@@ -13,6 +13,7 @@ require (
 	github.com/ebitengine/purego v0.5.0 // indirect
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20231117230948-b8b00452e321 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/hajimehoshi/ebiten v1.12.12 // indirect
 	github.com/hajimehoshi/file2byteslice v1.0.0 // indirect
 	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
 	github.com/hajimehoshi/oto/v2 v2.4.2 // indirect

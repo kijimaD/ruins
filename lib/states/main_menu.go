@@ -1,6 +1,8 @@
 package states
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/sokotwo/lib/resources"
@@ -32,5 +34,37 @@ func (st *MainMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransQuit}
 	}
-	return states.Transition{Type: states.TransNone}
+	return updateMenu(st, world)
+}
+
+// Menu Interface ================
+
+func (st *MainMenuState) getSelection() int {
+	return st.selection
+}
+
+func (st *MainMenuState) setSelection(selection int) {
+	st.selection = selection
+}
+
+func (st *MainMenuState) confirmSelection(world w.World) states.Transition {
+	switch st.selection {
+	case 0:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GamePlayState{}}}
+	case 1:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GamePlayState{}}}
+	case 2:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GamePlayState{}}}
+	case 3:
+		return states.Transition{Type: states.TransQuit}
+	}
+	panic(fmt.Errorf("unknown selection: %d", st.selection))
+}
+
+func (st *MainMenuState) getMenuIDs() []string {
+	return []string{"start", "intro", "exit"}
+}
+
+func (st *MainMenuState) getCursorMenuIDs() []string {
+	return []string{"cursor_start", "cursor_intro", "cursor_exit"}
 }
