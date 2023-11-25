@@ -1,2 +1,5 @@
 [font.hack]
 font = "assets/file/fonts/hack.ttf"
+
+[font.bizu]
+font = "assets/file/fonts/BIZUDGothic-Regular.ttf"
