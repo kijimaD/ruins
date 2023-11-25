@@ -7,7 +7,7 @@ import (
 
 type GamePlayState struct{}
 
-// State interface
+// State interface ================
 
 func (st *GamePlayState) OnPause(world w.World) {}
 

@@ -1,0 +1,10 @@
+[[entity]]
+
+[entity.components.Text]
+id = "title"
+text = "this is title"
+font_face = { font = "hack", option.size = 75.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 50, y = 650 }
