@@ -62,8 +62,8 @@ func main() {
 		},
 	}
 
-	// ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	// ebiten.SetWindowSize(minGameWidth, minGameHeight)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("sokotwo")
 
 	ebiten.RunGame(&mainGame{
