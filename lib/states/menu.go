@@ -1,6 +1,8 @@
 package states
 
 import (
+	"image/color"
+
 	"github.com/kijimaD/sokotwo/lib/math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -43,9 +45,9 @@ func updateMenu(menu menu, world w.World) states.Transition {
 		world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 			text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 			if text.ID == id {
-				text.Color.G = 255 // すべて塗りつぶし
+				text.Color = color.RGBA{0, 0, 0, 0}
 				if iCursor == newSelection {
-					text.Color.G = 0 // 選択中だけ別の色にする
+					text.Color = color.RGBA{255, 255, 255, 255}
 				}
 			}
 		}))
