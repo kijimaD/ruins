@@ -1,6 +1,6 @@
 package resources
 
-import "github.com/x-hgg-x/goecsengine/loader"
+import "github.com/kijimaD/sokotwo/lib/engine/loader"
 
 type MenuPrefabs struct {
 	MainMenu loader.EntityComponentList

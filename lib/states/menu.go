@@ -3,15 +3,14 @@ package states
 import (
 	"image/color"
 
-	"github.com/kijimaD/sokotwo/lib/math"
+	"github.com/kijimaD/sokotwo/lib/engine/math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	ec "github.com/kijimaD/sokotwo/lib/engine/components"
+	"github.com/kijimaD/sokotwo/lib/engine/states"
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
-	ec "github.com/x-hgg-x/goecsengine/components"
-	m "github.com/x-hgg-x/goecsengine/math"
-	"github.com/x-hgg-x/goecsengine/states"
-	w "github.com/x-hgg-x/goecsengine/world"
 )
 
 type menu interface {
@@ -22,7 +21,7 @@ type menu interface {
 	getCursorMenuIDs() []string
 }
 
-var menuLastCursorPosition = m.VectorInt2{}
+var menuLastCursorPosition = math.VectorInt2{}
 
 func updateMenu(menu menu, world w.World) states.Transition {
 	var transition states.Transition

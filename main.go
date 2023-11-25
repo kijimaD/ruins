@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	ec "github.com/kijimaD/sokotwo/lib/engine/components"
+	"github.com/kijimaD/sokotwo/lib/engine/loader"
+	er "github.com/kijimaD/sokotwo/lib/engine/resources"
+	es "github.com/kijimaD/sokotwo/lib/engine/states"
+	ew "github.com/kijimaD/sokotwo/lib/engine/world"
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
 	gr "github.com/kijimaD/sokotwo/lib/resources"
 	gs "github.com/kijimaD/sokotwo/lib/states"
-	ec "github.com/x-hgg-x/goecsengine/components"
-	"github.com/x-hgg-x/goecsengine/loader"
-	er "github.com/x-hgg-x/goecsengine/resources"
-	es "github.com/x-hgg-x/goecsengine/states"
-	ew "github.com/x-hgg-x/goecsengine/world"
 )
 
 const (

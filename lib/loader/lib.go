@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/x-hgg-x/goecsengine/loader"
-	w "github.com/x-hgg-x/goecsengine/world"
+	"github.com/kijimaD/sokotwo/lib/engine/loader"
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
 )
 
 func PreloadEntities(entityMetadataPath string, world w.World) loader.EntityComponentList {

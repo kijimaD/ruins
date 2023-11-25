@@ -1,8 +1,8 @@
 package states
 
 import (
-	"github.com/x-hgg-x/goecsengine/states"
-	w "github.com/x-hgg-x/goecsengine/world"
+	"github.com/kijimaD/sokotwo/lib/engine/states"
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
 )
 
 type GamePlayState struct{}

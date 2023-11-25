@@ -5,10 +5,10 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/sokotwo/lib/engine/loader"
+	"github.com/kijimaD/sokotwo/lib/engine/states"
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	"github.com/kijimaD/sokotwo/lib/resources"
-	"github.com/x-hgg-x/goecsengine/loader"
-	"github.com/x-hgg-x/goecsengine/states"
-	w "github.com/x-hgg-x/goecsengine/world"
 )
 
 type MainMenuState struct {

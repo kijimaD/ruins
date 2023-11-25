@@ -1,5 +1,17 @@
 package math
 
+// Vector2 type
+type Vector2 struct {
+	X float64
+	Y float64
+}
+
+// VectorInt2 type
+type VectorInt2 struct {
+	X int
+	Y int
+}
+
 func Min(a, b int) int {
 	if a < b {
 		return a

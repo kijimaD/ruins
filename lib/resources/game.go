@@ -1,7 +1,7 @@
 package resources
 
 import (
-	w "github.com/x-hgg-x/goecsengine/world"
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
 )
 
 const (
