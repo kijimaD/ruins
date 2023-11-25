@@ -60,6 +60,7 @@ func main() {
 		Menu: gr.MenuPrefabs{
 			MainMenu: gloader.PreloadEntities("assets/metadata/entities/ui/main_menu.toml", world),
 		},
+		Intro: gloader.PreloadEntities("assets/metadata/entities/ui/intro.toml", world),
 	}
 
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)

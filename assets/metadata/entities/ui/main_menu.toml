@@ -9,8 +9,6 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 480, y = 650 }
 
-# テキスト ================
-
 [[entity]]
 
 [entity.components.Text]
