@@ -25,8 +25,8 @@ var (
 
 type queue struct {
 	events []event
-	now    event
 	buf    string
+	// trueの場合キューを処理する
 	active bool
 }
 
@@ -61,6 +61,7 @@ func (q *queue) exec() queueResult {
 
 func (q *queue) Next() {
 	q.events = append(q.events[:0], q.events[1:]...)
+	q.active = true
 }
 
 type event interface {

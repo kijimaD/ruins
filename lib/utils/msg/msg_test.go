@@ -11,8 +11,14 @@ func TestExec(t *testing.T) {
 	q.events = append(q.events, &msg{
 		body: []rune("こんにちは"),
 	})
+	q.events = append(q.events, &msg{
+		body: []rune("こんばんは"),
+	})
 	q.Exec()
 	assert.Equal(t, "こんにちは", q.buf)
+	q.Next()
+	q.Exec()
+	assert.Equal(t, "こんにちはこんばんは", q.buf)
 }
 
 func TestMsg(t *testing.T) {
