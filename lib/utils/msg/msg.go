@@ -1,5 +1,10 @@
 package msg
 
+import (
+	"fmt"
+	"log"
+)
+
 // 指定数で、自動で改行する
 // 取り出す関数を実行するごとに1文字ずつ取り出す。これによってアニメーションっぽくする
 // 下にはみ出るサイズの文字列が入れられるとエラーを出す
@@ -21,45 +26,66 @@ type Msg struct {
 type submitResult string
 
 const (
-	SubmitOK         = submitResult("OK")
-	SubmitPageOK     = submitResult("OK_Page")
-	SubmitLineOK     = submitResult("OK_LINE")
+	// 行を正しく返した
+	SubmitLineOK = submitResult("OK_LINE")
+	// 終端に到達した
 	SubmitMsgFinish  = submitResult("MSG_FINISH")
 	SubmitPageFinish = submitResult("PAGE_FINISH")
 	SubmitLineFinish = submitResult("LINE_FINISH")
 	SubmitFail       = submitResult("FAIL")
+	// 予期せぬエラー
+	SubmitUnexpectFail = submitResult("UNEXPECT_FAIL")
 )
 
-type submitOpt struct {
-	pageNext bool
-	lineNext bool
-}
+type submitStrategy string
 
-func (m *Msg) Buf(opt submitOpt) string {
-	str, _ := m.submit(opt)
-	// submit statusがlineのとき、\nを入れる
-	//                pageのとき、bufを消す
-	//                msgのとき、終了ステータスを返す
-	// 送りオプションがついてるときだけ、次に進めるようにする
+const (
+	// ページ送り待ちする
+	submitPageNext = submitStrategy("PAGE")
+	// 改行待ちする
+	submitLineNext = submitStrategy("LINE")
+	submitStop     = submitStrategy("STOP")
+)
+
+func (m *Msg) Buf(opt submitStrategy) string {
+	str, result := m.submit(opt)
+
+	switch result {
+	case SubmitMsgFinish:
+		fmt.Println("終了。要状態遷移")
+	case SubmitPageFinish:
+		m.buf = ""
+	case SubmitLineFinish:
+		m.buf += "\n"
+	case SubmitLineOK:
+	default:
+		log.Fatalf("予期しないエラー: %s", result)
+	}
 	m.buf = m.buf + str
 	return m.buf
 }
 
-func (m *Msg) submit(opt submitOpt) (string, submitResult) {
+func (m *Msg) submit(opt submitStrategy) (string, submitResult) {
 	if m.pos > len(m.pages)-1 {
 		return "", SubmitMsgFinish
 	}
 
 	str, result := m.pages[m.pos].submit(opt)
-	if result == SubmitLineOK {
+	switch result {
+	case SubmitLineOK:
 		return str, result
+	case SubmitPageFinish:
+		if opt == submitPageNext {
+			m.pos++
+			str, result = m.submit(opt)
+			return str, result
+		} else {
+			return "", SubmitPageFinish
+		}
+	case SubmitLineFinish:
+		return "", SubmitLineFinish
 	}
-	if result == SubmitPageFinish && opt.pageNext {
-		m.pos++
-		str, result = m.submit(opt)
-		return str, result
-	}
-	return "", SubmitFail
+	return "", SubmitUnexpectFail
 }
 
 type page struct {
@@ -67,21 +93,25 @@ type page struct {
 	pos   int // linesのpos
 }
 
-func (p *page) submit(opt submitOpt) (string, submitResult) {
+func (p *page) submit(opt submitStrategy) (string, submitResult) {
 	if p.pos > len(p.lines)-1 {
 		return "", SubmitPageFinish
 	}
 
 	str, result := p.lines[p.pos].submit()
-	if result == SubmitLineOK {
+	switch result {
+	case SubmitLineOK:
 		return str, result
+	case SubmitLineFinish:
+		if opt == submitLineNext || opt == submitPageNext {
+			p.pos++
+			str, result = p.submit(opt)
+			return str, result
+		} else {
+			return "", SubmitLineFinish
+		}
 	}
-	if result == SubmitLineFinish && (opt.lineNext || opt.pageNext) {
-		p.pos++
-		str, result = p.submit(opt)
-		return str, result
-	}
-	return "", SubmitFail
+	return "", SubmitUnexpectFail
 }
 
 // lineごとにクリック待ちが発生する。改行は入るかもしれない

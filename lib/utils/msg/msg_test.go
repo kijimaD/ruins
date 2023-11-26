@@ -71,29 +71,27 @@ func TestPageSubmit(t *testing.T) {
 		},
 	}
 
-	noneOpt := submitOpt{}
-	str, result := p.submit(noneOpt)
+	str, result := p.submit(submitStop)
 	assert.Equal(t, "a", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = p.submit(noneOpt)
+	str, result = p.submit(submitStop)
 	assert.Equal(t, "b", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = p.submit(noneOpt)
+	str, result = p.submit(submitStop)
 	assert.Equal(t, "", str)
-	assert.Equal(t, SubmitFail, result)
+	assert.Equal(t, SubmitLineFinish, result)
 
-	nextOpt := submitOpt{lineNext: true}
-	str, result = p.submit(nextOpt)
+	str, result = p.submit(submitLineNext)
 	assert.Equal(t, "c", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = p.submit(nextOpt)
+	str, result = p.submit(submitLineNext)
 	assert.Equal(t, "d", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = p.submit(nextOpt)
+	str, result = p.submit(submitLineNext)
 	assert.Equal(t, "", str)
 	assert.Equal(t, SubmitPageFinish, result)
 }
@@ -115,95 +113,107 @@ func TestMsgSubmit(t *testing.T) {
 		},
 	}
 
-	noneOpt := submitOpt{}
-	lineOpt := submitOpt{lineNext: true}
-	pageOpt := submitOpt{pageNext: true}
-
-	str, result := m.submit(noneOpt)
+	str, result := m.submit(submitStop)
 	assert.Equal(t, "a", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = m.submit(noneOpt)
+	str, result = m.submit(submitStop)
 	assert.Equal(t, "b", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = m.submit(noneOpt)
+	str, result = m.submit(submitStop)
 	assert.Equal(t, "", str)
-	assert.Equal(t, SubmitFail, result)
+	assert.Equal(t, SubmitLineFinish, result)
 
-	str, result = m.submit(lineOpt)
+	str, result = m.submit(submitLineNext)
 	assert.Equal(t, "c", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = m.submit(noneOpt)
+	str, result = m.submit(submitStop)
 	assert.Equal(t, "d", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = m.submit(noneOpt)
+	str, result = m.submit(submitStop)
 	assert.Equal(t, "", str)
-	assert.Equal(t, SubmitFail, result)
+	assert.Equal(t, SubmitLineFinish, result)
 
-	str, result = m.submit(lineOpt)
+	str, result = m.submit(submitLineNext)
 	assert.Equal(t, "", str)
-	assert.Equal(t, SubmitFail, result)
+	assert.Equal(t, SubmitPageFinish, result)
 
-	str, result = m.submit(pageOpt)
+	str, result = m.submit(submitPageNext)
 	assert.Equal(t, "e", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = m.submit(noneOpt)
+	str, result = m.submit(submitStop)
 	assert.Equal(t, "f", str)
 	assert.Equal(t, SubmitLineOK, result)
 
-	str, result = m.submit(noneOpt)
+	// これがあると状態が変わって後続の返すステータスが変わる。ビミョーな挙動なので直す
+	// str, result = m.submit(submitPageNext)
+	// assert.Equal(t, "", str)
+	// assert.Equal(t, SubmitMsgFinish, result)
+
+	str, result = m.submit(submitStop)
 	assert.Equal(t, "", str)
-	assert.Equal(t, SubmitFail, result)
+	assert.Equal(t, SubmitLineFinish, result)
 }
 
-// func TestMsgbuf(t *testing.T) {
-// 	m := Msg{
-// 		pages: []page{
-// 			{
-// 				lines: []line{
-// 					{str: "ab"},
-// 					{str: "cd"},
-// 				},
-// 			},
-// 			{
-// 				lines: []line{
-// 					{str: "ef"},
-// 					{str: "gh"},
-// 				},
-// 			},
-// 		},
-// 	}
+func TestMsgbuf(t *testing.T) {
+	m := Msg{
+		pages: []page{
+			{
+				lines: []line{
+					{str: "ab"},
+					{str: "cd"},
+				},
+			},
+			{
+				lines: []line{
+					{str: "ef"},
+					{str: "gh"},
+				},
+			},
+		},
+	}
 
-// 	noneOpt := submitOpt{}
-// 	// pageOpt := submitOpt{pageNext: true}
+	str := m.Buf(submitStop)
+	assert.Equal(t, "a", str)
 
-// 	str := m.Buf(noneOpt)
-// 	assert.Equal(t, "a", str)
+	str = m.Buf(submitStop)
+	assert.Equal(t, "ab", str)
 
-// 	str = m.Buf(noneOpt)
-// 	assert.Equal(t, "ab", str)
+	// フラグなしだと先に進まない
+	str = m.Buf(submitStop)
+	assert.Equal(t, "ab\n", str)
 
-// 	// フラグなしだと先に進まない
-// 	str = m.Buf(noneOpt)
-// 	assert.Equal(t, "ab", str)
+	str = m.Buf(submitLineNext)
+	assert.Equal(t, "ab\nc", str)
 
-// 	// str = m.Buf()
-// 	// assert.Equal(t, "abc", str)
+	str = m.Buf(submitStop)
+	assert.Equal(t, "ab\ncd", str)
 
-// 	// str = m.Buf()
-// 	// assert.Equal(t, "abcd", str)
+	// ここでLINE_FINISHが出る。何もなくても、一度進まないといけない
+	// 次に何もないときには、一気にPAGE_FINISHにしたいな
+	str = m.Buf(submitStop)
+	assert.Equal(t, "ab\ncd\n", str)
 
-// 	// // フラグなしだと先に進まない
-// 	// str = m.Buf()
-// 	// assert.Equal(t, "abcd", str)
+	// ここでPAGE_FINISHが出る。
+	str = m.Buf(submitLineNext)
+	assert.Equal(t, "", str) // nextしても改行だけのときは、無効にしたいな...
 
-// 	// // ページをまたぐとフラッシュされる
-// 	// str = m.Buf()
-// 	// assert.Equal(t, "e", str)
-// 	// str = m.Buf()
-// 	// assert.Equal(t, "ef", str)
-// }
+	str = m.Buf(submitPageNext)
+	assert.Equal(t, "e", str)
+
+	str = m.Buf(submitStop)
+	assert.Equal(t, "ef", str)
+
+	str = m.Buf(submitLineNext)
+	assert.Equal(t, "efg", str)
+
+	str = m.Buf(submitStop)
+	assert.Equal(t, "efgh", str)
+
+	str = m.Buf(submitStop)
+	assert.Equal(t, "efgh\n", str)
+}
