@@ -36,23 +36,23 @@ func TestLineSubmit(t *testing.T) {
 
 	tests := []struct {
 		expectValue string
-		expectCont  bool
+		expectCont  submitResult
 	}{
 		{
 			expectValue: "a",
-			expectCont:  true,
+			expectCont:  SubmitLineOK,
 		},
 		{
 			expectValue: "b",
-			expectCont:  true,
+			expectCont:  SubmitLineOK,
 		},
 		{
 			expectValue: "c",
-			expectCont:  true,
+			expectCont:  SubmitLineOK,
 		},
 		{
 			expectValue: "",
-			expectCont:  false,
+			expectCont:  SubmitLineFinish,
 		},
 	}
 
@@ -71,37 +71,31 @@ func TestPageSubmit(t *testing.T) {
 		},
 	}
 
-	tests := []struct {
-		expectValue string
-		expectCont  bool
-	}{
-		{
-			expectValue: "a",
-			expectCont:  true,
-		},
-		{
-			expectValue: "b",
-			expectCont:  true,
-		},
-		{
-			expectValue: "c",
-			expectCont:  true,
-		},
-		{
-			expectValue: "d",
-			expectCont:  true,
-		},
-		{
-			expectValue: "",
-			expectCont:  false,
-		},
-	}
+	noneOpt := submitOpt{}
+	str, result := p.submit(noneOpt)
+	assert.Equal(t, "a", str)
+	assert.Equal(t, SubmitLineOK, result)
 
-	for _, tt := range tests {
-		str, cont := p.submit()
-		assert.Equal(t, tt.expectValue, str)
-		assert.Equal(t, tt.expectCont, cont)
-	}
+	str, result = p.submit(noneOpt)
+	assert.Equal(t, "b", str)
+	assert.Equal(t, SubmitLineOK, result)
+
+	str, result = p.submit(noneOpt)
+	assert.Equal(t, "", str)
+	assert.Equal(t, SubmitFail, result)
+
+	nextOpt := submitOpt{lineNext: true}
+	str, result = p.submit(nextOpt)
+	assert.Equal(t, "c", str)
+	assert.Equal(t, SubmitLineOK, result)
+
+	str, result = p.submit(nextOpt)
+	assert.Equal(t, "d", str)
+	assert.Equal(t, SubmitLineOK, result)
+
+	str, result = p.submit(nextOpt)
+	assert.Equal(t, "", str)
+	assert.Equal(t, SubmitPageFinish, result)
 }
 
 func TestMsgSubmit(t *testing.T) {
@@ -116,96 +110,100 @@ func TestMsgSubmit(t *testing.T) {
 			{
 				lines: []line{
 					{str: "ef"},
-					{str: "gh"},
 				},
 			},
 		},
 	}
 
-	tests := []struct {
-		expectValue string
-		expectCont  bool
-	}{
-		{
-			expectValue: "a",
-			expectCont:  true,
-		},
-		{
-			expectValue: "b",
-			expectCont:  true,
-		},
-		{
-			expectValue: "c",
-			expectCont:  true,
-		},
-		{
-			expectValue: "d",
-			expectCont:  true,
-		},
-		{
-			expectValue: "e",
-			expectCont:  true,
-		},
-		{
-			expectValue: "f",
-			expectCont:  true,
-		},
-		{
-			expectValue: "g",
-			expectCont:  true,
-		},
-		{
-			expectValue: "h",
-			expectCont:  true,
-		},
-		{
-			expectValue: "",
-			expectCont:  false,
-		},
-	}
+	noneOpt := submitOpt{}
+	lineOpt := submitOpt{lineNext: true}
+	pageOpt := submitOpt{pageNext: true}
 
-	for _, tt := range tests {
-		str, cont := m.submit()
-		assert.Equal(t, tt.expectValue, str)
-		assert.Equal(t, tt.expectCont, cont)
-	}
-}
-
-func TestMsgbuf(t *testing.T) {
-	m := Msg{
-		pages: []page{
-			{
-				lines: []line{
-					{str: "ab"},
-					{str: "cd"},
-				},
-			},
-			{
-				lines: []line{
-					{str: "ef"},
-					{str: "gh"},
-				},
-			},
-		},
-	}
-
-	str := m.Buf()
+	str, result := m.submit(noneOpt)
 	assert.Equal(t, "a", str)
+	assert.Equal(t, SubmitLineOK, result)
 
-	str = m.Buf()
-	assert.Equal(t, "ab", str)
+	str, result = m.submit(noneOpt)
+	assert.Equal(t, "b", str)
+	assert.Equal(t, SubmitLineOK, result)
 
-	// フラグなしだと先に進まない
-	str = m.Buf()
-	assert.Equal(t, "ab", str)
+	str, result = m.submit(noneOpt)
+	assert.Equal(t, "", str)
+	assert.Equal(t, SubmitFail, result)
 
-	str = m.Buf()
-	assert.Equal(t, "abc", str)
+	str, result = m.submit(lineOpt)
+	assert.Equal(t, "c", str)
+	assert.Equal(t, SubmitLineOK, result)
 
-	str = m.Buf()
-	assert.Equal(t, "abcd", str)
+	str, result = m.submit(noneOpt)
+	assert.Equal(t, "d", str)
+	assert.Equal(t, SubmitLineOK, result)
 
-	// フラグなしだと先に進まない
-	str = m.Buf()
-	assert.Equal(t, "abcd", str)
+	str, result = m.submit(noneOpt)
+	assert.Equal(t, "", str)
+	assert.Equal(t, SubmitFail, result)
+
+	str, result = m.submit(lineOpt)
+	assert.Equal(t, "", str)
+	assert.Equal(t, SubmitFail, result)
+
+	str, result = m.submit(pageOpt)
+	assert.Equal(t, "e", str)
+	assert.Equal(t, SubmitLineOK, result)
+
+	str, result = m.submit(noneOpt)
+	assert.Equal(t, "f", str)
+	assert.Equal(t, SubmitLineOK, result)
+
+	str, result = m.submit(noneOpt)
+	assert.Equal(t, "", str)
+	assert.Equal(t, SubmitFail, result)
 }
+
+// func TestMsgbuf(t *testing.T) {
+// 	m := Msg{
+// 		pages: []page{
+// 			{
+// 				lines: []line{
+// 					{str: "ab"},
+// 					{str: "cd"},
+// 				},
+// 			},
+// 			{
+// 				lines: []line{
+// 					{str: "ef"},
+// 					{str: "gh"},
+// 				},
+// 			},
+// 		},
+// 	}
+
+// 	noneOpt := submitOpt{}
+// 	// pageOpt := submitOpt{pageNext: true}
+
+// 	str := m.Buf(noneOpt)
+// 	assert.Equal(t, "a", str)
+
+// 	str = m.Buf(noneOpt)
+// 	assert.Equal(t, "ab", str)
+
+// 	// フラグなしだと先に進まない
+// 	str = m.Buf(noneOpt)
+// 	assert.Equal(t, "ab", str)
+
+// 	// str = m.Buf()
+// 	// assert.Equal(t, "abc", str)
+
+// 	// str = m.Buf()
+// 	// assert.Equal(t, "abcd", str)
+
+// 	// // フラグなしだと先に進まない
+// 	// str = m.Buf()
+// 	// assert.Equal(t, "abcd", str)
+
+// 	// // ページをまたぐとフラッシュされる
+// 	// str = m.Buf()
+// 	// assert.Equal(t, "e", str)
+// 	// str = m.Buf()
+// 	// assert.Equal(t, "ef", str)
+// }

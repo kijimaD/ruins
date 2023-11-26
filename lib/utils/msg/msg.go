@@ -18,8 +18,25 @@ type Msg struct {
 	buf   string
 }
 
-func (m *Msg) Buf() string {
-	str, _ := m.submit()
+type submitResult string
+
+const (
+	SubmitOK         = submitResult("OK")
+	SubmitPageOK     = submitResult("OK_Page")
+	SubmitLineOK     = submitResult("OK_LINE")
+	SubmitMsgFinish  = submitResult("MSG_FINISH")
+	SubmitPageFinish = submitResult("PAGE_FINISH")
+	SubmitLineFinish = submitResult("LINE_FINISH")
+	SubmitFail       = submitResult("FAIL")
+)
+
+type submitOpt struct {
+	pageNext bool
+	lineNext bool
+}
+
+func (m *Msg) Buf(opt submitOpt) string {
+	str, _ := m.submit(opt)
 	// submit statusがlineのとき、\nを入れる
 	//                pageのとき、bufを消す
 	//                msgのとき、終了ステータスを返す
@@ -28,18 +45,21 @@ func (m *Msg) Buf() string {
 	return m.buf
 }
 
-func (m *Msg) submit() (string, bool) {
+func (m *Msg) submit(opt submitOpt) (string, submitResult) {
 	if m.pos > len(m.pages)-1 {
-		return "", false
+		return "", SubmitMsgFinish
 	}
 
-	str, ok := m.pages[m.pos].submit()
-	if !ok {
-		m.pos++
-		str, ok := m.submit()
-		return str, ok
+	str, result := m.pages[m.pos].submit(opt)
+	if result == SubmitLineOK {
+		return str, result
 	}
-	return str, true
+	if result == SubmitPageFinish && opt.pageNext {
+		m.pos++
+		str, result = m.submit(opt)
+		return str, result
+	}
+	return "", SubmitFail
 }
 
 type page struct {
@@ -47,17 +67,21 @@ type page struct {
 	pos   int // linesのpos
 }
 
-func (p *page) submit() (string, bool) {
+func (p *page) submit(opt submitOpt) (string, submitResult) {
 	if p.pos > len(p.lines)-1 {
-		return "", false
+		return "", SubmitPageFinish
 	}
-	str, ok := p.lines[p.pos].submit()
-	if !ok {
+
+	str, result := p.lines[p.pos].submit()
+	if result == SubmitLineOK {
+		return str, result
+	}
+	if result == SubmitLineFinish && (opt.lineNext || opt.pageNext) {
 		p.pos++
-		str, ok := p.submit()
-		return str, ok
+		str, result = p.submit(opt)
+		return str, result
 	}
-	return str, true
+	return "", SubmitFail
 }
 
 // lineごとにクリック待ちが発生する。改行は入るかもしれない
@@ -67,12 +91,11 @@ type line struct {
 	pos int // strのpos
 }
 
-func (l *line) submit() (string, bool) {
-	// fmt.Println(l.pos, len(l.str)-1)
+func (l *line) submit() (string, submitResult) {
 	if l.pos > len(l.str)-1 {
-		return "", false
+		return "", SubmitLineFinish
 	}
 	str := l.str[l.pos]
 	l.pos++
-	return string(str), true
+	return string(str), SubmitLineOK
 }
