@@ -1,10 +1,5 @@
 package msg
 
-import (
-	"fmt"
-	"log"
-)
-
 // 指定数で、自動で改行する
 // 取り出す関数を実行するごとに1文字ずつ取り出す。これによってアニメーションっぽくする
 // 下にはみ出るサイズの文字列が入れられるとエラーを出す
@@ -17,115 +12,81 @@ import (
 
 // 改ページは押したときに現在の表示文字をフラッシュして、上から表示にすること。
 
-type Msg struct {
-	pages []page
-	pos   int // pageのpos
-	buf   string
+// 階層構造だとやりにくいし、ほかの構造に対応しにくい気がしてきた。テキスト表示だけじゃなくって、BGMなんかもあるんだぞ
+// イベントキュー形式はどうだろうか?
+
+type queue struct {
+	events []event
+	now    event
+	buf    string
+	active bool
 }
 
-type submitResult string
-
-const (
-	// 行を正しく返した
-	SubmitLineOK = submitResult("OK_LINE")
-	// 終端に到達した
-	SubmitMsgFinish  = submitResult("MSG_FINISH")
-	SubmitPageFinish = submitResult("PAGE_FINISH")
-	SubmitLineFinish = submitResult("LINE_FINISH")
-	SubmitFail       = submitResult("FAIL")
-	// 予期せぬエラー
-	SubmitUnexpectFail = submitResult("UNEXPECT_FAIL")
-)
-
-type submitStrategy string
-
-const (
-	// ページ送り待ちする
-	submitPageNext = submitStrategy("PAGE")
-	// 改行待ちする
-	submitLineNext = submitStrategy("LINE")
-	submitStop     = submitStrategy("STOP")
-)
-
-func (m *Msg) Buf(opt submitStrategy) string {
-	str, result := m.submit(opt)
-
-	switch result {
-	case SubmitMsgFinish:
-		fmt.Println("終了。要状態遷移")
-	case SubmitPageFinish:
-		m.buf = ""
-	case SubmitLineFinish:
-		m.buf += "\n"
-	case SubmitLineOK:
-	default:
-		log.Fatalf("予期しないエラー: %s", result)
+func NewQueue() queue {
+	return queue{
+		active: true,
 	}
-	m.buf = m.buf + str
-	return m.buf
 }
 
-func (m *Msg) submit(opt submitStrategy) (string, submitResult) {
-	if m.pos > len(m.pages)-1 {
-		return "", SubmitMsgFinish
+func (q *queue) Exec() {
+	if !q.active {
+		return
 	}
-
-	str, result := m.pages[m.pos].submit(opt)
-	switch result {
-	case SubmitLineOK:
-		return str, result
-	case SubmitPageFinish:
-		if opt == submitPageNext {
-			m.pos++
-			str, result = m.submit(opt)
-			return str, result
-		} else {
-			return "", SubmitPageFinish
-		}
-	case SubmitLineFinish:
-		return "", SubmitLineFinish
-	}
-	return "", SubmitUnexpectFail
+	q.events[0].PreHook()
+	q.events[0].Run(q)
 }
 
-type page struct {
-	lines []line
-	pos   int // linesのpos
+type event interface {
+	PreHook() func()
+	Run(*queue)
 }
 
-func (p *page) submit(opt submitStrategy) (string, submitResult) {
-	if p.pos > len(p.lines)-1 {
-		return "", SubmitPageFinish
-	}
+// ================
 
-	str, result := p.lines[p.pos].submit()
-	switch result {
-	case SubmitLineOK:
-		return str, result
-	case SubmitLineFinish:
-		if opt == submitLineNext || opt == submitPageNext {
-			p.pos++
-			str, result = p.submit(opt)
-			return str, result
-		} else {
-			return "", SubmitLineFinish
-		}
-	}
-	return "", SubmitUnexpectFail
+type msg struct {
+	body []rune
+	pos  int
+	done bool
 }
 
-// lineごとにクリック待ちが発生する。改行は入るかもしれない
-// 表示はstr1つ1つ
-type line struct {
-	str string
-	pos int // strのpos
+func (e *msg) PreHook() func() {
+	return func() {}
 }
 
-func (l *line) submit() (string, submitResult) {
-	if l.pos > len(l.str)-1 {
-		return "", SubmitLineFinish
+func (e *msg) Run(q *queue) {
+	if e.done {
+		return
 	}
-	str := l.str[l.pos]
-	l.pos++
-	return string(str), SubmitLineOK
+	q.buf += string(e.body[e.pos])
+	e.pos++
+	if e.pos > len(e.body)-1 {
+		e.done = true
+	}
+	return
+}
+
+// ================
+
+type wait struct{}
+
+func (e *wait) PreHook() func() {
+	return func() {}
+}
+
+func (e *wait) Run(q queue) {
+	q.active = false
+	return
+}
+
+// ================
+
+type resume struct{}
+
+func (e *resume) PreHook() func() {
+	return func() {}
+}
+
+func (e *resume) Run(q queue) {
+	q.active = true
+	return
 }
