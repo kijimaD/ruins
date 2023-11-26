@@ -15,6 +15,14 @@ package msg
 // 階層構造だとやりにくいし、ほかの構造に対応しにくい気がしてきた。テキスト表示だけじゃなくって、BGMなんかもあるんだぞ
 // イベントキュー形式はどうだろうか?
 
+type queueResult string
+
+var (
+	queueEmpty      = queueResult("EMPTY")
+	queueProcessing = queueResult("PROCESSING")
+	queueWait       = queueResult("WAIT")
+)
+
 type queue struct {
 	events []event
 	now    event
@@ -28,16 +36,35 @@ func NewQueue() queue {
 	}
 }
 
-func (q *queue) Exec() {
+func (q *queue) Exec() queueResult {
+	for {
+		result := q.exec()
+		if result == queueWait || result == queueEmpty {
+			break
+		}
+	}
+	return queueWait
+}
+
+func (q *queue) exec() queueResult {
 	if !q.active {
-		return
+		return queueWait
+	}
+	if len(q.events) == 0 {
+		return queueEmpty
 	}
 	q.events[0].PreHook()
 	q.events[0].Run(q)
+
+	return queueProcessing
+}
+
+func (q *queue) Next() {
+	q.events = append(q.events[:0], q.events[1:]...)
 }
 
 type event interface {
-	PreHook() func()
+	PreHook()
 	Run(*queue)
 }
 
@@ -46,21 +73,17 @@ type event interface {
 type msg struct {
 	body []rune
 	pos  int
-	done bool
 }
 
-func (e *msg) PreHook() func() {
-	return func() {}
+func (e *msg) PreHook() {
+	return
 }
 
 func (e *msg) Run(q *queue) {
-	if e.done {
-		return
-	}
 	q.buf += string(e.body[e.pos])
 	e.pos++
 	if e.pos > len(e.body)-1 {
-		e.done = true
+		q.active = false
 	}
 	return
 }
@@ -69,11 +92,11 @@ func (e *msg) Run(q *queue) {
 
 type wait struct{}
 
-func (e *wait) PreHook() func() {
-	return func() {}
+func (e *wait) PreHook() {
+	return
 }
 
-func (e *wait) Run(q queue) {
+func (e *wait) Run(q *queue) {
 	q.active = false
 	return
 }
@@ -82,11 +105,24 @@ func (e *wait) Run(q queue) {
 
 type resume struct{}
 
-func (e *resume) PreHook() func() {
-	return func() {}
+func (e *resume) PreHook() {
+	return
 }
 
-func (e *resume) Run(q queue) {
+func (e *resume) Run(q *queue) {
 	q.active = true
+	return
+}
+
+// ================
+
+type flush struct{}
+
+func (e *flush) PreHook() {
+	return
+}
+
+func (e *flush) Run(q *queue) {
+	q.buf = ""
 	return
 }
