@@ -37,10 +37,9 @@ func TestWait(t *testing.T) {
 	assert.Equal(t, "東京", q.buf)
 	q.Exec()
 	assert.Equal(t, "東京", q.buf)
-	q.Next() // flush
+	q.Pop() // flush
 	q.Exec()
 	assert.Equal(t, "", q.buf)
-	q.Next()
 	q.Exec()
 	q.Exec()
 	assert.Equal(t, "京都", q.buf)
@@ -56,11 +55,27 @@ func TestBuilder(t *testing.T) {
 	e.Eval(program)
 
 	q := NewQueue(e.Events)
-
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "こんにちは...", q.buf)
-	q.Next()
+	q.Pop()
 	// (flush実行)
-	q.Next()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "今日はいかがですか", q.buf)
 }
 
@@ -74,6 +89,13 @@ func TestSingle(t *testing.T) {
 
 	q := NewQueue(e.Events)
 
-	q.Next()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "こんにちは...", q.buf)
 }

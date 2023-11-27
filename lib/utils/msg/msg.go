@@ -27,6 +27,7 @@ func NewQueue(events []event) Queue {
 	return q
 }
 
+// キューの先端にあるイベントを実行する
 func (q *Queue) Exec() queueResult {
 	if !q.active {
 		return queueWait
@@ -41,7 +42,7 @@ func (q *Queue) Exec() queueResult {
 }
 
 // キューの先端を消して先に進める
-func (q *Queue) Next() queueResult {
+func (q *Queue) Pop() queueResult {
 	q.events = append(q.events[:0], q.events[1:]...)
 	q.active = true
 	// for {
@@ -127,5 +128,6 @@ func (e *flush) PreHook() {
 func (e *flush) Run(q *Queue) {
 	q.buf = ""
 	q.active = false
+	q.Pop()
 	return
 }

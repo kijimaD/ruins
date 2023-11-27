@@ -2,8 +2,8 @@
 
 [entity.components.Text]
 id = "title"
-text = "Diggers"
-font_face = { font = "hack", options.size = 75.0 }
+text = "探索者"
+font_face = { font = "kappa", options.size = 75.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]

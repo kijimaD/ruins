@@ -36,7 +36,7 @@ var introText = `
 ライバルたちと戦い古代の遺品を集めてくるプロ。[r]
 彼らの乗り物を、人々は「バトルディッガー」
 あるいはモグラとそれに乗って
-遺跡を冒険する者達「モグラ乗り」と呼んだ。[r]
+遺跡を冒険する者達を「モグラ乗り」と呼んだ。[r]
 これは、そんなモグラ乗りの物語である。`
 
 // State interface ================
@@ -70,7 +70,7 @@ func (st *IntroState) Update(world w.World) states.Transition {
 
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter):
-		st.queue.Next()
+		st.queue.Pop()
 	case inpututil.IsKeyJustPressed(ebiten.KeyBackspace):
 		// st.prevPage()
 	}
