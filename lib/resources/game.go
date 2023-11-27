@@ -34,6 +34,10 @@ func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
 	gameWidth := gridWidth*gridBlockSize + offsetX
 	gameHeight := gridHeight*gridBlockSize + offsetY
 
+	fadeOutSprite := &(*world.Resources.SpriteSheets)["intro-bg"].Sprites[0]
+	fadeOutSprite.Width = gameWidth
+	fadeOutSprite.Height = gameHeight
+
 	world.Resources.ScreenDimensions.Width = gameWidth
 	world.Resources.ScreenDimensions.Height = gameHeight
 

@@ -8,28 +8,26 @@ import (
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	"github.com/kijimaD/sokotwo/lib/resources"
+	"github.com/kijimaD/sokotwo/lib/utils/msg"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type IntroState struct {
-	progress int
+	queue msg.Queue
+	cycle int
 }
 
-// 全体のテキスト数から位置を計算してるっぽいので、改行してても文章が長いと左端に寄る
-var introText = []string{
-	"大陸に\n散らばる遺跡...",
-	"それは古代の\n失われた文明が眠る場所",
-	"その中では古代文明の財宝と\n多くの怪物たちが待ち構えている。",
-	// "かつて、勇者たちは剣や槍という\n粗末な武器を持って遺跡に挑み...",
-	// "文字通り命がけの冒険の代償に\nわずかばかりの貴金属を持ち帰った。",
-
-	// "やがて時代が進むと、剣は銃に変わり\n大砲を乗せた乗り物が現れた。",
-	// "遺跡から見つかる古代の財宝も失われた\n科学技術の品であり利用できることがわかってくると",
-	// "遺跡の価値はさらに上がりその支配権をめぐって、\nしばしば争いも起こるようになった。",
-	// "重武装の乗り物を駆って遺跡に挑み怪物たちや\nライバルたちと戦い古代の遺品を集めてくるプロ。",
-	// "彼らの乗り物を、人々は「バトルディッガー」\nあるいはモグラとそれに乗って遺跡を冒険する者達「モグラ乗り」と呼んだ。",
-	// "これは、そんなモグラ乗りの物語である。",
-}
+var introText = `
+大陸に散らばる遺跡...[r]
+それは古代の失われた文明が眠る場所。[r]
+その中では古代文明の財宝と多くの怪物たちが待ち構えている。[r]
+かつて、勇者たちは剣や槍という粗末な武器を持って遺跡に挑み...[r]
+文字通り命がけの冒険の代償にわずかばかりの貴金属を持ち帰った。[r]
+やがて時代が進むと、剣は銃に変わり大砲を乗せた乗り物が現れた。[r]
+遺跡から見つかる古代の財宝も失われた科学技術の品であり利用できることがわかってくると遺跡の価値はさらに上がりその支配権をめぐって、しばしば争いも起こるようになった。[r]
+重武装の乗り物を駆って遺跡に挑み怪物たちやライバルたちと戦い古代の遺品を集めてくるプロ。[r]
+彼らの乗り物を、人々は「バトルディッガー」あるいはモグラとそれに乗って遺跡を冒険する者達を「モグラ乗り」と呼んだ。[r]
+これは、そんなモグラ乗りの物語である。`
 
 // State interface ================
 
@@ -40,6 +38,12 @@ func (st *IntroState) OnResume(world w.World) {}
 func (st *IntroState) OnStart(world w.World) {
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	loader.AddEntities(world, prefabs.Intro)
+	l := msg.NewLexer(introText)
+	p := msg.NewParser(l)
+	program := p.ParseProgram()
+	e := msg.Evaluator{}
+	e.Eval(program)
+	st.queue = msg.NewQueue(e.Events)
 }
 
 func (st *IntroState) OnStop(world w.World) {
@@ -47,30 +51,23 @@ func (st *IntroState) OnStop(world w.World) {
 }
 
 func (st *IntroState) Update(world w.World) states.Transition {
+	// アニメーションに便利なので、グローバルにあっていいかもしれない
+	if st.cycle%2 == 0 {
+		st.queue.RunHead()
+		st.cycle = 0
+	}
+	st.cycle++
+
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter):
-		st.nextPage()
+		st.queue.Pop()
 	case inpututil.IsKeyJustPressed(ebiten.KeyBackspace):
-		st.prevPage()
+		// st.prevPage()
 	}
 
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		text.Text = introText[st.progress]
+		text.Text = st.queue.Display()
 	}))
 	return states.Transition{}
-}
-
-// utils ================
-
-func (st *IntroState) nextPage() {
-	if st.progress < len(introText)-1 {
-		st.progress += 1
-	}
-}
-
-func (st *IntroState) prevPage() {
-	if st.progress > 0 {
-		st.progress -= 1
-	}
 }
