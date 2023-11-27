@@ -19,23 +19,15 @@ type Queue struct {
 	active bool
 }
 
-func NewQueue() Queue {
-	return Queue{
+func NewQueue(events []event) Queue {
+	q := Queue{
 		active: true,
+		events: events,
 	}
+	return q
 }
 
 func (q *Queue) Exec() queueResult {
-	for {
-		result := q.exec()
-		if result == queueWait || result == queueEmpty {
-			break
-		}
-	}
-	return queueWait
-}
-
-func (q *Queue) exec() queueResult {
 	if !q.active {
 		return queueWait
 	}
@@ -49,9 +41,24 @@ func (q *Queue) exec() queueResult {
 }
 
 // キューの先端を消して先に進める
-func (q *Queue) Next() {
+func (q *Queue) Next() queueResult {
 	q.events = append(q.events[:0], q.events[1:]...)
 	q.active = true
+	// for {
+	// 	result := q.Exec()
+	// 	if result == queueWait || result == queueEmpty {
+	// 		break
+	// 	}
+	// }
+	return queueWait
+}
+
+func (q *Queue) Display() string {
+	return q.buf
+}
+
+func (q *Queue) SetEvents(es []event) {
+	q.events = es
 }
 
 type event interface {

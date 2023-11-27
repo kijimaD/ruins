@@ -18,7 +18,7 @@ func TestEval(t *testing.T) {
 	e := Evaluator{}
 	e.Eval(program)
 	results := []string{}
-	for _, e := range e.events {
+	for _, e := range e.Events {
 		switch event := e.(type) {
 		case *msg:
 			results = append(results, string(event.body))

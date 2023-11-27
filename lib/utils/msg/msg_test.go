@@ -6,40 +6,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExec(t *testing.T) {
-	q := NewQueue()
-	q.events = append(q.events, &msg{
-		body: []rune("こんにちは"),
-	})
-	q.events = append(q.events, &msg{
-		body: []rune("こんばんは"),
-	})
-	q.Exec()
-	assert.Equal(t, "こんにちは", q.buf)
-	q.Next()
-	q.Exec()
-	assert.Equal(t, "こんにちはこんばんは", q.buf)
-}
-
 func TestMsg(t *testing.T) {
-	q := NewQueue()
+	q := Queue{active: true}
 	q.events = append(q.events, &msg{
 		body: []rune("こんにちは"),
 	})
-	q.exec()
-	q.exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "こん", q.buf)
-	q.exec()
-	q.exec()
-	q.exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "こんにちは", q.buf)
-	q.exec()
+	q.Exec()
 	assert.Equal(t, "こんにちは", q.buf)
-	q.exec()
+	q.Exec()
 }
 
 func TestWait(t *testing.T) {
-	q := NewQueue()
+	q := Queue{active: true}
 	q.events = append(q.events, &msg{
 		body: []rune("東京"),
 	})
@@ -47,17 +32,17 @@ func TestWait(t *testing.T) {
 	q.events = append(q.events, &msg{
 		body: []rune("京都"),
 	})
-	q.exec()
-	q.exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "東京", q.buf)
-	q.exec()
+	q.Exec()
 	assert.Equal(t, "東京", q.buf)
 	q.Next() // flush
-	q.exec()
+	q.Exec()
 	assert.Equal(t, "", q.buf)
 	q.Next()
-	q.exec()
-	q.exec()
+	q.Exec()
+	q.Exec()
 	assert.Equal(t, "京都", q.buf)
 }
 
@@ -70,15 +55,25 @@ func TestBuilder(t *testing.T) {
 	e := Evaluator{}
 	e.Eval(program)
 
-	q := NewQueue()
-	q.events = e.events
+	q := NewQueue(e.Events)
 
-	q.Exec()
 	assert.Equal(t, "こんにちは...", q.buf)
 	q.Next()
-	q.Exec()
 	// (flush実行)
 	q.Next()
-	q.Exec()
 	assert.Equal(t, "今日はいかがですか", q.buf)
+}
+
+func TestSingle(t *testing.T) {
+	input := `こんにちは...`
+	l := NewLexer(input)
+	p := NewParser(l)
+	program := p.ParseProgram()
+	e := Evaluator{}
+	e.Eval(program)
+
+	q := NewQueue(e.Events)
+
+	q.Next()
+	assert.Equal(t, "こんにちは...", q.buf)
 }

@@ -1,7 +1,7 @@
 package msg
 
 type Evaluator struct {
-	events []event
+	Events []event
 }
 
 func (e *Evaluator) Eval(node Node) event {
@@ -12,11 +12,11 @@ func (e *Evaluator) Eval(node Node) event {
 		return e.Eval(node.Expression)
 	case *CmdExpression:
 		m := &flush{}
-		e.events = append(e.events, m)
+		e.Events = append(e.Events, m)
 		return m
 	case *TextLiteral:
 		m := &msg{body: []rune(node.Value)}
-		e.events = append(e.events, m)
+		e.Events = append(e.Events, m)
 		return m
 	}
 
