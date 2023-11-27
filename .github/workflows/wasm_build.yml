@@ -1,0 +1,27 @@
+name: WASM Build
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          docker build --target builder -t testimage .
+          docker run --rm -v ${PWD}:/app -w /app testimage bash -c "env GOOS=js GOARCH=wasm go build -o ./wasm/game.wasm -buildvcs=false"
+
+      - name: Check
+        run: |
+          ls -al ./wasm
+
+      - name: Publish generated content to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: wasm
