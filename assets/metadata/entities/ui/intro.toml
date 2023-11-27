@@ -3,7 +3,7 @@
 [entity.components.Text]
 id = "body"
 text = "DUMMY"
-font_face = { font = "bizu", options.size = 30.0 }
+font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
