@@ -79,8 +79,10 @@ func TestBuilder(t *testing.T) {
 	assert.Equal(t, "今日はいかがですか", q.buf)
 }
 
-func TestSingle(t *testing.T) {
-	input := `こんにちは...`
+// 改行を自動挿入できる
+func TestNewLine(t *testing.T) {
+	input := `こんにちは[r]
+ああああああああああああああああああああ`
 	l := NewLexer(input)
 	p := NewParser(l)
 	program := p.ParseProgram()
@@ -88,7 +90,56 @@ func TestSingle(t *testing.T) {
 	e.Eval(program)
 
 	q := NewQueue(e.Events)
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	assert.Equal(t, "こんにちは", q.buf)
+	q.Pop()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	assert.Equal(t, "ああああああああああああああ\nあああああ", q.buf)
+}
 
+// 意図的な改行で自動改行カウントをリセットする
+func TestNewLineResetCount(t *testing.T) {
+	input := `こんにちは[r]
+ああああああああああ
+ああああああああああ`
+	l := NewLexer(input)
+	p := NewParser(l)
+	program := p.ParseProgram()
+	e := Evaluator{}
+	e.Eval(program)
+
+	q := NewQueue(e.Events)
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	assert.Equal(t, "こんにちは", q.buf)
+	q.Pop()
+	// 意図的に挿入した改行2つ分Execが増える
 	q.Exec()
 	q.Exec()
 	q.Exec()
@@ -97,5 +148,19 @@ func TestSingle(t *testing.T) {
 	q.Exec()
 	q.Exec()
 	q.Exec()
-	assert.Equal(t, "こんにちは...", q.buf)
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	q.Exec()
+	assert.Equal(t, "ああああああああああ\nああああああああああ", q.buf)
 }

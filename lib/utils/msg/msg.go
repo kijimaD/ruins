@@ -68,6 +68,8 @@ type event interface {
 type msgEmit struct {
 	body []rune
 	pos  int
+	// 自動改行カウント
+	nlCount int
 }
 
 func (e *msgEmit) PreHook() {
@@ -76,8 +78,20 @@ func (e *msgEmit) PreHook() {
 
 // 1つ位置を進めて1文字得る
 func (e *msgEmit) Run(q *Queue) {
+	const width = 14
+
 	q.buf += string(e.body[e.pos])
+	// 意図的に挿入された改行がある場合はリセット
+	if string(e.body[e.pos]) == "\n" {
+		e.nlCount = 0
+	}
+	if e.nlCount%width == width-1 {
+		q.buf += "\n"
+	}
+
 	e.pos++
+	e.nlCount++
+
 	if e.pos > len(e.body)-1 {
 		q.deactivate()
 	}
