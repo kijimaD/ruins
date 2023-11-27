@@ -21,7 +21,7 @@ func NewQueue(events []event) Queue {
 }
 
 // キューの先端にあるイベントを実行する
-func (q *Queue) Exec() {
+func (q *Queue) RunHead() {
 	if !q.active {
 		return
 	}

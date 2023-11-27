@@ -53,7 +53,7 @@ func (st *IntroState) OnStop(world w.World) {
 func (st *IntroState) Update(world w.World) states.Transition {
 	// アニメーションに便利なので、グローバルにあっていいかもしれない
 	if st.cycle%2 == 0 {
-		st.queue.Exec()
+		st.queue.RunHead()
 		st.cycle = 0
 	}
 	st.cycle++
