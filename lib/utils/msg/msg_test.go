@@ -60,3 +60,25 @@ func TestWait(t *testing.T) {
 	q.exec()
 	assert.Equal(t, "京都", q.buf)
 }
+
+func TestBuilder(t *testing.T) {
+	input := `こんにちは...[r]
+今日はいかがですか`
+	l := NewLexer(input)
+	p := NewParser(l)
+	program := p.ParseProgram()
+	e := Evaluator{}
+	e.Eval(program)
+
+	q := NewQueue()
+	q.events = e.events
+
+	q.Exec()
+	assert.Equal(t, "こんにちは...", q.buf)
+	q.Next()
+	q.Exec()
+	// (flush実行)
+	q.Next()
+	q.Exec()
+	assert.Equal(t, "今日はいかがですか", q.buf)
+}

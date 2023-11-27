@@ -1,25 +1,34 @@
 package msg
 
-func Eval(node Node) event {
-	switch node := node.(type) {
+type Evaluator struct {
+	events []event
+}
 
-	// 文
+func (e *Evaluator) Eval(node Node) event {
+	switch node := node.(type) {
 	case *Program:
-		return evalProgram(node)
+		return e.evalProgram(node)
 	case *ExpressionStatement:
-		return Eval(node.Expression)
+		return e.Eval(node.Expression)
+	case *CmdExpression:
+		m := &flush{}
+		e.events = append(e.events, m)
+		return m
 	case *TextLiteral:
-		return &msg{body: []rune(node.Value)}
+		m := &msg{body: []rune(node.Value)}
+		e.events = append(e.events, m)
+		return m
 	}
 
 	return nil
 }
 
-func evalProgram(program *Program) event {
+func (e *Evaluator) evalProgram(program *Program) event {
 	var result event
 
 	for _, statement := range program.Statements {
-		result = Eval(statement)
+		result = e.Eval(statement)
 	}
+
 	return result
 }

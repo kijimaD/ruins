@@ -1,8 +1,9 @@
 package msg
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestEval(t *testing.T) {
@@ -13,7 +14,24 @@ func TestEval(t *testing.T) {
 	l := NewLexer(input)
 	p := NewParser(l)
 	program := p.ParseProgram()
-	e := Eval(program)
-	v, _ := e.(*msg)
-	fmt.Printf("%#v\n", string(v.body))
+
+	e := Evaluator{}
+	e.Eval(program)
+	results := []string{}
+	for _, e := range e.events {
+		switch event := e.(type) {
+		case *msg:
+			results = append(results, string(event.body))
+		case *flush:
+			results = append(results, "flush")
+		}
+	}
+	expect := []string{
+		"こんにちは",
+		"flush",
+		"世界",
+		"flush",
+		"←無視される改行たたたたた。\n←有効な改行",
+	}
+	assert.Equal(t, expect, results)
 }

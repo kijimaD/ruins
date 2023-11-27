@@ -48,6 +48,7 @@ func (q *queue) exec() queueResult {
 	return queueProcessing
 }
 
+// キューの先端を消して先に進める
 func (q *queue) Next() {
 	q.events = append(q.events[:0], q.events[1:]...)
 	q.active = true
@@ -118,5 +119,6 @@ func (e *flush) PreHook() {
 
 func (e *flush) Run(q *queue) {
 	q.buf = ""
+	q.active = false
 	return
 }
