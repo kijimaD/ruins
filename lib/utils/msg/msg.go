@@ -12,20 +12,20 @@ var (
 	queueWait       = queueResult("WAIT")
 )
 
-type queue struct {
+type Queue struct {
 	events []event
 	buf    string
 	// trueの場合キューを処理する
 	active bool
 }
 
-func NewQueue() queue {
-	return queue{
+func NewQueue() Queue {
+	return Queue{
 		active: true,
 	}
 }
 
-func (q *queue) Exec() queueResult {
+func (q *Queue) Exec() queueResult {
 	for {
 		result := q.exec()
 		if result == queueWait || result == queueEmpty {
@@ -35,7 +35,7 @@ func (q *queue) Exec() queueResult {
 	return queueWait
 }
 
-func (q *queue) exec() queueResult {
+func (q *Queue) exec() queueResult {
 	if !q.active {
 		return queueWait
 	}
@@ -49,14 +49,14 @@ func (q *queue) exec() queueResult {
 }
 
 // キューの先端を消して先に進める
-func (q *queue) Next() {
+func (q *Queue) Next() {
 	q.events = append(q.events[:0], q.events[1:]...)
 	q.active = true
 }
 
 type event interface {
 	PreHook()
-	Run(*queue)
+	Run(*Queue)
 }
 
 // ================
@@ -71,7 +71,7 @@ func (e *msg) PreHook() {
 	return
 }
 
-func (e *msg) Run(q *queue) {
+func (e *msg) Run(q *Queue) {
 	q.buf += string(e.body[e.pos])
 	e.pos++
 	if e.pos > len(e.body)-1 {
@@ -89,7 +89,7 @@ func (e *wait) PreHook() {
 	return
 }
 
-func (e *wait) Run(q *queue) {
+func (e *wait) Run(q *Queue) {
 	q.active = false
 	return
 }
@@ -103,7 +103,7 @@ func (e *resume) PreHook() {
 	return
 }
 
-func (e *resume) Run(q *queue) {
+func (e *resume) Run(q *Queue) {
 	q.active = true
 	return
 }
@@ -117,7 +117,7 @@ func (e *flush) PreHook() {
 	return
 }
 
-func (e *flush) Run(q *queue) {
+func (e *flush) Run(q *Queue) {
 	q.buf = ""
 	q.active = false
 	return
