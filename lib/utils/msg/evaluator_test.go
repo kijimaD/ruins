@@ -20,7 +20,7 @@ func TestEval(t *testing.T) {
 	results := []string{}
 	for _, e := range e.Events {
 		switch event := e.(type) {
-		case *msg:
+		case *msgEmit:
 			results = append(results, string(event.body))
 		case *flush:
 			results = append(results, "flush")

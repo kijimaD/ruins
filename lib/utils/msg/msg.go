@@ -4,17 +4,10 @@ package msg
 // 今日は晴れです。[p] -- 改ページクリック待ち
 // ところで[l] -- 行末クリック待ち
 
-type queueResult string
-
-var (
-	queueEmpty      = queueResult("EMPTY")
-	queueProcessing = queueResult("PROCESSING")
-	queueWait       = queueResult("WAIT")
-)
-
 type Queue struct {
 	events []event
-	buf    string
+	// 現在の表示文字列
+	buf string
 	// trueの場合キューを処理する
 	active bool
 }
@@ -28,30 +21,24 @@ func NewQueue(events []event) Queue {
 }
 
 // キューの先端にあるイベントを実行する
-func (q *Queue) Exec() queueResult {
+func (q *Queue) Exec() {
 	if !q.active {
-		return queueWait
+		return
 	}
 	if len(q.events) == 0 {
-		return queueEmpty
+		return
 	}
 	q.events[0].PreHook()
 	q.events[0].Run(q)
 
-	return queueProcessing
+	return
 }
 
 // キューの先端を消して先に進める
-func (q *Queue) Pop() queueResult {
+func (q *Queue) Pop() {
 	q.events = append(q.events[:0], q.events[1:]...)
-	q.active = true
-	// for {
-	// 	result := q.Exec()
-	// 	if result == queueWait || result == queueEmpty {
-	// 		break
-	// 	}
-	// }
-	return queueWait
+	q.activate()
+	return
 }
 
 func (q *Queue) Display() string {
@@ -62,6 +49,14 @@ func (q *Queue) SetEvents(es []event) {
 	q.events = es
 }
 
+func (q *Queue) activate() {
+	q.active = true
+}
+
+func (q *Queue) deactivate() {
+	q.active = false
+}
+
 type event interface {
 	PreHook()
 	Run(*Queue)
@@ -70,49 +65,22 @@ type event interface {
 // ================
 
 // メッセージ表示
-type msg struct {
+type msgEmit struct {
 	body []rune
 	pos  int
 }
 
-func (e *msg) PreHook() {
+func (e *msgEmit) PreHook() {
 	return
 }
 
-func (e *msg) Run(q *Queue) {
+// 1つ位置を進めて1文字得る
+func (e *msgEmit) Run(q *Queue) {
 	q.buf += string(e.body[e.pos])
 	e.pos++
 	if e.pos > len(e.body)-1 {
-		q.active = false
+		q.deactivate()
 	}
-	return
-}
-
-// ================
-
-// キューを待ち状態にする
-type wait struct{}
-
-func (e *wait) PreHook() {
-	return
-}
-
-func (e *wait) Run(q *Queue) {
-	q.active = false
-	return
-}
-
-// ================
-
-// キューを実行可能状態にする
-type resume struct{}
-
-func (e *resume) PreHook() {
-	return
-}
-
-func (e *resume) Run(q *Queue) {
-	q.active = true
 	return
 }
 
@@ -127,7 +95,7 @@ func (e *flush) PreHook() {
 
 func (e *flush) Run(q *Queue) {
 	q.buf = ""
-	q.active = false
+	q.deactivate()
 	q.Pop()
 	return
 }

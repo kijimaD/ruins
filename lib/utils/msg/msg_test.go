@@ -8,7 +8,7 @@ import (
 
 func TestMsg(t *testing.T) {
 	q := Queue{active: true}
-	q.events = append(q.events, &msg{
+	q.events = append(q.events, &msgEmit{
 		body: []rune("こんにちは"),
 	})
 	q.Exec()
@@ -25,11 +25,11 @@ func TestMsg(t *testing.T) {
 
 func TestWait(t *testing.T) {
 	q := Queue{active: true}
-	q.events = append(q.events, &msg{
+	q.events = append(q.events, &msgEmit{
 		body: []rune("東京"),
 	})
 	q.events = append(q.events, &flush{})
-	q.events = append(q.events, &msg{
+	q.events = append(q.events, &msgEmit{
 		body: []rune("京都"),
 	})
 	q.Exec()
