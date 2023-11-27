@@ -1,0 +1,23 @@
+name: Releaser
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Releaser
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: yarn semantic-release
