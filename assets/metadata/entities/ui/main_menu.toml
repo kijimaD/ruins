@@ -1,0 +1,81 @@
+[[entity]]
+
+[entity.components.Text]
+id = "title"
+text = "探索者"
+font_face = { font = "kappa", options.size = 75.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 480, y = 650 }
+
+[[entity]]
+
+[entity.components.Text]
+id = "start"
+text = "スタート"
+font_face = { font = "kappa", options.size = 40.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 480, y = 450 }
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_start"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 295, y = 450 }
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "intro"
+text = "イントロ"
+font_face = { font = "kappa", options.size = 40.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 480, y = 380 }
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_intro"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 295, y = 380 }
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "exit"
+text = "終了"
+font_face = { font = "kappa", options.size = 40.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 480, y = 300 }
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_exit"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 295, y = 300 }

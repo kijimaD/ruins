@@ -1,0 +1,11 @@
+[font.hack]
+font = "assets/file/fonts/hack.ttf"
+
+[font.bizu]
+font = "assets/file/fonts/BIZUDGothic-Regular.ttf"
+
+[font.dotgothic]
+font = "assets/file/fonts/DotGothic16-Regular.ttf"
+
+[font.kappa]
+font = "assets/file/fonts/JF-Dot-Kappa20B.ttf"

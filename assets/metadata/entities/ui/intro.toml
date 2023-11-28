@@ -1,0 +1,23 @@
+[[entity]]
+
+[entity.components.Text]
+id = "body"
+text = "DUMMY"
+font_face = { font = "kappa", options.size = 40.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 200, y = 500 }
+pivot = "TopLeft"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+sprite_sheet_name = "intro-bg"
+sprite_number = 0
+
+[entity.components.Transform]
+translation = { x = 0.0, y = 0.0 }
+origin = "Middle"
+depth = 2.0
