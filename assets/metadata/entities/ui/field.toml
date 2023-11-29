@@ -1,0 +1,11 @@
+[[entity]]
+
+[entity.components.Text]
+id = "body"
+text = "This is field state..."
+font_face = { font = "kappa", options.size = 40.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 200, y = 500 }
+pivot = "TopLeft"

@@ -9,4 +9,5 @@ type MenuPrefabs struct {
 type Prefabs struct {
 	Menu  MenuPrefabs
 	Intro loader.EntityComponentList
+	Field loader.EntityComponentList
 }
