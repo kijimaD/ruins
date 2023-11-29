@@ -14,7 +14,6 @@ jobs:
         run: |
           docker build --target builder -t testimage .
           docker run --rm -v ${PWD}:/app -w /app testimage bash -c "env GOOS=js GOARCH=wasm go build -o ./wasm/game.wasm -buildvcs=false"
-          cp -R assets wasm
 
       - name: Check
         run: |
