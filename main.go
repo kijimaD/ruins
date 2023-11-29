@@ -50,7 +50,7 @@ func main() {
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
 	// Load sprite sheets
-	spriteSheets := loader.LoadSpriteSheets("assets/metadata/spritesheets/spritesheets.toml")
+	spriteSheets := loader.LoadSpriteSheets("metadata/spritesheets/spritesheets.toml")
 	// // MEMO: ファイルの中身がないときに初期化されないので
 	if spriteSheets == nil {
 		spriteSheets = make(map[string]ec.SpriteSheet)
