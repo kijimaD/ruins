@@ -1,11 +1,12 @@
 package resources
 
 import (
-	"os"
-
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	"log"
 
 	"github.com/golang/freetype/truetype"
+
+	"github.com/kijimaD/sokotwo/assets"
+	"github.com/kijimaD/sokotwo/lib/engine/utils"
 )
 
 // Font structure
@@ -15,7 +16,10 @@ type Font struct {
 
 // UnmarshalTOML fills structure fields from TOML data
 func (f *Font) UnmarshalTOML(i interface{}) error {
-	fontFile := utils.Try(os.ReadFile(i.(map[string]interface{})["font"].(string)))
-	f.Font = utils.Try(truetype.Parse(fontFile))
+	data, err := assets.FS.ReadFile(i.(map[string]interface{})["font"].(string))
+	if err != nil {
+		log.Fatal(err)
+	}
+	f.Font = utils.Try(truetype.Parse(data))
 	return nil
 }

@@ -50,7 +50,7 @@ func main() {
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
 	// Load sprite sheets
-	spriteSheets := loader.LoadSpriteSheets("assets/metadata/spritesheets/spritesheets.toml")
+	spriteSheets := loader.LoadSpriteSheets("metadata/spritesheets/spritesheets.toml")
 	// // MEMO: ファイルの中身がないときに初期化されないので
 	if spriteSheets == nil {
 		spriteSheets = make(map[string]ec.SpriteSheet)
@@ -61,15 +61,15 @@ func main() {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts
-	fonts := loader.LoadFonts("assets/metadata/fonts/fonts.toml")
+	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
 	world.Resources.Fonts = &fonts
 
 	// load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{
 		Menu: gr.MenuPrefabs{
-			MainMenu: gloader.PreloadEntities("assets/metadata/entities/ui/main_menu.toml", world),
+			MainMenu: gloader.PreloadEntities("metadata/entities/ui/main_menu.toml", world),
 		},
-		Intro: gloader.PreloadEntities("assets/metadata/entities/ui/intro.toml", world),
+		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
 	}
 
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
