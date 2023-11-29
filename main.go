@@ -61,7 +61,7 @@ func main() {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts
-	fonts := loader.LoadFonts("assets/metadata/fonts/fonts.toml")
+	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
 	world.Resources.Fonts = &fonts
 
 	// load prefabs

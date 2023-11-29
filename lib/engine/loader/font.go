@@ -1,6 +1,9 @@
 package loader
 
 import (
+	"log"
+
+	"github.com/kijimaD/sokotwo/assets"
 	"github.com/kijimaD/sokotwo/lib/engine/resources"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
 
@@ -14,6 +17,10 @@ type fontMetadata struct {
 // LoadFonts loads fonts from a TOML file
 func LoadFonts(fontPath string) map[string]resources.Font {
 	var fontMetadata fontMetadata
-	utils.Try(toml.DecodeFile(fontPath, &fontMetadata))
+	bs, err := assets.FS.ReadFile(fontPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	utils.Try(toml.Decode(string(bs), &fontMetadata))
 	return fontMetadata.Fonts
 }
