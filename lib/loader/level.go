@@ -9,6 +9,9 @@ import (
 	"strings"
 
 	"github.com/kijimaD/sokotwo/assets"
+	gc "github.com/kijimaD/sokotwo/lib/components"
+	ec "github.com/kijimaD/sokotwo/lib/engine/components"
+	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/math"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
 	"github.com/kijimaD/sokotwo/lib/utils/vutil"
@@ -18,14 +21,21 @@ import (
 const MaxGridSize = 50
 
 const (
+	exteriorSpriteNumber = 0
+	wallSpriteNumber     = 1
+	floorSpriteNumber    = 2
+	playerSpriteNumber   = 3
+)
+
+const (
 	charFloor  = ' '
 	charWall   = '#'
 	charPlayer = '@'
-	// 壁より外側の部分
+	// 壁より外側の埋め合わせる部分
 	charExterior = '_'
 )
 
-var regexpValidChars = regexp.MustCompile(`^[ #@+]+$`)
+var regexpValidChars = regexp.MustCompile(`^[ #@+_]+$`)
 
 // 1つのパッケージは複数の階層を持つ
 type PackageData struct {
@@ -194,4 +204,114 @@ func fillExterior(grid [][]byte, line, col, gridWidth, gridHeight int) {
 			}
 		}
 	}
+}
+
+func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int, gameSpriteSheet *ec.SpriteSheet) (vutil.Vec2d[Tile], loader.EntityComponentList, error) {
+	componentList := loader.EntityComponentList{}
+
+	grid := packageData.Levels[levelNum]
+	gridWidth := grid.NCols
+	gridHeight := grid.NRows
+
+	horizontalPadding := layoutWidth - gridWidth
+	horizontalPaddingBefore := horizontalPadding / 2
+	horizontalPaddingAfter := horizontalPadding - horizontalPaddingBefore
+
+	verticalPadding := layoutHeight - gridHeight
+	verticalPaddingBefore := verticalPadding / 2
+	verticalPaddingAfter := verticalPadding - verticalPaddingBefore
+
+	tiles := make([]Tile, 0, gridWidth*gridHeight)
+
+	for iLine := 0; iLine < verticalPaddingBefore; iLine++ {
+		for iCol := 0; iCol < layoutWidth; iCol++ {
+			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+		}
+	}
+
+	for iGridLine := 0; iGridLine < gridHeight; iGridLine++ {
+		iLine := iGridLine + verticalPaddingBefore
+
+		for iCol := 0; iCol < horizontalPaddingBefore; iCol++ {
+			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+		}
+
+		for iGridCol := 0; iGridCol < gridWidth; iGridCol++ {
+			char := *grid.Get(iGridLine, iGridCol)
+			iCol := iGridCol + horizontalPaddingBefore
+
+			switch char {
+			case charFloor:
+				tiles = append(tiles, TileEmpty)
+				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			case charExterior:
+				tiles = append(tiles, TileEmpty)
+				createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			case charWall:
+				tiles = append(tiles, TileWall)
+				createWallEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			case charPlayer:
+				tiles = append(tiles, TilePlayer)
+				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			default:
+				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
+			}
+		}
+
+		for iCol := layoutWidth - horizontalPaddingAfter; iCol < layoutWidth; iCol++ {
+			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+		}
+	}
+
+	for iLine := layoutHeight - verticalPaddingAfter; iLine < layoutHeight; iLine++ {
+		for iCol := 0; iCol < layoutWidth; iCol++ {
+			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+		}
+	}
+
+	gameGrid := utils.Try(vutil.NewVec2d(gridHeight, gridWidth, tiles))
+	return gameGrid, componentList, nil
+}
+
+func createFloorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: floorSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
+}
+
+func createExteriorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: exteriorSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
+}
+
+func createWallEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: wallSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Wall:        &gc.Wall{},
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
+}
+
+func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: playerSpriteNumber},
+		Transform:    &ec.Transform{Depth: 1},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Player:      &gc.Player{},
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
 }
