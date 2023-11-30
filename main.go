@@ -70,7 +70,10 @@ func main() {
 			MainMenu: gloader.PreloadEntities("metadata/entities/ui/main_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
-		Field: gloader.PreloadEntities("metadata/entities/ui/field.toml", world),
+		Field: gr.FieldPrefabs{
+			LevelInfo:   gloader.PreloadEntities("metadata/entities/ui/level.toml", world),
+			PackageInfo: gloader.PreloadEntities("metadata/entities/ui/package.toml", world),
+		},
 	}
 
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)

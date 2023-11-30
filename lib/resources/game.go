@@ -1,7 +1,16 @@
 package resources
 
 import (
+	"fmt"
+
+	"github.com/kijimaD/sokotwo/lib/engine/math"
+	"github.com/kijimaD/sokotwo/lib/utils/vutil"
+
+	ec "github.com/kijimaD/sokotwo/lib/engine/components"
+	"github.com/kijimaD/sokotwo/lib/engine/loader"
+	"github.com/kijimaD/sokotwo/lib/engine/utils"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	gloader "github.com/kijimaD/sokotwo/lib/loader"
 )
 
 const (
@@ -12,6 +21,16 @@ const (
 	minGridHeight = 20
 )
 
+type Level struct {
+	CurrentNum int
+	Grid       vutil.Vec2d[Tile]
+}
+
+// PackageData contains level package data
+type PackageData = gloader.PackageData
+
+type Tile = gloader.Tile
+
 // グリッドレイアウト
 type GridLayout struct {
 	Width  int
@@ -19,7 +38,31 @@ type GridLayout struct {
 }
 
 type Game struct {
+	Package    PackageData
+	Level      Level
 	GridLayout GridLayout
+}
+
+func InitLevel(world w.World, levelNum int) {
+	gameResources := world.Resources.Game.(*Game)
+
+	prefabs := world.Resources.Prefabs.(*Prefabs)
+	levelInfoEntity := loader.AddEntities(world, prefabs.Field.LevelInfo)[0]
+
+	level := gameResources.Package.Levels[levelNum]
+	gridLayout := &gameResources.GridLayout
+	gridLayout.Width = math.Max(minGridWidth, level.NCols)
+	gridLayout.Height = math.Max(minGridHeight, level.NRows)
+
+	UpdateGameLayout(world, gridLayout)
+
+	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
+
+	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
+	loader.AddEntities(world, levelComponentList)
+	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
+
+	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("%d/%d階", levelNum+1, len(gameResources.Package.Levels))
 }
 
 // UpdateGameLayoutはゲームレイアウトを更新する

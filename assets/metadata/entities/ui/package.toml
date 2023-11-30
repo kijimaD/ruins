@@ -1,0 +1,12 @@
+[[entity]]
+
+[entity.components.Text]
+id = "package"
+text = "Package: 森の遺跡"
+font_face = { font = "kappa", options.size = 25.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -10 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
