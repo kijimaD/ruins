@@ -71,7 +71,7 @@ func InitLevel(world w.World, levelNum int) {
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
 
 	// Set level info text
-	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, len(gameResources.Package.Levels))
+	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("B%d", levelNum+1)
 }
 
 // UpdateGameLayoutはゲームレイアウトを更新する
