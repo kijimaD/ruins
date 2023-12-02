@@ -30,6 +30,8 @@ const (
 type Level struct {
 	CurrentNum int
 	Grid       vutil.Vec2d[Tile]
+	Movements  []MovementType
+	Modified   bool
 }
 
 // PackageData contains level package data
