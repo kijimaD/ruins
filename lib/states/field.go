@@ -20,9 +20,6 @@ func (st *FieldState) OnResume(world w.World) {}
 func (st *FieldState) OnStart(world w.World) {
 	packageData := utils.Try(gloader.LoadPackage("forest"))
 
-	// prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	// loader.AddEntities(world, prefabs.Field)
-
 	world.Resources.Game = &resources.Game{Package: packageData}
 	resources.InitLevel(world, 0)
 }
