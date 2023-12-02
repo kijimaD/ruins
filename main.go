@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	gc "github.com/kijimaD/sokotwo/lib/components"
 	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	er "github.com/kijimaD/sokotwo/lib/engine/resources"
@@ -45,16 +46,13 @@ func (game *mainGame) Draw(screen *ebiten.Image) {
 }
 
 func main() {
-	world := ew.InitWorld(&ec.Components{})
+	world := ew.InitWorld(&gc.Components{})
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
 	// Load sprite sheets
 	spriteSheets := loader.LoadSpriteSheets("metadata/spritesheets/spritesheets.toml")
-	// // MEMO: ファイルの中身がないときに初期化されないので
-	if spriteSheets == nil {
-		spriteSheets = make(map[string]ec.SpriteSheet)
-	}
+
 	textureImage := ebiten.NewImage(minGameWidth, minGameHeight)
 	textureImage.Fill(color.RGBA{B: 255})
 	spriteSheets["intro-bg"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
