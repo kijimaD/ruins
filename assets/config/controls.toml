@@ -1,0 +1,15 @@
+[controls.actions.MoveUp]
+combinations = [[{ key = "Up" }]]
+once = true
+
+[controls.actions.MoveDown]
+combinations = [[{ key = "Down" }]]
+once = true
+
+[controls.actions.MoveLeft]
+combinations = [[{ key = "Left" }]]
+once = true
+
+[controls.actions.MoveRight]
+combinations = [[{ key = "Right" }]]
+once = true

@@ -31,6 +31,7 @@ func (st *FieldState) OnStop(world w.World) {
 func (st *FieldState) Update(world w.World) states.Transition {
 	gs.GridTransformSystem(world)
 	gs.GridUpdateSystem(world)
+	gs.MoveSystem(world)
 
 	return states.Transition{}
 }

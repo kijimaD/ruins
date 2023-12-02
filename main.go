@@ -50,6 +50,15 @@ func main() {
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
+	// Load controls
+	axes := []string{}
+	actions := []string{
+		gr.MoveUpAction, gr.MoveDownAction, gr.MoveLeftAction, gr.MoveRightAction,
+	}
+	controls, inputHandler := loader.LoadControls("config/controls.toml", axes, actions)
+	world.Resources.Controls = &controls
+	world.Resources.InputHandler = &inputHandler
+
 	// Load sprite sheets
 	spriteSheets := loader.LoadSpriteSheets("metadata/spritesheets/spritesheets.toml")
 
