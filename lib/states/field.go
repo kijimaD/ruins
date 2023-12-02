@@ -6,6 +6,7 @@ import (
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
 	"github.com/kijimaD/sokotwo/lib/resources"
+	gs "github.com/kijimaD/sokotwo/lib/systems"
 )
 
 type FieldState struct{}
@@ -23,6 +24,7 @@ func (st *FieldState) OnStart(world w.World) {
 	// loader.AddEntities(world, prefabs.Field)
 
 	world.Resources.Game = &resources.Game{Package: packageData}
+	resources.InitLevel(world, 0)
 }
 
 func (st *FieldState) OnStop(world w.World) {
@@ -30,5 +32,8 @@ func (st *FieldState) OnStop(world w.World) {
 }
 
 func (st *FieldState) Update(world w.World) states.Transition {
+	gs.GridTransformSystem(world)
+	gs.GridUpdateSystem(world)
+
 	return states.Transition{}
 }

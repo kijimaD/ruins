@@ -1,8 +1,11 @@
 package components
 
 import (
+	"bytes"
 	"fmt"
+	"log"
 
+	"github.com/kijimaD/sokotwo/assets"
 	"github.com/kijimaD/sokotwo/lib/engine/math"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
 
@@ -30,7 +33,11 @@ type Texture struct {
 
 // UnmarshalText fills structure fields from text data
 func (t *Texture) UnmarshalText(text []byte) error {
-	textureImage, _ := utils.Try2(ebitenutil.NewImageFromFile(string(text)))
+	bs, err := assets.FS.ReadFile(string(text))
+	if err != nil {
+		log.Fatal(err)
+	}
+	textureImage, _ := utils.Try2(ebitenutil.NewImageFromReader(bytes.NewReader(bs)))
 	t.Image = textureImage
 	return nil
 }

@@ -1,0 +1,12 @@
+[sprite_sheet.game]
+texture_image = "file/textures/game.png"
+sprites = [
+    # Exterior
+    { x = 0,   y = 0, width = 32, height = 32 }, # Sprite 0
+    # Wall
+    { x = 32,  y = 0, width = 32, height = 32 }, # Sprite 1
+    # Floor
+    { x = 64,  y = 0, width = 32, height = 32 }, # Sprite 2
+    # Player
+    { x = 160, y = 0, width = 32, height = 32 }, # Sprite 5
+]
