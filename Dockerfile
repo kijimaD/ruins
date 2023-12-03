@@ -2,7 +2,7 @@
 # builder #
 ###########
 
-FROM golang:1.20-buster AS builder
+FROM golang:1.20-buster AS base
 RUN apt update \
     && apt install -y --no-install-recommends \
     upx-ucl
@@ -20,6 +20,8 @@ RUN apt install -y \
     xorg-dev \
     libx11-dev \
     libopenal-dev
+
+FROM golang:1.20-buster AS builder
 
 WORKDIR /build
 COPY . .
