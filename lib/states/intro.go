@@ -57,23 +57,27 @@ func (st *IntroState) OnStop(world w.World) {
 
 func (st *IntroState) Update(world w.World) states.Transition {
 	// アニメーションに便利なので、グローバルにあっていいかもしれない
+	var queueResult msg.QueueState
+
 	if st.cycle%2 == 0 {
-		st.queue.RunHead()
+		queueResult = st.queue.RunHead()
 		st.cycle = 0
 	}
 	st.cycle++
 
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter):
-		state := st.queue.Pop()
-		if state == msg.QueueStateFinish {
-			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
-		}
+		queueResult = st.queue.Pop()
 	}
 
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 		text.Text = st.queue.Display()
 	}))
+
+	switch queueResult {
+	case msg.QueueStateFinish:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+	}
 	return states.Transition{}
 }
