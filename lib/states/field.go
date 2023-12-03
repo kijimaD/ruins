@@ -21,7 +21,7 @@ func (st *FieldState) OnStart(world w.World) {
 	packageData := utils.Try(gloader.LoadPackage("forest"))
 
 	world.Resources.Game = &resources.Game{Package: packageData}
-	resources.InitLevel(world, 0)
+	resources.InitLevel(world, 1)
 }
 
 func (st *FieldState) OnStop(world w.World) {
