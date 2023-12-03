@@ -9,6 +9,8 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 480, y = 650 }
 
+# ================
+
 [[entity]]
 
 [entity.components.Text]
@@ -32,12 +34,13 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 295, y = 450 }
 
+# ================
 
 [[entity]]
 
 [entity.components.Text]
 id = "intro"
-text = "イントロ"
+text = "[DEBUG]イントロ"
 font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 
@@ -56,18 +59,31 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 295, y = 380 }
 
+# ================
 
 [[entity]]
 
 [entity.components.Text]
-id = "exit"
-text = "終了"
+id = "cursor_home"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 295, y = 300 }
+
+[[entity]]
+
+[entity.components.Text]
+id = "home"
+text = "[DEBUG]拠点メニュー"
 font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 480, y = 300 }
 
+# ================
 
 [[entity]]
 
@@ -78,4 +94,15 @@ font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 295, y = 300 }
+translation = { x = 295, y = 220 }
+
+[[entity]]
+
+[entity.components.Text]
+id = "exit"
+text = "終了"
+font_face = { font = "kappa", options.size = 40.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 480, y = 220 }

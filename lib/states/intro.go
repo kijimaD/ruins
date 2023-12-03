@@ -1,3 +1,4 @@
+// ゲームの導入テキストを表示するステート
 package states
 
 import (
