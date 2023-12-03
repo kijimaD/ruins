@@ -21,7 +21,7 @@ const (
 	minGridHeight = 20
 )
 
-// 直接呼び出せばよくないか?
+// Tileはsystemなどでも使う。systemから直接gloaderを扱わせたくないので、ここでエクスポートする
 const (
 	TilePlayer     = gloader.TilePlayer
 	TileWall       = gloader.TileWall
