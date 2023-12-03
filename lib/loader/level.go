@@ -25,7 +25,7 @@ const (
 	wallSpriteNumber     = 1
 	floorSpriteNumber    = 2
 	playerSpriteNumber   = 3
-	warpSpriteNumber     = 4
+	warpNextSpriteNumber = 4
 )
 
 const (
@@ -38,7 +38,7 @@ const (
 	// 壁より外側の埋め合わせる部分
 	charExterior = '_'
 	// 次の階層へ
-	charWarp = 'O'
+	charWarpNext = 'O'
 )
 
 var regexpValidChars = regexp.MustCompile(`^[ #@+_O]+$`)
@@ -55,7 +55,7 @@ type Tile uint8
 const (
 	TilePlayer Tile = 1 << iota
 	TileWall
-	TileWarp
+	TileWarpNext
 	TileEmpty Tile = 0
 )
 
@@ -137,11 +137,11 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	gridWidth := 0
 	gridHeight := len(lines)
 	playerCount := 0
-	warpCount := 0
+	warpNextCount := 0
 	for _, line := range lines {
 		gridWidth = math.Max(gridWidth, len(line))
 		playerCount += strings.Count(line, string(charPlayer))
-		warpCount += strings.Count(line, string(charWarp))
+		warpNextCount += strings.Count(line, string(charWarpNext))
 	}
 
 	if gridWidth > MaxGridSize || gridHeight > MaxGridSize {
@@ -150,7 +150,7 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	if playerCount != 1 {
 		return nil, fmt.Errorf("invalid level: level must have one player")
 	}
-	if warpCount != 1 {
+	if warpNextCount != 1 {
 		return nil, fmt.Errorf("invalid level: level must have one warp hole")
 	}
 
@@ -266,10 +266,10 @@ func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int,
 				tiles = append(tiles, TilePlayer)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
-			case charWarp:
-				tiles = append(tiles, TileWarp)
+			case charWarpNext:
+				tiles = append(tiles, TileWarpNext)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				createWarpEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				createWarpNextEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			default:
 				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
@@ -332,9 +332,9 @@ func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteShe
 	})
 }
 
-func createWarpEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+func createWarpNextEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpSpriteNumber},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpNextSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{

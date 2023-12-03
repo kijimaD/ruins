@@ -9,6 +9,6 @@ sprites = [
     { x = 64,  y = 0, width = 32, height = 32 }, # Sprite 2
     # Player
     { x = 160, y = 0, width = 32, height = 32 }, # Sprite 3
-    # Warp
+    # WarpNext
     { x = 96,  y = 0, width = 32, height = 32 }, # Sprite 4
 ]

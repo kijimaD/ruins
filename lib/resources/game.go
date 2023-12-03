@@ -22,10 +22,10 @@ const (
 )
 
 const (
-	TilePlayer = gloader.TilePlayer
-	TileWall   = gloader.TileWall
-	TileWarp   = gloader.TileWarp
-	TileEmpty  = gloader.TileEmpty
+	TilePlayer   = gloader.TilePlayer
+	TileWall     = gloader.TileWall
+	TileWarpNext = gloader.TileWarpNext
+	TileEmpty    = gloader.TileEmpty
 )
 
 type Level struct {

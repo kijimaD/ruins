@@ -56,8 +56,8 @@ func Move(world w.World, movements ...MovementType) {
 			return
 		}
 
-		// 移動
-		if oneFrontTile.Contains(TileWarp) {
+		// 次の階層へ
+		if oneFrontTile.Contains(TileWarpNext) {
 			newLevel := gameResources.Level.CurrentNum + 1
 			world.Manager.DeleteAllEntities()
 			InitLevel(world, newLevel)
