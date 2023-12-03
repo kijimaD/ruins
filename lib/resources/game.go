@@ -18,8 +18,8 @@ import (
 type StateEvent string
 
 const (
-	StateEventNone           = StateEvent("NONE")
-	StateEventMainTransition = StateEvent("MAIN_TRANSITION")
+	StateEventNone       = StateEvent("NONE")
+	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
 )
 
 const (

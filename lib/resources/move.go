@@ -67,8 +67,9 @@ func Move(world w.World, movements ...MovementType) {
 		}
 
 		// 脱出
-		// TODO: state切替処理を追加する
-		if oneFrontTile.Contains(TileWarpNext) {
+		if oneFrontTile.Contains(TileWarpEscape) {
+			gameResources := world.Resources.Game.(*Game)
+			gameResources.StateEvent = StateEventWarpEscape
 			return
 		}
 

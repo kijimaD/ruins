@@ -33,5 +33,12 @@ func (st *FieldState) Update(world w.World) states.Transition {
 	gs.GridUpdateSystem(world)
 	gs.MoveSystem(world)
 
+	gameResources := world.Resources.Game.(*resources.Game)
+	switch gameResources.StateEvent {
+	case resources.StateEventWarpEscape:
+		gameResources.StateEvent = resources.StateEventNone
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+	}
+
 	return states.Transition{}
 }
