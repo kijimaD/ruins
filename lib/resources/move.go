@@ -1,6 +1,8 @@
 package resources
 
-import w "github.com/kijimaD/sokotwo/lib/engine/world"
+import (
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
+)
 
 type MovementType uint8
 
@@ -56,11 +58,17 @@ func Move(world w.World, movements ...MovementType) {
 			return
 		}
 
-		// 次の階層へ
+		// 次の階層
 		if oneFrontTile.Contains(TileWarpNext) {
 			newLevel := gameResources.Level.CurrentNum + 1
 			world.Manager.DeleteAllEntities()
 			InitLevel(world, newLevel)
+			return
+		}
+
+		// 脱出
+		// TODO: state切替処理を追加する
+		if oneFrontTile.Contains(TileWarpNext) {
 			return
 		}
 

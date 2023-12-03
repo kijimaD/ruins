@@ -21,11 +21,13 @@ const (
 	minGridHeight = 20
 )
 
+// 直接呼び出せばよくないか?
 const (
-	TilePlayer   = gloader.TilePlayer
-	TileWall     = gloader.TileWall
-	TileWarpNext = gloader.TileWarpNext
-	TileEmpty    = gloader.TileEmpty
+	TilePlayer     = gloader.TilePlayer
+	TileWall       = gloader.TileWall
+	TileWarpNext   = gloader.TileWarpNext
+	TileWarpEscape = gloader.TileWarpEscape
+	TileEmpty      = gloader.TileEmpty
 )
 
 type Level struct {
@@ -74,7 +76,7 @@ func InitLevel(world w.World, levelNum int) {
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
 
 	// Set level info text
-	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("B%d", levelNum+1)
+	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("%dF", levelNum+1)
 }
 
 // UpdateGameLayoutはゲームレイアウトを更新する
