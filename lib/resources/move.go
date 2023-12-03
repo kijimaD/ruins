@@ -56,6 +56,14 @@ func Move(world w.World, movements ...MovementType) {
 			return
 		}
 
+		// 移動
+		if oneFrontTile.Contains(TileWarp) {
+			newLevel := gameResources.Level.CurrentNum + 1
+			world.Manager.DeleteAllEntities()
+			InitLevel(world, newLevel)
+			return
+		}
+
 		oneFrontTile.Set(TilePlayer)
 		playerTile.Remove(TilePlayer)
 

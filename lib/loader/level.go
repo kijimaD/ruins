@@ -25,17 +25,23 @@ const (
 	wallSpriteNumber     = 1
 	floorSpriteNumber    = 2
 	playerSpriteNumber   = 3
+	warpSpriteNumber     = 4
 )
 
 const (
-	charFloor  = ' '
-	charWall   = '#'
+	// フロア
+	charFloor = ' '
+	// 壁
+	charWall = '#'
+	// 操作するプレイヤー
 	charPlayer = '@'
 	// 壁より外側の埋め合わせる部分
 	charExterior = '_'
+	// 次の階層へ
+	charWarp = 'O'
 )
 
-var regexpValidChars = regexp.MustCompile(`^[ #@+_]+$`)
+var regexpValidChars = regexp.MustCompile(`^[ #@+_O]+$`)
 
 // 1つのパッケージは複数の階層を持つ
 type PackageData struct {
@@ -49,6 +55,7 @@ type Tile uint8
 const (
 	TilePlayer Tile = 1 << iota
 	TileWall
+	TileWarp
 	TileEmpty Tile = 0
 )
 
@@ -130,9 +137,11 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	gridWidth := 0
 	gridHeight := len(lines)
 	playerCount := 0
+	warpCount := 0
 	for _, line := range lines {
 		gridWidth = math.Max(gridWidth, len(line))
 		playerCount += strings.Count(line, string(charPlayer))
+		warpCount += strings.Count(line, string(charWarp))
 	}
 
 	if gridWidth > MaxGridSize || gridHeight > MaxGridSize {
@@ -140,6 +149,9 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	}
 	if playerCount != 1 {
 		return nil, fmt.Errorf("invalid level: level must have one player")
+	}
+	if warpCount != 1 {
+		return nil, fmt.Errorf("invalid level: level must have one warp hole")
 	}
 
 	grid := make([][]byte, len(lines))
@@ -170,7 +182,7 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	return grid, nil
 }
 
-// フロアに物を置く
+// フロアに外壁を置く
 func fillExterior(grid [][]byte, line, col, gridWidth, gridHeight int) {
 	if grid[line][col] != charFloor {
 		return
@@ -254,6 +266,10 @@ func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int,
 				tiles = append(tiles, TilePlayer)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			case charWarp:
+				tiles = append(tiles, TileWarp)
+				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				createWarpEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			default:
 				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
@@ -312,6 +328,17 @@ func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteShe
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Player:      &gc.Player{},
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
+}
+
+func createWarpEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Warp:        &gc.Warp{},
 		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }

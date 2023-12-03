@@ -6,6 +6,7 @@ type Components struct {
 	GridElement *ecs.SliceComponent
 	Player      *ecs.NullComponent
 	Wall        *ecs.NullComponent
+	Warp        *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -16,3 +17,5 @@ type GridElement struct {
 type Player struct{}
 
 type Wall struct{}
+
+type Warp struct{}

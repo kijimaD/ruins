@@ -24,6 +24,7 @@ const (
 const (
 	TilePlayer = gloader.TilePlayer
 	TileWall   = gloader.TileWall
+	TileWarp   = gloader.TileWarp
 	TileEmpty  = gloader.TileEmpty
 )
 

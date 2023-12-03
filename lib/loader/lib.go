@@ -13,6 +13,7 @@ type gameComponentList struct {
 	GridElement *gc.GridElement
 	Player      *gc.Player
 	Wall        *gc.Wall
+	Warp        *gc.Warp
 }
 
 func PreloadEntities(entityMetadataPath string, world w.World) loader.EntityComponentList {
