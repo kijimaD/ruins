@@ -21,21 +21,30 @@ import (
 const MaxGridSize = 50
 
 const (
-	exteriorSpriteNumber = 0
-	wallSpriteNumber     = 1
-	floorSpriteNumber    = 2
-	playerSpriteNumber   = 3
+	exteriorSpriteNumber   = 0
+	wallSpriteNumber       = 1
+	floorSpriteNumber      = 2
+	playerSpriteNumber     = 3
+	warpNextSpriteNumber   = 4
+	warpEscapeSpriteNumber = 5
 )
 
 const (
-	charFloor  = ' '
-	charWall   = '#'
+	// フロア
+	charFloor = ' '
+	// 壁
+	charWall = '#'
+	// 操作するプレイヤー
 	charPlayer = '@'
 	// 壁より外側の埋め合わせる部分
 	charExterior = '_'
+	// 次の階層へ
+	charWarpNext = 'O'
+	// 脱出
+	charWarpEscape = 'X'
 )
 
-var regexpValidChars = regexp.MustCompile(`^[ #@+_]+$`)
+var regexpValidChars = regexp.MustCompile(`^[ #@+_OX]+$`)
 
 // 1つのパッケージは複数の階層を持つ
 type PackageData struct {
@@ -49,6 +58,8 @@ type Tile uint8
 const (
 	TilePlayer Tile = 1 << iota
 	TileWall
+	TileWarpNext
+	TileWarpEscape
 	TileEmpty Tile = 0
 )
 
@@ -130,9 +141,13 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	gridWidth := 0
 	gridHeight := len(lines)
 	playerCount := 0
+	warpNextCount := 0
+	warpEscapeCount := 0
 	for _, line := range lines {
 		gridWidth = math.Max(gridWidth, len(line))
 		playerCount += strings.Count(line, string(charPlayer))
+		warpNextCount += strings.Count(line, string(charWarpNext))
+		warpEscapeCount += strings.Count(line, string(charWarpEscape))
 	}
 
 	if gridWidth > MaxGridSize || gridHeight > MaxGridSize {
@@ -140,6 +155,12 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	}
 	if playerCount != 1 {
 		return nil, fmt.Errorf("invalid level: level must have one player")
+	}
+	if warpNextCount != 1 {
+		return nil, fmt.Errorf("invalid level: level must have one next warp hole")
+	}
+	if warpEscapeCount != 1 {
+		return nil, fmt.Errorf("invalid level: level must have one escape warp hole")
 	}
 
 	grid := make([][]byte, len(lines))
@@ -170,7 +191,7 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 	return grid, nil
 }
 
-// フロアに物を置く
+// フロアに外壁を置く
 func fillExterior(grid [][]byte, line, col, gridWidth, gridHeight int) {
 	if grid[line][col] != charFloor {
 		return
@@ -254,6 +275,17 @@ func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int,
 				tiles = append(tiles, TilePlayer)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			case charWarpNext:
+				tiles = append(tiles, TileWarpNext)
+				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				createWarpNextEntity(&componentList, gameSpriteSheet, iLine, iCol)
+			case charWarpEscape:
+				tiles = append(tiles, TileWarpEscape)
+				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				const EscapeFloorCycle = 5
+				if levelNum+1%EscapeFloorCycle == 0 {
+					createWarpEscapeEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				}
 			default:
 				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
@@ -312,6 +344,28 @@ func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteShe
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Player:      &gc.Player{},
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
+}
+
+func createWarpNextEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpNextSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Warp:        &gc.Warp{},
+		GridElement: &gc.GridElement{Line: line, Col: col},
+	})
+}
+
+func createWarpEscapeEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpEscapeSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Warp:        &gc.Warp{},
 		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
