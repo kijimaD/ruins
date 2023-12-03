@@ -83,6 +83,8 @@ func (t *Tile) Remove(other Tile) {
 	*t &= 0xFF ^ other
 }
 
+// 設定ファイルをタイルとして読み出す。コンポーネント生成はしない
+// あとで階を生成するときに、タイルを元にコンポーネントを生成する
 func LoadPackage(packageName string) (packageData PackageData, packageErr error) {
 	packageData.Name = packageName
 
