@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/hajimehoshi/ebiten/v2 v2.6.2
+	github.com/stretchr/testify v1.8.4
 	github.com/x-hgg-x/goecs/v2 v2.0.5
 	golang.org/x/image v0.14.0
 )
@@ -16,7 +17,6 @@ require (
 	github.com/ebitengine/purego v0.5.0 // indirect
 	github.com/jezek/xgb v1.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/yourbasic/bit v0.0.0-20180313074424-45a4409f4082 // indirect
 	golang.org/x/exp/shiny v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/mobile v0.0.0-20231108233038-35478a0c49da // indirect
