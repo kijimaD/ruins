@@ -15,6 +15,13 @@ import (
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
 )
 
+type StateEvent string
+
+const (
+	StateEventNone           = StateEvent("NONE")
+	StateEventMainTransition = StateEvent("MAIN_TRANSITION")
+)
+
 const (
 	offsetX       = 0
 	offsetY       = 80
@@ -51,6 +58,7 @@ type GridLayout struct {
 }
 
 type Game struct {
+	StateEvent StateEvent
 	Package    PackageData
 	Level      Level
 	GridLayout GridLayout

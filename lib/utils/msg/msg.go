@@ -4,6 +4,13 @@ package msg
 // 今日は晴れです。[p] -- 改ページクリック待ち
 // ところで[l] -- 行末クリック待ち
 
+type QueueState string
+
+const (
+	QueueStateNone   = QueueState("NONE")
+	QueueStateFinish = QueueState("FINISH")
+)
+
 type Queue struct {
 	events []event
 	// 現在の表示文字列
@@ -35,10 +42,13 @@ func (q *Queue) RunHead() {
 }
 
 // キューの先端を消して先に進める
-func (q *Queue) Pop() {
+func (q *Queue) Pop() QueueState {
+	if len(q.events) == 0 {
+		return QueueStateFinish
+	}
 	q.events = append(q.events[:0], q.events[1:]...)
 	q.activate()
-	return
+	return QueueStateNone
 }
 
 func (q *Queue) Display() string {
