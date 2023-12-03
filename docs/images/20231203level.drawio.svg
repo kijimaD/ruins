@@ -1,4 +1,4 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="681px" height="361px" viewBox="-0.5 -0.5 681 361" content="&lt;mxfile&gt;&lt;diagram id=&quot;l1cYhL4nz6gxe94aEd-O&quot; name=&quot;Page-1&quot;&gt;xVbLrpswEP2aWVYCzMNeQkLaTVdZdO0bXEDiJfAtSb++YzCvQKJUyk2kSBkfj7HnnOMBILv8/L3mVfKzjEQGlhGdgezBskyT2PinkEuPUOb2QFynkU6agGP6V2jQ0OhnGolmkSjLMpNptQRPZVGIk1xgvK7Ldpn2u8yWu1Y8FivgeOLZGv2VRjLRVTjGhP8QaZwMO5uGnsn5kKyBJuFR2c4gEgLZ1WUp+yg/70SmyBt46dcdbsyOB6tFIR9ZYPUL/vDsU9emzyUvQ7FNm+YZL3AUNJLXUsth4FgvFrUU55sHMMey0A+izIWsL5gyLBiYuIxc9eN2IpYMOcmMVEI0yLWY8fjsqV4MdMnb5ZN1+aELvgc0UAGlwAwIGTAfaAihA4EJPprXzfAUwUeNUawilUMNlaZyqPpt5FCgtnoC5lAPAn8rhwAlwHZdYEHAVnK0SSrFseInNW7xfuGyROZY4d58VBLrriT2lSL2WhFzSxH3CYLQDUF6Jg46QPp7kvyBLerqINgN/IVb1KKwuCp8P6POCwn1th3eEaHIMruAqQANiRYNPPCxQKNzqQM+tWY34Cuou98frKv+QF/IHXt3c3QeaI4jI09vjsNmC++gKdAsexUwNBHtgkPnHUf1rcCYe0e9+L7UPOwuf2xJ3zfyQvOY5vNaGc8VN8VHU3W83Glt66nunYW/zSm86WzzdeZ1neHGXqhxYL9Bzqvb4D6o5vj19R9y4nD6COvmZp+yJPwH&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="681px" height="601px" viewBox="-0.5 -0.5 681 601" content="&lt;mxfile&gt;&lt;diagram id=&quot;l1cYhL4nz6gxe94aEd-O&quot; name=&quot;Page-1&quot;&gt;xVdNr6IwFP01XU5CKUi7BMWZzaxczLpPOkIC1GB96Pz6uYVWQKoxeT5NTLy9Pf24557eFkSW1elnw/f5b5mJEvledkJkhXwfYxLAn/acew9li96xa4rMgAbHpvgnjNMz3mORicMEqKQsVbGfOreyrsVWTXy8aWQ7hf2V5XTVPd+JmWOz5eXc+6fIVG6iCL3B/0sUu9yujD3TU3ELNo5DzjPZjlwkRWTZSKl6qzotRanJs7z049Y3ei8ba0StHhng9wM+eXk0sZl9qbMN9tAWVclraCUHxRtl0uFB2wwWjRKnmxvAl7BAD0JWQjVngNgBlonzhau+3Q7EEovJR6QSYpzcJHN3mXuIFwwTsjt8Mg8/XaA4QjTRBqWIeShliMWIpigNUYJRDOJdlLCL5KMBa6ctjaGehmkM1T8HhiIa6BkAQyOUxC4MQZQgtuwMHyVslo42L5TY7PlWt1s4XzAsVxVEuMKPpsS/m5LgKiPBPCPYlZHFExJCHQnpmVgbA+jvSYotW3RhjGRp+Utd1EJiYVT6fkbDFxIauRXeEaHJwp3BtAGCBIkmEYohQK9TaYhi6o9OwHdQd78++Ff1gb6QO/bu4hg+UBwvjDy9ONrFJtoBUYBYVtpgICLaGetOO6GuW4k31o6++L5VPOwuf2xK3w/yQvFg/LxSxivNTf1x2He83Clt867uzoKfswtOOnNeZ1FXGW6sBTlOgjek8+o0LB7M5uX19aV0hrOARQaPQtOsZVcDZvFqzP3DD1PKY7O1KPMigVqyExYWuFlpRMlV8Tmd/0sxup5DY12CZFfDy8R0UavU0GKwQ98zEb/8JsHkSj7+K6tB4KCWoji2jOKuLNiHYe9h0RtoIl74MpqgOXzqdH2jD0aS/gc=&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <path d="M 0 30 L 0 30 L 320 30 L 320 30" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
@@ -106,6 +106,42 @@
                 </foreignObject>
                 <text x="480" y="144" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
                     タイルテーマ...
+                </text>
+            </switch>
+        </g>
+        <path d="M 130 570 L 178.63 570" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 183.88 570 L 176.88 573.5 L 178.63 570 L 176.88 566.5 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <rect x="10" y="540" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="none"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 570px; margin-left: 11px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: normal; overflow-wrap: normal;">
+                                テキストファイル
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="70" y="574" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    テキストファイル
+                </text>
+            </switch>
+        </g>
+        <rect x="185" y="540" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="none"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 570px; margin-left: 186px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: normal; overflow-wrap: normal;">
+                                読み出し
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="245" y="574" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    読み出し
                 </text>
             </switch>
         </g>

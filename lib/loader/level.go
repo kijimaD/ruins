@@ -227,10 +227,13 @@ func fillExterior(grid [][]byte, line, col, gridWidth, gridHeight int) {
 	}
 }
 
-func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int, gameSpriteSheet *ec.SpriteSheet) (vutil.Vec2d[Tile], loader.EntityComponentList, error) {
+// 階層データからエンティティ(コンポーネント群)を生成する
+// selectLevel: 選択したフロアデータのインデックス
+// levelNum: 今いる階数
+func LoadLevel(packageData PackageData, selectLevel, levelNum, layoutWidth, layoutHeight int, gameSpriteSheet *ec.SpriteSheet) (vutil.Vec2d[Tile], loader.EntityComponentList, error) {
 	componentList := loader.EntityComponentList{}
 
-	grid := packageData.Levels[levelNum]
+	grid := packageData.Levels[selectLevel]
 	gridWidth := grid.NCols
 	gridHeight := grid.NRows
 
@@ -282,7 +285,11 @@ func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int,
 			case charWarpEscape:
 				tiles = append(tiles, TileWarpEscape)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				createWarpEscapeEntity(&componentList, gameSpriteSheet, iLine, iCol)
+
+				const EscapeFloorCycle = 5 // 5階ごとに脱出フロア
+				if levelNum%EscapeFloorCycle == 0 {
+					createWarpEscapeEntity(&componentList, gameSpriteSheet, iLine, iCol)
+				}
 			default:
 				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
