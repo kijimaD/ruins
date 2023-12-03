@@ -2,6 +2,8 @@ package resources
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/kijimaD/sokotwo/lib/engine/math"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
@@ -62,8 +64,11 @@ func InitLevel(world w.World, levelNum int) {
 	loader.AddEntities(world, prefabs.Field.PackageInfo)
 	levelInfoEntity := loader.AddEntities(world, prefabs.Field.LevelInfo)[0]
 
-	// Load level
-	level := gameResources.Package.Levels[levelNum]
+	packageLevelCount := len(gameResources.Package.Levels)
+	rand.Seed(time.Now().UnixNano())
+	randLevel := rand.Intn(packageLevelCount)
+
+	level := gameResources.Package.Levels[randLevel]
 	gridLayout := &gameResources.GridLayout
 	gridLayout.Width = math.Max(minGridWidth, level.NCols)
 	gridLayout.Height = math.Max(minGridHeight, level.NRows)
@@ -71,12 +76,12 @@ func InitLevel(world w.World, levelNum int) {
 	UpdateGameLayout(world, gridLayout)
 
 	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
+	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevel, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
 	loader.AddEntities(world, levelComponentList)
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
 
 	// Set level info text
-	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("%dF", levelNum+1)
+	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("%dF", levelNum)
 }
 
 // UpdateGameLayoutはゲームレイアウトを更新する

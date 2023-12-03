@@ -282,10 +282,7 @@ func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int,
 			case charWarpEscape:
 				tiles = append(tiles, TileWarpEscape)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				const EscapeFloorCycle = 5
-				if levelNum+1%EscapeFloorCycle == 0 {
-					createWarpEscapeEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				}
+				createWarpEscapeEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			default:
 				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
