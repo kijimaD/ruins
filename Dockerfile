@@ -21,7 +21,7 @@ RUN apt install -y \
     libx11-dev \
     libopenal-dev
 
-FROM golang:1.20-buster AS builder
+FROM base AS builder
 
 WORKDIR /build
 COPY . .
