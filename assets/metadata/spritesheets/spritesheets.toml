@@ -18,5 +18,5 @@ sprites = [
 [sprite_sheet.bg_title1]
 texture_image = "file/bg/title1.png"
 sprites = [
-    { x = 0, y = 0, width = 500, height = 500 },
+    { x = 0, y = 0, width = 960, height = 720 },
 ]
