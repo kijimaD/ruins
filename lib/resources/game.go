@@ -83,7 +83,7 @@ func InitLevel(world w.World, levelNum int) {
 
 	UpdateGameLayout(world, gridLayout)
 
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
+	gameSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevelNum, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
 	loader.AddEntities(world, levelComponentList)
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
@@ -103,10 +103,6 @@ func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
 
 	gameWidth := gridWidth*gridBlockSize + offsetX
 	gameHeight := gridHeight*gridBlockSize + offsetY
-
-	fadeOutSprite := &(*world.Resources.SpriteSheets)["intro-bg"].Sprites[0]
-	fadeOutSprite.Width = gameWidth
-	fadeOutSprite.Height = gameHeight
 
 	world.Resources.ScreenDimensions.Width = gameWidth
 	world.Resources.ScreenDimensions.Height = gameHeight

@@ -1,11 +1,8 @@
 package main
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/sokotwo/lib/components"
-	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	er "github.com/kijimaD/sokotwo/lib/engine/resources"
 	es "github.com/kijimaD/sokotwo/lib/engine/states"
@@ -62,9 +59,6 @@ func main() {
 	// Load sprite sheets
 	spriteSheets := loader.LoadSpriteSheets("metadata/spritesheets/spritesheets.toml")
 
-	textureImage := ebiten.NewImage(minGameWidth, minGameHeight)
-	textureImage.Fill(color.RGBA{B: 255})
-	spriteSheets["intro-bg"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts

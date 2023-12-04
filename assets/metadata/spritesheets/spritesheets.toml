@@ -1,4 +1,4 @@
-[sprite_sheet.game]
+[sprite_sheet.field]
 texture_image = "file/textures/game.png"
 sprites = [
     # Exterior
