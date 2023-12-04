@@ -75,6 +75,7 @@ func main() {
 	world.Resources.Prefabs = &gr.Prefabs{
 		Menu: gr.MenuPrefabs{
 			MainMenu: gloader.PreloadEntities("metadata/entities/ui/main_menu.toml", world),
+			HomeMenu: gloader.PreloadEntities("metadata/entities/ui/home_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
 		Field: gr.FieldPrefabs{

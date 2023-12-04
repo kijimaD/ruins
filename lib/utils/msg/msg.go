@@ -28,17 +28,17 @@ func NewQueue(events []event) Queue {
 }
 
 // キューの先端にあるイベントを実行する
-func (q *Queue) RunHead() {
+func (q *Queue) RunHead() QueueState {
 	if !q.active {
-		return
+		return QueueStateNone
 	}
 	if len(q.events) == 0 {
-		return
+		return QueueStateFinish
 	}
 	q.events[0].PreHook()
 	q.events[0].Run(q)
 
-	return
+	return QueueStateNone
 }
 
 // キューの先端を消して先に進める

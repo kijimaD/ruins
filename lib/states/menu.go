@@ -30,9 +30,9 @@ func updateMenu(menu menu, world w.World) states.Transition {
 
 	// Handle keyboard events
 	switch {
-	case inpututil.IsKeyJustPressed(ebiten.KeyDown):
+	case inpututil.IsKeyJustPressed(ebiten.KeyDown), inpututil.IsKeyJustPressed(ebiten.KeyRight):
 		menu.setSelection(math.Mod(selection+1, numItems))
-	case inpututil.IsKeyJustPressed(ebiten.KeyUp):
+	case inpututil.IsKeyJustPressed(ebiten.KeyUp), inpututil.IsKeyJustPressed(ebiten.KeyLeft):
 		menu.setSelection(math.Mod(selection-1, numItems))
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace):
 		return menu.confirmSelection(world)

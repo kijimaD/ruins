@@ -54,15 +54,17 @@ func (st *MainMenuState) confirmSelection(world w.World) states.Transition {
 	case 1:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}}
 	case 2:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+	case 3:
 		return states.Transition{Type: states.TransQuit}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
 
 func (st *MainMenuState) getMenuIDs() []string {
-	return []string{"start", "intro", "exit"}
+	return []string{"start", "intro", "home", "exit"}
 }
 
 func (st *MainMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_start", "cursor_intro", "cursor_exit"}
+	return []string{"cursor_start", "cursor_intro", "cursor_home", "cursor_exit"}
 }
