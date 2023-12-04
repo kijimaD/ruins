@@ -83,8 +83,8 @@ func InitLevel(world w.World, levelNum int) {
 
 	UpdateGameLayout(world, gridLayout)
 
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["field"]
-	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevelNum, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevelNum, levelNum, gridLayout.Width, gridLayout.Height, &fieldSpriteSheet))
 	loader.AddEntities(world, levelComponentList)
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
 
