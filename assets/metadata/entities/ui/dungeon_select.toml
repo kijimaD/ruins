@@ -1,5 +1,9 @@
 [[entity]]
 
+# ================
+
+[[entity]]
+
 [entity.components.Text]
 id = "forest"
 text = "森の遺跡"

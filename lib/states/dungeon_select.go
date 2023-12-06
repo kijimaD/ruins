@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
@@ -36,6 +37,21 @@ func (st *DungeonSelectState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPop}
 	}
+
+	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
+		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
+		if text.ID == "description" {
+			switch st.selection {
+			case 0:
+				text.Text = "鬱蒼とした森の奥地にある遺跡"
+			case 1:
+				text.Text = "切り立った山の洞窟にある遺跡"
+			case 2:
+				text.Text = "雲にまで届く塔を持つ遺跡"
+			}
+		}
+	}))
+
 	return updateMenu(st, world)
 }
 
@@ -52,11 +68,11 @@ func (st *DungeonSelectState) setSelection(selection int) {
 func (st *DungeonSelectState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
 	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
 	case 2:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
