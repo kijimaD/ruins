@@ -68,6 +68,9 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter):
 		queueResult = st.queue.Pop()
+	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
+		// debug
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 	}
 
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {

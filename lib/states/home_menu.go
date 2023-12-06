@@ -46,6 +46,8 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 				text.Text = "仲間を入れ替える"
 			case 4:
 				text.Text = "設定を変更する"
+			case 5:
+				text.Text = "終了する"
 			}
 		}
 	}))
@@ -75,15 +77,17 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 4:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+	case 5:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
 
 func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{"dungeon", "buy", "equip", "party", "system"}
+	return []string{"dungeon", "buy", "equip", "party", "system", "exit"}
 }
 
 func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_dungeon", "cursor_buy", "cursor_equip", "cursor_party", "cursor_system"}
+	return []string{"cursor_dungeon", "cursor_buy", "cursor_equip", "cursor_party", "cursor_system", "cursor_exit"}
 }

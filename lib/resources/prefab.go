@@ -3,9 +3,10 @@ package resources
 import "github.com/kijimaD/sokotwo/lib/engine/loader"
 
 type MenuPrefabs struct {
-	MainMenu          loader.EntityComponentList
-	HomeMenu          loader.EntityComponentList
+	MainMenu      loader.EntityComponentList
+	HomeMenu      loader.EntityComponentList
 	DungeonSelect loader.EntityComponentList
+	FieldMenu     loader.EntityComponentList
 }
 
 type FieldPrefabs struct {
