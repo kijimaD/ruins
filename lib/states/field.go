@@ -1,6 +1,8 @@
 package states
 
 import (
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
@@ -32,6 +34,10 @@ func (st *FieldState) Update(world w.World) states.Transition {
 	gs.GridTransformSystem(world)
 	gs.GridUpdateSystem(world)
 	gs.MoveSystem(world)
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
+	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
 	switch gameResources.StateEvent {

@@ -34,7 +34,7 @@ font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 300, y = 340 }
+translation = { x = 200, y = 340 }
 
 
 [[entity]]
@@ -46,7 +46,7 @@ font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 300, y = 400 }
+translation = { x = 200, y = 400 }
 
 # ================
 
@@ -59,7 +59,7 @@ font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 400, y = 340 }
+translation = { x = 300, y = 340 }
 
 
 [[entity]]
@@ -71,7 +71,7 @@ font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 400, y = 400 }
+translation = { x = 300, y = 400 }
 
 # ================
 
@@ -84,7 +84,7 @@ font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 500, y = 340 }
+translation = { x = 400, y = 340 }
 
 
 [[entity]]
@@ -96,7 +96,7 @@ font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 500, y = 400 }
+translation = { x = 400, y = 400 }
 
 # ================
 
@@ -109,7 +109,7 @@ font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 600, y = 340 }
+translation = { x = 500, y = 340 }
 
 
 [[entity]]
@@ -121,7 +121,7 @@ font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 600, y = 400 }
+translation = { x = 500, y = 400 }
 
 # ================
 
@@ -134,13 +134,38 @@ font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 700, y = 340 }
+translation = { x = 600, y = 340 }
 
 
 [[entity]]
 
 [entity.components.Text]
 id = "cursor_system"
+text = "▼"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 600, y = 400 }
+
+# ================
+
+[[entity]]
+
+[entity.components.Text]
+id = "exit"
+text = "[終]"
+font_face = { font = "kappa", options.size = 32.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 700, y = 340 }
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_exit"
 text = "▼"
 font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]

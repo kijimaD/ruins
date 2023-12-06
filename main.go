@@ -68,8 +68,10 @@ func main() {
 	// load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{
 		Menu: gr.MenuPrefabs{
-			MainMenu: gloader.PreloadEntities("metadata/entities/ui/main_menu.toml", world),
-			HomeMenu: gloader.PreloadEntities("metadata/entities/ui/home_menu.toml", world),
+			MainMenu:      gloader.PreloadEntities("metadata/entities/ui/main_menu.toml", world),
+			HomeMenu:      gloader.PreloadEntities("metadata/entities/ui/home_menu.toml", world),
+			DungeonSelect: gloader.PreloadEntities("metadata/entities/ui/dungeon_select.toml", world),
+			FieldMenu:     gloader.PreloadEntities("metadata/entities/ui/field_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
 		Field: gr.FieldPrefabs{
