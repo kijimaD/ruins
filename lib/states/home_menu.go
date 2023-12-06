@@ -66,7 +66,7 @@ func (st *HomeMenuState) setSelection(selection int) {
 func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
 	case 1:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 2:
