@@ -9,7 +9,6 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 480, y = 600 }
 
-
 [[entity]]
 
 [entity.components.SpriteRender]
@@ -32,7 +31,6 @@ color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 480, y = 450 }
-
 
 [[entity]]
 
@@ -57,7 +55,6 @@ color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 480, y = 380 }
-
 
 [[entity]]
 
