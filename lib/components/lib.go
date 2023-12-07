@@ -7,6 +7,8 @@ type Components struct {
 	Player      *ecs.NullComponent
 	Wall        *ecs.NullComponent
 	Warp        *ecs.NullComponent
+	Item        *ecs.NullComponent
+	Name        *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -18,15 +20,20 @@ type Player struct{}
 
 type Wall struct{}
 
-// ================
-
-type warpMode string
-
-var (
-	WarpModeNext   = warpMode("NEXT")
-	WarpModeEscape = warpMode("ESCAPE")
-)
-
 type Warp struct {
 	Mode warpMode
 }
+
+// アイテム枠に入るもの
+type Item struct{}
+
+// 消耗品
+// type Consumable struct{}
+
+// 表示名を持つ
+type Name struct {
+	Name string
+}
+
+// 所持品
+// type InBackpack struct{}

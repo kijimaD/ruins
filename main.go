@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/sokotwo/lib/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
@@ -83,6 +85,12 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("sokotwo")
+
+	// 実験 ===========
+	a := gloader.PreloadGameEntities("metadata/entities/item/consumable.toml", world)
+	v := a.Game[0].(gloader.GameComponentList)
+	fmt.Printf("%#v\n", v.Name)
+	// ================
 
 	ebiten.RunGame(&mainGame{
 		world:        world,
