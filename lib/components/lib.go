@@ -18,4 +18,15 @@ type Player struct{}
 
 type Wall struct{}
 
-type Warp struct{}
+// ================
+
+type warpMode string
+
+var (
+	WarpModeNext   = warpMode("NEXT")
+	WarpModeEscape = warpMode("ESCAPE")
+)
+
+type Warp struct {
+	Mode warpMode
+}

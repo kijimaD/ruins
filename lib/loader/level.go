@@ -360,7 +360,7 @@ func createWarpNextEntity(componentList *loader.EntityComponentList, gameSpriteS
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
-		Warp:        &gc.Warp{},
+		Warp:        &gc.Warp{Mode: gc.WarpModeNext},
 		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
@@ -371,7 +371,7 @@ func createWarpEscapeEntity(componentList *loader.EntityComponentList, gameSprit
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
-		Warp:        &gc.Warp{},
+		Warp:        &gc.Warp{Mode: gc.WarpModeEscape},
 		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
