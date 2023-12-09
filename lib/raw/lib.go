@@ -1,8 +1,12 @@
 package raw
 
 import (
+	"log"
+
 	"github.com/BurntSushi/toml"
+	gc "github.com/kijimaD/sokotwo/lib/components"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	gloader "github.com/kijimaD/sokotwo/lib/loader"
 )
 
 type RawMaster struct {
@@ -25,4 +29,17 @@ func (rw *RawMaster) Load(entityMetadataContent string) {
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
 	}
+}
+
+func (rw *RawMaster) GenerateItem(name string) gloader.Entity {
+	itemIdx, ok := rw.ItemIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	item := rw.Raws.Items[itemIdx]
+	entity := gloader.Entity{}
+	entity.Components.Item = &gc.Item{}
+	entity.Components.Name = &gc.Name{Name: item.Name}
+
+	return entity
 }

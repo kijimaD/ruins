@@ -20,7 +20,7 @@ type GameComponentList struct {
 	Name        *gc.Name
 }
 
-type entity struct {
+type Entity struct {
 	Components GameComponentList
 }
 
@@ -45,7 +45,7 @@ func PreloadGameEntities(entityMetadataPath string, world w.World) loader.Entity
 }
 
 type entityGameMetadata struct {
-	Entities []entity `toml:"entity"`
+	Entities []Entity `toml:"entity"`
 }
 
 func LoadGameComponent(entityMetadataContent []byte, world w.World) []interface{} {

@@ -31,3 +31,15 @@ name = "回復薬"
 	}
 	assert.Equal(t, expect, raw)
 }
+
+func TestGenerateItem(t *testing.T) {
+	str := `
+[[item]]
+name = "リペア"
+`
+	raw := RawMaster{}
+	raw.Load(str)
+	entity := raw.GenerateItem("リペア")
+	assert.NotNil(t, entity.Components.Name)
+	assert.NotNil(t, entity.Components.Item)
+}
