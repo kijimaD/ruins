@@ -9,6 +9,7 @@ type Components struct {
 	Warp        *ecs.NullComponent
 	Item        *ecs.NullComponent
 	Name        *ecs.SliceComponent
+	Description *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -30,9 +31,14 @@ type Item struct{}
 // 消耗品
 // type Consumable struct{}
 
-// 表示名を持つ
+// 表示名
 type Name struct {
 	Name string
+}
+
+// 説明
+type Description struct {
+	Description string
 }
 
 // 所持品

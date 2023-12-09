@@ -18,6 +18,7 @@ type GameComponentList struct {
 	Warp        *gc.Warp
 	Item        *gc.Item
 	Name        *gc.Name
+	Description *gc.Description
 }
 
 type Entity struct {
@@ -66,7 +67,8 @@ func LoadGameComponent(entityMetadataContent []byte, world w.World) []interface{
 
 func processComponentsListData(world w.World, data GameComponentList) GameComponentList {
 	return GameComponentList{
-		Item: data.Item,
-		Name: data.Name,
+		Item:        data.Item,
+		Name:        data.Name,
+		Description: data.Description,
 	}
 }
