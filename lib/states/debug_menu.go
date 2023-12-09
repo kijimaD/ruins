@@ -2,7 +2,6 @@ package states
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -59,7 +58,6 @@ func (st *DebugMenuState) confirmSelection(world w.World) states.Transition {
 		componentList.Game = append(componentList.Game, rawMaster.GenerateItem("回復薬"))
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
-		log.Println("スポーンした")
 		return states.Transition{Type: states.TransNone}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))

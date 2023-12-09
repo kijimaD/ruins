@@ -27,7 +27,7 @@ translation = { x = 480, y = 640 }
 
 [entity.components.Text]
 id = "spawn_item"
-text = "アイテムスポーン"
+text = "アイテムスポーン(回復薬)"
 font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 

@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/sokotwo/lib/components"
+	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
@@ -33,15 +34,28 @@ func (st *InventoryMenuState) OnStop(world w.World) {
 }
 
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+	}
+
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
+	itemTexts := ""
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Item).Visit(ecs.Visit(func(entity ecs.Entity) {
-		item := gameComponents.Item.Get(entity).(*gc.Item)
-		fmt.Println(item)
+	world.Manager.Join(gameComponents.Item, gameComponents.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		itemTexts += name.Name + "\n"
 	}))
+
+	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
+		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
+		if text.ID == "description" {
+			text.Text = itemTexts
+		}
+	}))
+
 	return updateMenu(st, world)
 }
 

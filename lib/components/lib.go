@@ -8,7 +8,7 @@ type Components struct {
 	Wall        *ecs.NullComponent
 	Warp        *ecs.NullComponent
 	Item        *ecs.NullComponent
-	Name        *ecs.NullComponent
+	Name        *ecs.SliceComponent
 }
 
 type GridElement struct {

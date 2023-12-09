@@ -30,7 +30,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {
-	// TODO: UIだけを消したい
+	// TODO: UIエンティティだけを消したい
 	// world.Manager.DeleteAllEntities()
 }
 
