@@ -4,6 +4,8 @@ package states
 import (
 	"fmt"
 
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
@@ -32,6 +34,10 @@ func (st *HomeMenuState) OnStop(world w.World) {
 }
 
 func (st *HomeMenuState) Update(world w.World) states.Transition {
+	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+	}
+
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 		if text.ID == "description" {

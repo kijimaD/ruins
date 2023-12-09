@@ -34,6 +34,7 @@ func (st *MainMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransQuit}
 	}
+
 	return updateMenu(st, world)
 }
 

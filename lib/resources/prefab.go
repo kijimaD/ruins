@@ -7,6 +7,7 @@ type MenuPrefabs struct {
 	HomeMenu      loader.EntityComponentList
 	DungeonSelect loader.EntityComponentList
 	FieldMenu     loader.EntityComponentList
+	DebugMenu     loader.EntityComponentList
 }
 
 type FieldPrefabs struct {

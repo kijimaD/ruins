@@ -73,6 +73,7 @@ func main() {
 			HomeMenu:      gloader.PreloadEntities("metadata/entities/ui/home_menu.toml", world),
 			DungeonSelect: gloader.PreloadEntities("metadata/entities/ui/dungeon_select.toml", world),
 			FieldMenu:     gloader.PreloadEntities("metadata/entities/ui/field_menu.toml", world),
+			DebugMenu:     gloader.PreloadEntities("metadata/entities/ui/debug_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
 		Field: gr.FieldPrefabs{

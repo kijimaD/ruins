@@ -1,5 +1,17 @@
 [[entity]]
 
+[entity.components.SpriteRender]
+sprite_sheet_name = "bg_title1"
+sprite_number = 0
+
+[entity.components.Transform]
+translation = { x = 0, y = 0 }
+origin = "Middle"
+
+# ================
+
+[[entity]]
+
 [entity.components.Text]
 id = "title"
 text = "探索者"
@@ -8,16 +20,6 @@ color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 480, y = 600 }
-
-[[entity]]
-
-[entity.components.SpriteRender]
-sprite_sheet_name = "bg_title1"
-sprite_number = 0
-
-[entity.components.Transform]
-translation = { x = 0, y = 0 }
-origin = "Middle"
 
 # ================
 
