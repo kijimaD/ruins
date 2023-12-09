@@ -30,7 +30,8 @@ func (st *HomeMenuState) OnStart(world w.World) {
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {
-	world.Manager.DeleteAllEntities()
+	// TODO: UIだけを消したい
+	// world.Manager.DeleteAllEntities()
 }
 
 func (st *HomeMenuState) Update(world w.World) states.Transition {
@@ -78,7 +79,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 1:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 2:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}}
 	case 3:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 4:
