@@ -16,6 +16,7 @@ type Resources struct {
 	AudioPlayers     *map[string]*audio.Player
 	Prefabs          interface{}
 	Game             interface{}
+	RawMaster        interface{}
 }
 
 // InitResources initializes resources

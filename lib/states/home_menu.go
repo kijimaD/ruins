@@ -4,6 +4,8 @@ package states
 import (
 	"fmt"
 
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
@@ -28,10 +30,15 @@ func (st *HomeMenuState) OnStart(world w.World) {
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {
-	world.Manager.DeleteAllEntities()
+	// TODO: UIエンティティだけを消したい
+	// world.Manager.DeleteAllEntities()
 }
 
 func (st *HomeMenuState) Update(world w.World) states.Transition {
+	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+	}
+
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 		if text.ID == "description" {
@@ -72,7 +79,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 1:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 2:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}}
 	case 3:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 4:

@@ -8,6 +8,7 @@ import (
 	es "github.com/kijimaD/sokotwo/lib/engine/states"
 	ew "github.com/kijimaD/sokotwo/lib/engine/world"
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
+	"github.com/kijimaD/sokotwo/lib/raw"
 	gr "github.com/kijimaD/sokotwo/lib/resources"
 	gs "github.com/kijimaD/sokotwo/lib/states"
 )
@@ -72,6 +73,8 @@ func main() {
 			HomeMenu:      gloader.PreloadEntities("metadata/entities/ui/home_menu.toml", world),
 			DungeonSelect: gloader.PreloadEntities("metadata/entities/ui/dungeon_select.toml", world),
 			FieldMenu:     gloader.PreloadEntities("metadata/entities/ui/field_menu.toml", world),
+			DebugMenu:     gloader.PreloadEntities("metadata/entities/ui/debug_menu.toml", world),
+			InventoryMenu: gloader.PreloadEntities("metadata/entities/ui/inventory_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
 		Field: gr.FieldPrefabs{
@@ -79,6 +82,10 @@ func main() {
 			PackageInfo: gloader.PreloadEntities("metadata/entities/ui/package.toml", world),
 		},
 	}
+
+	// load raws
+	rw := raw.LoadFromFile("metadata/entities/raw/raw.toml")
+	world.Resources.RawMaster = rw
 
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)

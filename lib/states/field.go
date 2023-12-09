@@ -38,7 +38,6 @@ func (st *FieldState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
 	}
-
 	gameResources := world.Resources.Game.(*resources.Game)
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpEscape:
