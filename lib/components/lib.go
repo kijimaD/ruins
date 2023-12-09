@@ -10,6 +10,7 @@ type Components struct {
 	Item        *ecs.NullComponent
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
+	InBackpack  *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -42,4 +43,4 @@ type Description struct {
 }
 
 // 所持品
-// type InBackpack struct{}
+type InBackpack struct{}

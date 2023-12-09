@@ -44,7 +44,12 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 
 	itemTexts := ""
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Item, gameComponents.Name, gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.Name,
+		gameComponents.Description,
+		gameComponents.InBackpack,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		description := gameComponents.Description.Get(entity).(*gc.Description)
 		itemTexts += fmt.Sprintf("%s %s\n", name.Name, description.Description)
