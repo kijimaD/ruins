@@ -3,10 +3,12 @@ package states
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
+	"github.com/kijimaD/sokotwo/lib/raw"
 	"github.com/kijimaD/sokotwo/lib/resources"
 	gs "github.com/kijimaD/sokotwo/lib/systems"
 )
@@ -37,6 +39,15 @@ func (st *FieldState) Update(world w.World) states.Transition {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
+	}
+
+	// TODO: デバッグ用。これを専用のメニューに移す
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		componentList := loader.EntityComponentList{}
+		rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+		componentList.Game = append(componentList.Game, rawMaster.GenerateItem("回復薬"))
+		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+		loader.AddEntities(world, componentList)
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)

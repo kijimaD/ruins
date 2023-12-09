@@ -14,8 +14,7 @@ name = "リペア"
 [[item]]
 name = "回復薬"
 `
-	raw := RawMaster{}
-	raw.Load(str)
+	raw := Load(str)
 
 	expect := RawMaster{
 		Raws: Raws{
@@ -37,8 +36,7 @@ func TestGenerateItem(t *testing.T) {
 [[item]]
 name = "リペア"
 `
-	raw := RawMaster{}
-	raw.Load(str)
+	raw := Load(str)
 	entity := raw.GenerateItem("リペア")
 	assert.NotNil(t, entity.Components.Name)
 	assert.NotNil(t, entity.Components.Item)

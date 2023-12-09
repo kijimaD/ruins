@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/BurntSushi/toml"
+	"github.com/kijimaD/sokotwo/assets"
 	gc "github.com/kijimaD/sokotwo/lib/components"
 	"github.com/kijimaD/sokotwo/lib/engine/utils"
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
@@ -22,24 +23,35 @@ type Item struct {
 	Name string
 }
 
-func (rw *RawMaster) Load(entityMetadataContent string) {
+func LoadFromFile(path string) RawMaster {
+	bs, err := assets.FS.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rw := Load(string(bs))
+	return rw
+}
+
+func Load(entityMetadataContent string) RawMaster {
+	rw := RawMaster{}
 	rw.ItemIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
 	}
+	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string) gloader.Entity {
+func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	item := rw.Raws.Items[itemIdx]
-	entity := gloader.Entity{}
-	entity.Components.Item = &gc.Item{}
-	entity.Components.Name = &gc.Name{Name: item.Name}
+	cl := gloader.GameComponentList{}
+	cl.Item = &gc.Item{}
+	cl.Name = &gc.Name{Name: item.Name}
 
-	return entity
+	return cl
 }

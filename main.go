@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/sokotwo/lib/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
@@ -10,6 +8,7 @@ import (
 	es "github.com/kijimaD/sokotwo/lib/engine/states"
 	ew "github.com/kijimaD/sokotwo/lib/engine/world"
 	gloader "github.com/kijimaD/sokotwo/lib/loader"
+	"github.com/kijimaD/sokotwo/lib/raw"
 	gr "github.com/kijimaD/sokotwo/lib/resources"
 	gs "github.com/kijimaD/sokotwo/lib/states"
 )
@@ -82,15 +81,13 @@ func main() {
 		},
 	}
 
+	// load raws
+	rw := raw.LoadFromFile("metadata/entities/raw/raw.toml")
+	world.Resources.RawMaster = rw
+
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("sokotwo")
-
-	// 実験 ===========
-	a := gloader.PreloadGameEntities("metadata/entities/item/consumable.toml", world)
-	v := a.Game[0].(gloader.GameComponentList)
-	fmt.Printf("%#v\n", v.Name)
-	// ================
 
 	ebiten.RunGame(&mainGame{
 		world:        world,
