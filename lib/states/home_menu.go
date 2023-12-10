@@ -16,22 +16,26 @@ import (
 
 type HomeMenuState struct {
 	selection int
+	homeMenu  []ecs.Entity
 }
 
 // State interface ================
 
-func (st *HomeMenuState) OnPause(world w.World) {}
+func (st *HomeMenuState) OnPause(world w.World) {
+	st.OnStop(world)
+}
 
-func (st *HomeMenuState) OnResume(world w.World) {}
+func (st *HomeMenuState) OnResume(world w.World) {
+	st.OnStart(world)
+}
 
 func (st *HomeMenuState) OnStart(world w.World) {
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	loader.AddEntities(world, prefabs.Menu.HomeMenu)
+	st.homeMenu = append(st.homeMenu, loader.AddEntities(world, prefabs.Menu.HomeMenu)...)
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {
-	// TODO: UIエンティティだけを消したい
-	// world.Manager.DeleteAllEntities()
+	world.Manager.DeleteEntities(st.homeMenu...)
 }
 
 func (st *HomeMenuState) Update(world w.World) states.Transition {
@@ -48,7 +52,7 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 			case 1:
 				text.Text = "装備品やアイテムを購入する"
 			case 2:
-				text.Text = "装備変更/アイテムを使う"
+				text.Text = "アイテムを使う"
 			case 3:
 				text.Text = "仲間を入れ替える"
 			case 4:
