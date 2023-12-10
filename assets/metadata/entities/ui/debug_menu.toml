@@ -15,7 +15,7 @@ origin = "Middle"
 [entity.components.Text]
 id = "title"
 text = "デバッグメニュー"
-font_face = { font = "kappa", options.size = 30.0 }
+font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
@@ -28,7 +28,7 @@ translation = { x = 480, y = 640 }
 [entity.components.Text]
 id = "spawn_item"
 text = "アイテムスポーン(回復薬)"
-font_face = { font = "kappa", options.size = 30.0 }
+font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
