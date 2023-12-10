@@ -15,7 +15,8 @@ import (
 )
 
 type InventoryMenuState struct {
-	selection int
+	selection     int
+	inventoryMenu []ecs.Entity
 }
 
 // State interface ================
@@ -26,11 +27,11 @@ func (st *InventoryMenuState) OnResume(world w.World) {}
 
 func (st *InventoryMenuState) OnStart(world w.World) {
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	loader.AddEntities(world, prefabs.Menu.InventoryMenu)
+	st.inventoryMenu = append(st.inventoryMenu, loader.AddEntities(world, prefabs.Menu.InventoryMenu)...)
 }
 
 func (st *InventoryMenuState) OnStop(world w.World) {
-	world.Manager.DeleteAllEntities()
+	world.Manager.DeleteEntities(st.inventoryMenu...)
 }
 
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
