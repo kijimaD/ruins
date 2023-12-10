@@ -3,7 +3,7 @@
 [entity.components.Text]
 id = "title"
 text = "フィールドメニュー"
-font_face = { font = "kappa", options.size = 30.0 }
+font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
