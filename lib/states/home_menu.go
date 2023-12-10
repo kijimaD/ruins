@@ -50,7 +50,7 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 			case 0:
 				text.Text = "遺跡に出発する"
 			case 1:
-				text.Text = "装備品やアイテムを購入する"
+				text.Text = "アイテムを合成する"
 			case 2:
 				text.Text = "アイテムを使う"
 			case 3:
@@ -81,7 +81,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 0:
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
 	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MixMenuState{}}}
 	case 2:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}}
 	case 3:
