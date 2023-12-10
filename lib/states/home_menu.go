@@ -52,12 +52,10 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 			case 1:
 				text.Text = "アイテムを合成する"
 			case 2:
-				text.Text = "アイテムを使う"
-			case 3:
 				text.Text = "仲間を入れ替える"
-			case 4:
+			case 3:
 				text.Text = "キャンプメニューを開く"
-			case 5:
+			case 4:
 				text.Text = "終了する"
 			}
 		}
@@ -83,12 +81,11 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 1:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MixMenuState{}}}
 	case 2:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}}
+		// TODO: 実装する
+		return states.Transition{Type: states.TransNone}
 	case 3:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
-	case 4:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CampMenuState{}}}
-	case 5:
+	case 4:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 
 	}
@@ -96,9 +93,9 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 }
 
 func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{"dungeon", "buy", "equip", "party", "system", "exit"}
+	return []string{"dungeon", "mix", "party", "camp", "exit"}
 }
 
 func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_dungeon", "cursor_buy", "cursor_equip", "cursor_party", "cursor_system", "cursor_exit"}
+	return []string{"cursor_dungeon", "cursor_mix", "cursor_party", "cursor_camp", "cursor_exit"}
 }

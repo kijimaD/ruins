@@ -35,7 +35,7 @@ func (st *InventoryMenuState) OnStop(world w.World) {
 
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CampMenuState{}}}
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
@@ -78,16 +78,16 @@ func (st *InventoryMenuState) setSelection(selection int) {
 func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
-
+		// TODO: 実装
+		return states.Transition{Type: states.TransNone}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
 
 func (st *InventoryMenuState) getMenuIDs() []string {
-	return []string{"dungeon"}
+	return []string{""}
 }
 
 func (st *InventoryMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_dungeon"}
+	return []string{""}
 }
