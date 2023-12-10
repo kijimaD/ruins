@@ -56,7 +56,7 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 			case 3:
 				text.Text = "仲間を入れ替える"
 			case 4:
-				text.Text = "設定を変更する"
+				text.Text = "キャンプメニューを開く"
 			case 5:
 				text.Text = "終了する"
 			}
@@ -87,7 +87,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 3:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
 	case 4:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CampMenuState{}}}
 	case 5:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 

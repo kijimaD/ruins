@@ -53,7 +53,7 @@ translation = { x = 200, y = 400 }
 
 [entity.components.Text]
 id = "buy"
-text = "[買]"
+text = "[合]"
 font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 
@@ -128,7 +128,7 @@ translation = { x = 500, y = 400 }
 
 [entity.components.Text]
 id = "system"
-text = "[設]"
+text = "[隊]"
 font_face = { font = "kappa", options.size = 32.0 }
 color = [255, 255, 255, 255]
 

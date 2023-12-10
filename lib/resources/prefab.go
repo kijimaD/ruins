@@ -10,6 +10,7 @@ type MenuPrefabs struct {
 	DebugMenu     loader.EntityComponentList
 	InventoryMenu loader.EntityComponentList
 	MixMenu       loader.EntityComponentList
+	CampMenu      loader.EntityComponentList
 }
 
 type FieldPrefabs struct {
