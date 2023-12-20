@@ -59,14 +59,21 @@ func (st *DebugMenuState) confirmSelection(world w.World) states.Transition {
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 		return states.Transition{Type: states.TransNone}
+	case 1:
+		componentList := loader.EntityComponentList{}
+		rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+		componentList.Game = append(componentList.Game, rawMaster.GenerateItem("手榴弾"))
+		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+		loader.AddEntities(world, componentList)
+		return states.Transition{Type: states.TransNone}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
 
 func (st *DebugMenuState) getMenuIDs() []string {
-	return []string{"spawn"}
+	return []string{"spawn_item_potion", "spawn_item_grenade"}
 }
 
 func (st *DebugMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_spawn"}
+	return []string{"cursor_spawn_item_potion", "cursor_spawn_item_grenade"}
 }
