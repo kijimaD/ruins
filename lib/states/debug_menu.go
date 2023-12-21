@@ -8,8 +8,8 @@ import (
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	"github.com/kijimaD/sokotwo/lib/raw"
 	"github.com/kijimaD/sokotwo/lib/resources"
+	"github.com/kijimaD/sokotwo/lib/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -53,18 +53,12 @@ func (st *DebugMenuState) setSelection(selection int) {
 func (st *DebugMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		componentList := loader.EntityComponentList{}
-		rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-		componentList.Game = append(componentList.Game, rawMaster.GenerateItem("回復薬"))
-		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
-		loader.AddEntities(world, componentList)
+		spawner.SpawnItem(world, "回復薬")
+
 		return states.Transition{Type: states.TransNone}
 	case 1:
-		componentList := loader.EntityComponentList{}
-		rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-		componentList.Game = append(componentList.Game, rawMaster.GenerateItem("手榴弾"))
-		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
-		loader.AddEntities(world, componentList)
+		spawner.SpawnItem(world, "手榴弾")
+
 		return states.Transition{Type: states.TransNone}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
