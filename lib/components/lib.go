@@ -11,6 +11,7 @@ type Components struct {
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
 	InBackpack  *ecs.NullComponent
+	Consumable  *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -30,7 +31,7 @@ type Warp struct {
 type Item struct{}
 
 // 消耗品
-// type Consumable struct{}
+type Consumable struct{}
 
 // 表示名
 type Name struct {

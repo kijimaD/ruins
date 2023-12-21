@@ -20,6 +20,7 @@ type GameComponentList struct {
 	Name        *gc.Name
 	Description *gc.Description
 	InBackpack  *gc.InBackpack
+	Consumable  *gc.Consumable
 }
 
 type Entity struct {
@@ -72,5 +73,6 @@ func processComponentsListData(world w.World, data GameComponentList) GameCompon
 		Name:        data.Name,
 		Description: data.Description,
 		InBackpack:  data.InBackpack,
+		Consumable:  data.Consumable,
 	}
 }

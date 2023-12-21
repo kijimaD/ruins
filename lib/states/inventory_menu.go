@@ -54,6 +54,7 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 		gameComponents.Name,
 		gameComponents.Description,
 		gameComponents.InBackpack,
+		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.menuLen += 1
 
@@ -100,7 +101,7 @@ func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition 
 		// TODO: 実装
 		return states.Transition{Type: states.TransNone}
 	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *InventoryMenuState) getMenuIDs() []string {

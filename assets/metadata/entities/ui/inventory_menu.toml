@@ -50,3 +50,17 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 200, y = 480 }
 pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.components.Text]
+id = "count"
+text = ""
+font_face = { font = "kappa", options.size = 32.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 600, y = 600 }
+pivot = "TopLeft"

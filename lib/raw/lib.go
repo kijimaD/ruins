@@ -22,6 +22,7 @@ type Raws struct {
 type Item struct {
 	Name        string
 	Description string
+	Consumable  bool
 }
 
 func LoadFromFile(path string) RawMaster {
@@ -51,10 +52,13 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := gloader.GameComponentList{}
+	cl.InBackpack = &gc.InBackpack{} // フィールドにスポーンするときもあるので、引数で変えられるようにする
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
-	cl.InBackpack = &gc.InBackpack{} // 引数で変えられるようにする
+	if item.Consumable {
+		cl.Consumable = &gc.Consumable{}
+	}
 
 	return cl
 }
