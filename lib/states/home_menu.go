@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	"github.com/kijimaD/sokotwo/lib/raw"
 	"github.com/kijimaD/sokotwo/lib/resources"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -32,6 +33,13 @@ func (st *HomeMenuState) OnResume(world w.World) {
 func (st *HomeMenuState) OnStart(world w.World) {
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	st.homeMenu = append(st.homeMenu, loader.AddEntities(world, prefabs.Menu.HomeMenu)...)
+
+	// デバッグアイテム
+	componentList := loader.EntityComponentList{}
+	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+	componentList.Game = append(componentList.Game, rawMaster.GenerateItem("回復薬"))
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+	loader.AddEntities(world, componentList)
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {
