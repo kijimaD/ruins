@@ -37,6 +37,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用
 	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "手榴弾")
+	spawner.SpawnMember(world, "椿", true)
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {

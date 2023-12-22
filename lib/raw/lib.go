@@ -11,18 +11,25 @@ import (
 )
 
 type RawMaster struct {
-	Raws      Raws
-	ItemIndex map[string]int // repair: 0 みたいな
+	Raws        Raws
+	ItemIndex   map[string]int
+	MemberIndex map[string]int
 }
 
 type Raws struct {
-	Items []Item `toml:"item"`
+	Items   []Item   `toml:"item"`
+	Members []Member `toml:"member"`
 }
 
+// tomlで入力として受け取る項目
 type Item struct {
 	Name        string
 	Description string
 	Consumable  bool
+}
+
+type Member struct {
+	Name string
 }
 
 func LoadFromFile(path string) RawMaster {
@@ -37,10 +44,14 @@ func LoadFromFile(path string) RawMaster {
 func Load(entityMetadataContent string) RawMaster {
 	rw := RawMaster{}
 	rw.ItemIndex = map[string]int{}
+	rw.MemberIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
+	}
+	for i, member := range rw.Raws.Members {
+		rw.MemberIndex[member.Name] = i
 	}
 	return rw
 }
@@ -58,6 +69,22 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	cl.Description = &gc.Description{Description: item.Description}
 	if item.Consumable {
 		cl.Consumable = &gc.Consumable{}
+	}
+
+	return cl
+}
+
+func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameComponentList {
+	memberIdx, ok := rw.MemberIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	member := rw.Raws.Members[memberIdx]
+	cl := gloader.GameComponentList{}
+	cl.Member = &gc.Member{}
+	cl.Name = &gc.Name{Name: member.Name}
+	if inParty {
+		cl.InParty = &gc.InParty{}
 	}
 
 	return cl

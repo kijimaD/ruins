@@ -12,3 +12,6 @@ consumable = true
 name = "手榴弾"
 description = "敵全体にダメージを与える"
 consumable = true
+
+[[member]]
+name = "椿"

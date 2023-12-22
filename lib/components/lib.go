@@ -8,10 +8,12 @@ type Components struct {
 	Wall        *ecs.NullComponent
 	Warp        *ecs.NullComponent
 	Item        *ecs.NullComponent
+	Consumable  *ecs.NullComponent
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
 	InBackpack  *ecs.NullComponent
-	Consumable  *ecs.NullComponent
+	InParty     *ecs.NullComponent
+	Member      *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -19,10 +21,13 @@ type GridElement struct {
 	Col  int
 }
 
+// フィールドでの移動体
 type Player struct{}
 
+// 壁
 type Wall struct{}
 
+// ワープパッド
 type Warp struct {
 	Mode warpMode
 }
@@ -45,3 +50,9 @@ type Description struct {
 
 // 所持品
 type InBackpack struct{}
+
+// パーティに参加している
+type InParty struct{}
+
+// 冒険に参加できるメンバー
+type Member struct{}
