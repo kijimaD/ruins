@@ -30,6 +30,8 @@ type Item struct {
 
 type Member struct {
 	Name string
+	HP   int
+	SP   int
 }
 
 func LoadFromFile(path string) RawMaster {
@@ -85,6 +87,11 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameCompo
 	cl.Name = &gc.Name{Name: member.Name}
 	if inParty {
 		cl.InParty = &gc.InParty{}
+	}
+	cl.Pools = &gc.Pools{
+		HP:    gc.Pool{Max: member.HP, Current: member.HP - 10},
+		SP:    gc.Pool{Max: member.SP, Current: member.SP - 10},
+		Level: 1,
 	}
 
 	return cl

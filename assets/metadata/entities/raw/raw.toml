@@ -15,6 +15,10 @@ consumable = true
 
 [[member]]
 name = "椿"
+hp = 100
+sp = 82
 
 [[member]]
 name = "白瀬"
+hp = 82
+sp = 87

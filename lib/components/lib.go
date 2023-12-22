@@ -14,6 +14,7 @@ type Components struct {
 	InBackpack  *ecs.NullComponent
 	InParty     *ecs.NullComponent
 	Member      *ecs.NullComponent
+	Pools       *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -56,3 +57,16 @@ type InParty struct{}
 
 // 冒険に参加できるメンバー
 type Member struct{}
+
+// 最大値と現在値を持つようなパラメータ
+type Pool struct {
+	Max     int
+	Current int
+}
+
+// メンバーに関連するパラメータ群
+type Pools struct {
+	HP    Pool
+	SP    Pool
+	Level int
+}

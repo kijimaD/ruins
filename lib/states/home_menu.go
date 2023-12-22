@@ -70,14 +70,21 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 	}))
 
 	names := []string{}
+	hps := []string{}
+	sps := []string{}
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Member,
 		gameComponents.InParty,
 		gameComponents.Name,
+		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
-		names = append(names, name.Name)
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+
+		names = append(names, fmt.Sprintf("%-4s Lv.%d", name.Name, pools.Level))
+		hps = append(hps, fmt.Sprintf("HP: %3d / %3d", pools.HP.Current, pools.HP.Max))
+		sps = append(sps, fmt.Sprintf("SP: %3d / %3d", pools.SP.Current, pools.SP.Max))
 	}))
 
 	world.Manager.Join(
@@ -102,6 +109,14 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 			if len(names) > 3 {
 				text.Text = names[3]
 			}
+		case "party_1_hp_label":
+			text.Text = hps[0]
+		case "party_1_sp_label":
+			text.Text = sps[0]
+		case "party_2_hp_label":
+			text.Text = hps[1]
+		case "party_2_sp_label":
+			text.Text = sps[1]
 		}
 	}))
 

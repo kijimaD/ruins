@@ -153,6 +153,20 @@ translation = { x = 600, y = 400 }
 [[entity]]
 
 [entity.Components.Text]
+id = "party_line"
+text = "───────────────"
+font_face = { font = "kappa", options.size = 32.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 200, y = 270 }
+pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.Components.Text]
 id = "party_1_name"
 text = ""
 font_face = { font = "kappa", options.size = 32.0 }
@@ -160,6 +174,35 @@ color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 200, y = 260 }
+pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.Components.Text]
+id = "party_1_hp_label"
+text = ""
+font_face = { font = "kappa", options.size = 24.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 200, y = 220 }
+pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.Components.Text]
+id = "party_1_sp_label"
+text = ""
+font_face = { font = "kappa", options.size = 24.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 200, y = 200 }
+pivot = "TopLeft"
 
 # ================
 
@@ -173,3 +216,32 @@ color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 500, y = 260 }
+pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.Components.Text]
+id = "party_2_hp_label"
+text = ""
+font_face = { font = "kappa", options.size = 24.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 500, y = 220 }
+pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.Components.Text]
+id = "party_2_sp_label"
+text = ""
+font_face = { font = "kappa", options.size = 24.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 500, y = 200 }
+pivot = "TopLeft"
