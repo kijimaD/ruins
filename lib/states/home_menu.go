@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	gc "github.com/kijimaD/sokotwo/lib/components"
 	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
@@ -38,6 +39,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "手榴弾")
 	spawner.SpawnMember(world, "椿", true)
+	spawner.SpawnMember(world, "白瀬", true)
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {
@@ -63,6 +65,42 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 				text.Text = "キャンプメニューを開く"
 			case 4:
 				text.Text = "終了する"
+			}
+		}
+	}))
+
+	names := []string{}
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+		gameComponents.Name,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		names = append(names, name.Name)
+	}))
+
+	world.Manager.Join(
+		world.Components.Engine.Text,
+		world.Components.Engine.UITransform,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
+		switch text.ID {
+		case "party_1_name":
+			if len(names) > 0 {
+				text.Text = names[0]
+			}
+		case "party_2_name":
+			if len(names) > 1 {
+				text.Text = names[1]
+			}
+		case "party_3_name":
+			if len(names) > 2 {
+				text.Text = names[2]
+			}
+		case "party_4_name":
+			if len(names) > 3 {
+				text.Text = names[3]
 			}
 		}
 	}))
