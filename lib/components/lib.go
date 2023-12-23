@@ -8,9 +8,13 @@ type Components struct {
 	Wall        *ecs.NullComponent
 	Warp        *ecs.NullComponent
 	Item        *ecs.NullComponent
+	Consumable  *ecs.NullComponent
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
 	InBackpack  *ecs.NullComponent
+	InParty     *ecs.NullComponent
+	Member      *ecs.NullComponent
+	Pools       *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -18,10 +22,13 @@ type GridElement struct {
 	Col  int
 }
 
+// フィールドでの移動体
 type Player struct{}
 
+// 壁
 type Wall struct{}
 
+// ワープパッド
 type Warp struct {
 	Mode warpMode
 }
@@ -30,7 +37,7 @@ type Warp struct {
 type Item struct{}
 
 // 消耗品
-// type Consumable struct{}
+type Consumable struct{}
 
 // 表示名
 type Name struct {
@@ -44,3 +51,22 @@ type Description struct {
 
 // 所持品
 type InBackpack struct{}
+
+// パーティに参加している
+type InParty struct{}
+
+// 冒険に参加できるメンバー
+type Member struct{}
+
+// 最大値と現在値を持つようなパラメータ
+type Pool struct {
+	Max     int
+	Current int
+}
+
+// メンバーに関連するパラメータ群
+type Pools struct {
+	HP    Pool
+	SP    Pool
+	Level int
+}

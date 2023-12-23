@@ -1,7 +1,24 @@
 [[item]]
 name = "リペア"
 description = "車体のダメージを半分程度回復する"
+consumable = true
 
 [[item]]
 name = "回復薬"
 description = "仲間の体力を半分程度回復する"
+consumable = true
+
+[[item]]
+name = "手榴弾"
+description = "敵全体にダメージを与える"
+consumable = true
+
+[[member]]
+name = "椿"
+hp = 100
+sp = 82
+
+[[member]]
+name = "白瀬"
+hp = 82
+sp = 87

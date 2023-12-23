@@ -17,6 +17,7 @@ import (
 type InventoryMenuState struct {
 	selection     int
 	inventoryMenu []ecs.Entity
+	menuLen       int
 }
 
 // State interface ================
@@ -43,23 +44,41 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
-	itemTexts := ""
+	st.menuLen = 0
+	itemList := ""
+	descriptions := []string{}
 	gameComponents := world.Components.Game.(*gc.Components)
+
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Name,
 		gameComponents.Description,
 		gameComponents.InBackpack,
+		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		st.menuLen += 1
+
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		description := gameComponents.Description.Get(entity).(*gc.Description)
-		itemTexts += fmt.Sprintf("%s %s\n", name.Name, description.Description)
+		descriptions = append(descriptions, description.Description)
+		itemList += fmt.Sprintf("%s \n", name.Name)
 	}))
 
-	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(
+		world.Components.Engine.Text,
+		world.Components.Engine.UITransform,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		if text.ID == "description" {
-			text.Text = itemTexts
+		switch text.ID {
+		case "description":
+			if len(descriptions) != 0 {
+				text.Text = descriptions[st.selection]
+			}
+		case "item_list":
+			text.Text = itemList
+		case "cursor":
+			ui := world.Components.Engine.UITransform.Get(entity).(*ec.UITransform)
+			ui.Translation.Y = 500 - st.selection*32 - 10
 		}
 	}))
 
@@ -82,7 +101,7 @@ func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition 
 		// TODO: 実装
 		return states.Transition{Type: states.TransNone}
 	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *InventoryMenuState) getMenuIDs() []string {
@@ -90,5 +109,11 @@ func (st *InventoryMenuState) getMenuIDs() []string {
 }
 
 func (st *InventoryMenuState) getCursorMenuIDs() []string {
-	return []string{""}
+	l := 0
+	if st.menuLen == 0 {
+		l = 1
+	} else {
+		l = st.menuLen
+	}
+	return make([]string, l)
 }
