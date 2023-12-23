@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/sokotwo/lib/components"
+	"github.com/kijimaD/sokotwo/lib/effects"
 	ec "github.com/kijimaD/sokotwo/lib/engine/components"
 	"github.com/kijimaD/sokotwo/lib/engine/loader"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
@@ -36,6 +37,8 @@ func (st *InventoryMenuState) OnStop(world w.World) {
 }
 
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
+	effects.RunEffectQueue(world)
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CampMenuState{}}}
 	}
@@ -96,9 +99,40 @@ func (st *InventoryMenuState) setSelection(selection int) {
 }
 
 func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition {
+	gameComponents := world.Components.Game.(*gc.Components)
+	var members []ecs.Entity
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		members = append(members, entity)
+	}))
+
+	var items []ecs.Entity
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.Name,
+		gameComponents.Description,
+		gameComponents.InBackpack,
+		gameComponents.Consumable,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
 	switch st.selection {
+	// アイテムを選択できるようにする
 	case 0:
-		// TODO: 実装
+		// 回復薬
+		// TODO: WantToUseItemを組み込んだEntityを生成する
+		// TODO: 仮で先頭の仲間固定にしている。ターゲットを選べるようにする
+		effects.ItemTrigger(nil, items[0], effects.Single{members[0]}, world)
+
+		return states.Transition{Type: states.TransNone}
+	case 1:
+		// 劇薬
+		// TODO: 仮で先頭の仲間固定にしている。ターゲットを選べるようにする
+		effects.ItemTrigger(nil, items[1], effects.Single{members[0]}, world)
+
 		return states.Transition{Type: states.TransNone}
 	}
 	return states.Transition{Type: states.TransNone}
