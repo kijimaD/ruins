@@ -36,6 +36,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	st.homeMenu = append(st.homeMenu, loader.AddEntities(world, prefabs.Menu.HomeMenu)...)
 
 	// デバッグ用
+	// メニューを開くたびに追加されるので微妙...
 	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "手榴弾")
 	spawner.SpawnMember(world, "椿", true)

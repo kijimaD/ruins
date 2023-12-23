@@ -1,0 +1,16 @@
+package effects
+
+import (
+	gc "github.com/kijimaD/sokotwo/lib/components"
+	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
+
+func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	pools := gameComponents.Pools.Get(target).(*gc.Pools)
+	v, ok := damage.EffectType.(Damage)
+	if ok {
+		pools.HP.Current -= v.Amount
+	}
+}
