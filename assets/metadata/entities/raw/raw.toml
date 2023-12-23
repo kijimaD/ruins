@@ -1,29 +1,25 @@
 [[item]]
-name = "リペア"
-description = "車体のダメージを半分程度回復する"
-consumable = true
+Name = "回復薬"
+Description = "体力を半分程度回復する"
+Consumable = true
+ProvidesHealing = 20
 
 [[item]]
-name = "回復薬"
-description = "体力を半分程度回復する"
-consumable = true
+Name = "劇薬"
+Description = "ダメージを与える"
+Consumable = true
 
 [[item]]
-name = "劇薬"
-description = "ダメージを与える"
-consumable = true
-
-[[item]]
-name = "手榴弾"
-description = "全体にダメージを与える"
-consumable = true
+Name = "手榴弾"
+Description = "全体にダメージを与える"
+Consumable = true
 
 [[member]]
-name = "椿"
-hp = 100
-sp = 82
+Name = "椿"
+HP = 100
+SP = 82
 
 [[member]]
-name = "白瀬"
-hp = 82
-sp = 87
+Name = "白瀬"
+HP = 82
+SP = 87

@@ -23,9 +23,10 @@ type Raws struct {
 
 // tomlで入力として受け取る項目
 type Item struct {
-	Name        string
-	Description string
-	Consumable  bool
+	Name            string
+	Description     string
+	Consumable      bool
+	ProvidesHealing int
 }
 
 type Member struct {
@@ -71,6 +72,9 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	cl.Description = &gc.Description{Description: item.Description}
 	if item.Consumable {
 		cl.Consumable = &gc.Consumable{}
+	}
+	if item.ProvidesHealing != 0 {
+		cl.ProvidesHealing = &gc.ProvidesHealing{Amount: item.ProvidesHealing}
 	}
 
 	return cl

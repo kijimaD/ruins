@@ -40,7 +40,7 @@ func RunEffectQueue(world w.World) {
 
 // EffectSpawnerからEffectを生成する
 func TargetApplicator(world w.World, es EffectSpawner) {
-	switch es.EffectType.(type) {
+	switch e := es.EffectType.(type) {
 	case Damage:
 		v, ok := es.Targets.(Single)
 		if ok {
@@ -51,6 +51,12 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 		if ok {
 			AffectEntity(world, es, v.Target)
 		}
+	case ItemUse:
+		_, ok := es.Targets.(Single)
+		if ok {
+			ItemTrigger(nil, e.Item, es.Targets, world)
+		}
+
 	}
 }
 

@@ -3,18 +3,19 @@ package components
 import ecs "github.com/x-hgg-x/goecs/v2"
 
 type Components struct {
-	GridElement *ecs.SliceComponent
-	Player      *ecs.NullComponent
-	Wall        *ecs.NullComponent
-	Warp        *ecs.NullComponent
-	Item        *ecs.NullComponent
-	Consumable  *ecs.NullComponent
-	Name        *ecs.SliceComponent
-	Description *ecs.SliceComponent
-	InBackpack  *ecs.NullComponent
-	InParty     *ecs.NullComponent
-	Member      *ecs.NullComponent
-	Pools       *ecs.SliceComponent
+	GridElement     *ecs.SliceComponent
+	Player          *ecs.NullComponent
+	Wall            *ecs.NullComponent
+	Warp            *ecs.NullComponent
+	Item            *ecs.NullComponent
+	Consumable      *ecs.SliceComponent
+	Name            *ecs.SliceComponent
+	Description     *ecs.SliceComponent
+	InBackpack      *ecs.NullComponent
+	InParty         *ecs.NullComponent
+	Member          *ecs.NullComponent
+	Pools           *ecs.SliceComponent
+	ProvidesHealing *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -69,4 +70,8 @@ type Pools struct {
 	HP    Pool
 	SP    Pool
 	Level int
+}
+
+type ProvidesHealing struct {
+	Amount int
 }

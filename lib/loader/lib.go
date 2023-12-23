@@ -12,18 +12,19 @@ import (
 )
 
 type GameComponentList struct {
-	GridElement *gc.GridElement
-	Player      *gc.Player
-	Wall        *gc.Wall
-	Warp        *gc.Warp
-	Item        *gc.Item
-	Name        *gc.Name
-	Description *gc.Description
-	InBackpack  *gc.InBackpack
-	Consumable  *gc.Consumable
-	InParty     *gc.InParty
-	Member      *gc.Member
-	Pools       *gc.Pools
+	GridElement     *gc.GridElement
+	Player          *gc.Player
+	Wall            *gc.Wall
+	Warp            *gc.Warp
+	Item            *gc.Item
+	Name            *gc.Name
+	Description     *gc.Description
+	InBackpack      *gc.InBackpack
+	Consumable      *gc.Consumable
+	InParty         *gc.InParty
+	Member          *gc.Member
+	Pools           *gc.Pools
+	ProvidesHealing *gc.ProvidesHealing
 }
 
 type Entity struct {
@@ -72,13 +73,14 @@ func LoadGameComponent(entityMetadataContent []byte, world w.World) []interface{
 
 func processComponentsListData(world w.World, data GameComponentList) GameComponentList {
 	return GameComponentList{
-		Item:        data.Item,
-		Name:        data.Name,
-		Description: data.Description,
-		InBackpack:  data.InBackpack,
-		Consumable:  data.Consumable,
-		InParty:     data.InParty,
-		Member:      data.Member,
-		Pools:       data.Pools,
+		Item:            data.Item,
+		Name:            data.Name,
+		Description:     data.Description,
+		InBackpack:      data.InBackpack,
+		Consumable:      data.Consumable,
+		InParty:         data.InParty,
+		Member:          data.Member,
+		Pools:           data.Pools,
+		ProvidesHealing: data.ProvidesHealing,
 	}
 }
