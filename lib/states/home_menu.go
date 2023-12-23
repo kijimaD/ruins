@@ -83,8 +83,8 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 
 		names = append(names, fmt.Sprintf("%-4s Lv.%d", name.Name, pools.Level))
-		hps = append(hps, fmt.Sprintf("HP: %3d / %3d", pools.HP.Current, pools.HP.Max))
-		sps = append(sps, fmt.Sprintf("SP: %3d / %3d", pools.SP.Current, pools.SP.Max))
+		hps = append(hps, fmt.Sprintf("HP %3d / %3d", pools.HP.Current, pools.HP.Max))
+		sps = append(sps, fmt.Sprintf("SP %3d / %3d", pools.SP.Current, pools.SP.Max))
 	}))
 
 	world.Manager.Join(
