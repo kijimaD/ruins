@@ -27,6 +27,7 @@ type Item struct {
 	Description     string
 	Consumable      bool
 	ProvidesHealing int
+	InflictsDamage  int
 }
 
 type Member struct {
@@ -75,6 +76,9 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	}
 	if item.ProvidesHealing != 0 {
 		cl.ProvidesHealing = &gc.ProvidesHealing{Amount: item.ProvidesHealing}
+	}
+	if item.InflictsDamage != 0 {
+		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
 
 	return cl

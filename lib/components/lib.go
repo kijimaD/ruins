@@ -16,6 +16,7 @@ type Components struct {
 	Member          *ecs.NullComponent
 	Pools           *ecs.SliceComponent
 	ProvidesHealing *ecs.SliceComponent
+	InflictsDamage  *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -73,5 +74,9 @@ type Pools struct {
 }
 
 type ProvidesHealing struct {
+	Amount int
+}
+
+type InflictsDamage struct {
 	Amount int
 }

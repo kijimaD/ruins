@@ -25,6 +25,7 @@ type GameComponentList struct {
 	Member          *gc.Member
 	Pools           *gc.Pools
 	ProvidesHealing *gc.ProvidesHealing
+	InflictsDamage  *gc.InflictsDamage
 }
 
 type Entity struct {
@@ -82,5 +83,6 @@ func processComponentsListData(world w.World, data GameComponentList) GameCompon
 		Member:          data.Member,
 		Pools:           data.Pools,
 		ProvidesHealing: data.ProvidesHealing,
+		InflictsDamage:  data.InflictsDamage,
 	}
 }

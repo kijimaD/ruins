@@ -8,6 +8,7 @@ ProvidesHealing = 20
 Name = "劇薬"
 Description = "ダメージを与える"
 Consumable = true
+InflictsDamage = 50
 
 [[item]]
 Name = "手榴弾"

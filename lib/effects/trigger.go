@@ -22,4 +22,9 @@ func EventTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w
 	if ok {
 		AddEffect(creator, Healing{Amount: healing.Amount}, targets)
 	}
+
+	damage, ok := gameComponents.InflictsDamage.Get(item).(*gc.InflictsDamage)
+	if ok {
+		AddEffect(creator, Damage{Amount: damage.Amount}, targets)
+	}
 }
