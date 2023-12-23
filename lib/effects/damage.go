@@ -14,3 +14,12 @@ func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
 		pools.HP.Current -= v.Amount
 	}
 }
+
+func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	pools := gameComponents.Pools.Get(target).(*gc.Pools)
+	v, ok := healing.EffectType.(Healing)
+	if ok {
+		pools.HP.Current += v.Amount
+	}
+}

@@ -17,12 +17,6 @@ type EffectSpawner struct {
 	Targets    Targets
 }
 
-type Damage struct {
-	Amount int
-}
-
-func (d Damage) isEffectType() {}
-
 func AddEffect(creator *ecs.Entity, effectType EffectType, targets Targets) {
 	EffectQueue = append(EffectQueue, EffectSpawner{
 		Creator:    creator,
@@ -52,6 +46,11 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 		if ok {
 			AffectEntity(world, es, v.Target)
 		}
+	case Healing:
+		v, ok := es.Targets.(Single)
+		if ok {
+			AffectEntity(world, es, v.Target)
+		}
 	}
 }
 
@@ -59,5 +58,7 @@ func AffectEntity(world w.World, es EffectSpawner, target ecs.Entity) {
 	switch es.EffectType.(type) {
 	case Damage:
 		InflictDamage(world, es, target)
+	case Healing:
+		HealDamage(world, es, target)
 	}
 }

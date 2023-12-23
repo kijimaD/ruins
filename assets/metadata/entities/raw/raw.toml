@@ -5,12 +5,17 @@ consumable = true
 
 [[item]]
 name = "回復薬"
-description = "仲間の体力を半分程度回復する"
+description = "体力を半分程度回復する"
+consumable = true
+
+[[item]]
+name = "劇薬"
+description = "ダメージを与える"
 consumable = true
 
 [[item]]
 name = "手榴弾"
-description = "敵全体にダメージを与える"
+description = "全体にダメージを与える"
 consumable = true
 
 [[member]]

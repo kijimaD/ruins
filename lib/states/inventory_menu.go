@@ -111,8 +111,15 @@ func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition 
 	switch st.selection {
 	// アイテムを選択できるようにする
 	case 0:
+		// 回復薬
 		// TODO: 仮で先頭の仲間固定にしている。ターゲットを選べるようにする
-		effects.AddEffect(nil, effects.Damage{Amount: 10}, effects.Single{Target: members[0]})
+		effects.AddEffect(nil, effects.Healing{Amount: 10}, effects.Single{Target: members[0]})
+
+		return states.Transition{Type: states.TransNone}
+	case 1:
+		// 劇薬
+		// TODO: 仮で先頭の仲間固定にしている。ターゲットを選べるようにする
+		effects.AddEffect(nil, effects.Damage{Amount: 30}, effects.Single{Target: members[0]})
 
 		return states.Transition{Type: states.TransNone}
 	}
