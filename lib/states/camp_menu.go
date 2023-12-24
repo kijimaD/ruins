@@ -53,6 +53,8 @@ func (st *CampMenuState) Update(world w.World) states.Transition {
 	return updateMenu(st, world)
 }
 
+func (st *CampMenuState) Draw(world w.World, screen *ebiten.Image) {}
+
 // Menu Interface ================
 
 func (st *CampMenuState) getSelection() int {

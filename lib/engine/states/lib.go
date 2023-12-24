@@ -48,6 +48,8 @@ type State interface {
 	OnResume(world w.World)
 	// Executed on every frame when the state is active
 	Update(world w.World) Transition
+	// 描画
+	Draw(world w.World, screen *ebiten.Image)
 }
 
 // StateMachine contains a stack of states.
@@ -97,6 +99,7 @@ func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image) {
 	// Run drawing systems
 	s.RenderSpriteSystem(world, screen)
 	u.RenderUISystem(world, screen)
+	sm.states[len(sm.states)-1].Draw(world, screen)
 }
 
 // Remove the active state and resume the next state

@@ -40,6 +40,8 @@ func (st *DebugMenuState) Update(world w.World) states.Transition {
 	return updateMenu(st, world)
 }
 
+func (st *DebugMenuState) Draw(world w.World, screen *ebiten.Image) {}
+
 // Menu Interface ================
 
 func (st *DebugMenuState) getSelection() int {

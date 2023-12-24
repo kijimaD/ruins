@@ -125,6 +125,8 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 	return updateMenu(st, world)
 }
 
+func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {}
+
 // Menu Interface ================
 
 func (st *HomeMenuState) getSelection() int {
