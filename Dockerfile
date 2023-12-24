@@ -2,6 +2,7 @@
 # builder #
 ###########
 
+# なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
 FROM golang:1.20-buster AS base
 RUN apt update \
     && apt install -y --no-install-recommends \
