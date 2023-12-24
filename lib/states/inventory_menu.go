@@ -12,6 +12,7 @@ import (
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	"github.com/kijimaD/sokotwo/lib/resources"
+	"github.com/kijimaD/sokotwo/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -74,7 +75,7 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 		switch text.ID {
 		case "description":
-			if len(descriptions) != 0 {
+			if len(descriptions) != 0 && st.selection < len(descriptions) {
 				text.Text = descriptions[st.selection]
 			}
 		case "item_list":
@@ -119,22 +120,15 @@ func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition 
 		items = append(items, entity)
 	}))
 
-	switch st.selection {
-	// アイテムを選択できるようにする
-	case 0:
-		// 回復薬
-		// TODO: WantToUseItemを組み込んだEntityを生成する
-		// TODO: 仮で先頭の仲間固定にしている。ターゲットを選べるようにする
-		effects.ItemTrigger(nil, items[0], effects.Single{members[0]}, world)
-
-		return states.Transition{Type: states.TransNone}
-	case 1:
-		// 劇薬
-		// TODO: 仮で先頭の仲間固定にしている。ターゲットを選べるようにする
-		effects.ItemTrigger(nil, items[1], effects.Single{members[0]}, world)
-
-		return states.Transition{Type: states.TransNone}
+	if st.selection < len(items) {
+		effects.ItemTrigger(nil, items[st.selection], effects.Single{members[0]}, world)
 	}
+
+	// 最後のアイテムを使ったときに、何もない空間にカーソルが残るのを防ぐ
+	if st.selection+1 == len(items) {
+		st.selection = mathutil.Max(st.selection-1, 0)
+	}
+
 	return states.Transition{Type: states.TransNone}
 }
 
