@@ -278,13 +278,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				widget.WindowOpts.MinSize(240, 200),
 				widget.WindowOpts.MaxSize(240, 400),
 			)
-
-			x, y := window.Contents.PreferredSize()
+			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{200, 50})
+			r = r.Add(image.Point{x + 20, y + 20})
 			window.SetLocation(r)
 			ui.AddWindow(window)
-			st.clickedItem = entry.entity
 		}),
 	)
 
