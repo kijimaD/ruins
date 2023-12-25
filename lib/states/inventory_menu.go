@@ -124,22 +124,34 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Left:  25,
-				Right: 25,
-			}),
+			widget.RowLayoutOpts.Padding(widget.NewInsetsSimple(20)),
+			widget.RowLayoutOpts.Spacing(20),
 		)),
 	)
 
-	title := widget.NewText(
-		widget.TextOpts.Text("インベントリ", face, color.White),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
-	rootContainer.AddChild(title)
+	{
+		titleContainer := widget.NewContainer(
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff})),
+
+			// the container will use an anchor layout to layout its single child widget
+			widget.ContainerOpts.Layout(widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Padding(widget.NewInsetsSimple(20)),
+				widget.RowLayoutOpts.Spacing(20),
+			)),
+		)
+		titleContainer.AddChild(
+			widget.NewText(
+				widget.TextOpts.Text("インベントリ", face, color.White),
+				widget.TextOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Position: widget.RowLayoutPositionCenter,
+					}),
+				),
+			),
+		)
+		rootContainer.AddChild(titleContainer)
+	}
 
 	entries := make([]any, 0, 10)
 	for _, itemEntity := range items {
@@ -156,11 +168,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	list := widget.NewList(
 		widget.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(150, 300),
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionEnd,
-				StretchVertical:    true,
+			widget.WidgetOpts.MinSize(300, 0),
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position:  widget.RowLayoutPositionCenter,
+				MaxWidth:  300,
+				MaxHeight: 400,
 			}),
 		)),
 		widget.ListOpts.Entries(entries),
@@ -177,13 +189,13 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
 			}, buttonImage),
 			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2)),
+			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4)),
 		),
 		widget.ListOpts.HideHorizontalSlider(),
 		widget.ListOpts.EntryFontFace(face),
 		widget.ListOpts.EntryColor(&widget.ListEntryColor{
-			Selected:                   color.NRGBA{0, 255, 0, 255},
-			Unselected:                 color.NRGBA{254, 255, 255, 255},
+			Selected:                   color.NRGBA{255, 255, 255, 255},
+			Unselected:                 color.NRGBA{255, 255, 255, 255},
 			SelectedBackground:         color.NRGBA{R: 130, G: 130, B: 200, A: 255},
 			SelectedFocusedBackground:  color.NRGBA{R: 130, G: 130, B: 170, A: 255},
 			FocusedBackground:          color.NRGBA{R: 170, G: 170, B: 180, A: 255},
@@ -200,7 +212,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			entry := args.Entry.(entryStruct)
 
 			windowContainer := widget.NewContainer(
-				widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255})),
+				widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{125, 125, 125, 255})),
 				widget.ContainerOpts.Layout(
 					widget.NewGridLayout(
 						widget.GridLayoutOpts.Columns(1),

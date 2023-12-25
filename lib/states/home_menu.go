@@ -44,7 +44,6 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "回復薬")
-	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "劇薬")
 	spawner.SpawnItem(world, "劇薬")
 	spawner.SpawnItem(world, "劇薬")
