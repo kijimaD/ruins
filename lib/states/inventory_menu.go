@@ -244,6 +244,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
 					Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
 				}),
+				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+					world.Manager.DeleteEntity(entry.entity)
+					st.ui = st.initUI(world)
+				}),
 			))
 
 			itemDesc := widget.NewText(
@@ -295,9 +299,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 func loadButtonImage() (*widget.ButtonImage, error) {
 	idle := e_image.NewNineSliceColor(color.NRGBA{R: 170, G: 170, B: 180, A: 255})
-
 	hover := e_image.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
-
 	pressed := e_image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
 
 	return &widget.ButtonImage{
