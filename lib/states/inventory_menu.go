@@ -126,7 +126,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.Layout(widget.NewGridLayout(
 			widget.GridLayoutOpts.Columns(2),
 			widget.GridLayoutOpts.Spacing(2, 0),
-			widget.GridLayoutOpts.Stretch([]bool{false, false, false}, []bool{true, true, true}),
+			widget.GridLayoutOpts.Stretch([]bool{true, false}, []bool{true, false}),
 		)),
 	)
 
