@@ -17,6 +17,7 @@ import (
 	er "github.com/kijimaD/sokotwo/lib/engine/resources"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	"github.com/kijimaD/sokotwo/lib/eui"
 	"github.com/kijimaD/sokotwo/lib/resources"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"golang.org/x/image/font"
@@ -100,7 +101,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	ui := ebitenui.UI{}
 	buttonImage, _ := loadButtonImage()
 	face, _ := loadFont((*world.Resources.Fonts)["kappa"])
-	titleFace := face
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	var members []ecs.Entity
@@ -109,17 +109,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		gameComponents.InParty,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		members = append(members, entity)
-	}))
-
-	var items []ecs.Entity
-	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.Name,
-		gameComponents.Description,
-		gameComponents.InBackpack,
-		gameComponents.Consumable,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
 	}))
 
 	rootContainer := widget.NewContainer(
@@ -139,10 +128,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 	rootContainer.AddChild(title)
-
-	empty := widget.NewContainer()
-	rootContainer.AddChild(empty)
-	rootContainer.AddChild(empty)
+	rootContainer.AddChild(eui.EmptyContainer())
+	rootContainer.AddChild(eui.EmptyContainer())
 
 	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
 		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
@@ -151,12 +138,21 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	itemDesc := widget.NewText(
 		widget.TextOpts.Text("", face, color.White),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+			Stretch: true,
+		})),
 	)
+
+	var items []ecs.Entity
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.Name,
+		gameComponents.Description,
+		gameComponents.InBackpack,
+		gameComponents.Consumable,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
 
 	for _, entity := range items {
 		entity := entity
@@ -206,7 +202,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		)
 		titleContainer.AddChild(widget.NewText(
-			widget.TextOpts.Text("アクション", titleFace, color.NRGBA{254, 255, 255, 255}),
+			widget.TextOpts.Text("アクション", face, color.NRGBA{254, 255, 255, 255}),
 			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
