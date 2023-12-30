@@ -3,6 +3,7 @@ package states
 import (
 	"image"
 	"image/color"
+	"math"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -125,50 +126,27 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.Layout(widget.NewGridLayout(
 			widget.GridLayoutOpts.Columns(2),
 			widget.GridLayoutOpts.Spacing(2, 0),
+			widget.GridLayoutOpts.Stretch([]bool{false, false, false}, []bool{true, true, true}),
 		)),
 	)
 
-	{
-		titleContainer := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff})),
-
-			// the container will use an anchor layout to layout its single child widget
-			widget.ContainerOpts.Layout(widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Padding(widget.NewInsetsSimple(20)),
-				widget.RowLayoutOpts.Spacing(20),
-			)),
-		)
-		titleContainer.AddChild(
-			widget.NewText(
-				widget.TextOpts.Text("インベントリ", face, color.White),
-				widget.TextOpts.WidgetOpts(
-					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-						Position: widget.RowLayoutPositionCenter,
-					}),
-				),
-			),
-		)
-		rootContainer.AddChild(titleContainer)
-	}
-
-	title := widget.NewText(
-		widget.TextOpts.Text("インベントリ", face, color.White),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
-	rootContainer.AddChild(title)
+	// title := widget.NewText(
+	// 	widget.TextOpts.Text("インベントリ", face, color.White),
+	// 	widget.TextOpts.WidgetOpts(
+	// 		widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+	// 			Position: widget.RowLayoutPositionCenter,
+	// 		}),
+	// 	),
+	// )
+	// rootContainer.AddChild(title)
 
 	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
 		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 		widget.RowLayoutOpts.Spacing(20),
 	)))
 
-	for _, itemEntity := range items {
-		entity := itemEntity
+	for _, entity := range items {
+		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		windowContainer := widget.NewContainer(
@@ -277,6 +255,46 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	rootContainer.AddChild(scrollContainer)
 
+	//Create a function to return the page size used by the slider
+	pageSizeFunc := func() int {
+		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
+	}
+	//Create a vertical Slider bar to control the ScrollableContainer
+	vSlider := widget.NewSlider(
+		widget.SliderOpts.Direction(widget.DirectionVertical),
+		widget.SliderOpts.MinMax(0, 1000),
+		widget.SliderOpts.PageSizeFunc(pageSizeFunc),
+		//On change update scroll location based on the Slider's value
+		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
+			scrollContainer.ScrollTop = float64(args.Slider.Current) / 1000
+		}),
+		widget.SliderOpts.Images(
+			// Set the track images
+			&widget.SliderTrackImage{
+				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+			},
+			// Set the handle images
+			&widget.ButtonImage{
+				Idle:    e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
+				Hover:   e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
+				Pressed: e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
+			},
+		),
+	)
+	//Set the slider's position if the scrollContainer is scrolled by other means than the slider
+	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
+		a := args.(*widget.WidgetScrolledEventArgs)
+		p := pageSizeFunc() / 3
+		if p < 1 {
+			p = 1
+		}
+		vSlider.Current -= int(math.Round(a.Y * float64(p)))
+	})
+
+	//Add the slider to the second slot in the root container
+	rootContainer.AddChild(vSlider)
+
 	var description string
 	world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
 		switch {
@@ -297,6 +315,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 	rootContainer.AddChild(itemDesc)
+
+	// construct the UI
+	ui = ebitenui.UI{
+		Container: rootContainer,
+	}
 
 	ui.Container = rootContainer
 
