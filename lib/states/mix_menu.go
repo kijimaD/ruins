@@ -39,6 +39,8 @@ func (st *MixMenuState) Update(world w.World) states.Transition {
 	return updateMenu(st, world)
 }
 
+func (st *MixMenuState) Draw(world w.World, screen *ebiten.Image) {}
+
 // Menu Interface ================
 
 func (st *MixMenuState) getSelection() int {

@@ -55,6 +55,8 @@ func (st *DungeonSelectState) Update(world w.World) states.Transition {
 	return updateMenu(st, world)
 }
 
+func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {}
+
 // Menu Interface ================
 
 func (st *DungeonSelectState) getSelection() int {

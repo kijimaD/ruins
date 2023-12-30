@@ -47,3 +47,5 @@ func (st *FieldState) Update(world w.World) states.Transition {
 
 	return states.Transition{}
 }
+
+func (st *FieldState) Draw(world w.World, screen *ebiten.Image) {}

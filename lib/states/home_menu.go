@@ -38,7 +38,19 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用
 	// メニューを開くたびに追加されるので微妙...
 	spawner.SpawnItem(world, "回復薬")
+	spawner.SpawnItem(world, "回復薬")
+	spawner.SpawnItem(world, "回復薬")
+	spawner.SpawnItem(world, "回復薬")
+	spawner.SpawnItem(world, "回復薬")
+	spawner.SpawnItem(world, "回復薬")
+	spawner.SpawnItem(world, "回復薬")
 	spawner.SpawnItem(world, "劇薬")
+	spawner.SpawnItem(world, "劇薬")
+	spawner.SpawnItem(world, "劇薬")
+	spawner.SpawnItem(world, "劇薬")
+	spawner.SpawnItem(world, "手榴弾")
+	spawner.SpawnItem(world, "手榴弾")
+	spawner.SpawnItem(world, "手榴弾")
 	spawner.SpawnItem(world, "手榴弾")
 	spawner.SpawnMember(world, "椿", true)
 	spawner.SpawnMember(world, "白瀬", true)
@@ -124,6 +136,8 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 
 	return updateMenu(st, world)
 }
+
+func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {}
 
 // Menu Interface ================
 

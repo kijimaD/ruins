@@ -84,3 +84,5 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	}
 	return states.Transition{}
 }
+
+func (st *IntroState) Draw(world w.World, screen *ebiten.Image) {}
