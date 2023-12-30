@@ -145,6 +145,15 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.RowLayoutOpts.Spacing(20),
 	)))
 
+	itemDesc := widget.NewText(
+		widget.TextOpts.Text("", face, color.White),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
+
 	for _, entity := range items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -236,14 +245,24 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		button.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.clickedItem != entity {
 				st.clickedItem = entity
-				st.ui = st.initUI(world)
+
+				var description string
+				world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+					switch {
+					case entity.HasComponent(gameComponents.Description):
+						if entity == st.clickedItem {
+							c := gameComponents.Description.Get(entity).(*gc.Description)
+							description = c.Description
+						}
+					}
+				}))
+				itemDesc.Label = description
 			}
 		})
 
 		content.AddChild(button)
 	}
 
-	// 長さを短くしたい
 	scrollContainer := widget.NewScrollContainer(
 		widget.ScrollContainerOpts.Content(content),
 		widget.ScrollContainerOpts.StretchContentWidth(),
@@ -252,14 +271,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			Mask: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
 		}),
 	)
-
 	rootContainer.AddChild(scrollContainer)
 
 	//Create a function to return the page size used by the slider
 	pageSizeFunc := func() int {
 		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
 	}
-	//Create a vertical Slider bar to control the ScrollableContainer
 	vSlider := widget.NewSlider(
 		widget.SliderOpts.Direction(widget.DirectionVertical),
 		widget.SliderOpts.MinMax(0, 1000),
@@ -282,7 +299,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			},
 		),
 	)
-	//Set the slider's position if the scrollContainer is scrolled by other means than the slider
 	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
 		a := args.(*widget.WidgetScrolledEventArgs)
 		p := pageSizeFunc() / 3
@@ -291,32 +307,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		}
 		vSlider.Current -= int(math.Round(a.Y * float64(p)))
 	})
-
-	//Add the slider to the second slot in the root container
 	rootContainer.AddChild(vSlider)
 
-	var description string
-	world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-		switch {
-		case entity.HasComponent(gameComponents.Description):
-			if entity == st.clickedItem {
-				c := gameComponents.Description.Get(entity).(*gc.Description)
-				description = c.Description
-			}
-		}
-	}))
-
-	itemDesc := widget.NewText(
-		widget.TextOpts.Text(description, face, color.White),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
 	rootContainer.AddChild(itemDesc)
 
-	// construct the UI
 	ui = ebitenui.UI{
 		Container: rootContainer,
 	}
