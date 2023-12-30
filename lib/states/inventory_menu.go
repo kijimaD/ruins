@@ -232,9 +232,9 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				Bottom: 5,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				x, y := window.Contents.PreferredSize()
+				x, y := ebiten.CursorPosition()
 				r := image.Rect(0, 0, x, y)
-				r = r.Add(image.Point{100, 50})
+				r = r.Add(image.Point{x + 20, y + 20})
 				window.SetLocation(r)
 				ui.AddWindow(window)
 
