@@ -122,10 +122,9 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	}))
 
 	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.NewInsetsSimple(20)),
-			widget.RowLayoutOpts.Spacing(20),
+		widget.ContainerOpts.Layout(widget.NewGridLayout(
+			widget.GridLayoutOpts.Columns(2),
+			widget.GridLayoutOpts.Spacing(2, 0),
 		)),
 	)
 
@@ -153,144 +152,151 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(titleContainer)
 	}
 
-	entries := make([]any, 0, 10)
-	for _, itemEntity := range items {
-		name := gameComponents.Name.Get(itemEntity).(*gc.Name)
-		desc := gameComponents.Description.Get(itemEntity).(*gc.Description)
+	title := widget.NewText(
+		widget.TextOpts.Text("インベントリ", face, color.White),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
+	rootContainer.AddChild(title)
 
-		ds := entryStruct{
-			entity:      itemEntity,
-			name:        name.Name,
-			description: desc.Description,
-		}
-		entries = append(entries, ds)
+	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
+		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+		widget.RowLayoutOpts.Spacing(20),
+	)))
+
+	for _, itemEntity := range items {
+		entity := itemEntity
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+
+		windowContainer := widget.NewContainer(
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255})),
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					widget.GridLayoutOpts.Columns(1),
+					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{false, false, false}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    20,
+						Bottom: 20,
+						Left:   10,
+						Right:  10,
+					}),
+					widget.GridLayoutOpts.Spacing(0, 15),
+				),
+			),
+		)
+
+		windowContainer.AddChild(widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
+				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+			}),
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
+				st.ui = st.initUI(world)
+			}),
+		))
+
+		windowContainer.AddChild(widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
+				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+			}),
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				world.Manager.DeleteEntity(entity)
+				st.ui = st.initUI(world)
+			}),
+		))
+
+		titleContainer := widget.NewContainer(
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{150, 150, 150, 255})),
+			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		)
+		titleContainer.AddChild(widget.NewText(
+			widget.TextOpts.Text("アクション", titleFace, color.NRGBA{254, 255, 255, 255}),
+			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+			})),
+		))
+
+		window := widget.NewWindow(
+			widget.WindowOpts.Contents(windowContainer),
+			widget.WindowOpts.TitleBar(titleContainer, 25),
+			widget.WindowOpts.Modal(),
+			widget.WindowOpts.CloseMode(widget.CLICK_OUT),
+			widget.WindowOpts.Draggable(),
+			widget.WindowOpts.Resizeable(),
+			widget.WindowOpts.MinSize(200, 200),
+			widget.WindowOpts.MaxSize(300, 400),
+		)
+
+		button := widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text(name.Name, face, &widget.ButtonTextColor{
+				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+			}),
+			widget.ButtonOpts.TextPadding(widget.Insets{
+				Left:   30,
+				Right:  30,
+				Top:    5,
+				Bottom: 5,
+			}),
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				x, y := window.Contents.PreferredSize()
+				r := image.Rect(0, 0, x, y)
+				r = r.Add(image.Point{100, 50})
+				window.SetLocation(r)
+				ui.AddWindow(window)
+
+				st.clickedItem = entity
+			}),
+		)
+
+		button.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			if st.clickedItem != entity {
+				st.clickedItem = entity
+				st.ui = st.initUI(world)
+			}
+		})
+
+		content.AddChild(button)
 	}
 
-	list := widget.NewList(
-		widget.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(300, 0),
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position:  widget.RowLayoutPositionCenter,
-				MaxWidth:  300,
-				MaxHeight: 400,
-			}),
-		)),
-		widget.ListOpts.Entries(entries),
-		widget.ListOpts.ScrollContainerOpts(
-			widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-				Idle:     e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Disabled: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Mask:     e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			}),
-		),
-		widget.ListOpts.SliderOpts(
-			widget.SliderOpts.Images(&widget.SliderTrackImage{
-				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			}, buttonImage),
-			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4)),
-		),
-		widget.ListOpts.HideHorizontalSlider(),
-		widget.ListOpts.EntryFontFace(face),
-		widget.ListOpts.EntryColor(&widget.ListEntryColor{
-			Selected:                   color.NRGBA{255, 255, 255, 255},
-			Unselected:                 color.NRGBA{255, 255, 255, 255},
-			SelectedBackground:         color.NRGBA{R: 130, G: 130, B: 200, A: 255},
-			SelectedFocusedBackground:  color.NRGBA{R: 130, G: 130, B: 170, A: 255},
-			FocusedBackground:          color.NRGBA{R: 170, G: 170, B: 180, A: 255},
-			DisabledUnselected:         color.NRGBA{100, 100, 100, 255},
-			DisabledSelected:           color.NRGBA{100, 100, 100, 255},
-			DisabledSelectedBackground: color.NRGBA{100, 100, 100, 255},
-		}),
-		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
-			return e.(entryStruct).name
-		}),
-		widget.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
-		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {
-			entry := args.Entry.(entryStruct)
-
-			windowContainer := widget.NewContainer(
-				widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{125, 125, 125, 255})),
-				widget.ContainerOpts.Layout(
-					widget.NewGridLayout(
-						widget.GridLayoutOpts.Columns(1),
-						widget.GridLayoutOpts.Stretch([]bool{true}, []bool{false, false, false}),
-						widget.GridLayoutOpts.Padding(widget.Insets{
-							Top:    20,
-							Bottom: 20,
-							Left:   10,
-							Right:  10,
-						}),
-						widget.GridLayoutOpts.Spacing(0, 15),
-					),
-				),
-			)
-
-			windowContainer.AddChild(widget.NewButton(
-				widget.ButtonOpts.Image(buttonImage),
-				widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
-					Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
-				}),
-				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-					effects.ItemTrigger(nil, entry.entity, effects.Single{members[0]}, world)
-					st.ui = st.initUI(world)
-				}),
-			))
-
-			windowContainer.AddChild(widget.NewButton(
-				widget.ButtonOpts.Image(buttonImage),
-				widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
-					Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
-				}),
-				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-					world.Manager.DeleteEntity(entry.entity)
-					st.ui = st.initUI(world)
-				}),
-			))
-
-			itemDesc := widget.NewText(
-				widget.TextOpts.Text(entry.description, face, color.White),
-				widget.TextOpts.WidgetOpts(
-					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-						Position: widget.RowLayoutPositionCenter,
-					}),
-				),
-			)
-			windowContainer.AddChild(itemDesc)
-
-			titleContainer := widget.NewContainer(
-				widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{150, 150, 150, 255})),
-				widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-			)
-			titleContainer.AddChild(widget.NewText(
-				widget.TextOpts.Text("アクション", titleFace, color.NRGBA{254, 255, 255, 255}),
-				widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-					HorizontalPosition: widget.AnchorLayoutPositionCenter,
-					VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				})),
-			))
-
-			window := widget.NewWindow(
-				widget.WindowOpts.Contents(windowContainer),
-				widget.WindowOpts.TitleBar(titleContainer, 25),
-				widget.WindowOpts.Modal(),
-				widget.WindowOpts.CloseMode(widget.CLICK_OUT),
-				widget.WindowOpts.Draggable(),
-				widget.WindowOpts.Resizeable(),
-				widget.WindowOpts.MinSize(240, 200),
-				widget.WindowOpts.MaxSize(240, 400),
-			)
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			window.SetLocation(r)
-			ui.AddWindow(window)
+	// 長さを短くしたい
+	scrollContainer := widget.NewScrollContainer(
+		widget.ScrollContainerOpts.Content(content),
+		widget.ScrollContainerOpts.StretchContentWidth(),
+		widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
+			Idle: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
+			Mask: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
 		}),
 	)
 
-	rootContainer.AddChild(list)
+	rootContainer.AddChild(scrollContainer)
+
+	var description string
+	world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+		switch {
+		case entity.HasComponent(gameComponents.Description):
+			if entity == st.clickedItem {
+				c := gameComponents.Description.Get(entity).(*gc.Description)
+				description = c.Description
+			}
+		}
+	}))
+
+	itemDesc := widget.NewText(
+		widget.TextOpts.Text(description, face, color.White),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
+	rootContainer.AddChild(itemDesc)
 
 	ui.Container = rootContainer
 
