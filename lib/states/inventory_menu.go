@@ -124,21 +124,25 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewGridLayout(
-			widget.GridLayoutOpts.Columns(2),
+			widget.GridLayoutOpts.Columns(3),
 			widget.GridLayoutOpts.Spacing(2, 0),
-			widget.GridLayoutOpts.Stretch([]bool{true, false}, []bool{true, false}),
+			widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
 		)),
 	)
 
-	// title := widget.NewText(
-	// 	widget.TextOpts.Text("インベントリ", face, color.White),
-	// 	widget.TextOpts.WidgetOpts(
-	// 		widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-	// 			Position: widget.RowLayoutPositionCenter,
-	// 		}),
-	// 	),
-	// )
-	// rootContainer.AddChild(title)
+	title := widget.NewText(
+		widget.TextOpts.Text("インベントリ", face, color.White),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
+	rootContainer.AddChild(title)
+
+	empty := widget.NewContainer()
+	rootContainer.AddChild(empty)
+	rootContainer.AddChild(empty)
 
 	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
 		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
@@ -267,37 +271,35 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ScrollContainerOpts.Content(content),
 		widget.ScrollContainerOpts.StretchContentWidth(),
 		widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-			Idle: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
-			Mask: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
+			Idle: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+			Mask: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
 		}),
 	)
 	rootContainer.AddChild(scrollContainer)
 
-	//Create a function to return the page size used by the slider
 	pageSizeFunc := func() int {
 		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
 	}
+	trackPadding := widget.Insets{4, 20, 20, 4}
 	vSlider := widget.NewSlider(
 		widget.SliderOpts.Direction(widget.DirectionVertical),
 		widget.SliderOpts.MinMax(0, 1000),
 		widget.SliderOpts.PageSizeFunc(pageSizeFunc),
-		//On change update scroll location based on the Slider's value
 		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
 			scrollContainer.ScrollTop = float64(args.Slider.Current) / 1000
 		}),
 		widget.SliderOpts.Images(
-			// Set the track images
 			&widget.SliderTrackImage{
-				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 0}),
+				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 0}),
 			},
-			// Set the handle images
 			&widget.ButtonImage{
 				Idle:    e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
 				Hover:   e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
 				Pressed: e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
 			},
 		),
+		widget.SliderOpts.TrackPadding(trackPadding),
 	)
 	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
 		a := args.(*widget.WidgetScrolledEventArgs)
@@ -308,6 +310,16 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		vSlider.Current -= int(math.Round(a.Y * float64(p)))
 	})
 	rootContainer.AddChild(vSlider)
+
+	itemSpec := widget.NewText(
+		widget.TextOpts.Text("性能メニュー", face, color.White),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
+	rootContainer.AddChild(itemSpec)
 
 	rootContainer.AddChild(itemDesc)
 
