@@ -136,12 +136,25 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.RowLayoutOpts.Spacing(20),
 	)))
 
+	itemDescContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    20,
+				Bottom: 20,
+			}),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(0, 40),
+		),
+	)
+
 	itemDesc := widget.NewText(
 		widget.TextOpts.Text("", face, color.White),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 			Stretch: true,
 		})),
 	)
+	itemDescContainer.AddChild(itemDesc)
 
 	var items []ecs.Entity
 	world.Manager.Join(
@@ -308,7 +321,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer.AddChild(vSlider)
 
 	itemSpec := widget.NewText(
-		widget.TextOpts.Text("性能メニュー", face, color.White),
+		widget.TextOpts.Text("性能", face, color.White),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position: widget.RowLayoutPositionCenter,
@@ -317,7 +330,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 	rootContainer.AddChild(itemSpec)
 
-	rootContainer.AddChild(itemDesc)
+	rootContainer.AddChild(itemDescContainer)
 
 	ui = ebitenui.UI{
 		Container: rootContainer,
