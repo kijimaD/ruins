@@ -257,19 +257,16 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		button.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.clickedItem != entity {
 				st.clickedItem = entity
-
-				var description string
-				world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-					switch {
-					case entity.HasComponent(gameComponents.Description):
-						if entity == st.clickedItem {
-							c := gameComponents.Description.Get(entity).(*gc.Description)
-							description = c.Description
-						}
-					}
-				}))
-				itemDesc.Label = description
 			}
+
+			var description string
+			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+				if entity == st.clickedItem && entity.HasComponent(gameComponents.Description) {
+					c := gameComponents.Description.Get(entity).(*gc.Description)
+					description = c.Description
+				}
+			}))
+			itemDesc.Label = description
 		})
 
 		content.AddChild(button)
