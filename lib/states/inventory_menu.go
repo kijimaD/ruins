@@ -18,6 +18,7 @@ import (
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	"github.com/kijimaD/sokotwo/lib/eui"
 	"github.com/kijimaD/sokotwo/lib/resources"
+	"github.com/kijimaD/sokotwo/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"golang.org/x/image/font"
 )
@@ -171,7 +172,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		windowContainer := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255})),
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.PrimaryColor)),
 			widget.ContainerOpts.Layout(
 				widget.NewGridLayout(
 					widget.GridLayoutOpts.Columns(1),
@@ -190,7 +191,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
-				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+				Idle: styles.ButtonIdleColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
@@ -201,7 +202,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
-				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+				Idle: styles.ButtonIdleColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				world.Manager.DeleteEntity(entity)
@@ -235,7 +236,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		button := widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text(name.Name, face, &widget.ButtonTextColor{
-				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+				Idle: styles.ButtonIdleColor,
 			}),
 			widget.ButtonOpts.TextPadding(widget.Insets{
 				Left:   30,
@@ -298,12 +299,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 }
 
 func loadButtonImage() (*widget.ButtonImage, error) {
-	idle := e_image.NewNineSliceColor(color.NRGBA{R: 170, G: 170, B: 180, A: 255})
 	hover := e_image.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
 	pressed := e_image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
 
 	return &widget.ButtonImage{
-		Idle:    idle,
+		Idle:    styles.ButtonIdleColor,
 		Hover:   hover,
 		Pressed: pressed,
 	}, nil
