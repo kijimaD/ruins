@@ -271,6 +271,16 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				window.Close()
 			}),
 		))
+
+		windowContainer.AddChild(widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text("閉じる", face, &widget.ButtonTextColor{
+				Idle: styles.TextColor,
+			}),
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				window.Close()
+			}),
+		))
 	}
 
 	sc, v := eui.NewScrollContainer(content)
