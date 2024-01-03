@@ -1,4 +1,4 @@
-name: Releaser
+name: Semantic Release
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: yarn --frozen-lockfile
-      # - name: Releaser
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   run: yarn semantic-release
+      - name: Releaser
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: yarn semantic-release
