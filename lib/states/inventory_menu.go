@@ -2,8 +2,6 @@ package states
 
 import (
 	"image"
-	"image/color"
-	"math"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -17,7 +15,9 @@ import (
 	er "github.com/kijimaD/sokotwo/lib/engine/resources"
 	"github.com/kijimaD/sokotwo/lib/engine/states"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	"github.com/kijimaD/sokotwo/lib/eui"
 	"github.com/kijimaD/sokotwo/lib/resources"
+	"github.com/kijimaD/sokotwo/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"golang.org/x/image/font"
 )
@@ -100,7 +100,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	ui := ebitenui.UI{}
 	buttonImage, _ := loadButtonImage()
 	face, _ := loadFont((*world.Resources.Fonts)["kappa"])
-	titleFace := face
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	var members []ecs.Entity
@@ -110,6 +109,51 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		members = append(members, entity)
 	}))
+
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewGridLayout(
+			widget.GridLayoutOpts.Columns(3),
+			widget.GridLayoutOpts.Spacing(2, 0),
+			widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+		)),
+	)
+
+	title := widget.NewText(
+		widget.TextOpts.Text("インベントリ", face, styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
+	rootContainer.AddChild(title)
+	rootContainer.AddChild(eui.EmptyContainer())
+	rootContainer.AddChild(eui.EmptyContainer())
+
+	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
+		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+		widget.RowLayoutOpts.Spacing(20),
+	)))
+
+	itemDescContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    20,
+				Bottom: 20,
+			}),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(0, 40),
+		),
+	)
+
+	itemDesc := widget.NewText(
+		widget.TextOpts.Text(" ", face, styles.TextColor),
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+			Stretch: true,
+		})),
+	)
+	itemDescContainer.AddChild(itemDesc)
 
 	var items []ecs.Entity
 	world.Manager.Join(
@@ -122,44 +166,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		items = append(items, entity)
 	}))
 
-	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewGridLayout(
-			widget.GridLayoutOpts.Columns(2),
-			widget.GridLayoutOpts.Spacing(2, 0),
-			widget.GridLayoutOpts.Stretch([]bool{true, false}, []bool{true, false}),
-		)),
-	)
-
-	// title := widget.NewText(
-	// 	widget.TextOpts.Text("インベントリ", face, color.White),
-	// 	widget.TextOpts.WidgetOpts(
-	// 		widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-	// 			Position: widget.RowLayoutPositionCenter,
-	// 		}),
-	// 	),
-	// )
-	// rootContainer.AddChild(title)
-
-	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
-		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		widget.RowLayoutOpts.Spacing(20),
-	)))
-
-	itemDesc := widget.NewText(
-		widget.TextOpts.Text("", face, color.White),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
-
 	for _, entity := range items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		windowContainer := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255})),
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
 			widget.ContainerOpts.Layout(
 				widget.NewGridLayout(
 					widget.GridLayoutOpts.Columns(1),
@@ -178,7 +190,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
-				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
@@ -189,7 +201,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
-				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				world.Manager.DeleteEntity(entity)
@@ -198,11 +210,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		))
 
 		titleContainer := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{150, 150, 150, 255})),
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
 			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		)
 		titleContainer.AddChild(widget.NewText(
-			widget.TextOpts.Text("アクション", titleFace, color.NRGBA{254, 255, 255, 255}),
+			widget.TextOpts.Text("アクション", face, styles.TextColor),
 			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -223,7 +235,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		button := widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text(name.Name, face, &widget.ButtonTextColor{
-				Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.TextPadding(widget.Insets{
 				Left:   30,
@@ -245,71 +257,36 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		button.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.clickedItem != entity {
 				st.clickedItem = entity
-
-				var description string
-				world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-					switch {
-					case entity.HasComponent(gameComponents.Description):
-						if entity == st.clickedItem {
-							c := gameComponents.Description.Get(entity).(*gc.Description)
-							description = c.Description
-						}
-					}
-				}))
-				itemDesc.Label = description
 			}
+
+			var description string
+			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+				if entity == st.clickedItem && entity.HasComponent(gameComponents.Description) {
+					c := gameComponents.Description.Get(entity).(*gc.Description)
+					description = c.Description
+				}
+			}))
+			itemDesc.Label = description
 		})
 
 		content.AddChild(button)
 	}
 
-	scrollContainer := widget.NewScrollContainer(
-		widget.ScrollContainerOpts.Content(content),
-		widget.ScrollContainerOpts.StretchContentWidth(),
-		widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-			Idle: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
-			Mask: e_image.NewNineSliceColor(color.NRGBA{0x13, 0x1a, 0x22, 0xff}),
-		}),
-	)
-	rootContainer.AddChild(scrollContainer)
+	sc, v := eui.NewScrollContainer(content)
+	rootContainer.AddChild(sc)
+	rootContainer.AddChild(v)
 
-	//Create a function to return the page size used by the slider
-	pageSizeFunc := func() int {
-		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
-	}
-	vSlider := widget.NewSlider(
-		widget.SliderOpts.Direction(widget.DirectionVertical),
-		widget.SliderOpts.MinMax(0, 1000),
-		widget.SliderOpts.PageSizeFunc(pageSizeFunc),
-		//On change update scroll location based on the Slider's value
-		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
-			scrollContainer.ScrollTop = float64(args.Slider.Current) / 1000
-		}),
-		widget.SliderOpts.Images(
-			// Set the track images
-			&widget.SliderTrackImage{
-				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			},
-			// Set the handle images
-			&widget.ButtonImage{
-				Idle:    e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-				Hover:   e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-				Pressed: e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-			},
+	itemSpec := widget.NewText(
+		widget.TextOpts.Text("性能", face, styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
 		),
 	)
-	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
-		a := args.(*widget.WidgetScrolledEventArgs)
-		p := pageSizeFunc() / 3
-		if p < 1 {
-			p = 1
-		}
-		vSlider.Current -= int(math.Round(a.Y * float64(p)))
-	})
-	rootContainer.AddChild(vSlider)
+	rootContainer.AddChild(itemSpec)
 
-	rootContainer.AddChild(itemDesc)
+	rootContainer.AddChild(itemDescContainer)
 
 	ui = ebitenui.UI{
 		Container: rootContainer,
@@ -321,9 +298,9 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 }
 
 func loadButtonImage() (*widget.ButtonImage, error) {
-	idle := e_image.NewNineSliceColor(color.NRGBA{R: 170, G: 170, B: 180, A: 255})
-	hover := e_image.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
-	pressed := e_image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
+	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
+	hover := e_image.NewNineSliceColor(styles.ButtonHoverColor)
+	pressed := e_image.NewNineSliceColor(styles.ButtonPressedColor)
 
 	return &widget.ButtonImage{
 		Idle:    idle,
