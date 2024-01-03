@@ -18,10 +18,14 @@ var (
 	// サブ
 	SecondaryColor = RGB(0x9dd793)
 	// 地のテキスト
-	BaseTextColor = RGB(0x000000)
+	TextColor = RGB(0xf5f5f5)
 	// 背景
 	BackgroundColor = RGB(0x000000)
 
+	// ウィンドウ
+	WindowBodyColor   = RGB(0x808080)
+	WindowHeaderColor = RGB(0x939393)
+
 	// アイドル
-	ButtonIdleColor = RGB(0xdff4ff)
+	ButtonIdleColor = RGB(0xaaaaaa)
 )

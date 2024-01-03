@@ -120,7 +120,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	title := widget.NewText(
-		widget.TextOpts.Text("インベントリ", face, color.White),
+		widget.TextOpts.Text("インベントリ", face, styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position: widget.RowLayoutPositionCenter,
@@ -149,7 +149,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	itemDesc := widget.NewText(
-		widget.TextOpts.Text("", face, color.White),
+		widget.TextOpts.Text(" ", face, styles.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 			Stretch: true,
 		})),
@@ -172,7 +172,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		windowContainer := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.PrimaryColor)),
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
 			widget.ContainerOpts.Layout(
 				widget.NewGridLayout(
 					widget.GridLayoutOpts.Columns(1),
@@ -191,7 +191,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
-				Idle: styles.ButtonIdleColor,
+				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
@@ -202,7 +202,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
-				Idle: styles.ButtonIdleColor,
+				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				world.Manager.DeleteEntity(entity)
@@ -211,11 +211,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		))
 
 		titleContainer := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(color.NRGBA{150, 150, 150, 255})),
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
 			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		)
 		titleContainer.AddChild(widget.NewText(
-			widget.TextOpts.Text("アクション", face, color.NRGBA{254, 255, 255, 255}),
+			widget.TextOpts.Text("アクション", face, styles.TextColor),
 			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -236,7 +236,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		button := widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text(name.Name, face, &widget.ButtonTextColor{
-				Idle: styles.ButtonIdleColor,
+				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.TextPadding(widget.Insets{
 				Left:   30,
@@ -278,7 +278,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer.AddChild(v)
 
 	itemSpec := widget.NewText(
-		widget.TextOpts.Text("性能", face, color.White),
+		widget.TextOpts.Text("性能", face, styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position: widget.RowLayoutPositionCenter,
