@@ -2,7 +2,6 @@ package states
 
 import (
 	"image"
-	"image/color"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -300,8 +299,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 func loadButtonImage() (*widget.ButtonImage, error) {
 	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
-	hover := e_image.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
-	pressed := e_image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
+	hover := e_image.NewNineSliceColor(styles.ButtonHoverColor)
+	pressed := e_image.NewNineSliceColor(styles.ButtonPressedColor)
 
 	return &widget.ButtonImage{
 		Idle:    idle,

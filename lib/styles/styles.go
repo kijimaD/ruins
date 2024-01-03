@@ -26,6 +26,8 @@ var (
 	WindowBodyColor   = RGB(0x808080)
 	WindowHeaderColor = RGB(0x939393)
 
-	// アイドル
-	ButtonIdleColor = RGB(0xaaaaaa)
+	// ボタン
+	ButtonIdleColor    = RGB(0xaaaaaa)
+	ButtonHoverColor   = RGB(0x828296)
+	ButtonPressedColor = RGB(0x646478)
 )
