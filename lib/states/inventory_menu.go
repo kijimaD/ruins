@@ -187,28 +187,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			),
 		)
 
-		windowContainer.AddChild(widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
-				st.ui = st.initUI(world)
-			}),
-		))
-
-		windowContainer.AddChild(widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				world.Manager.DeleteEntity(entity)
-				st.ui = st.initUI(world)
-			}),
-		))
-
 		titleContainer := widget.NewContainer(
 			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
 			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
@@ -268,8 +246,31 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}))
 			itemDesc.Label = description
 		})
-
 		content.AddChild(button)
+
+		windowContainer.AddChild(widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
+				Idle: styles.TextColor,
+			}),
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
+				content.RemoveChild(button)
+				window.Close()
+			}),
+		))
+
+		windowContainer.AddChild(widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
+				Idle: styles.TextColor,
+			}),
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				world.Manager.DeleteEntity(entity)
+				content.RemoveChild(button)
+				window.Close()
+			}),
+		))
 	}
 
 	sc, v := eui.NewScrollContainer(content)
