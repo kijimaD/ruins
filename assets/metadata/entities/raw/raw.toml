@@ -2,7 +2,6 @@
 Name = "回復薬"
 Description = "体力を半分程度回復する"
 ProvidesHealing = 20
-TargetFaction = "ALLY"
 
 [item.consumable]
 UsableScene = "ANY"
@@ -13,7 +12,6 @@ TargetWhole = false
 Name = "回復スプレー"
 Description = "全員の体力を半分程度回復する"
 ProvidesHealing = 20
-TargetFaction = "ALLY"
 
 [item.consumable]
 UsableScene = "ANY"
@@ -24,7 +22,6 @@ TargetWhole = true
 Name = "劇薬"
 Description = "ダメージを与える"
 InflictsDamage = 50
-TargetFaction = "ENEMY"
 
 [item.consumable]
 UsableScene = "BATTLE"
@@ -35,7 +32,6 @@ TargetWhole = false
 Name = "手榴弾"
 Description = "全体にダメージを与える"
 InflictsDamage = 100
-TargetFaction = "ENEMY"
 
 [item.consumable]
 UsableScene = "BATTLE"
