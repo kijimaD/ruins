@@ -39,7 +39,16 @@ type Warp struct {
 type Item struct{}
 
 // 消耗品
-type Consumable struct{}
+type Consumable struct {
+	UsableScene UsableSceneType
+	Target      Target
+}
+
+// 対象
+type Target struct {
+	TargetFaction TargetFactionType // 対象派閥
+	TargetWhole   bool              // 全体対象
+}
 
 // 表示名
 type Name struct {

@@ -25,9 +25,15 @@ type Raws struct {
 type Item struct {
 	Name            string
 	Description     string
-	Consumable      bool
 	ProvidesHealing int
 	InflictsDamage  int
+	Consumable      *Consumable `toml:"consumable"`
+}
+
+type Consumable struct {
+	UsableScene   string
+	TargetFaction string
+	TargetWhole   bool
 }
 
 type Member struct {
@@ -71,8 +77,40 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
-	if item.Consumable {
-		cl.Consumable = &gc.Consumable{}
+
+	if item.Consumable != nil {
+		var faction gc.TargetFactionType
+		switch gc.TargetFactionType(item.Consumable.TargetFaction) {
+		case gc.TargetFactionAlly:
+			faction = gc.TargetFactionAlly
+		case gc.TargetFactionEnemy:
+			faction = gc.TargetFactionEnemy
+		case gc.TargetFactionNone:
+			faction = gc.TargetFactionNone
+		default:
+			log.Fatalf("invalid TargetFaction: %s", item.Consumable.TargetFaction)
+		}
+
+		var usableContext gc.UsableSceneType
+		switch gc.UsableSceneType(item.Consumable.UsableScene) {
+		case gc.UsableSceneAny:
+			usableContext = gc.UsableSceneAny
+		case gc.UsableSceneBattle:
+			usableContext = gc.UsableSceneBattle
+		case gc.UsableSceneField:
+			usableContext = gc.UsableSceneField
+		default:
+			log.Fatalf("invalid UsableScene: %s", item.Consumable.UsableScene)
+		}
+
+		target := gc.Target{
+			TargetFaction: faction,
+			TargetWhole:   item.Consumable.TargetWhole,
+		}
+		cl.Consumable = &gc.Consumable{
+			UsableScene: usableContext,
+			Target:      target,
+		}
 	}
 	if item.ProvidesHealing != 0 {
 		cl.ProvidesHealing = &gc.ProvidesHealing{Amount: item.ProvidesHealing}
@@ -80,7 +118,6 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	if item.InflictsDamage != 0 {
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
-
 	return cl
 }
 

@@ -1,19 +1,46 @@
 [[item]]
 Name = "回復薬"
 Description = "体力を半分程度回復する"
-Consumable = true
 ProvidesHealing = 20
+TargetFaction = "ALLY"
+
+[item.consumable]
+UsableScene = "ANY"
+TargetFaction = "ALLY"
+TargetWhole = false
+
+[[item]]
+Name = "回復スプレー"
+Description = "全員の体力を半分程度回復する"
+ProvidesHealing = 20
+TargetFaction = "ALLY"
+
+[item.consumable]
+UsableScene = "ANY"
+TargetFaction = "ALLY"
+TargetWhole = true
 
 [[item]]
 Name = "劇薬"
 Description = "ダメージを与える"
-Consumable = true
 InflictsDamage = 50
+TargetFaction = "ENEMY"
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetFaction = "ENEMY"
+TargetWhole = false
 
 [[item]]
 Name = "手榴弾"
 Description = "全体にダメージを与える"
-Consumable = true
+InflictsDamage = 100
+TargetFaction = "ENEMY"
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetFaction = "ENEMY"
+TargetWhole = true
 
 [[member]]
 Name = "椿"
