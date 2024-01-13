@@ -1,9 +1,5 @@
 package msg
 
-// こんにちは。\n -- 改行
-// 今日は晴れです。[p] -- 改ページクリック待ち
-// ところで[l] -- 行末クリック待ち
-
 type QueueState string
 
 const (
