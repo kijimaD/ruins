@@ -7,7 +7,7 @@ import (
 )
 
 func TestEval(t *testing.T) {
-	input := `こんにちは[r]世界[p]
+	input := `こんにちは[l]世界[p]
 ←無視される改行たたたたた。
 ←有効な改行`
 
@@ -24,11 +24,13 @@ func TestEval(t *testing.T) {
 			results = append(results, string(event.body))
 		case *flush:
 			results = append(results, "flush")
+		case *lineEndWait:
+			results = append(results, "lineEndWait")
 		}
 	}
 	expect := []string{
 		"こんにちは",
-		"flush",
+		"lineEndWait",
 		"世界",
 		"flush",
 		"←無視される改行たたたたた。\n←有効な改行",

@@ -11,10 +11,16 @@ func (e *Evaluator) Eval(node Node) event {
 	case *ExpressionStatement:
 		return e.Eval(node.Expression)
 	case *CmdExpression:
-		// TODO: ほかのイベントも追加する
-		m := &flush{}
-		e.Events = append(e.Events, m)
-		return m
+		var event event
+		switch node.Cmd.String() {
+		case "p":
+			event = &flush{}
+			e.Events = append(e.Events, event)
+		case "l":
+			event = &lineEndWait{}
+			e.Events = append(e.Events, event)
+		}
+		return event
 	case *TextLiteral:
 		m := &msgEmit{body: []rune(node.Value)}
 		e.Events = append(e.Events, m)

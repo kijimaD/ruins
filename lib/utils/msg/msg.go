@@ -119,3 +119,19 @@ func (e *flush) Run(q *Queue) {
 	q.Pop()
 	return
 }
+
+// ================
+
+// 行末クリック待ち
+type lineEndWait struct{}
+
+func (l *lineEndWait) PreHook() {
+	return
+}
+
+func (l *lineEndWait) Run(q *Queue) {
+	q.buf = q.buf + "\n"
+	q.deactivate()
+	q.Pop()
+	return
+}

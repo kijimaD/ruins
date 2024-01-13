@@ -50,7 +50,7 @@ jobs:
       - name: build
         run: docker build --target builder -t testimage .
       - name: test
-        run: docker run --rm testimage go test .
+        run: docker run --rm testimage go test ./... -v
 
   # lint:
   #   needs: setup
