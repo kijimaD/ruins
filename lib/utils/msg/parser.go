@@ -175,9 +175,9 @@ func (p *Parser) parseCmdExpression() Expression {
 	exp.Expression = p.parseExpression(LOWEST)
 
 	switch exp.Expression.String() {
-	case "p":
+	case CMD_FLUSH:
 		exp.Cmd = &flush{}
-	case "l":
+	case CMD_LINE_END_WAIT:
 		exp.Cmd = &lineEndWait{}
 	}
 

@@ -15,4 +15,7 @@ const (
 
 	LBRACKET = "["
 	RBRACKET = "]"
+
+	CMD_FLUSH         = "p"
+	CMD_LINE_END_WAIT = "l"
 )
