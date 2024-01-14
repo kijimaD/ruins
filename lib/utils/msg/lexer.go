@@ -1,10 +1,13 @@
 package msg
 
+import "fmt"
+
 type Lexer struct {
 	input        string
 	position     int // 現在検査中のバイトchの位置
 	readPosition int // 入力における次の位置
 	ch           byte
+	OnIdent      bool
 }
 
 func NewLexer(input string) *Lexer {
@@ -33,15 +36,23 @@ func (l *Lexer) NextToken() Token {
 	switch l.ch {
 	case '[':
 		tok = newToken(LBRACKET, l.ch)
+		l.OnIdent = true
 	case ']':
 		tok = newToken(RBRACKET, l.ch)
+		l.OnIdent = false
 	case 0:
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
-		tok.Literal = l.readText()
-		tok.Type = TEXT
-		return tok
+		if l.OnIdent {
+			tok.Literal = l.readIdentifier()
+			tok.Type = LookupIdent(tok.Literal) // 予約語
+			return tok
+		} else {
+			tok.Literal = l.readText()
+			tok.Type = TEXT
+			return tok
+		}
 	}
 
 	l.readChar()
@@ -51,6 +62,16 @@ func (l *Lexer) NextToken() Token {
 // トークンを初期化する
 func newToken(tokenType TokenType, ch byte) Token {
 	return Token{Type: tokenType, Literal: string(ch)}
+}
+
+// 予約語を読み込み
+func (l *Lexer) readIdentifier() string {
+	position := l.position
+	fmt.Println(isLetter(l.ch))
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
 }
 
 // 半角スペースを読み飛ばす
@@ -78,4 +99,9 @@ func (l *Lexer) readText() string {
 		}
 	}
 	return l.input[position:l.position]
+}
+
+// 英字か判定する
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }

@@ -2,6 +2,7 @@ package msg
 
 import (
 	"bytes"
+	"strings"
 )
 
 type Node interface {
@@ -85,3 +86,36 @@ type TextLiteral struct {
 func (sl *TextLiteral) expressionNode()      {}
 func (sl *TextLiteral) TokenLiteral() string { return sl.Token.Literal }
 func (sl *TextLiteral) String() string       { return sl.Token.Literal }
+
+type FunctionLiteral struct {
+	Token      Token
+	FuncName   Identifier
+	Parameters []*Identifier
+}
+
+func (fl *FunctionLiteral) expressionNode()      {} // fnの結果をほかの変数に代入できたりするため。代入式の一部として扱うためには、式でないといけない
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
+func (fl *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	params := []string{}
+	for _, p := range fl.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(fl.TokenLiteral())
+	out.WriteString("[")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
+type Identifier struct {
+	Token Token // token.IDENT トークン
+	Value string
+}
+
+func (i *Identifier) expressionNode()      {}
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+func (i *Identifier) String() string       { return i.Value }
