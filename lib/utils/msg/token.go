@@ -12,8 +12,9 @@ const (
 	EOF     = "EOF"
 
 	// 識別子 + リテラル。数値や変数名など、予約語ではないもの。
-	IDENT = "IDENT"
-	TEXT  = "TEXT"
+	STRING = "STRING"
+	IDENT  = "IDENT"
+	TEXT   = "TEXT"
 
 	LBRACKET = "["
 	RBRACKET = "]"

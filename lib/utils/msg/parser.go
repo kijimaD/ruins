@@ -204,10 +204,10 @@ func (p *Parser) parseFunctionLiteral() Expression {
 	ident := Identifier{Token: p.curToken, Value: p.curToken.Literal}
 	lit.FuncName = ident
 
-	// なければスルー
 	if !p.peekTokenIs(RBRACKET) {
-		lit.Parameters = p.parseFunctionParameters()
+		p.nextToken()
 	}
+	lit.Parameters = p.parseFunctionParameters()
 
 	return lit
 }
@@ -217,19 +217,25 @@ func (p *Parser) parseFunctionParameters() []*NamedParam {
 	namedParams := []*NamedParam{}
 
 	for !p.peekTokenIs(RBRACKET) {
-		p.nextToken()
 		name := Identifier{Token: p.curToken, Value: p.curToken.Literal}
 		if !p.peekTokenIs(EQUAL) {
-			log.Fatal("シンタックスエラー: 値がない")
+			log.Fatal("シンタックスエラー: EQUALがない: ", p.curToken.Literal)
 		}
 		p.nextToken()
+		if !p.peekTokenIs(STRING) {
+			log.Fatal("シンタックスエラー: STRINGがない: ", p.curToken.Literal)
+		}
 		p.nextToken()
 		param := &NamedParam{
 			Name:  name,
 			Value: p.curToken.Literal,
 		}
-
 		namedParams = append(namedParams, param)
+
+		if p.peekTokenIs(RBRACKET) {
+			break
+		}
+		p.nextToken()
 	}
 
 	return namedParams
