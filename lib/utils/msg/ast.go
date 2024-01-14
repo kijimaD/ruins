@@ -60,8 +60,9 @@ func (es *ExpressionStatement) String() string {
 }
 
 type CmdExpression struct {
-	Token Token // '['トークン
-	Cmd   Expression
+	Token      Token // '['トークン
+	Expression Expression
+	Cmd        event
 }
 
 func (ie *CmdExpression) expressionNode()      {}
@@ -70,7 +71,7 @@ func (ie *CmdExpression) String() string {
 	var out bytes.Buffer
 
 	out.WriteString("[")
-	out.WriteString(ie.Cmd.String())
+	out.WriteString(ie.Expression.String())
 	out.WriteString("]")
 
 	return out.String()

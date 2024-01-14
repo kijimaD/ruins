@@ -11,16 +11,8 @@ func (e *Evaluator) Eval(node Node) event {
 	case *ExpressionStatement:
 		return e.Eval(node.Expression)
 	case *CmdExpression:
-		var event event
-		switch node.Cmd.String() {
-		case "p":
-			event = &flush{}
-			e.Events = append(e.Events, event)
-		case "l":
-			event = &lineEndWait{}
-			e.Events = append(e.Events, event)
-		}
-		return event
+		e.Events = append(e.Events, node.Cmd)
+		return node.Cmd
 	case *TextLiteral:
 		m := &msgEmit{body: []rune(node.Value)}
 		e.Events = append(e.Events, m)

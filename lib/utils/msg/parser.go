@@ -172,7 +172,14 @@ func (p *Parser) parseCmdExpression() Expression {
 	exp := &CmdExpression{Token: p.curToken}
 
 	p.nextToken()
-	exp.Cmd = p.parseExpression(LOWEST)
+	exp.Expression = p.parseExpression(LOWEST)
+
+	switch exp.Expression.String() {
+	case "p":
+		exp.Cmd = &flush{}
+	case "l":
+		exp.Cmd = &lineEndWait{}
+	}
 
 	if !p.expectPeek(RBRACKET) {
 		return nil
