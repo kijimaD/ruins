@@ -135,3 +135,17 @@ func (l *lineEndWait) Run(q *Queue) {
 	q.Pop()
 	return
 }
+
+// 未実装
+type notImplement struct{}
+
+func (l *notImplement) PreHook() {
+	return
+}
+
+func (l *notImplement) Run(q *Queue) {
+	q.buf = ""
+	q.deactivate()
+	q.Pop()
+	return
+}

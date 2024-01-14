@@ -103,8 +103,8 @@ func (fl *FunctionLiteral) String() string {
 		params = append(params, p.String())
 	}
 
-	out.WriteString(fl.TokenLiteral())
 	out.WriteString("[")
+	out.WriteString(fl.FuncName.Value)
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString("]")
 

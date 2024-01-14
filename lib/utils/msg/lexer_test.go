@@ -8,7 +8,8 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `こんにちは[r]あああ
-←改行した。[p]`
+←改行した。[p]
+[image source="test.png" page="fore"]`
 	l := NewLexer(input)
 
 	tests := []struct {
@@ -24,7 +25,7 @@ func TestNextToken(t *testing.T) {
 			expectedLiteral: "[",
 		},
 		{
-			expectedType:    TEXT,
+			expectedType:    IDENT,
 			expectedLiteral: "r",
 		},
 		{
@@ -40,12 +41,52 @@ func TestNextToken(t *testing.T) {
 			expectedLiteral: "[",
 		},
 		{
-			expectedType:    TEXT,
+			expectedType:    IDENT,
 			expectedLiteral: "p",
 		},
 		{
 			expectedType:    RBRACKET,
 			expectedLiteral: "]",
+		},
+		{
+			expectedType:    LBRACKET,
+			expectedLiteral: "[",
+		},
+		{
+			expectedType:    CMD_IMAGE,
+			expectedLiteral: "image",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "source",
+		},
+		{
+			expectedType:    EQUAL,
+			expectedLiteral: "=",
+		},
+		{
+			expectedType:    STRING,
+			expectedLiteral: "test.png",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "page",
+		},
+		{
+			expectedType:    EQUAL,
+			expectedLiteral: "=",
+		},
+		{
+			expectedType:    STRING,
+			expectedLiteral: "fore",
+		},
+		{
+			expectedType:    RBRACKET,
+			expectedLiteral: "]",
+		},
+		{
+			expectedType:    EOF,
+			expectedLiteral: "",
 		},
 	}
 

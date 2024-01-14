@@ -199,7 +199,6 @@ func (p *Parser) parseTextLiteral() Expression {
 // [p]
 func (p *Parser) parseFunctionLiteral() Expression {
 	lit := &FunctionLiteral{Token: p.curToken}
-
 	p.nextToken()
 	ident := Identifier{Token: p.curToken, Value: p.curToken.Literal}
 	lit.FuncName = ident
@@ -208,6 +207,8 @@ func (p *Parser) parseFunctionLiteral() Expression {
 		p.nextToken()
 	}
 	lit.Parameters = p.parseFunctionParameters()
+
+	p.nextToken()
 
 	return lit
 }

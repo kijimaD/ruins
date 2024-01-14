@@ -1,4 +1,4 @@
-- `\n`: 改行 `こんにちは。\n`
-- `[p]`: 改ページクリック待ち `今日は晴れです[p]`
-- `[l]`: 行末クリック待ち `ところで[l]`
-- `[image storage="" page=fore layer=base]`: 背景表示 `[image storage="bg0" page=fore layer=base]`
+- `\n`: 改行
+- `[p]`: 改ページクリック待ち
+- `[l]`: 行末クリック待ち
+- `[image source"test.png" page="fore" layer="base"]`: 背景表示
