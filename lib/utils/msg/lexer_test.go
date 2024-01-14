@@ -7,7 +7,7 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := `こんにちは[r]あああ
+	input := `こんにちは[l]あああ
 ←改行した。[p]
 [image source="test.png" page="fore"]`
 	l := NewLexer(input)
@@ -26,7 +26,7 @@ func TestNextToken(t *testing.T) {
 		},
 		{
 			expectedType:    IDENT,
-			expectedLiteral: "r",
+			expectedLiteral: "l",
 		},
 		{
 			expectedType:    RBRACKET,
