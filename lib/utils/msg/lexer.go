@@ -1,7 +1,5 @@
 package msg
 
-import "fmt"
-
 type Lexer struct {
 	input        string
 	position     int // 現在検査中のバイトchの位置
@@ -40,6 +38,8 @@ func (l *Lexer) NextToken() Token {
 	case ']':
 		tok = newToken(RBRACKET, l.ch)
 		l.OnIdent = false
+	case '=':
+		tok = newToken(EQUAL, l.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = EOF
@@ -67,7 +67,6 @@ func newToken(tokenType TokenType, ch byte) Token {
 // 予約語を読み込み
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	fmt.Println(isLetter(l.ch))
 	for isLetter(l.ch) {
 		l.readChar()
 	}

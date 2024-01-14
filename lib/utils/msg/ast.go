@@ -90,7 +90,7 @@ func (sl *TextLiteral) String() string       { return sl.Token.Literal }
 type FunctionLiteral struct {
 	Token      Token
 	FuncName   Identifier
-	Parameters []*Identifier
+	Parameters []*NamedParam
 }
 
 func (fl *FunctionLiteral) expressionNode()      {} // fnの結果をほかの変数に代入できたりするため。代入式の一部として扱うためには、式でないといけない
@@ -119,3 +119,19 @@ type Identifier struct {
 func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 func (i *Identifier) String() string       { return i.Value }
+
+type NamedParam struct {
+	Name  Identifier
+	Value string
+}
+
+func (n *NamedParam) expressionNode() {}
+func (n *NamedParam) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(n.Name.String())
+	out.WriteString(" = ")
+	out.WriteString(n.Value)
+
+	return out.String()
+}
