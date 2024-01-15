@@ -103,13 +103,13 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 			log.Fatalf("invalid UsableScene: %s", item.Consumable.UsableScene)
 		}
 
-		target := gc.Target{
+		targetType := gc.TargetType{
 			TargetFaction: faction,
 			TargetWhole:   item.Consumable.TargetWhole,
 		}
 		cl.Consumable = &gc.Consumable{
 			UsableScene: usableContext,
-			Target:      target,
+			TargetType:  targetType,
 		}
 	}
 	if item.ProvidesHealing != 0 {

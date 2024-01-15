@@ -41,11 +41,11 @@ type Item struct{}
 // 消耗品
 type Consumable struct {
 	UsableScene UsableSceneType
-	Target      Target
+	TargetType  TargetType
 }
 
 // 対象
-type Target struct {
+type TargetType struct {
 	TargetFaction TargetFactionType // 対象派閥
 	TargetWhole   bool              // 全体対象
 }
