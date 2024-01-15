@@ -1,5 +1,7 @@
 package msg
 
+import "time"
+
 type QueueState string
 
 const (
@@ -158,6 +160,8 @@ func (l *lineEndWait) Run(q *Queue) {
 	return
 }
 
+// ================
+
 // 未実装
 type notImplement struct{}
 
@@ -166,6 +170,23 @@ func (l *notImplement) PreHook() {
 }
 
 func (l *notImplement) Run(q *Queue) {
+	q.buf = ""
+	q.deactivate()
+	q.Pop()
+	return
+}
+
+// ================
+type wait struct {
+	durationMsec time.Duration
+}
+
+func (w *wait) PreHook() {
+	return
+}
+
+func (w *wait) Run(q *Queue) {
+	time.Sleep(w.durationMsec)
 	q.buf = ""
 	q.deactivate()
 	q.Pop()

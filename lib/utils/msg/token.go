@@ -24,11 +24,13 @@ const (
 	CMD_FLUSH         = "p"
 	CMD_LINE_END_WAIT = "l"
 	CMD_IMAGE         = "image"
+	CMD_WAIT          = "wait"
 )
 
 // 予約語
 var keywords = map[string]TokenType{
 	"image": CMD_IMAGE,
+	"wait":  CMD_WAIT,
 }
 
 // 予約語の場合はその種類を、それ意外の場合はIDENTを返す
