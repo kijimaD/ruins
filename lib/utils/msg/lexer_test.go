@@ -54,7 +54,7 @@ func TestNextToken(t *testing.T) {
 			expectedLiteral: "[",
 		},
 		{
-			expectedType:    CMD_IMAGE,
+			expectedType:    IDENT,
 			expectedLiteral: "image",
 		},
 		{
@@ -90,7 +90,7 @@ func TestNextToken(t *testing.T) {
 			expectedLiteral: "[",
 		},
 		{
-			expectedType:    CMD_WAIT,
+			expectedType:    IDENT,
 			expectedLiteral: "wait",
 		},
 		{
