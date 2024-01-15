@@ -28,12 +28,9 @@ const (
 )
 
 // 予約語
-var keywords = map[string]TokenType{
-	"image": CMD_IMAGE,
-	"wait":  CMD_WAIT,
-}
+var keywords = map[string]TokenType{}
 
-// 予約語の場合はその種類を、それ意外の場合はIDENTを返す
+// 予約語の場合はその種類を、それ以外の場合はIDENTを返す
 func LookupIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok

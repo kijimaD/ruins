@@ -169,26 +169,6 @@ func (p *Parser) noPrefixParseFnError(t TokenType) {
 	p.errors = append(p.errors, msg)
 }
 
-func (p *Parser) parseCmdExpression() Expression {
-	exp := &CmdExpression{Token: p.curToken}
-
-	p.nextToken()
-	exp.Expression = p.parseExpression(LOWEST)
-
-	switch exp.Expression.String() {
-	case CMD_FLUSH:
-		exp.Cmd = &flush{}
-	case CMD_LINE_END_WAIT:
-		exp.Cmd = &lineEndWait{}
-	}
-
-	if !p.expectPeek(RBRACKET) {
-		return nil
-	}
-
-	return exp
-}
-
 // 文字列トークンをパース
 func (p *Parser) parseTextLiteral() Expression {
 	return &TextLiteral{Token: p.curToken, Value: p.curToken.Literal}
