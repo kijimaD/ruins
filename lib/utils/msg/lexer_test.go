@@ -7,8 +7,10 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := `こんにちは[r]あああ
-←改行した。[p]`
+	input := `こんにちは[l]あああ
+←改行した。[p]
+[image source="test.png" page="fore"]
+[wait time="100"]`
 	l := NewLexer(input)
 
 	tests := []struct {
@@ -24,8 +26,8 @@ func TestNextToken(t *testing.T) {
 			expectedLiteral: "[",
 		},
 		{
-			expectedType:    TEXT,
-			expectedLiteral: "r",
+			expectedType:    IDENT,
+			expectedLiteral: "l",
 		},
 		{
 			expectedType:    RBRACKET,
@@ -40,12 +42,76 @@ func TestNextToken(t *testing.T) {
 			expectedLiteral: "[",
 		},
 		{
-			expectedType:    TEXT,
+			expectedType:    IDENT,
 			expectedLiteral: "p",
 		},
 		{
 			expectedType:    RBRACKET,
 			expectedLiteral: "]",
+		},
+		{
+			expectedType:    LBRACKET,
+			expectedLiteral: "[",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "image",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "source",
+		},
+		{
+			expectedType:    EQUAL,
+			expectedLiteral: "=",
+		},
+		{
+			expectedType:    STRING,
+			expectedLiteral: "test.png",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "page",
+		},
+		{
+			expectedType:    EQUAL,
+			expectedLiteral: "=",
+		},
+		{
+			expectedType:    STRING,
+			expectedLiteral: "fore",
+		},
+		{
+			expectedType:    RBRACKET,
+			expectedLiteral: "]",
+		},
+		{
+			expectedType:    LBRACKET,
+			expectedLiteral: "[",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "wait",
+		},
+		{
+			expectedType:    IDENT,
+			expectedLiteral: "time",
+		},
+		{
+			expectedType:    EQUAL,
+			expectedLiteral: "=",
+		},
+		{
+			expectedType:    STRING,
+			expectedLiteral: "100",
+		},
+		{
+			expectedType:    RBRACKET,
+			expectedLiteral: "]",
+		},
+		{
+			expectedType:    EOF,
+			expectedLiteral: "",
 		},
 	}
 

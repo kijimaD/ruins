@@ -46,7 +46,7 @@ func TestWait(t *testing.T) {
 }
 
 func TestBuilder(t *testing.T) {
-	input := `こんにちは...[r]
+	input := `こんにちは...[p]
 今日はいかがですか`
 	l := NewLexer(input)
 	p := NewParser(l)
@@ -81,7 +81,7 @@ func TestBuilder(t *testing.T) {
 
 // 改行を自動挿入できる
 func TestNewLine(t *testing.T) {
-	input := `こんにちは[r]
+	input := `こんにちは[p]
 ああああああああああああああああああああ`
 	l := NewLexer(input)
 	p := NewParser(l)
@@ -122,7 +122,7 @@ func TestNewLine(t *testing.T) {
 
 // 意図的な改行で自動改行カウントをリセットする
 func TestNewLineResetCount(t *testing.T) {
-	input := `こんにちは[r]
+	input := `こんにちは[p]
 ああああああああああ
 ああああああああああ`
 	l := NewLexer(input)
