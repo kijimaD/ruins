@@ -19,7 +19,7 @@ type IntroState struct {
 	bg    *ebiten.Image
 }
 
-// TODO: 背景切り替え時にsleepを入れれたらよさそう
+// TODO: 背景切り替え時にsleepを入れたらよさそう
 var introText = `
 [image source="bg_urban1"]
 <導入>[p]
@@ -63,15 +63,14 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	// アニメーションに便利なので、グローバルにあっていいかもしれない
 	var queueResult msg.QueueState
 
-	// FIXME: 最後までいくとバグる
+	if v, ok := st.queue.Head().(*msg.ChangeBg); ok {
+		world.Manager.Join(world.Components.Engine.SpriteRender, world.Components.Engine.Transform).Visit(ecs.Visit(func(entity ecs.Entity) {
+			sprite := world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender)
+			new := (*world.Resources.SpriteSheets)[v.Source]
+			sprite.SpriteSheet = &new
+		}))
+	}
 	if st.cycle%2 == 0 {
-		if v, ok := st.queue.Head().(*msg.ChangeBg); ok {
-			world.Manager.Join(world.Components.Engine.SpriteRender, world.Components.Engine.Transform).Visit(ecs.Visit(func(entity ecs.Entity) {
-				sprite := world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender)
-				new := (*world.Resources.SpriteSheets)[v.Source]
-				sprite.SpriteSheet = &new
-			}))
-		}
 		queueResult = st.queue.RunHead()
 		st.cycle = 0
 	}

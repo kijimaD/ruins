@@ -38,6 +38,9 @@ func (q *Queue) RunHead() QueueState {
 }
 
 func (q *Queue) Head() Event {
+	if len(q.events) == 0 {
+		return &notImplement{}
+	}
 	return q.events[0]
 }
 
