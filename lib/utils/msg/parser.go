@@ -2,6 +2,7 @@ package msg
 
 import (
 	"fmt"
+	"log"
 )
 
 type Parser struct {
@@ -27,7 +28,7 @@ type (
 const (
 	_ int = iota
 	LOWEST
-	CMD // [r]
+	CMD // [...]
 )
 
 // 優先順位テーブル。トークンタイプと優先順位を関連付ける
@@ -45,7 +46,7 @@ func NewParser(l *Lexer) *Parser {
 	// 前置トークン
 	p.prefixParseFns = make(map[TokenType]prefixParseFn)
 	p.registerPrefix(TEXT, p.parseTextLiteral)
-	p.registerPrefix(LBRACKET, p.parseCmdExpression)
+	p.registerPrefix(LBRACKET, p.parseFunctionLiteral)
 
 	// 2つトークンを読み込む。curTokenとpeekTokenの両方がセットされる
 	p.nextToken()
@@ -168,20 +169,52 @@ func (p *Parser) noPrefixParseFnError(t TokenType) {
 	p.errors = append(p.errors, msg)
 }
 
-func (p *Parser) parseCmdExpression() Expression {
-	exp := &CmdExpression{Token: p.curToken}
-
-	p.nextToken()
-	exp.Cmd = p.parseExpression(LOWEST)
-
-	if !p.expectPeek(RBRACKET) {
-		return nil
-	}
-
-	return exp
-}
-
 // 文字列トークンをパース
 func (p *Parser) parseTextLiteral() Expression {
 	return &TextLiteral{Token: p.curToken, Value: p.curToken.Literal}
+}
+
+// コマンドリテラルをパース
+// [image storage="test.png"]
+// [p]
+func (p *Parser) parseFunctionLiteral() Expression {
+	lit := &FunctionLiteral{Token: p.curToken}
+	p.nextToken()
+	ident := Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	lit.FuncName = ident
+
+	if !p.peekTokenIs(RBRACKET) {
+		p.nextToken()
+	}
+	lit.Parameters = p.parseFunctionParameters()
+
+	p.nextToken()
+
+	return lit
+}
+
+// 引数をパース
+func (p *Parser) parseFunctionParameters() NamedParams {
+	namedParams := NamedParams{}
+	namedParams.Map = map[string]string{}
+
+	for !p.peekTokenIs(RBRACKET) {
+		name := Identifier{Token: p.curToken, Value: p.curToken.Literal}
+		if !p.peekTokenIs(EQUAL) {
+			log.Fatal("シンタックスエラー: EQUALがない: ", p.curToken.Literal)
+		}
+		p.nextToken()
+		if !p.peekTokenIs(STRING) {
+			log.Fatal("シンタックスエラー: STRINGがない: ", p.curToken.Literal)
+		}
+		p.nextToken()
+		namedParams.Map[name.Value] = p.curToken.Literal
+
+		if p.peekTokenIs(RBRACKET) {
+			break
+		}
+		p.nextToken()
+	}
+
+	return namedParams
 }

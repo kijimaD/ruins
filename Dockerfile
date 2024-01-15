@@ -1,6 +1,6 @@
-###########
-# builder #
-###########
+########
+# base #
+########
 
 # なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
 FROM golang:1.20-buster AS base
@@ -22,9 +22,17 @@ RUN apt install -y \
     libx11-dev \
     libopenal-dev
 
+###########
+# builder #
+###########
+
 FROM base AS builder
 
 WORKDIR /build
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
 COPY . .
 
 RUN GO111MODULE=on go build -o ./bin/sokotwo . \

@@ -26,3 +26,15 @@ texture_image = "file/bg/black1.png"
 sprites = [
     { x = 0, y = 0, width = 960, height = 720 },
 ]
+
+[sprite_sheet.bg_urban1]
+texture_image = "file/bg/urban1.png"
+sprites = [
+    { x = 0, y = 0, width = 960, height = 720 },
+]
+
+[sprite_sheet.bg_crystal1]
+texture_image = "file/bg/crystal1.png"
+sprites = [
+    { x = 0, y = 0, width = 960, height = 720 },
+]
