@@ -1,6 +1,7 @@
 package msg
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,7 +10,8 @@ import (
 func TestEval(t *testing.T) {
 	input := `こんにちは[l]世界[p]
 ←無視される改行たたたたた。
-←有効な改行`
+←有効な改行
+[image source="test.png"]`
 
 	l := NewLexer(input)
 	p := NewParser(l)
@@ -26,6 +28,8 @@ func TestEval(t *testing.T) {
 			results = append(results, "flush")
 		case *lineEndWait:
 			results = append(results, "lineEndWait")
+		case *ChangeBg:
+			results = append(results, fmt.Sprintf("%s source=%s", "changeBg", event.Source))
 		}
 	}
 	expect := []string{
@@ -33,7 +37,8 @@ func TestEval(t *testing.T) {
 		"lineEndWait",
 		"世界",
 		"flush",
-		"←無視される改行たたたたた。\n←有効な改行",
+		"←無視される改行たたたたた。\n←有効な改行\n",
+		"changeBg source=test.png",
 	}
 	assert.Equal(t, expect, results)
 }

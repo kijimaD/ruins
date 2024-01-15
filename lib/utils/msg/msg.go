@@ -8,14 +8,14 @@ const (
 )
 
 type Queue struct {
-	events []event
+	events []Event
 	// 現在の表示文字列
 	buf string
 	// trueの場合キューを処理する
 	active bool
 }
 
-func NewQueue(events []event) Queue {
+func NewQueue(events []Event) Queue {
 	q := Queue{
 		active: true,
 		events: events,
@@ -37,6 +37,10 @@ func (q *Queue) RunHead() QueueState {
 	return QueueStateNone
 }
 
+func (q *Queue) Head() Event {
+	return q.events[0]
+}
+
 // キューの先端を消して先に進める
 func (q *Queue) Pop() QueueState {
 	if len(q.events) == 0 {
@@ -51,7 +55,7 @@ func (q *Queue) Display() string {
 	return q.buf
 }
 
-func (q *Queue) SetEvents(es []event) {
+func (q *Queue) SetEvents(es []Event) {
 	q.events = es
 }
 
@@ -63,7 +67,7 @@ func (q *Queue) deactivate() {
 	q.active = false
 }
 
-type event interface {
+type Event interface {
 	PreHook()
 	Run(*Queue)
 }
@@ -116,6 +120,21 @@ func (e *flush) PreHook() {
 func (e *flush) Run(q *Queue) {
 	q.buf = ""
 	q.deactivate()
+	q.Pop()
+	return
+}
+
+// ================
+
+type ChangeBg struct {
+	Source string
+}
+
+func (c *ChangeBg) PreHook() {
+	return
+}
+
+func (c *ChangeBg) Run(q *Queue) {
 	q.Pop()
 	return
 }

@@ -16,15 +16,19 @@ import (
 type IntroState struct {
 	queue msg.Queue
 	cycle int
+	bg    *ebiten.Image
 }
 
+// TODO: 背景切り替え時にsleepを入れれたらよさそう
 var introText = `
+[image source="bg_urban1"]
 <導入>[p]
 大陸に散らばる遺跡...[p]
 それは古代の失われた文明が眠る場所。[l]
 その中では古代文明の財宝と多くの怪物たちが待ち構えている。[p]
 <昔>[p]
 かつて、勇者たちは剣や槍という粗末な武器を持って遺跡に挑み...[p]
+[image source="bg_crystal1"]
 文字通り命がけの冒険の代償にわずかばかりの貴金属を持ち帰った。[p]
 <変遷>[p]
 やがて時代が進むと、剣は銃に変わり大砲を乗せた乗り物が現れた。[p]
@@ -59,7 +63,15 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	// アニメーションに便利なので、グローバルにあっていいかもしれない
 	var queueResult msg.QueueState
 
+	// FIXME: 最後までいくとバグる
 	if st.cycle%2 == 0 {
+		if v, ok := st.queue.Head().(*msg.ChangeBg); ok {
+			world.Manager.Join(world.Components.Engine.SpriteRender, world.Components.Engine.Transform).Visit(ecs.Visit(func(entity ecs.Entity) {
+				sprite := world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender)
+				new := (*world.Resources.SpriteSheets)[v.Source]
+				sprite.SpriteSheet = &new
+			}))
+		}
 		queueResult = st.queue.RunHead()
 		st.cycle = 0
 	}
@@ -85,4 +97,9 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	return states.Transition{}
 }
 
-func (st *IntroState) Draw(world w.World, screen *ebiten.Image) {}
+func (st *IntroState) Draw(world w.World, screen *ebiten.Image) {
+	opts := &ebiten.DrawImageOptions{}
+	if st.bg != nil {
+		screen.DrawImage(st.bg, opts)
+	}
+}

@@ -9,3 +9,15 @@ color = [255, 255, 255, 255]
 [entity.components.UITransform]
 translation = { x = 200, y = 500 }
 pivot = "TopLeft"
+
+# ================
+
+[[entity]]
+
+[entity.components.SpriteRender]
+sprite_sheet_name = "bg_black1"
+sprite_number = 0
+
+[entity.components.Transform]
+translation = { x = 0, y = 0 }
+origin = "Middle"

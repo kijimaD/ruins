@@ -66,7 +66,7 @@ func TestParsingCmdExpressionImage(t *testing.T) {
 	f, ok := stmt.Expression.(*FunctionLiteral)
 	assert.True(t, ok)
 	assert.Equal(t, "image", f.FuncName.Value)
-	assert.Equal(t, "value1", f.Parameters[0].Value)
-	assert.Equal(t, "value2", f.Parameters[1].Value)
-	assert.Equal(t, "test.png", f.Parameters[2].Value)
+	assert.Equal(t, "value1", f.Parameters.Map["a"])
+	assert.Equal(t, "value2", f.Parameters.Map["b"])
+	assert.Equal(t, "test.png", f.Parameters.Map["c"])
 }

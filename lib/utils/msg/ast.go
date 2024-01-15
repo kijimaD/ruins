@@ -63,7 +63,7 @@ func (es *ExpressionStatement) String() string {
 type CmdExpression struct {
 	Token      Token // '['トークン
 	Expression Expression
-	Cmd        event
+	Cmd        Event
 }
 
 func (ie *CmdExpression) expressionNode()      {}
@@ -90,7 +90,7 @@ func (sl *TextLiteral) String() string       { return sl.Token.Literal }
 type FunctionLiteral struct {
 	Token      Token
 	FuncName   Identifier
-	Parameters []*NamedParam
+	Parameters NamedParams
 }
 
 func (fl *FunctionLiteral) expressionNode()      {} // fnの結果をほかの変数に代入できたりするため。代入式の一部として扱うためには、式でないといけない
@@ -99,8 +99,8 @@ func (fl *FunctionLiteral) String() string {
 	var out bytes.Buffer
 
 	params := []string{}
-	for _, p := range fl.Parameters {
-		params = append(params, p.String())
+	for k, v := range fl.Parameters.Map {
+		params = append(params, k+"="+v)
 	}
 
 	out.WriteString("[")
@@ -120,18 +120,18 @@ func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 func (i *Identifier) String() string       { return i.Value }
 
-type NamedParam struct {
-	Name  Identifier
-	Value string
+type NamedParams struct {
+	Map map[string]string
 }
 
-func (n *NamedParam) expressionNode() {}
-func (n *NamedParam) String() string {
+func (n *NamedParams) expressionNode() {}
+func (n *NamedParams) String() string {
 	var out bytes.Buffer
 
-	out.WriteString(n.Name.String())
-	out.WriteString(" = ")
-	out.WriteString(n.Value)
-
+	for k, v := range n.Map {
+		out.WriteString(k)
+		out.WriteString(" = ")
+		out.WriteString(v)
+	}
 	return out.String()
 }

@@ -214,8 +214,9 @@ func (p *Parser) parseFunctionLiteral() Expression {
 }
 
 // 引数をパース
-func (p *Parser) parseFunctionParameters() []*NamedParam {
-	namedParams := []*NamedParam{}
+func (p *Parser) parseFunctionParameters() NamedParams {
+	namedParams := NamedParams{}
+	namedParams.Map = map[string]string{}
 
 	for !p.peekTokenIs(RBRACKET) {
 		name := Identifier{Token: p.curToken, Value: p.curToken.Literal}
@@ -227,11 +228,7 @@ func (p *Parser) parseFunctionParameters() []*NamedParam {
 			log.Fatal("シンタックスエラー: STRINGがない: ", p.curToken.Literal)
 		}
 		p.nextToken()
-		param := &NamedParam{
-			Name:  name,
-			Value: p.curToken.Literal,
-		}
-		namedParams = append(namedParams, param)
+		namedParams.Map[name.Value] = p.curToken.Literal
 
 		if p.peekTokenIs(RBRACKET) {
 			break
