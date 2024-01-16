@@ -30,6 +30,8 @@ type InventoryMenuState struct {
 	clickedItem   ecs.Entity
 }
 
+var selectedItemButton *widget.Button // 選択中のアイテム
+
 // State interface ================
 
 func (st *InventoryMenuState) OnPause(world w.World) {}
@@ -229,6 +231,25 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		)
 	}
 
+	partyContainer := newWindowContainer()
+	partyWindow := newWindow(newTitleContainer("選択"), partyContainer)
+	{
+		world.Manager.Join(
+			gameComponents.Member,
+			gameComponents.InParty,
+			gameComponents.Name,
+			gameComponents.Pools,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+				effects.ItemTrigger(nil, entity, effects.Single{entity}, world)
+				partyWindow.Close()
+				content.RemoveChild(selectedItemButton)
+			})
+			partyContainer.AddChild(partyButton)
+		}))
+	}
+
 	for _, entity := range items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -265,9 +286,15 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		content.AddChild(itemButton)
 
 		useButton := newItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
-			effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
-			content.RemoveChild(itemButton)
+			x, y := ebiten.CursorPosition()
+			r := image.Rect(0, 0, x, y)
+			r = r.Add(image.Point{x + 20, y + 20})
+			partyWindow.SetLocation(r)
+			// TODO: アイテムの属性によって分岐させる
+			// たとえば全体向けの場合は選択ウィンドウは出さない
+			ui.AddWindow(partyWindow)
 			actionWindow.Close()
+			selectedItemButton = itemButton
 		})
 		windowContainer.AddChild(useButton)
 
