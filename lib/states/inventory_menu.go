@@ -213,6 +213,22 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		)
 	}
 
+	newItemButton := func(text string, f func(args *widget.ButtonClickedEventArgs)) *widget.Button {
+		return widget.NewButton(
+			widget.ButtonOpts.Image(buttonImage),
+			widget.ButtonOpts.Text(text, face, &widget.ButtonTextColor{
+				Idle: styles.TextColor,
+			}),
+			widget.ButtonOpts.TextPadding(widget.Insets{
+				Left:   30,
+				Right:  30,
+				Top:    5,
+				Bottom: 5,
+			}),
+			widget.ButtonOpts.ClickedHandler(f),
+		)
+	}
+
 	for _, entity := range items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -222,27 +238,15 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 		actionWindow := newWindow(titleContainer, windowContainer)
 
-		itemButton := widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text(name.Name, face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.TextPadding(widget.Insets{
-				Left:   30,
-				Right:  30,
-				Top:    5,
-				Bottom: 5,
-			}),
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				x, y := ebiten.CursorPosition()
-				r := image.Rect(0, 0, x, y)
-				r = r.Add(image.Point{x + 20, y + 20})
-				actionWindow.SetLocation(r)
-				ui.AddWindow(actionWindow)
+		itemButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+			x, y := ebiten.CursorPosition()
+			r := image.Rect(0, 0, x, y)
+			r = r.Add(image.Point{x + 20, y + 20})
+			actionWindow.SetLocation(r)
+			ui.AddWindow(actionWindow)
 
-				st.clickedItem = entity
-			}),
-		)
+			st.clickedItem = entity
+		})
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.clickedItem != entity {
@@ -260,39 +264,24 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		})
 		content.AddChild(itemButton)
 
-		windowContainer.AddChild(widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text("使う", face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
-				content.RemoveChild(itemButton)
-				actionWindow.Close()
-			}),
-		))
+		useButton := newItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
+			effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
+			content.RemoveChild(itemButton)
+			actionWindow.Close()
+		})
+		windowContainer.AddChild(useButton)
 
-		windowContainer.AddChild(widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text("捨てる", face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				world.Manager.DeleteEntity(entity)
-				content.RemoveChild(itemButton)
-				actionWindow.Close()
-			}),
-		))
+		dropButton := newItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
+			world.Manager.DeleteEntity(entity)
+			content.RemoveChild(itemButton)
+			actionWindow.Close()
+		})
+		windowContainer.AddChild(dropButton)
 
-		windowContainer.AddChild(widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text("閉じる", face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				actionWindow.Close()
-			}),
-		))
+		closeButton := newItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+			actionWindow.Close()
+		})
+		windowContainer.AddChild(closeButton)
 	}
 
 	sc, v := eui.NewScrollContainer(content)
