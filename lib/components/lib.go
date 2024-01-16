@@ -44,12 +44,6 @@ type Consumable struct {
 	TargetType  TargetType
 }
 
-// 対象
-type TargetType struct {
-	TargetFaction TargetFactionType // 対象派閥
-	TargetWhole   bool              // 全体対象
-}
-
 // 表示名
 type Name struct {
 	Name string

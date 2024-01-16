@@ -6,7 +6,7 @@ ProvidesHealing = 20
 [item.consumable]
 UsableScene = "ANY"
 TargetFaction = "ALLY"
-TargetWhole = false
+TargetCount = "SINGLE"
 
 [[item]]
 Name = "回復スプレー"
@@ -16,7 +16,7 @@ ProvidesHealing = 20
 [item.consumable]
 UsableScene = "ANY"
 TargetFaction = "ALLY"
-TargetWhole = true
+TargetCount = "ALL"
 
 [[item]]
 Name = "劇薬"
@@ -26,7 +26,7 @@ InflictsDamage = 50
 [item.consumable]
 UsableScene = "BATTLE"
 TargetFaction = "ENEMY"
-TargetWhole = false
+TargetCount = "SINGLE"
 
 [[item]]
 Name = "手榴弾"
@@ -36,7 +36,7 @@ InflictsDamage = 100
 [item.consumable]
 UsableScene = "BATTLE"
 TargetFaction = "ENEMY"
-TargetWhole = true
+TargetCount = "ALL"
 
 [[member]]
 Name = "椿"

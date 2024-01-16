@@ -33,7 +33,7 @@ type Item struct {
 type Consumable struct {
 	UsableScene   string
 	TargetFaction string
-	TargetWhole   bool
+	TargetCount   string
 }
 
 type Member struct {
@@ -103,9 +103,19 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 			log.Fatalf("invalid UsableScene: %s", item.Consumable.UsableScene)
 		}
 
+		var targetCount gc.TargetCount
+		switch gc.TargetCount(item.Consumable.TargetCount) {
+		case gc.TargetSingle:
+			targetCount = gc.TargetSingle
+		case gc.TargetAll:
+			targetCount = gc.TargetAll
+		default:
+			log.Fatalf("invalid TargetCount: %s", item.Consumable.TargetCount)
+		}
+
 		targetType := gc.TargetType{
 			TargetFaction: faction,
-			TargetWhole:   item.Consumable.TargetWhole,
+			TargetCount:   targetCount,
 		}
 		cl.Consumable = &gc.Consumable{
 			UsableScene: usableContext,
