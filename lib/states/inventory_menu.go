@@ -166,11 +166,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		items = append(items, entity)
 	}))
 
-	for _, entity := range items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-
-		windowContainer := widget.NewContainer(
+	newWindowContainer := func() *widget.Container {
+		return widget.NewContainer(
 			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
 			widget.ContainerOpts.Layout(
 				widget.NewGridLayout(
@@ -186,22 +183,27 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				),
 			),
 		)
+	}
 
-		titleContainer := widget.NewContainer(
+	newTitleContainer := func(title string) *widget.Container {
+		container := widget.NewContainer(
 			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
 			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		)
-		titleContainer.AddChild(widget.NewText(
-			widget.TextOpts.Text("アクション", face, styles.TextColor),
+		container.AddChild(widget.NewText(
+			widget.TextOpts.Text(title, face, styles.TextColor),
 			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
 			})),
 		))
+		return container
+	}
 
-		window := widget.NewWindow(
-			widget.WindowOpts.Contents(windowContainer),
-			widget.WindowOpts.TitleBar(titleContainer, 25),
+	newWindow := func(title *widget.Container, content *widget.Container) *widget.Window {
+		return widget.NewWindow(
+			widget.WindowOpts.Contents(content),
+			widget.WindowOpts.TitleBar(title, 25),
 			widget.WindowOpts.Modal(),
 			widget.WindowOpts.CloseMode(widget.CLICK_OUT),
 			widget.WindowOpts.Draggable(),
@@ -209,8 +211,18 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.WindowOpts.MinSize(200, 200),
 			widget.WindowOpts.MaxSize(300, 400),
 		)
+	}
 
-		button := widget.NewButton(
+	for _, entity := range items {
+		entity := entity
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+
+		windowContainer := newWindowContainer()
+		titleContainer := newTitleContainer("アクション")
+
+		actionWindow := newWindow(titleContainer, windowContainer)
+
+		itemButton := widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
 			widget.ButtonOpts.Text(name.Name, face, &widget.ButtonTextColor{
 				Idle: styles.TextColor,
@@ -225,14 +237,14 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				x, y := ebiten.CursorPosition()
 				r := image.Rect(0, 0, x, y)
 				r = r.Add(image.Point{x + 20, y + 20})
-				window.SetLocation(r)
-				ui.AddWindow(window)
+				actionWindow.SetLocation(r)
+				ui.AddWindow(actionWindow)
 
 				st.clickedItem = entity
 			}),
 		)
 
-		button.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.clickedItem != entity {
 				st.clickedItem = entity
 			}
@@ -246,7 +258,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}))
 			itemDesc.Label = description
 		})
-		content.AddChild(button)
+		content.AddChild(itemButton)
 
 		windowContainer.AddChild(widget.NewButton(
 			widget.ButtonOpts.Image(buttonImage),
@@ -255,8 +267,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				effects.ItemTrigger(nil, entity, effects.Single{members[0]}, world)
-				content.RemoveChild(button)
-				window.Close()
+				content.RemoveChild(itemButton)
+				actionWindow.Close()
 			}),
 		))
 
@@ -267,8 +279,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				world.Manager.DeleteEntity(entity)
-				content.RemoveChild(button)
-				window.Close()
+				content.RemoveChild(itemButton)
+				actionWindow.Close()
 			}),
 		))
 
@@ -278,7 +290,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				window.Close()
+				actionWindow.Close()
 			}),
 		))
 	}
