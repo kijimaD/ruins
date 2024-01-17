@@ -1,6 +1,7 @@
 package effects
 
 import (
+	gc "github.com/kijimaD/sokotwo/lib/components"
 	w "github.com/kijimaD/sokotwo/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -11,6 +12,7 @@ type EffectType interface {
 	isEffectType()
 }
 
+// queueの中身
 type EffectSpawner struct {
 	Creator    *ecs.Entity
 	EffectType EffectType
@@ -46,10 +48,30 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 		if ok {
 			AffectEntity(world, es, v.Target)
 		}
+		_, ok = es.Targets.(Party)
+		if ok {
+			gameComponents := world.Components.Game.(*gc.Components)
+			world.Manager.Join(
+				gameComponents.Member,
+				gameComponents.InParty,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				AffectEntity(world, es, entity)
+			}))
+		}
 	case Healing:
 		v, ok := es.Targets.(Single)
 		if ok {
 			AffectEntity(world, es, v.Target)
+		}
+		_, ok = es.Targets.(Party)
+		if ok {
+			gameComponents := world.Components.Game.(*gc.Components)
+			world.Manager.Join(
+				gameComponents.Member,
+				gameComponents.InParty,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				AffectEntity(world, es, entity)
+			}))
 		}
 	case ItemUse:
 		_, ok := es.Targets.(Single)
