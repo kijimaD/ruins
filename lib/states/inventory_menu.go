@@ -233,22 +233,20 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	partyContainer := newWindowContainer()
 	partyWindow := newWindow(newTitleContainer("選択"), partyContainer)
-	{
-		world.Manager.Join(
-			gameComponents.Member,
-			gameComponents.InParty,
-			gameComponents.Name,
-			gameComponents.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			name := gameComponents.Name.Get(entity).(*gc.Name)
-			partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, entity, effects.Single{entity}, world)
-				partyWindow.Close()
-				content.RemoveChild(selectedItemButton)
-			})
-			partyContainer.AddChild(partyButton)
-		}))
-	}
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+		gameComponents.Name,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+			effects.ItemTrigger(nil, entity, effects.Single{entity}, world)
+			partyWindow.Close()
+			content.RemoveChild(selectedItemButton)
+		})
+		partyContainer.AddChild(partyButton)
+	}))
 
 	for _, entity := range items {
 		entity := entity
