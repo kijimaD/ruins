@@ -7,11 +7,11 @@ var (
 	WarpModeEscape = warpMode("ESCAPE")
 )
 
-type TargetCount string
+type TargetNum string
 
 var (
-	TargetSingle = TargetCount("SINGLE")
-	TargetAll    = TargetCount("ALL")
+	TargetSingle = TargetNum("SINGLE")
+	TargetAll    = TargetNum("ALL")
 )
 
 type TargetFactionType string

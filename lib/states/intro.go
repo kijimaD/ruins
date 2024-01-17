@@ -19,7 +19,6 @@ type IntroState struct {
 	bg    *ebiten.Image
 }
 
-// TODO: 背景切り替え時にsleepを入れたらよさそう
 var introText = `
 [image source="bg_urban1"]
 <導入>[p]

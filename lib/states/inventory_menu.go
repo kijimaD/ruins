@@ -30,6 +30,7 @@ type InventoryMenuState struct {
 	clickedItem   ecs.Entity
 }
 
+var selectedItem ecs.Entity
 var selectedItemButton *widget.Button // 選択中のアイテム
 
 // State interface ================
@@ -241,7 +242,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			effects.ItemTrigger(nil, entity, effects.Single{entity}, world)
+			effects.ItemTrigger(nil, selectedItem, effects.Single{entity}, world)
 			partyWindow.Close()
 			content.RemoveChild(selectedItemButton)
 		})
@@ -288,11 +289,19 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x + 20, y + 20})
 			partyWindow.SetLocation(r)
-			// TODO: アイテムの属性によって分岐させる
-			// たとえば全体向けの場合は選択ウィンドウは出さない
-			ui.AddWindow(partyWindow)
-			actionWindow.Close()
-			selectedItemButton = itemButton
+
+			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
+			switch consumable.TargetType.TargetNum {
+			case gc.TargetSingle:
+				ui.AddWindow(partyWindow)
+				actionWindow.Close()
+				selectedItem = entity
+				selectedItemButton = itemButton
+			case gc.TargetAll:
+				effects.ItemTrigger(nil, entity, effects.Party{}, world)
+				actionWindow.Close()
+				content.RemoveChild(itemButton)
+			}
 		})
 		windowContainer.AddChild(useButton)
 
