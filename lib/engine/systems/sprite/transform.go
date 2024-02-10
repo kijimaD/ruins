@@ -1,8 +1,8 @@
 package spritesystem
 
 import (
-	c "github.com/kijimaD/sokotwo/lib/engine/components"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	c "github.com/kijimaD/ruins/lib/engine/components"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )

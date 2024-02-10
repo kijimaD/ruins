@@ -8,13 +8,13 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kijimaD/sokotwo/assets"
-	gc "github.com/kijimaD/sokotwo/lib/components"
-	ec "github.com/kijimaD/sokotwo/lib/engine/components"
-	"github.com/kijimaD/sokotwo/lib/engine/loader"
-	"github.com/kijimaD/sokotwo/lib/engine/math"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	"github.com/kijimaD/sokotwo/lib/utils/vutil"
+	"github.com/kijimaD/ruins/assets"
+	gc "github.com/kijimaD/ruins/lib/components"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	"github.com/kijimaD/ruins/lib/engine/math"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	"github.com/kijimaD/ruins/lib/utils/vutil"
 )
 
 // 最大のグリッドサイズ

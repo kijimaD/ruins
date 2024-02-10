@@ -35,8 +35,8 @@ RUN go mod download
 
 COPY . .
 
-RUN GO111MODULE=on go build -o ./bin/sokotwo . \
- && upx-ucl --best --ultra-brute ./bin/sokotwo
+RUN GO111MODULE=on go build -o ./bin/ruins . \
+ && upx-ucl --best --ultra-brute ./bin/ruins
 
 ###########
 # release #
@@ -44,9 +44,9 @@ RUN GO111MODULE=on go build -o ./bin/sokotwo . \
 
 FROM gcr.io/distroless/static-debian11:latest AS release
 
-COPY --from=builder /build/bin/sokotwo /bin/
+COPY --from=builder /build/bin/ruins /bin/
 WORKDIR /workdir
-ENTRYPOINT ["/bin/sokotwo"]
+ENTRYPOINT ["/bin/ruins"]
 
 ########
 # node #

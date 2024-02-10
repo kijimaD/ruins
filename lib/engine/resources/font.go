@@ -5,8 +5,8 @@ import (
 
 	"github.com/golang/freetype/truetype"
 
-	"github.com/kijimaD/sokotwo/assets"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	"github.com/kijimaD/ruins/assets"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 )
 
 // Font structure

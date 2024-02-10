@@ -4,10 +4,10 @@ import (
 	"log"
 
 	"github.com/BurntSushi/toml"
-	"github.com/kijimaD/sokotwo/assets"
-	gc "github.com/kijimaD/sokotwo/lib/components"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	gloader "github.com/kijimaD/sokotwo/lib/loader"
+	"github.com/kijimaD/ruins/assets"
+	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	gloader "github.com/kijimaD/ruins/lib/loader"
 )
 
 type RawMaster struct {

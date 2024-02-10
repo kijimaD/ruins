@@ -3,13 +3,13 @@ package states
 import (
 	"image/color"
 
-	"github.com/kijimaD/sokotwo/lib/engine/math"
+	"github.com/kijimaD/ruins/lib/engine/math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	ec "github.com/kijimaD/sokotwo/lib/engine/components"
-	"github.com/kijimaD/sokotwo/lib/engine/states"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/states"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 

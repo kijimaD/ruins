@@ -5,14 +5,14 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/kijimaD/sokotwo/lib/engine/math"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	"github.com/kijimaD/sokotwo/lib/utils/vutil"
+	"github.com/kijimaD/ruins/lib/engine/math"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	"github.com/kijimaD/ruins/lib/utils/vutil"
 
-	ec "github.com/kijimaD/sokotwo/lib/engine/components"
-	"github.com/kijimaD/sokotwo/lib/engine/loader"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	gloader "github.com/kijimaD/sokotwo/lib/loader"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	gloader "github.com/kijimaD/ruins/lib/loader"
 )
 
 type StateEvent string

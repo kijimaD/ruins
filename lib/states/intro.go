@@ -4,12 +4,12 @@ package states
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	ec "github.com/kijimaD/sokotwo/lib/engine/components"
-	"github.com/kijimaD/sokotwo/lib/engine/loader"
-	"github.com/kijimaD/sokotwo/lib/engine/states"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	"github.com/kijimaD/sokotwo/lib/resources"
-	"github.com/kijimaD/sokotwo/lib/utils/msg"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	"github.com/kijimaD/ruins/lib/engine/states"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/utils/msg"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 

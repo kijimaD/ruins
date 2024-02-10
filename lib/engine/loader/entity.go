@@ -4,9 +4,9 @@ import (
 	"image/color"
 	"reflect"
 
-	c "github.com/kijimaD/sokotwo/lib/engine/components"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	c "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	"github.com/BurntSushi/toml"
 	"github.com/golang/freetype/truetype"

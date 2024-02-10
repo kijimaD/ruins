@@ -5,9 +5,9 @@ import (
 	"math"
 	"sort"
 
-	c "github.com/kijimaD/sokotwo/lib/engine/components"
-	m "github.com/kijimaD/sokotwo/lib/engine/math"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	c "github.com/kijimaD/ruins/lib/engine/components"
+	m "github.com/kijimaD/ruins/lib/engine/math"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	ecs "github.com/x-hgg-x/goecs/v2"

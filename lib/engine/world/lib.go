@@ -1,8 +1,8 @@
 package world
 
 import (
-	c "github.com/kijimaD/sokotwo/lib/engine/components"
-	"github.com/kijimaD/sokotwo/lib/engine/resources"
+	c "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/resources"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )

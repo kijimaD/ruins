@@ -2,7 +2,7 @@ package resources
 
 import (
 	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/kijimaD/sokotwo/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/engine/components"
 )
 
 // Resources contains references to data not related to any entity
