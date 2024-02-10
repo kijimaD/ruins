@@ -3,12 +3,12 @@ package states
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/sokotwo/lib/engine/states"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	gloader "github.com/kijimaD/sokotwo/lib/loader"
-	"github.com/kijimaD/sokotwo/lib/resources"
-	gs "github.com/kijimaD/sokotwo/lib/systems"
+	"github.com/kijimaD/ruins/lib/engine/states"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	gloader "github.com/kijimaD/ruins/lib/loader"
+	"github.com/kijimaD/ruins/lib/resources"
+	gs "github.com/kijimaD/ruins/lib/systems"
 )
 
 type FieldState struct{}

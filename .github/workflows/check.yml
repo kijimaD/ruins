@@ -109,7 +109,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           target: release
           push: true
-          tags: ghcr.io/kijimad/sokotwo:${{ steps.git-tag.outputs.git-tag }},ghcr.io/kijimad/sokotwo:latest
+          tags: ghcr.io/kijimad/ruins:${{ steps.git-tag.outputs.git-tag }},ghcr.io/kijimad/ruins:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 

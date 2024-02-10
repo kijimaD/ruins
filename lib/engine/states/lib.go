@@ -3,11 +3,11 @@ package states
 import (
 	"os"
 
-	i "github.com/kijimaD/sokotwo/lib/engine/systems/input"
-	s "github.com/kijimaD/sokotwo/lib/engine/systems/sprite"
-	u "github.com/kijimaD/sokotwo/lib/engine/systems/ui"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	i "github.com/kijimaD/ruins/lib/engine/systems/input"
+	s "github.com/kijimaD/ruins/lib/engine/systems/sprite"
+	u "github.com/kijimaD/ruins/lib/engine/systems/ui"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )

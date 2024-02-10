@@ -4,11 +4,11 @@ import (
 	"log"
 
 	"github.com/BurntSushi/toml"
-	"github.com/kijimaD/sokotwo/assets"
-	gc "github.com/kijimaD/sokotwo/lib/components"
-	"github.com/kijimaD/sokotwo/lib/engine/loader"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	"github.com/kijimaD/ruins/assets"
+	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	"github.com/kijimaD/ruins/lib/engine/utils"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
 type GameComponentList struct {

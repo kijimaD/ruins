@@ -1,8 +1,8 @@
 package systems
 
 import (
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	"github.com/kijimaD/sokotwo/lib/resources"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
 )
 
 func MoveSystem(world w.World) {

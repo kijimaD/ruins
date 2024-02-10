@@ -1,9 +1,9 @@
 package spawner
 
 import (
-	"github.com/kijimaD/sokotwo/lib/engine/loader"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	"github.com/kijimaD/sokotwo/lib/raw"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/raw"
 )
 
 func SpawnItem(world w.World, name string) {

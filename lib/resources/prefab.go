@@ -1,6 +1,6 @@
 package resources
 
-import "github.com/kijimaD/sokotwo/lib/engine/loader"
+import "github.com/kijimaD/ruins/lib/engine/loader"
 
 type MenuPrefabs struct {
 	MainMenu      loader.EntityComponentList

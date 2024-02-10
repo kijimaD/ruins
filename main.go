@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	gc "github.com/kijimaD/sokotwo/lib/components"
-	"github.com/kijimaD/sokotwo/lib/engine/loader"
-	er "github.com/kijimaD/sokotwo/lib/engine/resources"
-	es "github.com/kijimaD/sokotwo/lib/engine/states"
-	ew "github.com/kijimaD/sokotwo/lib/engine/world"
-	gloader "github.com/kijimaD/sokotwo/lib/loader"
-	"github.com/kijimaD/sokotwo/lib/raw"
-	gr "github.com/kijimaD/sokotwo/lib/resources"
-	gs "github.com/kijimaD/sokotwo/lib/states"
+	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	er "github.com/kijimaD/ruins/lib/engine/resources"
+	es "github.com/kijimaD/ruins/lib/engine/states"
+	ew "github.com/kijimaD/ruins/lib/engine/world"
+	gloader "github.com/kijimaD/ruins/lib/loader"
+	"github.com/kijimaD/ruins/lib/raw"
+	gr "github.com/kijimaD/ruins/lib/resources"
+	gs "github.com/kijimaD/ruins/lib/states"
 )
 
 const (
@@ -91,7 +91,7 @@ func main() {
 
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
-	ebiten.SetWindowTitle("sokotwo")
+	ebiten.SetWindowTitle("ruins")
 
 	ebiten.RunGame(&mainGame{
 		world:        world,

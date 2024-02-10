@@ -1,10 +1,10 @@
 package systems
 
 import (
-	gc "github.com/kijimaD/sokotwo/lib/components"
-	"github.com/kijimaD/sokotwo/lib/resources"
+	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/resources"
 
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 

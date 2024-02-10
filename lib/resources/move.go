@@ -1,7 +1,7 @@
 package resources
 
 import (
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
 type MovementType uint8

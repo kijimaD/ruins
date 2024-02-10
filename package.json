@@ -1,10 +1,10 @@
 {
-  "name": "sokotwo",
+  "name": "ruins",
   "version": "0.0.0",
   "description": "RPG",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kijimaD/sokotwo.git"
+    "url": "git+https://github.com/kijimaD/ruins.git"
   },
   "main": "index.js",
   "scripts": {},
@@ -13,9 +13,9 @@
   "private": true,
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/kijimaD/sokotwo/issues"
+    "url": "https://github.com/kijimaD/ruins/issues"
   },
-  "homepage": "https://github.com/kijimaD/sokotwo",
+  "homepage": "https://github.com/kijimaD/ruins",
   "devDependencies": {
     "semantic-release": "^22.0.4",
     "semantic-release-cli": "^5.4.4",

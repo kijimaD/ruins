@@ -3,9 +3,9 @@ package loader
 import (
 	"log"
 
-	"github.com/kijimaD/sokotwo/assets"
-	"github.com/kijimaD/sokotwo/lib/engine/resources"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	"github.com/kijimaD/ruins/assets"
+	"github.com/kijimaD/ruins/lib/engine/resources"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 
 	"github.com/BurntSushi/toml"
 )

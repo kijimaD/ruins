@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 
 	"github.com/BurntSushi/toml"
 	"github.com/hajimehoshi/ebiten/v2"

@@ -1,4 +1,4 @@
-module github.com/kijimaD/sokotwo
+module github.com/kijimaD/ruins
 
 go 1.20
 

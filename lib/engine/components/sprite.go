@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kijimaD/sokotwo/assets"
-	"github.com/kijimaD/sokotwo/lib/engine/math"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	"github.com/kijimaD/ruins/assets"
+	"github.com/kijimaD/ruins/lib/engine/math"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"

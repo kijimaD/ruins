@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"image/color"
 
-	"github.com/kijimaD/sokotwo/lib/engine/math"
-	"github.com/kijimaD/sokotwo/lib/engine/utils"
+	"github.com/kijimaD/ruins/lib/engine/math"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 
 	"golang.org/x/image/font"
 )

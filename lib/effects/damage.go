@@ -1,9 +1,9 @@
 package effects
 
 import (
-	gc "github.com/kijimaD/sokotwo/lib/components"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
-	"github.com/kijimaD/sokotwo/lib/utils/mathutil"
+	gc "github.com/kijimaD/ruins/lib/components"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 

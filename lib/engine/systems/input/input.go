@@ -3,8 +3,8 @@ package inputsystem
 import (
 	"math"
 
-	"github.com/kijimaD/sokotwo/lib/engine/resources"
-	w "github.com/kijimaD/sokotwo/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/engine/resources"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
