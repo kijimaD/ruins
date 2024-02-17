@@ -115,6 +115,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.GridLayoutOpts.Columns(3),
 			widget.GridLayoutOpts.Spacing(2, 0),
 			widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+			widget.GridLayoutOpts.Padding(widget.Insets{
+				Top:    20,
+				Bottom: 20,
+				Left:   20,
+				Right:  20,
+			}),
 		)),
 	)
 
@@ -161,26 +167,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		items = append(items, entity)
 	}))
 
-	newWindowContainer := func() *widget.Container {
-		return widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
-			widget.ContainerOpts.Layout(
-				// TODO: gridである必要はなさそう。RowContainerを使えばよい?
-				widget.NewGridLayout(
-					widget.GridLayoutOpts.Columns(1),
-					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{false, false, false}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
-						Top:    10,
-						Bottom: 10,
-						Left:   10,
-						Right:  10,
-					}),
-					widget.GridLayoutOpts.Spacing(0, 2),
-				),
-			),
-		)
-	}
-
 	newTitleContainer := func(title string) *widget.Container {
 		container := widget.NewContainer(
 			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
@@ -225,7 +211,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		)
 	}
 
-	partyContainer := newWindowContainer()
+	partyContainer := eui.NewWindowContainer()
 	partyWindow := newWindow(newTitleContainer("選択"), partyContainer)
 	world.Manager.Join(
 		gameComponents.Member,
@@ -246,7 +232,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
-		windowContainer := newWindowContainer()
+		windowContainer := eui.NewWindowContainer()
 		titleContainer := newTitleContainer("アクション")
 
 		actionWindow := newWindow(titleContainer, windowContainer)
@@ -278,7 +264,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		})
 		itemList.AddChild(itemButton)
 
-		useButton := newItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
+		useButton := newItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x + 20, y + 20})

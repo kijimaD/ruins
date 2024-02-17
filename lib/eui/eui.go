@@ -59,6 +59,28 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 	return scrollContainer, vSlider
 }
 
+// 前面に開くウィンドウ用のコンテナ。色が違ったりする
+func NewWindowContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    20,
+				Bottom: 20,
+				Left:   10,
+				Right:  10,
+			}),
+			widget.RowLayoutOpts.Spacing(2),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.GridLayoutData{
+				MaxHeight: 160,
+			}),
+		),
+	)
+}
+
 // 左上のメニュータイトル
 // 「インベントリ」や「仲間」や「装備」とか
 func NewMenuTitle(title string, world w.World) *widget.Text {
