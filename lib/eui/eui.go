@@ -6,10 +6,8 @@ import (
 
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/golang/freetype/truetype"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/styles"
-	"golang.org/x/image/font"
 )
 
 func EmptyContainer() *widget.Container {
@@ -61,25 +59,17 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 	return scrollContainer, vSlider
 }
 
-// TODO: いい感じにしたい
-func LoadButtonImage() *widget.ButtonImage {
-	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
-	hover := e_image.NewNineSliceColor(styles.ButtonHoverColor)
-	pressed := e_image.NewNineSliceColor(styles.ButtonPressedColor)
+// 左上のメニュータイトル
+// 「インベントリ」や「仲間」や「装備」とか
+func NewMenuTitle(title string, world w.World) *widget.Text {
+	text := widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+		),
+	)
 
-	return &widget.ButtonImage{
-		Idle:    idle,
-		Hover:   hover,
-		Pressed: pressed,
-	}
-}
-
-// TODO: いい感じにしたい
-func LoadFont(world w.World) font.Face {
-	opts := truetype.Options{
-		Size: 24,
-		DPI:  72,
-	}
-
-	return truetype.NewFace((*world.Resources.Fonts)["kappa"].Font, &opts)
+	return text
 }

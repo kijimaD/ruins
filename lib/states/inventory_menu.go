@@ -110,20 +110,14 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewGridLayout(
+			// アイテム, スクロール, アイテムspecで3列になっている
 			widget.GridLayoutOpts.Columns(3),
 			widget.GridLayoutOpts.Spacing(2, 0),
 			widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
 		)),
 	)
 
-	title := widget.NewText(
-		widget.TextOpts.Text("インベントリ", eui.LoadFont(world), styles.TextColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
+	title := eui.NewMenuTitle("インベントリ", world)
 	rootContainer.AddChild(title)
 	rootContainer.AddChild(eui.EmptyContainer())
 	rootContainer.AddChild(eui.EmptyContainer())
