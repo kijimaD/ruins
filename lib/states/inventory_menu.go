@@ -108,6 +108,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		members = append(members, entity)
 	}))
 
+	// TODO: わかりにくいのでグリッドをやめてrowにしたい
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewGridLayout(
 			// アイテム, スクロール, アイテムspecで3列になっている
@@ -117,16 +118,17 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		)),
 	)
 
-	title := eui.NewMenuTitle("インベントリ", world)
-	rootContainer.AddChild(title)
+	rootContainer.AddChild(eui.NewMenuTitle("インベントリ", world))
 	rootContainer.AddChild(eui.EmptyContainer())
 	rootContainer.AddChild(eui.EmptyContainer())
 
-	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
+	// 各アイテムが入るコンテナ
+	itemList := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
 		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		widget.RowLayoutOpts.Spacing(20),
+		widget.RowLayoutOpts.Spacing(2),
 	)))
 
+	// アイテムの説明文コンテナ
 	itemDescContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Padding(widget.Insets{
@@ -139,6 +141,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 
+	// アイテムの説明文
 	itemDesc := widget.NewText(
 		widget.TextOpts.Text(" ", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
@@ -162,16 +165,17 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		return widget.NewContainer(
 			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
 			widget.ContainerOpts.Layout(
+				// TODO: gridである必要はなさそう。RowContainerを使えばよい?
 				widget.NewGridLayout(
 					widget.GridLayoutOpts.Columns(1),
 					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{false, false, false}),
 					widget.GridLayoutOpts.Padding(widget.Insets{
-						Top:    20,
-						Bottom: 20,
+						Top:    10,
+						Bottom: 10,
 						Left:   10,
 						Right:  10,
 					}),
-					widget.GridLayoutOpts.Spacing(0, 15),
+					widget.GridLayoutOpts.Spacing(0, 2),
 				),
 			),
 		)
@@ -233,7 +237,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, selectedItem, effects.Single{entity}, world)
 			partyWindow.Close()
-			content.RemoveChild(selectedItemButton)
+			itemList.RemoveChild(selectedItemButton)
 		})
 		partyContainer.AddChild(partyButton)
 	}))
@@ -247,6 +251,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 		actionWindow := newWindow(titleContainer, windowContainer)
 
+		// アイテムの名前がラベルについたボタン
 		itemButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
@@ -271,7 +276,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}))
 			itemDesc.Label = description
 		})
-		content.AddChild(itemButton)
+		itemList.AddChild(itemButton)
 
 		useButton := newItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
@@ -289,14 +294,14 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			case gc.TargetAll:
 				effects.ItemTrigger(nil, entity, effects.Party{}, world)
 				actionWindow.Close()
-				content.RemoveChild(itemButton)
+				itemList.RemoveChild(itemButton)
 			}
 		})
 		windowContainer.AddChild(useButton)
 
 		dropButton := newItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
-			content.RemoveChild(itemButton)
+			itemList.RemoveChild(itemButton)
 			actionWindow.Close()
 		})
 		windowContainer.AddChild(dropButton)
@@ -307,7 +312,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		windowContainer.AddChild(closeButton)
 	}
 
-	sc, v := eui.NewScrollContainer(content)
+	sc, v := eui.NewScrollContainer(itemList)
 	rootContainer.AddChild(sc)
 	rootContainer.AddChild(v)
 
