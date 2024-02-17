@@ -6,7 +6,6 @@ import (
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/golang/freetype/truetype"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -18,7 +17,6 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
-	"golang.org/x/image/font"
 )
 
 type InventoryMenuState struct {
@@ -100,9 +98,8 @@ type entryStruct struct {
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	ui := ebitenui.UI{}
-	buttonImage, _ := loadButtonImage()
-
 	gameComponents := world.Components.Game.(*gc.Components)
+
 	var members []ecs.Entity
 	world.Manager.Join(
 		gameComponents.Member,
@@ -120,7 +117,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	title := widget.NewText(
-		widget.TextOpts.Text("インベントリ", loadFont(world), styles.TextColor),
+		widget.TextOpts.Text("インベントリ", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position: widget.RowLayoutPositionCenter,
@@ -149,7 +146,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	itemDesc := widget.NewText(
-		widget.TextOpts.Text(" ", loadFont(world), styles.TextColor),
+		widget.TextOpts.Text(" ", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 			Stretch: true,
 		})),
@@ -192,7 +189,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		)
 		container.AddChild(widget.NewText(
-			widget.TextOpts.Text(title, loadFont(world), styles.TextColor),
+			widget.TextOpts.Text(title, eui.LoadFont(world), styles.TextColor),
 			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -216,8 +213,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	newItemButton := func(text string, f func(args *widget.ButtonClickedEventArgs)) *widget.Button {
 		return widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text(text, loadFont(world), &widget.ButtonTextColor{
+			widget.ButtonOpts.Image(eui.LoadButtonImage()),
+			widget.ButtonOpts.Text(text, eui.LoadFont(world), &widget.ButtonTextColor{
 				Idle: styles.TextColor,
 			}),
 			widget.ButtonOpts.TextPadding(widget.Insets{
@@ -321,7 +318,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer.AddChild(v)
 
 	itemSpec := widget.NewText(
-		widget.TextOpts.Text("性能", loadFont(world), styles.TextColor),
+		widget.TextOpts.Text("性能", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position: widget.RowLayoutPositionCenter,
@@ -329,35 +326,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 	rootContainer.AddChild(itemSpec)
-
 	rootContainer.AddChild(itemDescContainer)
 
 	ui = ebitenui.UI{
 		Container: rootContainer,
 	}
-
 	ui.Container = rootContainer
 
 	return &ui
-}
-
-func loadButtonImage() (*widget.ButtonImage, error) {
-	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
-	hover := e_image.NewNineSliceColor(styles.ButtonHoverColor)
-	pressed := e_image.NewNineSliceColor(styles.ButtonPressedColor)
-
-	return &widget.ButtonImage{
-		Idle:    idle,
-		Hover:   hover,
-		Pressed: pressed,
-	}, nil
-}
-
-func loadFont(world w.World) font.Face {
-	opts := truetype.Options{
-		Size: 24,
-		DPI:  72,
-	}
-
-	return truetype.NewFace((*world.Resources.Fonts)["kappa"].Font, &opts)
 }
