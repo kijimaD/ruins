@@ -19,8 +19,8 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 		widget.ScrollContainerOpts.Content(content),
 		widget.ScrollContainerOpts.StretchContentWidth(),
 		widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-			Idle: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			Mask: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+			Idle: e_image.NewNineSliceColor(styles.ForegroundColor),
+			Mask: e_image.NewNineSliceColor(styles.ForegroundColor),
 		}),
 	)
 	pageSizeFunc := func() int {

@@ -108,20 +108,21 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		members = append(members, entity)
 	}))
 
-	// TODO: わかりにくいのでグリッドをやめてrowにしたい
 	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewGridLayout(
-			// アイテム, スクロール, アイテムspecで3列になっている
-			widget.GridLayoutOpts.Columns(3),
-			widget.GridLayoutOpts.Spacing(2, 0),
-			widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-			widget.GridLayoutOpts.Padding(widget.Insets{
-				Top:    20,
-				Bottom: 20,
-				Left:   20,
-				Right:  20,
-			}),
-		)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				// アイテム, スクロール, アイテム性能で3列になっている
+				widget.GridLayoutOpts.Columns(3),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    20,
+					Bottom: 20,
+					Left:   20,
+					Right:  20,
+				}),
+			)),
 	)
 
 	rootContainer.AddChild(eui.NewMenuTitle("インベントリ", world))
@@ -129,10 +130,17 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer.AddChild(eui.EmptyContainer())
 
 	// 各アイテムが入るコンテナ
-	itemList := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
-		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		widget.RowLayoutOpts.Spacing(2),
-	)))
+	itemList := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    4,
+				Bottom: 4,
+				Left:   4,
+				Right:  4,
+			}),
+		)))
 
 	// アイテムの説明文コンテナ
 	itemDescContainer := widget.NewContainer(
@@ -302,6 +310,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer.AddChild(sc)
 	rootContainer.AddChild(v)
 
+	itemSpecContainer := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Spacing(2),
+		)))
 	itemSpec := widget.NewText(
 		widget.TextOpts.Text("性能", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
@@ -310,7 +324,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}),
 		),
 	)
-	rootContainer.AddChild(itemSpec)
+	itemSpecContainer.AddChild(itemSpec)
+	rootContainer.AddChild(itemSpecContainer)
 	rootContainer.AddChild(itemDescContainer)
 
 	ui = ebitenui.UI{

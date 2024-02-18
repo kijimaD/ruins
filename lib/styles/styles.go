@@ -19,8 +19,12 @@ var (
 	SecondaryColor = RGB(0x9dd793)
 	// 地のテキスト
 	TextColor = RGB(0xf5f5f5)
+	// 前
+	ForegroundColor = RGB(0xa9a9a9)
 	// 背景
 	BackgroundColor = RGB(0x000000)
+	// デバッグ
+	DebugColor = RGB(0x0000FF)
 
 	// ウィンドウ
 	WindowBodyColor   = RGB(0x808080)
