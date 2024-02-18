@@ -28,6 +28,7 @@ type Item struct {
 	ProvidesHealing int
 	InflictsDamage  int
 	Consumable      *Consumable `toml:"consumable"`
+	Weapon          *Weapon     `toml:"weapon"`
 }
 
 type Consumable struct {
@@ -127,6 +128,14 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	}
 	if item.InflictsDamage != 0 {
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
+	}
+	if item.Weapon != nil {
+		cl.Weapon = &gc.Weapon{
+			Accuracy:          item.Weapon.Accuracy,
+			BaseDamage:        item.Weapon.BaseDamage,
+			AttackCount:       item.Weapon.AttackCount,
+			EnergyConsumption: item.Weapon.EnergyConsumption,
+		}
 	}
 	return cl
 }

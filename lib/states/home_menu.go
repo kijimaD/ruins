@@ -45,6 +45,9 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		count++
 	}))
 	if count == 0 {
+		spawner.SpawnItem(world, "木刀")
+		spawner.SpawnItem(world, "レイガン")
+		spawner.SpawnItem(world, "ファイヤガン")
 		spawner.SpawnItem(world, "回復薬")
 		spawner.SpawnItem(world, "回復薬")
 		spawner.SpawnItem(world, "回復薬")

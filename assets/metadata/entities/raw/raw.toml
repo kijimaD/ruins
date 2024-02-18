@@ -1,3 +1,5 @@
+# item ================
+
 [[item]]
 Name = "回復薬"
 Description = "体力を半分程度回復する"
@@ -37,6 +39,40 @@ InflictsDamage = 100
 UsableScene = "BATTLE"
 TargetFaction = "ENEMY"
 TargetNum = "ALL"
+
+# weapon ================
+
+[[item]]
+Name = "木刀"
+Description = "木を削って作られた刀"
+
+[item.weapon]
+Accuracy = 100
+BaseDamage = 10
+AttackCount = 1
+EnergyConsumption = 1
+
+[[item]]
+Name = "レイガン"
+Description = "光線を発射する拳銃"
+
+[item.weapon]
+Accuracy = 90
+BaseDamage = 20
+AttackCount = 1
+EnergyConsumption = 2
+
+[[item]]
+Name = "ファイヤガン"
+Description = "炎の弾丸を発射する拳銃"
+
+[item.weapon]
+Accuracy = 90
+BaseDamage = 22
+AttackCount = 1
+EnergyConsumption = 3
+
+# member ================
 
 [[member]]
 Name = "椿"
