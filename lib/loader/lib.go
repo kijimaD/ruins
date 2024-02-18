@@ -26,6 +26,7 @@ type GameComponentList struct {
 	Pools           *gc.Pools
 	ProvidesHealing *gc.ProvidesHealing
 	InflictsDamage  *gc.InflictsDamage
+	Weapon          *gc.Weapon
 }
 
 type Entity struct {

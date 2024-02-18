@@ -17,6 +17,7 @@ type Components struct {
 	Pools           *ecs.SliceComponent
 	ProvidesHealing *ecs.SliceComponent
 	InflictsDamage  *ecs.SliceComponent
+	Weapon          *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -57,6 +58,13 @@ type Description struct {
 // 所持品
 type InBackpack struct{}
 
+// 武器
+type Weapon struct {
+	Accuracy    int // 命中率
+	BaseDamage  int // 攻撃力
+	AttackCount int // 攻撃回数
+}
+
 // パーティに参加している
 type InParty struct{}
 
@@ -76,10 +84,12 @@ type Pools struct {
 	Level int
 }
 
+// 回復する
 type ProvidesHealing struct {
 	Amount int
 }
 
+// ダメージを与える
 type InflictsDamage struct {
 	Amount int
 }
