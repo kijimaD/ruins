@@ -6,20 +6,17 @@ import (
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/golang/freetype/truetype"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
-	er "github.com/kijimaD/ruins/lib/engine/resources"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
-	"golang.org/x/image/font"
 )
 
 type InventoryMenuState struct {
@@ -101,10 +98,8 @@ type entryStruct struct {
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	ui := ebitenui.UI{}
-	buttonImage, _ := loadButtonImage()
-	face, _ := loadFont((*world.Resources.Fonts)["kappa"])
-
 	gameComponents := world.Components.Game.(*gc.Components)
+
 	var members []ecs.Entity
 	world.Manager.Join(
 		gameComponents.Member,
@@ -113,31 +108,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		members = append(members, entity)
 	}))
 
-	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewGridLayout(
-			widget.GridLayoutOpts.Columns(3),
-			widget.GridLayoutOpts.Spacing(2, 0),
-			widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-		)),
-	)
+	// 各アイテムが入るコンテナ
+	itemList := eui.NewScrollContentContainer()
 
-	title := widget.NewText(
-		widget.TextOpts.Text("インベントリ", face, styles.TextColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
-	rootContainer.AddChild(title)
-	rootContainer.AddChild(eui.EmptyContainer())
-	rootContainer.AddChild(eui.EmptyContainer())
-
-	content := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
-		widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		widget.RowLayoutOpts.Spacing(20),
-	)))
-
+	// アイテムの説明文コンテナ
 	itemDescContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Padding(widget.Insets{
@@ -149,14 +123,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.WidgetOpts.MinSize(0, 40),
 		),
 	)
-
-	itemDesc := widget.NewText(
-		widget.TextOpts.Text(" ", face, styles.TextColor),
-		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-			Stretch: true,
-		})),
-	)
+	// アイテムの説明文
+	itemDesc := eui.NewMenuText(" ", world)
 	itemDescContainer.AddChild(itemDesc)
+
+	partyContainer := eui.NewWindowContainer()
+	partyWindow := eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
 
 	var items []ecs.Entity
 	world.Manager.Join(
@@ -169,195 +141,150 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		items = append(items, entity)
 	}))
 
-	newWindowContainer := func() *widget.Container {
-		return widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
-			widget.ContainerOpts.Layout(
-				widget.NewGridLayout(
-					widget.GridLayoutOpts.Columns(1),
-					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{false, false, false}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
-						Top:    20,
-						Bottom: 20,
-						Left:   10,
-						Right:  10,
-					}),
-					widget.GridLayoutOpts.Spacing(0, 15),
-				),
-			),
-		)
+	{
+		world.Manager.Join(
+			gameComponents.Member,
+			gameComponents.InParty,
+			gameComponents.Name,
+			gameComponents.Pools,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+				effects.ItemTrigger(nil, selectedItem, effects.Single{entity}, world)
+				partyWindow.Close()
+				itemList.RemoveChild(selectedItemButton)
+			}, world)
+			partyContainer.AddChild(partyButton)
+		}))
 	}
 
-	newTitleContainer := func(title string) *widget.Container {
-		container := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
-			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-		)
-		container.AddChild(widget.NewText(
-			widget.TextOpts.Text(title, face, styles.TextColor),
-			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-			})),
-		))
-		return container
-	}
+	{
+		for _, entity := range items {
+			entity := entity
+			name := gameComponents.Name.Get(entity).(*gc.Name)
 
-	newWindow := func(title *widget.Container, content *widget.Container) *widget.Window {
-		return widget.NewWindow(
-			widget.WindowOpts.Contents(content),
-			widget.WindowOpts.TitleBar(title, 25),
-			widget.WindowOpts.Modal(),
-			widget.WindowOpts.CloseMode(widget.CLICK_OUT),
-			widget.WindowOpts.Draggable(),
-			widget.WindowOpts.Resizeable(),
-			widget.WindowOpts.MinSize(200, 200),
-			widget.WindowOpts.MaxSize(300, 400),
-		)
-	}
+			windowContainer := eui.NewWindowContainer()
+			titleContainer := eui.NewWindowHeaderContainer("アクション", world)
+			actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
-	newItemButton := func(text string, f func(args *widget.ButtonClickedEventArgs)) *widget.Button {
-		return widget.NewButton(
-			widget.ButtonOpts.Image(buttonImage),
-			widget.ButtonOpts.Text(text, face, &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.TextPadding(widget.Insets{
-				Left:   30,
-				Right:  30,
-				Top:    5,
-				Bottom: 5,
-			}),
-			widget.ButtonOpts.ClickedHandler(f),
-		)
-	}
+			// アイテムの名前がラベルについたボタン
+			itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+				x, y := ebiten.CursorPosition()
+				r := image.Rect(0, 0, x, y)
+				r = r.Add(image.Point{x + 20, y + 20})
+				actionWindow.SetLocation(r)
+				ui.AddWindow(actionWindow)
 
-	partyContainer := newWindowContainer()
-	partyWindow := newWindow(newTitleContainer("選択"), partyContainer)
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-		gameComponents.Name,
-		gameComponents.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			effects.ItemTrigger(nil, selectedItem, effects.Single{entity}, world)
-			partyWindow.Close()
-			content.RemoveChild(selectedItemButton)
-		})
-		partyContainer.AddChild(partyButton)
-	}))
-
-	for _, entity := range items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-
-		windowContainer := newWindowContainer()
-		titleContainer := newTitleContainer("アクション")
-
-		actionWindow := newWindow(titleContainer, windowContainer)
-
-		itemButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			actionWindow.SetLocation(r)
-			ui.AddWindow(actionWindow)
-
-			st.clickedItem = entity
-		})
-
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			if st.clickedItem != entity {
 				st.clickedItem = entity
-			}
+			}, world)
 
-			var description string
-			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.clickedItem && entity.HasComponent(gameComponents.Description) {
-					c := gameComponents.Description.Get(entity).(*gc.Description)
-					description = c.Description
+			itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+				if st.clickedItem != entity {
+					st.clickedItem = entity
 				}
-			}))
-			itemDesc.Label = description
-		})
-		content.AddChild(itemButton)
 
-		useButton := newItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			partyWindow.SetLocation(r)
+				var description string
+				world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+					if entity == st.clickedItem && entity.HasComponent(gameComponents.Description) {
+						c := gameComponents.Description.Get(entity).(*gc.Description)
+						description = c.Description
+					}
+				}))
+				itemDesc.Label = description
+			})
+			itemList.AddChild(itemButton)
 
-			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
-			switch consumable.TargetType.TargetNum {
-			case gc.TargetSingle:
-				ui.AddWindow(partyWindow)
+			useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
+				x, y := ebiten.CursorPosition()
+				r := image.Rect(0, 0, x, y)
+				r = r.Add(image.Point{x + 20, y + 20})
+				partyWindow.SetLocation(r)
+
+				consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
+				switch consumable.TargetType.TargetNum {
+				case gc.TargetSingle:
+					ui.AddWindow(partyWindow)
+					actionWindow.Close()
+					selectedItem = entity
+					selectedItemButton = itemButton
+				case gc.TargetAll:
+					effects.ItemTrigger(nil, entity, effects.Party{}, world)
+					actionWindow.Close()
+					itemList.RemoveChild(itemButton)
+				}
+			}, world)
+			windowContainer.AddChild(useButton)
+
+			dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
+				world.Manager.DeleteEntity(entity)
+				itemList.RemoveChild(itemButton)
 				actionWindow.Close()
-				selectedItem = entity
-				selectedItemButton = itemButton
-			case gc.TargetAll:
-				effects.ItemTrigger(nil, entity, effects.Party{}, world)
+			}, world)
+			windowContainer.AddChild(dropButton)
+
+			closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 				actionWindow.Close()
-				content.RemoveChild(itemButton)
-			}
-		})
-		windowContainer.AddChild(useButton)
-
-		dropButton := newItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
-			world.Manager.DeleteEntity(entity)
-			content.RemoveChild(itemButton)
-			actionWindow.Close()
-		})
-		windowContainer.AddChild(dropButton)
-
-		closeButton := newItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		})
-		windowContainer.AddChild(closeButton)
+			}, world)
+			windowContainer.AddChild(closeButton)
+		}
 	}
 
-	sc, v := eui.NewScrollContainer(content)
-	rootContainer.AddChild(sc)
-	rootContainer.AddChild(v)
+	rootContainer := newRootContainer()
+	{
+		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
+		rootContainer.AddChild(eui.EmptyContainer())
+		rootContainer.AddChild(eui.EmptyContainer())
 
+		sc, v := eui.NewScrollContainer(itemList)
+		rootContainer.AddChild(sc)
+		rootContainer.AddChild(v)
+		rootContainer.AddChild(newItemSpecContainer(world))
+
+		rootContainer.AddChild(itemDescContainer)
+	}
+
+	ui = ebitenui.UI{
+		Container: rootContainer,
+	}
+
+	return &ui
+}
+
+func newRootContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				// アイテム, スクロール, アイテム性能で3列になっている
+				widget.GridLayoutOpts.Columns(3),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    20,
+					Bottom: 20,
+					Left:   20,
+					Right:  20,
+				}),
+			)),
+	)
+}
+
+func newItemSpecContainer(world w.World) *widget.Container {
+	itemSpecContainer := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(2),
+			)))
 	itemSpec := widget.NewText(
-		widget.TextOpts.Text("性能", face, styles.TextColor),
+		widget.TextOpts.Text("性能", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position: widget.RowLayoutPositionCenter,
 			}),
 		),
 	)
-	rootContainer.AddChild(itemSpec)
-
-	rootContainer.AddChild(itemDescContainer)
-
-	ui = ebitenui.UI{
-		Container: rootContainer,
-	}
-
-	ui.Container = rootContainer
-
-	return &ui
-}
-
-func loadButtonImage() (*widget.ButtonImage, error) {
-	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
-	hover := e_image.NewNineSliceColor(styles.ButtonHoverColor)
-	pressed := e_image.NewNineSliceColor(styles.ButtonPressedColor)
-
-	return &widget.ButtonImage{
-		Idle:    idle,
-		Hover:   hover,
-		Pressed: pressed,
-	}, nil
-}
-
-func loadFont(font er.Font) (font.Face, error) {
-	return truetype.NewFace(font.Font, &truetype.Options{
-		Size: 24,
-		DPI:  72,
-	}), nil
+	itemSpecContainer.AddChild(itemSpec)
+	return itemSpecContainer
 }

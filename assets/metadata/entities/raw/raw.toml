@@ -30,7 +30,7 @@ TargetNum = "SINGLE"
 
 [[item]]
 Name = "手榴弾"
-Description = "全体にダメージを与える"
+Description = "全体にダメージを与える。全体にダメージを与える。"
 InflictsDamage = 100
 
 [item.consumable]

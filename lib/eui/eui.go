@@ -6,19 +6,22 @@ import (
 
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/styles"
 )
 
 func EmptyContainer() *widget.Container {
 	return widget.NewContainer()
 }
 
+// スクロールコンテナとスクロールバー
 func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
 	scrollContainer := widget.NewScrollContainer(
 		widget.ScrollContainerOpts.Content(content),
 		widget.ScrollContainerOpts.StretchContentWidth(),
 		widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-			Idle: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			Mask: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+			Idle: e_image.NewNineSliceColor(styles.ForegroundColor),
+			Mask: e_image.NewNineSliceColor(styles.ForegroundColor),
 		}),
 	)
 	pageSizeFunc := func() int {
@@ -55,4 +58,105 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 	})
 
 	return scrollContainer, vSlider
+}
+
+// 前面に開くウィンドウ用のコンテナ。色が違ったりする
+func NewWindowContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    20,
+				Bottom: 20,
+				Left:   10,
+				Right:  10,
+			}),
+			widget.RowLayoutOpts.Spacing(2),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.GridLayoutData{
+				MaxHeight: 160,
+			}),
+		),
+	)
+}
+
+// ウィンドウのヘッダー
+func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
+	container := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
+	container.AddChild(widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionCenter,
+			VerticalPosition:   widget.AnchorLayoutPositionCenter,
+		})),
+	))
+
+	return container
+}
+
+// スクロールコンテナの中身になるコンテナ
+func NewScrollContentContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    4,
+				Bottom: 4,
+				Left:   4,
+				Right:  4,
+			}),
+		)))
+}
+
+// text ================
+
+func NewMenuText(title string, world w.World) *widget.Text {
+	text := widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
+
+	return text
+}
+
+// window ================
+
+// ウィンドウ
+func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.Window {
+	return widget.NewWindow(
+		widget.WindowOpts.Contents(content),
+		widget.WindowOpts.TitleBar(title, 25),
+		widget.WindowOpts.Modal(),
+		widget.WindowOpts.CloseMode(widget.CLICK_OUT),
+		widget.WindowOpts.Draggable(),
+		widget.WindowOpts.Resizeable(),
+		widget.WindowOpts.MinSize(200, 200),
+		widget.WindowOpts.MaxSize(300, 400),
+	)
+}
+
+// button ================
+
+func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button {
+	return widget.NewButton(
+		widget.ButtonOpts.Image(LoadButtonImage()),
+		widget.ButtonOpts.Text(text, LoadFont(world), &widget.ButtonTextColor{
+			Idle: styles.TextColor,
+		}),
+		widget.ButtonOpts.TextPadding(widget.Insets{
+			Left:   30,
+			Right:  30,
+			Top:    5,
+			Bottom: 5,
+		}),
+		widget.ButtonOpts.ClickedHandler(f),
+	)
 }
