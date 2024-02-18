@@ -1,7 +1,9 @@
 package states
 
 import (
+	"fmt"
 	"image"
+	"strconv"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -34,6 +36,9 @@ var items []ecs.Entity                // 表示対象とするアイテム
 var itemDesc *widget.Text             // アイテムの概要
 var itemList *widget.Container        // アイテムリストのコンテナ
 var partyWindow *widget.Window        // 仲間を選択するウィンドウ
+var weaponAccuracy *widget.Text       // 武器の命中率
+var weaponBaseDamage *widget.Text     // 武器の攻撃力
+var weaponConsumption *widget.Text    // 武器の消費エネルギー
 
 // State interface ================
 
@@ -264,6 +269,21 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				}
 			}))
 			itemDesc.Label = description
+
+			var accuracy string
+			var baseDamage string
+			var consumption string
+			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
+				if entity == st.clickedItem && entity.HasComponent(gameComponents.Weapon) {
+					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
+					accuracy = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
+					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
+					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
+				}
+			}))
+			weaponAccuracy.Label = accuracy
+			weaponBaseDamage.Label = baseDamage
+			weaponConsumption.Label = consumption
 		})
 		itemList.AddChild(itemButton)
 
@@ -329,16 +349,29 @@ func newItemSpecContainer(world w.World) *widget.Container {
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(2),
-			)))
-	itemSpec := widget.NewText(
-		widget.TextOpts.Text("性能", eui.LoadFont(world), styles.TextColor),
+				widget.RowLayoutOpts.Spacing(4),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    10,
+					Bottom: 10,
+					Left:   10,
+					Right:  10,
+				}),
+			)),
+	)
+	weaponAccuracy = specText(world)
+	weaponBaseDamage = specText(world)
+	weaponConsumption = specText(world)
+	itemSpecContainer.AddChild(weaponAccuracy)
+	itemSpecContainer.AddChild(weaponBaseDamage)
+	itemSpecContainer.AddChild(weaponConsumption)
+	return itemSpecContainer
+}
+
+func specText(world w.World) *widget.Text {
+	return widget.NewText(
+		widget.TextOpts.Text("", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
 	)
-	itemSpecContainer.AddChild(itemSpec)
-	return itemSpecContainer
 }

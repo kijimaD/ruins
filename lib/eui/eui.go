@@ -102,16 +102,17 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 // スクロールコンテナの中身になるコンテナ
 func NewScrollContentContainer() *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Spacing(2),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    4,
-				Bottom: 4,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(2),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    4,
+					Bottom: 4,
+					Left:   4,
+					Right:  4,
+				}),
+			)))
 }
 
 // text ================

@@ -60,9 +60,10 @@ type InBackpack struct{}
 
 // 武器
 type Weapon struct {
-	Accuracy    int // 命中率
-	BaseDamage  int // 攻撃力
-	AttackCount int // 攻撃回数
+	Accuracy          int // 命中率
+	BaseDamage        int // 攻撃力
+	AttackCount       int // 攻撃回数
+	EnergyConsumption int // 消費エネルギー
 }
 
 // パーティに参加している

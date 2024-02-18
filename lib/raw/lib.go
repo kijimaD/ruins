@@ -131,9 +131,10 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	}
 	if item.Weapon != nil {
 		cl.Weapon = &gc.Weapon{
-			Accuracy:    item.Weapon.Accuracy,
-			BaseDamage:  item.Weapon.BaseDamage,
-			AttackCount: item.Weapon.AttackCount,
+			Accuracy:          item.Weapon.Accuracy,
+			BaseDamage:        item.Weapon.BaseDamage,
+			AttackCount:       item.Weapon.AttackCount,
+			EnergyConsumption: item.Weapon.EnergyConsumption,
 		}
 	}
 	return cl
