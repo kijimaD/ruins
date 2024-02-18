@@ -133,7 +133,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 	// アイテムの説明文
-	st.itemDesc = eui.NewMenuText(" ", world)
+	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
 	partyContainer := eui.NewWindowContainer()
@@ -176,7 +176,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 
-	rootContainer := st.newRootContainer()
+	rootContainer := st.newRootContainer(world)
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(eui.EmptyContainer())
@@ -320,7 +320,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 	}
 }
 
-func (st *InventoryMenuState) newRootContainer() *widget.Container {
+func (st *InventoryMenuState) newRootContainer(world w.World) *widget.Container {
 	return widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
 		widget.ContainerOpts.Layout(
