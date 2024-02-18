@@ -28,9 +28,8 @@ type InventoryMenuState struct {
 	menuLen       int
 	ui            *ebitenui.UI
 
-	clickedItem        ecs.Entity
 	selectedItem       ecs.Entity        // 選択中のアイテム
-	selectedItemButton *widget.Button    // 選択中のアイテムUI
+	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
 	itemList           *widget.Container // アイテムリストのコンテナ
@@ -142,22 +141,20 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	st.toggleMenuConsumable(world)
 
-	{
-		world.Manager.Join(
-			gameComponents.Member,
-			gameComponents.InParty,
-			gameComponents.Name,
-			gameComponents.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			name := gameComponents.Name.Get(entity).(*gc.Name)
-			partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
-				st.partyWindow.Close()
-				st.itemList.RemoveChild(st.selectedItemButton)
-			}, world)
-			partyContainer.AddChild(partyButton)
-		}))
-	}
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+		gameComponents.Name,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
+			st.partyWindow.Close()
+			st.itemList.RemoveChild(st.selectedItemButton)
+		}, world)
+		partyContainer.AddChild(partyButton)
+	}))
 
 	toggleContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
@@ -183,7 +180,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(eui.EmptyContainer())
-		// rootContainer.AddChild(eui.EmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
 		sc, v := eui.NewScrollContainer(st.itemList)
@@ -253,17 +249,17 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			actionWindow.SetLocation(r)
 			st.ui.AddWindow(actionWindow)
 
-			st.clickedItem = entity
+			st.selectedItem = entity
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			if st.clickedItem != entity {
-				st.clickedItem = entity
+			if st.selectedItem != entity {
+				st.selectedItem = entity
 			}
 
 			var description string
 			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.clickedItem && entity.HasComponent(gameComponents.Description) {
+				if entity == st.selectedItem && entity.HasComponent(gameComponents.Description) {
 					c := gameComponents.Description.Get(entity).(*gc.Description)
 					description = c.Description
 				}
@@ -274,7 +270,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			var baseDamage string
 			var consumption string
 			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.clickedItem && entity.HasComponent(gameComponents.Weapon) {
+				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
 					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
 					accuracy = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
 					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
