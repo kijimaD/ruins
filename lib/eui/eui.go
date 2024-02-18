@@ -82,40 +82,6 @@ func NewWindowContainer() *widget.Container {
 	)
 }
 
-// スクロールコンテナの中身になるコンテナ
-func NewScrollContentContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Spacing(2),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    4,
-				Bottom: 4,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
-}
-
-///////////
-// text  //
-///////////
-
-// 左上のメニュータイトル
-// 「インベントリ」や「仲間」や「装備」とか
-func NewMenuTitle(title string, world w.World) *widget.Text {
-	text := widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter,
-			}),
-		),
-	)
-
-	return text
-}
-
 // ウィンドウのヘッダー
 func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 	container := widget.NewContainer(
@@ -131,4 +97,66 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 	))
 
 	return container
+}
+
+// スクロールコンテナの中身になるコンテナ
+func NewScrollContentContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    4,
+				Bottom: 4,
+				Left:   4,
+				Right:  4,
+			}),
+		)))
+}
+
+// text ================
+
+func NewMenuText(title string, world w.World) *widget.Text {
+	text := widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
+
+	return text
+}
+
+// window ================
+
+// ウィンドウ
+func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.Window {
+	return widget.NewWindow(
+		widget.WindowOpts.Contents(content),
+		widget.WindowOpts.TitleBar(title, 25),
+		widget.WindowOpts.Modal(),
+		widget.WindowOpts.CloseMode(widget.CLICK_OUT),
+		widget.WindowOpts.Draggable(),
+		widget.WindowOpts.Resizeable(),
+		widget.WindowOpts.MinSize(200, 200),
+		widget.WindowOpts.MaxSize(300, 400),
+	)
+}
+
+// button ================
+
+func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button {
+	return widget.NewButton(
+		widget.ButtonOpts.Image(LoadButtonImage()),
+		widget.ButtonOpts.Text(text, LoadFont(world), &widget.ButtonTextColor{
+			Idle: styles.TextColor,
+		}),
+		widget.ButtonOpts.TextPadding(widget.Insets{
+			Left:   30,
+			Right:  30,
+			Top:    5,
+			Bottom: 5,
+		}),
+		widget.ButtonOpts.ClickedHandler(f),
+	)
 }

@@ -125,7 +125,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			)),
 	)
 
-	rootContainer.AddChild(eui.NewMenuTitle("インベントリ", world))
+	rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 	rootContainer.AddChild(eui.EmptyContainer())
 	rootContainer.AddChild(eui.EmptyContainer())
 
@@ -145,12 +145,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 	// アイテムの説明文
-	itemDesc := widget.NewText(
-		widget.TextOpts.Text(" ", eui.LoadFont(world), styles.TextColor),
-		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-			Stretch: true,
-		})),
-	)
+	itemDesc := eui.NewMenuText(" ", world)
 	itemDescContainer.AddChild(itemDesc)
 
 	var items []ecs.Entity
@@ -164,37 +159,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		items = append(items, entity)
 	}))
 
-	newWindow := func(title *widget.Container, content *widget.Container) *widget.Window {
-		return widget.NewWindow(
-			widget.WindowOpts.Contents(content),
-			widget.WindowOpts.TitleBar(title, 25),
-			widget.WindowOpts.Modal(),
-			widget.WindowOpts.CloseMode(widget.CLICK_OUT),
-			widget.WindowOpts.Draggable(),
-			widget.WindowOpts.Resizeable(),
-			widget.WindowOpts.MinSize(200, 200),
-			widget.WindowOpts.MaxSize(300, 400),
-		)
-	}
-
-	newItemButton := func(text string, f func(args *widget.ButtonClickedEventArgs)) *widget.Button {
-		return widget.NewButton(
-			widget.ButtonOpts.Image(eui.LoadButtonImage()),
-			widget.ButtonOpts.Text(text, eui.LoadFont(world), &widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			}),
-			widget.ButtonOpts.TextPadding(widget.Insets{
-				Left:   30,
-				Right:  30,
-				Top:    5,
-				Bottom: 5,
-			}),
-			widget.ButtonOpts.ClickedHandler(f),
-		)
-	}
-
 	partyContainer := eui.NewWindowContainer()
-	partyWindow := newWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
+	partyWindow := eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
 	world.Manager.Join(
 		gameComponents.Member,
 		gameComponents.InParty,
@@ -202,11 +168,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
-		partyButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, selectedItem, effects.Single{entity}, world)
 			partyWindow.Close()
 			itemList.RemoveChild(selectedItemButton)
-		})
+		}, world)
 		partyContainer.AddChild(partyButton)
 	}))
 
@@ -216,11 +182,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 		windowContainer := eui.NewWindowContainer()
 		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-
-		actionWindow := newWindow(titleContainer, windowContainer)
+		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
 		// アイテムの名前がラベルについたボタン
-		itemButton := newItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x + 20, y + 20})
@@ -228,7 +193,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			ui.AddWindow(actionWindow)
 
 			st.clickedItem = entity
-		})
+		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.clickedItem != entity {
@@ -246,7 +211,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		})
 		itemList.AddChild(itemButton)
 
-		useButton := newItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
+		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x + 20, y + 20})
@@ -264,19 +229,19 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 				actionWindow.Close()
 				itemList.RemoveChild(itemButton)
 			}
-		})
+		}, world)
 		windowContainer.AddChild(useButton)
 
-		dropButton := newItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
+		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
 			itemList.RemoveChild(itemButton)
 			actionWindow.Close()
-		})
+		}, world)
 		windowContainer.AddChild(dropButton)
 
-		closeButton := newItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.Close()
-		})
+		}, world)
 		windowContainer.AddChild(closeButton)
 	}
 
