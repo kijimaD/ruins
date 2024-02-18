@@ -130,17 +130,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer.AddChild(eui.EmptyContainer())
 
 	// 各アイテムが入るコンテナ
-	itemList := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Spacing(2),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    4,
-				Bottom: 4,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
+	itemList := eui.NewScrollContentContainer()
 
 	// アイテムの説明文コンテナ
 	itemDescContainer := widget.NewContainer(
@@ -154,7 +144,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.WidgetOpts.MinSize(0, 40),
 		),
 	)
-
 	// アイテムの説明文
 	itemDesc := widget.NewText(
 		widget.TextOpts.Text(" ", eui.LoadFont(world), styles.TextColor),
@@ -174,21 +163,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
-
-	newTitleContainer := func(title string) *widget.Container {
-		container := widget.NewContainer(
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
-			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-		)
-		container.AddChild(widget.NewText(
-			widget.TextOpts.Text(title, eui.LoadFont(world), styles.TextColor),
-			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-			})),
-		))
-		return container
-	}
 
 	newWindow := func(title *widget.Container, content *widget.Container) *widget.Window {
 		return widget.NewWindow(
@@ -220,7 +194,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	partyContainer := eui.NewWindowContainer()
-	partyWindow := newWindow(newTitleContainer("選択"), partyContainer)
+	partyWindow := newWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
 	world.Manager.Join(
 		gameComponents.Member,
 		gameComponents.InParty,
@@ -241,7 +215,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		windowContainer := eui.NewWindowContainer()
-		titleContainer := newTitleContainer("アクション")
+		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
 
 		actionWindow := newWindow(titleContainer, windowContainer)
 
@@ -312,10 +286,11 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	itemSpecContainer := widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Spacing(2),
-		)))
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(2),
+			)))
 	itemSpec := widget.NewText(
 		widget.TextOpts.Text("性能", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(

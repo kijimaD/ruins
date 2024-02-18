@@ -14,6 +14,7 @@ func EmptyContainer() *widget.Container {
 	return widget.NewContainer()
 }
 
+// スクロールコンテナとスクロールバー
 func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
 	scrollContainer := widget.NewScrollContainer(
 		widget.ScrollContainerOpts.Content(content),
@@ -81,6 +82,25 @@ func NewWindowContainer() *widget.Container {
 	)
 }
 
+// スクロールコンテナの中身になるコンテナ
+func NewScrollContentContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    4,
+				Bottom: 4,
+				Left:   4,
+				Right:  4,
+			}),
+		)))
+}
+
+///////////
+// text  //
+///////////
+
 // 左上のメニュータイトル
 // 「インベントリ」や「仲間」や「装備」とか
 func NewMenuTitle(title string, world w.World) *widget.Text {
@@ -94,4 +114,21 @@ func NewMenuTitle(title string, world w.World) *widget.Text {
 	)
 
 	return text
+}
+
+// ウィンドウのヘッダー
+func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
+	container := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
+	container.AddChild(widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionCenter,
+			VerticalPosition:   widget.AnchorLayoutPositionCenter,
+		})),
+	))
+
+	return container
 }
