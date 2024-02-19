@@ -119,26 +119,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	partyContainer := eui.NewWindowContainer()
-	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
-
-	st.toggleMenuConsumable(world)
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-		gameComponents.Name,
-		gameComponents.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
-			st.partyWindow.Close()
-			st.itemList.RemoveChild(st.selectedItemButton)
-		}, world)
-		partyContainer.AddChild(partyButton)
-	}))
+	st.initPartyWindow(world)
 
 	toggleContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
@@ -151,6 +132,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			}),
 		)))
 
+	st.toggleMenuConsumable(world)
 	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) {
 		st.toggleMenuConsumable(world)
 	}, world)
@@ -163,7 +145,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := st.newRootContainer(world)
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
-		rootContainer.AddChild(eui.EmptyContainer())
+		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
 		sc, v := eui.NewScrollContainer(st.itemList)
@@ -301,6 +283,27 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		}, world)
 		windowContainer.AddChild(closeButton)
 	}
+}
+
+// メンバー選択画面を初期化する
+func (st *InventoryMenuState) initPartyWindow(world w.World) {
+	partyContainer := eui.NewWindowContainer()
+	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+		gameComponents.Name,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
+			st.partyWindow.Close()
+			st.itemList.RemoveChild(st.selectedItemButton)
+		}, world)
+		partyContainer.AddChild(partyButton)
+	}))
 }
 
 func (st *InventoryMenuState) newRootContainer(world w.World) *widget.Container {
