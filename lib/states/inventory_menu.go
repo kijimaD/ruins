@@ -27,18 +27,17 @@ type InventoryMenuState struct {
 	inventoryMenu []ecs.Entity
 	menuLen       int
 	ui            *ebitenui.UI
-	clickedItem   ecs.Entity
-}
 
-var selectedItem ecs.Entity           // 選択中のアイテム
-var selectedItemButton *widget.Button // 選択中のアイテムUI
-var items []ecs.Entity                // 表示対象とするアイテム
-var itemDesc *widget.Text             // アイテムの概要
-var itemList *widget.Container        // アイテムリストのコンテナ
-var partyWindow *widget.Window        // 仲間を選択するウィンドウ
-var weaponAccuracy *widget.Text       // 武器の命中率
-var weaponBaseDamage *widget.Text     // 武器の攻撃力
-var weaponConsumption *widget.Text    // 武器の消費エネルギー
+	selectedItem       ecs.Entity        // 選択中のアイテム
+	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
+	items              []ecs.Entity      // 表示対象とするアイテム
+	itemDesc           *widget.Text      // アイテムの概要
+	itemList           *widget.Container // アイテムリストのコンテナ
+	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
+	weaponAccuracy     *widget.Text      // 武器の命中率
+	weaponBaseDamage   *widget.Text      // 武器の攻撃力
+	weaponConsumption  *widget.Text      // 武器の消費エネルギー
+}
 
 // State interface ================
 
@@ -100,110 +99,43 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 
 // ================
 
-type entryStruct struct {
-	entity      ecs.Entity
-	name        string
-	description string
-}
-
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
-	ui := ebitenui.UI{}
-	gameComponents := world.Components.Game.(*gc.Components)
-
-	var members []ecs.Entity
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		members = append(members, entity)
-	}))
-
 	// 各アイテムが入るコンテナ
-	itemList = eui.NewScrollContentContainer()
+	st.itemList = eui.NewScrollContentContainer()
 
-	// アイテムの説明文コンテナ
-	itemDescContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    20,
-				Bottom: 20,
-			}),
-		)),
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(0, 40),
-		),
-	)
 	// アイテムの説明文
-	itemDesc = eui.NewMenuText(" ", world)
-	itemDescContainer.AddChild(itemDesc)
+	itemDescContainer := eui.NewRowContainer()
+	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
+	itemDescContainer.AddChild(st.itemDesc)
 
-	partyContainer := eui.NewWindowContainer()
-	partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
-
-	st.toggleMenuConsumable(world)
-
-	{
-		world.Manager.Join(
-			gameComponents.Member,
-			gameComponents.InParty,
-			gameComponents.Name,
-			gameComponents.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			name := gameComponents.Name.Get(entity).(*gc.Name)
-			partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, selectedItem, effects.Single{entity}, world)
-				partyWindow.Close()
-				itemList.RemoveChild(selectedItemButton)
-			}, world)
-			partyContainer.AddChild(partyButton)
-		}))
-	}
-
-	toggleContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Spacing(2),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    4,
-				Bottom: 4,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
-
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) {
-		st.toggleMenuConsumable(world)
-	}, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) {
-		st.toggleMenuWeapon(world)
-	}, world)
+	st.queryMenuConsumable(world)
+	toggleContainer := eui.NewRowContainer()
+	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
+	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 
-	rootContainer := newRootContainer()
+	rootContainer := st.newRootContainer(world)
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
-		rootContainer.AddChild(eui.EmptyContainer())
-		// rootContainer.AddChild(eui.EmptyContainer())
+		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(itemList)
+		sc, v := eui.NewScrollContainer(st.itemList)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(newItemSpecContainer(world))
+		rootContainer.AddChild(st.newItemSpecContainer(world))
 
 		rootContainer.AddChild(itemDescContainer)
 	}
 
-	ui = ebitenui.UI{
-		Container: rootContainer,
-	}
-
-	return &ui
+	return &ebitenui.UI{Container: rootContainer}
 }
 
-func (st *InventoryMenuState) toggleMenuConsumable(world w.World) {
-	itemList.RemoveChildren()
-	items = []ecs.Entity{}
+// 新しいクエリを実行してitemsをセットする
+func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
+	st.itemList.RemoveChildren()
+	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -213,14 +145,15 @@ func (st *InventoryMenuState) toggleMenuConsumable(world w.World) {
 		gameComponents.InBackpack,
 		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
+		st.items = append(st.items, entity)
 	}))
 	st.generateList(world)
 }
 
-func (st *InventoryMenuState) toggleMenuWeapon(world w.World) {
-	itemList.RemoveChildren()
-	items = []ecs.Entity{}
+// 新しいクエリを実行してitemsをセットする
+func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
+	st.itemList.RemoveChildren()
+	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -230,14 +163,15 @@ func (st *InventoryMenuState) toggleMenuWeapon(world w.World) {
 		gameComponents.InBackpack,
 		gameComponents.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
+		st.items = append(st.items, entity)
 	}))
 	st.generateList(world)
 }
 
+// itemsからUIを生成する
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	for _, entity := range items {
+	for _, entity := range st.items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
@@ -253,57 +187,58 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			actionWindow.SetLocation(r)
 			st.ui.AddWindow(actionWindow)
 
-			st.clickedItem = entity
+			st.selectedItem = entity
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			if st.clickedItem != entity {
-				st.clickedItem = entity
+			if st.selectedItem != entity {
+				st.selectedItem = entity
 			}
 
 			var description string
 			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.clickedItem && entity.HasComponent(gameComponents.Description) {
+				if entity == st.selectedItem && entity.HasComponent(gameComponents.Description) {
 					c := gameComponents.Description.Get(entity).(*gc.Description)
 					description = c.Description
 				}
 			}))
-			itemDesc.Label = description
+			st.itemDesc.Label = description
 
 			var accuracy string
 			var baseDamage string
 			var consumption string
 			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.clickedItem && entity.HasComponent(gameComponents.Weapon) {
+				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
 					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
 					accuracy = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
 					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
 					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
 				}
 			}))
-			weaponAccuracy.Label = accuracy
-			weaponBaseDamage.Label = baseDamage
-			weaponConsumption.Label = consumption
+			st.weaponAccuracy.Label = accuracy
+			st.weaponBaseDamage.Label = baseDamage
+			st.weaponConsumption.Label = consumption
 		})
-		itemList.AddChild(itemButton)
+		st.itemList.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x + 20, y + 20})
-			partyWindow.SetLocation(r)
+			st.initPartyWindow(world)
+			st.partyWindow.SetLocation(r)
 
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {
 			case gc.TargetSingle:
-				st.ui.AddWindow(partyWindow)
+				st.ui.AddWindow(st.partyWindow)
 				actionWindow.Close()
-				selectedItem = entity
-				selectedItemButton = itemButton
+				st.selectedItem = entity
+				st.selectedItemButton = itemButton
 			case gc.TargetAll:
 				effects.ItemTrigger(nil, entity, effects.Party{}, world)
 				actionWindow.Close()
-				itemList.RemoveChild(itemButton)
+				st.itemList.RemoveChild(itemButton)
 			}
 		}, world)
 		if gameComponents.Consumable.Get(entity) != nil {
@@ -312,7 +247,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
-			itemList.RemoveChild(itemButton)
+			st.itemList.RemoveChild(itemButton)
 			actionWindow.Close()
 		}, world)
 		windowContainer.AddChild(dropButton)
@@ -324,7 +259,28 @@ func (st *InventoryMenuState) generateList(world world.World) {
 	}
 }
 
-func newRootContainer() *widget.Container {
+// メンバー選択画面を初期化する
+func (st *InventoryMenuState) initPartyWindow(world w.World) {
+	partyContainer := eui.NewWindowContainer()
+	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+		gameComponents.Name,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
+			st.partyWindow.Close()
+			st.itemList.RemoveChild(st.selectedItemButton)
+		}, world)
+		partyContainer.AddChild(partyButton)
+	}))
+}
+
+func (st *InventoryMenuState) newRootContainer(world w.World) *widget.Container {
 	return widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
 		widget.ContainerOpts.Layout(
@@ -343,7 +299,7 @@ func newRootContainer() *widget.Container {
 	)
 }
 
-func newItemSpecContainer(world w.World) *widget.Container {
+func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Container {
 	itemSpecContainer := widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
 		widget.ContainerOpts.Layout(
@@ -358,16 +314,16 @@ func newItemSpecContainer(world w.World) *widget.Container {
 				}),
 			)),
 	)
-	weaponAccuracy = specText(world)
-	weaponBaseDamage = specText(world)
-	weaponConsumption = specText(world)
-	itemSpecContainer.AddChild(weaponAccuracy)
-	itemSpecContainer.AddChild(weaponBaseDamage)
-	itemSpecContainer.AddChild(weaponConsumption)
+	st.weaponAccuracy = st.specText(world)
+	st.weaponBaseDamage = st.specText(world)
+	st.weaponConsumption = st.specText(world)
+	itemSpecContainer.AddChild(st.weaponAccuracy)
+	itemSpecContainer.AddChild(st.weaponBaseDamage)
+	itemSpecContainer.AddChild(st.weaponConsumption)
 	return itemSpecContainer
 }
 
-func specText(world w.World) *widget.Text {
+func (st *InventoryMenuState) specText(world w.World) *widget.Text {
 	return widget.NewText(
 		widget.TextOpts.Text("", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(

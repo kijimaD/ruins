@@ -10,8 +10,22 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
-func EmptyContainer() *widget.Container {
+func NewEmptyContainer() *widget.Container {
 	return widget.NewContainer()
+}
+
+// 汎用的なrowコンテナ
+func NewRowContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    10,
+				Bottom: 10,
+				Left:   4,
+				Right:  4,
+			}),
+		)))
 }
 
 // スクロールコンテナとスクロールバー
@@ -60,6 +74,22 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 	return scrollContainer, vSlider
 }
 
+// スクロールコンテナの中身になるコンテナ
+func NewScrollContentContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(2),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    4,
+					Bottom: 4,
+					Left:   4,
+					Right:  4,
+				}),
+			)))
+}
+
 // 前面に開くウィンドウ用のコンテナ。色が違ったりする
 func NewWindowContainer() *widget.Container {
 	return widget.NewContainer(
@@ -97,22 +127,6 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 	))
 
 	return container
-}
-
-// スクロールコンテナの中身になるコンテナ
-func NewScrollContentContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(2),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    4,
-					Bottom: 4,
-					Left:   4,
-					Right:  4,
-				}),
-			)))
 }
 
 // text ================
