@@ -103,42 +103,15 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテムが入るコンテナ
 	st.itemList = eui.NewScrollContentContainer()
 
-	// アイテムの説明文コンテナ
-	itemDescContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    20,
-				Bottom: 20,
-			}),
-		)),
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(0, 40),
-		),
-	)
 	// アイテムの説明文
+	itemDescContainer := eui.NewRowContainer()
 	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	st.initPartyWindow(world)
-
-	toggleContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Spacing(2),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    4,
-				Bottom: 4,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
-
-	st.toggleMenuConsumable(world)
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) {
-		st.toggleMenuConsumable(world)
-	}, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) {
-		st.toggleMenuWeapon(world)
-	}, world)
+	st.queryMenuConsumable(world)
+	toggleContainer := eui.NewRowContainer()
+	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
+	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 
@@ -160,7 +133,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 }
 
 // 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) toggleMenuConsumable(world w.World) {
+func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
 	st.itemList.RemoveChildren()
 	st.items = []ecs.Entity{}
 
@@ -178,7 +151,7 @@ func (st *InventoryMenuState) toggleMenuConsumable(world w.World) {
 }
 
 // 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) toggleMenuWeapon(world w.World) {
+func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
 	st.itemList.RemoveChildren()
 	st.items = []ecs.Entity{}
 
@@ -252,6 +225,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x + 20, y + 20})
+			st.initPartyWindow(world)
 			st.partyWindow.SetLocation(r)
 
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)

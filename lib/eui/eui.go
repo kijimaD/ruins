@@ -14,6 +14,20 @@ func NewEmptyContainer() *widget.Container {
 	return widget.NewContainer()
 }
 
+// 汎用的なrowコンテナ
+func NewRowContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    10,
+				Bottom: 10,
+				Left:   4,
+				Right:  4,
+			}),
+		)))
+}
+
 // スクロールコンテナとスクロールバー
 func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
 	scrollContainer := widget.NewScrollContainer(
