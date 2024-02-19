@@ -99,24 +99,7 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 
 // ================
 
-type entryStruct struct {
-	entity      ecs.Entity
-	name        string
-	description string
-}
-
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
-	ui := ebitenui.UI{}
-	gameComponents := world.Components.Game.(*gc.Components)
-
-	var members []ecs.Entity
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		members = append(members, entity)
-	}))
-
 	// 各アイテムが入るコンテナ
 	st.itemList = eui.NewScrollContentContainer()
 
@@ -141,6 +124,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 	st.toggleMenuConsumable(world)
 
+	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Member,
 		gameComponents.InParty,
@@ -190,13 +174,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(itemDescContainer)
 	}
 
-	ui = ebitenui.UI{
-		Container: rootContainer,
-	}
-
-	return &ui
+	return &ebitenui.UI{Container: rootContainer}
 }
 
+// 新しいクエリを実行してitemsをセットする
 func (st *InventoryMenuState) toggleMenuConsumable(world w.World) {
 	st.itemList.RemoveChildren()
 	st.items = []ecs.Entity{}
@@ -214,6 +195,7 @@ func (st *InventoryMenuState) toggleMenuConsumable(world w.World) {
 	st.generateList(world)
 }
 
+// 新しいクエリを実行してitemsをセットする
 func (st *InventoryMenuState) toggleMenuWeapon(world w.World) {
 	st.itemList.RemoveChildren()
 	st.items = []ecs.Entity{}
@@ -231,6 +213,7 @@ func (st *InventoryMenuState) toggleMenuWeapon(world w.World) {
 	st.generateList(world)
 }
 
+// itemsからUIを生成する
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	for _, entity := range st.items {
