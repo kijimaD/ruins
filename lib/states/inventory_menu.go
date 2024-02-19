@@ -25,7 +25,6 @@ import (
 type InventoryMenuState struct {
 	selection     int
 	inventoryMenu []ecs.Entity
-	menuLen       int
 	ui            *ebitenui.UI
 
 	selectedItem       ecs.Entity        // 選択中のアイテム
@@ -115,7 +114,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 
-	rootContainer := st.newRootContainer(world)
+	rootContainer := eui.NewItemGridContainer()
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(eui.NewEmptyContainer())
@@ -278,25 +277,6 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		}, world)
 		partyContainer.AddChild(partyButton)
 	}))
-}
-
-func (st *InventoryMenuState) newRootContainer(world w.World) *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				// アイテム, スクロール, アイテム性能で3列になっている
-				widget.GridLayoutOpts.Columns(3),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    20,
-					Bottom: 20,
-					Left:   20,
-					Right:  20,
-				}),
-			)),
-	)
 }
 
 func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Container {
