@@ -29,7 +29,8 @@ description = "半分程度回復する"
 			"リペア": 0,
 			"回復薬": 1,
 		},
-		MemberIndex: map[string]int{},
+		MemberIndex:   map[string]int{},
+		MaterialIndex: map[string]int{},
 	}
 	assert.Equal(t, expect, raw)
 }
