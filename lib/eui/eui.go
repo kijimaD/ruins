@@ -28,6 +28,26 @@ func NewRowContainer() *widget.Container {
 		)))
 }
 
+// アイテム系メニューのRootとなる3x3のグリッドコンテナ
+func NewItemGridContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				// アイテム, スクロール, アイテム性能で3列になっている
+				widget.GridLayoutOpts.Columns(3),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    20,
+					Bottom: 20,
+					Left:   20,
+					Right:  20,
+				}),
+			)),
+	)
+}
+
 // スクロールコンテナとスクロールバー
 func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
 	scrollContainer := widget.NewScrollContainer(

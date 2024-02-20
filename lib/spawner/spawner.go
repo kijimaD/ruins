@@ -21,3 +21,13 @@ func SpawnMember(world w.World, name string, inParty bool) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
 }
+
+func SpawnAllMaterials(world w.World) {
+	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+	for k, _ := range rawMaster.MaterialIndex {
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k))
+		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+		loader.AddEntities(world, componentList)
+	}
+}

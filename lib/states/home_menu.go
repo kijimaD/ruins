@@ -11,6 +11,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -46,8 +47,8 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	}))
 	if count == 0 {
 		spawner.SpawnItem(world, "木刀")
+		spawner.SpawnItem(world, "ハンドガン")
 		spawner.SpawnItem(world, "レイガン")
-		spawner.SpawnItem(world, "ファイヤガン")
 		spawner.SpawnItem(world, "回復薬")
 		spawner.SpawnItem(world, "回復薬")
 		spawner.SpawnItem(world, "回復薬")
@@ -63,6 +64,10 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾")
 		spawner.SpawnMember(world, "椿", true)
 		spawner.SpawnMember(world, "白瀬", true)
+		spawner.SpawnAllMaterials(world)
+		materialhelper.PlusAmount("鉄くず", 4, world)
+		materialhelper.PlusAmount("緑ハーブ", 2, world)
+		materialhelper.PlusAmount("フェライトコア", 3, world)
 	}
 }
 

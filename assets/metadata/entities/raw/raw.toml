@@ -44,13 +44,23 @@ TargetNum = "ALL"
 
 [[item]]
 Name = "木刀"
-Description = "木を削って作られた刀"
+Description = "旅行の土産でおなじみの木を削って作られた刀"
 
 [item.weapon]
 Accuracy = 100
-BaseDamage = 10
+BaseDamage = 8
 AttackCount = 1
 EnergyConsumption = 1
+
+[[item]]
+Name = "ハンドガン"
+Description = "樹脂素材を多用した自動拳銃"
+
+[item.weapon]
+Accuracy = 95
+BaseDamage = 14
+AttackCount = 1
+EnergyConsumption = 2
 
 [[item]]
 Name = "レイガン"
@@ -60,17 +70,21 @@ Description = "光線を発射する拳銃"
 Accuracy = 90
 BaseDamage = 20
 AttackCount = 1
-EnergyConsumption = 2
-
-[[item]]
-Name = "ファイヤガン"
-Description = "炎の弾丸を発射する拳銃"
-
-[item.weapon]
-Accuracy = 90
-BaseDamage = 22
-AttackCount = 1
 EnergyConsumption = 3
+
+# material ================
+
+[[material]]
+Name = "鉄くず"
+Description = "鉄を多く含む金属の塊"
+
+[[material]]
+Name = "緑ハーブ"
+Description = "よい香りに鎮静・興奮などの作用がある植物"
+
+[[material]]
+Name = "フェライトコア"
+Description = "フェライト製の磁性体"
 
 # member ================
 
