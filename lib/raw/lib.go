@@ -165,7 +165,7 @@ func (rw *RawMaster) GenerateMaterial(name string) gloader.GameComponentList {
 	}
 	material := rw.Raws.Materials[materialIdx]
 	cl := gloader.GameComponentList{}
-	cl.Material = &gc.Material{Amount: 1} // debug用。本来は0から
+	cl.Material = &gc.Material{Amount: 0}
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
 
