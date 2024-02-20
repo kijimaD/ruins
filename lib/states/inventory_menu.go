@@ -33,6 +33,7 @@ type InventoryMenuState struct {
 	itemDesc           *widget.Text      // アイテムの概要
 	itemList           *widget.Container // アイテムリストのコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
+	itemAmount         *widget.Text      // アイテムの数量
 	weaponAccuracy     *widget.Text      // 武器の命中率
 	weaponBaseDamage   *widget.Text      // 武器の攻撃力
 	weaponConsumption  *widget.Text      // 武器の消費エネルギー
@@ -111,8 +112,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	toggleContainer := eui.NewRowContainer()
 	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
 	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
+	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.queryMenuMaterial(world) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
+	toggleContainer.AddChild(toggleMaterialButton)
 
 	rootContainer := eui.NewItemGridContainer()
 	{
@@ -167,6 +170,25 @@ func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
 	st.generateList(world)
 }
 
+// 新しいクエリを実行してitemsをセットする
+func (st *InventoryMenuState) queryMenuMaterial(world w.World) {
+	st.itemList.RemoveChildren()
+	st.items = []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Name,
+		gameComponents.Description,
+		gameComponents.Material,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		material := gameComponents.Material.Get(entity).(*gc.Material)
+		if material.Amount > 0 {
+			st.items = append(st.items, entity)
+		}
+	}))
+	st.generateList(world)
+}
+
 // itemsからUIを生成する
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -217,6 +239,15 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			st.weaponAccuracy.Label = accuracy
 			st.weaponBaseDamage.Label = baseDamage
 			st.weaponConsumption.Label = consumption
+
+			var amount string
+			world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
+				if entity == st.selectedItem && entity.HasComponent(gameComponents.Material) {
+					material := gameComponents.Material.Get(entity).(*gc.Material)
+					amount = fmt.Sprintf("%d 個", material.Amount)
+				}
+			}))
+			st.itemAmount.Label = amount
 		})
 		st.itemList.AddChild(itemButton)
 
@@ -294,9 +325,11 @@ func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Contai
 				}),
 			)),
 	)
+	st.itemAmount = st.specText(world)
 	st.weaponAccuracy = st.specText(world)
 	st.weaponBaseDamage = st.specText(world)
 	st.weaponConsumption = st.specText(world)
+	itemSpecContainer.AddChild(st.itemAmount)
 	itemSpecContainer.AddChild(st.weaponAccuracy)
 	itemSpecContainer.AddChild(st.weaponBaseDamage)
 	itemSpecContainer.AddChild(st.weaponConsumption)

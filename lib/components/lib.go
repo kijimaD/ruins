@@ -18,6 +18,7 @@ type Components struct {
 	ProvidesHealing *ecs.SliceComponent
 	InflictsDamage  *ecs.SliceComponent
 	Weapon          *ecs.SliceComponent
+	Material        *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -37,9 +38,10 @@ type Warp struct {
 }
 
 // アイテム枠に入るもの
+// 一切使用できない売却専用アイテムとかはItem単独に含まれる
 type Item struct{}
 
-// 消耗品
+// 消耗品。一度使うとなくなる
 type Consumable struct {
 	UsableScene UsableSceneType
 	TargetType  TargetType
@@ -55,7 +57,7 @@ type Description struct {
 	Description string
 }
 
-// 所持品
+// インベントリに所持している
 type InBackpack struct{}
 
 // 武器
@@ -66,7 +68,7 @@ type Weapon struct {
 	EnergyConsumption int // 消費エネルギー
 }
 
-// パーティに参加している
+// パーティに参加している状態
 type InParty struct{}
 
 // 冒険に参加できるメンバー
@@ -85,12 +87,17 @@ type Pools struct {
 	Level int
 }
 
-// 回復する
+// 回復する性質
 type ProvidesHealing struct {
 	Amount int
 }
 
-// ダメージを与える
+// ダメージを与える性質
 type InflictsDamage struct {
+	Amount int
+}
+
+// 合成素材。カウントだけしている
+type Material struct {
 	Amount int
 }

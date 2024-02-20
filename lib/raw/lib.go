@@ -11,14 +11,16 @@ import (
 )
 
 type RawMaster struct {
-	Raws        Raws
-	ItemIndex   map[string]int
-	MemberIndex map[string]int
+	Raws          Raws
+	ItemIndex     map[string]int
+	MaterialIndex map[string]int
+	MemberIndex   map[string]int
 }
 
 type Raws struct {
-	Items   []Item   `toml:"item"`
-	Members []Member `toml:"member"`
+	Items     []Item     `toml:"item"`
+	Materials []Material `toml:"material"`
+	Members   []Member   `toml:"member"`
 }
 
 // tomlで入力として受け取る項目
@@ -35,6 +37,18 @@ type Consumable struct {
 	UsableScene   string
 	TargetFaction string
 	TargetNum     string
+}
+
+type Weapon struct {
+	Accuracy          int // 命中率。0~100%
+	BaseDamage        int // ベース攻撃力
+	AttackCount       int // 攻撃回数
+	EnergyConsumption int // 攻撃で消費するエネルギー
+}
+
+type Material struct {
+	Name        string
+	Description string
 }
 
 type Member struct {
@@ -55,11 +69,15 @@ func LoadFromFile(path string) RawMaster {
 func Load(entityMetadataContent string) RawMaster {
 	rw := RawMaster{}
 	rw.ItemIndex = map[string]int{}
+	rw.MaterialIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
+	}
+	for i, material := range rw.Raws.Materials {
+		rw.MaterialIndex[material.Name] = i
 	}
 	for i, member := range rw.Raws.Members {
 		rw.MemberIndex[member.Name] = i
@@ -137,6 +155,20 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 			EnergyConsumption: item.Weapon.EnergyConsumption,
 		}
 	}
+	return cl
+}
+
+func (rw *RawMaster) GenerateMaterial(name string) gloader.GameComponentList {
+	materialIdx, ok := rw.MaterialIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	material := rw.Raws.Materials[materialIdx]
+	cl := gloader.GameComponentList{}
+	cl.Material = &gc.Material{Amount: 1} // debug用。本来は0から
+	cl.Name = &gc.Name{Name: material.Name}
+	cl.Description = &gc.Description{Description: material.Description}
+
 	return cl
 }
 
