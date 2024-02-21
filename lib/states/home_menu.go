@@ -68,6 +68,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		materialhelper.PlusAmount("鉄くず", 4, world)
 		materialhelper.PlusAmount("緑ハーブ", 2, world)
 		materialhelper.PlusAmount("フェライトコア", 3, world)
+		spawner.SpawnAllRecipes(world)
 	}
 }
 

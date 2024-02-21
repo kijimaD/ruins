@@ -19,6 +19,7 @@ type Components struct {
 	InflictsDamage  *ecs.SliceComponent
 	Weapon          *ecs.SliceComponent
 	Material        *ecs.SliceComponent
+	Recipe          *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -100,4 +101,9 @@ type InflictsDamage struct {
 // 合成素材。カウントだけしている
 type Material struct {
 	Amount int
+}
+
+// 合成に必要な素材
+type Recipe struct {
+	Inputs []RecipeInput
 }

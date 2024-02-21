@@ -31,6 +31,7 @@ description = "半分程度回復する"
 		},
 		MemberIndex:   map[string]int{},
 		MaterialIndex: map[string]int{},
+		RecipeIndex:   map[string]int{},
 	}
 	assert.Equal(t, expect, raw)
 }

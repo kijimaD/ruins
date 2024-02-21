@@ -83,8 +83,25 @@ Name = "緑ハーブ"
 Description = "よい香りに鎮静・興奮などの作用がある植物"
 
 [[material]]
+Name = "黄ハーブ"
+Description = "体力を増強させる作用がある植物"
+
+[[material]]
 Name = "フェライトコア"
 Description = "フェライト製の磁性体"
+
+# recipe ================
+
+[[recipe]]
+Name = "回復薬"
+
+[[recipe.inputs]]
+Name = "緑ハーブ"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "黄ハーブ"
+Amount = 1
 
 # member ================
 
