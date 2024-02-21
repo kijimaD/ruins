@@ -170,7 +170,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 0:
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
 	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MixMenuState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{}}}
 	case 2:
 		// TODO: 実装する
 		return states.Transition{Type: states.TransNone}

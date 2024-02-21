@@ -15,29 +15,29 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-type MixMenuState struct {
+type CraftMenuState struct {
 	selection int
-	mixMenu   []ecs.Entity
+	craftMenu []ecs.Entity
 	ui        *ebitenui.UI
 }
 
 // State interface ================
 
-func (st *MixMenuState) OnPause(world w.World) {}
+func (st *CraftMenuState) OnPause(world w.World) {}
 
-func (st *MixMenuState) OnResume(world w.World) {}
+func (st *CraftMenuState) OnResume(world w.World) {}
 
-func (st *MixMenuState) OnStart(world w.World) {
+func (st *CraftMenuState) OnStart(world w.World) {
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.mixMenu = append(st.mixMenu, loader.AddEntities(world, prefabs.Menu.MixMenu)...)
+	st.craftMenu = append(st.craftMenu, loader.AddEntities(world, prefabs.Menu.CraftMenu)...)
 	st.ui = st.initUI(world)
 }
 
-func (st *MixMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.mixMenu...)
+func (st *CraftMenuState) OnStop(world w.World) {
+	world.Manager.DeleteEntities(st.craftMenu...)
 }
 
-func (st *MixMenuState) Update(world w.World) states.Transition {
+func (st *CraftMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -53,21 +53,21 @@ func (st *MixMenuState) Update(world w.World) states.Transition {
 	return updateMenu(st, world)
 }
 
-func (st *MixMenuState) Draw(world w.World, screen *ebiten.Image) {
+func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
 // Menu Interface ================
 
-func (st *MixMenuState) getSelection() int {
+func (st *CraftMenuState) getSelection() int {
 	return st.selection
 }
 
-func (st *MixMenuState) setSelection(selection int) {
+func (st *CraftMenuState) setSelection(selection int) {
 	st.selection = selection
 }
 
-func (st *MixMenuState) confirmSelection(world w.World) states.Transition {
+func (st *CraftMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
 		return states.Transition{Type: states.TransNone}
@@ -75,17 +75,17 @@ func (st *MixMenuState) confirmSelection(world w.World) states.Transition {
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
 
-func (st *MixMenuState) getMenuIDs() []string {
+func (st *CraftMenuState) getMenuIDs() []string {
 	return []string{""}
 }
 
-func (st *MixMenuState) getCursorMenuIDs() []string {
+func (st *CraftMenuState) getCursorMenuIDs() []string {
 	return []string{""}
 }
 
 // ================
 
-func (st *MixMenuState) initUI(world w.World) *ebitenui.UI {
+func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewItemGridContainer()
 	return &ebitenui.UI{Container: rootContainer}
 }

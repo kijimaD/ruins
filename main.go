@@ -75,7 +75,7 @@ func main() {
 			FieldMenu:     gloader.PreloadEntities("metadata/entities/ui/field_menu.toml", world),
 			DebugMenu:     gloader.PreloadEntities("metadata/entities/ui/debug_menu.toml", world),
 			InventoryMenu: gloader.PreloadEntities("metadata/entities/ui/inventory_menu.toml", world),
-			MixMenu:       gloader.PreloadEntities("metadata/entities/ui/mix_menu.toml", world),
+			CraftMenu:     gloader.PreloadEntities("metadata/entities/ui/craft_menu.toml", world),
 			CampMenu:      gloader.PreloadEntities("metadata/entities/ui/camp_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
