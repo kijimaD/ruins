@@ -6,10 +6,10 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 )
 
-func SpawnItem(world w.World, name string) {
+func SpawnItem(world w.World, name string, spawnType raw.SpawnType) {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, raw.InBackpack))
+	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, spawnType))
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
 }

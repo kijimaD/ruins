@@ -12,6 +12,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/materialhelper"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -46,17 +47,17 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		count++
 	}))
 	if count == 0 {
-		spawner.SpawnItem(world, "木刀")
-		spawner.SpawnItem(world, "ハンドガン")
-		spawner.SpawnItem(world, "レイガン")
-		spawner.SpawnItem(world, "回復薬")
-		spawner.SpawnItem(world, "回復薬")
-		spawner.SpawnItem(world, "回復スプレー")
-		spawner.SpawnItem(world, "回復スプレー")
-		spawner.SpawnItem(world, "手榴弾")
-		spawner.SpawnItem(world, "手榴弾")
-		spawner.SpawnItem(world, "手榴弾")
-		spawner.SpawnItem(world, "手榴弾")
+		spawner.SpawnItem(world, "木刀", raw.InBackpack)
+		spawner.SpawnItem(world, "ハンドガン", raw.InBackpack)
+		spawner.SpawnItem(world, "レイガン", raw.InBackpack)
+		spawner.SpawnItem(world, "回復薬", raw.InBackpack)
+		spawner.SpawnItem(world, "回復薬", raw.InBackpack)
+		spawner.SpawnItem(world, "回復スプレー", raw.InBackpack)
+		spawner.SpawnItem(world, "回復スプレー", raw.InBackpack)
+		spawner.SpawnItem(world, "手榴弾", raw.InBackpack)
+		spawner.SpawnItem(world, "手榴弾", raw.InBackpack)
+		spawner.SpawnItem(world, "手榴弾", raw.InBackpack)
+		spawner.SpawnItem(world, "手榴弾", raw.InBackpack)
 		spawner.SpawnMember(world, "椿", true)
 		spawner.SpawnMember(world, "白瀬", true)
 		spawner.SpawnAllMaterials(world)

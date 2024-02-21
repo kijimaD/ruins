@@ -8,6 +8,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -55,11 +56,11 @@ func (st *DebugMenuState) setSelection(selection int) {
 func (st *DebugMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		spawner.SpawnItem(world, "回復薬")
+		spawner.SpawnItem(world, "回復薬", raw.InBackpack)
 
 		return states.Transition{Type: states.TransNone}
 	case 1:
-		spawner.SpawnItem(world, "手榴弾")
+		spawner.SpawnItem(world, "手榴弾", raw.InBackpack)
 
 		return states.Transition{Type: states.TransNone}
 	}
