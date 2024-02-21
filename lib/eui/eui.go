@@ -162,9 +162,9 @@ func NewMenuText(title string, world w.World) *widget.Text {
 	return text
 }
 
-func NewBodyText(title string, world w.World) *widget.Text {
+func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, LoadFont(world), color),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),

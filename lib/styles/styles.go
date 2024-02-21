@@ -34,4 +34,7 @@ var (
 	ButtonIdleColor    = RGB(0xaaaaaa)
 	ButtonHoverColor   = RGB(0x828296)
 	ButtonPressedColor = RGB(0x646478)
+
+	SuccessColor = RGB(0x198754)
+	DangerColor  = RGB(0xdc3545)
 )

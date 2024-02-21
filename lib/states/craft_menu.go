@@ -3,6 +3,7 @@ package states
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"strconv"
 
 	"github.com/ebitenui/ebitenui"
@@ -236,8 +237,15 @@ func (st *CraftMenuState) generateList(world world.World) {
 				if entity == st.selectedItem && entity.HasComponent(gameComponents.Recipe) {
 					recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
 					for _, input := range recipe.Inputs {
-						str := fmt.Sprintf("%s %d個 / %d個", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
-						st.recipeList.AddChild(eui.NewBodyText(str, world))
+						str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
+						var color color.RGBA
+						if materialhelper.GetAmount(input.Name, world) >= input.Amount {
+							color = styles.SuccessColor
+						} else {
+							color = styles.DangerColor
+						}
+
+						st.recipeList.AddChild(eui.NewBodyText(str, color, world))
 					}
 				}
 			}))
