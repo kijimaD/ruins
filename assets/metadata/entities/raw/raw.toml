@@ -53,6 +53,16 @@ AttackCount = 1
 EnergyConsumption = 1
 
 [[item]]
+Name = "鉄のナイフ"
+Description = "鉄で作られた小ぶりのナイフ"
+
+[item.weapon]
+Accuracy = 100
+BaseDamage = 9
+AttackCount = 1
+EnergyConsumption = 1
+
+[[item]]
 Name = "ハンドガン"
 Description = "樹脂素材を多用した自動拳銃"
 
@@ -87,8 +97,16 @@ Name = "黄ハーブ"
 Description = "体力を増強させる作用がある植物"
 
 [[material]]
+Name = "木の棒"
+Description = "滑らかな表面を持ち、軽くて持ちやすい棒"
+
+[[material]]
 Name = "フェライトコア"
 Description = "フェライト製の磁性体"
+
+[[material]]
+Name = "鉄"
+Description = "加工しやすく産業の中核をなす金属"
 
 # recipe ================
 
@@ -102,6 +120,35 @@ Amount = 1
 [[recipe.inputs]]
 Name = "黄ハーブ"
 Amount = 1
+
+[[recipe]]
+Name = "木刀"
+
+[[recipe.inputs]]
+Name = "木の棒"
+Amount = 2
+
+[[recipe]]
+Name = "鉄のナイフ"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "木の棒"
+Amount = 2
+
+[[recipe]]
+Name = "レイガン"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 4
+
+[[recipe.inputs]]
+Name = "フェライトコア"
+Amount = 2
 
 # member ================
 

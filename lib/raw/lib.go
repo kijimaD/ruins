@@ -204,9 +204,15 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 		cl.Recipe.Inputs = append(cl.Recipe.Inputs, gc.RecipeInput{Name: input.Name, Amount: input.Amount})
 	}
 
-	// descriptionはitem定義から持ってくる
+	// マッチしたitemの定義から持ってくる
 	item := rw.GenerateItem(recipe.Name)
 	cl.Description = &gc.Description{Description: item.Description.Description}
+	if item.Weapon != nil {
+		cl.Weapon = item.Weapon
+	}
+	if item.Consumable != nil {
+		cl.Consumable = item.Consumable
+	}
 
 	return cl
 }

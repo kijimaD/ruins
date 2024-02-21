@@ -162,6 +162,17 @@ func NewMenuText(title string, world w.World) *widget.Text {
 	return text
 }
 
+func NewBodyText(title string, world w.World) *widget.Text {
+	text := widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
+
+	return text
+}
+
 // window ================
 
 // ウィンドウ

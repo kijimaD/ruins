@@ -17,6 +17,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -33,6 +34,7 @@ type CraftMenuState struct {
 	itemDesc           *widget.Text      // アイテムの概要
 	itemList           *widget.Container // アイテムリストのコンテナ
 	itemAmount         *widget.Text      // アイテムの数量
+	recipeList         *widget.Container // レシピリストのコンテナ
 	weaponAccuracy     *widget.Text      // 武器の命中率
 	weaponBaseDamage   *widget.Text      // 武器の攻撃力
 	weaponConsumption  *widget.Text      // 武器の消費エネルギー
@@ -118,6 +120,8 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 
+	st.recipeList = st.newItemSpecContainer(world)
+
 	rootContainer := eui.NewItemGridContainer()
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
@@ -127,7 +131,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		sc, v := eui.NewScrollContainer(st.itemList)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newItemSpecContainer(world))
+		rootContainer.AddChild(st.newVSplitContainer(st.newItemSpecContainer(world), st.recipeList, world))
 
 		rootContainer.AddChild(itemDescContainer)
 	}
@@ -144,6 +148,7 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) {
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.Recipe,
+		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.items = append(st.items, entity)
 	}))
@@ -157,10 +162,8 @@ func (st *CraftMenuState) queryMenuWeapon(world w.World) {
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Item,
 		gameComponents.Name,
-		gameComponents.Description,
-		gameComponents.InBackpack,
+		gameComponents.Recipe,
 		gameComponents.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.items = append(st.items, entity)
@@ -227,6 +230,17 @@ func (st *CraftMenuState) generateList(world world.World) {
 				}
 			}))
 			st.itemAmount.Label = amount
+
+			st.recipeList.RemoveChildren()
+			world.Manager.Join(gameComponents.Recipe).Visit(ecs.Visit(func(entity ecs.Entity) {
+				if entity == st.selectedItem && entity.HasComponent(gameComponents.Recipe) {
+					recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
+					for _, input := range recipe.Inputs {
+						str := fmt.Sprintf("%s %d個 / %d個", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
+						st.recipeList.AddChild(eui.NewBodyText(str, world))
+					}
+				}
+			}))
 		})
 		st.itemList.AddChild(itemButton)
 
@@ -279,4 +293,27 @@ func (st *CraftMenuState) specText(world w.World) *widget.Text {
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
 	)
+}
+
+// 縦分割コンテナ
+func (st *CraftMenuState) newVSplitContainer(top *widget.Container, bottom *widget.Container, world w.World) *widget.Container {
+	split := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				widget.GridLayoutOpts.Columns(1),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    2,
+					Bottom: 2,
+					Left:   2,
+					Right:  2,
+				}),
+			)),
+	)
+	split.AddChild(top)
+	split.AddChild(bottom)
+
+	return split
 }
