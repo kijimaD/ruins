@@ -98,7 +98,10 @@ type InflictsDamage struct {
 	Amount int
 }
 
-// 合成素材。カウントだけしている
+// 合成素材。
+// アイテムとの違い:
+// - 個々のインスタンスで性能の違いはなく、単に数量だけを見る
+// - 複数の単位で扱うのでAmountを持つ。x2で落ちていたりする
 type Material struct {
 	Amount int
 }

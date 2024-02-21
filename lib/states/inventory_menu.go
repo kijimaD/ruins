@@ -17,6 +17,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -176,16 +177,14 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) {
 	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Description,
-		gameComponents.Material,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	materialhelper.OwnedMaterial(func(entity ecs.Entity) {
 		material := gameComponents.Material.Get(entity).(*gc.Material)
+		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
 		if material.Amount > 0 {
 			st.items = append(st.items, entity)
 		}
-	}))
+	}, world)
+
 	st.generateList(world)
 }
 

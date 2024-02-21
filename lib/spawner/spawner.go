@@ -9,7 +9,7 @@ import (
 func SpawnItem(world w.World, name string) {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name))
+	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, raw.InBackpack))
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
 }
@@ -22,16 +22,18 @@ func SpawnMember(world w.World, name string, inParty bool) {
 	loader.AddEntities(world, componentList)
 }
 
+// 所持素材の個数を0で初期化する
 func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k))
+		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, raw.InBackpack))
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
 }
 
+// 初期化
 func SpawnAllRecipes(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.RecipeIndex {

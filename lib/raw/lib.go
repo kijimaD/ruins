@@ -104,14 +104,16 @@ func Load(entityMetadataContent string) RawMaster {
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
+func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.GameComponentList {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := gloader.GameComponentList{}
-	cl.InBackpack = &gc.InBackpack{} // フィールドにスポーンするときもあるので、引数で変えられるようにする
+	if spawnType == InBackpack {
+		cl.InBackpack = &gc.InBackpack{}
+	}
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
@@ -177,16 +179,19 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMaterial(name string) gloader.GameComponentList {
+func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) gloader.GameComponentList {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
-	material := rw.Raws.Materials[materialIdx]
 	cl := gloader.GameComponentList{}
-	cl.Material = &gc.Material{Amount: 0}
+	cl.Material = &gc.Material{Amount: amount}
+	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
+	if spawnType == InBackpack {
+		cl.InBackpack = &gc.InBackpack{}
+	}
 
 	return cl
 }
@@ -205,7 +210,7 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 	}
 
 	// マッチしたitemの定義から持ってくる
-	item := rw.GenerateItem(recipe.Name)
+	item := rw.GenerateItem(recipe.Name, InBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Weapon != nil {
 		cl.Weapon = item.Weapon

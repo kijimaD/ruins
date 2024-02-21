@@ -21,18 +21,8 @@ TargetFaction = "ALLY"
 TargetNum = "ALL"
 
 [[item]]
-Name = "劇薬"
-Description = "ダメージを与える"
-InflictsDamage = 50
-
-[item.consumable]
-UsableScene = "BATTLE"
-TargetFaction = "ENEMY"
-TargetNum = "SINGLE"
-
-[[item]]
 Name = "手榴弾"
-Description = "全体にダメージを与える。全体にダメージを与える。"
+Description = "敵全体にダメージを与える"
 InflictsDamage = 100
 
 [item.consumable]

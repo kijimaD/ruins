@@ -7,19 +7,26 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func GetAmount(name string, world w.World) int {
-	result := 0
+func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.Material,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gameComponents.InBackpack,
+	).Visit(ecs.Visit(f))
+}
+
+// 所持している素材の数を取得する
+func GetAmount(name string, world w.World) int {
+	result := 0
+	gameComponents := world.Components.Game.(*gc.Components)
+	OwnedMaterial(func(entity ecs.Entity) {
 		n := gameComponents.Name.Get(entity).(*gc.Name)
 		if n.Name == name {
 			material := gameComponents.Material.Get(entity).(*gc.Material)
 			result = material.Amount
 		}
-	}))
+	}, world)
 	return result
 }
 
