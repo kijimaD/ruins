@@ -43,7 +43,7 @@ func RequiredMaterials(world w.World, goal string) []components.RecipeInput {
 	return required
 }
 
-func Randmize(world w.World, entity ecs.Entity) {
+func Randomize(world w.World, entity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	if entity.HasComponent(gameComponents.Weapon) {
 		weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)

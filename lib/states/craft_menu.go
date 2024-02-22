@@ -260,7 +260,7 @@ func (st *CraftMenuState) generateList(world world.World) {
 
 		useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
 			resultEntity := spawner.SpawnItem(world, name.Name, raw.SpawnInBackpack)
-			craft.Randmize(world, resultEntity)
+			craft.Randomize(world, resultEntity)
 
 			actionWindow.Close()
 			st.initResultWindow(world, resultEntity)
