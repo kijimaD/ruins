@@ -102,22 +102,19 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 // ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
-	// 各アイテムが入るコンテナ
+	// 各アイテム名が入るコンテナ
 	st.itemList = eui.NewScrollContentContainer()
+	st.queryMenuConsumable(world)
+
+	// 種類トグル
+	toggleContainer := st.newToggleContainer(world)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
-	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
+	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	st.queryMenuConsumable(world)
-	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
-	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.queryMenuMaterial(world) }, world)
-	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleWeaponButton)
-	toggleContainer.AddChild(toggleMaterialButton)
+	sc, v := eui.NewScrollContainer(st.itemList)
 
 	rootContainer := eui.NewItemGridContainer()
 	{
@@ -125,7 +122,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(st.itemList)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
 		rootContainer.AddChild(st.newItemSpecContainer(world))
@@ -309,6 +305,18 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 	}))
 }
 
+func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
+	toggleContainer := eui.NewRowContainer()
+	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
+	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
+	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.queryMenuMaterial(world) }, world)
+	toggleContainer.AddChild(toggleConsumableButton)
+	toggleContainer.AddChild(toggleWeaponButton)
+	toggleContainer.AddChild(toggleMaterialButton)
+
+	return toggleContainer
+}
+
 func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Container {
 	itemSpecContainer := widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
@@ -324,10 +332,10 @@ func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Contai
 				}),
 			)),
 	)
-	st.itemAmount = st.specText(world)
-	st.weaponAccuracy = st.specText(world)
-	st.weaponBaseDamage = st.specText(world)
-	st.weaponConsumption = st.specText(world)
+	st.itemAmount = st.newSpecText(world)
+	st.weaponAccuracy = st.newSpecText(world)
+	st.weaponBaseDamage = st.newSpecText(world)
+	st.weaponConsumption = st.newSpecText(world)
 	itemSpecContainer.AddChild(st.itemAmount)
 	itemSpecContainer.AddChild(st.weaponAccuracy)
 	itemSpecContainer.AddChild(st.weaponBaseDamage)
@@ -335,7 +343,7 @@ func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Contai
 	return itemSpecContainer
 }
 
-func (st *InventoryMenuState) specText(world w.World) *widget.Text {
+func (st *InventoryMenuState) newSpecText(world w.World) *widget.Text {
 	return widget.NewText(
 		widget.TextOpts.Text("", eui.LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
