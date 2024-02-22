@@ -3,5 +3,5 @@ package raw
 type SpawnType string
 
 var (
-	InBackpack SpawnType = "IN_BACKPACK"
+	SpawnInBackpack SpawnType = "IN_BACKPACK"
 )

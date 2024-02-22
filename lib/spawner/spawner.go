@@ -27,7 +27,7 @@ func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, raw.InBackpack))
+		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, raw.SpawnInBackpack))
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}

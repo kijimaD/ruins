@@ -56,11 +56,11 @@ func (st *DebugMenuState) setSelection(selection int) {
 func (st *DebugMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		spawner.SpawnItem(world, "回復薬", raw.InBackpack)
+		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 
 		return states.Transition{Type: states.TransNone}
 	case 1:
-		spawner.SpawnItem(world, "手榴弾", raw.InBackpack)
+		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 
 		return states.Transition{Type: states.TransNone}
 	}

@@ -111,7 +111,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := gloader.GameComponentList{}
-	if spawnType == InBackpack {
+	if spawnType == SpawnInBackpack {
 		cl.InBackpack = &gc.InBackpack{}
 	}
 	cl.Item = &gc.Item{}
@@ -189,7 +189,7 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnTy
 	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
-	if spawnType == InBackpack {
+	if spawnType == SpawnInBackpack {
 		cl.InBackpack = &gc.InBackpack{}
 	}
 
@@ -210,7 +210,7 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 	}
 
 	// マッチしたitemの定義から持ってくる
-	item := rw.GenerateItem(recipe.Name, InBackpack)
+	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Weapon != nil {
 		cl.Weapon = item.Weapon
