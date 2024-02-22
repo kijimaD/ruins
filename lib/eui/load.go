@@ -14,11 +14,15 @@ func LoadButtonImage() *widget.ButtonImage {
 	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
 	hover := e_image.NewNineSliceColor(styles.ButtonHoverColor)
 	pressed := e_image.NewNineSliceColor(styles.ButtonPressedColor)
+	pressedHover := e_image.NewNineSliceColor(styles.ButtonPressedColor)
+	disabled := e_image.NewNineSliceColor(styles.ButtonPressedColor)
 
 	return &widget.ButtonImage{
-		Idle:    idle,
-		Hover:   hover,
-		Pressed: pressed,
+		Idle:         idle,
+		Hover:        hover,
+		Pressed:      pressed,
+		PressedHover: pressedHover,
+		Disabled:     disabled,
 	}
 }
 

@@ -195,6 +195,7 @@ func (st *CraftMenuState) generateList(world world.World) {
 			st.ui.AddWindow(actionWindow)
 
 			st.selectedItem = entity
+			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
@@ -235,52 +236,9 @@ func (st *CraftMenuState) generateList(world world.World) {
 			}))
 			st.itemAmount.Label = amount
 
-			st.recipeList.RemoveChildren()
-			world.Manager.Join(
-				gameComponents.Recipe,
-			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem {
-					recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
-					for _, input := range recipe.Inputs {
-						str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
-						var color color.RGBA
-						if materialhelper.GetAmount(input.Name, world) >= input.Amount {
-							color = styles.SuccessColor
-						} else {
-							color = styles.DangerColor
-						}
-
-						st.recipeList.AddChild(eui.NewBodyText(str, color, world))
-					}
-				}
-			}))
-
+			st.updateRecipeList(world)
 		})
 		st.itemList.AddChild(itemButton)
-
-		useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
-			// TODO: 合成したあとに、素材一覧と使用ボタンを更新できてない
-			resultEntity, err := craft.Craft(world, name.Name)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			actionWindow.Close()
-			st.initResultWindow(world, *resultEntity)
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x, y})
-			st.resultWindow.SetLocation(r)
-			st.ui.AddWindow(st.resultWindow)
-		}, world)
-		if craft.CanCraft(world, name.Name) {
-			windowContainer.AddChild(useButton)
-		}
-
-		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		}, world)
-		windowContainer.AddChild(closeButton)
 	}
 }
 
@@ -367,4 +325,56 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 		st.resultWindow.Close()
 	}, world)
 	resultContainer.AddChild(closeButton)
+}
+
+func (st *CraftMenuState) updateRecipeList(world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	st.recipeList.RemoveChildren()
+	world.Manager.Join(
+		gameComponents.Recipe,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity == st.selectedItem {
+			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
+			for _, input := range recipe.Inputs {
+				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
+				var color color.RGBA
+				if materialhelper.GetAmount(input.Name, world) >= input.Amount {
+					color = styles.SuccessColor
+				} else {
+					color = styles.DangerColor
+				}
+
+				st.recipeList.AddChild(eui.NewBodyText(str, color, world))
+			}
+		}
+	}))
+}
+
+// アクションウィンドウはクリックのたびに毎回中身を作り直す
+// useButton.GetWidget().Disabled = true を使ってボタンを非活性にする方が楽でよさそうなのだが、非活性にすると描画の色まわりでヌルポになる。色は設定しているのに...
+func (st *CraftMenuState) initWindowContainer(world w.World, name string, windowContainer *widget.Container, actionWindow *widget.Window) {
+	windowContainer.RemoveChildren()
+	useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
+		resultEntity, err := craft.Craft(world, name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		st.updateRecipeList(world)
+
+		actionWindow.Close()
+		st.initResultWindow(world, *resultEntity)
+		x, y := ebiten.CursorPosition()
+		r := image.Rect(0, 0, x, y)
+		r = r.Add(image.Point{x, y})
+		st.resultWindow.SetLocation(r)
+		st.ui.AddWindow(st.resultWindow)
+	}, world)
+	if craft.CanCraft(world, name) {
+		windowContainer.AddChild(useButton)
+	}
+
+	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+		actionWindow.Close()
+	}, world)
+	windowContainer.AddChild(closeButton)
 }
