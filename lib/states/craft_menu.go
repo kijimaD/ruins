@@ -237,8 +237,10 @@ func (st *CraftMenuState) generateList(world world.World) {
 			st.itemAmount.Label = amount
 
 			st.recipeList.RemoveChildren()
-			world.Manager.Join(gameComponents.Recipe).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Recipe) {
+			world.Manager.Join(
+				gameComponents.Recipe,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				if entity == st.selectedItem {
 					recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
 					for _, input := range recipe.Inputs {
 						str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
@@ -257,9 +259,8 @@ func (st *CraftMenuState) generateList(world world.World) {
 		st.itemList.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
-			name := gameComponents.Name.Get(entity).(*gc.Name)
 			resultEntity := spawner.SpawnItem(world, name.Name, raw.SpawnInBackpack)
-			craft.Randmize(resultEntity, world)
+			craft.Randmize(world, resultEntity)
 
 			actionWindow.Close()
 			st.initResultWindow(world, resultEntity)
@@ -269,7 +270,9 @@ func (st *CraftMenuState) generateList(world world.World) {
 			st.resultWindow.SetLocation(r)
 			st.ui.AddWindow(st.resultWindow)
 		}, world)
-		windowContainer.AddChild(useButton)
+		if craft.CanCraft(world, name.Name) {
+			windowContainer.AddChild(useButton)
+		}
 
 		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.Close()

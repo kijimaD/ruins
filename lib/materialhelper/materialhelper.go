@@ -7,6 +7,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// 所持中の素材
 func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -40,14 +41,11 @@ func MinusAmount(name string, amount int, world w.World) {
 
 func changeAmount(name string, amount int, world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Material,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	OwnedMaterial(func(entity ecs.Entity) {
 		n := gameComponents.Name.Get(entity).(*gc.Name)
 		if n.Name == name {
 			material := gameComponents.Material.Get(entity).(*gc.Material)
 			material.Amount = mathutil.Min(999, mathutil.Max(0, material.Amount+amount))
 		}
-	}))
+	}, world)
 }
