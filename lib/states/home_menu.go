@@ -58,7 +58,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-		spawner.SpawnMember(world, "椿", true)
+		spawner.SpawnMember(world, "村上", true)
 		spawner.SpawnMember(world, "白瀬", true)
 		spawner.SpawnAllMaterials(world)
 		materialhelper.PlusAmount("鉄", 4, world)

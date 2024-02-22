@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"log"
 	"strconv"
 
 	"github.com/ebitenui/ebitenui"
@@ -20,9 +21,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/materialhelper"
-	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/spawner"
 	"github.com/kijimaD/ruins/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -255,15 +254,19 @@ func (st *CraftMenuState) generateList(world world.World) {
 					}
 				}
 			}))
+
 		})
 		st.itemList.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
-			resultEntity := spawner.SpawnItem(world, name.Name, raw.SpawnInBackpack)
-			craft.Randomize(world, resultEntity)
+			// TODO: 合成したあとに、素材一覧と使用ボタンを更新できてない
+			resultEntity, err := craft.Craft(world, name.Name)
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			actionWindow.Close()
-			st.initResultWindow(world, resultEntity)
+			st.initResultWindow(world, *resultEntity)
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
 			r = r.Add(image.Point{x, y})

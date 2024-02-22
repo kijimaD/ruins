@@ -143,8 +143,8 @@ Amount = 2
 # member ================
 
 [[member]]
-Name = "椿"
-HP = 100
+Name = "村上"
+HP = 101
 SP = 82
 
 [[member]]

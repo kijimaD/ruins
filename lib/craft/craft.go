@@ -1,20 +1,35 @@
 package craft
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/materialhelper"
+	"github.com/kijimaD/ruins/lib/raw"
+	"github.com/kijimaD/ruins/lib/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
+
+func Craft(world w.World, name string) (*ecs.Entity, error) {
+	if !CanCraft(world, name) {
+		return nil, fmt.Errorf("必要素材が足りない")
+	}
+
+	resultEntity := spawner.SpawnItem(world, name, raw.SpawnInBackpack)
+	randomize(world, resultEntity)
+	consumeMaterials(world, name)
+
+	return &resultEntity, nil
+}
 
 // 所持数と必要数を比較してクラフト可能か判定する
 func CanCraft(world w.World, name string) bool {
 	canCraft := true
-	for _, recipe := range RequiredMaterials(world, name) {
-		if !(materialhelper.GetAmount(recipe.Name, world) >= recipe.Amount) {
+	for _, recipeInput := range requiredMaterials(world, name) {
+		if !(materialhelper.GetAmount(recipeInput.Name, world) >= recipeInput.Amount) {
 			canCraft = false
 			break
 		}
@@ -23,8 +38,15 @@ func CanCraft(world w.World, name string) bool {
 	return canCraft
 }
 
+// アイテム合成に必要な素材を消費する
+func consumeMaterials(world w.World, goal string) {
+	for _, recipeInput := range requiredMaterials(world, goal) {
+		materialhelper.MinusAmount(recipeInput.Name, recipeInput.Amount, world)
+	}
+}
+
 // 指定したレシピに必要な素材一覧
-func RequiredMaterials(world w.World, goal string) []components.RecipeInput {
+func requiredMaterials(world w.World, goal string) []components.RecipeInput {
 	required := []components.RecipeInput{}
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -43,7 +65,7 @@ func RequiredMaterials(world w.World, goal string) []components.RecipeInput {
 	return required
 }
 
-func Randomize(world w.World, entity ecs.Entity) {
+func randomize(world w.World, entity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	if entity.HasComponent(gameComponents.Weapon) {
 		weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
