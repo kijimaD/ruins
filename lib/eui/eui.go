@@ -162,6 +162,17 @@ func NewMenuText(title string, world w.World) *widget.Text {
 	return text
 }
 
+func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
+	text := widget.NewText(
+		widget.TextOpts.Text(title, LoadFont(world), color),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
+
+	return text
+}
+
 // window ================
 
 // ウィンドウ
@@ -183,9 +194,12 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button {
 	return widget.NewButton(
 		widget.ButtonOpts.Image(LoadButtonImage()),
-		widget.ButtonOpts.Text(text, LoadFont(world), &widget.ButtonTextColor{
-			Idle: styles.TextColor,
-		}),
+		widget.ButtonOpts.Text(text,
+			LoadFont(world),
+			&widget.ButtonTextColor{
+				Idle: styles.TextColor,
+			},
+		),
 		widget.ButtonOpts.TextPadding(widget.Insets{
 			Left:   30,
 			Right:  30,

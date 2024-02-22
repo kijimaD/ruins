@@ -21,18 +21,8 @@ TargetFaction = "ALLY"
 TargetNum = "ALL"
 
 [[item]]
-Name = "劇薬"
-Description = "ダメージを与える"
-InflictsDamage = 50
-
-[item.consumable]
-UsableScene = "BATTLE"
-TargetFaction = "ENEMY"
-TargetNum = "SINGLE"
-
-[[item]]
 Name = "手榴弾"
-Description = "全体にダメージを与える。全体にダメージを与える。"
+Description = "敵全体にダメージを与える"
 InflictsDamage = 100
 
 [item.consumable]
@@ -49,6 +39,16 @@ Description = "旅行の土産でおなじみの木を削って作られた刀"
 [item.weapon]
 Accuracy = 100
 BaseDamage = 8
+AttackCount = 1
+EnergyConsumption = 1
+
+[[item]]
+Name = "鉄のナイフ"
+Description = "鉄で作られた小ぶりのナイフ"
+
+[item.weapon]
+Accuracy = 100
+BaseDamage = 9
 AttackCount = 1
 EnergyConsumption = 1
 
@@ -83,14 +83,68 @@ Name = "緑ハーブ"
 Description = "よい香りに鎮静・興奮などの作用がある植物"
 
 [[material]]
+Name = "黄ハーブ"
+Description = "体力を増強させる作用がある植物"
+
+[[material]]
+Name = "木の棒"
+Description = "滑らかな表面を持ち、軽くて持ちやすい棒"
+
+[[material]]
 Name = "フェライトコア"
 Description = "フェライト製の磁性体"
+
+[[material]]
+Name = "鉄"
+Description = "加工しやすく産業の中核をなす金属"
+
+# recipe ================
+
+[[recipe]]
+Name = "回復薬"
+
+[[recipe.inputs]]
+Name = "緑ハーブ"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "黄ハーブ"
+Amount = 1
+
+[[recipe]]
+Name = "木刀"
+
+[[recipe.inputs]]
+Name = "木の棒"
+Amount = 2
+
+[[recipe]]
+Name = "鉄のナイフ"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "木の棒"
+Amount = 2
+
+[[recipe]]
+Name = "レイガン"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 4
+
+[[recipe.inputs]]
+Name = "フェライトコア"
+Amount = 2
 
 # member ================
 
 [[member]]
-Name = "椿"
-HP = 100
+Name = "村上"
+HP = 101
 SP = 82
 
 [[member]]

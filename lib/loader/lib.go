@@ -28,6 +28,7 @@ type GameComponentList struct {
 	InflictsDamage  *gc.InflictsDamage
 	Weapon          *gc.Weapon
 	Material        *gc.Material
+	Recipe          *gc.Recipe
 }
 
 type Entity struct {

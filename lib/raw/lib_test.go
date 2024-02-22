@@ -31,6 +31,7 @@ description = "半分程度回復する"
 		},
 		MemberIndex:   map[string]int{},
 		MaterialIndex: map[string]int{},
+		RecipeIndex:   map[string]int{},
 	}
 	assert.Equal(t, expect, raw)
 }
@@ -41,7 +42,7 @@ func TestGenerateItem(t *testing.T) {
 name = "リペア"
 `
 	raw := Load(str)
-	entity := raw.GenerateItem("リペア")
+	entity := raw.GenerateItem("リペア", SpawnInBackpack)
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
 	assert.NotNil(t, entity.Description)

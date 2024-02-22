@@ -14,12 +14,14 @@ type RawMaster struct {
 	Raws          Raws
 	ItemIndex     map[string]int
 	MaterialIndex map[string]int
+	RecipeIndex   map[string]int
 	MemberIndex   map[string]int
 }
 
 type Raws struct {
 	Items     []Item     `toml:"item"`
 	Materials []Material `toml:"material"`
+	Recipes   []Recipe   `toml:"recipe"`
 	Members   []Member   `toml:"member"`
 }
 
@@ -57,6 +59,18 @@ type Member struct {
 	SP   int
 }
 
+// レシピ
+type Recipe struct {
+	Name   string
+	Inputs []RecipeInput `toml:"inputs"`
+}
+
+// 合成の元になる素材
+type RecipeInput struct {
+	Name   string
+	Amount int
+}
+
 func LoadFromFile(path string) RawMaster {
 	bs, err := assets.FS.ReadFile(path)
 	if err != nil {
@@ -70,6 +84,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw := RawMaster{}
 	rw.ItemIndex = map[string]int{}
 	rw.MaterialIndex = map[string]int{}
+	rw.RecipeIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
@@ -79,20 +94,26 @@ func Load(entityMetadataContent string) RawMaster {
 	for i, material := range rw.Raws.Materials {
 		rw.MaterialIndex[material.Name] = i
 	}
+	for i, recipe := range rw.Raws.Recipes {
+		rw.RecipeIndex[recipe.Name] = i
+	}
 	for i, member := range rw.Raws.Members {
 		rw.MemberIndex[member.Name] = i
 	}
+
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
+func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.GameComponentList {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := gloader.GameComponentList{}
-	cl.InBackpack = &gc.InBackpack{} // フィールドにスポーンするときもあるので、引数で変えられるようにする
+	if spawnType == SpawnInBackpack {
+		cl.InBackpack = &gc.InBackpack{}
+	}
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
@@ -158,16 +179,45 @@ func (rw *RawMaster) GenerateItem(name string) gloader.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMaterial(name string) gloader.GameComponentList {
+func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) gloader.GameComponentList {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
-	material := rw.Raws.Materials[materialIdx]
 	cl := gloader.GameComponentList{}
-	cl.Material = &gc.Material{Amount: 0}
+	cl.Material = &gc.Material{Amount: amount}
+	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
+	if spawnType == SpawnInBackpack {
+		cl.InBackpack = &gc.InBackpack{}
+	}
+
+	return cl
+}
+
+func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
+	recipeIdx, ok := rw.RecipeIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	recipe := rw.Raws.Recipes[recipeIdx]
+	cl := gloader.GameComponentList{}
+	cl.Name = &gc.Name{Name: recipe.Name}
+	cl.Recipe = &gc.Recipe{}
+	for _, input := range recipe.Inputs {
+		cl.Recipe.Inputs = append(cl.Recipe.Inputs, gc.RecipeInput{Name: input.Name, Amount: input.Amount})
+	}
+
+	// マッチしたitemの定義から持ってくる
+	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
+	cl.Description = &gc.Description{Description: item.Description.Description}
+	if item.Weapon != nil {
+		cl.Weapon = item.Weapon
+	}
+	if item.Consumable != nil {
+		cl.Consumable = item.Consumable
+	}
 
 	return cl
 }
