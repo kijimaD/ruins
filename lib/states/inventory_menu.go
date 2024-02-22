@@ -38,6 +38,7 @@ type InventoryMenuState struct {
 	weaponAccuracy     *widget.Text      // 武器の命中率
 	weaponBaseDamage   *widget.Text      // 武器の攻撃力
 	weaponConsumption  *widget.Text      // 武器の消費エネルギー
+	winRect            image.Rectangle   // ウィンドウの開く位置
 }
 
 // State interface ================
@@ -202,9 +203,9 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			actionWindow.SetLocation(r)
+			st.winRect = image.Rect(0, 0, x, y)
+			st.winRect = st.winRect.Add(image.Point{x + 20, y + 20})
+			actionWindow.SetLocation(st.winRect)
 			st.ui.AddWindow(actionWindow)
 
 			st.selectedItem = entity
@@ -251,11 +252,8 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		st.itemList.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
 			st.initPartyWindow(world)
-			st.partyWindow.SetLocation(r)
+			st.partyWindow.SetLocation(st.winRect)
 
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {

@@ -42,6 +42,7 @@ type CraftMenuState struct {
 	weaponAccuracy     *widget.Text      // 武器の命中率
 	weaponBaseDamage   *widget.Text      // 武器の攻撃力
 	weaponConsumption  *widget.Text      // 武器の消費エネルギー
+	winRect            image.Rectangle   // ウィンドウの開く位置
 }
 
 // State interface ================
@@ -189,9 +190,9 @@ func (st *CraftMenuState) generateList(world world.World) {
 		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			actionWindow.SetLocation(r)
+			st.winRect = image.Rect(0, 0, x, y)
+			st.winRect = st.winRect.Add(image.Point{x + 20, y + 20})
+			actionWindow.SetLocation(st.winRect)
 			st.ui.AddWindow(actionWindow)
 
 			st.selectedItem = entity
@@ -363,10 +364,7 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 
 		actionWindow.Close()
 		st.initResultWindow(world, *resultEntity)
-		x, y := ebiten.CursorPosition()
-		r := image.Rect(0, 0, x, y)
-		r = r.Add(image.Point{x, y})
-		st.resultWindow.SetLocation(r)
+		st.resultWindow.SetLocation(st.winRect)
 		st.ui.AddWindow(st.resultWindow)
 	}, world)
 	if craft.CanCraft(world, name) {

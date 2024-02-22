@@ -61,10 +61,10 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnMember(world, "村上", true)
 		spawner.SpawnMember(world, "白瀬", true)
 		spawner.SpawnAllMaterials(world)
-		materialhelper.PlusAmount("鉄", 4, world)
+		materialhelper.PlusAmount("鉄", 40, world)
 		materialhelper.PlusAmount("鉄くず", 4, world)
 		materialhelper.PlusAmount("緑ハーブ", 2, world)
-		materialhelper.PlusAmount("フェライトコア", 3, world)
+		materialhelper.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
 	}
 }
