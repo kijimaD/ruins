@@ -230,7 +230,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
 				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
 					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-					accuracy = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
+					accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(weapon.Accuracy))
 					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
 					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
 				}

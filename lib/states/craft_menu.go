@@ -12,6 +12,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/craft"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
@@ -19,7 +20,9 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/materialhelper"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/spawner"
 	"github.com/kijimaD/ruins/lib/styles"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -34,6 +37,7 @@ type CraftMenuState struct {
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
 	itemList           *widget.Container // アイテムリストのコンテナ
+	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	itemAmount         *widget.Text      // アイテムの数量
 	recipeList         *widget.Container // レシピリストのコンテナ
 	weaponAccuracy     *widget.Text      // 武器の命中率
@@ -125,7 +129,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	rootContainer := eui.NewItemGridContainer()
 	{
-		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
+		rootContainer.AddChild(eui.NewMenuText("合成", world))
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
@@ -214,7 +218,7 @@ func (st *CraftMenuState) generateList(world world.World) {
 			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
 				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
 					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-					accuracy = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
+					accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(weapon.Accuracy))
 					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
 					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
 				}
@@ -252,11 +256,18 @@ func (st *CraftMenuState) generateList(world world.World) {
 		})
 		st.itemList.AddChild(itemButton)
 
-		useButton := eui.NewItemButton("合成する　", func(args *widget.ButtonClickedEventArgs) {
+		useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			resultEntity := spawner.SpawnItem(world, name.Name, raw.SpawnInBackpack)
+			craft.Randmize(resultEntity, world)
+
+			actionWindow.Close()
+			st.initResultWindow(world, resultEntity)
 			x, y := ebiten.CursorPosition()
 			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			// TODO: 合成
+			r = r.Add(image.Point{x, y})
+			st.resultWindow.SetLocation(r)
+			st.ui.AddWindow(st.resultWindow)
 		}, world)
 		windowContainer.AddChild(useButton)
 
@@ -324,4 +335,30 @@ func (st *CraftMenuState) newVSplitContainer(top *widget.Container, bottom *widg
 	split.AddChild(bottom)
 
 	return split
+}
+
+func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
+	resultContainer := eui.NewWindowContainer()
+	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
+	gameComponents := world.Components.Game.(*gc.Components)
+	name := gameComponents.Name.Get(entity).(*gc.Name)
+	resultContainer.AddChild(eui.NewMenuText(fmt.Sprintf("<%s>", name.Name), world))
+
+	if entity.HasComponent(gameComponents.Weapon) {
+		weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
+		a := st.specText(world)
+		b := st.specText(world)
+		c := st.specText(world)
+		resultContainer.AddChild(a)
+		resultContainer.AddChild(b)
+		resultContainer.AddChild(c)
+		a.Label = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
+		b.Label = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
+		c.Label = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
+	}
+
+	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+		st.resultWindow.Close()
+	}, world)
+	resultContainer.AddChild(closeButton)
 }
