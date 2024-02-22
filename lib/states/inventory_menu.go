@@ -270,7 +270,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				st.itemList.RemoveChild(itemButton)
 			}
 		}, world)
-		if gameComponents.Consumable.Get(entity) != nil {
+		if entity.HasComponent(gameComponents.Consumable) {
 			windowContainer.AddChild(useButton)
 		}
 
@@ -279,7 +279,9 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			st.itemList.RemoveChild(itemButton)
 			actionWindow.Close()
 		}, world)
-		windowContainer.AddChild(dropButton)
+		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) {
+			windowContainer.AddChild(dropButton)
+		}
 
 		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.Close()

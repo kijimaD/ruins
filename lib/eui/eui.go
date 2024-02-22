@@ -194,9 +194,12 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button {
 	return widget.NewButton(
 		widget.ButtonOpts.Image(LoadButtonImage()),
-		widget.ButtonOpts.Text(text, LoadFont(world), &widget.ButtonTextColor{
-			Idle: styles.TextColor,
-		}),
+		widget.ButtonOpts.Text(text,
+			LoadFont(world),
+			&widget.ButtonTextColor{
+				Idle: styles.TextColor,
+			},
+		),
 		widget.ButtonOpts.TextPadding(widget.Insets{
 			Left:   30,
 			Right:  30,
