@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
@@ -40,6 +43,8 @@ func (game *mainGame) Update() error {
 }
 
 func (game *mainGame) Draw(screen *ebiten.Image) {
+	// stateによっては背景に隠れて見えない
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f", ebiten.CurrentFPS()))
 	game.stateMachine.Draw(game.world, screen)
 }
 
