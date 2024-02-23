@@ -37,7 +37,6 @@ type CraftMenuState struct {
 	itemDesc           *widget.Text      // アイテムの概要
 	itemList           *widget.Container // アイテムリストのコンテナ
 	resultWindow       *widget.Window    // 合成結果ウィンドウ
-	itemAmount         *widget.Text      // アイテムの数量
 	recipeList         *widget.Container // レシピリストのコンテナ
 	weaponAccuracy     *widget.Text      // 武器の命中率
 	weaponBaseDamage   *widget.Text      // 武器の攻撃力
@@ -228,15 +227,6 @@ func (st *CraftMenuState) generateList(world world.World) {
 			st.weaponBaseDamage.Label = baseDamage
 			st.weaponConsumption.Label = consumption
 
-			var amount string
-			world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Material) {
-					material := gameComponents.Material.Get(entity).(*gc.Material)
-					amount = fmt.Sprintf("%d 個", material.Amount)
-				}
-			}))
-			st.itemAmount.Label = amount
-
 			st.updateRecipeList(world)
 		})
 		st.itemList.AddChild(itemButton)
@@ -258,11 +248,9 @@ func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container 
 				}),
 			)),
 	)
-	st.itemAmount = st.specText(world)
 	st.weaponAccuracy = st.specText(world)
 	st.weaponBaseDamage = st.specText(world)
 	st.weaponConsumption = st.specText(world)
-	itemSpecContainer.AddChild(st.itemAmount)
 	itemSpecContainer.AddChild(st.weaponAccuracy)
 	itemSpecContainer.AddChild(st.weaponBaseDamage)
 	itemSpecContainer.AddChild(st.weaponConsumption)
