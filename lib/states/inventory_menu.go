@@ -1,6 +1,8 @@
 package states
 
 import (
+	"log"
+
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
@@ -144,6 +146,8 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 		st.items = st.queryMenuWeapon(world)
 	case itemCategoryTypeMaterial:
 		st.items = st.queryMenuMaterial(world)
+	default:
+		log.Fatal("未定義のcategory")
 	}
 
 	st.generateList(world)
@@ -213,8 +217,6 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.SetLocation(setWinRect())
 			st.ui.AddWindow(actionWindow)
-
-			st.selectedItem = entity
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {

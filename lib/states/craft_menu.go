@@ -39,6 +39,7 @@ type CraftMenuState struct {
 	specContainer      *widget.Container // 性能表示のコンテナ
 	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	recipeList         *widget.Container // レシピリストのコンテナ
+	category           itemCategoryType
 }
 
 // State interface ================
@@ -108,6 +109,7 @@ func (st *CraftMenuState) getCursorMenuIDs() []string {
 func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテムが入るコンテナ
 	st.actionContainer = eui.NewScrollContentContainer()
+	st.categoryReload(world)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
@@ -116,8 +118,8 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	st.queryMenuConsumable(world)
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
+	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWeapon) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 
@@ -141,10 +143,29 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *CraftMenuState) queryMenuConsumable(world w.World) {
+func (st *CraftMenuState) setCategoryReload(world w.World, category itemCategoryType) {
+	st.category = category
+	st.categoryReload(world)
+}
+
+func (st *CraftMenuState) categoryReload(world w.World) {
 	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
+
+	switch st.category {
+	case itemCategoryTypeConsumable:
+		st.items = st.queryMenuConsumable(world)
+	case itemCategoryTypeWeapon:
+		st.items = st.queryMenuWeapon(world)
+	default:
+		log.Fatal("未定義のcategory")
+	}
+
+	st.generateActionContainer(world)
+}
+
+func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -152,15 +173,14 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) {
 		gameComponents.Recipe,
 		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.items = append(st.items, entity)
+		items = append(items, entity)
 	}))
-	st.generateActionContainer(world)
+
+	return items
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *CraftMenuState) queryMenuWeapon(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
+func (st *CraftMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -168,9 +188,10 @@ func (st *CraftMenuState) queryMenuWeapon(world w.World) {
 		gameComponents.Recipe,
 		gameComponents.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.items = append(st.items, entity)
+		items = append(items, entity)
 	}))
-	st.generateActionContainer(world)
+
+	return items
 }
 
 // itemsからactionCointainerを生成する
