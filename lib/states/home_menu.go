@@ -11,7 +11,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/materialhelper"
+	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
@@ -61,10 +61,10 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnMember(world, "村上", true)
 		spawner.SpawnMember(world, "白瀬", true)
 		spawner.SpawnAllMaterials(world)
-		materialhelper.PlusAmount("鉄", 40, world)
-		materialhelper.PlusAmount("鉄くず", 4, world)
-		materialhelper.PlusAmount("緑ハーブ", 2, world)
-		materialhelper.PlusAmount("フェライトコア", 30, world)
+		material.PlusAmount("鉄", 40, world)
+		material.PlusAmount("鉄くず", 4, world)
+		material.PlusAmount("緑ハーブ", 2, world)
+		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
 	}
 }

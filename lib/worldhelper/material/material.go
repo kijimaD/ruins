@@ -1,4 +1,4 @@
-package materialhelper
+package material
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"

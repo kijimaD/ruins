@@ -7,9 +7,9 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/spawner"
+	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -29,7 +29,7 @@ func Craft(world w.World, name string) (*ecs.Entity, error) {
 func CanCraft(world w.World, name string) bool {
 	canCraft := true
 	for _, recipeInput := range requiredMaterials(world, name) {
-		if !(materialhelper.GetAmount(recipeInput.Name, world) >= recipeInput.Amount) {
+		if !(material.GetAmount(recipeInput.Name, world) >= recipeInput.Amount) {
 			canCraft = false
 			break
 		}
@@ -41,7 +41,7 @@ func CanCraft(world w.World, name string) bool {
 // アイテム合成に必要な素材を消費する
 func consumeMaterials(world w.World, goal string) {
 	for _, recipeInput := range requiredMaterials(world, goal) {
-		materialhelper.MinusAmount(recipeInput.Name, recipeInput.Amount, world)
+		material.MinusAmount(recipeInput.Name, recipeInput.Amount, world)
 	}
 }
 

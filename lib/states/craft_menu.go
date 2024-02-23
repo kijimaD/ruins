@@ -13,16 +13,16 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/craft"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/worldhelper/craft"
+	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -325,9 +325,9 @@ func (st *CraftMenuState) updateRecipeList(world w.World) {
 		if entity == st.selectedItem {
 			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
 			for _, input := range recipe.Inputs {
-				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, materialhelper.GetAmount(input.Name, world))
+				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, material.GetAmount(input.Name, world))
 				var color color.RGBA
-				if materialhelper.GetAmount(input.Name, world) >= input.Amount {
+				if material.GetAmount(input.Name, world) >= input.Amount {
 					color = styles.SuccessColor
 				} else {
 					color = styles.DangerColor
