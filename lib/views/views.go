@@ -35,7 +35,9 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			consumption := fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
 			targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
 
-			targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
+			if v.DamageAttr != components.DamageAttrNone {
+				targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
+			}
 		case *components.Wearable:
 			if v == nil {
 				continue
