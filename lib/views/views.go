@@ -39,10 +39,29 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 				targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
 			}
 			if attr := v.DamageAttr.String(); attr != "" && attr != components.DamageAttrNone.String() {
-				targetContainer.AddChild(eui.NewBodyText(fmt.Sprintf("<%s>", attr), styles.TextColor, world))
+				text := damageAttrText(world, v.DamageAttr, attr)
+				targetContainer.AddChild(text)
 			}
 		}
 	}
 
 	return targetContainer
+}
+
+func damageAttrText(world w.World, dat components.DamageAttrType, str string) *widget.Text {
+	var text *widget.Text
+	switch dat {
+	case components.DamageAttrFire:
+		text = eui.NewBodyText(str, styles.FireColor, world)
+	case components.DamageAttrThunder:
+		text = eui.NewBodyText(str, styles.ThunderColor, world)
+	case components.DamageAttrChill:
+		text = eui.NewBodyText(str, styles.ChillColor, world)
+	case components.DamageAttrPhoton:
+		text = eui.NewBodyText(str, styles.PhotonColor, world)
+	default:
+		text = eui.NewBodyText(str, styles.TextColor, world)
+	}
+
+	return text
 }

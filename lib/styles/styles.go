@@ -37,4 +37,9 @@ var (
 
 	SuccessColor = RGB(0x198754)
 	DangerColor  = RGB(0xdc3545)
+
+	FireColor    = RGB(0xc44303) // 赤
+	ThunderColor = RGB(0x4169e1) // 暗青
+	ChillColor   = RGB(0x00ffff) // 明青
+	PhotonColor  = RGB(0xffff00) // 黄
 )
