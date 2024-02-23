@@ -11,10 +11,10 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
+	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -61,10 +61,10 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnMember(world, "村上", true)
 		spawner.SpawnMember(world, "白瀬", true)
 		spawner.SpawnAllMaterials(world)
-		materialhelper.PlusAmount("鉄", 4, world)
-		materialhelper.PlusAmount("鉄くず", 4, world)
-		materialhelper.PlusAmount("緑ハーブ", 2, world)
-		materialhelper.PlusAmount("フェライトコア", 3, world)
+		material.PlusAmount("鉄", 40, world)
+		material.PlusAmount("鉄くず", 4, world)
+		material.PlusAmount("緑ハーブ", 2, world)
+		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
 	}
 }
@@ -167,7 +167,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 0:
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
 	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{category: itemCategoryTypeConsumable}}}
 	case 2:
 		// TODO: 実装する
 		return states.Transition{Type: states.TransNone}

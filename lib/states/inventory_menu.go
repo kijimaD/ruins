@@ -1,9 +1,7 @@
 package states
 
 import (
-	"fmt"
-	"image"
-	"strconv"
+	"log"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -17,9 +15,10 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/materialhelper"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/views"
+	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -32,12 +31,10 @@ type InventoryMenuState struct {
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
-	itemList           *widget.Container // アイテムリストのコンテナ
+	actionContainer    *widget.Container // アクションの起点となるコンテナ
+	specContainer      *widget.Container // 性能表示のコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
-	itemAmount         *widget.Text      // アイテムの数量
-	weaponAccuracy     *widget.Text      // 武器の命中率
-	weaponBaseDamage   *widget.Text      // 武器の攻撃力
-	weaponConsumption  *widget.Text      // 武器の消費エネルギー
+	category           itemCategoryType
 }
 
 // State interface ================
@@ -99,24 +96,48 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 }
 
 // ================
+var _ haveCategory = &InventoryMenuState{}
+
+func (st *InventoryMenuState) setCategoryReload(world w.World, category itemCategoryType) {
+	st.category = category
+	st.categoryReload(world)
+}
+
+func (st *InventoryMenuState) categoryReload(world w.World) {
+	st.actionContainer.RemoveChildren()
+	st.items = []ecs.Entity{}
+
+	switch st.category {
+	case itemCategoryTypeConsumable:
+		st.items = st.queryMenuConsumable(world)
+	case itemCategoryTypeWeapon:
+		st.items = st.queryMenuWeapon(world)
+	case itemCategoryTypeMaterial:
+		st.items = st.queryMenuMaterial(world)
+	default:
+		log.Fatal("未定義のcategory")
+	}
+
+	st.generateList(world)
+}
+
+// ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
-	// 各アイテムが入るコンテナ
-	st.itemList = eui.NewScrollContentContainer()
+	// 各アクションが入るコンテナ
+	st.actionContainer = eui.NewScrollContentContainer()
+	st.categoryReload(world)
+
+	// 種類トグル
+	toggleContainer := st.newToggleContainer(world)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
-	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
+	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	st.queryMenuConsumable(world)
-	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
-	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.queryMenuMaterial(world) }, world)
-	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleWeaponButton)
-	toggleContainer.AddChild(toggleMaterialButton)
+	sc, v := eui.NewScrollContainer(st.actionContainer)
+	st.specContainer = st.newItemSpecContainer(world)
 
 	rootContainer := eui.NewItemGridContainer()
 	{
@@ -124,10 +145,9 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(st.itemList)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newItemSpecContainer(world))
+		rootContainer.AddChild(st.specContainer)
 
 		rootContainer.AddChild(itemDescContainer)
 	}
@@ -135,10 +155,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
-	st.itemList.RemoveChildren()
-	st.items = []ecs.Entity{}
+func (st *InventoryMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -148,15 +166,14 @@ func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
 		gameComponents.InBackpack,
 		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.items = append(st.items, entity)
+		items = append(items, entity)
 	}))
-	st.generateList(world)
+
+	return items
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
-	st.itemList.RemoveChildren()
-	st.items = []ecs.Entity{}
+func (st *InventoryMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -166,26 +183,25 @@ func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
 		gameComponents.InBackpack,
 		gameComponents.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.items = append(st.items, entity)
+		items = append(items, entity)
 	}))
-	st.generateList(world)
+
+	return items
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) queryMenuMaterial(world w.World) {
-	st.itemList.RemoveChildren()
-	st.items = []ecs.Entity{}
+func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	materialhelper.OwnedMaterial(func(entity ecs.Entity) {
+	simple.OwnedMaterial(func(entity ecs.Entity) {
 		material := gameComponents.Material.Get(entity).(*gc.Material)
 		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
 		if material.Amount > 0 {
-			st.items = append(st.items, entity)
+			items = append(items, entity)
 		}
 	}, world)
 
-	st.generateList(world)
+	return items
 }
 
 // itemsからUIを生成する
@@ -201,61 +217,25 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
-			actionWindow.SetLocation(r)
+			actionWindow.SetLocation(setWinRect())
 			st.ui.AddWindow(actionWindow)
-
-			st.selectedItem = entity
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
-
-			var description string
-			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Description) {
-					c := gameComponents.Description.Get(entity).(*gc.Description)
-					description = c.Description
-				}
-			}))
-			st.itemDesc.Label = description
-
-			var accuracy string
-			var baseDamage string
-			var consumption string
-			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
-					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-					accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(weapon.Accuracy))
-					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
-					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
-				}
-			}))
-			st.weaponAccuracy.Label = accuracy
-			st.weaponBaseDamage.Label = baseDamage
-			st.weaponConsumption.Label = consumption
-
-			var amount string
-			world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Material) {
-					material := gameComponents.Material.Get(entity).(*gc.Material)
-					amount = fmt.Sprintf("%d 個", material.Amount)
-				}
-			}))
-			st.itemAmount.Label = amount
+			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			views.UpdateSpec(world, st.specContainer, []any{
+				simple.GetWeapon(world, entity),
+				simple.GetMaterial(world, entity),
+			})
 		})
-		st.itemList.AddChild(itemButton)
+		st.actionContainer.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			r := image.Rect(0, 0, x, y)
-			r = r.Add(image.Point{x + 20, y + 20})
 			st.initPartyWindow(world)
-			st.partyWindow.SetLocation(r)
+			st.partyWindow.SetLocation(getWinRect())
 
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {
@@ -267,7 +247,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			case gc.TargetAll:
 				effects.ItemTrigger(nil, entity, effects.Party{}, world)
 				actionWindow.Close()
-				st.itemList.RemoveChild(itemButton)
+				st.actionContainer.RemoveChild(itemButton)
 			}
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) {
@@ -276,7 +256,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
-			st.itemList.RemoveChild(itemButton)
+			st.categoryReload(world)
 			actionWindow.Close()
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) {
@@ -305,10 +285,22 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
-			st.itemList.RemoveChild(st.selectedItemButton)
+			st.actionContainer.RemoveChild(st.selectedItemButton)
 		}, world)
 		partyContainer.AddChild(partyButton)
 	}))
+}
+
+func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
+	toggleContainer := eui.NewRowContainer()
+	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWeapon) }, world)
+	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeMaterial) }, world)
+	toggleContainer.AddChild(toggleConsumableButton)
+	toggleContainer.AddChild(toggleWeaponButton)
+	toggleContainer.AddChild(toggleMaterialButton)
+
+	return toggleContainer
 }
 
 func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Container {
@@ -326,22 +318,6 @@ func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Contai
 				}),
 			)),
 	)
-	st.itemAmount = st.specText(world)
-	st.weaponAccuracy = st.specText(world)
-	st.weaponBaseDamage = st.specText(world)
-	st.weaponConsumption = st.specText(world)
-	itemSpecContainer.AddChild(st.itemAmount)
-	itemSpecContainer.AddChild(st.weaponAccuracy)
-	itemSpecContainer.AddChild(st.weaponBaseDamage)
-	itemSpecContainer.AddChild(st.weaponConsumption)
-	return itemSpecContainer
-}
 
-func (st *InventoryMenuState) specText(world w.World) *widget.Text {
-	return widget.NewText(
-		widget.TextOpts.Text("", eui.LoadFont(world), styles.TextColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
-		),
-	)
+	return itemSpecContainer
 }
