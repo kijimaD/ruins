@@ -33,6 +33,7 @@ type InventoryMenuState struct {
 	actionContainer    *widget.Container // アクションの起点となるコンテナ
 	specContainer      *widget.Container // 性能表示のコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
+	category           itemCategoryType
 }
 
 // State interface ================
@@ -96,9 +97,9 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 // ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
-	// 各アイテム名が入るコンテナ
+	// 各アクションが入るコンテナ
 	st.actionContainer = eui.NewScrollContentContainer()
-	st.queryMenuConsumable(world)
+	st.categoryReload(world)
 
 	// 種類トグル
 	toggleContainer := st.newToggleContainer(world)
@@ -127,10 +128,29 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
+func (st *InventoryMenuState) setCategoryReload(world w.World, category itemCategoryType) {
+	st.category = category
+	st.categoryReload(world)
+}
+
+func (st *InventoryMenuState) categoryReload(world w.World) {
 	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
+
+	switch st.category {
+	case itemCategoryTypeConsumable:
+		st.items = st.queryMenuConsumable(world)
+	case itemCategoryTypeWeapon:
+		st.items = st.queryMenuWeapon(world)
+	case itemCategoryTypeMaterial:
+		st.items = st.queryMenuMaterial(world)
+	}
+
+	st.generateList(world)
+}
+
+func (st *InventoryMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -140,15 +160,14 @@ func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
 		gameComponents.InBackpack,
 		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.items = append(st.items, entity)
+		items = append(items, entity)
 	}))
-	st.generateList(world)
+
+	return items
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
+func (st *InventoryMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -158,26 +177,25 @@ func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
 		gameComponents.InBackpack,
 		gameComponents.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.items = append(st.items, entity)
+		items = append(items, entity)
 	}))
-	st.generateList(world)
+
+	return items
 }
 
-// 新しいクエリを実行してitemsをセットする
-func (st *InventoryMenuState) queryMenuMaterial(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
+func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	material.OwnedMaterial(func(entity ecs.Entity) {
 		material := gameComponents.Material.Get(entity).(*gc.Material)
 		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
 		if material.Amount > 0 {
-			st.items = append(st.items, entity)
+			items = append(items, entity)
 		}
 	}, world)
 
-	st.generateList(world)
+	return items
 }
 
 // itemsからUIを生成する
@@ -234,7 +252,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
-			st.actionContainer.RemoveChild(itemButton)
+			st.categoryReload(world)
 			actionWindow.Close()
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) {
@@ -271,9 +289,9 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.queryMenuConsumable(world) }, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.queryMenuWeapon(world) }, world)
-	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.queryMenuMaterial(world) }, world)
+	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWeapon) }, world)
+	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeMaterial) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
 	toggleContainer.AddChild(toggleMaterialButton)

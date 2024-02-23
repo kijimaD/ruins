@@ -22,3 +22,11 @@ func setWinRect() image.Rectangle {
 func getWinRect() image.Rectangle {
 	return winRect
 }
+
+type itemCategoryType string
+
+var (
+	itemCategoryTypeConsumable itemCategoryType = "CONSUMABLE"
+	itemCategoryTypeWeapon     itemCategoryType = "WEAPON"
+	itemCategoryTypeMaterial   itemCategoryType = "MATERIAL"
+)
