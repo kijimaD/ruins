@@ -1,8 +1,6 @@
 package states
 
 import (
-	"image"
-
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
@@ -35,7 +33,6 @@ type InventoryMenuState struct {
 	actionContainer    *widget.Container // アクションの起点となるコンテナ
 	specContainer      *widget.Container // 性能表示のコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
-	winRect            image.Rectangle   // ウィンドウの開く位置
 }
 
 // State interface ================
@@ -196,10 +193,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			st.winRect = image.Rect(0, 0, x, y)
-			st.winRect = st.winRect.Add(image.Point{x + 20, y + 20})
-			actionWindow.SetLocation(st.winRect)
+			actionWindow.SetLocation(setWinRect())
 			st.ui.AddWindow(actionWindow)
 
 			st.selectedItem = entity
@@ -219,7 +213,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
 			st.initPartyWindow(world)
-			st.partyWindow.SetLocation(st.winRect)
+			st.partyWindow.SetLocation(getWinRect())
 
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {
@@ -304,13 +298,4 @@ func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Contai
 	)
 
 	return itemSpecContainer
-}
-
-func (st *InventoryMenuState) newSpecText(world w.World) *widget.Text {
-	return widget.NewText(
-		widget.TextOpts.Text("", eui.LoadFont(world), styles.TextColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
-		),
-	)
 }

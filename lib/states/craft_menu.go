@@ -2,7 +2,6 @@ package states
 
 import (
 	"fmt"
-	"image"
 	"image/color"
 	"log"
 
@@ -40,7 +39,6 @@ type CraftMenuState struct {
 	specContainer      *widget.Container // 性能表示のコンテナ
 	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	recipeList         *widget.Container // レシピリストのコンテナ
-	winRect            image.Rectangle   // ウィンドウの開く位置
 }
 
 // State interface ================
@@ -156,7 +154,7 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.items = append(st.items, entity)
 	}))
-	st.generateList(world)
+	st.generateActionContainer(world)
 }
 
 // 新しいクエリを実行してitemsをセットする
@@ -172,11 +170,11 @@ func (st *CraftMenuState) queryMenuWeapon(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.items = append(st.items, entity)
 	}))
-	st.generateList(world)
+	st.generateActionContainer(world)
 }
 
 // itemsからactionCointainerを生成する
-func (st *CraftMenuState) generateList(world world.World) {
+func (st *CraftMenuState) generateActionContainer(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	for _, entity := range st.items {
 		entity := entity
@@ -188,8 +186,7 @@ func (st *CraftMenuState) generateList(world world.World) {
 
 		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			st.setWinRect()
-			actionWindow.SetLocation(st.winRect)
+			actionWindow.SetLocation(setWinRect())
 			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
 			st.ui.AddWindow(actionWindow)
 		}, world)
@@ -223,15 +220,6 @@ func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container 
 	)
 
 	return itemSpecContainer
-}
-
-func (st *CraftMenuState) specText(world w.World) *widget.Text {
-	return widget.NewText(
-		widget.TextOpts.Text("", eui.LoadFont(world), styles.TextColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
-		),
-	)
 }
 
 // 縦分割コンテナ
@@ -305,7 +293,7 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 
 		actionWindow.Close()
 		st.initResultWindow(world, *resultEntity)
-		st.resultWindow.SetLocation(st.winRect)
+		st.resultWindow.SetLocation(getWinRect())
 		st.ui.AddWindow(st.resultWindow)
 	}, world)
 	if craft.CanCraft(world, name) {
@@ -316,10 +304,4 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 		actionWindow.Close()
 	}, world)
 	windowContainer.AddChild(closeButton)
-}
-
-func (st *CraftMenuState) setWinRect() {
-	x, y := ebiten.CursorPosition()
-	st.winRect = image.Rect(0, 0, x, y)
-	st.winRect = st.winRect.Add(image.Point{x + 20, y + 20})
 }
