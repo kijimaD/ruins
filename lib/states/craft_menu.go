@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/color"
 	"log"
-	"strconv"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -21,7 +20,9 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/craft"
+	"github.com/kijimaD/ruins/lib/worldhelper/items"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -38,10 +39,8 @@ type CraftMenuState struct {
 	itemList           *widget.Container // アイテムリストのコンテナ
 	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	recipeList         *widget.Container // レシピリストのコンテナ
-	weaponAccuracy     *widget.Text      // 武器の命中率
-	weaponBaseDamage   *widget.Text      // 武器の攻撃力
-	weaponConsumption  *widget.Text      // 武器の消費エネルギー
 	winRect            image.Rectangle   // ウィンドウの開く位置
+	specContainer      *widget.Container // 性能表示のコンテナ
 }
 
 // State interface ================
@@ -125,6 +124,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	toggleContainer.AddChild(toggleWeaponButton)
 
 	st.recipeList = st.newItemSpecContainer(world)
+	st.specContainer = st.newItemSpecContainer(world)
 
 	rootContainer := eui.NewItemGridContainer()
 	{
@@ -135,7 +135,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		sc, v := eui.NewScrollContainer(st.itemList)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newVSplitContainer(st.newItemSpecContainer(world), st.recipeList, world))
+		rootContainer.AddChild(st.newVSplitContainer(st.specContainer, st.recipeList, world))
 
 		rootContainer.AddChild(itemDescContainer)
 	}
@@ -206,26 +206,13 @@ func (st *CraftMenuState) generateList(world world.World) {
 			var description string
 			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
 				if entity == st.selectedItem && entity.HasComponent(gameComponents.Description) {
-					c := gameComponents.Description.Get(entity).(*gc.Description)
-					description = c.Description
+					desc := gameComponents.Description.Get(entity).(*gc.Description)
+					description = desc.Description
 				}
 			}))
 			st.itemDesc.Label = description
 
-			var accuracy string
-			var baseDamage string
-			var consumption string
-			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
-					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-					accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(weapon.Accuracy))
-					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
-					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
-				}
-			}))
-			st.weaponAccuracy.Label = accuracy
-			st.weaponBaseDamage.Label = baseDamage
-			st.weaponConsumption.Label = consumption
+			views.UpdateSpec(world, st.specContainer, items.GetWeapon(world, entity))
 
 			st.updateRecipeList(world)
 		})
@@ -248,12 +235,6 @@ func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container 
 				}),
 			)),
 	)
-	st.weaponAccuracy = st.specText(world)
-	st.weaponBaseDamage = st.specText(world)
-	st.weaponConsumption = st.specText(world)
-	itemSpecContainer.AddChild(st.weaponAccuracy)
-	itemSpecContainer.AddChild(st.weaponBaseDamage)
-	itemSpecContainer.AddChild(st.weaponConsumption)
 
 	return itemSpecContainer
 }
@@ -293,22 +274,8 @@ func (st *CraftMenuState) newVSplitContainer(top *widget.Container, bottom *widg
 func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 	resultContainer := eui.NewWindowContainer()
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
-	gameComponents := world.Components.Game.(*gc.Components)
-	name := gameComponents.Name.Get(entity).(*gc.Name)
-	resultContainer.AddChild(eui.NewMenuText(fmt.Sprintf("<%s>", name.Name), world))
 
-	if entity.HasComponent(gameComponents.Weapon) {
-		weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-		a := st.specText(world)
-		b := st.specText(world)
-		c := st.specText(world)
-		resultContainer.AddChild(a)
-		resultContainer.AddChild(b)
-		resultContainer.AddChild(c)
-		a.Label = fmt.Sprintf("命中率 %s", strconv.Itoa(weapon.Accuracy))
-		b.Label = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
-		c.Label = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
-	}
+	views.UpdateSpec(world, resultContainer, items.GetWeapon(world, entity))
 
 	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 		st.resultWindow.Close()
