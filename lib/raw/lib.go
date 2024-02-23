@@ -5,6 +5,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
+	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/utils"
 	gloader "github.com/kijimaD/ruins/lib/loader"
@@ -46,6 +47,7 @@ type Weapon struct {
 	BaseDamage        int // ベース攻撃力
 	AttackCount       int // 攻撃回数
 	EnergyConsumption int // 攻撃で消費するエネルギー
+	DamageAttr        string
 }
 
 type Material struct {
@@ -174,6 +176,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			BaseDamage:        item.Weapon.BaseDamage,
 			AttackCount:       item.Weapon.AttackCount,
 			EnergyConsumption: item.Weapon.EnergyConsumption,
+			DamageAttr:        components.StringToDamangeAttrType(item.Weapon.DamageAttr),
 		}
 	}
 	return cl
