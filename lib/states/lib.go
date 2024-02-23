@@ -31,6 +31,7 @@ type itemCategoryType string
 var (
 	itemCategoryTypeConsumable itemCategoryType = "CONSUMABLE"
 	itemCategoryTypeWeapon     itemCategoryType = "WEAPON"
+	itemCategoryTypeWearable   itemCategoryType = "WEARABLE"
 	itemCategoryTypeMaterial   itemCategoryType = "MATERIAL"
 )
 

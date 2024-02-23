@@ -34,6 +34,7 @@ type Item struct {
 	InflictsDamage  int
 	Consumable      *Consumable `toml:"consumable"`
 	Weapon          *Weapon     `toml:"weapon"`
+	Wearable        *Wearable   `toml:"wearable"`
 }
 
 type Consumable struct {
@@ -48,6 +49,11 @@ type Weapon struct {
 	AttackCount       int    // 攻撃回数
 	EnergyConsumption int    // 攻撃で消費するエネルギー
 	DamageAttr        string // 攻撃属性
+}
+
+type Wearable struct {
+	BaseDefense   int
+	EquipmentSlot string
 }
 
 type Material struct {
@@ -179,6 +185,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			DamageAttr:        components.StringToDamangeAttrType(item.Weapon.DamageAttr),
 		}
 	}
+	if item.Wearable != nil {
+		cl.Wearable = &gc.Wearable{
+			BaseDefense:   item.Wearable.BaseDefense,
+			EquipmentSlot: components.StringToEquipmentSlotType(item.Wearable.EquipmentSlot),
+		}
+	}
 	return cl
 }
 
@@ -217,6 +229,9 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Weapon != nil {
 		cl.Weapon = item.Weapon
+	}
+	if item.Wearable != nil {
+		cl.Wearable = item.Wearable
 	}
 	if item.Consumable != nil {
 		cl.Consumable = item.Consumable

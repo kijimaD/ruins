@@ -17,30 +17,35 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 	for _, component := range cs {
 		switch v := component.(type) {
 		case components.Material:
-			var amount string
 			if v.Amount != 0 {
-				amount = fmt.Sprintf("%d 個", v.Amount)
+				amount := fmt.Sprintf("%d 個", v.Amount)
 				targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
 			}
 		case components.Weapon:
-			var accuracy string
 			if v.Accuracy != 0 {
-				accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
+				accuracy := fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
 				targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 			}
-			var baseDamage string
 			if v.BaseDamage != 0 {
-				baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(v.BaseDamage))
+				baseDamage := fmt.Sprintf("攻撃力 %s", strconv.Itoa(v.BaseDamage))
 				targetContainer.AddChild(eui.NewBodyText(baseDamage, styles.TextColor, world))
 			}
-			var consumption string
 			if v.EnergyConsumption != 0 {
-				consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
+				consumption := fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
 				targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
 			}
 			if attr := v.DamageAttr.String(); attr != "" && attr != components.DamageAttrNone.String() {
 				text := damageAttrText(world, v.DamageAttr, attr)
 				targetContainer.AddChild(text)
+			}
+		case components.Wearable:
+			if v.BaseDefense != 0 {
+				baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.BaseDefense))
+				targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
+			}
+			if attr := v.EquipmentSlot.String(); attr != "" {
+				equipmentSlot := fmt.Sprintf("部位 %s", v.EquipmentSlot)
+				targetContainer.AddChild(eui.NewBodyText(equipmentSlot, styles.TextColor, world))
 			}
 		}
 	}

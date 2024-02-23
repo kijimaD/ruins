@@ -109,6 +109,16 @@ AttackCount = 1
 EnergyConsumption = 2
 DamageAttr = "FIRE"
 
+# wearable ================
+
+[[item]]
+Name = "鉄の西洋鎧"
+Description = "伝統的な意匠が施されたずっしりと重い鎧"
+
+[item.wearable]
+BaseDefense = 12
+EquipmentSlot = "TORSO"
+
 # material ================
 
 [[material]]
@@ -193,6 +203,13 @@ Amount = 3
 
 [[recipe]]
 Name = "ファイヤグローブ"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
+
+[[recipe]]
+Name = "鉄の西洋鎧"
 
 [[recipe.inputs]]
 Name = "鉄"
