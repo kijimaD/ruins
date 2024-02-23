@@ -209,16 +209,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
-
-			var description string
-			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Description) {
-					c := gameComponents.Description.Get(entity).(*gc.Description)
-					description = c.Description
-				}
-			}))
-			st.itemDesc.Label = description
-
+			st.itemDesc.Label = items.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{
 				items.GetWeapon(world, entity),
 				items.GetMaterial(world, entity),

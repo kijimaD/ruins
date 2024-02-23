@@ -32,3 +32,16 @@ func GetMaterial(world w.World, target ecs.Entity) components.Material {
 
 	return result
 }
+
+func GetDescription(world w.World, target ecs.Entity) components.Description {
+	result := components.Description{}
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity == target && entity.HasComponent(gameComponents.Description) {
+			description := gameComponents.Description.Get(entity).(*gc.Description)
+			result = *description
+		}
+	}))
+
+	return result
+}

@@ -32,7 +32,7 @@ type CraftMenuState struct {
 	craftMenu []ecs.Entity
 	ui        *ebitenui.UI
 
-	hoveredItem        ecs.Entity        // 選択中のアイテム
+	hoveredItem        ecs.Entity        // ホバー中のアイテム
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
@@ -175,7 +175,7 @@ func (st *CraftMenuState) queryMenuWeapon(world w.World) {
 	st.generateList(world)
 }
 
-// itemsからUIを生成する
+// itemsからactionCointainerを生成する
 func (st *CraftMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	for _, entity := range st.items {
@@ -198,18 +198,8 @@ func (st *CraftMenuState) generateList(world world.World) {
 			if st.hoveredItem != entity {
 				st.hoveredItem = entity
 			}
-
-			var description string
-			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.hoveredItem && entity.HasComponent(gameComponents.Description) {
-					desc := gameComponents.Description.Get(entity).(*gc.Description)
-					description = desc.Description
-				}
-			}))
-			st.itemDesc.Label = description
-
+			st.itemDesc.Label = items.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{items.GetWeapon(world, entity)})
-
 			st.updateRecipeList(world)
 		})
 		st.actionContainer.AddChild(itemButton)
