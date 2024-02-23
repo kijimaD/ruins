@@ -1,6 +1,8 @@
 package components
 
-import "log"
+import (
+	"log"
+)
 
 type warpMode string
 
@@ -71,8 +73,6 @@ func (es EquipmentSlotType) String() string {
 		result = "脚部"
 	case EquipmentSlotJewelry:
 		result = "装飾"
-	default:
-		log.Fatal("invalid equiment slot type")
 	}
 	return result
 }

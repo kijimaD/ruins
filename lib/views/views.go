@@ -14,6 +14,7 @@ import (
 func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *widget.Container {
 	targetContainer.RemoveChildren()
 
+	// FIXME: 必要なすべてのstate全体で必要なコンポーネントが渡されてくるので、たとえば消耗品のタブ時でも武器のcase内は実行される
 	for _, component := range cs {
 		switch v := component.(type) {
 		case components.Material:
@@ -53,6 +54,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 	return targetContainer
 }
 
+// 属性によって色付けする
 func damageAttrText(world w.World, dat components.DamageAttrType, str string) *widget.Text {
 	var text *widget.Text
 	switch dat {
