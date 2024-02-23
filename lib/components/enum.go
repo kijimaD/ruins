@@ -57,6 +57,8 @@ func StringToEquipmentSlotType(input string) EquipmentSlotType {
 		result = EquipmentSlotLegs
 	case string(EquipmentSlotJewelry):
 		result = EquipmentSlotJewelry
+	default:
+		log.Fatal("invalid equiment slot type")
 	}
 
 	return result
@@ -73,6 +75,8 @@ func (es EquipmentSlotType) String() string {
 		result = "脚部"
 	case EquipmentSlotJewelry:
 		result = "装飾"
+	default:
+		log.Fatal("invalid equiment slot type")
 	}
 	return result
 }
@@ -122,6 +126,8 @@ func (da DamageAttrType) String() string {
 		result = "冷"
 	case DamageAttrPhoton:
 		result = "光"
+	default:
+		log.Fatal("invalid damage attr type")
 	}
 	return result
 }
