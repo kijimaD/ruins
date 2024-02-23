@@ -19,3 +19,16 @@ func GetWeapon(world w.World, target ecs.Entity) components.Weapon {
 
 	return result
 }
+
+func GetMaterial(world w.World, target ecs.Entity) components.Material {
+	result := components.Material{}
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity == target && entity.HasComponent(gameComponents.Material) {
+			material := gameComponents.Material.Get(entity).(*gc.Material)
+			result = *material
+		}
+	}))
+
+	return result
+}

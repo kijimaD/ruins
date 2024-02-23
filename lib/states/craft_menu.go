@@ -212,7 +212,7 @@ func (st *CraftMenuState) generateList(world world.World) {
 			}))
 			st.itemDesc.Label = description
 
-			views.UpdateSpec(world, st.specContainer, items.GetWeapon(world, entity))
+			views.UpdateSpec(world, st.specContainer, []any{items.GetWeapon(world, entity)})
 
 			st.updateRecipeList(world)
 		})
@@ -275,7 +275,7 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 	resultContainer := eui.NewWindowContainer()
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
 
-	views.UpdateSpec(world, resultContainer, items.GetWeapon(world, entity))
+	views.UpdateSpec(world, resultContainer, []any{items.GetWeapon(world, entity)})
 
 	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 		st.resultWindow.Close()

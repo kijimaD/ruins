@@ -1,9 +1,7 @@
 package states
 
 import (
-	"fmt"
 	"image"
-	"strconv"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -17,9 +15,11 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/views"
+	"github.com/kijimaD/ruins/lib/worldhelper/items"
+	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -34,11 +34,8 @@ type InventoryMenuState struct {
 	itemDesc           *widget.Text      // アイテムの概要
 	itemList           *widget.Container // アイテムリストのコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
-	itemAmount         *widget.Text      // アイテムの数量
-	weaponAccuracy     *widget.Text      // 武器の命中率
-	weaponBaseDamage   *widget.Text      // 武器の攻撃力
-	weaponConsumption  *widget.Text      // 武器の消費エネルギー
 	winRect            image.Rectangle   // ウィンドウの開く位置
+	specContainer      *widget.Container // 性能表示のコンテナ
 }
 
 // State interface ================
@@ -115,6 +112,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	itemDescContainer.AddChild(st.itemDesc)
 
 	sc, v := eui.NewScrollContainer(st.itemList)
+	st.specContainer = st.newItemSpecContainer(world)
 
 	rootContainer := eui.NewItemGridContainer()
 	{
@@ -124,7 +122,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newItemSpecContainer(world))
+		rootContainer.AddChild(st.specContainer)
 
 		rootContainer.AddChild(itemDescContainer)
 	}
@@ -221,29 +219,10 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			}))
 			st.itemDesc.Label = description
 
-			var accuracy string
-			var baseDamage string
-			var consumption string
-			world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Weapon) {
-					weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-					accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(weapon.Accuracy))
-					baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
-					consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
-				}
-			}))
-			st.weaponAccuracy.Label = accuracy
-			st.weaponBaseDamage.Label = baseDamage
-			st.weaponConsumption.Label = consumption
-
-			var amount string
-			world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Material) {
-					material := gameComponents.Material.Get(entity).(*gc.Material)
-					amount = fmt.Sprintf("%d 個", material.Amount)
-				}
-			}))
-			st.itemAmount.Label = amount
+			views.UpdateSpec(world, st.specContainer, []any{
+				items.GetWeapon(world, entity),
+				items.GetMaterial(world, entity),
+			})
 		})
 		st.itemList.AddChild(itemButton)
 
@@ -332,14 +311,7 @@ func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Contai
 				}),
 			)),
 	)
-	st.itemAmount = st.newSpecText(world)
-	st.weaponAccuracy = st.newSpecText(world)
-	st.weaponBaseDamage = st.newSpecText(world)
-	st.weaponConsumption = st.newSpecText(world)
-	itemSpecContainer.AddChild(st.itemAmount)
-	itemSpecContainer.AddChild(st.weaponAccuracy)
-	itemSpecContainer.AddChild(st.weaponBaseDamage)
-	itemSpecContainer.AddChild(st.weaponConsumption)
+
 	return itemSpecContainer
 }
 
