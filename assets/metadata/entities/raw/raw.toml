@@ -133,7 +133,7 @@ Description = "よくなめされた革で成形された長靴"
 
 [item.wearable]
 BaseDefense = 5
-EquipmentSlot = "LEG"
+EquipmentSlot = "LEGS"
 
 [[item]]
 Name = "機械の指輪"

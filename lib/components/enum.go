@@ -68,9 +68,11 @@ func (es EquipmentSlotType) String() string {
 	case EquipmentSlotTorso:
 		result = "胴体"
 	case EquipmentSlotLegs:
-		result = "脚"
+		result = "脚部"
 	case EquipmentSlotJewelry:
 		result = "装飾"
+	default:
+		log.Fatal("invalid equiment slot type")
 	}
 	return result
 }
