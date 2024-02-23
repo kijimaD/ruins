@@ -32,7 +32,7 @@ type CraftMenuState struct {
 	craftMenu []ecs.Entity
 	ui        *ebitenui.UI
 
-	selectedItem       ecs.Entity        // 選択中のアイテム
+	hoveredItem        ecs.Entity        // 選択中のアイテム
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
@@ -188,24 +188,20 @@ func (st *CraftMenuState) generateList(world world.World) {
 
 		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			x, y := ebiten.CursorPosition()
-			st.winRect = image.Rect(0, 0, x, y)
-			st.winRect = st.winRect.Add(image.Point{x + 20, y + 20})
+			st.setWinRect()
 			actionWindow.SetLocation(st.winRect)
-			st.ui.AddWindow(actionWindow)
-
-			st.selectedItem = entity
 			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
+			st.ui.AddWindow(actionWindow)
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			if st.selectedItem != entity {
-				st.selectedItem = entity
+			if st.hoveredItem != entity {
+				st.hoveredItem = entity
 			}
 
 			var description string
 			world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				if entity == st.selectedItem && entity.HasComponent(gameComponents.Description) {
+				if entity == st.hoveredItem && entity.HasComponent(gameComponents.Description) {
 					desc := gameComponents.Description.Get(entity).(*gc.Description)
 					description = desc.Description
 				}
@@ -289,7 +285,7 @@ func (st *CraftMenuState) updateRecipeList(world w.World) {
 	world.Manager.Join(
 		gameComponents.Recipe,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == st.selectedItem {
+		if entity == st.hoveredItem {
 			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
 			for _, input := range recipe.Inputs {
 				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, material.GetAmount(input.Name, world))
@@ -330,4 +326,10 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 		actionWindow.Close()
 	}, world)
 	windowContainer.AddChild(closeButton)
+}
+
+func (st *CraftMenuState) setWinRect() {
+	x, y := ebiten.CursorPosition()
+	st.winRect = image.Rect(0, 0, x, y)
+	st.winRect = st.winRect.Add(image.Point{x + 20, y + 20})
 }
