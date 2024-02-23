@@ -7,39 +7,36 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func GetWeapon(world w.World, target ecs.Entity) components.Weapon {
-	result := components.Weapon{}
+func GetWeapon(world w.World, target ecs.Entity) *components.Weapon {
+	var result *components.Weapon
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if entity == target && entity.HasComponent(gameComponents.Weapon) {
-			weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
-			result = *weapon
+			result = gameComponents.Weapon.Get(entity).(*gc.Weapon)
 		}
 	}))
 
 	return result
 }
 
-func GetWearable(world w.World, target ecs.Entity) components.Wearable {
-	result := components.Wearable{}
+func GetWearable(world w.World, target ecs.Entity) *components.Wearable {
+	var result *components.Wearable
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(gameComponents.Wearable).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if entity == target && entity.HasComponent(gameComponents.Wearable) {
-			wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
-			result = *wearable
+			result = gameComponents.Wearable.Get(entity).(*gc.Wearable)
 		}
 	}))
 
 	return result
 }
 
-func GetMaterial(world w.World, target ecs.Entity) components.Material {
-	result := components.Material{}
+func GetMaterial(world w.World, target ecs.Entity) *components.Material {
+	var result *components.Material
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if entity == target && entity.HasComponent(gameComponents.Material) {
-			material := gameComponents.Material.Get(entity).(*gc.Material)
-			result = *material
+			result = gameComponents.Material.Get(entity).(*gc.Material)
 		}
 	}))
 
