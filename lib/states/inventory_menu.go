@@ -32,10 +32,10 @@ type InventoryMenuState struct {
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
-	itemList           *widget.Container // アイテムリストのコンテナ
+	actionContainer    *widget.Container // アクションの起点となるコンテナ
+	specContainer      *widget.Container // 性能表示のコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
 	winRect            image.Rectangle   // ウィンドウの開く位置
-	specContainer      *widget.Container // 性能表示のコンテナ
 }
 
 // State interface ================
@@ -100,7 +100,7 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテム名が入るコンテナ
-	st.itemList = eui.NewScrollContentContainer()
+	st.actionContainer = eui.NewScrollContentContainer()
 	st.queryMenuConsumable(world)
 
 	// 種類トグル
@@ -111,7 +111,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	sc, v := eui.NewScrollContainer(st.itemList)
+	sc, v := eui.NewScrollContainer(st.actionContainer)
 	st.specContainer = st.newItemSpecContainer(world)
 
 	rootContainer := eui.NewItemGridContainer()
@@ -132,7 +132,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 // 新しいクエリを実行してitemsをセットする
 func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
-	st.itemList.RemoveChildren()
+	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -150,7 +150,7 @@ func (st *InventoryMenuState) queryMenuConsumable(world w.World) {
 
 // 新しいクエリを実行してitemsをセットする
 func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
-	st.itemList.RemoveChildren()
+	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -168,7 +168,7 @@ func (st *InventoryMenuState) queryMenuWeapon(world w.World) {
 
 // 新しいクエリを実行してitemsをセットする
 func (st *InventoryMenuState) queryMenuMaterial(world w.World) {
-	st.itemList.RemoveChildren()
+	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -224,7 +224,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				items.GetMaterial(world, entity),
 			})
 		})
-		st.itemList.AddChild(itemButton)
+		st.actionContainer.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
 			st.initPartyWindow(world)
@@ -240,7 +240,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			case gc.TargetAll:
 				effects.ItemTrigger(nil, entity, effects.Party{}, world)
 				actionWindow.Close()
-				st.itemList.RemoveChild(itemButton)
+				st.actionContainer.RemoveChild(itemButton)
 			}
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) {
@@ -249,7 +249,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
-			st.itemList.RemoveChild(itemButton)
+			st.actionContainer.RemoveChild(itemButton)
 			actionWindow.Close()
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) {
@@ -278,7 +278,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
-			st.itemList.RemoveChild(st.selectedItemButton)
+			st.actionContainer.RemoveChild(st.selectedItemButton)
 		}, world)
 		partyContainer.AddChild(partyButton)
 	}))

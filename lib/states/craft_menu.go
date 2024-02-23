@@ -36,11 +36,11 @@ type CraftMenuState struct {
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
 	items              []ecs.Entity      // 表示対象とするアイテム
 	itemDesc           *widget.Text      // アイテムの概要
-	itemList           *widget.Container // アイテムリストのコンテナ
+	actionContainer    *widget.Container // アクションの起点となるコンテナ
+	specContainer      *widget.Container // 性能表示のコンテナ
 	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	recipeList         *widget.Container // レシピリストのコンテナ
 	winRect            image.Rectangle   // ウィンドウの開く位置
-	specContainer      *widget.Container // 性能表示のコンテナ
 }
 
 // State interface ================
@@ -109,7 +109,7 @@ func (st *CraftMenuState) getCursorMenuIDs() []string {
 
 func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテムが入るコンテナ
-	st.itemList = eui.NewScrollContentContainer()
+	st.actionContainer = eui.NewScrollContentContainer()
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
@@ -132,7 +132,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(st.itemList)
+		sc, v := eui.NewScrollContainer(st.actionContainer)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
 		rootContainer.AddChild(st.newVSplitContainer(st.specContainer, st.recipeList, world))
@@ -145,7 +145,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 // 新しいクエリを実行してitemsをセットする
 func (st *CraftMenuState) queryMenuConsumable(world w.World) {
-	st.itemList.RemoveChildren()
+	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -161,7 +161,7 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) {
 
 // 新しいクエリを実行してitemsをセットする
 func (st *CraftMenuState) queryMenuWeapon(world w.World) {
-	st.itemList.RemoveChildren()
+	st.actionContainer.RemoveChildren()
 	st.items = []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -216,7 +216,7 @@ func (st *CraftMenuState) generateList(world world.World) {
 
 			st.updateRecipeList(world)
 		})
-		st.itemList.AddChild(itemButton)
+		st.actionContainer.AddChild(itemButton)
 	}
 }
 
