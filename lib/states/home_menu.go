@@ -50,6 +50,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
+		spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)

@@ -20,6 +20,7 @@ type Components struct {
 	Weapon          *ecs.SliceComponent
 	Material        *ecs.SliceComponent
 	Recipe          *ecs.SliceComponent
+	Wearable        *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -68,6 +69,11 @@ type Weapon struct {
 	AttackCount       int            // 攻撃回数
 	EnergyConsumption int            // 消費エネルギー
 	DamageAttr        DamageAttrType // 攻撃属性
+}
+
+type Wearable struct {
+	BaseDefense   int               // 防御力
+	EquipmentSlot EquipmentSlotType // 装備部位
 }
 
 // パーティに参加している状態

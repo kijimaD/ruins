@@ -112,6 +112,8 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 		st.items = st.queryMenuConsumable(world)
 	case itemCategoryTypeWeapon:
 		st.items = st.queryMenuWeapon(world)
+	case itemCategoryTypeWearable:
+		st.items = st.queryMenuWearable(world)
 	case itemCategoryTypeMaterial:
 		st.items = st.queryMenuMaterial(world)
 	default:
@@ -161,8 +163,6 @@ func (st *InventoryMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.Name,
-		gameComponents.Description,
 		gameComponents.InBackpack,
 		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -178,10 +178,23 @@ func (st *InventoryMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.Name,
-		gameComponents.Description,
 		gameComponents.InBackpack,
 		gameComponents.Weapon,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
+	return items
+}
+
+func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.InBackpack,
+		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -228,6 +241,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{
 				simple.GetWeapon(world, entity),
+				simple.GetWearable(world, entity),
 				simple.GetMaterial(world, entity),
 			})
 		})
@@ -293,11 +307,13 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("アイテム", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
 	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWeapon) }, world)
+	toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWearable) }, world)
 	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeMaterial) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWeaponButton)
+	toggleContainer.AddChild(toggleWearableButton)
 	toggleContainer.AddChild(toggleMaterialButton)
 
 	return toggleContainer

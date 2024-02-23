@@ -20,6 +20,19 @@ func GetWeapon(world w.World, target ecs.Entity) components.Weapon {
 	return result
 }
 
+func GetWearable(world w.World, target ecs.Entity) components.Wearable {
+	result := components.Wearable{}
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(gameComponents.Wearable).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity == target && entity.HasComponent(gameComponents.Wearable) {
+			wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
+			result = *wearable
+		}
+	}))
+
+	return result
+}
+
 func GetMaterial(world w.World, target ecs.Entity) components.Material {
 	result := components.Material{}
 	gameComponents := world.Components.Game.(*gc.Components)
