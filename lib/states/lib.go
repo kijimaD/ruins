@@ -4,6 +4,7 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
 var (
@@ -23,6 +24,8 @@ func getWinRect() image.Rectangle {
 	return winRect
 }
 
+// ================
+
 type itemCategoryType string
 
 var (
@@ -30,3 +33,11 @@ var (
 	itemCategoryTypeWeapon     itemCategoryType = "WEAPON"
 	itemCategoryTypeMaterial   itemCategoryType = "MATERIAL"
 )
+
+// ================
+
+// 単に実装形式を合わせるためのintarface
+type haveCategory interface {
+	setCategoryReload(world w.World, category itemCategoryType)
+	categoryReload(world w.World)
+}

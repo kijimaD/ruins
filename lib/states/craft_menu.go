@@ -105,6 +105,30 @@ func (st *CraftMenuState) getCursorMenuIDs() []string {
 }
 
 // ================
+var _ haveCategory = &CraftMenuState{}
+
+func (st *CraftMenuState) setCategoryReload(world w.World, category itemCategoryType) {
+	st.category = category
+	st.categoryReload(world)
+}
+
+func (st *CraftMenuState) categoryReload(world w.World) {
+	st.actionContainer.RemoveChildren()
+	st.items = []ecs.Entity{}
+
+	switch st.category {
+	case itemCategoryTypeConsumable:
+		st.items = st.queryMenuConsumable(world)
+	case itemCategoryTypeWeapon:
+		st.items = st.queryMenuWeapon(world)
+	default:
+		log.Fatal("未定義のcategory")
+	}
+
+	st.generateActionContainer(world)
+}
+
+// ================
 
 func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテムが入るコンテナ
@@ -141,27 +165,6 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
-}
-
-func (st *CraftMenuState) setCategoryReload(world w.World, category itemCategoryType) {
-	st.category = category
-	st.categoryReload(world)
-}
-
-func (st *CraftMenuState) categoryReload(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
-
-	switch st.category {
-	case itemCategoryTypeConsumable:
-		st.items = st.queryMenuConsumable(world)
-	case itemCategoryTypeWeapon:
-		st.items = st.queryMenuWeapon(world)
-	default:
-		log.Fatal("未定義のcategory")
-	}
-
-	st.generateActionContainer(world)
 }
 
 func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {

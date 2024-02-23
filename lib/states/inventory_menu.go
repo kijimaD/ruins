@@ -96,6 +96,32 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 }
 
 // ================
+var _ haveCategory = &InventoryMenuState{}
+
+func (st *InventoryMenuState) setCategoryReload(world w.World, category itemCategoryType) {
+	st.category = category
+	st.categoryReload(world)
+}
+
+func (st *InventoryMenuState) categoryReload(world w.World) {
+	st.actionContainer.RemoveChildren()
+	st.items = []ecs.Entity{}
+
+	switch st.category {
+	case itemCategoryTypeConsumable:
+		st.items = st.queryMenuConsumable(world)
+	case itemCategoryTypeWeapon:
+		st.items = st.queryMenuWeapon(world)
+	case itemCategoryTypeMaterial:
+		st.items = st.queryMenuMaterial(world)
+	default:
+		log.Fatal("未定義のcategory")
+	}
+
+	st.generateList(world)
+}
+
+// ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アクションが入るコンテナ
@@ -127,29 +153,6 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
-}
-
-func (st *InventoryMenuState) setCategoryReload(world w.World, category itemCategoryType) {
-	st.category = category
-	st.categoryReload(world)
-}
-
-func (st *InventoryMenuState) categoryReload(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
-
-	switch st.category {
-	case itemCategoryTypeConsumable:
-		st.items = st.queryMenuConsumable(world)
-	case itemCategoryTypeWeapon:
-		st.items = st.queryMenuWeapon(world)
-	case itemCategoryTypeMaterial:
-		st.items = st.queryMenuMaterial(world)
-	default:
-		log.Fatal("未定義のcategory")
-	}
-
-	st.generateList(world)
 }
 
 func (st *InventoryMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
