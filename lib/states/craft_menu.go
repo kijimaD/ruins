@@ -21,8 +21,8 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/craft"
-	"github.com/kijimaD/ruins/lib/worldhelper/items"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -194,7 +194,7 @@ func (st *CraftMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
 	return items
 }
 
-// itemsからactionCointainerを生成する
+// itemsからactionContainerを生成する
 func (st *CraftMenuState) generateActionContainer(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	for _, entity := range st.items {
@@ -202,10 +202,11 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		windowContainer := eui.NewWindowContainer()
-		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
+		actionWindow := eui.NewSmallWindow(
+			eui.NewWindowHeaderContainer("アクション", world),
+			windowContainer,
+		)
 
-		// アイテムの名前がラベルについたボタン
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.SetLocation(setWinRect())
 			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
@@ -216,8 +217,8 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 			if st.hoveredItem != entity {
 				st.hoveredItem = entity
 			}
-			st.itemDesc.Label = items.GetDescription(world, entity).Description
-			views.UpdateSpec(world, st.specContainer, []any{items.GetWeapon(world, entity)})
+			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			views.UpdateSpec(world, st.specContainer, []any{simple.GetWeapon(world, entity)})
 			st.updateRecipeList(world)
 		})
 		st.actionContainer.AddChild(itemButton)
@@ -270,7 +271,7 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 	resultContainer := eui.NewWindowContainer()
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
 
-	views.UpdateSpec(world, resultContainer, []any{items.GetWeapon(world, entity)})
+	views.UpdateSpec(world, resultContainer, []any{simple.GetWeapon(world, entity)})
 
 	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 		st.resultWindow.Close()

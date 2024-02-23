@@ -18,8 +18,7 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/items"
-	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -191,7 +190,7 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	material.OwnedMaterial(func(entity ecs.Entity) {
+	simple.OwnedMaterial(func(entity ecs.Entity) {
 		material := gameComponents.Material.Get(entity).(*gc.Material)
 		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
 		if material.Amount > 0 {
@@ -223,10 +222,10 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
-			st.itemDesc.Label = items.GetDescription(world, entity).Description
+			st.itemDesc.Label = simple.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{
-				items.GetWeapon(world, entity),
-				items.GetMaterial(world, entity),
+				simple.GetWeapon(world, entity),
+				simple.GetMaterial(world, entity),
 			})
 		})
 		st.actionContainer.AddChild(itemButton)

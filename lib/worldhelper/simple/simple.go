@@ -1,4 +1,4 @@
-package items
+package simple
 
 import (
 	"github.com/kijimaD/ruins/lib/components"
@@ -31,6 +31,15 @@ func GetMaterial(world w.World, target ecs.Entity) components.Material {
 	}))
 
 	return result
+}
+
+// 所持中の素材
+func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Material,
+		gameComponents.InBackpack,
+	).Visit(ecs.Visit(f))
 }
 
 func GetDescription(world w.World, target ecs.Entity) components.Description {
