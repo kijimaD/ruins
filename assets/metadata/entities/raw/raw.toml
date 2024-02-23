@@ -34,23 +34,25 @@ TargetNum = "ALL"
 
 [[item]]
 Name = "木刀"
-Description = "旅行の土産でおなじみの木を削って作られた刀"
+Description = "旅行の土産でおなじみの、木でできた刃のない刀"
 
 [item.weapon]
 Accuracy = 100
 BaseDamage = 8
 AttackCount = 1
 EnergyConsumption = 1
+DamageAttr = "NONE"
 
 [[item]]
 Name = "鉄のナイフ"
-Description = "鉄で作られた小ぶりのナイフ"
+Description = "鉄で作られた軽いナイフ"
 
 [item.weapon]
 Accuracy = 100
 BaseDamage = 9
 AttackCount = 1
 EnergyConsumption = 1
+DamageAttr = "NONE"
 
 [[item]]
 Name = "ハンドガン"
@@ -61,6 +63,7 @@ Accuracy = 95
 BaseDamage = 14
 AttackCount = 1
 EnergyConsumption = 2
+DamageAttr = "NONE"
 
 [[item]]
 Name = "レイガン"
@@ -71,6 +74,40 @@ Accuracy = 90
 BaseDamage = 20
 AttackCount = 1
 EnergyConsumption = 3
+DamageAttr = "PHOTON"
+
+[[item]]
+Name = "電撃グレネード"
+Description = "放電物質を投射する擲弾銃"
+
+[item.weapon]
+Accuracy = 80
+BaseDamage = 26
+AttackCount = 1
+EnergyConsumption = 4
+DamageAttr = "THUNDER"
+
+[[item]]
+Name = "冷凍グレネード"
+Description = "極低温物質を投射する擲弾銃"
+
+[item.weapon]
+Accuracy = 80
+BaseDamage = 25
+AttackCount = 1
+EnergyConsumption = 4
+DamageAttr = "CHILL"
+
+[[item]]
+Name = "ファイヤグローブ"
+Description = "炎を纏ったグローブ"
+
+[item.weapon]
+Accuracy = 85
+BaseDamage = 22
+AttackCount = 1
+EnergyConsumption = 2
+DamageAttr = "FIRE"
 
 # material ================
 
@@ -139,6 +176,27 @@ Amount = 4
 [[recipe.inputs]]
 Name = "フェライトコア"
 Amount = 2
+
+[[recipe]]
+Name = "電撃グレネード"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
+
+[[recipe]]
+Name = "冷凍グレネード"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
+
+[[recipe]]
+Name = "ファイヤグローブ"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
 
 # member ================
 

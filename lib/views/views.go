@@ -15,31 +15,53 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 	targetContainer.RemoveChildren()
 
 	for _, component := range cs {
-		if material, ok := component.(components.Material); ok {
+		switch v := component.(type) {
+		case components.Material:
 			var amount string
-			if material.Amount != 0 {
-				amount = fmt.Sprintf("%d 個", material.Amount)
+			if v.Amount != 0 {
+				amount = fmt.Sprintf("%d 個", v.Amount)
 				targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
 			}
-		}
-		if weapon, ok := component.(components.Weapon); ok {
+		case components.Weapon:
 			var accuracy string
-			if weapon.Accuracy != 0 {
-				accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(weapon.Accuracy))
+			if v.Accuracy != 0 {
+				accuracy = fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
 				targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 			}
 			var baseDamage string
-			if weapon.BaseDamage != 0 {
-				baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(weapon.BaseDamage))
+			if v.BaseDamage != 0 {
+				baseDamage = fmt.Sprintf("攻撃力 %s", strconv.Itoa(v.BaseDamage))
 				targetContainer.AddChild(eui.NewBodyText(baseDamage, styles.TextColor, world))
 			}
 			var consumption string
-			if weapon.EnergyConsumption != 0 {
-				consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(weapon.EnergyConsumption))
+			if v.EnergyConsumption != 0 {
+				consumption = fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
 				targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
+			}
+			if attr := v.DamageAttr.String(); attr != "" && attr != components.DamageAttrNone.String() {
+				text := damageAttrText(world, v.DamageAttr, attr)
+				targetContainer.AddChild(text)
 			}
 		}
 	}
 
 	return targetContainer
+}
+
+func damageAttrText(world w.World, dat components.DamageAttrType, str string) *widget.Text {
+	var text *widget.Text
+	switch dat {
+	case components.DamageAttrFire:
+		text = eui.NewBodyText(str, styles.FireColor, world)
+	case components.DamageAttrThunder:
+		text = eui.NewBodyText(str, styles.ThunderColor, world)
+	case components.DamageAttrChill:
+		text = eui.NewBodyText(str, styles.ChillColor, world)
+	case components.DamageAttrPhoton:
+		text = eui.NewBodyText(str, styles.PhotonColor, world)
+	default:
+		text = eui.NewBodyText(str, styles.TextColor, world)
+	}
+
+	return text
 }
