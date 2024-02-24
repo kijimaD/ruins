@@ -70,8 +70,7 @@ func (st *CampMenuState) confirmSelection(world w.World) states.Transition {
 	case 0:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: itemCategoryTypeConsumable}}}
 	case 1:
-		// TODO: 実装する
-		return states.Transition{Type: states.TransNone}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}}
 	}
 	panic(fmt.Errorf("unknown selection: %d", st.selection))
 }
