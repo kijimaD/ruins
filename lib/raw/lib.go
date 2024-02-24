@@ -49,6 +49,7 @@ type Weapon struct {
 	AttackCount       int    // 攻撃回数
 	EnergyConsumption int    // 攻撃で消費するエネルギー
 	DamageAttr        string // 攻撃属性
+	WeaponCategory    string // 武器カテゴリ
 }
 
 type Wearable struct {
@@ -183,6 +184,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			AttackCount:       item.Weapon.AttackCount,
 			EnergyConsumption: item.Weapon.EnergyConsumption,
 			DamageAttr:        components.StringToDamangeAttrType(item.Weapon.DamageAttr),
+			WeaponCategory:    components.StringToWeaponType(item.Weapon.WeaponCategory),
 		}
 	}
 	if item.Wearable != nil {

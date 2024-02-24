@@ -42,6 +42,7 @@ BaseDamage = 8
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
+WeaponCategory = "SWORD"
 
 [[item]]
 Name = "鉄のナイフ"
@@ -53,6 +54,7 @@ BaseDamage = 9
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
+WeaponCategory = "SWORD"
 
 [[item]]
 Name = "ハンドガン"
@@ -64,6 +66,7 @@ BaseDamage = 14
 AttackCount = 1
 EnergyConsumption = 2
 DamageAttr = "NONE"
+WeaponCategory = "HANDGUN"
 
 [[item]]
 Name = "レイガン"
@@ -75,6 +78,7 @@ BaseDamage = 20
 AttackCount = 1
 EnergyConsumption = 3
 DamageAttr = "PHOTON"
+WeaponCategory = "HANDGUN"
 
 [[item]]
 Name = "電撃グレネード"
@@ -86,6 +90,7 @@ BaseDamage = 26
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "THUNDER"
+WeaponCategory = "RIFLE"
 
 [[item]]
 Name = "冷凍グレネード"
@@ -97,17 +102,7 @@ BaseDamage = 25
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "CHILL"
-
-[[item]]
-Name = "ファイヤグローブ"
-Description = "炎を纏ったグローブ"
-
-[item.weapon]
-Accuracy = 85
-BaseDamage = 22
-AttackCount = 1
-EnergyConsumption = 2
-DamageAttr = "FIRE"
+WeaponCategory = "RIFLE"
 
 # wearable ================
 
@@ -220,13 +215,6 @@ Amount = 3
 
 [[recipe]]
 Name = "冷凍グレネード"
-
-[[recipe.inputs]]
-Name = "鉄"
-Amount = 3
-
-[[recipe]]
-Name = "ファイヤグローブ"
 
 [[recipe.inputs]]
 Name = "鉄"

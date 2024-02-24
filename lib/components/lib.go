@@ -69,6 +69,7 @@ type Weapon struct {
 	AttackCount       int            // 攻撃回数
 	EnergyConsumption int            // 消費エネルギー
 	DamageAttr        DamageAttrType // 攻撃属性
+	WeaponCategory    WeaponType     // 武器種別
 }
 
 type Wearable struct {

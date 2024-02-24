@@ -35,6 +35,54 @@ var (
 )
 
 // ================
+// 武器種別
+
+type WeaponType string
+
+var (
+	WeaponSword   = WeaponType("SWORD")   // 刀剣
+	WeaponSpear   = WeaponType("SPEAR")   // 槍
+	WeaponHandgun = WeaponType("HANDGUN") // 拳銃
+	WeaponRifle   = WeaponType("RIFLE")   // 小銃
+)
+
+func StringToWeaponType(input string) WeaponType {
+	var result WeaponType
+	switch input {
+	case string(WeaponSword):
+		result = WeaponSword
+	case string(WeaponSpear):
+		result = WeaponSpear
+	case string(WeaponHandgun):
+		result = WeaponHandgun
+	case string(WeaponRifle):
+		result = WeaponRifle
+	default:
+		log.Fatal("invalid weapon type")
+	}
+
+	return result
+}
+
+func (wc WeaponType) String() string {
+	var result string
+	switch wc {
+	case WeaponSword:
+		result = "刀剣"
+	case WeaponSpear:
+		result = "槍"
+	case WeaponHandgun:
+		result = "拳銃"
+	case WeaponRifle:
+		result = "小銃"
+	default:
+		log.Fatal("invalid weapon type")
+	}
+
+	return result
+}
+
+// ================
 // 装備スロット
 
 type EquipmentSlotType string
