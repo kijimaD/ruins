@@ -186,8 +186,8 @@ func (da DamageAttrType) String() string {
 type EquipmentSlotNumber int
 
 const (
-	EquipmentSlotOne EquipmentSlotNumber = iota + 1
+	EquipmentSlotZero EquipmentSlotNumber = iota
+	EquipmentSlotOne
 	EquipmentSlotTwo
 	EquipmentSlotThree
-	EquipmentSlotFour
 )

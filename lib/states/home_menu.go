@@ -14,6 +14,7 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
+	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -47,7 +48,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		count++
 	}))
 	if count == 0 {
-		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
+		sword := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
@@ -59,7 +60,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-		spawner.SpawnMember(world, "村上", true)
+		murakami := spawner.SpawnMember(world, "村上", true)
 		spawner.SpawnMember(world, "白瀬", true)
 		spawner.SpawnAllMaterials(world)
 		material.PlusAmount("鉄", 40, world)
@@ -67,6 +68,8 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		material.PlusAmount("緑ハーブ", 2, world)
 		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
+
+		equips.Equip(world, sword, murakami, gc.EquipmentSlotZero)
 	}
 }
 

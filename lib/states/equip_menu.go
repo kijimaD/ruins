@@ -6,12 +6,14 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -87,6 +89,25 @@ func (st *EquipMenuState) getCursorMenuIDs() []string {
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewItemGridContainer()
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	members := []ecs.Entity{}
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		members = append(members, entity)
+	}))
+
+	items := equips.GetEquipments(world, members[0])
+	for i, item := range items {
+		var name string
+		if item != nil {
+			n := gameComponents.Name.Get(*item).(*gc.Name)
+			name = n.Name
+		}
+		fmt.Printf("%d %s\n", i, name)
+	}
 
 	return &ebitenui.UI{Container: rootContainer}
 }

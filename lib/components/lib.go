@@ -13,6 +13,7 @@ type Components struct {
 	Description     *ecs.SliceComponent
 	InBackpack      *ecs.NullComponent
 	InParty         *ecs.NullComponent
+	Equipped        *ecs.SliceComponent
 	Member          *ecs.NullComponent
 	Pools           *ecs.SliceComponent
 	ProvidesHealing *ecs.SliceComponent

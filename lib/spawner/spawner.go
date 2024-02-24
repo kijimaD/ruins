@@ -17,12 +17,14 @@ func SpawnItem(world w.World, name string, spawnType raw.SpawnType) ecs.Entity {
 	return entities[len(entities)-1]
 }
 
-func SpawnMember(world w.World, name string, inParty bool) {
+func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	componentList.Game = append(componentList.Game, rawMaster.GenerateMember(name, inParty))
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
-	loader.AddEntities(world, componentList)
+	entities := loader.AddEntities(world, componentList)
+
+	return entities[len(entities)-1]
 }
 
 // 所持素材の個数を0で初期化する
