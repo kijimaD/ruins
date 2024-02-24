@@ -179,3 +179,15 @@ func (da DamageAttrType) String() string {
 	}
 	return result
 }
+
+// ================
+// 装備スロット番号
+
+type EquipmentSlotNumber int
+
+const (
+	EquipmentSlotOne EquipmentSlotNumber = iota + 1
+	EquipmentSlotTwo
+	EquipmentSlotThree
+	EquipmentSlotFour
+)

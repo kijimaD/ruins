@@ -62,6 +62,12 @@ type Description struct {
 // インベントリに所持している
 type InBackpack struct{}
 
+// キャラクタが装備している
+type Equipped struct {
+	Owner         ecs.Entity
+	EquipmentSlot EquipmentSlotNumber
+}
+
 // 武器
 type Weapon struct {
 	Accuracy          int            // 命中率
