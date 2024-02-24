@@ -26,6 +26,8 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			if v == nil {
 				continue
 			}
+			targetContainer.AddChild(eui.NewBodyText(v.WeaponCategory.String(), styles.TextColor, world))
+
 			accuracy := fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 
@@ -42,11 +44,11 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			if v == nil {
 				continue
 			}
-			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.BaseDefense))
-			targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
-
 			equipmentSlot := fmt.Sprintf("部位 %s", v.EquipmentSlot)
 			targetContainer.AddChild(eui.NewBodyText(equipmentSlot, styles.TextColor, world))
+
+			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.BaseDefense))
+			targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
 		}
 	}
 
