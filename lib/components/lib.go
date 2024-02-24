@@ -73,8 +73,8 @@ type Weapon struct {
 }
 
 type Wearable struct {
-	BaseDefense   int               // 防御力
-	EquipmentSlot EquipmentSlotType // 装備部位
+	BaseDefense       int           // 防御力
+	EquipmentCategory EquipmentType // 装備部位
 }
 
 // パーティに参加している状態

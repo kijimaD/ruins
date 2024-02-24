@@ -53,8 +53,8 @@ type Weapon struct {
 }
 
 type Wearable struct {
-	BaseDefense   int
-	EquipmentSlot string
+	BaseDefense       int
+	EquipmentCategory string
 }
 
 type Material struct {
@@ -189,8 +189,8 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	}
 	if item.Wearable != nil {
 		cl.Wearable = &gc.Wearable{
-			BaseDefense:   item.Wearable.BaseDefense,
-			EquipmentSlot: components.StringToEquipmentSlotType(item.Wearable.EquipmentSlot),
+			BaseDefense:       item.Wearable.BaseDefense,
+			EquipmentCategory: components.StringToEquipmentType(item.Wearable.EquipmentCategory),
 		}
 	}
 	return cl
