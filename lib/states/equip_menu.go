@@ -163,6 +163,10 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	for i, v := range st.slots {
+		windowContainer := eui.NewWindowContainer()
+		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
+		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
+
 		v := v
 		i := i
 		var name = ""
@@ -173,10 +177,8 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 		}
 
 		slotButton := eui.NewItemButton(fmt.Sprintf("[ %s ]", name), func(args *widget.ButtonClickedEventArgs) {
-			st.items = st.queryMenuWeapon(world)
-			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
-			f()
-			st.setToggleButton(world, true, f)
+			actionWindow.SetLocation(setWinRect())
+			st.ui.AddWindow(actionWindow)
 		}, world)
 		slotButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = desc
@@ -189,6 +191,29 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 				st.specContainer.RemoveChildren()
 			}
 		})
+		equipButton := eui.NewItemButton("装備する", func(args *widget.ButtonClickedEventArgs) {
+			st.items = st.queryMenuWeapon(world)
+			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
+			f()
+			st.setToggleButton(world, true, f)
+			actionWindow.Close()
+		}, world)
+		windowContainer.AddChild(equipButton)
+
+		if v != nil {
+			disarmButton := eui.NewItemButton("外す", func(args *widget.ButtonClickedEventArgs) {
+				equips.Disarm(world, *v)
+				st.generateActionContainer(world, member)
+				actionWindow.Close()
+			}, world)
+			windowContainer.AddChild(disarmButton)
+		}
+
+		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+			actionWindow.Close()
+		}, world)
+		windowContainer.AddChild(closeButton)
+
 		st.actionContainer.AddChild(slotButton)
 	}
 }
