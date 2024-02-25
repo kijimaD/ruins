@@ -13,8 +13,8 @@ func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.Equip
 	item.RemoveComponent(gameComponents.InBackpack)
 }
 
-// 外す
-func Disarm(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.EquipmentSlotNumber) {
+// 装備を外す
+func Disarm(world w.World, item ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	item.AddComponent(gameComponents.InBackpack, &gc.InBackpack{})
 	item.RemoveComponent(gameComponents.Equipped)
@@ -32,25 +32,15 @@ func GetEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := gameComponents.Equipped.Get(entity).(*gc.Equipped)
 		if owner == equipped.Owner {
-			if equipped.EquipmentSlot == gc.EquipmentSlotZero {
+			switch equipped.EquipmentSlot {
+			case gc.EquipmentSlotZero:
 				entities[0] = &entity
-			} else {
-				entities[0] = nil
-			}
-			if equipped.EquipmentSlot == gc.EquipmentSlotOne {
+			case gc.EquipmentSlotOne:
 				entities[1] = &entity
-			} else {
-				entities[1] = nil
-			}
-			if equipped.EquipmentSlot == gc.EquipmentSlotTwo {
+			case gc.EquipmentSlotTwo:
 				entities[2] = &entity
-			} else {
-				entities[2] = nil
-			}
-			if equipped.EquipmentSlot == gc.EquipmentSlotThree {
+			case gc.EquipmentSlotThree:
 				entities[3] = &entity
-			} else {
-				entities[3] = nil
 			}
 		}
 	}))

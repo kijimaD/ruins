@@ -164,26 +164,25 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 	st.slots = equips.GetEquipments(world, member)
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	for _, slot := range st.slots {
-		slot := slot
-		var name = "_"
+	for i, v := range st.slots {
+		v := v
+		i := i
+		var name = ""
 		var desc = " "
-		if slot != nil {
-			name = gameComponents.Name.Get(*slot).(*gc.Name).Name
-			desc = gameComponents.Description.Get(*slot).(*gc.Description).Description
+		if v != nil {
+			name = gameComponents.Name.Get(*v).(*gc.Name).Name
+			desc = gameComponents.Description.Get(*v).(*gc.Description).Description
 		}
 
-		slotButton := eui.NewItemButton(name, func(args *widget.ButtonClickedEventArgs) {
-			// TODO: 実装する
-			// メニューを装備選択に変える。
-			st.generateActionContainerEquip(world, member)
+		slotButton := eui.NewItemButton(fmt.Sprintf("[ %s ]", name), func(args *widget.ButtonClickedEventArgs) {
+			st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v)
 		}, world)
 		slotButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = desc
-			if slot != nil {
+			if v != nil {
 				views.UpdateSpec(world, st.specContainer, []any{
-					simple.GetWeapon(world, *slot),
-					simple.GetWearable(world, *slot),
+					simple.GetWeapon(world, *v),
+					simple.GetWearable(world, *v),
 				})
 			} else {
 				st.specContainer.RemoveChildren()
@@ -193,10 +192,9 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 	}
 }
 
-// 装備選択を生成する
-func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs.Entity) {
+// インベントリにある装備選択を生成する
+func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs.Entity, targetSlot gc.EquipmentSlotNumber, previousEquipment *ecs.Entity) {
 	st.actionContainer.RemoveChildren()
-
 	st.items = st.queryMenuWeapon(world)
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -205,9 +203,13 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
 		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			// TODO: ここに装備処理とステート遷移を入れる
-			st.generateActionContainer(world, member)
+			if previousEquipment != nil {
+				equips.Disarm(world, *previousEquipment)
+			}
+			equips.Equip(world, entity, member, targetSlot)
 
+			// 画面を戻す
+			st.generateActionContainer(world, member)
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
