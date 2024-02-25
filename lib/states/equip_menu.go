@@ -29,6 +29,7 @@ type EquipMenuState struct {
 
 	slots           []*ecs.Entity // スロット一覧
 	items           []ecs.Entity  // インベントリにあるアイテム一覧
+	toggleContainer *widget.Container
 	actionContainer *widget.Container
 	specContainer   *widget.Container
 	itemDesc        *widget.Text
@@ -112,11 +113,8 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.specContainer = st.newItemSpecContainer(world)
 	st.generateActionContainer(world, members[0])
 
-	toggleContainer := eui.NewRowContainer()
-	toggleEquipButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) {}, world)
-	toggleSkillButton := eui.NewItemButton("技能", func(args *widget.ButtonClickedEventArgs) {}, world)
-	toggleContainer.AddChild(toggleEquipButton)
-	toggleContainer.AddChild(toggleSkillButton)
+	st.toggleContainer = eui.NewRowContainer()
+	st.setToggleButton(world, false, func() {})
 
 	itemDescContainer := eui.NewRowContainer()
 	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
@@ -126,7 +124,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		rootContainer.AddChild(eui.NewMenuText("装備", world))
 		rootContainer.AddChild(eui.NewEmptyContainer())
-		rootContainer.AddChild(toggleContainer)
+		rootContainer.AddChild(st.toggleContainer)
 
 		sc, v := eui.NewScrollContainer(st.actionContainer)
 		rootContainer.AddChild(sc)
@@ -175,7 +173,10 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 		}
 
 		slotButton := eui.NewItemButton(fmt.Sprintf("[ %s ]", name), func(args *widget.ButtonClickedEventArgs) {
-			st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v)
+			st.items = st.queryMenuWeapon(world)
+			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
+			f()
+			st.setToggleButton(world, true, f)
 		}, world)
 		slotButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = desc
@@ -195,7 +196,6 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 // インベントリにある装備選択を生成する
 func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs.Entity, targetSlot gc.EquipmentSlotNumber, previousEquipment *ecs.Entity) {
 	st.actionContainer.RemoveChildren()
-	st.items = st.queryMenuWeapon(world)
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	for _, entity := range st.items {
@@ -210,6 +210,7 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 
 			// 画面を戻す
 			st.generateActionContainer(world, member)
+			st.setToggleButton(world, false, func() {})
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
@@ -224,6 +225,22 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 	}
 }
 
+func (st *EquipMenuState) setToggleButton(world w.World, isInventory bool, reloadFunc func()) {
+	st.toggleContainer.RemoveChildren()
+
+	if isInventory {
+		toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.items = st.queryMenuWeapon(world); reloadFunc() }, world)
+		toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.items = st.queryMenuWearable(world); reloadFunc() }, world)
+		st.toggleContainer.AddChild(toggleWeaponButton)
+		st.toggleContainer.AddChild(toggleWearableButton)
+	} else {
+		toggleEquipButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) {}, world)
+		toggleSkillButton := eui.NewItemButton("技能", func(args *widget.ButtonClickedEventArgs) {}, world)
+		st.toggleContainer.AddChild(toggleEquipButton)
+		st.toggleContainer.AddChild(toggleSkillButton)
+	}
+}
+
 func (st *EquipMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
@@ -232,6 +249,21 @@ func (st *EquipMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
 		gameComponents.Item,
 		gameComponents.InBackpack,
 		gameComponents.Weapon,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
+	return items
+}
+
+func (st *EquipMenuState) queryMenuWearable(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.InBackpack,
+		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
