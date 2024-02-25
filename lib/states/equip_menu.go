@@ -27,7 +27,8 @@ type EquipMenuState struct {
 	equipMenu []ecs.Entity
 	ui        *ebitenui.UI
 
-	slots           []*ecs.Entity
+	slots           []*ecs.Entity // スロット一覧
+	items           []ecs.Entity  // インベントリにあるアイテム一覧
 	actionContainer *widget.Container
 	specContainer   *widget.Container
 	itemDesc        *widget.Text
@@ -127,8 +128,9 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		rootContainer.AddChild(st.actionContainer)
-		rootContainer.AddChild(eui.NewEmptyContainer())
+		sc, v := eui.NewScrollContainer(st.actionContainer)
+		rootContainer.AddChild(sc)
+		rootContainer.AddChild(v)
 		rootContainer.AddChild(st.specContainer)
 
 		rootContainer.AddChild(st.itemDesc)
@@ -170,10 +172,13 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 			name = gameComponents.Name.Get(*slot).(*gc.Name).Name
 			desc = gameComponents.Description.Get(*slot).(*gc.Description).Description
 		}
-		itemButton := eui.NewItemButton(name, func(args *widget.ButtonClickedEventArgs) {
-		}, world)
 
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+		slotButton := eui.NewItemButton(name, func(args *widget.ButtonClickedEventArgs) {
+			// TODO: 実装する
+			// メニューを装備選択に変える。
+			st.generateActionContainerEquip(world, member)
+		}, world)
+		slotButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = desc
 			if slot != nil {
 				views.UpdateSpec(world, st.specContainer, []any{
@@ -184,6 +189,50 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 				st.specContainer.RemoveChildren()
 			}
 		})
+		st.actionContainer.AddChild(slotButton)
+	}
+}
+
+// 装備選択を生成する
+func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs.Entity) {
+	st.actionContainer.RemoveChildren()
+
+	st.items = st.queryMenuWeapon(world)
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	for _, entity := range st.items {
+		entity := entity
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+
+		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+			// TODO: ここに装備処理とステート遷移を入れる
+			st.generateActionContainer(world, member)
+
+		}, world)
+
+		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			views.UpdateSpec(world, st.specContainer, []any{
+				simple.GetWeapon(world, entity),
+				simple.GetWearable(world, entity),
+				simple.GetMaterial(world, entity),
+			})
+		})
 		st.actionContainer.AddChild(itemButton)
 	}
+}
+
+func (st *EquipMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.InBackpack,
+		gameComponents.Weapon,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
+	return items
 }
