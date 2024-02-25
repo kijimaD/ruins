@@ -11,6 +11,7 @@ type MenuPrefabs struct {
 	InventoryMenu loader.EntityComponentList
 	CraftMenu     loader.EntityComponentList
 	CampMenu      loader.EntityComponentList
+	EquipMenu     loader.EntityComponentList
 }
 
 type FieldPrefabs struct {

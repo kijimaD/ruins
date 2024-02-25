@@ -83,28 +83,28 @@ func (wc WeaponType) String() string {
 }
 
 // ================
-// 装備スロット
+// 装備品種別
 
-type EquipmentSlotType string
+type EquipmentType string
 
 var (
-	EquipmentSlotHead    = EquipmentSlotType("HEAD")    // 頭部
-	EquipmentSlotTorso   = EquipmentSlotType("TORSO")   // 胴体
-	EquipmentSlotLegs    = EquipmentSlotType("LEGS")    // 脚
-	EquipmentSlotJewelry = EquipmentSlotType("JEWELRY") // アクセサリ
+	EquipmentHead    = EquipmentType("HEAD")    // 頭部
+	EquipmentTorso   = EquipmentType("TORSO")   // 胴体
+	EquipmentLegs    = EquipmentType("LEGS")    // 脚
+	EquipmentJewelry = EquipmentType("JEWELRY") // アクセサリ
 )
 
-func StringToEquipmentSlotType(input string) EquipmentSlotType {
-	var result EquipmentSlotType
+func StringToEquipmentType(input string) EquipmentType {
+	var result EquipmentType
 	switch input {
-	case string(EquipmentSlotHead):
-		result = EquipmentSlotHead
-	case string(EquipmentSlotTorso):
-		result = EquipmentSlotTorso
-	case string(EquipmentSlotLegs):
-		result = EquipmentSlotLegs
-	case string(EquipmentSlotJewelry):
-		result = EquipmentSlotJewelry
+	case string(EquipmentHead):
+		result = EquipmentHead
+	case string(EquipmentTorso):
+		result = EquipmentTorso
+	case string(EquipmentLegs):
+		result = EquipmentLegs
+	case string(EquipmentJewelry):
+		result = EquipmentJewelry
 	default:
 		log.Fatal("invalid equiment slot type")
 	}
@@ -112,16 +112,16 @@ func StringToEquipmentSlotType(input string) EquipmentSlotType {
 	return result
 }
 
-func (es EquipmentSlotType) String() string {
+func (es EquipmentType) String() string {
 	var result string
 	switch es {
-	case EquipmentSlotHead:
+	case EquipmentHead:
 		result = "頭部"
-	case EquipmentSlotTorso:
+	case EquipmentTorso:
 		result = "胴体"
-	case EquipmentSlotLegs:
+	case EquipmentLegs:
 		result = "脚部"
-	case EquipmentSlotJewelry:
+	case EquipmentJewelry:
 		result = "装飾"
 	default:
 		log.Fatal("invalid equiment slot type")
@@ -179,3 +179,15 @@ func (da DamageAttrType) String() string {
 	}
 	return result
 }
+
+// ================
+// 装備スロット番号
+
+type EquipmentSlotNumber int
+
+const (
+	EquipmentSlotZero EquipmentSlotNumber = iota
+	EquipmentSlotOne
+	EquipmentSlotTwo
+	EquipmentSlotThree
+)

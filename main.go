@@ -82,6 +82,7 @@ func main() {
 			InventoryMenu: gloader.PreloadEntities("metadata/entities/ui/inventory_menu.toml", world),
 			CraftMenu:     gloader.PreloadEntities("metadata/entities/ui/craft_menu.toml", world),
 			CampMenu:      gloader.PreloadEntities("metadata/entities/ui/camp_menu.toml", world),
+			EquipMenu:     gloader.PreloadEntities("metadata/entities/ui/equip_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
 		Field: gr.FieldPrefabs{

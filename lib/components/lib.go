@@ -13,6 +13,7 @@ type Components struct {
 	Description     *ecs.SliceComponent
 	InBackpack      *ecs.NullComponent
 	InParty         *ecs.NullComponent
+	Equipped        *ecs.SliceComponent
 	Member          *ecs.NullComponent
 	Pools           *ecs.SliceComponent
 	ProvidesHealing *ecs.SliceComponent
@@ -62,6 +63,12 @@ type Description struct {
 // インベントリに所持している
 type InBackpack struct{}
 
+// キャラクタが装備している
+type Equipped struct {
+	Owner         ecs.Entity
+	EquipmentSlot EquipmentSlotNumber
+}
+
 // 武器
 type Weapon struct {
 	Accuracy          int            // 命中率
@@ -73,8 +80,8 @@ type Weapon struct {
 }
 
 type Wearable struct {
-	BaseDefense   int               // 防御力
-	EquipmentSlot EquipmentSlotType // 装備部位
+	BaseDefense       int           // 防御力
+	EquipmentCategory EquipmentType // 装備部位
 }
 
 // パーティに参加している状態

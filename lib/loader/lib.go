@@ -20,6 +20,7 @@ type GameComponentList struct {
 	Name            *gc.Name
 	Description     *gc.Description
 	InBackpack      *gc.InBackpack
+	Equipped        *gc.Equipped
 	Consumable      *gc.Consumable
 	InParty         *gc.InParty
 	Member          *gc.Member
@@ -76,6 +77,7 @@ func LoadGameComponent(entityMetadataContent []byte, world w.World) []interface{
 	return interfaceSlice
 }
 
+// TODO: 何に使っている?
 func processComponentsListData(world w.World, data GameComponentList) GameComponentList {
 	return GameComponentList{
 		Item:            data.Item,
@@ -84,6 +86,7 @@ func processComponentsListData(world w.World, data GameComponentList) GameCompon
 		InBackpack:      data.InBackpack,
 		Consumable:      data.Consumable,
 		InParty:         data.InParty,
+		Equipped:        data.Equipped,
 		Member:          data.Member,
 		Pools:           data.Pools,
 		ProvidesHealing: data.ProvidesHealing,
