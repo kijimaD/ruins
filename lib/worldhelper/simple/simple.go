@@ -56,6 +56,19 @@ func GetDescription(world w.World, target ecs.Entity) components.Description {
 	return result
 }
 
+func GetName(world w.World, target ecs.Entity) components.Name {
+	result := components.Name{}
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(gameComponents.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity == target && entity.HasComponent(gameComponents.Name) {
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			result = *name
+		}
+	}))
+
+	return result
+}
+
 // 所持中の素材
 // TODO: worldを先に置く
 func OwnedMaterial(f func(entity ecs.Entity), world w.World) {

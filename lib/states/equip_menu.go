@@ -260,19 +260,14 @@ func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadF
 		st.subMenuContainer.AddChild(toggleWeaponButton)
 		st.subMenuContainer.AddChild(toggleWearableButton)
 	} else {
-		toggleEquipButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) {}, world)
-		toggleSkillButton := eui.NewItemButton("技能", func(args *widget.ButtonClickedEventArgs) {}, world)
-		st.subMenuContainer.AddChild(toggleEquipButton)
-		st.subMenuContainer.AddChild(toggleSkillButton)
-
 		members := []ecs.Entity{}
 		simple.InPartyMember(world, func(entity ecs.Entity) {
 			members = append(members, entity)
 		})
-		nextMemberButton := eui.NewItemButton("次", func(args *widget.ButtonClickedEventArgs) {
-			st.curMemberIdx = (st.curMemberIdx + 1) % len(members)
-			st.generateActionContainer(world)
-		}, world)
+
+		getName := func() string { return simple.GetName(world, members[st.curMemberIdx]).Name }
+		memberName := eui.NewMenuText(getName(), world)
+
 		prevMemberButton := eui.NewItemButton("前", func(args *widget.ButtonClickedEventArgs) {
 			// Goでは負の剰余は負のままになる
 			result := st.curMemberIdx - 1
@@ -281,9 +276,18 @@ func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadF
 			}
 			st.curMemberIdx = result
 			st.generateActionContainer(world)
+
+			memberName.Label = getName()
 		}, world)
-		st.subMenuContainer.AddChild(nextMemberButton)
+		nextMemberButton := eui.NewItemButton("次", func(args *widget.ButtonClickedEventArgs) {
+			st.curMemberIdx = (st.curMemberIdx + 1) % len(members)
+			st.generateActionContainer(world)
+
+			memberName.Label = getName()
+		}, world)
 		st.subMenuContainer.AddChild(prevMemberButton)
+		st.subMenuContainer.AddChild(memberName)
+		st.subMenuContainer.AddChild(nextMemberButton)
 	}
 }
 
