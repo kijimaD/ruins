@@ -43,15 +43,6 @@ func GetMaterial(world w.World, target ecs.Entity) *components.Material {
 	return result
 }
 
-// 所持中の素材
-func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Material,
-		gameComponents.InBackpack,
-	).Visit(ecs.Visit(f))
-}
-
 func GetDescription(world w.World, target ecs.Entity) components.Description {
 	result := components.Description{}
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -63,4 +54,23 @@ func GetDescription(world w.World, target ecs.Entity) components.Description {
 	}))
 
 	return result
+}
+
+// 所持中の素材
+// TODO: worldを先に置く
+func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Material,
+		gameComponents.InBackpack,
+	).Visit(ecs.Visit(f))
+}
+
+// パーティメンバー
+func InPartyMember(world w.World, f func(entity ecs.Entity)) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(f))
 }

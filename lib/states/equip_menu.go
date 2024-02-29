@@ -33,6 +33,7 @@ type EquipMenuState struct {
 	actionContainer  *widget.Container // 操作の起点となるメインメニュー
 	specContainer    *widget.Container // 性能コンテナ
 	itemDesc         *widget.Text      // アイテムの説明
+	curMemberIdx     int               // 選択中の味方
 }
 
 // State interface ================
@@ -100,18 +101,9 @@ func (st *EquipMenuState) getCursorMenuIDs() []string {
 // ================
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
-	gameComponents := world.Components.Game.(*gc.Components)
-	members := []ecs.Entity{}
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		members = append(members, entity)
-	}))
-
 	st.actionContainer = st.newItemSpecContainer(world)
 	st.specContainer = st.newItemSpecContainer(world)
-	st.generateActionContainer(world, members[0])
+	st.generateActionContainer(world)
 
 	st.subMenuContainer = eui.NewRowContainer()
 	st.toggleSubMenu(world, false, func() {})
@@ -158,8 +150,15 @@ func (st *EquipMenuState) newItemSpecContainer(world w.World) *widget.Container 
 }
 
 // スロットコンテナを生成する
-func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Entity) {
+func (st *EquipMenuState) generateActionContainer(world w.World) {
 	st.actionContainer.RemoveChildren()
+
+	members := []ecs.Entity{}
+	simple.InPartyMember(world, func(entity ecs.Entity) {
+		members = append(members, entity)
+	})
+	member := members[st.curMemberIdx]
+
 	st.slots = equips.GetEquipments(world, member)
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -204,7 +203,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World, member ecs.Enti
 		if v != nil {
 			disarmButton := eui.NewItemButton("外す", func(args *widget.ButtonClickedEventArgs) {
 				equips.Disarm(world, *v)
-				st.generateActionContainer(world, member)
+				st.generateActionContainer(world)
 				actionWindow.Close()
 			}, world)
 			windowContainer.AddChild(disarmButton)
@@ -235,7 +234,7 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 			equips.Equip(world, entity, member, targetSlot)
 
 			// 画面を戻す
-			st.generateActionContainer(world, member)
+			st.generateActionContainer(world)
 			st.toggleSubMenu(world, false, func() {})
 		}, world)
 
@@ -265,6 +264,26 @@ func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadF
 		toggleSkillButton := eui.NewItemButton("技能", func(args *widget.ButtonClickedEventArgs) {}, world)
 		st.subMenuContainer.AddChild(toggleEquipButton)
 		st.subMenuContainer.AddChild(toggleSkillButton)
+
+		members := []ecs.Entity{}
+		simple.InPartyMember(world, func(entity ecs.Entity) {
+			members = append(members, entity)
+		})
+		nextMemberButton := eui.NewItemButton("次", func(args *widget.ButtonClickedEventArgs) {
+			st.curMemberIdx = (st.curMemberIdx + 1) % len(members)
+			st.generateActionContainer(world)
+		}, world)
+		prevMemberButton := eui.NewItemButton("前", func(args *widget.ButtonClickedEventArgs) {
+			// Goでは負の剰余は負のままになる
+			result := st.curMemberIdx - 1
+			if result < 0 {
+				result += len(members)
+			}
+			st.curMemberIdx = result
+			st.generateActionContainer(world)
+		}, world)
+		st.subMenuContainer.AddChild(nextMemberButton)
+		st.subMenuContainer.AddChild(prevMemberButton)
 	}
 }
 
