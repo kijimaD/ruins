@@ -17,14 +17,14 @@ const (
 
 // ================
 
-type TargetNum string
+type TargetNumType string
 
 const (
 	TargetSingle = TargetNumType("SINGLE")
 	TargetAll    = TargetNumType("ALL")
 )
 
-func (enum TargetNum) Valid() error {
+func (enum TargetNumType) Valid() error {
 	switch enum {
 	case TargetSingle, TargetAll:
 		return nil

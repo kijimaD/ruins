@@ -131,12 +131,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		if err := gc.TargetFactionType(item.Consumable.TargetFaction).Valid(); err != nil {
 			log.Fatal(err)
 		}
-		if err := gc.TargetNum(item.Consumable.TargetNum).Valid(); err != nil {
+		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		targetType := gc.TargetType{
 			TargetFaction: gc.TargetFactionType(item.Consumable.TargetFaction),
-			TargetNum:     gc.TargetNum(item.Consumable.TargetNum),
+			TargetNum:     gc.TargetNumType(item.Consumable.TargetNum),
 		}
 
 		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
