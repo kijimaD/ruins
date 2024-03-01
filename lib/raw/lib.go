@@ -170,9 +170,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		}
 	}
 	if item.Wearable != nil {
+		if err := components.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
+			log.Fatal(err)
+		}
 		cl.Wearable = &gc.Wearable{
 			BaseDefense:       item.Wearable.BaseDefense,
-			EquipmentCategory: components.StringToEquipmentType(item.Wearable.EquipmentCategory),
+			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
 		}
 	}
 	return cl

@@ -29,6 +29,7 @@ func (enum TargetNum) Valid() error {
 	case TargetSingle, TargetAll:
 		return nil
 	}
+
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
@@ -47,6 +48,7 @@ func (enum TargetFactionType) Valid() error {
 	case TargetFactionAlly, TargetFactionEnemy, TargetFactionNone:
 		return nil
 	}
+
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
@@ -65,6 +67,7 @@ func (enum UsableSceneType) Valid() error {
 	case UsableSceneBattle, UsableSceneField, UsableSceneAny:
 		return nil
 	}
+
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
@@ -85,6 +88,7 @@ func (enum WeaponType) Valid() error {
 	case WeaponSword, WeaponSpear, WeaponHandgun, WeaponRifle:
 		return nil
 	}
+
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
@@ -123,25 +127,8 @@ func (enum EquipmentType) Valid() error {
 	case EquipmentHead, EquipmentTorso, EquipmentLegs, EquipmentJewelry:
 		return nil
 	}
+
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
-}
-
-func StringToEquipmentType(input string) EquipmentType {
-	var result EquipmentType
-	switch input {
-	case string(EquipmentHead):
-		result = EquipmentHead
-	case string(EquipmentTorso):
-		result = EquipmentTorso
-	case string(EquipmentLegs):
-		result = EquipmentLegs
-	case string(EquipmentJewelry):
-		result = EquipmentJewelry
-	default:
-		log.Fatal("invalid equiment slot type")
-	}
-
-	return result
 }
 
 func (es EquipmentType) String() string {
