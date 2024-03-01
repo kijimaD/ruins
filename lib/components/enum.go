@@ -10,7 +10,7 @@ var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 
 type warpMode string
 
-var (
+const (
 	WarpModeNext   = warpMode("NEXT")
 	WarpModeEscape = warpMode("ESCAPE")
 )
@@ -19,9 +19,9 @@ var (
 
 type TargetNum string
 
-var (
-	TargetSingle = TargetNum("SINGLE")
-	TargetAll    = TargetNum("ALL")
+const (
+	TargetSingle = TargetNumType("SINGLE")
+	TargetAll    = TargetNumType("ALL")
 )
 
 func (enum TargetNum) Valid() error {
@@ -37,7 +37,7 @@ func (enum TargetNum) Valid() error {
 
 type TargetFactionType string
 
-var (
+const (
 	TargetFactionAlly  = TargetFactionType("ALLY")  // 味方
 	TargetFactionEnemy = TargetFactionType("ENEMY") //  敵
 	TargetFactionNone  = TargetFactionType("NONE")  // なし
@@ -56,7 +56,7 @@ func (enum TargetFactionType) Valid() error {
 
 type UsableSceneType string
 
-var (
+const (
 	UsableSceneBattle = UsableSceneType("BATTLE") // 戦闘
 	UsableSceneField  = UsableSceneType("FIELD")  // フィールド
 	UsableSceneAny    = UsableSceneType("ANY")    // いつでも
@@ -76,7 +76,7 @@ func (enum UsableSceneType) Valid() error {
 
 type WeaponType string
 
-var (
+const (
 	WeaponSword   = WeaponType("SWORD")   // 刀剣
 	WeaponSpear   = WeaponType("SPEAR")   // 槍
 	WeaponHandgun = WeaponType("HANDGUN") // 拳銃
@@ -115,7 +115,7 @@ func (wc WeaponType) String() string {
 
 type EquipmentType string
 
-var (
+const (
 	EquipmentHead    = EquipmentType("HEAD")    // 頭部
 	EquipmentTorso   = EquipmentType("TORSO")   // 胴体
 	EquipmentLegs    = EquipmentType("LEGS")    // 脚
@@ -153,7 +153,7 @@ func (es EquipmentType) String() string {
 
 type DamageAttrType string
 
-var (
+const (
 	DamageAttrNone    DamageAttrType = "NONE"
 	DamageAttrFire    DamageAttrType = "FIRE"
 	DamageAttrThunder DamageAttrType = "THUNDER"
