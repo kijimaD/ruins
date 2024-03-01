@@ -128,46 +128,22 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	cl.Description = &gc.Description{Description: item.Description}
 
 	if item.Consumable != nil {
-		var faction gc.TargetFactionType
-		switch gc.TargetFactionType(item.Consumable.TargetFaction) {
-		case gc.TargetFactionAlly:
-			faction = gc.TargetFactionAlly
-		case gc.TargetFactionEnemy:
-			faction = gc.TargetFactionEnemy
-		case gc.TargetFactionNone:
-			faction = gc.TargetFactionNone
-		default:
-			log.Fatalf("invalid TargetFaction: %s", item.Consumable.TargetFaction)
+		if err := gc.TargetFactionType(item.Consumable.TargetFaction).Valid(); err != nil {
+			log.Fatal(err)
 		}
-
-		var usableContext gc.UsableSceneType
-		switch gc.UsableSceneType(item.Consumable.UsableScene) {
-		case gc.UsableSceneAny:
-			usableContext = gc.UsableSceneAny
-		case gc.UsableSceneBattle:
-			usableContext = gc.UsableSceneBattle
-		case gc.UsableSceneField:
-			usableContext = gc.UsableSceneField
-		default:
-			log.Fatalf("invalid UsableScene: %s", item.Consumable.UsableScene)
+		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
+			log.Fatal(err)
 		}
-
-		var targetCount gc.TargetNum
-		switch gc.TargetNum(item.Consumable.TargetNum) {
-		case gc.TargetSingle:
-			targetCount = gc.TargetSingle
-		case gc.TargetAll:
-			targetCount = gc.TargetAll
-		default:
-			log.Fatalf("invalid TargetNum: %s", item.Consumable.TargetNum)
-		}
-
 		targetType := gc.TargetType{
-			TargetFaction: faction,
-			TargetNum:     targetCount,
+			TargetFaction: gc.TargetFactionType(item.Consumable.TargetFaction),
+			TargetNum:     gc.TargetNumType(item.Consumable.TargetNum),
+		}
+
+		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
+			log.Fatal(err)
 		}
 		cl.Consumable = &gc.Consumable{
-			UsableScene: usableContext,
+			UsableScene: gc.UsableSceneType(item.Consumable.UsableScene),
 			TargetType:  targetType,
 		}
 	}
@@ -178,19 +154,28 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
 	if item.Weapon != nil {
+		if err := components.WeaponType(item.Weapon.WeaponCategory).Valid(); err != nil {
+			log.Fatal(err)
+		}
+		if err := components.DamageAttrType(item.Weapon.DamageAttr).Valid(); err != nil {
+			log.Fatal(err)
+		}
 		cl.Weapon = &gc.Weapon{
 			Accuracy:          item.Weapon.Accuracy,
 			BaseDamage:        item.Weapon.BaseDamage,
 			AttackCount:       item.Weapon.AttackCount,
 			EnergyConsumption: item.Weapon.EnergyConsumption,
-			DamageAttr:        components.StringToDamangeAttrType(item.Weapon.DamageAttr),
-			WeaponCategory:    components.StringToWeaponType(item.Weapon.WeaponCategory),
+			DamageAttr:        components.DamageAttrType(item.Weapon.DamageAttr),
+			WeaponCategory:    components.WeaponType(item.Weapon.WeaponCategory),
 		}
 	}
 	if item.Wearable != nil {
+		if err := components.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
+			log.Fatal(err)
+		}
 		cl.Wearable = &gc.Wearable{
 			BaseDefense:       item.Wearable.BaseDefense,
-			EquipmentCategory: components.StringToEquipmentType(item.Wearable.EquipmentCategory),
+			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
 		}
 	}
 	return cl

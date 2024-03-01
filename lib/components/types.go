@@ -3,7 +3,7 @@ package components
 // 対象
 type TargetType struct {
 	TargetFaction TargetFactionType // 対象派閥
-	TargetNum     TargetNum
+	TargetNum     TargetNumType
 }
 
 // 合成の元になる素材

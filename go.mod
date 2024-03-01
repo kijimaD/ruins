@@ -17,6 +17,7 @@ require (
 	github.com/ebitengine/purego v0.5.1 // indirect
 	github.com/ebitenui/ebitenui v0.5.5 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/yourbasic/bit v0.0.0-20180313074424-45a4409f4082 // indirect
 	golang.org/x/exp v0.0.0-20231219180239-dc181d75b848 // indirect
