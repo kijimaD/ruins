@@ -2,7 +2,11 @@ package components
 
 import (
 	"log"
+
+	"github.com/pkg/errors"
 )
+
+var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 
 type warpMode string
 
@@ -11,12 +15,24 @@ var (
 	WarpModeEscape = warpMode("ESCAPE")
 )
 
+// ================
+
 type TargetNum string
 
 var (
 	TargetSingle = TargetNum("SINGLE")
 	TargetAll    = TargetNum("ALL")
 )
+
+func (enum TargetNum) Valid() error {
+	switch enum {
+	case TargetSingle, TargetAll:
+		return nil
+	}
+	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+}
+
+// ================
 
 type TargetFactionType string
 
@@ -26,6 +42,16 @@ var (
 	TargetFactionNone  = TargetFactionType("NONE")  // なし
 )
 
+func (enum TargetFactionType) Valid() error {
+	switch enum {
+	case TargetFactionAlly, TargetFactionEnemy, TargetFactionNone:
+		return nil
+	}
+	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+}
+
+// ================
+
 type UsableSceneType string
 
 var (
@@ -33,6 +59,14 @@ var (
 	UsableSceneField  = UsableSceneType("FIELD")  // フィールド
 	UsableSceneAny    = UsableSceneType("ANY")    // いつでも
 )
+
+func (enum UsableSceneType) Valid() error {
+	switch enum {
+	case UsableSceneBattle, UsableSceneField, UsableSceneAny:
+		return nil
+	}
+	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+}
 
 // ================
 // 武器種別
@@ -46,22 +80,12 @@ var (
 	WeaponRifle   = WeaponType("RIFLE")   // 小銃
 )
 
-func StringToWeaponType(input string) WeaponType {
-	var result WeaponType
-	switch input {
-	case string(WeaponSword):
-		result = WeaponSword
-	case string(WeaponSpear):
-		result = WeaponSpear
-	case string(WeaponHandgun):
-		result = WeaponHandgun
-	case string(WeaponRifle):
-		result = WeaponRifle
-	default:
-		log.Fatal("invalid weapon type")
+func (enum WeaponType) Valid() error {
+	switch enum {
+	case WeaponSword, WeaponSpear, WeaponHandgun, WeaponRifle:
+		return nil
 	}
-
-	return result
+	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
 func (wc WeaponType) String() string {
@@ -93,6 +117,14 @@ var (
 	EquipmentLegs    = EquipmentType("LEGS")    // 脚
 	EquipmentJewelry = EquipmentType("JEWELRY") // アクセサリ
 )
+
+func (enum EquipmentType) Valid() error {
+	switch enum {
+	case EquipmentHead, EquipmentTorso, EquipmentLegs, EquipmentJewelry:
+		return nil
+	}
+	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+}
 
 func StringToEquipmentType(input string) EquipmentType {
 	var result EquipmentType
@@ -142,23 +174,12 @@ var (
 	DamageAttrPhoton  DamageAttrType = "PHOTON"
 )
 
-func StringToDamangeAttrType(input string) DamageAttrType {
-	var result DamageAttrType
-	switch input {
-	case string(DamageAttrNone):
-		result = DamageAttrNone
-	case string(DamageAttrFire):
-		result = DamageAttrFire
-	case string(DamageAttrThunder):
-		result = DamageAttrThunder
-	case string(DamageAttrChill):
-		result = DamageAttrChill
-	case string(DamageAttrPhoton):
-		result = DamageAttrPhoton
-	default:
-		log.Fatal("invalid damage attr type")
+func (enum DamageAttrType) Valid() error {
+	switch enum {
+	case DamageAttrNone, DamageAttrFire, DamageAttrThunder, DamageAttrChill, DamageAttrPhoton:
+		return nil
 	}
-	return result
+	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
 func (da DamageAttrType) String() string {
