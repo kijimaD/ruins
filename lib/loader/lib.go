@@ -66,8 +66,8 @@ func LoadGameComponent(entityMetadataContent []byte, world w.World) []interface{
 	utils.Try(toml.Decode(string(entityMetadataContent), &entityGameMetadata))
 
 	gameComponentList := make([]GameComponentList, len(entityGameMetadata.Entities))
-	for iEntity, entity := range entityGameMetadata.Entities {
-		gameComponentList[iEntity] = processComponentsListData(world, entity.Components)
+	for iEntity, _ := range entityGameMetadata.Entities {
+		gameComponentList[iEntity] = GameComponentList{}
 	}
 
 	interfaceSlice := make([]interface{}, len(gameComponentList))
@@ -75,21 +75,4 @@ func LoadGameComponent(entityMetadataContent []byte, world w.World) []interface{
 		interfaceSlice[i] = v
 	}
 	return interfaceSlice
-}
-
-// TODO: 何に使っている?
-func processComponentsListData(world w.World, data GameComponentList) GameComponentList {
-	return GameComponentList{
-		Item:            data.Item,
-		Name:            data.Name,
-		Description:     data.Description,
-		InBackpack:      data.InBackpack,
-		Consumable:      data.Consumable,
-		InParty:         data.InParty,
-		Equipped:        data.Equipped,
-		Member:          data.Member,
-		Pools:           data.Pools,
-		ProvidesHealing: data.ProvidesHealing,
-		InflictsDamage:  data.InflictsDamage,
-	}
 }
