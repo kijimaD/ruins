@@ -51,7 +51,7 @@ translation = { x = 295, y = 450 }
 
 [entity.components.Text]
 id = "intro"
-text = "[DEBUG]イントロ"
+text = "イントロ"
 font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 
@@ -86,7 +86,7 @@ translation = { x = 295, y = 300 }
 
 [entity.components.Text]
 id = "home"
-text = "[DEBUG]拠点メニュー"
+text = "拠点メニュー"
 font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 
