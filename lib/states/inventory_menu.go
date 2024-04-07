@@ -252,12 +252,12 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		st.actionContainer.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-			st.initPartyWindow(world)
-			st.partyWindow.SetLocation(getWinRect())
-
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {
 			case gc.TargetSingle:
+				st.initPartyWindow(world)
+				st.partyWindow.SetLocation(getWinRect())
+
 				st.ui.AddWindow(st.partyWindow)
 				actionWindow.Close()
 				st.selectedItem = entity

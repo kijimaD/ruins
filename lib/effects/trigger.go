@@ -6,6 +6,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// アイテムからイベントをトリガーする
 func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World) {
 	EventTrigger(creator, item, targets, world)
 
@@ -16,6 +17,7 @@ func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.
 	}
 }
 
+// イベントをトリガーする
 func EventTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	healing, ok := gameComponents.ProvidesHealing.Get(item).(*gc.ProvidesHealing)
