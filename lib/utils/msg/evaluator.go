@@ -10,6 +10,13 @@ type Evaluator struct {
 	Events []Event
 }
 
+func NewEvaluator(node Node) *Evaluator {
+	e := Evaluator{}
+	e.Eval(node)
+
+	return &e
+}
+
 func (e *Evaluator) Eval(node Node) Event {
 	switch node := node.(type) {
 	case *Program:

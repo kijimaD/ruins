@@ -1,6 +1,7 @@
 package states
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/ebitenui/ebitenui"
@@ -218,8 +219,11 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 }
 
 // itemsからUIを生成する
+// 使用などでアイテム数が変動した場合は再実行する必要がある
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
+	count := fmt.Sprintf("合計 %02d個", len(st.items))
+	st.actionContainer.AddChild(eui.NewWindowHeaderContainer(count, world))
 	for _, entity := range st.items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -248,12 +252,12 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		st.actionContainer.AddChild(itemButton)
 
 		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-			st.initPartyWindow(world)
-			st.partyWindow.SetLocation(getWinRect())
-
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {
 			case gc.TargetSingle:
+				st.initPartyWindow(world)
+				st.partyWindow.SetLocation(getWinRect())
+
 				st.ui.AddWindow(st.partyWindow)
 				actionWindow.Close()
 				st.selectedItem = entity
@@ -262,6 +266,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				effects.ItemTrigger(nil, entity, effects.Party{}, world)
 				actionWindow.Close()
 				st.actionContainer.RemoveChild(itemButton)
+				st.categoryReload(world)
 			}
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) {
@@ -270,8 +275,8 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
 			world.Manager.DeleteEntity(entity)
-			st.categoryReload(world)
 			actionWindow.Close()
+			st.categoryReload(world)
 		}, world)
 		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) {
 			windowContainer.AddChild(dropButton)
@@ -300,6 +305,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
 			st.actionContainer.RemoveChild(st.selectedItemButton)
+			st.categoryReload(world)
 		}, world)
 		partyContainer.AddChild(partyButton)
 	}))

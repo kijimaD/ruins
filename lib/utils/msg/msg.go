@@ -25,6 +25,15 @@ func NewQueue(events []Event) Queue {
 	return q
 }
 
+func NewQueueFromText(text string) Queue {
+	l := NewLexer(text)
+	p := NewParser(l)
+	program := p.ParseProgram()
+	e := NewEvaluator(program)
+
+	return NewQueue(e.Events)
+}
+
 // キューの先端にあるイベントを実行する
 func (q *Queue) RunHead() QueueState {
 	if !q.active {
