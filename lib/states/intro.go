@@ -49,12 +49,7 @@ func (st *IntroState) OnResume(world w.World) {}
 func (st *IntroState) OnStart(world w.World) {
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	loader.AddEntities(world, prefabs.Intro)
-	l := msg.NewLexer(introText)
-	p := msg.NewParser(l)
-	program := p.ParseProgram()
-	e := msg.Evaluator{}
-	e.Eval(program)
-	st.queue = msg.NewQueue(e.Events)
+	st.queue = msg.NewQueueFromText(introText)
 }
 
 func (st *IntroState) OnStop(world w.World) {
