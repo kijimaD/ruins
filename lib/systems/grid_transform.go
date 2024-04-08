@@ -1,6 +1,8 @@
 package systems
 
 import (
+	"github.com/kijimaD/ruins/lib/engine/math"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 
 	ec "github.com/kijimaD/ruins/lib/engine/components"
@@ -17,8 +19,29 @@ const (
 func GridTransformSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	world.Manager.Join(gameComponents.GridElement, world.Components.Engine.SpriteRender, world.Components.Engine.Transform).Visit(ecs.Visit(func(entity ecs.Entity) {
+	var playerX = 0
+	var playerY = 0
+	world.Manager.Join(
+		gameComponents.Player,
+		gameComponents.GridElement,
+		world.Components.Engine.SpriteRender,
+		world.Components.Engine.Transform,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		playerX = gridElement.Line
+		playerY = gridElement.Col
+	}))
+
+	world.Manager.Join(
+		gameComponents.GridElement,
+		world.Components.Engine.SpriteRender,
+		world.Components.Engine.Transform,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		if math.Abs(gridElement.Line-playerX)+math.Abs(gridElement.Col-playerY) > 5 {
+			return
+		}
+
 		elementSpriteRender := world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender)
 		elementTranslation := &world.Components.Engine.Transform.Get(entity).(*ec.Transform).Translation
 
