@@ -1,8 +1,6 @@
 package systems
 
 import (
-	"github.com/kijimaD/ruins/lib/engine/math"
-
 	gc "github.com/kijimaD/ruins/lib/components"
 
 	ec "github.com/kijimaD/ruins/lib/engine/components"
@@ -11,11 +9,15 @@ import (
 )
 
 const (
-	transformOffsetX = 0
-	transformOffsetY = -80
+	// スクリーンサイズ x 0.5
+	transformOffsetX = 480
+	transformOffsetY = -360
+	// 1つあたりのタイルサイズ
+	tileSize = 32
 )
 
 // GridTransformSystem sets transform for grid elements
+// TODO: タイルサイズと画面サイズをハードコードしてカメラを実装しているので、画面サイズが変わると壊れる
 func GridTransformSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -38,9 +40,6 @@ func GridTransformSystem(world w.World) {
 		world.Components.Engine.Transform,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		if math.Abs(gridElement.Line-playerX)+math.Abs(gridElement.Col-playerY) > 5 {
-			return
-		}
 
 		elementSpriteRender := world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender)
 		elementTranslation := &world.Components.Engine.Transform.Get(entity).(*ec.Transform).Translation
@@ -48,7 +47,7 @@ func GridTransformSystem(world w.World) {
 		screenHeight := float64(world.Resources.ScreenDimensions.Height)
 		elementSprite := elementSpriteRender.SpriteSheet.Sprites[elementSpriteRender.SpriteNumber]
 
-		elementTranslation.X = float64(gridElement.Col*elementSprite.Width) + float64(elementSprite.Width)/2 + transformOffsetX
-		elementTranslation.Y = screenHeight - float64(gridElement.Line*elementSprite.Height) - float64(elementSprite.Height)/2 + transformOffsetY
+		elementTranslation.X = float64(gridElement.Col*elementSprite.Width) + float64(elementSprite.Width)/2 + transformOffsetX - float64(playerY*tileSize)
+		elementTranslation.Y = screenHeight - float64(gridElement.Line*elementSprite.Height) - float64(elementSprite.Height)/2 + transformOffsetY + float64(playerX*tileSize)
 	}))
 }
