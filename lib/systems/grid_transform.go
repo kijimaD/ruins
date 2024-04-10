@@ -17,7 +17,8 @@ const (
 	transformOffsetX = 480
 	transformOffsetY = -360
 	// 1つあたりのタイルサイズ
-	tileSize = 32
+	tileSize     = 32
+	drawDistance = 6
 )
 
 // GridTransformSystem sets transform for grid elements
@@ -56,7 +57,7 @@ func GridTransformSystem(world w.World) {
 		// 視界
 		xAbs := mymath.Abs(gridElement.Line - playerX)
 		yAbs := mymath.Abs(gridElement.Col - playerY)
-		if math.Sqrt(float64(math.Pow(float64(xAbs), 2))+float64(math.Pow(float64(yAbs), 2))) > 6 {
+		if math.Sqrt(float64(math.Pow(float64(xAbs), 2))+float64(math.Pow(float64(yAbs), 2))) > drawDistance {
 			// 描画範囲外に移動させて非表示にする...
 			// TODO: 遠さによって透明度を変えつつ、黒で塗りつぶしたい
 			elementTranslation.X = -100
