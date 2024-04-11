@@ -32,6 +32,7 @@ type EquipMenuState struct {
 	subMenuContainer *widget.Container // 右上のサブメニュー
 	actionContainer  *widget.Container // 操作の起点となるメインメニュー
 	specContainer    *widget.Container // 性能コンテナ
+	abilityContainer *widget.Container // メンバーの能力表示コンテナ
 	itemDesc         *widget.Text      // アイテムの説明
 	curMemberIdx     int               // 選択中の味方
 }
@@ -101,9 +102,11 @@ func (st *EquipMenuState) getCursorMenuIDs() []string {
 // ================
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
-	st.actionContainer = st.newItemSpecContainer(world)
-	st.specContainer = st.newItemSpecContainer(world)
+	st.actionContainer = eui.NewVerticalContainer()
 	st.generateActionContainer(world)
+	st.specContainer = eui.NewVerticalContainer()
+	st.abilityContainer = eui.NewVerticalContainer()
+	st.reloadAbilityContainer(world)
 
 	st.subMenuContainer = eui.NewRowContainer()
 	st.toggleSubMenu(world, false, func() {})
@@ -121,32 +124,12 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		sc, v := eui.NewScrollContainer(st.actionContainer)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.specContainer)
+		rootContainer.AddChild(st.newVSplitContainer(st.specContainer, st.abilityContainer))
 
 		rootContainer.AddChild(st.itemDesc)
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
-}
-
-// アイテムの性能表示コンテナ
-func (st *EquipMenuState) newItemSpecContainer(world w.World) *widget.Container {
-	itemSpecContainer := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
-	)
-
-	return itemSpecContainer
 }
 
 // スロットコンテナを生成する
@@ -265,9 +248,6 @@ func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadF
 			members = append(members, entity)
 		})
 
-		getName := func() string { return simple.GetName(world, members[st.curMemberIdx]).Name }
-		memberName := eui.NewMenuText(getName(), world)
-
 		prevMemberButton := eui.NewItemButton("前", func(args *widget.ButtonClickedEventArgs) {
 			// Goでは負の剰余は負のままになる
 			result := st.curMemberIdx - 1
@@ -277,17 +257,39 @@ func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadF
 			st.curMemberIdx = result
 			st.generateActionContainer(world)
 
-			memberName.Label = getName()
+			st.reloadAbilityContainer(world)
 		}, world)
 		nextMemberButton := eui.NewItemButton("次", func(args *widget.ButtonClickedEventArgs) {
 			st.curMemberIdx = (st.curMemberIdx + 1) % len(members)
 			st.generateActionContainer(world)
 
-			memberName.Label = getName()
+			st.reloadAbilityContainer(world)
 		}, world)
 		st.subMenuContainer.AddChild(prevMemberButton)
-		st.subMenuContainer.AddChild(memberName)
 		st.subMenuContainer.AddChild(nextMemberButton)
+	}
+}
+
+// メンバーの能力表示コンテナを更新する
+func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
+	st.abilityContainer.RemoveChildren()
+
+	members := []ecs.Entity{}
+	simple.InPartyMember(world, func(entity ecs.Entity) {
+		members = append(members, entity)
+	})
+	targetMember := members[st.curMemberIdx]
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	for _, entity := range st.queryAbility(world) {
+		if entity != targetMember {
+			continue
+		}
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s", name.Name), styles.TextColor, world))
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("HP %3d/%3d", pools.HP.Current, pools.HP.Max), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("SP %3d/%3d", pools.SP.Current, pools.SP.Max), styles.TextColor, world))
 	}
 }
 
@@ -321,4 +323,42 @@ func (st *EquipMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	}))
 
 	return items
+}
+
+func (st *EquipMenuState) queryAbility(world w.World) []ecs.Entity {
+	entities := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.Name,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		entities = append(entities, entity)
+	}))
+
+	return entities
+}
+
+// 縦分割コンテナ
+func (st *EquipMenuState) newVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
+	split := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				widget.GridLayoutOpts.Columns(1),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    2,
+					Bottom: 2,
+					Left:   2,
+					Right:  2,
+				}),
+			)),
+	)
+	split.AddChild(top)
+	split.AddChild(bottom)
+
+	return split
 }
