@@ -111,7 +111,7 @@ Name = "作業用ヘルメット"
 Description = "衝撃吸収性に優れた産業用の帽子"
 
 [item.wearable]
-BaseDefense = 10
+Defense = 10
 EquipmentCategory = "HEAD"
 
 [[item]]
@@ -119,7 +119,7 @@ Name = "西洋鎧"
 Description = "伝統的な意匠が施されたずっしりと重い鎧"
 
 [item.wearable]
-BaseDefense = 16
+Defense = 16
 EquipmentCategory = "TORSO"
 
 [[item]]
@@ -127,15 +127,15 @@ Name = "革のブーツ"
 Description = "よくなめされた革で成形された長靴"
 
 [item.wearable]
-BaseDefense = 5
+Defense = 5
 EquipmentCategory = "LEGS"
 
 [[item]]
 Name = "機械の指輪"
-Description = "極めて微細なプリント基板が施された指輪"
+Description = "指輪型の小さな機械"
 
 [item.wearable]
-BaseDefense = 1
+Defense = 1
 EquipmentCategory = "JEWELRY"
 
 # material ================

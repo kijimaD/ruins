@@ -77,6 +77,6 @@ func randomize(world w.World, entity ecs.Entity) {
 	if entity.HasComponent(gameComponents.Wearable) {
 		wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
 
-		wearable.BaseDefense += (-4 + rand.Intn(20)) // -4 ~ +9
+		wearable.Defense += (-4 + rand.Intn(20)) // -4 ~ +9
 	}
 }

@@ -82,7 +82,7 @@ type Weapon struct {
 }
 
 type Wearable struct {
-	BaseDefense       int           // 防御力
+	Defense           int           // 防御力
 	EquipmentCategory EquipmentType // 装備部位
 }
 

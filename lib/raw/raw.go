@@ -53,7 +53,7 @@ type Weapon struct {
 }
 
 type Wearable struct {
-	BaseDefense       int
+	Defense           int
 	EquipmentCategory string
 }
 
@@ -184,7 +184,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			log.Fatal(err)
 		}
 		cl.Wearable = &gc.Wearable{
-			BaseDefense:       item.Wearable.BaseDefense,
+			Defense:           item.Wearable.Defense,
 			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
 		}
 	}

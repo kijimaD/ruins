@@ -47,7 +47,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			equipmentCategory := fmt.Sprintf("部位 %s", v.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
-			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.BaseDefense))
+			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.Defense))
 			targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
 		}
 	}

@@ -40,7 +40,7 @@ func EquipmentChangedSystem(world w.World) bool {
 		owner := equipped.Owner
 		attrs := gameComponents.Attributes.Get(owner).(*gc.Attributes)
 
-		attrs.Defense.Modifier += wearable.BaseDefense
+		attrs.Defense.Modifier += wearable.Defense
 		attrs.Defense.Total = attrs.Defense.Base + attrs.Defense.Modifier
 	}))
 
