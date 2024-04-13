@@ -251,11 +251,23 @@ Amount = 1
 # member ================
 
 [[member]]
-Name = "村上"
+Name = "イシハラ"
 HP = 101
 SP = 82
+[member.attributes]
+Vitality = 7
+Strength = 5
+Sensation = 5
+Dexterity = 6
+Agility = 5
 
 [[member]]
-Name = "白瀬"
+Name = "シラセ"
 HP = 82
 SP = 87
+[member.attributes]
+Vitality = 5
+Strength = 4
+Sensation = 8
+Dexterity = 7
+Agility = 7

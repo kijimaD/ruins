@@ -78,7 +78,7 @@ type WeaponType string
 
 const (
 	WeaponSword   = WeaponType("SWORD")   // 刀剣
-	WeaponSpear   = WeaponType("SPEAR")   // 槍
+	WeaponSpear   = WeaponType("SPEAR")   // 長物
 	WeaponHandgun = WeaponType("HANDGUN") // 拳銃
 	WeaponRifle   = WeaponType("RIFLE")   // 小銃
 )
@@ -98,7 +98,7 @@ func (wc WeaponType) String() string {
 	case WeaponSword:
 		result = "刀剣"
 	case WeaponSpear:
-		result = "槍"
+		result = "長物"
 	case WeaponHandgun:
 		result = "拳銃"
 	case WeaponRifle:
@@ -173,7 +173,7 @@ func (da DamageAttrType) String() string {
 	var result string
 	switch da {
 	case DamageAttrNone:
-		result = "無属性"
+		result = "無"
 	case DamageAttrFire:
 		result = "火"
 	case DamageAttrThunder:

@@ -62,8 +62,8 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-		murakami := spawner.SpawnMember(world, "村上", true)
-		spawner.SpawnMember(world, "白瀬", true)
+		ishihara := spawner.SpawnMember(world, "イシハラ", true)
+		spawner.SpawnMember(world, "シラセ", true)
 		spawner.SpawnAllMaterials(world)
 		material.PlusAmount("鉄", 40, world)
 		material.PlusAmount("鉄くず", 4, world)
@@ -71,7 +71,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
 
-		equips.Equip(world, sword, murakami, gc.EquipmentSlotZero)
+		equips.Equip(world, sword, ishihara, gc.EquipmentSlotZero)
 	}
 }
 

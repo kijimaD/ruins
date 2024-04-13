@@ -28,6 +28,24 @@ func NewRowContainer() *widget.Container {
 		)))
 }
 
+// 中身が縦並びのコンテナ
+func NewVerticalContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(4),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    10,
+					Bottom: 10,
+					Left:   10,
+					Right:  10,
+				}),
+			)),
+	)
+}
+
 // アイテム系メニューのRootとなる3x3のグリッドコンテナ
 func NewItemGridContainer() *widget.Container {
 	return widget.NewContainer(

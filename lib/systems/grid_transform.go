@@ -22,7 +22,7 @@ const (
 )
 
 // GridTransformSystem sets transform for grid elements
-// TODO: タイルサイズと画面サイズをハードコードしてカメラを実装しているので、画面サイズが変わると壊れる
+// TODO: タイルサイズと画面サイズをハードコーディングしてカメラを実装しているので、画面サイズが変わると壊れる
 func GridTransformSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
