@@ -24,3 +24,13 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+v.Amount)
 	}
 }
+
+func HealDamageByRatio(world w.World, healing EffectSpawner, target ecs.Entity) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	pools := gameComponents.Pools.Get(target).(*gc.Pools)
+	v, ok := healing.EffectType.(HealingByRatio)
+	if ok {
+		amount := int(float64(pools.HP.Max) * v.Amount)
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+amount)
+	}
+}
