@@ -26,6 +26,14 @@ type HealingByRatio struct {
 func (HealingByRatio) isEffectType() {}
 
 // ================
+// スタミナ
+type RecoveryStaminaByRatio struct {
+	Amount float64 // 0.0 ~ 1.0
+}
+
+func (RecoveryStaminaByRatio) isEffectType() {}
+
+// ================
 type ItemUse struct {
 	Item ecs.Entity
 }

@@ -75,6 +75,21 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 				AffectEntity(world, es, entity)
 			}))
 		}
+	case RecoveryStaminaByRatio:
+		v, ok := es.Targets.(Single)
+		if ok {
+			AffectEntity(world, es, v.Target)
+		}
+		_, ok = es.Targets.(Party)
+		if ok {
+			gameComponents := world.Components.Game.(*gc.Components)
+			world.Manager.Join(
+				gameComponents.Member,
+				gameComponents.InParty,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				AffectEntity(world, es, entity)
+			}))
+		}
 	case ItemUse:
 		_, ok := es.Targets.(Single)
 		if ok {
@@ -86,12 +101,16 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 }
 
 func AffectEntity(world w.World, es EffectSpawner, target ecs.Entity) {
-	switch es.EffectType.(type) {
+	switch e := es.EffectType.(type) {
 	case Damage:
 		InflictDamage(world, es, target)
 	case Healing:
 		HealDamage(world, es, target)
 	case HealingByRatio:
 		HealDamageByRatio(world, es, target)
+	case RecoveryStaminaByRatio:
+		RecoverStaminaByRatio(world, es, target)
+	default:
+		log.Fatalf("対応してないEffectType: %T", e)
 	}
 }
