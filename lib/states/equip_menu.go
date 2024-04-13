@@ -290,6 +290,10 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("HP %3d/%3d", pools.HP.Current, pools.HP.Max), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("SP %3d/%3d", pools.SP.Current, pools.SP.Max), styles.TextColor, world))
+
+		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("生命力 %2d(%2d)", attrs.Vitality.Total, attrs.Vitality.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("膂力　 %2d(%2d)", attrs.Strength.Total, attrs.Strength.Base), styles.TextColor, world))
 	}
 }
 

@@ -63,9 +63,15 @@ type Material struct {
 }
 
 type Member struct {
-	Name string
-	HP   int
-	SP   int
+	Name       string
+	HP         int
+	SP         int
+	Attributes Attributes `toml:"attributes"`
+}
+
+type Attributes struct {
+	Vitality int
+	Strength int
 }
 
 // レシピ
@@ -238,6 +244,16 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameCompo
 	cl.Name = &gc.Name{Name: member.Name}
 	if inParty {
 		cl.InParty = &gc.InParty{}
+	}
+	cl.Attributes = &gc.Attributes{
+		Vitality: gc.Attribute{
+			Base:  member.Attributes.Vitality,
+			Total: member.Attributes.Vitality,
+		},
+		Strength: gc.Attribute{
+			Base:  member.Attributes.Strength,
+			Total: member.Attributes.Strength,
+		},
 	}
 	cl.Pools = &gc.Pools{
 		HP:    gc.Pool{Max: member.HP, Current: member.HP - 10},

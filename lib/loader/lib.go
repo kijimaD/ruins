@@ -31,6 +31,7 @@ type GameComponentList struct {
 	Material        *gc.Material
 	Recipe          *gc.Recipe
 	Wearable        *gc.Wearable
+	Attributes      *gc.Attributes
 }
 
 type Entity struct {

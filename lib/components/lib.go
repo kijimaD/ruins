@@ -22,6 +22,7 @@ type Components struct {
 	Material        *ecs.SliceComponent
 	Recipe          *ecs.SliceComponent
 	Wearable        *ecs.SliceComponent
+	Attributes      *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -96,11 +97,22 @@ type Pool struct {
 	Current int
 }
 
-// メンバーに関連するパラメータ群
 type Pools struct {
 	HP    Pool
 	SP    Pool
 	Level int
+}
+
+type Attribute struct {
+	Base     int // 固有の値
+	Modifier int // 装備などで変動する値
+	Total    int // 足し合わせた現在値。メモ
+}
+
+// ステータス
+type Attributes struct {
+	Vitality Attribute // 生命力。HPやSPに影響する
+	Strength Attribute // 膂力。近接攻撃
 }
 
 // 回復する性質
@@ -116,7 +128,7 @@ type InflictsDamage struct {
 // 合成素材。
 // アイテムとの違い:
 // - 個々のインスタンスで性能の違いはなく、単に数量だけを見る
-// - 複数の単位で扱うのでAmountを持つ。x2で落ちていたりする
+// - 複数の単位で扱うのでAmountを持つ。x3を合成で使ったりする
 type Material struct {
 	Amount int
 }

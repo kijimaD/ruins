@@ -254,8 +254,14 @@ Amount = 1
 Name = "村上"
 HP = 101
 SP = 82
+[member.attributes]
+Vitality = 7
+Strength = 5
 
 [[member]]
 Name = "白瀬"
 HP = 82
 SP = 87
+[member.attributes]
+Vitality = 5
+Strength = 4
