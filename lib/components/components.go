@@ -74,7 +74,7 @@ type Equipped struct {
 // 武器
 type Weapon struct {
 	Accuracy          int            // 命中率
-	BaseDamage        int            // 攻撃力
+	Damage            int            // 攻撃力
 	AttackCount       int            // 攻撃回数
 	EnergyConsumption int            // 消費エネルギー
 	DamageAttr        DamageAttrType // 攻撃属性

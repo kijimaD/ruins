@@ -46,7 +46,7 @@ type Consumable struct {
 
 type Weapon struct {
 	Accuracy          int    // 命中率
-	BaseDamage        int    // ベース攻撃力
+	Damage            int    // 攻撃力
 	AttackCount       int    // 攻撃回数
 	EnergyConsumption int    // 攻撃で消費するエネルギー
 	DamageAttr        string // 攻撃属性
@@ -193,7 +193,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		}
 		cl.Weapon = &gc.Weapon{
 			Accuracy:          item.Weapon.Accuracy,
-			BaseDamage:        item.Weapon.BaseDamage,
+			Damage:            item.Weapon.Damage,
 			AttackCount:       item.Weapon.AttackCount,
 			EnergyConsumption: item.Weapon.EnergyConsumption,
 			DamageAttr:        components.DamageAttrType(item.Weapon.DamageAttr),

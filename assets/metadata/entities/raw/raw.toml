@@ -38,7 +38,7 @@ Description = "旅行の土産でおなじみの、木でできた刃のない�
 
 [item.weapon]
 Accuracy = 100
-BaseDamage = 8
+Damage = 8
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
@@ -53,7 +53,7 @@ Description = "鉄で作られた軽いナイフ"
 
 [item.weapon]
 Accuracy = 100
-BaseDamage = 9
+Damage = 9
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
@@ -65,7 +65,7 @@ Description = "樹脂素材を多用した自動拳銃"
 
 [item.weapon]
 Accuracy = 95
-BaseDamage = 14
+Damage = 14
 AttackCount = 1
 EnergyConsumption = 2
 DamageAttr = "NONE"
@@ -77,7 +77,7 @@ Description = "光線を発射する拳銃"
 
 [item.weapon]
 Accuracy = 90
-BaseDamage = 20
+Damage = 20
 AttackCount = 1
 EnergyConsumption = 3
 DamageAttr = "PHOTON"
@@ -89,7 +89,7 @@ Description = "放電物質を投射する擲弾銃"
 
 [item.weapon]
 Accuracy = 80
-BaseDamage = 26
+Damage = 26
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "THUNDER"
@@ -101,7 +101,7 @@ Description = "極低温物質を投射する擲弾銃"
 
 [item.weapon]
 Accuracy = 80
-BaseDamage = 25
+Damage = 25
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "CHILL"
