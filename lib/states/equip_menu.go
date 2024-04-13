@@ -292,8 +292,11 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("SP %3d/%3d", pools.SP.Current, pools.SP.Max), styles.TextColor, world))
 
 		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("生命力 %2d(%2d)", attrs.Vitality.Total, attrs.Vitality.Base), styles.TextColor, world))
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("膂力　 %2d(%2d)", attrs.Strength.Total, attrs.Strength.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("体力 %2d(%2d)", attrs.Vitality.Total, attrs.Vitality.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("筋力 %2d(%2d)", attrs.Strength.Total, attrs.Strength.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("感覚 %2d(%2d)", attrs.Sensation.Total, attrs.Sensation.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("器用 %2d(%2d)", attrs.Dexterity.Total, attrs.Dexterity.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("敏捷 %2d(%2d)", attrs.Agility.Total, attrs.Agility.Base), styles.TextColor, world))
 	}
 }
 

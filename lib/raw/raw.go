@@ -70,8 +70,11 @@ type Member struct {
 }
 
 type Attributes struct {
-	Vitality int
-	Strength int
+	Vitality  int
+	Strength  int
+	Sensation int
+	Dexterity int
+	Agility   int
 }
 
 // レシピ
@@ -253,6 +256,18 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameCompo
 		Strength: gc.Attribute{
 			Base:  member.Attributes.Strength,
 			Total: member.Attributes.Strength,
+		},
+		Sensation: gc.Attribute{
+			Base:  member.Attributes.Sensation,
+			Total: member.Attributes.Sensation,
+		},
+		Dexterity: gc.Attribute{
+			Base:  member.Attributes.Dexterity,
+			Total: member.Attributes.Dexterity,
+		},
+		Agility: gc.Attribute{
+			Base:  member.Attributes.Agility,
+			Total: member.Attributes.Agility,
 		},
 	}
 	cl.Pools = &gc.Pools{

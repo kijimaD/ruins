@@ -98,8 +98,8 @@ type Pool struct {
 }
 
 type Pools struct {
-	HP    Pool
-	SP    Pool
+	HP    Pool // 最大値は計算式で算出される。例: 30+(体力*8+力+器用さ)*{1+(Lv-1)*0.03}
+	SP    Pool // 最大値は計算式で算出される。例: (体力*2+力+器用さ+素早さ+精神*3)*{1+(Lv-1)*0.02}
 	Level int
 }
 
@@ -109,10 +109,13 @@ type Attribute struct {
 	Total    int // 足し合わせた現在値。メモ
 }
 
-// ステータス
+// エンティティが持つステータス。各種計算式で使う
 type Attributes struct {
-	Vitality Attribute // 生命力。HPやSPに影響する
-	Strength Attribute // 膂力。近接攻撃
+	Vitality  Attribute // 体力。丈夫さ、持久力、しぶとさ。HPやSPに影響する
+	Strength  Attribute // 筋力。主に近接攻撃のダメージに影響する
+	Sensation Attribute // 感覚。主に射撃攻撃のダメージに影響する
+	Dexterity Attribute // 器用。攻撃時の命中率に影響する
+	Agility   Attribute // 敏捷。回避率、行動の速さに影響する
 }
 
 // 回復する性質
