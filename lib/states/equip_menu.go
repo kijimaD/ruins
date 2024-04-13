@@ -297,6 +297,7 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("感覚 %2d(%2d)", attrs.Sensation.Total, attrs.Sensation.Base), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("器用 %2d(%2d)", attrs.Dexterity.Total, attrs.Dexterity.Base), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("敏捷 %2d(%2d)", attrs.Agility.Total, attrs.Agility.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("防御 %2d(%2d)", attrs.Defense.Total, attrs.Defense.Base), styles.TextColor, world))
 	}
 }
 

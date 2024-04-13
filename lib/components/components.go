@@ -116,6 +116,7 @@ type Attributes struct {
 	Sensation Attribute // 感覚。主に射撃攻撃のダメージに影響する
 	Dexterity Attribute // 器用。攻撃時の命中率に影響する
 	Agility   Attribute // 敏捷。回避率、行動の速さに影響する
+	Defense   Attribute // 防御。被弾ダメージを軽減させる
 }
 
 // 回復する性質

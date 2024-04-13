@@ -260,6 +260,7 @@ Strength = 5
 Sensation = 5
 Dexterity = 6
 Agility = 5
+Defense = 0
 
 [[member]]
 Name = "シラセ"
@@ -271,3 +272,4 @@ Strength = 4
 Sensation = 8
 Dexterity = 7
 Agility = 7
+Defense = 0
