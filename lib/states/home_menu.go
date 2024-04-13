@@ -14,6 +14,7 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
+	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -84,6 +85,8 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
+
+	_ = gs.EquipmentChangedSystem(world)
 
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)

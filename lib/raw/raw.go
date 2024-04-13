@@ -73,8 +73,6 @@ type Material struct {
 
 type Member struct {
 	Name       string
-	HP         int
-	SP         int
 	Attributes Attributes `toml:"attributes"`
 }
 
@@ -282,8 +280,6 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameCompo
 		Defense:   gc.Attribute{Base: member.Attributes.Defense},
 	}
 	cl.Pools = &gc.Pools{
-		HP:    gc.Pool{Max: member.HP, Current: member.HP - 10},
-		SP:    gc.Pool{Max: member.SP, Current: member.SP - 10},
 		Level: 1,
 	}
 

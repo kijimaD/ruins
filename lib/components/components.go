@@ -97,13 +97,13 @@ type Member struct{}
 
 // 最大値と現在値を持つようなパラメータ
 type Pool struct {
-	Max     int
-	Current int
+	Max     int // 計算式で算出される
+	Current int // 計算式で算出される
 }
 
 type Pools struct {
-	HP    Pool // 最大値は計算式で算出される。例: 30+(体力*8+力+器用さ)*{1+(Lv-1)*0.03}
-	SP    Pool // 最大値は計算式で算出される。例: (体力*2+力+器用さ+素早さ+精神*3)*{1+(Lv-1)*0.02}
+	HP    Pool
+	SP    Pool
 	Level int
 }
 
