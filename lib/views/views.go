@@ -31,8 +31,11 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			accuracy := fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 
-			baseDamage := fmt.Sprintf("攻撃力 %s", strconv.Itoa(v.BaseDamage))
+			baseDamage := fmt.Sprintf("攻撃 %s", strconv.Itoa(v.BaseDamage))
 			targetContainer.AddChild(eui.NewBodyText(baseDamage, styles.TextColor, world))
+
+			attackCount := fmt.Sprintf("回数 %s", strconv.Itoa(v.AttackCount))
+			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
 			consumption := fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
 			targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
