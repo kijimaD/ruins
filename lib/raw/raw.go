@@ -35,6 +35,7 @@ type Item struct {
 	Consumable      *Consumable `toml:"consumable"`
 	Weapon          *Weapon     `toml:"weapon"`
 	Wearable        *Wearable   `toml:"wearable"`
+	EquipBonus      *EquipBonus `toml:"equip_bonus"`
 }
 
 type Consumable struct {
@@ -55,6 +56,14 @@ type Weapon struct {
 type Wearable struct {
 	Defense           int
 	EquipmentCategory string
+}
+
+type EquipBonus struct {
+	Vitality  int
+	Strength  int
+	Sensation int
+	Dexterity int
+	Agility   int
 }
 
 type Material struct {
@@ -163,6 +172,18 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	if item.InflictsDamage != 0 {
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
+
+	var bonus gc.EquipBonus
+	if item.EquipBonus != nil {
+		bonus = gc.EquipBonus{
+			Vitality:  item.EquipBonus.Vitality,
+			Strength:  item.EquipBonus.Strength,
+			Sensation: item.EquipBonus.Sensation,
+			Dexterity: item.EquipBonus.Dexterity,
+			Agility:   item.EquipBonus.Agility,
+		}
+	}
+
 	if item.Weapon != nil {
 		if err := components.WeaponType(item.Weapon.WeaponCategory).Valid(); err != nil {
 			log.Fatal(err)
@@ -177,6 +198,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			EnergyConsumption: item.Weapon.EnergyConsumption,
 			DamageAttr:        components.DamageAttrType(item.Weapon.DamageAttr),
 			WeaponCategory:    components.WeaponType(item.Weapon.WeaponCategory),
+			EquipBonus:        bonus,
 		}
 	}
 	if item.Wearable != nil {
@@ -186,8 +208,10 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		cl.Wearable = &gc.Wearable{
 			Defense:           item.Wearable.Defense,
 			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
+			EquipBonus:        bonus,
 		}
 	}
+
 	return cl
 }
 

@@ -44,6 +44,9 @@ EnergyConsumption = 1
 DamageAttr = "NONE"
 WeaponCategory = "SWORD"
 
+[item.equip_bonus]
+Strength = 1
+
 [[item]]
 Name = "鉄のナイフ"
 Description = "鉄で作られた軽いナイフ"
@@ -114,6 +117,10 @@ Description = "衝撃吸収性に優れた産業用の帽子"
 Defense = 10
 EquipmentCategory = "HEAD"
 
+[item.equip_bonus]
+Vitality = 2
+Agility = -2
+
 [[item]]
 Name = "西洋鎧"
 Description = "伝統的な意匠が施されたずっしりと重い鎧"
@@ -121,6 +128,9 @@ Description = "伝統的な意匠が施されたずっしりと重い鎧"
 [item.wearable]
 Defense = 16
 EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Agility = -4
 
 [[item]]
 Name = "革のブーツ"
@@ -130,6 +140,9 @@ Description = "よくなめされた革で成形された長靴"
 Defense = 5
 EquipmentCategory = "LEGS"
 
+[item.equip_bonus]
+Agility = -2
+
 [[item]]
 Name = "機械の指輪"
 Description = "指輪型の小さな機械"
@@ -137,6 +150,13 @@ Description = "指輪型の小さな機械"
 [item.wearable]
 Defense = 1
 EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Vitality = 1
+Strength = 1
+Sensation = 1
+Dexterity = 1
+Agility = 1
 
 # material ================
 

@@ -8,6 +8,7 @@ import (
 
 // 装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
 // TODO: 最大HP/SPの更新はここでやったほうがよさそう
+// TODO: マイナスにならないようにする
 func EquipmentChangedSystem(world w.World) bool {
 	running := false
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -44,6 +45,28 @@ func EquipmentChangedSystem(world w.World) bool {
 
 	world.Manager.Join(
 		gameComponents.Equipped,
+		gameComponents.Weapon,
+	).Visit(ecs.Visit(func(item ecs.Entity) {
+		equipped := gameComponents.Equipped.Get(item).(*gc.Equipped)
+		weapon := gameComponents.Weapon.Get(item).(*gc.Weapon)
+
+		owner := equipped.Owner
+		attrs := gameComponents.Attributes.Get(owner).(*gc.Attributes)
+
+		attrs.Vitality.Modifier += weapon.EquipBonus.Vitality
+		attrs.Vitality.Total = attrs.Vitality.Base + attrs.Vitality.Modifier
+		attrs.Strength.Modifier += weapon.EquipBonus.Strength
+		attrs.Strength.Total = attrs.Strength.Base + attrs.Strength.Modifier
+		attrs.Sensation.Modifier += weapon.EquipBonus.Sensation
+		attrs.Sensation.Total = attrs.Sensation.Base + attrs.Sensation.Modifier
+		attrs.Dexterity.Modifier += weapon.EquipBonus.Dexterity
+		attrs.Dexterity.Total = attrs.Dexterity.Base + attrs.Dexterity.Modifier
+		attrs.Agility.Modifier += weapon.EquipBonus.Agility
+		attrs.Agility.Total = attrs.Agility.Base + attrs.Agility.Modifier
+	}))
+
+	world.Manager.Join(
+		gameComponents.Equipped,
 		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(item ecs.Entity) {
 		equipped := gameComponents.Equipped.Get(item).(*gc.Equipped)
@@ -54,6 +77,17 @@ func EquipmentChangedSystem(world w.World) bool {
 
 		attrs.Defense.Modifier += wearable.Defense
 		attrs.Defense.Total = attrs.Defense.Base + attrs.Defense.Modifier
+
+		attrs.Vitality.Modifier += wearable.EquipBonus.Vitality
+		attrs.Vitality.Total = attrs.Vitality.Base + attrs.Vitality.Modifier
+		attrs.Strength.Modifier += wearable.EquipBonus.Strength
+		attrs.Strength.Total = attrs.Strength.Base + attrs.Strength.Modifier
+		attrs.Sensation.Modifier += wearable.EquipBonus.Sensation
+		attrs.Sensation.Total = attrs.Sensation.Base + attrs.Sensation.Modifier
+		attrs.Dexterity.Modifier += wearable.EquipBonus.Dexterity
+		attrs.Dexterity.Total = attrs.Dexterity.Base + attrs.Dexterity.Modifier
+		attrs.Agility.Modifier += wearable.EquipBonus.Agility
+		attrs.Agility.Total = attrs.Agility.Base + attrs.Agility.Modifier
 	}))
 
 	return true

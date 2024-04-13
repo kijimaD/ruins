@@ -62,10 +62,10 @@ type Description struct {
 	Description string
 }
 
-// インベントリに所持している
+// インベントリに所持している状態
 type InBackpack struct{}
 
-// キャラクタが装備している
+// キャラクタが装備している状態
 type Equipped struct {
 	Owner         ecs.Entity
 	EquipmentSlot EquipmentSlotNumber
@@ -79,11 +79,14 @@ type Weapon struct {
 	EnergyConsumption int            // 消費エネルギー
 	DamageAttr        DamageAttrType // 攻撃属性
 	WeaponCategory    WeaponType     // 武器種別
+	EquipBonus        EquipBonus
 }
 
+// 防具
 type Wearable struct {
 	Defense           int           // 防御力
 	EquipmentCategory EquipmentType // 装備部位
+	EquipBonus        EquipBonus
 }
 
 // パーティに参加している状態

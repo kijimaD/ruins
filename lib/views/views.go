@@ -43,6 +43,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			if v.DamageAttr != components.DamageAttrNone {
 				targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
 			}
+			addEquipBonus(targetContainer, v.EquipBonus, world)
 		case *components.Wearable:
 			if v == nil {
 				continue
@@ -52,6 +53,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 
 			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.Defense))
 			targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
+			addEquipBonus(targetContainer, v.EquipBonus, world)
 		}
 	}
 
@@ -75,4 +77,31 @@ func damageAttrText(world w.World, dat components.DamageAttrType, str string) *w
 	}
 
 	return text
+}
+
+func addEquipBonus(targetContainer *widget.Container, equipBonus components.EquipBonus, world w.World) {
+	if equipBonus.Vitality != 0 {
+		vitality := fmt.Sprintf("体力 %+d", equipBonus.Vitality)
+		targetContainer.AddChild(eui.NewBodyText(vitality, styles.TextColor, world))
+	}
+
+	if equipBonus.Strength != 0 {
+		strength := fmt.Sprintf("筋力 %+d", equipBonus.Strength)
+		targetContainer.AddChild(eui.NewBodyText(strength, styles.TextColor, world))
+	}
+
+	if equipBonus.Sensation != 0 {
+		sensation := fmt.Sprintf("感覚 %+d", equipBonus.Sensation)
+		targetContainer.AddChild(eui.NewBodyText(sensation, styles.TextColor, world))
+	}
+
+	if equipBonus.Dexterity != 0 {
+		dexterity := fmt.Sprintf("器用 %+d", equipBonus.Dexterity)
+		targetContainer.AddChild(eui.NewBodyText(dexterity, styles.TextColor, world))
+	}
+
+	if equipBonus.Agility != 0 {
+		agility := fmt.Sprintf("敏捷 %+d", equipBonus.Agility)
+		targetContainer.AddChild(eui.NewBodyText(agility, styles.TextColor, world))
+	}
 }
