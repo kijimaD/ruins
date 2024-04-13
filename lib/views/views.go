@@ -9,6 +9,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 )
 
 func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *widget.Container {
@@ -81,27 +82,27 @@ func damageAttrText(world w.World, dat components.DamageAttrType, str string) *w
 
 func addEquipBonus(targetContainer *widget.Container, equipBonus components.EquipBonus, world w.World) {
 	if equipBonus.Vitality != 0 {
-		vitality := fmt.Sprintf("体力 %+d", equipBonus.Vitality)
+		vitality := fmt.Sprintf("%s %+d", consts.VitalityLabel, equipBonus.Vitality)
 		targetContainer.AddChild(eui.NewBodyText(vitality, styles.TextColor, world))
 	}
 
 	if equipBonus.Strength != 0 {
-		strength := fmt.Sprintf("筋力 %+d", equipBonus.Strength)
+		strength := fmt.Sprintf("%s %+d", consts.StrengthLabel, equipBonus.Strength)
 		targetContainer.AddChild(eui.NewBodyText(strength, styles.TextColor, world))
 	}
 
 	if equipBonus.Sensation != 0 {
-		sensation := fmt.Sprintf("感覚 %+d", equipBonus.Sensation)
+		sensation := fmt.Sprintf("%s %+d", consts.SensationLabel, equipBonus.Sensation)
 		targetContainer.AddChild(eui.NewBodyText(sensation, styles.TextColor, world))
 	}
 
 	if equipBonus.Dexterity != 0 {
-		dexterity := fmt.Sprintf("器用 %+d", equipBonus.Dexterity)
+		dexterity := fmt.Sprintf("%s %+d", consts.DexterityLabel, equipBonus.Dexterity)
 		targetContainer.AddChild(eui.NewBodyText(dexterity, styles.TextColor, world))
 	}
 
 	if equipBonus.Agility != 0 {
-		agility := fmt.Sprintf("敏捷 %+d", equipBonus.Agility)
+		agility := fmt.Sprintf("%s %+d", consts.AgilityLabel, equipBonus.Agility)
 		targetContainer.AddChild(eui.NewBodyText(agility, styles.TextColor, world))
 	}
 }
