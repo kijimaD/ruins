@@ -29,16 +29,16 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			}
 			targetContainer.AddChild(eui.NewBodyText(v.WeaponCategory.String(), styles.TextColor, world))
 
-			accuracy := fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
+			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(v.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 
-			damage := fmt.Sprintf("攻撃 %s", strconv.Itoa(v.Damage))
+			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(v.Damage))
 			targetContainer.AddChild(eui.NewBodyText(damage, styles.TextColor, world))
 
-			attackCount := fmt.Sprintf("回数 %s", strconv.Itoa(v.AttackCount))
+			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(v.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
-			consumption := fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
+			consumption := fmt.Sprintf("%s %s", consts.EnergyConsumptionLabel, strconv.Itoa(v.EnergyConsumption))
 			targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
 
 			if v.DamageAttr != components.DamageAttrNone {
@@ -49,11 +49,11 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			if v == nil {
 				continue
 			}
-			equipmentCategory := fmt.Sprintf("部位 %s", v.EquipmentCategory)
+			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, v.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
-			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.Defense))
-			targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
+			defense := fmt.Sprintf("%s %s", consts.DefenseLabel, strconv.Itoa(v.Defense))
+			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, v.EquipBonus, world)
 		}
 	}
