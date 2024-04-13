@@ -16,6 +16,7 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
@@ -54,6 +55,10 @@ func (st *EquipMenuState) OnStop(world w.World) {
 }
 
 func (st *EquipMenuState) Update(world w.World) states.Transition {
+	changed := gs.EquipmentChangedSystem(world)
+	if changed {
+		st.reloadAbilityContainer(world)
+	}
 	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {

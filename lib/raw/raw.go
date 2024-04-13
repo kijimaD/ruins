@@ -250,30 +250,12 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameCompo
 		cl.InParty = &gc.InParty{}
 	}
 	cl.Attributes = &gc.Attributes{
-		Vitality: gc.Attribute{
-			Base:  member.Attributes.Vitality,
-			Total: member.Attributes.Vitality,
-		},
-		Strength: gc.Attribute{
-			Base:  member.Attributes.Strength,
-			Total: member.Attributes.Strength,
-		},
-		Sensation: gc.Attribute{
-			Base:  member.Attributes.Sensation,
-			Total: member.Attributes.Sensation,
-		},
-		Dexterity: gc.Attribute{
-			Base:  member.Attributes.Dexterity,
-			Total: member.Attributes.Dexterity,
-		},
-		Agility: gc.Attribute{
-			Base:  member.Attributes.Agility,
-			Total: member.Attributes.Agility,
-		},
-		Defense: gc.Attribute{
-			Base:  member.Attributes.Defense,
-			Total: member.Attributes.Defense,
-		},
+		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
+		Strength:  gc.Attribute{Base: member.Attributes.Strength},
+		Sensation: gc.Attribute{Base: member.Attributes.Sensation},
+		Dexterity: gc.Attribute{Base: member.Attributes.Dexterity},
+		Agility:   gc.Attribute{Base: member.Attributes.Agility},
+		Defense:   gc.Attribute{Base: member.Attributes.Defense},
 	}
 	cl.Pools = &gc.Pools{
 		HP:    gc.Pool{Max: member.HP, Current: member.HP - 10},

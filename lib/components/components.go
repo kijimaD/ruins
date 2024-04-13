@@ -3,26 +3,27 @@ package components
 import ecs "github.com/x-hgg-x/goecs/v2"
 
 type Components struct {
-	GridElement     *ecs.SliceComponent
-	Player          *ecs.NullComponent
-	Wall            *ecs.NullComponent
-	Warp            *ecs.NullComponent
-	Item            *ecs.NullComponent
-	Consumable      *ecs.SliceComponent
-	Name            *ecs.SliceComponent
-	Description     *ecs.SliceComponent
-	InBackpack      *ecs.NullComponent
-	InParty         *ecs.NullComponent
-	Equipped        *ecs.SliceComponent
-	Member          *ecs.NullComponent
-	Pools           *ecs.SliceComponent
-	ProvidesHealing *ecs.SliceComponent
-	InflictsDamage  *ecs.SliceComponent
-	Weapon          *ecs.SliceComponent
-	Material        *ecs.SliceComponent
-	Recipe          *ecs.SliceComponent
-	Wearable        *ecs.SliceComponent
-	Attributes      *ecs.SliceComponent
+	GridElement      *ecs.SliceComponent
+	Player           *ecs.NullComponent
+	Wall             *ecs.NullComponent
+	Warp             *ecs.NullComponent
+	Item             *ecs.NullComponent
+	Consumable       *ecs.SliceComponent
+	Name             *ecs.SliceComponent
+	Description      *ecs.SliceComponent
+	InBackpack       *ecs.NullComponent
+	InParty          *ecs.NullComponent
+	Equipped         *ecs.SliceComponent
+	Member           *ecs.NullComponent
+	Pools            *ecs.SliceComponent
+	ProvidesHealing  *ecs.SliceComponent
+	InflictsDamage   *ecs.SliceComponent
+	Weapon           *ecs.SliceComponent
+	Material         *ecs.SliceComponent
+	Recipe           *ecs.SliceComponent
+	Wearable         *ecs.SliceComponent
+	Attributes       *ecs.SliceComponent
+	EquipmentChanged *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -141,3 +142,6 @@ type Material struct {
 type Recipe struct {
 	Inputs []RecipeInput
 }
+
+// 装備変更直後を示すダーティーフラグ
+type EquipmentChanged struct{}

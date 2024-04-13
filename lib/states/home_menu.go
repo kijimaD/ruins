@@ -51,7 +51,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		sword := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
+		armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
@@ -72,6 +72,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnAllRecipes(world)
 
 		equips.Equip(world, sword, ishihara, gc.EquipmentSlotZero)
+		equips.Equip(world, armor, ishihara, gc.EquipmentSlotOne)
 	}
 }
 
