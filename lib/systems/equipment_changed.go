@@ -7,6 +7,7 @@ import (
 )
 
 // 装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
+// TODO: 最大HP/SPの更新はここでやったほうがよさそう
 func EquipmentChangedSystem(world w.World) bool {
 	running := false
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -21,11 +22,22 @@ func EquipmentChangedSystem(world w.World) bool {
 		return false
 	}
 
+	// 初期化
 	world.Manager.Join(
 		gameComponents.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
 
+		attrs.Vitality.Modifier = 0
+		attrs.Vitality.Total = attrs.Vitality.Base
+		attrs.Strength.Modifier = 0
+		attrs.Strength.Total = attrs.Strength.Base
+		attrs.Sensation.Modifier = 0
+		attrs.Sensation.Total = attrs.Sensation.Base
+		attrs.Dexterity.Modifier = 0
+		attrs.Dexterity.Total = attrs.Dexterity.Base
+		attrs.Agility.Modifier = 0
+		attrs.Agility.Total = attrs.Agility.Base
 		attrs.Defense.Modifier = 0
 		attrs.Defense.Total = attrs.Defense.Base
 	}))
