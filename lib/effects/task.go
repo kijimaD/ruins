@@ -31,12 +31,17 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	}
 }
 
-func RecoverStaminaByRatio(world w.World, healing EffectSpawner, target ecs.Entity) {
+func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
-	v, ok := healing.EffectType.(RecoveryStaminaByRatio)
+	v, ok := recover.EffectType.(RecoveryStamina)
 	if ok {
-		amount := int(float64(pools.SP.Max) * v.Amount)
-		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+amount)
+		switch v.ValueType {
+		case gc.PercentageType:
+			amount := int(float64(pools.SP.Max) * v.Ratio)
+			pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+amount)
+		case gc.NumeralType:
+			pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+v.Amount)
+		}
 	}
 }

@@ -31,11 +31,13 @@ func (Healing) isEffectType() {}
 // ================
 
 // スタミナ
-type RecoveryStaminaByRatio struct {
-	Amount float64 // 0.0 ~ 1.0
+type RecoveryStamina struct {
+	ValueType gc.ValueType
+	Amount    int
+	Ratio     float64 // 0.0 ~ 1.0
 }
 
-func (RecoveryStaminaByRatio) isEffectType() {}
+func (RecoveryStamina) isEffectType() {}
 
 // ================
 
