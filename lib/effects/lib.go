@@ -1,6 +1,8 @@
 package effects
 
 import (
+	"log"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -40,7 +42,7 @@ func RunEffectQueue(world w.World) {
 	}
 }
 
-// EffectSpawnerからEffectを生成する
+// 単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
 func TargetApplicator(world w.World, es EffectSpawner) {
 	switch e := es.EffectType.(type) {
 	case Damage:
@@ -58,7 +60,22 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 				AffectEntity(world, es, entity)
 			}))
 		}
-	case Healing:
+	case Healing, HealingByRatio:
+		v, ok := es.Targets.(Single)
+		if ok {
+			AffectEntity(world, es, v.Target)
+		}
+		_, ok = es.Targets.(Party)
+		if ok {
+			gameComponents := world.Components.Game.(*gc.Components)
+			world.Manager.Join(
+				gameComponents.Member,
+				gameComponents.InParty,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				AffectEntity(world, es, entity)
+			}))
+		}
+	case RecoveryStaminaByRatio:
 		v, ok := es.Targets.(Single)
 		if ok {
 			AffectEntity(world, es, v.Target)
@@ -78,15 +95,22 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 		if ok {
 			ItemTrigger(nil, e.Item, es.Targets, world)
 		}
-
+	default:
+		log.Fatalf("対応してないEffectType: %T", e)
 	}
 }
 
 func AffectEntity(world w.World, es EffectSpawner, target ecs.Entity) {
-	switch es.EffectType.(type) {
+	switch e := es.EffectType.(type) {
 	case Damage:
 		InflictDamage(world, es, target)
 	case Healing:
 		HealDamage(world, es, target)
+	case HealingByRatio:
+		HealDamageByRatio(world, es, target)
+	case RecoveryStaminaByRatio:
+		RecoverStaminaByRatio(world, es, target)
+	default:
+		log.Fatalf("対応してないEffectType: %T", e)
 	}
 }

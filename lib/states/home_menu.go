@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/effects"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
@@ -14,6 +15,7 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
+	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -51,7 +53,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		sword := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
+		armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
@@ -72,6 +74,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnAllRecipes(world)
 
 		equips.Equip(world, sword, ishihara, gc.EquipmentSlotZero)
+		equips.Equip(world, armor, ishihara, gc.EquipmentSlotOne)
 	}
 }
 
@@ -83,6 +86,13 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
+
+	effects.RunEffectQueue(world)
+	_ = gs.EquipmentChangedSystem(world)
+
+	// 完全回復
+	effects.AddEffect(nil, effects.HealingByRatio{Amount: float64(1.0)}, effects.Party{})
+	effects.AddEffect(nil, effects.RecoveryStaminaByRatio{Amount: float64(1.0)}, effects.Party{})
 
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)

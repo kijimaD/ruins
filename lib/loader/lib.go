@@ -12,26 +12,27 @@ import (
 )
 
 type GameComponentList struct {
-	GridElement     *gc.GridElement
-	Player          *gc.Player
-	Wall            *gc.Wall
-	Warp            *gc.Warp
-	Item            *gc.Item
-	Name            *gc.Name
-	Description     *gc.Description
-	InBackpack      *gc.InBackpack
-	Equipped        *gc.Equipped
-	Consumable      *gc.Consumable
-	InParty         *gc.InParty
-	Member          *gc.Member
-	Pools           *gc.Pools
-	ProvidesHealing *gc.ProvidesHealing
-	InflictsDamage  *gc.InflictsDamage
-	Weapon          *gc.Weapon
-	Material        *gc.Material
-	Recipe          *gc.Recipe
-	Wearable        *gc.Wearable
-	Attributes      *gc.Attributes
+	GridElement      *gc.GridElement
+	Player           *gc.Player
+	Wall             *gc.Wall
+	Warp             *gc.Warp
+	Item             *gc.Item
+	Name             *gc.Name
+	Description      *gc.Description
+	InBackpack       *gc.InBackpack
+	Equipped         *gc.Equipped
+	Consumable       *gc.Consumable
+	InParty          *gc.InParty
+	Member           *gc.Member
+	Pools            *gc.Pools
+	ProvidesHealing  *gc.ProvidesHealing
+	InflictsDamage   *gc.InflictsDamage
+	Weapon           *gc.Weapon
+	Material         *gc.Material
+	Recipe           *gc.Recipe
+	Wearable         *gc.Wearable
+	Attributes       *gc.Attributes
+	EquipmentChanged *gc.EquipmentChanged
 }
 
 type Entity struct {

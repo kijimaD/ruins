@@ -11,6 +11,7 @@ func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.Equip
 	gameComponents := world.Components.Game.(*gc.Components)
 	item.AddComponent(gameComponents.Equipped, &gc.Equipped{Owner: owner, EquipmentSlot: slotNumber})
 	item.RemoveComponent(gameComponents.InBackpack)
+	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
 }
 
 // 装備を外す
@@ -18,6 +19,7 @@ func Disarm(world w.World, item ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	item.AddComponent(gameComponents.InBackpack, &gc.InBackpack{})
 	item.RemoveComponent(gameComponents.Equipped)
+	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
 }
 
 // 指定キャラクターの装備アイテム一覧を取得する

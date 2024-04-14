@@ -16,6 +16,8 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	gs "github.com/kijimaD/ruins/lib/systems"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
@@ -54,6 +56,10 @@ func (st *EquipMenuState) OnStop(world w.World) {
 }
 
 func (st *EquipMenuState) Update(world w.World) states.Transition {
+	changed := gs.EquipmentChangedSystem(world)
+	if changed {
+		st.reloadAbilityContainer(world)
+	}
 	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -288,15 +294,16 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s", name.Name), styles.TextColor, world))
 		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("HP %3d/%3d", pools.HP.Current, pools.HP.Max), styles.TextColor, world))
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("SP %3d/%3d", pools.SP.Current, pools.SP.Max), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), styles.TextColor, world))
 
 		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("体力 %2d(%2d)", attrs.Vitality.Total, attrs.Vitality.Base), styles.TextColor, world))
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("筋力 %2d(%2d)", attrs.Strength.Total, attrs.Strength.Base), styles.TextColor, world))
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("感覚 %2d(%2d)", attrs.Sensation.Total, attrs.Sensation.Base), styles.TextColor, world))
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("器用 %2d(%2d)", attrs.Dexterity.Total, attrs.Dexterity.Base), styles.TextColor, world))
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("敏捷 %2d(%2d)", attrs.Agility.Total, attrs.Agility.Base), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
+		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
 	}
 }
 

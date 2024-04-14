@@ -9,6 +9,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 )
 
 func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *widget.Container {
@@ -28,27 +29,32 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			}
 			targetContainer.AddChild(eui.NewBodyText(v.WeaponCategory.String(), styles.TextColor, world))
 
-			accuracy := fmt.Sprintf("命中 %s", strconv.Itoa(v.Accuracy))
+			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(v.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 
-			baseDamage := fmt.Sprintf("攻撃力 %s", strconv.Itoa(v.BaseDamage))
-			targetContainer.AddChild(eui.NewBodyText(baseDamage, styles.TextColor, world))
+			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(v.Damage))
+			targetContainer.AddChild(eui.NewBodyText(damage, styles.TextColor, world))
 
-			consumption := fmt.Sprintf("消費SP %s", strconv.Itoa(v.EnergyConsumption))
+			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(v.AttackCount))
+			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
+
+			consumption := fmt.Sprintf("%s %s", consts.EnergyConsumptionLabel, strconv.Itoa(v.EnergyConsumption))
 			targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
 
 			if v.DamageAttr != components.DamageAttrNone {
 				targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
 			}
+			addEquipBonus(targetContainer, v.EquipBonus, world)
 		case *components.Wearable:
 			if v == nil {
 				continue
 			}
-			equipmentCategory := fmt.Sprintf("部位 %s", v.EquipmentCategory)
+			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, v.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
-			baseDefense := fmt.Sprintf("防御力 %s", strconv.Itoa(v.BaseDefense))
-			targetContainer.AddChild(eui.NewBodyText(baseDefense, styles.TextColor, world))
+			defense := fmt.Sprintf("%s %s", consts.DefenseLabel, strconv.Itoa(v.Defense))
+			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
+			addEquipBonus(targetContainer, v.EquipBonus, world)
 		}
 	}
 
@@ -72,4 +78,31 @@ func damageAttrText(world w.World, dat components.DamageAttrType, str string) *w
 	}
 
 	return text
+}
+
+func addEquipBonus(targetContainer *widget.Container, equipBonus components.EquipBonus, world w.World) {
+	if equipBonus.Vitality != 0 {
+		vitality := fmt.Sprintf("%s %+d", consts.VitalityLabel, equipBonus.Vitality)
+		targetContainer.AddChild(eui.NewBodyText(vitality, styles.TextColor, world))
+	}
+
+	if equipBonus.Strength != 0 {
+		strength := fmt.Sprintf("%s %+d", consts.StrengthLabel, equipBonus.Strength)
+		targetContainer.AddChild(eui.NewBodyText(strength, styles.TextColor, world))
+	}
+
+	if equipBonus.Sensation != 0 {
+		sensation := fmt.Sprintf("%s %+d", consts.SensationLabel, equipBonus.Sensation)
+		targetContainer.AddChild(eui.NewBodyText(sensation, styles.TextColor, world))
+	}
+
+	if equipBonus.Dexterity != 0 {
+		dexterity := fmt.Sprintf("%s %+d", consts.DexterityLabel, equipBonus.Dexterity)
+		targetContainer.AddChild(eui.NewBodyText(dexterity, styles.TextColor, world))
+	}
+
+	if equipBonus.Agility != 0 {
+		agility := fmt.Sprintf("%s %+d", consts.AgilityLabel, equipBonus.Agility)
+		targetContainer.AddChild(eui.NewBodyText(agility, styles.TextColor, world))
+	}
 }

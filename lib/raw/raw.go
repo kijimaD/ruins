@@ -35,6 +35,7 @@ type Item struct {
 	Consumable      *Consumable `toml:"consumable"`
 	Weapon          *Weapon     `toml:"weapon"`
 	Wearable        *Wearable   `toml:"wearable"`
+	EquipBonus      *EquipBonus `toml:"equip_bonus"`
 }
 
 type Consumable struct {
@@ -45,7 +46,7 @@ type Consumable struct {
 
 type Weapon struct {
 	Accuracy          int    // 命中率
-	BaseDamage        int    // ベース攻撃力
+	Damage            int    // 攻撃力
 	AttackCount       int    // 攻撃回数
 	EnergyConsumption int    // 攻撃で消費するエネルギー
 	DamageAttr        string // 攻撃属性
@@ -53,8 +54,16 @@ type Weapon struct {
 }
 
 type Wearable struct {
-	BaseDefense       int
+	Defense           int
 	EquipmentCategory string
+}
+
+type EquipBonus struct {
+	Vitality  int
+	Strength  int
+	Sensation int
+	Dexterity int
+	Agility   int
 }
 
 type Material struct {
@@ -64,8 +73,6 @@ type Material struct {
 
 type Member struct {
 	Name       string
-	HP         int
-	SP         int
 	Attributes Attributes `toml:"attributes"`
 }
 
@@ -75,6 +82,7 @@ type Attributes struct {
 	Sensation int
 	Dexterity int
 	Agility   int
+	Defense   int
 }
 
 // レシピ
@@ -162,6 +170,18 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	if item.InflictsDamage != 0 {
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
+
+	var bonus gc.EquipBonus
+	if item.EquipBonus != nil {
+		bonus = gc.EquipBonus{
+			Vitality:  item.EquipBonus.Vitality,
+			Strength:  item.EquipBonus.Strength,
+			Sensation: item.EquipBonus.Sensation,
+			Dexterity: item.EquipBonus.Dexterity,
+			Agility:   item.EquipBonus.Agility,
+		}
+	}
+
 	if item.Weapon != nil {
 		if err := components.WeaponType(item.Weapon.WeaponCategory).Valid(); err != nil {
 			log.Fatal(err)
@@ -171,11 +191,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		}
 		cl.Weapon = &gc.Weapon{
 			Accuracy:          item.Weapon.Accuracy,
-			BaseDamage:        item.Weapon.BaseDamage,
+			Damage:            item.Weapon.Damage,
 			AttackCount:       item.Weapon.AttackCount,
 			EnergyConsumption: item.Weapon.EnergyConsumption,
 			DamageAttr:        components.DamageAttrType(item.Weapon.DamageAttr),
 			WeaponCategory:    components.WeaponType(item.Weapon.WeaponCategory),
+			EquipBonus:        bonus,
 		}
 	}
 	if item.Wearable != nil {
@@ -183,10 +204,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			log.Fatal(err)
 		}
 		cl.Wearable = &gc.Wearable{
-			BaseDefense:       item.Wearable.BaseDefense,
+			Defense:           item.Wearable.Defense,
 			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
+			EquipBonus:        bonus,
 		}
 	}
+
 	return cl
 }
 
@@ -249,30 +272,14 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameCompo
 		cl.InParty = &gc.InParty{}
 	}
 	cl.Attributes = &gc.Attributes{
-		Vitality: gc.Attribute{
-			Base:  member.Attributes.Vitality,
-			Total: member.Attributes.Vitality,
-		},
-		Strength: gc.Attribute{
-			Base:  member.Attributes.Strength,
-			Total: member.Attributes.Strength,
-		},
-		Sensation: gc.Attribute{
-			Base:  member.Attributes.Sensation,
-			Total: member.Attributes.Sensation,
-		},
-		Dexterity: gc.Attribute{
-			Base:  member.Attributes.Dexterity,
-			Total: member.Attributes.Dexterity,
-		},
-		Agility: gc.Attribute{
-			Base:  member.Attributes.Agility,
-			Total: member.Attributes.Agility,
-		},
+		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
+		Strength:  gc.Attribute{Base: member.Attributes.Strength},
+		Sensation: gc.Attribute{Base: member.Attributes.Sensation},
+		Dexterity: gc.Attribute{Base: member.Attributes.Dexterity},
+		Agility:   gc.Attribute{Base: member.Attributes.Agility},
+		Defense:   gc.Attribute{Base: member.Attributes.Defense},
 	}
 	cl.Pools = &gc.Pools{
-		HP:    gc.Pool{Max: member.HP, Current: member.HP - 10},
-		SP:    gc.Pool{Max: member.SP, Current: member.SP - 10},
 		Level: 1,
 	}
 

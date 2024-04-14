@@ -38,11 +38,14 @@ Description = "旅行の土産でおなじみの、木でできた刃のない�
 
 [item.weapon]
 Accuracy = 100
-BaseDamage = 8
+Damage = 8
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
 WeaponCategory = "SWORD"
+
+[item.equip_bonus]
+Strength = 1
 
 [[item]]
 Name = "鉄のナイフ"
@@ -50,7 +53,7 @@ Description = "鉄で作られた軽いナイフ"
 
 [item.weapon]
 Accuracy = 100
-BaseDamage = 9
+Damage = 9
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
@@ -62,7 +65,7 @@ Description = "樹脂素材を多用した自動拳銃"
 
 [item.weapon]
 Accuracy = 95
-BaseDamage = 14
+Damage = 14
 AttackCount = 1
 EnergyConsumption = 2
 DamageAttr = "NONE"
@@ -74,7 +77,7 @@ Description = "光線を発射する拳銃"
 
 [item.weapon]
 Accuracy = 90
-BaseDamage = 20
+Damage = 20
 AttackCount = 1
 EnergyConsumption = 3
 DamageAttr = "PHOTON"
@@ -86,7 +89,7 @@ Description = "放電物質を投射する擲弾銃"
 
 [item.weapon]
 Accuracy = 80
-BaseDamage = 26
+Damage = 26
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "THUNDER"
@@ -98,7 +101,7 @@ Description = "極低温物質を投射する擲弾銃"
 
 [item.weapon]
 Accuracy = 80
-BaseDamage = 25
+Damage = 25
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "CHILL"
@@ -111,32 +114,49 @@ Name = "作業用ヘルメット"
 Description = "衝撃吸収性に優れた産業用の帽子"
 
 [item.wearable]
-BaseDefense = 10
+Defense = 10
 EquipmentCategory = "HEAD"
+
+[item.equip_bonus]
+Vitality = 4
+Agility = -2
 
 [[item]]
 Name = "西洋鎧"
 Description = "伝統的な意匠が施されたずっしりと重い鎧"
 
 [item.wearable]
-BaseDefense = 16
+Defense = 16
 EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Agility = -4
 
 [[item]]
 Name = "革のブーツ"
 Description = "よくなめされた革で成形された長靴"
 
 [item.wearable]
-BaseDefense = 5
+Defense = 5
 EquipmentCategory = "LEGS"
+
+[item.equip_bonus]
+Agility = -2
 
 [[item]]
 Name = "機械の指輪"
-Description = "極めて微細なプリント基板が施された指輪"
+Description = "指輪型の小さな機械"
 
 [item.wearable]
-BaseDefense = 1
+Defense = 1
 EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Vitality = 1
+Strength = 1
+Sensation = 1
+Dexterity = 1
+Agility = 1
 
 # material ================
 
@@ -252,22 +272,20 @@ Amount = 1
 
 [[member]]
 Name = "イシハラ"
-HP = 101
-SP = 82
 [member.attributes]
 Vitality = 7
 Strength = 5
 Sensation = 5
 Dexterity = 6
 Agility = 5
+Defense = 0
 
 [[member]]
 Name = "シラセ"
-HP = 82
-SP = 87
 [member.attributes]
 Vitality = 5
 Strength = 4
 Sensation = 8
 Dexterity = 7
 Agility = 7
+Defense = 0

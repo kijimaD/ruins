@@ -3,26 +3,27 @@ package components
 import ecs "github.com/x-hgg-x/goecs/v2"
 
 type Components struct {
-	GridElement     *ecs.SliceComponent
-	Player          *ecs.NullComponent
-	Wall            *ecs.NullComponent
-	Warp            *ecs.NullComponent
-	Item            *ecs.NullComponent
-	Consumable      *ecs.SliceComponent
-	Name            *ecs.SliceComponent
-	Description     *ecs.SliceComponent
-	InBackpack      *ecs.NullComponent
-	InParty         *ecs.NullComponent
-	Equipped        *ecs.SliceComponent
-	Member          *ecs.NullComponent
-	Pools           *ecs.SliceComponent
-	ProvidesHealing *ecs.SliceComponent
-	InflictsDamage  *ecs.SliceComponent
-	Weapon          *ecs.SliceComponent
-	Material        *ecs.SliceComponent
-	Recipe          *ecs.SliceComponent
-	Wearable        *ecs.SliceComponent
-	Attributes      *ecs.SliceComponent
+	GridElement      *ecs.SliceComponent
+	Player           *ecs.NullComponent
+	Wall             *ecs.NullComponent
+	Warp             *ecs.NullComponent
+	Item             *ecs.NullComponent
+	Consumable       *ecs.SliceComponent
+	Name             *ecs.SliceComponent
+	Description      *ecs.SliceComponent
+	InBackpack       *ecs.NullComponent
+	InParty          *ecs.NullComponent
+	Equipped         *ecs.SliceComponent
+	Member           *ecs.NullComponent
+	Pools            *ecs.SliceComponent
+	ProvidesHealing  *ecs.SliceComponent
+	InflictsDamage   *ecs.SliceComponent
+	Weapon           *ecs.SliceComponent
+	Material         *ecs.SliceComponent
+	Recipe           *ecs.SliceComponent
+	Wearable         *ecs.SliceComponent
+	Attributes       *ecs.SliceComponent
+	EquipmentChanged *ecs.NullComponent
 }
 
 type GridElement struct {
@@ -61,10 +62,10 @@ type Description struct {
 	Description string
 }
 
-// インベントリに所持している
+// インベントリに所持している状態
 type InBackpack struct{}
 
-// キャラクタが装備している
+// キャラクタが装備している状態
 type Equipped struct {
 	Owner         ecs.Entity
 	EquipmentSlot EquipmentSlotNumber
@@ -73,16 +74,19 @@ type Equipped struct {
 // 武器
 type Weapon struct {
 	Accuracy          int            // 命中率
-	BaseDamage        int            // 攻撃力
+	Damage            int            // 攻撃力
 	AttackCount       int            // 攻撃回数
 	EnergyConsumption int            // 消費エネルギー
 	DamageAttr        DamageAttrType // 攻撃属性
 	WeaponCategory    WeaponType     // 武器種別
+	EquipBonus        EquipBonus
 }
 
+// 防具
 type Wearable struct {
-	BaseDefense       int           // 防御力
+	Defense           int           // 防御力
 	EquipmentCategory EquipmentType // 装備部位
+	EquipBonus        EquipBonus
 }
 
 // パーティに参加している状態
@@ -93,13 +97,13 @@ type Member struct{}
 
 // 最大値と現在値を持つようなパラメータ
 type Pool struct {
-	Max     int
-	Current int
+	Max     int // 計算式で算出される
+	Current int // 計算式で算出される
 }
 
 type Pools struct {
-	HP    Pool // 最大値は計算式で算出される。例: 30+(体力*8+力+器用さ)*{1+(Lv-1)*0.03}
-	SP    Pool // 最大値は計算式で算出される。例: (体力*2+力+器用さ+素早さ+精神*3)*{1+(Lv-1)*0.02}
+	HP    Pool
+	SP    Pool
 	Level int
 }
 
@@ -116,6 +120,7 @@ type Attributes struct {
 	Sensation Attribute // 感覚。主に射撃攻撃のダメージに影響する
 	Dexterity Attribute // 器用。攻撃時の命中率に影響する
 	Agility   Attribute // 敏捷。回避率、行動の速さに影響する
+	Defense   Attribute // 防御。被弾ダメージを軽減させる
 }
 
 // 回復する性質
@@ -140,3 +145,6 @@ type Material struct {
 type Recipe struct {
 	Inputs []RecipeInput
 }
+
+// 装備変更直後を示すダーティーフラグ
+type EquipmentChanged struct{}
