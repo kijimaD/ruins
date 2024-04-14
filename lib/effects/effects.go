@@ -7,6 +7,7 @@ import (
 
 // ================
 
+// ダメージ
 type Damage struct {
 	Amount int
 }
@@ -15,6 +16,7 @@ func (Damage) isEffectType() {}
 
 // ================
 
+// 体力回復
 type Healing struct {
 	Amount gc.Amounter
 }
