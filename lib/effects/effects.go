@@ -2,6 +2,7 @@ package effects
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -15,15 +16,10 @@ func (Damage) isEffectType() {}
 
 // ================
 
-// ValueTypeで使うフィールドが分岐する
-// 数値タイプだと、その数値がそのまま回復量となる
-// 例: 50指定すると、回復量は50
-// 割合タイプだと、全体からの数値割合分が回復量となる
-// 例: 最大HPが100で0.5指定すると、回復量は50
+// TODO: effectでは単純に数字だけを受け取り、シンプルにしたい
+// effect追加を直に呼び出さないようにする。components経由で使わせる
 type Healing struct {
-	ValueType gc.ValueType
-	Amount    int
-	Ratio     float64 // 0.0 ~ 1.0
+	Amount gc.Amounter
 }
 
 func (Healing) isEffectType() {}
@@ -32,7 +28,7 @@ func (Healing) isEffectType() {}
 
 // スタミナ
 type RecoveryStamina struct {
-	ValueType gc.ValueType
+	ValueType raw.ValueType
 	Amount    int
 	Ratio     float64 // 0.0 ~ 1.0
 }

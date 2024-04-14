@@ -125,9 +125,7 @@ type Attributes struct {
 
 // 回復する性質
 type ProvidesHealing struct {
-	ValueType ValueType
-	Amount    int
-	Ratio     float64 // 0.0 ~ 1.0
+	Amount Amounter
 }
 
 // ダメージを与える性質

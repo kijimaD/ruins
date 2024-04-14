@@ -8,7 +8,7 @@ import (
 
 // AddEffectのラッパー群。アイテムからトリガーする
 
-// アイテムからEffectを登録する
+// アイテムについたComponentからEffectを登録する
 // 消費アイテムはなくなる
 func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World) {
 	eventTrigger(creator, item, targets, world)
@@ -31,12 +31,7 @@ func eventTrigger(creator *ecs.Entity, entity ecs.Entity, targets Targets, world
 	gameComponents := world.Components.Game.(*gc.Components)
 	healing, ok := gameComponents.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
 	if ok {
-		switch healing.ValueType {
-		case gc.PercentageType:
-			AddEffect(creator, Healing{ValueType: gc.PercentageType, Ratio: healing.Ratio}, targets)
-		case gc.NumeralType:
-			AddEffect(creator, Healing{ValueType: gc.NumeralType, Amount: healing.Amount}, targets)
-		}
+		AddEffect(creator, Healing{Amount: healing.Amount}, targets)
 	}
 
 	damage, ok := gameComponents.InflictsDamage.Get(entity).(*gc.InflictsDamage)

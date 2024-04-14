@@ -39,7 +39,7 @@ type Item struct {
 }
 
 type ProvidesHealing struct {
-	ValueType string
+	ValueType ValueType
 	Amount    int
 	Ratio     float64
 }
@@ -172,19 +172,15 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	}
 
 	if item.ProvidesHealing != nil {
-		if err := gc.ValueType(item.ProvidesHealing.ValueType).Valid(); err != nil {
+		if err := ValueType(item.ProvidesHealing.ValueType).Valid(); err != nil {
 			log.Fatal(err)
 		}
-		ph := &gc.ProvidesHealing{
-			ValueType: gc.ValueType(item.ProvidesHealing.ValueType),
+		switch item.ProvidesHealing.ValueType {
+		case PercentageType:
+			cl.ProvidesHealing = &gc.ProvidesHealing{Amount: gc.RatioAmount{Ratio: item.ProvidesHealing.Ratio}}
+		case NumeralType:
+			cl.ProvidesHealing = &gc.ProvidesHealing{Amount: gc.NumeralAmount{Numeral: item.ProvidesHealing.Amount}}
 		}
-		switch ph.ValueType {
-		case gc.PercentageType:
-			ph.Ratio = item.ProvidesHealing.Ratio
-		case gc.NumeralType:
-			ph.Amount = item.ProvidesHealing.Amount
-		}
-		cl.ProvidesHealing = ph
 	}
 	if item.InflictsDamage != 0 {
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
