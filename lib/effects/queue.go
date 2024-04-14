@@ -45,37 +45,7 @@ func RunEffectQueue(world w.World) {
 // 単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
 func TargetApplicator(world w.World, es EffectSpawner) {
 	switch e := es.EffectType.(type) {
-	case Damage:
-		v, ok := es.Targets.(Single)
-		if ok {
-			AffectEntity(world, es, v.Target)
-		}
-		_, ok = es.Targets.(Party)
-		if ok {
-			gameComponents := world.Components.Game.(*gc.Components)
-			world.Manager.Join(
-				gameComponents.Member,
-				gameComponents.InParty,
-			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				AffectEntity(world, es, entity)
-			}))
-		}
-	case Healing, HealingByRatio:
-		v, ok := es.Targets.(Single)
-		if ok {
-			AffectEntity(world, es, v.Target)
-		}
-		_, ok = es.Targets.(Party)
-		if ok {
-			gameComponents := world.Components.Game.(*gc.Components)
-			world.Manager.Join(
-				gameComponents.Member,
-				gameComponents.InParty,
-			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				AffectEntity(world, es, entity)
-			}))
-		}
-	case RecoveryStaminaByRatio:
+	case Damage, Healing, RecoveryStamina:
 		v, ok := es.Targets.(Single)
 		if ok {
 			AffectEntity(world, es, v.Target)
@@ -93,6 +63,7 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 	case ItemUse:
 		_, ok := es.Targets.(Single)
 		if ok {
+			// アイテムは複数のComponents->Effectに分解されてキューに追加される
 			ItemTrigger(nil, e.Item, es.Targets, world)
 		}
 	default:
@@ -106,10 +77,8 @@ func AffectEntity(world w.World, es EffectSpawner, target ecs.Entity) {
 		InflictDamage(world, es, target)
 	case Healing:
 		HealDamage(world, es, target)
-	case HealingByRatio:
-		HealDamageByRatio(world, es, target)
-	case RecoveryStaminaByRatio:
-		RecoverStaminaByRatio(world, es, target)
+	case RecoveryStamina:
+		RecoverStamina(world, es, target)
 	default:
 		log.Fatalf("対応してないEffectType: %T", e)
 	}

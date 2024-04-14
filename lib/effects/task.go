@@ -22,31 +22,32 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
 	v, ok := healing.EffectType.(Healing)
-	if ok {
-		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+v.Amount)
+	if !ok {
+		log.Print("Healingがついてない")
+	}
+	switch at := v.Amount.(type) {
+	case gc.RatioAmount:
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+at.Calc(pools.HP.Max))
+	case gc.NumeralAmount:
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+at.Calc())
+	default:
+		log.Fatalf("unexpected: %T", at)
 	}
 }
 
-func HealDamageByRatio(world w.World, healing EffectSpawner, target ecs.Entity) {
+func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
-	v, ok := healing.EffectType.(HealingByRatio)
-	if ok {
-		amount := int(float64(pools.HP.Max) * v.Amount)
-		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+amount)
-	} else {
-		log.Fatalf("expect: HealingByRatio, actual: %T", v)
+	v, ok := recover.EffectType.(RecoveryStamina)
+	if !ok {
+		log.Print("RecoverStaminaがついてない")
 	}
-}
-
-func RecoverStaminaByRatio(world w.World, healing EffectSpawner, target ecs.Entity) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	pools := gameComponents.Pools.Get(target).(*gc.Pools)
-	v, ok := healing.EffectType.(RecoveryStaminaByRatio)
-	if ok {
-		amount := int(float64(pools.SP.Max) * v.Amount)
-		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+amount)
-	} else {
-		log.Fatalf("expect: RecoverStaminaByRatio, actual: %T", v)
+	switch at := v.Amount.(type) {
+	case gc.RatioAmount:
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+at.Calc(pools.SP.Max))
+	case gc.NumeralAmount:
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+at.Calc())
+	default:
+		log.Fatalf("unexpected: %T", at)
 	}
 }

@@ -38,7 +38,7 @@ func SpawnAllMaterials(world w.World) {
 	}
 }
 
-// 初期化
+// レシピ初期化
 func SpawnAllRecipes(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.RecipeIndex {

@@ -3,22 +3,28 @@
 [[item]]
 Name = "回復薬"
 Description = "体力を半分程度回復する"
-ProvidesHealing = 20
 
 [item.consumable]
 UsableScene = "ANY"
 TargetFaction = "ALLY"
 TargetNum = "SINGLE"
 
+[item.provides_healing]
+ValueType = "PERCENTAGE"
+Ratio = 0.5
+
 [[item]]
 Name = "回復スプレー"
 Description = "全員の体力を半分程度回復する"
-ProvidesHealing = 20
 
 [item.consumable]
 UsableScene = "ANY"
 TargetFaction = "ALLY"
 TargetNum = "ALL"
+
+[item.provides_healing]
+ValueType = "PERCENTAGE"
+Ratio = 0.5
 
 [[item]]
 Name = "手榴弾"

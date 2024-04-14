@@ -125,7 +125,7 @@ type Attributes struct {
 
 // 回復する性質
 type ProvidesHealing struct {
-	Amount int
+	Amount Amounter
 }
 
 // ダメージを与える性質

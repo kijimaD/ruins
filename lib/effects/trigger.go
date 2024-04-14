@@ -6,9 +6,9 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// AddEffectのラッパー群。アイテムからトリガーする
+// AddEffectのラッパー群
 
-// アイテムからEffectを登録する
+// アイテムについたComponentからEffectを登録する
 // 消費アイテムはなくなる
 func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World) {
 	eventTrigger(creator, item, targets, world)
@@ -21,12 +21,12 @@ func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.
 }
 
 // TODO: 地雷など、フィールド上で一度しか動作しないギミックを動作させるのに使う予定
-// Consumable Itemと同じように、使ったあとに消す処理を入れるだろう
+// Consumable Itemと同じように、使ったあとに再び使えないようにdisable処理を入れるだろう
 // func Trigger() {
 //	...
 // }
 
-// アイテムからコンポーネントを取り出し、対応したEffectをトリガーする
+// アイテムからコンポーネントを取り出し、対応したEffectを追加する
 func eventTrigger(creator *ecs.Entity, entity ecs.Entity, targets Targets, world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	healing, ok := gameComponents.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)

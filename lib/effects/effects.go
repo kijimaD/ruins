@@ -1,8 +1,13 @@
 package effects
 
-import ecs "github.com/x-hgg-x/goecs/v2"
+import (
+	gc "github.com/kijimaD/ruins/lib/components"
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
 
 // ================
+
+// ダメージ
 type Damage struct {
 	Amount int
 }
@@ -10,30 +15,25 @@ type Damage struct {
 func (Damage) isEffectType() {}
 
 // ================
+
+// 体力回復
 type Healing struct {
-	Amount int
+	Amount gc.Amounter
 }
 
 func (Healing) isEffectType() {}
 
 // ================
-// 全体から割合分を加算して回復する
-// 例: 最大HPが100で0.5指定すると、回復量は50
-type HealingByRatio struct {
-	Amount float64 // 0.0 ~ 1.0
-}
 
-func (HealingByRatio) isEffectType() {}
-
-// ================
 // スタミナ
-type RecoveryStaminaByRatio struct {
-	Amount float64 // 0.0 ~ 1.0
+type RecoveryStamina struct {
+	Amount gc.Amounter
 }
 
-func (RecoveryStaminaByRatio) isEffectType() {}
+func (RecoveryStamina) isEffectType() {}
 
 // ================
+
 type ItemUse struct {
 	Item ecs.Entity
 }
