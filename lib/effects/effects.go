@@ -16,8 +16,6 @@ func (Damage) isEffectType() {}
 
 // ================
 
-// TODO: effectでは単純に数字だけを受け取り、シンプルにしたい
-// effect追加を直に呼び出さないようにする。components経由で使わせる
 type Healing struct {
 	Amount gc.Amounter
 }

@@ -23,15 +23,16 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
 	v, ok := healing.EffectType.(Healing)
-	if ok {
-		switch a := v.Amount.(type) {
-		case gc.RatioAmount:
-			pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+a.Calc(pools.HP.Max))
-		case gc.NumeralAmount:
-			pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+a.Calc())
-		default:
-			log.Fatalf("unexpected: %T", a)
-		}
+	if !ok {
+		log.Print("Healingがついてない")
+	}
+	switch a := v.Amount.(type) {
+	case gc.RatioAmount:
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+a.Calc(pools.HP.Max))
+	case gc.NumeralAmount:
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+a.Calc())
+	default:
+		log.Fatalf("unexpected: %T", a)
 	}
 }
 
@@ -39,13 +40,14 @@ func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
 	v, ok := recover.EffectType.(RecoveryStamina)
-	if ok {
-		switch v.ValueType {
-		case raw.PercentageType:
-			amount := int(float64(pools.SP.Max) * v.Ratio)
-			pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+amount)
-		case raw.NumeralType:
-			pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+v.Amount)
-		}
+	if !ok {
+		log.Print("RecoverStaminaがついてない")
+	}
+	switch v.ValueType {
+	case raw.PercentageType:
+		amount := int(float64(pools.SP.Max) * v.Ratio)
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+amount)
+	case raw.NumeralType:
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+v.Amount)
 	}
 }
