@@ -31,7 +31,12 @@ func eventTrigger(creator *ecs.Entity, entity ecs.Entity, targets Targets, world
 	gameComponents := world.Components.Game.(*gc.Components)
 	healing, ok := gameComponents.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
 	if ok {
-		AddEffect(creator, Healing{Amount: healing.Amount}, targets)
+		switch healing.ValueType {
+		case gc.PercentageType:
+			AddEffect(creator, Healing{ValueType: gc.PercentageType, Ratio: healing.Ratio}, targets)
+		case gc.NumeralType:
+			AddEffect(creator, Healing{ValueType: gc.NumeralType, Amount: healing.Amount}, targets)
+		}
 	}
 
 	damage, ok := gameComponents.InflictsDamage.Get(entity).(*gc.InflictsDamage)

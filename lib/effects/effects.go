@@ -1,8 +1,12 @@
 package effects
 
-import ecs "github.com/x-hgg-x/goecs/v2"
+import (
+	gc "github.com/kijimaD/ruins/lib/components"
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
 
 // ================
+
 type Damage struct {
 	Amount int
 }
@@ -10,22 +14,22 @@ type Damage struct {
 func (Damage) isEffectType() {}
 
 // ================
+
+// ValueTypeで使うフィールドが分岐する
+// 数値タイプだと、その数値がそのまま回復量となる
+// 例: 50指定すると、回復量は50
+// 割合タイプだと、全体からの数値割合分が回復量となる
+// 例: 最大HPが100で0.5指定すると、回復量は50
 type Healing struct {
-	Amount int
+	ValueType gc.ValueType
+	Amount    int
+	Ratio     float64 // 0.0 ~ 1.0
 }
 
 func (Healing) isEffectType() {}
 
 // ================
-// 全体から割合分を加算して回復する
-// 例: 最大HPが100で0.5指定すると、回復量は50
-type HealingByRatio struct {
-	Amount float64 // 0.0 ~ 1.0
-}
 
-func (HealingByRatio) isEffectType() {}
-
-// ================
 // スタミナ
 type RecoveryStaminaByRatio struct {
 	Amount float64 // 0.0 ~ 1.0
@@ -34,6 +38,7 @@ type RecoveryStaminaByRatio struct {
 func (RecoveryStaminaByRatio) isEffectType() {}
 
 // ================
+
 type ItemUse struct {
 	Item ecs.Entity
 }

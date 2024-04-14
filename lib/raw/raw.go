@@ -30,12 +30,18 @@ type Raws struct {
 type Item struct {
 	Name            string
 	Description     string
-	ProvidesHealing int
 	InflictsDamage  int
-	Consumable      *Consumable `toml:"consumable"`
-	Weapon          *Weapon     `toml:"weapon"`
-	Wearable        *Wearable   `toml:"wearable"`
-	EquipBonus      *EquipBonus `toml:"equip_bonus"`
+	Consumable      *Consumable      `toml:"consumable"`
+	ProvidesHealing *ProvidesHealing `toml:"provides_healing"`
+	Weapon          *Weapon          `toml:"weapon"`
+	Wearable        *Wearable        `toml:"wearable"`
+	EquipBonus      *EquipBonus      `toml:"equip_bonus"`
+}
+
+type ProvidesHealing struct {
+	ValueType string
+	Amount    int
+	Ratio     float64
 }
 
 type Consumable struct {
@@ -164,8 +170,21 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			TargetType:  targetType,
 		}
 	}
-	if item.ProvidesHealing != 0 {
-		cl.ProvidesHealing = &gc.ProvidesHealing{Amount: item.ProvidesHealing}
+
+	if item.ProvidesHealing != nil {
+		if err := gc.ValueType(item.ProvidesHealing.ValueType).Valid(); err != nil {
+			log.Fatal(err)
+		}
+		ph := &gc.ProvidesHealing{
+			ValueType: gc.ValueType(item.ProvidesHealing.ValueType),
+		}
+		switch ph.ValueType {
+		case gc.PercentageType:
+			ph.Ratio = item.ProvidesHealing.Ratio
+		case gc.NumeralType:
+			ph.Amount = item.ProvidesHealing.Amount
+		}
+		cl.ProvidesHealing = ph
 	}
 	if item.InflictsDamage != 0 {
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}

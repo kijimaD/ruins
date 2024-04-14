@@ -60,7 +60,7 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 				AffectEntity(world, es, entity)
 			}))
 		}
-	case Healing, HealingByRatio:
+	case Healing:
 		v, ok := es.Targets.(Single)
 		if ok {
 			AffectEntity(world, es, v.Target)
@@ -106,8 +106,6 @@ func AffectEntity(world w.World, es EffectSpawner, target ecs.Entity) {
 		InflictDamage(world, es, target)
 	case Healing:
 		HealDamage(world, es, target)
-	case HealingByRatio:
-		HealDamageByRatio(world, es, target)
 	case RecoveryStaminaByRatio:
 		RecoverStaminaByRatio(world, es, target)
 	default:

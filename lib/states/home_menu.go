@@ -91,7 +91,7 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 	_ = gs.EquipmentChangedSystem(world)
 
 	// 完全回復
-	effects.AddEffect(nil, effects.HealingByRatio{Amount: float64(1.0)}, effects.Party{})
+	effects.AddEffect(nil, effects.Healing{ValueType: gc.PercentageType, Ratio: float64(1.0)}, effects.Party{})
 	effects.AddEffect(nil, effects.RecoveryStaminaByRatio{Amount: float64(1.0)}, effects.Party{})
 
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
