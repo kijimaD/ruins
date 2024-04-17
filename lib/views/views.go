@@ -38,8 +38,8 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(v.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
-			if v.DamageAttr != components.DamageAttrNone {
-				targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
+			if v.Element != components.ElementTypeNone {
+				targetContainer.AddChild(damageAttrText(world, v.Element, v.Element.String()))
 			}
 			addEquipBonus(targetContainer, v.EquipBonus, world)
 		case *components.Wearable:
@@ -59,16 +59,16 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 }
 
 // 属性によって色付けする
-func damageAttrText(world w.World, dat components.DamageAttrType, str string) *widget.Text {
+func damageAttrText(world w.World, dat components.ElementType, str string) *widget.Text {
 	var text *widget.Text
 	switch dat {
-	case components.DamageAttrFire:
+	case components.ElementTypeFire:
 		text = eui.NewBodyText(str, styles.FireColor, world)
-	case components.DamageAttrThunder:
+	case components.ElementTypeThunder:
 		text = eui.NewBodyText(str, styles.ThunderColor, world)
-	case components.DamageAttrChill:
+	case components.ElementTypeChill:
 		text = eui.NewBodyText(str, styles.ChillColor, world)
-	case components.DamageAttrPhoton:
+	case components.ElementTypePhoton:
 		text = eui.NewBodyText(str, styles.PhotonColor, world)
 	default:
 		text = eui.NewBodyText(str, styles.TextColor, world)

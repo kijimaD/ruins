@@ -46,7 +46,7 @@ Description = "旅行の土産でおなじみの、木でできた刃のない�
 Accuracy = 100
 Damage = 8
 AttackCount = 1
-DamageAttr = "NONE"
+Element = "NONE"
 AttackCategory = "SWORD"
 
 [item.equip_bonus]
@@ -60,7 +60,7 @@ Description = "鉄で作られた軽いナイフ"
 Accuracy = 100
 Damage = 9
 AttackCount = 1
-DamageAttr = "NONE"
+Element = "NONE"
 AttackCategory = "SWORD"
 
 [[item]]
@@ -71,7 +71,7 @@ Description = "樹脂素材を多用した自動拳銃"
 Accuracy = 95
 Damage = 14
 AttackCount = 1
-DamageAttr = "NONE"
+Element = "NONE"
 AttackCategory = "HANDGUN"
 
 [[item]]
@@ -82,7 +82,7 @@ Description = "光線を発射する拳銃"
 Accuracy = 90
 Damage = 20
 AttackCount = 1
-DamageAttr = "PHOTON"
+Element = "PHOTON"
 AttackCategory = "HANDGUN"
 
 [[item]]
@@ -93,7 +93,7 @@ Description = "放電物質を投射する擲弾銃"
 Accuracy = 80
 Damage = 26
 AttackCount = 1
-DamageAttr = "THUNDER"
+Element = "THUNDER"
 AttackCategory = "RIFLE"
 
 [[item]]
@@ -104,7 +104,7 @@ Description = "極低温物質を投射する擲弾銃"
 Accuracy = 80
 Damage = 25
 AttackCount = 1
-DamageAttr = "CHILL"
+Element = "CHILL"
 AttackCategory = "RIFLE"
 
 # wearable ================

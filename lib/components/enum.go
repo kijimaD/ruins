@@ -154,39 +154,39 @@ func (es EquipmentType) String() string {
 // ================
 // 攻撃属性
 
-type DamageAttrType string
+type ElementType string
 
 const (
-	DamageAttrNone    DamageAttrType = "NONE"
-	DamageAttrFire    DamageAttrType = "FIRE"
-	DamageAttrThunder DamageAttrType = "THUNDER"
-	DamageAttrChill   DamageAttrType = "CHILL"
-	DamageAttrPhoton  DamageAttrType = "PHOTON"
+	ElementTypeNone    ElementType = "NONE"
+	ElementTypeFire    ElementType = "FIRE"
+	ElementTypeThunder ElementType = "THUNDER"
+	ElementTypeChill   ElementType = "CHILL"
+	ElementTypePhoton  ElementType = "PHOTON"
 )
 
-func (enum DamageAttrType) Valid() error {
+func (enum ElementType) Valid() error {
 	switch enum {
-	case DamageAttrNone, DamageAttrFire, DamageAttrThunder, DamageAttrChill, DamageAttrPhoton:
+	case ElementTypeNone, ElementTypeFire, ElementTypeThunder, ElementTypeChill, ElementTypePhoton:
 		return nil
 	}
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (da DamageAttrType) String() string {
+func (da ElementType) String() string {
 	var result string
 	switch da {
-	case DamageAttrNone:
+	case ElementTypeNone:
 		result = "無"
-	case DamageAttrFire:
+	case ElementTypeFire:
 		result = "火"
-	case DamageAttrThunder:
+	case ElementTypeThunder:
 		result = "電"
-	case DamageAttrChill:
+	case ElementTypeChill:
 		result = "冷"
-	case DamageAttrPhoton:
+	case ElementTypePhoton:
 		result = "光"
 	default:
-		log.Fatal("invalid damage attr type")
+		log.Fatal("invalid element type")
 	}
 	return result
 }

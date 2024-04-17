@@ -135,10 +135,10 @@ type Card struct {
 }
 
 type Attack struct {
-	Accuracy       int            // 命中率
-	Damage         int            // 攻撃力
-	AttackCount    int            // 攻撃回数
-	DamageAttr     DamageAttrType // 攻撃属性
-	AttackCategory AttackType     // 攻撃種別
-	EquipBonus     EquipBonus     // ステータスへのボーナス
+	Accuracy       int         // 命中率
+	Damage         int         // 攻撃力
+	AttackCount    int         // 攻撃回数
+	Element        ElementType // 攻撃属性
+	AttackCategory AttackType  // 攻撃種別
+	EquipBonus     EquipBonus  // ステータスへのボーナス
 }

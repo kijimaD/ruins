@@ -54,7 +54,7 @@ type Attack struct {
 	Accuracy       int    // 命中率
 	Damage         int    // 攻撃力
 	AttackCount    int    // 攻撃回数
-	DamageAttr     string // 攻撃属性
+	Element        string // 攻撃属性
 	AttackCategory string // 武器カテゴリ
 }
 
@@ -200,14 +200,14 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		if err := components.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
 			log.Fatal(err)
 		}
-		if err := components.DamageAttrType(item.Attack.DamageAttr).Valid(); err != nil {
+		if err := components.ElementType(item.Attack.Element).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		cl.Attack = &gc.Attack{
 			Accuracy:       item.Attack.Accuracy,
 			Damage:         item.Attack.Damage,
 			AttackCount:    item.Attack.AttackCount,
-			DamageAttr:     components.DamageAttrType(item.Attack.DamageAttr),
+			Element:        components.ElementType(item.Attack.Element),
 			AttackCategory: components.AttackType(item.Attack.AttackCategory),
 			EquipBonus:     bonus,
 		}
