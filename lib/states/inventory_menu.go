@@ -278,7 +278,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			actionWindow.Close()
 			st.categoryReload(world)
 		}, world)
-		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) {
+		if entity.HasComponent(gameComponents.Consumable) || entity.HasComponent(gameComponents.Weapon) || entity.HasComponent(gameComponents.Wearable) {
 			windowContainer.AddChild(dropButton)
 		}
 

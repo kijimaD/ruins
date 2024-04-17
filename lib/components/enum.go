@@ -17,6 +17,7 @@ const (
 
 // ================
 
+// ターゲット数
 type TargetNumType string
 
 const (
@@ -35,11 +36,12 @@ func (enum TargetNumType) Valid() error {
 
 // ================
 
+// ターゲットの種別
 type TargetFactionType string
 
 const (
 	TargetFactionAlly  = TargetFactionType("ALLY")  // 味方
-	TargetFactionEnemy = TargetFactionType("ENEMY") //  敵
+	TargetFactionEnemy = TargetFactionType("ENEMY") // 敵
 	TargetFactionNone  = TargetFactionType("NONE")  // なし
 )
 
