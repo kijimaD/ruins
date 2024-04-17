@@ -51,12 +51,11 @@ type Consumable struct {
 }
 
 type Attack struct {
-	Accuracy          int    // 命中率
-	Damage            int    // 攻撃力
-	AttackCount       int    // 攻撃回数
-	EnergyConsumption int    // 攻撃で消費するエネルギー
-	DamageAttr        string // 攻撃属性
-	AttackCategory    string // 武器カテゴリ
+	Accuracy       int    // 命中率
+	Damage         int    // 攻撃力
+	AttackCount    int    // 攻撃回数
+	DamageAttr     string // 攻撃属性
+	AttackCategory string // 武器カテゴリ
 }
 
 type Wearable struct {
@@ -205,13 +204,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 			log.Fatal(err)
 		}
 		cl.Attack = &gc.Attack{
-			Accuracy:          item.Attack.Accuracy,
-			Damage:            item.Attack.Damage,
-			AttackCount:       item.Attack.AttackCount,
-			EnergyConsumption: item.Attack.EnergyConsumption,
-			DamageAttr:        components.DamageAttrType(item.Attack.DamageAttr),
-			AttackCategory:    components.AttackType(item.Attack.AttackCategory),
-			EquipBonus:        bonus,
+			Accuracy:       item.Attack.Accuracy,
+			Damage:         item.Attack.Damage,
+			AttackCount:    item.Attack.AttackCount,
+			DamageAttr:     components.DamageAttrType(item.Attack.DamageAttr),
+			AttackCategory: components.AttackType(item.Attack.AttackCategory),
+			EquipBonus:     bonus,
 		}
 	}
 	if item.Wearable != nil {

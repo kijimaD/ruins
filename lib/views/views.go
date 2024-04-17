@@ -38,9 +38,6 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(v.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
-			consumption := fmt.Sprintf("%s %s", consts.EnergyConsumptionLabel, strconv.Itoa(v.EnergyConsumption))
-			targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
-
 			if v.DamageAttr != components.DamageAttrNone {
 				targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
 			}

@@ -70,9 +70,8 @@ func randomize(world w.World, entity ecs.Entity) {
 	if entity.HasComponent(gameComponents.Attack) {
 		attack := gameComponents.Attack.Get(entity).(*gc.Attack)
 
-		attack.Accuracy += (-10 + rand.Intn(20))        // -10 ~ +9
-		attack.Damage += (-5 + rand.Intn(15))           // -5  ~ +9
-		attack.EnergyConsumption += (-1 + rand.Intn(3)) // -1  ~ +1
+		attack.Accuracy += (-10 + rand.Intn(20)) // -10 ~ +9
+		attack.Damage += (-5 + rand.Intn(15))    // -5  ~ +9
 	}
 	if entity.HasComponent(gameComponents.Wearable) {
 		wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
