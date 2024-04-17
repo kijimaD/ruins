@@ -42,6 +42,7 @@ type TargetFactionType string
 const (
 	TargetFactionAlly  = TargetFactionType("ALLY")  // 味方
 	TargetFactionEnemy = TargetFactionType("ENEMY") // 敵
+	TargetFactionCard  = TargetFactionType("CARD")  // カード
 	TargetFactionNone  = TargetFactionType("NONE")  // なし
 )
 
@@ -76,37 +77,37 @@ func (enum UsableSceneType) Valid() error {
 // ================
 // 武器種別
 
-type WeaponType string
+type AttackType string
 
 const (
-	WeaponSword   = WeaponType("SWORD")   // 刀剣
-	WeaponSpear   = WeaponType("SPEAR")   // 長物
-	WeaponHandgun = WeaponType("HANDGUN") // 拳銃
-	WeaponRifle   = WeaponType("RIFLE")   // 小銃
+	AttackSword   = AttackType("SWORD")   // 刀剣
+	AttackSpear   = AttackType("SPEAR")   // 長物
+	AttackHandgun = AttackType("HANDGUN") // 拳銃
+	AttackRifle   = AttackType("RIFLE")   // 小銃
 )
 
-func (enum WeaponType) Valid() error {
+func (enum AttackType) Valid() error {
 	switch enum {
-	case WeaponSword, WeaponSpear, WeaponHandgun, WeaponRifle:
+	case AttackSword, AttackSpear, AttackHandgun, AttackRifle:
 		return nil
 	}
 
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (wc WeaponType) String() string {
+func (wc AttackType) String() string {
 	var result string
 	switch wc {
-	case WeaponSword:
+	case AttackSword:
 		result = "刀剣"
-	case WeaponSpear:
+	case AttackSpear:
 		result = "長物"
-	case WeaponHandgun:
+	case AttackHandgun:
 		result = "拳銃"
-	case WeaponRifle:
+	case AttackRifle:
 		result = "小銃"
 	default:
-		log.Fatal("invalid weapon type")
+		log.Fatal("invalid attack type")
 	}
 
 	return result

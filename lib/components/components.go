@@ -18,7 +18,7 @@ type Components struct {
 	Pools            *ecs.SliceComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
-	Weapon           *ecs.SliceComponent
+	Attack           *ecs.SliceComponent
 	Material         *ecs.SliceComponent
 	Recipe           *ecs.SliceComponent
 	Wearable         *ecs.SliceComponent
@@ -69,17 +69,6 @@ type InBackpack struct{}
 type Equipped struct {
 	Owner         ecs.Entity
 	EquipmentSlot EquipmentSlotNumber
-}
-
-// 武器
-type Weapon struct {
-	Accuracy          int            // 命中率
-	Damage            int            // 攻撃力
-	AttackCount       int            // 攻撃回数
-	EnergyConsumption int            // 消費エネルギー
-	DamageAttr        DamageAttrType // 攻撃属性
-	WeaponCategory    WeaponType     // 武器種別
-	EquipBonus        EquipBonus
 }
 
 // 防具
@@ -136,3 +125,21 @@ type Recipe struct {
 
 // 装備変更直後を示すダーティーフラグ
 type EquipmentChanged struct{}
+
+// カードは戦闘中に選択するためのコマンド
+// 攻撃や防御など、人に影響を及ぼすものをアクションカードという
+// 他カードをターゲットとするものをブーストカードという
+type Card struct {
+	TargetType TargetType
+	Cost       int
+}
+
+type Attack struct {
+	Accuracy          int            // 命中率
+	Damage            int            // 攻撃力
+	AttackCount       int            // 攻撃回数
+	EnergyConsumption int            // 消費エネルギー
+	DamageAttr        DamageAttrType // 攻撃属性
+	AttackCategory    AttackType     // 攻撃種別
+	EquipBonus        EquipBonus     // ステータスへのボーナス
+}

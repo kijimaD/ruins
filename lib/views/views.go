@@ -23,11 +23,11 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			}
 			amount := fmt.Sprintf("%d 個", v.Amount)
 			targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
-		case *components.Weapon:
+		case *components.Attack:
 			if v == nil {
 				continue
 			}
-			targetContainer.AddChild(eui.NewBodyText(v.WeaponCategory.String(), styles.TextColor, world))
+			targetContainer.AddChild(eui.NewBodyText(v.AttackCategory.String(), styles.TextColor, world))
 
 			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(v.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))

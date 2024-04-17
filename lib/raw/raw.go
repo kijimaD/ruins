@@ -33,7 +33,7 @@ type Item struct {
 	InflictsDamage  int
 	Consumable      *Consumable      `toml:"consumable"`
 	ProvidesHealing *ProvidesHealing `toml:"provides_healing"`
-	Weapon          *Weapon          `toml:"weapon"`
+	Attack          *Attack          `toml:"attack"`
 	Wearable        *Wearable        `toml:"wearable"`
 	EquipBonus      *EquipBonus      `toml:"equip_bonus"`
 }
@@ -50,13 +50,13 @@ type Consumable struct {
 	TargetNum     string
 }
 
-type Weapon struct {
+type Attack struct {
 	Accuracy          int    // 命中率
 	Damage            int    // 攻撃力
 	AttackCount       int    // 攻撃回数
 	EnergyConsumption int    // 攻撃で消費するエネルギー
 	DamageAttr        string // 攻撃属性
-	WeaponCategory    string // 武器カテゴリ
+	AttackCategory    string // 武器カテゴリ
 }
 
 type Wearable struct {
@@ -197,20 +197,20 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		}
 	}
 
-	if item.Weapon != nil {
-		if err := components.WeaponType(item.Weapon.WeaponCategory).Valid(); err != nil {
+	if item.Attack != nil {
+		if err := components.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
 			log.Fatal(err)
 		}
-		if err := components.DamageAttrType(item.Weapon.DamageAttr).Valid(); err != nil {
+		if err := components.DamageAttrType(item.Attack.DamageAttr).Valid(); err != nil {
 			log.Fatal(err)
 		}
-		cl.Weapon = &gc.Weapon{
-			Accuracy:          item.Weapon.Accuracy,
-			Damage:            item.Weapon.Damage,
-			AttackCount:       item.Weapon.AttackCount,
-			EnergyConsumption: item.Weapon.EnergyConsumption,
-			DamageAttr:        components.DamageAttrType(item.Weapon.DamageAttr),
-			WeaponCategory:    components.WeaponType(item.Weapon.WeaponCategory),
+		cl.Attack = &gc.Attack{
+			Accuracy:          item.Attack.Accuracy,
+			Damage:            item.Attack.Damage,
+			AttackCount:       item.Attack.AttackCount,
+			EnergyConsumption: item.Attack.EnergyConsumption,
+			DamageAttr:        components.DamageAttrType(item.Attack.DamageAttr),
+			AttackCategory:    components.AttackType(item.Attack.AttackCategory),
 			EquipBonus:        bonus,
 		}
 	}
@@ -261,8 +261,8 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 	// マッチしたitemの定義から持ってくる
 	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
-	if item.Weapon != nil {
-		cl.Weapon = item.Weapon
+	if item.Attack != nil {
+		cl.Attack = item.Attack
 	}
 	if item.Wearable != nil {
 		cl.Wearable = item.Wearable

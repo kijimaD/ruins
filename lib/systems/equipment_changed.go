@@ -45,23 +45,23 @@ func EquipmentChangedSystem(world w.World) bool {
 
 	world.Manager.Join(
 		gameComponents.Equipped,
-		gameComponents.Weapon,
+		gameComponents.Attack,
 	).Visit(ecs.Visit(func(item ecs.Entity) {
 		equipped := gameComponents.Equipped.Get(item).(*gc.Equipped)
-		weapon := gameComponents.Weapon.Get(item).(*gc.Weapon)
+		attack := gameComponents.Attack.Get(item).(*gc.Attack)
 
 		owner := equipped.Owner
 		attrs := gameComponents.Attributes.Get(owner).(*gc.Attributes)
 
-		attrs.Vitality.Modifier += weapon.EquipBonus.Vitality
+		attrs.Vitality.Modifier += attack.EquipBonus.Vitality
 		attrs.Vitality.Total = attrs.Vitality.Base + attrs.Vitality.Modifier
-		attrs.Strength.Modifier += weapon.EquipBonus.Strength
+		attrs.Strength.Modifier += attack.EquipBonus.Strength
 		attrs.Strength.Total = attrs.Strength.Base + attrs.Strength.Modifier
-		attrs.Sensation.Modifier += weapon.EquipBonus.Sensation
+		attrs.Sensation.Modifier += attack.EquipBonus.Sensation
 		attrs.Sensation.Total = attrs.Sensation.Base + attrs.Sensation.Modifier
-		attrs.Dexterity.Modifier += weapon.EquipBonus.Dexterity
+		attrs.Dexterity.Modifier += attack.EquipBonus.Dexterity
 		attrs.Dexterity.Total = attrs.Dexterity.Base + attrs.Dexterity.Modifier
-		attrs.Agility.Modifier += weapon.EquipBonus.Agility
+		attrs.Agility.Modifier += attack.EquipBonus.Agility
 		attrs.Agility.Total = attrs.Agility.Base + attrs.Agility.Modifier
 	}))
 

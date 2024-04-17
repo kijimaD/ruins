@@ -36,19 +36,19 @@ UsableScene = "BATTLE"
 TargetFaction = "ENEMY"
 TargetNum = "ALL"
 
-# weapon ================
+# attack ================
 
 [[item]]
 Name = "木刀"
 Description = "旅行の土産でおなじみの、木でできた刃のない刀"
 
-[item.weapon]
+[item.attack]
 Accuracy = 100
 Damage = 8
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
-WeaponCategory = "SWORD"
+AttackCategory = "SWORD"
 
 [item.equip_bonus]
 Strength = 1
@@ -57,61 +57,61 @@ Strength = 1
 Name = "鉄のナイフ"
 Description = "鉄で作られた軽いナイフ"
 
-[item.weapon]
+[item.attack]
 Accuracy = 100
 Damage = 9
 AttackCount = 1
 EnergyConsumption = 1
 DamageAttr = "NONE"
-WeaponCategory = "SWORD"
+AttackCategory = "SWORD"
 
 [[item]]
 Name = "ハンドガン"
 Description = "樹脂素材を多用した自動拳銃"
 
-[item.weapon]
+[item.attack]
 Accuracy = 95
 Damage = 14
 AttackCount = 1
 EnergyConsumption = 2
 DamageAttr = "NONE"
-WeaponCategory = "HANDGUN"
+AttackCategory = "HANDGUN"
 
 [[item]]
 Name = "レイガン"
 Description = "光線を発射する拳銃"
 
-[item.weapon]
+[item.attack]
 Accuracy = 90
 Damage = 20
 AttackCount = 1
 EnergyConsumption = 3
 DamageAttr = "PHOTON"
-WeaponCategory = "HANDGUN"
+AttackCategory = "HANDGUN"
 
 [[item]]
 Name = "電撃グレネード"
 Description = "放電物質を投射する擲弾銃"
 
-[item.weapon]
+[item.attack]
 Accuracy = 80
 Damage = 26
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "THUNDER"
-WeaponCategory = "RIFLE"
+AttackCategory = "RIFLE"
 
 [[item]]
 Name = "冷凍グレネード"
 Description = "極低温物質を投射する擲弾銃"
 
-[item.weapon]
+[item.attack]
 Accuracy = 80
 Damage = 25
 AttackCount = 1
 EnergyConsumption = 4
 DamageAttr = "CHILL"
-WeaponCategory = "RIFLE"
+AttackCategory = "RIFLE"
 
 # wearable ================
 

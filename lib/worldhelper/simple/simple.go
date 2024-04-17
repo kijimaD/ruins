@@ -7,12 +7,12 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func GetWeapon(world w.World, target ecs.Entity) *components.Weapon {
-	var result *components.Weapon
+func GetAttack(world w.World, target ecs.Entity) *components.Attack {
+	var result *components.Attack
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Weapon).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Weapon) {
-			result = gameComponents.Weapon.Get(entity).(*gc.Weapon)
+	world.Manager.Join(gameComponents.Attack).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity == target && entity.HasComponent(gameComponents.Attack) {
+			result = gameComponents.Attack.Get(entity).(*gc.Attack)
 		}
 	}))
 
