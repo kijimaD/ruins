@@ -86,7 +86,7 @@ type Weapon struct {
 type Wearable struct {
 	Defense           int           // 防御力
 	EquipmentCategory EquipmentType // 装備部位
-	EquipBonus        EquipBonus
+	EquipBonus        EquipBonus    // ステータスへのボーナス
 }
 
 // パーティに参加している状態
@@ -95,22 +95,10 @@ type InParty struct{}
 // 冒険に参加できるメンバー
 type Member struct{}
 
-// 最大値と現在値を持つようなパラメータ
-type Pool struct {
-	Max     int // 計算式で算出される
-	Current int // 計算式で算出される
-}
-
 type Pools struct {
 	HP    Pool
 	SP    Pool
 	Level int
-}
-
-type Attribute struct {
-	Base     int // 固有の値
-	Modifier int // 装備などで変動する値
-	Total    int // 足し合わせた現在値。メモ
 }
 
 // エンティティが持つステータス。各種計算式で使う

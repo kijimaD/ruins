@@ -1,6 +1,19 @@
 package components
 
-// 対象
+// 最大値と現在値を持つようなパラメータ
+type Pool struct {
+	Max     int // 計算式で算出される
+	Current int
+}
+
+// 変動するパラメータ値
+type Attribute struct {
+	Base     int // 固有の値
+	Modifier int // 装備などで変動する値
+	Total    int // 足し合わせた現在値。算出される値のメモ
+}
+
+// 選択対象
 type TargetType struct {
 	TargetFaction TargetFactionType // 対象派閥
 	TargetNum     TargetNumType
