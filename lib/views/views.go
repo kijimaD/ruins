@@ -52,6 +52,12 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			defense := fmt.Sprintf("%s %s", consts.DefenseLabel, strconv.Itoa(v.Defense))
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, v.EquipBonus, world)
+		case *components.Card:
+			if v == nil {
+				continue
+			}
+			cost := fmt.Sprintf("コスト %d", v.Cost)
+			targetContainer.AddChild(eui.NewBodyText(cost, styles.TextColor, world))
 		}
 	}
 

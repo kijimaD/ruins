@@ -33,6 +33,7 @@ type GameComponentList struct {
 	Wearable         *gc.Wearable
 	Attributes       *gc.Attributes
 	EquipmentChanged *gc.EquipmentChanged
+	Card             *gc.Card
 }
 
 type Entity struct {

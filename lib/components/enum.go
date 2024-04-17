@@ -76,6 +76,7 @@ func (enum UsableSceneType) Valid() error {
 
 // ================
 // 武器種別
+// 種別によって適用する計算式が異なる
 
 type AttackType string
 
@@ -95,9 +96,9 @@ func (enum AttackType) Valid() error {
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (wc AttackType) String() string {
+func (at AttackType) String() string {
 	var result string
-	switch wc {
+	switch at {
 	case AttackSword:
 		result = "刀剣"
 	case AttackSpear:
@@ -172,9 +173,9 @@ func (enum ElementType) Valid() error {
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (da ElementType) String() string {
+func (et ElementType) String() string {
 	var result string
-	switch da {
+	switch et {
 	case ElementTypeNone:
 		result = "無"
 	case ElementTypeFire:

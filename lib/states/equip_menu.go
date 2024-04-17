@@ -173,8 +173,10 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			st.itemDesc.Label = desc
 			if v != nil {
 				views.UpdateSpec(world, st.specContainer, []any{
+					simple.GetCard(world, *v),
 					simple.GetAttack(world, *v),
 					simple.GetWearable(world, *v),
+					simple.GetMaterial(world, *v),
 				})
 			} else {
 				st.specContainer.RemoveChildren()
@@ -230,6 +232,7 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{
+				simple.GetCard(world, entity),
 				simple.GetAttack(world, entity),
 				simple.GetWearable(world, entity),
 				simple.GetMaterial(world, entity),

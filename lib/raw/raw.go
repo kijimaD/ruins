@@ -33,9 +33,10 @@ type Item struct {
 	InflictsDamage  int
 	Consumable      *Consumable      `toml:"consumable"`
 	ProvidesHealing *ProvidesHealing `toml:"provides_healing"`
-	Attack          *Attack          `toml:"attack"`
 	Wearable        *Wearable        `toml:"wearable"`
 	EquipBonus      *EquipBonus      `toml:"equip_bonus"`
+	Card            *Card            `toml:"card"`
+	Attack          *Attack          `toml:"attack"`
 }
 
 type ProvidesHealing struct {
@@ -46,6 +47,12 @@ type ProvidesHealing struct {
 
 type Consumable struct {
 	UsableScene   string
+	TargetFaction string
+	TargetNum     string
+}
+
+type Card struct {
+	Cost          int
 	TargetFaction string
 	TargetNum     string
 }
@@ -185,6 +192,16 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
 
+	if item.Card != nil {
+		cl.Card = &gc.Card{
+			TargetType: gc.TargetType{
+				TargetFaction: gc.TargetFactionType(item.Card.TargetFaction),
+				TargetNum:     gc.TargetNumType(item.Card.TargetNum),
+			},
+			Cost: item.Card.Cost,
+		}
+	}
+
 	var bonus gc.EquipBonus
 	if item.EquipBonus != nil {
 		bonus = gc.EquipBonus{
@@ -259,6 +276,9 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 	// マッチしたitemの定義から持ってくる
 	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
+	if item.Card != nil {
+		cl.Card = item.Card
+	}
 	if item.Attack != nil {
 		cl.Attack = item.Attack
 	}

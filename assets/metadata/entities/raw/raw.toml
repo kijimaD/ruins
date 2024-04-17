@@ -36,11 +36,16 @@ UsableScene = "BATTLE"
 TargetFaction = "ENEMY"
 TargetNum = "ALL"
 
-# attack ================
+# card ================
 
 [[item]]
 Name = "木刀"
 Description = "旅行の土産でおなじみの、木でできた刃のない刀"
+
+[item.card]
+Cost = 2
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
 
 [item.attack]
 Accuracy = 100
@@ -56,6 +61,11 @@ Strength = 1
 Name = "鉄のナイフ"
 Description = "鉄で作られた軽いナイフ"
 
+[item.card]
+Cost = 2
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
+
 [item.attack]
 Accuracy = 100
 Damage = 9
@@ -66,6 +76,11 @@ AttackCategory = "SWORD"
 [[item]]
 Name = "ハンドガン"
 Description = "樹脂素材を多用した自動拳銃"
+
+[item.card]
+Cost = 2
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
 
 [item.attack]
 Accuracy = 95
@@ -78,6 +93,11 @@ AttackCategory = "HANDGUN"
 Name = "レイガン"
 Description = "光線を発射する拳銃"
 
+[item.card]
+Cost = 2
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
+
 [item.attack]
 Accuracy = 90
 Damage = 20
@@ -89,6 +109,11 @@ AttackCategory = "HANDGUN"
 Name = "電撃グレネード"
 Description = "放電物質を投射する擲弾銃"
 
+[item.card]
+Cost = 2
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
+
 [item.attack]
 Accuracy = 80
 Damage = 26
@@ -99,6 +124,11 @@ AttackCategory = "RIFLE"
 [[item]]
 Name = "冷凍グレネード"
 Description = "極低温物質を投射する擲弾銃"
+
+[item.card]
+Cost = 2
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
 
 [item.attack]
 Accuracy = 80

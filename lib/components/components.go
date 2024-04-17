@@ -24,6 +24,7 @@ type Components struct {
 	Wearable         *ecs.SliceComponent
 	Attributes       *ecs.SliceComponent
 	EquipmentChanged *ecs.NullComponent
+	Card             *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -43,7 +44,7 @@ type Warp struct {
 }
 
 // アイテム枠に入るもの
-// 一切使用できない売却専用アイテムとかはItem単独に含まれる
+// 使用できない売却専用アイテムなどはItem単独に含まれる
 type Item struct{}
 
 // 消耗品。一度使うとなくなる
