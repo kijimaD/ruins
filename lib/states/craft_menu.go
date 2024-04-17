@@ -145,11 +145,11 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	st.queryMenuConsumable(world)
 	toggleContainer := eui.NewRowContainer()
 	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleWearableButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWearable) }, world)
 	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeCard) }, world)
-	toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWearable) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleCardButton)
 	toggleContainer.AddChild(toggleWearableButton)
+	toggleContainer.AddChild(toggleCardButton)
 
 	st.recipeList = st.newItemSpecContainer(world)
 	st.specContainer = st.newItemSpecContainer(world)

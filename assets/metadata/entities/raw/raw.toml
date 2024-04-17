@@ -1,6 +1,10 @@
 # item ================
 
 [[item]]
+Name = "ルビー"
+Description = "高く売れる"
+
+[[item]]
 Name = "回復薬"
 Description = "体力を半分程度回復する"
 
