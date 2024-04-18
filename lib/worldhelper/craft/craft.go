@@ -67,12 +67,11 @@ func requiredMaterials(world w.World, goal string) []components.RecipeInput {
 
 func randomize(world w.World, entity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	if entity.HasComponent(gameComponents.Weapon) {
-		weapon := gameComponents.Weapon.Get(entity).(*gc.Weapon)
+	if entity.HasComponent(gameComponents.Attack) {
+		attack := gameComponents.Attack.Get(entity).(*gc.Attack)
 
-		weapon.Accuracy += (-10 + rand.Intn(20))        // -10 ~ +9
-		weapon.Damage += (-5 + rand.Intn(15))           // -5  ~ +9
-		weapon.EnergyConsumption += (-1 + rand.Intn(3)) // -1  ~ +1
+		attack.Accuracy += (-10 + rand.Intn(20)) // -10 ~ +9
+		attack.Damage += (-5 + rand.Intn(15))    // -5  ~ +9
 	}
 	if entity.HasComponent(gameComponents.Wearable) {
 		wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)

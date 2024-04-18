@@ -45,28 +45,6 @@ func EquipmentChangedSystem(world w.World) bool {
 
 	world.Manager.Join(
 		gameComponents.Equipped,
-		gameComponents.Weapon,
-	).Visit(ecs.Visit(func(item ecs.Entity) {
-		equipped := gameComponents.Equipped.Get(item).(*gc.Equipped)
-		weapon := gameComponents.Weapon.Get(item).(*gc.Weapon)
-
-		owner := equipped.Owner
-		attrs := gameComponents.Attributes.Get(owner).(*gc.Attributes)
-
-		attrs.Vitality.Modifier += weapon.EquipBonus.Vitality
-		attrs.Vitality.Total = attrs.Vitality.Base + attrs.Vitality.Modifier
-		attrs.Strength.Modifier += weapon.EquipBonus.Strength
-		attrs.Strength.Total = attrs.Strength.Base + attrs.Strength.Modifier
-		attrs.Sensation.Modifier += weapon.EquipBonus.Sensation
-		attrs.Sensation.Total = attrs.Sensation.Base + attrs.Sensation.Modifier
-		attrs.Dexterity.Modifier += weapon.EquipBonus.Dexterity
-		attrs.Dexterity.Total = attrs.Dexterity.Base + attrs.Dexterity.Modifier
-		attrs.Agility.Modifier += weapon.EquipBonus.Agility
-		attrs.Agility.Total = attrs.Agility.Base + attrs.Agility.Modifier
-	}))
-
-	world.Manager.Join(
-		gameComponents.Equipped,
 		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(item ecs.Entity) {
 		equipped := gameComponents.Equipped.Get(item).(*gc.Equipped)

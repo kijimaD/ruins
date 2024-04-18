@@ -117,10 +117,10 @@ func (st *CraftMenuState) categoryReload(world w.World) {
 	st.items = []ecs.Entity{}
 
 	switch st.category {
-	case itemCategoryTypeConsumable:
+	case itemCategoryTypeItem:
 		st.items = st.queryMenuConsumable(world)
-	case itemCategoryTypeWeapon:
-		st.items = st.queryMenuWeapon(world)
+	case itemCategoryTypeCard:
+		st.items = st.queryMenuCard(world)
 	case itemCategoryTypeWearable:
 		st.items = st.queryMenuWearable(world)
 	default:
@@ -144,12 +144,12 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	st.queryMenuConsumable(world)
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
-	toggleWeaponButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWeapon) }, world)
-	toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWearable) }, world)
+	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeItem) }, world)
+	toggleWearableButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWearable) }, world)
+	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeCard) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleWeaponButton)
 	toggleContainer.AddChild(toggleWearableButton)
+	toggleContainer.AddChild(toggleCardButton)
 
 	st.recipeList = st.newItemSpecContainer(world)
 	st.specContainer = st.newItemSpecContainer(world)
@@ -180,20 +180,24 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
 		gameComponents.Recipe,
 		gameComponents.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if entity.HasComponent(gameComponents.Card) {
+			return
+		}
+
 		items = append(items, entity)
 	}))
 
 	return items
 }
 
-func (st *CraftMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
+func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.Recipe,
-		gameComponents.Weapon,
+		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -219,6 +223,7 @@ func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 // itemsからactionContainerを生成する
 func (st *CraftMenuState) generateActionContainer(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
+
 	for _, entity := range st.items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -241,7 +246,8 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 			}
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{
-				simple.GetWeapon(world, entity),
+				simple.GetCard(world, entity),
+				simple.GetAttack(world, entity),
 				simple.GetWearable(world, entity),
 			})
 			st.updateRecipeList(world)
@@ -297,7 +303,8 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
 
 	views.UpdateSpec(world, resultContainer, []any{
-		simple.GetWeapon(world, entity),
+		simple.GetCard(world, entity),
+		simple.GetAttack(world, entity),
 		simple.GetWearable(world, entity),
 	})
 

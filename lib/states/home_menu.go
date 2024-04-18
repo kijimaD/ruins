@@ -50,12 +50,13 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		count++
 	}))
 	if count == 0 {
-		sword := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
+		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
 		armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
+		spawner.SpawnItem(world, "ルビー原石", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
@@ -73,8 +74,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
 
-		equips.Equip(world, sword, ishihara, gc.EquipmentSlotZero)
-		equips.Equip(world, armor, ishihara, gc.EquipmentSlotOne)
+		equips.Equip(world, armor, ishihara, gc.EquipmentSlotZero)
 	}
 }
 
@@ -183,7 +183,7 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 0:
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
 	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{category: itemCategoryTypeConsumable}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{category: itemCategoryTypeItem}}}
 	case 2:
 		// TODO: 実装する
 		return states.Transition{Type: states.TransNone}

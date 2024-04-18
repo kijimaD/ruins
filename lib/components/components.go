@@ -18,12 +18,13 @@ type Components struct {
 	Pools            *ecs.SliceComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
-	Weapon           *ecs.SliceComponent
+	Attack           *ecs.SliceComponent
 	Material         *ecs.SliceComponent
 	Recipe           *ecs.SliceComponent
 	Wearable         *ecs.SliceComponent
 	Attributes       *ecs.SliceComponent
 	EquipmentChanged *ecs.NullComponent
+	Card             *ecs.SliceComponent
 }
 
 type GridElement struct {
@@ -42,8 +43,8 @@ type Warp struct {
 	Mode warpMode
 }
 
-// アイテム枠に入るもの
-// 一切使用できない売却専用アイテムとかはItem単独に含まれる
+// キャラクターが保持できるもの
+// 装備品、カード、回復アイテム、売却アイテム
 type Item struct{}
 
 // 消耗品。一度使うとなくなる
@@ -62,34 +63,23 @@ type Description struct {
 	Description string
 }
 
-// インベントリに所持している状態
+// インベントリに入っている状態
 type InBackpack struct{}
 
-// キャラクタが装備している状態
+// キャラクタが装備している状態。InBackpackとは排反
 type Equipped struct {
 	Owner         ecs.Entity
 	EquipmentSlot EquipmentSlotNumber
 }
 
-// 武器
-type Weapon struct {
-	Accuracy          int            // 命中率
-	Damage            int            // 攻撃力
-	AttackCount       int            // 攻撃回数
-	EnergyConsumption int            // 消費エネルギー
-	DamageAttr        DamageAttrType // 攻撃属性
-	WeaponCategory    WeaponType     // 武器種別
-	EquipBonus        EquipBonus
-}
-
-// 防具
+// 装備品。キャラクタが装備することでパラメータを変更できる
 type Wearable struct {
 	Defense           int           // 防御力
 	EquipmentCategory EquipmentType // 装備部位
 	EquipBonus        EquipBonus    // ステータスへのボーナス
 }
 
-// パーティに参加している状態
+// 冒険パーティに参加している状態
 type InParty struct{}
 
 // 冒険に参加できるメンバー
@@ -101,7 +91,7 @@ type Pools struct {
 	Level int
 }
 
-// エンティティが持つステータス。各種計算式で使う
+// エンティティが持つステータス値。各種計算式で使う
 type Attributes struct {
 	Vitality  Attribute // 体力。丈夫さ、持久力、しぶとさ。HPやSPに影響する
 	Strength  Attribute // 筋力。主に近接攻撃のダメージに影響する
@@ -112,16 +102,18 @@ type Attributes struct {
 }
 
 // 回復する性質
+// 直接的な数値が作用し、ステータスなどは考慮されない
 type ProvidesHealing struct {
 	Amount Amounter
 }
 
 // ダメージを与える性質
+// 直接的な数値が作用し、ステータスなどは考慮されない
 type InflictsDamage struct {
 	Amount int
 }
 
-// 合成素材。
+// 合成素材
 // アイテムとの違い:
 // - 個々のインスタンスで性能の違いはなく、単に数量だけを見る
 // - 複数の単位で扱うのでAmountを持つ。x3を合成で使ったりする
@@ -136,3 +128,20 @@ type Recipe struct {
 
 // 装備変更直後を示すダーティーフラグ
 type EquipmentChanged struct{}
+
+// カードは戦闘中に選択するコマンド
+// 攻撃、防御、回復など、人に影響を及ぼすものをアクションカードという
+// アクションカードをターゲットとして効果を変容させるものをブーストカードという
+type Card struct {
+	TargetType TargetType
+	Cost       int
+}
+
+// 攻撃の性質。攻撃毎にこの数値と作用対象のステータスを加味して、最終的なダメージ量を決定する
+type Attack struct {
+	Accuracy       int         // 命中率
+	Damage         int         // 攻撃力
+	AttackCount    int         // 攻撃回数
+	Element        ElementType // 攻撃属性
+	AttackCategory AttackType  // 攻撃種別
+}

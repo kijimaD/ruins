@@ -26,16 +26,16 @@ type Raws struct {
 	Members   []Member   `toml:"member"`
 }
 
-// tomlで入力として受け取る項目
 type Item struct {
 	Name            string
 	Description     string
 	InflictsDamage  int
 	Consumable      *Consumable      `toml:"consumable"`
 	ProvidesHealing *ProvidesHealing `toml:"provides_healing"`
-	Weapon          *Weapon          `toml:"weapon"`
 	Wearable        *Wearable        `toml:"wearable"`
 	EquipBonus      *EquipBonus      `toml:"equip_bonus"`
+	Card            *Card            `toml:"card"`
+	Attack          *Attack          `toml:"attack"`
 }
 
 type ProvidesHealing struct {
@@ -50,13 +50,18 @@ type Consumable struct {
 	TargetNum     string
 }
 
-type Weapon struct {
-	Accuracy          int    // 命中率
-	Damage            int    // 攻撃力
-	AttackCount       int    // 攻撃回数
-	EnergyConsumption int    // 攻撃で消費するエネルギー
-	DamageAttr        string // 攻撃属性
-	WeaponCategory    string // 武器カテゴリ
+type Card struct {
+	Cost          int
+	TargetFaction string
+	TargetNum     string
+}
+
+type Attack struct {
+	Accuracy       int    // 命中率
+	Damage         int    // 攻撃力
+	AttackCount    int    // 攻撃回数
+	Element        string // 攻撃属性
+	AttackCategory string // 武器カテゴリ
 }
 
 type Wearable struct {
@@ -186,6 +191,40 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
 	}
 
+	if item.Card != nil {
+		if err := gc.TargetFactionType(item.Card.TargetFaction).Valid(); err != nil {
+			log.Fatal(err)
+		}
+		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
+			log.Fatal(err)
+		}
+
+		cl.Card = &gc.Card{
+			TargetType: gc.TargetType{
+				TargetFaction: gc.TargetFactionType(item.Card.TargetFaction),
+				TargetNum:     gc.TargetNumType(item.Card.TargetNum),
+			},
+			Cost: item.Card.Cost,
+		}
+	}
+
+	if item.Attack != nil {
+		if err := gc.ElementType(item.Attack.Element).Valid(); err != nil {
+			log.Fatal(err)
+		}
+		if err := gc.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
+			log.Fatal(err)
+		}
+
+		cl.Attack = &gc.Attack{
+			Accuracy:       item.Attack.Accuracy,
+			Damage:         item.Attack.Damage,
+			AttackCount:    item.Attack.AttackCount,
+			Element:        gc.ElementType(item.Attack.Element),
+			AttackCategory: gc.AttackType(item.Attack.AttackCategory),
+		}
+	}
+
 	var bonus gc.EquipBonus
 	if item.EquipBonus != nil {
 		bonus = gc.EquipBonus{
@@ -197,23 +236,6 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		}
 	}
 
-	if item.Weapon != nil {
-		if err := components.WeaponType(item.Weapon.WeaponCategory).Valid(); err != nil {
-			log.Fatal(err)
-		}
-		if err := components.DamageAttrType(item.Weapon.DamageAttr).Valid(); err != nil {
-			log.Fatal(err)
-		}
-		cl.Weapon = &gc.Weapon{
-			Accuracy:          item.Weapon.Accuracy,
-			Damage:            item.Weapon.Damage,
-			AttackCount:       item.Weapon.AttackCount,
-			EnergyConsumption: item.Weapon.EnergyConsumption,
-			DamageAttr:        components.DamageAttrType(item.Weapon.DamageAttr),
-			WeaponCategory:    components.WeaponType(item.Weapon.WeaponCategory),
-			EquipBonus:        bonus,
-		}
-	}
 	if item.Wearable != nil {
 		if err := components.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
 			log.Fatal(err)
@@ -258,11 +280,14 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 		cl.Recipe.Inputs = append(cl.Recipe.Inputs, gc.RecipeInput{Name: input.Name, Amount: input.Amount})
 	}
 
-	// マッチしたitemの定義から持ってくる
+	// 説明文などのため、マッチしたitemの定義から持ってくる
 	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
-	if item.Weapon != nil {
-		cl.Weapon = item.Weapon
+	if item.Card != nil {
+		cl.Card = item.Card
+	}
+	if item.Attack != nil {
+		cl.Attack = item.Attack
 	}
 	if item.Wearable != nil {
 		cl.Wearable = item.Wearable

@@ -27,12 +27,13 @@ type GameComponentList struct {
 	Pools            *gc.Pools
 	ProvidesHealing  *gc.ProvidesHealing
 	InflictsDamage   *gc.InflictsDamage
-	Weapon           *gc.Weapon
+	Attack           *gc.Attack
 	Material         *gc.Material
 	Recipe           *gc.Recipe
 	Wearable         *gc.Wearable
 	Attributes       *gc.Attributes
 	EquipmentChanged *gc.EquipmentChanged
+	Card             *gc.Card
 }
 
 type Entity struct {

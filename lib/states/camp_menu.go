@@ -68,7 +68,7 @@ func (st *CampMenuState) setSelection(selection int) {
 func (st *CampMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: itemCategoryTypeConsumable}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: itemCategoryTypeItem}}}
 	case 1:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}}
 	}

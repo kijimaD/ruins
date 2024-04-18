@@ -23,11 +23,11 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			}
 			amount := fmt.Sprintf("%d 個", v.Amount)
 			targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
-		case *components.Weapon:
+		case *components.Attack:
 			if v == nil {
 				continue
 			}
-			targetContainer.AddChild(eui.NewBodyText(v.WeaponCategory.String(), styles.TextColor, world))
+			targetContainer.AddChild(eui.NewBodyText(v.AttackCategory.String(), styles.TextColor, world))
 
 			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(v.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
@@ -38,13 +38,9 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(v.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
-			consumption := fmt.Sprintf("%s %s", consts.EnergyConsumptionLabel, strconv.Itoa(v.EnergyConsumption))
-			targetContainer.AddChild(eui.NewBodyText(consumption, styles.TextColor, world))
-
-			if v.DamageAttr != components.DamageAttrNone {
-				targetContainer.AddChild(damageAttrText(world, v.DamageAttr, v.DamageAttr.String()))
+			if v.Element != components.ElementTypeNone {
+				targetContainer.AddChild(damageAttrText(world, v.Element, v.Element.String()))
 			}
-			addEquipBonus(targetContainer, v.EquipBonus, world)
 		case *components.Wearable:
 			if v == nil {
 				continue
@@ -55,6 +51,12 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			defense := fmt.Sprintf("%s %s", consts.DefenseLabel, strconv.Itoa(v.Defense))
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, v.EquipBonus, world)
+		case *components.Card:
+			if v == nil {
+				continue
+			}
+			cost := fmt.Sprintf("コスト %d", v.Cost)
+			targetContainer.AddChild(eui.NewBodyText(cost, styles.TextColor, world))
 		}
 	}
 
@@ -62,16 +64,16 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 }
 
 // 属性によって色付けする
-func damageAttrText(world w.World, dat components.DamageAttrType, str string) *widget.Text {
+func damageAttrText(world w.World, dat components.ElementType, str string) *widget.Text {
 	var text *widget.Text
 	switch dat {
-	case components.DamageAttrFire:
+	case components.ElementTypeFire:
 		text = eui.NewBodyText(str, styles.FireColor, world)
-	case components.DamageAttrThunder:
+	case components.ElementTypeThunder:
 		text = eui.NewBodyText(str, styles.ThunderColor, world)
-	case components.DamageAttrChill:
+	case components.ElementTypeChill:
 		text = eui.NewBodyText(str, styles.ChillColor, world)
-	case components.DamageAttrPhoton:
+	case components.ElementTypePhoton:
 		text = eui.NewBodyText(str, styles.PhotonColor, world)
 	default:
 		text = eui.NewBodyText(str, styles.TextColor, world)
