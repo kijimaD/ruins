@@ -174,7 +174,6 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			if v != nil {
 				views.UpdateSpec(world, st.specContainer, []any{
 					simple.GetCard(world, *v),
-					simple.GetAttack(world, *v),
 					simple.GetWearable(world, *v),
 					simple.GetMaterial(world, *v),
 				})
@@ -183,7 +182,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			}
 		})
 		equipButton := eui.NewItemButton("装備する", func(args *widget.ButtonClickedEventArgs) {
-			st.items = st.queryMenuAttack(world)
+			st.items = st.queryMenuWearable(world)
 			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
 			f()
 			st.toggleSubMenu(world, true, f)
@@ -233,7 +232,6 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
 			views.UpdateSpec(world, st.specContainer, []any{
 				simple.GetCard(world, entity),
-				simple.GetAttack(world, entity),
 				simple.GetWearable(world, entity),
 				simple.GetMaterial(world, entity),
 			})
@@ -247,9 +245,7 @@ func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadF
 	st.subMenuContainer.RemoveChildren()
 
 	if isInventory {
-		toggleAttackButton := eui.NewItemButton("武器", func(args *widget.ButtonClickedEventArgs) { st.items = st.queryMenuAttack(world); reloadFunc() }, world)
 		toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.items = st.queryMenuWearable(world); reloadFunc() }, world)
-		st.subMenuContainer.AddChild(toggleAttackButton)
 		st.subMenuContainer.AddChild(toggleWearableButton)
 	} else {
 		members := []ecs.Entity{}
@@ -308,22 +304,6 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
 	}
-}
-
-// 装備可能な武器を取得する
-func (st *EquipMenuState) queryMenuAttack(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.InBackpack,
-		gameComponents.Attack,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
-	}))
-
-	return items
 }
 
 // 装備可能な防具を取得する
