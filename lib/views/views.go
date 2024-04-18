@@ -41,7 +41,6 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			if v.Element != components.ElementTypeNone {
 				targetContainer.AddChild(damageAttrText(world, v.Element, v.Element.String()))
 			}
-			addEquipBonus(targetContainer, v.EquipBonus, world)
 		case *components.Wearable:
 			if v == nil {
 				continue

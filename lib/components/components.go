@@ -141,5 +141,4 @@ type Attack struct {
 	AttackCount    int         // 攻撃回数
 	Element        ElementType // 攻撃属性
 	AttackCategory AttackType  // 攻撃種別
-	EquipBonus     EquipBonus  // ステータスへのボーナス
 }
