@@ -172,12 +172,10 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 		slotButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = desc
 			if v != nil {
-				views.UpdateSpec(world, st.specContainer, []any{
-					simple.GetCard(world, *v),
-					simple.GetWearable(world, *v),
-					simple.GetMaterial(world, *v),
-				})
+				// 該当スロットに装備がある場合はその性能を表示する
+				views.UpdateSpec(world, st.specContainer, *v)
 			} else {
+				// 非表示
 				st.specContainer.RemoveChildren()
 			}
 		})
@@ -230,11 +228,7 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
-			views.UpdateSpec(world, st.specContainer, []any{
-				simple.GetCard(world, entity),
-				simple.GetWearable(world, entity),
-				simple.GetMaterial(world, entity),
-			})
+			views.UpdateSpec(world, st.specContainer, entity)
 		})
 		st.actionContainer.AddChild(itemButton)
 	}

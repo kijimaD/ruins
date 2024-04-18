@@ -245,11 +245,7 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 				st.hoveredItem = entity
 			}
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
-			views.UpdateSpec(world, st.specContainer, []any{
-				simple.GetCard(world, entity),
-				simple.GetAttack(world, entity),
-				simple.GetWearable(world, entity),
-			})
+			views.UpdateSpec(world, st.specContainer, entity)
 			st.updateRecipeList(world)
 		})
 		st.actionContainer.AddChild(itemButton)
@@ -302,11 +298,7 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 	resultContainer := eui.NewWindowContainer()
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
 
-	views.UpdateSpec(world, resultContainer, []any{
-		simple.GetCard(world, entity),
-		simple.GetAttack(world, entity),
-		simple.GetWearable(world, entity),
-	})
+	views.UpdateSpec(world, resultContainer, entity)
 
 	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
 		st.resultWindow.Close()

@@ -6,27 +6,28 @@ import (
 
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/kijimaD/ruins/lib/components"
+	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/utils/consts"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *widget.Container {
+// 性能表示コンテナを更新する
+func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	targetContainer.RemoveChildren()
+	gameComponents := world.Components.Game.(*gc.Components)
 
-	for _, component := range cs {
-		switch v := component.(type) {
-		case *components.Material:
-			if v == nil {
-				continue
-			}
+	{
+		if gameComponents.Material.Get(entity) != nil {
+			v := gameComponents.Material.Get(entity).(*gc.Material)
 			amount := fmt.Sprintf("%d 個", v.Amount)
 			targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
-		case *components.Attack:
-			if v == nil {
-				continue
-			}
+		}
+
+		if gameComponents.Attack.Get(entity) != nil {
+			v := gameComponents.Attack.Get(entity).(*gc.Attack)
 			targetContainer.AddChild(eui.NewBodyText(v.AttackCategory.String(), styles.TextColor, world))
 
 			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(v.Accuracy))
@@ -41,26 +42,22 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, cs []any) *wid
 			if v.Element != components.ElementTypeNone {
 				targetContainer.AddChild(damageAttrText(world, v.Element, v.Element.String()))
 			}
-		case *components.Wearable:
-			if v == nil {
-				continue
-			}
+		}
+		if gameComponents.Wearable.Get(entity) != nil {
+			v := gameComponents.Wearable.Get(entity).(*gc.Wearable)
 			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, v.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
 			defense := fmt.Sprintf("%s %s", consts.DefenseLabel, strconv.Itoa(v.Defense))
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, v.EquipBonus, world)
-		case *components.Card:
-			if v == nil {
-				continue
-			}
+		}
+		if gameComponents.Card.Get(entity) != nil {
+			v := gameComponents.Card.Get(entity).(*gc.Card)
 			cost := fmt.Sprintf("コスト %d", v.Cost)
 			targetContainer.AddChild(eui.NewBodyText(cost, styles.TextColor, world))
 		}
 	}
-
-	return targetContainer
 }
 
 // 属性によって色付けする

@@ -211,12 +211,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				st.selectedItem = entity
 			}
 			st.itemDesc.Label = simple.GetDescription(world, entity).Description
-			views.UpdateSpec(world, st.specContainer, []any{
-				simple.GetCard(world, entity),
-				simple.GetAttack(world, entity),
-				simple.GetWearable(world, entity),
-				simple.GetMaterial(world, entity),
-			})
+			views.UpdateSpec(world, st.specContainer, entity)
 		})
 		st.actionContainer.AddChild(itemButton)
 
