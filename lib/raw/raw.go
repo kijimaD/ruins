@@ -26,7 +26,6 @@ type Raws struct {
 	Members   []Member   `toml:"member"`
 }
 
-// tomlで入力として受け取る項目
 type Item struct {
 	Name            string
 	Description     string
@@ -193,12 +192,36 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	}
 
 	if item.Card != nil {
+		if err := gc.TargetFactionType(item.Card.TargetFaction).Valid(); err != nil {
+			log.Fatal(err)
+		}
+		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
+			log.Fatal(err)
+		}
+
 		cl.Card = &gc.Card{
 			TargetType: gc.TargetType{
 				TargetFaction: gc.TargetFactionType(item.Card.TargetFaction),
 				TargetNum:     gc.TargetNumType(item.Card.TargetNum),
 			},
 			Cost: item.Card.Cost,
+		}
+	}
+
+	if item.Attack != nil {
+		if err := gc.ElementType(item.Attack.Element).Valid(); err != nil {
+			log.Fatal(err)
+		}
+		if err := gc.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
+			log.Fatal(err)
+		}
+
+		cl.Attack = &gc.Attack{
+			Accuracy:       item.Attack.Accuracy,
+			Damage:         item.Attack.Damage,
+			AttackCount:    item.Attack.AttackCount,
+			Element:        gc.ElementType(item.Attack.Element),
+			AttackCategory: gc.AttackType(item.Attack.AttackCategory),
 		}
 	}
 
@@ -213,22 +236,6 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 		}
 	}
 
-	if item.Attack != nil {
-		if err := components.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
-			log.Fatal(err)
-		}
-		if err := components.ElementType(item.Attack.Element).Valid(); err != nil {
-			log.Fatal(err)
-		}
-		cl.Attack = &gc.Attack{
-			Accuracy:       item.Attack.Accuracy,
-			Damage:         item.Attack.Damage,
-			AttackCount:    item.Attack.AttackCount,
-			Element:        components.ElementType(item.Attack.Element),
-			AttackCategory: components.AttackType(item.Attack.AttackCategory),
-			EquipBonus:     bonus,
-		}
-	}
 	if item.Wearable != nil {
 		if err := components.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
 			log.Fatal(err)
@@ -273,7 +280,7 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 		cl.Recipe.Inputs = append(cl.Recipe.Inputs, gc.RecipeInput{Name: input.Name, Amount: input.Amount})
 	}
 
-	// マッチしたitemの定義から持ってくる
+	// 説明文などのため、マッチしたitemの定義から持ってくる
 	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Card != nil {

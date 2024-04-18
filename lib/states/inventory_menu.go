@@ -110,7 +110,7 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 
 	switch st.category {
 	case itemCategoryTypeConsumable:
-		st.items = st.queryMenuConsumable(world)
+		st.items = simple.QueryMenuItem(world)
 	case itemCategoryTypeCard:
 		st.items = st.queryMenuCard(world)
 	case itemCategoryTypeMaterial:
@@ -156,28 +156,14 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-func (st *InventoryMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.InBackpack,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
-	}))
-
-	return items
-}
-
 func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.InBackpack,
 		gameComponents.Card,
+		gameComponents.InBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))

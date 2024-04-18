@@ -56,7 +56,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "ルビー", raw.SpawnInBackpack)
+		spawner.SpawnItem(world, "ルビー原石", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)

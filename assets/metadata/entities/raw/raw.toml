@@ -1,8 +1,8 @@
 # item ================
 
 [[item]]
-Name = "ルビー"
-Description = "高く売れる"
+Name = "ルビー原石"
+Description = "赤く光る鉱物。高く売れる"
 
 [[item]]
 Name = "回復薬"
@@ -57,9 +57,6 @@ Damage = 8
 AttackCount = 1
 Element = "NONE"
 AttackCategory = "SWORD"
-
-[item.equip_bonus]
-Strength = 1
 
 [[item]]
 Name = "鉄のナイフ"
