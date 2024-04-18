@@ -29,10 +29,10 @@ func getWinRect() image.Rectangle {
 type itemCategoryType string
 
 var (
-	itemCategoryTypeConsumable itemCategoryType = "CONSUMABLE"
-	itemCategoryTypeCard       itemCategoryType = "CARD"
-	itemCategoryTypeWearable   itemCategoryType = "WEARABLE"
-	itemCategoryTypeMaterial   itemCategoryType = "MATERIAL"
+	itemCategoryTypeItem     itemCategoryType = "ITEM"
+	itemCategoryTypeCard     itemCategoryType = "CARD"
+	itemCategoryTypeWearable itemCategoryType = "WEARABLE"
+	itemCategoryTypeMaterial itemCategoryType = "MATERIAL"
 )
 
 // ================

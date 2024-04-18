@@ -117,8 +117,8 @@ func (st *CraftMenuState) categoryReload(world w.World) {
 	st.items = []ecs.Entity{}
 
 	switch st.category {
-	case itemCategoryTypeConsumable:
-		st.items = st.queryMenuConsumable(world)
+	case itemCategoryTypeItem:
+		st.items = simple.QueryMenuItem(world)
 	case itemCategoryTypeCard:
 		st.items = st.queryMenuCard(world)
 	case itemCategoryTypeWearable:
@@ -142,9 +142,9 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	st.queryMenuConsumable(world)
+	simple.QueryMenuItem(world)
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeItem) }, world)
 	toggleWearableButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeWearable) }, world)
 	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeCard) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
@@ -169,21 +169,6 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
-}
-
-func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Recipe,
-		gameComponents.Consumable,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
-	}))
-
-	return items
 }
 
 func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {

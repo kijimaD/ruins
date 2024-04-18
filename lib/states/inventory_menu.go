@@ -109,7 +109,7 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 	st.items = []ecs.Entity{}
 
 	switch st.category {
-	case itemCategoryTypeConsumable:
+	case itemCategoryTypeItem:
 		st.items = simple.QueryMenuItem(world)
 	case itemCategoryTypeCard:
 		st.items = st.queryMenuCard(world)
@@ -282,7 +282,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeConsumable) }, world)
+	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeItem) }, world)
 	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeCard) }, world)
 	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeMaterial) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
