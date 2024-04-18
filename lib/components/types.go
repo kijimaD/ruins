@@ -34,9 +34,8 @@ type EquipBonus struct {
 	Agility   int
 
 	// 残り項目:
-	// 火属性などの属性耐性
-	// 頑丈+1、貫通+2などのパッシブスキル
-	// 「救護」「乱射」などのアクティブスキル
+	// - 火属性などの属性耐性
+	// - 頑丈+1、連射+2などのスキル
 }
 
 // ================
@@ -46,6 +45,7 @@ type Amounter interface {
 
 var _ Amounter = RatioAmount{}
 
+// 倍率指定
 type RatioAmount struct {
 	Ratio float64
 }
@@ -57,6 +57,7 @@ func (ra RatioAmount) Calc(base int) int {
 
 var _ Amounter = NumeralAmount{}
 
+// 絶対量指定
 type NumeralAmount struct {
 	Numeral int
 }
