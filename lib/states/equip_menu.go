@@ -238,10 +238,7 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadFunc func()) {
 	st.subMenuContainer.RemoveChildren()
 
-	if isInventory {
-		toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.items = st.queryMenuWearable(world); reloadFunc() }, world)
-		st.subMenuContainer.AddChild(toggleWearableButton)
-	} else {
+	if !isInventory {
 		members := []ecs.Entity{}
 		simple.InPartyMember(world, func(entity ecs.Entity) {
 			members = append(members, entity)
