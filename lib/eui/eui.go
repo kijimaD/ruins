@@ -180,7 +180,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, *LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 			VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -194,7 +194,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 
 func NewMenuText(title string, world w.World) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, *LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -205,7 +205,7 @@ func NewMenuText(title string, world w.World) *widget.Text {
 
 func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), color),
+		widget.TextOpts.Text(title, *LoadFont(world), color),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -236,7 +236,7 @@ func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), wor
 	return widget.NewButton(
 		widget.ButtonOpts.Image(LoadButtonImage()),
 		widget.ButtonOpts.Text(text,
-			LoadFont(world),
+			*LoadFont(world),
 			&widget.ButtonTextColor{
 				Idle: styles.TextColor,
 			},

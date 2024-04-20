@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/pkg/profile"
+	"golang.org/x/image/font"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -88,6 +91,12 @@ func main() {
 	// load fonts
 	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
 	world.Resources.Fonts = &fonts
+	world.Resources.DefaultFaces = &map[string]font.Face{
+		"kappa": truetype.NewFace((*world.Resources.Fonts)["kappa"].Font, &truetype.Options{
+			Size: 24,
+			DPI:  72,
+		}),
+	}
 
 	// load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{

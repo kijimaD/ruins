@@ -3,7 +3,6 @@ package eui
 import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/golang/freetype/truetype"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/styles"
 	"golang.org/x/image/font"
@@ -27,11 +26,8 @@ func LoadButtonImage() *widget.ButtonImage {
 }
 
 // TODO: いい感じにしたい
-func LoadFont(world w.World) font.Face {
-	opts := truetype.Options{
-		Size: 24,
-		DPI:  72,
-	}
+func LoadFont(world w.World) *font.Face {
+	face := (*world.Resources.DefaultFaces)["kappa"]
 
-	return truetype.NewFace((*world.Resources.Fonts)["kappa"].Font, &opts)
+	return &face
 }
