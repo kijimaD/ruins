@@ -125,7 +125,9 @@ func main() {
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("ruins")
 
-	defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
+	if runtime.GOOS == "linux" {
+		defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
+	}
 
 	ebiten.RunGame(&mainGame{
 		world:        world,
