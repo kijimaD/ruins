@@ -10,12 +10,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
@@ -45,6 +43,7 @@ func (st *HomeMenuState) OnResume(world w.World) {
 }
 
 func (st *HomeMenuState) OnStart(world w.World) {
+	st.ui = st.initUI(world)
 
 	// デバッグ用
 	// 初回のみ追加する
@@ -83,27 +82,24 @@ func (st *HomeMenuState) OnStart(world w.World) {
 
 		equips.Equip(world, armor, ishihara, gc.EquipmentSlotZero)
 	}
-
-	st.ui = st.initUI(world)
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {}
 
-// FIXME: 毎ループでやってるので重い。変更があったときだけ、でいい
 func (st *HomeMenuState) Update(world w.World) states.Transition {
+	effects.RunEffectQueue(world)
+	_ = gs.EquipmentChangedSystem(world)
+
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
-	effects.RunEffectQueue(world)
-	_ = gs.EquipmentChangedSystem(world)
+	st.updateActionList(world)
+	st.updateMemberContainer(world)
 
 	// 完全回復
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-
-	st.updateActionList(world)
-	st.updateMemberContainer(world)
 
 	st.ui.Update()
 
@@ -155,20 +151,15 @@ func (st *HomeMenuState) getCursorMenuIDs() []string {
 // ================
 
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewItemGridContainer()
+	rootContainer := eui.NewVerticalContainer()
 	st.memberContainer = eui.NewVerticalContainer()
+
 	st.actionListContainer = eui.NewRowContainer()
 	st.actionDescContainer = eui.NewRowContainer()
+	actionContainer := eui.NewVSplitContainer(st.actionListContainer, st.actionDescContainer)
 	{
-		rootContainer.AddChild(eui.NewEmptyContainer())
-		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(st.memberContainer)
-
-		rootContainer.AddChild(eui.NewEmptyContainer())
-		rootContainer.AddChild(eui.NewEmptyContainer())
-		rootContainer.AddChild(eui.NewEmptyContainer())
-
-		rootContainer.AddChild(eui.NewVSplitContainer(st.actionListContainer, st.actionDescContainer))
+		rootContainer.AddChild(actionContainer)
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
