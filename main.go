@@ -53,17 +53,15 @@ func (game *mainGame) Draw(screen *ebiten.Image) {
 	msg := fmt.Sprintf(`FPS: %f
 Alloc: %.2fMB
 TotalAlloc: %.2fMB
-HeapAlloc: %.2fMB
-Mallocs: %.2fKB
-Frees: %.2fKB
+Mallocs: %.2fMB
+Frees: %.2fMB
 `,
 
 		ebiten.ActualFPS(),
 		float64(mem.Alloc/1024/1024),
-		float64(mem.TotalAlloc/1024/1024),
-		float64(mem.HeapAlloc/1024/1024),
-		float64(mem.Mallocs/1024),
-		float64(mem.Frees/1024),
+		float64(mem.TotalAlloc/1024/1024), // 起動後から割り当てられたヒープオブジェクトの数。freeされてもリセットされない
+		float64(mem.Mallocs/1024/1024),    // 割り当てられているヒープオブジェクトの数。freeされたら減る
+		float64(mem.Frees/1024/1024),      // 解放されたヒープオブジェクトの数
 	)
 	ebitenutil.DebugPrint(screen, msg)
 }
