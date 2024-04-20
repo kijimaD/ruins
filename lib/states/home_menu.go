@@ -30,9 +30,9 @@ type HomeMenuState struct {
 	homeMenu  []ecs.Entity
 	ui        *ebitenui.UI
 
-	memberContainer     *widget.Container
-	actionListContainer *widget.Container
-	actionDescContainer *widget.Container
+	memberContainer     *widget.Container // メンバー一覧コンテナ
+	actionListContainer *widget.Container // 選択肢アクション一覧コンテナ
+	actionDescContainer *widget.Container // 選択肢アクションの説明コンテナ
 }
 
 // State interface ================
@@ -106,44 +106,8 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 
-	labels := []string{
-		"出発",
-		"合成",
-		"入替",
-		"所持",
-		"装備",
-		"終了",
-	}
-	st.actionListContainer.RemoveChildren()
-	for i, label := range labels {
-		btn := eui.NewMenuText(label, world)
-		if st.selection == i {
-			btn.Color = styles.ButtonHoverColor
-		}
-		st.actionListContainer.AddChild(btn)
-	}
-
-	descs := []string{
-		"遺跡に出発する",
-		"アイテムを合成する",
-		"仲間を入れ替える(未実装)",
-		"所持品を確認する",
-		"装備を変更する",
-		"終了する",
-	}
-	desc := descs[st.selection]
-
-	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(eui.NewMenuText(desc, world))
-
-	st.memberContainer.RemoveChildren()
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		views.AddMemberBar(world, st.memberContainer, entity)
-	}))
+	st.updateActionList(world)
+	st.updateMemberContainer(world)
 
 	st.ui.Update()
 
@@ -212,4 +176,49 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
+}
+
+// 選択肢を更新する
+func (st *HomeMenuState) updateActionList(world w.World) {
+	st.actionListContainer.RemoveChildren()
+	st.actionDescContainer.RemoveChildren()
+
+	labels := []string{
+		"出発",
+		"合成",
+		"入替",
+		"所持",
+		"装備",
+		"終了",
+	}
+	for i, label := range labels {
+		btn := eui.NewMenuText(label, world)
+		if st.selection == i {
+			btn.Color = styles.ButtonHoverColor
+		}
+		st.actionListContainer.AddChild(btn)
+	}
+
+	descs := []string{
+		"遺跡に出発する",
+		"アイテムを合成する",
+		"仲間を入れ替える(未実装)",
+		"所持品を確認する",
+		"装備を変更する",
+		"終了する",
+	}
+	desc := descs[st.selection]
+	st.actionDescContainer.AddChild(eui.NewMenuText(desc, world))
+}
+
+// メンバー一覧を更新する
+func (st *HomeMenuState) updateMemberContainer(world w.World) {
+	st.memberContainer.RemoveChildren()
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		views.AddMemberBar(world, st.memberContainer, entity)
+	}))
 }
