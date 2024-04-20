@@ -281,10 +281,8 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		if entity != targetMember {
 			continue
 		}
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s", name.Name), styles.TextColor, world))
+		views.AddMemberBar(world, st.abilityContainer, entity)
 		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), styles.TextColor, world))
 
 		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
