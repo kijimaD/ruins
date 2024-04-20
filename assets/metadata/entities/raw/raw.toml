@@ -145,7 +145,7 @@ Name = "作業用ヘルメット"
 Description = "衝撃吸収性に優れた産業用の帽子"
 
 [item.wearable]
-Defense = 10
+Defense = 4
 EquipmentCategory = "HEAD"
 
 [item.equip_bonus]
@@ -157,7 +157,7 @@ Name = "西洋鎧"
 Description = "伝統的な意匠が施されたずっしりと重い鎧"
 
 [item.wearable]
-Defense = 16
+Defense = 8
 EquipmentCategory = "TORSO"
 
 [item.equip_bonus]
@@ -168,7 +168,7 @@ Name = "革のブーツ"
 Description = "よくなめされた革で成形された長靴"
 
 [item.wearable]
-Defense = 5
+Defense = 3
 EquipmentCategory = "LEGS"
 
 [item.equip_bonus]

@@ -18,7 +18,7 @@ func NewEmptyContainer() *widget.Container {
 func NewRowContainer() *widget.Container {
 	return widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Spacing(8),
 			widget.RowLayoutOpts.Padding(widget.Insets{
 				Top:    10,
 				Bottom: 10,

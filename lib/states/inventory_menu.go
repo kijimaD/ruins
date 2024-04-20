@@ -264,8 +264,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		gameComponents.Name,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+		partyButton := eui.NewItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
 			st.actionContainer.RemoveChild(st.selectedItemButton)

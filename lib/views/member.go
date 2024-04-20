@@ -9,6 +9,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -19,7 +20,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 	targetContainer.AddChild(eui.NewMenuText(name.Name, world))
 
 	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-	targetContainer.AddChild(eui.NewMenuText(fmt.Sprintf("HP %3d / %3d", pools.HP.Current, pools.HP.Max), world))
+	targetContainer.AddChild(eui.NewMenuText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), world))
 
 	hProgressbar := widget.NewProgressBar(
 		widget.ProgressBarOpts.WidgetOpts(
