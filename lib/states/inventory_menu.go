@@ -272,6 +272,8 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 			st.categoryReload(world)
 		}, world)
 		partyContainer.AddChild(partyButton)
+
+		views.AddMemberBar(world, partyContainer, entity)
 	}))
 }
 
