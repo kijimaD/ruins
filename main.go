@@ -40,6 +40,7 @@ func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func (game *mainGame) Update() error {
 	game.stateMachine.Update(game.world)
+
 	return nil
 }
 

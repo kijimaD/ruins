@@ -28,7 +28,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 			// This is necessary if you wish to have the progress bar be larger than
 			// the provided track image. In this exampe since we are using NineSliceColor
 			// which is 1px x 1px we must set a minimum size.
-			widget.WidgetOpts.MinSize(180, 20),
+			widget.WidgetOpts.MinSize(140, 20),
 		),
 		widget.ProgressBarOpts.Images(
 			// Set the track images (Idle, Hover, Disabled).

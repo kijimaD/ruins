@@ -320,3 +320,13 @@ Sensation = 8
 Dexterity = 7
 Agility = 7
 Defense = 0
+
+[[member]]
+Name = "ヒラヤマ"
+[member.attributes]
+Vitality = 5
+Strength = 5
+Sensation = 5
+Dexterity = 5
+Agility = 5
+Defense = 0
