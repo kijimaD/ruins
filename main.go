@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"runtime"
+
+	"net/http"
+	_ "net/http/pprof"
 
 	"github.com/golang/freetype/truetype"
 	"github.com/pkg/profile"
@@ -125,9 +129,13 @@ func main() {
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("ruins")
 
+	// プロファイラ
 	if runtime.GOOS == "linux" {
 		defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 	}
+	go func() {
+		log.Fatal(http.ListenAndServe("localhost:6060", nil))
+	}()
 
 	ebiten.RunGame(&mainGame{
 		world:        world,

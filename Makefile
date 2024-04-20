@@ -4,9 +4,13 @@
 run: ## 実行する
 	go run .
 
-.PHONY: memプロファイルを見る
-memp: ## 実行する
+.PHONY: memp
+memp: ## 実行毎に保存しているプロファイルを見る
 	go tool pprof mem.pprof
+
+.PHONY: pprof
+pprof: ## サーバ経由で取得したプロファイルを見る。起動中でなければならない
+	go build . && go tool pprof ruins "http://localhost:6060/debug/pprof/heap?seconds=10"
 
 .PHONY: help
 help: ## ヘルプを表示する
