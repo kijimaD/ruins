@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -43,9 +44,27 @@ func (game *mainGame) Update() error {
 }
 
 func (game *mainGame) Draw(screen *ebiten.Image) {
-	// stateによっては背景に隠れて見えない
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f", ebiten.CurrentFPS()))
 	game.stateMachine.Draw(game.world, screen)
+
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	msg := fmt.Sprintf(`FPS: %f
+Alloc: %.2fMB
+TotalAlloc: %.2fMB
+HeapAlloc: %.2fMB
+Mallocs: %.2fKB
+Frees: %.2fKB
+`,
+
+		ebiten.ActualFPS(),
+		float64(mem.Alloc/1024/1024),
+		float64(mem.TotalAlloc/1024/1024),
+		float64(mem.HeapAlloc/1024/1024),
+		float64(mem.Mallocs/1024),
+		float64(mem.Frees/1024),
+	)
+	ebitenutil.DebugPrint(screen, msg)
+
 }
 
 func main() {
