@@ -27,7 +27,6 @@ import (
 
 type HomeMenuState struct {
 	selection int
-	homeMenu  []ecs.Entity
 	ui        *ebitenui.UI
 
 	memberContainer     *widget.Container // メンバー一覧コンテナ
@@ -46,8 +45,6 @@ func (st *HomeMenuState) OnResume(world w.World) {
 }
 
 func (st *HomeMenuState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.homeMenu = append(st.homeMenu, loader.AddEntities(world, prefabs.Menu.HomeMenu)...)
 
 	// デバッグ用
 	// 初回のみ追加する
@@ -90,9 +87,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *HomeMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.homeMenu...)
-}
+func (st *HomeMenuState) OnStop(world w.World) {}
 
 // FIXME: 毎ループでやってるので重い。変更があったときだけ、でいい
 func (st *HomeMenuState) Update(world w.World) states.Transition {
