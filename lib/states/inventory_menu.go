@@ -58,7 +58,7 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CampMenuState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
@@ -264,14 +264,15 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		gameComponents.Name,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		partyButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+		partyButton := eui.NewItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
 			st.actionContainer.RemoveChild(st.selectedItemButton)
 			st.categoryReload(world)
 		}, world)
 		partyContainer.AddChild(partyButton)
+
+		views.AddMemberBar(world, partyContainer, entity)
 	}))
 }
 

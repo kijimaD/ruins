@@ -163,7 +163,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		sc, v := eui.NewScrollContainer(st.actionContainer)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newVSplitContainer(st.specContainer, st.recipeList, world))
+		rootContainer.AddChild(eui.NewVSplitContainer(st.specContainer, st.recipeList))
 
 		rootContainer.AddChild(itemDescContainer)
 	}
@@ -269,29 +269,6 @@ func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container 
 	)
 
 	return itemSpecContainer
-}
-
-// 縦分割コンテナ
-func (st *CraftMenuState) newVSplitContainer(top *widget.Container, bottom *widget.Container, world w.World) *widget.Container {
-	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(1),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
-				}),
-			)),
-	)
-	split.AddChild(top)
-	split.AddChild(bottom)
-
-	return split
 }
 
 func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {

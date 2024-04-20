@@ -18,7 +18,7 @@ func NewEmptyContainer() *widget.Container {
 func NewRowContainer() *widget.Container {
 	return widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Spacing(2),
+			widget.RowLayoutOpts.Spacing(8),
 			widget.RowLayoutOpts.Padding(widget.Insets{
 				Top:    10,
 				Bottom: 10,
@@ -31,7 +31,7 @@ func NewRowContainer() *widget.Container {
 // 中身が縦並びのコンテナ
 func NewVerticalContainer() *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
@@ -64,6 +64,29 @@ func NewItemGridContainer() *widget.Container {
 				}),
 			)),
 	)
+}
+
+// 縦分割コンテナ
+func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
+	split := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				widget.GridLayoutOpts.Columns(1),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    2,
+					Bottom: 2,
+					Left:   2,
+					Right:  2,
+				}),
+			)),
+	)
+	split.AddChild(top)
+	split.AddChild(bottom)
+
+	return split
 }
 
 // スクロールコンテナとスクロールバー
@@ -157,7 +180,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, *LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 			VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -171,7 +194,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 
 func NewMenuText(title string, world w.World) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, *LoadFont(world), styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -182,7 +205,7 @@ func NewMenuText(title string, world w.World) *widget.Text {
 
 func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, LoadFont(world), color),
+		widget.TextOpts.Text(title, *LoadFont(world), color),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -213,7 +236,7 @@ func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), wor
 	return widget.NewButton(
 		widget.ButtonOpts.Image(LoadButtonImage()),
 		widget.ButtonOpts.Text(text,
-			LoadFont(world),
+			*LoadFont(world),
 			&widget.ButtonTextColor{
 				Idle: styles.TextColor,
 			},

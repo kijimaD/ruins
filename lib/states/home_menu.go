@@ -4,18 +4,20 @@ package states
 import (
 	"fmt"
 
+	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
+	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -23,7 +25,11 @@ import (
 
 type HomeMenuState struct {
 	selection int
-	homeMenu  []ecs.Entity
+	ui        *ebitenui.UI
+
+	memberContainer     *widget.Container // メンバー一覧コンテナ
+	actionListContainer *widget.Container // 選択肢アクション一覧コンテナ
+	actionDescContainer *widget.Container // 選択肢アクションの説明コンテナ
 }
 
 // State interface ================
@@ -37,8 +43,7 @@ func (st *HomeMenuState) OnResume(world w.World) {
 }
 
 func (st *HomeMenuState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.homeMenu = append(st.homeMenu, loader.AddEntities(world, prefabs.Menu.HomeMenu)...)
+	st.ui = st.initUI(world)
 
 	// デバッグ用
 	// 初回のみ追加する
@@ -67,6 +72,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
 		ishihara := spawner.SpawnMember(world, "イシハラ", true)
 		spawner.SpawnMember(world, "シラセ", true)
+		spawner.SpawnMember(world, "ヒラヤマ", true)
 		spawner.SpawnAllMaterials(world)
 		material.PlusAmount("鉄", 40, world)
 		material.PlusAmount("鉄くず", 4, world)
@@ -78,95 +84,31 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	}
 }
 
-func (st *HomeMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.homeMenu...)
-}
+func (st *HomeMenuState) OnStop(world w.World) {}
 
 func (st *HomeMenuState) Update(world w.World) states.Transition {
+	effects.RunEffectQueue(world)
+	_ = gs.EquipmentChangedSystem(world)
+
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
-	effects.RunEffectQueue(world)
-	_ = gs.EquipmentChangedSystem(world)
+	st.updateActionList(world)
+	st.updateMemberContainer(world)
 
 	// 完全回復
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 
-	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
-		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		if text.ID == "description" {
-			switch st.selection {
-			case 0:
-				text.Text = "遺跡に出発する"
-			case 1:
-				text.Text = "アイテムを合成する"
-			case 2:
-				text.Text = "仲間を入れ替える"
-			case 3:
-				text.Text = "キャンプメニューを開く"
-			case 4:
-				text.Text = "終了する"
-			}
-		}
-	}))
-
-	names := []string{}
-	hps := []string{}
-	sps := []string{}
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Member,
-		gameComponents.InParty,
-		gameComponents.Name,
-		gameComponents.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-
-		names = append(names, fmt.Sprintf("%-4s Lv.%d", name.Name, pools.Level))
-		hps = append(hps, fmt.Sprintf("HP %3d / %3d", pools.HP.Current, pools.HP.Max))
-		sps = append(sps, fmt.Sprintf("SP %3d / %3d", pools.SP.Current, pools.SP.Max))
-	}))
-
-	world.Manager.Join(
-		world.Components.Engine.Text,
-		world.Components.Engine.UITransform,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		switch text.ID {
-		case "party_1_name":
-			if len(names) > 0 {
-				text.Text = names[0]
-			}
-		case "party_2_name":
-			if len(names) > 1 {
-				text.Text = names[1]
-			}
-		case "party_3_name":
-			if len(names) > 2 {
-				text.Text = names[2]
-			}
-		case "party_4_name":
-			if len(names) > 3 {
-				text.Text = names[3]
-			}
-		case "party_1_hp_label":
-			text.Text = hps[0]
-		case "party_1_sp_label":
-			text.Text = sps[0]
-		case "party_2_hp_label":
-			text.Text = hps[1]
-		case "party_2_sp_label":
-			text.Text = sps[1]
-		}
-	}))
+	st.ui.Update()
 
 	return updateMenu(st, world)
 }
 
-func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {}
+func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
+	st.ui.Draw(screen)
+}
 
 // Menu Interface ================
 
@@ -188,8 +130,10 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 		// TODO: 実装する
 		return states.Transition{Type: states.TransNone}
 	case 3:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CampMenuState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: itemCategoryTypeItem}}}
 	case 4:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}}
+	case 5:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 
 	}
@@ -197,9 +141,71 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 }
 
 func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{"dungeon", "mix", "party", "camp", "exit"}
+	return []string{"dungeon", "mix", "party", "inventory", "equip", "exit"}
 }
 
 func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_dungeon", "cursor_mix", "cursor_party", "cursor_camp", "cursor_exit"}
+	return []string{"cursor_dungeon", "cursor_mix", "cursor_party", "cursor_inventory", "equip", "cursor_exit"}
+}
+
+// ================
+
+func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
+	rootContainer := eui.NewVerticalContainer()
+	st.memberContainer = eui.NewVerticalContainer()
+
+	st.actionListContainer = eui.NewRowContainer()
+	st.actionDescContainer = eui.NewRowContainer()
+	actionContainer := eui.NewVSplitContainer(st.actionListContainer, st.actionDescContainer)
+	{
+		rootContainer.AddChild(st.memberContainer)
+		rootContainer.AddChild(actionContainer)
+	}
+
+	return &ebitenui.UI{Container: rootContainer}
+}
+
+// 選択肢を更新する
+func (st *HomeMenuState) updateActionList(world w.World) {
+	st.actionListContainer.RemoveChildren()
+	st.actionDescContainer.RemoveChildren()
+
+	labels := []string{
+		"出発",
+		"合成",
+		"入替",
+		"所持",
+		"装備",
+		"終了",
+	}
+	for i, label := range labels {
+		btn := eui.NewMenuText(label, world)
+		if st.selection == i {
+			btn.Color = styles.ButtonHoverColor
+		}
+		st.actionListContainer.AddChild(btn)
+	}
+
+	descs := []string{
+		"遺跡に出発する",
+		"アイテムを合成する",
+		"仲間を入れ替える(未実装)",
+		"所持品を確認する",
+		"装備を変更する",
+		"終了する",
+	}
+	desc := descs[st.selection]
+	st.actionDescContainer.AddChild(eui.NewMenuText(desc, world))
+}
+
+// メンバー一覧を更新する
+func (st *HomeMenuState) updateMemberContainer(world w.World) {
+	st.memberContainer.RemoveChildren()
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Member,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		views.AddMemberBar(world, st.memberContainer, entity)
+	}))
 }

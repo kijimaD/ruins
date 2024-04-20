@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	"runtime"
+
+	"github.com/golang/freetype/truetype"
+	"github.com/pkg/profile"
+	"golang.org/x/image/font"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -39,13 +44,29 @@ func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func (game *mainGame) Update() error {
 	game.stateMachine.Update(game.world)
+
 	return nil
 }
 
 func (game *mainGame) Draw(screen *ebiten.Image) {
-	// stateによっては背景に隠れて見えない
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f", ebiten.CurrentFPS()))
 	game.stateMachine.Draw(game.world, screen)
+
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	msg := fmt.Sprintf(`FPS: %f
+Alloc: %.2fMB
+TotalAlloc: %.2fMB
+Mallocs: %.2fMB
+Frees: %.2fMB
+`,
+
+		ebiten.ActualFPS(),
+		float64(mem.Alloc/1024/1024),
+		float64(mem.TotalAlloc/1024/1024), // 起動後から割り当てられたヒープオブジェクトの数。freeされてもリセットされない
+		float64(mem.Mallocs/1024/1024),    // 割り当てられているヒープオブジェクトの数。freeされたら減る
+		float64(mem.Frees/1024/1024),      // 解放されたヒープオブジェクトの数
+	)
+	ebitenutil.DebugPrint(screen, msg)
 }
 
 func main() {
@@ -70,6 +91,12 @@ func main() {
 	// load fonts
 	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
 	world.Resources.Fonts = &fonts
+	world.Resources.DefaultFaces = &map[string]font.Face{
+		"kappa": truetype.NewFace((*world.Resources.Fonts)["kappa"].Font, &truetype.Options{
+			Size: 24,
+			DPI:  72,
+		}),
+	}
 
 	// load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{
@@ -81,7 +108,6 @@ func main() {
 			DebugMenu:     gloader.PreloadEntities("metadata/entities/ui/debug_menu.toml", world),
 			InventoryMenu: gloader.PreloadEntities("metadata/entities/ui/inventory_menu.toml", world),
 			CraftMenu:     gloader.PreloadEntities("metadata/entities/ui/craft_menu.toml", world),
-			CampMenu:      gloader.PreloadEntities("metadata/entities/ui/camp_menu.toml", world),
 			EquipMenu:     gloader.PreloadEntities("metadata/entities/ui/equip_menu.toml", world),
 		},
 		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
@@ -98,6 +124,8 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("ruins")
+
+	defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 
 	ebiten.RunGame(&mainGame{
 		world:        world,
