@@ -66,6 +66,29 @@ func NewItemGridContainer() *widget.Container {
 	)
 }
 
+// 縦分割コンテナ
+func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
+	split := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				widget.GridLayoutOpts.Columns(1),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    2,
+					Bottom: 2,
+					Left:   2,
+					Right:  2,
+				}),
+			)),
+	)
+	split.AddChild(top)
+	split.AddChild(bottom)
+
+	return split
+}
+
 // スクロールコンテナとスクロールバー
 func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
 	scrollContainer := widget.NewScrollContainer(
