@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/pkg/profile"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -65,7 +66,6 @@ Frees: %.2fKB
 		float64(mem.Frees/1024),
 	)
 	ebitenutil.DebugPrint(screen, msg)
-
 }
 
 func main() {
@@ -117,6 +117,8 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("ruins")
+
+	defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 
 	ebiten.RunGame(&mainGame{
 		world:        world,
