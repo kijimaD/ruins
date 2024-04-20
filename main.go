@@ -129,8 +129,8 @@ func main() {
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("ruins")
 
-	// プロファイラ
-	if runtime.GOOS == "linux" {
+	// プロファイラ。WASMは除外する
+	if runtime.GOOS != "js" {
 		defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 	}
 	go func() {
