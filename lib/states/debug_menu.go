@@ -19,6 +19,10 @@ type DebugMenuState struct {
 	debugMenu []ecs.Entity
 }
 
+func (st DebugMenuState) String() string {
+	return "DebugMenu"
+}
+
 // State interface ================
 
 func (st *DebugMenuState) OnPause(world w.World) {}

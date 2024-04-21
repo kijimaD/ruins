@@ -15,6 +15,10 @@ type MainMenuState struct {
 	selection int
 }
 
+func (st MainMenuState) String() string {
+	return "MainMenu"
+}
+
 // State interface ================
 
 func (st *MainMenuState) OnPause(world w.World) {}

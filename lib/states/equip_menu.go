@@ -39,6 +39,10 @@ type EquipMenuState struct {
 	curMemberIdx     int               // 選択中の味方
 }
 
+func (st EquipMenuState) String() string {
+	return "EquipMenu"
+}
+
 // State interface ================
 
 func (st *EquipMenuState) OnPause(world w.World) {}
