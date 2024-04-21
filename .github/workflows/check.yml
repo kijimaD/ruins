@@ -40,7 +40,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: build
-        run: ./build.sh
+        run: |
+          git fetch --prune --unshallow
+          ./build.sh
 
   test:
     needs: setup
