@@ -15,6 +15,7 @@ APP_NAME=ruins
 APP_VERSION=v0.0.0
 
 cd `dirname $0`
+cd ../
 
 # ================
 
