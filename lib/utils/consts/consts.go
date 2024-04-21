@@ -16,4 +16,5 @@ const (
 	EquimentCategoryLabel = "部位"
 )
 
+// ビルド時に挿入する
 var AppVersion = "v0.0.0"
