@@ -14,4 +14,14 @@ cmd() {
     go run . screenshot $state
 }
 
+cmd CraftMenu
 cmd Intro
+cmd DebugMenu
+cmd DungeonSelect
+cmd EquipMenu
+cmd Field
+cmd FieldMenu
+cmd HomeMenu
+cmd Intro
+cmd InventoryMenu
+cmd MainMenu
