@@ -63,7 +63,7 @@ jobs:
           # キャプチャ実行
           make vrt
           # 差分が発生しないか確認する
-          git status -s
+          git status
           test -z "$(git status -s)"
 
 
