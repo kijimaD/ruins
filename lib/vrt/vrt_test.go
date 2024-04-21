@@ -11,5 +11,5 @@ import (
 // https://github.com/hajimehoshi/ebiten/blob/be771268ede283303836afc5823389429b87fddd/run.go#L290
 // Don't call RunGame or RunGameWithOptions twice or more in one process.
 func TestRunTestGame(t *testing.T) {
-	vrt.RunTestGame(t, &gs.MainMenuState{}, "MainMenu")
+	vrt.RunTestGame(&gs.MainMenuState{}, "MainMenu")
 }
