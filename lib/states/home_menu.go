@@ -47,14 +47,14 @@ func (st *HomeMenuState) OnResume(world w.World) {
 func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用
 	// 初回のみ追加する
-	count := 0
+	memberCount := 0
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Member,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		count++
+		memberCount++
 	}))
-	if count == 0 {
+	if memberCount == 0 {
 		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
