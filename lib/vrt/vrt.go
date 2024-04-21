@@ -2,6 +2,7 @@ package vrt
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"image/png"
 	"log"
@@ -49,6 +50,11 @@ const dirPerm = 0o755
 
 func (g *TestGame) Draw(screen *ebiten.Image) {
 	g.StateMachine.Draw(g.World, screen)
+
+	// テストでは保存しない
+	if flag.Lookup("test.v") != nil {
+		return
+	}
 
 	_ = os.Mkdir(outputDirName, dirPerm)
 	file, err := os.Create(path.Join(outputDirName, fmt.Sprintf("%s.png", g.outputPath)))
