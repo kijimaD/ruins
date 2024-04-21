@@ -95,7 +95,6 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	world.Resources.Prefabs = &gr.Prefabs{
 		Menu: gr.MenuPrefabs{
 			MainMenu:      gloader.PreloadEntities("metadata/entities/ui/main_menu.toml", world),
-			HomeMenu:      gloader.PreloadEntities("metadata/entities/ui/home_menu.toml", world),
 			DungeonSelect: gloader.PreloadEntities("metadata/entities/ui/dungeon_select.toml", world),
 			FieldMenu:     gloader.PreloadEntities("metadata/entities/ui/field_menu.toml", world),
 			DebugMenu:     gloader.PreloadEntities("metadata/entities/ui/debug_menu.toml", world),
