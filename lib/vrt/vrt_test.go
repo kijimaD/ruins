@@ -2,7 +2,6 @@ package vrt_test
 
 import (
 	"errors"
-	"fmt"
 	"image/png"
 	"log"
 	"os"
@@ -14,21 +13,16 @@ import (
 	gs "github.com/kijimaD/ruins/lib/states"
 )
 
-func TestMain(m *testing.M) {
-	RunTestGame(m)
-}
-
 func TestAaa(t *testing.T) {
-	fmt.Println("===============")
+	RunTestGame()
 }
 
 // ================
 
-var regularTermination = errors.New("regular termination")
+var regularTermination = errors.New("テスト環境における、想定どおりの終了")
 
 type TestGame struct {
 	game.MainGame
-	m         *testing.M
 	gameCount int
 }
 
@@ -36,7 +30,7 @@ func (g *TestGame) Update() error {
 	// テストの前に実行される
 	g.StateMachine.Update(g.World)
 
-	// 1フレームだけ実行する。描画するため
+	// 1フレームだけ実行する。更新→描画の順なので、1度は更新しないと描画されない
 	if g.gameCount < 1 {
 		g.gameCount += 1
 		return nil
@@ -61,18 +55,14 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 	}
 }
 
-func RunTestGame(m *testing.M) {
-	ebiten.SetWindowSize(960, 720)
-	ebiten.SetInitFocused(false)
-	ebiten.SetWindowTitle("Testing...")
-
+func RunTestGame() {
 	world := game.InitWorld(960, 720)
 	g := &TestGame{
-		m: m,
 		MainGame: game.MainGame{
 			World:        world,
 			StateMachine: es.Init(&gs.MainMenuState{}, world),
 		},
+		gameCount: 0,
 	}
 
 	if err := ebiten.RunGame(g); err != nil && err != regularTermination {
