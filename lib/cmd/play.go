@@ -35,10 +35,10 @@ func runPlay(_ *cli.Context) error {
 	// プロファイラ。WASMは除外する
 	if runtime.GOOS != "js" {
 		defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
+		go func() {
+			log.Fatal(http.ListenAndServe("localhost:6060", nil))
+		}()
 	}
-	go func() {
-		log.Fatal(http.ListenAndServe("localhost:6060", nil))
-	}()
 
 	world := game.InitWorld(minGameWidth, minGameHeight)
 	ebiten.RunGame(&game.MainGame{
