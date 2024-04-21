@@ -10,7 +10,7 @@ test: ## テストを実行する
 
 .PHONY: build
 build: ## ビルドする
-	./build.sh
+	./scripts/build.sh
 
 .PHONY: memp
 memp: ## 実行毎に保存しているプロファイルを見る

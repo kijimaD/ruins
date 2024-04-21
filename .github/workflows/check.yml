@@ -42,7 +42,7 @@ jobs:
       - name: build
         run: |
           git fetch --prune --unshallow
-          ./build.sh
+          ./scripts/build.sh
 
   test:
     needs: setup
