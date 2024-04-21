@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"path"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/engine/states"
@@ -35,10 +36,14 @@ func (g *TestGame) Update() error {
 	return regularTermination
 }
 
+const outputDirName = "vrtimages"
+const dirPerm = 0o755
+
 func (g *TestGame) Draw(screen *ebiten.Image) {
 	g.StateMachine.Draw(g.World, screen)
 
-	file, err := os.Create(fmt.Sprintf("%s.png", g.outputPath))
+	_ = os.Mkdir(outputDirName, dirPerm)
+	file, err := os.Create(path.Join(outputDirName, fmt.Sprintf("%s.png", g.outputPath)))
 	if err != nil {
 		log.Fatal(err)
 	}

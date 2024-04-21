@@ -26,6 +26,7 @@ func NewMainApp() *cli.App {
 	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
 		CmdPlay,
+		CmdScreenshot,
 	}
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 %s
