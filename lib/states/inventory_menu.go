@@ -35,7 +35,11 @@ type InventoryMenuState struct {
 	actionContainer    *widget.Container // アクションの起点となるコンテナ
 	specContainer      *widget.Container // 性能表示のコンテナ
 	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
-	category           itemCategoryType
+	category           ItemCategoryType
+}
+
+func (st InventoryMenuState) String() string {
+	return "InventoryMenu"
 }
 
 // State interface ================
@@ -99,7 +103,7 @@ func (st *InventoryMenuState) getCursorMenuIDs() []string {
 // ================
 var _ haveCategory = &InventoryMenuState{}
 
-func (st *InventoryMenuState) setCategoryReload(world w.World, category itemCategoryType) {
+func (st *InventoryMenuState) setCategoryReload(world w.World, category ItemCategoryType) {
 	st.category = category
 	st.categoryReload(world)
 }
@@ -109,17 +113,22 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 	st.items = []ecs.Entity{}
 
 	switch st.category {
-	case itemCategoryTypeItem:
+	case ItemCategoryTypeItem:
 		st.items = simple.QueryMenuItem(world)
-	case itemCategoryTypeCard:
+	case ItemCategoryTypeCard:
 		st.items = st.queryMenuCard(world)
-	case itemCategoryTypeMaterial:
+	case ItemCategoryTypeMaterial:
 		st.items = st.queryMenuMaterial(world)
 	default:
 		log.Fatal("未定義のcategory")
 	}
 
 	st.generateList(world)
+}
+
+// TODO: 後で整理する
+func (st *InventoryMenuState) SetCategory(category ItemCategoryType) {
+	st.category = category
 }
 
 // ================
@@ -278,9 +287,9 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeItem) }, world)
-	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeCard) }, world)
-	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, itemCategoryTypeMaterial) }, world)
+	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeItem) }, world)
+	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeCard) }, world)
+	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeMaterial) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleCardButton)
 	toggleContainer.AddChild(toggleMaterialButton)

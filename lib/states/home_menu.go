@@ -32,6 +32,10 @@ type HomeMenuState struct {
 	actionDescContainer *widget.Container // 選択肢アクションの説明コンテナ
 }
 
+func (st HomeMenuState) String() string {
+	return "HomeMenu"
+}
+
 // State interface ================
 
 func (st *HomeMenuState) OnPause(world w.World) {
@@ -125,12 +129,12 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 	case 0:
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
 	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{category: itemCategoryTypeItem}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{category: ItemCategoryTypeItem}}}
 	case 2:
 		// TODO: 実装する
 		return states.Transition{Type: states.TransNone}
 	case 3:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: itemCategoryTypeItem}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: ItemCategoryTypeItem}}}
 	case 4:
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}}
 	case 5:

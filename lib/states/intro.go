@@ -19,6 +19,10 @@ type IntroState struct {
 	bg    *ebiten.Image
 }
 
+func (st IntroState) String() string {
+	return "Intro"
+}
+
 var introText = `
 [image source="bg_urban1"]
 

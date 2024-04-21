@@ -13,6 +13,10 @@ import (
 
 type FieldState struct{}
 
+func (st FieldState) String() string {
+	return "Field"
+}
+
 // State interface ================
 
 func (st *FieldState) OnPause(world w.World) {}

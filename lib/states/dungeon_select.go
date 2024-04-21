@@ -18,6 +18,10 @@ type DungeonSelectState struct {
 	dungeonSelect []ecs.Entity
 }
 
+func (st DungeonSelectState) String() string {
+	return "DungeonSelect"
+}
+
 // State interface ================
 
 func (st *DungeonSelectState) OnPause(world w.World) {}

@@ -26,19 +26,19 @@ func getWinRect() image.Rectangle {
 
 // ================
 
-type itemCategoryType string
+type ItemCategoryType string
 
 var (
-	itemCategoryTypeItem     itemCategoryType = "ITEM"
-	itemCategoryTypeCard     itemCategoryType = "CARD"
-	itemCategoryTypeWearable itemCategoryType = "WEARABLE"
-	itemCategoryTypeMaterial itemCategoryType = "MATERIAL"
+	ItemCategoryTypeItem     ItemCategoryType = "ITEM"
+	ItemCategoryTypeCard     ItemCategoryType = "CARD"
+	ItemCategoryTypeWearable ItemCategoryType = "WEARABLE"
+	ItemCategoryTypeMaterial ItemCategoryType = "MATERIAL"
 )
 
 // ================
 
 // 単に実装形式を合わせるためのintarface
 type haveCategory interface {
-	setCategoryReload(world w.World, category itemCategoryType)
+	setCategoryReload(world w.World, category ItemCategoryType)
 	categoryReload(world w.World)
 }

@@ -3,7 +3,6 @@ package resources
 import (
 	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/kijimaD/ruins/lib/engine/math"
 	"github.com/kijimaD/ruins/lib/engine/utils"
@@ -73,8 +72,11 @@ func InitLevel(world w.World, levelNum int) {
 	loader.AddEntities(world, prefabs.Field.PackageInfo)
 	levelInfoEntity := loader.AddEntities(world, prefabs.Field.LevelInfo)[0]
 
-	rand.Seed(time.Now().UnixNano())
 	randLevelNum := rand.Intn(len(gameResources.Package.Levels))
+	// 1階は常に同じフロアが出る
+	if levelNum == 1 {
+		randLevelNum = 0
+	}
 
 	level := gameResources.Package.Levels[randLevelNum]
 	gridLayout := &gameResources.GridLayout

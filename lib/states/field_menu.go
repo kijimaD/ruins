@@ -17,6 +17,10 @@ type FieldMenuState struct {
 	fieldMenu []ecs.Entity
 }
 
+func (st FieldMenuState) String() string {
+	return "FieldMenu"
+}
+
 // State interface ================
 
 func (st *FieldMenuState) OnPause(world w.World) {}
