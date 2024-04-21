@@ -42,7 +42,7 @@ jobs:
       - name: build
         run: |
           git fetch --prune --unshallow
-          ./scripts/build.sh
+          make build
 
   test:
     needs: setup
@@ -58,7 +58,13 @@ jobs:
           sudo apt install -y libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          go test ./... -v
+          make test
+
+          # キャプチャ実行
+          make vrt
+          # 差分が発生しないか確認する
+          git status -s
+          test -z "$(git status -s)"
 
 
   # lint:

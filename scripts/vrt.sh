@@ -8,10 +8,12 @@ set -eux
 cd `dirname $0`
 cd ../
 
+RUN=${RUN:-"go run ."}
+
 cmd() {
     state=$1
 
-    go run . screenshot $state
+    $RUN screenshot $state
 }
 
 cmd CraftMenu

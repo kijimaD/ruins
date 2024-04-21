@@ -12,6 +12,10 @@ test: ## テストを実行する
 build: ## ビルドする
 	./scripts/build.sh
 
+.PHONY: vrt
+vrt: ## 各ステートでスクショを取得する
+	./scripts/vrt.sh
+
 .PHONY: memp
 memp: ## 実行毎に保存しているプロファイルを見る
 	go tool pprof mem.pprof
