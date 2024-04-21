@@ -5,11 +5,13 @@ set -eux
 # クロスコンパイルするスクリプト
 ##################################
 
+# 定数的
 SOURCE=app
 BUILD_STAGE_TARGET=base
 BUILDER_IMAGE_NAME=base
 APP_NAME=ruins
 
+# 変数的
 APP_VERSION=v0.0.0
 
 cd `dirname $0`
@@ -22,13 +24,11 @@ function is_git_repo {
 
 if [ $(is_git_repo) = "true" ]; then
     APP_VERSION=`git describe --tag --abbrev=0`
-else
-    APP_VERSION=`cat ../.versions`
 fi
 
 # ================
 
-# cmd <command> <GOOS> <GOARCH> <CGO>
+# cmd <output> <GOOS> <GOARCH> <CGO>
 cmd() {
     output=$1
     goos=$2
@@ -50,9 +50,10 @@ start() {
     docker build . --target $BUILD_STAGE_TARGET -t $BUILDER_IMAGE_NAME
 
     cmd "${APP_NAME}_linux_amd64" linux amd64 1
-    # cmd "${APP_NAME}_linux_arm64" linux arm64 1
-
     cmd "${APP_NAME}_windows_amd64" windows amd64 0
+
+    # no such instruction になる...
+    # cmd "${APP_NAME}_linux_arm64" linux arm64 1
     # cmd "${APP_NAME}_windows_arm64" windows arm64 0
 
     cmd "${APP_NAME}_js_wasm" js wasm 0
