@@ -13,14 +13,16 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// 一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
+	memberContainer := eui.NewVerticalContainer()
 
 	name := gameComponents.Name.Get(entity).(*gc.Name)
-	targetContainer.AddChild(eui.NewMenuText(name.Name, world))
+	memberContainer.AddChild(eui.NewMenuText(name.Name, world))
 
 	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-	targetContainer.AddChild(eui.NewMenuText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), world))
+	memberContainer.AddChild(eui.NewMenuText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), world))
 
 	hProgressbar := widget.NewProgressBar(
 		widget.ProgressBarOpts.WidgetOpts(
@@ -49,5 +51,8 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 			Bottom: 2,
 		}),
 	)
-	targetContainer.AddChild(hProgressbar)
+	memberContainer.AddChild(hProgressbar)
+	memberContainer.AddChild(eui.NewMenuText(fmt.Sprintf("LV %d", pools.Level), world))
+
+	targetContainer.AddChild(memberContainer)
 }

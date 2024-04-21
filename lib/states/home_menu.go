@@ -156,7 +156,7 @@ func (st *HomeMenuState) getCursorMenuIDs() []string {
 
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
-	st.memberContainer = eui.NewVerticalContainer()
+	st.memberContainer = eui.NewRowContainer()
 
 	st.actionListContainer = eui.NewRowContainer()
 	st.actionDescContainer = eui.NewRowContainer()
