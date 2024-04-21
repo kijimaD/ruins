@@ -1,8 +1,16 @@
 .DEFAULT_GOAL := help
 
 .PHONY: run
-run: ## 実行する
-	go run .
+run: ## 実行する。スクショのキーを指定している
+	EBITENGINE_SCREENSHOT_KEY=1 go run .
+
+.PHONY: test
+test: ## テストを実行する
+	go test ./... -v
+
+.PHONY: build
+build: ## ビルドする
+	./build.sh
 
 .PHONY: memp
 memp: ## 実行毎に保存しているプロファイルを見る
