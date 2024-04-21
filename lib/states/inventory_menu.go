@@ -266,6 +266,9 @@ func (st *InventoryMenuState) generateList(world world.World) {
 func (st *InventoryMenuState) initPartyWindow(world w.World) {
 	partyContainer := eui.NewWindowContainer()
 	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
+	rowContainer := eui.NewRowContainer()
+	partyContainer.AddChild(rowContainer)
+
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Member,
@@ -273,15 +276,17 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		gameComponents.Name,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		memberContainer := eui.NewVerticalContainer()
 		partyButton := eui.NewItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
 			st.actionContainer.RemoveChild(st.selectedItemButton)
 			st.categoryReload(world)
 		}, world)
-		partyContainer.AddChild(partyButton)
+		memberContainer.AddChild(partyButton)
+		views.AddMemberBar(world, memberContainer, entity)
 
-		views.AddMemberBar(world, partyContainer, entity)
+		rowContainer.AddChild(memberContainer)
 	}))
 }
 
