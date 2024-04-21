@@ -163,7 +163,7 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-var datum = []struct {
+var homeMenuTrans = []struct {
 	label string
 	trans states.Transition
 	desc  string
@@ -204,7 +204,7 @@ var datum = []struct {
 func (st *HomeMenuState) updateActionList(world w.World) {
 	st.actionListContainer.RemoveChildren()
 
-	for i, data := range datum {
+	for i, data := range homeMenuTrans {
 		i := i
 		label := data.label
 		trans := data.trans
@@ -227,7 +227,7 @@ func (st *HomeMenuState) updateActionList(world w.World) {
 // 選択肢の解説を更新する
 func (st *HomeMenuState) updateActionDesc(world w.World) {
 	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(eui.NewMenuText(datum[st.selection].desc, world))
+	st.actionDescContainer.AddChild(eui.NewMenuText(homeMenuTrans[st.selection].desc, world))
 }
 
 // メンバー一覧を更新する
