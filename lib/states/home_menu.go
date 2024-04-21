@@ -2,8 +2,6 @@
 package states
 
 import (
-	"fmt"
-
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -15,7 +13,6 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/spawner"
-	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
@@ -26,6 +23,7 @@ import (
 type HomeMenuState struct {
 	selection int
 	ui        *ebitenui.UI
+	trans     *states.Transition
 
 	memberContainer     *widget.Container // メンバー一覧コンテナ
 	actionListContainer *widget.Container // 選択肢アクション一覧コンテナ
@@ -47,8 +45,6 @@ func (st *HomeMenuState) OnResume(world w.World) {
 }
 
 func (st *HomeMenuState) OnStart(world w.World) {
-	st.ui = st.initUI(world)
-
 	// デバッグ用
 	// 初回のみ追加する
 	count := 0
@@ -86,6 +82,16 @@ func (st *HomeMenuState) OnStart(world w.World) {
 
 		equips.Equip(world, armor, ishihara, gc.EquipmentSlotZero)
 	}
+
+	// ステータス反映(最大HP)
+	_ = gs.EquipmentChangedSystem(world)
+
+	// 完全回復
+	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
+	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
+	effects.RunEffectQueue(world)
+
+	st.ui = st.initUI(world)
 }
 
 func (st *HomeMenuState) OnStop(world w.World) {}
@@ -98,14 +104,13 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
-	st.updateActionList(world)
-	st.updateMemberContainer(world)
-
-	// 完全回復
-	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-
 	st.ui.Update()
+
+	if st.trans != nil {
+		next := *st.trans
+		st.trans = nil
+		return next
+	}
 
 	return updateMenu(st, world)
 }
@@ -115,6 +120,7 @@ func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
 }
 
 // Menu Interface ================
+// 使ってないので削除していく
 
 func (st *HomeMenuState) getSelection() int {
 	return st.selection
@@ -125,31 +131,15 @@ func (st *HomeMenuState) setSelection(selection int) {
 }
 
 func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}}
-	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&CraftMenuState{category: ItemCategoryTypeItem}}}
-	case 2:
-		// TODO: 実装する
-		return states.Transition{Type: states.TransNone}
-	case 3:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: ItemCategoryTypeItem}}}
-	case 4:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}}
-	case 5:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
-
-	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{"dungeon", "mix", "party", "inventory", "equip", "exit"}
+	return []string{}
 }
 
 func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_dungeon", "cursor_mix", "cursor_party", "cursor_inventory", "equip", "cursor_exit"}
+	return []string{}
 }
 
 // ================
@@ -166,40 +156,78 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(actionContainer)
 	}
 
+	st.updateActionList(world)
+	st.updateActionDesc(world)
+	st.updateMemberContainer(world)
+
 	return &ebitenui.UI{Container: rootContainer}
+}
+
+var datum = []struct {
+	label string
+	trans states.Transition
+	desc  string
+}{
+	{
+		label: "出発",
+		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}},
+		desc:  "遺跡に出発する",
+	},
+	{
+		label: "合成",
+		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{category: ItemCategoryTypeItem}}},
+		desc:  "アイテムを合成する",
+	},
+	{
+		label: "入替",
+		trans: states.Transition{Type: states.TransNone},
+		desc:  "仲間を入れ替える(未実装)",
+	},
+	{
+		label: "所持",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: ItemCategoryTypeItem}}},
+		desc:  "所持品を確認する",
+	},
+	{
+		label: "装備",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}},
+		desc:  "装備を変更する",
+	},
+	{
+		label: "終了",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}},
+		desc:  "タイトル画面に戻る",
+	},
 }
 
 // 選択肢を更新する
 func (st *HomeMenuState) updateActionList(world w.World) {
 	st.actionListContainer.RemoveChildren()
-	st.actionDescContainer.RemoveChildren()
 
-	labels := []string{
-		"出発",
-		"合成",
-		"入替",
-		"所持",
-		"装備",
-		"終了",
-	}
-	for i, label := range labels {
-		btn := eui.NewMenuText(label, world)
-		if st.selection == i {
-			btn.Color = styles.ButtonHoverColor
-		}
+	for i, data := range datum {
+		i := i
+		label := data.label
+		trans := data.trans
+		btn := eui.NewItemButton(
+			label,
+			func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &trans
+			},
+			world,
+		)
+		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			st.selection = i
+			st.updateActionDesc(world)
+			st.updateMemberContainer(world)
+		})
 		st.actionListContainer.AddChild(btn)
 	}
+}
 
-	descs := []string{
-		"遺跡に出発する",
-		"アイテムを合成する",
-		"仲間を入れ替える(未実装)",
-		"所持品を確認する",
-		"装備を変更する",
-		"終了する",
-	}
-	desc := descs[st.selection]
-	st.actionDescContainer.AddChild(eui.NewMenuText(desc, world))
+// 選択肢の解説を更新する
+func (st *HomeMenuState) updateActionDesc(world w.World) {
+	st.actionDescContainer.RemoveChildren()
+	st.actionDescContainer.AddChild(eui.NewMenuText(datum[st.selection].desc, world))
 }
 
 // メンバー一覧を更新する

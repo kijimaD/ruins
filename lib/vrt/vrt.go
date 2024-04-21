@@ -104,9 +104,7 @@ func RunTestGame(state states.State, outputPath string) {
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
 
-	for i := 0; i < 10; i++ {
-		effects.RunEffectQueue(world)
-	}
+	effects.RunEffectQueue(world)
 
 	g := &TestGame{
 		MainGame: game.MainGame{
