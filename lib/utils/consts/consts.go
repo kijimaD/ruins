@@ -15,3 +15,5 @@ const (
 	AttackCountLabel      = "回数"
 	EquimentCategoryLabel = "部位"
 )
+
+var AppVersion = "v0.0.0"
