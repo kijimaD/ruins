@@ -135,11 +135,11 @@ func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
 }
 
 func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{}
+	return []string{""}
 }
 
 func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{}
+	return []string{""}
 }
 
 // ================
