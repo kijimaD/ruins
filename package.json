@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/kijimaD/ruins",
   "devDependencies": {
-    "semantic-release": "^22.0.4",
+    "semantic-release": "^23.0.8",
     "semantic-release-cli": "^5.4.4",
     "yarn": "^1.22.22"
   },
