@@ -52,5 +52,5 @@ ENTRYPOINT ["/bin/ruins"]
 # node #
 ########
 
-FROM node:18 as releaser
+FROM node:21 as releaser
 RUN yarn install
