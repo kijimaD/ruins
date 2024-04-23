@@ -101,7 +101,7 @@ jobs:
           password: ${{ secrets.WRITE_PACKAGE }}
 
       - name: Cache Docker layers
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
