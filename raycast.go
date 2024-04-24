@@ -1,16 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"image"
 	"image/color"
 	"log"
 	"math"
 	"sort"
 
-	"github.com/hajimehoshi/ebiten/examples/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -30,13 +27,9 @@ var (
 )
 
 func init() {
-	// Decode an image from the image file's byte slice.
-	img, _, err := image.Decode(bytes.NewReader(images.Tile_png))
-	if err != nil {
-		log.Fatal(err)
-	}
-	bgImage = ebiten.NewImageFromImage(img)
-	triangleImage.Fill(color.White)
+	bgImage = ebiten.NewImage(screenWidth, screenHeight)
+	bgImage.Fill(color.RGBA{255, 255, 255, 255})
+	triangleImage.Fill(color.RGBA{0, 0, 0, 255})
 }
 
 type line struct {
@@ -219,9 +212,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	opt.Address = ebiten.AddressRepeat
 	opt.Blend = ebiten.BlendSourceOut
 	for i, line := range rays {
+		// まず全面を影で覆う。次に見えている領域だけをその上から三角形として描画する
+		// triangleを変えても、反映されないな...
 		nextLine := rays[(i+1)%len(rays)]
 
 		// Draw triangle of area between rays
+		// vertices: 頂点
 		v := rayVertices(float64(g.px), float64(g.py), nextLine.X2, nextLine.Y2, line.X2, line.Y2)
 		shadowImage.DrawTriangles(v, []uint16{0, 1, 2}, triangleImage, opt)
 	}
@@ -238,7 +234,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Draw shadow
 	op := &ebiten.DrawImageOptions{}
-	op.ColorScale.ScaleAlpha(1.0)
+	op.ColorScale.ScaleAlpha(0.5)
 	screen.DrawImage(shadowImage, op)
 
 	// Draw walls
