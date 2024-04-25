@@ -32,7 +32,7 @@ var (
 
 func init() {
 	bgImage = ebiten.NewImage(screenWidth, screenHeight)
-	bgImage.Fill(color.White)
+	bgImage.Fill(color.RGBA{255, 85, 0, 255})
 	triangleImage.Fill(color.RGBA{0, 0, 0, 255})
 }
 
@@ -190,7 +190,7 @@ func genVertices(num int, x int, y int) []ebiten.Vertex {
 	const (
 		centerX = screenWidth / 2
 		centerY = screenHeight / 2
-		r       = 100
+		r       = 160
 	)
 
 	vs := []ebiten.Vertex{}
@@ -283,7 +283,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
-	// 円
+	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
 		vs := genVertices(ngon, g.px, g.py)
 		opt := &ebiten.DrawTrianglesOptions{}
@@ -296,10 +296,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// Draw shadow
-	op := &ebiten.DrawImageOptions{}
-	op.ColorScale.ScaleAlpha(0.8)
-	screen.DrawImage(shadowImage, op)
-	screen.DrawImage(visionImage, op)
+	{
+		op := &ebiten.DrawImageOptions{}
+		op.ColorScale.ScaleAlpha(0.8)
+		screen.DrawImage(shadowImage, op)
+	}
+	{
+		op := &ebiten.DrawImageOptions{}
+		op.ColorScale.ScaleAlpha(1)
+		screen.DrawImage(visionImage, op)
+	}
 
 	// Draw player as a rect
 	vector.DrawFilledRect(screen, float32(g.px)-2, float32(g.py)-2, 4, 4, color.Black, true)
