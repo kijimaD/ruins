@@ -28,7 +28,7 @@ var (
 
 func init() {
 	bgImage = ebiten.NewImage(screenWidth, screenHeight)
-	bgImage.Fill(color.RGBA{255, 255, 255, 255})
+	bgImage.Fill(color.RGBA{200, 200, 200, 255})
 	triangleImage.Fill(color.RGBA{0, 0, 0, 255})
 }
 
@@ -212,8 +212,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	opt.Address = ebiten.AddressRepeat
 	opt.Blend = ebiten.BlendSourceOut
 	for i, line := range rays {
-		// まず全面を影で覆う。次に見えている領域だけをその上から三角形として描画する
-		// triangleを変えても、反映されないな...
+		// 全面黒の影画像から、見えてる部分だけ切り出す
 		nextLine := rays[(i+1)%len(rays)]
 
 		// Draw triangle of area between rays
@@ -288,9 +287,11 @@ func main() {
 	g.objects = append(g.objects, object{rect(45, 50, 70, 20)})
 	g.objects = append(g.objects, object{rect(150, 50, 30, 60)})
 
-	// Rectangles
 	g.objects = append(g.objects, object{rect(95, 90, 70, 20)})
 	g.objects = append(g.objects, object{rect(120, 150, 30, 60)})
+
+	g.objects = append(g.objects, object{rect(200, 210, 5, 5)})
+	g.objects = append(g.objects, object{rect(220, 210, 5, 5)})
 
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
 	ebiten.SetWindowTitle("Ray casting and shadows (Ebitengine Demo)")
