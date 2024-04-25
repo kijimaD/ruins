@@ -24,6 +24,9 @@ var (
 	bgImage       *ebiten.Image
 	shadowImage   = ebiten.NewImage(screenWidth, screenHeight)
 	triangleImage = ebiten.NewImage(screenWidth, screenHeight)
+
+	vertices []ebiten.Vertex
+	ngon     = 20
 )
 
 func init() {
@@ -176,10 +179,61 @@ func (g *Game) handleMovement() {
 
 func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {
 	return []ebiten.Vertex{
-		{DstX: float32(x1), DstY: float32(y1), SrcX: 0, SrcY: 0, ColorR: 1, ColorG: 1, ColorB: 1, ColorA: 1},
-		{DstX: float32(x2), DstY: float32(y2), SrcX: 0, SrcY: 0, ColorR: 1, ColorG: 1, ColorB: 1, ColorA: 1},
-		{DstX: float32(x3), DstY: float32(y3), SrcX: 0, SrcY: 0, ColorR: 1, ColorG: 1, ColorB: 1, ColorA: 1},
+		{DstX: float32(x1), DstY: float32(y1), ColorR: 0, ColorG: 0, ColorB: 0, ColorA: 0},
+		{DstX: float32(x2), DstY: float32(y2), ColorR: 1, ColorG: 1, ColorB: 1, ColorA: 1},
+		{DstX: float32(x3), DstY: float32(y3), ColorR: 1, ColorG: 1, ColorB: 1, ColorA: 1},
 	}
+}
+
+func genVertices(num int) []ebiten.Vertex {
+	const (
+		centerX = screenWidth / 2
+		centerY = screenHeight / 2
+		r       = 200
+	)
+
+	vs := []ebiten.Vertex{}
+	for i := 0; i < num; i++ {
+		rate := float64(i) / float64(num)
+		cr := 0.0
+		cg := 0.0
+		cb := 0.0
+		// if rate < 1.0/3.0 {
+		// 	cb = 2 - 2*(rate*3)
+		// 	cr = 2 * (rate * 3)
+		// }
+		// if 1.0/3.0 <= rate && rate < 2.0/3.0 {
+		// 	cr = 2 - 2*(rate-1.0/3.0)*3
+		// 	cg = 2 * (rate - 1.0/3.0) * 3
+		// }
+		// if 2.0/3.0 <= rate {
+		// 	cg = 2 - 2*(rate-2.0/3.0)*3
+		// 	cb = 2 * (rate - 2.0/3.0) * 3
+		// }
+		vs = append(vs, ebiten.Vertex{
+			DstX:   float32(r*math.Cos(2*math.Pi*rate)) + centerX,
+			DstY:   float32(r*math.Sin(2*math.Pi*rate)) + centerY,
+			SrcX:   0,
+			SrcY:   0,
+			ColorR: float32(cr),
+			ColorG: float32(cg),
+			ColorB: float32(cb),
+			ColorA: 1,
+		})
+	}
+
+	vs = append(vs, ebiten.Vertex{
+		DstX:   centerX,
+		DstY:   centerY,
+		SrcX:   0,
+		SrcY:   0,
+		ColorR: 0,
+		ColorG: 0,
+		ColorB: 0,
+		ColorA: 0,
+	})
+
+	return vs
 }
 
 type Game struct {
@@ -207,18 +261,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	shadowImage.Fill(color.Black)
 	rays := rayCasting(float64(g.px), float64(g.py), g.objects)
 
-	// Subtract ray triangles from shadow
-	opt := &ebiten.DrawTrianglesOptions{}
-	opt.Address = ebiten.AddressRepeat
-	opt.Blend = ebiten.BlendSourceOut
-	for i, line := range rays {
-		// 全面黒の影画像から、見えてる部分だけ切り出す
-		nextLine := rays[(i+1)%len(rays)]
+	// 全面が黒の画像から、三角形の部分をブレンドで引いて、隠れてる部分だけ黒で残す
+	{
+		opt := &ebiten.DrawTrianglesOptions{}
+		opt.Address = ebiten.AddressRepeat
+		opt.Blend = ebiten.BlendSourceOut
+		for i, line := range rays {
+			nextLine := rays[(i+1)%len(rays)]
 
-		// Draw triangle of area between rays
-		// vertices: 頂点
-		v := rayVertices(float64(g.px), float64(g.py), nextLine.X2, nextLine.Y2, line.X2, line.Y2)
-		shadowImage.DrawTriangles(v, []uint16{0, 1, 2}, triangleImage, opt)
+			// Draw triangle of area between rays
+			// vertices: 頂点
+			v := rayVertices(float64(g.px), float64(g.py), nextLine.X2, nextLine.Y2, line.X2, line.Y2)
+			shadowImage.DrawTriangles(v, []uint16{0, 1, 2}, triangleImage, opt)
+		}
 	}
 
 	// Draw background
@@ -231,9 +286,20 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
+	// 円
+	{
+		vs := genVertices(ngon)
+		op := &ebiten.DrawTrianglesOptions{}
+		indices := []uint16{}
+		for i := 0; i < ngon; i++ {
+			indices = append(indices, uint16(i), uint16(i+1)%uint16(ngon), uint16(ngon))
+		}
+		screen.DrawTriangles(vs, indices, triangleImage, op)
+	}
+
 	// Draw shadow
 	op := &ebiten.DrawImageOptions{}
-	op.ColorScale.ScaleAlpha(0.5)
+	op.ColorScale.ScaleAlpha(0.8)
 	screen.DrawImage(shadowImage, op)
 
 	// Draw walls
