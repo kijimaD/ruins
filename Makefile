@@ -22,7 +22,8 @@ memp: ## 実行毎に保存しているプロファイルを見る
 
 .PHONY: pprof
 pprof: ## サーバ経由で取得したプロファイルを見る。起動中でなければならない
-	go build . && go tool pprof ruins "http://localhost:6060/debug/pprof/heap?seconds=10"
+	go build .
+	go tool pprof ruins "http://localhost:6060/debug/pprof/profile?seconds=10"
 
 .PHONY: help
 help: ## ヘルプを表示する
