@@ -1,13 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"image"
 	"image/color"
 	"log"
 	"math"
 	"sort"
 
+	"github.com/hajimehoshi/ebiten/examples/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -31,8 +34,12 @@ var (
 )
 
 func init() {
-	bgImage = ebiten.NewImage(screenWidth, screenHeight)
-	bgImage.Fill(color.RGBA{255, 85, 0, 255})
+	img, _, err := image.Decode(bytes.NewReader(images.Tile_png))
+	if err != nil {
+		log.Fatal(err)
+	}
+	bgImage = ebiten.NewImageFromImage(img)
+
 	blackImage.Fill(color.RGBA{0, 0, 0, 255})
 }
 
@@ -298,7 +305,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw shadow
 	{
 		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(0.8)
+		op.ColorScale.ScaleAlpha(1)
 		screen.DrawImage(shadowImage, op)
 	}
 	{

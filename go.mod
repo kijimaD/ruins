@@ -24,6 +24,7 @@ require (
 	github.com/ebitengine/purego v0.7.1 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect
+	github.com/hajimehoshi/ebiten v1.12.12 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
