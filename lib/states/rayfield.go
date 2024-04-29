@@ -22,8 +22,10 @@ func (st *RayFieldState) OnPause(world w.World) {}
 func (st *RayFieldState) OnResume(world w.World) {}
 
 func (st *RayFieldState) OnStart(world w.World) {
-	st.Game.Px = 100
-	st.Game.Py = 100
+	st.Game.Px = world.Resources.ScreenDimensions.Width / 4
+	st.Game.Py = world.Resources.ScreenDimensions.Height / 4
+	st.Game.ScreenWidth = world.Resources.ScreenDimensions.Width
+	st.Game.ScreenHeight = world.Resources.ScreenDimensions.Height
 	st.Game.Prepare()
 }
 

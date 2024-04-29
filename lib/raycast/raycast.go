@@ -3,7 +3,6 @@ package raycast
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"image"
 	"image/color"
 	"log"
@@ -18,30 +17,20 @@ import (
 )
 
 const (
-	screenWidth  = 480
-	screenHeight = 480
-	padding      = 20
+	padding = 20
 )
 
 var (
-	bgImage     *ebiten.Image
-	shadowImage = ebiten.NewImage(screenWidth, screenHeight)
-	visionImage = ebiten.NewImage(screenWidth, screenHeight)
-	blackImage  = ebiten.NewImage(screenWidth, screenHeight)
+	screenWidth  = 0
+	screenHeight = 0
+	bgImage      *ebiten.Image
+	shadowImage  *ebiten.Image
+	visionImage  *ebiten.Image
+	blackImage   *ebiten.Image
 
 	vertices   []ebiten.Vertex
 	visionNgon = 20
 )
-
-func init() {
-	img, _, err := image.Decode(bytes.NewReader(images.Tile_png))
-	if err != nil {
-		log.Fatal(err)
-	}
-	bgImage = ebiten.NewImageFromImage(img)
-
-	blackImage.Fill(color.RGBA{0, 0, 0, 255})
-}
 
 type line struct {
 	X1, Y1, X2, Y2 float64
@@ -106,7 +95,7 @@ func intersection(l1, l2 line) (float64, float64, bool) {
 
 // rayCasting returns a slice of line originating from point cx, cy and intersecting with objects
 func rayCasting(cx, cy float64, objects []Object) []line {
-	const rayLength = 1000 // something large enough to reach all objects
+	const rayLength = 10000 // something large enough to reach all objects
 
 	var rays []line
 	for _, obj := range objects {
@@ -159,11 +148,7 @@ func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {
 }
 
 func visionVertices(num int, x int, y int) []ebiten.Vertex {
-	const (
-		centerX = screenWidth / 2
-		centerY = screenHeight / 2
-		r       = 160
-	)
+	r := 160
 
 	vs := []ebiten.Vertex{}
 	for i := 0; i < num; i++ {
@@ -172,8 +157,8 @@ func visionVertices(num int, x int, y int) []ebiten.Vertex {
 		cg := 0.0
 		cb := 0.0
 		vs = append(vs, ebiten.Vertex{
-			DstX:   float32(r*math.Cos(2*math.Pi*rate)) + float32(x),
-			DstY:   float32(r*math.Sin(2*math.Pi*rate)) + float32(y),
+			DstX:   float32(float64(r)*math.Cos(2*math.Pi*rate)) + float32(x),
+			DstY:   float32(float64(r)*math.Sin(2*math.Pi*rate)) + float32(y),
 			SrcX:   0,
 			SrcY:   0,
 			ColorR: float32(cr),
@@ -198,14 +183,31 @@ func visionVertices(num int, x int, y int) []ebiten.Vertex {
 }
 
 type Game struct {
-	showRays bool
-	Px, Py   int
-	Objects  []Object
+	showRays     bool
+	Px, Py       int
+	Objects      []Object
+	ScreenWidth  int
+	ScreenHeight int
 }
 
 func (g *Game) Prepare() {
+	screenWidth = g.ScreenWidth
+	screenHeight = g.ScreenHeight
+
+	shadowImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
+	visionImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
+	blackImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
+
+	img, _, err := image.Decode(bytes.NewReader(images.Tile_png))
+	if err != nil {
+		log.Fatal(err)
+	}
+	bgImage = ebiten.NewImageFromImage(img)
+
+	blackImage.Fill(color.RGBA{0, 0, 0, 255})
+
 	// 	// Add outer walls
-	g.Objects = append(g.Objects, Object{rect(padding, padding, screenWidth-2*padding, screenHeight-2*padding)})
+	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(screenWidth)-2*padding, float64(screenHeight)-2*padding)})
 
 	// Angled wall
 	g.Objects = append(g.Objects, Object{[]line{{50, 110, 100, 150}}})
@@ -231,19 +233,36 @@ func (g *Game) Update() error {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		g.Px += 1
+		g.Px += 2
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
-		g.Py += 1
+		g.Py += 2
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		g.Px -= 1
+		g.Px -= 2
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		g.Py -= 1
+		g.Py -= 2
+	}
+
+	// +1/-1 is to stop player before it reaches the border
+	if g.Px >= screenWidth-padding {
+		g.Px = screenWidth - padding - 1
+	}
+
+	if g.Px <= padding {
+		g.Px = padding + 1
+	}
+
+	if g.Py >= screenHeight-padding {
+		g.Py = screenHeight - padding - 1
+	}
+
+	if g.Py <= padding {
+		g.Py = padding + 1
 	}
 
 	return nil
@@ -320,10 +339,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	} else {
 		ebitenutil.DebugPrintAt(screen, "R: show rays", padding, 0)
 	}
-
-	ebitenutil.DebugPrintAt(screen, "WASD: move", 160, 0)
-	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("TPS: %0.2f", ebiten.ActualTPS()), 51, 51)
-	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Rays: 2*%d", len(rays)/2), padding, 222)
 }
 
 func rect(x, y, w, h float64) []line {
