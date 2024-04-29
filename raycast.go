@@ -21,10 +21,10 @@ const (
 )
 
 var (
-	bgImage       *ebiten.Image
-	shadowImage   = ebiten.NewImage(screenWidth, screenHeight)
-	visionImage   = ebiten.NewImage(screenWidth, screenHeight)
-	triangleImage = ebiten.NewImage(screenWidth, screenHeight)
+	bgImage     *ebiten.Image
+	shadowImage = ebiten.NewImage(screenWidth, screenHeight)
+	visionImage = ebiten.NewImage(screenWidth, screenHeight)
+	blackImage  = ebiten.NewImage(screenWidth, screenHeight)
 
 	vertices   []ebiten.Vertex
 	visionNgon = 20
@@ -33,7 +33,7 @@ var (
 func init() {
 	bgImage = ebiten.NewImage(screenWidth, screenHeight)
 	bgImage.Fill(color.RGBA{255, 85, 0, 255})
-	triangleImage.Fill(color.RGBA{0, 0, 0, 255})
+	blackImage.Fill(color.RGBA{0, 0, 0, 255})
 }
 
 type line struct {
@@ -251,7 +251,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	visionImage.Fill(color.Black)
 	rays := rayCasting(float64(g.px), float64(g.py), g.objects)
 
-	// 全面が黒の画像から、三角形の部分をブレンドで引いて、隠れてる部分だけ黒で残す
+	// 全面が黒の画像から、三角形の部分をブレンドで引いて、影になっている部分だけ黒で残す
 	{
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Address = ebiten.AddressRepeat
@@ -262,7 +262,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			// Draw triangle of area between rays
 			// vertices: 頂点
 			v := rayVertices(float64(g.px), float64(g.py), nextLine.X2, nextLine.Y2, line.X2, line.Y2)
-			shadowImage.DrawTriangles(v, []uint16{0, 1, 2}, triangleImage, opt)
+			shadowImage.DrawTriangles(v, []uint16{0, 1, 2}, blackImage, opt)
 		}
 	}
 
@@ -292,7 +292,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		for i := 0; i < visionNgon; i++ {
 			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
 		}
-		visionImage.DrawTriangles(vs, indices, triangleImage, opt)
+		visionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
 
 	// Draw shadow
