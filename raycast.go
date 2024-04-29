@@ -26,8 +26,8 @@ var (
 	visionImage   = ebiten.NewImage(screenWidth, screenHeight)
 	triangleImage = ebiten.NewImage(screenWidth, screenHeight)
 
-	vertices []ebiten.Vertex
-	ngon     = 20
+	vertices   []ebiten.Vertex
+	visionNgon = 20
 )
 
 func init() {
@@ -186,7 +186,7 @@ func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {
 	}
 }
 
-func genVertices(num int, x int, y int) []ebiten.Vertex {
+func visionVertices(num int, x int, y int) []ebiten.Vertex {
 	const (
 		centerX = screenWidth / 2
 		centerY = screenHeight / 2
@@ -285,12 +285,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
-		vs := genVertices(ngon, g.px, g.py)
+		vs := visionVertices(visionNgon, g.px, g.py)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
-		for i := 0; i < ngon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(ngon), uint16(ngon))
+		for i := 0; i < visionNgon; i++ {
+			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
 		}
 		visionImage.DrawTriangles(vs, indices, triangleImage, opt)
 	}
