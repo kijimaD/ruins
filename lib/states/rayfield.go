@@ -22,11 +22,9 @@ func (st *RayFieldState) OnPause(world w.World) {}
 func (st *RayFieldState) OnResume(world w.World) {}
 
 func (st *RayFieldState) OnStart(world w.World) {
-	// 画像に数バイトの誤差が出て、VRTで失敗しているようなので
-	// world.Resources.ScreenDimensions.Width / 4
-	// world.Resources.ScreenDimensions.Height / 4
-	st.Game.Px = 20
-	st.Game.Py = 20
+	// 画像に数バイトの誤差が出て、VRTで失敗しているようなのでこの位置
+	st.Game.Px = world.Resources.ScreenDimensions.Width / 2
+	st.Game.Py = world.Resources.ScreenDimensions.Height / 2
 	st.Game.ScreenWidth = world.Resources.ScreenDimensions.Width
 	st.Game.ScreenHeight = world.Resources.ScreenDimensions.Height
 	st.Game.Prepare()
