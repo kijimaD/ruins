@@ -23,10 +23,11 @@ const (
 var (
 	screenWidth  = 0
 	screenHeight = 0
-	bgImage      *ebiten.Image
-	shadowImage  *ebiten.Image
-	visionImage  *ebiten.Image
-	blackImage   *ebiten.Image
+	baseImage    *ebiten.Image // 一番下にある黒背景
+	bgImage      *ebiten.Image // 床を表現する
+	shadowImage  *ebiten.Image // 影を表現する
+	visionImage  *ebiten.Image // 視界を表現する
+	blackImage   *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
 
 	vertices   []ebiten.Vertex
 	visionNgon = 20
@@ -194,6 +195,7 @@ func (g *Game) Prepare() {
 	screenWidth = g.ScreenWidth
 	screenHeight = g.ScreenHeight
 
+	baseImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	shadowImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	visionImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	blackImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
@@ -204,7 +206,8 @@ func (g *Game) Prepare() {
 	}
 	bgImage = ebiten.NewImageFromImage(img)
 
-	blackImage.Fill(color.RGBA{0, 0, 0, 255})
+	baseImage.Fill(color.Black)
+	blackImage.Fill(color.Black)
 
 	// 	// Add outer walls
 	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(screenWidth)-2*padding, float64(screenHeight)-2*padding)})
@@ -290,6 +293,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// Draw background
+	screen.DrawImage(baseImage, nil)
 	screen.DrawImage(bgImage, nil)
 
 	// Draw walls
