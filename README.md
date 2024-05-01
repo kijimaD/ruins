@@ -7,6 +7,7 @@
 <img src="./vrtimages/FieldMenu.png" width="50%" /><img src="./vrtimages/Field.png" width="50%" />
 <img src="./vrtimages/HomeMenu.png" width="50%" /><img src="./vrtimages/Intro.png" width="50%" />
 <img src="./vrtimages/InventoryMenu.png" width="50%" /><img src="./vrtimages/MainMenu.png" width="50%" />
+<img src="./vrtimages/RayField.png" width="50%" />
 
 各画像は全自動でキャプチャされる。最新なことをCIで保証している。
 
