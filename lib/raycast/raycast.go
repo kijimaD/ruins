@@ -320,6 +320,18 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		visionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
 
+	// 光源の中心付近を明るくする
+	{
+		vs := visionVertices(visionNgon, g.Px, g.Py, 20)
+		opt := &ebiten.DrawTrianglesOptions{}
+		opt.Blend = ebiten.BlendClear
+		indices := []uint16{}
+		for i := 0; i < visionNgon; i++ {
+			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
+		}
+		visionImage.DrawTriangles(vs, indices, blackImage, opt)
+	}
+
 	// Draw shadow
 	{
 		op := &ebiten.DrawImageOptions{}
