@@ -2,7 +2,6 @@ package raycast
 
 import (
 	"bytes"
-	"errors"
 	"image"
 	"image/color"
 	"log"
@@ -225,10 +224,6 @@ func (g *Game) Prepare() {
 }
 
 func (g *Game) Update() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return errors.New("game ended by player")
-	}
-
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 		g.showRays = !g.showRays
 	}
@@ -292,7 +287,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Draw background
 	screen.DrawImage(baseImage, nil)
-	screen.DrawImage(bgImage, nil)
+	{
+		tileWidth, tileHeight := bgImage.Size()
+		// 背景画像を敷き詰める
+		for i := 0; i < screenWidth; i += tileWidth {
+			for j := 0; j < screenHeight; j += tileHeight {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(i), float64(j))
+				screen.DrawImage(bgImage, op)
+			}
+		}
+	}
 
 	// Draw walls
 	for _, obj := range g.Objects {
