@@ -26,8 +26,8 @@ translation = { x = 480, y = 640 }
 [[entity]]
 
 [entity.components.Text]
-id = "item"
-text = "アイテム"
+id = "exit"
+text = "終了"
 font_face = { font = "kappa", options.size = 40.0 }
 color = [255, 255, 255, 255]
 
@@ -37,7 +37,7 @@ translation = { x = 480, y = 500 }
 [[entity]]
 
 [entity.components.Text]
-id = "cursor_item"
+id = "cursor_exit"
 text = "\u25ba"
 font_face = { font = "hack", options.size = 60.0 }
 color = [255, 255, 255, 255]

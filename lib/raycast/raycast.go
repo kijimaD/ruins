@@ -2,7 +2,6 @@ package raycast
 
 import (
 	"bytes"
-	"errors"
 	"image"
 	"image/color"
 	"log"
@@ -26,7 +25,7 @@ var (
 	baseImage    *ebiten.Image // 一番下にある黒背景
 	bgImage      *ebiten.Image // 床を表現する
 	shadowImage  *ebiten.Image // 影を表現する
-	visionImage  *ebiten.Image // 視界を表現する
+	visionImage  *ebiten.Image // 視界を表現する黒背景
 	blackImage   *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
 
 	vertices   []ebiten.Vertex
@@ -148,9 +147,7 @@ func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {
 	}
 }
 
-func visionVertices(num int, x int, y int) []ebiten.Vertex {
-	r := 160
-
+func visionVertices(num int, x int, y int, r int) []ebiten.Vertex {
 	vs := []ebiten.Vertex{}
 	for i := 0; i < num; i++ {
 		rate := float64(i) / float64(num)
@@ -227,10 +224,6 @@ func (g *Game) Prepare() {
 }
 
 func (g *Game) Update() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return errors.New("game ended by player")
-	}
-
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 		g.showRays = !g.showRays
 	}
@@ -294,7 +287,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Draw background
 	screen.DrawImage(baseImage, nil)
-	screen.DrawImage(bgImage, nil)
+	{
+		tileWidth, tileHeight := bgImage.Size()
+		// 背景画像を敷き詰める
+		for i := 0; i < screenWidth; i += tileWidth {
+			for j := 0; j < screenHeight; j += tileHeight {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(i), float64(j))
+				screen.DrawImage(bgImage, op)
+			}
+		}
+	}
 
 	// Draw walls
 	for _, obj := range g.Objects {
@@ -312,9 +315,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
-		vs := visionVertices(visionNgon, g.Px, g.Py)
+		vs := visionVertices(visionNgon, g.Px, g.Py, 140)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
+		indices := []uint16{}
+		for i := 0; i < visionNgon; i++ {
+			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
+		}
+		visionImage.DrawTriangles(vs, indices, blackImage, opt)
+	}
+
+	// 光源の中心付近を明るくする
+	{
+		vs := visionVertices(visionNgon, g.Px, g.Py, 20)
+		opt := &ebiten.DrawTrianglesOptions{}
+		opt.Blend = ebiten.BlendClear
 		indices := []uint16{}
 		for i := 0; i < visionNgon; i++ {
 			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
@@ -339,9 +354,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, float32(g.Px)-1, float32(g.Py)-1, 2, 2, color.RGBA{255, 100, 100, 255}, true)
 
 	if g.showRays {
-		ebitenutil.DebugPrintAt(screen, "R: hide rays", padding, 0)
+		ebitenutil.DebugPrintAt(screen, "R: hide rays", screenWidth-padding, 0)
 	} else {
-		ebitenutil.DebugPrintAt(screen, "R: show rays", padding, 0)
+		ebitenutil.DebugPrintAt(screen, "R: show rays", screenHeight-padding, 0)
 	}
 }
 

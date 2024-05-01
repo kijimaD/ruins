@@ -67,9 +67,9 @@ func (st *FieldMenuState) confirmSelection(world w.World) states.Transition {
 }
 
 func (st *FieldMenuState) getMenuIDs() []string {
-	return []string{"item", "close"}
+	return []string{"exit", "close"}
 }
 
 func (st *FieldMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_item", "cursor_close"}
+	return []string{"cursor_exit", "cursor_close"}
 }
