@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -134,7 +133,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		sc, v := eui.NewScrollContainer(st.actionContainer)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newVSplitContainer(st.specContainer, st.abilityContainer))
+		rootContainer.AddChild(eui.NewWSplitContainer(st.specContainer, st.abilityContainer))
 
 		rootContainer.AddChild(st.itemDesc)
 	}
@@ -328,27 +327,4 @@ func (st *EquipMenuState) queryAbility(world w.World) []ecs.Entity {
 	}))
 
 	return entities
-}
-
-// 縦分割コンテナ
-func (st *EquipMenuState) newVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
-	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(1),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
-				}),
-			)),
-	)
-	split.AddChild(top)
-	split.AddChild(bottom)
-
-	return split
 }
