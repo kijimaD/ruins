@@ -26,7 +26,7 @@ var (
 	baseImage    *ebiten.Image // 一番下にある黒背景
 	bgImage      *ebiten.Image // 床を表現する
 	shadowImage  *ebiten.Image // 影を表現する
-	visionImage  *ebiten.Image // 視界を表現する
+	visionImage  *ebiten.Image // 視界を表現する黒背景
 	blackImage   *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
 
 	vertices   []ebiten.Vertex
@@ -148,9 +148,7 @@ func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {
 	}
 }
 
-func visionVertices(num int, x int, y int) []ebiten.Vertex {
-	r := 160
-
+func visionVertices(num int, x int, y int, r int) []ebiten.Vertex {
 	vs := []ebiten.Vertex{}
 	for i := 0; i < num; i++ {
 		rate := float64(i) / float64(num)
@@ -312,7 +310,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
-		vs := visionVertices(visionNgon, g.Px, g.Py)
+		vs := visionVertices(visionNgon, g.Px, g.Py, 140)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
