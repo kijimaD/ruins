@@ -21,13 +21,11 @@ const (
 )
 
 var (
-	screenWidth  = 0
-	screenHeight = 0
-	baseImage    *ebiten.Image // 一番下にある黒背景
-	bgImage      *ebiten.Image // 床を表現する
-	shadowImage  *ebiten.Image // 影を表現する
-	visionImage  *ebiten.Image // 視界を表現する黒背景
-	blackImage   *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
+	baseImage   *ebiten.Image // 一番下にある黒背景
+	bgImage     *ebiten.Image // 床を表現する
+	shadowImage *ebiten.Image // 影を表現する
+	visionImage *ebiten.Image // 視界を表現する黒背景
+	blackImage  *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
 
 	vertices   []ebiten.Vertex
 	visionNgon = 20
@@ -192,9 +190,6 @@ type Game struct {
 }
 
 func (g *Game) Prepare() {
-	screenWidth = g.ScreenWidth
-	screenHeight = g.ScreenHeight
-
 	baseImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	shadowImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	visionImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
@@ -209,8 +204,8 @@ func (g *Game) Prepare() {
 	baseImage.Fill(color.Black)
 	blackImage.Fill(color.Black)
 
-	// 	// Add outer walls
-	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(screenWidth)-2*padding, float64(screenHeight)-2*padding)})
+	// Add outer walls
+	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(g.ScreenWidth)-2*padding, float64(g.ScreenHeight)-2*padding)})
 
 	// Rectangles
 	g.Objects = append(g.Objects, Object{rect(45, 50, 70, 20)})
@@ -248,16 +243,16 @@ func (g *Game) Update() {
 	}
 
 	// +1/-1 is to stop player before it reaches the border
-	if g.Px >= screenWidth-padding {
-		g.Px = screenWidth - padding - 1
+	if g.Px >= g.ScreenWidth-padding {
+		g.Px = g.ScreenWidth - padding - 1
 	}
 
 	if g.Px <= padding {
 		g.Px = padding + 1
 	}
 
-	if g.Py >= screenHeight-padding {
-		g.Py = screenHeight - padding - 1
+	if g.Py >= g.ScreenHeight-padding {
+		g.Py = g.ScreenHeight - padding - 1
 	}
 
 	if g.Py <= padding {
@@ -294,8 +289,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	{
 		tileWidth, tileHeight := bgImage.Size()
 		// 背景画像を敷き詰める
-		for i := 0; i < screenWidth; i += tileWidth {
-			for j := 0; j < screenHeight; j += tileHeight {
+		for i := 0; i < g.ScreenWidth; i += tileWidth {
+			for j := 0; j < g.ScreenHeight; j += tileHeight {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(i), float64(j))
 				screen.DrawImage(bgImage, op)
@@ -359,9 +354,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, float32(g.Px)-1, float32(g.Py)-1, 2, 2, color.RGBA{255, 100, 100, 255}, true)
 
 	if g.showRays {
-		ebitenutil.DebugPrintAt(screen, "R: hide rays", screenWidth-padding*8, 0)
+		ebitenutil.DebugPrintAt(screen, "R: hide rays", g.ScreenWidth-padding*8, 0)
 	} else {
-		ebitenutil.DebugPrintAt(screen, "R: show rays", screenWidth-padding*8, 0)
+		ebitenutil.DebugPrintAt(screen, "R: show rays", g.ScreenWidth-padding*8, 0)
 	}
 }
 
