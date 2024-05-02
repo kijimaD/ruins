@@ -7,6 +7,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// アイテムを生成する
 func SpawnItem(world w.World, name string, spawnType raw.SpawnType) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
@@ -17,6 +18,7 @@ func SpawnItem(world w.World, name string, spawnType raw.SpawnType) ecs.Entity {
 	return entities[len(entities)-1]
 }
 
+// プレイアブルキャラを生成する
 func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)

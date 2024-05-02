@@ -1,6 +1,8 @@
 package components
 
-import ecs "github.com/x-hgg-x/goecs/v2"
+import (
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
 
 type Components struct {
 	GridElement      *ecs.SliceComponent

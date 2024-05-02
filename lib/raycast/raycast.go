@@ -209,9 +209,6 @@ func (g *Game) Prepare() {
 	// 	// Add outer walls
 	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(screenWidth)-2*padding, float64(screenHeight)-2*padding)})
 
-	// Angled wall
-	g.Objects = append(g.Objects, Object{[]line{{50, 110, 100, 150}}})
-
 	// Rectangles
 	g.Objects = append(g.Objects, Object{rect(45, 50, 70, 20)})
 	g.Objects = append(g.Objects, Object{rect(150, 50, 30, 60)})
@@ -221,9 +218,12 @@ func (g *Game) Prepare() {
 
 	g.Objects = append(g.Objects, Object{rect(200, 210, 5, 5)})
 	g.Objects = append(g.Objects, Object{rect(220, 210, 5, 5)})
+
+	g.Objects = append(g.Objects, Object{rect(100, 250, 500, 20)})
+	g.Objects = append(g.Objects, Object{rect(100, 400, 500, 20)})
 }
 
-func (g *Game) Update() error {
+func (g *Game) Update() {
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 		g.showRays = !g.showRays
 	}
@@ -261,13 +261,14 @@ func (g *Game) Update() error {
 		g.Py = padding + 1
 	}
 
-	return nil
+	return
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Reset the shadowImage
 	shadowImage.Fill(color.Black)
 	visionImage.Fill(color.Black)
+	// position, blockviewをクエリ
 	rays := rayCasting(float64(g.Px), float64(g.Py), g.Objects)
 
 	// 全面が黒の画像から、三角形の部分をブレンドで引いて、影になっている部分だけ黒で残す
@@ -302,7 +303,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw walls
 	for _, obj := range g.Objects {
 		for _, w := range obj.walls {
-			vector.StrokeLine(screen, float32(w.X1), float32(w.Y1), float32(w.X2), float32(w.Y2), 1, color.RGBA{255, 0, 0, 255}, true)
+			vector.StrokeLine(screen, float32(w.X1), float32(w.Y1), float32(w.X2), float32(w.Y2), 20, color.RGBA{0, 0, 0, 100}, true)
 		}
 	}
 
@@ -315,7 +316,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
-		vs := visionVertices(visionNgon, g.Px, g.Py, 140)
+		vs := visionVertices(visionNgon, g.Px, g.Py, 200)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
@@ -350,7 +351,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// Draw player as a rect
-	vector.DrawFilledRect(screen, float32(g.Px)-2, float32(g.Py)-2, 4, 4, color.Black, true)
+	vector.DrawFilledRect(screen, float32(g.Px)-16, float32(g.Py)-16, 32, 32, color.Black, true)
 	vector.DrawFilledRect(screen, float32(g.Px)-1, float32(g.Py)-1, 2, 2, color.RGBA{255, 100, 100, 255}, true)
 
 	if g.showRays {
