@@ -31,6 +31,7 @@ var (
 	visionNgon = 20
 )
 
+// 始点と終点
 type line struct {
 	X1, Y1, X2, Y2 float64
 }
@@ -44,12 +45,12 @@ type Object struct {
 }
 
 func (o Object) points() [][2]float64 {
-	// Get one of the endpoints for all segments,
-	// + the startpoint of the first one, for non-closed paths
+	// すべてのセグメントの終点を取得
 	var points [][2]float64
 	for _, wall := range o.walls {
 		points = append(points, [2]float64{wall.X2, wall.Y2})
 	}
+	// パスが閉じてない場合、最初のポイントを足すことでパスを閉じる
 	p := [2]float64{o.walls[0].X1, o.walls[0].Y1}
 	if p[0] != points[len(points)-1][0] && p[1] != points[len(points)-1][1] {
 		points = append(points, [2]float64{o.walls[0].X1, o.walls[0].Y1})
@@ -57,6 +58,7 @@ func (o Object) points() [][2]float64 {
 	return points
 }
 
+// 角度を変えて新しい線を生成する
 func newRay(x, y, length, angle float64) line {
 	return line{
 		X1: x,
