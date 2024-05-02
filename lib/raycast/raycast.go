@@ -1,3 +1,4 @@
+// https://ebitengine.org/en/examples/raycasting.html を参考にした
 package raycast
 
 import (
@@ -94,8 +95,9 @@ func intersection(l1, l2 line) (float64, float64, bool) {
 }
 
 // rayCasting returns a slice of line originating from point cx, cy and intersecting with objects
+// cx, cyは視点
 func rayCasting(cx, cy float64, objects []Object) []line {
-	const rayLength = 10000 // something large enough to reach all objects
+	const rayLength = 1000 // something large enough to reach all objects
 
 	var rays []line
 	for _, obj := range objects {
@@ -104,6 +106,7 @@ func rayCasting(cx, cy float64, objects []Object) []line {
 			l := line{cx, cy, p[0], p[1]}
 			angle := l.angle()
 
+			// 微妙に角度をつけて影を自然に見せる(直線にならないようにする)
 			for _, offset := range []float64{-0.005, 0.005} {
 				points := [][2]float64{}
 				ray := newRay(cx, cy, rayLength, angle+offset)
@@ -117,7 +120,7 @@ func rayCasting(cx, cy float64, objects []Object) []line {
 					}
 				}
 
-				// Find the point closest to start of ray
+				// rayの視点から最も近い点(=距離が最も小さい点)を求める
 				min := math.Inf(1)
 				minI := -1
 				for i, p := range points {
@@ -338,12 +341,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		visionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
 
-	// Draw shadow
+	// 建物影
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
 		screen.DrawImage(shadowImage, op)
 	}
+	// 視界影
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
@@ -355,9 +359,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, float32(g.Px)-1, float32(g.Py)-1, 2, 2, color.RGBA{255, 100, 100, 255}, true)
 
 	if g.showRays {
-		ebitenutil.DebugPrintAt(screen, "R: hide rays", screenWidth-padding, 0)
+		ebitenutil.DebugPrintAt(screen, "R: hide rays", screenWidth-padding*8, 0)
 	} else {
-		ebitenutil.DebugPrintAt(screen, "R: show rays", screenHeight-padding, 0)
+		ebitenutil.DebugPrintAt(screen, "R: show rays", screenWidth-padding*8, 0)
 	}
 }
 
