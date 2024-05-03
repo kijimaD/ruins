@@ -95,12 +95,12 @@ var debugMenuTrans = []struct {
 	trans states.Transition
 }{
 	{
-		label: "回復薬をインベントリにスポーン",
+		label: "回復薬スポーン(インベントリ)",
 		f:     func(world w.World) { spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack) },
 		trans: states.Transition{Type: states.TransNone},
 	},
 	{
-		label: "手榴弾をインベントリにスポーン",
+		label: "手榴弾スポーン(インベントリ)",
 		f:     func(world w.World) { spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack) },
 		trans: states.Transition{Type: states.TransNone},
 	},

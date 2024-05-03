@@ -21,9 +21,8 @@ import (
 )
 
 type HomeMenuState struct {
-	selection int
-	ui        *ebitenui.UI
-	trans     *states.Transition
+	ui    *ebitenui.UI
+	trans *states.Transition
 
 	memberContainer     *widget.Container // メンバー一覧コンテナ
 	actionListContainer *widget.Container // 選択肢アクション一覧コンテナ
@@ -134,7 +133,6 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	st.updateActionList(world)
-	st.updateActionDesc(world)
 	st.updateMemberContainer(world)
 
 	return &ebitenui.UI{Container: rootContainer}
@@ -181,8 +179,7 @@ var homeMenuTrans = []struct {
 func (st *HomeMenuState) updateActionList(world w.World) {
 	st.actionListContainer.RemoveChildren()
 
-	for i, data := range homeMenuTrans {
-		i := i
+	for _, data := range homeMenuTrans {
 		data := data
 		btn := eui.NewItemButton(
 			data.label,
@@ -192,18 +189,13 @@ func (st *HomeMenuState) updateActionList(world w.World) {
 			world,
 		)
 		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			st.selection = i
-			st.updateActionDesc(world)
+			st.actionDescContainer.RemoveChildren()
+			st.actionDescContainer.AddChild(eui.NewMenuText(data.desc, world))
+
 			st.updateMemberContainer(world)
 		})
 		st.actionListContainer.AddChild(btn)
 	}
-}
-
-// 選択肢の解説を更新する
-func (st *HomeMenuState) updateActionDesc(world w.World) {
-	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(eui.NewMenuText(homeMenuTrans[st.selection].desc, world))
 }
 
 // メンバー一覧を更新する
