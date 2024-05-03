@@ -89,10 +89,6 @@ var mainMenuTrans = []struct {
 	trans states.Transition
 }{
 	{
-		label: "スタート",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}},
-	},
-	{
 		label: "イントロ",
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}},
 	},
@@ -101,7 +97,7 @@ var mainMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
 	},
 	{
-		label: "ray field(実装中)",
+		label: "raycast field(実装中)",
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{

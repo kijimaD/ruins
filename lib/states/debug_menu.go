@@ -63,7 +63,7 @@ func (st *DebugMenuState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 
 func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
+	rootContainer := eui.NewVerticalTransContainer()
 	st.debugMenuContainer = eui.NewVerticalContainer()
 	rootContainer.AddChild(st.debugMenuContainer)
 

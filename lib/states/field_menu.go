@@ -1,20 +1,23 @@
 package states
 
 import (
-	"fmt"
-
+	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/eui"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type FieldMenuState struct {
 	selection int
 	fieldMenu []ecs.Entity
+
+	ui                 *ebitenui.UI
+	trans              *states.Transition
+	fieldMenuContainer *widget.Container
 }
 
 func (st FieldMenuState) String() string {
@@ -28,48 +31,69 @@ func (st *FieldMenuState) OnPause(world w.World) {}
 func (st *FieldMenuState) OnResume(world w.World) {}
 
 func (st *FieldMenuState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.fieldMenu = append(st.fieldMenu, loader.AddEntities(world, prefabs.Menu.FieldMenu)...)
+	st.ui = st.initUI(world)
 }
 
-func (st *FieldMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.fieldMenu...)
-}
+func (st *FieldMenuState) OnStop(world w.World) {}
 
 func (st *FieldMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPop}
 	}
 
-	return updateMenu(st, world)
-}
+	st.ui.Update()
+	if st.trans != nil {
+		next := *st.trans
+		st.trans = nil
 
-func (st *FieldMenuState) Draw(world w.World, screen *ebiten.Image) {}
-
-// Menu Interface ================
-
-func (st *FieldMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *FieldMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *FieldMenuState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&MainMenuState{}}}
-	case 1:
-		return states.Transition{Type: states.TransPop}
+		return next
 	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
+
+	return states.Transition{Type: states.TransNone}
 }
 
-func (st *FieldMenuState) getMenuIDs() []string {
-	return []string{"exit", "close"}
+func (st *FieldMenuState) Draw(world w.World, screen *ebiten.Image) {
+	st.ui.Draw(screen)
 }
 
-func (st *FieldMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_exit", "cursor_close"}
+// ================
+
+func (st *FieldMenuState) initUI(world w.World) *ebitenui.UI {
+	rootContainer := eui.NewVerticalTransContainer()
+	st.fieldMenuContainer = eui.NewVerticalContainer()
+	rootContainer.AddChild(st.fieldMenuContainer)
+
+	st.updateMenuContainer(world)
+
+	return &ebitenui.UI{Container: rootContainer}
+}
+
+func (st *FieldMenuState) updateMenuContainer(world w.World) {
+	st.fieldMenuContainer.RemoveChildren()
+
+	for _, data := range fieldMenuTrans {
+		data := data
+		btn := eui.NewItemButton(
+			data.label,
+			func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			},
+			world,
+		)
+		st.fieldMenuContainer.AddChild(btn)
+	}
+}
+
+var fieldMenuTrans = []struct {
+	label string
+	trans states.Transition
+}{
+	{
+		label: "閉じる",
+		trans: states.Transition{Type: states.TransPop},
+	},
+	{
+		label: "終了",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}},
+	},
 }

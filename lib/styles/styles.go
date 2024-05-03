@@ -25,6 +25,8 @@ var (
 	BackgroundColor = RGB(0x000000)
 	// デバッグ
 	DebugColor = RGB(0x0000FF)
+	// 透過黒背景
+	TransBlackColor = color.RGBA{0, 0, 0, 100}
 
 	// ウィンドウ
 	WindowBodyColor   = RGB(0x808080)

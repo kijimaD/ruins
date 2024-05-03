@@ -35,13 +35,9 @@ func (st HomeMenuState) String() string {
 
 // State interface ================
 
-func (st *HomeMenuState) OnPause(world w.World) {
-	st.OnStop(world)
-}
+func (st *HomeMenuState) OnPause(world w.World) {}
 
-func (st *HomeMenuState) OnResume(world w.World) {
-	st.OnStart(world)
-}
+func (st *HomeMenuState) OnResume(world w.World) {}
 
 func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用
