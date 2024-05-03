@@ -112,34 +112,11 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 		return next
 	}
 
-	return updateMenu(st, world)
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
-}
-
-// Menu Interface ================
-// 使ってないので削除していく
-
-func (st *HomeMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *HomeMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
-	return states.Transition{Type: states.TransNone}
-}
-
-func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{""}
-}
-
-func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{""}
 }
 
 // ================

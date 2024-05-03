@@ -1,18 +1,22 @@
 package states
 
 import (
-	"fmt"
+	"image/color"
 
+	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/eui"
 )
 
 type MainMenuState struct {
-	selection int
+	ui    *ebitenui.UI
+	trans *states.Transition
+
+	mainMenuContainer *widget.Container
 }
 
 func (st MainMenuState) String() string {
@@ -26,8 +30,7 @@ func (st *MainMenuState) OnPause(world w.World) {}
 func (st *MainMenuState) OnResume(world w.World) {}
 
 func (st *MainMenuState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	loader.AddEntities(world, prefabs.Menu.MainMenu)
+	st.ui = st.initUI(world)
 }
 
 func (st *MainMenuState) OnStop(world w.World) {
@@ -39,41 +42,70 @@ func (st *MainMenuState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransQuit}
 	}
 
-	return updateMenu(st, world)
-}
+	st.ui.Update()
 
-func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {}
-
-// Menu Interface ================
-
-func (st *MainMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *MainMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *MainMenuState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}}
-	case 1:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}}
-	case 2:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
-	case 3:
-		return states.Transition{Type: states.TransQuit}
-	case 4:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&RayFieldState{}}}
+	if st.trans != nil {
+		next := *st.trans
+		st.trans = nil
+		return next
 	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
+
+	return states.Transition{Type: states.TransNone}
 }
 
-func (st *MainMenuState) getMenuIDs() []string {
-	return []string{"start", "intro", "home", "exit", "ray"}
+func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
+	st.ui.Draw(screen)
 }
 
-func (st *MainMenuState) getCursorMenuIDs() []string {
-	return []string{"cursor_start", "cursor_intro", "cursor_home", "cursor_exit", "cursor_ray"}
+func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
+	rootContainer := eui.NewVerticalContainer()
+	st.mainMenuContainer = eui.NewVerticalContainer()
+	rootContainer.AddChild(eui.NewBodyText("Ruins", color.RGBA{255, 255, 255, 255}, world))
+	rootContainer.AddChild(st.mainMenuContainer)
+
+	st.updateMenuContainer(world)
+
+	return &ebitenui.UI{Container: rootContainer}
+}
+
+func (st *MainMenuState) updateMenuContainer(world w.World) {
+	st.mainMenuContainer.RemoveChildren()
+
+	for _, data := range mainMenuTrans {
+		data := data
+		btn := eui.NewItemButton(
+			data.label,
+			func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			},
+			world,
+		)
+		st.mainMenuContainer.AddChild(btn)
+	}
+}
+
+var mainMenuTrans = []struct {
+	label string
+	trans states.Transition
+}{
+	{
+		label: "スタート",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&FieldState{}}},
+	},
+	{
+		label: "イントロ",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}},
+	},
+	{
+		label: "拠点メニュー",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
+	},
+	{
+		label: "ray field(実装中)",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&RayFieldState{}}},
+	},
+	{
+		label: "終了",
+		trans: states.Transition{Type: states.TransQuit},
+	},
 }
