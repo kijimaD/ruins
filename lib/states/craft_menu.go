@@ -75,40 +75,15 @@ func (st *CraftMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	return updateMenu(st, world)
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
-// Menu Interface ================
-
-func (st *CraftMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *CraftMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *CraftMenuState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransNone}
-	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
-}
-
-func (st *CraftMenuState) getMenuIDs() []string {
-	return []string{""}
-}
-
-func (st *CraftMenuState) getCursorMenuIDs() []string {
-	return []string{""}
-}
-
 // ================
+
 var _ haveCategory = &CraftMenuState{}
 
 func (st *CraftMenuState) setCategoryReload(world w.World, category ItemCategoryType) {

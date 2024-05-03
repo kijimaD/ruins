@@ -1,8 +1,6 @@
 package states
 
 import (
-	"fmt"
-
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -75,36 +73,6 @@ func (st *DungeonSelectState) Update(world w.World) states.Transition {
 
 func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
-}
-
-// Menu Interface ================
-
-func (st *DungeonSelectState) getSelection() int {
-	return st.selection
-}
-
-func (st *DungeonSelectState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *DungeonSelectState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
-	case 1:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
-	case 2:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
-	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
-}
-
-func (st *DungeonSelectState) getMenuIDs() []string {
-	return []string{"forest", "mountain", "tower"}
-}
-
-func (st *DungeonSelectState) getCursorMenuIDs() []string {
-	return []string{"cursor_forest", "cursor_mountain", "cursor_tower"}
 }
 
 func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {

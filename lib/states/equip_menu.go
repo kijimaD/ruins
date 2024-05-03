@@ -75,40 +75,12 @@ func (st *EquipMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	return updateMenu(st, world)
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *EquipMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
-
-// Menu Interface ================
-
-func (st *EquipMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *EquipMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *EquipMenuState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransNone}
-	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
-}
-
-func (st *EquipMenuState) getMenuIDs() []string {
-	return []string{""}
-}
-
-func (st *EquipMenuState) getCursorMenuIDs() []string {
-	return []string{""}
-}
-
-// ================
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.actionContainer = eui.NewVerticalContainer()
