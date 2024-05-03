@@ -206,12 +206,11 @@ func (st *HomeMenuState) updateActionList(world w.World) {
 
 	for i, data := range homeMenuTrans {
 		i := i
-		label := data.label
-		trans := data.trans
+		data := data
 		btn := eui.NewItemButton(
-			label,
+			data.label,
 			func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &trans
+				st.trans = &data.trans
 			},
 			world,
 		)
