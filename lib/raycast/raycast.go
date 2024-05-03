@@ -12,7 +12,6 @@ import (
 	"github.com/hajimehoshi/ebiten/examples/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -224,43 +223,6 @@ func (g *Game) Prepare() {
 }
 
 func (g *Game) Update() {
-	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
-		g.showRays = !g.showRays
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		g.Px += 2
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
-		g.Py += 2
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		g.Px -= 2
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		g.Py -= 2
-	}
-
-	// +1/-1 is to stop player before it reaches the border
-	if g.Px >= g.ScreenWidth-padding {
-		g.Px = g.ScreenWidth - padding - 1
-	}
-
-	if g.Px <= padding {
-		g.Px = padding + 1
-	}
-
-	if g.Py >= g.ScreenHeight-padding {
-		g.Py = g.ScreenHeight - padding - 1
-	}
-
-	if g.Py <= padding {
-		g.Py = padding + 1
-	}
-
 	return
 }
 
@@ -314,46 +276,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
-	// 視界以外をグラデーションを入れながら塗りつぶし
-	{
-		vs := visionVertices(visionNgon, g.Px, g.Py, 200)
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Blend = ebiten.BlendSourceIn
-		indices := []uint16{}
-		for i := 0; i < visionNgon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
-		}
-		visionImage.DrawTriangles(vs, indices, blackImage, opt)
-	}
-
-	// 光源の中心付近を明るくする
-	{
-		vs := visionVertices(visionNgon, g.Px, g.Py, 20)
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Blend = ebiten.BlendClear
-		indices := []uint16{}
-		for i := 0; i < visionNgon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
-		}
-		visionImage.DrawTriangles(vs, indices, blackImage, opt)
-	}
-
 	// 建物影
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
 		screen.DrawImage(shadowImage, op)
 	}
-	// 視界影
-	{
-		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(1)
-		screen.DrawImage(visionImage, op)
-	}
-
-	// Draw player as a rect
-	vector.DrawFilledRect(screen, float32(g.Px)-16, float32(g.Py)-16, 32, 32, color.Black, true)
-	vector.DrawFilledRect(screen, float32(g.Px)-1, float32(g.Py)-1, 2, 2, color.RGBA{255, 100, 100, 255}, true)
 
 	if g.showRays {
 		ebitenutil.DebugPrintAt(screen, "R: hide rays", g.ScreenWidth-padding*8, 0)

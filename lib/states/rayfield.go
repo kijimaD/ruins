@@ -35,12 +35,11 @@ func (st *RayFieldState) OnStart(world w.World) {
 	spawner.SpawnPlayer(world, 200, 200)
 }
 
-func (st *RayFieldState) OnStop(world w.World) {
-	world.Manager.DeleteAllEntities()
-}
+func (st *RayFieldState) OnStop(world w.World) {}
 
 func (st *RayFieldState) Update(world w.World) states.Transition {
 	st.Game.Update()
+	gs.MoveRaySystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
@@ -52,4 +51,5 @@ func (st *RayFieldState) Update(world w.World) states.Transition {
 func (st *RayFieldState) Draw(world w.World, screen *ebiten.Image) {
 	st.Game.Draw(screen)
 	gs.RenderObjectSystem(world, screen)
+	gs.RenderVisionSystem(world, screen)
 }
