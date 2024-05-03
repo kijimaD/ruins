@@ -6,6 +6,8 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/raycast"
+	"github.com/kijimaD/ruins/lib/spawner"
+	gs "github.com/kijimaD/ruins/lib/systems"
 )
 
 type RayFieldState struct {
@@ -29,6 +31,8 @@ func (st *RayFieldState) OnStart(world w.World) {
 	st.Game.ScreenWidth = world.Resources.ScreenDimensions.Width
 	st.Game.ScreenHeight = world.Resources.ScreenDimensions.Height
 	st.Game.Prepare()
+
+	spawner.SpawnPlayer(world, 200, 200)
 }
 
 func (st *RayFieldState) OnStop(world w.World) {
@@ -47,4 +51,5 @@ func (st *RayFieldState) Update(world w.World) states.Transition {
 
 func (st *RayFieldState) Draw(world w.World, screen *ebiten.Image) {
 	st.Game.Draw(screen)
+	gs.RenderObjectSystem(world, screen)
 }

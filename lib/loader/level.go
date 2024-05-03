@@ -36,7 +36,7 @@ const (
 	charWall = '#'
 	// 操作するプレイヤー
 	charPlayer = '@'
-	// 壁より外側の埋め合わせる部分
+	// 壁より外側の埋める部分
 	charExterior = '_'
 	// 次の階層へ
 	charWarpNext = 'O'

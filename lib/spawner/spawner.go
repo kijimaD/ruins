@@ -1,8 +1,10 @@
 package spawner
 
 import (
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	gloader "github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -49,4 +51,21 @@ func SpawnAllRecipes(world w.World) {
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
+}
+
+// フィールド上に表示されるプレイヤーを生成する
+func SpawnPlayer(world w.World, x int, y int) {
+	gcl := gloader.GameComponentList{}
+	gcl.Position = &gc.Position{x, y}
+	gcl.Player = &gc.Player{}
+
+	// fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		Position: &gc.Position{x, y},
+		Player:   &gc.Player{},
+		// Render:   &gc.Render{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
+	})
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+	loader.AddEntities(world, componentList)
 }

@@ -27,6 +27,9 @@ type Components struct {
 	Attributes       *ecs.SliceComponent
 	EquipmentChanged *ecs.NullComponent
 	Card             *ecs.SliceComponent
+
+	Position *ecs.SliceComponent
+	Render   *ecs.SliceComponent
 }
 
 type GridElement struct {
