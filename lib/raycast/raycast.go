@@ -217,9 +217,6 @@ func (g *Game) Prepare() {
 
 	g.Objects = append(g.Objects, Object{rect(200, 210, 5, 5)})
 	g.Objects = append(g.Objects, Object{rect(220, 210, 5, 5)})
-
-	g.Objects = append(g.Objects, Object{rect(100, 250, 500, 20)})
-	g.Objects = append(g.Objects, Object{rect(100, 400, 500, 20)})
 }
 
 func (g *Game) Update() {
@@ -229,7 +226,6 @@ func (g *Game) Update() {
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Reset the shadowImage
 	shadowImage.Fill(color.Black)
-	visionImage.Fill(color.Black)
 	// position, blockviewをクエリ
 	rays := rayCasting(float64(g.Px), float64(g.Py), g.Objects)
 

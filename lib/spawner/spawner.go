@@ -55,16 +55,22 @@ func SpawnAllRecipes(world w.World) {
 
 // フィールド上に表示されるプレイヤーを生成する
 func SpawnPlayer(world w.World, x int, y int) {
-	gcl := gloader.GameComponentList{}
-	gcl.Position = &gc.Position{x, y}
-	gcl.Player = &gc.Player{}
-
 	// fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
 		Position: &gc.Position{x, y},
 		Player:   &gc.Player{},
-		// Render:   &gc.Render{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
+	})
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+	loader.AddEntities(world, componentList)
+}
+
+// フィールド上に表示されるオブジェクトを生成する
+func SpawnFieldObject(world w.World, x int, y int) {
+	// fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		Position: &gc.Position{x, y},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)

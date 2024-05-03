@@ -16,12 +16,13 @@ func RenderObjectSystem(world w.World, screen *ebiten.Image) {
 	world.Manager.Join(
 		gameComponents.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// プレイヤーを描画する
+		pos := gameComponents.Position.Get(entity).(*gc.Position)
 		switch {
 		case entity.HasComponent(gameComponents.Player):
-			pos := gameComponents.Position.Get(entity).(*gc.Position)
 
 			vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, 32, 32, color.White, true)
+		default:
+			vector.DrawFilledRect(screen, float32(pos.X)-8, float32(pos.Y)-8, 16, 16, color.RGBA{0, 255, 0, 255}, true)
 		}
 	}))
 }
