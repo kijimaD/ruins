@@ -21,9 +21,8 @@ import (
 )
 
 type HomeMenuState struct {
-	selection int
-	ui        *ebitenui.UI
-	trans     *states.Transition
+	ui    *ebitenui.UI
+	trans *states.Transition
 
 	memberContainer     *widget.Container // メンバー一覧コンテナ
 	actionListContainer *widget.Container // 選択肢アクション一覧コンテナ
@@ -36,13 +35,9 @@ func (st HomeMenuState) String() string {
 
 // State interface ================
 
-func (st *HomeMenuState) OnPause(world w.World) {
-	st.OnStop(world)
-}
+func (st *HomeMenuState) OnPause(world w.World) {}
 
-func (st *HomeMenuState) OnResume(world w.World) {
-	st.OnStart(world)
-}
+func (st *HomeMenuState) OnResume(world w.World) {}
 
 func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用
@@ -112,34 +107,11 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 		return next
 	}
 
-	return updateMenu(st, world)
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
-}
-
-// Menu Interface ================
-// 使ってないので削除していく
-
-func (st *HomeMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *HomeMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *HomeMenuState) confirmSelection(world w.World) states.Transition {
-	return states.Transition{Type: states.TransNone}
-}
-
-func (st *HomeMenuState) getMenuIDs() []string {
-	return []string{""}
-}
-
-func (st *HomeMenuState) getCursorMenuIDs() []string {
-	return []string{""}
 }
 
 // ================
@@ -157,7 +129,6 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	st.updateActionList(world)
-	st.updateActionDesc(world)
 	st.updateMemberContainer(world)
 
 	return &ebitenui.UI{Container: rootContainer}
@@ -204,30 +175,23 @@ var homeMenuTrans = []struct {
 func (st *HomeMenuState) updateActionList(world w.World) {
 	st.actionListContainer.RemoveChildren()
 
-	for i, data := range homeMenuTrans {
-		i := i
-		label := data.label
-		trans := data.trans
+	for _, data := range homeMenuTrans {
+		data := data
 		btn := eui.NewItemButton(
-			label,
+			data.label,
 			func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &trans
+				st.trans = &data.trans
 			},
 			world,
 		)
 		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			st.selection = i
-			st.updateActionDesc(world)
+			st.actionDescContainer.RemoveChildren()
+			st.actionDescContainer.AddChild(eui.NewMenuText(data.desc, world))
+
 			st.updateMemberContainer(world)
 		})
 		st.actionListContainer.AddChild(btn)
 	}
-}
-
-// 選択肢の解説を更新する
-func (st *HomeMenuState) updateActionDesc(world w.World) {
-	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(eui.NewMenuText(homeMenuTrans[st.selection].desc, world))
 }
 
 // メンバー一覧を更新する

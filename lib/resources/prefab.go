@@ -3,10 +3,6 @@ package resources
 import "github.com/kijimaD/ruins/lib/engine/loader"
 
 type MenuPrefabs struct {
-	MainMenu      loader.EntityComponentList
-	DungeonSelect loader.EntityComponentList
-	FieldMenu     loader.EntityComponentList
-	DebugMenu     loader.EntityComponentList
 	InventoryMenu loader.EntityComponentList
 	CraftMenu     loader.EntityComponentList
 	EquipMenu     loader.EntityComponentList

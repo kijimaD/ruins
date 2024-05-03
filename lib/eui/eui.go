@@ -46,6 +46,24 @@ func NewVerticalContainer() *widget.Container {
 	)
 }
 
+// ポーズ用の半透明なコンテナ。コピペがひどいのでどうにかする
+func NewVerticalTransContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(4),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    10,
+					Bottom: 10,
+					Left:   10,
+					Right:  10,
+				}),
+			)),
+	)
+}
+
 // アイテム系メニューのRootとなる3x3のグリッドコンテナ
 func NewItemGridContainer() *widget.Container {
 	return widget.NewContainer(
@@ -85,6 +103,29 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget
 	)
 	split.AddChild(top)
 	split.AddChild(bottom)
+
+	return split
+}
+
+// 横分割コンテナ
+func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget.Container {
+	split := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewGridLayout(
+				widget.GridLayoutOpts.Columns(2),
+				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
+				widget.GridLayoutOpts.Padding(widget.Insets{
+					Top:    2,
+					Bottom: 2,
+					Left:   2,
+					Right:  2,
+				}),
+			)),
+	)
+	split.AddChild(right)
+	split.AddChild(left)
 
 	return split
 }

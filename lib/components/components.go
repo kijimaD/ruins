@@ -1,6 +1,8 @@
 package components
 
-import ecs "github.com/x-hgg-x/goecs/v2"
+import (
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
 
 type Components struct {
 	GridElement      *ecs.SliceComponent
@@ -25,6 +27,9 @@ type Components struct {
 	Attributes       *ecs.SliceComponent
 	EquipmentChanged *ecs.NullComponent
 	Card             *ecs.SliceComponent
+
+	Position *ecs.SliceComponent
+	Render   *ecs.SliceComponent
 }
 
 type GridElement struct {

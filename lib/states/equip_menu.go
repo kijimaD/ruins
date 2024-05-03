@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -76,40 +75,12 @@ func (st *EquipMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	return updateMenu(st, world)
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *EquipMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
-
-// Menu Interface ================
-
-func (st *EquipMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *EquipMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *EquipMenuState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransNone}
-	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
-}
-
-func (st *EquipMenuState) getMenuIDs() []string {
-	return []string{""}
-}
-
-func (st *EquipMenuState) getCursorMenuIDs() []string {
-	return []string{""}
-}
-
-// ================
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.actionContainer = eui.NewVerticalContainer()
@@ -134,7 +105,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		sc, v := eui.NewScrollContainer(st.actionContainer)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
-		rootContainer.AddChild(st.newVSplitContainer(st.specContainer, st.abilityContainer))
+		rootContainer.AddChild(eui.NewWSplitContainer(st.specContainer, st.abilityContainer))
 
 		rootContainer.AddChild(st.itemDesc)
 	}
@@ -328,27 +299,4 @@ func (st *EquipMenuState) queryAbility(world w.World) []ecs.Entity {
 	}))
 
 	return entities
-}
-
-// 縦分割コンテナ
-func (st *EquipMenuState) newVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
-	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(1),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
-				}),
-			)),
-	)
-	split.AddChild(top)
-	split.AddChild(bottom)
-
-	return split
 }

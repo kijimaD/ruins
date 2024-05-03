@@ -24,7 +24,6 @@ import (
 )
 
 type InventoryMenuState struct {
-	selection     int
 	inventoryMenu []ecs.Entity
 	ui            *ebitenui.UI
 
@@ -71,33 +70,11 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	return updateMenu(st, world)
+	return states.Transition{Type: states.TransNone}
 }
 
 func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
-}
-
-// Menu Interface ================
-
-func (st *InventoryMenuState) getSelection() int {
-	return st.selection
-}
-
-func (st *InventoryMenuState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *InventoryMenuState) confirmSelection(world w.World) states.Transition {
-	return states.Transition{Type: states.TransNone}
-}
-
-func (st *InventoryMenuState) getMenuIDs() []string {
-	return []string{""}
-}
-
-func (st *InventoryMenuState) getCursorMenuIDs() []string {
-	return []string{""}
 }
 
 // ================

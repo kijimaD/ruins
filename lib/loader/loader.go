@@ -34,6 +34,9 @@ type GameComponentList struct {
 	Attributes       *gc.Attributes
 	EquipmentChanged *gc.EquipmentChanged
 	Card             *gc.Card
+
+	Position *gc.Position
+	Render   *gc.Render
 }
 
 type Entity struct {

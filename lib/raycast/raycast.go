@@ -1,3 +1,4 @@
+// https://ebitengine.org/en/examples/raycasting.html を参考にした
 package raycast
 
 import (
@@ -20,18 +21,17 @@ const (
 )
 
 var (
-	screenWidth  = 0
-	screenHeight = 0
-	baseImage    *ebiten.Image // 一番下にある黒背景
-	bgImage      *ebiten.Image // 床を表現する
-	shadowImage  *ebiten.Image // 影を表現する
-	visionImage  *ebiten.Image // 視界を表現する黒背景
-	blackImage   *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
+	baseImage   *ebiten.Image // 一番下にある黒背景
+	bgImage     *ebiten.Image // 床を表現する
+	shadowImage *ebiten.Image // 影を表現する
+	visionImage *ebiten.Image // 視界を表現する黒背景
+	blackImage  *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
 
 	vertices   []ebiten.Vertex
 	visionNgon = 20
 )
 
+// 始点と終点
 type line struct {
 	X1, Y1, X2, Y2 float64
 }
@@ -45,12 +45,12 @@ type Object struct {
 }
 
 func (o Object) points() [][2]float64 {
-	// Get one of the endpoints for all segments,
-	// + the startpoint of the first one, for non-closed paths
+	// すべてのセグメントの終点を取得
 	var points [][2]float64
 	for _, wall := range o.walls {
 		points = append(points, [2]float64{wall.X2, wall.Y2})
 	}
+	// パスが閉じてない場合、最初のポイントを足すことでパスを閉じる
 	p := [2]float64{o.walls[0].X1, o.walls[0].Y1}
 	if p[0] != points[len(points)-1][0] && p[1] != points[len(points)-1][1] {
 		points = append(points, [2]float64{o.walls[0].X1, o.walls[0].Y1})
@@ -58,6 +58,7 @@ func (o Object) points() [][2]float64 {
 	return points
 }
 
+// 角度を変えて新しい線を生成する
 func newRay(x, y, length, angle float64) line {
 	return line{
 		X1: x,
@@ -94,8 +95,9 @@ func intersection(l1, l2 line) (float64, float64, bool) {
 }
 
 // rayCasting returns a slice of line originating from point cx, cy and intersecting with objects
+// cx, cyは視点
 func rayCasting(cx, cy float64, objects []Object) []line {
-	const rayLength = 10000 // something large enough to reach all objects
+	const rayLength = 1000 // something large enough to reach all objects
 
 	var rays []line
 	for _, obj := range objects {
@@ -104,6 +106,7 @@ func rayCasting(cx, cy float64, objects []Object) []line {
 			l := line{cx, cy, p[0], p[1]}
 			angle := l.angle()
 
+			// 微妙に角度をつけて影を自然に見せる(直線にならないようにする)
 			for _, offset := range []float64{-0.005, 0.005} {
 				points := [][2]float64{}
 				ray := newRay(cx, cy, rayLength, angle+offset)
@@ -117,7 +120,7 @@ func rayCasting(cx, cy float64, objects []Object) []line {
 					}
 				}
 
-				// Find the point closest to start of ray
+				// rayの視点から最も近い点(=距離が最も小さい点)を求める
 				min := math.Inf(1)
 				minI := -1
 				for i, p := range points {
@@ -189,9 +192,6 @@ type Game struct {
 }
 
 func (g *Game) Prepare() {
-	screenWidth = g.ScreenWidth
-	screenHeight = g.ScreenHeight
-
 	baseImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	shadowImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
 	visionImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
@@ -206,11 +206,8 @@ func (g *Game) Prepare() {
 	baseImage.Fill(color.Black)
 	blackImage.Fill(color.Black)
 
-	// 	// Add outer walls
-	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(screenWidth)-2*padding, float64(screenHeight)-2*padding)})
-
-	// Angled wall
-	g.Objects = append(g.Objects, Object{[]line{{50, 110, 100, 150}}})
+	// Add outer walls
+	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(g.ScreenWidth)-2*padding, float64(g.ScreenHeight)-2*padding)})
 
 	// Rectangles
 	g.Objects = append(g.Objects, Object{rect(45, 50, 70, 20)})
@@ -221,9 +218,12 @@ func (g *Game) Prepare() {
 
 	g.Objects = append(g.Objects, Object{rect(200, 210, 5, 5)})
 	g.Objects = append(g.Objects, Object{rect(220, 210, 5, 5)})
+
+	g.Objects = append(g.Objects, Object{rect(100, 250, 500, 20)})
+	g.Objects = append(g.Objects, Object{rect(100, 400, 500, 20)})
 }
 
-func (g *Game) Update() error {
+func (g *Game) Update() {
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 		g.showRays = !g.showRays
 	}
@@ -245,29 +245,30 @@ func (g *Game) Update() error {
 	}
 
 	// +1/-1 is to stop player before it reaches the border
-	if g.Px >= screenWidth-padding {
-		g.Px = screenWidth - padding - 1
+	if g.Px >= g.ScreenWidth-padding {
+		g.Px = g.ScreenWidth - padding - 1
 	}
 
 	if g.Px <= padding {
 		g.Px = padding + 1
 	}
 
-	if g.Py >= screenHeight-padding {
-		g.Py = screenHeight - padding - 1
+	if g.Py >= g.ScreenHeight-padding {
+		g.Py = g.ScreenHeight - padding - 1
 	}
 
 	if g.Py <= padding {
 		g.Py = padding + 1
 	}
 
-	return nil
+	return
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Reset the shadowImage
 	shadowImage.Fill(color.Black)
 	visionImage.Fill(color.Black)
+	// position, blockviewをクエリ
 	rays := rayCasting(float64(g.Px), float64(g.Py), g.Objects)
 
 	// 全面が黒の画像から、三角形の部分をブレンドで引いて、影になっている部分だけ黒で残す
@@ -290,8 +291,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	{
 		tileWidth, tileHeight := bgImage.Size()
 		// 背景画像を敷き詰める
-		for i := 0; i < screenWidth; i += tileWidth {
-			for j := 0; j < screenHeight; j += tileHeight {
+		for i := 0; i < g.ScreenWidth; i += tileWidth {
+			for j := 0; j < g.ScreenHeight; j += tileHeight {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(i), float64(j))
 				screen.DrawImage(bgImage, op)
@@ -302,7 +303,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw walls
 	for _, obj := range g.Objects {
 		for _, w := range obj.walls {
-			vector.StrokeLine(screen, float32(w.X1), float32(w.Y1), float32(w.X2), float32(w.Y2), 1, color.RGBA{255, 0, 0, 255}, true)
+			vector.StrokeLine(screen, float32(w.X1), float32(w.Y1), float32(w.X2), float32(w.Y2), 20, color.RGBA{0, 0, 0, 100}, true)
 		}
 	}
 
@@ -315,7 +316,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
-		vs := visionVertices(visionNgon, g.Px, g.Py, 140)
+		vs := visionVertices(visionNgon, g.Px, g.Py, 200)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
@@ -337,12 +338,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		visionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
 
-	// Draw shadow
+	// 建物影
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
 		screen.DrawImage(shadowImage, op)
 	}
+	// 視界影
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
@@ -350,13 +352,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// Draw player as a rect
-	vector.DrawFilledRect(screen, float32(g.Px)-2, float32(g.Py)-2, 4, 4, color.Black, true)
+	vector.DrawFilledRect(screen, float32(g.Px)-16, float32(g.Py)-16, 32, 32, color.Black, true)
 	vector.DrawFilledRect(screen, float32(g.Px)-1, float32(g.Py)-1, 2, 2, color.RGBA{255, 100, 100, 255}, true)
 
 	if g.showRays {
-		ebitenutil.DebugPrintAt(screen, "R: hide rays", screenWidth-padding, 0)
+		ebitenutil.DebugPrintAt(screen, "R: hide rays", g.ScreenWidth-padding*8, 0)
 	} else {
-		ebitenutil.DebugPrintAt(screen, "R: show rays", screenHeight-padding, 0)
+		ebitenutil.DebugPrintAt(screen, "R: show rays", g.ScreenWidth-padding*8, 0)
 	}
 }
 

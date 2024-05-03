@@ -1,21 +1,24 @@
 package states
 
 import (
-	"fmt"
-
+	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/eui"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type DungeonSelectState struct {
 	selection     int
 	dungeonSelect []ecs.Entity
+
+	ui                     *ebitenui.UI
+	trans                  *states.Transition
+	dungeonSelectContainer *widget.Container
+	dungeonDescContainer   *widget.Container
 }
 
 func (st DungeonSelectState) String() string {
@@ -29,8 +32,9 @@ func (st *DungeonSelectState) OnPause(world w.World) {}
 func (st *DungeonSelectState) OnResume(world w.World) {}
 
 func (st *DungeonSelectState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.dungeonSelect = append(st.dungeonSelect, loader.AddEntities(world, prefabs.Menu.DungeonSelect)...)
+	// prefabs := world.Resources.Prefabs.(*resources.Prefabs)
+	// st.dungeonSelect = append(st.dungeonSelect, loader.AddEntities(world, prefabs.Menu.DungeonSelect)...)
+	st.ui = st.initUI(world)
 }
 
 func (st *DungeonSelectState) OnStop(world w.World) {
@@ -42,51 +46,93 @@ func (st *DungeonSelectState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransPop}
 	}
 
-	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
-		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		if text.ID == "description" {
-			switch st.selection {
-			case 0:
-				text.Text = "鬱蒼とした森の奥地にある遺跡"
-			case 1:
-				text.Text = "切り立った山の洞窟にある遺跡"
-			case 2:
-				text.Text = "雲にまで届く塔を持つ遺跡"
-			}
-		}
-	}))
+	// world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
+	// 	text := world.Components.Engine.Text.Get(entity).(*ec.Text)
+	// 	if text.ID == "description" {
+	// 		switch st.selection {
+	// 		case 0:
+	// 			text.Text = "鬱蒼とした森の奥地にある遺跡"
+	// 		case 1:
+	// 			text.Text = "切り立った山の洞窟にある遺跡"
+	// 		case 2:
+	// 			text.Text = "雲にまで届く塔を持つ遺跡"
+	// 		}
+	// 	}
+	// }))
 
-	return updateMenu(st, world)
-}
-
-func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {}
-
-// Menu Interface ================
-
-func (st *DungeonSelectState) getSelection() int {
-	return st.selection
-}
-
-func (st *DungeonSelectState) setSelection(selection int) {
-	st.selection = selection
-}
-
-func (st *DungeonSelectState) confirmSelection(world w.World) states.Transition {
-	switch st.selection {
-	case 0:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
-	case 1:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
-	case 2:
-		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}}
+	if st.trans != nil {
+		next := *st.trans
+		st.trans = nil
+		return next
 	}
-	panic(fmt.Errorf("unknown selection: %d", st.selection))
+
+	st.ui.Update()
+
+	return states.Transition{Type: states.TransNone}
 }
 
-func (st *DungeonSelectState) getMenuIDs() []string {
-	return []string{"forest", "mountain", "tower"}
+func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {
+	st.ui.Draw(screen)
 }
 
-func (st *DungeonSelectState) getCursorMenuIDs() []string {
-	return []string{"cursor_forest", "cursor_mountain", "cursor_tower"}
+func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
+	rootContainer := eui.NewVerticalContainer()
+
+	st.dungeonSelectContainer = eui.NewRowContainer()
+	rootContainer.AddChild(st.dungeonSelectContainer)
+
+	st.dungeonDescContainer = eui.NewRowContainer()
+	rootContainer.AddChild(st.dungeonDescContainer)
+
+	st.updateMenuContainer(world)
+
+	return &ebitenui.UI{Container: rootContainer}
+}
+
+func (st *DungeonSelectState) updateMenuContainer(world w.World) {
+	st.dungeonSelectContainer.RemoveChildren()
+
+	for _, data := range dungeonSelectTrans {
+		data := data
+		btn := eui.NewItemButton(
+			data.label,
+			func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			},
+			world,
+		)
+		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			st.dungeonDescContainer.RemoveChildren()
+			st.dungeonDescContainer.AddChild(eui.NewMenuText(data.desc, world))
+		})
+		st.dungeonSelectContainer.AddChild(btn)
+	}
+}
+
+// MEMO: まだtransは全部同じ
+var dungeonSelectTrans = []struct {
+	label string
+	desc  string
+	trans states.Transition
+}{
+	{
+		label: "森の遺跡",
+		desc:  "鬱蒼とした森の奥地にある遺跡",
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+	},
+	{
+		label: "山の遺跡",
+		desc:  "切り立った山の洞窟にある遺跡",
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+	},
+	{
+		label: "塔の遺跡",
+		desc:  "雲にまで届く塔を持つ遺跡",
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+	},
+	{
+		label: "拠点メニューに戻る",
+		desc:  "",
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
+	},
 }

@@ -33,7 +33,7 @@ Ratio = 0.5
 [[item]]
 Name = "手榴弾"
 Description = "敵全体にダメージを与える"
-InflictsDamage = 100
+InflictsDamage = 20
 
 [item.consumable]
 UsableScene = "BATTLE"
