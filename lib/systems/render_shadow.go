@@ -79,8 +79,6 @@ func rayCasting(cx, cy float64, world w.World) []line {
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
-			// texture := spriteRender.SpriteSheet.Texture
-			// textureWidth, textureHeight := texture.Image.Size()
 
 			x := float64(pos.X - sprite.Width/2)
 			y := float64(pos.Y - sprite.Height/2)
@@ -119,7 +117,7 @@ func rayCasting(cx, cy float64, world w.World) []line {
 					}
 				}
 
-				// rayの視点から最も近い点(=距離が最も小さい点)を求める
+				// 視点から最も近い交点までの線分を rays スライスに追加する
 				min := math.Inf(1)
 				minIdx := -1
 				for i, p := range points {
