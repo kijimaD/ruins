@@ -33,7 +33,8 @@ func (st *RayFieldState) OnStart(world w.World) {
 	st.Game.Prepare()
 
 	spawner.SpawnPlayer(world, 200, 200)
-	spawner.SpawnFieldObject(world, 240, 200)
+	spawner.SpawnFieldWall(world, 240, 200)
+	spawner.SpawnFieldWarpNext(world, 300, 300)
 }
 
 func (st *RayFieldState) OnStop(world w.World) {}

@@ -68,12 +68,24 @@ func SpawnPlayer(world w.World, x int, y int) {
 }
 
 // フィールド上に表示されるオブジェクトを生成する
-func SpawnFieldObject(world w.World, x int, y int) {
+func SpawnFieldWall(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
 		Position:     &gc.Position{x, y},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
+	})
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+	loader.AddEntities(world, componentList)
+}
+
+// フィールド上に表示される階段を生成する
+func SpawnFieldWarpNext(world w.World, x int, y int) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		Position:     &gc.Position{x, y},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 4},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)

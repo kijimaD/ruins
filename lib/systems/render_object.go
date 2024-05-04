@@ -2,8 +2,10 @@ package systems
 
 import (
 	"image"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	m "github.com/kijimaD/ruins/lib/engine/math"
@@ -19,6 +21,10 @@ func RenderObjectSystem(world w.World, screen *ebiten.Image) {
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pos := gameComponents.Position.Get(entity).(*gc.Position)
+
+		// オブジェクトの足元の影。とりあえず矩形。スプライトの白黒画像を下に表示するのが望ましい
+		vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, 32, 32, color.RGBA{0, 0, 0, 100}, true)
+
 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 		drawImage(screen, sprite, pos)
 	}))
