@@ -13,18 +13,20 @@
 
 ## Reference
 
-ゲーム作成で参考にしたコード類。
+ゲーム作成で参考にしたコード等。
 
 - ゲームシステム面で、KONAMIのビデオゲーム『パワプロクンポケット』シリーズ10・11・12を参考にした
 - https://github.com/x-hgg-x/sokoban-go
-  - 最初にコピペし、改変していった
+  - 最初にコピペして作成をはじめ、改変していった
   - ECSの使い方まわりで大きく参考にした
 - https://github.com/x-hgg-x/goecsengine
-  - sokoban-goの依存ライブラリ。改変のため、コピペしてコードに含めた
+  - sokoban-goの依存ライブラリ。改変しないと不便なことがけっこうあったので、コピペしてコードに含めた
 - https://bfnihtly.bracketproductions.com/
-  - 設定ファイルによるファクトリまわりなど
+  - 設定ファイルによるファクトリまわりを参考にした
 - https://krkrz.github.io/krkr2doc/kag3doc/contents/
   - サウンドノベルに必要な記法を参考にした
+- https://ebitengine.org/en/examples/raycasting.html
+  - レイキャストの実装の参考にした
 
 使用した素材類。
 
