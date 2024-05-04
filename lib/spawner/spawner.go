@@ -2,6 +2,7 @@ package spawner
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
@@ -55,11 +56,12 @@ func SpawnAllRecipes(world w.World) {
 
 // フィールド上に表示されるプレイヤーを生成する
 func SpawnPlayer(world w.World, x int, y int) {
-	// fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position: &gc.Position{x, y},
-		Player:   &gc.Player{},
+		Position:     &gc.Position{x, y},
+		Player:       &gc.Player{},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
@@ -67,10 +69,11 @@ func SpawnPlayer(world w.World, x int, y int) {
 
 // フィールド上に表示されるオブジェクトを生成する
 func SpawnFieldObject(world w.World, x int, y int) {
-	// fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position: &gc.Position{x, y},
+		Position:     &gc.Position{x, y},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)

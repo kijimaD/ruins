@@ -28,8 +28,8 @@ type Components struct {
 	EquipmentChanged *ecs.NullComponent
 	Card             *ecs.SliceComponent
 
-	Position *ecs.SliceComponent
-	Render   *ecs.SliceComponent
+	Position     *ecs.SliceComponent
+	SpriteRender *ecs.SliceComponent
 }
 
 type GridElement struct {

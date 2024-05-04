@@ -58,11 +58,12 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 	}
 
 	// 描画
-	{
-		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(1)
-		screen.DrawImage(visionImage, op)
-	}
+	// 開発には邪魔なのでいったんオフにしておく
+	// {
+	// 	op := &ebiten.DrawImageOptions{}
+	// 	op.ColorScale.ScaleAlpha(1)
+	// 	screen.DrawImage(visionImage, op)
+	// }
 }
 
 func visionVertices(num int, x int, y int, r int) []ebiten.Vertex {
