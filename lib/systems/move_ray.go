@@ -19,10 +19,6 @@ func MoveRaySystem(world w.World) {
 		pos = gameComponents.Position.Get(entity).(*gc.Position)
 	}))
 
-	// if inpututil.IsKeyJustPressed(ebiten.KeyR) {
-	// 	g.showRays = !g.showRays
-	// }
-
 	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		pos.X += 2
 	}
@@ -39,20 +35,24 @@ func MoveRaySystem(world w.World) {
 		pos.Y -= 2
 	}
 
+	padding := 20
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
 	// // +1/-1 is to stop player before it reaches the border
-	// if g.Px >= g.ScreenWidth-padding {
-	// 	g.Px = g.ScreenWidth - padding - 1
-	// }
+	if pos.X >= screenWidth-padding {
+		pos.X = screenWidth - padding - 1
+	}
 
-	// if g.Px <= padding {
-	// 	g.Px = padding + 1
-	// }
+	if pos.X <= padding {
+		pos.X = padding + 1
+	}
 
-	// if g.Py >= g.ScreenHeight-padding {
-	// 	g.Py = g.ScreenHeight - padding - 1
-	// }
+	if pos.Y >= screenHeight-padding {
+		pos.Y = screenHeight - padding - 1
+	}
 
-	// if g.Py <= padding {
-	// 	g.Py = padding + 1
-	// }
+	if pos.Y <= padding {
+		pos.Y = padding + 1
+	}
 }
