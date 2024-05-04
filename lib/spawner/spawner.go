@@ -67,13 +67,14 @@ func SpawnPlayer(world w.World, x int, y int) {
 	loader.AddEntities(world, componentList)
 }
 
-// フィールド上に表示されるオブジェクトを生成する
+// フィールド上に表示される壁を生成する
 func SpawnFieldWall(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
 		Position:     &gc.Position{x, y},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
+		BlockView:    &gc.BlockView{},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)

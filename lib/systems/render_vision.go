@@ -35,7 +35,7 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 200)
+		vs := visionVertices(visionNgon, pos.X, pos.Y, 500)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
@@ -47,7 +47,7 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 
 	// 光源の中心付近を明るくする
 	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 20)
+		vs := visionVertices(visionNgon, pos.X, pos.Y, 100)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendClear
 		indices := []uint16{}
@@ -57,13 +57,12 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 		visionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
 
-	// 描画
-	// 開発には邪魔なのでいったんオフにしておく
-	// {
-	// 	op := &ebiten.DrawImageOptions{}
-	// 	op.ColorScale.ScaleAlpha(1)
-	// 	screen.DrawImage(visionImage, op)
-	// }
+	// screenに描画する
+	{
+		op := &ebiten.DrawImageOptions{}
+		op.ColorScale.ScaleAlpha(1)
+		screen.DrawImage(visionImage, op)
+	}
 }
 
 func visionVertices(num int, x int, y int, r int) []ebiten.Vertex {

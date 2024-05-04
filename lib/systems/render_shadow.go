@@ -73,6 +73,7 @@ func rayCasting(cx, cy float64, world w.World) []line {
 	world.Manager.Join(
 		gameComponents.Position,
 		gameComponents.SpriteRender,
+		gameComponents.BlockView,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if !entity.HasComponent(gameComponents.Player) {
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
