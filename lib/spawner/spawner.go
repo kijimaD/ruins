@@ -2,6 +2,7 @@ package spawner
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
@@ -55,16 +56,37 @@ func SpawnAllRecipes(world w.World) {
 
 // フィールド上に表示されるプレイヤーを生成する
 func SpawnPlayer(world w.World, x int, y int) {
-	gcl := gloader.GameComponentList{}
-	gcl.Position = &gc.Position{x, y}
-	gcl.Player = &gc.Player{}
-
-	// fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position: &gc.Position{x, y},
-		Player:   &gc.Player{},
-		// Render:   &gc.Render{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
+		Position:     &gc.Position{x, y},
+		Player:       &gc.Player{},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
+	})
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+	loader.AddEntities(world, componentList)
+}
+
+// フィールド上に表示される壁を生成する
+func SpawnFieldWall(world w.World, x int, y int) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		Position:     &gc.Position{x, y},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
+		BlockView:    &gc.BlockView{},
+	})
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+	loader.AddEntities(world, componentList)
+}
+
+// フィールド上に表示される階段を生成する
+func SpawnFieldWarpNext(world w.World, x int, y int) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		Position:     &gc.Position{x, y},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 4},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)

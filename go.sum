@@ -28,6 +28,7 @@ github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF0
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGwJL78qG/PmXZO1EjYhfJinVAhrmmHX6Z8B9k=
 github.com/google/pprof v0.0.0-20211214055906-6f57359322fd h1:1FjCyPC+syAzJ5/2S8fqdZK1R22vvA0J7JZKcuOIQ7Y=
 github.com/google/pprof v0.0.0-20211214055906-6f57359322fd/go.mod h1:KgnwoLYCZ8IQu3XUZ8Nc/bM9CCZFOyjUNOSygVozoDg=
+github.com/hajimehoshi/bitmapfont v1.3.0 h1:h6+HJQ+2MKT3lEVEArjVC4/h0qcFXlVsMTGuRijEnVA=
 github.com/hajimehoshi/bitmapfont v1.3.0/go.mod h1:/Qb7yVjHYNUV4JdqNkPs6BSZwLjKqkZOMIp6jZD0KgE=
 github.com/hajimehoshi/bitmapfont/v3 v3.0.0 h1:r2+6gYK38nfztS/et50gHAswb9hXgxXECYgE8Nczmi4=
 github.com/hajimehoshi/ebiten v1.12.12 h1:JvmF1bXRa+t+/CcLWxrJCRsdjs2GyBYBSiFAfIqDFlI=
