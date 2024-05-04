@@ -32,6 +32,7 @@ func (st *RayFieldState) OnStart(world w.World) {
 	st.Game.ScreenHeight = world.Resources.ScreenDimensions.Height
 	st.Game.Prepare()
 
+	// debug
 	spawner.SpawnPlayer(world, 200, 200)
 	spawner.SpawnFieldWall(world, 240, 200)
 	spawner.SpawnFieldWarpNext(world, 300, 300)
@@ -54,4 +55,5 @@ func (st *RayFieldState) Draw(world w.World, screen *ebiten.Image) {
 	st.Game.Draw(screen)
 	gs.RenderObjectSystem(world, screen)
 	gs.RenderVisionSystem(world, screen)
+	gs.RenderShadowSystem(world, screen)
 }

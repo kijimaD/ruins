@@ -11,8 +11,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/examples/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 const (
@@ -192,10 +190,6 @@ type Game struct {
 
 func (g *Game) Prepare() {
 	baseImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
-	shadowImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
-	visionImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
-	blackImage = ebiten.NewImage(g.ScreenWidth, g.ScreenHeight)
-
 	img, _, err := image.Decode(bytes.NewReader(images.Tile_png))
 	if err != nil {
 		log.Fatal(err)
@@ -203,20 +197,6 @@ func (g *Game) Prepare() {
 	bgImage = ebiten.NewImageFromImage(img)
 
 	baseImage.Fill(color.Black)
-	blackImage.Fill(color.Black)
-
-	// Add outer walls
-	g.Objects = append(g.Objects, Object{rect(padding, padding, float64(g.ScreenWidth)-2*padding, float64(g.ScreenHeight)-2*padding)})
-
-	// Rectangles
-	g.Objects = append(g.Objects, Object{rect(45, 50, 70, 20)})
-	g.Objects = append(g.Objects, Object{rect(150, 50, 30, 60)})
-
-	g.Objects = append(g.Objects, Object{rect(95, 90, 70, 20)})
-	g.Objects = append(g.Objects, Object{rect(120, 150, 30, 60)})
-
-	g.Objects = append(g.Objects, Object{rect(200, 210, 5, 5)})
-	g.Objects = append(g.Objects, Object{rect(220, 210, 5, 5)})
 }
 
 func (g *Game) Update() {
@@ -224,26 +204,6 @@ func (g *Game) Update() {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Reset the shadowImage
-	shadowImage.Fill(color.Black)
-	// position, blockviewをクエリ
-	rays := rayCasting(float64(g.Px), float64(g.Py), g.Objects)
-
-	// 全面が黒の画像から、三角形の部分をブレンドで引いて、影になっている部分だけ黒で残す
-	{
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Address = ebiten.AddressRepeat
-		opt.Blend = ebiten.BlendSourceOut
-		for i, line := range rays {
-			nextLine := rays[(i+1)%len(rays)]
-
-			// Draw triangle of area between rays
-			// vertices: 頂点
-			v := rayVertices(float64(g.Px), float64(g.Py), nextLine.X2, nextLine.Y2, line.X2, line.Y2)
-			shadowImage.DrawTriangles(v, []uint16{0, 1, 2}, blackImage, opt)
-		}
-	}
-
 	// Draw background
 	screen.DrawImage(baseImage, nil)
 	{
@@ -256,33 +216,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				screen.DrawImage(bgImage, op)
 			}
 		}
-	}
-
-	// Draw walls
-	for _, obj := range g.Objects {
-		for _, w := range obj.walls {
-			vector.StrokeLine(screen, float32(w.X1), float32(w.Y1), float32(w.X2), float32(w.Y2), 20, color.RGBA{0, 0, 0, 100}, true)
-		}
-	}
-
-	if g.showRays {
-		// Draw rays
-		for _, r := range rays {
-			vector.StrokeLine(screen, float32(r.X1), float32(r.Y1), float32(r.X2), float32(r.Y2), 1, color.RGBA{255, 255, 0, 150}, true)
-		}
-	}
-
-	// 建物影
-	{
-		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(1)
-		screen.DrawImage(shadowImage, op)
-	}
-
-	if g.showRays {
-		ebitenutil.DebugPrintAt(screen, "R: hide rays", g.ScreenWidth-padding*8, 0)
-	} else {
-		ebitenutil.DebugPrintAt(screen, "R: show rays", g.ScreenWidth-padding*8, 0)
 	}
 }
 
