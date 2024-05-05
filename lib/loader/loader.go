@@ -39,6 +39,7 @@ type GameComponentList struct {
 	Position     *gc.Position
 	SpriteRender *ec.SpriteRender
 	BlockView    *gc.BlockView
+	BlockPass    *gc.BlockPass
 }
 
 type Entity struct {

@@ -75,6 +75,7 @@ func SpawnFieldWall(world w.World, x int, y int) {
 		Position:     &gc.Position{x, y},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
 		BlockView:    &gc.BlockView{},
+		BlockPass:    &gc.BlockPass{},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
