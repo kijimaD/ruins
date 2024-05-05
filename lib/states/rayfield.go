@@ -46,6 +46,8 @@ func (st *RayFieldState) OnStart(world w.World) {
 	// debug
 	spawner.SpawnPlayer(world, 200, 200)
 	spawner.SpawnFieldWall(world, 240, 200)
+	spawner.SpawnFieldWall(world, 320, 200)
+	spawner.SpawnFieldWall(world, 352, 200)
 	spawner.SpawnFieldWarpNext(world, 300, 300)
 }
 

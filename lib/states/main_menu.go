@@ -54,11 +54,14 @@ func (st *MainMenuState) Update(world w.World) states.Transition {
 }
 
 func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
+	bg := (*world.Resources.SpriteSheets)["bg_title1"]
+	screen.DrawImage(bg.Texture.Image, nil)
+
 	st.ui.Draw(screen)
 }
 
 func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
+	rootContainer := eui.NewRowContainer()
 	st.mainMenuContainer = eui.NewVerticalContainer()
 	rootContainer.AddChild(eui.NewBodyText("Ruins", color.RGBA{255, 255, 255, 255}, world))
 	rootContainer.AddChild(st.mainMenuContainer)
@@ -97,7 +100,7 @@ var mainMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
 	},
 	{
-		label: "raycast field(実装中)",
+		label: "フィールド",
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
