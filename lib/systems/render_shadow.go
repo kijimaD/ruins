@@ -87,7 +87,7 @@ func rayCasting(cx, cy float64, world w.World) []line {
 			y := float64(pos.Y - sprite.Height/2)
 			w := float64(sprite.Width)
 			h := float64(sprite.Height)
-			objects = append(objects, Object{rect(x, y, w, h)})
+			objects = append(objects, Object{walls: rect(x, y, w, h)})
 		}
 	}))
 
@@ -121,6 +121,7 @@ func rayCasting(cx, cy float64, world w.World) []line {
 				}
 
 				// 視点から最も近い交点までの線分を rays スライスに追加する
+				// 最も近いものだけなので、オブジェクトで遮られるとその先に線分は出ない
 				min := math.Inf(1)
 				minIdx := -1
 				for i, p := range points {
@@ -214,4 +215,51 @@ func intersection(l1, l2 line) (float64, float64, bool) {
 	x := l1.X1 + t*(l1.X2-l1.X1)
 	y := l1.Y1 + t*(l1.Y2-l1.Y1)
 	return x, y, true
+}
+
+func drawRect(screen *ebiten.Image, img *ebiten.Image, x, y, width, height float32, opt *ebiten.DrawTrianglesOptions) {
+	sx, sy := -width/2, -height/2
+	vs := []ebiten.Vertex{
+		{
+			DstX:   x,
+			DstY:   y,
+			SrcX:   sx,
+			SrcY:   sy,
+			ColorR: 1,
+			ColorG: 1,
+			ColorB: 1,
+			ColorA: 1,
+		},
+		{
+			DstX:   x + width,
+			DstY:   y,
+			SrcX:   sx + width,
+			SrcY:   sy,
+			ColorR: 1,
+			ColorG: 1,
+			ColorB: 1,
+			ColorA: 1,
+		},
+		{
+			DstX:   x,
+			DstY:   y + height,
+			SrcX:   sx,
+			SrcY:   sy + height,
+			ColorR: 1,
+			ColorG: 1,
+			ColorB: 1,
+			ColorA: 1,
+		},
+		{
+			DstX:   x + width,
+			DstY:   y + height,
+			SrcX:   sx + width,
+			SrcY:   sy + height,
+			ColorR: 1,
+			ColorG: 1,
+			ColorB: 1,
+			ColorA: 1,
+		},
+	}
+	screen.DrawTriangles(vs, []uint16{0, 1, 2, 1, 2, 3}, img, opt)
 }
