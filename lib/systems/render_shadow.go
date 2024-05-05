@@ -25,6 +25,7 @@ func RenderShadowSystem(world w.World, screen *ebiten.Image) {
 	world.Manager.Join(
 		gameComponents.Position,
 		gameComponents.Player,
+		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pos = gameComponents.Position.Get(entity).(*gc.Position)
 	}))

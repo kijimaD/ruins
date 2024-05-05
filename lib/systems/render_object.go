@@ -21,11 +21,14 @@ func RenderObjectSystem(world w.World, screen *ebiten.Image) {
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+
+		spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
+		spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
 
 		// オブジェクトの足元の影。とりあえず矩形。スプライトの白黒画像を下に表示するのが望ましい
-		vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, 32, 32, color.RGBA{0, 0, 0, 100}, true)
+		vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight, color.RGBA{0, 0, 0, 100}, true)
 
-		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 		drawImage(screen, sprite, pos)
 	}))
 }
