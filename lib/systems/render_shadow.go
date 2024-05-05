@@ -52,12 +52,6 @@ func RenderShadowSystem(world w.World, screen *ebiten.Image) {
 	// for _, r := range rays {
 	// 	vector.StrokeLine(screen, float32(r.X1), float32(r.Y1), float32(r.X2), float32(r.Y2), 1, color.RGBA{255, 255, 0, 150}, true)
 	// }
-
-	{
-		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(1)
-		screen.DrawImage(shadowImage, op)
-	}
 }
 
 func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {
