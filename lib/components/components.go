@@ -34,15 +34,18 @@ type Components struct {
 	BlockPass    *ecs.NullComponent
 }
 
+// TODO: 削除予定
 type GridElement struct {
 	Line int
 	Col  int
 }
 
-// フィールドでの移動体
+// フィールドで操作対象となる
+// operatorとかのほうがよさそうか?
 type Player struct{}
 
 // 壁
+// TODO: 削除予定
 type Wall struct{}
 
 // ワープパッド
@@ -133,7 +136,7 @@ type Recipe struct {
 	Inputs []RecipeInput
 }
 
-// 装備変更直後を示すダーティーフラグ
+// 装備変更が行われたことを示すダーティーフラグ
 type EquipmentChanged struct{}
 
 // カードは戦闘中に選択するコマンド
