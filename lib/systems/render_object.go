@@ -23,13 +23,26 @@ func RenderObjectSystem(world w.World, screen *ebiten.Image) {
 		pos := gameComponents.Position.Get(entity).(*gc.Position)
 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
+		drawImage(screen, sprite, pos)
+	}))
+
+	// 壁の影。影をキャストする用のコンポーネントを追加したほうがよさそう
+	world.Manager.Join(
+		gameComponents.Position,
+		gameComponents.SpriteRender,
+		gameComponents.BlockView,
+		gameComponents.BlockPass,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+
 		spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
 		spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
 
-		// オブジェクトの足元の影。とりあえず矩形。スプライトの白黒画像を下に表示するのが望ましい
-		vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight, color.RGBA{0, 0, 0, 100}, true)
-
 		drawImage(screen, sprite, pos)
+
+		vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
+		vector.DrawFilledRect(screen, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
 	}))
 }
 
