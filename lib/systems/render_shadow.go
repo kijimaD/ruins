@@ -18,6 +18,7 @@ var (
 	shadowImage = ebiten.NewImage(1000, 1000)
 )
 
+// 遮蔽物を隠す
 func RenderShadowSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -48,10 +49,29 @@ func RenderShadowSystem(world w.World, screen *ebiten.Image) {
 		}
 	}
 
+	// 光源近くの視界影をとりはらう
+	{
+		vs := visionVertices(visionNgon, pos.X, pos.Y, 50)
+		opt := &ebiten.DrawTrianglesOptions{}
+		opt.Address = ebiten.AddressRepeat
+		opt.Blend = ebiten.BlendClear
+		indices := []uint16{}
+		for i := 0; i < visionNgon; i++ {
+			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
+		}
+		shadowImage.DrawTriangles(vs, indices, blackImage, opt)
+	}
+
 	// Draw rays
 	// for _, r := range rays {
 	// 	vector.StrokeLine(screen, float32(r.X1), float32(r.Y1), float32(r.X2), float32(r.Y2), 1, color.RGBA{255, 255, 0, 150}, true)
 	// }
+
+	{
+		op := &ebiten.DrawImageOptions{}
+		op.ColorScale.ScaleAlpha(0.8)
+		screen.DrawImage(shadowImage, op)
+	}
 }
 
 func rayVertices(x1, y1, x2, y2, x3, y3 float64) []ebiten.Vertex {

@@ -21,6 +21,7 @@ const (
 	visionNgon = 20
 )
 
+// 周囲を暗くする
 func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 	visionImage.Fill(color.Black)
 	blackImage.Fill(color.Black)
@@ -36,6 +37,7 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 	}))
 
 	// 視界以外をグラデーションを入れながら塗りつぶし
+	// TODO: 光源用のコンポーネントを追加したほうがよさそう
 	{
 		vs := visionVertices(visionNgon, pos.X, pos.Y, 500)
 		opt := &ebiten.DrawTrianglesOptions{}
@@ -64,7 +66,7 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 		vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
 	}))
 
-	// 光源の中心付近を明るくする。光源用のコンポーネントを追加したほうがよさそう
+	// 光源の中心付近を明るくする
 	{
 		vs := visionVertices(visionNgon, pos.X, pos.Y, 100)
 		opt := &ebiten.DrawTrianglesOptions{}
@@ -75,25 +77,7 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 		}
 		visionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
-	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 50)
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Address = ebiten.AddressRepeat
-		opt.Blend = ebiten.BlendClear
-		indices := []uint16{}
-		for i := 0; i < visionNgon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
-		}
-		shadowImage.DrawTriangles(vs, indices, blackImage, opt)
-	}
 
-	{
-		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(0.8)
-		screen.DrawImage(shadowImage, op)
-	}
-
-	// screenに描画する
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
