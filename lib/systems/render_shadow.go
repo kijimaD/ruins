@@ -13,7 +13,9 @@ import (
 )
 
 var (
-	shadowImage = ebiten.NewImage(1000, 1000) // 影生成時の、マスクのベースとして使う黒画像
+	// 影生成時の、マスクのベースとして使う黒画像。
+	// TODO: Resourceに配置すべき
+	shadowImage = ebiten.NewImage(1000, 1000)
 )
 
 func RenderShadowSystem(world w.World, screen *ebiten.Image) {

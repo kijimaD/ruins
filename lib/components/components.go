@@ -31,6 +31,7 @@ type Components struct {
 	Position     *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
+	BlockPass    *ecs.NullComponent
 }
 
 type GridElement struct {

@@ -6,7 +6,7 @@ type Position struct {
 	Y int
 }
 
-// フィールド上で通り抜けできない
+// フィールド上で通過できない
 type BlockPass struct{}
 
 // フィールド上で視界を遮る
