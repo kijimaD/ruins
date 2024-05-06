@@ -19,7 +19,7 @@ var (
 )
 
 // 遮蔽物を隠す
-func RenderShadowSystem(world w.World, screen *ebiten.Image) {
+func BlindSpotSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	var pos *gc.Position

@@ -93,7 +93,7 @@ func (st *RayFieldState) Draw(world w.World, screen *ebiten.Image) {
 		}
 	}
 
-	gs.RenderObjectSystem(world, screen)
-	gs.RenderVisionSystem(world, screen)
-	gs.RenderShadowSystem(world, screen)
+	gs.RenderSpriteSystem(world, screen)
+	gs.DarknessSystem(world, screen)
+	gs.BlindSpotSystem(world, screen)
 }
