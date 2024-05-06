@@ -6,13 +6,14 @@ require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/ebitenui/ebitenui v0.5.6
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/hajimehoshi/ebiten/v2 v2.7.2
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
 	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.2
 	github.com/x-hgg-x/goecs/v2 v2.0.5
-	golang.org/x/image v0.15.0
+	golang.org/x/image v0.16.0
 )
 
 require (
@@ -24,7 +25,6 @@ require (
 	github.com/ebitengine/purego v0.7.1 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect
-	github.com/hajimehoshi/ebiten v1.12.12 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
