@@ -9,6 +9,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -68,13 +69,9 @@ func BlindSpotSystem(world w.World, screen *ebiten.Image) {
 	// }
 
 	{
-		cx, cy := float64(world.Resources.ScreenDimensions.Width/2), float64(world.Resources.ScreenDimensions.Height/2)
-
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(0.9)
-		op.GeoM.Translate(float64(-CameraX), float64(-CameraY))
-		op.GeoM.Scale(1, 1)
-		op.GeoM.Translate(float64(cx), float64(cy))
+		camera.SetTranslate(world, op, -CameraX, -CameraY)
 		screen.DrawImage(shadowImage, op)
 	}
 }
