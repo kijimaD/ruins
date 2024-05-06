@@ -46,8 +46,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(st, mode)
 	case gs.MainMenuState{}.String():
 		vrt.RunTestGame(&gs.MainMenuState{}, mode)
-	case gs.RayFieldState{}.String():
-		vrt.RunTestGame(&gs.RayFieldState{}, mode)
+	case gs.DungeonState{}.String():
+		vrt.RunTestGame(&gs.DungeonState{}, mode)
 	default:
 		return fmt.Errorf("対応してないステートが指定された: %s", mode)
 	}
