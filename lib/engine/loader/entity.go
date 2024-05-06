@@ -16,7 +16,6 @@ import (
 // EngineComponentList is the list of engine components
 type EngineComponentList struct {
 	SpriteRender *c.SpriteRender
-	Transform    *c.Transform
 }
 
 // EntityComponentList is a list of preloaded entities with components
