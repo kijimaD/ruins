@@ -51,7 +51,7 @@ func RenderShadowSystem(world w.World, screen *ebiten.Image) {
 
 	// 光源近くの視界影をとりはらう
 	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 50)
+		vs := visionVertices(visionNgon, pos.X, pos.Y, 64)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Address = ebiten.AddressRepeat
 		opt.Blend = ebiten.BlendClear
