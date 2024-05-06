@@ -13,8 +13,8 @@ import (
 
 var (
 	// TODO: ちゃんと保存する
-	cameraX = 200
-	cameraY = 200
+	CameraX = 200
+	CameraY = 200
 )
 
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
@@ -46,7 +46,7 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRende
 	op := &spriteRender.Options
 	op.GeoM.Reset()
 	op.GeoM.Translate(float64(pos.X-sprite.Width/2), float64(pos.Y-sprite.Width/2))
-	op.GeoM.Translate(float64(-cameraX), float64(-cameraY))
+	op.GeoM.Translate(float64(-CameraX), float64(-CameraY))
 	op.GeoM.Scale(1, 1)
 	op.GeoM.Translate(float64(cx), float64(cy))
 	screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)

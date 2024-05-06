@@ -68,8 +68,13 @@ func BlindSpotSystem(world w.World, screen *ebiten.Image) {
 	// }
 
 	{
+		cx, cy := float64(world.Resources.ScreenDimensions.Width/2), float64(world.Resources.ScreenDimensions.Height/2)
+
 		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(0.8)
+		op.ColorScale.ScaleAlpha(0.9)
+		op.GeoM.Translate(float64(-CameraX), float64(-CameraY))
+		op.GeoM.Scale(1, 1)
+		op.GeoM.Translate(float64(cx), float64(cy))
 		screen.DrawImage(shadowImage, op)
 	}
 }

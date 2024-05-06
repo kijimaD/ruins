@@ -78,8 +78,8 @@ func MoveSystem(world w.World) {
 		}))
 	}
 
-	cameraX = pos.X
-	cameraY = pos.Y
+	CameraX = pos.X
+	CameraY = pos.Y
 
 	padding := 20
 	screenWidth := world.Resources.ScreenDimensions.Width
