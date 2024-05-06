@@ -118,17 +118,17 @@ var dungeonSelectTrans = []struct {
 	{
 		label: "森の遺跡",
 		desc:  "鬱蒼とした森の奥地にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
 		label: "山の遺跡",
 		desc:  "切り立った山の洞窟にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
 		label: "塔の遺跡",
 		desc:  "雲にまで届く塔を持つ遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
 		label: "拠点メニューに戻る",

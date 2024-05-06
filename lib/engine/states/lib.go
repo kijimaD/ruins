@@ -91,7 +91,6 @@ func (sm *StateMachine) Update(world w.World) {
 	sm.lastTransition = sm.states[len(sm.states)-1].Update(world)
 
 	// Run post-game systems
-	s.TransformSystem(world)
 }
 
 // Draw draws the screen after a state update
