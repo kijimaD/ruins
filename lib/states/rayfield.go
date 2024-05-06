@@ -9,10 +9,12 @@ import (
 	"github.com/hajimehoshi/ebiten/examples/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/spawner"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 var (
@@ -44,11 +46,22 @@ func (st *RayFieldState) OnStart(world w.World) {
 	baseImage.Fill(color.Black)
 
 	// debug
-	spawner.SpawnPlayer(world, 200, 200)
-	spawner.SpawnFieldWall(world, 240, 200)
-	spawner.SpawnFieldWall(world, 320, 200)
-	spawner.SpawnFieldWall(world, 352, 200)
-	spawner.SpawnFieldWarpNext(world, 300, 300)
+	// 終了したとき、現状は前回からの続きになっている
+	// 終了や階層移動したときはフィールドにあるものを削除したい
+	playerCount := 0
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Player,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		playerCount++
+	}))
+	if playerCount == 0 {
+		spawner.SpawnPlayer(world, 200, 200)
+		spawner.SpawnFieldWall(world, 240, 200)
+		spawner.SpawnFieldWall(world, 320, 200)
+		spawner.SpawnFieldWall(world, 352, 200)
+		spawner.SpawnFieldWarpNext(world, 300, 300)
+	}
 }
 
 func (st *RayFieldState) OnStop(world w.World) {}
