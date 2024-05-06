@@ -25,8 +25,7 @@ import (
 )
 
 type CraftMenuState struct {
-	selection int
-	ui        *ebitenui.UI
+	ui *ebitenui.UI
 
 	hoveredItem        ecs.Entity        // ホバー中のアイテム
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン

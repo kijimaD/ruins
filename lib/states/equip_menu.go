@@ -22,8 +22,7 @@ import (
 )
 
 type EquipMenuState struct {
-	selection int
-	ui        *ebitenui.UI
+	ui *ebitenui.UI
 
 	slots            []*ecs.Entity     // スロット一覧
 	items            []ecs.Entity      // インベントリにあるアイテム一覧

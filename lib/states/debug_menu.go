@@ -13,8 +13,6 @@ import (
 )
 
 type DebugMenuState struct {
-	selection int
-
 	ui                 *ebitenui.UI
 	trans              *states.Transition
 	debugMenuContainer *widget.Container

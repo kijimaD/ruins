@@ -11,8 +11,6 @@ import (
 )
 
 type DungeonSelectState struct {
-	selection int
-
 	ui                     *ebitenui.UI
 	trans                  *states.Transition
 	dungeonSelectContainer *widget.Container

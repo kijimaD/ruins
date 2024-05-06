@@ -11,8 +11,6 @@ import (
 )
 
 type FieldMenuState struct {
-	selection int
-
 	ui                 *ebitenui.UI
 	trans              *states.Transition
 	fieldMenuContainer *widget.Container
