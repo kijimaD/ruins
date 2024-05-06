@@ -11,7 +11,7 @@ import (
 )
 
 // raycast用move
-func MoveRaySystem(world w.World) {
+func MoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	var pos *gc.Position

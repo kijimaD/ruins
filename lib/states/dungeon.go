@@ -67,7 +67,7 @@ func (st *DungeonState) OnStart(world w.World) {
 func (st *DungeonState) OnStop(world w.World) {}
 
 func (st *DungeonState) Update(world w.World) states.Transition {
-	gs.MoveRaySystem(world)
+	gs.MoveSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
