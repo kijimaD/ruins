@@ -11,7 +11,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func RenderObjectSystem(world w.World, screen *ebiten.Image) {
+func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	world.Manager.Join(

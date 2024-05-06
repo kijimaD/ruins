@@ -22,7 +22,7 @@ const (
 )
 
 // 周囲を暗くする
-func RenderVisionSystem(world w.World, screen *ebiten.Image) {
+func DarknessSystem(world w.World, screen *ebiten.Image) {
 	visionImage.Fill(color.Black)
 	blackImage.Fill(color.Black)
 

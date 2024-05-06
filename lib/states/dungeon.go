@@ -22,19 +22,19 @@ var (
 	bgImage   *ebiten.Image // 床を表現する
 )
 
-type RayFieldState struct{}
+type DungeonState struct{}
 
-func (st RayFieldState) String() string {
-	return "RayField"
+func (st DungeonState) String() string {
+	return "Dungeon"
 }
 
 // State interface ================
 
-func (st *RayFieldState) OnPause(world w.World) {}
+func (st *DungeonState) OnPause(world w.World) {}
 
-func (st *RayFieldState) OnResume(world w.World) {}
+func (st *DungeonState) OnResume(world w.World) {}
 
-func (st *RayFieldState) OnStart(world w.World) {
+func (st *DungeonState) OnStart(world w.World) {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 	baseImage = ebiten.NewImage(screenWidth, screenHeight)
@@ -64,9 +64,9 @@ func (st *RayFieldState) OnStart(world w.World) {
 	}
 }
 
-func (st *RayFieldState) OnStop(world w.World) {}
+func (st *DungeonState) OnStop(world w.World) {}
 
-func (st *RayFieldState) Update(world w.World) states.Transition {
+func (st *DungeonState) Update(world w.World) states.Transition {
 	gs.MoveRaySystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -76,7 +76,7 @@ func (st *RayFieldState) Update(world w.World) states.Transition {
 	return states.Transition{}
 }
 
-func (st *RayFieldState) Draw(world w.World, screen *ebiten.Image) {
+func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 
@@ -93,7 +93,7 @@ func (st *RayFieldState) Draw(world w.World, screen *ebiten.Image) {
 		}
 	}
 
-	gs.RenderObjectSystem(world, screen)
-	gs.RenderVisionSystem(world, screen)
-	gs.RenderShadowSystem(world, screen)
+	gs.RenderSpriteSystem(world, screen)
+	gs.DarknessSystem(world, screen)
+	gs.BlindSpotSystem(world, screen)
 }
