@@ -14,7 +14,6 @@ import (
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	ew "github.com/kijimaD/ruins/lib/engine/world"
-	gloader "github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/raw"
 	gr "github.com/kijimaD/ruins/lib/resources"
 )
@@ -89,20 +88,6 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 			Size: 24,
 			DPI:  72,
 		}),
-	}
-
-	// load prefabs
-	world.Resources.Prefabs = &gr.Prefabs{
-		Menu: gr.MenuPrefabs{
-			InventoryMenu: gloader.PreloadEntities("metadata/entities/ui/inventory_menu.toml", world),
-			CraftMenu:     gloader.PreloadEntities("metadata/entities/ui/craft_menu.toml", world),
-			EquipMenu:     gloader.PreloadEntities("metadata/entities/ui/equip_menu.toml", world),
-		},
-		Intro: gloader.PreloadEntities("metadata/entities/ui/intro.toml", world),
-		Field: gr.FieldPrefabs{
-			LevelInfo:   gloader.PreloadEntities("metadata/entities/ui/level.toml", world),
-			PackageInfo: gloader.PreloadEntities("metadata/entities/ui/package.toml", world),
-		},
 	}
 
 	// load raws

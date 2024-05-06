@@ -9,11 +9,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/consts"
@@ -25,7 +23,6 @@ import (
 
 type EquipMenuState struct {
 	selection int
-	equipMenu []ecs.Entity
 	ui        *ebitenui.UI
 
 	slots            []*ecs.Entity     // スロット一覧
@@ -49,14 +46,10 @@ func (st *EquipMenuState) OnPause(world w.World) {}
 func (st *EquipMenuState) OnResume(world w.World) {}
 
 func (st *EquipMenuState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.equipMenu = append(st.equipMenu, loader.AddEntities(world, prefabs.Menu.EquipMenu)...)
 	st.ui = st.initUI(world)
 }
 
-func (st *EquipMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.equipMenu...)
-}
+func (st *EquipMenuState) OnStop(world w.World) {}
 
 func (st *EquipMenuState) Update(world w.World) states.Transition {
 	changed := gs.EquipmentChangedSystem(world)

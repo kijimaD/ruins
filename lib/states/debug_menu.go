@@ -10,12 +10,10 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/spawner"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type DebugMenuState struct {
 	selection int
-	debugMenu []ecs.Entity
 
 	ui                 *ebitenui.UI
 	trans              *states.Transition
@@ -36,9 +34,7 @@ func (st *DebugMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *DebugMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.debugMenu...)
-}
+func (st *DebugMenuState) OnStop(world w.World) {}
 
 func (st *DebugMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {

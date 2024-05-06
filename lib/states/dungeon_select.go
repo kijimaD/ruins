@@ -8,12 +8,10 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type DungeonSelectState struct {
-	selection     int
-	dungeonSelect []ecs.Entity
+	selection int
 
 	ui                     *ebitenui.UI
 	trans                  *states.Transition
@@ -37,9 +35,7 @@ func (st *DungeonSelectState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *DungeonSelectState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.dungeonSelect...)
-}
+func (st *DungeonSelectState) OnStop(world w.World) {}
 
 func (st *DungeonSelectState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
