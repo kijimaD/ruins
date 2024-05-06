@@ -8,13 +8,9 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type FieldMenuState struct {
-	selection int
-	fieldMenu []ecs.Entity
-
 	ui                 *ebitenui.UI
 	trans              *states.Transition
 	fieldMenuContainer *widget.Container

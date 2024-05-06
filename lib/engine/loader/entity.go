@@ -9,18 +9,13 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	"github.com/BurntSushi/toml"
-	"github.com/golang/freetype/truetype"
 	"github.com/hajimehoshi/ebiten/v2"
 	ecs "github.com/x-hgg-x/goecs/v2"
-	"golang.org/x/image/font"
 )
 
 // EngineComponentList is the list of engine components
 type EngineComponentList struct {
 	SpriteRender *c.SpriteRender
-	Transform    *c.Transform
-	Text         *c.Text
-	UITransform  *c.UITransform
 }
 
 // EntityComponentList is a list of preloaded entities with components
@@ -78,9 +73,6 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 
 type engineComponentListData struct {
 	SpriteRender *spriteRenderData
-	Transform    *c.Transform
-	Text         *textData
-	UITransform  *c.UITransform
 }
 
 type entity struct {
@@ -106,9 +98,6 @@ func LoadEngineComponents(entityMetadataContent []byte, world w.World) []EngineC
 func processComponentsListData(world w.World, data engineComponentListData) EngineComponentList {
 	return EngineComponentList{
 		SpriteRender: processSpriteRenderData(world, data.SpriteRender),
-		Transform:    data.Transform,
-		Text:         processTextData(world, data.Text),
-		UITransform:  data.UITransform,
 	}
 }
 
@@ -164,71 +153,5 @@ func processSpriteRenderData(world w.World, spriteRenderData *spriteRenderData) 
 			Sprites: []c.Sprite{{X: 0, Y: 0, Width: spriteRenderData.Fill.Width, Height: spriteRenderData.Fill.Height}},
 		},
 		SpriteNumber: 0,
-	}
-}
-
-//
-// Text
-//
-
-type fontFaceOptions struct {
-	Size              float64
-	DPI               float64
-	Hinting           string
-	GlyphCacheEntries int `toml:"glyph_cache_entries"`
-	SubPixelsX        int `toml:"sub_pixels_x"`
-	SubPixelsY        int `toml:"sub_pixels_y"`
-}
-
-var hintingMap = map[string]font.Hinting{
-	"":         font.HintingFull,
-	"None":     font.HintingNone,
-	"Vertical": font.HintingVertical,
-	"Full":     font.HintingFull,
-}
-
-type fontFaceData struct {
-	Font    string
-	Options fontFaceOptions
-}
-
-type textData struct {
-	ID       string
-	Text     string
-	FontFace fontFaceData `toml:"font_face"`
-	Color    [4]uint8
-}
-
-func processTextData(world w.World, textData *textData) *c.Text {
-	if textData == nil {
-		return nil
-	}
-
-	// Search font from its name
-	textFont, ok := (*world.Resources.Fonts)[textData.FontFace.Font]
-	if !ok {
-		utils.LogFatalf("unable to find font with name '%s'", textData.FontFace.Font)
-	}
-
-	// Check hinting
-	hinting, ok := hintingMap[textData.FontFace.Options.Hinting]
-	if !ok {
-		utils.LogFatalf("unknown hinting option: '%s'", textData.FontFace.Options.Hinting)
-	}
-
-	options := &truetype.Options{
-		Size:              textData.FontFace.Options.Size,
-		DPI:               textData.FontFace.Options.DPI,
-		Hinting:           hinting,
-		GlyphCacheEntries: textData.FontFace.Options.GlyphCacheEntries,
-		SubPixelsX:        textData.FontFace.Options.SubPixelsX,
-		SubPixelsY:        textData.FontFace.Options.SubPixelsY,
-	}
-
-	return &c.Text{
-		ID:       textData.ID,
-		Text:     textData.Text,
-		FontFace: truetype.NewFace(textFont.Font, options),
-		Color:    color.RGBA{R: textData.Color[0], G: textData.Color[1], B: textData.Color[2], A: textData.Color[3]},
 	}
 }

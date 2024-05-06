@@ -1,14 +1,12 @@
 package resources
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/kijimaD/ruins/lib/engine/math"
 	"github.com/kijimaD/ruins/lib/engine/utils"
 	"github.com/kijimaD/ruins/lib/utils/vutil"
 
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
@@ -70,7 +68,6 @@ func InitLevel(world w.World, levelNum int) {
 	// Load ui entities
 	prefabs := world.Resources.Prefabs.(*Prefabs)
 	loader.AddEntities(world, prefabs.Field.PackageInfo)
-	levelInfoEntity := loader.AddEntities(world, prefabs.Field.LevelInfo)[0]
 
 	randLevelNum := rand.Intn(len(gameResources.Package.Levels))
 	// 1階は常に同じフロアが出る
@@ -89,9 +86,6 @@ func InitLevel(world w.World, levelNum int) {
 	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevelNum, levelNum, gridLayout.Width, gridLayout.Height, &fieldSpriteSheet))
 	loader.AddEntities(world, levelComponentList)
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
-
-	// Set level info text
-	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("%dF", levelNum)
 }
 
 // UpdateGameLayoutはゲームレイアウトを更新する

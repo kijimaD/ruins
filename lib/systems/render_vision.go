@@ -68,7 +68,7 @@ func RenderVisionSystem(world w.World, screen *ebiten.Image) {
 
 	// 光源の中心付近を明るくする
 	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 100)
+		vs := visionVertices(visionNgon, pos.X, pos.Y, 64)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendClear
 		indices := []uint16{}

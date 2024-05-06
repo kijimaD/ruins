@@ -11,12 +11,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
@@ -24,8 +22,7 @@ import (
 )
 
 type InventoryMenuState struct {
-	inventoryMenu []ecs.Entity
-	ui            *ebitenui.UI
+	ui *ebitenui.UI
 
 	selectedItem       ecs.Entity        // 選択中のアイテム
 	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
@@ -48,14 +45,10 @@ func (st *InventoryMenuState) OnPause(world w.World) {}
 func (st *InventoryMenuState) OnResume(world w.World) {}
 
 func (st *InventoryMenuState) OnStart(world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	st.inventoryMenu = append(st.inventoryMenu, loader.AddEntities(world, prefabs.Menu.InventoryMenu)...)
 	st.ui = st.initUI(world)
 }
 
-func (st *InventoryMenuState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.inventoryMenu...)
-}
+func (st *InventoryMenuState) OnStop(world w.World) {}
 
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)

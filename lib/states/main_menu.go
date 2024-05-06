@@ -33,9 +33,7 @@ func (st *MainMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *MainMenuState) OnStop(world w.World) {
-	world.Manager.DeleteAllEntities()
-}
+func (st *MainMenuState) OnStop(world w.World) {}
 
 func (st *MainMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {

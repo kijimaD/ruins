@@ -8,13 +8,9 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type DungeonSelectState struct {
-	selection     int
-	dungeonSelect []ecs.Entity
-
 	ui                     *ebitenui.UI
 	trans                  *states.Transition
 	dungeonSelectContainer *widget.Container
@@ -37,9 +33,7 @@ func (st *DungeonSelectState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *DungeonSelectState) OnStop(world w.World) {
-	world.Manager.DeleteEntities(st.dungeonSelect...)
-}
+func (st *DungeonSelectState) OnStop(world w.World) {}
 
 func (st *DungeonSelectState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -118,17 +112,17 @@ var dungeonSelectTrans = []struct {
 	{
 		label: "森の遺跡",
 		desc:  "鬱蒼とした森の奥地にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
 		label: "山の遺跡",
 		desc:  "切り立った山の洞窟にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
 		label: "塔の遺跡",
 		desc:  "雲にまで届く塔を持つ遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&FieldState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&RayFieldState{}}},
 	},
 	{
 		label: "拠点メニューに戻る",
