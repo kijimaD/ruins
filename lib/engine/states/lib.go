@@ -4,8 +4,6 @@ import (
 	"os"
 
 	i "github.com/kijimaD/ruins/lib/engine/systems/input"
-	s "github.com/kijimaD/ruins/lib/engine/systems/sprite"
-	u "github.com/kijimaD/ruins/lib/engine/systems/ui"
 	"github.com/kijimaD/ruins/lib/engine/utils"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 
@@ -95,9 +93,6 @@ func (sm *StateMachine) Update(world w.World) {
 
 // Draw draws the screen after a state update
 func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image) {
-	// Run drawing systems
-	s.RenderSpriteSystem(world, screen)
-	u.RenderUISystem(world, screen)
 	sm.states[len(sm.states)-1].Draw(world, screen)
 }
 
