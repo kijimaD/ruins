@@ -71,7 +71,7 @@ func SpawnPlayer(world w.World, x int, y int) {
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
 			Position: &gc.Position{x, y},
-			Camera:   &gc.Camera{},
+			Camera:   &gc.Camera{Scale: 1, ScaleTo: 1},
 		})
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)

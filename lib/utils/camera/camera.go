@@ -11,13 +11,13 @@ import (
 // TODO: ズーム率を追加する
 func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	// var camera gc.Camera
+	var camera *gc.Camera
 	var cPos *gc.Position
 	world.Manager.Join(
 		gameComponents.Camera,
 		gameComponents.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// camera = gameComponents.Camera.Get(entity).(*gc.Camera)
+		camera = gameComponents.Camera.Get(entity).(*gc.Camera)
 		cPos = gameComponents.Position.Get(entity).(*gc.Position)
 	}))
 
@@ -25,7 +25,7 @@ func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
 
 	// カメラ位置
 	op.GeoM.Translate(float64(-cPos.X), float64(-cPos.Y))
+	op.GeoM.Scale(camera.Scale, camera.Scale)
 	// 画面の中央
 	op.GeoM.Translate(float64(cx), float64(cy))
-	op.GeoM.Scale(1, 1)
 }
