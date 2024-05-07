@@ -9,6 +9,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -69,7 +70,8 @@ func BlindSpotSystem(world w.World, screen *ebiten.Image) {
 
 	{
 		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(0.8)
+		op.ColorScale.ScaleAlpha(0.9)
+		camera.SetTranslate(world, op)
 		screen.DrawImage(shadowImage, op)
 	}
 }

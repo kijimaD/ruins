@@ -7,6 +7,7 @@ import (
 type Components struct {
 	GridElement      *ecs.SliceComponent
 	Player           *ecs.NullComponent
+	Camera           *ecs.SliceComponent
 	Wall             *ecs.NullComponent
 	Warp             *ecs.NullComponent
 	Item             *ecs.NullComponent
@@ -40,9 +41,15 @@ type GridElement struct {
 	Col  int
 }
 
-// フィールドで操作対象となる
+// フィールドで操作対象となる対象
 // operatorとかのほうがよさそうか?
 type Player struct{}
+
+// カメラ
+type Camera struct {
+	Scale   float64
+	ScaleTo float64
+}
 
 // 壁
 // TODO: 削除予定

@@ -8,6 +8,7 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	m "github.com/kijimaD/ruins/lib/engine/math"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -21,11 +22,11 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		pos := gameComponents.Position.Get(entity).(*gc.Position)
 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
-		drawImage(screen, sprite, pos)
+		drawImage(world, screen, sprite, pos)
 	}))
 }
 
-func drawImage(screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position) {
+func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position) {
 	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 	texture := spriteRender.SpriteSheet.Texture
 	textureWidth, textureHeight := texture.Image.Size()
@@ -35,7 +36,9 @@ func drawImage(screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Posi
 	top := m.Max(0, sprite.Y)
 	bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
 
-	op := spriteRender.Options
+	op := &spriteRender.Options
+	op.GeoM.Reset() // FIXME: Resetがないと非表示になる。なぜ?
 	op.GeoM.Translate(float64(pos.X-sprite.Width/2), float64(pos.Y-sprite.Width/2))
-	screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), &op)
+	camera.SetTranslate(world, op)
+	screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)
 }

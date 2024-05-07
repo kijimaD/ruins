@@ -14,6 +14,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/spawner"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -67,7 +68,7 @@ func (st *DungeonState) OnStart(world w.World) {
 func (st *DungeonState) OnStop(world w.World) {}
 
 func (st *DungeonState) Update(world w.World) states.Transition {
-	gs.MoveRaySystem(world)
+	gs.MoveSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
@@ -77,17 +78,17 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 }
 
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
-	screenWidth := world.Resources.ScreenDimensions.Width
-	screenHeight := world.Resources.ScreenDimensions.Height
-
 	screen.DrawImage(baseImage, nil)
 	{
+		screenWidth := world.Resources.ScreenDimensions.Width
+		screenHeight := world.Resources.ScreenDimensions.Height
 		tileWidth, tileHeight := bgImage.Size()
 		// 背景画像を敷き詰める
 		for i := 0; i < screenWidth; i += tileWidth {
 			for j := 0; j < screenHeight; j += tileHeight {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(i), float64(j))
+				camera.SetTranslate(world, op)
 				screen.DrawImage(bgImage, op)
 			}
 		}

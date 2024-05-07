@@ -11,7 +11,7 @@ import (
 )
 
 // raycast用move
-func MoveRaySystem(world w.World) {
+func MoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	var pos *gc.Position
@@ -76,6 +76,53 @@ func MoveRaySystem(world w.World) {
 				}
 			}
 		}))
+	}
+
+	{
+		// カメラの追従
+		var camera *gc.Camera
+		var cPos *gc.Position
+		world.Manager.Join(
+			gameComponents.Camera,
+			gameComponents.Position,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			camera = gameComponents.Camera.Get(entity).(*gc.Camera)
+			cPos = gameComponents.Position.Get(entity).(*gc.Position)
+		}))
+		cPos.X = pos.X
+		cPos.Y = pos.Y
+
+		// ズーム率変更
+		// 参考: https://ebitengine.org/ja/examples/isometric.html
+		var scrollY float64
+		if ebiten.IsKeyPressed(ebiten.KeyC) || ebiten.IsKeyPressed(ebiten.KeyPageDown) {
+			scrollY = -0.25
+		} else if ebiten.IsKeyPressed(ebiten.KeyE) || ebiten.IsKeyPressed(ebiten.KeyPageUp) {
+			scrollY = 0.25
+		} else {
+			_, scrollY = ebiten.Wheel()
+			if scrollY < -1 {
+				scrollY = -1
+			} else if scrollY > 1 {
+				scrollY = 1
+			}
+		}
+		camera.ScaleTo += scrollY * (camera.ScaleTo / 7)
+
+		// Clamp target zoom level.
+		if camera.ScaleTo < 0.01 {
+			camera.ScaleTo = 0.01
+		} else if camera.ScaleTo > 100 {
+			camera.ScaleTo = 100
+		}
+
+		// Smooth zoom transition.
+		div := 10.0
+		if camera.ScaleTo > camera.Scale {
+			camera.Scale += (camera.ScaleTo - camera.Scale) / div
+		} else if camera.ScaleTo < camera.Scale {
+			camera.Scale -= (camera.Scale - camera.ScaleTo) / div
+		}
 	}
 
 	padding := 20

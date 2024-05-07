@@ -57,14 +57,25 @@ func SpawnAllRecipes(world w.World) {
 // フィールド上に表示されるプレイヤーを生成する
 func SpawnPlayer(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
-	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{x, y},
-		Player:       &gc.Player{},
-		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
-	})
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
-	loader.AddEntities(world, componentList)
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, gloader.GameComponentList{
+			Position:     &gc.Position{x, y},
+			Player:       &gc.Player{},
+			SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
+		})
+		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+		loader.AddEntities(world, componentList)
+	}
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, gloader.GameComponentList{
+			Position: &gc.Position{x, y},
+			Camera:   &gc.Camera{Scale: 1, ScaleTo: 1},
+		})
+		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
+		loader.AddEntities(world, componentList)
+	}
 }
 
 // フィールド上に表示される壁を生成する
