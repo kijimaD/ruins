@@ -13,7 +13,6 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/spawner"
-	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -89,7 +88,7 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 			for j := 0; j < screenHeight; j += tileHeight {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(i), float64(j))
-				camera.SetTranslate(world, op, -systems.CameraX, -systems.CameraY)
+				camera.SetTranslate(world, op)
 				screen.DrawImage(bgImage, op)
 			}
 		}

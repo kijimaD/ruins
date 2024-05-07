@@ -12,12 +12,6 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-var (
-	// TODO: ちゃんと保存する
-	CameraX = 200
-	CameraY = 200
-)
-
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -45,6 +39,6 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRende
 	op := &spriteRender.Options
 	op.GeoM.Reset() // FIXME: Resetがないと非表示になる。なぜ?
 	op.GeoM.Translate(float64(pos.X-sprite.Width/2), float64(pos.Y-sprite.Width/2))
-	camera.SetTranslate(world, op, -CameraX, -CameraY)
+	camera.SetTranslate(world, op)
 	screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)
 }

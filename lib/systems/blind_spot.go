@@ -71,7 +71,7 @@ func BlindSpotSystem(world w.World, screen *ebiten.Image) {
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(0.9)
-		camera.SetTranslate(world, op, -CameraX, -CameraY)
+		camera.SetTranslate(world, op)
 		screen.DrawImage(shadowImage, op)
 	}
 }

@@ -78,8 +78,18 @@ func MoveSystem(world w.World) {
 		}))
 	}
 
-	CameraX = pos.X
-	CameraY = pos.Y
+	// カメラの追従
+	{
+		var cPos *gc.Position
+		world.Manager.Join(
+			gameComponents.Camera,
+			gameComponents.Position,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			cPos = gameComponents.Position.Get(entity).(*gc.Position)
+		}))
+		cPos.X = pos.X
+		cPos.Y = pos.Y
+	}
 
 	padding := 20
 	screenWidth := world.Resources.ScreenDimensions.Width
