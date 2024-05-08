@@ -2,8 +2,9 @@ package components
 
 // フィールド上に存在する
 type Position struct {
-	X int
-	Y int
+	X     int
+	Y     int
+	Angle float64
 }
 
 // フィールド上で通過できない

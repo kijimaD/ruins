@@ -37,8 +37,10 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRende
 	bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
 
 	op := &spriteRender.Options
-	op.GeoM.Reset() // FIXME: Resetがないと非表示になる。なぜ?
-	op.GeoM.Translate(float64(pos.X-sprite.Width/2), float64(pos.Y-sprite.Width/2))
+	op.GeoM.Reset()                                                       // FIXME: Resetがないと非表示になる。なぜ?
+	op.GeoM.Translate(float64(-sprite.Width/2), float64(-sprite.Width/2)) // 回転軸を画像の中心にする
+	op.GeoM.Rotate(pos.Angle)
+	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	camera.SetTranslate(world, op)
 	screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)
 }
