@@ -29,24 +29,56 @@ func MoveSystem(world w.World) {
 	originalX := pos.X
 	originalY := pos.Y
 
-	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+	// 元の画像を0度(時計の12時の位置スタート)として、何度回転させるか
+	switch {
+	// Right
+	case ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight):
 		pos.X += 2
 		pos.Angle = math.Pi / 2
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
+		if ebiten.IsKeyPressed(ebiten.KeyW) {
+			pos.Y -= 2
+			pos.Angle = math.Pi / 4
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyS) {
+			pos.Y += 2
+			pos.Angle = 3 * math.Pi / 4
+		}
+	// Down
+	case ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown):
 		pos.Y += 2
 		pos.Angle = math.Pi
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		if ebiten.IsKeyPressed(ebiten.KeyA) {
+			pos.X -= 2
+			pos.Angle = 5 * math.Pi / 4
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyD) {
+			pos.X += 2
+			pos.Angle = 3 * math.Pi / 4
+		}
+	// Left
+	case ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft):
 		pos.X -= 2
 		pos.Angle = 3 * math.Pi / 2
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
+		if ebiten.IsKeyPressed(ebiten.KeyW) {
+			pos.Y -= 2
+			pos.Angle = 7 * math.Pi / 4
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyS) {
+			pos.Y += 2
+			pos.Angle = 5 * math.Pi / 4
+		}
+	// Up
+	case ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp):
 		pos.Y -= 2
 		pos.Angle = math.Pi * 2
+		if ebiten.IsKeyPressed(ebiten.KeyA) {
+			pos.X -= 2
+			pos.Angle = 7 * math.Pi / 4
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyD) {
+			pos.X += 2
+			pos.Angle = math.Pi / 4
+		}
 	}
 
 	// 衝突判定して、衝突していれば元の位置に戻す
