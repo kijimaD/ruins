@@ -31,18 +31,22 @@ func MoveSystem(world w.World) {
 
 	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		pos.X += 2
+		pos.Angle = math.Pi / 2
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
 		pos.Y += 2
+		pos.Angle = math.Pi
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
 		pos.X -= 2
+		pos.Angle = 3 * math.Pi / 2
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
 		pos.Y -= 2
+		pos.Angle = math.Pi * 2
 	}
 
 	// 衝突判定して、衝突していれば元の位置に戻す

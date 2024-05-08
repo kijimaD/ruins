@@ -60,7 +60,7 @@ func SpawnPlayer(world w.World, x int, y int) {
 	{
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
-			Position:     &gc.Position{x, y},
+			Position:     &gc.Position{X: x, Y: y},
 			Player:       &gc.Player{},
 			SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
 		})
@@ -70,8 +70,8 @@ func SpawnPlayer(world w.World, x int, y int) {
 	{
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
-			Position: &gc.Position{x, y},
-			Camera:   &gc.Camera{Scale: 1, ScaleTo: 1},
+			Position: &gc.Position{X: x, Y: y},
+			Camera:   &gc.Camera{Scale: 01, ScaleTo: 1},
 		})
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
@@ -83,7 +83,7 @@ func SpawnFieldWall(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{x, y},
+		Position:     &gc.Position{X: x, Y: y},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
 		BlockView:    &gc.BlockView{},
 		BlockPass:    &gc.BlockPass{},
@@ -97,7 +97,7 @@ func SpawnFieldWarpNext(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{x, y},
+		Position:     &gc.Position{X: x, Y: y},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 4},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
