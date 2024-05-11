@@ -21,7 +21,7 @@ func SpawnItem(world w.World, name string, spawnType raw.SpawnType) ecs.Entity {
 	return entities[len(entities)-1]
 }
 
-// プレイアブルキャラを生成する
+// パーティに追加可能なキャラを生成する
 func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
@@ -60,13 +60,14 @@ func SpawnPlayer(world w.World, x int, y int) {
 	{
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
-			Position:     &gc.Position{X: x, Y: y},
+			Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumTaller},
 			Player:       &gc.Player{},
 			SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
 		})
 		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
+	// カメラ
 	{
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
@@ -83,7 +84,7 @@ func SpawnFieldWall(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{X: x, Y: y},
+		Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumTaller},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
 		BlockView:    &gc.BlockView{},
 		BlockPass:    &gc.BlockPass{},
@@ -97,7 +98,7 @@ func SpawnFieldWarpNext(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{X: x, Y: y},
+		Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumRug},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 4},
 	})
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})

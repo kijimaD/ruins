@@ -8,6 +8,9 @@ import (
 
 var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 
+// ================
+
+// ワープモード
 type warpMode string
 
 const (
@@ -57,6 +60,7 @@ func (enum TargetFactionType) Valid() error {
 
 // ================
 
+// 使えるシーン
 type UsableSceneType string
 
 const (
@@ -75,9 +79,9 @@ func (enum UsableSceneType) Valid() error {
 }
 
 // ================
+
 // 武器種別
 // 種別によって適用する計算式が異なる
-
 type AttackType string
 
 const (
@@ -115,8 +119,8 @@ func (at AttackType) String() string {
 }
 
 // ================
-// 装備品種別
 
+// 装備品種別
 type EquipmentType string
 
 const (
@@ -153,8 +157,8 @@ func (es EquipmentType) String() string {
 }
 
 // ================
-// 攻撃属性
 
+// 攻撃属性
 type ElementType string
 
 const (
@@ -193,8 +197,8 @@ func (et ElementType) String() string {
 }
 
 // ================
-// 装備スロット番号
 
+// 装備スロット番号
 type EquipmentSlotNumber int
 
 const (
@@ -203,3 +207,16 @@ const (
 	EquipmentSlotTwo
 	EquipmentSlotThree
 )
+
+// ================
+
+// オブジェクトの描画順。小さい値を先に描画する
+type DepthNum int
+
+const (
+	DepthNumFloor  DepthNum = iota // 床
+	DepthNumRug                    // 床に置くもの。例: ワープホール、アイテム
+	DepthNumTaller                 // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
+)
+
+var DepthNums = []DepthNum{DepthNumFloor, DepthNumRug, DepthNumTaller}

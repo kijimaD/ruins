@@ -15,15 +15,20 @@ import (
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	world.Manager.Join(
-		gameComponents.Position,
-		gameComponents.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := gameComponents.Position.Get(entity).(*gc.Position)
-		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+	for _, v := range gc.DepthNums {
+		world.Manager.Join(
+			gameComponents.Position,
+			gameComponents.SpriteRender,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pos := gameComponents.Position.Get(entity).(*gc.Position)
+			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
-		drawImage(world, screen, sprite, pos)
-	}))
+			if pos.Depth != v {
+				return
+			}
+			drawImage(world, screen, sprite, pos)
+		}))
+	}
 }
 
 func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position) {
