@@ -314,27 +314,18 @@ func LoadLevel(packageData PackageData, selectLevel, levelNum, layoutWidth, layo
 }
 
 func createFloorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: floorSpriteNumber},
-	})
 	componentList.Game = append(componentList.Game, GameComponentList{
 		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
 func createExteriorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: exteriorSpriteNumber},
-	})
 	componentList.Game = append(componentList.Game, GameComponentList{
 		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
 func createWallEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: wallSpriteNumber},
-	})
 	componentList.Game = append(componentList.Game, GameComponentList{
 		Wall:        &gc.Wall{},
 		GridElement: &gc.GridElement{Line: line, Col: col},
@@ -342,9 +333,6 @@ func createWallEntity(componentList *loader.EntityComponentList, gameSpriteSheet
 }
 
 func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: playerSpriteNumber},
-	})
 	componentList.Game = append(componentList.Game, GameComponentList{
 		Player:      &gc.Player{},
 		GridElement: &gc.GridElement{Line: line, Col: col},
@@ -352,9 +340,6 @@ func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteShe
 }
 
 func createWarpNextEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpNextSpriteNumber},
-	})
 	componentList.Game = append(componentList.Game, GameComponentList{
 		Warp:        &gc.Warp{Mode: gc.WarpModeNext},
 		GridElement: &gc.GridElement{Line: line, Col: col},
@@ -362,9 +347,6 @@ func createWarpNextEntity(componentList *loader.EntityComponentList, gameSpriteS
 }
 
 func createWarpEscapeEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
-		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: warpEscapeSpriteNumber},
-	})
 	componentList.Game = append(componentList.Game, GameComponentList{
 		Warp:        &gc.Warp{Mode: gc.WarpModeEscape},
 		GridElement: &gc.GridElement{Line: line, Col: col},

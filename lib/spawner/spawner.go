@@ -15,7 +15,6 @@ func SpawnItem(world w.World, name string, spawnType raw.SpawnType) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, spawnType))
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	entities := loader.AddEntities(world, componentList)
 
 	return entities[len(entities)-1]
@@ -26,7 +25,6 @@ func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	componentList.Game = append(componentList.Game, rawMaster.GenerateMember(name, inParty))
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	entities := loader.AddEntities(world, componentList)
 
 	return entities[len(entities)-1]
@@ -38,7 +36,6 @@ func SpawnAllMaterials(world w.World) {
 	for k, _ := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, raw.SpawnInBackpack))
-		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
 }
@@ -49,7 +46,6 @@ func SpawnAllRecipes(world w.World) {
 	for k, _ := range rawMaster.RecipeIndex {
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, rawMaster.GenerateRecipe(k))
-		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
 }
@@ -64,7 +60,6 @@ func SpawnPlayer(world w.World, x int, y int) {
 			Player:       &gc.Player{},
 			SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
 		})
-		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
 	// カメラ
@@ -74,7 +69,6 @@ func SpawnPlayer(world w.World, x int, y int) {
 			Position: &gc.Position{X: x, Y: y},
 			Camera:   &gc.Camera{Scale: 01, ScaleTo: 1},
 		})
-		componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 		loader.AddEntities(world, componentList)
 	}
 }
@@ -89,7 +83,6 @@ func SpawnFieldWall(world w.World, x int, y int) {
 		BlockView:    &gc.BlockView{},
 		BlockPass:    &gc.BlockPass{},
 	})
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
 }
 
@@ -101,6 +94,5 @@ func SpawnFieldWarpNext(world w.World, x int, y int) {
 		Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumRug},
 		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 4},
 	})
-	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{})
 	loader.AddEntities(world, componentList)
 }

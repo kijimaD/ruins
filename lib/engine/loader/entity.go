@@ -20,15 +20,13 @@ type EngineComponentList struct {
 
 // EntityComponentList is a list of preloaded entities with components
 type EntityComponentList struct {
-	Engine []EngineComponentList
-	Game   []interface{}
+	Game []interface{}
 }
 
 // LoadEntities creates entities with components from a TOML file
 func LoadEntities(entityMetadataContent []byte, world w.World, gameComponentList []interface{}) []ecs.Entity {
 	entityComponentList := EntityComponentList{
-		Engine: LoadEngineComponents(entityMetadataContent, world),
-		Game:   gameComponentList,
+		Game: gameComponentList,
 	}
 	return AddEntities(world, entityComponentList)
 }
@@ -36,15 +34,15 @@ func LoadEntities(entityMetadataContent []byte, world w.World, gameComponentList
 // AddEntities adds entities with engine and game components
 func AddEntities(world w.World, entityComponentList EntityComponentList) []ecs.Entity {
 	// Create new entities and add engine components
-	entities := make([]ecs.Entity, len(entityComponentList.Engine))
-	for iEntity := range entityComponentList.Engine {
+	entities := make([]ecs.Entity, len(entityComponentList.Game))
+	for iEntity := range entityComponentList.Game {
 		entities[iEntity] = world.Manager.NewEntity()
-		AddEntityComponents(entities[iEntity], world.Components.Engine, entityComponentList.Engine[iEntity])
+		AddEntityComponents(entities[iEntity], world.Components.Game, entityComponentList.Game[iEntity])
 	}
 
 	// Add game components
 	if entityComponentList.Game != nil {
-		if len(entityComponentList.Game) != len(entityComponentList.Engine) {
+		if len(entityComponentList.Game) != len(entityComponentList.Game) {
 			utils.LogFatalf("incorrect size for game component list")
 		}
 		for iEntity := range entities {

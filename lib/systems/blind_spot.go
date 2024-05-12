@@ -129,6 +129,7 @@ func rayCasting(cx, cy float64, world w.World) []line {
 
 				// Unpack all objects
 				for _, o := range objects {
+					// 矩形の1辺ごとに交差を検証する
 					for _, wall := range o.walls {
 						if px, py, ok := intersection(ray, wall); ok {
 							points = append(points, [2]float64{px, py})
