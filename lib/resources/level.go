@@ -3,13 +3,7 @@ package resources
 import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
-)
-
-type StateEvent string
-
-const (
-	StateEventNone       = StateEvent("NONE")
-	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
+	"github.com/kijimaD/ruins/lib/utils/vutil"
 )
 
 const (
@@ -18,6 +12,19 @@ const (
 	gridBlockSize = 32
 	minGridWidth  = 30
 	minGridHeight = 20
+)
+
+type Game struct {
+	StateEvent StateEvent
+	Level      Level
+}
+
+// ステート上でのイベント
+type StateEvent string
+
+const (
+	StateEventNone       = StateEvent("NONE")
+	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
 )
 
 // Tileはsystemなどでも使う。systemから直接gloaderを扱わせたくないので、ここでエクスポートする
@@ -29,16 +36,15 @@ const (
 	TileEmpty      = gloader.TileEmpty
 )
 
+// 現在の階層
 type Level struct {
-	CurrentNum int
+	// タイル群
+	Tiles vutil.Vec2d[Tile]
+	// 階数
+	Depth int
 }
 
 type Tile = gloader.Tile
-
-type Game struct {
-	StateEvent StateEvent
-	Level      Level
-}
 
 // UpdateGameLayoutはゲームウィンドウサイズを更新する
 func UpdateGameLayout(world w.World) (int, int) {
