@@ -1,13 +1,6 @@
 package resources
 
 import (
-	"math/rand"
-
-	"github.com/kijimaD/ruins/lib/engine/math"
-	"github.com/kijimaD/ruins/lib/engine/utils"
-	"github.com/kijimaD/ruins/lib/utils/vutil"
-
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
 )
@@ -38,64 +31,18 @@ const (
 
 type Level struct {
 	CurrentNum int
-	Grid       vutil.Vec2d[Tile]
-	Movements  []MovementType
-	Modified   bool
 }
-
-// PackageData contains level package data
-type PackageData = gloader.PackageData
 
 type Tile = gloader.Tile
 
-// グリッドレイアウト
-type GridLayout struct {
-	Width  int
-	Height int
-}
-
 type Game struct {
 	StateEvent StateEvent
-	Package    PackageData
 	Level      Level
-	GridLayout GridLayout
 }
 
-// levelNum: 今いる階数
-func InitLevel(world w.World, levelNum int) {
-	gameResources := world.Resources.Game.(*Game)
-
-	// Load ui entities
-	prefabs := world.Resources.Prefabs.(*Prefabs)
-	loader.AddEntities(world, prefabs.Field.PackageInfo)
-
-	randLevelNum := rand.Intn(len(gameResources.Package.Levels))
-	// 1階は常に同じフロアが出る
-	if levelNum == 1 {
-		randLevelNum = 0
-	}
-
-	level := gameResources.Package.Levels[randLevelNum]
-	gridLayout := &gameResources.GridLayout
-	gridLayout.Width = math.Max(minGridWidth, level.NCols)
-	gridLayout.Height = math.Max(minGridHeight, level.NRows)
-
-	UpdateGameLayout(world, gridLayout)
-
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
-	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevelNum, levelNum, gridLayout.Width, gridLayout.Height, &fieldSpriteSheet))
-	loader.AddEntities(world, levelComponentList)
-	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
-}
-
-// UpdateGameLayoutはゲームレイアウトを更新する
-func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
+// UpdateGameLayoutはゲームウィンドウサイズを更新する
+func UpdateGameLayout(world w.World) (int, int) {
 	gridWidth, gridHeight := minGridWidth, minGridHeight
-
-	if gridLayout != nil {
-		gridWidth = gridLayout.Width
-		gridHeight = gridLayout.Height
-	}
 
 	gameWidth := gridWidth*gridBlockSize + offsetX
 	gameHeight := gridHeight*gridBlockSize + offsetY
