@@ -16,28 +16,13 @@ import (
 
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	var pos *gc.Position
-	world.Manager.Join(
-		gameComponents.Position,
-		gameComponents.Player,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos = gameComponents.Position.Get(entity).(*gc.Position)
-	}))
 
 	// プレイヤーの周りだけ描画する
 	gameResources := world.Resources.Game.(*resources.Game)
-	tx, ty := gameResources.Level.XYToTileXY(pos.X, pos.Y)
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 
-	const drawRange = 30
 	for w := 0; w < gameResources.Level.Width; w++ {
-		if tx+drawRange < w || tx-drawRange > w {
-			continue
-		}
 		for h := 0; h < gameResources.Level.Height; h++ {
-			if ty+drawRange < h || ty-drawRange > h {
-				continue
-			}
 			tile := gameResources.Level.Tiles[gameResources.Level.XYIndex(w, h)]
 			if tile == resources.TileEmpty {
 				spriteNumber := 2 // とりあえずハードコード
