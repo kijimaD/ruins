@@ -1,6 +1,7 @@
 package resources
 
 import (
+	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
 )
@@ -46,8 +47,16 @@ type Level struct {
 
 type Tile = gloader.Tile
 
+// タイル座標から、タイルスライスのインデックスを求める
 func (l *Level) XYIndex(x int, y int) int {
 	return y*l.Width + x
+}
+
+// xy座標をタイル座標に変換する
+func (l *Level) XYToTileXY(x int, y int) (int, int) {
+	tx := x / ec.DungeonTileSize
+	ty := y / ec.DungeonTileSize
+	return tx, ty
 }
 
 func NewLevel(newDepth int, width int, height int) Level {

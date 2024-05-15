@@ -30,7 +30,7 @@ func MoveSystem(world w.World) {
 	originalX := pos.X
 	originalY := pos.Y
 
-	speed := 5
+	speed := 3
 
 	// 元の画像を0度(時計の12時の位置スタート)として、何度回転させるか
 	switch {
