@@ -20,9 +20,9 @@ cmd() {
 cmd CraftMenu
 cmd Intro
 cmd DebugMenu
+cmd DungeonMenu
 cmd DungeonSelect
 cmd EquipMenu
-cmd FieldMenu
 cmd HomeMenu
 cmd Intro
 cmd InventoryMenu

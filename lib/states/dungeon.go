@@ -75,7 +75,7 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 	gs.MoveSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&FieldMenuState{}}}
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonMenuState{}}}
 	}
 
 	return states.Transition{}
