@@ -11,6 +11,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
+const DungeonTileSize = 32
+
 // Sprite structure
 type Sprite struct {
 	// Horizontal position of the sprite in the sprite sheet

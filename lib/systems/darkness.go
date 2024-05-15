@@ -9,13 +9,14 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 var (
-	visionImage = ebiten.NewImage(1000, 1000) // 視界を表現する黒背景
-	blackImage  = ebiten.NewImage(1000, 1000) // 影生成時の、マスクのベースとして使う黒画像
+	visionImage *ebiten.Image // 視界を表現する黒背景
+	blackImage  *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
 )
 
 const (
@@ -24,6 +25,12 @@ const (
 
 // 周囲を暗くする
 func DarknessSystem(world w.World, screen *ebiten.Image) {
+	gameResources := world.Resources.Game.(*resources.Game)
+	levelWidth := gameResources.Level.Width * ec.DungeonTileSize
+	levelHeight := gameResources.Level.Height * ec.DungeonTileSize
+	visionImage = ebiten.NewImage(levelWidth, levelHeight)
+	blackImage = ebiten.NewImage(levelWidth, levelHeight)
+
 	visionImage.Fill(color.Black)
 	blackImage.Fill(color.Black)
 
