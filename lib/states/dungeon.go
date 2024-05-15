@@ -12,9 +12,9 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	gs "github.com/kijimaD/ruins/lib/systems"
-	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -63,6 +63,10 @@ func (st *DungeonState) OnStart(world w.World) {
 		spawner.SpawnFieldWall(world, 352, 200)
 		spawner.SpawnFieldWarpNext(world, 300, 300)
 	}
+
+	world.Resources.Game = &resources.Game{}
+	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources.Level = resources.NewLevel(1, 50, 50)
 }
 
 func (st *DungeonState) OnStop(world w.World) {}
@@ -79,20 +83,6 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 	screen.DrawImage(baseImage, nil)
-	{
-		screenWidth := world.Resources.ScreenDimensions.Width
-		screenHeight := world.Resources.ScreenDimensions.Height
-		tileWidth, tileHeight := bgImage.Size()
-		// 背景画像を敷き詰める
-		for i := 0; i < screenWidth; i += tileWidth {
-			for j := 0; j < screenHeight; j += tileHeight {
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(i), float64(j))
-				camera.SetTranslate(world, op)
-				screen.DrawImage(bgImage, op)
-			}
-		}
-	}
 
 	gs.RenderSpriteSystem(world, screen)
 	gs.DarknessSystem(world, screen)

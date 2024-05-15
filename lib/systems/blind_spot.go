@@ -109,10 +109,19 @@ func rayCasting(cx, cy float64, world w.World) []line {
 
 	// 外周の壁。rayが必ずどこかに当たるようにしないといけない
 	{
+		var pos *gc.Position
+		world.Manager.Join(
+			gameComponents.Position,
+			gameComponents.Player,
+			gameComponents.SpriteRender,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pos = gameComponents.Position.Get(entity).(*gc.Position)
+		}))
+
 		screenWidth := float64(world.Resources.ScreenDimensions.Width)
 		screenHeight := float64(world.Resources.ScreenDimensions.Height)
-		padding := float64(20)
-		objects = append(objects, Object{rect(padding, padding, float64(screenWidth-2*padding), float64(screenHeight-2*padding))})
+
+		objects = append(objects, Object{rect(float64(pos.X)-screenWidth, float64(pos.Y)-screenHeight, float64(screenWidth*2), float64(screenHeight*2))})
 	}
 
 	var rays []line

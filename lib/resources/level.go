@@ -3,7 +3,6 @@ package resources
 import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
-	"github.com/kijimaD/ruins/lib/utils/vutil"
 )
 
 const (
@@ -29,22 +28,42 @@ const (
 
 // Tileはsystemなどでも使う。systemから直接gloaderを扱わせたくないので、ここでエクスポートする
 const (
-	TilePlayer     = gloader.TilePlayer
-	TileWall       = gloader.TileWall
-	TileWarpNext   = gloader.TileWarpNext
-	TileWarpEscape = gloader.TileWarpEscape
-	TileEmpty      = gloader.TileEmpty
+	TileEmpty = gloader.TileEmpty
+	TileWall  = gloader.TileWall
 )
 
 // 現在の階層
 type Level struct {
 	// タイル群
-	Tiles vutil.Vec2d[Tile]
+	Tiles []Tile
 	// 階数
 	Depth int
+	// 横グリッド数
+	Width int
+	// 縦グリッド数
+	Height int
 }
 
 type Tile = gloader.Tile
+
+func (l *Level) XYIndex(x int, y int) int {
+	return y*l.Width + x
+}
+
+func NewLevel(newDepth int, width int, height int) Level {
+	tileCount := width * height
+	level := Level{
+		Tiles:  make([]Tile, tileCount),
+		Depth:  newDepth,
+		Width:  width,
+		Height: height,
+	}
+	for i, _ := range level.Tiles {
+		level.Tiles[i] = TileEmpty
+	}
+
+	return level
+}
 
 // UpdateGameLayoutはゲームウィンドウサイズを更新する
 func UpdateGameLayout(world w.World) (int, int) {

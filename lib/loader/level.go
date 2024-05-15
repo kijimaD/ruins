@@ -56,11 +56,8 @@ type PackageData struct {
 type Tile uint8
 
 const (
-	TilePlayer Tile = 1 << iota
-	TileWall
-	TileWarpNext
-	TileWarpEscape
 	TileEmpty Tile = 0
+	TileWall  Tile = 1 << iota
 )
 
 // レシーバのゲームタイルが、引数のタイルを含んでいるかチェックする
@@ -276,23 +273,6 @@ func LoadLevel(packageData PackageData, selectLevel, levelNum, layoutWidth, layo
 			case charWall:
 				tiles = append(tiles, TileWall)
 				createWallEntity(&componentList, gameSpriteSheet, iLine, iCol)
-			case charPlayer:
-				tiles = append(tiles, TilePlayer)
-				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
-			case charWarpNext:
-				tiles = append(tiles, TileWarpNext)
-				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				createWarpNextEntity(&componentList, gameSpriteSheet, iLine, iCol)
-			case charWarpEscape:
-				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				const EscapeFloorCycle = 5 // 5階ごとに脱出フロア
-				if levelNum%EscapeFloorCycle == 0 {
-					tiles = append(tiles, TileWarpEscape)
-					createWarpEscapeEntity(&componentList, gameSpriteSheet, iLine, iCol)
-				} else {
-					tiles = append(tiles, TileEmpty)
-				}
 			default:
 				return vutil.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
