@@ -7,6 +7,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -29,54 +30,56 @@ func MoveSystem(world w.World) {
 	originalX := pos.X
 	originalY := pos.Y
 
+	speed := 3
+
 	// 元の画像を0度(時計の12時の位置スタート)として、何度回転させるか
 	switch {
 	// Right
 	case ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight):
-		pos.X += 2
+		pos.X += speed
 		pos.Angle = math.Pi / 2
 		if ebiten.IsKeyPressed(ebiten.KeyW) {
-			pos.Y -= 2
+			pos.Y -= speed
 			pos.Angle = math.Pi / 4
 		}
 		if ebiten.IsKeyPressed(ebiten.KeyS) {
-			pos.Y += 2
+			pos.Y += speed
 			pos.Angle = 3 * math.Pi / 4
 		}
 	// Down
 	case ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown):
-		pos.Y += 2
+		pos.Y += speed
 		pos.Angle = math.Pi
 		if ebiten.IsKeyPressed(ebiten.KeyA) {
-			pos.X -= 2
+			pos.X -= speed
 			pos.Angle = 5 * math.Pi / 4
 		}
 		if ebiten.IsKeyPressed(ebiten.KeyD) {
-			pos.X += 2
+			pos.X += speed
 			pos.Angle = 3 * math.Pi / 4
 		}
 	// Left
 	case ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft):
-		pos.X -= 2
+		pos.X -= speed
 		pos.Angle = 3 * math.Pi / 2
 		if ebiten.IsKeyPressed(ebiten.KeyW) {
-			pos.Y -= 2
+			pos.Y -= speed
 			pos.Angle = 7 * math.Pi / 4
 		}
 		if ebiten.IsKeyPressed(ebiten.KeyS) {
-			pos.Y += 2
+			pos.Y += speed
 			pos.Angle = 5 * math.Pi / 4
 		}
 	// Up
 	case ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp):
-		pos.Y -= 2
+		pos.Y -= speed
 		pos.Angle = math.Pi * 2
 		if ebiten.IsKeyPressed(ebiten.KeyA) {
-			pos.X -= 2
+			pos.X -= speed
 			pos.Angle = 7 * math.Pi / 4
 		}
 		if ebiten.IsKeyPressed(ebiten.KeyD) {
-			pos.X += 2
+			pos.X += speed
 			pos.Angle = math.Pi / 4
 		}
 	}
@@ -162,20 +165,21 @@ func MoveSystem(world w.World) {
 	}
 
 	padding := 20
-	screenWidth := world.Resources.ScreenDimensions.Width
-	screenHeight := world.Resources.ScreenDimensions.Height
+	gameResources := world.Resources.Game.(*resources.Game)
+	levelWidth := gameResources.Level.Width * ec.DungeonTileSize
+	levelHeight := gameResources.Level.Height * ec.DungeonTileSize
 
-	// // +1/-1 is to stop player before it reaches the border
-	if pos.X >= screenWidth-padding {
-		pos.X = screenWidth - padding - 1
+	// +1/-1 is to stop player before it reaches the border
+	if pos.X >= levelWidth-padding {
+		pos.X = levelWidth - padding - 1
 	}
 
 	if pos.X <= padding {
 		pos.X = padding + 1
 	}
 
-	if pos.Y >= screenHeight-padding {
-		pos.Y = screenHeight - padding - 1
+	if pos.Y >= levelHeight-padding {
+		pos.Y = levelHeight - padding - 1
 	}
 
 	if pos.Y <= padding {

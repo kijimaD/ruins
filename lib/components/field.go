@@ -1,12 +1,24 @@
 package components
 
-// フィールド上に存在する
+// フィールド上に座標をもって存在する。移動体に対して使う
 type Position struct {
 	X     int
 	Y     int
 	Angle float64  // 角度(ラジアン)。この角度分スプライトを回転させる
 	Depth DepthNum // 描画順。小さい順に先に(下に)描画する
 }
+
+// フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
+type GridElement struct {
+	Row Row
+	Col Col
+}
+
+// タイルの横位置。ピクセル数ではない
+type Row int
+
+// タイルの縦位置。ピクセル数ではない
+type Col int
 
 // フィールド上で通過できない
 type BlockPass struct{}

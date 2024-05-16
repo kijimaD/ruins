@@ -25,13 +25,7 @@ type MainGame struct {
 }
 
 func (game *MainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	var gridLayout *gr.GridLayout
-
-	if game.World.Resources.Game != nil {
-		gridLayout = &game.World.Resources.Game.(*gr.Game).GridLayout
-	}
-
-	return gr.UpdateGameLayout(game.World, gridLayout)
+	return gr.UpdateGameLayout(game.World)
 }
 
 func (game *MainGame) Update() error {

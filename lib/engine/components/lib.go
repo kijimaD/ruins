@@ -6,24 +6,14 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// EngineComponents contains references to all engine components
-type EngineComponents struct {
-	SpriteRender *ecs.SliceComponent
-	Transform    *ecs.SliceComponent
-	Text         *ecs.SliceComponent
-	UITransform  *ecs.SliceComponent
-}
-
 // Components contains engine and game components
 type Components struct {
-	Engine *EngineComponents
-	Game   interface{}
+	Game interface{}
 }
 
 // InitComponents initializes components
 func InitComponents(manager *ecs.Manager, gameComponents interface{}) *Components {
-	components := &Components{Engine: &EngineComponents{}, Game: gameComponents}
-	initFields(manager, components.Engine)
+	components := &Components{Game: gameComponents}
 	initFields(manager, components.Game)
 	return components
 }

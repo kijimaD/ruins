@@ -8,6 +8,7 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	m "github.com/kijimaD/ruins/lib/engine/math"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+
 	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -15,6 +16,25 @@ import (
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
+	// タイル描画
+	world.Manager.Join(
+		gameComponents.GridElement,
+		gameComponents.SpriteRender,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+		pos := &gc.Position{
+			X: int(gridElement.Row*ec.DungeonTileSize + ec.DungeonTileSize/2),
+			Y: int(gridElement.Col*ec.DungeonTileSize + ec.DungeonTileSize/2),
+		}
+		drawImage(world, screen, sprite, pos)
+	}))
+
+	// TODO: ↓的な方法でソートしたほうがよさそう
+	// Sort by increasing values of depth
+	// sort.Slice(spritesDepths, func(i, j int) bool {
+	// 	return spritesDepths[i].depth < spritesDepths[j].depth
+	// })
 	for _, v := range gc.DepthNums {
 		world.Manager.Join(
 			gameComponents.Position,
@@ -36,6 +56,7 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRende
 	texture := spriteRender.SpriteSheet.Texture
 	textureWidth, textureHeight := texture.Image.Size()
 
+	// テクスチャから欲しいスプライトを切り出す
 	left := m.Max(0, sprite.X)
 	right := m.Min(textureWidth, sprite.X+sprite.Width)
 	top := m.Max(0, sprite.Y)

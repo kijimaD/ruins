@@ -50,19 +50,6 @@ func BlindSpotSystem(world w.World, screen *ebiten.Image) {
 		}
 	}
 
-	// 光源近くの視界影をとりはらう
-	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 64)
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Address = ebiten.AddressRepeat
-		opt.Blend = ebiten.BlendClear
-		indices := []uint16{}
-		for i := 0; i < visionNgon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
-		}
-		shadowImage.DrawTriangles(vs, indices, blackImage, opt)
-	}
-
 	// Draw rays
 	// for _, r := range rays {
 	// 	vector.StrokeLine(screen, float32(r.X1), float32(r.Y1), float32(r.X2), float32(r.Y2), 1, color.RGBA{255, 255, 0, 150}, true)
@@ -109,10 +96,19 @@ func rayCasting(cx, cy float64, world w.World) []line {
 
 	// 外周の壁。rayが必ずどこかに当たるようにしないといけない
 	{
+		var pos *gc.Position
+		world.Manager.Join(
+			gameComponents.Position,
+			gameComponents.Player,
+			gameComponents.SpriteRender,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pos = gameComponents.Position.Get(entity).(*gc.Position)
+		}))
+
 		screenWidth := float64(world.Resources.ScreenDimensions.Width)
 		screenHeight := float64(world.Resources.ScreenDimensions.Height)
-		padding := float64(20)
-		objects = append(objects, Object{rect(padding, padding, float64(screenWidth-2*padding), float64(screenHeight-2*padding))})
+
+		objects = append(objects, Object{rect(float64(pos.X)-screenWidth, float64(pos.Y)-screenHeight, float64(screenWidth*2), float64(screenHeight*2))})
 	}
 
 	var rays []line
@@ -129,6 +125,7 @@ func rayCasting(cx, cy float64, world w.World) []line {
 
 				// Unpack all objects
 				for _, o := range objects {
+					// 矩形の1辺ごとに交差を検証する
 					for _, wall := range o.walls {
 						if px, py, ok := intersection(ray, wall); ok {
 							points = append(points, [2]float64{px, py})

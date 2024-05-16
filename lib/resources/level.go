@@ -1,22 +1,11 @@
 package resources
 
 import (
-	"math/rand"
-
-	"github.com/kijimaD/ruins/lib/engine/math"
-	"github.com/kijimaD/ruins/lib/engine/utils"
-	"github.com/kijimaD/ruins/lib/utils/vutil"
-
-	"github.com/kijimaD/ruins/lib/engine/loader"
+	gc "github.com/kijimaD/ruins/lib/components"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
-)
-
-type StateEvent string
-
-const (
-	StateEventNone       = StateEvent("NONE")
-	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
+	"github.com/kijimaD/ruins/lib/spawner"
 )
 
 const (
@@ -27,75 +16,67 @@ const (
 	minGridHeight = 20
 )
 
-// Tileはsystemなどでも使う。systemから直接gloaderを扱わせたくないので、ここでエクスポートする
-const (
-	TilePlayer     = gloader.TilePlayer
-	TileWall       = gloader.TileWall
-	TileWarpNext   = gloader.TileWarpNext
-	TileWarpEscape = gloader.TileWarpEscape
-	TileEmpty      = gloader.TileEmpty
-)
-
-type Level struct {
-	CurrentNum int
-	Grid       vutil.Vec2d[Tile]
-	Movements  []MovementType
-	Modified   bool
+type Game struct {
+	StateEvent StateEvent
+	Level      Level
 }
 
-// PackageData contains level package data
-type PackageData = gloader.PackageData
+// フィールド上でのイベント
+type StateEvent string
 
-type Tile = gloader.Tile
+const (
+	StateEventNone       = StateEvent("NONE")
+	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
+)
 
-// グリッドレイアウト
-type GridLayout struct {
-	Width  int
+// Tileはsystemなどでも使う。systemから直接gloaderを扱わせたくないので、ここでエクスポートする
+const (
+	TileEmpty = gloader.TileEmpty
+	TileWall  = gloader.TileWall
+)
+
+// 現在の階層
+type Level struct {
+	// 階数
+	Depth int
+	// 横グリッド数
+	Width int
+	// 縦グリッド数
 	Height int
 }
 
-type Game struct {
-	StateEvent StateEvent
-	Package    PackageData
-	Level      Level
-	GridLayout GridLayout
+type Tile = gloader.Tile
+
+// タイル座標から、タイルスライスのインデックスを求める
+func (l *Level) XYIndex(x int, y int) int {
+	return y*l.Width + x
 }
 
-// levelNum: 今いる階数
-func InitLevel(world w.World, levelNum int) {
-	gameResources := world.Resources.Game.(*Game)
+// xy座標をタイル座標に変換する
+func (l *Level) XYToTileXY(x int, y int) (int, int) {
+	tx := x / ec.DungeonTileSize
+	ty := y / ec.DungeonTileSize
+	return tx, ty
+}
 
-	// Load ui entities
-	prefabs := world.Resources.Prefabs.(*Prefabs)
-	loader.AddEntities(world, prefabs.Field.PackageInfo)
-
-	randLevelNum := rand.Intn(len(gameResources.Package.Levels))
-	// 1階は常に同じフロアが出る
-	if levelNum == 1 {
-		randLevelNum = 0
+func NewLevel(world w.World, newDepth int, width int, height int) Level {
+	level := Level{
+		Depth:  newDepth,
+		Width:  width,
+		Height: height,
+	}
+	for j := 0; j < width; j++ {
+		for k := 0; k < height; k++ {
+			spawner.SpawnFloor(world, gc.Row(k), gc.Col(j))
+		}
 	}
 
-	level := gameResources.Package.Levels[randLevelNum]
-	gridLayout := &gameResources.GridLayout
-	gridLayout.Width = math.Max(minGridWidth, level.NCols)
-	gridLayout.Height = math.Max(minGridHeight, level.NRows)
-
-	UpdateGameLayout(world, gridLayout)
-
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
-	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, randLevelNum, levelNum, gridLayout.Width, gridLayout.Height, &fieldSpriteSheet))
-	loader.AddEntities(world, levelComponentList)
-	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
+	return level
 }
 
-// UpdateGameLayoutはゲームレイアウトを更新する
-func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
+// UpdateGameLayoutはゲームウィンドウサイズを更新する
+func UpdateGameLayout(world w.World) (int, int) {
 	gridWidth, gridHeight := minGridWidth, minGridHeight
-
-	if gridLayout != nil {
-		gridWidth = gridLayout.Width
-		gridHeight = gridLayout.Height
-	}
 
 	gameWidth := gridWidth*gridBlockSize + offsetX
 	gameHeight := gridHeight*gridBlockSize + offsetY

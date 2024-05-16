@@ -10,29 +10,29 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 )
 
-type FieldMenuState struct {
-	ui                 *ebitenui.UI
-	trans              *states.Transition
-	fieldMenuContainer *widget.Container
+type DungeonMenuState struct {
+	ui                   *ebitenui.UI
+	trans                *states.Transition
+	dungeonMenuContainer *widget.Container
 }
 
-func (st FieldMenuState) String() string {
-	return "FieldMenu"
+func (st DungeonMenuState) String() string {
+	return "DungeonMenu"
 }
 
 // State interface ================
 
-func (st *FieldMenuState) OnPause(world w.World) {}
+func (st *DungeonMenuState) OnPause(world w.World) {}
 
-func (st *FieldMenuState) OnResume(world w.World) {}
+func (st *DungeonMenuState) OnResume(world w.World) {}
 
-func (st *FieldMenuState) OnStart(world w.World) {
+func (st *DungeonMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *FieldMenuState) OnStop(world w.World) {}
+func (st *DungeonMenuState) OnStop(world w.World) {}
 
-func (st *FieldMenuState) Update(world w.World) states.Transition {
+func (st *DungeonMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPop}
 	}
@@ -48,26 +48,26 @@ func (st *FieldMenuState) Update(world w.World) states.Transition {
 	return states.Transition{Type: states.TransNone}
 }
 
-func (st *FieldMenuState) Draw(world w.World, screen *ebiten.Image) {
+func (st *DungeonMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
 // ================
 
-func (st *FieldMenuState) initUI(world w.World) *ebitenui.UI {
+func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalTransContainer()
-	st.fieldMenuContainer = eui.NewVerticalContainer()
-	rootContainer.AddChild(st.fieldMenuContainer)
+	st.dungeonMenuContainer = eui.NewVerticalContainer()
+	rootContainer.AddChild(st.dungeonMenuContainer)
 
 	st.updateMenuContainer(world)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-func (st *FieldMenuState) updateMenuContainer(world w.World) {
-	st.fieldMenuContainer.RemoveChildren()
+func (st *DungeonMenuState) updateMenuContainer(world w.World) {
+	st.dungeonMenuContainer.RemoveChildren()
 
-	for _, data := range fieldMenuTrans {
+	for _, data := range dungeonMenuTrans {
 		data := data
 		btn := eui.NewItemButton(
 			data.label,
@@ -76,11 +76,11 @@ func (st *FieldMenuState) updateMenuContainer(world w.World) {
 			},
 			world,
 		)
-		st.fieldMenuContainer.AddChild(btn)
+		st.dungeonMenuContainer.AddChild(btn)
 	}
 }
 
-var fieldMenuTrans = []struct {
+var dungeonMenuTrans = []struct {
 	label string
 	trans states.Transition
 }{
