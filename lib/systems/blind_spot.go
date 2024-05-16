@@ -77,40 +77,34 @@ func rayCasting(cx, cy float64, world w.World) []line {
 	objects := []Object{}
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Position,
 		gameComponents.SpriteRender,
 		gameComponents.BlockView,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if !entity.HasComponent(gameComponents.Player) {
-			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+			if gameComponents.Position.Get(entity) != nil {
+				pos := gameComponents.Position.Get(entity).(*gc.Position)
+				spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+				sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 
-			x := float64(pos.X - sprite.Width/2)
-			y := float64(pos.Y - sprite.Height/2)
-			w := float64(sprite.Width)
-			h := float64(sprite.Height)
-			objects = append(objects, Object{walls: rect(x, y, w, h)})
-		}
-	}))
+				x := float64(pos.X - sprite.Width/2)
+				y := float64(pos.Y - sprite.Height/2)
+				w := float64(sprite.Width)
+				h := float64(sprite.Height)
+				objects = append(objects, Object{walls: rect(x, y, w, h)})
 
-	// TODO: positionとgridelementで共用する
-	world.Manager.Join(
-		gameComponents.GridElement,
-		gameComponents.SpriteRender,
-		gameComponents.BlockView,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if !entity.HasComponent(gameComponents.Player) {
-			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+			}
+			if gameComponents.GridElement.Get(entity) != nil {
+				grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+				spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+				sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 
-			x := float64(int(grid.Row) * sprite.Width)
-			y := float64(int(grid.Col) * sprite.Height)
-			w := float64(sprite.Width)
-			h := float64(sprite.Height)
+				x := float64(int(grid.Row) * sprite.Width)
+				y := float64(int(grid.Col) * sprite.Height)
+				w := float64(sprite.Width)
+				h := float64(sprite.Height)
 
-			objects = append(objects, Object{walls: rect(x, y, w, h)})
+				objects = append(objects, Object{walls: rect(x, y, w, h)})
+			}
 		}
 	}))
 

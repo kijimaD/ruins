@@ -24,35 +24,32 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	// 	return spritesDepths[i].depth < spritesDepths[j].depth
 	// })
 	for _, v := range ec.DepthNums {
-		// タイル描画
 		world.Manager.Join(
-			gameComponents.GridElement,
 			gameComponents.SpriteRender,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-			tileSize := gameResources.Level.TileSize
-			pos := &gc.Position{
-				X: int(gridElement.Row)*tileSize + tileSize/2,
-				Y: int(gridElement.Col)*tileSize + tileSize/2,
+			// タイル描画
+			if gameComponents.GridElement.Get(entity) != nil {
+				gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+				spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+				tileSize := gameResources.Level.TileSize
+				pos := &gc.Position{
+					X: int(gridElement.Row)*tileSize + tileSize/2,
+					Y: int(gridElement.Col)*tileSize + tileSize/2,
+				}
+				if spriteRender.Depth != v {
+					return
+				}
+				drawImage(world, screen, spriteRender, pos)
 			}
-			if spriteRender.Depth != v {
-				return
+			// 座標描画
+			if gameComponents.Position.Get(entity) != nil {
+				pos := gameComponents.Position.Get(entity).(*gc.Position)
+				spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+				if spriteRender.Depth != v {
+					return
+				}
+				drawImage(world, screen, spriteRender, pos)
 			}
-			drawImage(world, screen, spriteRender, pos)
-		}))
-
-		// 座標描画
-		world.Manager.Join(
-			gameComponents.Position,
-			gameComponents.SpriteRender,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-			if spriteRender.Depth != v {
-				return
-			}
-			drawImage(world, screen, spriteRender, pos)
 		}))
 	}
 }
