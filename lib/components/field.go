@@ -4,8 +4,7 @@ package components
 type Position struct {
 	X     int
 	Y     int
-	Angle float64  // 角度(ラジアン)。この角度分スプライトを回転させる
-	Depth DepthNum // 描画順。小さい順に先に(下に)描画する
+	Angle float64 // 角度(ラジアン)。この角度分スプライトを回転させる
 }
 
 // フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う

@@ -51,10 +51,23 @@ type SpriteSheet struct {
 
 // SpriteRender component
 type SpriteRender struct {
-	// Reference sprite sheet
+	// スプライトシートファイル
 	SpriteSheet *SpriteSheet
-	// Index of the sprite on the sprite sheet
+	// スプライトシートでのインデックス
 	SpriteNumber int
+	// 描画順。小さい順に先に(下に)描画する
+	Depth DepthNum
 	// Draw options
 	Options ebiten.DrawImageOptions
 }
+
+// オブジェクトの描画順。小さい値を先に描画する
+type DepthNum int
+
+const (
+	DepthNumFloor  DepthNum = iota // 床
+	DepthNumRug                    // 床に置くもの。例: ワープホール、アイテム
+	DepthNumTaller                 // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
+)
+
+var DepthNums = []DepthNum{DepthNumFloor, DepthNumRug, DepthNumTaller}

@@ -18,29 +18,28 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
 
-	// TODO: ↓的な方法でソートしたほうがよさそう
+	// TODO: ↓的な方法でソートしたほうがパフォーマンスがよさそう
 	// Sort by increasing values of depth
 	// sort.Slice(spritesDepths, func(i, j int) bool {
 	// 	return spritesDepths[i].depth < spritesDepths[j].depth
 	// })
-	for _, v := range gc.DepthNums {
+	for _, v := range ec.DepthNums {
 		// タイル描画
 		world.Manager.Join(
 			gameComponents.GridElement,
 			gameComponents.SpriteRender,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 			tileSize := gameResources.Level.TileSize
 			pos := &gc.Position{
 				X: int(gridElement.Row)*tileSize + tileSize/2,
 				Y: int(gridElement.Col)*tileSize + tileSize/2,
 			}
-
-			if pos.Depth != v {
+			if spriteRender.Depth != v {
 				return
 			}
-			drawImage(world, screen, sprite, pos)
+			drawImage(world, screen, spriteRender, pos)
 		}))
 
 		// 座標描画
@@ -49,12 +48,11 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			gameComponents.SpriteRender,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-
-			if pos.Depth != v {
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			if spriteRender.Depth != v {
 				return
 			}
-			drawImage(world, screen, sprite, pos)
+			drawImage(world, screen, spriteRender, pos)
 		}))
 	}
 }
