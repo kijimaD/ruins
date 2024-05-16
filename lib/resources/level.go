@@ -40,16 +40,16 @@ type Level struct {
 	// 階数
 	Depth int
 	// 横グリッド数
-	Width int
+	TileWidth gc.Row
 	// 縦グリッド数
-	Height int
+	TileHeight gc.Col
 }
 
 type Tile = gloader.Tile
 
 // タイル座標から、タイルスライスのインデックスを求める
 func (l *Level) XYIndex(x int, y int) int {
-	return y*l.Width + x
+	return y*int(l.TileWidth) + x
 }
 
 // xy座標をタイル座標に変換する
@@ -59,14 +59,14 @@ func (l *Level) XYToTileXY(x int, y int) (int, int) {
 	return tx, ty
 }
 
-func NewLevel(world w.World, newDepth int, width int, height int) Level {
+func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 	level := Level{
-		Depth:  newDepth,
-		Width:  width,
-		Height: height,
+		Depth:      newDepth,
+		TileWidth:  width,
+		TileHeight: height,
 	}
-	for j := 0; j < width; j++ {
-		for k := 0; k < height; k++ {
+	for j := 0; j < int(width); j++ {
+		for k := 0; k < int(height); k++ {
 			spawner.SpawnFloor(world, gc.Row(k), gc.Col(j))
 		}
 	}
