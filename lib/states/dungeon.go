@@ -66,7 +66,7 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	world.Resources.Game = &resources.Game{}
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(1, 50, 50)
+	gameResources.Level = resources.NewLevel(world, 1, 50, 50)
 }
 
 func (st *DungeonState) OnStop(world w.World) {}

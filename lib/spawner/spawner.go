@@ -73,6 +73,20 @@ func SpawnPlayer(world w.World, x int, y int) {
 	}
 }
 
+// ================
+// TODO: フィールド系は、ステージ初期化でしか使わないのでloaderに移動させる
+
+// フィールド上に表示される床を生成する
+func SpawnFloor(world w.World, x gc.Row, y gc.Col) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		GridElement:  &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 2},
+	})
+	loader.AddEntities(world, componentList)
+}
+
 // フィールド上に表示される壁を生成する
 func SpawnFieldWall(world w.World, x int, y int) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]

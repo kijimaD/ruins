@@ -10,9 +10,15 @@ type Position struct {
 
 // フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
 type GridElement struct {
-	Line int
-	Col  int
+	Row Row
+	Col Col
 }
+
+// タイルの横位置。ピクセル数ではない
+type Row int
+
+// タイルの縦位置。ピクセル数ではない
+type Col int
 
 // フィールド上で通過できない
 type BlockPass struct{}

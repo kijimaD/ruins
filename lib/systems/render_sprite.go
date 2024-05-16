@@ -8,7 +8,6 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	m "github.com/kijimaD/ruins/lib/engine/math"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/resources"
 
 	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -17,28 +16,19 @@ import (
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	gameResources := world.Resources.Game.(*resources.Game)
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
-
-	for w := 0; w < gameResources.Level.Width; w++ {
-		for h := 0; h < gameResources.Level.Height; h++ {
-			tile := gameResources.Level.Tiles[gameResources.Level.XYIndex(w, h)]
-			if tile == resources.TileEmpty {
-				spriteNumber := 2 // とりあえずハードコード
-				sr := &ec.SpriteRender{
-					SpriteSheet:  &fieldSpriteSheet,
-					SpriteNumber: spriteNumber,
-					Options:      ebiten.DrawImageOptions{},
-				}
-				sprite := fieldSpriteSheet.Sprites[spriteNumber]
-				pos := &gc.Position{
-					X: w*sprite.Width + sprite.Width/2,
-					Y: h*sprite.Height + sprite.Height/2,
-				}
-				drawImage(world, screen, sr, pos)
-			}
+	// タイル描画
+	world.Manager.Join(
+		gameComponents.GridElement,
+		gameComponents.SpriteRender,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+		pos := &gc.Position{
+			X: int(gridElement.Row*ec.DungeonTileSize + ec.DungeonTileSize/2),
+			Y: int(gridElement.Col*ec.DungeonTileSize + ec.DungeonTileSize/2),
 		}
-	}
+		drawImage(world, screen, sprite, pos)
+	}))
 
 	// TODO: ↓的な方法でソートしたほうがよさそう
 	// Sort by increasing values of depth

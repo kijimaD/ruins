@@ -1,9 +1,11 @@
 package resources
 
 import (
+	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
+	"github.com/kijimaD/ruins/lib/spawner"
 )
 
 const (
@@ -35,8 +37,6 @@ const (
 
 // 現在の階層
 type Level struct {
-	// タイル群
-	Tiles []Tile
 	// 階数
 	Depth int
 	// 横グリッド数
@@ -59,16 +59,16 @@ func (l *Level) XYToTileXY(x int, y int) (int, int) {
 	return tx, ty
 }
 
-func NewLevel(newDepth int, width int, height int) Level {
-	tileCount := width * height
+func NewLevel(world w.World, newDepth int, width int, height int) Level {
 	level := Level{
-		Tiles:  make([]Tile, tileCount),
 		Depth:  newDepth,
 		Width:  width,
 		Height: height,
 	}
-	for i, _ := range level.Tiles {
-		level.Tiles[i] = TileEmpty
+	for j := 0; j < width; j++ {
+		for k := 0; k < height; k++ {
+			spawner.SpawnFloor(world, gc.Row(k), gc.Col(j))
+		}
 	}
 
 	return level
