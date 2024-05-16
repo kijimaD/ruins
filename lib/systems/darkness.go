@@ -26,10 +26,8 @@ const (
 // 周囲を暗くする
 func DarknessSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
-	levelWidth := gameResources.Level.Width * ec.DungeonTileSize
-	levelHeight := gameResources.Level.Height * ec.DungeonTileSize
-	visionImage = ebiten.NewImage(levelWidth, levelHeight)
-	blackImage = ebiten.NewImage(levelWidth, levelHeight)
+	visionImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+	blackImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
 
 	visionImage.Fill(color.Black)
 	blackImage.Fill(color.Black)

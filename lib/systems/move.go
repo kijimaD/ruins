@@ -166,8 +166,8 @@ func MoveSystem(world w.World) {
 
 	padding := 20
 	gameResources := world.Resources.Game.(*resources.Game)
-	levelWidth := gameResources.Level.Width * ec.DungeonTileSize
-	levelHeight := gameResources.Level.Height * ec.DungeonTileSize
+	levelWidth := gameResources.Level.Width()
+	levelHeight := gameResources.Level.Height()
 
 	// +1/-1 is to stop player before it reaches the border
 	if pos.X >= levelWidth-padding {

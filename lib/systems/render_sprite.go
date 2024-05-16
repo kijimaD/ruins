@@ -8,6 +8,7 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	m "github.com/kijimaD/ruins/lib/engine/math"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
 
 	"github.com/kijimaD/ruins/lib/utils/camera"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -15,6 +16,7 @@ import (
 
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
+	gameResources := world.Resources.Game.(*resources.Game)
 
 	// タイル描画
 	world.Manager.Join(
@@ -23,9 +25,10 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+		tileSize := gameResources.Level.TileSize
 		pos := &gc.Position{
-			X: int(gridElement.Row*ec.DungeonTileSize + ec.DungeonTileSize/2),
-			Y: int(gridElement.Col*ec.DungeonTileSize + ec.DungeonTileSize/2),
+			X: int(gridElement.Row)*tileSize + tileSize/2,
+			Y: int(gridElement.Col)*tileSize + tileSize/2,
 		}
 		drawImage(world, screen, sprite, pos)
 	}))

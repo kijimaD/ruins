@@ -11,8 +11,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-const DungeonTileSize = 32
-
 // スプライトは1つ1つの意味をなす画像の位置を示す情報
 // 1ファイルに対して複数のスプライトが定義されている
 type Sprite struct {
