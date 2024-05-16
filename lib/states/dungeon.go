@@ -61,6 +61,8 @@ func (st *DungeonState) OnStart(world w.World) {
 		spawner.SpawnFieldWall(world, 2, 2)
 		spawner.SpawnFieldWall(world, 4, 2)
 		spawner.SpawnFieldWall(world, 4, 3)
+		spawner.SpawnFieldWall(world, 5, 3)
+		spawner.SpawnFieldWall(world, 8, 3)
 		spawner.SpawnFieldWarpNext(world, 4, 4) // row, col
 	}
 

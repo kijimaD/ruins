@@ -94,6 +94,26 @@ func rayCasting(cx, cy float64, world w.World) []line {
 		}
 	}))
 
+	// TODO: positionとgridelementで共用する
+	world.Manager.Join(
+		gameComponents.GridElement,
+		gameComponents.SpriteRender,
+		gameComponents.BlockView,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if !entity.HasComponent(gameComponents.Player) {
+			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+
+			x := float64(int(grid.Row) * sprite.Width)
+			y := float64(int(grid.Col) * sprite.Height)
+			w := float64(sprite.Width)
+			h := float64(sprite.Height)
+
+			objects = append(objects, Object{walls: rect(x, y, w, h)})
+		}
+	}))
+
 	// 外周の壁。rayが必ずどこかに当たるようにしないといけない
 	{
 		var pos *gc.Position

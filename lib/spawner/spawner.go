@@ -95,16 +95,19 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) {
 	loader.AddEntities(world, componentList)
 }
 
-// TODO: これもGridElementにする
 // フィールド上に表示される壁を生成する
-func SpawnFieldWall(world w.World, x int, y int) {
+func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumTaller},
-		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
-		BlockView:    &gc.BlockView{},
-		BlockPass:    &gc.BlockPass{},
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 1,
+			Depth:        ec.DepthNumTaller,
+		},
+		BlockView: &gc.BlockView{},
+		BlockPass: &gc.BlockPass{},
 	})
 	loader.AddEntities(world, componentList)
 }
