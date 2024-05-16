@@ -25,9 +25,10 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+		tileSize := gameResources.Level.TileSize
 		pos := &gc.Position{
-			X: int(gridElement.Row)*gameResources.Level.TileSize + gameResources.Level.TileSize/2,
-			Y: int(gridElement.Col)*gameResources.Level.TileSize + gameResources.Level.TileSize/2,
+			X: int(gridElement.Row)*tileSize + tileSize/2,
+			Y: int(gridElement.Col)*tileSize + tileSize/2,
 		}
 		drawImage(world, screen, sprite, pos)
 	}))
