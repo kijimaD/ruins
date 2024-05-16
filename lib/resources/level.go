@@ -2,7 +2,6 @@ package resources
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	gloader "github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/spawner"
@@ -39,10 +38,12 @@ const (
 type Level struct {
 	// 階数
 	Depth int
-	// 横グリッド数
+	// 横のタイル数
 	TileWidth gc.Row
-	// 縦グリッド数
+	// 縦のタイル数
 	TileHeight gc.Col
+	// 1タイルあたりのピクセル数(正方形)
+	TileSize int
 }
 
 type Tile = gloader.Tile
@@ -52,18 +53,24 @@ func (l *Level) XYIndex(x int, y int) int {
 	return y*int(l.TileWidth) + x
 }
 
-// xy座標をタイル座標に変換する
-func (l *Level) XYToTileXY(x int, y int) (int, int) {
-	tx := x / ec.DungeonTileSize
-	ty := y / ec.DungeonTileSize
-	return tx, ty
+// ステージ幅。横の全体ピクセル数
+func (l *Level) Width() int {
+	return int(l.TileWidth) * l.TileSize
 }
+
+// ステージ縦。縦の全体ピクセル数
+func (l *Level) Height() int {
+	return int(l.TileHeight) * l.TileSize
+}
+
+const defaultTileSize = 32
 
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 	level := Level{
 		Depth:      newDepth,
 		TileWidth:  width,
 		TileHeight: height,
+		TileSize:   defaultTileSize,
 	}
 	for j := 0; j < int(width); j++ {
 		for k := 0; k < int(height); k++ {
