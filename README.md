@@ -6,7 +6,7 @@
 
 <img src="./vrtimages/DungeonSelect.png" width="50%" /><img src="./vrtimages/EquipMenu.png" width="50%" />
 
-<img src="./vrtimages/FieldMenu.png" width="50%" /><img src="./vrtimages/HomeMenu.png" width="50%" />
+<img src="./vrtimages/DungeonMenu.png" width="50%" /><img src="./vrtimages/HomeMenu.png" width="50%" />
 
 <img src="./vrtimages/Intro.png" width="50%" /><img src="./vrtimages/InventoryMenu.png" width="50%" />
 
