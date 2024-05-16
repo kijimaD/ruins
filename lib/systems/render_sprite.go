@@ -17,7 +17,6 @@ import (
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	// プレイヤーの周りだけ描画する
 	gameResources := world.Resources.Game.(*resources.Game)
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 

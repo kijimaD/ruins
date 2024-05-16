@@ -19,7 +19,7 @@ type Game struct {
 	Level      Level
 }
 
-// ステート上でのイベント
+// フィールド上でのイベント
 type StateEvent string
 
 const (

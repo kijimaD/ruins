@@ -5,7 +5,6 @@ import (
 )
 
 type Components struct {
-	GridElement      *ecs.SliceComponent
 	Player           *ecs.NullComponent
 	Camera           *ecs.SliceComponent
 	Wall             *ecs.NullComponent
@@ -30,15 +29,10 @@ type Components struct {
 	Card             *ecs.SliceComponent
 
 	Position     *ecs.SliceComponent
+	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
-}
-
-// TODO: 削除予定
-type GridElement struct {
-	Line int
-	Col  int
 }
 
 // フィールドで操作対象となる対象

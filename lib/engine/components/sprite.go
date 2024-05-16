@@ -13,7 +13,8 @@ import (
 
 const DungeonTileSize = 32
 
-// Sprite structure
+// スプライトは1つ1つの意味をなす画像の位置を示す情報
+// 1ファイルに対して複数のスプライトが定義されている
 type Sprite struct {
 	// Horizontal position of the sprite in the sprite sheet
 	X int
@@ -25,7 +26,7 @@ type Sprite struct {
 	Height int
 }
 
-// Texture structure
+// 複数のスプライトが格納された画像ファイル
 type Texture struct {
 	// Texture image
 	Image *ebiten.Image
@@ -42,7 +43,7 @@ func (t *Texture) UnmarshalText(text []byte) error {
 	return nil
 }
 
-// SpriteSheet structure
+// 画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
 type SpriteSheet struct {
 	// Texture image
 	Texture Texture `toml:"texture_image"`
