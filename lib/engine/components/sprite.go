@@ -69,5 +69,3 @@ const (
 	DepthNumRug                    // 床に置くもの。例: ワープホール、アイテム
 	DepthNumTaller                 // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
 )
-
-var DepthNums = []DepthNum{DepthNumFloor, DepthNumRug, DepthNumTaller}

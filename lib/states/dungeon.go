@@ -12,6 +12,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	gs "github.com/kijimaD/ruins/lib/systems"
@@ -58,26 +59,36 @@ func (st *DungeonState) OnStart(world w.World) {
 	}))
 	if playerCount == 0 {
 		spawner.SpawnPlayer(world, 200, 200)
-		spawner.SpawnFieldWall(world, 2, 2)
-		spawner.SpawnFieldWall(world, 5, 2)
-		spawner.SpawnFieldWall(world, 5, 3)
-		spawner.SpawnFieldWall(world, 8, 3)
-		spawner.SpawnFieldWall(world, 8, 3)
-		spawner.SpawnFieldWarpNext(world, 4, 4) // row, col
 	}
 
-	world.Resources.Game = &resources.Game{}
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(world, 1, 50, 50)
+	gameResources.Level = loader.NewLevel(world, 1, 6, 6)
 }
 
-func (st *DungeonState) OnStop(world w.World) {}
+func (st *DungeonState) OnStop(world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.SpriteRender,
+		gameComponents.Player.Not(),
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.DeleteEntity(entity)
+	}))
+}
 
 func (st *DungeonState) Update(world w.World) states.Transition {
 	gs.MoveSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonMenuState{}}}
+	}
+
+	gameResources := world.Resources.Game.(*resources.Game)
+	switch gameResources.StateEvent {
+	case resources.StateEventWarpNext:
+		gameResources.StateEvent = resources.StateEventNone // reset
+		gameResources.Depth += 1
+
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{}}}
 	}
 
 	return states.Transition{}
@@ -89,4 +100,5 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 	gs.RenderSpriteSystem(world, screen)
 	gs.DarknessSystem(world, screen)
 	gs.BlindSpotSystem(world, screen)
+	gs.HUDSystem(world, screen)
 }

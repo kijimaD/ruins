@@ -15,6 +15,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	ew "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/raw"
+	"github.com/kijimaD/ruins/lib/resources"
 	gr "github.com/kijimaD/ruins/lib/resources"
 )
 
@@ -87,6 +88,8 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	// load raws
 	rw := raw.LoadFromFile("metadata/entities/raw/raw.toml")
 	world.Resources.RawMaster = rw
+
+	world.Resources.Game = &resources.Game{}
 
 	return world
 }

@@ -29,7 +29,7 @@ func MoveSystem(world w.World) {
 	originalX := pos.X
 	originalY := pos.Y
 
-	speed := 3
+	const speed = 3
 
 	// 元の画像を0度(時計の12時の位置スタート)として、何度回転させるか
 	switch {
@@ -95,10 +95,8 @@ func MoveSystem(world w.World) {
 		world.Manager.Join(
 			gameComponents.SpriteRender,
 			gameComponents.BlockPass,
+			gameComponents.Player.Not(),
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			if entity.HasComponent(gameComponents.Player) {
-				return
-			}
 			switch {
 			case entity.HasComponent(gameComponents.Position):
 				objectPos := gameComponents.Position.Get(entity).(*gc.Position)
@@ -200,5 +198,15 @@ func MoveSystem(world w.World) {
 
 	if pos.Y <= padding {
 		pos.Y = padding + 1
+	}
+
+	// タイルイベントを発行する
+	{
+		gameResources := world.Resources.Game.(*resources.Game)
+		entity := gameResources.Level.AtEntity(pos.X, pos.Y)
+
+		if entity.HasComponent(gameComponents.Warp) {
+			gameResources.StateEvent = resources.StateEventWarpNext
+		}
 	}
 }
