@@ -27,8 +27,9 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		world.Manager.Join(
 			gameComponents.SpriteRender,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			// タイル描画
-			if gameComponents.GridElement.Get(entity) != nil {
+			switch {
+			case entity.HasComponent(gameComponents.GridElement):
+				// タイル描画
 				gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
 				spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 				tileSize := gameResources.Level.TileSize
@@ -40,9 +41,8 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 					return
 				}
 				drawImage(world, screen, spriteRender, pos)
-			}
-			// 座標描画
-			if gameComponents.Position.Get(entity) != nil {
+			case entity.HasComponent(gameComponents.Position):
+				// 座標描画
 				pos := gameComponents.Position.Get(entity).(*gc.Position)
 				spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 				if spriteRender.Depth != v {
@@ -50,6 +50,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 				}
 				drawImage(world, screen, spriteRender, pos)
 			}
+
 		}))
 	}
 }

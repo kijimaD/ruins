@@ -97,37 +97,38 @@ func MoveSystem(world w.World) {
 			gameComponents.SpriteRender,
 			gameComponents.BlockPass,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			if !entity.HasComponent(gameComponents.Player) {
-				if gameComponents.Position.Get(entity) != nil {
-					objectPos := gameComponents.Position.Get(entity).(*gc.Position)
-					objectSpriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-					objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
+			if entity.HasComponent(gameComponents.Player) {
+				return
+			}
+			switch {
+			case entity.HasComponent(gameComponents.Position):
+				objectPos := gameComponents.Position.Get(entity).(*gc.Position)
+				objectSpriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
-					objectx1 := float64(objectPos.X - objectSprite.Width/2)
-					objectx2 := float64(objectPos.X + objectSprite.Width/2)
-					objecty1 := float64(objectPos.Y - objectSprite.Height/2)
-					objecty2 := float64(objectPos.Y + objectSprite.Height/2)
-					if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
-						// 衝突していれば元の位置に戻す
-						pos.X = originalX
-						pos.Y = originalY
-					}
+				objectx1 := float64(objectPos.X - objectSprite.Width/2)
+				objectx2 := float64(objectPos.X + objectSprite.Width/2)
+				objecty1 := float64(objectPos.Y - objectSprite.Height/2)
+				objecty2 := float64(objectPos.Y + objectSprite.Height/2)
+				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
+					// 衝突していれば元の位置に戻す
+					pos.X = originalX
+					pos.Y = originalY
 				}
-				if gameComponents.GridElement.Get(entity) != nil {
-					objectGrid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-					objectSpriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-					objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
-					x := int(objectGrid.Row) * sprite.Width
-					y := int(objectGrid.Col) * sprite.Height
-					objectx1 := float64(x)
-					objectx2 := float64(x + objectSprite.Width)
-					objecty1 := float64(y)
-					objecty2 := float64(y + objectSprite.Height)
-					if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
-						// 衝突していれば元の位置に戻す
-						pos.X = originalX
-						pos.Y = originalY
-					}
+			case entity.HasComponent(gameComponents.GridElement):
+				objectGrid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+				objectSpriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
+				x := int(objectGrid.Row) * sprite.Width
+				y := int(objectGrid.Col) * sprite.Height
+				objectx1 := float64(x)
+				objectx2 := float64(x + objectSprite.Width)
+				objecty1 := float64(y)
+				objecty2 := float64(y + objectSprite.Height)
+				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
+					// 衝突していれば元の位置に戻す
+					pos.X = originalX
+					pos.Y = originalY
 				}
 			}
 		}))
