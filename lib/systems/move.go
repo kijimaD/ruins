@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -200,5 +201,15 @@ func MoveSystem(world w.World) {
 
 	if pos.Y <= padding {
 		pos.Y = padding + 1
+	}
+
+	// プレイヤーのPositionから、該当するタイルを求めてイベントを発行する
+	{
+		gameResources := world.Resources.Game.(*resources.Game)
+		entity := gameResources.Level.AtEntity(pos.X, pos.Y)
+
+		if entity.HasComponent(gameComponents.Warp) {
+			fmt.Println("ワープ!")
+		}
 	}
 }

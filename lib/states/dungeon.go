@@ -12,6 +12,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/spawner"
 	gs "github.com/kijimaD/ruins/lib/systems"
@@ -62,7 +63,7 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	world.Resources.Game = &resources.Game{}
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(world, 1, 6, 6)
+	gameResources.Level = loader.NewLevel(world, 1, 6, 6)
 }
 
 func (st *DungeonState) OnStop(world w.World) {}
