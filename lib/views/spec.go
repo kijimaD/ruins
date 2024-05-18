@@ -20,13 +20,13 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	{
-		if gameComponents.Material.Get(entity) != nil {
+		if entity.HasComponent(gameComponents.Material) {
 			v := gameComponents.Material.Get(entity).(*gc.Material)
 			amount := fmt.Sprintf("%d 個", v.Amount)
 			targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
 		}
 
-		if gameComponents.Attack.Get(entity) != nil {
+		if entity.HasComponent(gameComponents.Attack) {
 			v := gameComponents.Attack.Get(entity).(*gc.Attack)
 			targetContainer.AddChild(eui.NewBodyText(v.AttackCategory.String(), styles.TextColor, world))
 
@@ -43,7 +43,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 				targetContainer.AddChild(damageAttrText(world, v.Element, v.Element.String()))
 			}
 		}
-		if gameComponents.Wearable.Get(entity) != nil {
+		if entity.HasComponent(gameComponents.Wearable) {
 			v := gameComponents.Wearable.Get(entity).(*gc.Wearable)
 			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, v.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
@@ -52,7 +52,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, v.EquipBonus, world)
 		}
-		if gameComponents.Card.Get(entity) != nil {
+		if entity.HasComponent(gameComponents.Card) {
 			v := gameComponents.Card.Get(entity).(*gc.Card)
 			cost := fmt.Sprintf("コスト %d", v.Cost)
 			targetContainer.AddChild(eui.NewBodyText(cost, styles.TextColor, world))
