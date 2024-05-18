@@ -96,10 +96,8 @@ func MoveSystem(world w.World) {
 		world.Manager.Join(
 			gameComponents.SpriteRender,
 			gameComponents.BlockPass,
+			gameComponents.Player.Not(),
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			if entity.HasComponent(gameComponents.Player) {
-				return
-			}
 			switch {
 			case entity.HasComponent(gameComponents.Position):
 				objectPos := gameComponents.Position.Get(entity).(*gc.Position)
