@@ -11,7 +11,6 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// raycast用move
 func MoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
