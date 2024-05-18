@@ -66,13 +66,29 @@ func (st *DungeonState) OnStart(world w.World) {
 	gameResources.Level = loader.NewLevel(world, 1, 6, 6)
 }
 
-func (st *DungeonState) OnStop(world w.World) {}
+func (st *DungeonState) OnStop(world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.SpriteRender,
+		gameComponents.Player.Not(),
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.DeleteEntity(entity)
+	}))
+}
 
 func (st *DungeonState) Update(world w.World) states.Transition {
 	gs.MoveSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonMenuState{}}}
+	}
+
+	gameResources := world.Resources.Game.(*resources.Game)
+	switch gameResources.StateEvent {
+	case resources.StateEventWarpNext:
+		gameResources.StateEvent = resources.StateEventNone // reset
+
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{}}}
 	}
 
 	return states.Transition{}
@@ -84,4 +100,5 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 	gs.RenderSpriteSystem(world, screen)
 	gs.DarknessSystem(world, screen)
 	gs.BlindSpotSystem(world, screen)
+	gs.HUDSystem(world, screen)
 }

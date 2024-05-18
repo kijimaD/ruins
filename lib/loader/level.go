@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"math/rand"
 	"regexp"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -55,46 +56,56 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 	tiles := make([]ecs.Entity, 0, int(width)*int(height))
 
 	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(5)))
-
-	tiles = append(tiles, SpawnFieldWall(world, gc.Row(1), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(5)))
-
+	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(0)))
 	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(3)))
-	tiles = append(tiles, SpawnFieldWall(world, gc.Row(2), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(5)))
-
 	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(5)))
-
 	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(0)))
-	tiles = append(tiles, SpawnFieldWall(world, gc.Row(4), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(3)))
-	tiles = append(tiles, SpawnFieldWarpNext(world, gc.Row(4), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(5)))
-
 	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(0)))
+
+	tiles = append(tiles, SpawnFieldWall(world, gc.Row(0), gc.Col(1)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(1)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(1)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(1)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(1)))
 	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(1)))
+
+	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(2)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(2)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(2)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(2)))
+	tiles = append(tiles, SpawnFieldWall(world, gc.Row(4), gc.Col(2)))
 	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(2)))
+
+	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(3)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(3)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(3)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(3)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(3)))
 	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(3)))
+
+	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(4)))
+	tiles = append(tiles, SpawnFieldWall(world, gc.Row(1), gc.Col(4)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(4)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(4)))
+	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(4)))
 	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(5)))
+
+	r := rand.Intn(2)
+	if r == 0 {
+		tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(5)))
+		tiles = append(tiles, SpawnFieldWarpNext(world, gc.Row(3), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(5)))
+	} else {
+		tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(5)))
+		tiles = append(tiles, SpawnFieldWarpNext(world, gc.Row(4), gc.Col(5)))
+		tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(5)))
+	}
 
 	level := Level{
 		Depth:      newDepth,

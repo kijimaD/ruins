@@ -1,7 +1,6 @@
 package systems
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -207,7 +206,7 @@ func MoveSystem(world w.World) {
 		entity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
 		if entity.HasComponent(gameComponents.Warp) {
-			fmt.Println("ワープ!")
+			gameResources.StateEvent = resources.StateEventWarpNext
 		}
 	}
 }
