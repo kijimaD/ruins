@@ -58,17 +58,11 @@ func (st *DungeonState) OnStart(world w.World) {
 	}))
 	if playerCount == 0 {
 		spawner.SpawnPlayer(world, 200, 200)
-		spawner.SpawnFieldWall(world, 2, 2)
-		spawner.SpawnFieldWall(world, 5, 2)
-		spawner.SpawnFieldWall(world, 5, 3)
-		spawner.SpawnFieldWall(world, 8, 3)
-		spawner.SpawnFieldWall(world, 8, 3)
-		spawner.SpawnFieldWarpNext(world, 4, 4) // row, col
 	}
 
 	world.Resources.Game = &resources.Game{}
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(world, 1, 50, 50)
+	gameResources.Level = resources.NewLevel(world, 1, 6, 6)
 }
 
 func (st *DungeonState) OnStop(world w.World) {}

@@ -114,6 +114,8 @@ func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) {
 
 // フィールド上に表示される階段を生成する
 func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) {
+	SpawnFloor(world, x, y) // 下敷き描画
+
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{

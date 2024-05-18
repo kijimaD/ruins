@@ -42,11 +42,9 @@ type Level struct {
 	TileWidth gc.Row
 	// 縦のタイル数
 	TileHeight gc.Col
-	// 1タイルあたりのピクセル数(正方形)
+	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
 	TileSize int
 }
-
-type Tile = gloader.Tile
 
 // タイル座標から、タイルスライスのインデックスを求める
 func (l *Level) XYIndex(x int, y int) int {
@@ -63,6 +61,8 @@ func (l *Level) Height() int {
 	return int(l.TileHeight) * l.TileSize
 }
 
+type Tile = gloader.Tile
+
 const defaultTileSize = 32
 
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
@@ -72,11 +72,48 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 		TileHeight: height,
 		TileSize:   defaultTileSize,
 	}
-	for j := 0; j < int(width); j++ {
-		for k := 0; k < int(height); k++ {
-			spawner.SpawnFloor(world, gc.Row(k), gc.Col(j))
-		}
-	}
+
+	spawner.SpawnFloor(world, gc.Row(0), gc.Col(0))
+	spawner.SpawnFloor(world, gc.Row(0), gc.Col(1))
+	spawner.SpawnFloor(world, gc.Row(0), gc.Col(2))
+	spawner.SpawnFloor(world, gc.Row(0), gc.Col(3))
+	spawner.SpawnFloor(world, gc.Row(0), gc.Col(4))
+	spawner.SpawnFloor(world, gc.Row(0), gc.Col(5))
+
+	spawner.SpawnFieldWall(world, gc.Row(1), gc.Col(0))
+	spawner.SpawnFloor(world, gc.Row(1), gc.Col(1))
+	spawner.SpawnFloor(world, gc.Row(1), gc.Col(2))
+	spawner.SpawnFloor(world, gc.Row(1), gc.Col(3))
+	spawner.SpawnFloor(world, gc.Row(1), gc.Col(4))
+	spawner.SpawnFloor(world, gc.Row(1), gc.Col(5))
+
+	spawner.SpawnFloor(world, gc.Row(2), gc.Col(0))
+	spawner.SpawnFloor(world, gc.Row(2), gc.Col(1))
+	spawner.SpawnFloor(world, gc.Row(2), gc.Col(2))
+	spawner.SpawnFloor(world, gc.Row(2), gc.Col(3))
+	spawner.SpawnFieldWall(world, gc.Row(2), gc.Col(4))
+	spawner.SpawnFloor(world, gc.Row(2), gc.Col(5))
+
+	spawner.SpawnFloor(world, gc.Row(3), gc.Col(0))
+	spawner.SpawnFloor(world, gc.Row(3), gc.Col(1))
+	spawner.SpawnFloor(world, gc.Row(3), gc.Col(2))
+	spawner.SpawnFloor(world, gc.Row(3), gc.Col(3))
+	spawner.SpawnFloor(world, gc.Row(3), gc.Col(4))
+	spawner.SpawnFloor(world, gc.Row(3), gc.Col(5))
+
+	spawner.SpawnFloor(world, gc.Row(4), gc.Col(0))
+	spawner.SpawnFieldWall(world, gc.Row(4), gc.Col(1))
+	spawner.SpawnFloor(world, gc.Row(4), gc.Col(2))
+	spawner.SpawnFloor(world, gc.Row(4), gc.Col(3))
+	spawner.SpawnFieldWarpNext(world, gc.Row(4), gc.Col(4))
+	spawner.SpawnFloor(world, gc.Row(4), gc.Col(5))
+
+	spawner.SpawnFloor(world, gc.Row(5), gc.Col(0))
+	spawner.SpawnFloor(world, gc.Row(5), gc.Col(1))
+	spawner.SpawnFloor(world, gc.Row(5), gc.Col(2))
+	spawner.SpawnFloor(world, gc.Row(5), gc.Col(3))
+	spawner.SpawnFloor(world, gc.Row(5), gc.Col(4))
+	spawner.SpawnFloor(world, gc.Row(5), gc.Col(5))
 
 	return level
 }
