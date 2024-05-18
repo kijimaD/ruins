@@ -57,19 +57,30 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 
 	// 壁の影。影をキャストする用のコンポーネントを追加したほうがよさそう
 	world.Manager.Join(
-		gameComponents.Position,
 		gameComponents.SpriteRender,
 		gameComponents.BlockView,
 		gameComponents.BlockPass,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := gameComponents.Position.Get(entity).(*gc.Position)
-		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+		switch {
+		case entity.HasComponent(gameComponents.Position):
+			pos := gameComponents.Position.Get(entity).(*gc.Position)
+			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
-		spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
-		spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
+			spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
+			spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
 
-		vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
-		vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
+			vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
+			vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
+		case entity.HasComponent(gameComponents.GridElement):
+			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+
+			spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
+			spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
+
+			vector.DrawFilledRect(visionImage, float32(grid.Row)*spriteWidth, float32(grid.Col)*spriteWidth, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
+			vector.DrawFilledRect(visionImage, float32(grid.Row)*spriteWidth, float32(grid.Col)*spriteWidth, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
+		}
 	}))
 
 	// 光源の中心付近を明るくする

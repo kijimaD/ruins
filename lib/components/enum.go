@@ -207,16 +207,3 @@ const (
 	EquipmentSlotTwo
 	EquipmentSlotThree
 )
-
-// ================
-
-// オブジェクトの描画順。小さい値を先に描画する
-type DepthNum int
-
-const (
-	DepthNumFloor  DepthNum = iota // 床
-	DepthNumRug                    // 床に置くもの。例: ワープホール、アイテム
-	DepthNumTaller                 // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
-)
-
-var DepthNums = []DepthNum{DepthNumFloor, DepthNumRug, DepthNumTaller}

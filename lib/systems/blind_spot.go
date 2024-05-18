@@ -77,11 +77,14 @@ func rayCasting(cx, cy float64, world w.World) []line {
 	objects := []Object{}
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Position,
 		gameComponents.SpriteRender,
 		gameComponents.BlockView,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if !entity.HasComponent(gameComponents.Player) {
+		if entity.HasComponent(gameComponents.Player) {
+			return
+		}
+		switch {
+		case entity.HasComponent(gameComponents.Position):
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
@@ -90,6 +93,17 @@ func rayCasting(cx, cy float64, world w.World) []line {
 			y := float64(pos.Y - sprite.Height/2)
 			w := float64(sprite.Width)
 			h := float64(sprite.Height)
+			objects = append(objects, Object{walls: rect(x, y, w, h)})
+		case entity.HasComponent(gameComponents.GridElement):
+			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+
+			x := float64(int(grid.Row) * sprite.Width)
+			y := float64(int(grid.Col) * sprite.Height)
+			w := float64(sprite.Width)
+			h := float64(sprite.Height)
+
 			objects = append(objects, Object{walls: rect(x, y, w, h)})
 		}
 	}))

@@ -56,9 +56,13 @@ func SpawnPlayer(world w.World, x int, y int) {
 	{
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
-			Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumTaller},
-			Player:       &gc.Player{},
-			SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 3},
+			Position: &gc.Position{X: x, Y: y},
+			Player:   &gc.Player{},
+			SpriteRender: &ec.SpriteRender{
+				SpriteSheet:  &fieldSpriteSheet,
+				SpriteNumber: 3,
+				Depth:        ec.DepthNumTaller,
+			},
 		})
 		loader.AddEntities(world, componentList)
 	}
@@ -81,32 +85,44 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		GridElement:  &gc.GridElement{Row: x, Col: y},
-		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 2},
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 2,
+			Depth:        ec.DepthNumFloor,
+		},
 	})
 	loader.AddEntities(world, componentList)
 }
 
 // フィールド上に表示される壁を生成する
-func SpawnFieldWall(world w.World, x int, y int) {
+func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumTaller},
-		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 1},
-		BlockView:    &gc.BlockView{},
-		BlockPass:    &gc.BlockPass{},
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 1,
+			Depth:        ec.DepthNumTaller,
+		},
+		BlockView: &gc.BlockView{},
+		BlockPass: &gc.BlockPass{},
 	})
 	loader.AddEntities(world, componentList)
 }
 
 // フィールド上に表示される階段を生成する
-func SpawnFieldWarpNext(world w.World, x int, y int) {
+func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gloader.GameComponentList{
-		Position:     &gc.Position{X: x, Y: y, Depth: gc.DepthNumRug},
-		SpriteRender: &ec.SpriteRender{SpriteSheet: &fieldSpriteSheet, SpriteNumber: 4},
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 4,
+			Depth:        ec.DepthNumRug,
+		},
 	})
 	loader.AddEntities(world, componentList)
 }
