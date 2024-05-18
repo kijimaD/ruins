@@ -29,7 +29,7 @@ func MoveSystem(world w.World) {
 	originalX := pos.X
 	originalY := pos.Y
 
-	speed := 3
+	const speed = 3
 
 	// 元の画像を0度(時計の12時の位置スタート)として、何度回転させるか
 	switch {
@@ -200,7 +200,7 @@ func MoveSystem(world w.World) {
 		pos.Y = padding + 1
 	}
 
-	// プレイヤーのPositionから、該当するタイルを求めてイベントを発行する
+	// タイルイベントを発行する
 	{
 		gameResources := world.Resources.Game.(*resources.Game)
 		entity := gameResources.Level.AtEntity(pos.X, pos.Y)
