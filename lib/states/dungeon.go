@@ -61,7 +61,6 @@ func (st *DungeonState) OnStart(world w.World) {
 		spawner.SpawnPlayer(world, 200, 200)
 	}
 
-	world.Resources.Game = &resources.Game{}
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.Level = loader.NewLevel(world, 1, 6, 6)
 }
@@ -87,6 +86,7 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
 		gameResources.StateEvent = resources.StateEventNone // reset
+		gameResources.Depth += 1
 
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{}}}
 	}

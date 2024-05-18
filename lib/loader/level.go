@@ -40,8 +40,6 @@ var regexpValidChars = regexp.MustCompile(`^[ #@+_OX]+$`)
 
 // 現在の階層
 type Level struct {
-	// 階数
-	Depth int
 	// 横のタイル数
 	TileWidth gc.Row
 	// 縦のタイル数
@@ -108,7 +106,6 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 	}
 
 	level := Level{
-		Depth:      newDepth,
 		TileWidth:  width,
 		TileHeight: height,
 		TileSize:   defaultTileSize,

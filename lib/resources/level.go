@@ -14,8 +14,12 @@ const (
 )
 
 type Game struct {
+	// フィールド上で発生したイベント。各stateで補足されて処理される
 	StateEvent StateEvent
-	Level      loader.Level
+	// 現在階のフィールド情報
+	Level loader.Level
+	// 階層数
+	Depth int
 }
 
 // フィールド上でのイベント

@@ -11,5 +11,5 @@ import (
 
 func HUDSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
-	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("B%d", gameResources.Level.Depth), 0, 300)
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("B%d", gameResources.Depth), 0, 200)
 }
