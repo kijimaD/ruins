@@ -61,7 +61,8 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 		gameComponents.BlockView,
 		gameComponents.BlockPass,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if gameComponents.Position.Get(entity) != nil {
+		switch {
+		case entity.HasComponent(gameComponents.Position):
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
@@ -70,8 +71,7 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 
 			vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
 			vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
-		}
-		if gameComponents.GridElement.Get(entity) != nil {
+		case entity.HasComponent(gameComponents.GridElement):
 			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
 			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
