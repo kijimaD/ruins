@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 21
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm install
       - name: Releaser
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: yarn semantic-release
+        run: npx semantic-release

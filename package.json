@@ -10,7 +10,7 @@
   "scripts": {},
   "keywords": [],
   "author": "Kijima Daigo",
-  "private": true,
+  "private": false,
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/kijimaD/ruins/issues"
@@ -18,8 +18,7 @@
   "homepage": "https://github.com/kijimaD/ruins",
   "devDependencies": {
     "semantic-release": "^23.0.8",
-    "semantic-release-cli": "^5.4.4",
-    "yarn": "^1.22.22"
+    "semantic-release-cli": "^5.4.4"
   },
   "release": {
     "plugins": [
