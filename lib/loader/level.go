@@ -46,8 +46,8 @@ type Level struct {
 	TileHeight gc.Col
 	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
 	TileSize int
-	// タイル群
-	Grid []ecs.Entity
+	// タイルエンティティ群
+	Entities []ecs.Entity
 }
 
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
@@ -109,7 +109,7 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 		TileWidth:  width,
 		TileHeight: height,
 		TileSize:   defaultTileSize,
-		Grid:       tiles,
+		Entities:   tiles,
 	}
 
 	return level
@@ -126,7 +126,7 @@ func (l *Level) AtEntity(x int, y int) ecs.Entity {
 	ty := y / l.TileSize
 	idx := l.XYTileIndex(tx, ty)
 
-	return l.Grid[idx]
+	return l.Entities[idx]
 }
 
 // ステージ幅。横の全体ピクセル数
