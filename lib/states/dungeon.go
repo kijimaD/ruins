@@ -14,7 +14,6 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/spawner"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -47,29 +46,24 @@ func (st *DungeonState) OnStart(world w.World) {
 	bgImage = ebiten.NewImageFromImage(img)
 	baseImage.Fill(color.Black)
 
-	// debug
-	// 終了したとき、現状は前回からの続きになっている
-	// 終了や階層移動したときはフィールドにあるものを削除したい
-	playerCount := 0
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.Player,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerCount++
-	}))
-	if playerCount == 0 {
-		spawner.SpawnPlayer(world, 200, 200)
-	}
-
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = loader.NewLevel(world, 1, 6, 6)
+	gameResources.Level = loader.NewLevel(world, 1, 20, 20)
 }
 
 func (st *DungeonState) OnStop(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.SpriteRender,
-		gameComponents.Player.Not(),
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.DeleteEntity(entity)
+	}))
+	world.Manager.Join(
+		gameComponents.Position,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.DeleteEntity(entity)
+	}))
+	world.Manager.Join(
+		gameComponents.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))

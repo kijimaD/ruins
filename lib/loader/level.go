@@ -2,7 +2,6 @@ package loader
 
 import (
 	"math/rand"
-	"regexp"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 
@@ -21,23 +20,6 @@ const (
 	warpEscapeSpriteNumber = 5
 )
 
-// const (
-// 	// フロア
-// 	charFloor = ' '
-// 	// 壁
-// 	charWall = '#'
-// 	// 操作するプレイヤー
-// 	charPlayer = '@'
-// 	// 壁より外側の埋める部分
-// 	charExterior = '_'
-// 	// 次の階層へ
-// 	charWarpNext = 'O'
-// 	// 脱出
-// 	charWarpEscape = 'X'
-// )
-
-var regexpValidChars = regexp.MustCompile(`^[ #@+_OX]+$`)
-
 // 現在の階層
 type Level struct {
 	// 横のタイル数
@@ -51,65 +33,63 @@ type Level struct {
 }
 
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
-	tiles := make([]ecs.Entity, 0, int(width)*int(height))
-
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(0)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(0)))
-
-	tiles = append(tiles, SpawnFieldWall(world, gc.Row(0), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(1)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(1)))
-
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(2)))
-	tiles = append(tiles, SpawnFieldWall(world, gc.Row(4), gc.Col(2)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(2)))
-
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(3)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(3)))
-
-	tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(4)))
-	tiles = append(tiles, SpawnFieldWall(world, gc.Row(1), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(4)))
-	tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(4)))
-
-	r := rand.Intn(2)
-	if r == 0 {
-		tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(5)))
-		tiles = append(tiles, SpawnFieldWarpNext(world, gc.Row(3), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(4), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(5)))
-	} else {
-		tiles = append(tiles, SpawnFloor(world, gc.Row(0), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(1), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(2), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(3), gc.Col(5)))
-		tiles = append(tiles, SpawnFieldWarpNext(world, gc.Row(4), gc.Col(5)))
-		tiles = append(tiles, SpawnFloor(world, gc.Row(5), gc.Col(5)))
-	}
-
 	level := Level{
 		TileWidth:  width,
 		TileHeight: height,
 		TileSize:   defaultTileSize,
-		Entities:   tiles,
+	}
+	tileCount := int(width) * int(height)
+
+	tiles := make([]Tile, tileCount)
+	for i, _ := range tiles {
+		tiles[i] = TileFloor
+	}
+	// 壁を生成する
+	{
+		n := rand.Intn(14)
+		n += 6 // 6 ~ 20
+		for i := 0; i < n; i++ {
+			x := rand.Intn(int(level.TileWidth))
+			y := rand.Intn(int(level.TileHeight))
+			tileIdx := level.XYTileIndex(x, y)
+			tiles[tileIdx] = TileWall
+		}
+	}
+	// ワープホールを生成する
+	{
+		x := rand.Intn(int(level.TileWidth))
+		y := rand.Intn(int(level.TileHeight))
+		tileIdx := level.XYTileIndex(x, y)
+		tiles[tileIdx] = TileWarpNext
+	}
+
+	// tilesを元にエンティティを生成する
+	entities := make([]ecs.Entity, tileCount)
+	for i, t := range tiles {
+		x, y := level.XYTileCoord(i)
+		switch t {
+		case TileFloor:
+			entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
+		case TileWall:
+			entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+		case TileWarpNext:
+			entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+		}
+	}
+
+	level.Entities = entities
+
+	// プレイヤー配置
+	{
+		for {
+			x := rand.Intn(int(level.TileWidth))
+			y := rand.Intn(int(level.TileHeight))
+			tileIdx := level.XYTileIndex(x, y)
+			if tiles[tileIdx] == TileFloor {
+				SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
+				break
+			}
+		}
 	}
 
 	return level
@@ -118,6 +98,13 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 // タイル座標から、タイルスライスのインデックスを求める
 func (l *Level) XYTileIndex(tx int, ty int) int {
 	return ty*int(l.TileWidth) + tx
+}
+
+// タイルスライスのインデックスからタイル座標を求める
+func (l *Level) XYTileCoord(idx int) (int, int) {
+	x := idx % int(l.TileWidth)
+	y := idx / int(l.TileWidth)
+	return x, y
 }
 
 // xy座標から、該当するエンティティを求める
@@ -204,4 +191,31 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	})
 
 	return loader.AddEntities(world, componentList)[0]
+}
+
+// フィールド上に表示されるプレイヤーを生成する
+func SpawnPlayer(world w.World, x int, y int) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, GameComponentList{
+			Position: &gc.Position{X: x, Y: y},
+			Player:   &gc.Player{},
+			SpriteRender: &ec.SpriteRender{
+				SpriteSheet:  &fieldSpriteSheet,
+				SpriteNumber: 3,
+				Depth:        ec.DepthNumTaller,
+			},
+		})
+		loader.AddEntities(world, componentList)
+	}
+	// カメラ
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, GameComponentList{
+			Position: &gc.Position{X: x, Y: y},
+			Camera:   &gc.Camera{Scale: 0.1, ScaleTo: 1},
+		})
+		loader.AddEntities(world, componentList)
+	}
 }
