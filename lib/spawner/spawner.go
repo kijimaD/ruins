@@ -1,11 +1,8 @@
 package spawner
 
 import (
-	gc "github.com/kijimaD/ruins/lib/components"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	gloader "github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -46,33 +43,6 @@ func SpawnAllRecipes(world w.World) {
 	for k, _ := range rawMaster.RecipeIndex {
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, rawMaster.GenerateRecipe(k))
-		loader.AddEntities(world, componentList)
-	}
-}
-
-// フィールド上に表示されるプレイヤーを生成する
-func SpawnPlayer(world w.World, x int, y int) {
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
-	{
-		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, gloader.GameComponentList{
-			Position: &gc.Position{X: x, Y: y},
-			Player:   &gc.Player{},
-			SpriteRender: &ec.SpriteRender{
-				SpriteSheet:  &fieldSpriteSheet,
-				SpriteNumber: 3,
-				Depth:        ec.DepthNumTaller,
-			},
-		})
-		loader.AddEntities(world, componentList)
-	}
-	// カメラ
-	{
-		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, gloader.GameComponentList{
-			Position: &gc.Position{X: x, Y: y},
-			Camera:   &gc.Camera{Scale: 01, ScaleTo: 1},
-		})
 		loader.AddEntities(world, componentList)
 	}
 }
