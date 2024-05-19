@@ -2,9 +2,6 @@
 <html>
   <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-  </head>
-
-  <body>
     <script src="wasm_exec.js"></script>
     <script>
      // Polyfill
@@ -17,8 +14,16 @@
 
      const go = new Go();
      WebAssembly.instantiateStreaming(fetch("game.wasm"), go.importObject).then(result => {
+         document.getElementById("loading").classList.remove("active");
          go.run(result.instance);
      });
     </script>
+    <link rel='stylesheet' href='loading.css' />
+  </head>
+
+  <body>
+    <div class="loading active" id="loading">
+        <div class="loading-txt">Now Loading...</div>
+    </div>
   </body>
 </html>
