@@ -28,21 +28,24 @@ type Level struct {
 	TileHeight gc.Col
 	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
 	TileSize int
+	// タイル群。地図生成の処理を保持するのに使う
+	Tiles []Tile
 	// タイルエンティティ群
 	Entities []ecs.Entity
 }
 
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
+	tileCount := int(width) * int(height)
 	level := Level{
 		TileWidth:  width,
 		TileHeight: height,
 		TileSize:   defaultTileSize,
+		Tiles:      make([]Tile, tileCount),
+		Entities:   make([]ecs.Entity, tileCount),
 	}
-	tileCount := int(width) * int(height)
 
-	tiles := make([]Tile, tileCount)
-	for i, _ := range tiles {
-		tiles[i] = TileFloor
+	for i, _ := range level.Tiles {
+		level.Tiles[i] = TileFloor
 	}
 	// 壁を生成する
 	{
@@ -52,7 +55,7 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 			x := rand.Intn(int(level.TileWidth))
 			y := rand.Intn(int(level.TileHeight))
 			tileIdx := level.XYTileIndex(x, y)
-			tiles[tileIdx] = TileWall
+			level.Tiles[tileIdx] = TileWall
 		}
 	}
 	// ワープホールを生成する
@@ -60,24 +63,21 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 		x := rand.Intn(int(level.TileWidth))
 		y := rand.Intn(int(level.TileHeight))
 		tileIdx := level.XYTileIndex(x, y)
-		tiles[tileIdx] = TileWarpNext
+		level.Tiles[tileIdx] = TileWarpNext
 	}
 
 	// tilesを元にエンティティを生成する
-	entities := make([]ecs.Entity, tileCount)
-	for i, t := range tiles {
+	for i, t := range level.Tiles {
 		x, y := level.XYTileCoord(i)
 		switch t {
 		case TileFloor:
-			entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
+			level.Entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
 		case TileWall:
-			entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+			level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
 		case TileWarpNext:
-			entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+			level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
 		}
 	}
-
-	level.Entities = entities
 
 	// プレイヤー配置
 	{
@@ -85,7 +85,7 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 			x := rand.Intn(int(level.TileWidth))
 			y := rand.Intn(int(level.TileHeight))
 			tileIdx := level.XYTileIndex(x, y)
-			if tiles[tileIdx] == TileFloor {
+			if level.Tiles[tileIdx] == TileFloor {
 				SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
 				break
 			}
