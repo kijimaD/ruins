@@ -5,6 +5,7 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 )
 
+// TODO: 移動する
 type GameComponentList struct {
 	GridElement      *gc.GridElement
 	Player           *gc.Player
