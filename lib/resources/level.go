@@ -33,7 +33,7 @@ type Level struct {
 	TileHeight gc.Col
 	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
 	TileSize int
-	// タイル群。地図生成の処理を保持するのに使う
+	// タイル群。マップ生成の処理を保持するのに使う
 	Tiles []Tile
 	// タイルエンティティ群
 	Entities []ecs.Entity
@@ -50,27 +50,37 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 		Tiles:      make([]Tile, tileCount),
 		Entities:   make([]ecs.Entity, tileCount),
 	}
-
 	for i, _ := range level.Tiles {
-		level.Tiles[i] = TileFloor
+		level.Tiles[i] = TileWall
 	}
-	// 壁を生成する
+	// 通路を生成する
 	{
-		n := rand.Intn(14)
-		n += 6 // 6 ~ 20
+		n := 300 + rand.Intn(50)
 		for i := 0; i < n; i++ {
 			x := rand.Intn(int(level.TileWidth))
 			y := rand.Intn(int(level.TileHeight))
 			tileIdx := level.XYTileIndex(x, y)
-			level.Tiles[tileIdx] = TileWall
+			level.Tiles[tileIdx] = TileFloor
 		}
 	}
+
 	// ワープホールを生成する
+	// FIXME: たまに届かない位置に生成される
 	{
 		x := rand.Intn(int(level.TileWidth))
 		y := rand.Intn(int(level.TileHeight))
 		tileIdx := level.XYTileIndex(x, y)
 		level.Tiles[tileIdx] = TileWarpNext
+	}
+	// プレイヤー配置
+	for {
+		x := rand.Intn(int(level.TileWidth))
+		y := rand.Intn(int(level.TileHeight))
+		tileIdx := level.XYTileIndex(x, y)
+		if level.Tiles[tileIdx] == TileFloor {
+			SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
+			break
+		}
 	}
 
 	// tilesを元にエンティティを生成する
@@ -83,17 +93,6 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 			level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
 		case TileWarpNext:
 			level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
-		}
-	}
-
-	// プレイヤー配置
-	for {
-		x := rand.Intn(int(level.TileWidth))
-		y := rand.Intn(int(level.TileHeight))
-		tileIdx := level.XYTileIndex(x, y)
-		if level.Tiles[tileIdx] == TileFloor {
-			SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
-			break
 		}
 	}
 
