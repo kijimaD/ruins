@@ -42,7 +42,7 @@ RUN GO111MODULE=on go build -o ./bin/ruins . \
 # release #
 ###########
 
-FROM gcr.io/distroless/static-debian11:latest AS release
+FROM gcr.io/distroless/base-debian11:latest AS release
 
 COPY --from=builder /build/bin/ruins /bin/
 WORKDIR /workdir
