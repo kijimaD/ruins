@@ -1,10 +1,13 @@
 package resources
 
 import (
+	"log"
 	"math/rand"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/loader"
+	"github.com/kijimaD/ruins/lib/mapbuilder"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -20,49 +23,23 @@ type Game struct {
 	// フィールド上で発生したイベント。各stateで補足されて処理される
 	StateEvent StateEvent
 	// 現在階のフィールド情報
-	Level Level
+	Level loader.Level
 	// 階層数
 	Depth int
 }
 
-// 現在の階層
-type Level struct {
-	// 横のタイル数
-	TileWidth gc.Row
-	// 縦のタイル数
-	TileHeight gc.Col
-	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
-	TileSize int
-	// タイル群。マップ生成の処理を保持するのに使う
-	Tiles []Tile
-	// タイルエンティティ群
-	Entities []ecs.Entity
-}
-
 const defaultTileSize = 32
 
-func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
+func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.Level {
 	tileCount := int(width) * int(height)
-	level := Level{
+	level := loader.Level{
 		TileWidth:  width,
 		TileHeight: height,
 		TileSize:   defaultTileSize,
-		Tiles:      make([]Tile, tileCount),
 		Entities:   make([]ecs.Entity, tileCount),
 	}
-	for i, _ := range level.Tiles {
-		level.Tiles[i] = TileWall
-	}
-	// 通路を生成する
-	{
-		n := 300 + rand.Intn(50)
-		for i := 0; i < n; i++ {
-			x := rand.Intn(int(level.TileWidth))
-			y := rand.Intn(int(level.TileHeight))
-			tileIdx := level.XYTileIndex(x, y)
-			level.Tiles[tileIdx] = TileFloor
-		}
-	}
+	chain := mapbuilder.SimpleRoomBuilder()
+	chain.Build()
 
 	// ワープホールを生成する
 	// FIXME: たまに届かない位置に生成される
@@ -70,75 +47,39 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) Level {
 		x := rand.Intn(int(level.TileWidth))
 		y := rand.Intn(int(level.TileHeight))
 		tileIdx := level.XYTileIndex(x, y)
-		level.Tiles[tileIdx] = TileWarpNext
+		chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
 	}
-	// プレイヤー配置
+	// プレイヤーを配置する
+	failCount := 0
 	for {
+		if failCount > 1000 {
+			log.Fatal("プレイヤーの生成に失敗した")
+		}
 		x := rand.Intn(int(level.TileWidth))
 		y := rand.Intn(int(level.TileHeight))
-		tileIdx := level.XYTileIndex(x, y)
-		if level.Tiles[tileIdx] == TileFloor {
+		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
 			SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
 			break
 		}
+		failCount++
 	}
 
 	// tilesを元にエンティティを生成する
-	for i, t := range level.Tiles {
-		x, y := level.XYTileCoord(i)
+	for i, t := range chain.BuildData.Tiles {
+		x, y := chain.BuildData.Level.XYTileCoord(i)
 		switch t {
-		case TileFloor:
-			level.Entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
-		case TileWall:
-			level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
-		case TileWarpNext:
-			level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+		case mapbuilder.TileFloor:
+			chain.BuildData.Level.Entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
+		case mapbuilder.TileWall:
+			chain.BuildData.Level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+		case mapbuilder.TileWarpNext:
+			chain.BuildData.Level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
 		}
 	}
 
-	return level
+	return chain.BuildData.Level
 }
-
-// タイル座標から、タイルスライスのインデックスを求める
-func (l *Level) XYTileIndex(tx int, ty int) int {
-	return ty*int(l.TileWidth) + tx
-}
-
-// タイルスライスのインデックスからタイル座標を求める
-func (l *Level) XYTileCoord(idx int) (int, int) {
-	x := idx % int(l.TileWidth)
-	y := idx / int(l.TileWidth)
-	return x, y
-}
-
-// xy座標から、該当するエンティティを求める
-func (l *Level) AtEntity(x int, y int) ecs.Entity {
-	tx := x / l.TileSize
-	ty := y / l.TileSize
-	idx := l.XYTileIndex(tx, ty)
-
-	return l.Entities[idx]
-}
-
-// ステージ幅。横の全体ピクセル数
-func (l *Level) Width() int {
-	return int(l.TileWidth) * l.TileSize
-}
-
-// ステージ縦。縦の全体ピクセル数
-func (l *Level) Height() int {
-	return int(l.TileHeight) * l.TileSize
-}
-
-// フィールドのタイル
-type Tile uint8
-
-const (
-	TileEmpty Tile = 0
-	TileFloor Tile = 1 << iota
-	TileWall
-	TileWarpNext
-)
 
 // フィールド上でのイベント
 type StateEvent string
