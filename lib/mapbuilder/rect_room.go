@@ -4,13 +4,14 @@ import (
 	"math/rand"
 )
 
-type SimpleMapBuilder struct{}
+// 長方形の部屋を作成する
+type RectRoomBuilder struct{}
 
-func (b SimpleMapBuilder) BuildInitial(buildData *BuilderMap) {
+func (b RectRoomBuilder) BuildInitial(buildData *BuilderMap) {
 	b.BuildRooms(buildData)
 }
 
-func (b SimpleMapBuilder) BuildRooms(buildData *BuilderMap) {
+func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
 	const maxRooms = 30
 	rooms := []Rect{}
 	for i := 0; i < maxRooms; i++ {
