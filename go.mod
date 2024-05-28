@@ -3,7 +3,7 @@ module github.com/kijimaD/ruins
 go 1.20
 
 require (
-	github.com/BurntSushi/toml v1.3.2
+	github.com/BurntSushi/toml v1.4.0
 	github.com/ebitenui/ebitenui v0.5.6
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/hajimehoshi/ebiten v1.12.12
