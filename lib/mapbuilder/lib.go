@@ -77,6 +77,7 @@ type MetaMapBuilder interface {
 func SimpleRoomBuilder() *BuilderChain {
 	chain := NewBuilderChain()
 	chain.StartWith(RectRoomBuilder{})
+	chain.With(LineCorridorBuilder{})
 	chain.With(RoomDraw{})
 
 	return chain

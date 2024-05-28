@@ -12,7 +12,7 @@ func (b RectRoomBuilder) BuildInitial(buildData *BuilderMap) {
 }
 
 func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
-	const maxRooms = 30
+	const maxRooms = 20
 	rooms := []Rect{}
 	for i := 0; i < maxRooms; i++ {
 		x := 1 + rand.Intn(18)
