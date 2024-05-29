@@ -1,7 +1,6 @@
 package mapbuilder
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -36,13 +35,70 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 				}
 			}
 			destCenterX, destCenterY := buildData.Rooms[closestIdx].Center()
-			fmt.Println(destCenterX, destCenterY)
-			// TODO ================
-			// 線を引く
-			// 線をマス目ごとに分解してループ、タイルを切り替える
+			points := bresenhamPoints(point{x: centerX, y: centerY}, point{x: destCenterX, y: destCenterY})
+			corridor := []int{}
+			for _, p := range points {
+				idx := buildData.Level.XYTileIndex(p.x, p.y)
+				if 0 < idx && idx < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 {
+					// FIXME: 効いてなさそう
+					buildData.Tiles[idx] = TileFloor
+				}
+				corridor = append(corridor, idx)
+			}
+			corridors = append(corridors, corridor)
 		}
-		corridor := []int{}
-		corridors = append(corridors, corridor)
 		connected[i] = true
 	}
+}
+
+type point struct {
+	x int
+	y int
+}
+
+// https://gist.github.com/s1moe2/a85a5da7e2af25397de326d9714a6bbc#file-bresenham-go
+func bresenhamPoints(p1, p2 point) []point {
+	dx := int(math.Abs(float64(p2.x) - float64(p1.x)))
+	sx := -1
+	if p1.x < p2.x {
+		sx = 1
+	}
+
+	dy := -int(math.Abs(float64(p2.y) - float64(p1.y)))
+	sy := -1
+	if p1.y < p2.y {
+		sy = 1
+	}
+
+	err := dx + dy
+
+	points := []point{}
+
+	for {
+		points = append(points, point{p1.x, p1.y})
+
+		if p1.x == p2.x && p1.y == p2.y {
+			break
+		}
+
+		e2 := 2 * err
+
+		if e2 >= dy {
+			if p1.x == p2.x {
+				break
+			}
+			err = err + dy
+			p1.x = p1.x + sx
+		}
+
+		if e2 <= dx {
+			if p1.y == p2.y {
+				break
+			}
+			err = err + dx
+			p1.y = p1.y + sy
+		}
+	}
+
+	return points
 }
