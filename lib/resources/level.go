@@ -43,16 +43,25 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 
 	// ワープホールを生成する
 	// FIXME: たまに届かない位置に生成される
-	{
+	failCountWarpNext := 0
+	for {
+		if failCountWarpNext > 1000 {
+			log.Fatal("ワープホールの生成に失敗した")
+		}
 		x := rand.Intn(int(level.TileWidth))
 		y := rand.Intn(int(level.TileHeight))
 		tileIdx := level.XYTileIndex(x, y)
-		chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
+		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
+
+			break
+		}
+		failCountWarpNext++
 	}
 	// プレイヤーを配置する
-	failCount := 0
+	failCountPlayer := 0
 	for {
-		if failCount > 1000 {
+		if failCountPlayer > 1000 {
 			log.Fatal("プレイヤーの生成に失敗した")
 		}
 		x := rand.Intn(int(level.TileWidth))
@@ -62,7 +71,7 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 			SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
 			break
 		}
-		failCount++
+		failCountPlayer++
 	}
 
 	// tilesを元にエンティティを生成する
