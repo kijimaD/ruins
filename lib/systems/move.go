@@ -87,10 +87,11 @@ func MoveSystem(world w.World) {
 	// 2つの矩形を比較して、重複する部分があれば衝突とみなす
 	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
-		x1 := float64(pos.X - sprite.Width/2)
-		x2 := float64(pos.X + sprite.Width/2)
-		y1 := float64(pos.Y - sprite.Height/2)
-		y2 := float64(pos.Y + sprite.Height/2)
+		padding := 4 // 1マスの道を進みやすくする
+		x1 := float64(pos.X - sprite.Width/2 + padding)
+		x2 := float64(pos.X + sprite.Width/2 - padding)
+		y1 := float64(pos.Y - sprite.Height/2 + padding)
+		y2 := float64(pos.Y + sprite.Height/2 - padding)
 
 		world.Manager.Join(
 			gameComponents.SpriteRender,

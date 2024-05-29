@@ -12,7 +12,6 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -47,7 +46,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	baseImage.Fill(color.Black)
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = loader.NewLevel(world, 1, 20, 20)
+	gameResources.Level = resources.NewLevel(world, 1, 20, 20)
 }
 
 func (st *DungeonState) OnStop(world w.World) {
