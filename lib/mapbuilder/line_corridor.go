@@ -35,8 +35,8 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 			}
 			destCenterX, destCenterY := buildData.Rooms[closestIdx].Center()
 			ps1 := bresenhamPoints(point{x: centerX, y: centerY}, point{x: destCenterX, y: destCenterY})
-			ps2 := bresenhamPoints(point{x: centerX - 1, y: centerY - 1}, point{x: destCenterX - 1, y: destCenterY - 1})
-			ps3 := bresenhamPoints(point{x: centerX + 1, y: centerY + 1}, point{x: destCenterX + 1, y: destCenterY + 1})
+			ps2 := bresenhamPoints(point{x: centerX - 1, y: centerY}, point{x: destCenterX - 1, y: destCenterY})
+			ps3 := bresenhamPoints(point{x: centerX, y: centerY - 1}, point{x: destCenterX, y: destCenterY - 1})
 			points := []point{}
 			for _, p := range ps1 {
 				points = append(points, p)
