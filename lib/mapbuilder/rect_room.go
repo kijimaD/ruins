@@ -19,7 +19,7 @@ func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
 		y := 1 + rand.Intn(16)
 		w := 2 + rand.Intn(2)
 		h := 2 + rand.Intn(2)
-		newRoom := Rect{x, y, x + w, y + h}
+		newRoom := Rect{X1: x, X2: x + w, Y1: y, Y2: y + h}
 		rooms = append(rooms, newRoom)
 	}
 
