@@ -14,7 +14,6 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 	// 接続済みの部屋。通路を2重に計算しないようにする
 	connected := map[int]bool{}
 	// 廊下のスライス
-	corridors := [][]int{}
 	for i, room := range buildData.Rooms {
 		roomDistances := map[int]float64{}
 		centerX, centerY := room.Center()
@@ -56,7 +55,7 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 				}
 				corridor = append(corridor, idx)
 			}
-			corridors = append(corridors, corridor)
+			buildData.Corridors = append(buildData.Corridors, corridor)
 		}
 		connected[i] = true
 	}
