@@ -35,12 +35,23 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 				}
 			}
 			destCenterX, destCenterY := buildData.Rooms[closestIdx].Center()
-			points := bresenhamPoints(point{x: centerX, y: centerY}, point{x: destCenterX, y: destCenterY})
+			ps1 := bresenhamPoints(point{x: centerX, y: centerY}, point{x: destCenterX, y: destCenterY})
+			ps2 := bresenhamPoints(point{x: centerX - 1, y: centerY - 1}, point{x: destCenterX - 1, y: destCenterY - 1})
+			ps3 := bresenhamPoints(point{x: centerX + 1, y: centerY + 1}, point{x: destCenterX + 1, y: destCenterY + 1})
+			points := []point{}
+			for _, p := range ps1 {
+				points = append(points, p)
+			}
+			for _, p := range ps2 {
+				points = append(points, p)
+			}
+			for _, p := range ps3 {
+				points = append(points, p)
+			}
 			corridor := []int{}
 			for _, p := range points {
 				idx := buildData.Level.XYTileIndex(p.x, p.y)
-				if 0 < idx && idx < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 {
-					// FIXME: 効いてなさそう
+				if 0 < idx && idx < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 && buildData.Tiles[idx] == TileWall {
 					buildData.Tiles[idx] = TileFloor
 				}
 				corridor = append(corridor, idx)
