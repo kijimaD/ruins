@@ -20,7 +20,7 @@ var (
 )
 
 const (
-	visionNgon = 20
+	visionNgon = 10
 )
 
 // 周囲を暗くする
