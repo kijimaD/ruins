@@ -164,10 +164,10 @@ func MoveSystem(world w.World) {
 		camera.ScaleTo += scrollY * (camera.ScaleTo / 7)
 
 		// Clamp target zoom level.
-		if camera.ScaleTo < 0.01 {
-			camera.ScaleTo = 0.01
-		} else if camera.ScaleTo > 100 {
-			camera.ScaleTo = 100
+		if camera.ScaleTo < 0.8 {
+			camera.ScaleTo = 0.8
+		} else if camera.ScaleTo > 10 {
+			camera.ScaleTo = 10
 		}
 
 		// Smooth zoom transition.
