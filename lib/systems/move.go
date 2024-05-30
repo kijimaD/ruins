@@ -83,9 +83,9 @@ func MoveSystem(world w.World) {
 		}
 	}
 
-	// 衝突判定して、衝突していれば元の位置に戻す
+	// 移動した場合、衝突判定して衝突していれば元の位置に戻す
 	// 2つの矩形を比較して、重複する部分があれば衝突とみなす
-	{
+	if pos.X != originalX || pos.Y != originalY {
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
 		x1 := float64(pos.X - sprite.Width/2 + padding)
