@@ -46,7 +46,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	baseImage.Fill(color.Black)
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(world, 1, 20, 20)
+	gameResources.Level = resources.NewLevel(world, 1, 50, 50)
 }
 
 func (st *DungeonState) OnStop(world w.World) {

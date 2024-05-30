@@ -4,6 +4,7 @@ package mapbuilder
 import (
 	"log"
 
+	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/loader"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -22,8 +23,8 @@ type BuilderChain struct {
 	BuildData BuilderMap
 }
 
-func NewBuilderChain() *BuilderChain {
-	tileCount := int(20) * int(20)
+func NewBuilderChain(width components.Row, height components.Col) *BuilderChain {
+	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
 	for i, _ := range tiles {
 		tiles[i] = TileWall
@@ -34,9 +35,8 @@ func NewBuilderChain() *BuilderChain {
 		Builders: []MetaMapBuilder{},
 		BuildData: BuilderMap{
 			Level: loader.Level{
-				// 仮の値
-				TileWidth:  20,
-				TileHeight: 20,
+				TileWidth:  components.Row(width),
+				TileHeight: components.Col(height),
 				TileSize:   32,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
@@ -74,8 +74,8 @@ type MetaMapBuilder interface {
 	BuildMeta(*BuilderMap)
 }
 
-func SimpleRoomBuilder() *BuilderChain {
-	chain := NewBuilderChain()
+func SimpleRoomBuilder(width components.Row, height components.Col) *BuilderChain {
+	chain := NewBuilderChain(width, height)
 	chain.StartWith(RectRoomBuilder{})
 	chain.With(RoomDraw{}) // TODO: 暫定的にここで壁を埋めてるので、先に実行する必要がある
 	chain.With(LineCorridorBuilder{})
