@@ -10,13 +10,15 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/utils/camera"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 var (
 	// 影生成時の、マスクのベースとして使う黒画像。
 	// TODO: Resourceに配置すべき
-	shadowImage = ebiten.NewImage(1000, 1000)
+	// TODO: ステージのサイズによって可変にするべき
+	shadowImage = ebiten.NewImage(consts.TileSize*50, consts.TileSize*50)
 )
 
 // 遮蔽物を隠す

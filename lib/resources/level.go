@@ -8,13 +8,12 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
-	ecs "github.com/x-hgg-x/goecs/v2"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 )
 
 const (
 	offsetX       = 0
 	offsetY       = 80
-	gridBlockSize = 32
 	minGridWidth  = 30
 	minGridHeight = 20
 )
@@ -28,29 +27,20 @@ type Game struct {
 	Depth int
 }
 
-const defaultTileSize = 32
-
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.Level {
-	tileCount := int(width) * int(height)
-	level := loader.Level{
-		TileWidth:  width,
-		TileHeight: height,
-		TileSize:   defaultTileSize,
-		Entities:   make([]ecs.Entity, tileCount),
-	}
-	chain := mapbuilder.SimpleRoomBuilder()
+	chain := mapbuilder.SimpleRoomBuilder(width, height)
 	chain.Build()
 
 	// ワープホールを生成する
 	// FIXME: たまに届かない位置に生成される
 	failCountWarpNext := 0
 	for {
-		if failCountWarpNext > 1000 {
+		if failCountWarpNext > 200 {
 			log.Fatal("ワープホールの生成に失敗した")
 		}
-		x := rand.Intn(int(level.TileWidth))
-		y := rand.Intn(int(level.TileHeight))
-		tileIdx := level.XYTileIndex(x, y)
+		x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+		y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
 			chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
 
@@ -61,14 +51,14 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 	// プレイヤーを配置する
 	failCountPlayer := 0
 	for {
-		if failCountPlayer > 1000 {
+		if failCountPlayer > 200 {
 			log.Fatal("プレイヤーの生成に失敗した")
 		}
-		x := rand.Intn(int(level.TileWidth))
-		y := rand.Intn(int(level.TileHeight))
+		x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+		y := rand.Intn(int(chain.BuildData.Level.TileHeight))
 		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
-			SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
+			SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
 			break
 		}
 		failCountPlayer++
@@ -81,7 +71,10 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 		case mapbuilder.TileFloor:
 			chain.BuildData.Level.Entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
 		case mapbuilder.TileWall:
-			chain.BuildData.Level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+			// 近傍4タイルにフロアがあるときだけ壁にする
+			if chain.BuildData.AdjacentOrthoAnyFloor(i) {
+				chain.BuildData.Level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+			}
 		case mapbuilder.TileWarpNext:
 			chain.BuildData.Level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
 		}
@@ -103,8 +96,8 @@ const (
 func UpdateGameLayout(world w.World) (int, int) {
 	gridWidth, gridHeight := minGridWidth, minGridHeight
 
-	gameWidth := gridWidth*gridBlockSize + offsetX
-	gameHeight := gridHeight*gridBlockSize + offsetY
+	gameWidth := gridWidth*consts.TileSize + offsetX
+	gameHeight := gridHeight*consts.TileSize + offsetY
 
 	world.Resources.ScreenDimensions.Width = gameWidth
 	world.Resources.ScreenDimensions.Height = gameHeight

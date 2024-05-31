@@ -2,6 +2,8 @@ package mapbuilder
 
 import (
 	"math/rand"
+
+	"github.com/kijimaD/ruins/lib/utils/mathutil"
 )
 
 // 長方形の部屋を作成する
@@ -12,14 +14,19 @@ func (b RectRoomBuilder) BuildInitial(buildData *BuilderMap) {
 }
 
 func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
-	const maxRooms = 8
+	maxRooms := 4 + rand.Intn(10)
 	rooms := []Rect{}
 	for i := 0; i < maxRooms; i++ {
-		x := 1 + rand.Intn(16)
-		y := 1 + rand.Intn(16)
-		w := 2 + rand.Intn(2)
-		h := 2 + rand.Intn(2)
-		newRoom := Rect{X1: x, X2: x + w, Y1: y, Y2: y + h}
+		x := rand.Intn(int(buildData.Level.TileWidth))
+		y := rand.Intn(int(buildData.Level.TileHeight))
+		w := 2 + rand.Intn(8)
+		h := 2 + rand.Intn(8)
+		newRoom := Rect{
+			X1: x,
+			X2: mathutil.Min(x+w, int(buildData.Level.TileWidth)),
+			Y1: y,
+			Y2: mathutil.Min(y+h, int(buildData.Level.TileHeight)),
+		}
 		rooms = append(rooms, newRoom)
 	}
 
