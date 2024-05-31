@@ -16,7 +16,8 @@ import (
 var (
 	// 影生成時の、マスクのベースとして使う黒画像。
 	// TODO: Resourceに配置すべき
-	shadowImage = ebiten.NewImage(1000, 1000)
+	// TODO: ステージのサイズによって可変にするべき
+	shadowImage = ebiten.NewImage(32*50, 32*50)
 )
 
 // 遮蔽物を隠す

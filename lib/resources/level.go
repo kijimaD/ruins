@@ -73,7 +73,10 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 		case mapbuilder.TileFloor:
 			chain.BuildData.Level.Entities[i] = SpawnFloor(world, gc.Row(x), gc.Col(y))
 		case mapbuilder.TileWall:
-			chain.BuildData.Level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+			// 近傍4タイルにフロアがあるときだけ壁にする
+			if chain.BuildData.AdjacentOrthoAnyFloor(i) {
+				chain.BuildData.Level.Entities[i] = SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+			}
 		case mapbuilder.TileWarpNext:
 			chain.BuildData.Level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
 		}

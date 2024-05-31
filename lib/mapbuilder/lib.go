@@ -17,6 +17,58 @@ type BuilderMap struct {
 	Corridors [][]int
 }
 
+// 上にあるタイルを調べる
+func (bm BuilderMap) UpTile(idx int) Tile {
+	targetIdx := idx - int(bm.Level.TileWidth)
+	if targetIdx < 0 {
+		return TileEmpty
+	}
+
+	return bm.Tiles[targetIdx]
+}
+
+// 下にあるタイルを調べる
+func (bm BuilderMap) DownTile(idx int) Tile {
+	targetIdx := idx + int(bm.Level.TileHeight)
+	if targetIdx > len(bm.Tiles)-1 {
+		return TileEmpty
+	}
+
+	return bm.Tiles[targetIdx]
+}
+
+// 右にあるタイルを調べる
+func (bm BuilderMap) LeftTile(idx int) Tile {
+	targetIdx := idx - 1
+	if targetIdx < 0 {
+		return TileEmpty
+	}
+
+	return bm.Tiles[targetIdx]
+}
+
+// 左にあるタイルを調べる
+func (bm BuilderMap) RightTile(idx int) Tile {
+	targetIdx := idx + 1
+	if targetIdx > len(bm.Tiles)-1 {
+		return TileEmpty
+	}
+
+	return bm.Tiles[targetIdx]
+}
+
+// 直交する近傍4タイルに床があるか判定する
+func (bm BuilderMap) AdjacentOrthoAnyFloor(idx int) bool {
+	return bm.UpTile(idx) == TileFloor ||
+		bm.DownTile(idx) == TileFloor ||
+		bm.RightTile(idx) == TileFloor ||
+		bm.LeftTile(idx) == TileFloor ||
+		bm.UpTile(idx) == TileWarpNext ||
+		bm.DownTile(idx) == TileWarpNext ||
+		bm.RightTile(idx) == TileWarpNext ||
+		bm.LeftTile(idx) == TileWarpNext
+}
+
 type BuilderChain struct {
 	Starter   *InitialMapBuilder
 	Builders  []MetaMapBuilder
