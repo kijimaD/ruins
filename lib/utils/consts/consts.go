@@ -1,6 +1,8 @@
 package consts
 
 const (
+	TileSize = 32
+
 	HPLabel        = "HP"
 	SPLabel        = "SP"
 	VitalityLabel  = "体力"

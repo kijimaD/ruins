@@ -8,12 +8,12 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/loader"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 )
 
 const (
 	offsetX       = 0
 	offsetY       = 80
-	gridBlockSize = 32
 	minGridWidth  = 30
 	minGridHeight = 20
 )
@@ -27,8 +27,6 @@ type Game struct {
 	Depth int
 }
 
-const defaultTileSize = 32
-
 func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.Level {
 	chain := mapbuilder.SimpleRoomBuilder(width, height)
 	chain.Build()
@@ -37,7 +35,7 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 	// FIXME: たまに届かない位置に生成される
 	failCountWarpNext := 0
 	for {
-		if failCountWarpNext > 1000 {
+		if failCountWarpNext > 200 {
 			log.Fatal("ワープホールの生成に失敗した")
 		}
 		x := rand.Intn(int(chain.BuildData.Level.TileWidth))
@@ -53,14 +51,14 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 	// プレイヤーを配置する
 	failCountPlayer := 0
 	for {
-		if failCountPlayer > 1000 {
+		if failCountPlayer > 200 {
 			log.Fatal("プレイヤーの生成に失敗した")
 		}
 		x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 		y := rand.Intn(int(chain.BuildData.Level.TileHeight))
 		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
-			SpawnPlayer(world, x*defaultTileSize+defaultTileSize/2, y*defaultTileSize+defaultTileSize/2)
+			SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
 			break
 		}
 		failCountPlayer++
@@ -98,8 +96,8 @@ const (
 func UpdateGameLayout(world w.World) (int, int) {
 	gridWidth, gridHeight := minGridWidth, minGridHeight
 
-	gameWidth := gridWidth*gridBlockSize + offsetX
-	gameHeight := gridHeight*gridBlockSize + offsetY
+	gameWidth := gridWidth*consts.TileSize + offsetX
+	gameHeight := gridHeight*consts.TileSize + offsetY
 
 	world.Resources.ScreenDimensions.Width = gameWidth
 	world.Resources.ScreenDimensions.Height = gameHeight

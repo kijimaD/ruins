@@ -6,6 +6,7 @@ import (
 
 	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/loader"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -89,7 +90,7 @@ func NewBuilderChain(width components.Row, height components.Col) *BuilderChain 
 			Level: loader.Level{
 				TileWidth:  components.Row(width),
 				TileHeight: components.Col(height),
-				TileSize:   32,
+				TileSize:   consts.TileSize,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
 			Tiles:     tiles,
