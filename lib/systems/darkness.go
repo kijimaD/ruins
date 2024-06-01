@@ -81,11 +81,10 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 			visionImage.DrawImage(wallShadowImage, op)
 		case entity.HasComponent(gameComponents.GridElement):
 			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			{
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(int(grid.Row)*consts.TileSize), float64(int(grid.Col)*consts.TileSize+16))
-				visionImage.DrawImage(wallShadowImage, op)
-			}
+
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(int(grid.Row)*consts.TileSize), float64(int(grid.Col)*consts.TileSize+16))
+			visionImage.DrawImage(wallShadowImage, op)
 		}
 	}))
 
