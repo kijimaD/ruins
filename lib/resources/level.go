@@ -27,41 +27,65 @@ type Game struct {
 	Depth int
 }
 
-func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.Level {
+func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
+	gameResources := world.Resources.Game.(*Game)
+
 	chain := mapbuilder.SimpleRoomBuilder(width, height)
 	chain.Build()
 
 	// ワープホールを生成する
 	// FIXME: たまに届かない位置に生成される
-	failCountWarpNext := 0
-	for {
-		if failCountWarpNext > 200 {
-			log.Fatal("ワープホールの生成に失敗した")
-		}
-		x := rand.Intn(int(chain.BuildData.Level.TileWidth))
-		y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
-			chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
+	{
+		failCount := 0
+		for {
+			if failCount > 200 {
+				log.Fatal("進行ワープホールの生成に失敗した")
+			}
+			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+				chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
 
-			break
+				break
+			}
+			failCount++
 		}
-		failCountWarpNext++
+	}
+
+	if gameResources.Depth%5 == 0 {
+		failCount := 0
+		for {
+			if failCount > 200 {
+				log.Fatal("帰還ワープホールの生成に失敗した")
+			}
+			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+				chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpEscape
+
+				break
+			}
+			failCount++
+		}
 	}
 	// プレイヤーを配置する
-	failCountPlayer := 0
-	for {
-		if failCountPlayer > 200 {
-			log.Fatal("プレイヤーの生成に失敗した")
+	{
+		failCount := 0
+		for {
+			if failCount > 200 {
+				log.Fatal("プレイヤーの生成に失敗した")
+			}
+			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+				SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
+				break
+			}
+			failCount++
 		}
-		x := rand.Intn(int(chain.BuildData.Level.TileWidth))
-		y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-		if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
-			SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
-			break
-		}
-		failCountPlayer++
 	}
 
 	// tilesを元にエンティティを生成する
@@ -77,6 +101,8 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 			}
 		case mapbuilder.TileWarpNext:
 			chain.BuildData.Level.Entities[i] = SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+		case mapbuilder.TileWarpEscape:
+			chain.BuildData.Level.Entities[i] = SpawnFieldWarpEscape(world, gc.Row(x), gc.Col(y))
 		}
 	}
 

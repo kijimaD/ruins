@@ -99,7 +99,7 @@ var mainMenuTrans = []struct {
 	},
 	{
 		label: "フィールド",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{}}},
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "終了",

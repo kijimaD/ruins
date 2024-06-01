@@ -8,4 +8,5 @@ const (
 	TileFloor
 	TileWall
 	TileWarpNext
+	TileWarpEscape
 )

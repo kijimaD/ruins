@@ -22,7 +22,9 @@ var (
 	bgImage   *ebiten.Image // 床を表現する
 )
 
-type DungeonState struct{}
+type DungeonState struct {
+	Depth int
+}
 
 func (st DungeonState) String() string {
 	return "Dungeon"
@@ -46,7 +48,8 @@ func (st *DungeonState) OnStart(world w.World) {
 	baseImage.Fill(color.Black)
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(world, 1, 50, 50)
+	gameResources.Depth = st.Depth
+	gameResources.Level = resources.NewLevel(world, 50, 50)
 }
 
 func (st *DungeonState) OnStop(world w.World) {
@@ -66,6 +69,10 @@ func (st *DungeonState) OnStop(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
+
+	// reset
+	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources.StateEvent = resources.StateEventNone
 }
 
 func (st *DungeonState) Update(world w.World) states.Transition {
@@ -78,10 +85,9 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 	gameResources := world.Resources.Game.(*resources.Game)
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
-		gameResources.StateEvent = resources.StateEventNone // reset
-		gameResources.Depth += 1
-
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{Depth: gameResources.Depth + 1}}}
+	case resources.StateEventWarpEscape:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
 
 	return states.Transition{}

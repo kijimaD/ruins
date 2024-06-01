@@ -44,7 +44,7 @@ func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	return loader.AddEntities(world, componentList)[0]
 }
 
-// フィールド上に表示される階段を生成する
+// フィールド上に表示される進行ワープホールを生成する
 func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	SpawnFloor(world, x, y) // 下敷き描画
 
@@ -58,6 +58,25 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 			Depth:        ec.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeNext},
+	})
+
+	return loader.AddEntities(world, componentList)[0]
+}
+
+// フィールド上に表示される脱出ワープホールを生成する
+func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+	SpawnFloor(world, x, y) // 下敷き描画
+
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 5,
+			Depth:        ec.DepthNumRug,
+		},
+		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
 	})
 
 	return loader.AddEntities(world, componentList)[0]
