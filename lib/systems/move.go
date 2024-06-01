@@ -206,8 +206,16 @@ func MoveSystem(world w.World) {
 		gameResources := world.Resources.Game.(*resources.Game)
 		entity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
+		gameComponents := world.Components.Game.(*gc.Components)
 		if entity.HasComponent(gameComponents.Warp) {
-			gameResources.StateEvent = resources.StateEventWarpNext
+			warp := gameComponents.Warp.Get(entity).(*gc.Warp)
+			switch warp.Mode {
+			case gc.WarpModeNext:
+				gameResources.StateEvent = resources.StateEventWarpNext
+			case gc.WarpModeEscape:
+				gameResources.StateEvent = resources.StateEventWarpEscape
+			}
+
 		}
 	}
 }

@@ -46,7 +46,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	baseImage.Fill(color.Black)
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.Level = resources.NewLevel(world, 1, 50, 50)
+	gameResources.Level = resources.NewLevel(world, gameResources.Depth, 50, 50)
 }
 
 func (st *DungeonState) OnStop(world w.World) {
@@ -66,6 +66,11 @@ func (st *DungeonState) OnStop(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
+
+	// reset
+	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources.StateEvent = resources.StateEventNone
+	gameResources.Depth += 1
 }
 
 func (st *DungeonState) Update(world w.World) states.Transition {
@@ -78,10 +83,9 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 	gameResources := world.Resources.Game.(*resources.Game)
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
-		gameResources.StateEvent = resources.StateEventNone // reset
-		gameResources.Depth += 1
-
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{}}}
+	case resources.StateEventWarpEscape:
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
 
 	return states.Transition{}

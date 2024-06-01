@@ -8,7 +8,7 @@ type Components struct {
 	Player           *ecs.NullComponent
 	Camera           *ecs.SliceComponent
 	Wall             *ecs.NullComponent
-	Warp             *ecs.NullComponent
+	Warp             *ecs.SliceComponent
 	Item             *ecs.NullComponent
 	Consumable       *ecs.SliceComponent
 	Name             *ecs.SliceComponent
