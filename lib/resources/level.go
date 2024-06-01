@@ -27,7 +27,9 @@ type Game struct {
 	Depth int
 }
 
-func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.Level {
+func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
+	gameResources := world.Resources.Game.(*Game)
+
 	chain := mapbuilder.SimpleRoomBuilder(width, height)
 	chain.Build()
 
@@ -51,7 +53,7 @@ func NewLevel(world w.World, newDepth int, width gc.Row, height gc.Col) loader.L
 		}
 	}
 
-	if newDepth%5 == 0 {
+	if gameResources.Depth%5 == 0 {
 		failCount := 0
 		for {
 			if failCount > 200 {

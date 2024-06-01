@@ -28,8 +28,6 @@ func (st *DungeonSelectState) OnPause(world w.World) {}
 func (st *DungeonSelectState) OnResume(world w.World) {}
 
 func (st *DungeonSelectState) OnStart(world w.World) {
-	// prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	// st.dungeonSelect = append(st.dungeonSelect, loader.AddEntities(world, prefabs.Menu.DungeonSelect)...)
 	st.ui = st.initUI(world)
 }
 
@@ -39,20 +37,6 @@ func (st *DungeonSelectState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPop}
 	}
-
-	// world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
-	// 	text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-	// 	if text.ID == "description" {
-	// 		switch st.selection {
-	// 		case 0:
-	// 			text.Text = "鬱蒼とした森の奥地にある遺跡"
-	// 		case 1:
-	// 			text.Text = "切り立った山の洞窟にある遺跡"
-	// 		case 2:
-	// 			text.Text = "雲にまで届く塔を持つ遺跡"
-	// 		}
-	// 	}
-	// }))
 
 	if st.trans != nil {
 		next := *st.trans
@@ -112,17 +96,17 @@ var dungeonSelectTrans = []struct {
 	{
 		label: "森の遺跡",
 		desc:  "鬱蒼とした森の奥地にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "山の遺跡",
 		desc:  "切り立った山の洞窟にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "塔の遺跡",
 		desc:  "雲にまで届く塔を持つ遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{}}},
+		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "拠点メニューに戻る",
