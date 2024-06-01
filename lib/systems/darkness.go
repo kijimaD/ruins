@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/camera"
@@ -82,13 +81,9 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 			visionImage.DrawImage(wallShadowImage, op)
 		case entity.HasComponent(gameComponents.GridElement):
 			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-
-			spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
-			spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
 			{
 				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(grid.Row)*float64(spriteWidth), float64(grid.Col)*float64(spriteHeight)+16)
+				op.GeoM.Translate(float64(int(grid.Row)*consts.TileSize), float64(int(grid.Col)*consts.TileSize+16))
 				visionImage.DrawImage(wallShadowImage, op)
 			}
 		}
