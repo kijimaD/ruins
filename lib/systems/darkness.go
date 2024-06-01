@@ -27,13 +27,22 @@ const (
 // 周囲を暗くする
 func DarknessSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
-	visionImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
-	blackImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
-	wallShadowImage = ebiten.NewImage(consts.TileSize, consts.TileSize)
+	// 毎回リセットする
+	{
+		visionImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+		visionImage.Fill(color.Black)
+	}
 
-	visionImage.Fill(color.Black)
-	blackImage.Fill(color.Black)
-	wallShadowImage.Fill(color.RGBA{0, 0, 0, 80})
+	// 初回のみ生成
+	if blackImage == nil {
+		blackImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+		blackImage.Fill(color.Black)
+	}
+	// 初回のみ生成
+	if wallShadowImage == nil {
+		wallShadowImage = ebiten.NewImage(consts.TileSize, consts.TileSize)
+		wallShadowImage.Fill(color.RGBA{0, 0, 0, 80})
+	}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -81,9 +90,6 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(grid.Row)*float64(spriteWidth), float64(grid.Col)*float64(spriteHeight)+16)
 				visionImage.DrawImage(wallShadowImage, op)
-			}
-			{
-
 			}
 		}
 	}))
