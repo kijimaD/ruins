@@ -11,7 +11,6 @@ type GameComponentList struct {
 	GridElement      *gc.GridElement
 	Player           *gc.Player
 	Camera           *gc.Camera
-	Wall             *gc.Wall
 	Warp             *gc.Warp
 	Item             *gc.Item
 	Name             *gc.Name
