@@ -179,7 +179,7 @@ func MoveSystem(world w.World) {
 		}
 	}
 
-	padding := 20
+	padding := 10
 	gameResources := world.Resources.Game.(*resources.Game)
 	levelWidth := gameResources.Level.Width()
 	levelHeight := gameResources.Level.Height()
