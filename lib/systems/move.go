@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/effects"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -211,9 +212,9 @@ func MoveSystem(world w.World) {
 			warp := gameComponents.Warp.Get(entity).(*gc.Warp)
 			switch warp.Mode {
 			case gc.WarpModeNext:
-				gameResources.StateEvent = resources.StateEventWarpNext
+				effects.AddEffect(nil, effects.WarpNext{}, effects.None{})
 			case gc.WarpModeEscape:
-				gameResources.StateEvent = resources.StateEventWarpEscape
+				effects.AddEffect(nil, effects.WarpEscape{}, effects.None{})
 			}
 		}
 	}

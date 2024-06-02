@@ -7,7 +7,7 @@ import (
 
 // ================
 
-// ダメージ
+// ダメージを与える
 type Damage struct {
 	Amount int
 }
@@ -16,7 +16,7 @@ func (Damage) isEffectType() {}
 
 // ================
 
-// 体力回復
+// 体力を回復する
 type Healing struct {
 	Amount gc.Amounter
 }
@@ -25,7 +25,7 @@ func (Healing) isEffectType() {}
 
 // ================
 
-// スタミナ回復
+// スタミナを回復する
 type RecoveryStamina struct {
 	Amount gc.Amounter
 }
@@ -34,9 +34,23 @@ func (RecoveryStamina) isEffectType() {}
 
 // ================
 
-// アイテム使用
+// アイテムを使用する
 type ItemUse struct {
 	Item ecs.Entity
 }
 
 func (ItemUse) isEffectType() {}
+
+// ================
+
+// 次階層に移動する
+type WarpNext struct{}
+
+func (WarpNext) isEffectType() {}
+
+// ================
+
+// 脱出
+type WarpEscape struct{}
+
+func (WarpEscape) isEffectType() {}

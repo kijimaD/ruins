@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -50,4 +51,14 @@ func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
 	default:
 		log.Fatalf("unexpected: %T", at)
 	}
+}
+
+func WarpNextTask(world w.World) {
+	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources.StateEvent = resources.StateEventWarpNext
+}
+
+func WarpEscapeTask(world w.World) {
+	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources.StateEvent = resources.StateEventWarpEscape
 }
