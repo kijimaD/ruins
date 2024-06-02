@@ -215,7 +215,6 @@ func MoveSystem(world w.World) {
 			case gc.WarpModeEscape:
 				gameResources.StateEvent = resources.StateEventWarpEscape
 			}
-
 		}
 	}
 }
