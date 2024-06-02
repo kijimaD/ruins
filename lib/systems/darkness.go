@@ -9,12 +9,14 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/camera"
+	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 var (
-	visionImage *ebiten.Image // 視界を表現する黒背景
-	blackImage  *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
+	visionImage     *ebiten.Image // 視界を表現する黒背景
+	blackImage      *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
+	wallShadowImage *ebiten.Image // 壁が落とす影
 )
 
 const (
@@ -24,11 +26,22 @@ const (
 // 周囲を暗くする
 func DarknessSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
-	visionImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
-	blackImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+	// 毎回リセットする
+	{
+		visionImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+		visionImage.Fill(color.Black)
+	}
 
-	visionImage.Fill(color.Black)
-	blackImage.Fill(color.Black)
+	// 初回のみ生成
+	if blackImage == nil {
+		blackImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+		blackImage.Fill(color.Black)
+	}
+	// 初回のみ生成
+	if wallShadowImage == nil {
+		wallShadowImage = ebiten.NewImage(consts.TileSize, consts.TileSize)
+		wallShadowImage.Fill(color.RGBA{0, 0, 0, 80})
+	}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -54,33 +67,26 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 	}
 
 	// 壁の影。影をキャストする用のコンポーネントを追加したほうがよさそう
-	// FIXME: 見えない部分もすべてのブロックに影がついて重いのでいったんオフにしておく
-	// world.Manager.Join(
-	// 	gameComponents.SpriteRender,
-	// 	gameComponents.BlockView,
-	// 	gameComponents.BlockPass,
-	// ).Visit(ecs.Visit(func(entity ecs.Entity) {
-	// 	switch {
-	// 	case entity.HasComponent(gameComponents.Position):
-	// 		pos := gameComponents.Position.Get(entity).(*gc.Position)
-	// 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+	world.Manager.Join(
+		gameComponents.SpriteRender,
+		gameComponents.BlockView,
+		gameComponents.BlockPass,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		switch {
+		case entity.HasComponent(gameComponents.Position):
+			pos := gameComponents.Position.Get(entity).(*gc.Position)
 
-	// 		spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
-	// 		spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(pos.X-int(consts.TileSize/2)), float64(pos.Y+16))
+			visionImage.DrawImage(wallShadowImage, op)
+		case entity.HasComponent(gameComponents.GridElement):
+			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
 
-	// 		vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
-	// 		vector.DrawFilledRect(visionImage, float32(pos.X)-16, float32(pos.Y)-16, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
-	// 	case entity.HasComponent(gameComponents.GridElement):
-	// 		grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-	// 		sprite := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-
-	// 		spriteWidth := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Width)
-	// 		spriteHeight := float32(sprite.SpriteSheet.Sprites[sprite.SpriteNumber].Height)
-
-	// 		vector.DrawFilledRect(visionImage, float32(grid.Row)*spriteWidth, float32(grid.Col)*spriteWidth, spriteWidth, spriteHeight+4, color.RGBA{0, 0, 0, 140}, true)
-	// 		vector.DrawFilledRect(visionImage, float32(grid.Row)*spriteWidth, float32(grid.Col)*spriteWidth, spriteWidth, spriteHeight+16, color.RGBA{0, 0, 0, 80}, true)
-	// 	}
-	// }))
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(int(grid.Row)*consts.TileSize), float64(int(grid.Col)*consts.TileSize+16))
+			visionImage.DrawImage(wallShadowImage, op)
+		}
+	}))
 
 	// 光源の中心付近を明るくする
 	{
