@@ -45,11 +45,8 @@ type Camera struct {
 	ScaleTo float64
 }
 
-// 壁
-// TODO: 削除予定
-type Wall struct{}
-
 // ワープパッド
+// TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
 type Warp struct {
 	Mode warpMode
 }

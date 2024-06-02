@@ -25,7 +25,7 @@ func (Healing) isEffectType() {}
 
 // ================
 
-// スタミナ
+// スタミナ回復
 type RecoveryStamina struct {
 	Amount gc.Amounter
 }
@@ -34,6 +34,7 @@ func (RecoveryStamina) isEffectType() {}
 
 // ================
 
+// アイテム使用
 type ItemUse struct {
 	Item ecs.Entity
 }
