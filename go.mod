@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/ebitenui/ebitenui v0.5.6
+	github.com/ebitenui/ebitenui v0.5.7
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/hajimehoshi/ebiten/v2 v2.7.4
