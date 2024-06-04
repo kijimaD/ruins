@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -48,7 +49,7 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 	case Damage, Healing, RecoveryStamina:
 		v, ok := es.Targets.(Single)
 		if ok {
-			AffectEntity(world, es, v.Target)
+			AffectEntity(world, es, utils.GetPtr(v.Target))
 		}
 		_, ok = es.Targets.(Party)
 		if ok {
@@ -57,9 +58,15 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 				gameComponents.Member,
 				gameComponents.InParty,
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				AffectEntity(world, es, entity)
+				AffectEntity(world, es, utils.GetPtr(entity))
 			}))
 		}
+	case WarpNext, WarpEscape:
+		_, ok := es.Targets.(None)
+		if !ok {
+			log.Fatal("Warp EffectのTargetはNoneである必要がある")
+		}
+		AffectEntity(world, es, nil)
 	case ItemUse:
 		_, ok := es.Targets.(Single)
 		if ok {
@@ -71,14 +78,18 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 	}
 }
 
-func AffectEntity(world w.World, es EffectSpawner, target ecs.Entity) {
+func AffectEntity(world w.World, es EffectSpawner, target *ecs.Entity) {
 	switch e := es.EffectType.(type) {
 	case Damage:
-		InflictDamage(world, es, target)
+		InflictDamage(world, es, *target)
 	case Healing:
-		HealDamage(world, es, target)
+		HealDamage(world, es, *target)
 	case RecoveryStamina:
-		RecoverStamina(world, es, target)
+		RecoverStamina(world, es, *target)
+	case WarpNext:
+		WarpNextTask(world)
+	case WarpEscape:
+		WarpEscapeTask(world)
 	default:
 		log.Fatalf("対応してないEffectType: %T", e)
 	}

@@ -15,3 +15,7 @@ type Single struct {
 }
 
 func (Single) isTarget() {}
+
+type None struct{}
+
+func (None) isTarget() {}
