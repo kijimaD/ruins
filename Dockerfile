@@ -4,9 +4,7 @@
 
 # なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
 FROM golang:1.20-buster AS base
-RUN apt update \
-    && apt install -y --no-install-recommends \
-    upx-ucl
+RUN apt update
 RUN apt install -y \
     gcc \
     libc6-dev \
@@ -20,7 +18,8 @@ RUN apt install -y \
     pkg-config \
     xorg-dev \
     libx11-dev \
-    libopenal-dev
+    libopenal-dev \
+    upx-ucl
 
 ###########
 # builder #
@@ -49,8 +48,8 @@ RUN upx-ucl --best --ultra-brute ./bin/ruins
 FROM gcr.io/distroless/base-debian11:latest AS release
 
 COPY --from=builder /build/bin/ruins /bin/
-WORKDIR /workdir
-ENTRYPOINT ["/bin/ruins"]
+WORKDIR /work
+ENTRYPOINT ["ruins"]
 
 ########
 # node #
