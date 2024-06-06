@@ -31,12 +31,16 @@ FROM base AS builder
 WORKDIR /build
 COPY go.mod ./
 COPY go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go mod download
 
 COPY . .
-
-RUN GO111MODULE=on go build -o ./bin/ruins . \
- && upx-ucl --best --ultra-brute ./bin/ruins
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    GO111MODULE=on \
+    go build -o ./bin/ruins .
+RUN upx-ucl --best --ultra-brute ./bin/ruins
 
 ###########
 # release #
