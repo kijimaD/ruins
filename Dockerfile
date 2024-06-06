@@ -4,9 +4,7 @@
 
 # なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
 FROM golang:1.20-buster AS base
-RUN apt update \
-    && apt install -y --no-install-recommends \
-    upx-ucl
+RUN apt update
 RUN apt install -y \
     gcc \
     libc6-dev \
@@ -20,7 +18,8 @@ RUN apt install -y \
     pkg-config \
     xorg-dev \
     libx11-dev \
-    libopenal-dev
+    libopenal-dev \
+    upx-ucl
 
 ###########
 # builder #
@@ -31,12 +30,16 @@ FROM base AS builder
 WORKDIR /build
 COPY go.mod ./
 COPY go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go mod download
 
 COPY . .
-
-RUN GO111MODULE=on go build -o ./bin/ruins . \
- && upx-ucl --best --ultra-brute ./bin/ruins
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    GO111MODULE=on \
+    go build -o ./bin/ruins .
+RUN upx-ucl --best --ultra-brute ./bin/ruins
 
 ###########
 # release #
@@ -45,8 +48,8 @@ RUN GO111MODULE=on go build -o ./bin/ruins . \
 FROM gcr.io/distroless/base-debian11:latest AS release
 
 COPY --from=builder /build/bin/ruins /bin/
-WORKDIR /workdir
-ENTRYPOINT ["/bin/ruins"]
+WORKDIR /work
+ENTRYPOINT ["ruins"]
 
 ########
 # node #
