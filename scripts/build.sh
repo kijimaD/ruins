@@ -41,7 +41,7 @@ cmd() {
            -w /work \
            -v $PWD:/work \
            -v $HOME/go/pkg/mod:/go/pkg/mod \
-           -v $HOME/build/cache:/root/.cache/go-build \
+           -v $HOME/.cache/go-build:/root/.cache/go-build \
            --env GOOS=$goos \
            --env GOARCH=$goarch \
            --env CGO_ENABLED=$cgo \
