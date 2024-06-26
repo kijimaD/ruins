@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.2
 	github.com/x-hgg-x/goecs/v2 v2.0.5
-	golang.org/x/image v0.17.0
+	golang.org/x/image v0.18.0
 )
 
 require (
