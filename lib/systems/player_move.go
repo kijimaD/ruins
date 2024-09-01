@@ -12,10 +12,11 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// TODO: プレイヤーの移動処理限定なので、NPCでも共用できるようにしたい
 func PlayerMoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	var pos *gc.Position
+	var pos *gc.Position // player position
 	var spriteRender *ec.SpriteRender
 	world.Manager.Join(
 		gameComponents.Position,
@@ -85,14 +86,15 @@ func PlayerMoveSystem(world w.World) {
 	}
 
 	// 移動した場合、衝突判定して衝突していれば元の位置に戻す
-	// 2つの矩形を比較して、重複する部分があれば衝突とみなす
+	// プレイヤー、通り抜け不可オブジェクトの2つの矩形を比較して、重複する部分があれば衝突とみなす
+	// TODO: 移動オブジェクトが増えたときに計算量が爆発しそう
 	if pos.X != originalX || pos.Y != originalY {
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
-		x1 := float64(pos.X - sprite.Width/2 + padding)
-		x2 := float64(pos.X + sprite.Width/2 - padding)
-		y1 := float64(pos.Y - sprite.Height/2 + padding)
-		y2 := float64(pos.Y + sprite.Height/2 - padding)
+		playerx1 := float64(pos.X - sprite.Width/2 + padding)
+		playerx2 := float64(pos.X + sprite.Width/2 - padding)
+		playery1 := float64(pos.Y - sprite.Height/2 + padding)
+		playery2 := float64(pos.Y + sprite.Height/2 - padding)
 
 		world.Manager.Join(
 			gameComponents.SpriteRender,
@@ -109,7 +111,7 @@ func PlayerMoveSystem(world w.World) {
 				objectx2 := float64(objectPos.X + objectSprite.Width/2)
 				objecty1 := float64(objectPos.Y - objectSprite.Height/2)
 				objecty2 := float64(objectPos.Y + objectSprite.Height/2)
-				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
+				if (math.Max(playerx1, objectx1) < math.Min(playerx2, objectx2)) && (math.Max(playery1, objecty1) < math.Min(playery2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
@@ -124,7 +126,7 @@ func PlayerMoveSystem(world w.World) {
 				objectx2 := float64(x + objectSprite.Width)
 				objecty1 := float64(y)
 				objecty2 := float64(y + objectSprite.Height)
-				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
+				if (math.Max(playerx1, objectx1) < math.Min(playerx2, objectx2)) && (math.Max(playery1, objecty1) < math.Min(playery2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY

@@ -122,6 +122,7 @@ func SpawnNPC(world w.World, x int, y int) {
 				SpriteNumber: 6,
 				Depth:        ec.DepthNumTaller,
 			},
+			BlockPass: &gc.BlockPass{},
 		})
 		loader.AddEntities(world, componentList)
 	}
