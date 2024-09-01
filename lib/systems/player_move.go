@@ -12,8 +12,88 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// TODO: プレイヤーの移動処理限定なので、NPCでも共用できるようにしたい
 func PlayerMoveSystem(world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+
+	const distance = 3
+	switch {
+	case ebiten.IsKeyPressed(ebiten.KeyW) && ebiten.IsKeyPressed(ebiten.KeyD):
+		tryMove(world, 45, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyW) && ebiten.IsKeyPressed(ebiten.KeyA):
+		tryMove(world, 135, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyS) && ebiten.IsKeyPressed(ebiten.KeyA):
+		tryMove(world, 225, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyS) && ebiten.IsKeyPressed(ebiten.KeyD):
+		tryMove(world, 315, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyD):
+		tryMove(world, 0, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyW):
+		tryMove(world, 90, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyA):
+		tryMove(world, 180, distance)
+	case ebiten.IsKeyPressed(ebiten.KeyS):
+		tryMove(world, 270, distance)
+	}
+
+	{
+		// カメラの追従
+		var pos *gc.Position // player position
+		world.Manager.Join(
+			gameComponents.Position,
+			gameComponents.Player,
+			gameComponents.SpriteRender,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pos = gameComponents.Position.Get(entity).(*gc.Position)
+		}))
+
+		var camera *gc.Camera
+		var cPos *gc.Position
+		world.Manager.Join(
+			gameComponents.Camera,
+			gameComponents.Position,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			camera = gameComponents.Camera.Get(entity).(*gc.Camera)
+			cPos = gameComponents.Position.Get(entity).(*gc.Position)
+		}))
+		cPos.X = pos.X
+		cPos.Y = pos.Y
+
+		// ズーム率変更
+		// 参考: https://ebitengine.org/ja/examples/isometric.html
+		var scrollY float64
+		if ebiten.IsKeyPressed(ebiten.KeyC) || ebiten.IsKeyPressed(ebiten.KeyPageDown) {
+			scrollY = -0.25
+		} else if ebiten.IsKeyPressed(ebiten.KeyE) || ebiten.IsKeyPressed(ebiten.KeyPageUp) {
+			scrollY = 0.25
+		} else {
+			_, scrollY = ebiten.Wheel()
+			if scrollY < -1 {
+				scrollY = -1
+			} else if scrollY > 1 {
+				scrollY = 1
+			}
+		}
+		camera.ScaleTo += scrollY * (camera.ScaleTo / 7)
+
+		// Clamp target zoom level.
+		if camera.ScaleTo < 0.8 {
+			camera.ScaleTo = 0.8
+		} else if camera.ScaleTo > 10 {
+			camera.ScaleTo = 10
+		}
+
+		// Smooth zoom transition.
+		div := 10.0
+		if camera.ScaleTo > camera.Scale {
+			camera.Scale += (camera.ScaleTo - camera.Scale) / div
+		} else if camera.ScaleTo < camera.Scale {
+			camera.Scale -= (camera.Scale - camera.ScaleTo) / div
+		}
+	}
+}
+
+// 角度と距離を指定して相対移動させる
+func tryMove(world w.World, angle float64, distance float64) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	var pos *gc.Position // player position
@@ -27,67 +107,13 @@ func PlayerMoveSystem(world w.World) {
 		spriteRender = gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 	}))
 
-	// オブジェクトの位置関係によっては、進めないこともある。そのときに戻す用
 	originalX := pos.X
 	originalY := pos.Y
 
-	const speed = 3
+	radians := angle * math.Pi / 180.0
+	pos.X += int(math.Cos(radians) * distance)
+	pos.Y -= int(math.Sin(radians) * distance) // ゲーム画面におけるy軸は上がマイナスであるので逆転させる
 
-	// 元の画像を0度(時計の12時の位置スタート)として、何度回転させるか
-	switch {
-	// Right
-	case ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight):
-		pos.X += speed
-		pos.Angle = math.Pi / 2
-		if ebiten.IsKeyPressed(ebiten.KeyW) {
-			pos.Y -= speed
-			pos.Angle = math.Pi / 4
-		}
-		if ebiten.IsKeyPressed(ebiten.KeyS) {
-			pos.Y += speed
-			pos.Angle = 3 * math.Pi / 4
-		}
-	// Down
-	case ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown):
-		pos.Y += speed
-		pos.Angle = math.Pi
-		if ebiten.IsKeyPressed(ebiten.KeyA) {
-			pos.X -= speed
-			pos.Angle = 5 * math.Pi / 4
-		}
-		if ebiten.IsKeyPressed(ebiten.KeyD) {
-			pos.X += speed
-			pos.Angle = 3 * math.Pi / 4
-		}
-	// Left
-	case ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft):
-		pos.X -= speed
-		pos.Angle = 3 * math.Pi / 2
-		if ebiten.IsKeyPressed(ebiten.KeyW) {
-			pos.Y -= speed
-			pos.Angle = 7 * math.Pi / 4
-		}
-		if ebiten.IsKeyPressed(ebiten.KeyS) {
-			pos.Y += speed
-			pos.Angle = 5 * math.Pi / 4
-		}
-	// Up
-	case ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp):
-		pos.Y -= speed
-		pos.Angle = math.Pi * 2
-		if ebiten.IsKeyPressed(ebiten.KeyA) {
-			pos.X -= speed
-			pos.Angle = 7 * math.Pi / 4
-		}
-		if ebiten.IsKeyPressed(ebiten.KeyD) {
-			pos.X += speed
-			pos.Angle = math.Pi / 4
-		}
-	}
-
-	// 移動した場合、衝突判定して衝突していれば元の位置に戻す
-	// プレイヤー、通り抜け不可オブジェクトの2つの矩形を比較して、重複する部分があれば衝突とみなす
-	// TODO: 移動オブジェクトが増えたときに計算量が爆発しそう
 	if pos.X != originalX || pos.Y != originalY {
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
@@ -133,53 +159,6 @@ func PlayerMoveSystem(world w.World) {
 				}
 			}
 		}))
-	}
-
-	{
-		// カメラの追従
-		var camera *gc.Camera
-		var cPos *gc.Position
-		world.Manager.Join(
-			gameComponents.Camera,
-			gameComponents.Position,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			camera = gameComponents.Camera.Get(entity).(*gc.Camera)
-			cPos = gameComponents.Position.Get(entity).(*gc.Position)
-		}))
-		cPos.X = pos.X
-		cPos.Y = pos.Y
-
-		// ズーム率変更
-		// 参考: https://ebitengine.org/ja/examples/isometric.html
-		var scrollY float64
-		if ebiten.IsKeyPressed(ebiten.KeyC) || ebiten.IsKeyPressed(ebiten.KeyPageDown) {
-			scrollY = -0.25
-		} else if ebiten.IsKeyPressed(ebiten.KeyE) || ebiten.IsKeyPressed(ebiten.KeyPageUp) {
-			scrollY = 0.25
-		} else {
-			_, scrollY = ebiten.Wheel()
-			if scrollY < -1 {
-				scrollY = -1
-			} else if scrollY > 1 {
-				scrollY = 1
-			}
-		}
-		camera.ScaleTo += scrollY * (camera.ScaleTo / 7)
-
-		// Clamp target zoom level.
-		if camera.ScaleTo < 0.8 {
-			camera.ScaleTo = 0.8
-		} else if camera.ScaleTo > 10 {
-			camera.ScaleTo = 10
-		}
-
-		// Smooth zoom transition.
-		div := 10.0
-		if camera.ScaleTo > camera.Scale {
-			camera.Scale += (camera.ScaleTo - camera.Scale) / div
-		} else if camera.ScaleTo < camera.Scale {
-			camera.Scale -= (camera.Scale - camera.ScaleTo) / div
-		}
 	}
 
 	padding := 10
