@@ -93,7 +93,7 @@ func SpawnPlayer(world w.World, x int, y int) {
 			SpriteRender: &ec.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
 				SpriteNumber: 3,
-				Depth:        ec.DepthNumTaller,
+				Depth:        ec.DepthNumPlayer,
 			},
 		})
 		loader.AddEntities(world, componentList)
@@ -104,6 +104,24 @@ func SpawnPlayer(world w.World, x int, y int) {
 		componentList.Game = append(componentList.Game, gloader.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Camera:   &gc.Camera{Scale: 0.1, ScaleTo: 1},
+		})
+		loader.AddEntities(world, componentList)
+	}
+}
+
+// フィールド上に表示されるNPCを生成する
+// TODO: 接触すると戦闘開始するようにする
+func SpawnNPC(world w.World, x int, y int) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, gloader.GameComponentList{
+			Position: &gc.Position{X: x, Y: y},
+			SpriteRender: &ec.SpriteRender{
+				SpriteSheet:  &fieldSpriteSheet,
+				SpriteNumber: 6,
+				Depth:        ec.DepthNumTaller,
+			},
 		})
 		loader.AddEntities(world, componentList)
 	}

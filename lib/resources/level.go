@@ -70,7 +70,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			failCount++
 		}
 	}
-	// プレイヤーを配置する
+	// フィールドにプレイヤーを配置する
 	{
 		failCount := 0
 		for {
@@ -83,6 +83,26 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
 				SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
 				break
+			}
+			failCount++
+		}
+	}
+	{
+		failCount := 0
+		NPCCount := 0
+		for {
+			if failCount > 200 {
+				log.Fatal("NPCの生成に失敗した")
+			}
+			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+				SpawnNPC(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
+				NPCCount += 1
+				if NPCCount > 10 {
+					break
+				}
 			}
 			failCount++
 		}

@@ -13,6 +13,8 @@ sprites = [
     { x = 96,  y = 0, width = 32, height = 32 }, # Sprite 4
     # WarpEscape
     { x = 128, y = 0, width = 32, height = 32 }, # Sprite 5
+    # Red Ball
+    { x = 192, y = 0, width = 32, height = 32 }, # Sprite 6
 ]
 
 [sprite_sheet.bg_title1]
