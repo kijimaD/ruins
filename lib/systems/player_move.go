@@ -108,7 +108,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	pos.X += int(math.Cos(radians) * distance)
 	pos.Y -= int(math.Sin(radians) * distance) // ゲーム画面におけるy軸は上がマイナスであるので逆転させる
 
-	if pos.X != originalX || pos.Y != originalY {
+	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
 		playerx1 := float64(pos.X - sprite.Width/2 + padding)
