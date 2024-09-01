@@ -20,6 +20,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	{
+		// グリッド
 		iSprite := 0
 		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.GridElement).Size())
 		world.Manager.Join(
@@ -30,8 +31,9 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender := gameComponents.SpriteRender.Get(entities[i]).(*ec.SpriteRender)
-			return spriteRender.Depth < spriteRender.Depth
+			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*ec.SpriteRender)
+			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*ec.SpriteRender)
+			return spriteRender1.Depth < spriteRender2.Depth
 		})
 		for _, entity := range entities {
 			// タイル描画
@@ -46,6 +48,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		}
 	}
 	{
+		// 移動体
 		iSprite := 0
 		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.Position).Size())
 		world.Manager.Join(
@@ -56,8 +59,10 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender := gameComponents.SpriteRender.Get(entities[i]).(*ec.SpriteRender)
-			return spriteRender.Depth < spriteRender.Depth
+			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*ec.SpriteRender)
+			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*ec.SpriteRender)
+
+			return spriteRender1.Depth < spriteRender2.Depth
 		})
 		for _, entity := range entities {
 			// 座標描画
