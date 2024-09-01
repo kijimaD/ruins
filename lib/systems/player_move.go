@@ -15,37 +15,39 @@ import (
 func PlayerMoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
+	var playerEntity ecs.Entity
+	var playerPos *gc.Position // player position
+	world.Manager.Join(
+		gameComponents.Position,
+		gameComponents.Player,
+		gameComponents.SpriteRender,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		playerEntity = entity
+		playerPos = gameComponents.Position.Get(entity).(*gc.Position)
+	}))
+
 	const distance = 3
 	switch {
 	case ebiten.IsKeyPressed(ebiten.KeyW) && ebiten.IsKeyPressed(ebiten.KeyD):
-		tryMove(world, 45, distance)
+		tryMove(world, playerEntity, 45, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyW) && ebiten.IsKeyPressed(ebiten.KeyA):
-		tryMove(world, 135, distance)
+		tryMove(world, playerEntity, 135, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyS) && ebiten.IsKeyPressed(ebiten.KeyA):
-		tryMove(world, 225, distance)
+		tryMove(world, playerEntity, 225, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyS) && ebiten.IsKeyPressed(ebiten.KeyD):
-		tryMove(world, 315, distance)
+		tryMove(world, playerEntity, 315, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyD):
-		tryMove(world, 0, distance)
+		tryMove(world, playerEntity, 0, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyW):
-		tryMove(world, 90, distance)
+		tryMove(world, playerEntity, 90, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyA):
-		tryMove(world, 180, distance)
+		tryMove(world, playerEntity, 180, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyS):
-		tryMove(world, 270, distance)
+		tryMove(world, playerEntity, 270, distance)
 	}
 
 	{
 		// カメラの追従
-		var pos *gc.Position // player position
-		world.Manager.Join(
-			gameComponents.Position,
-			gameComponents.Player,
-			gameComponents.SpriteRender,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			pos = gameComponents.Position.Get(entity).(*gc.Position)
-		}))
-
 		var camera *gc.Camera
 		var cPos *gc.Position
 		world.Manager.Join(
@@ -55,8 +57,8 @@ func PlayerMoveSystem(world w.World) {
 			camera = gameComponents.Camera.Get(entity).(*gc.Camera)
 			cPos = gameComponents.Position.Get(entity).(*gc.Position)
 		}))
-		cPos.X = pos.X
-		cPos.Y = pos.Y
+		cPos.X = playerPos.X
+		cPos.Y = playerPos.Y
 
 		// ズーム率変更
 		// 参考: https://ebitengine.org/ja/examples/isometric.html
@@ -93,19 +95,11 @@ func PlayerMoveSystem(world w.World) {
 }
 
 // 角度と距離を指定して相対移動させる
-func tryMove(world w.World, angle float64, distance float64) {
+func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	var pos *gc.Position // player position
-	var spriteRender *ec.SpriteRender
-	world.Manager.Join(
-		gameComponents.Position,
-		gameComponents.Player,
-		gameComponents.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos = gameComponents.Position.Get(entity).(*gc.Position)
-		spriteRender = gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-	}))
+	pos := gameComponents.Position.Get(entity).(*gc.Position) // player pos
+	spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 
 	originalX := pos.X
 	originalY := pos.Y
