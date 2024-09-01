@@ -12,7 +12,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func MoveSystem(world w.World) {
+func PlayerMoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	var pos *gc.Position
