@@ -10,6 +10,7 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 )
 
+// FIXME: spawner package との使い分けがよくわからない
 // フィールド上に表示される床を生成する
 func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]

@@ -5,16 +5,22 @@ import (
 	"log"
 
 	"github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/loader"
+	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 地図上のタイルを作る元になる概念の集合体
+// 階層のタイルを作る元になる概念の集合体
 type BuilderMap struct {
-	Level     loader.Level
-	Tiles     []Tile // フロアを構成するタイル群。長さはステージの大きさで決まる
-	Rooms     []Rect
+	// 階層情報
+	Level resources.Level
+	// 階層を構成するタイル群。長さはステージの大きさで決まる
+	Tiles []Tile
+	// 部屋群。部屋は長方形の移動可能な空間のことをいう。
+	// 部屋はタイルの集合体である
+	Rooms []Rect
+	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
+	// 廊下はタイルの集合体である
 	Corridors [][]int
 }
 
@@ -96,7 +102,7 @@ func NewBuilderChain(width components.Row, height components.Col) *BuilderChain 
 		Starter:  nil,
 		Builders: []MetaMapBuilder{},
 		BuildData: BuilderMap{
-			Level: loader.Level{
+			Level: resources.Level{
 				TileWidth:  components.Row(width),
 				TileHeight: components.Col(height),
 				TileSize:   consts.TileSize,
