@@ -25,7 +25,7 @@ jobs:
           go install golang.org/x/tools/cmd/godoc@latest
           $(go env GOPATH)/bin/godoc -http=localhost:8888 & \
           sleep 30
-          wget -r -np -nv -N -E -p -k -e robots=off --reject-regex="png" "http://localhost:8888/pkg/github.com/Msksgm/generate-static-godoc-and-deploy-github-pages-sample/"
+          wget -r -np -nv -N -E -p -k -e robots=off --reject-regex="png" "http://localhost:8888/pkg/github.com/kijimaD/ruins/"
           pkill godoc
           mv localhost:8888/ ./wasm/godoc/
 
