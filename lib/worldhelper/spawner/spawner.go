@@ -1,6 +1,7 @@
 package spawner
 
 import (
+	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -8,7 +9,6 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	gloader "github.com/kijimaD/ruins/lib/loader"
 )
 
 // ================
@@ -19,7 +19,7 @@ import (
 func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+	componentList.Game = append(componentList.Game, components.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -35,7 +35,7 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+	componentList.Game = append(componentList.Game, components.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -55,7 +55,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+	componentList.Game = append(componentList.Game, components.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -74,7 +74,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, gloader.GameComponentList{
+	componentList.Game = append(componentList.Game, components.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -95,7 +95,7 @@ func SpawnPlayer(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		componentList.Game = append(componentList.Game, components.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Player:   &gc.Player{},
 			SpriteRender: &ec.SpriteRender{
@@ -109,7 +109,7 @@ func SpawnPlayer(world w.World, x gc.Pixel, y gc.Pixel) {
 	// カメラ
 	{
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		componentList.Game = append(componentList.Game, components.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Camera:   &gc.Camera{Scale: 0.1, ScaleTo: 1},
 		})
@@ -123,7 +123,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, gloader.GameComponentList{
+		componentList.Game = append(componentList.Game, components.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			SpriteRender: &ec.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,

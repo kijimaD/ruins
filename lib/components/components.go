@@ -1,8 +1,39 @@
 package components
 
 import (
+	ec "github.com/kijimaD/ruins/lib/engine/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
+
+type GameComponentList struct {
+	GridElement      *GridElement
+	Player           *Player
+	Camera           *Camera
+	Warp             *Warp
+	Item             *Item
+	Name             *Name
+	Description      *Description
+	InBackpack       *InBackpack
+	Equipped         *Equipped
+	Consumable       *Consumable
+	InParty          *InParty
+	Member           *Member
+	Pools            *Pools
+	ProvidesHealing  *ProvidesHealing
+	InflictsDamage   *InflictsDamage
+	Attack           *Attack
+	Material         *Material
+	Recipe           *Recipe
+	Wearable         *Wearable
+	Attributes       *Attributes
+	EquipmentChanged *EquipmentChanged
+	Card             *Card
+
+	Position     *Position
+	SpriteRender *ec.SpriteRender
+	BlockView    *BlockView
+	BlockPass    *BlockPass
+}
 
 type Components struct {
 	Player           *ecs.NullComponent
