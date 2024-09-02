@@ -11,6 +11,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
+	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -18,7 +19,6 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/spawner"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 )
@@ -72,30 +72,30 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 func RunTestGame(state states.State, outputPath string) {
 	world := game.InitWorld(960, 720)
 
-	spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
-	armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "ルビー原石", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	ishihara := spawner.SpawnMember(world, "イシハラ", true)
-	spawner.SpawnMember(world, "シラセ", true)
-	spawner.SpawnMember(world, "ヒラヤマ", true)
-	spawner.SpawnAllMaterials(world)
+	resources.SpawnItem(world, "木刀", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
+	armor := resources.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "ルビー原石", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
+	resources.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
+	ishihara := resources.SpawnMember(world, "イシハラ", true)
+	resources.SpawnMember(world, "シラセ", true)
+	resources.SpawnMember(world, "ヒラヤマ", true)
+	resources.SpawnAllMaterials(world)
 	material.PlusAmount("鉄", 40, world)
 	material.PlusAmount("鉄くず", 4, world)
 	material.PlusAmount("緑ハーブ", 2, world)
 	material.PlusAmount("フェライトコア", 30, world)
-	spawner.SpawnAllRecipes(world)
+	resources.SpawnAllRecipes(world)
 	equips.Equip(world, armor, ishihara, gc.EquipmentSlotZero)
 
 	_ = gs.EquipmentChangedSystem(world)
