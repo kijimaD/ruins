@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>resources - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="../../../../../../../lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="../../../../../../../lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.20.14";</script>
+<script src="../../../../../../../lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8888/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8888/pkg/">GoDoc</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8888/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package resources
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/kijimaD/ruins/lib/engine/resources"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+			
+				
+				<dd><a href="index.html#Action">type Action</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Axis">type Axis</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Axis.UnmarshalTOML">func (a *Axis) UnmarshalTOML(i interface{}) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Button">type Button</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Button.UnmarshalTOML">func (b *Button) UnmarshalTOML(i interface{}) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ControllerAxis">type ControllerAxis</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ControllerButton">type ControllerButton</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ControllerButton.UnmarshalTOML">func (b *ControllerButton) UnmarshalTOML(i interface{}) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Controls">type Controls</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Emulated">type Emulated</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Font">type Font</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Font.UnmarshalTOML">func (f *Font) UnmarshalTOML(i interface{}) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#InputHandler">type InputHandler</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Key">type Key</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Key.UnmarshalText">func (k *Key) UnmarshalText(text []byte) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MouseAxis">type MouseAxis</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#MouseButton">type MouseButton</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MouseButton.UnmarshalText">func (b *MouseButton) UnmarshalText(text []byte) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Resources">type Resources</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InitResources">func InitResources() *Resources</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ScreenDimensions">type ScreenDimensions</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go">controlls.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/dimensions.go">dimensions.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go">font.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go">lib.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+		
+		
+			
+			
+			<h2 id="Action">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=2680:2901#L105">Action</a>
+				<a class="permalink" href="index.html#Action">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Action contains buttons combinations with settings
+
+			<pre>type Action struct {
+<span id="Action.Combinations"></span>    <span class="comment">// Combinations contains buttons combinations</span>
+    Combinations [][]<a href="index.html#Button">Button</a>
+<span id="Action.Once"></span>    <span class="comment">// Once determines if the action should be triggered every frame when the button is pressed (default) or only once</span>
+    Once <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Axis">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=2402:2441#L93">Axis</a>
+				<a class="permalink" href="index.html#Axis">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Axis can be an emulated axis, a gamepad axis or a mouse axis
+
+			<pre>type Axis struct {
+<span id="Axis.Value"></span>    Value interface{}
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Axis.UnmarshalTOML">func (*Axis) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=2498:2547#L98">UnmarshalTOML</a>
+					<a class="permalink" href="index.html#Axis.UnmarshalTOML">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (a *<a href="index.html#Axis">Axis</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalTOML fills structure fields from TOML data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Button">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=1642:1683#L56">Button</a>
+				<a class="permalink" href="index.html#Button">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Button can be a US keyboard key, a mouse button or a gamepad button
+
+			<pre>type Button struct {
+<span id="Button.Value"></span>    Value interface{}
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Button.UnmarshalTOML">func (*Button) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=1740:1791#L61">UnmarshalTOML</a>
+					<a class="permalink" href="index.html#Button.UnmarshalTOML">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#Button">Button</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalTOML fills structure fields from TOML data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ControllerAxis">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=1990:2113#L74">ControllerAxis</a>
+				<a class="permalink" href="index.html#ControllerAxis">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ControllerAxis is a gamepad axis
+
+			<pre>type ControllerAxis struct {
+<span id="ControllerAxis.ID"></span>    ID       ebiten.<a href="index.html#GamepadID">GamepadID</a>
+<span id="ControllerAxis.Axis"></span>    Axis     <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="ControllerAxis.Invert"></span>    Invert   <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+<span id="ControllerAxis.DeadZone"></span>    DeadZone <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> `toml:&#34;dead_zone&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ControllerButton">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=899:999#L33">ControllerButton</a>
+				<a class="permalink" href="index.html#ControllerButton">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ControllerButton is a gamepad button
+
+			<pre>type ControllerButton struct {
+<span id="ControllerButton.ID"></span>    ID            ebiten.<a href="index.html#GamepadID">GamepadID</a>
+<span id="ControllerButton.GamepadButton"></span>    GamepadButton ebiten.<a href="index.html#GamepadButton">GamepadButton</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ControllerButton.UnmarshalTOML">func (*ControllerButton) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=1056:1117#L39">UnmarshalTOML</a>
+					<a class="permalink" href="index.html#ControllerButton.UnmarshalTOML">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#ControllerButton">ControllerButton</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalTOML fills structure fields from TOML data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Controls">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=2939:3170#L113">Controls</a>
+				<a class="permalink" href="index.html#Controls">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Controls contains input controls
+
+			<pre>type Controls struct {
+<span id="Controls.Axes"></span>    <span class="comment">// Axes contains axis controls, used for inputs represented by a float value from -1 to 1</span>
+    Axes map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Axis">Axis</a>
+<span id="Controls.Actions"></span>    <span class="comment">// Actions contains buttons combinations, used for general inputs</span>
+    Actions map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Action">Action</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Emulated">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=1904:1952#L68">Emulated</a>
+				<a class="permalink" href="index.html#Emulated">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Emulated is an emulated axis
+
+			<pre>type Emulated struct {
+<span id="Emulated.Pos"></span>    Pos <a href="index.html#Button">Button</a>
+<span id="Emulated.Neg"></span>    Neg <a href="index.html#Button">Button</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Font">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go?s=177:218#L3">Font</a>
+				<a class="permalink" href="index.html#Font">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Font structure
+
+			<pre>type Font struct {
+<span id="Font.Font"></span>    Font *<a href="http://localhost:8888/pkg/github.com/golang/freetype/truetype/">truetype</a>.<a href="http://localhost:8888/pkg/github.com/golang/freetype/truetype/#Font">Font</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Font.UnmarshalTOML">func (*Font) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go?s=275:324#L8">UnmarshalTOML</a>
+					<a class="permalink" href="index.html#Font.UnmarshalTOML">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f *<a href="index.html#Font">Font</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalTOML fills structure fields from TOML data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="InputHandler">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=3263:3412#L121">InputHandler</a>
+				<a class="permalink" href="index.html#InputHandler">&#xb6;</a>
+				
+				
+			</h2>
+			<p>InputHandler contains input axis values and actions corresponding to specified controls
+
+			<pre>type InputHandler struct {
+<span id="InputHandler.Axes"></span>    <span class="comment">// Axes contains input axis values</span>
+    Axes map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+<span id="InputHandler.Actions"></span>    <span class="comment">// Actions contains input actions</span>
+    Actions map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Key">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=201:236#L5">Key</a>
+				<a class="permalink" href="index.html#Key">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Key is a US keyboard key
+
+			<pre>type Key struct {
+<span id="Key.Key"></span>    Key ebiten.<a href="index.html#Key">Key</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Key.UnmarshalText">func (*Key) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=293:339#L10">UnmarshalText</a>
+					<a class="permalink" href="index.html#Key.UnmarshalText">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (k *<a href="index.html#Key">Key</a>) UnmarshalText(text []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalText fills structure fields from text data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MouseAxis">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=2144:2179#L82">MouseAxis</a>
+				<a class="permalink" href="index.html#MouseAxis">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MouseAxis is a mouse axis
+
+			<pre>type MouseAxis struct {
+<span id="MouseAxis.Axis"></span>    Axis <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="MouseButton">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=510:569#L19">MouseButton</a>
+				<a class="permalink" href="index.html#MouseButton">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MouseButton is a mouse button
+
+			<pre>type MouseButton struct {
+<span id="MouseButton.MouseButton"></span>    MouseButton ebiten.<a href="index.html#MouseButton">MouseButton</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MouseButton.UnmarshalText">func (*MouseButton) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controlls.go?s=626:680#L24">UnmarshalText</a>
+					<a class="permalink" href="index.html#MouseButton.UnmarshalText">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#MouseButton">MouseButton</a>) UnmarshalText(text []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalText fills structure fields from text data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Resources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=217:633#L1">Resources</a>
+				<a class="permalink" href="index.html#Resources">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Resources contains references to data not related to any entity
+
+			<pre>type Resources struct {
+<span id="Resources.ScreenDimensions"></span>    ScreenDimensions *<a href="index.html#ScreenDimensions">ScreenDimensions</a>
+<span id="Resources.Controls"></span>    Controls         *<a href="index.html#Controls">Controls</a>
+<span id="Resources.InputHandler"></span>    InputHandler     *<a href="index.html#InputHandler">InputHandler</a>
+<span id="Resources.SpriteSheets"></span>    SpriteSheets     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>
+<span id="Resources.Fonts"></span>    Fonts            *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Font">Font</a>
+<span id="Resources.DefaultFaces"></span>    DefaultFaces     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/golang.org/x/image/font/">font</a>.<a href="http://localhost:8888/pkg/golang.org/x/image/font/#Face">Face</a>
+<span id="Resources.AudioContext"></span>    AudioContext     *<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/">audio</a>.<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/#Context">Context</a>
+<span id="Resources.AudioPlayers"></span>    AudioPlayers     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]*<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/">audio</a>.<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/#Player">Player</a>
+<span id="Resources.Prefabs"></span>    Prefabs          interface{}
+<span id="Resources.Game"></span>    Game             interface{}
+<span id="Resources.RawMaster"></span>    RawMaster        interface{}
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="InitResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=674:705#L15">InitResources</a>
+					<a class="permalink" href="index.html#InitResources">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func InitResources() *<a href="index.html#Resources">Resources</a></pre>
+				<p>InitResources initializes resources
+
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="ScreenDimensions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/dimensions.go?s=74:130#L1">ScreenDimensions</a>
+				<a class="permalink" href="index.html#ScreenDimensions">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ScreenDimensions contains current screen dimensions
+
+			<pre>type ScreenDimensions struct {
+<span id="ScreenDimensions.Width"></span>    Width  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="ScreenDimensions.Height"></span>    Height <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.20.14.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8888/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

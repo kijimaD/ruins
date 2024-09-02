@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>raw - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="../../../../../../lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.20.14";</script>
+<script src="../../../../../../lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8888/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8888/pkg/">GoDoc</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8888/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package raw
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/kijimaD/ruins/lib/raw"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
+			
+			
+			
+				
+				<dd><a href="index.html#Attack">type Attack</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Attributes">type Attributes</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Card">type Card</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Consumable">type Consumable</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#EquipBonus">type EquipBonus</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Item">type Item</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Material">type Material</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Member">type Member</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ProvidesHealing">type ProvidesHealing</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#RawMaster">type RawMaster</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Load">func Load(entityMetadataContent string) RawMaster</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#LoadFromFile">func LoadFromFile(path string) RawMaster</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateItem">func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.GameComponentList</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMaterial">func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) gloader.GameComponentList</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMember">func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameComponentList</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateRecipe">func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Raws">type Raws</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Recipe">type Recipe</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#RecipeInput">type RecipeInput</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#SpawnType">type SpawnType</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ValueType">type ValueType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ValueType.Valid">func (enum ValueType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Wearable">type Wearable</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go">enum.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/opts.go">opts.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go">raw.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				
+				<pre>var <span id="ErrInvalidEnumType">ErrInvalidEnumType</span> = <a href="http://localhost:8888/pkg/github.com/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/github.com/pkg/errors/#New">New</a>(&#34;enumに無効な値が指定された&#34;)</pre>
+			
+		
+		
+		
+			
+			
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1297:1514#L49">Attack</a>
+				<a class="permalink" href="index.html#Attack">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Attack struct {
+<span id="Attack.Accuracy"></span>    Accuracy       <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 命中率</span>
+<span id="Attack.Damage"></span>    Damage         <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 攻撃力</span>
+<span id="Attack.AttackCount"></span>    AttackCount    <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 攻撃回数</span>
+<span id="Attack.Element"></span>    Element        <a href="http://localhost:8888/pkg/builtin/#string">string</a> <span class="comment">// 攻撃属性</span>
+<span id="Attack.AttackCategory"></span>    AttackCategory <a href="http://localhost:8888/pkg/builtin/#string">string</a> <span class="comment">// 武器カテゴリ</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1846:1962#L80">Attributes</a>
+				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Attributes struct {
+<span id="Attributes.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Attributes.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Attributes.Sensation"></span>    Sensation <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Attributes.Dexterity"></span>    Dexterity <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Attributes.Agility"></span>    Agility   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Attributes.Defense"></span>    Defense   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1212:1295#L43">Card</a>
+				<a class="permalink" href="index.html#Card">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Card struct {
+<span id="Card.Cost"></span>    Cost          <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Card.TargetFaction"></span>    TargetFaction <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Card.TargetNum"></span>    TargetNum     <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1118:1210#L37">Consumable</a>
+				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Consumable struct {
+<span id="Consumable.UsableScene"></span>    UsableScene   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Consumable.TargetFaction"></span>    TargetFaction <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Consumable.TargetNum"></span>    TargetNum     <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1591:1692#L62">EquipBonus</a>
+				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type EquipBonus struct {
+<span id="EquipBonus.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Sensation"></span>    Sensation <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Dexterity"></span>    Dexterity <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Agility"></span>    Agility   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=620:1028#L19">Item</a>
+				<a class="permalink" href="index.html#Item">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Item struct {
+<span id="Item.Name"></span>    Name            <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Item.Description"></span>    Description     <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Item.InflictsDamage"></span>    InflictsDamage  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Item.Consumable"></span>    Consumable      *<a href="index.html#Consumable">Consumable</a>      `toml:&#34;consumable&#34;`
+<span id="Item.ProvidesHealing"></span>    ProvidesHealing *<a href="index.html#ProvidesHealing">ProvidesHealing</a> `toml:&#34;provides_healing&#34;`
+<span id="Item.Wearable"></span>    Wearable        *<a href="index.html#Wearable">Wearable</a>        `toml:&#34;wearable&#34;`
+<span id="Item.EquipBonus"></span>    EquipBonus      *<a href="index.html#EquipBonus">EquipBonus</a>      `toml:&#34;equip_bonus&#34;`
+<span id="Item.Card"></span>    Card            *<a href="index.html#Card">Card</a>            `toml:&#34;card&#34;`
+<span id="Item.Attack"></span>    Attack          *<a href="index.html#Attack">Attack</a>          `toml:&#34;attack&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1694:1758#L70">Material</a>
+				<a class="permalink" href="index.html#Material">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Material struct {
+<span id="Material.Name"></span>    Name        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Material.Description"></span>    Description <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1760:1844#L75">Member</a>
+				<a class="permalink" href="index.html#Member">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Member struct {
+<span id="Member.Name"></span>    Name       <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Member.Attributes"></span>    Attributes <a href="index.html#Attributes">Attributes</a> `toml:&#34;attributes&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1030:1116#L31">ProvidesHealing</a>
+				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type ProvidesHealing struct {
+<span id="ProvidesHealing.ValueType"></span>    ValueType <a href="index.html#ValueType">ValueType</a>
+<span id="ProvidesHealing.Amount"></span>    Amount    <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="ProvidesHealing.Ratio"></span>    Ratio     <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="RawMaster">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=279:444#L4">RawMaster</a>
+				<a class="permalink" href="index.html#RawMaster">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type RawMaster struct {
+<span id="RawMaster.Raws"></span>    Raws          <a href="index.html#Raws">Raws</a>
+<span id="RawMaster.ItemIndex"></span>    ItemIndex     map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="RawMaster.MaterialIndex"></span>    MaterialIndex map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="RawMaster.RecipeIndex"></span>    RecipeIndex   map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="RawMaster.MemberIndex"></span>    MemberIndex   map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2296:2345#L110">Load</a>
+					<a class="permalink" href="index.html#Load">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func Load(entityMetadataContent <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#RawMaster">RawMaster</a></pre>
+				
+				
+				
+			
+				
+				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2141:2181#L101">LoadFromFile</a>
+					<a class="permalink" href="index.html#LoadFromFile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func LoadFromFile(path <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#RawMaster">RawMaster</a></pre>
+				
+				
+				
+			
+
+			
+				
+				<h3 id="RawMaster.GenerateItem">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2904:2997#L134">GenerateItem</a>
+					<a class="permalink" href="index.html#RawMaster.GenerateItem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, spawnType <a href="index.html#SpawnType">SpawnType</a>) <a href="../loader/index.html">gloader</a>.<a href="../loader/index.html#GameComponentList">GameComponentList</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RawMaster.GenerateMaterial">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=6113:6222#L243">GenerateMaterial</a>
+					<a class="permalink" href="index.html#RawMaster.GenerateMaterial">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, spawnType <a href="index.html#SpawnType">SpawnType</a>) <a href="../loader/index.html">gloader</a>.<a href="../loader/index.html#GameComponentList">GameComponentList</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RawMaster.GenerateMember">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=7572:7660#L292">GenerateMember</a>
+					<a class="permalink" href="index.html#RawMaster.GenerateMember">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateMember(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, inParty <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) <a href="../loader/index.html">gloader</a>.<a href="../loader/index.html#GameComponentList">GameComponentList</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RawMaster.GenerateRecipe">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=6653:6727#L260">GenerateRecipe</a>
+					<a class="permalink" href="index.html#RawMaster.GenerateRecipe">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateRecipe(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../loader/index.html">gloader</a>.<a href="../loader/index.html#GameComponentList">GameComponentList</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=446:618#L12">Raws</a>
+				<a class="permalink" href="index.html#Raws">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Raws struct {
+<span id="Raws.Items"></span>    Items     []<a href="index.html#Item">Item</a>     `toml:&#34;item&#34;`
+<span id="Raws.Materials"></span>    Materials []<a href="index.html#Material">Material</a> `toml:&#34;material&#34;`
+<span id="Raws.Recipes"></span>    Recipes   []<a href="index.html#Recipe">Recipe</a>   `toml:&#34;recipe&#34;`
+<span id="Raws.Members"></span>    Members   []<a href="index.html#Member">Member</a>   `toml:&#34;member&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1977:2052#L90">Recipe</a>
+				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
+				
+				
+			</h2>
+			<p>レシピ
+
+			<pre>type Recipe struct {
+<span id="Recipe.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Recipe.Inputs"></span>    Inputs []<a href="index.html#RecipeInput">RecipeInput</a> `toml:&#34;inputs&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2085:2139#L96">RecipeInput</a>
+				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
+				
+				
+			</h2>
+			<p>合成の元になる素材
+
+			<pre>type RecipeInput struct {
+<span id="RecipeInput.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="RecipeInput.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="SpawnType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/opts.go?s=13:34#L1">SpawnType</a>
+				<a class="permalink" href="index.html#SpawnType">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type SpawnType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+				
+				<pre>var (
+    <span id="SpawnInBackpack">SpawnInBackpack</span> <a href="index.html#SpawnType">SpawnType</a> = &#34;IN_BACKPACK&#34;
+)</pre>
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ValueType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go?s=160:181#L1">ValueType</a>
+				<a class="permalink" href="index.html#ValueType">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type ValueType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+				
+				<pre>const (
+    <span id="PercentageType">PercentageType</span> <a href="index.html#ValueType">ValueType</a> = &#34;PERCENTAGE&#34;
+    <span id="NumeralType">NumeralType</span>              = &#34;NUMERAL&#34;
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ValueType.Valid">func (ValueType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go?s=273:308#L7">Valid</a>
+					<a class="permalink" href="index.html#ValueType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#ValueType">ValueType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1516:1589#L57">Wearable</a>
+				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Wearable struct {
+<span id="Wearable.Defense"></span>    Defense           <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Wearable.EquipmentCategory"></span>    EquipmentCategory <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.20.14.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8888/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

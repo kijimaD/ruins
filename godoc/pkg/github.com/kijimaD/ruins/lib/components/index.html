@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>components - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="../../../../../../lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.20.14";</script>
+<script src="../../../../../../lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8888/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8888/pkg/">GoDoc</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8888/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package components
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/kijimaD/ruins/lib/components"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
+			
+			
+			
+				
+				<dd><a href="index.html#Amounter">type Amounter</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Attack">type Attack</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#AttackType">type AttackType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AttackType.String">func (at AttackType) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AttackType.Valid">func (enum AttackType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Attribute">type Attribute</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Attributes">type Attributes</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#BlockPass">type BlockPass</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#BlockView">type BlockView</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Camera">type Camera</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Card">type Card</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Col">type Col</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Components">type Components</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Consumable">type Consumable</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Description">type Description</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ElementType">type ElementType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ElementType.String">func (et ElementType) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ElementType.Valid">func (enum ElementType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#EquipBonus">type EquipBonus</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#EquipmentChanged">type EquipmentChanged</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#EquipmentSlotNumber">type EquipmentSlotNumber</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#EquipmentType">type EquipmentType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipmentType.String">func (es EquipmentType) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipmentType.Valid">func (enum EquipmentType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Equipped">type Equipped</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#GridElement">type GridElement</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#InBackpack">type InBackpack</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#InParty">type InParty</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#InflictsDamage">type InflictsDamage</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Item">type Item</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Material">type Material</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Member">type Member</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Name">type Name</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#NumeralAmount">type NumeralAmount</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NumeralAmount.Amount">func (na NumeralAmount) Amount()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NumeralAmount.Calc">func (na NumeralAmount) Calc() int</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Player">type Player</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Pool">type Pool</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Pools">type Pools</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Position">type Position</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ProvidesHealing">type ProvidesHealing</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#RatioAmount">type RatioAmount</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RatioAmount.Amount">func (ra RatioAmount) Amount()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RatioAmount.Calc">func (ra RatioAmount) Calc(base int) int</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Recipe">type Recipe</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#RecipeInput">type RecipeInput</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Renderable">type Renderable</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Row">type Row</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#TargetFactionType">type TargetFactionType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetFactionType.Valid">func (enum TargetFactionType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetNumType">type TargetNumType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetNumType.Valid">func (enum TargetNumType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetType">type TargetType</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#UsableSceneType">type UsableSceneType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#UsableSceneType.Valid">func (enum UsableSceneType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Warp">type Warp</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Wearable">type Wearable</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go">components.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go">enum.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go">field.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go">types.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span id="WarpModeNext">WarpModeNext</span>   = warpMode(&#34;NEXT&#34;)
+    <span id="WarpModeEscape">WarpModeEscape</span> = warpMode(&#34;ESCAPE&#34;)
+)</pre>
+			
+				
+				<pre>const (
+    <span id="TargetSingle">TargetSingle</span> = <a href="index.html#TargetNumType">TargetNumType</a>(&#34;SINGLE&#34;)
+    <span id="TargetAll">TargetAll</span>    = <a href="index.html#TargetNumType">TargetNumType</a>(&#34;ALL&#34;)
+)</pre>
+			
+				
+				<pre>const (
+    <span id="TargetFactionAlly">TargetFactionAlly</span>  = <a href="index.html#TargetFactionType">TargetFactionType</a>(&#34;ALLY&#34;)  <span class="comment">// 味方</span>
+    <span id="TargetFactionEnemy">TargetFactionEnemy</span> = <a href="index.html#TargetFactionType">TargetFactionType</a>(&#34;ENEMY&#34;) <span class="comment">// 敵</span>
+    <span id="TargetFactionCard">TargetFactionCard</span>  = <a href="index.html#TargetFactionType">TargetFactionType</a>(&#34;CARD&#34;)  <span class="comment">// カード</span>
+    <span id="TargetFactionNone">TargetFactionNone</span>  = <a href="index.html#TargetFactionType">TargetFactionType</a>(&#34;NONE&#34;)  <span class="comment">// なし</span>
+)</pre>
+			
+				
+				<pre>const (
+    <span id="UsableSceneBattle">UsableSceneBattle</span> = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;BATTLE&#34;) <span class="comment">// 戦闘</span>
+    <span id="UsableSceneField">UsableSceneField</span>  = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;FIELD&#34;)  <span class="comment">// フィールド</span>
+    <span id="UsableSceneAny">UsableSceneAny</span>    = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;ANY&#34;)    <span class="comment">// いつでも</span>
+)</pre>
+			
+				
+				<pre>const (
+    <span id="AttackSword">AttackSword</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;SWORD&#34;)   <span class="comment">// 刀剣</span>
+    <span id="AttackSpear">AttackSpear</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;SPEAR&#34;)   <span class="comment">// 長物</span>
+    <span id="AttackHandgun">AttackHandgun</span> = <a href="index.html#AttackType">AttackType</a>(&#34;HANDGUN&#34;) <span class="comment">// 拳銃</span>
+    <span id="AttackRifle">AttackRifle</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;RIFLE&#34;)   <span class="comment">// 小銃</span>
+)</pre>
+			
+				
+				<pre>const (
+    <span id="EquipmentHead">EquipmentHead</span>    = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;HEAD&#34;)    <span class="comment">// 頭部</span>
+    <span id="EquipmentTorso">EquipmentTorso</span>   = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;TORSO&#34;)   <span class="comment">// 胴体</span>
+    <span id="EquipmentLegs">EquipmentLegs</span>    = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;LEGS&#34;)    <span class="comment">// 脚</span>
+    <span id="EquipmentJewelry">EquipmentJewelry</span> = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;JEWELRY&#34;) <span class="comment">// アクセサリ</span>
+)</pre>
+			
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				
+				<pre>var <span id="ErrInvalidEnumType">ErrInvalidEnumType</span> = <a href="http://localhost:8888/pkg/github.com/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/github.com/pkg/errors/#New">New</a>(&#34;enumに無効な値が指定された&#34;)</pre>
+			
+		
+		
+		
+			
+			
+			<h2 id="Amounter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=879:916#L32">Amounter</a>
+				<a class="permalink" href="index.html#Amounter">&#xb6;</a>
+				
+				
+			</h2>
+			<p>================
+
+			<pre>type Amounter interface {
+    Amount()
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4309:4545#L139">Attack</a>
+				<a class="permalink" href="index.html#Attack">&#xb6;</a>
+				
+				
+			</h2>
+			<p>攻撃の性質。攻撃毎にこの数値と作用対象のステータスを加味して、最終的なダメージ量を決定する
+
+			<pre>type Attack struct {
+<span id="Attack.Accuracy"></span>    Accuracy       <a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// 命中率</span>
+<span id="Attack.Damage"></span>    Damage         <a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// 攻撃力</span>
+<span id="Attack.AttackCount"></span>    AttackCount    <a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// 攻撃回数</span>
+<span id="Attack.Element"></span>    Element        <a href="index.html#ElementType">ElementType</a> <span class="comment">// 攻撃属性</span>
+<span id="Attack.AttackCategory"></span>    AttackCategory <a href="index.html#AttackType">AttackType</a>  <span class="comment">// 攻撃種別</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="AttackType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1699:1721#L75">AttackType</a>
+				<a class="permalink" href="index.html#AttackType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>武器種別
+種別によって適用する計算式が異なる
+
+			<pre>type AttackType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="AttackType.String">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2121:2157#L93">String</a>
+					<a class="permalink" href="index.html#AttackType.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (at <a href="index.html#AttackType">AttackType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="AttackType.Valid">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1930:1966#L84">Valid</a>
+					<a class="permalink" href="index.html#AttackType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#AttackType">AttackType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Attribute">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=191:369#L1">Attribute</a>
+				<a class="permalink" href="index.html#Attribute">&#xb6;</a>
+				
+				
+			</h2>
+			<p>変動するパラメータ値
+
+			<pre>type Attribute struct {
+<span id="Attribute.Base"></span>    Base     <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 固有の値</span>
+<span id="Attribute.Modifier"></span>    Modifier <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 装備などで変動する値</span>
+<span id="Attribute.Total"></span>    Total    <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 足し合わせた現在値。算出される値のメモ</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2590:3091#L93">Attributes</a>
+				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
+				
+				
+			</h2>
+			<p>エンティティが持つステータス値。各種計算式で使う
+
+			<pre>type Attributes struct {
+<span id="Attributes.Vitality"></span>    Vitality  <a href="index.html#Attribute">Attribute</a> <span class="comment">// 体力。丈夫さ、持久力、しぶとさ。HPやSPに影響する</span>
+<span id="Attributes.Strength"></span>    Strength  <a href="index.html#Attribute">Attribute</a> <span class="comment">// 筋力。主に近接攻撃のダメージに影響する</span>
+<span id="Attributes.Sensation"></span>    Sensation <a href="index.html#Attribute">Attribute</a> <span class="comment">// 感覚。主に射撃攻撃のダメージに影響する</span>
+<span id="Attributes.Dexterity"></span>    Dexterity <a href="index.html#Attribute">Attribute</a> <span class="comment">// 器用。攻撃時の命中率に影響する</span>
+<span id="Attributes.Agility"></span>    Agility   <a href="index.html#Attribute">Attribute</a> <span class="comment">// 敏捷。回避率、行動の速さに影響する</span>
+<span id="Attributes.Defense"></span>    Defense   <a href="index.html#Attribute">Attribute</a> <span class="comment">// 防御。被弾ダメージを軽減させる</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="BlockPass">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=801:824#L25">BlockPass</a>
+				<a class="permalink" href="index.html#BlockPass">&#xb6;</a>
+				
+				
+			</h2>
+			<p>フィールド上で通過できない
+
+			<pre>type BlockPass struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="BlockView">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=866:889#L28">BlockView</a>
+				<a class="permalink" href="index.html#BlockView">&#xb6;</a>
+				
+				
+			</h2>
+			<p>フィールド上で視界を遮る
+
+			<pre>type BlockView struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1223:1279#L33">Camera</a>
+				<a class="permalink" href="index.html#Camera">&#xb6;</a>
+				
+				
+			</h2>
+			<p>カメラ
+
+			<pre>type Camera struct {
+<span id="Camera.Scale"></span>    Scale   <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+<span id="Camera.ScaleTo"></span>    ScaleTo <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4109:4168#L133">Card</a>
+				<a class="permalink" href="index.html#Card">&#xb6;</a>
+				
+				
+			</h2>
+			<p>カードは戦闘中に選択するコマンド
+攻撃、防御、回復など、人に影響を及ぼすものをアクションカードという
+アクションカードをターゲットとして効果を変容させるものをブーストカードという
+
+			<pre>type Card struct {
+<span id="Card.TargetType"></span>    TargetType <a href="index.html#TargetType">TargetType</a>
+<span id="Card.Cost"></span>    Cost       <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Col">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=744:756#L22">Col</a>
+				<a class="permalink" href="index.html#Col">&#xb6;</a>
+				
+				
+			</h2>
+			<p>タイルの縦位置。ピクセル数ではない
+
+			<pre>type Col <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=67:1091#L1">Components</a>
+				<a class="permalink" href="index.html#Components">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Components struct {
+<span id="Components.Player"></span>    Player           *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Camera"></span>    Camera           *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Wall"></span>    Wall             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Warp"></span>    Warp             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Item"></span>    Item             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Consumable"></span>    Consumable       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Name"></span>    Name             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Description"></span>    Description      *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.InBackpack"></span>    InBackpack       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.InParty"></span>    InParty          *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Equipped"></span>    Equipped         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Member"></span>    Member           *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Pools"></span>    Pools            *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.ProvidesHealing"></span>    ProvidesHealing  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.InflictsDamage"></span>    InflictsDamage   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Attack"></span>    Attack           *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Material"></span>    Material         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Recipe"></span>    Recipe           *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Wearable"></span>    Wearable         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Attributes"></span>    Attributes       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.EquipmentChanged"></span>    EquipmentChanged *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Card"></span>    Card             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+
+<span id="Components.Position"></span>    Position     *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.GridElement"></span>    GridElement  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.SpriteRender"></span>    SpriteRender *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.BlockView"></span>    BlockView    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.BlockPass"></span>    BlockPass    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1625:1704#L49">Consumable</a>
+				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
+				
+				
+			</h2>
+			<p>消耗品。一度使うとなくなる
+
+			<pre>type Consumable struct {
+<span id="Consumable.UsableScene"></span>    UsableScene <a href="index.html#UsableSceneType">UsableSceneType</a>
+<span id="Consumable.TargetType"></span>    TargetType  <a href="index.html#TargetType">TargetType</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1764:1811#L60">Description</a>
+				<a class="permalink" href="index.html#Description">&#xb6;</a>
+				
+				
+			</h2>
+			<p>説明
+
+			<pre>type Description struct {
+<span id="Description.Description"></span>    Description <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ElementType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3277:3300#L152">ElementType</a>
+				<a class="permalink" href="index.html#ElementType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>攻撃属性
+
+			<pre>type ElementType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+				
+				<pre>const (
+    <span id="ElementTypeNone">ElementTypeNone</span>    <a href="index.html#ElementType">ElementType</a> = &#34;NONE&#34;
+    <span id="ElementTypeFire">ElementTypeFire</span>    <a href="index.html#ElementType">ElementType</a> = &#34;FIRE&#34;
+    <span id="ElementTypeThunder">ElementTypeThunder</span> <a href="index.html#ElementType">ElementType</a> = &#34;THUNDER&#34;
+    <span id="ElementTypeChill">ElementTypeChill</span>   <a href="index.html#ElementType">ElementType</a> = &#34;CHILL&#34;
+    <span id="ElementTypePhoton">ElementTypePhoton</span>  <a href="index.html#ElementType">ElementType</a> = &#34;PHOTON&#34;
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ElementType.String">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3752:3789#L170">String</a>
+					<a class="permalink" href="index.html#ElementType.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (et <a href="index.html#ElementType">ElementType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ElementType.Valid">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3524:3561#L162">Valid</a>
+					<a class="permalink" href="index.html#ElementType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#ElementType">ElementType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=656:857#L19">EquipBonus</a>
+				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
+				
+				
+			</h2>
+			<p>装備品のオプショナルな性能。武器・防具で共通する
+
+			<pre>type EquipBonus struct {
+<span id="EquipBonus.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Sensation"></span>    Sensation <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Dexterity"></span>    Dexterity <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Agility"></span>    Agility   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3804:3834#L128">EquipmentChanged</a>
+				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
+				
+				
+			</h2>
+			<p>装備変更が行われたことを示すダーティーフラグ
+
+			<pre>type EquipmentChanged struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4146:4174#L192">EquipmentSlotNumber</a>
+				<a class="permalink" href="index.html#EquipmentSlotNumber">&#xb6;</a>
+				
+				
+			</h2>
+			<p>装備スロット番号
+
+			<pre>type EquipmentSlotNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				
+				<pre>const (
+    <span id="EquipmentSlotZero">EquipmentSlotZero</span> <a href="index.html#EquipmentSlotNumber">EquipmentSlotNumber</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span id="EquipmentSlotOne">EquipmentSlotOne</span>
+    <span id="EquipmentSlotTwo">EquipmentSlotTwo</span>
+    <span id="EquipmentSlotThree">EquipmentSlotThree</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="EquipmentType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2457:2482#L114">EquipmentType</a>
+				<a class="permalink" href="index.html#EquipmentType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>装備品種別
+
+			<pre>type EquipmentType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="EquipmentType.String">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2925:2964#L132">String</a>
+					<a class="permalink" href="index.html#EquipmentType.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (es <a href="index.html#EquipmentType">EquipmentType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipmentType.Valid">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2721:2760#L123">Valid</a>
+					<a class="permalink" href="index.html#EquipmentType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#EquipmentType">EquipmentType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Equipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1956:2041#L68">Equipped</a>
+				<a class="permalink" href="index.html#Equipped">&#xb6;</a>
+				
+				
+			</h2>
+			<p>キャラクタが装備している状態。InBackpackとは排反
+
+			<pre>type Equipped struct {
+<span id="Equipped.Owner"></span>    Owner         <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+<span id="Equipped.EquipmentSlot"></span>    EquipmentSlot <a href="index.html#EquipmentSlotNumber">EquipmentSlotNumber</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="GridElement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=573:618#L13">GridElement</a>
+				<a class="permalink" href="index.html#GridElement">&#xb6;</a>
+				
+				
+			</h2>
+			<p>フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
+スプライトはグリッドに沿って配置する
++----
+|   |
+|   |
+|   |
+-----
+
+			<pre>type GridElement struct {
+<span id="GridElement.Row"></span>    Row <a href="index.html#Row">Row</a>
+<span id="GridElement.Col"></span>    Col <a href="index.html#Col">Col</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="InBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1859:1883#L65">InBackpack</a>
+				<a class="permalink" href="index.html#InBackpack">&#xb6;</a>
+				
+				
+			</h2>
+			<p>インベントリに入っている状態
+
+			<pre>type InBackpack struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2371:2392#L81">InParty</a>
+				<a class="permalink" href="index.html#InParty">&#xb6;</a>
+				
+				
+			</h2>
+			<p>冒険パーティに参加している状態
+
+			<pre>type InParty struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3357:3399#L110">InflictsDamage</a>
+				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ダメージを与える性質
+直接的な数値が作用し、ステータスなどは考慮されない
+
+			<pre>type InflictsDamage struct {
+<span id="InflictsDamage.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1562:1580#L46">Item</a>
+				<a class="permalink" href="index.html#Item">&#xb6;</a>
+				
+				
+			</h2>
+			<p>キャラクターが保持できるもの
+装備品、カード、回復アイテム、売却アイテム
+
+			<pre>type Item struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3622:3658#L118">Material</a>
+				<a class="permalink" href="index.html#Material">&#xb6;</a>
+				
+				
+			</h2>
+			<p>合成素材
+アイテムとの違い:
+- 個々のインスタンスで性能の違いはなく、単に数量だけを見る
+- 複数の単位で扱うのでAmountを持つ。x3を合成で使ったりする
+
+			<pre>type Material struct {
+<span id="Material.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2434:2454#L84">Member</a>
+				<a class="permalink" href="index.html#Member">&#xb6;</a>
+				
+				
+			</h2>
+			<p>冒険に参加できるメンバー
+
+			<pre>type Member struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1719:1752#L55">Name</a>
+				<a class="permalink" href="index.html#Name">&#xb6;</a>
+				
+				
+			</h2>
+			<p>表示名
+
+			<pre>type Name struct {
+<span id="Name.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="NumeralAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1181:1223#L51">NumeralAmount</a>
+				<a class="permalink" href="index.html#NumeralAmount">&#xb6;</a>
+				
+				
+			</h2>
+			<p>絶対量指定
+
+			<pre>type NumeralAmount struct {
+<span id="NumeralAmount.Numeral"></span>    Numeral <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="NumeralAmount.Amount">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1225:1257#L55">Amount</a>
+					<a class="permalink" href="index.html#NumeralAmount.Amount">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (na <a href="index.html#NumeralAmount">NumeralAmount</a>) Amount()</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="NumeralAmount.Calc">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1261:1295#L56">Calc</a>
+					<a class="permalink" href="index.html#NumeralAmount.Calc">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (na <a href="index.html#NumeralAmount">NumeralAmount</a>) Calc() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1188:1208#L30">Player</a>
+				<a class="permalink" href="index.html#Player">&#xb6;</a>
+				
+				
+			</h2>
+			<p>フィールドで操作対象となる対象
+operatorとかのほうがよさそうか?
+
+			<pre>type Player struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Pool">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=78:155#L1">Pool</a>
+				<a class="permalink" href="index.html#Pool">&#xb6;</a>
+				
+				
+			</h2>
+			<p>最大値と現在値を持つようなパラメータ
+
+			<pre>type Pool struct {
+<span id="Pool.Max"></span>    Max     <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 計算式で算出される</span>
+<span id="Pool.Current"></span>    Current <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2456:2512#L86">Pools</a>
+				<a class="permalink" href="index.html#Pools">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type Pools struct {
+<span id="Pools.HP"></span>    HP    <a href="index.html#Pool">Pool</a>
+<span id="Pools.SP"></span>    SP    <a href="index.html#Pool">Pool</a>
+<span id="Pools.Level"></span>    Level <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Position">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=220:356#L1">Position</a>
+				<a class="permalink" href="index.html#Position">&#xb6;</a>
+				
+				
+			</h2>
+			<p>フィールド上に座標をもって存在する。移動体に対して使う
+スプライトはこの位置に中心を合わせて配置する
+-----
+|   |
+| + |
+|   |
+-----
+
+			<pre>type Position struct {
+<span id="Position.X"></span>    X     <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Position.Y"></span>    Y     <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Position.Angle"></span>    Angle <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 角度(ラジアン)。この角度分スプライトを回転させる</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3194:3242#L104">ProvidesHealing</a>
+				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
+				
+				
+			</h2>
+			<p>回復する性質
+直接的な数値が作用し、ステータスなどは考慮されない
+
+			<pre>type ProvidesHealing struct {
+<span id="ProvidesHealing.Amount"></span>    Amount <a href="index.html#Amounter">Amounter</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="RatioAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=966:1008#L39">RatioAmount</a>
+				<a class="permalink" href="index.html#RatioAmount">&#xb6;</a>
+				
+				
+			</h2>
+			<p>倍率指定
+
+			<pre>type RatioAmount struct {
+<span id="RatioAmount.Ratio"></span>    Ratio <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RatioAmount.Amount">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1010:1040#L43">Amount</a>
+					<a class="permalink" href="index.html#RatioAmount.Amount">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ra <a href="index.html#RatioAmount">RatioAmount</a>) Amount()</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RatioAmount.Calc">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1044:1084#L44">Calc</a>
+					<a class="permalink" href="index.html#RatioAmount.Calc">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ra <a href="index.html#RatioAmount">RatioAmount</a>) Calc(base <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3688:3732#L123">Recipe</a>
+				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
+				
+				
+			</h2>
+			<p>合成に必要な素材
+
+			<pre>type Recipe struct {
+<span id="Recipe.Inputs"></span>    Inputs []<a href="index.html#RecipeInput">RecipeInput</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=524:578#L13">RecipeInput</a>
+				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
+				
+				
+			</h2>
+			<p>合成の元になる素材
+
+			<pre>type RecipeInput struct {
+<span id="RecipeInput.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="RecipeInput.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Renderable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=931:955#L31">Renderable</a>
+				<a class="permalink" href="index.html#Renderable">&#xb6;</a>
+				
+				
+			</h2>
+			<p>フィールド上で描画できる
+
+			<pre>type Renderable struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Row">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=675:687#L19">Row</a>
+				<a class="permalink" href="index.html#Row">&#xb6;</a>
+				
+				
+			</h2>
+			<p>タイルの横位置。ピクセル数ではない
+
+			<pre>type Row <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="TargetFactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=663:692#L33">TargetFactionType</a>
+				<a class="permalink" href="index.html#TargetFactionType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ターゲットの種別
+
+			<pre>type TargetFactionType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TargetFactionType.Valid">func (TargetFactionType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=941:984#L42">Valid</a>
+					<a class="permalink" href="index.html#TargetFactionType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#TargetFactionType">TargetFactionType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="TargetNumType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=334:359#L14">TargetNumType</a>
+				<a class="permalink" href="index.html#TargetNumType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ターゲット数
+
+			<pre>type TargetNumType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TargetNumType.Valid">func (TargetNumType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=449:488#L21">Valid</a>
+					<a class="permalink" href="index.html#TargetNumType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#TargetNumType">TargetNumType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="TargetType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=387:491#L7">TargetType</a>
+				<a class="permalink" href="index.html#TargetType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>選択対象
+
+			<pre>type TargetType struct {
+<span id="TargetType.TargetFaction"></span>    TargetFaction <a href="index.html#TargetFactionType">TargetFactionType</a> <span class="comment">// 対象派閥</span>
+<span id="TargetType.TargetNum"></span>    TargetNum     <a href="index.html#TargetNumType">TargetNumType</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="UsableSceneType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1186:1213#L54">UsableSceneType</a>
+				<a class="permalink" href="index.html#UsableSceneType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>使えるシーン
+
+			<pre>type UsableSceneType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="UsableSceneType.Valid">func (UsableSceneType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1412:1453#L62">Valid</a>
+					<a class="permalink" href="index.html#UsableSceneType.Valid">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (enum <a href="index.html#UsableSceneType">UsableSceneType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1412:1447#L40">Warp</a>
+				<a class="permalink" href="index.html#Warp">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ワープパッド
+TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
+
+			<pre>type Warp struct {
+<span id="Warp.Mode"></span>    Mode warpMode
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2131:2320#L74">Wearable</a>
+				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
+				
+				
+			</h2>
+			<p>装備品。キャラクタが装備することでパラメータを変更できる
+
+			<pre>type Wearable struct {
+<span id="Wearable.Defense"></span>    Defense           <a href="http://localhost:8888/pkg/builtin/#int">int</a>           <span class="comment">// 防御力</span>
+<span id="Wearable.EquipmentCategory"></span>    EquipmentCategory <a href="index.html#EquipmentType">EquipmentType</a> <span class="comment">// 装備部位</span>
+<span id="Wearable.EquipBonus"></span>    EquipBonus        <a href="index.html#EquipBonus">EquipBonus</a>    <span class="comment">// ステータスへのボーナス</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.20.14.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8888/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

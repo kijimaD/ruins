@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>states - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="../../../../../../lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.20.14";</script>
+<script src="../../../../../../lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8888/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8888/pkg/">GoDoc</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8888/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package states
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/kijimaD/ruins/lib/states"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>拠点でのコマンド選択画面
+<p>ゲームの導入テキストを表示するステート
+
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+			
+				
+				<dd><a href="index.html#CraftMenuState">type CraftMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.Draw">func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.OnPause">func (st *CraftMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.OnResume">func (st *CraftMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.OnStart">func (st *CraftMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.OnStop">func (st *CraftMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.SetCategory">func (st *CraftMenuState) SetCategory(category ItemCategoryType)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.String">func (st CraftMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.Update">func (st *CraftMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DebugMenuState">type DebugMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.Draw">func (st *DebugMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnPause">func (st *DebugMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnResume">func (st *DebugMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnStart">func (st *DebugMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnStop">func (st *DebugMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.String">func (st DebugMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.Update">func (st *DebugMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DungeonMenuState">type DungeonMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.Draw">func (st *DungeonMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnPause">func (st *DungeonMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnResume">func (st *DungeonMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnStart">func (st *DungeonMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnStop">func (st *DungeonMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.String">func (st DungeonMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.Update">func (st *DungeonMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DungeonSelectState">type DungeonSelectState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.Draw">func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnPause">func (st *DungeonSelectState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnResume">func (st *DungeonSelectState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnStart">func (st *DungeonSelectState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnStop">func (st *DungeonSelectState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.String">func (st DungeonSelectState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.Update">func (st *DungeonSelectState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DungeonState">type DungeonState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.Draw">func (st *DungeonState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.OnPause">func (st *DungeonState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.OnResume">func (st *DungeonState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.OnStart">func (st *DungeonState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.OnStop">func (st *DungeonState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.String">func (st DungeonState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.Update">func (st *DungeonState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#EquipMenuState">type EquipMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.Draw">func (st *EquipMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.OnPause">func (st *EquipMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.OnResume">func (st *EquipMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.OnStart">func (st *EquipMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.OnStop">func (st *EquipMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.String">func (st EquipMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.Update">func (st *EquipMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#HomeMenuState">type HomeMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.Draw">func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnPause">func (st *HomeMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnResume">func (st *HomeMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnStart">func (st *HomeMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnStop">func (st *HomeMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.String">func (st HomeMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.Update">func (st *HomeMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#IntroState">type IntroState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.Draw">func (st *IntroState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.OnPause">func (st *IntroState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.OnResume">func (st *IntroState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.OnStart">func (st *IntroState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.OnStop">func (st *IntroState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.String">func (st IntroState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IntroState.Update">func (st *IntroState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#InventoryMenuState">type InventoryMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.Draw">func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.OnPause">func (st *InventoryMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.OnResume">func (st *InventoryMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.OnStart">func (st *InventoryMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.OnStop">func (st *InventoryMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.SetCategory">func (st *InventoryMenuState) SetCategory(category ItemCategoryType)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.String">func (st InventoryMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.Update">func (st *InventoryMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ItemCategoryType">type ItemCategoryType</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#MainMenuState">type MainMenuState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.Draw">func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.OnPause">func (st *MainMenuState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.OnResume">func (st *MainMenuState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.OnStart">func (st *MainMenuState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.OnStop">func (st *MainMenuState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.String">func (st MainMenuState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.Update">func (st *MainMenuState) Update(world w.World) states.Transition</a></dd>
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go">craft_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go">debug_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go">dungeon.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go">dungeon_select.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go">equip_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go">field_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go">home_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go">intro.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go">inventory_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/lib.go">lib.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go">main_menu.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+		
+		
+			
+			
+			<h2 id="CraftMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=783:1456#L17">CraftMenuState</a>
+				<a class="permalink" href="index.html#CraftMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type CraftMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CraftMenuState.Draw">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2274:2341#L63">Draw</a>
+					<a class="permalink" href="index.html#CraftMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.OnPause">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=1561:1609#L37">OnPause</a>
+					<a class="permalink" href="index.html#CraftMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.OnResume">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=1614:1663#L39">OnResume</a>
+					<a class="permalink" href="index.html#CraftMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.OnStart">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=1668:1716#L41">OnStart</a>
+					<a class="permalink" href="index.html#CraftMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.OnStop">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=1748:1795#L45">OnStop</a>
+					<a class="permalink" href="index.html#CraftMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.SetCategory">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=3042:3106#L95">SetCategory</a>
+					<a class="permalink" href="index.html#CraftMenuState.SetCategory">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) SetCategory(category <a href="index.html#ItemCategoryType">ItemCategoryType</a>)</pre>
+				<p>TODO: あとで整理する
+
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.String">func (CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=1458:1498#L31">String</a>
+					<a class="permalink" href="index.html#CraftMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#CraftMenuState">CraftMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.Update">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=1800:1865#L47">Update</a>
+					<a class="permalink" href="index.html#CraftMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="DebugMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=386:526#L5">DebugMenuState</a>
+				<a class="permalink" href="index.html#DebugMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type DebugMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="DebugMenuState.Draw">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1190:1257#L43">Draw</a>
+					<a class="permalink" href="index.html#DebugMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DebugMenuState.OnPause">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=631:679#L17">OnPause</a>
+					<a class="permalink" href="index.html#DebugMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DebugMenuState.OnResume">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=684:733#L19">OnResume</a>
+					<a class="permalink" href="index.html#DebugMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DebugMenuState.OnStart">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=738:786#L21">OnStart</a>
+					<a class="permalink" href="index.html#DebugMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DebugMenuState.OnStop">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=818:865#L25">OnStop</a>
+					<a class="permalink" href="index.html#DebugMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DebugMenuState.String">func (DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=528:568#L11">String</a>
+					<a class="permalink" href="index.html#DebugMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#DebugMenuState">DebugMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DebugMenuState.Update">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=870:935#L27">Update</a>
+					<a class="permalink" href="index.html#DebugMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="DungeonMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=310:458#L3">DungeonMenuState</a>
+				<a class="permalink" href="index.html#DungeonMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type DungeonMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="DungeonMenuState.Draw">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=1136:1205#L41">Draw</a>
+					<a class="permalink" href="index.html#DungeonMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonMenuState.OnPause">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=567:617#L15">OnPause</a>
+					<a class="permalink" href="index.html#DungeonMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonMenuState.OnResume">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=622:673#L17">OnResume</a>
+					<a class="permalink" href="index.html#DungeonMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonMenuState.OnStart">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=678:728#L19">OnStart</a>
+					<a class="permalink" href="index.html#DungeonMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonMenuState.OnStop">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=760:809#L23">OnStop</a>
+					<a class="permalink" href="index.html#DungeonMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonMenuState.String">func (DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=460:502#L9">String</a>
+					<a class="permalink" href="index.html#DungeonMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#DungeonMenuState">DungeonMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonMenuState.Update">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go?s=814:881#L25">Update</a>
+					<a class="permalink" href="index.html#DungeonMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="DungeonSelectState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=310:508#L3">DungeonSelectState</a>
+				<a class="permalink" href="index.html#DungeonSelectState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type DungeonSelectState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="DungeonSelectState.Draw">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=1200:1271#L42">Draw</a>
+					<a class="permalink" href="index.html#DungeonSelectState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonSelectState.OnPause">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=621:673#L16">OnPause</a>
+					<a class="permalink" href="index.html#DungeonSelectState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonSelectState.OnResume">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=678:731#L18">OnResume</a>
+					<a class="permalink" href="index.html#DungeonSelectState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonSelectState.OnStart">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=736:788#L20">OnStart</a>
+					<a class="permalink" href="index.html#DungeonSelectState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonSelectState.OnStop">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=820:871#L24">OnStop</a>
+					<a class="permalink" href="index.html#DungeonSelectState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonSelectState.String">func (DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=510:554#L10">String</a>
+					<a class="permalink" href="index.html#DungeonSelectState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#DungeonSelectState">DungeonSelectState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonSelectState.Update">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=876:945#L26">Update</a>
+					<a class="permalink" href="index.html#DungeonSelectState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=621:660#L16">DungeonState</a>
+				<a class="permalink" href="index.html#DungeonState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type DungeonState struct {
+<span id="DungeonState.Depth"></span>    Depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=2749:2814#L88">Draw</a>
+					<a class="permalink" href="index.html#DungeonState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=761:807#L26">OnPause</a>
+					<a class="permalink" href="index.html#DungeonState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=812:859#L28">OnResume</a>
+					<a class="permalink" href="index.html#DungeonState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=864:910#L30">OnStart</a>
+					<a class="permalink" href="index.html#DungeonState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1401:1446#L46">OnStop</a>
+					<a class="permalink" href="index.html#DungeonState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=662:700#L20">String</a>
+					<a class="permalink" href="index.html#DungeonState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#DungeonState">DungeonState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=2043:2106#L69">Update</a>
+					<a class="permalink" href="index.html#DungeonState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="EquipMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=706:1305#L14">EquipMenuState</a>
+				<a class="permalink" href="index.html#EquipMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type EquipMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="EquipMenuState.Draw">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2220:2287#L63">Draw</a>
+					<a class="permalink" href="index.html#EquipMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.OnPause">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1410:1458#L33">OnPause</a>
+					<a class="permalink" href="index.html#EquipMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.OnResume">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1463:1512#L35">OnResume</a>
+					<a class="permalink" href="index.html#EquipMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.OnStart">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1517:1565#L37">OnStart</a>
+					<a class="permalink" href="index.html#EquipMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.OnStop">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1597:1644#L41">OnStop</a>
+					<a class="permalink" href="index.html#EquipMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.String">func (EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1307:1347#L27">String</a>
+					<a class="permalink" href="index.html#EquipMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#EquipMenuState">EquipMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.Update">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1649:1714#L43">Update</a>
+					<a class="permalink" href="index.html#EquipMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="HomeMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=732:1054#L13">HomeMenuState</a>
+				<a class="permalink" href="index.html#HomeMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type HomeMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="HomeMenuState.Draw">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=3887:3953#L103">Draw</a>
+					<a class="permalink" href="index.html#HomeMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HomeMenuState.OnPause">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1157:1204#L28">OnPause</a>
+					<a class="permalink" href="index.html#HomeMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HomeMenuState.OnResume">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1209:1257#L30">OnResume</a>
+					<a class="permalink" href="index.html#HomeMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HomeMenuState.OnStart">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1262:1309#L32">OnStart</a>
+					<a class="permalink" href="index.html#HomeMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HomeMenuState.OnStop">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=3401:3447#L82">OnStop</a>
+					<a class="permalink" href="index.html#HomeMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HomeMenuState.String">func (HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1056:1095#L22">String</a>
+					<a class="permalink" href="index.html#HomeMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#HomeMenuState">HomeMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HomeMenuState.Update">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=3452:3516#L84">Update</a>
+					<a class="permalink" href="index.html#HomeMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="IntroState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=413:571#L5">IntroState</a>
+				<a class="permalink" href="index.html#IntroState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type IntroState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="IntroState.Draw">func (*IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=2350:2413#L85">Draw</a>
+					<a class="permalink" href="index.html#IntroState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#IntroState">IntroState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IntroState.OnPause">func (*IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=1158:1202#L35">OnPause</a>
+					<a class="permalink" href="index.html#IntroState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#IntroState">IntroState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IntroState.OnResume">func (*IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=1207:1252#L37">OnResume</a>
+					<a class="permalink" href="index.html#IntroState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#IntroState">IntroState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IntroState.OnStart">func (*IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=1257:1301#L39">OnStart</a>
+					<a class="permalink" href="index.html#IntroState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#IntroState">IntroState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IntroState.OnStop">func (*IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=1377:1420#L44">OnStop</a>
+					<a class="permalink" href="index.html#IntroState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#IntroState">IntroState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IntroState.String">func (IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=573:609#L15">String</a>
+					<a class="permalink" href="index.html#IntroState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#IntroState">IntroState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IntroState.Update">func (*IntroState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/intro.go?s=1425:1486#L46">Update</a>
+					<a class="permalink" href="index.html#IntroState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#IntroState">IntroState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="InventoryMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=665:1273#L14">InventoryMenuState</a>
+				<a class="permalink" href="index.html#InventoryMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type InventoryMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="InventoryMenuState.Draw">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2119:2190#L59">Draw</a>
+					<a class="permalink" href="index.html#InventoryMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.OnPause">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1386:1438#L33">OnPause</a>
+					<a class="permalink" href="index.html#InventoryMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.OnResume">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1443:1496#L35">OnResume</a>
+					<a class="permalink" href="index.html#InventoryMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.OnStart">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1501:1553#L37">OnStart</a>
+					<a class="permalink" href="index.html#InventoryMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.OnStop">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1585:1636#L41">OnStop</a>
+					<a class="permalink" href="index.html#InventoryMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.SetCategory">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2886:2954#L90">SetCategory</a>
+					<a class="permalink" href="index.html#InventoryMenuState.SetCategory">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) SetCategory(category <a href="index.html#ItemCategoryType">ItemCategoryType</a>)</pre>
+				<p>TODO: 後で整理する
+
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.String">func (InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1275:1319#L27">String</a>
+					<a class="permalink" href="index.html#InventoryMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#InventoryMenuState">InventoryMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.Update">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1641:1710#L43">Update</a>
+					<a class="permalink" href="index.html#InventoryMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ItemCategoryType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/lib.go?s=481:509#L19">ItemCategoryType</a>
+				<a class="permalink" href="index.html#ItemCategoryType">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type ItemCategoryType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+				
+				<pre>var (
+    <span id="ItemCategoryTypeItem">ItemCategoryTypeItem</span>     <a href="index.html#ItemCategoryType">ItemCategoryType</a> = &#34;ITEM&#34;
+    <span id="ItemCategoryTypeCard">ItemCategoryTypeCard</span>     <a href="index.html#ItemCategoryType">ItemCategoryType</a> = &#34;CARD&#34;
+    <span id="ItemCategoryTypeWearable">ItemCategoryTypeWearable</span> <a href="index.html#ItemCategoryType">ItemCategoryType</a> = &#34;WEARABLE&#34;
+    <span id="ItemCategoryTypeMaterial">ItemCategoryTypeMaterial</span> <a href="index.html#ItemCategoryType">ItemCategoryType</a> = &#34;MATERIAL&#34;
+)</pre>
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="MainMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=326:439#L5">MainMenuState</a>
+				<a class="permalink" href="index.html#MainMenuState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type MainMenuState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MainMenuState.Draw">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1097:1163#L44">Draw</a>
+					<a class="permalink" href="index.html#MainMenuState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.OnPause">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=542:589#L18">OnPause</a>
+					<a class="permalink" href="index.html#MainMenuState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.OnResume">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=594:642#L20">OnResume</a>
+					<a class="permalink" href="index.html#MainMenuState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.OnStart">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=647:694#L22">OnStart</a>
+					<a class="permalink" href="index.html#MainMenuState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.OnStop">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=726:772#L26">OnStop</a>
+					<a class="permalink" href="index.html#MainMenuState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.String">func (MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=441:480#L12">String</a>
+					<a class="permalink" href="index.html#MainMenuState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#MainMenuState">MainMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.Update">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=777:841#L28">Update</a>
+					<a class="permalink" href="index.html#MainMenuState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.20.14.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8888/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>
