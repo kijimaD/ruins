@@ -11,13 +11,8 @@ import (
 	"github.com/kijimaD/ruins/lib/utils/consts"
 )
 
-const (
-	offsetX       = 0
-	offsetY       = 80
-	minGridWidth  = 30
-	minGridHeight = 20
-)
-
+// 冒険出発から帰還までを1セットとした情報を保持する。
+// 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
 type Game struct {
 	// フィールド上で発生したイベント。各stateで補足されて処理される
 	StateEvent StateEvent
@@ -27,6 +22,7 @@ type Game struct {
 	Depth int
 }
 
+// 新規に階層を生成する。
 func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 	gameResources := world.Resources.Game.(*Game)
 
@@ -44,7 +40,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
 			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			if chain.BuildData.IsSpawnableTile(x, y) {
 				chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
 
 				break
@@ -61,8 +57,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			}
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			if chain.BuildData.IsSpawnableTile(x, y) {
+				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 				chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpEscape
 
 				break
@@ -70,7 +66,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			failCount++
 		}
 	}
-	// プレイヤーを配置する
+	// フィールドにプレイヤーを配置する
 	{
 		failCount := 0
 		for {
@@ -79,10 +75,29 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			}
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			if chain.BuildData.IsSpawnableTile(x, y) {
 				SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
 				break
+			}
+			failCount++
+		}
+	}
+	{
+		failCount := 0
+		NPCCount := 0
+		for {
+			if failCount > 200 {
+				log.Fatal("NPCの生成に失敗した")
+			}
+			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
+			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			// TODO: キャラがかぶって生成されるのを直す
+			if chain.BuildData.IsSpawnableTile(x, y) {
+				SpawnNPC(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
+				NPCCount += 1
+				if NPCCount > 10 {
+					break
+				}
 			}
 			failCount++
 		}
@@ -107,26 +122,4 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 	}
 
 	return chain.BuildData.Level
-}
-
-// フィールド上でのイベント
-type StateEvent string
-
-const (
-	StateEventNone       = StateEvent("NONE")
-	StateEventWarpNext   = StateEvent("WARP_NEXT")
-	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
-)
-
-// UpdateGameLayoutはゲームウィンドウサイズを更新する
-func UpdateGameLayout(world w.World) (int, int) {
-	gridWidth, gridHeight := minGridWidth, minGridHeight
-
-	gameWidth := gridWidth*consts.TileSize + offsetX
-	gameHeight := gridHeight*consts.TileSize + offsetY
-
-	world.Resources.ScreenDimensions.Width = gameWidth
-	world.Resources.ScreenDimensions.Height = gameHeight
-
-	return gameWidth, gameHeight
 }
