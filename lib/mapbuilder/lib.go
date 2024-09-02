@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/kijimaD/ruins/lib/components"
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -21,12 +22,12 @@ type BuilderMap struct {
 	Rooms []Rect
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
-	Corridors [][]int
+	Corridors [][]resources.TileIdx
 }
 
 // 指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
-func (bm BuilderMap) IsSpawnableTile(tx int, ty int) bool {
+func (bm BuilderMap) IsSpawnableTile(tx gc.Row, ty gc.Col) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
 
@@ -34,8 +35,8 @@ func (bm BuilderMap) IsSpawnableTile(tx int, ty int) bool {
 }
 
 // 上にあるタイルを調べる
-func (bm BuilderMap) UpTile(idx int) Tile {
-	targetIdx := idx - int(bm.Level.TileWidth)
+func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile {
+	targetIdx := resources.TileIdx(int(idx) - int(bm.Level.TileWidth))
 	if targetIdx < 0 {
 		return TileEmpty
 	}
@@ -44,8 +45,8 @@ func (bm BuilderMap) UpTile(idx int) Tile {
 }
 
 // 下にあるタイルを調べる
-func (bm BuilderMap) DownTile(idx int) Tile {
-	targetIdx := idx + int(bm.Level.TileHeight)
+func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile {
+	targetIdx := int(idx) + int(bm.Level.TileHeight)
 	if targetIdx > len(bm.Tiles)-1 {
 		return TileEmpty
 	}
@@ -54,7 +55,7 @@ func (bm BuilderMap) DownTile(idx int) Tile {
 }
 
 // 右にあるタイルを調べる
-func (bm BuilderMap) LeftTile(idx int) Tile {
+func (bm BuilderMap) LeftTile(idx resources.TileIdx) Tile {
 	targetIdx := idx - 1
 	if targetIdx < 0 {
 		return TileEmpty
@@ -64,9 +65,9 @@ func (bm BuilderMap) LeftTile(idx int) Tile {
 }
 
 // 左にあるタイルを調べる
-func (bm BuilderMap) RightTile(idx int) Tile {
+func (bm BuilderMap) RightTile(idx resources.TileIdx) Tile {
 	targetIdx := idx + 1
-	if targetIdx > len(bm.Tiles)-1 {
+	if int(targetIdx) > len(bm.Tiles)-1 {
 		return TileEmpty
 	}
 
@@ -74,7 +75,7 @@ func (bm BuilderMap) RightTile(idx int) Tile {
 }
 
 // 直交する近傍4タイルに床があるか判定する
-func (bm BuilderMap) AdjacentOrthoAnyFloor(idx int) bool {
+func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 	return bm.UpTile(idx) == TileFloor ||
 		bm.DownTile(idx) == TileFloor ||
 		bm.RightTile(idx) == TileFloor ||
@@ -110,7 +111,7 @@ func NewBuilderChain(width components.Row, height components.Col) *BuilderChain 
 			},
 			Tiles:     tiles,
 			Rooms:     []Rect{},
-			Corridors: [][]int{},
+			Corridors: [][]resources.TileIdx{},
 		},
 	}
 }

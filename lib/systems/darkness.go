@@ -28,18 +28,18 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
 	// 毎回リセットする
 	{
-		visionImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+		visionImage = ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
 		visionImage.Fill(color.Black)
 	}
 
 	// 初回のみ生成
 	if blackImage == nil {
-		blackImage = ebiten.NewImage(gameResources.Level.Width(), gameResources.Level.Height())
+		blackImage = ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
 		blackImage.Fill(color.Black)
 	}
 	// 初回のみ生成
 	if wallShadowImage == nil {
-		wallShadowImage = ebiten.NewImage(consts.TileSize, consts.TileSize)
+		wallShadowImage = ebiten.NewImage(int(consts.TileSize), int(consts.TileSize))
 		wallShadowImage.Fill(color.RGBA{0, 0, 0, 80})
 	}
 
@@ -77,13 +77,13 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(pos.X-int(consts.TileSize/2)), float64(pos.Y+16))
+			op.GeoM.Translate(float64(int(pos.X)-int(consts.TileSize/2)), float64(pos.Y+16))
 			visionImage.DrawImage(wallShadowImage, op)
 		case entity.HasComponent(gameComponents.GridElement):
 			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
 
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(int(grid.Row)*consts.TileSize), float64(int(grid.Col)*consts.TileSize+16))
+			op.GeoM.Translate(float64(int(grid.Row)*int(consts.TileSize)), float64(int(grid.Col)*int(consts.TileSize)+16))
 			visionImage.DrawImage(wallShadowImage, op)
 		}
 	}))
@@ -108,7 +108,7 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 	}
 }
 
-func visionVertices(num int, x int, y int, r int) []ebiten.Vertex {
+func visionVertices(num int, x gc.Pixel, y gc.Pixel, r gc.Pixel) []ebiten.Vertex {
 	vs := []ebiten.Vertex{}
 	for i := 0; i < num; i++ {
 		rate := float64(i) / float64(num)

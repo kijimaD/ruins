@@ -2,6 +2,9 @@ package mapbuilder
 
 import (
 	"math"
+
+	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/resources"
 )
 
 type LineCorridorBuilder struct{}
@@ -47,10 +50,10 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 			for _, p := range ps3 {
 				points = append(points, p)
 			}
-			corridor := []int{}
+			corridor := []resources.TileIdx{}
 			for _, p := range points {
-				idx := buildData.Level.XYTileIndex(p.x, p.y)
-				if 0 < idx && idx < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 && buildData.Tiles[idx] == TileWall {
+				idx := buildData.Level.XYTileIndex(gc.Row(p.x), gc.Col(p.y))
+				if 0 < int(idx) && int(idx) < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 && buildData.Tiles[idx] == TileWall {
 					buildData.Tiles[idx] = TileFloor
 				}
 				corridor = append(corridor, idx)
@@ -62,20 +65,20 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 }
 
 type point struct {
-	x int
-	y int
+	x gc.Row
+	y gc.Col
 }
 
 // https://gist.github.com/s1moe2/a85a5da7e2af25397de326d9714a6bbc#file-bresenham-go
 func bresenhamPoints(p1, p2 point) []point {
 	dx := int(math.Abs(float64(p2.x) - float64(p1.x)))
-	sx := -1
+	sx := gc.Row(-1)
 	if p1.x < p2.x {
 		sx = 1
 	}
 
 	dy := -int(math.Abs(float64(p2.y) - float64(p1.y)))
-	sy := -1
+	sy := gc.Col(-1)
 	if p1.y < p2.y {
 		sy = 1
 	}

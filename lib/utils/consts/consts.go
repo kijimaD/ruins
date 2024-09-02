@@ -1,7 +1,9 @@
 package consts
 
+import gc "github.com/kijimaD/ruins/lib/components"
+
 const (
-	TileSize = 32
+	TileSize gc.Pixel = 32
 
 	HPLabel        = "HP"
 	SPLabel        = "SP"

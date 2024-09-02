@@ -27,8 +27,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("進行ワープホールの生成に失敗した")
 			}
-			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
-			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
 			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 			if chain.BuildData.IsSpawnableTile(x, y) {
 				chain.BuildData.Tiles[tileIdx] = TileWarpNext
@@ -45,8 +45,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("帰還ワープホールの生成に失敗した")
 			}
-			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
-			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
 			if chain.BuildData.IsSpawnableTile(x, y) {
 				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
@@ -63,10 +63,14 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("プレイヤーの生成に失敗した")
 			}
-			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
-			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
 			if chain.BuildData.IsSpawnableTile(x, y) {
-				resources.SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
+				resources.SpawnPlayer(
+					world,
+					gc.Pixel(int(x)*int(consts.TileSize)+int(consts.TileSize)/2),
+					gc.Pixel(int(y)*int(consts.TileSize)+int(consts.TileSize)/2),
+				)
 				break
 			}
 			failCount++
@@ -79,11 +83,15 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("NPCの生成に失敗した")
 			}
-			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
-			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
+			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
 			// TODO: キャラがかぶって生成されるのを直す
 			if chain.BuildData.IsSpawnableTile(x, y) {
-				resources.SpawnNPC(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
+				resources.SpawnNPC(
+					world,
+					gc.Pixel(int(x)*int(consts.TileSize)+int(consts.TileSize/2)),
+					gc.Pixel(int(y)*int(consts.TileSize)+int(consts.TileSize/2)),
+				)
 				NPCCount += 1
 				if NPCCount > 10 {
 					break
@@ -94,7 +102,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	}
 
 	// tilesを元にエンティティを生成する
-	for i, t := range chain.BuildData.Tiles {
+	for _i, t := range chain.BuildData.Tiles {
+		i := resources.TileIdx(_i)
 		x, y := chain.BuildData.Level.XYTileCoord(i)
 		switch t {
 		case TileFloor:

@@ -105,16 +105,16 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	originalY := pos.Y
 
 	radians := angle * math.Pi / 180.0
-	pos.X += int(math.Cos(radians) * distance)
-	pos.Y -= int(math.Sin(radians) * distance) // ゲーム画面におけるy軸は上がマイナスであるので逆転させる
+	pos.X += gc.Pixel(math.Cos(radians) * distance)
+	pos.Y -= gc.Pixel(math.Sin(radians) * distance) // ゲーム画面におけるy軸は上がマイナスであるので逆転させる
 
 	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
-		playerx1 := float64(pos.X - sprite.Width/2 + padding)
-		playerx2 := float64(pos.X + sprite.Width/2 - padding)
-		playery1 := float64(pos.Y - sprite.Height/2 + padding)
-		playery2 := float64(pos.Y + sprite.Height/2 - padding)
+		playerx1 := float64(int(pos.X) - sprite.Width/2 + padding)
+		playerx2 := float64(int(pos.X) + sprite.Width/2 - padding)
+		playery1 := float64(int(pos.Y) - sprite.Height/2 + padding)
+		playery2 := float64(int(pos.Y) + sprite.Height/2 - padding)
 
 		world.Manager.Join(
 			gameComponents.SpriteRender,
@@ -127,10 +127,10 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 				objectSpriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
-				objectx1 := float64(objectPos.X - objectSprite.Width/2)
-				objectx2 := float64(objectPos.X + objectSprite.Width/2)
-				objecty1 := float64(objectPos.Y - objectSprite.Height/2)
-				objecty2 := float64(objectPos.Y + objectSprite.Height/2)
+				objectx1 := float64(int(objectPos.X) - objectSprite.Width/2)
+				objectx2 := float64(int(objectPos.X) + objectSprite.Width/2)
+				objecty1 := float64(int(objectPos.Y) - objectSprite.Height/2)
+				objecty2 := float64(int(objectPos.Y) + objectSprite.Height/2)
 				if (math.Max(playerx1, objectx1) < math.Min(playerx2, objectx2)) && (math.Max(playery1, objecty1) < math.Min(playery2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
@@ -155,14 +155,14 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 		}))
 	}
 
-	padding := 10
+	padding := gc.Pixel(10)
 	gameResources := world.Resources.Game.(*resources.Game)
 	levelWidth := gameResources.Level.Width()
 	levelHeight := gameResources.Level.Height()
 
 	// +1/-1 is to stop player before it reaches the border
-	if pos.X >= levelWidth-padding {
-		pos.X = levelWidth - padding - 1
+	if pos.X >= gc.Pixel(levelWidth-padding) {
+		pos.X = gc.Pixel(levelWidth - padding - 1)
 	}
 
 	if pos.X <= padding {

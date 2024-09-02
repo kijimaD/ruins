@@ -23,38 +23,39 @@ type Level struct {
 	// 縦のタイル数
 	TileHeight gc.Col
 	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
-	TileSize int
+	TileSize gc.Pixel
 	// タイルエンティティ群
 	Entities []ecs.Entity
 }
 
 // タイル座標から、タイルスライスのインデックスを求める
-func (l *Level) XYTileIndex(tx int, ty int) int {
-	return ty*int(l.TileWidth) + tx
+func (l *Level) XYTileIndex(tx gc.Row, ty gc.Col) TileIdx {
+	return TileIdx(int(ty)*int(l.TileWidth) + int(tx))
 }
 
 // タイルスライスのインデックスからタイル座標を求める
-func (l *Level) XYTileCoord(idx int) (int, int) {
-	x := idx % int(l.TileWidth)
-	y := idx / int(l.TileWidth)
-	return x, y
+func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
+	x := int(idx) % int(l.TileWidth)
+	y := int(idx) / int(l.TileWidth)
+
+	return gc.Pixel(x), gc.Pixel(y)
 }
 
 // xy座標から、該当するエンティティを求める
-func (l *Level) AtEntity(x int, y int) ecs.Entity {
-	tx := x / l.TileSize
-	ty := y / l.TileSize
+func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
+	tx := gc.Row(int(x) / int(l.TileSize))
+	ty := gc.Col(int(y) / int(l.TileSize))
 	idx := l.XYTileIndex(tx, ty)
 
 	return l.Entities[idx]
 }
 
 // ステージ幅。横の全体ピクセル数
-func (l *Level) Width() int {
-	return int(l.TileWidth) * l.TileSize
+func (l *Level) Width() gc.Pixel {
+	return gc.Pixel(int(l.TileWidth) * int(l.TileSize))
 }
 
 // ステージ縦。縦の全体ピクセル数
-func (l *Level) Height() int {
-	return int(l.TileHeight) * l.TileSize
+func (l *Level) Height() gc.Pixel {
+	return gc.Pixel(int(l.TileHeight) * int(l.TileSize))
 }

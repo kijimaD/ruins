@@ -87,7 +87,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 // TODO: エンティティが重複しているときにエラーを返す。
 // TODO: 置けるタイル以外が指定されるとエラーを返す。
 // デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
-func SpawnPlayer(world w.World, x int, y int) {
+func SpawnPlayer(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := loader.EntityComponentList{}
@@ -115,7 +115,7 @@ func SpawnPlayer(world w.World, x int, y int) {
 
 // フィールド上に表示されるNPCを生成する
 // TODO: 接触すると戦闘開始するようにする
-func SpawnNPC(world w.World, x int, y int) {
+func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := loader.EntityComponentList{}
