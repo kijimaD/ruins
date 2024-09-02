@@ -16,6 +16,14 @@ type BuilderMap struct {
 	Tiles     []Tile
 	Rooms     []Rect
 	Corridors [][]int
+
+// 指定タイル座標がスポーン可能かを返す
+// スポーンチェックは地図生成時にしか使わないだろう
+func (bm BuilderMap) IsSpawnableTile(tx int, ty int) bool {
+	idx := bm.Level.XYTileIndex(tx, ty)
+	tile := bm.Tiles[idx]
+
+	return tile == TileFloor
 }
 
 // 上にあるタイルを調べる

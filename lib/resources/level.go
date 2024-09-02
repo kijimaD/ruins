@@ -44,7 +44,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
 			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			if chain.BuildData.IsSpawnableTile(x, y) {
 				chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpNext
 
 				break
@@ -61,8 +61,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			}
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			if chain.BuildData.IsSpawnableTile(x, y) {
+				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 				chain.BuildData.Tiles[tileIdx] = mapbuilder.TileWarpEscape
 
 				break
@@ -79,8 +79,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			}
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			if chain.BuildData.IsSpawnableTile(x, y) {
 				SpawnPlayer(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
 				break
 			}
@@ -96,8 +95,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level {
 			}
 			x := rand.Intn(int(chain.BuildData.Level.TileWidth))
 			y := rand.Intn(int(chain.BuildData.Level.TileHeight))
-			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[tileIdx] == mapbuilder.TileFloor {
+			// TODO: キャラがかぶって生成されるのを直す
+			if chain.BuildData.IsSpawnableTile(x, y) {
 				SpawnNPC(world, x*consts.TileSize+consts.TileSize/2, y*consts.TileSize+consts.TileSize/2)
 				NPCCount += 1
 				if NPCCount > 10 {
