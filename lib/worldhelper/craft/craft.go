@@ -8,8 +8,8 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -18,7 +18,7 @@ func Craft(world w.World, name string) (*ecs.Entity, error) {
 		return nil, fmt.Errorf("必要素材が足りない")
 	}
 
-	resultEntity := resources.SpawnItem(world, name, raw.SpawnInBackpack)
+	resultEntity := spawner.SpawnItem(world, name, raw.SpawnInBackpack)
 	randomize(world, resultEntity)
 	consumeMaterials(world, name)
 
