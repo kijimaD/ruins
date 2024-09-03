@@ -147,7 +147,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.DownTile">func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.IsSpawnableTile">func (bm BuilderMap) IsSpawnableTile(tx gc.Row, ty gc.Col) bool</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.IsSpawnableTile">func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.LeftTile">func (bm BuilderMap) LeftTile(idx resources.TileIdx) Tile</a></dd>
@@ -266,12 +266,13 @@
 		
 			
 			
-			<h2 id="BuilderChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2441:2549#L79">BuilderChain</a>
+			<h2 id="BuilderChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3507:3615#L110">BuilderChain</a>
 				<a class="permalink" href="index.html#BuilderChain">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>階層データBuilderMapに対して適用する生成ロジックを保持する構造体
+
 			<pre>type BuilderChain struct {
 <span id="BuilderChain.Starter"></span>    Starter   *<a href="index.html#InitialMapBuilder">InitialMapBuilder</a>
 <span id="BuilderChain.Builders"></span>    Builders  []<a href="index.html#MetaMapBuilder">MetaMapBuilder</a>
@@ -289,7 +290,7 @@
 
 			
 				
-				<h3 id="NewBuilderChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2551:2630#L85">NewBuilderChain</a>
+				<h3 id="NewBuilderChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3617:3696#L116">NewBuilderChain</a>
 					<a class="permalink" href="index.html#NewBuilderChain">&#xb6;</a>
 					
 					
@@ -300,7 +301,7 @@
 				
 			
 				
-				<h3 id="SimpleRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3698:3779#L136">SimpleRoomBuilder</a>
+				<h3 id="SimpleRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4764:4845#L167">SimpleRoomBuilder</a>
 					<a class="permalink" href="index.html#SimpleRoomBuilder">&#xb6;</a>
 					
 					
@@ -313,7 +314,7 @@
 
 			
 				
-				<h3 id="BuilderChain.Build">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3363:3393#L117">Build</a>
+				<h3 id="BuilderChain.Build">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4429:4459#L148">Build</a>
 					<a class="permalink" href="index.html#BuilderChain.Build">&#xb6;</a>
 					
 					
@@ -325,7 +326,7 @@
 				
 			
 				
-				<h3 id="BuilderChain.StartWith">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3143:3212#L109">StartWith</a>
+				<h3 id="BuilderChain.StartWith">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4209:4278#L140">StartWith</a>
 					<a class="permalink" href="index.html#BuilderChain.StartWith">&#xb6;</a>
 					
 					
@@ -337,7 +338,7 @@
 				
 			
 				
-				<h3 id="BuilderChain.With">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3250:3308#L113">With</a>
+				<h3 id="BuilderChain.With">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4316:4374#L144">With</a>
 					<a class="permalink" href="index.html#BuilderChain.With">&#xb6;</a>
 					
 					
@@ -351,7 +352,7 @@
 		
 			
 			
-			<h2 id="BuilderMap">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=364:840#L5">BuilderMap</a>
+			<h2 id="BuilderMap">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=411:887#L6">BuilderMap</a>
 				<a class="permalink" href="index.html#BuilderMap">&#xb6;</a>
 				
 				
@@ -384,7 +385,7 @@
 
 			
 				
-				<h3 id="BuilderMap.AdjacentOrthoAnyFloor">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2072:2142#L68">AdjacentOrthoAnyFloor</a>
+				<h3 id="BuilderMap.AdjacentOrthoAnyFloor">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3043:3113#L98">AdjacentOrthoAnyFloor</a>
 					<a class="permalink" href="index.html#BuilderMap.AdjacentOrthoAnyFloor">&#xb6;</a>
 					
 					
@@ -397,7 +398,7 @@
 				
 			
 				
-				<h3 id="BuilderMap.DownTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=1406:1463#L38">DownTile</a>
+				<h3 id="BuilderMap.DownTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2377:2434#L68">DownTile</a>
 					<a class="permalink" href="index.html#BuilderMap.DownTile">&#xb6;</a>
 					
 					
@@ -410,12 +411,12 @@
 				
 			
 				
-				<h3 id="BuilderMap.IsSpawnableTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=976:1039#L20">IsSpawnableTile</a>
+				<h3 id="BuilderMap.IsSpawnableTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=1023:1101#L21">IsSpawnableTile</a>
 					<a class="permalink" href="index.html#BuilderMap.IsSpawnableTile">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (bm <a href="index.html#BuilderMap">BuilderMap</a>) IsSpawnableTile(tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<pre>func (bm <a href="index.html#BuilderMap">BuilderMap</a>) IsSpawnableTile(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
 				<p>指定タイル座標がスポーン可能かを返す
 スポーンチェックは地図生成時にしか使わないだろう
 
@@ -424,7 +425,7 @@
 				
 			
 				
-				<h3 id="BuilderMap.LeftTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=1641:1698#L48">LeftTile</a>
+				<h3 id="BuilderMap.LeftTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2612:2669#L78">LeftTile</a>
 					<a class="permalink" href="index.html#BuilderMap.LeftTile">&#xb6;</a>
 					
 					
@@ -437,7 +438,7 @@
 				
 			
 				
-				<h3 id="BuilderMap.RightTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=1834:1892#L58">RightTile</a>
+				<h3 id="BuilderMap.RightTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2805:2863#L88">RightTile</a>
 					<a class="permalink" href="index.html#BuilderMap.RightTile">&#xb6;</a>
 					
 					
@@ -450,7 +451,7 @@
 				
 			
 				
-				<h3 id="BuilderMap.UpTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=1169:1224#L28">UpTile</a>
+				<h3 id="BuilderMap.UpTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2140:2195#L58">UpTile</a>
 					<a class="permalink" href="index.html#BuilderMap.UpTile">&#xb6;</a>
 					
 					
@@ -465,7 +466,7 @@
 		
 			
 			
-			<h2 id="InitialMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3574:3637#L128">InitialMapBuilder</a>
+			<h2 id="InitialMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4640:4703#L159">InitialMapBuilder</a>
 				<a class="permalink" href="index.html#InitialMapBuilder">&#xb6;</a>
 				
 				
@@ -536,7 +537,7 @@
 		
 			
 			
-			<h2 id="MetaMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3639:3696#L132">MetaMapBuilder</a>
+			<h2 id="MetaMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4705:4762#L163">MetaMapBuilder</a>
 				<a class="permalink" href="index.html#MetaMapBuilder">&#xb6;</a>
 				
 				
