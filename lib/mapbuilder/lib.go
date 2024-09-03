@@ -6,6 +6,7 @@ import (
 
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -32,6 +33,28 @@ func (bm BuilderMap) IsSpawnableTile(tx gc.Row, ty gc.Col) bool {
 	tile := bm.Tiles[idx]
 
 	return tile == TileFloor
+}
+
+// 指定タイル座標にエンティティがすでにあるかを返す
+// MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせているので、1回の計算で検証できる
+func (bm BuilderMap) ExistEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool {
+	isExist := false
+	cx := components.Pixel(int(tx)*int(consts.TileSize) + int(consts.TileSize)/2)
+	cy := components.Pixel(int(ty)*int(consts.TileSize) + int(consts.TileSize)/2)
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Position,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		if pos.X == cx && pos.Y == cy {
+			isExist = true
+
+			return
+		}
+	}))
+
+	return isExist
 }
 
 // 上にあるタイルを調べる
@@ -86,6 +109,7 @@ func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 		bm.LeftTile(idx) == TileWarpNext
 }
 
+// 階層データBuilderMapに対して適用する生成ロジックを保持する構造体
 type BuilderChain struct {
 	Starter   *InitialMapBuilder
 	Builders  []MetaMapBuilder

@@ -64,13 +64,13 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("プレイヤーの生成に失敗した")
 			}
-			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
-			if chain.BuildData.IsSpawnableTile(x, y) {
+			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
+			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
+			if chain.BuildData.IsSpawnableTile(tx, ty) && !chain.BuildData.ExistEntityOnTile(world, tx, ty) {
 				spawner.SpawnPlayer(
 					world,
-					gc.Pixel(int(x)*int(consts.TileSize)+int(consts.TileSize)/2),
-					gc.Pixel(int(y)*int(consts.TileSize)+int(consts.TileSize)/2),
+					gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
+					gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
 				)
 				break
 			}
@@ -79,22 +79,23 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	}
 	{
 		failCount := 0
-		NPCCount := 0
+		total := rand.Intn(10 + 10)
+		successCount := 0
 		for {
 			if failCount > 200 {
 				log.Fatal("NPCの生成に失敗した")
 			}
-			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
-			// TODO: キャラがかぶって生成されるのを直す
-			if chain.BuildData.IsSpawnableTile(x, y) {
+			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
+			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
+			if chain.BuildData.IsSpawnableTile(tx, ty) && !chain.BuildData.ExistEntityOnTile(world, tx, ty) {
 				spawner.SpawnNPC(
 					world,
-					gc.Pixel(int(x)*int(consts.TileSize)+int(consts.TileSize/2)),
-					gc.Pixel(int(y)*int(consts.TileSize)+int(consts.TileSize/2)),
+					gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
+					gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
 				)
-				NPCCount += 1
-				if NPCCount > 10 {
+				successCount += 1
+				failCount = 0
+				if successCount > total {
 					break
 				}
 			}
@@ -102,7 +103,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 		}
 	}
 
-	// tilesを元にエンティティを生成する
+	// tilesを元にタイルエンティティを生成する
 	for _i, t := range chain.BuildData.Tiles {
 		i := resources.TileIdx(_i)
 		x, y := chain.BuildData.Level.XYTileCoord(i)
