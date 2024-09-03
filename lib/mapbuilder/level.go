@@ -31,7 +31,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
 			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
 			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.IsSpawnableTile(x, y) {
+			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				chain.BuildData.Tiles[tileIdx] = TileWarpNext
 
 				break
@@ -48,7 +48,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
 			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
-			if chain.BuildData.IsSpawnableTile(x, y) {
+			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
 
@@ -66,17 +66,19 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
 			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
-			if chain.BuildData.IsSpawnableTile(tx, ty) && !chain.BuildData.ExistEntityOnTile(world, tx, ty) {
-				spawner.SpawnPlayer(
-					world,
-					gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
-					gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
-				)
-				break
+			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
+				failCount++
+				continue
 			}
-			failCount++
+			spawner.SpawnPlayer(
+				world,
+				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
+				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
+			)
+			break
 		}
 	}
+	// フィールドにNPCを生成する
 	{
 		failCount := 0
 		total := rand.Intn(10 + 10)
@@ -87,19 +89,20 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
 			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
-			if chain.BuildData.IsSpawnableTile(tx, ty) && !chain.BuildData.ExistEntityOnTile(world, tx, ty) {
-				spawner.SpawnNPC(
-					world,
-					gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
-					gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
-				)
-				successCount += 1
-				failCount = 0
-				if successCount > total {
-					break
-				}
+			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
+				failCount++
+				continue
 			}
-			failCount++
+			spawner.SpawnNPC(
+				world,
+				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
+				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
+			)
+			successCount += 1
+			failCount = 0
+			if successCount > total {
+				break
+			}
 		}
 	}
 

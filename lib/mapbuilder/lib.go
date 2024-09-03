@@ -28,16 +28,23 @@ type BuilderMap struct {
 
 // 指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
-func (bm BuilderMap) IsSpawnableTile(tx gc.Row, ty gc.Col) bool {
+func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
+	if tile != TileFloor {
+		return false
+	}
 
-	return tile == TileFloor
+	if bm.existEntityOnTile(world, tx, ty) {
+		return false
+	}
+
+	return true
 }
 
 // 指定タイル座標にエンティティがすでにあるかを返す
-// MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせているので、1回の計算で検証できる
-func (bm BuilderMap) ExistEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool {
+// MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせている。Positionを持つエンティティの数ぶんで検証できる
+func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool {
 	isExist := false
 	cx := components.Pixel(int(tx)*int(consts.TileSize) + int(consts.TileSize)/2)
 	cy := components.Pixel(int(ty)*int(consts.TileSize) + int(consts.TileSize)/2)
