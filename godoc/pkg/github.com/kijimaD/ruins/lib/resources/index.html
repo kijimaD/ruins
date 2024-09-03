@@ -114,28 +114,7 @@
 			
 			
 				
-				<dd><a href="index.html#NewLevel">func NewLevel(world w.World, width gc.Row, height gc.Col) loader.Level</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnFieldWall">func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnFieldWarpEscape">func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnFieldWarpNext">func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnFloor">func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnNPC">func SpawnNPC(world w.World, x int, y int)</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, x int, y int)</a></dd>
-			
-				
-				<dd><a href="index.html#UpdateGameLayout">func UpdateGameLayout(world w.World) (int, int)</a></dd>
+				<dd><a href="index.html#UpdateGameLayout">func UpdateGameLayout(world w.World) (gc.Pixel, gc.Pixel)</a></dd>
 			
 			
 				
@@ -144,7 +123,32 @@
 				
 			
 				
+				<dd><a href="index.html#Level">type Level</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Level.AtEntity">func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Level.Height">func (l *Level) Height() gc.Pixel</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Level.Width">func (l *Level) Width() gc.Pixel</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Level.XYTileCoord">func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Level.XYTileIndex">func (l *Level) XYTileIndex(tx gc.Row, ty gc.Col) TileIdx</a></dd>
+				
+			
+				
 				<dd><a href="index.html#StateEvent">type StateEvent</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#TileIdx">type TileIdx</a></dd>
 				
 				
 			
@@ -170,6 +174,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go">level.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go">spawner.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/type.go">type.go</a>
 			
 			</span>
 			</p>
@@ -221,114 +227,12 @@
 		
 			
 			
-			<h2 id="NewLevel">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=741:811#L16">NewLevel</a>
-				<a class="permalink" href="index.html#NewLevel">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewLevel(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="../loader/index.html">loader</a>.<a href="../loader/index.html#Level">Level</a></pre>
-			<p>新規に階層を生成する。
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnFieldWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go?s=909:974#L20">SpawnFieldWall</a>
-				<a class="permalink" href="index.html#SpawnFieldWall">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnFieldWall(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>フィールド上に表示される壁を生成する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go?s=2198:2269#L57">SpawnFieldWarpEscape</a>
-				<a class="permalink" href="index.html#SpawnFieldWarpEscape">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnFieldWarpEscape(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>フィールド上に表示される脱出ワープホールを生成する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go?s=1540:1609#L38">SpawnFieldWarpNext</a>
-				<a class="permalink" href="index.html#SpawnFieldWarpNext">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnFieldWarpNext(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>フィールド上に表示される進行ワープホールを生成する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnFloor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go?s=364:425#L4">SpawnFloor</a>
-				<a class="permalink" href="index.html#SpawnFloor">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnFloor(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>フィールド上に表示される床を生成する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go?s=4138:4180#L107">SpawnNPC</a>
-				<a class="permalink" href="index.html#SpawnNPC">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnNPC(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, x <a href="http://localhost:8888/pkg/builtin/#int">int</a>, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>フィールド上に表示されるNPCを生成する
-TODO: 接触すると戦闘開始するようにする
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/spawner.go?s=3247:3292#L79">SpawnPlayer</a>
-				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnPlayer(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, x <a href="http://localhost:8888/pkg/builtin/#int">int</a>, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>フィールド上に表示されるプレイヤーを生成する。
-TODO: エンティティが重複しているときにエラーを返す。
-TODO: 置けるタイル以外が指定されるとエラーを返す。
-デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
-
-			
-			
-
-		
-			
-			
-			<h2 id="UpdateGameLayout">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/layout.go?s=197:244#L1">UpdateGameLayout</a>
+			<h2 id="UpdateGameLayout">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/layout.go?s=243:300#L1">UpdateGameLayout</a>
 				<a class="permalink" href="index.html#UpdateGameLayout">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func UpdateGameLayout(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+			<pre>func UpdateGameLayout(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>)</pre>
 			<p>UpdateGameLayoutはゲームウィンドウサイズを更新する。
 
 			
@@ -338,7 +242,7 @@ TODO: 置けるタイル以外が指定されるとエラーを返す。
 		
 			
 			
-			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=482:702#L6">Game</a>
+			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=322:535#L1">Game</a>
 				<a class="permalink" href="index.html#Game">&#xb6;</a>
 				
 				
@@ -350,7 +254,7 @@ TODO: 置けるタイル以外が指定されるとエラーを返す。
     <span class="comment">// フィールド上で発生したイベント。各stateで補足されて処理される</span>
 <span id="Game.StateEvent"></span>    StateEvent <a href="index.html#StateEvent">StateEvent</a>
     <span class="comment">// 現在階のフィールド情報</span>
-<span id="Game.Level"></span>    Level <a href="../loader/index.html">loader</a>.<a href="../loader/index.html#Level">Level</a>
+<span id="Game.Level"></span>    Level <a href="index.html#Level">Level</a>
     <span class="comment">// 階層数</span>
 <span id="Game.Depth"></span>    Depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>
 }
@@ -370,6 +274,104 @@ TODO: 置けるタイル以外が指定されるとエラーを返す。
 		
 			
 			
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=556:854#L10">Level</a>
+				<a class="permalink" href="index.html#Level">&#xb6;</a>
+				
+				
+			</h2>
+			<p>現在の階層
+
+			<pre>type Level struct {
+    <span class="comment">// 横のタイル数</span>
+<span id="Level.TileWidth"></span>    TileWidth <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>
+    <span class="comment">// 縦のタイル数</span>
+<span id="Level.TileHeight"></span>    TileHeight <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>
+    <span class="comment">// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる</span>
+<span id="Level.TileSize"></span>    TileSize <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>
+    <span class="comment">// タイルエンティティ群</span>
+<span id="Level.Entities"></span>    Entities []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1364:1423#L35">AtEntity</a>
+					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#Level">Level</a>) AtEntity(x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+				<p>xy座標から、該当するエンティティを求める
+
+				
+				
+				
+			
+				
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1753:1786#L49">Height</a>
+					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#Level">Level</a>) Height() <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a></pre>
+				<p>ステージ縦。縦の全体ピクセル数
+
+				
+				
+				
+			
+				
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1613:1645#L44">Width</a>
+					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#Level">Level</a>) Width() <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a></pre>
+				<p>ステージ幅。横の全体ピクセル数
+
+				
+				
+				
+			
+				
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1132:1193#L27">XYTileCoord</a>
+					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#Level">Level</a>) XYTileCoord(idx <a href="index.html#TileIdx">TileIdx</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>)</pre>
+				<p>タイルスライスのインデックスからタイル座標を求める
+
+				
+				
+				
+			
+				
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=938:995#L22">XYTileIndex</a>
+					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#Level">Level</a>) XYTileIndex(tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="index.html#TileIdx">TileIdx</a></pre>
+				<p>タイル座標から、タイルスライスのインデックスを求める
+
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=59:81#L1">StateEvent</a>
 				<a class="permalink" href="index.html#StateEvent">&#xb6;</a>
 				
@@ -378,6 +380,29 @@ TODO: 置けるタイル以外が指定されるとエラーを返す。
 			<p>フィールド上でのイベント
 
 			<pre>type StateEvent <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="TileIdx">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/type.go?s=38:54#L1">TileIdx</a>
+				<a class="permalink" href="index.html#TileIdx">&#xb6;</a>
+				
+				
+			</h2>
+			<p>タイル番号
+
+			<pre>type TileIdx <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
 			
 
