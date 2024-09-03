@@ -29,7 +29,7 @@ func (st IntroState) String() string {
 var introText = `
 [image source="bg_urban1"]
 
-人類は遺跡とともにあった。[p]
+遺跡。[p]
 粗末な装備で怪物と財宝に満ちた遺跡に挑み、[p]
 
 [image source="bg_crystal1"]

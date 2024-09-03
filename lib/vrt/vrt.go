@@ -35,8 +35,8 @@ func (g *TestGame) Update() error {
 	// テストの前に実行される
 	g.StateMachine.Update(g.World)
 
-	// 1フレームだけ実行する。更新→描画の順なので、1度は更新しないと描画されない
-	if g.gameCount < 1 {
+	// 10フレームだけ実行する。更新→描画の順なので、1度は更新しないと描画されない
+	if g.gameCount < 10 {
 		g.gameCount += 1
 		return nil
 	}

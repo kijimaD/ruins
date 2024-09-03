@@ -20,7 +20,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	chain := SimpleRoomBuilder(width, height)
 	chain.Build()
 
-	// ワープホールを生成する
+	// 進行ワープホールを生成する
 	// FIXME: たまに届かない位置に生成される
 	{
 		failCount := 0
@@ -39,7 +39,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			failCount++
 		}
 	}
-
+	// 帰還ワープホールを生成する
 	if gameResources.Depth%5 == 0 {
 		failCount := 0
 		for {
