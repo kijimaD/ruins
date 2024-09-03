@@ -13,6 +13,7 @@ import (
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -50,7 +51,7 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.Depth = st.Depth
-	gameResources.Level = resources.NewLevel(world, 50, 50)
+	gameResources.Level = mapbuilder.NewLevel(world, 50, 50)
 }
 
 func (st *DungeonState) OnStop(world w.World) {

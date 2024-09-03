@@ -25,8 +25,11 @@ type MainGame struct {
 	StateMachine es.StateMachine
 }
 
+// interface methodのため、シグネチャは変更できない
 func (game *MainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return gr.UpdateGameLayout(game.World)
+	x, y := gr.UpdateGameLayout(game.World)
+
+	return int(x), int(y)
 }
 
 func (game *MainGame) Update() error {

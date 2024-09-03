@@ -1,17 +1,18 @@
 package resources
 
 import (
+	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/utils/consts"
 )
 
 // UpdateGameLayoutはゲームウィンドウサイズを更新する。
-func UpdateGameLayout(world w.World) (int, int) {
+func UpdateGameLayout(world w.World) (gc.Pixel, gc.Pixel) {
 	const (
-		offsetX       = 0
-		offsetY       = 80
-		minGridWidth  = 30
-		minGridHeight = 20
+		offsetX       gc.Pixel = 0
+		offsetY       gc.Pixel = 80
+		minGridWidth  gc.Pixel = 30
+		minGridHeight gc.Pixel = 20
 	)
 
 	gridWidth, gridHeight := minGridWidth, minGridHeight
@@ -19,8 +20,8 @@ func UpdateGameLayout(world w.World) (int, int) {
 	gameWidth := gridWidth*consts.TileSize + offsetX
 	gameHeight := gridHeight*consts.TileSize + offsetY
 
-	world.Resources.ScreenDimensions.Width = gameWidth
-	world.Resources.ScreenDimensions.Height = gameHeight
+	world.Resources.ScreenDimensions.Width = int(gameWidth)
+	world.Resources.ScreenDimensions.Height = int(gameHeight)
 
 	return gameWidth, gameHeight
 }

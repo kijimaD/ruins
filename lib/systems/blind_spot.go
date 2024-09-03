@@ -18,7 +18,7 @@ var (
 	// 影生成時の、マスクのベースとして使う黒画像。
 	// TODO: Resourceに配置すべき
 	// TODO: ステージのサイズによって可変にするべき
-	shadowImage = ebiten.NewImage(consts.TileSize*50, consts.TileSize*50)
+	shadowImage = ebiten.NewImage(int(consts.TileSize*50), int(consts.TileSize*50))
 )
 
 // 遮蔽物を隠す
@@ -89,8 +89,8 @@ func rayCasting(cx, cy float64, world w.World) []line {
 			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 
-			x := float64(pos.X - sprite.Width/2)
-			y := float64(pos.Y - sprite.Height/2)
+			x := float64(int(pos.X) - sprite.Width/2)
+			y := float64(int(pos.Y) - sprite.Height/2)
 			w := float64(sprite.Width)
 			h := float64(sprite.Height)
 			objects = append(objects, Object{walls: rect(x, y, w, h)})

@@ -18,9 +18,9 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/spawner"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 )
 
 var regularTermination = errors.New("テスト環境における、想定どおりの終了")

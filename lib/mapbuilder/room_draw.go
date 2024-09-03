@@ -1,5 +1,7 @@
 package mapbuilder
 
+import gc "github.com/kijimaD/ruins/lib/components"
+
 type RoomDraw struct{}
 
 func (b RoomDraw) BuildMeta(buildData *BuilderMap) {
@@ -21,8 +23,8 @@ func (b RoomDraw) build(buildData *BuilderMap) {
 func (b RoomDraw) rectangle(buildData *BuilderMap, room Rect) {
 	for x := room.X1; x <= room.X2; x++ {
 		for y := room.Y1; y <= room.Y2; y++ {
-			idx := buildData.Level.XYTileIndex(x, y)
-			if 0 < idx && idx < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 {
+			idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+			if 0 < int(idx) && int(idx) < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 {
 				buildData.Tiles[idx] = TileFloor
 			}
 		}

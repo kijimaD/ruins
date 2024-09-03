@@ -9,7 +9,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/spawner"
+	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 )
 
 type DebugMenuState struct {

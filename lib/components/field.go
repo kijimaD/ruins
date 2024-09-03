@@ -8,11 +8,15 @@ package components
 // |   |
 // -----
 type Position struct {
-	X     int
-	Y     int
+	X     Pixel
+	Y     Pixel
 	Angle float64 // 角度(ラジアン)。この角度分スプライトを回転させる
 }
 
+// ピクセル単位
+type Pixel int
+
+// TODO: 縦横の型を共通にする。タイル単位だということがわかればよい。TileUnitとか
 // フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
 // スプライトはグリッドに沿って配置する
 // +----

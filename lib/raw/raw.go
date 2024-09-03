@@ -8,7 +8,6 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/utils"
-	gloader "github.com/kijimaD/ruins/lib/loader"
 )
 
 type RawMaster struct {
@@ -141,13 +140,13 @@ func Load(entityMetadataContent string) RawMaster {
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.GameComponentList {
+func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) components.GameComponentList {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	item := rw.Raws.Items[itemIdx]
-	cl := gloader.GameComponentList{}
+	cl := components.GameComponentList{}
 	if spawnType == SpawnInBackpack {
 		cl.InBackpack = &gc.InBackpack{}
 	}
@@ -250,12 +249,12 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) gloader.Game
 	return cl
 }
 
-func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) gloader.GameComponentList {
+func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) components.GameComponentList {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
-	cl := gloader.GameComponentList{}
+	cl := components.GameComponentList{}
 	cl.Material = &gc.Material{Amount: amount}
 	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
@@ -267,13 +266,13 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnTy
 	return cl
 }
 
-func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
+func (rw *RawMaster) GenerateRecipe(name string) components.GameComponentList {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	recipe := rw.Raws.Recipes[recipeIdx]
-	cl := gloader.GameComponentList{}
+	cl := components.GameComponentList{}
 	cl.Name = &gc.Name{Name: recipe.Name}
 	cl.Recipe = &gc.Recipe{}
 	for _, input := range recipe.Inputs {
@@ -299,13 +298,13 @@ func (rw *RawMaster) GenerateRecipe(name string) gloader.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMember(name string, inParty bool) gloader.GameComponentList {
+func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
-	cl := gloader.GameComponentList{}
+	cl := components.GameComponentList{}
 	cl.Member = &gc.Member{}
 	cl.Name = &gc.Name{Name: member.Name}
 	if inParty {

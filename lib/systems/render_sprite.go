@@ -41,8 +41,8 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
 			tileSize := gameResources.Level.TileSize
 			pos := &gc.Position{
-				X: int(gridElement.Row)*tileSize + tileSize/2,
-				Y: int(gridElement.Col)*tileSize + tileSize/2,
+				X: gc.Pixel(int(gridElement.Row)*int(tileSize) + int(tileSize/2)),
+				Y: gc.Pixel(int(gridElement.Col)*int(tileSize) + int(tileSize/2)),
 			}
 			drawImage(world, screen, spriteRender, pos)
 		}
