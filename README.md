@@ -1,7 +1,7 @@
 デッキ構築型RPG(予定)。
 
 - [play](https://kijimad.github.io/ruins/)
-- [godoc](https://kijimad.github.io/ruins/godoc/pkg/github.com/kijimaD/ruins/lib/raw/index.html)
+- [godoc](https://kijimad.github.io/ruins/godoc/pkg/github.com/kijimaD/ruins/lib/)
 
 ## Play Images
 
