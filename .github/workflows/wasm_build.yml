@@ -22,7 +22,7 @@ jobs:
 
       - name: Generate godoc
         run: |
-          go install golang.org/x/tools/cmd/godoc@latest
+          go install golang.org/x/tools/cmd/godoc@v0.24.0
           $(go env GOPATH)/bin/godoc -http=localhost:8888 & \
           sleep 30
           wget -r -np -nv -N -E -p -k -e robots=off --reject-regex="png" "http://localhost:8888/pkg/github.com/kijimaD/ruins/"
