@@ -7,7 +7,7 @@ require (
 	github.com/ebitenui/ebitenui v0.5.8
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/hajimehoshi/ebiten v1.12.12
-	github.com/hajimehoshi/ebiten/v2 v2.7.9
+	github.com/hajimehoshi/ebiten/v2 v2.7.10
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
 	github.com/stretchr/testify v1.9.0
