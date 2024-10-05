@@ -101,6 +101,5 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 
 	gs.RenderSpriteSystem(world, screen)
 	gs.DarknessSystem(world, screen)
-	gs.BlindSpotSystem(world, screen)
 	gs.HUDSystem(world, screen)
 }
