@@ -105,6 +105,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	originalY := pos.Y
 
 	radians := angle * math.Pi / 180.0
+	pos.Angle = (90 - angle) * math.Pi / 180.0 // 画像の回転角度と、ラジアンの角度の開始角度には90度のずれがある
 	pos.X += gc.Pixel(math.Cos(radians) * distance)
 	pos.Y -= gc.Pixel(math.Sin(radians) * distance) // ゲーム画面におけるy軸は上がマイナスであるので逆転させる
 
