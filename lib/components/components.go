@@ -170,7 +170,6 @@ type EquipmentChanged struct{}
 
 // カードは戦闘中に選択するコマンド
 // 攻撃、防御、回復など、人に影響を及ぼすものをアクションカードという
-// アクションカードをターゲットとして効果を変容させるものをブーストカードという
 type Card struct {
 	TargetType TargetType
 	Cost       int
