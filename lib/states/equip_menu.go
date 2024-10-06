@@ -85,7 +85,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.toggleSubMenu(world, false, func() {})
 
 	itemDescContainer := eui.NewRowContainer()
-	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
+	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
 	rootContainer := eui.NewItemGridContainer()
@@ -175,6 +175,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 
 // インベントリにある装備選択を生成する
 func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs.Entity, targetSlot gc.EquipmentSlotNumber, previousEquipment *ecs.Entity) {
+	// 切り替えのために消す
 	st.actionContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
