@@ -25,15 +25,16 @@ import (
 type EquipMenuState struct {
 	ui *ebitenui.UI
 
-	slots            []*ecs.Entity     // スロット一覧
-	items            []ecs.Entity      // インベントリにあるアイテム一覧
-	subMenuContainer *widget.Container // 右上のサブメニュー
-	actionContainer  *widget.Container // 操作の起点となるメインメニュー
-	specContainer    *widget.Container // 性能コンテナ
-	abilityContainer *widget.Container // メンバーの能力表示コンテナ
-	itemDesc         *widget.Text      // アイテムの説明
-	curMemberIdx     int               // 選択中の味方
-	equipTarget      equipTarget       // 装備対象。防具もしくは手札
+	slots                []*ecs.Entity     // スロット一覧
+	items                []ecs.Entity      // インベントリにあるアイテム一覧
+	subMenuContainer     *widget.Container // 右上のサブメニュー
+	actionContainer      *widget.Container // 操作の起点となるメインメニュー
+	specContainer        *widget.Container // 性能コンテナ
+	abilityContainer     *widget.Container // メンバーの能力表示コンテナ
+	equipTargetContainer *widget.Container // 装備対象の切り替えコンテナ
+	itemDesc             *widget.Text      // アイテムの説明
+	curMemberIdx         int               // 選択中の味方
+	equipTarget          equipTarget       // 装備対象。防具もしくは手札
 }
 
 func (st EquipMenuState) String() string {
@@ -90,9 +91,11 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.specContainer = eui.NewVerticalContainer()
 	st.abilityContainer = eui.NewVerticalContainer()
 	st.reloadAbilityContainer(world)
+	st.equipTargetContainer = eui.NewRowContainer()
+	st.reloadEquipTargetContainer(world, true)
 
 	st.subMenuContainer = eui.NewRowContainer()
-	st.toggleSubMenu(world, false, func() {})
+	st.reloadSubMenu(world, true, func() {})
 
 	itemDescContainer := eui.NewRowContainer()
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
@@ -100,7 +103,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 
 	rootContainer := eui.NewItemGridContainer()
 	{
-		rootContainer.AddChild(st.newEquipTargetContainer(world))
+		rootContainer.AddChild(st.equipTargetContainer)
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(st.subMenuContainer)
 
@@ -172,7 +175,8 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			}
 			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
 			f()
-			st.toggleSubMenu(world, true, f)
+			st.reloadSubMenu(world, false, f)
+			st.reloadEquipTargetContainer(world, false)
 			actionWindow.Close()
 		}, world)
 		windowContainer.AddChild(equipButton)
@@ -213,7 +217,8 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 
 			// 画面を戻す
 			st.generateActionContainer(world)
-			st.toggleSubMenu(world, false, func() {})
+			st.reloadSubMenu(world, true, func() {})
+			st.reloadEquipTargetContainer(world, true)
 		}, world)
 
 		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
@@ -224,28 +229,39 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 	}
 }
 
-func (st *EquipMenuState) newEquipTargetContainer(world w.World) *widget.Container {
+func (st *EquipMenuState) reloadEquipTargetContainer(world w.World, visible bool) {
+	st.equipTargetContainer.RemoveChildren()
+
+	st.equipTargetContainer.AddChild(eui.NewMenuText("装備", world))
+	if !visible {
+		return
+	}
 	toggleTargetWearButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) {
 		st.equipTarget = equipTargetWear
 		st.generateActionContainer(world)
+		st.reloadEquipTargetContainer(world, visible)
 	}, world)
 	toggleTargetCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) {
 		st.equipTarget = equipTargetCard
 		st.generateActionContainer(world)
+		st.reloadEquipTargetContainer(world, visible)
 	}, world)
-	c := eui.NewRowContainer()
-	c.AddChild(eui.NewMenuText("装備", world))
-	c.AddChild(toggleTargetWearButton)
-	c.AddChild(toggleTargetCardButton)
 
-	return c
+	switch st.equipTarget {
+	case equipTargetWear:
+		toggleTargetWearButton.GetWidget().Disabled = true
+	case equipTargetCard:
+		toggleTargetCardButton.GetWidget().Disabled = true
+	}
+	st.equipTargetContainer.AddChild(toggleTargetWearButton)
+	st.equipTargetContainer.AddChild(toggleTargetCardButton)
 }
 
 // サブメニューコンテナの表示を切り替える
-func (st *EquipMenuState) toggleSubMenu(world w.World, isInventory bool, reloadFunc func()) {
+func (st *EquipMenuState) reloadSubMenu(world w.World, visible bool, reloadFunc func()) {
 	st.subMenuContainer.RemoveChildren()
 
-	if !isInventory {
+	if visible {
 		members := []ecs.Entity{}
 		simple.InPartyMember(world, func(entity ecs.Entity) {
 			members = append(members, entity)
