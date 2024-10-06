@@ -96,7 +96,7 @@ func RunTestGame(state states.State, outputPath string) {
 	material.PlusAmount("緑ハーブ", 2, world)
 	material.PlusAmount("フェライトコア", 30, world)
 	spawner.SpawnAllRecipes(world)
-	equips.Equip(world, armor, ishihara, gc.EquipmentSlotZero)
+	equips.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 
 	_ = gs.EquipmentChangedSystem(world)
 

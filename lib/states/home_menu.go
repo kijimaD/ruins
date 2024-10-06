@@ -51,6 +51,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	}))
 	if memberCount == 0 {
 		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
+		card := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
 		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
 		armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
@@ -75,7 +76,8 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
 
-		equips.Equip(world, armor, ishihara, gc.EquipmentSlotZero)
+		equips.Equip(world, card, ishihara, gc.EquipmentSlotNumber(0))
+		equips.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 	}
 
 	// ステータス反映(最大HP)

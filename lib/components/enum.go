@@ -198,12 +198,5 @@ func (et ElementType) String() string {
 
 // ================
 
-// 装備スロット番号
+// 装備スロット番号。0始まり
 type EquipmentSlotNumber int
-
-const (
-	EquipmentSlotZero EquipmentSlotNumber = iota
-	EquipmentSlotOne
-	EquipmentSlotTwo
-	EquipmentSlotThree
-)
