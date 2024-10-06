@@ -84,7 +84,9 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 
 	switch st.category {
 	case ItemCategoryTypeItem:
-		st.items = simple.QueryMenuItem(world)
+		st.items = st.queryMenuItem(world)
+	case ItemCategoryTypeWearable:
+		st.items = st.queryMenuWearable(world)
 	case ItemCategoryTypeCard:
 		st.items = st.queryMenuCard(world)
 	case ItemCategoryTypeMaterial:
@@ -135,6 +137,22 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
+func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.InBackpack,
+		gameComponents.Wearable.Not(),
+		gameComponents.Card.Not(),
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
+	return items
+}
+
 func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
@@ -142,6 +160,21 @@ func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Card,
+		gameComponents.InBackpack,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
+	return items
+}
+
+func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.Wearable,
 		gameComponents.InBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
@@ -264,8 +297,10 @@ func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Containe
 	toggleContainer := eui.NewRowContainer()
 	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeItem) }, world)
 	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeCard) }, world)
+	toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeWearable) }, world)
 	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeMaterial) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
+	toggleContainer.AddChild(toggleWearableButton)
 	toggleContainer.AddChild(toggleCardButton)
 	toggleContainer.AddChild(toggleMaterialButton)
 
