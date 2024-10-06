@@ -160,6 +160,16 @@ func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	return entities[len(entities)-1]
 }
 
+// 戦闘に参加する敵キャラを生成する
+func SpawnEnemy(world w.World, name string) ecs.Entity {
+	componentList := loader.EntityComponentList{}
+	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+	componentList.Game = append(componentList.Game, rawMaster.GenerateEnemy(name))
+	entities := loader.AddEntities(world, componentList)
+
+	return entities[len(entities)-1]
+}
+
 // 所持素材の個数を0で初期化する
 func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)

@@ -298,18 +298,14 @@ func (rw *RawMaster) GenerateRecipe(name string) components.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
+func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
 	cl := components.GameComponentList{}
-	cl.Member = &gc.Member{}
 	cl.Name = &gc.Name{Name: member.Name}
-	if inParty {
-		cl.InParty = &gc.InParty{}
-	}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
 		Strength:  gc.Attribute{Base: member.Attributes.Strength},
@@ -321,6 +317,24 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameCo
 	cl.Pools = &gc.Pools{
 		Level: 1,
 	}
+	cl.EquipmentChanged = &gc.EquipmentChanged{}
+
+	return cl
+}
+
+func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
+	cl := rw.GenerateFighter(name)
+	cl.Member = &gc.Member{}
+	if inParty {
+		cl.InParty = &gc.InParty{}
+	}
+
+	return cl
+}
+
+func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
+	cl := rw.GenerateFighter(name)
+	cl.Enemy = &gc.Enemy{}
 
 	return cl
 }

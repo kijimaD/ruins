@@ -330,3 +330,13 @@ Sensation = 5
 Dexterity = 5
 Agility = 5
 Defense = 0
+
+[[member]]
+Name = "軽戦車"
+[member.attributes]
+Vitality = 8
+Strength = 8
+Sensation = 5
+Dexterity = 5
+Agility = 5
+Defense = 5

@@ -18,6 +18,7 @@ type GameComponentList struct {
 	Consumable       *Consumable
 	InParty          *InParty
 	Member           *Member
+	Enemy            *Enemy
 	Pools            *Pools
 	ProvidesHealing  *ProvidesHealing
 	InflictsDamage   *InflictsDamage
@@ -48,6 +49,7 @@ type Components struct {
 	InParty          *ecs.NullComponent
 	Equipped         *ecs.SliceComponent
 	Member           *ecs.NullComponent
+	Enemy            *ecs.NullComponent
 	Pools            *ecs.SliceComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
@@ -123,6 +125,10 @@ type InParty struct{}
 
 // 冒険に参加できるメンバー
 type Member struct{}
+
+// 敵
+// 「派閥」コンポーネントとして、味方と敵を排反にしたほうがいいのかもしれない
+type Enemy struct{}
 
 type Pools struct {
 	HP    Pool
