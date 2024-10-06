@@ -168,7 +168,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			case equipTargetCard:
 				st.items = st.queryMenuCard(world)
 			default:
-				log.Fatal(fmt.Sprintf("invalid equipTarget type: %s", st.equipTarget))
+				log.Fatal(fmt.Sprintf("invalid equipTarget type: %d", st.equipTarget))
 			}
 			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
 			f()
