@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
@@ -32,11 +33,20 @@ type EquipMenuState struct {
 	abilityContainer *widget.Container // メンバーの能力表示コンテナ
 	itemDesc         *widget.Text      // アイテムの説明
 	curMemberIdx     int               // 選択中の味方
+	equipTarget      equipTarget       // 装備対象。防具もしくは手札
 }
 
 func (st EquipMenuState) String() string {
 	return "EquipMenu"
 }
+
+// 装備対象
+type equipTarget int
+
+const (
+	equipTargetWear equipTarget = iota
+	equipTargetCard
+)
 
 // State interface ================
 
@@ -90,7 +100,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 
 	rootContainer := eui.NewItemGridContainer()
 	{
-		rootContainer.AddChild(eui.NewMenuText("装備", world))
+		rootContainer.AddChild(st.newEquipTargetContainer(world))
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(st.subMenuContainer)
 
@@ -105,7 +115,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// スロットコンテナを生成する
+// アクションコンテナを生成する
 func (st *EquipMenuState) generateActionContainer(world w.World) {
 	st.actionContainer.RemoveChildren()
 
@@ -115,7 +125,12 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 	})
 	member := members[st.curMemberIdx]
 
-	st.slots = equips.GetEquipments(world, member)
+	switch st.equipTarget {
+	case equipTargetWear:
+		st.slots = equips.GetWearEquipments(world, member)
+	case equipTargetCard:
+		st.slots = equips.GetCardEquipments(world, member)
+	}
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	for i, v := range st.slots {
@@ -147,7 +162,14 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			}
 		})
 		equipButton := eui.NewItemButton("装備する", func(args *widget.ButtonClickedEventArgs) {
-			st.items = st.queryMenuWearable(world)
+			switch st.equipTarget {
+			case equipTargetWear:
+				st.items = st.queryMenuWear(world)
+			case equipTargetCard:
+				st.items = st.queryMenuCard(world)
+			default:
+				log.Fatal(fmt.Sprintf("invalid equipTarget type: %s", st.equipTarget))
+			}
 			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
 			f()
 			st.toggleSubMenu(world, true, f)
@@ -173,7 +195,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 	}
 }
 
-// インベントリにある装備選択を生成する
+// インベントリにある装備選択コンテナを生成する
 func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs.Entity, targetSlot gc.EquipmentSlotNumber, previousEquipment *ecs.Entity) {
 	// 切り替えのために消す
 	st.actionContainer.RemoveChildren()
@@ -200,6 +222,23 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 		})
 		st.actionContainer.AddChild(itemButton)
 	}
+}
+
+func (st *EquipMenuState) newEquipTargetContainer(world w.World) *widget.Container {
+	toggleTargetWearButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) {
+		st.equipTarget = equipTargetWear
+		st.generateActionContainer(world)
+	}, world)
+	toggleTargetCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) {
+		st.equipTarget = equipTargetCard
+		st.generateActionContainer(world)
+	}, world)
+	c := eui.NewRowContainer()
+	c.AddChild(eui.NewMenuText("装備", world))
+	c.AddChild(toggleTargetWearButton)
+	c.AddChild(toggleTargetCardButton)
+
+	return c
 }
 
 // サブメニューコンテナの表示を切り替える
@@ -264,7 +303,7 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 }
 
 // 装備可能な防具を取得する
-func (st *EquipMenuState) queryMenuWearable(world w.World) []ecs.Entity {
+func (st *EquipMenuState) queryMenuWear(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -272,6 +311,22 @@ func (st *EquipMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 		gameComponents.Item,
 		gameComponents.InBackpack,
 		gameComponents.Wearable,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		items = append(items, entity)
+	}))
+
+	return items
+}
+
+// 装備可能な手札を取得する
+func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
+	items := []ecs.Entity{}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.InBackpack,
+		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
