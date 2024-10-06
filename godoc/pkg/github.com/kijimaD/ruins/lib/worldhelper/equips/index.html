@@ -118,7 +118,10 @@
 				<dd><a href="index.html#Equip">func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.EquipmentSlotNumber)</a></dd>
 			
 				
-				<dd><a href="index.html#GetEquipments">func GetEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
+				<dd><a href="index.html#GetCardEquipments">func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
+			
+				
+				<dd><a href="index.html#GetWearEquipments">func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
 			
 			
 			
@@ -175,13 +178,28 @@
 		
 			
 			
-			<h2 id="GetEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equips/equips.go?s=979:1044#L17">GetEquipments</a>
-				<a class="permalink" href="index.html#GetEquipments">&#xb6;</a>
+			<h2 id="GetCardEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equips/equips.go?s=1673:1742#L42">GetCardEquipments</a>
+				<a class="permalink" href="index.html#GetCardEquipments">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func GetEquipments(world <a href="../../engine/world/index.html">w</a>.<a href="../../engine/world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []*<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>指定キャラクターの装備アイテム一覧を取得する
+			<pre>func GetCardEquipments(world <a href="../../engine/world/index.html">w</a>.<a href="../../engine/world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []*<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>指定キャラクターの装備中のカード一覧を取得する
+必ず長さ8のスライスを返す
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetWearEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equips/equips.go?s=979:1048#L17">GetWearEquipments</a>
+				<a class="permalink" href="index.html#GetWearEquipments">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetWearEquipments(world <a href="../../engine/world/index.html">w</a>.<a href="../../engine/world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []*<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>指定キャラクターの装備中の防具一覧を取得する
 必ず長さ4のスライスを返す
 
 			
