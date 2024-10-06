@@ -300,8 +300,8 @@ func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Containe
 	toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeWearable) }, world)
 	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeMaterial) }, world)
 	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleWearableButton)
 	toggleContainer.AddChild(toggleCardButton)
+	toggleContainer.AddChild(toggleWearableButton)
 	toggleContainer.AddChild(toggleMaterialButton)
 
 	return toggleContainer
