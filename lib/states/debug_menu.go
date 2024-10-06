@@ -99,6 +99,11 @@ var debugMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransNone},
 	},
 	{
+		label: "戦闘開始",
+		f:     func(world w.World) {},
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&BattleState{}}},
+	},
+	{
 		label: "閉じる",
 		f:     func(world w.World) {},
 		trans: states.Transition{Type: states.TransPop},
