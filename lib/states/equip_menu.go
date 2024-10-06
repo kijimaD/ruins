@@ -127,13 +127,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 		members = append(members, entity)
 	})
 	member := members[st.curMemberIdx]
-
-	switch st.equipTarget {
-	case equipTargetWear:
-		st.slots = equips.GetWearEquipments(world, member)
-	case equipTargetCard:
-		st.slots = equips.GetCardEquipments(world, member)
-	}
+	st.setSlots(world, member)
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	for i, v := range st.slots {
@@ -165,14 +159,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			}
 		})
 		equipButton := eui.NewItemButton("装備する", func(args *widget.ButtonClickedEventArgs) {
-			switch st.equipTarget {
-			case equipTargetWear:
-				st.items = st.queryMenuWear(world)
-			case equipTargetCard:
-				st.items = st.queryMenuCard(world)
-			default:
-				log.Fatal(fmt.Sprintf("invalid equipTarget type: %d", st.equipTarget))
-			}
+			st.setItems(world)
 			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
 			f()
 			st.reloadSubMenu(world, false, f)
@@ -315,6 +302,26 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
+	}
+}
+
+func (st *EquipMenuState) setSlots(world w.World, member ecs.Entity) {
+	switch st.equipTarget {
+	case equipTargetWear:
+		st.slots = equips.GetWearEquipments(world, member)
+	case equipTargetCard:
+		st.slots = equips.GetCardEquipments(world, member)
+	}
+}
+
+func (st *EquipMenuState) setItems(world w.World) {
+	switch st.equipTarget {
+	case equipTargetWear:
+		st.items = st.queryMenuWear(world)
+	case equipTargetCard:
+		st.items = st.queryMenuCard(world)
+	default:
+		log.Fatal(fmt.Sprintf("invalid equipTarget type: %d", st.equipTarget))
 	}
 }
 
