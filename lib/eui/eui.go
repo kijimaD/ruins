@@ -274,7 +274,7 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 
 // list ================
 
-func NewList(entries []any, world w.World) *widget.List {
+func NewList(entries []any, entryLabelFunc widget.ListOpt, entrySelectedHandler widget.ListOpt, world w.World) *widget.List {
 	return widget.NewList(
 		widget.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(150, 0),
@@ -318,6 +318,8 @@ func NewList(entries []any, world w.World) *widget.List {
 		widget.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
 		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {}),
+		entryLabelFunc,
+		entrySelectedHandler,
 	)
 }
 

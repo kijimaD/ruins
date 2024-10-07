@@ -2,11 +2,9 @@ package states
 
 import (
 	"fmt"
-	"image/color"
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -16,6 +14,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -24,12 +23,12 @@ type BattleState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
 
-	phase battlePhase
+	phase *battlePhase
 
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
-	// 各フェーズでの選択表示に使うリスト
-	actionList *widget.List
+	// 各フェーズでの選択表示に使うコンテナ
+	selectContainer *widget.Container
 }
 
 func (st BattleState) String() string {
@@ -38,17 +37,17 @@ func (st BattleState) String() string {
 
 type battlePhase int
 
-const (
+var (
 	// 開戦 / 逃走
-	phaseChoosePolicy battlePhase = iota
+	phaseChoosePolicy battlePhase = 0
 	// 各キャラの行動選択
-	phaseChooseAction
+	phaseChooseAction battlePhase = 1
 	// 行動の対象選択
-	phaseChooseTarget
+	phaseChooseTarget battlePhase = 2
 	// 戦闘実行
-	phaseExecute
+	phaseExecute battlePhase = 3
 	// リザルト画面
-	phaseResult
+	phaseResult battlePhase = 4
 )
 
 // State interface ================
@@ -90,14 +89,6 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
 
-	switch st.phase {
-	case phaseChoosePolicy:
-	case phaseChooseAction:
-	case phaseChooseTarget:
-	case phaseExecute:
-	case phaseResult:
-	}
-
 	return states.Transition{Type: states.TransNone}
 }
 
@@ -105,12 +96,16 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 
 	switch st.phase {
-	case phaseChoosePolicy:
+	case &phaseChoosePolicy:
 		st.reloadPolicy(world)
-	case phaseChooseAction:
-	case phaseChooseTarget:
-	case phaseExecute:
-	case phaseResult:
+	case &phaseChooseAction:
+		st.reloadAction(world)
+	case &phaseChooseTarget:
+	case &phaseExecute:
+	case &phaseResult:
+	}
+	if st.phase != nil {
+		st.phase = nil
 	}
 }
 
@@ -120,13 +115,14 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalTransContainer()
 	st.enemyListContainer = eui.NewRowContainer()
 	st.updateEnemyListContainer(world)
+	st.selectContainer = eui.NewRowContainer()
 	st.reloadPolicy(world)
 	rootContainer.AddChild(st.enemyListContainer)
-	rootContainer.AddChild(st.actionList)
+	rootContainer.AddChild(st.selectContainer)
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// メンバー一覧を更新する
+// 敵一覧を更新する
 func (st *BattleState) updateEnemyListContainer(world w.World) {
 	st.enemyListContainer.RemoveChildren()
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -142,6 +138,8 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 	}))
 }
 
+// ================
+
 type policyEntry string
 
 const (
@@ -150,66 +148,80 @@ const (
 )
 
 func (st *BattleState) reloadPolicy(world w.World) {
+	st.selectContainer.RemoveChildren()
+
 	entries := []any{
 		policyEntryAttack,
 		policyEntryEscape,
 	}
-	st.actionList = widget.NewList(
-		widget.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(150, 0),
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionEnd,
-				StretchVertical:    true,
-				Padding:            widget.NewInsetsSimple(50),
-			}),
-		)),
-		widget.ListOpts.Entries(entries),
-		widget.ListOpts.ScrollContainerOpts(
-			widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-				Idle:     image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Disabled: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Mask:     image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			}),
-		),
-		widget.ListOpts.SliderOpts(
-			widget.SliderOpts.Images(&widget.SliderTrackImage{
-				Idle:  image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				Hover: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-			}, eui.LoadButtonImage()),
-			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2))),
-		widget.ListOpts.HideHorizontalSlider(),
-		widget.ListOpts.EntryFontFace(*eui.LoadFont(world)),
-		widget.ListOpts.EntryColor(&widget.ListEntryColor{
-			Selected:                   color.NRGBA{R: 0, G: 255, B: 0, A: 255},
-			Unselected:                 color.NRGBA{R: 254, G: 255, B: 255, A: 255},
-			SelectedBackground:         color.NRGBA{R: 130, G: 130, B: 200, A: 255},
-			SelectingBackground:        color.NRGBA{R: 130, G: 130, B: 130, A: 255},
-			SelectingFocusedBackground: color.NRGBA{R: 130, G: 140, B: 170, A: 255},
-			SelectedFocusedBackground:  color.NRGBA{R: 130, G: 130, B: 170, A: 255},
-			FocusedBackground:          color.NRGBA{R: 170, G: 170, B: 180, A: 255},
-			DisabledUnselected:         color.NRGBA{R: 100, G: 100, B: 100, A: 255},
-			DisabledSelected:           color.NRGBA{R: 100, G: 100, B: 100, A: 255},
-			DisabledSelectedBackground: color.NRGBA{R: 100, G: 100, B: 100, A: 255},
-		}),
+	list := eui.NewList(
+		entries,
 		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
 			v, ok := e.(policyEntry)
 			if !ok {
-				log.Fatal("unexpected entry label selected!")
+				log.Fatal("unexpected entry detect!")
 			}
 			return string(v)
 		}),
-		widget.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {
 			entry := args.Entry.(policyEntry)
 			switch entry {
 			case policyEntryAttack:
-				st.phase = phaseChooseAction
+				st.phase = &phaseChooseAction
 			case policyEntryEscape:
 				st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+			default:
+				log.Fatal("unexpected entry detect!")
 			}
 		}),
+		world,
 	)
+	st.selectContainer.AddChild(list)
+}
+
+// ================
+
+func (st *BattleState) reloadAction(world w.World) {
+	st.selectContainer.RemoveChildren()
+
+	members := []ecs.Entity{}
+	simple.InPartyMember(world, func(entity ecs.Entity) {
+		members = append(members, entity)
+	})
+	// とりあえず先頭のメンバーだけ。本来は命令する対象による
+	owner := members[0]
+	gameComponents := world.Components.Game.(*gc.Components)
+	eqs := []any{} // 実際にはecs.Entityが入る
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.Equipped,
+		gameComponents.Card,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		equipped := gameComponents.Equipped.Get(entity).(*gc.Equipped)
+		if owner == equipped.Owner {
+			eqs = append(eqs, entity)
+		}
+	}))
+	list := eui.NewList(
+		eqs,
+		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
+			v, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := simple.GetName(world, v)
+			return name.Name
+		}),
+		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {
+			v, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := simple.GetName(world, v)
+			// TODO: ここでpushする
+			fmt.Println(name.Name)
+		}),
+		world,
+	)
+	st.selectContainer.AddChild(list)
 }
