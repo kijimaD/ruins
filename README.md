@@ -15,6 +15,8 @@
 
 <img src="./vrtimages/MainMenu.png" width="50%" /><img src="./vrtimages/Dungeon.png" width="50%" />
 
+<img src="./vrtimages/Battle.png" width="50%" />
+
 各画像は全自動でキャプチャされる。最新なことをCIで保証している。
 
 ## Reference
