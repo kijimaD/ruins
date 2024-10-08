@@ -11,6 +11,7 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
+	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -24,7 +25,7 @@ type BattleState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
 
-	phase *battlePhase
+	phase battlePhase
 
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
@@ -35,22 +36,6 @@ type BattleState struct {
 func (st BattleState) String() string {
 	return "Battle"
 }
-
-// TODO: enumではなく、各ステートで使う構造体にして受け渡せるようにしたい
-type battlePhase int
-
-var (
-	// 開戦 / 逃走
-	phaseChoosePolicy battlePhase = 0
-	// 各キャラの行動選択
-	phaseChooseAction battlePhase = 1
-	// 行動の対象選択
-	phaseChooseTarget battlePhase = 2
-	// 戦闘実行
-	phaseExecute battlePhase = 3
-	// リザルト画面
-	phaseResult battlePhase = 4
-)
 
 // State interface ================
 
@@ -97,15 +82,18 @@ func (st *BattleState) Update(world w.World) states.Transition {
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 
-	switch st.phase {
-	case &phaseChoosePolicy:
+	// ステートが変わった一度だけ実行される
+	// TODO: 毎回実行したいものもあるから、変える必要がある
+	switch v := st.phase.(type) {
+	case *phaseChoosePolicy:
 		st.reloadPolicy(world)
-	case &phaseChooseAction:
-		st.reloadAction(world)
-	case &phaseChooseTarget:
-		st.reloadTarget(world)
-	case &phaseExecute:
-	case &phaseResult:
+	case *phaseChooseAction:
+		st.reloadAction(world, v)
+	case *phaseChooseTarget:
+		st.reloadTarget(world, v)
+	case *phaseExecute:
+		st.reloadExecute(world, v)
+	case *phaseResult:
 	}
 	if st.phase != nil {
 		st.phase = nil
@@ -170,7 +158,13 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			entry := args.Entry.(policyEntry)
 			switch entry {
 			case policyEntryAttack:
-				st.phase = &phaseChooseAction
+				members := []ecs.Entity{}
+				simple.InPartyMember(world, func(entity ecs.Entity) {
+					members = append(members, entity)
+				})
+				// TODO とりあえず先頭のメンバーだけ
+				owner := members[0]
+				st.phase = &phaseChooseAction{owner: owner}
 			case policyEntryEscape:
 				st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 			default:
@@ -184,24 +178,18 @@ func (st *BattleState) reloadPolicy(world w.World) {
 
 // ================
 
-func (st *BattleState) reloadAction(world w.World) {
+func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseAction) {
 	st.selectContainer.RemoveChildren()
 
-	members := []ecs.Entity{}
-	simple.InPartyMember(world, func(entity ecs.Entity) {
-		members = append(members, entity)
-	})
-	// とりあえず先頭のメンバーだけ。本来は命令する対象による
-	owner := members[0]
 	gameComponents := world.Components.Game.(*gc.Components)
-	equipCards := []any{} // 実際にはecs.Entityが入る
+	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Equipped,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := gameComponents.Equipped.Get(entity).(*gc.Equipped)
-		if owner == equipped.Owner {
+		if currentPhase.owner == equipped.Owner {
 			equipCards = append(equipCards, entity)
 		}
 	}))
@@ -216,15 +204,18 @@ func (st *BattleState) reloadAction(world w.World) {
 			return name.Name
 		}),
 		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {
-			v, ok := args.Entry.(ecs.Entity)
+			cardEntity, ok := args.Entry.(ecs.Entity)
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			name := simple.GetName(world, v)
-			// TODO: ここでpushする
-			fmt.Println("TODO:", name.Name)
-
-			st.phase = &phaseChooseTarget
+			card := simple.GetCard(world, cardEntity)
+			if card == nil {
+				log.Fatal("unexpected error: entityがcardを保持していない")
+			}
+			st.phase = &phaseChooseTarget{
+				owner: currentPhase.owner,
+				way:   *card,
+			}
 		}),
 		world,
 	)
@@ -233,7 +224,7 @@ func (st *BattleState) reloadAction(world w.World) {
 
 // ================
 
-func (st *BattleState) reloadTarget(world w.World) {
+func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarget) {
 	st.enemyListContainer.RemoveChildren()
 	st.selectContainer.RemoveChildren()
 
@@ -243,6 +234,7 @@ func (st *BattleState) reloadTarget(world w.World) {
 		gameComponents.Enemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		// 敵キャラごとにターゲット選択ボタンを作成する
 		vc := eui.NewVerticalContainer()
 		st.enemyListContainer.AddChild(vc)
 
@@ -250,15 +242,29 @@ func (st *BattleState) reloadTarget(world w.World) {
 		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
 		vc.AddChild(eui.NewMenuText(text, world))
+
 		btn := eui.NewItemButton(
 			"選択",
 			func(args *widget.ButtonClickedEventArgs) {
-				fmt.Println("TODO:", name.Name)
-				cl := components.GameComponentList{}
-				cl.BattleCommand = &gc.BattleCommand{}
+				cl := loader.EntityComponentList{}
+				cl.Game = append(cl.Game, components.GameComponentList{
+					BattleCommand: &gc.BattleCommand{
+						Owner:  currentPhase.owner,
+						Target: entity,
+						Way:    currentPhase.way,
+					},
+				})
+				loader.AddEntities(world, cl)
+				st.phase = &phaseExecute{}
 			},
 			world,
 		)
 		vc.AddChild(btn)
 	}))
+}
+
+// ================
+
+func (st *BattleState) reloadExecute(world w.World, currentPhase *phaseExecute) {
+	st.updateEnemyListContainer(world)
 }
