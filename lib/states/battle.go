@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
+	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -15,6 +16,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
@@ -122,13 +124,41 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalTransContainer()
-	st.enemyListContainer = eui.NewRowContainer()
+	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
 	st.selectContainer = eui.NewVerticalContainer()
 	st.reloadPolicy(world)
 	rootContainer.AddChild(st.enemyListContainer)
 	rootContainer.AddChild(st.selectContainer)
+
 	return &ebitenui.UI{Container: rootContainer}
+}
+
+// 中央寄せのコンテナ
+func (st *BattleState) initEnemyContainer() *widget.Container {
+	return widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(4),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    10,
+					Bottom: 10,
+					Left:   10,
+					Right:  10,
+				}),
+			)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position:  widget.RowLayoutPositionCenter,
+				Stretch:   true,
+				MaxWidth:  200,
+				MaxHeight: 200,
+			}),
+			widget.WidgetOpts.MinSize(0, 0),
+		),
+	)
 }
 
 // 敵一覧を更新する

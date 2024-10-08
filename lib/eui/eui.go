@@ -317,7 +317,6 @@ func NewList(entries []any, entryLabelFunc widget.ListOpt, entrySelectedHandler 
 		widget.ListOpts.EntryLabelFunc(func(e interface{}) string { return "" }),
 		widget.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
 		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
-		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {}),
 		entryLabelFunc,
 		entrySelectedHandler,
 	)
