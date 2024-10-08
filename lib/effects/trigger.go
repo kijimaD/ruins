@@ -22,7 +22,7 @@ func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.
 
 // TODO: 地雷など、フィールド上で一度しか動作しないギミックを動作させるのに使う予定
 // Consumable Itemと同じように、使ったあとに再び使えないようにdisable処理を入れるだろう
-// func Trigger() {
+// func fieldTrigger() {
 //	...
 // }
 
