@@ -25,7 +25,8 @@ type BattleState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
 
-	phase battlePhase
+	phase     battlePhase
+	prevPhase battlePhase
 
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
@@ -76,28 +77,39 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
 
+	// ステートが変わった最初の1回だけ実行される
+	if st.phase != st.prevPhase {
+		switch v := st.phase.(type) {
+		case *phaseChoosePolicy:
+			st.reloadPolicy(world)
+		case *phaseChooseAction:
+			st.reloadAction(world, v)
+		case *phaseChooseTarget:
+			st.reloadTarget(world, v)
+		case *phaseExecute:
+		case *phaseResult:
+		}
+		st.prevPhase = st.phase
+	}
+
+	// 毎回実行される
+	switch st.phase.(type) {
+	case *phaseChoosePolicy:
+	case *phaseChooseAction:
+	case *phaseChooseTarget:
+	case *phaseExecute:
+		effects.RunEffectQueue(world)
+		gs.BattleCommandSystem(world)
+		st.updateEnemyListContainer(world)
+		st.reloadExecute(world)
+	case *phaseResult:
+	}
+
 	return states.Transition{Type: states.TransNone}
 }
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
-
-	// ステートが変わった一度だけ実行される
-	// TODO: 毎回実行したいものもあるから、変える必要がある
-	switch v := st.phase.(type) {
-	case *phaseChoosePolicy:
-		st.reloadPolicy(world)
-	case *phaseChooseAction:
-		st.reloadAction(world, v)
-	case *phaseChooseTarget:
-		st.reloadTarget(world, v)
-	case *phaseExecute:
-		st.reloadExecute(world, v)
-	case *phaseResult:
-	}
-	if st.phase != nil {
-		st.phase = nil
-	}
 }
 
 // ================
@@ -135,6 +147,7 @@ type policyEntry string
 
 const (
 	policyEntryAttack policyEntry = "攻撃"
+	policyEntryItem   policyEntry = "道具"
 	policyEntryEscape policyEntry = "逃走"
 )
 
@@ -143,6 +156,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 
 	entries := []any{
 		policyEntryAttack,
+		policyEntryItem,
 		policyEntryEscape,
 	}
 	list := eui.NewList(
@@ -165,6 +179,8 @@ func (st *BattleState) reloadPolicy(world w.World) {
 				// TODO とりあえず先頭のメンバーだけ
 				owner := members[0]
 				st.phase = &phaseChooseAction{owner: owner}
+			case policyEntryItem:
+				// TODO: 未実装
 			case policyEntryEscape:
 				st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 			default:
@@ -265,6 +281,10 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 
 // ================
 
-func (st *BattleState) reloadExecute(world w.World, currentPhase *phaseExecute) {
+func (st *BattleState) reloadExecute(world w.World) {
 	st.updateEnemyListContainer(world)
+
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		st.phase = &phaseChoosePolicy{}
+	}
 }

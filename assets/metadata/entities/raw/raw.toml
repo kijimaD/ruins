@@ -44,7 +44,7 @@ TargetNum = "ALL"
 
 [[item]]
 Name = "体当たり"
-Description = "勢いをつけて体を接触させる"
+Description = "勢いをつけて体を接触させてダメージを与える"
 
 [item.card]
 Cost = 0
