@@ -8,6 +8,7 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
@@ -35,6 +36,7 @@ func (st BattleState) String() string {
 	return "Battle"
 }
 
+// TODO: enumではなく、各ステートで使う構造体にして受け渡せるようにしたい
 type battlePhase int
 
 var (
@@ -101,6 +103,7 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 	case &phaseChooseAction:
 		st.reloadAction(world)
 	case &phaseChooseTarget:
+		st.reloadTarget(world)
 	case &phaseExecute:
 	case &phaseResult:
 	}
@@ -129,7 +132,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.Enemy,
-		gameComponents.Attributes,
+		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
@@ -191,7 +194,7 @@ func (st *BattleState) reloadAction(world w.World) {
 	// とりあえず先頭のメンバーだけ。本来は命令する対象による
 	owner := members[0]
 	gameComponents := world.Components.Game.(*gc.Components)
-	eqs := []any{} // 実際にはecs.Entityが入る
+	equipCards := []any{} // 実際にはecs.Entityが入る
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Equipped,
@@ -199,11 +202,11 @@ func (st *BattleState) reloadAction(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := gameComponents.Equipped.Get(entity).(*gc.Equipped)
 		if owner == equipped.Owner {
-			eqs = append(eqs, entity)
+			equipCards = append(equipCards, entity)
 		}
 	}))
 	list := eui.NewList(
-		eqs,
+		equipCards,
 		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
 			v, ok := e.(ecs.Entity)
 			if !ok {
@@ -219,9 +222,43 @@ func (st *BattleState) reloadAction(world w.World) {
 			}
 			name := simple.GetName(world, v)
 			// TODO: ここでpushする
-			fmt.Println(name.Name)
+			fmt.Println("TODO:", name.Name)
+
+			st.phase = &phaseChooseTarget
 		}),
 		world,
 	)
 	st.selectContainer.AddChild(list)
+}
+
+// ================
+
+func (st *BattleState) reloadTarget(world w.World) {
+	st.enemyListContainer.RemoveChildren()
+	st.selectContainer.RemoveChildren()
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.Name,
+		gameComponents.Enemy,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		vc := eui.NewVerticalContainer()
+		st.enemyListContainer.AddChild(vc)
+
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+		vc.AddChild(eui.NewMenuText(text, world))
+		btn := eui.NewItemButton(
+			"選択",
+			func(args *widget.ButtonClickedEventArgs) {
+				fmt.Println("TODO:", name.Name)
+				cl := components.GameComponentList{}
+				cl.BattleCommand = &gc.BattleCommand{}
+			},
+			world,
+		)
+		vc.AddChild(btn)
+	}))
 }

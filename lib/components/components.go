@@ -6,7 +6,6 @@ import (
 )
 
 type GameComponentList struct {
-	GridElement      *GridElement
 	Player           *Player
 	Camera           *Camera
 	Warp             *Warp
@@ -31,9 +30,12 @@ type GameComponentList struct {
 	Card             *Card
 
 	Position     *Position
+	GridElement  *GridElement
 	SpriteRender *ec.SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
+
+	BattleCommand *BattleCommand
 }
 
 type Components struct {
@@ -66,6 +68,8 @@ type Components struct {
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
+
+	BattleCommand *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
