@@ -1,7 +1,6 @@
 package states
 
 import (
-	gc "github.com/kijimaD/ruins/lib/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -24,7 +23,7 @@ func (p *phaseChooseAction) isBattlePhase() {}
 // 行動の対象選択
 type phaseChooseTarget struct {
 	owner ecs.Entity
-	way   gc.Card
+	way   ecs.Entity
 }
 
 func (p *phaseChooseTarget) isBattlePhase() {}

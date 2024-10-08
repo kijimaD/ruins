@@ -214,7 +214,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			st.phase = &phaseChooseTarget{
 				owner: currentPhase.owner,
-				way:   *card,
+				way:   cardEntity,
 			}
 		}),
 		world,
