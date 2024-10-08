@@ -50,6 +50,8 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		memberCount++
 	}))
 	if memberCount == 0 {
+		spawner.SpawnItem(world, "体当たり", raw.SpawnInNone)
+
 		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		card1 := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
 		card2 := spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)

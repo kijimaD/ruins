@@ -16,6 +16,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -25,8 +26,12 @@ type BattleState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
 
-	phase     battlePhase
+	// 現在のサブステート
+	phase battlePhase
+	// 1個前のサブステート。サブステート変更を検知するのに使う
 	prevPhase battlePhase
+	// 現在処理中のメンバーのインデックス。メンバーごとにコマンドを発行するため
+	curMemberIndex int
 
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
@@ -73,9 +78,6 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	}
 
 	st.ui.Update()
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
-	}
 
 	// ステートが変わった最初の1回だけ実行される
 	if st.phase != st.prevPhase {
@@ -102,6 +104,10 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		gs.BattleCommandSystem(world)
 		st.updateEnemyListContainer(world)
 		st.reloadExecute(world)
+
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			st.phase = &phaseChoosePolicy{}
+		}
 	case *phaseResult:
 	}
 
@@ -118,7 +124,7 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalTransContainer()
 	st.enemyListContainer = eui.NewRowContainer()
 	st.updateEnemyListContainer(world)
-	st.selectContainer = eui.NewRowContainer()
+	st.selectContainer = eui.NewVerticalContainer()
 	st.reloadPolicy(world)
 	rootContainer.AddChild(st.enemyListContainer)
 	rootContainer.AddChild(st.selectContainer)
@@ -176,13 +182,12 @@ func (st *BattleState) reloadPolicy(world w.World) {
 				simple.InPartyMember(world, func(entity ecs.Entity) {
 					members = append(members, entity)
 				})
-				// TODO とりあえず先頭のメンバーだけ
-				owner := members[0]
+				owner := members[st.curMemberIndex]
 				st.phase = &phaseChooseAction{owner: owner}
 			case policyEntryItem:
 				// TODO: 未実装
 			case policyEntryEscape:
-				st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+				st.trans = &states.Transition{Type: states.TransPop}
 			default:
 				log.Fatal("unexpected entry detect!")
 			}
@@ -196,6 +201,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 
 func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseAction) {
 	st.selectContainer.RemoveChildren()
+	st.updateEnemyListContainer(world)
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
@@ -209,6 +215,26 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			equipCards = append(equipCards, entity)
 		}
 	}))
+
+	// 装備がなくても詰まないようにデフォルトの攻撃手段を追加する
+	world.Manager.Join(
+		gameComponents.Item,
+		gameComponents.Card,
+		gameComponents.Equipped.Not(),
+		gameComponents.InBackpack.Not(),
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		equipCards = append(equipCards, entity)
+	}))
+
+	{
+		members := []ecs.Entity{}
+		simple.InPartyMember(world, func(entity ecs.Entity) {
+			members = append(members, entity)
+		})
+		member := members[st.curMemberIndex]
+		name := simple.GetName(world, member)
+		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
+	}
 	list := eui.NewList(
 		equipCards,
 		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
@@ -271,7 +297,20 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 					},
 				})
 				loader.AddEntities(world, cl)
-				st.phase = &phaseExecute{}
+
+				// みんな出揃ったらExecuteに、揃ってなかったらメンバーをインクリメントしてコマンド選択ステートへ
+				members := []ecs.Entity{}
+				simple.InPartyMember(world, func(entity ecs.Entity) {
+					members = append(members, entity)
+				})
+				if st.curMemberIndex >= len(members)-1 {
+					st.curMemberIndex = 0
+					st.phase = &phaseExecute{}
+				} else {
+					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
+					st.phase = &phaseChooseAction{owner: members[st.curMemberIndex]}
+				}
+
 			},
 			world,
 		)
@@ -283,8 +322,4 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 
 func (st *BattleState) reloadExecute(world w.World) {
 	st.updateEnemyListContainer(world)
-
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		st.phase = &phaseChoosePolicy{}
-	}
 }
