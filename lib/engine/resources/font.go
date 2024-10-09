@@ -1,25 +1,31 @@
 package resources
 
 import (
-	"log"
-
-	"github.com/golang/freetype/truetype"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 
 	"github.com/kijimaD/ruins/assets"
-	"github.com/kijimaD/ruins/lib/engine/utils"
 )
 
 // Font structure
 type Font struct {
-	Font *truetype.Font
+	Font text.Face
 }
 
 // UnmarshalTOML fills structure fields from TOML data
 func (f *Font) UnmarshalTOML(i interface{}) error {
-	data, err := assets.FS.ReadFile(i.(map[string]interface{})["font"].(string))
+	fontFile, err := assets.FS.Open(i.(map[string]interface{})["font"].(string))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	f.Font = utils.Try(truetype.Parse(data))
+	s, err := text.NewGoTextFaceSource(fontFile)
+	if err != nil {
+		return err
+	}
+	font := &text.GoTextFace{
+		Source: s,
+		Size:   24,
+	}
+	f.Font = font
+
 	return nil
 }
