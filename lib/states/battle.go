@@ -16,6 +16,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
@@ -197,14 +198,14 @@ func (st *BattleState) reloadPolicy(world w.World) {
 	}
 	list := eui.NewList(
 		entries,
-		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
+		euiext.ListOpts.EntryLabelFunc(func(e interface{}) string {
 			v, ok := e.(policyEntry)
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
 			return string(v)
 		}),
-		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
 			entry := args.Entry.(policyEntry)
 			switch entry {
 			case policyEntryAttack:
@@ -267,7 +268,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}
 	list := eui.NewList(
 		equipCards,
-		widget.ListOpts.EntryLabelFunc(func(e interface{}) string {
+		euiext.ListOpts.EntryLabelFunc(func(e interface{}) string {
 			v, ok := e.(ecs.Entity)
 			if !ok {
 				log.Fatal("unexpected entry detect!")
@@ -275,7 +276,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			name := simple.GetName(world, v)
 			return name.Name
 		}),
-		widget.ListOpts.EntrySelectedHandler(func(args *widget.ListEntrySelectedEventArgs) {
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
 			cardEntity, ok := args.Entry.(ecs.Entity)
 			if !ok {
 				log.Fatal("unexpected entry detect!")
