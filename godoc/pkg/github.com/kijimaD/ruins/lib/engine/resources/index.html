@@ -468,7 +468,7 @@
 		
 			
 			
-			<h2 id="Font">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go?s=177:218#L3">Font</a>
+			<h2 id="Font">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go?s=129:165#L1">Font</a>
 				<a class="permalink" href="index.html#Font">&#xb6;</a>
 				
 				
@@ -476,7 +476,7 @@
 			<p>Font structure
 
 			<pre>type Font struct {
-<span id="Font.Font"></span>    Font *<a href="http://localhost:8888/pkg/github.com/golang/freetype/truetype/">truetype</a>.<a href="http://localhost:8888/pkg/github.com/golang/freetype/truetype/#Font">Font</a>
+<span id="Font.Font"></span>    Font text.<a href="index.html#Face">Face</a>
 }
 </pre>
 
@@ -492,7 +492,7 @@
 
 			
 				
-				<h3 id="Font.UnmarshalTOML">func (*Font) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go?s=275:324#L8">UnmarshalTOML</a>
+				<h3 id="Font.UnmarshalTOML">func (*Font) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go?s=222:271#L5">UnmarshalTOML</a>
 					<a class="permalink" href="index.html#Font.UnmarshalTOML">&#xb6;</a>
 					
 					
@@ -640,7 +640,7 @@
 		
 			
 			
-			<h2 id="Resources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=217:633#L1">Resources</a>
+			<h2 id="Resources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=234:650#L1">Resources</a>
 				<a class="permalink" href="index.html#Resources">&#xb6;</a>
 				
 				
@@ -653,7 +653,7 @@
 <span id="Resources.InputHandler"></span>    InputHandler     *<a href="index.html#InputHandler">InputHandler</a>
 <span id="Resources.SpriteSheets"></span>    SpriteSheets     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>
 <span id="Resources.Fonts"></span>    Fonts            *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Font">Font</a>
-<span id="Resources.DefaultFaces"></span>    DefaultFaces     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/golang.org/x/image/font/">font</a>.<a href="http://localhost:8888/pkg/golang.org/x/image/font/#Face">Face</a>
+<span id="Resources.DefaultFaces"></span>    DefaultFaces     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]text.<a href="index.html#Face">Face</a>
 <span id="Resources.AudioContext"></span>    AudioContext     *<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/">audio</a>.<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/#Context">Context</a>
 <span id="Resources.AudioPlayers"></span>    AudioPlayers     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]*<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/">audio</a>.<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/#Player">Player</a>
 <span id="Resources.Prefabs"></span>    Prefabs          interface{}
@@ -672,7 +672,7 @@
 
 			
 				
-				<h3 id="InitResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=674:705#L15">InitResources</a>
+				<h3 id="InitResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=691:722#L15">InitResources</a>
 					<a class="permalink" href="index.html#InitResources">&#xb6;</a>
 					
 					
