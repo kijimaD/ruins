@@ -3,9 +3,9 @@ package eui
 import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/styles"
-	"golang.org/x/image/font"
 )
 
 // TODO: いい感じにしたい
@@ -26,7 +26,7 @@ func LoadButtonImage() *widget.ButtonImage {
 }
 
 // TODO: いい感じにしたい
-func LoadFont(world w.World) *font.Face {
+func LoadFont(world w.World) *text.Face {
 	face := (*world.Resources.DefaultFaces)["kappa"]
 
 	return &face

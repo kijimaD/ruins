@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/golang/freetype/truetype"
-	"golang.org/x/image/font"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
@@ -81,11 +79,8 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	// load fonts
 	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
 	world.Resources.Fonts = &fonts
-	world.Resources.DefaultFaces = &map[string]font.Face{
-		"kappa": truetype.NewFace((*world.Resources.Fonts)["kappa"].Font, &truetype.Options{
-			Size: 24,
-			DPI:  72,
-		}),
+	world.Resources.DefaultFaces = &map[string]text.Face{
+		"kappa": (*world.Resources.Fonts)["kappa"].Font,
 	}
 
 	// load raws

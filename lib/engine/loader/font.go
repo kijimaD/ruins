@@ -11,10 +11,11 @@ import (
 )
 
 type fontMetadata struct {
+	// resources.Fontは UnmarshalTOML を実装しており、そのロジックでフォントに変換して構造体に入れられる
 	Fonts map[string]resources.Font `toml:"font"`
 }
 
-// LoadFonts loads fonts from a TOML file
+// フォントの設定ymlを読み込む
 func LoadFonts(fontPath string) map[string]resources.Font {
 	var fontMetadata fontMetadata
 	bs, err := assets.FS.ReadFile(fontPath)
