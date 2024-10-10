@@ -40,6 +40,9 @@ type BattleState struct {
 	enemyListContainer *widget.Container
 	// 各フェーズでの選択表示に使うコンテナ
 	selectContainer *widget.Container
+
+	selectedItem      ecs.Entity
+	cardSpecContainer *widget.Container // カードの説明表示コンテナ
 }
 
 func (st BattleState) String() string {
@@ -129,8 +132,12 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	st.updateEnemyListContainer(world)
 	st.selectContainer = eui.NewVerticalContainer()
 	st.reloadPolicy(world)
-	rootContainer.AddChild(st.enemyListContainer)
-	rootContainer.AddChild(st.selectContainer)
+	st.cardSpecContainer = eui.NewVerticalContainer()
+	rootContainer.AddChild(
+		st.enemyListContainer,
+		st.selectContainer,
+		st.cardSpecContainer,
+	)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
@@ -277,15 +284,34 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				log.Fatal("unexpected entry detect!")
 			}
 			name := simple.GetName(world, v)
-			return name.Name
+			card := simple.GetCard(world, v)
+			return fmt.Sprintf("%s(%d)", name.Name, card.Cost)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
-			v, ok := e.(ecs.Entity)
+			entity, ok := e.(ecs.Entity)
 			if !ok {
 				return
 			}
-			name := simple.GetName(world, v)
-			fmt.Println(name)
+			if st.selectedItem != entity {
+				st.selectedItem = entity
+			}
+			desc := simple.GetDescription(world, entity)
+			attack := simple.GetAttack(world, entity)
+			st.cardSpecContainer.RemoveChildren()
+			text := fmt.Sprintf(
+				`%s
+命中率 %d
+攻撃力 %d
+属性 %s %s
+`,
+				desc.Description,
+				attack.Accuracy,
+				attack.Damage,
+				attack.Element,
+				attack.AttackCategory,
+			)
+			st.cardSpecContainer.AddChild(eui.NewMenuText(text, world))
+
 			return
 		}),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
@@ -301,6 +327,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				owner: currentPhase.owner,
 				way:   cardEntity,
 			}
+			st.cardSpecContainer.RemoveChildren() // 選択し終わったら消す。こうするより非表示にしたほうがいいかもしれない
 		}),
 	}
 	list := eui.NewList(

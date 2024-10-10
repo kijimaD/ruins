@@ -60,7 +60,7 @@ type Attack struct {
 	Damage         int    // 攻撃力
 	AttackCount    int    // 攻撃回数
 	Element        string // 攻撃属性
-	AttackCategory string // 武器カテゴリ
+	AttackCategory string // 攻撃種別
 }
 
 type Wearable struct {
