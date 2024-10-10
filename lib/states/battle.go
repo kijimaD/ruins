@@ -197,7 +197,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 		policyEntryEscape,
 	}
 	opts := []euiext.ListOpt{
-		euiext.ListOpts.EntryLabelFunc(func(e interface{}) string {
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(policyEntry)
 			if !ok {
 				log.Fatal("unexpected entry detect!")
@@ -275,7 +275,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
 	opts := []euiext.ListOpt{
-		euiext.ListOpts.EntryLabelFunc(func(e interface{}) string {
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(ecs.Entity)
 			if !ok {
 				log.Fatal("unexpected entry detect!")

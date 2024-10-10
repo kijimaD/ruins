@@ -21,7 +21,7 @@ type List struct {
 	scrollContainerOpts         []widget.ScrollContainerOpt
 	sliderOpts                  []widget.SliderOpt
 	entries                     []any
-	entryLabelFunc              widget.ListEntryLabelFunc
+	entryLabelFunc              ListEntryLabelFunc
 	entryFace                   text.Face
 	entryUnselectedColor        *widget.ButtonImage
 	entrySelectedColor          *widget.ButtonImage
@@ -177,7 +177,7 @@ func (o ListOptions) Entries(e []any) ListOpt {
 	}
 }
 
-func (o ListOptions) EntryLabelFunc(f widget.ListEntryLabelFunc) ListOpt {
+func (o ListOptions) EntryLabelFunc(f ListEntryLabelFunc) ListOpt {
 	return func(l *List) {
 		l.entryLabelFunc = f
 	}
