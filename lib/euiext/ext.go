@@ -55,12 +55,14 @@ type List struct {
 	focusMap map[widget.FocusDirection]widget.Focuser
 
 	// 独自拡張
-	buttonOpts []widget.ButtonOpt
+	buttonOpts     []widget.ButtonOpt
+	entryEnterFunc ListEntryEnterFunc
 }
 
 type ListOpt func(l *List)
 
 type ListEntryLabelFunc func(e any) string
+type ListEntryEnterFunc func(e any)
 
 type ListEntryColor struct {
 	Unselected                 color.Color
@@ -127,6 +129,9 @@ func (l *List) validate() {
 	if l.entryLabelFunc == nil {
 		panic("List: EntryLabelFunc is required.")
 	}
+	if l.entryEnterFunc == nil {
+		panic("List: EntryEnterFunc is required.")
+	}
 	if l.entryTextColor == nil || l.entryTextColor.Idle == nil {
 		panic("List: ListEntryColor.Selected is required.")
 	}
@@ -180,6 +185,12 @@ func (o ListOptions) Entries(e []any) ListOpt {
 func (o ListOptions) EntryLabelFunc(f ListEntryLabelFunc) ListOpt {
 	return func(l *List) {
 		l.entryLabelFunc = f
+	}
+}
+
+func (o ListOptions) EntryEnterFunc(f ListEntryEnterFunc) ListOpt {
+	return func(l *List) {
+		l.entryEnterFunc = f
 	}
 }
 
@@ -635,6 +646,9 @@ func (l *List) createEntry(entry any) *widget.Button {
 			widget.ButtonOpts.TextPosition(l.entryTextHorizontalPosition, l.entryTextVerticalPosition),
 			widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 				l.setSelectedEntry(entry, true)
+			}),
+			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
+				l.entryEnterFunc(entry)
 			}),
 		}, l.buttonOpts...)...,
 	)

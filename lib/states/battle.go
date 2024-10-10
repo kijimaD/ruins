@@ -204,6 +204,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			}
 			return string(v)
 		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
 			entry := args.Entry.(policyEntry)
 			switch entry {
@@ -225,11 +226,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 	}
 	list := eui.NewList(
 		entries,
-		[]widget.ButtonOpt{
-			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
-				fmt.Println("Cursor Entered: " + args.Button.Text().Label)
-			}),
-		},
+		[]widget.ButtonOpt{},
 		opts,
 		world,
 	)
@@ -283,6 +280,15 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			name := simple.GetName(world, v)
 			return name.Name
 		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			v, ok := e.(ecs.Entity)
+			if !ok {
+				return
+			}
+			name := simple.GetName(world, v)
+			fmt.Println(name)
+			return
+		}),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
 			cardEntity, ok := args.Entry.(ecs.Entity)
 			if !ok {
@@ -300,11 +306,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}
 	list := eui.NewList(
 		equipCards,
-		[]widget.ButtonOpt{
-			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
-				fmt.Println("Cursor Entered: " + args.Button.Text().Label)
-			}),
-		},
+		[]widget.ButtonOpt{},
 		opts,
 		world,
 	)
