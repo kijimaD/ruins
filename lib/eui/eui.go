@@ -275,9 +275,8 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 
 // list ================
 
-func NewList(entries []any, buttonOpts []widget.ButtonOpt, listOpts []euiext.ListOpt, world w.World) *euiext.List {
+func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.List {
 	return euiext.NewList(
-		buttonOpts,
 		append([]euiext.ListOpt{
 			euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
 				widget.WidgetOpts.MinSize(150, 0),
@@ -319,7 +318,7 @@ func NewList(entries []any, buttonOpts []widget.ButtonOpt, listOpts []euiext.Lis
 			}),
 			euiext.ListOpts.EntryLabelFunc(func(e interface{}) string { return "" }),
 			euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter)}, listOpts...),
+			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter)}, listOpts...)...,
 	)
 }
 

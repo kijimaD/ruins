@@ -226,7 +226,6 @@ func (st *BattleState) reloadPolicy(world w.World) {
 	}
 	list := eui.NewList(
 		entries,
-		[]widget.ButtonOpt{},
 		opts,
 		world,
 	)
@@ -306,7 +305,6 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}
 	list := eui.NewList(
 		equipCards,
-		[]widget.ButtonOpt{},
 		opts,
 		world,
 	)
