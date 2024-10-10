@@ -225,6 +225,11 @@ func (st *BattleState) reloadPolicy(world w.World) {
 	}
 	list := eui.NewList(
 		entries,
+		[]widget.ButtonOpt{
+			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
+				fmt.Println("Cursor Entered: " + args.Button.Text().Label)
+			}),
+		},
 		opts,
 		world,
 	)
@@ -295,6 +300,11 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}
 	list := eui.NewList(
 		equipCards,
+		[]widget.ButtonOpt{
+			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
+				fmt.Println("Cursor Entered: " + args.Button.Text().Label)
+			}),
+		},
 		opts,
 		world,
 	)

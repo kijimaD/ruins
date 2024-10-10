@@ -53,6 +53,9 @@ type List struct {
 	prevFocusIndex     int
 
 	focusMap map[widget.FocusDirection]widget.Focuser
+
+	// 独自拡張
+	buttonOpts []widget.ButtonOpt
 }
 
 type ListOpt func(l *List)
@@ -84,7 +87,7 @@ type ListOptions struct{}
 
 var ListOpts ListOptions
 
-func NewList(opts ...ListOpt) *List {
+func NewList(buttonOpts []widget.ButtonOpt, listOpts []ListOpt) *List {
 	l := &List{
 		EntrySelectedEvent: &event.Event{},
 
@@ -95,11 +98,12 @@ func NewList(opts ...ListOpt) *List {
 		focusIndex:     0,
 		prevFocusIndex: -1,
 		focusMap:       make(map[widget.FocusDirection]widget.Focuser),
+		buttonOpts:     buttonOpts,
 	}
 
 	l.init.Append(l.createWidget)
 
-	for _, o := range opts {
+	for _, o := range listOpts {
 		o(l)
 	}
 
@@ -621,16 +625,18 @@ func (l *List) checkForDuplicates(entries []any, entry any) bool {
 
 func (l *List) createEntry(entry any) *widget.Button {
 	but := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-			Stretch: true,
-		})),
-		widget.ButtonOpts.Image(l.entryUnselectedColor),
-		widget.ButtonOpts.Text(l.entryLabelFunc(entry), l.entryFace, l.entryUnselectedTextColor),
-		widget.ButtonOpts.TextPadding(l.entryTextPadding),
-		widget.ButtonOpts.TextPosition(l.entryTextHorizontalPosition, l.entryTextVerticalPosition),
-		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
-			l.setSelectedEntry(entry, true)
-		}),
+		append([]widget.ButtonOpt{
+			widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true,
+			})),
+			widget.ButtonOpts.Image(l.entryUnselectedColor),
+			widget.ButtonOpts.Text(l.entryLabelFunc(entry), l.entryFace, l.entryUnselectedTextColor),
+			widget.ButtonOpts.TextPadding(l.entryTextPadding),
+			widget.ButtonOpts.TextPosition(l.entryTextHorizontalPosition, l.entryTextVerticalPosition),
+			widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
+				l.setSelectedEntry(entry, true)
+			}),
+		}, l.buttonOpts...)...,
 	)
 
 	return but

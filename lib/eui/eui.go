@@ -275,17 +275,19 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 
 // list ================
 
-func NewList(entries []any, opts []euiext.ListOpt, world w.World) *euiext.List {
+func NewList(entries []any, buttonOpts []widget.ButtonOpt, listOpts []euiext.ListOpt, world w.World) *euiext.List {
 	return euiext.NewList(
-		append([]euiext.ListOpt{euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(150, 0),
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionEnd,
-				StretchVertical:    true,
-				Padding:            widget.NewInsetsSimple(50),
-			}),
-		)),
+		buttonOpts,
+		append([]euiext.ListOpt{
+			euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.MinSize(150, 0),
+				widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionCenter,
+					VerticalPosition:   widget.AnchorLayoutPositionEnd,
+					StretchVertical:    true,
+					Padding:            widget.NewInsetsSimple(50),
+				}),
+			)),
 			euiext.ListOpts.Entries(entries),
 			euiext.ListOpts.ScrollContainerOpts(
 				widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
@@ -317,7 +319,7 @@ func NewList(entries []any, opts []euiext.ListOpt, world w.World) *euiext.List {
 			}),
 			euiext.ListOpts.EntryLabelFunc(func(e interface{}) string { return "" }),
 			euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter)}, opts...)...,
+			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter)}, listOpts...),
 	)
 }
 
