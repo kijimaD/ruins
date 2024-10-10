@@ -148,6 +148,11 @@
 				
 			
 				
+				<dd><a href="index.html#BattleCommand">type BattleCommand</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#BlockPass">type BlockPass</a></dd>
 				
 				
@@ -196,6 +201,11 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#ElementType.Valid">func (enum ElementType) Valid() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Enemy">type Enemy</a></dd>
+				
 				
 			
 				
@@ -396,6 +406,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/battle.go">battle.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go">components.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go">enum.go</a>
@@ -448,6 +460,7 @@
     <span id="AttackSpear">AttackSpear</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;SPEAR&#34;)   <span class="comment">// 長物</span>
     <span id="AttackHandgun">AttackHandgun</span> = <a href="index.html#AttackType">AttackType</a>(&#34;HANDGUN&#34;) <span class="comment">// 拳銃</span>
     <span id="AttackRifle">AttackRifle</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;RIFLE&#34;)   <span class="comment">// 小銃</span>
+    <span id="AttackFist">AttackFist</span>    = <a href="index.html#AttackType">AttackType</a>(&#34;FIST&#34;)    <span class="comment">// 格闘</span>
 )</pre>
 			
 				
@@ -495,7 +508,7 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5004:5240#L169">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5272:5508#L179">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -547,7 +560,7 @@
 
 			
 				
-				<h3 id="AttackType.String">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2121:2157#L93">String</a>
+				<h3 id="AttackType.String">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2182:2218#L94">String</a>
 					<a class="permalink" href="index.html#AttackType.String">&#xb6;</a>
 					
 					
@@ -559,7 +572,7 @@
 				
 			
 				
-				<h3 id="AttackType.Valid">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1930:1966#L84">Valid</a>
+				<h3 id="AttackType.Valid">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1979:2015#L85">Valid</a>
 					<a class="permalink" href="index.html#AttackType.Valid">&#xb6;</a>
 					
 					
@@ -601,7 +614,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3403:3904#L124">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3671:4172#L134">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -615,6 +628,36 @@
 <span id="Attributes.Dexterity"></span>    Dexterity <a href="index.html#Attribute">Attribute</a> <span class="comment">// 器用。攻撃時の命中率に影響する</span>
 <span id="Attributes.Agility"></span>    Agility   <a href="index.html#Attribute">Attribute</a> <span class="comment">// 敏捷。回避率、行動の速さに影響する</span>
 <span id="Attributes.Defense"></span>    Defense   <a href="index.html#Attribute">Attribute</a> <span class="comment">// 防御。被弾ダメージを軽減させる</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="BattleCommand">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/battle.go?s=62:259#L1">BattleCommand</a>
+				<a class="permalink" href="index.html#BattleCommand">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type BattleCommand struct {
+    <span class="comment">// 行動主体(死んだらこの攻撃は実行されない}</span>
+<span id="BattleCommand.Owner"></span>    Owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+    <span class="comment">// 行動対象</span>
+<span id="BattleCommand.Target"></span>    Target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+    <span class="comment">// 行動方法(カードEntity)</span>
+<span id="BattleCommand.Way"></span>    Way <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
 }
 </pre>
 
@@ -680,7 +723,7 @@
 		
 			
 			
-			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2036:2092#L64">Camera</a>
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2161:2217#L70">Camera</a>
 				<a class="permalink" href="index.html#Camera">&#xb6;</a>
 				
 				
@@ -707,7 +750,7 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4804:4863#L163">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5072:5131#L173">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
@@ -758,7 +801,7 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=880:1904#L28">Components</a>
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=932:2029#L31">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
@@ -777,6 +820,7 @@
 <span id="Components.InParty"></span>    InParty          *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.Equipped"></span>    Equipped         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.Member"></span>    Member           *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Enemy"></span>    Enemy            *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.Pools"></span>    Pools            *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.ProvidesHealing"></span>    ProvidesHealing  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.InflictsDamage"></span>    InflictsDamage   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
@@ -793,6 +837,8 @@
 <span id="Components.SpriteRender"></span>    SpriteRender *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.BlockView"></span>    BlockView    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.BlockPass"></span>    BlockPass    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+
+<span id="Components.BattleCommand"></span>    BattleCommand *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 }
 </pre>
 
@@ -810,7 +856,7 @@
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2438:2517#L80">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2563:2642#L86">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -837,7 +883,7 @@
 		
 			
 			
-			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2577:2624#L91">Description</a>
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2702:2749#L97">Description</a>
 				<a class="permalink" href="index.html#Description">&#xb6;</a>
 				
 				
@@ -863,7 +909,7 @@
 		
 			
 			
-			<h2 id="ElementType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3277:3300#L152">ElementType</a>
+			<h2 id="ElementType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3376:3399#L155">ElementType</a>
 				<a class="permalink" href="index.html#ElementType">&#xb6;</a>
 				
 				
@@ -893,7 +939,7 @@
 
 			
 				
-				<h3 id="ElementType.String">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3752:3789#L170">String</a>
+				<h3 id="ElementType.String">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3851:3888#L173">String</a>
 					<a class="permalink" href="index.html#ElementType.String">&#xb6;</a>
 					
 					
@@ -905,7 +951,7 @@
 				
 			
 				
-				<h3 id="ElementType.Valid">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3524:3561#L162">Valid</a>
+				<h3 id="ElementType.Valid">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3623:3660#L165">Valid</a>
 					<a class="permalink" href="index.html#ElementType.Valid">&#xb6;</a>
 					
 					
@@ -915,6 +961,31 @@
 				
 				
 				
+			
+		
+			
+			
+			<h2 id="Enemy">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3516:3535#L125">Enemy</a>
+				<a class="permalink" href="index.html#Enemy">&#xb6;</a>
+				
+				
+			</h2>
+			<p>敵
+「派閥」コンポーネントとして、味方と敵を排反にしたほうがいいのかもしれない
+
+			<pre>type Enemy struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
 			
 		
 			
@@ -949,7 +1020,7 @@
 		
 			
 			
-			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4617:4647#L159">EquipmentChanged</a>
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4885:4915#L169">EquipmentChanged</a>
 				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
 				
 				
@@ -973,7 +1044,7 @@
 		
 			
 			
-			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4159:4187#L192">EquipmentSlotNumber</a>
+			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4258:4286#L195">EquipmentSlotNumber</a>
 				<a class="permalink" href="index.html#EquipmentSlotNumber">&#xb6;</a>
 				
 				
@@ -996,7 +1067,7 @@
 		
 			
 			
-			<h2 id="EquipmentType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2457:2482#L114">EquipmentType</a>
+			<h2 id="EquipmentType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2556:2581#L117">EquipmentType</a>
 				<a class="permalink" href="index.html#EquipmentType">&#xb6;</a>
 				
 				
@@ -1017,7 +1088,7 @@
 
 			
 				
-				<h3 id="EquipmentType.String">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2925:2964#L132">String</a>
+				<h3 id="EquipmentType.String">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3024:3063#L135">String</a>
 					<a class="permalink" href="index.html#EquipmentType.String">&#xb6;</a>
 					
 					
@@ -1029,7 +1100,7 @@
 				
 			
 				
-				<h3 id="EquipmentType.Valid">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2721:2760#L123">Valid</a>
+				<h3 id="EquipmentType.Valid">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2820:2859#L126">Valid</a>
 					<a class="permalink" href="index.html#EquipmentType.Valid">&#xb6;</a>
 					
 					
@@ -1043,7 +1114,7 @@
 		
 			
 			
-			<h2 id="Equipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2769:2854#L99">Equipped</a>
+			<h2 id="Equipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2894:2979#L105">Equipped</a>
 				<a class="permalink" href="index.html#Equipped">&#xb6;</a>
 				
 				
@@ -1070,14 +1141,13 @@
 		
 			
 			
-			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=120:878#L1">GameComponentList</a>
+			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=120:930#L1">GameComponentList</a>
 				<a class="permalink" href="index.html#GameComponentList">&#xb6;</a>
 				
 				
 			</h2>
 			
 			<pre>type GameComponentList struct {
-<span id="GameComponentList.GridElement"></span>    GridElement      *<a href="index.html#GridElement">GridElement</a>
 <span id="GameComponentList.Player"></span>    Player           *<a href="index.html#Player">Player</a>
 <span id="GameComponentList.Camera"></span>    Camera           *<a href="index.html#Camera">Camera</a>
 <span id="GameComponentList.Warp"></span>    Warp             *<a href="index.html#Warp">Warp</a>
@@ -1089,6 +1159,7 @@
 <span id="GameComponentList.Consumable"></span>    Consumable       *<a href="index.html#Consumable">Consumable</a>
 <span id="GameComponentList.InParty"></span>    InParty          *<a href="index.html#InParty">InParty</a>
 <span id="GameComponentList.Member"></span>    Member           *<a href="index.html#Member">Member</a>
+<span id="GameComponentList.Enemy"></span>    Enemy            *<a href="index.html#Enemy">Enemy</a>
 <span id="GameComponentList.Pools"></span>    Pools            *<a href="index.html#Pools">Pools</a>
 <span id="GameComponentList.ProvidesHealing"></span>    ProvidesHealing  *<a href="index.html#ProvidesHealing">ProvidesHealing</a>
 <span id="GameComponentList.InflictsDamage"></span>    InflictsDamage   *<a href="index.html#InflictsDamage">InflictsDamage</a>
@@ -1101,9 +1172,12 @@
 <span id="GameComponentList.Card"></span>    Card             *<a href="index.html#Card">Card</a>
 
 <span id="GameComponentList.Position"></span>    Position     *<a href="index.html#Position">Position</a>
+<span id="GameComponentList.GridElement"></span>    GridElement  *<a href="index.html#GridElement">GridElement</a>
 <span id="GameComponentList.SpriteRender"></span>    SpriteRender *<a href="../engine/components/index.html">ec</a>.<a href="../engine/components/index.html#SpriteRender">SpriteRender</a>
 <span id="GameComponentList.BlockView"></span>    BlockView    *<a href="index.html#BlockView">BlockView</a>
 <span id="GameComponentList.BlockPass"></span>    BlockPass    *<a href="index.html#BlockPass">BlockPass</a>
+
+<span id="GameComponentList.BattleCommand"></span>    BattleCommand *<a href="index.html#BattleCommand">BattleCommand</a>
 }
 </pre>
 
@@ -1155,7 +1229,7 @@
 		
 			
 			
-			<h2 id="InBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2672:2696#L96">InBackpack</a>
+			<h2 id="InBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2797:2821#L102">InBackpack</a>
 				<a class="permalink" href="index.html#InBackpack">&#xb6;</a>
 				
 				
@@ -1179,7 +1253,7 @@
 		
 			
 			
-			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3184:3205#L112">InParty</a>
+			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3309:3330#L118">InParty</a>
 				<a class="permalink" href="index.html#InParty">&#xb6;</a>
 				
 				
@@ -1203,7 +1277,7 @@
 		
 			
 			
-			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4170:4212#L141">InflictsDamage</a>
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4438:4480#L151">InflictsDamage</a>
 				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
 				
 				
@@ -1230,7 +1304,7 @@
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2375:2393#L77">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2500:2518#L83">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -1255,7 +1329,7 @@
 		
 			
 			
-			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4435:4471#L149">Material</a>
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4703:4739#L159">Material</a>
 				<a class="permalink" href="index.html#Material">&#xb6;</a>
 				
 				
@@ -1284,7 +1358,7 @@
 		
 			
 			
-			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3247:3267#L115">Member</a>
+			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3372:3392#L121">Member</a>
 				<a class="permalink" href="index.html#Member">&#xb6;</a>
 				
 				
@@ -1308,7 +1382,7 @@
 		
 			
 			
-			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2532:2565#L86">Name</a>
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2657:2690#L92">Name</a>
 				<a class="permalink" href="index.html#Name">&#xb6;</a>
 				
 				
@@ -1407,7 +1481,7 @@
 		
 			
 			
-			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2001:2021#L61">Player</a>
+			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2126:2146#L67">Player</a>
 				<a class="permalink" href="index.html#Player">&#xb6;</a>
 				
 				
@@ -1459,7 +1533,7 @@ operatorとかのほうがよさそうか?
 		
 			
 			
-			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3269:3325#L117">Pools</a>
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3537:3593#L127">Pools</a>
 				<a class="permalink" href="index.html#Pools">&#xb6;</a>
 				
 				
@@ -1520,7 +1594,7 @@ operatorとかのほうがよさそうか?
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4007:4055#L135">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4275:4323#L145">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -1597,7 +1671,7 @@ operatorとかのほうがよさそうか?
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4501:4545#L154">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4769:4813#L164">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -1829,7 +1903,7 @@ operatorとかのほうがよさそうか?
 		
 			
 			
-			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2225:2260#L71">Warp</a>
+			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2350:2385#L77">Warp</a>
 				<a class="permalink" href="index.html#Warp">&#xb6;</a>
 				
 				
@@ -1856,7 +1930,7 @@ TODO: 接触をトリガーに何かさせたいことはよくあるので、�
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=2944:3133#L105">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3069:3258#L111">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
