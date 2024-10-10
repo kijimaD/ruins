@@ -196,8 +196,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 		policyEntryItem,
 		policyEntryEscape,
 	}
-	list := eui.NewList(
-		entries,
+	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e interface{}) string {
 			v, ok := e.(policyEntry)
 			if !ok {
@@ -223,6 +222,10 @@ func (st *BattleState) reloadPolicy(world w.World) {
 				log.Fatal("unexpected entry detect!")
 			}
 		}),
+	}
+	list := eui.NewList(
+		entries,
+		opts,
 		world,
 	)
 	st.selectContainer.AddChild(list)
@@ -266,8 +269,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		name := simple.GetName(world, member)
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
-	list := eui.NewList(
-		equipCards,
+	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e interface{}) string {
 			v, ok := e.(ecs.Entity)
 			if !ok {
@@ -290,6 +292,10 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				way:   cardEntity,
 			}
 		}),
+	}
+	list := eui.NewList(
+		equipCards,
+		opts,
 		world,
 	)
 	st.selectContainer.AddChild(list)
