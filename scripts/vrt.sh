@@ -17,14 +17,15 @@ cmd() {
     $RUN screenshot $state
 }
 
+cmd Battle
 cmd CraftMenu
-cmd Intro
 cmd DebugMenu
+cmd Dungeon
 cmd DungeonMenu
 cmd DungeonSelect
 cmd EquipMenu
 cmd HomeMenu
 cmd Intro
+cmd Intro
 cmd InventoryMenu
 cmd MainMenu
-cmd Dungeon

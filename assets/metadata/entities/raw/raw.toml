@@ -43,6 +43,22 @@ TargetNum = "ALL"
 # card ================
 
 [[item]]
+Name = "体当たり"
+Description = "勢いをつけて体を接触させてダメージを与える"
+
+[item.card]
+Cost = 0
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 100
+Damage = 4
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "FIST"
+
+[[item]]
 Name = "木刀"
 Description = "旅行の土産でおなじみの、木でできた刃のない刀"
 
@@ -330,3 +346,13 @@ Sensation = 5
 Dexterity = 5
 Agility = 5
 Defense = 0
+
+[[member]]
+Name = "軽戦車"
+[member.attributes]
+Vitality = 8
+Strength = 8
+Sensation = 5
+Dexterity = 5
+Agility = 5
+Defense = 5

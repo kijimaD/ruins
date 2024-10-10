@@ -89,11 +89,12 @@ const (
 	AttackSpear   = AttackType("SPEAR")   // 長物
 	AttackHandgun = AttackType("HANDGUN") // 拳銃
 	AttackRifle   = AttackType("RIFLE")   // 小銃
+	AttackFist    = AttackType("FIST")    // 格闘
 )
 
 func (enum AttackType) Valid() error {
 	switch enum {
-	case AttackSword, AttackSpear, AttackHandgun, AttackRifle:
+	case AttackSword, AttackSpear, AttackHandgun, AttackRifle, AttackFist:
 		return nil
 	}
 
@@ -111,6 +112,8 @@ func (at AttackType) String() string {
 		result = "拳銃"
 	case AttackRifle:
 		result = "小銃"
+	case AttackFist:
+		result = "格闘"
 	default:
 		log.Fatal("invalid attack type")
 	}

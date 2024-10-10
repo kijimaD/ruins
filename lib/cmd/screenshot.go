@@ -24,6 +24,8 @@ func runScreenshot(ctx *cli.Context) error {
 	}
 
 	switch mode {
+	case gs.BattleState{}.String():
+		vrt.RunTestGame(&gs.BattleState{}, mode)
 	case gs.CraftMenuState{}.String():
 		st := &gs.CraftMenuState{}
 		st.SetCategory(states.ItemCategoryTypeItem)
@@ -49,7 +51,7 @@ func runScreenshot(ctx *cli.Context) error {
 	case gs.DungeonState{}.String():
 		vrt.RunTestGame(&gs.DungeonState{}, mode)
 	default:
-		return fmt.Errorf("対応してないステートが指定された: %s", mode)
+		return fmt.Errorf("スクリーンショット実行時に対応してないステートが指定された: %s", mode)
 	}
 
 	return nil
