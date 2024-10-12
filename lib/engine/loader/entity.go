@@ -54,7 +54,9 @@ func AddEntities(world w.World, entityComponentList EntityComponentList) []ecs.E
 
 // AddEntityComponents adds loaded components to an entity
 func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity {
+	// 追加先のコンポーネントリスト。コンポーネントのスライス群
 	ecv := reflect.ValueOf(ecsComponentList).Elem()
+	// 追加するコンポーネント
 	cv := reflect.ValueOf(components)
 	for iField := 0; iField < cv.NumField(); iField++ {
 		if !cv.Field(iField).IsNil() {
@@ -62,8 +64,17 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 			value := reflect.New(reflect.TypeOf(component.Interface()))
 			value.Elem().Set(component)
 
-			ecsComponent := ecv.FieldByName(component.Type().Name()).Interface().(ecs.DataComponent)
-			entity.AddComponent(ecsComponent, value.Interface())
+			switch component.Kind() {
+			case reflect.Struct:
+				// 追加対象コンポーネントの型名を使って、追加先コンポーネントのフィールドを対応付けて値を設定する
+				ecsComponent := ecv.FieldByName(component.Type().Name()).Interface().(ecs.DataComponent)
+				entity.AddComponent(ecsComponent, value.Interface())
+			case reflect.String:
+				// 追加対象コンポーネントの値を使って、追加先コンポーネントのフィールドを対応付けて値を設定する
+				ecsComponent := ecv.FieldByName(component.String()).Interface().(ecs.DataComponent)
+
+				entity.AddComponent(ecsComponent, value.Interface())
+			}
 		}
 	}
 	return entity

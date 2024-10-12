@@ -201,5 +201,14 @@ func (et ElementType) String() string {
 
 // ================
 
-// 装備スロット番号。0始まり
-type EquipmentSlotNumber int
+// 派閥
+type FactionType string
+
+// 値はComponentListのフィールド名である必要がある。微妙だな...
+// グローバル変数にしたほうがよさそう
+const (
+	// 味方
+	FactionTypeAlly FactionType = "FactionTypeAlly"
+	// 敵
+	FactionTypeEnemy FactionType = "FactionTypeEnemy"
+)

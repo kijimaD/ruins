@@ -38,6 +38,9 @@ type EquipBonus struct {
 	// - 頑丈+1、連射+2などのスキル
 }
 
+// 装備スロット番号。0始まり
+type EquipmentSlotNumber int
+
 // ================
 type Amounter interface {
 	Amount()

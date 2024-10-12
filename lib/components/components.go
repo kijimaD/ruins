@@ -5,19 +5,22 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// コンポーネントのリストが格納されたオブジェクト。
+// コンポーネントの型に応じて、対応するECSコンポーネントを取得するために使用する。
 type GameComponentList struct {
-	Player           *Player
-	Camera           *Camera
-	Warp             *Warp
-	Item             *Item
-	Name             *Name
-	Description      *Description
-	InBackpack       *InBackpack
-	Equipped         *Equipped
-	Consumable       *Consumable
-	InParty          *InParty
-	Member           *Member
-	Enemy            *Enemy
+	// general ================
+	Player      *Player
+	Camera      *Camera
+	Warp        *Warp
+	Item        *Item
+	Name        *Name
+	Description *Description
+	InBackpack  *InBackpack
+	Equipped    *Equipped
+	Consumable  *Consumable
+	InParty     *InParty
+	Member      *Member
+	// Enemy            *Enemy
 	Pools            *Pools
 	ProvidesHealing  *ProvidesHealing
 	InflictsDamage   *InflictsDamage
@@ -28,30 +31,36 @@ type GameComponentList struct {
 	Attributes       *Attributes
 	EquipmentChanged *EquipmentChanged
 	Card             *Card
+	FactionType      *FactionType
 
+	// field ================
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *ec.SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
 
+	// battle ================
 	BattleCommand *BattleCommand
 }
 
+// componentsを溜めるスライス群
+// Join時はこのフィールドでクエリする
 type Components struct {
-	Player           *ecs.NullComponent
-	Camera           *ecs.SliceComponent
-	Wall             *ecs.NullComponent
-	Warp             *ecs.SliceComponent
-	Item             *ecs.NullComponent
-	Consumable       *ecs.SliceComponent
-	Name             *ecs.SliceComponent
-	Description      *ecs.SliceComponent
-	InBackpack       *ecs.NullComponent
-	InParty          *ecs.NullComponent
-	Equipped         *ecs.SliceComponent
-	Member           *ecs.NullComponent
-	Enemy            *ecs.NullComponent
+	Player      *ecs.NullComponent
+	Camera      *ecs.SliceComponent
+	Wall        *ecs.NullComponent
+	Warp        *ecs.SliceComponent
+	Item        *ecs.NullComponent
+	Consumable  *ecs.SliceComponent
+	Name        *ecs.SliceComponent
+	Description *ecs.SliceComponent
+	InBackpack  *ecs.NullComponent
+	InParty     *ecs.NullComponent
+	Equipped    *ecs.SliceComponent
+	Member      *ecs.NullComponent
+	// Enemy            *ecs.NullComponent
+	FactionTypeEnemy *ecs.NullComponent
 	Pools            *ecs.SliceComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
@@ -128,11 +137,15 @@ type Wearable struct {
 type InParty struct{}
 
 // 冒険に参加できるメンバー
+// TODO: allyにしたほうがいいかも
 type Member struct{}
 
 // 敵
 // 「派閥」コンポーネントとして、味方と敵を排反にしたほうがいいのかもしれない
-type Enemy struct{}
+// そうするとJoinだけではだめなので面倒だな
+// ただ排反を表現できればいいのだが
+// コンポーネントでチェックを入れるようにすればいいのか
+// type Enemy struct{}
 
 type Pools struct {
 	HP    Pool

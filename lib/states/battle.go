@@ -69,7 +69,7 @@ func (st *BattleState) OnStop(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
-		gameComponents.Enemy,
+		gameComponents.FactionTypeEnemy,
 		gameComponents.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
@@ -175,7 +175,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
-		gameComponents.Enemy,
+		gameComponents.FactionTypeEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -347,7 +347,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
-		gameComponents.Enemy,
+		gameComponents.FactionTypeEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 敵キャラごとにターゲット選択ボタンを作成する
