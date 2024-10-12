@@ -71,14 +71,8 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 				value.Elem().Set(component)
 				ecsComponent := ecv.FieldByName(component.Type().Name()).Interface().(ecs.DataComponent)
 				entity.AddComponent(ecsComponent, value.Interface())
-			case reflect.String:
-				// 追加対象コンポーネントの値を使って、追加先コンポーネントのフィールドを対応付けて値を設定する
-				value.Elem().Set(component)
-				ecsComponent := ecv.FieldByName(component.String()).Interface().(ecs.DataComponent)
-
-				entity.AddComponent(ecsComponent, value.Interface())
 			case reflect.Interface:
-				// Stringer インターフェースを持つ場合、メソッドを呼び出す
+				// Stringer インターフェースだけ対応している。Componentsに対応するフィールド名が必須なため
 				if component.Type().Implements(reflect.TypeOf((*fmt.Stringer)(nil)).Elem()) {
 					method := component.MethodByName("String")
 					if method.IsValid() {

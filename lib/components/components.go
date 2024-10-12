@@ -203,15 +203,28 @@ type Attack struct {
 	AttackCategory AttackType  // 攻撃種別
 }
 
+// ================
 // 派閥
-type FactionType string
+type FactionType fmt.Stringer
 
-const (
+var (
 	// 味方
-	FactionAlly FactionType = "FactionAlly"
+	FactionAlly FactionType = FactionAllyData{}
 	// 敵
-	FactionEnemy FactionType = "FactionEnemy"
+	FactionEnemy FactionType = FactionEnemyData{}
 )
+
+type FactionAllyData struct{}
+
+func (c FactionAllyData) String() string {
+	return "FactionAlly"
+}
+
+type FactionEnemyData struct{}
+
+func (c FactionEnemyData) String() string {
+	return "FactionEnemy"
+}
 
 // ================
 // アイテムの場所
