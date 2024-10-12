@@ -75,17 +75,19 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 				// Stringer インターフェースだけ対応している。Componentsに対応するフィールド名が必須なため
 				if component.Type().Implements(reflect.TypeOf((*fmt.Stringer)(nil)).Elem()) {
 					method := component.MethodByName("String")
-					if method.IsValid() {
-						results := method.Call(nil)
-						if len(results) > 0 {
-							v := component.Elem().Interface()
-							value.Elem().Set(reflect.ValueOf(v))
-
-							result := results[0].Interface().(string)
-							ecsComponent := ecv.FieldByName(result).Interface().(ecs.DataComponent)
-							entity.AddComponent(ecsComponent, value.Interface())
-						}
+					if !method.IsValid() {
+						log.Fatal("String() に失敗した")
 					}
+					results := method.Call(nil)
+					if len(results) != 1 {
+						log.Fatal("String() の返り値の取得に失敗した")
+					}
+					v := component.Elem().Interface()
+					value.Elem().Set(reflect.ValueOf(v))
+
+					result := results[0].Interface().(string)
+					ecsComponent := ecv.FieldByName(result).Interface().(ecs.DataComponent)
+					entity.AddComponent(ecsComponent, value.Interface())
 				}
 			default:
 				log.Fatalf("GameComponentListフィールドに指定された型の処理は定義されていない: %s", component.Kind())
