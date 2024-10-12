@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"fmt"
 	"image/color"
 	"log"
 	"reflect"
@@ -77,13 +78,20 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 
 				entity.AddComponent(ecsComponent, value.Interface())
 			case reflect.Interface:
-				switch v := component.Elem().Interface().(type) {
-				case string:
-					value.Elem().Set(reflect.ValueOf(v))
-					ecsComponent := ecv.FieldByName(component.Elem().String()).Interface().(ecs.DataComponent)
-					entity.AddComponent(ecsComponent, value.Interface())
-				default:
-					log.Fatalf("GameComponentListフィールドに指定されたany型で、処理が定義されていないものが指定された: %#v", v)
+				// Stringer インターフェースを持つ場合、メソッドを呼び出す
+				if component.Type().Implements(reflect.TypeOf((*fmt.Stringer)(nil)).Elem()) {
+					method := component.MethodByName("String")
+					if method.IsValid() {
+						results := method.Call(nil)
+						if len(results) > 0 {
+							v := component.Elem().Interface()
+							value.Elem().Set(reflect.ValueOf(v))
+
+							result := results[0].Interface().(string)
+							ecsComponent := ecv.FieldByName(result).Interface().(ecs.DataComponent)
+							entity.AddComponent(ecsComponent, value.Interface())
+						}
+					}
 				}
 			default:
 				log.Fatalf("GameComponentListフィールドに指定された型の処理は定義されていない: %s", component.Kind())

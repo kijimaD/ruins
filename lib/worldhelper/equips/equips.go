@@ -9,7 +9,7 @@ import (
 // 装備する
 func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.EquipmentSlotNumber) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	item.AddComponent(gameComponents.ItemLocationEquipped, &gc.Equipped{Owner: owner, EquipmentSlot: slotNumber})
+	item.AddComponent(gameComponents.ItemLocationEquipped, &gc.LocationEquipped{Owner: owner, EquipmentSlot: slotNumber})
 	item.RemoveComponent(gameComponents.ItemLocationInBackpack)
 	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
 }
@@ -33,7 +33,7 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 		gameComponents.ItemLocationEquipped,
 		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.Equipped)
+		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
 			for i, _ := range entities {
 				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
@@ -58,7 +58,7 @@ func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 		gameComponents.ItemLocationEquipped,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.Equipped)
+		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
 			for i, _ := range entities {
 				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {

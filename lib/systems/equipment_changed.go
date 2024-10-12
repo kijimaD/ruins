@@ -47,7 +47,7 @@ func EquipmentChangedSystem(world w.World) bool {
 		gameComponents.ItemLocationEquipped,
 		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(item ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(item).(*gc.Equipped)
+		equipped := gameComponents.ItemLocationEquipped.Get(item).(*gc.LocationEquipped)
 		wearable := gameComponents.Wearable.Get(item).(*gc.Wearable)
 
 		owner := equipped.Owner

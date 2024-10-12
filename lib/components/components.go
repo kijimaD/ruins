@@ -1,6 +1,8 @@
 package components
 
 import (
+	"fmt"
+
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -131,12 +133,6 @@ type Description struct {
 	Description string
 }
 
-// キャラクタが装備している状態
-type Equipped struct {
-	Owner         ecs.Entity
-	EquipmentSlot EquipmentSlotNumber
-}
-
 // 装備品。キャラクタが装備することでパラメータを変更できる
 type Wearable struct {
 	Defense           int           // 防御力
@@ -217,16 +213,44 @@ const (
 	FactionEnemy FactionType = "FactionEnemy"
 )
 
+// ================
 // アイテムの場所
-type ItemLocationType any
+type ItemLocationType fmt.Stringer
 
 var (
 	// バックパック内
-	ItemLocationInBackpack ItemLocationType = "ItemLocationInBackpack"
+	ItemLocationInBackpack ItemLocationType = LocationInBackpack{}
 	// 味方が装備中
-	ItemLocationEquipped ItemLocationType = Equipped{}
+	ItemLocationEquipped ItemLocationType = LocationEquipped{}
 	// フィールド上
-	ItemLocationOnField ItemLocationType = "ItemLocationOnField"
+	ItemLocationOnField ItemLocationType = LocationOnField{}
 	// いずれにも存在しない。マスター用
-	ItemLocationNone ItemLocationType = "ItemLocationNone"
+	ItemLocationNone ItemLocationType = LocationNone{}
 )
+
+type LocationInBackpack struct{}
+
+func (c LocationInBackpack) String() string {
+	return "ItemLocationInBackpack"
+}
+
+type LocationEquipped struct {
+	Owner         ecs.Entity
+	EquipmentSlot EquipmentSlotNumber
+}
+
+func (c LocationEquipped) String() string {
+	return "ItemLocationEquipped"
+}
+
+type LocationOnField struct{}
+
+func (c LocationOnField) String() string {
+	return "ItemLocationOnField"
+}
+
+type LocationNone struct{}
+
+func (c LocationNone) String() string {
+	return "ItemLocationNone"
+}

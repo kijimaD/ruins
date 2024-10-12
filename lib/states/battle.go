@@ -252,7 +252,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		gameComponents.ItemLocationEquipped,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.Equipped)
+		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if currentPhase.owner == equipped.Owner {
 			equipCards = append(equipCards, entity)
 		}
