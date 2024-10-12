@@ -1,75 +1,97 @@
 package components
 
 import (
+	"fmt"
+
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// コンポーネントのリストが格納されたオブジェクト。
+// この構造体を元にエンティティに対してコンポーネントを作成する。
+// フィールドの型や値に応じて、対応するECSコンポーネントを取得する。
 type GameComponentList struct {
-	Player           *Player
-	Camera           *Camera
-	Warp             *Warp
+	// general ================
+	Name        *Name
+	Description *Description
+
+	// item ================
 	Item             *Item
-	Name             *Name
-	Description      *Description
-	InBackpack       *InBackpack
-	Equipped         *Equipped
 	Consumable       *Consumable
-	InParty          *InParty
-	Member           *Member
-	Enemy            *Enemy
 	Pools            *Pools
-	ProvidesHealing  *ProvidesHealing
-	InflictsDamage   *InflictsDamage
 	Attack           *Attack
 	Material         *Material
 	Recipe           *Recipe
 	Wearable         *Wearable
 	Attributes       *Attributes
-	EquipmentChanged *EquipmentChanged
 	Card             *Card
+	ItemLocationType *ItemLocationType
 
+	// field ================
+	Player       *Player
+	Camera       *Camera
+	Wall         *Wall
+	Warp         *Warp
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *ec.SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
 
-	BattleCommand *BattleCommand
+	// member ================
+	InParty     *InParty
+	FactionType *FactionType
+
+	// event ================
+	BattleCommand    *BattleCommand
+	EquipmentChanged *EquipmentChanged
+	ProvidesHealing  *ProvidesHealing
+	InflictsDamage   *InflictsDamage
 }
 
+// componentsを溜めるスライス群
+// Join時はこのフィールドでクエリする
 type Components struct {
-	Player           *ecs.NullComponent
-	Camera           *ecs.SliceComponent
-	Wall             *ecs.NullComponent
-	Warp             *ecs.SliceComponent
-	Item             *ecs.NullComponent
-	Consumable       *ecs.SliceComponent
-	Name             *ecs.SliceComponent
-	Description      *ecs.SliceComponent
-	InBackpack       *ecs.NullComponent
-	InParty          *ecs.NullComponent
-	Equipped         *ecs.SliceComponent
-	Member           *ecs.NullComponent
-	Enemy            *ecs.NullComponent
-	Pools            *ecs.SliceComponent
-	ProvidesHealing  *ecs.SliceComponent
-	InflictsDamage   *ecs.SliceComponent
-	Attack           *ecs.SliceComponent
-	Material         *ecs.SliceComponent
-	Recipe           *ecs.SliceComponent
-	Wearable         *ecs.SliceComponent
-	Attributes       *ecs.SliceComponent
-	EquipmentChanged *ecs.NullComponent
-	Card             *ecs.SliceComponent
+	// general ================
+	Name        *ecs.SliceComponent
+	Description *ecs.SliceComponent
 
+	// item ================
+	Item                   *ecs.NullComponent
+	Consumable             *ecs.SliceComponent
+	Pools                  *ecs.SliceComponent
+	Attack                 *ecs.SliceComponent
+	Material               *ecs.SliceComponent
+	Recipe                 *ecs.SliceComponent
+	Wearable               *ecs.SliceComponent
+	Attributes             *ecs.SliceComponent
+	Card                   *ecs.SliceComponent
+	ItemLocationInBackpack *ecs.NullComponent
+	ItemLocationEquipped   *ecs.SliceComponent
+	ItemLocationOnField    *ecs.NullComponent
+	ItemLocationNone       *ecs.NullComponent
+
+	// field ================
+	Player       *ecs.NullComponent
+	Camera       *ecs.SliceComponent
+	Wall         *ecs.NullComponent
+	Warp         *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
 
-	BattleCommand *ecs.SliceComponent
+	// member ================
+	InParty      *ecs.NullComponent
+	FactionAlly  *ecs.NullComponent
+	FactionEnemy *ecs.NullComponent
+
+	// event ================
+	BattleCommand    *ecs.SliceComponent
+	EquipmentChanged *ecs.NullComponent
+	ProvidesHealing  *ecs.SliceComponent
+	InflictsDamage   *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
@@ -81,6 +103,9 @@ type Camera struct {
 	Scale   float64
 	ScaleTo float64
 }
+
+// 壁
+type Wall struct{}
 
 // ワープパッド
 // TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
@@ -108,15 +133,6 @@ type Description struct {
 	Description string
 }
 
-// インベントリに入っている状態
-type InBackpack struct{}
-
-// キャラクタが装備している状態。InBackpackとは排反
-type Equipped struct {
-	Owner         ecs.Entity
-	EquipmentSlot EquipmentSlotNumber
-}
-
 // 装備品。キャラクタが装備することでパラメータを変更できる
 type Wearable struct {
 	Defense           int           // 防御力
@@ -126,13 +142,6 @@ type Wearable struct {
 
 // 冒険パーティに参加している状態
 type InParty struct{}
-
-// 冒険に参加できるメンバー
-type Member struct{}
-
-// 敵
-// 「派閥」コンポーネントとして、味方と敵を排反にしたほうがいいのかもしれない
-type Enemy struct{}
 
 type Pools struct {
 	HP    Pool
@@ -192,4 +201,69 @@ type Attack struct {
 	AttackCount    int         // 攻撃回数
 	Element        ElementType // 攻撃属性
 	AttackCategory AttackType  // 攻撃種別
+}
+
+// ================
+// 派閥
+type FactionType fmt.Stringer
+
+var (
+	// 味方
+	FactionAlly FactionType = FactionAllyData{}
+	// 敵
+	FactionEnemy FactionType = FactionEnemyData{}
+)
+
+type FactionAllyData struct{}
+
+func (c FactionAllyData) String() string {
+	return "FactionAlly"
+}
+
+type FactionEnemyData struct{}
+
+func (c FactionEnemyData) String() string {
+	return "FactionEnemy"
+}
+
+// ================
+// アイテムの場所
+type ItemLocationType fmt.Stringer
+
+var (
+	// バックパック内
+	ItemLocationInBackpack ItemLocationType = LocationInBackpack{}
+	// 味方が装備中
+	ItemLocationEquipped ItemLocationType = LocationEquipped{}
+	// フィールド上
+	ItemLocationOnField ItemLocationType = LocationOnField{}
+	// いずれにも存在しない。マスター用
+	ItemLocationNone ItemLocationType = LocationNone{}
+)
+
+type LocationInBackpack struct{}
+
+func (c LocationInBackpack) String() string {
+	return "ItemLocationInBackpack"
+}
+
+type LocationEquipped struct {
+	Owner         ecs.Entity
+	EquipmentSlot EquipmentSlotNumber
+}
+
+func (c LocationEquipped) String() string {
+	return "ItemLocationEquipped"
+}
+
+type LocationOnField struct{}
+
+func (c LocationOnField) String() string {
+	return "ItemLocationOnField"
+}
+
+type LocationNone struct{}
+
+func (c LocationNone) String() string {
+	return "ItemLocationNone"
 }

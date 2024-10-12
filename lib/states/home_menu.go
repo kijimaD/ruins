@@ -11,7 +11,6 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/raw"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
@@ -45,30 +44,30 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	memberCount := 0
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		memberCount++
 	}))
 	if memberCount == 0 {
-		spawner.SpawnItem(world, "体当たり", raw.SpawnInNone)
+		spawner.SpawnItem(world, "体当たり", gc.ItemLocationNone)
 
-		spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
-		card1 := spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
-		card2 := spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
-		armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "ルビー原石", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-		spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
+		spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+		card1 := spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+		card2 := spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
+		armor := spawner.SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 		ishihara := spawner.SpawnMember(world, "イシハラ", true)
 		spawner.SpawnMember(world, "シラセ", true)
 		spawner.SpawnMember(world, "ヒラヤマ", true)
@@ -205,7 +204,7 @@ func (st *HomeMenuState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 		gameComponents.InParty,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)

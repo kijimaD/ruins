@@ -69,7 +69,7 @@ func (st *BattleState) OnStop(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
-		gameComponents.Enemy,
+		gameComponents.FactionEnemy,
 		gameComponents.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
@@ -175,7 +175,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
-		gameComponents.Enemy,
+		gameComponents.FactionEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
@@ -249,10 +249,10 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.Equipped,
+		gameComponents.ItemLocationEquipped,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.Equipped.Get(entity).(*gc.Equipped)
+		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if currentPhase.owner == equipped.Owner {
 			equipCards = append(equipCards, entity)
 		}
@@ -262,8 +262,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Card,
-		gameComponents.Equipped.Not(),
-		gameComponents.InBackpack.Not(),
+		gameComponents.ItemLocationNone,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipCards = append(equipCards, entity)
 	}))
@@ -347,7 +346,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Name,
-		gameComponents.Enemy,
+		gameComponents.FactionEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 敵キャラごとにターゲット選択ボタンを作成する

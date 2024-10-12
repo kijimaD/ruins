@@ -17,7 +17,6 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/game"
-	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
@@ -72,21 +71,21 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 func RunTestGame(state states.State, outputPath string) {
 	world := game.InitWorld(960, 720)
 
-	spawner.SpawnItem(world, "木刀", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "ハンドガン", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "レイガン", raw.SpawnInBackpack)
-	armor := spawner.SpawnItem(world, "西洋鎧", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "作業用ヘルメット", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "革のブーツ", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "ルビー原石", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復薬", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "回復スプレー", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
-	spawner.SpawnItem(world, "手榴弾", raw.SpawnInBackpack)
+	spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
+	armor := spawner.SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 	ishihara := spawner.SpawnMember(world, "イシハラ", true)
 	spawner.SpawnMember(world, "シラセ", true)
 	spawner.SpawnMember(world, "ヒラヤマ", true)

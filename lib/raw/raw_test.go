@@ -3,6 +3,7 @@ package raw
 import (
 	"testing"
 
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,7 +43,7 @@ func TestGenerateItem(t *testing.T) {
 name = "リペア"
 `
 	raw := Load(str)
-	entity := raw.GenerateItem("リペア", SpawnInBackpack)
+	entity := raw.GenerateItem("リペア", gc.ItemLocationInBackpack)
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
 	assert.NotNil(t, entity.Description)

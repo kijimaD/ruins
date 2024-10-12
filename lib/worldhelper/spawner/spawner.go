@@ -141,10 +141,10 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 // ================
 
 // アイテムを生成する
-func SpawnItem(world w.World, name string, spawnType raw.SpawnType) ecs.Entity {
+func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, spawnType))
+	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, locationType))
 	entities := loader.AddEntities(world, componentList)
 
 	return entities[len(entities)-1]
@@ -175,7 +175,7 @@ func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, raw.SpawnInBackpack))
+		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack))
 		loader.AddEntities(world, componentList)
 	}
 }

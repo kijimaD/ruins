@@ -198,8 +198,3 @@ func (et ElementType) String() string {
 	}
 	return result
 }
-
-// ================
-
-// 装備スロット番号。0始まり
-type EquipmentSlotNumber int

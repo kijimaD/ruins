@@ -332,7 +332,7 @@ func (st *EquipMenuState) queryMenuWear(world w.World) []ecs.Entity {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.InBackpack,
+		gameComponents.ItemLocationInBackpack,
 		gameComponents.Wearable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
@@ -348,7 +348,7 @@ func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.InBackpack,
+		gameComponents.ItemLocationInBackpack,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
@@ -362,7 +362,7 @@ func (st *EquipMenuState) queryAbility(world w.World) []ecs.Entity {
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 		gameComponents.Name,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
