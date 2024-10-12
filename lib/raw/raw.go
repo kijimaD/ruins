@@ -8,7 +8,6 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/utils"
-	myutils "github.com/kijimaD/ruins/lib/utils"
 )
 
 type RawMaster struct {
@@ -328,7 +327,7 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 
 func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
 	cl := rw.GenerateFighter(name)
-	cl.FactionType = myutils.GetPtr(gc.FactionAlly)
+	cl.FactionType = &gc.FactionAlly
 	if inParty {
 		cl.InParty = &gc.InParty{}
 	}
@@ -338,7 +337,7 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameCo
 
 func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
 	cl := rw.GenerateFighter(name)
-	cl.FactionType = myutils.GetPtr(gc.FactionEnemy)
+	cl.FactionType = &gc.FactionEnemy
 
 	return cl
 }
