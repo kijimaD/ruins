@@ -142,7 +142,7 @@
 				<dd><a href="index.html#SpawnNPC">func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel)</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, x gc.Pixel, y gc.Pixel)</a></dd>
+				<dd><a href="index.html#SpawnOperator">func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel)</a></dd>
 			
 			
 			
@@ -171,7 +171,7 @@
 		
 			
 			
-			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=6058:6095#L164">SpawnAllMaterials</a>
+			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=6070:6107#L164">SpawnAllMaterials</a>
 				<a class="permalink" href="index.html#SpawnAllMaterials">&#xb6;</a>
 				
 				
@@ -185,7 +185,7 @@
 		
 			
 			
-			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=6429:6464#L174">SpawnAllRecipes</a>
+			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=6441:6476#L174">SpawnAllRecipes</a>
 				<a class="permalink" href="index.html#SpawnAllRecipes">&#xb6;</a>
 				
 				
@@ -199,7 +199,7 @@
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=5679:5733#L154">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=5691:5745#L154">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -269,7 +269,7 @@
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=4834:4921#L134">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=4846:4933#L134">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
@@ -283,7 +283,7 @@
 		
 			
 			
-			<h2 id="SpawnMember">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=5270:5339#L144">SpawnMember</a>
+			<h2 id="SpawnMember">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=5282:5351#L144">SpawnMember</a>
 				<a class="permalink" href="index.html#SpawnMember">&#xb6;</a>
 				
 				
@@ -297,7 +297,7 @@
 		
 			
 			
-			<h2 id="SpawnNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=4246:4298#L112">SpawnNPC</a>
+			<h2 id="SpawnNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=4258:4310#L112">SpawnNPC</a>
 				<a class="permalink" href="index.html#SpawnNPC">&#xb6;</a>
 				
 				
@@ -312,13 +312,13 @@ TODO: 接触すると戦闘開始するようにする
 		
 			
 			
-			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=3339:3394#L84">SpawnPlayer</a>
-				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
+			<h2 id="SpawnOperator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawner/spawner.go?s=3345:3402#L84">SpawnOperator</a>
+				<a class="permalink" href="index.html#SpawnOperator">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func SpawnPlayer(world <a href="../../engine/world/index.html">w</a>.<a href="../../engine/world/index.html#World">World</a>, x <a href="../../components/index.html">gc</a>.<a href="../../components/index.html#Pixel">Pixel</a>, y <a href="../../components/index.html">gc</a>.<a href="../../components/index.html#Pixel">Pixel</a>)</pre>
-			<p>フィールド上に表示されるプレイヤーを生成する。
+			<pre>func SpawnOperator(world <a href="../../engine/world/index.html">w</a>.<a href="../../engine/world/index.html#World">World</a>, x <a href="../../components/index.html">gc</a>.<a href="../../components/index.html#Pixel">Pixel</a>, y <a href="../../components/index.html">gc</a>.<a href="../../components/index.html#Pixel">Pixel</a>)</pre>
+			<p>フィールド上に表示される操作対象キャラを生成する。
 TODO: エンティティが重複しているときにエラーを返す。
 TODO: 置けるタイル以外が指定されるとエラーを返す。
 デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
