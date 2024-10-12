@@ -140,19 +140,14 @@ func Load(entityMetadataContent string) RawMaster {
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) components.GameComponentList {
+func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) components.GameComponentList {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := components.GameComponentList{}
-	switch spawnType {
-	case SpawnInBackpack:
-		cl.ItemLocationType = &gc.ItemLocationInBackpack
-	case SpawnInNone:
-		cl.ItemLocationType = &gc.ItemLocationNone
-	}
+	cl.ItemLocationType = &locationType
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
@@ -252,7 +247,7 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) components.G
 	return cl
 }
 
-func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) components.GameComponentList {
+func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) components.GameComponentList {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
@@ -262,9 +257,7 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnTy
 	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
-	if spawnType == SpawnInBackpack {
-		cl.ItemLocationType = &gc.ItemLocationInBackpack
-	}
+	cl.ItemLocationType = &locationType
 
 	return cl
 }
@@ -283,7 +276,7 @@ func (rw *RawMaster) GenerateRecipe(name string) components.GameComponentList {
 	}
 
 	// 説明文などのため、マッチしたitemの定義から持ってくる
-	item := rw.GenerateItem(recipe.Name, SpawnInBackpack)
+	item := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Card != nil {
 		cl.Card = item.Card
