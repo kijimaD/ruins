@@ -95,7 +95,7 @@ func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
 func InPartyMember(world w.World, f func(entity ecs.Entity)) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 		gameComponents.InParty,
 	).Visit(ecs.Visit(f))
 }

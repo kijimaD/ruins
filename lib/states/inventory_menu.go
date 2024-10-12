@@ -274,7 +274,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 		gameComponents.InParty,
 		gameComponents.Name,
 		gameComponents.Pools,

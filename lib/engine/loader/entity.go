@@ -2,6 +2,7 @@ package loader
 
 import (
 	"image/color"
+	"log"
 	"reflect"
 
 	c "github.com/kijimaD/ruins/lib/engine/components"
@@ -74,6 +75,8 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 				ecsComponent := ecv.FieldByName(component.String()).Interface().(ecs.DataComponent)
 
 				entity.AddComponent(ecsComponent, value.Interface())
+			default:
+				log.Fatalf("指定されたGameComponentListフィールドの型が無効: %#v", component.Kind())
 			}
 		}
 	}

@@ -325,7 +325,7 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 
 func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
 	cl := rw.GenerateFighter(name)
-	cl.Member = &gc.Member{}
+	cl.FactionType = myutils.GetPtr(gc.FactionAlly)
 	if inParty {
 		cl.InParty = &gc.InParty{}
 	}
@@ -335,7 +335,7 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameCo
 
 func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
 	cl := rw.GenerateFighter(name)
-	cl.FactionType = myutils.GetPtr(gc.FactionTypeEnemy)
+	cl.FactionType = myutils.GetPtr(gc.FactionEnemy)
 
 	return cl
 }

@@ -45,7 +45,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	memberCount := 0
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		memberCount++
 	}))
@@ -205,7 +205,7 @@ func (st *HomeMenuState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 		gameComponents.InParty,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)

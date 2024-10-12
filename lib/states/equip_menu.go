@@ -362,7 +362,7 @@ func (st *EquipMenuState) queryAbility(world w.World) []ecs.Entity {
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Member,
+		gameComponents.FactionAlly,
 		gameComponents.Name,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
