@@ -63,20 +63,30 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 		if !cv.Field(iField).IsNil() {
 			component := cv.Field(iField).Elem()
 			value := reflect.New(reflect.TypeOf(component.Interface()))
-			value.Elem().Set(component)
 
 			switch component.Kind() {
 			case reflect.Struct:
 				// 追加対象コンポーネントの型名を使って、追加先コンポーネントのフィールドを対応付けて値を設定する
+				value.Elem().Set(component)
 				ecsComponent := ecv.FieldByName(component.Type().Name()).Interface().(ecs.DataComponent)
 				entity.AddComponent(ecsComponent, value.Interface())
 			case reflect.String:
 				// 追加対象コンポーネントの値を使って、追加先コンポーネントのフィールドを対応付けて値を設定する
+				value.Elem().Set(component)
 				ecsComponent := ecv.FieldByName(component.String()).Interface().(ecs.DataComponent)
 
 				entity.AddComponent(ecsComponent, value.Interface())
+			case reflect.Interface:
+				switch v := component.Elem().Interface().(type) {
+				case string:
+					value.Elem().Set(reflect.ValueOf(v))
+					ecsComponent := ecv.FieldByName(component.Elem().String()).Interface().(ecs.DataComponent)
+					entity.AddComponent(ecsComponent, value.Interface())
+				default:
+					log.Fatalf("GameComponentListフィールドに指定されたany型で、処理が定義されていないものが指定された: %#v", v)
+				}
 			default:
-				log.Fatalf("指定されたGameComponentListフィールドの型が無効: %#v", component.Kind())
+				log.Fatalf("GameComponentListフィールドに指定された型の処理は定義されていない: %s", component.Kind())
 			}
 		}
 	}

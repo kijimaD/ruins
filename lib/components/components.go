@@ -6,24 +6,24 @@ import (
 )
 
 // コンポーネントのリストが格納されたオブジェクト。
-// このフィールドの型や値に応じて、対応するECSコンポーネントを取得するために使用する。
+// この構造体を元にエンティティに対してコンポーネントを作成する。
+// フィールドの型や値に応じて、対応するECSコンポーネントを取得する。
 type GameComponentList struct {
 	// general ================
 	Name        *Name
 	Description *Description
 
 	// item ================
-	Item       *Item
-	InBackpack *InBackpack
-	Equipped   *Equipped
-	Consumable *Consumable
-	Pools      *Pools
-	Attack     *Attack
-	Material   *Material
-	Recipe     *Recipe
-	Wearable   *Wearable
-	Attributes *Attributes
-	Card       *Card
+	Item             *Item
+	Consumable       *Consumable
+	Pools            *Pools
+	Attack           *Attack
+	Material         *Material
+	Recipe           *Recipe
+	Wearable         *Wearable
+	Attributes       *Attributes
+	Card             *Card
+	ItemLocationType *ItemLocationType
 
 	// field ================
 	Player       *Player
@@ -37,8 +37,8 @@ type GameComponentList struct {
 	BlockPass    *BlockPass
 
 	// member ================
-	FactionType *FactionType
 	InParty     *InParty
+	FactionType *FactionType
 
 	// event ================
 	BattleCommand    *BattleCommand
@@ -55,17 +55,19 @@ type Components struct {
 	Description *ecs.SliceComponent
 
 	// item ================
-	Item       *ecs.NullComponent
-	InBackpack *ecs.NullComponent
-	Equipped   *ecs.SliceComponent
-	Consumable *ecs.SliceComponent
-	Pools      *ecs.SliceComponent
-	Attack     *ecs.SliceComponent
-	Material   *ecs.SliceComponent
-	Recipe     *ecs.SliceComponent
-	Wearable   *ecs.SliceComponent
-	Attributes *ecs.SliceComponent
-	Card       *ecs.SliceComponent
+	Item                   *ecs.NullComponent
+	Consumable             *ecs.SliceComponent
+	Pools                  *ecs.SliceComponent
+	Attack                 *ecs.SliceComponent
+	Material               *ecs.SliceComponent
+	Recipe                 *ecs.SliceComponent
+	Wearable               *ecs.SliceComponent
+	Attributes             *ecs.SliceComponent
+	Card                   *ecs.SliceComponent
+	ItemLocationInBackpack *ecs.NullComponent
+	ItemLocationEquipped   *ecs.SliceComponent
+	ItemLocationOnField    *ecs.NullComponent
+	ItemLocationNone       *ecs.NullComponent
 
 	// field ================
 	Player       *ecs.NullComponent
@@ -79,9 +81,9 @@ type Components struct {
 	BlockPass    *ecs.NullComponent
 
 	// member ================
+	InParty      *ecs.NullComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
-	InParty      *ecs.NullComponent
 
 	// event ================
 	BattleCommand    *ecs.SliceComponent
@@ -129,10 +131,7 @@ type Description struct {
 	Description string
 }
 
-// インベントリに入っている状態
-type InBackpack struct{}
-
-// キャラクタが装備している状態。InBackpackとは排反
+// キャラクタが装備している状態
 type Equipped struct {
 	Owner         ecs.Entity
 	EquipmentSlot EquipmentSlotNumber
@@ -216,4 +215,18 @@ const (
 	FactionAlly FactionType = "FactionAlly"
 	// 敵
 	FactionEnemy FactionType = "FactionEnemy"
+)
+
+// アイテムの場所
+type ItemLocationType any
+
+var (
+	// バックパック内
+	ItemLocationInBackpack ItemLocationType = "ItemLocationInBackpack"
+	// 味方が装備中
+	ItemLocationEquipped ItemLocationType = Equipped{}
+	// フィールド上
+	ItemLocationOnField ItemLocationType = "ItemLocationOnField"
+	// いずれにも存在しない。マスター用
+	ItemLocationNone ItemLocationType = "ItemLocationNone"
 )

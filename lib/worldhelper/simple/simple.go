@@ -87,7 +87,7 @@ func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Material,
-		gameComponents.InBackpack,
+		gameComponents.ItemLocationInBackpack,
 	).Visit(ecs.Visit(f))
 }
 

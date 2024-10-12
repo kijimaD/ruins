@@ -148,8 +148,11 @@ func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) components.G
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := components.GameComponentList{}
-	if spawnType == SpawnInBackpack {
-		cl.InBackpack = &gc.InBackpack{}
+	switch spawnType {
+	case SpawnInBackpack:
+		cl.ItemLocationType = &gc.ItemLocationInBackpack
+	case SpawnInNone:
+		cl.ItemLocationType = &gc.ItemLocationNone
 	}
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
@@ -261,7 +264,7 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnTy
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
 	if spawnType == SpawnInBackpack {
-		cl.InBackpack = &gc.InBackpack{}
+		cl.ItemLocationType = &gc.ItemLocationInBackpack
 	}
 
 	return cl

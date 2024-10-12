@@ -249,10 +249,10 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
 	world.Manager.Join(
 		gameComponents.Item,
-		gameComponents.Equipped,
+		gameComponents.ItemLocationEquipped,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.Equipped.Get(entity).(*gc.Equipped)
+		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.Equipped)
 		if currentPhase.owner == equipped.Owner {
 			equipCards = append(equipCards, entity)
 		}
@@ -262,8 +262,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Card,
-		gameComponents.Equipped.Not(),
-		gameComponents.InBackpack.Not(),
+		gameComponents.ItemLocationNone,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipCards = append(equipCards, entity)
 	}))
