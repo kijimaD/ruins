@@ -12,14 +12,14 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func PlayerMoveSystem(world w.World) {
+func OperatorMoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	var playerEntity ecs.Entity
 	var playerPos *gc.Position // player position
 	world.Manager.Join(
 		gameComponents.Position,
-		gameComponents.Player,
+		gameComponents.Operator,
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		playerEntity = entity
@@ -120,7 +120,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 		world.Manager.Join(
 			gameComponents.SpriteRender,
 			gameComponents.BlockPass,
-			gameComponents.Player.Not(),
+			gameComponents.Operator.Not(),
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			switch {
 			case entity.HasComponent(gameComponents.Position):

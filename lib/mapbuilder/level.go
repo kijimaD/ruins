@@ -57,12 +57,12 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			failCount++
 		}
 	}
-	// フィールドにプレイヤーを配置する
+	// フィールドに操作対象キャラを配置する
 	{
 		failCount := 0
 		for {
 			if failCount > 200 {
-				log.Fatal("プレイヤーの生成に失敗した")
+				log.Fatal("操作対象キャラの生成に失敗した")
 			}
 			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
 			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
@@ -70,7 +70,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 				failCount++
 				continue
 			}
-			spawner.SpawnPlayer(
+			spawner.SpawnOperator(
 				world,
 				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
 				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
