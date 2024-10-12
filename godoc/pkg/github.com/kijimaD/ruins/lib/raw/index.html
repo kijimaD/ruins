@@ -176,10 +176,10 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateFighter">func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateItem">func (rw *RawMaster) GenerateItem(name string, spawnType SpawnType) components.GameComponentList</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateItem">func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) components.GameComponentList</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMaterial">func (rw *RawMaster) GenerateMaterial(name string, amount int, spawnType SpawnType) components.GameComponentList</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMaterial">func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) components.GameComponentList</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMember">func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList</a></dd>
@@ -200,11 +200,6 @@
 			
 				
 				<dd><a href="index.html#RecipeInput">type RecipeInput</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#SpawnType">type SpawnType</a></dd>
 				
 				
 			
@@ -233,8 +228,6 @@
 			<span style="font-size:90%">
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go">enum.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/opts.go">opts.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go">raw.go</a>
 			
@@ -561,7 +554,7 @@
 
 			
 				
-				<h3 id="RawMaster.GenerateEnemy">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8550:8626#L325">GenerateEnemy</a>
+				<h3 id="RawMaster.GenerateEnemy">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8522:8598#L321">GenerateEnemy</a>
 					<a class="permalink" href="index.html#RawMaster.GenerateEnemy">&#xb6;</a>
 					
 					
@@ -573,7 +566,7 @@
 				
 			
 				
-				<h3 id="RawMaster.GenerateFighter">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=7537:7615#L291">GenerateFighter</a>
+				<h3 id="RawMaster.GenerateFighter">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=7501:7579#L287">GenerateFighter</a>
 					<a class="permalink" href="index.html#RawMaster.GenerateFighter">&#xb6;</a>
 					
 					
@@ -585,31 +578,31 @@
 				
 			
 				
-				<h3 id="RawMaster.GenerateItem">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2851:2947#L133">GenerateItem</a>
+				<h3 id="RawMaster.GenerateItem">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2851:2960#L133">GenerateItem</a>
 					<a class="permalink" href="index.html#RawMaster.GenerateItem">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, spawnType <a href="index.html#SpawnType">SpawnType</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
 				
 				
 				
 				
 			
 				
-				<h3 id="RawMaster.GenerateMaterial">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=6066:6178#L242">GenerateMaterial</a>
+				<h3 id="RawMaster.GenerateMaterial">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=6043:6168#L240">GenerateMaterial</a>
 					<a class="permalink" href="index.html#RawMaster.GenerateMaterial">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, spawnType <a href="index.html#SpawnType">SpawnType</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
 				
 				
 				
 				
 			
 				
-				<h3 id="RawMaster.GenerateMember">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8337:8428#L315">GenerateMember</a>
+				<h3 id="RawMaster.GenerateMember">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8301:8392#L311">GenerateMember</a>
 					<a class="permalink" href="index.html#RawMaster.GenerateMember">&#xb6;</a>
 					
 					
@@ -621,7 +614,7 @@
 				
 			
 				
-				<h3 id="RawMaster.GenerateRecipe">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=6612:6689#L259">GenerateRecipe</a>
+				<h3 id="RawMaster.GenerateRecipe">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=6566:6643#L255">GenerateRecipe</a>
 					<a class="permalink" href="index.html#RawMaster.GenerateRecipe">&#xb6;</a>
 					
 					
@@ -705,36 +698,6 @@
 
 			
 
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="SpawnType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/opts.go?s=13:34#L1">SpawnType</a>
-				<a class="permalink" href="index.html#SpawnType">&#xb6;</a>
-				
-				
-			</h2>
-			
-			<pre>type SpawnType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-
-			
-
-			
-				
-				<pre>var (
-    <span class="comment">// どの場所にも属さない。マスタとして使う</span>
-    <span id="SpawnInNone">SpawnInNone</span> <a href="index.html#SpawnType">SpawnType</a> = &#34;NONE&#34;
-    <span class="comment">// バックパック内に生成する</span>
-    <span id="SpawnInBackpack">SpawnInBackpack</span> <a href="index.html#SpawnType">SpawnType</a> = &#34;IN_BACKPACK&#34;
-)</pre>
 			
 
 			
