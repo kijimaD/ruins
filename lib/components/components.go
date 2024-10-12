@@ -9,73 +9,85 @@ import (
 // このフィールドの型や値に応じて、対応するECSコンポーネントを取得するために使用する。
 type GameComponentList struct {
 	// general ================
-	Player           *Player
-	Camera           *Camera
-	Warp             *Warp
-	Item             *Item
-	Name             *Name
-	Description      *Description
-	InBackpack       *InBackpack
-	Equipped         *Equipped
-	Consumable       *Consumable
-	InParty          *InParty
-	Pools            *Pools
-	ProvidesHealing  *ProvidesHealing
-	InflictsDamage   *InflictsDamage
-	Attack           *Attack
-	Material         *Material
-	Recipe           *Recipe
-	Wearable         *Wearable
-	Attributes       *Attributes
-	EquipmentChanged *EquipmentChanged
-	Card             *Card
-	FactionType      *FactionType
+	Name        *Name
+	Description *Description
+
+	// item ================
+	Item       *Item
+	InBackpack *InBackpack
+	Equipped   *Equipped
+	Consumable *Consumable
+	Pools      *Pools
+	Attack     *Attack
+	Material   *Material
+	Recipe     *Recipe
+	Wearable   *Wearable
+	Attributes *Attributes
+	Card       *Card
 
 	// field ================
+	Player       *Player
+	Camera       *Camera
+	Wall         *Wall
+	Warp         *Warp
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *ec.SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
 
-	// battle ================
-	BattleCommand *BattleCommand
+	// member ================
+	FactionType *FactionType
+	InParty     *InParty
+
+	// event ================
+	BattleCommand    *BattleCommand
+	EquipmentChanged *EquipmentChanged
+	ProvidesHealing  *ProvidesHealing
+	InflictsDamage   *InflictsDamage
 }
 
 // componentsを溜めるスライス群
 // Join時はこのフィールドでクエリする
 type Components struct {
-	Player           *ecs.NullComponent
-	Camera           *ecs.SliceComponent
-	Wall             *ecs.NullComponent
-	Warp             *ecs.SliceComponent
-	Item             *ecs.NullComponent
-	Consumable       *ecs.SliceComponent
-	Name             *ecs.SliceComponent
-	Description      *ecs.SliceComponent
-	InBackpack       *ecs.NullComponent
-	InParty          *ecs.NullComponent
-	Equipped         *ecs.SliceComponent
-	Pools            *ecs.SliceComponent
-	ProvidesHealing  *ecs.SliceComponent
-	InflictsDamage   *ecs.SliceComponent
-	Attack           *ecs.SliceComponent
-	Material         *ecs.SliceComponent
-	Recipe           *ecs.SliceComponent
-	Wearable         *ecs.SliceComponent
-	Attributes       *ecs.SliceComponent
-	EquipmentChanged *ecs.NullComponent
-	Card             *ecs.SliceComponent
-	FactionAlly      *ecs.NullComponent
-	FactionEnemy     *ecs.NullComponent
+	// general ================
+	Name        *ecs.SliceComponent
+	Description *ecs.SliceComponent
 
+	// item ================
+	Item       *ecs.NullComponent
+	InBackpack *ecs.NullComponent
+	Equipped   *ecs.SliceComponent
+	Consumable *ecs.SliceComponent
+	Pools      *ecs.SliceComponent
+	Attack     *ecs.SliceComponent
+	Material   *ecs.SliceComponent
+	Recipe     *ecs.SliceComponent
+	Wearable   *ecs.SliceComponent
+	Attributes *ecs.SliceComponent
+	Card       *ecs.SliceComponent
+
+	// field ================
+	Player       *ecs.NullComponent
+	Camera       *ecs.SliceComponent
+	Wall         *ecs.NullComponent
+	Warp         *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
 
-	BattleCommand *ecs.SliceComponent
+	// member ================
+	FactionAlly  *ecs.NullComponent
+	FactionEnemy *ecs.NullComponent
+	InParty      *ecs.NullComponent
+
+	// event ================
+	BattleCommand    *ecs.SliceComponent
+	EquipmentChanged *ecs.NullComponent
+	ProvidesHealing  *ecs.SliceComponent
+	InflictsDamage   *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
@@ -87,6 +99,9 @@ type Camera struct {
 	Scale   float64
 	ScaleTo float64
 }
+
+// 壁
+type Wall struct{}
 
 // ワープパッド
 // TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
