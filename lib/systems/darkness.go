@@ -48,7 +48,7 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 	var pos *gc.Position
 	world.Manager.Join(
 		gameComponents.Position,
-		gameComponents.Player,
+		gameComponents.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pos = gameComponents.Position.Get(entity).(*gc.Position)
 	}))

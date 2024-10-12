@@ -78,7 +78,7 @@ func (st *DungeonState) OnStop(world w.World) {
 }
 
 func (st *DungeonState) Update(world w.World) states.Transition {
-	gs.PlayerMoveSystem(world)
+	gs.OperatorMoveSystem(world)
 	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {

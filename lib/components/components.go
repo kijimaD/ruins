@@ -28,7 +28,7 @@ type GameComponentList struct {
 	ItemLocationType *ItemLocationType
 
 	// field ================
-	Player       *Player
+	Operator     *Operator
 	Camera       *Camera
 	Wall         *Wall
 	Warp         *Warp
@@ -72,7 +72,7 @@ type Components struct {
 	ItemLocationNone       *ecs.NullComponent
 
 	// field ================
-	Player       *ecs.NullComponent
+	Operator     *ecs.NullComponent
 	Camera       *ecs.SliceComponent
 	Wall         *ecs.NullComponent
 	Warp         *ecs.SliceComponent
@@ -95,8 +95,7 @@ type Components struct {
 }
 
 // フィールドで操作対象となる対象
-// operatorとかのほうがよさそうか?
-type Player struct{}
+type Operator struct{}
 
 // カメラ
 type Camera struct {

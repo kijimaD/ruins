@@ -65,8 +65,8 @@ type SpriteRender struct {
 type DepthNum int
 
 const (
-	DepthNumFloor  DepthNum = iota // 床。最背面に表示する
-	DepthNumRug                    // 床に置くもの。例: ワープホール、アイテム
-	DepthNumTaller                 // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
-	DepthNumPlayer                 // プレイヤーキャラを最も手前に表示する
+	DepthNumFloor    DepthNum = iota // 床。最背面に表示する
+	DepthNumRug                      // 床に置くもの。例: ワープホール、アイテム
+	DepthNumTaller                   // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
+	DepthNumOperator                 // 操作キャラを最も手前に表示する
 )
