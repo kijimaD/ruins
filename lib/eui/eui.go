@@ -31,20 +31,22 @@ func NewRowContainer() *widget.Container {
 }
 
 // 中身が縦並びのコンテナ
-func NewVerticalContainer() *widget.Container {
+func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+					widget.RowLayoutOpts.Spacing(4),
+					widget.RowLayoutOpts.Padding(widget.Insets{
+						Top:    10,
+						Bottom: 10,
+						Left:   10,
+						Right:  10,
+					}),
+				)),
+		}, opts...)...,
 	)
 }
 
