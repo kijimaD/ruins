@@ -73,9 +73,9 @@ func (st *BattleState) OnStart(world w.World) {
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: enemy})
 	effects.RunEffectQueue(world)
 
-	st.ui = st.initUI(world)
-
 	gamelog.BattleLog.Append("敵が現れた。")
+
+	st.ui = st.initUI(world)
 }
 
 func (st *BattleState) OnStop(world w.World) {
@@ -101,8 +101,6 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	st.reloadMsg(world)
-
 	// ステートが変わった最初の1回だけ実行される
 	if st.phase != st.prevPhase {
 		switch v := st.phase.(type) {
@@ -127,6 +125,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		effects.RunEffectQueue(world)
 		st.updateEnemyListContainer(world)
 		st.reloadExecute(world)
+		st.reloadMsg(world)
 
 		// commandが残っていればクリック待ちにする
 		commandCount := 0
@@ -177,6 +176,7 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	st.msgContainer = eui.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(500, 400)),
 	)
+	st.reloadMsg(world)
 	actionContainer := eui.NewRowContainer()
 
 	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
