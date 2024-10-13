@@ -17,6 +17,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
@@ -41,8 +42,12 @@ type BattleState struct {
 	// 各フェーズでの選択表示に使うコンテナ
 	selectContainer *widget.Container
 
-	selectedItem      ecs.Entity
-	cardSpecContainer *widget.Container // カードの説明表示コンテナ
+	// 選択中のアイテム
+	selectedItem ecs.Entity
+	// カードの説明表示コンテナ
+	cardSpecContainer *widget.Container
+	// メッセージ表示
+	msgContainer *widget.Container
 }
 
 func (st BattleState) String() string {
@@ -62,6 +67,8 @@ func (st *BattleState) OnStart(world w.World) {
 	effects.RunEffectQueue(world)
 
 	st.ui = st.initUI(world)
+
+	gamelog.BattleLog.Append("敵が現れた。")
 }
 
 func (st *BattleState) OnStop(world w.World) {
@@ -84,6 +91,8 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	}
 
 	st.ui.Update()
+
+	st.reloadMsg(world)
 
 	// ステートが変わった最初の1回だけ実行される
 	if st.phase != st.prevPhase {
@@ -130,13 +139,23 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalTransContainer()
 	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
-	st.selectContainer = eui.NewVerticalContainer()
+	st.selectContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 180)),
+	)
 	st.reloadPolicy(world)
-	st.cardSpecContainer = eui.NewVerticalContainer()
+	st.cardSpecContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(600, 180)),
+	)
+	st.msgContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(500, 400)),
+	)
+	actionContainer := eui.NewRowContainer()
+
+	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
 	rootContainer.AddChild(
 		st.enemyListContainer,
-		st.selectContainer,
-		st.cardSpecContainer,
+		actionContainer,
+		st.msgContainer,
 	)
 
 	return &ebitenui.UI{Container: rootContainer}
@@ -164,7 +183,7 @@ func (st *BattleState) initEnemyContainer() *widget.Container {
 				MaxWidth:  200,
 				MaxHeight: 200,
 			}),
-			widget.WidgetOpts.MinSize(0, 0),
+			widget.WidgetOpts.MinSize(0, 600),
 		),
 	)
 }
@@ -267,15 +286,6 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		equipCards = append(equipCards, entity)
 	}))
 
-	{
-		members := []ecs.Entity{}
-		simple.InPartyMember(world, func(entity ecs.Entity) {
-			members = append(members, entity)
-		})
-		member := members[st.curMemberIndex]
-		name := simple.GetName(world, member)
-		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
-	}
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(ecs.Entity)
@@ -335,6 +345,15 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		world,
 	)
 	st.selectContainer.AddChild(list)
+	{
+		members := []ecs.Entity{}
+		simple.InPartyMember(world, func(entity ecs.Entity) {
+			members = append(members, entity)
+		})
+		member := members[st.curMemberIndex]
+		name := simple.GetName(world, member)
+		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
+	}
 }
 
 // ================
@@ -393,6 +412,50 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 
 // ================
 
+func (st *BattleState) reloadMsg(world w.World) {
+	st.msgContainer.RemoveChildren()
+
+	entries := []any{}
+	for _, e := range gamelog.BattleLog.Latest(8) {
+		entries = append(entries, e)
+	}
+
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(500, 280),
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionEnd,
+				StretchVertical:    true,
+				Padding:            widget.NewInsetsSimple(50),
+			}),
+		)),
+		euiext.ListOpts.SliderOpts(
+			widget.SliderOpts.MinHandleSize(5),
+			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2))),
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			v, ok := e.(string)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			return v
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {}),
+	}
+
+	list := eui.NewList(
+		entries,
+		opts,
+		world,
+	)
+	st.msgContainer.AddChild(list)
+}
+
+// ================
+
 func (st *BattleState) reloadExecute(world w.World) {
 	st.updateEnemyListContainer(world)
+
+	// 処理を書く...
 }
