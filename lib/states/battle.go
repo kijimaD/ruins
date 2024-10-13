@@ -26,6 +26,11 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+const (
+	// 戦闘ログメッセージの高さ。文字分で指定する
+	MessageCharBaseHeight = 7
+)
+
 type BattleState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
@@ -36,6 +41,8 @@ type BattleState struct {
 	prevPhase battlePhase
 	// 現在処理中のメンバーのインデックス。メンバーごとにコマンドを発行するため
 	curMemberIndex int
+	// テキスト送り待ち状態
+	isWaitClick bool
 
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
@@ -81,6 +88,8 @@ func (st *BattleState) OnStop(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
+
+	gamelog.BattleLog.Flush()
 }
 
 func (st *BattleState) Update(world w.World) states.Transition {
@@ -120,21 +129,27 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadExecute(world)
 
 		// commandが残っていればクリック待ちにする
-		wait := false
+		commandCount := 0
 		gameComponents := world.Components.Game.(*gc.Components)
 		world.Manager.Join(
 			gameComponents.BattleCommand,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			wait = true
+			commandCount += 1
 		}))
-		if wait && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-			gs.BattleCommandSystem(world)
 
-			return states.Transition{Type: states.TransNone}
+		if commandCount == 0 {
+			// 選択完了
+			st.phase = &phaseChoosePolicy{}
+		} else {
+			// 未処理のコマンドがまだ残っている
+			st.isWaitClick = true
 		}
 
-		if !wait {
-			st.phase = &phaseChoosePolicy{}
+		if st.isWaitClick && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			gs.BattleCommandSystem(world)
+			st.isWaitClick = false
+
+			return states.Transition{Type: states.TransNone}
 		}
 	case *phaseResult:
 	}
@@ -411,6 +426,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 				if st.curMemberIndex >= len(members)-1 {
 					st.curMemberIndex = 0
 					st.phase = &phaseExecute{}
+					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
 				} else {
 					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
 					st.phase = &phaseChooseAction{owner: members[st.curMemberIndex]}
@@ -429,8 +445,11 @@ func (st *BattleState) reloadMsg(world w.World) {
 	st.msgContainer.RemoveChildren()
 
 	entries := []any{}
-	for _, e := range gamelog.BattleLog.Latest(8) {
+	for _, e := range gamelog.BattleLog.Latest(MessageCharBaseHeight) {
 		entries = append(entries, e)
+	}
+	if st.isWaitClick {
+		entries = append(entries, any("▼"))
 	}
 
 	opts := []euiext.ListOpt{
