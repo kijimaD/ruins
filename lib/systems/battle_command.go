@@ -12,11 +12,13 @@ import (
 )
 
 // カード使用としてeffectに移したほうがいいかも
+// effects.ItemTrigger() 的な
 func BattleCommandSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
+	if firstEntity := ecs.GetFirst(world.Manager.Join(
 		gameComponents.BattleCommand,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	)); firstEntity != nil {
+		entity := *firstEntity
 		cmd := gameComponents.BattleCommand.Get(entity).(*gc.BattleCommand)
 
 		// wayから攻撃の属性を取り出す
@@ -42,5 +44,5 @@ func BattleCommandSystem(world w.World) {
 		}
 
 		world.Manager.DeleteEntity(entity)
-	}))
+	}
 }

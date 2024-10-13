@@ -116,11 +116,24 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseChooseTarget:
 	case *phaseExecute:
 		effects.RunEffectQueue(world)
-		gs.BattleCommandSystem(world)
 		st.updateEnemyListContainer(world)
 		st.reloadExecute(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		// commandが残っていればクリック待ちにする
+		wait := false
+		gameComponents := world.Components.Game.(*gc.Components)
+		world.Manager.Join(
+			gameComponents.BattleCommand,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			wait = true
+		}))
+		if wait && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			gs.BattleCommandSystem(world)
+
+			return states.Transition{Type: states.TransNone}
+		}
+
+		if !wait {
 			st.phase = &phaseChoosePolicy{}
 		}
 	case *phaseResult:
