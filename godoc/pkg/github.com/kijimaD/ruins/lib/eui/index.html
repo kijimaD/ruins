@@ -113,6 +113,9 @@
 			
 			
 				
+				<dd><a href="index.html#BaseRowLayoutOpts">func BaseRowLayoutOpts() []widget.RowLayoutOpt</a></dd>
+			
+				
 				<dd><a href="index.html#LoadButtonImage">func LoadButtonImage() *widget.ButtonImage</a></dd>
 			
 				
@@ -120,9 +123,6 @@
 			
 				
 				<dd><a href="index.html#NewBodyText">func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text</a></dd>
-			
-				
-				<dd><a href="index.html#NewEmptyContainer">func NewEmptyContainer() *widget.Container</a></dd>
 			
 				
 				<dd><a href="index.html#NewItemButton">func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button</a></dd>
@@ -137,10 +137,10 @@
 				<dd><a href="index.html#NewMenuText">func NewMenuText(title string, world w.World) *widget.Text</a></dd>
 			
 				
-				<dd><a href="index.html#NewRowContainer">func NewRowContainer() *widget.Container</a></dd>
+				<dd><a href="index.html#NewRowContainer">func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewScrollContainer">func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider)</a></dd>
+				<dd><a href="index.html#NewScrollContainer">func NewScrollContainer(content widget.HasWidget, world w.World) (*widget.ScrollContainer, *widget.Slider)</a></dd>
 			
 				
 				<dd><a href="index.html#NewScrollContentContainer">func NewScrollContentContainer() *widget.Container</a></dd>
@@ -155,13 +155,10 @@
 				<dd><a href="index.html#NewVerticalContainer">func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewVerticalTransContainer">func NewVerticalTransContainer() *widget.Container</a></dd>
-			
-				
 				<dd><a href="index.html#NewWSplitContainer">func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewWindowContainer">func NewWindowContainer() *widget.Container</a></dd>
+				<dd><a href="index.html#NewWindowContainer">func NewWindowContainer(world w.World) *widget.Container</a></dd>
 			
 				
 				<dd><a href="index.html#NewWindowHeaderContainer">func NewWindowHeaderContainer(title string, world w.World) *widget.Container</a></dd>
@@ -197,6 +194,19 @@
 		
 			
 			
+			<h2 id="BaseRowLayoutOpts">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=10269:10315#L312">BaseRowLayoutOpts</a>
+				<a class="permalink" href="index.html#BaseRowLayoutOpts">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func BaseRowLayoutOpts() []<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#RowLayoutOpt">RowLayoutOpt</a></pre>
+			
+			
+			
+
+		
+			
+			
 			<h2 id="LoadButtonImage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/load.go?s=274:316#L2">LoadButtonImage</a>
 				<a class="permalink" href="index.html#LoadButtonImage">&#xb6;</a>
 				
@@ -225,7 +235,7 @@
 		
 			
 			
-			<h2 id="NewBodyText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=7563:7639#L241">NewBodyText</a>
+			<h2 id="NewBodyText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=6338:6414#L209">NewBodyText</a>
 				<a class="permalink" href="index.html#NewBodyText">&#xb6;</a>
 				
 				
@@ -238,20 +248,7 @@
 		
 			
 			
-			<h2 id="NewEmptyContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=297:339#L5">NewEmptyContainer</a>
-				<a class="permalink" href="index.html#NewEmptyContainer">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewEmptyContainer() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
-			
-			
-			
-
-		
-			
-			
-			<h2 id="NewItemButton">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=10787:10893#L319">NewItemButton</a>
+			<h2 id="NewItemButton">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=9742:9848#L293">NewItemButton</a>
 				<a class="permalink" href="index.html#NewItemButton">&#xb6;</a>
 				
 				
@@ -264,7 +261,7 @@
 		
 			
 			
-			<h2 id="NewItemGridContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=1902:1947#L62">NewItemGridContainer</a>
+			<h2 id="NewItemGridContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=1074:1119#L36">NewItemGridContainer</a>
 				<a class="permalink" href="index.html#NewItemGridContainer">&#xb6;</a>
 				
 				
@@ -278,7 +275,7 @@
 		
 			
 			
-			<h2 id="NewList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=8332:8414#L270">NewList</a>
+			<h2 id="NewList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=7107:7189#L238">NewList</a>
 				<a class="permalink" href="index.html#NewList">&#xb6;</a>
 				
 				
@@ -291,7 +288,7 @@
 		
 			
 			
-			<h2 id="NewMenuText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=7298:7356#L230">NewMenuText</a>
+			<h2 id="NewMenuText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=6073:6131#L198">NewMenuText</a>
 				<a class="permalink" href="index.html#NewMenuText">&#xb6;</a>
 				
 				
@@ -304,12 +301,12 @@
 		
 			
 			
-			<h2 id="NewRowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=406:446#L10">NewRowContainer</a>
+			<h2 id="NewRowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=328:395#L6">NewRowContainer</a>
 				<a class="permalink" href="index.html#NewRowContainer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewRowContainer() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<pre>func NewRowContainer(opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ContainerOpt">ContainerOpt</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
 			<p>汎用的なrowコンテナ
 
 			
@@ -318,12 +315,12 @@
 		
 			
 			
-			<h2 id="NewScrollContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=3831:3922#L128">NewScrollContainer</a>
+			<h2 id="NewScrollContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=3003:3109#L102">NewScrollContainer</a>
 				<a class="permalink" href="index.html#NewScrollContainer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewScrollContainer(content <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#HasWidget">HasWidget</a>) (*<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ScrollContainer">ScrollContainer</a>, *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Slider">Slider</a>)</pre>
+			<pre>func NewScrollContainer(content <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#HasWidget">HasWidget</a>, world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) (*<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ScrollContainer">ScrollContainer</a>, *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Slider">Slider</a>)</pre>
 			<p>スクロールコンテナとスクロールバー
 
 			
@@ -332,7 +329,7 @@
 		
 			
 			
-			<h2 id="NewScrollContentContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=5625:5675#L174">NewScrollContentContainer</a>
+			<h2 id="NewScrollContentContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=4432:4482#L139">NewScrollContentContainer</a>
 				<a class="permalink" href="index.html#NewScrollContentContainer">&#xb6;</a>
 				
 				
@@ -346,7 +343,7 @@
 		
 			
 			
-			<h2 id="NewSmallWindow">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=7882:7968#L255">NewSmallWindow</a>
+			<h2 id="NewSmallWindow">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=6657:6743#L223">NewSmallWindow</a>
 				<a class="permalink" href="index.html#NewSmallWindow">&#xb6;</a>
 				
 				
@@ -360,7 +357,7 @@
 		
 			
 			
-			<h2 id="NewVSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=2535:2625#L82">NewVSplitContainer</a>
+			<h2 id="NewVSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=1707:1797#L56">NewVSplitContainer</a>
 				<a class="permalink" href="index.html#NewVSplitContainer">&#xb6;</a>
 				
 				
@@ -374,7 +371,7 @@
 		
 			
 			
-			<h2 id="NewVerticalContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=727:799#L24">NewVerticalContainer</a>
+			<h2 id="NewVerticalContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=619:691#L19">NewVerticalContainer</a>
 				<a class="permalink" href="index.html#NewVerticalContainer">&#xb6;</a>
 				
 				
@@ -388,21 +385,7 @@
 		
 			
 			
-			<h2 id="NewVerticalTransContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=1361:1411#L44">NewVerticalTransContainer</a>
-				<a class="permalink" href="index.html#NewVerticalTransContainer">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewVerticalTransContainer() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
-			<p>ポーズ用の半透明なコンテナ。コピペがひどいのでどうにかする
-
-			
-			
-
-		
-			
-			
-			<h2 id="NewWSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=3168:3258#L105">NewWSplitContainer</a>
+			<h2 id="NewWSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=2340:2430#L79">NewWSplitContainer</a>
 				<a class="permalink" href="index.html#NewWSplitContainer">&#xb6;</a>
 				
 				
@@ -416,13 +399,13 @@
 		
 			
 			
-			<h2 id="NewWindowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=6070:6113#L190">NewWindowContainer</a>
+			<h2 id="NewWindowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=4826:4882#L155">NewWindowContainer</a>
 				<a class="permalink" href="index.html#NewWindowContainer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewWindowContainer() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
-			<p>前面に開くウィンドウ用のコンテナ。色が違ったりする
+			<pre>func NewWindowContainer(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<p>ウィンドウの本体
 
 			
 			
@@ -430,7 +413,7 @@
 		
 			
 			
-			<h2 id="NewWindowHeaderContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=6670:6746#L212">NewWindowHeaderContainer</a>
+			<h2 id="NewWindowHeaderContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/eui/eui.go?s=5442:5518#L179">NewWindowHeaderContainer</a>
 				<a class="permalink" href="index.html#NewWindowHeaderContainer">&#xb6;</a>
 				
 				
