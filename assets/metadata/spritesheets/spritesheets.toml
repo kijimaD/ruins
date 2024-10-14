@@ -44,5 +44,5 @@ sprites = [
 [sprite_sheet.front_tank1]
 texture_image = "file/front/tank1.png"
 sprites = [
-    { x = 0, y = 0, width = 500, height = 333 },
+    { x = 0, y = 0, width = 300, height = 180 },
 ]

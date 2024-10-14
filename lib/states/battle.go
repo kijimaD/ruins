@@ -2,7 +2,6 @@ package states
 
 import (
 	"fmt"
-	"image"
 	"log"
 
 	"github.com/ebitenui/ebitenui"
@@ -13,9 +12,7 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
-	m "github.com/kijimaD/ruins/lib/engine/math"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -164,37 +161,6 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	{
-		iSprite := 0
-		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.Attributes).Size())
-		world.Manager.Join(
-			gameComponents.SpriteRender,
-			gameComponents.Attributes,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			entities[iSprite] = entity
-			iSprite++
-		}))
-
-		for _, entity := range entities {
-			// 座標描画
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
-			texture := spriteRender.SpriteSheet.Texture
-			textureWidth, textureHeight := texture.Image.Size()
-
-			left := m.Max(0, sprite.X)
-			right := m.Min(textureWidth, sprite.X+sprite.Width)
-			top := m.Max(0, sprite.Y)
-			bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
-
-			op := &spriteRender.Options
-			op.GeoM.Reset()
-			op.GeoM.Translate(float64(100), float64(100))
-			screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)
-		}
-	}
 }
 
 // ================
@@ -229,21 +195,8 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// 中央寄せのコンテナ
 func (st *BattleState) initEnemyContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
+	return eui.NewRowContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position:  widget.RowLayoutPositionCenter,
@@ -253,6 +206,9 @@ func (st *BattleState) initEnemyContainer() *widget.Container {
 			}),
 			widget.WidgetOpts.MinSize(0, 600),
 		),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+		)),
 	)
 }
 
@@ -265,10 +221,24 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		gameComponents.FactionEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-		st.enemyListContainer.AddChild(eui.NewMenuText(text, world))
+		{
+			// とりあえず仮の画像
+			tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
+			graphic := widget.NewGraphic(
+				widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: true,
+				})),
+				widget.GraphicOpts.Image(tankSS.Texture.Image),
+			)
+			st.enemyListContainer.AddChild(graphic)
+		}
+
+		{
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+			st.enemyListContainer.AddChild(eui.NewMenuText(text, world))
+		}
 	}))
 }
 
