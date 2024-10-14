@@ -4,11 +4,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-const (
-	fontFaceRegular = "assets/fonts/NotoSans-Regular.ttf"
-	fontFaceBold    = "assets/fonts/NotoSans-Bold.ttf"
-)
-
 type fonts struct {
 	face         text.Face
 	titleFace    text.Face
