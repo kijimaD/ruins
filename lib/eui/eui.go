@@ -17,35 +17,31 @@ func NewEmptyContainer() *widget.Container {
 }
 
 // 汎用的なrowコンテナ
-func NewRowContainer() *widget.Container {
+func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Spacing(8),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    10,
-				Bottom: 10,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					BaseRowLayoutOpts()...,
+				),
+			),
+		}, opts...)...,
+	)
 }
 
 // 中身が縦並びのコンテナ
 func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
 		append([]widget.ContainerOpt{
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
 			widget.ContainerOpts.Layout(
 				widget.NewRowLayout(
-					widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-					widget.RowLayoutOpts.Spacing(4),
-					widget.RowLayoutOpts.Padding(widget.Insets{
-						Top:    10,
-						Bottom: 10,
-						Left:   10,
-						Right:  10,
-					}),
-				)),
+					append([]widget.RowLayoutOpt{
+						widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+					},
+						BaseRowLayoutOpts()...,
+					)...,
+				),
+			),
 		}, opts...)...,
 	)
 }
@@ -338,4 +334,18 @@ func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), wor
 		widget.ButtonOpts.TextPadding(res.Button.Padding),
 		widget.ButtonOpts.ClickedHandler(f),
 	)
+}
+
+// opts ================
+
+func BaseRowLayoutOpts() []widget.RowLayoutOpt {
+	return []widget.RowLayoutOpt{
+		widget.RowLayoutOpts.Spacing(4),
+		widget.RowLayoutOpts.Padding(widget.Insets{
+			Top:    10,
+			Bottom: 10,
+			Left:   4,
+			Right:  4,
+		}),
+	}
 }
