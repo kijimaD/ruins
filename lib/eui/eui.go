@@ -12,10 +12,6 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
-func NewEmptyContainer() *widget.Container {
-	return widget.NewContainer()
-}
-
 // 汎用的なrowコンテナ
 func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(

@@ -133,7 +133,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewItemGridContainer()
 	{
 		rootContainer.AddChild(eui.NewMenuText("合成", world))
-		rootContainer.AddChild(eui.NewEmptyContainer())
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(toggleContainer)
 
 		sc, v := eui.NewScrollContainer(st.actionContainer, world)

@@ -124,7 +124,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewItemGridContainer()
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
-		rootContainer.AddChild(eui.NewEmptyContainer())
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(toggleContainer)
 
 		rootContainer.AddChild(sc)
