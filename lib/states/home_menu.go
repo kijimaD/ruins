@@ -70,7 +70,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 		ishihara := spawner.SpawnMember(world, "イシハラ", true)
 		spawner.SpawnMember(world, "シラセ", true)
-		spawner.SpawnMember(world, "ヒラヤマ", true)
+		spawner.SpawnMember(world, "タチバナ", true)
 		spawner.SpawnAllMaterials(world)
 		material.PlusAmount("鉄", 40, world)
 		material.PlusAmount("鉄くず", 4, world)
