@@ -104,10 +104,10 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewItemGridContainer()
 	{
 		rootContainer.AddChild(st.equipTargetContainer)
-		rootContainer.AddChild(eui.NewEmptyContainer())
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(st.subMenuContainer)
 
-		sc, v := eui.NewScrollContainer(st.actionContainer)
+		sc, v := eui.NewScrollContainer(st.actionContainer, world)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
 		rootContainer.AddChild(eui.NewWSplitContainer(st.specContainer, st.abilityContainer))
@@ -131,7 +131,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	for i, v := range st.slots {
-		windowContainer := eui.NewWindowContainer()
+		windowContainer := eui.NewWindowContainer(world)
 		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
 		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
@@ -144,7 +144,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			desc = gameComponents.Description.Get(*v).(*gc.Description).Description
 		}
 
-		slotButton := eui.NewItemButton(fmt.Sprintf("[ %s ]", name), func(args *widget.ButtonClickedEventArgs) {
+		slotButton := eui.NewItemButton(fmt.Sprintf("%s", name), func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.SetLocation(setWinRect())
 			st.ui.AddWindow(actionWindow)
 		}, world)

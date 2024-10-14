@@ -2,6 +2,7 @@ package states
 
 import (
 	"github.com/ebitenui/ebitenui"
+	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -9,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 )
 
@@ -57,7 +59,9 @@ func (st *DebugMenuState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 
 func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalTransContainer()
+	rootContainer := eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 	st.debugMenuContainer = eui.NewVerticalContainer()
 	rootContainer.AddChild(st.debugMenuContainer)
 

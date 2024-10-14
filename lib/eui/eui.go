@@ -12,59 +12,33 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
-func NewEmptyContainer() *widget.Container {
-	return widget.NewContainer()
-}
-
 // 汎用的なrowコンテナ
-func NewRowContainer() *widget.Container {
+func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Spacing(8),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    10,
-				Bottom: 10,
-				Left:   4,
-				Right:  4,
-			}),
-		)))
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					BaseRowLayoutOpts()...,
+				),
+			),
+		}, opts...)...,
+	)
 }
 
 // 中身が縦並びのコンテナ
 func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
 		append([]widget.ContainerOpt{
-			widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
 			widget.ContainerOpts.Layout(
 				widget.NewRowLayout(
-					widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-					widget.RowLayoutOpts.Spacing(4),
-					widget.RowLayoutOpts.Padding(widget.Insets{
-						Top:    10,
-						Bottom: 10,
-						Left:   10,
-						Right:  10,
-					}),
-				)),
+					append([]widget.RowLayoutOpt{
+						widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+					},
+						BaseRowLayoutOpts()...,
+					)...,
+				),
+			),
 		}, opts...)...,
-	)
-}
-
-// ポーズ用の半透明なコンテナ。コピペがひどいのでどうにかする
-func NewVerticalTransContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
 	)
 }
 
@@ -135,7 +109,9 @@ func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget
 }
 
 // スクロールコンテナとスクロールバー
-func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
+func NewScrollContainer(content widget.HasWidget, world w.World) (*widget.ScrollContainer, *widget.Slider) {
+	res := world.Resources.UIResources
+
 	scrollContainer := widget.NewScrollContainer(
 		widget.ScrollContainerOpts.Content(content),
 		widget.ScrollContainerOpts.StretchContentWidth(),
@@ -147,7 +123,6 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 	pageSizeFunc := func() int {
 		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
 	}
-	trackPadding := widget.Insets{4, 20, 20, 4}
 	vSlider := widget.NewSlider(
 		widget.SliderOpts.Direction(widget.DirectionVertical),
 		widget.SliderOpts.MinMax(0, 1000),
@@ -155,18 +130,8 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
 			scrollContainer.ScrollTop = float64(args.Slider.Current) / 1000
 		}),
-		widget.SliderOpts.Images(
-			&widget.SliderTrackImage{
-				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 0}),
-				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 0}),
-			},
-			&widget.ButtonImage{
-				Idle:    e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-				Hover:   e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-				Pressed: e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-			},
-		),
-		widget.SliderOpts.TrackPadding(trackPadding),
+		widget.SliderOpts.TrackPadding(widget.Insets{4, 4, 4, 4}),
+		widget.SliderOpts.Images(res.Slider.TrackImage, res.Slider.Handle),
 	)
 	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
 		a := args.(*widget.WidgetScrolledEventArgs)
@@ -196,10 +161,12 @@ func NewScrollContentContainer() *widget.Container {
 			)))
 }
 
-// 前面に開くウィンドウ用のコンテナ。色が違ったりする
-func NewWindowContainer() *widget.Container {
+// ウィンドウの本体
+func NewWindowContainer(world w.World) *widget.Container {
+	res := world.Resources.UIResources
+
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
+		widget.ContainerOpts.BackgroundImage(res.Panel.Image),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 			widget.RowLayoutOpts.Padding(widget.Insets{
@@ -220,8 +187,9 @@ func NewWindowContainer() *widget.Container {
 
 // ウィンドウのヘッダー
 func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
+	res := world.Resources.UIResources
 	container := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
+		widget.ContainerOpts.BackgroundImage(res.Panel.TitleBar),
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
@@ -278,6 +246,8 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 // list ================
 
 func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.List {
+	res := world.Resources.UIResources
+
 	return euiext.NewList(
 		append([]euiext.ListOpt{
 			euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
@@ -297,13 +267,6 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 					Mask:     image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
 				}),
 			),
-			euiext.ListOpts.SliderOpts(
-				widget.SliderOpts.Images(&widget.SliderTrackImage{
-					Idle:  image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-					Hover: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				}, LoadButtonImage()),
-				widget.SliderOpts.MinHandleSize(5),
-				widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2))),
 			euiext.ListOpts.HideHorizontalSlider(),
 			euiext.ListOpts.EntryFontFace(*LoadFont(world)),
 			euiext.ListOpts.EntryColor(&euiext.ListEntryColor{
@@ -320,27 +283,50 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 			}),
 			euiext.ListOpts.EntryLabelFunc(func(e interface{}) string { return "" }),
 			euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter)}, listOpts...)...,
+			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
+			euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.Image)),
+			euiext.ListOpts.SliderOpts(
+				widget.SliderOpts.Images(res.List.Track, res.List.Handle),
+				widget.SliderOpts.MinHandleSize(res.List.HandleSize),
+				widget.SliderOpts.TrackPadding(res.List.TrackPadding),
+			),
+			euiext.ListOpts.HideHorizontalSlider(),
+			euiext.ListOpts.Entries(entries),
+			euiext.ListOpts.EntryFontFace(res.List.Face),
+			euiext.ListOpts.EntryTextPadding(res.List.EntryPadding),
+		}, listOpts...)...,
 	)
 }
 
 // button ================
 
 func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button {
+	res := world.Resources.UIResources
 	return widget.NewButton(
-		widget.ButtonOpts.Image(LoadButtonImage()),
-		widget.ButtonOpts.Text(text,
-			*LoadFont(world),
-			&widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			},
+		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+			Stretch: true,
+		})),
+		widget.ButtonOpts.Image(res.Button.Image),
+		widget.ButtonOpts.Text(
+			text,
+			res.Button.Face,
+			res.Button.Text,
 		),
-		widget.ButtonOpts.TextPadding(widget.Insets{
-			Left:   30,
-			Right:  30,
-			Top:    5,
-			Bottom: 5,
-		}),
+		widget.ButtonOpts.TextPadding(res.Button.Padding),
 		widget.ButtonOpts.ClickedHandler(f),
 	)
+}
+
+// opts ================
+
+func BaseRowLayoutOpts() []widget.RowLayoutOpt {
+	return []widget.RowLayoutOpt{
+		widget.RowLayoutOpts.Spacing(4),
+		widget.RowLayoutOpts.Padding(widget.Insets{
+			Top:    10,
+			Bottom: 10,
+			Left:   4,
+			Right:  4,
+		}),
+	}
 }

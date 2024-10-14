@@ -2,12 +2,14 @@ package states
 
 import (
 	"github.com/ebitenui/ebitenui"
+	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/styles"
 )
 
 type DungeonMenuState struct {
@@ -55,7 +57,9 @@ func (st *DungeonMenuState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 
 func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalTransContainer()
+	rootContainer := eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 	st.dungeonMenuContainer = eui.NewVerticalContainer()
 	rootContainer.AddChild(st.dungeonMenuContainer)
 

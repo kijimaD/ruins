@@ -28,7 +28,7 @@ import (
 
 const (
 	// 戦闘ログメッセージの高さ。文字分で指定する
-	MessageCharBaseHeight = 7
+	MessageCharBaseHeight = 10
 )
 
 type BattleState struct {
@@ -163,7 +163,9 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalTransContainer()
+	rootContainer := eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
 	st.selectContainer = eui.NewVerticalContainer(
@@ -259,6 +261,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			return string(v)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
+		euiext.ListOpts.EntryButtonOpts(),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
 			entry := args.Entry.(policyEntry)
 			switch entry {

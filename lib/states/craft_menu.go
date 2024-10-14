@@ -133,10 +133,10 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewItemGridContainer()
 	{
 		rootContainer.AddChild(eui.NewMenuText("合成", world))
-		rootContainer.AddChild(eui.NewEmptyContainer())
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(st.actionContainer)
+		sc, v := eui.NewScrollContainer(st.actionContainer, world)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
 		rootContainer.AddChild(eui.NewVSplitContainer(st.specContainer, st.recipeList))
@@ -204,7 +204,7 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
-		windowContainer := eui.NewWindowContainer()
+		windowContainer := eui.NewWindowContainer(world)
 		actionWindow := eui.NewSmallWindow(
 			eui.NewWindowHeaderContainer("アクション", world),
 			windowContainer,
@@ -248,7 +248,7 @@ func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container 
 }
 
 func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
-	resultContainer := eui.NewWindowContainer()
+	resultContainer := eui.NewWindowContainer(world)
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
 
 	views.UpdateSpec(world, resultContainer, entity)
