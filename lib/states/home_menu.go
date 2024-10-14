@@ -130,10 +130,10 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	st.actionDescContainer.AddChild(eui.NewMenuText(" ", world))
 
 	actionContainer := eui.NewVSplitContainer(st.actionListContainer, st.actionDescContainer)
-	{
-		rootContainer.AddChild(st.memberContainer)
-		rootContainer.AddChild(actionContainer)
-	}
+	rootContainer.AddChild(
+		st.memberContainer,
+		actionContainer,
+	)
 
 	st.updateActionList(world)
 	st.updateMemberContainer(world)

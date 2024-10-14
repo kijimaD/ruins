@@ -21,6 +21,7 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
+	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -48,6 +49,8 @@ type BattleState struct {
 	enemyListContainer *widget.Container
 	// 各フェーズでの選択表示に使うコンテナ
 	selectContainer *widget.Container
+	// 味方表示コンテナ
+	memberContainer *widget.Container
 
 	// 選択中のアイテム
 	selectedItem ecs.Entity
@@ -168,10 +171,12 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	)
 	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
+
 	st.selectContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 180)),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 120)),
 	)
 	st.reloadPolicy(world)
+
 	st.cardSpecContainer = eui.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(600, 180)),
 	)
@@ -181,8 +186,11 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	st.reloadMsg(world)
 	actionContainer := eui.NewRowContainer()
 
+	st.memberContainer = eui.NewRowContainer()
+	st.updateMemberContainer(world)
 	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
 	rootContainer.AddChild(
+		st.memberContainer,
 		st.enemyListContainer,
 		actionContainer,
 		st.msgContainer,
@@ -493,4 +501,16 @@ func (st *BattleState) reloadExecute(world w.World) {
 	st.updateEnemyListContainer(world)
 
 	// 処理を書く...
+}
+
+// メンバー一覧を更新する
+func (st *BattleState) updateMemberContainer(world w.World) {
+	st.memberContainer.RemoveChildren()
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.FactionAlly,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		views.AddMemberBar(world, st.memberContainer, entity)
+	}))
 }
