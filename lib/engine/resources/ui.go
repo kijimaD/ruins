@@ -159,10 +159,10 @@ type ToolTipResources struct {
 	Color      color.Color
 }
 
-func NewUIResources() (*UIResources, error) {
+func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error) {
 	background := image.NewNineSliceColor(hexToColor(backgroundColor))
 
-	fonts, err := loadFonts()
+	fonts, err := loadFonts(tfs)
 	if err != nil {
 		return nil, err
 	}

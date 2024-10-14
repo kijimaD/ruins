@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
@@ -18,23 +16,23 @@ type fonts struct {
 	toolTipFace  text.Face
 }
 
-func loadFonts() (*fonts, error) {
-	fontFace, err := loadFont(fontFaceRegular, 20)
+func loadFonts(tfs *text.GoTextFaceSource) (*fonts, error) {
+	fontFace, err := loadFont(tfs, 20)
 	if err != nil {
 		return nil, err
 	}
 
-	titleFontFace, err := loadFont(fontFaceBold, 24)
+	titleFontFace, err := loadFont(tfs, 24)
 	if err != nil {
 		return nil, err
 	}
 
-	bigTitleFontFace, err := loadFont(fontFaceBold, 28)
+	bigTitleFontFace, err := loadFont(tfs, 28)
 	if err != nil {
 		return nil, err
 	}
 
-	toolTipFace, err := loadFont(fontFaceRegular, 15)
+	toolTipFace, err := loadFont(tfs, 15)
 	if err != nil {
 		return nil, err
 	}
@@ -47,20 +45,9 @@ func loadFonts() (*fonts, error) {
 	}, nil
 }
 
-func loadFont(path string, size float64) (text.Face, error) {
-	fontFile, err := embeddedAssets.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	s, err := text.NewGoTextFaceSource(fontFile)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-
+func loadFont(tfs *text.GoTextFaceSource, size float64) (text.Face, error) {
 	return &text.GoTextFace{
-		Source: s,
+		Source: tfs,
 		Size:   size,
 	}, nil
 }

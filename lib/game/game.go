@@ -80,12 +80,14 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	// load fonts
 	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
 	world.Resources.Fonts = &fonts
+
+	defaultFont := (*world.Resources.Fonts)["kappa"]
 	world.Resources.DefaultFaces = &map[string]text.Face{
-		"kappa": (*world.Resources.Fonts)["kappa"].Font,
+		"kappa": defaultFont.Font,
 	}
 
 	// load UI resources
-	uir, err := er.NewUIResources()
+	uir, err := er.NewUIResources(defaultFont.FaceSource)
 	if err != nil {
 		log.Fatal(err)
 	}
