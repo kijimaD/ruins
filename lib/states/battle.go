@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"image"
 	"log"
 
 	"github.com/ebitenui/ebitenui"
@@ -12,7 +13,9 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/loader"
+	m "github.com/kijimaD/ruins/lib/engine/math"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -161,6 +164,37 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	{
+		iSprite := 0
+		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.Attributes).Size())
+		world.Manager.Join(
+			gameComponents.SpriteRender,
+			gameComponents.Attributes,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			entities[iSprite] = entity
+			iSprite++
+		}))
+
+		for _, entity := range entities {
+			// 座標描画
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+			texture := spriteRender.SpriteSheet.Texture
+			textureWidth, textureHeight := texture.Image.Size()
+
+			left := m.Max(0, sprite.X)
+			right := m.Min(textureWidth, sprite.X+sprite.Width)
+			top := m.Max(0, sprite.Y)
+			bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
+
+			op := &spriteRender.Options
+			op.GeoM.Reset()
+			op.GeoM.Translate(float64(100), float64(100))
+			screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)
+		}
+	}
 }
 
 // ================
@@ -461,7 +495,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(500, 280),
+			widget.WidgetOpts.MinSize(world.Resources.ScreenDimensions.Width-20, 280),
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionEnd,

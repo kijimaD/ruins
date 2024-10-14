@@ -164,7 +164,19 @@ func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 func SpawnEnemy(world w.World, name string) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-	componentList.Game = append(componentList.Game, rawMaster.GenerateEnemy(name))
+
+	// とりあえず仮画像
+	tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
+	cl := rawMaster.GenerateEnemy(name)
+	cl.SpriteRender = &ec.SpriteRender{
+		SpriteSheet:  &tankSS,
+		SpriteNumber: 0,
+		Depth:        ec.DepthNumFloor,
+	}
+	componentList.Game = append(
+		componentList.Game,
+		cl,
+	)
 	entities := loader.AddEntities(world, componentList)
 
 	return entities[len(entities)-1]
