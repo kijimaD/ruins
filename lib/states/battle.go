@@ -45,6 +45,8 @@ type BattleState struct {
 	// テキスト送り待ち状態
 	isWaitClick bool
 
+	// 背景
+	bg *ebiten.Image
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
 	// 各フェーズでの選択表示に使うコンテナ
@@ -73,6 +75,9 @@ func (st *BattleState) OnStart(world w.World) {
 	_ = gs.EquipmentChangedSystem(world) // これをしないとHP/SPが設定されない
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: enemy})
 	effects.RunEffectQueue(world)
+
+	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
+	st.bg = bg.Texture.Image
 
 	st.ui = st.initUI(world)
 }
@@ -160,6 +165,10 @@ func (st *BattleState) Update(world w.World) states.Transition {
 }
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
+	if st.bg != nil {
+		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
+	}
+
 	st.ui.Draw(screen)
 }
 
