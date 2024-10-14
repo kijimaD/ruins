@@ -203,12 +203,12 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	count := fmt.Sprintf("合計 %02d個", len(st.items))
-	st.actionContainer.AddChild(eui.NewWindowHeaderContainer(count, world))
+	st.actionContainer.AddChild(eui.NewMenuText(count, world))
 	for _, entity := range st.items {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
-		windowContainer := eui.NewWindowContainer()
+		windowContainer := eui.NewWindowContainer(world)
 		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
 		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
@@ -267,7 +267,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 
 // メンバー選択画面を初期化する
 func (st *InventoryMenuState) initPartyWindow(world w.World) {
-	partyContainer := eui.NewWindowContainer()
+	partyContainer := eui.NewWindowContainer(world)
 	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
 	rowContainer := eui.NewRowContainer()
 	partyContainer.AddChild(rowContainer)

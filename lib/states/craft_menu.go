@@ -204,7 +204,7 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 		entity := entity
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 
-		windowContainer := eui.NewWindowContainer()
+		windowContainer := eui.NewWindowContainer(world)
 		actionWindow := eui.NewSmallWindow(
 			eui.NewWindowHeaderContainer("アクション", world),
 			windowContainer,
@@ -248,7 +248,7 @@ func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container 
 }
 
 func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
-	resultContainer := eui.NewWindowContainer()
+	resultContainer := eui.NewWindowContainer(world)
 	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
 
 	views.UpdateSpec(world, resultContainer, entity)

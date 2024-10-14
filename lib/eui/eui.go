@@ -161,10 +161,12 @@ func NewScrollContentContainer() *widget.Container {
 			)))
 }
 
-// 前面に開くウィンドウ用のコンテナ。色が違ったりする
-func NewWindowContainer() *widget.Container {
+// ウィンドウの本体
+func NewWindowContainer(world w.World) *widget.Container {
+	res := world.Resources.UIResources
+
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowBodyColor)),
+		widget.ContainerOpts.BackgroundImage(res.Panel.Image),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 			widget.RowLayoutOpts.Padding(widget.Insets{
@@ -185,8 +187,9 @@ func NewWindowContainer() *widget.Container {
 
 // ウィンドウのヘッダー
 func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
+	res := world.Resources.UIResources
 	container := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.WindowHeaderColor)),
+		widget.ContainerOpts.BackgroundImage(res.Panel.TitleBar),
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(

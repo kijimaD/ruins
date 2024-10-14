@@ -131,7 +131,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	for i, v := range st.slots {
-		windowContainer := eui.NewWindowContainer()
+		windowContainer := eui.NewWindowContainer(world)
 		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
 		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
@@ -144,7 +144,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			desc = gameComponents.Description.Get(*v).(*gc.Description).Description
 		}
 
-		slotButton := eui.NewItemButton(fmt.Sprintf("[ %s ]", name), func(args *widget.ButtonClickedEventArgs) {
+		slotButton := eui.NewItemButton(fmt.Sprintf("%s", name), func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.SetLocation(setWinRect())
 			st.ui.AddWindow(actionWindow)
 		}, world)
