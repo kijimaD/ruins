@@ -56,8 +56,6 @@ type BattleState struct {
 	selectedItem ecs.Entity
 	// カードの説明表示コンテナ
 	cardSpecContainer *widget.Container
-	// メッセージ表示
-	msgContainer *widget.Container
 }
 
 func (st BattleState) String() string {
@@ -75,8 +73,6 @@ func (st *BattleState) OnStart(world w.World) {
 	_ = gs.EquipmentChangedSystem(world) // これをしないとHP/SPが設定されない
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: enemy})
 	effects.RunEffectQueue(world)
-
-	gamelog.BattleLog.Append("敵が現れた。")
 
 	st.ui = st.initUI(world)
 }
@@ -139,19 +135,23 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			commandCount += 1
 		}))
 
-		if commandCount == 0 {
-			// 選択完了
-			st.phase = &phaseChoosePolicy{}
-		} else {
+		if commandCount != 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
-		}
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				gs.BattleCommandSystem(world)
+				st.isWaitClick = false
 
-		if st.isWaitClick && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-			gs.BattleCommandSystem(world)
-			st.isWaitClick = false
-
-			return states.Transition{Type: states.TransNone}
+				return states.Transition{Type: states.TransNone}
+			}
+		} else {
+			// 選択完了
+			st.isWaitClick = true
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				st.phase = &phaseChoosePolicy{}
+				st.isWaitClick = false
+				gamelog.BattleLog.Flush()
+			}
 		}
 	case *phaseResult:
 	}
@@ -178,22 +178,18 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	st.reloadPolicy(world)
 
 	st.cardSpecContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(600, 180)),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(600, 120)),
 	)
-	st.msgContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(500, 400)),
-	)
-	st.reloadMsg(world)
-	actionContainer := eui.NewRowContainer()
 
 	st.memberContainer = eui.NewRowContainer()
 	st.updateMemberContainer(world)
+
+	actionContainer := eui.NewRowContainer()
 	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
 	rootContainer.AddChild(
 		st.memberContainer,
 		st.enemyListContainer,
 		actionContainer,
-		st.msgContainer,
 	)
 
 	return &ebitenui.UI{Container: rootContainer}
@@ -453,7 +449,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 // ================
 
 func (st *BattleState) reloadMsg(world w.World) {
-	st.msgContainer.RemoveChildren()
+	st.selectContainer.RemoveChildren()
 
 	entries := []any{}
 	for _, e := range gamelog.BattleLog.Latest(MessageCharBaseHeight) {
@@ -475,7 +471,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		)),
 		euiext.ListOpts.SliderOpts(
 			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2))),
+			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4))),
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(string)
 			if !ok {
@@ -492,7 +488,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		opts,
 		world,
 	)
-	st.msgContainer.AddChild(list)
+	st.selectContainer.AddChild(list)
 }
 
 // ================
