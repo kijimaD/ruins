@@ -70,6 +70,8 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter):
 		queueResult = st.queue.Pop()
+	case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
+		queueResult = st.queue.Pop()
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		// debug
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
