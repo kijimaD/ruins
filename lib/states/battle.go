@@ -163,7 +163,9 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalTransContainer()
+	rootContainer := eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
 	st.selectContainer = eui.NewVerticalContainer(

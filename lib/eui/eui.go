@@ -42,24 +42,6 @@ func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 	)
 }
 
-// ポーズ用の半透明なコンテナ。コピペがひどいのでどうにかする
-func NewVerticalTransContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
-	)
-}
-
 // アイテム系メニューのRootとなる3x3のグリッドコンテナ
 func NewItemGridContainer() *widget.Container {
 	return widget.NewContainer(
