@@ -136,7 +136,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(eui.NewEmptyContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(st.actionContainer)
+		sc, v := eui.NewScrollContainer(st.actionContainer, world)
 		rootContainer.AddChild(sc)
 		rootContainer.AddChild(v)
 		rootContainer.AddChild(eui.NewVSplitContainer(st.specContainer, st.recipeList))

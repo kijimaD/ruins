@@ -118,7 +118,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	sc, v := eui.NewScrollContainer(st.actionContainer)
+	sc, v := eui.NewScrollContainer(st.actionContainer, world)
 	st.specContainer = st.newItemSpecContainer(world)
 
 	rootContainer := eui.NewItemGridContainer()

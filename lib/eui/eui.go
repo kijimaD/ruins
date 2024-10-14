@@ -135,7 +135,9 @@ func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget
 }
 
 // スクロールコンテナとスクロールバー
-func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *widget.Slider) {
+func NewScrollContainer(content widget.HasWidget, world w.World) (*widget.ScrollContainer, *widget.Slider) {
+	res := world.Resources.UIResources
+
 	scrollContainer := widget.NewScrollContainer(
 		widget.ScrollContainerOpts.Content(content),
 		widget.ScrollContainerOpts.StretchContentWidth(),
@@ -147,7 +149,6 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 	pageSizeFunc := func() int {
 		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
 	}
-	trackPadding := widget.Insets{4, 20, 20, 4}
 	vSlider := widget.NewSlider(
 		widget.SliderOpts.Direction(widget.DirectionVertical),
 		widget.SliderOpts.MinMax(0, 1000),
@@ -155,18 +156,8 @@ func NewScrollContainer(content widget.HasWidget) (*widget.ScrollContainer, *wid
 		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
 			scrollContainer.ScrollTop = float64(args.Slider.Current) / 1000
 		}),
-		widget.SliderOpts.Images(
-			&widget.SliderTrackImage{
-				Idle:  e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 0}),
-				Hover: e_image.NewNineSliceColor(color.NRGBA{100, 100, 100, 0}),
-			},
-			&widget.ButtonImage{
-				Idle:    e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-				Hover:   e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-				Pressed: e_image.NewNineSliceColor(color.NRGBA{255, 100, 100, 255}),
-			},
-		),
-		widget.SliderOpts.TrackPadding(trackPadding),
+		widget.SliderOpts.TrackPadding(widget.Insets{4, 4, 4, 4}),
+		widget.SliderOpts.Images(res.Slider.TrackImage, res.Slider.Handle),
 	)
 	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
 		a := args.(*widget.WidgetScrolledEventArgs)
@@ -278,6 +269,8 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 // list ================
 
 func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.List {
+	res := world.Resources.UIResources
+
 	return euiext.NewList(
 		append([]euiext.ListOpt{
 			euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
@@ -297,13 +290,6 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 					Mask:     image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
 				}),
 			),
-			euiext.ListOpts.SliderOpts(
-				widget.SliderOpts.Images(&widget.SliderTrackImage{
-					Idle:  image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-					Hover: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				}, LoadButtonImage()),
-				widget.SliderOpts.MinHandleSize(5),
-				widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2))),
 			euiext.ListOpts.HideHorizontalSlider(),
 			euiext.ListOpts.EntryFontFace(*LoadFont(world)),
 			euiext.ListOpts.EntryColor(&euiext.ListEntryColor{
@@ -320,7 +306,18 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 			}),
 			euiext.ListOpts.EntryLabelFunc(func(e interface{}) string { return "" }),
 			euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter)}, listOpts...)...,
+			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
+			euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.Image)),
+			euiext.ListOpts.SliderOpts(
+				widget.SliderOpts.Images(res.List.Track, res.List.Handle),
+				widget.SliderOpts.MinHandleSize(res.List.HandleSize),
+				widget.SliderOpts.TrackPadding(res.List.TrackPadding),
+			),
+			euiext.ListOpts.HideHorizontalSlider(),
+			euiext.ListOpts.Entries(entries),
+			euiext.ListOpts.EntryFontFace(res.List.Face),
+			euiext.ListOpts.EntryTextPadding(res.List.EntryPadding),
+		}, listOpts...)...,
 	)
 }
 

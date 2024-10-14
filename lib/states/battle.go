@@ -28,7 +28,7 @@ import (
 
 const (
 	// 戦闘ログメッセージの高さ。文字分で指定する
-	MessageCharBaseHeight = 7
+	MessageCharBaseHeight = 10
 )
 
 type BattleState struct {
