@@ -55,7 +55,10 @@ type List struct {
 	focusMap map[widget.FocusDirection]widget.Focuser
 
 	// 独自拡張
+	// optsではentityを特定できないので必要
 	entryEnterFunc ListEntryEnterFunc
+	// ボタンオプション。ハンドラはここで指定すると選択entityを特定できないのでハンドラ用のオプションを使う
+	entryButtonOpts []widget.ButtonOpt
 }
 
 type ListOpt func(l *List)
@@ -147,6 +150,12 @@ func (o ListOptions) ContainerOpts(opts ...widget.ContainerOpt) ListOpt {
 func (o ListOptions) ScrollContainerOpts(opts ...widget.ScrollContainerOpt) ListOpt {
 	return func(l *List) {
 		l.scrollContainerOpts = append(l.scrollContainerOpts, opts...)
+	}
+}
+
+func (o ListOptions) EntryButtonOpts(opts ...widget.ButtonOpt) ListOpt {
+	return func(l *List) {
+		l.entryButtonOpts = append(l.entryButtonOpts, opts...)
 	}
 }
 
@@ -634,19 +643,21 @@ func (l *List) checkForDuplicates(entries []any, entry any) bool {
 
 func (l *List) createEntry(entry any) *widget.Button {
 	but := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-			Stretch: true,
-		})),
-		widget.ButtonOpts.Image(l.entryUnselectedColor),
-		widget.ButtonOpts.Text(l.entryLabelFunc(entry), l.entryFace, l.entryUnselectedTextColor),
-		widget.ButtonOpts.TextPadding(l.entryTextPadding),
-		widget.ButtonOpts.TextPosition(l.entryTextHorizontalPosition, l.entryTextVerticalPosition),
-		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
-			l.setSelectedEntry(entry, true)
-		}),
-		widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
-			l.entryEnterFunc(entry)
-		}),
+		append([]widget.ButtonOpt{
+			widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true,
+			})),
+			widget.ButtonOpts.Image(l.entryUnselectedColor),
+			widget.ButtonOpts.Text(l.entryLabelFunc(entry), l.entryFace, l.entryUnselectedTextColor),
+			widget.ButtonOpts.TextPadding(l.entryTextPadding),
+			widget.ButtonOpts.TextPosition(l.entryTextHorizontalPosition, l.entryTextVerticalPosition),
+			widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
+				l.setSelectedEntry(entry, true)
+			}),
+			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
+				l.entryEnterFunc(entry)
+			}),
+		}, l.entryButtonOpts...)...,
 	)
 
 	return but

@@ -259,6 +259,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			return string(v)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
+		euiext.ListOpts.EntryButtonOpts(),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
 			entry := args.Entry.(policyEntry)
 			switch entry {
