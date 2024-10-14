@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"log"
 	"runtime"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -82,6 +83,13 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	world.Resources.DefaultFaces = &map[string]text.Face{
 		"kappa": (*world.Resources.Fonts)["kappa"].Font,
 	}
+
+	// load UI resources
+	uir, err := er.NewUIResources()
+	if err != nil {
+		log.Fatal(err)
+	}
+	world.Resources.UIResources = uir
 
 	// load raws
 	rw := raw.LoadFromFile("metadata/entities/raw/raw.toml")

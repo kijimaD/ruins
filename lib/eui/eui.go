@@ -327,20 +327,19 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 // button ================
 
 func NewItemButton(text string, f func(args *widget.ButtonClickedEventArgs), world w.World) *widget.Button {
+	// TODO: res.Button.Face を使う
+	res := world.Resources.UIResources
 	return widget.NewButton(
-		widget.ButtonOpts.Image(LoadButtonImage()),
-		widget.ButtonOpts.Text(text,
+		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+			Stretch: true,
+		})),
+		widget.ButtonOpts.Image(res.Button.Image),
+		widget.ButtonOpts.Text(
+			text,
 			*LoadFont(world),
-			&widget.ButtonTextColor{
-				Idle: styles.TextColor,
-			},
+			res.Button.Text,
 		),
-		widget.ButtonOpts.TextPadding(widget.Insets{
-			Left:   30,
-			Right:  30,
-			Top:    5,
-			Bottom: 5,
-		}),
+		widget.ButtonOpts.TextPadding(res.Button.Padding),
 		widget.ButtonOpts.ClickedHandler(f),
 	)
 }

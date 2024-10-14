@@ -19,6 +19,7 @@ type Resources struct {
 	Prefabs          interface{}
 	Game             interface{}
 	RawMaster        interface{}
+	UIResources      *UIResources
 }
 
 // InitResources initializes resources
