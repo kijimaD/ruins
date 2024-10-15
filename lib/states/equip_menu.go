@@ -118,9 +118,8 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(st.subMenuContainer)
 
-		sc, v := eui.NewScrollContainer(st.actionContainer, world)
-		rootContainer.AddChild(sc)
-		rootContainer.AddChild(v)
+		rootContainer.AddChild(st.actionContainer)
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(eui.NewWSplitContainer(st.specContainer, st.abilityContainer))
 
 		rootContainer.AddChild(st.itemDesc)
