@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -18,7 +17,6 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	"github.com/kijimaD/ruins/lib/views"
@@ -175,9 +173,7 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
-	)
+	rootContainer := eui.NewVerticalContainer()
 	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
 
@@ -187,7 +183,9 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	st.reloadPolicy(world)
 
 	st.cardSpecContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(600, 120)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(600, 120),
+		),
 	)
 
 	st.memberContainer = eui.NewRowContainer()
@@ -334,6 +332,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		equipCards = append(equipCards, entity)
 	}))
 
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(ecs.Entity)
@@ -352,9 +351,17 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
+			st.cardSpecContainer.RemoveChildren()
+			transContainer := eui.NewRowContainer(
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.MinSize(700, 120),
+				),
+				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+			)
+			st.cardSpecContainer.AddChild(transContainer)
+
 			desc := simple.GetDescription(world, entity)
 			attack := simple.GetAttack(world, entity)
-			st.cardSpecContainer.RemoveChildren()
 			text := fmt.Sprintf(
 				`%s
 命中率 %d
@@ -367,7 +374,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				attack.Element,
 				attack.AttackCategory,
 			)
-			st.cardSpecContainer.AddChild(eui.NewMenuText(text, world))
+			transContainer.AddChild(eui.NewMenuText(text, world))
 
 			return
 		}),
