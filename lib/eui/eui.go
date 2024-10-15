@@ -206,8 +206,9 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 // text ================
 
 func NewMenuText(title string, world w.World) *widget.Text {
+	res := world.Resources.UIResources
 	text := widget.NewText(
-		widget.TextOpts.Text(title, *LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, res.Text.Face, styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),

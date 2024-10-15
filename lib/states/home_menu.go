@@ -70,7 +70,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 		ishihara := spawner.SpawnMember(world, "イシハラ", true)
 		spawner.SpawnMember(world, "シラセ", true)
-		spawner.SpawnMember(world, "ヒラヤマ", true)
+		spawner.SpawnMember(world, "タチバナ", true)
 		spawner.SpawnAllMaterials(world)
 		material.PlusAmount("鉄", 40, world)
 		material.PlusAmount("鉄くず", 4, world)
@@ -130,10 +130,10 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	st.actionDescContainer.AddChild(eui.NewMenuText(" ", world))
 
 	actionContainer := eui.NewVSplitContainer(st.actionListContainer, st.actionDescContainer)
-	{
-		rootContainer.AddChild(st.memberContainer)
-		rootContainer.AddChild(actionContainer)
-	}
+	rootContainer.AddChild(
+		st.memberContainer,
+		actionContainer,
+	)
 
 	st.updateActionList(world)
 	st.updateMemberContainer(world)

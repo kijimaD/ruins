@@ -96,6 +96,7 @@ type ComboButtonResources struct {
 
 type ListResources struct {
 	Image        *widget.ScrollContainerImage
+	ImageTrans   *widget.ScrollContainerImage
 	Track        *widget.SliderTrackImage
 	TrackPadding widget.Insets
 	Handle       *widget.ButtonImage
@@ -117,9 +118,10 @@ type ProgressBarResources struct {
 }
 
 type PanelResources struct {
-	Image    *image.NineSlice
-	TitleBar *image.NineSlice
-	Padding  widget.Insets
+	Image      *image.NineSlice
+	ImageTrans *image.NineSlice
+	TitleBar   *image.NineSlice
+	Padding    widget.Insets
 }
 
 type TabBookResources struct {
@@ -423,6 +425,11 @@ func newListResources(fonts *fonts) (*ListResources, error) {
 		return nil, err
 	}
 
+	idleTrans, err := newImageFromFile("assets/graphics/list-idle-trans.png")
+	if err != nil {
+		return nil, err
+	}
+
 	disabled, err := newImageFromFile("assets/graphics/list-disabled.png")
 	if err != nil {
 		return nil, err
@@ -456,6 +463,12 @@ func newListResources(fonts *fonts) (*ListResources, error) {
 	return &ListResources{
 		Image: &widget.ScrollContainerImage{
 			Idle:     image.NewNineSlice(idle, [3]int{25, 12, 22}, [3]int{25, 12, 25}),
+			Disabled: image.NewNineSlice(disabled, [3]int{25, 12, 22}, [3]int{25, 12, 25}),
+			Mask:     image.NewNineSlice(mask, [3]int{26, 10, 23}, [3]int{26, 10, 26}),
+		},
+
+		ImageTrans: &widget.ScrollContainerImage{
+			Idle:     image.NewNineSlice(idleTrans, [3]int{25, 12, 22}, [3]int{25, 12, 25}),
 			Disabled: image.NewNineSlice(disabled, [3]int{25, 12, 22}, [3]int{25, 12, 25}),
 			Mask:     image.NewNineSlice(mask, [3]int{26, 10, 23}, [3]int{26, 10, 26}),
 		},
@@ -581,13 +594,18 @@ func newPanelResources() (*PanelResources, error) {
 	if err != nil {
 		return nil, err
 	}
+	it, err := loadImageNineSlice("assets/graphics/panel-idle-trans.png", 10, 10)
+	if err != nil {
+		return nil, err
+	}
 	t, err := loadImageNineSlice("assets/graphics/titlebar-idle.png", 10, 10)
 	if err != nil {
 		return nil, err
 	}
 	return &PanelResources{
-		Image:    i,
-		TitleBar: t,
+		Image:      i,
+		ImageTrans: it,
+		TitleBar:   t,
 		Padding: widget.Insets{
 			Left:   30,
 			Right:  30,

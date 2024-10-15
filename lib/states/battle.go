@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -18,9 +17,9 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
+	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -44,17 +43,19 @@ type BattleState struct {
 	// テキスト送り待ち状態
 	isWaitClick bool
 
+	// 背景
+	bg *ebiten.Image
 	// 敵表示コンテナ
 	enemyListContainer *widget.Container
 	// 各フェーズでの選択表示に使うコンテナ
 	selectContainer *widget.Container
+	// 味方表示コンテナ
+	memberContainer *widget.Container
 
 	// 選択中のアイテム
 	selectedItem ecs.Entity
 	// カードの説明表示コンテナ
 	cardSpecContainer *widget.Container
-	// メッセージ表示
-	msgContainer *widget.Container
 }
 
 func (st BattleState) String() string {
@@ -73,7 +74,8 @@ func (st *BattleState) OnStart(world w.World) {
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: enemy})
 	effects.RunEffectQueue(world)
 
-	gamelog.BattleLog.Append("敵が現れた。")
+	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
+	st.bg = bg.Texture.Image
 
 	st.ui = st.initUI(world)
 }
@@ -136,19 +138,21 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			commandCount += 1
 		}))
 
-		if commandCount == 0 {
-			// 選択完了
-			st.phase = &phaseChoosePolicy{}
-		} else {
+		if commandCount != 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				gs.BattleCommandSystem(world)
+				st.isWaitClick = false
+			}
+			return states.Transition{Type: states.TransNone}
 		}
 
-		if st.isWaitClick && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-			gs.BattleCommandSystem(world)
+		// 選択完了
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
-
-			return states.Transition{Type: states.TransNone}
+			gamelog.BattleLog.Flush()
 		}
 	case *phaseResult:
 	}
@@ -157,55 +161,47 @@ func (st *BattleState) Update(world w.World) states.Transition {
 }
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
+	if st.bg != nil {
+		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
+	}
+
 	st.ui.Draw(screen)
 }
 
 // ================
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
-	)
+	rootContainer := eui.NewVerticalContainer()
 	st.enemyListContainer = st.initEnemyContainer()
 	st.updateEnemyListContainer(world)
+
 	st.selectContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 180)),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 120)),
 	)
 	st.reloadPolicy(world)
-	st.cardSpecContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(600, 180)),
-	)
-	st.msgContainer = eui.NewVerticalContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(500, 400)),
-	)
-	st.reloadMsg(world)
-	actionContainer := eui.NewRowContainer()
 
+	st.cardSpecContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(600, 120),
+		),
+	)
+
+	st.memberContainer = eui.NewRowContainer()
+	st.updateMemberContainer(world)
+
+	actionContainer := eui.NewRowContainer()
 	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
 	rootContainer.AddChild(
+		st.memberContainer,
 		st.enemyListContainer,
 		actionContainer,
-		st.msgContainer,
 	)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-// 中央寄せのコンテナ
 func (st *BattleState) initEnemyContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
+	return eui.NewRowContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position:  widget.RowLayoutPositionCenter,
@@ -215,6 +211,9 @@ func (st *BattleState) initEnemyContainer() *widget.Container {
 			}),
 			widget.WidgetOpts.MinSize(0, 600),
 		),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+		)),
 	)
 }
 
@@ -227,10 +226,24 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		gameComponents.FactionEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-		st.enemyListContainer.AddChild(eui.NewMenuText(text, world))
+		{
+			// とりあえず仮の画像
+			tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
+			graphic := widget.NewGraphic(
+				widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: true,
+				})),
+				widget.GraphicOpts.Image(tankSS.Texture.Image),
+			)
+			st.enemyListContainer.AddChild(graphic)
+		}
+
+		{
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+			st.enemyListContainer.AddChild(eui.NewMenuText(text, world))
+		}
 	}))
 }
 
@@ -252,6 +265,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 		policyEntryItem,
 		policyEntryEscape,
 	}
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(policyEntry)
@@ -280,6 +294,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 				log.Fatal("unexpected entry detect!")
 			}
 		}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 	list := eui.NewList(
 		entries,
@@ -293,7 +308,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 
 func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseAction) {
 	st.selectContainer.RemoveChildren()
-	st.updateEnemyListContainer(world)
+	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
@@ -317,6 +332,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		equipCards = append(equipCards, entity)
 	}))
 
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(ecs.Entity)
@@ -335,9 +351,17 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
+			st.cardSpecContainer.RemoveChildren()
+			transContainer := eui.NewRowContainer(
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.MinSize(700, 120),
+				),
+				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+			)
+			st.cardSpecContainer.AddChild(transContainer)
+
 			desc := simple.GetDescription(world, entity)
 			attack := simple.GetAttack(world, entity)
-			st.cardSpecContainer.RemoveChildren()
 			text := fmt.Sprintf(
 				`%s
 命中率 %d
@@ -350,7 +374,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				attack.Element,
 				attack.AttackCategory,
 			)
-			st.cardSpecContainer.AddChild(eui.NewMenuText(text, world))
+			transContainer.AddChild(eui.NewMenuText(text, world))
 
 			return
 		}),
@@ -369,6 +393,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			st.cardSpecContainer.RemoveChildren() // 選択し終わったら消す。こうするより非表示にしたほうがいいかもしれない
 		}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 	list := eui.NewList(
 		equipCards,
@@ -390,8 +415,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 // ================
 
 func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarget) {
-	st.enemyListContainer.RemoveChildren()
 	st.selectContainer.RemoveChildren()
+	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -401,12 +426,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 敵キャラごとにターゲット選択ボタンを作成する
 		vc := eui.NewVerticalContainer()
-		st.enemyListContainer.AddChild(vc)
-
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-		vc.AddChild(eui.NewMenuText(text, world))
+		st.cardSpecContainer.AddChild(vc)
 
 		btn := eui.NewItemButton(
 			"選択",
@@ -439,13 +459,19 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 			world,
 		)
 		vc.AddChild(btn)
+
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+		vc.AddChild(eui.NewMenuText(text, world))
 	}))
 }
 
 // ================
 
 func (st *BattleState) reloadMsg(world w.World) {
-	st.msgContainer.RemoveChildren()
+	st.selectContainer.RemoveChildren()
+	st.cardSpecContainer.RemoveChildren()
 
 	entries := []any{}
 	for _, e := range gamelog.BattleLog.Latest(MessageCharBaseHeight) {
@@ -455,9 +481,10 @@ func (st *BattleState) reloadMsg(world w.World) {
 		entries = append(entries, any("▼"))
 	}
 
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(500, 280),
+			widget.WidgetOpts.MinSize(world.Resources.ScreenDimensions.Width-20, 280),
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionEnd,
@@ -467,7 +494,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		)),
 		euiext.ListOpts.SliderOpts(
 			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(2))),
+			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4))),
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(string)
 			if !ok {
@@ -477,6 +504,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 
 	list := eui.NewList(
@@ -484,7 +512,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		opts,
 		world,
 	)
-	st.msgContainer.AddChild(list)
+	st.selectContainer.AddChild(list)
 }
 
 // ================
@@ -493,4 +521,16 @@ func (st *BattleState) reloadExecute(world w.World) {
 	st.updateEnemyListContainer(world)
 
 	// 処理を書く...
+}
+
+// メンバー一覧を更新する
+func (st *BattleState) updateMemberContainer(world w.World) {
+	st.memberContainer.RemoveChildren()
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.FactionAlly,
+		gameComponents.InParty,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		views.AddMemberBar(world, st.memberContainer, entity)
+	}))
 }
