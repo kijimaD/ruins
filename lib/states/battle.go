@@ -310,7 +310,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 
 func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseAction) {
 	st.selectContainer.RemoveChildren()
-	st.updateEnemyListContainer(world)
+	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
@@ -407,8 +407,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 // ================
 
 func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarget) {
-	st.enemyListContainer.RemoveChildren()
 	st.selectContainer.RemoveChildren()
+	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -418,12 +418,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 敵キャラごとにターゲット選択ボタンを作成する
 		vc := eui.NewVerticalContainer()
-		st.enemyListContainer.AddChild(vc)
-
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-		vc.AddChild(eui.NewMenuText(text, world))
+		st.cardSpecContainer.AddChild(vc)
 
 		btn := eui.NewItemButton(
 			"選択",
@@ -456,6 +451,11 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 			world,
 		)
 		vc.AddChild(btn)
+
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+		vc.AddChild(eui.NewMenuText(text, world))
 	}))
 }
 
@@ -463,6 +463,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 
 func (st *BattleState) reloadMsg(world w.World) {
 	st.selectContainer.RemoveChildren()
+	st.cardSpecContainer.RemoveChildren()
 
 	entries := []any{}
 	for _, e := range gamelog.BattleLog.Latest(MessageCharBaseHeight) {
