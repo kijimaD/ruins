@@ -144,17 +144,15 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				gs.BattleCommandSystem(world)
 				st.isWaitClick = false
+			}
+			return states.Transition{Type: states.TransNone}
+		}
 
-				return states.Transition{Type: states.TransNone}
-			}
-		} else {
-			// 選択完了
-			st.isWaitClick = true
-			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-				st.phase = &phaseChoosePolicy{}
-				st.isWaitClick = false
-				gamelog.BattleLog.Flush()
-			}
+		// 選択完了
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			st.phase = &phaseChoosePolicy{}
+			st.isWaitClick = false
+			gamelog.BattleLog.Flush()
 		}
 	case *phaseResult:
 	}
