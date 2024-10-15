@@ -267,6 +267,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 		policyEntryItem,
 		policyEntryEscape,
 	}
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(policyEntry)
@@ -295,6 +296,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 				log.Fatal("unexpected entry detect!")
 			}
 		}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 	list := eui.NewList(
 		entries,
@@ -393,6 +395,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			st.cardSpecContainer.RemoveChildren() // 選択し終わったら消す。こうするより非表示にしたほうがいいかもしれない
 		}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 	list := eui.NewList(
 		equipCards,
@@ -480,6 +483,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		entries = append(entries, any("▼"))
 	}
 
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(world.Resources.ScreenDimensions.Width-20, 280),
@@ -502,6 +506,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
 		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 
 	list := eui.NewList(
