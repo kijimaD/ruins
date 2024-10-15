@@ -5,7 +5,7 @@
 
 ## Play Images
 
-<img src="./vrtimages/CraftMenu.png" width="50%" /><img src="./vrtimages/DebugMenu.png" width="50%" />
+<img src="./vrtimages/Battle.png" width="50%" /><img src="./vrtimages/Dungeon.png" width="50%" />
 
 <img src="./vrtimages/DungeonSelect.png" width="50%" /><img src="./vrtimages/EquipMenu.png" width="50%" />
 
@@ -13,9 +13,9 @@
 
 <img src="./vrtimages/Intro.png" width="50%" /><img src="./vrtimages/InventoryMenu.png" width="50%" />
 
-<img src="./vrtimages/MainMenu.png" width="50%" /><img src="./vrtimages/Dungeon.png" width="50%" />
+<img src="./vrtimages/MainMenu.png" width="50%" /><img src="./vrtimages/CraftMenu.png" width="50%" />
 
-<img src="./vrtimages/Battle.png" width="50%" />
+<img src="./vrtimages/DebugMenu.png" width="50%" />
 
 各画像は全自動でキャプチャされる。最新なことをCIで保証している。
 
