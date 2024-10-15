@@ -295,6 +295,7 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 			euiext.ListOpts.Entries(entries),
 			euiext.ListOpts.EntryFontFace(res.List.Face),
 			euiext.ListOpts.EntryTextPadding(res.List.EntryPadding),
+			euiext.ListOpts.AllowReselect(),
 		}, listOpts...)...,
 	)
 }

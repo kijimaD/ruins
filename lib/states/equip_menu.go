@@ -234,7 +234,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 		}),
 		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
 		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(400, 400),
+			widget.WidgetOpts.MinSize(440, 400),
 		)),
 	}
 	list := eui.NewList(
@@ -252,11 +252,39 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 	st.actionContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
+	entities := []any{}
 	for _, entity := range st.items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		entities = append(entities, entity)
+	}
 
-		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(entity).(*gc.Name).Name
+
+			return string(name)
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			desc := gameComponents.Description.Get(entity).(*gc.Description).Description
+			st.itemDesc.Label = desc
+			views.UpdateSpec(world, st.specContainer, entity)
+		}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			entity, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			// 装備
 			if previousEquipment != nil {
 				equips.Disarm(world, *previousEquipment)
 			}
@@ -266,14 +294,24 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 			st.generateActionContainer(world)
 			st.reloadSubMenu(world, true, func() {})
 			st.reloadEquipTargetContainer(world, true)
-		}, world)
-
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			st.itemDesc.Label = simple.GetDescription(world, entity).Description
-			views.UpdateSpec(world, st.specContainer, entity)
-		})
-		st.actionContainer.AddChild(itemButton)
+		}),
+		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(440, 400),
+		)),
 	}
+
+	list := eui.NewList(
+		entities,
+		opts,
+		world,
+	)
+	st.actionContainer.AddChild(list)
+	st.actionContainer.AddChild(eui.NewItemButton("戻る", func(args *widget.ButtonClickedEventArgs) {
+		st.generateActionContainer(world)
+		st.reloadSubMenu(world, true, func() {})
+		st.reloadEquipTargetContainer(world, true)
+	}, world))
 }
 
 func (st *EquipMenuState) reloadEquipTargetContainer(world w.World, visible bool) {
