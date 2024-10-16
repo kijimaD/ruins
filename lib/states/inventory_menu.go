@@ -23,13 +23,14 @@ import (
 type InventoryMenuState struct {
 	ui *ebitenui.UI
 
-	selectedItem    ecs.Entity        // 選択中のアイテム
-	items           []ecs.Entity      // 表示対象とするアイテム
-	itemDesc        *widget.Text      // アイテムの概要
-	actionContainer *widget.Container // アクションの起点となるコンテナ
-	specContainer   *widget.Container // 性能表示のコンテナ
-	partyWindow     *widget.Window    // 仲間を選択するウィンドウ
-	category        ItemCategoryType
+	selectedItem            ecs.Entity        // 選択中のアイテム
+	items                   []ecs.Entity      // 表示対象とするアイテム
+	itemDesc                *widget.Text      // アイテムの概要
+	actionContainer         *widget.Container // アクションの起点となるコンテナ
+	specContainer           *widget.Container // 性能表示のコンテナ
+	toggleCategoryContainer *widget.Container // カテゴリを切り替えるコンテナ
+	partyWindow             *widget.Window    // 仲間を選択するウィンドウ
+	category                ItemCategoryType
 }
 
 func (st InventoryMenuState) String() string {
@@ -43,6 +44,7 @@ func (st *InventoryMenuState) OnPause(world w.World) {}
 func (st *InventoryMenuState) OnResume(world w.World) {}
 
 func (st *InventoryMenuState) OnStart(world w.World) {
+	st.category = ItemCategoryTypeItem
 	st.ui = st.initUI(world)
 }
 
@@ -71,9 +73,8 @@ func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 var _ haveCategory = &InventoryMenuState{}
 
-func (st *InventoryMenuState) setCategoryReload(world w.World, category ItemCategoryType) {
+func (st *InventoryMenuState) setCategory(world w.World, category ItemCategoryType) {
 	st.category = category
-	st.categoryReload(world)
 }
 
 func (st *InventoryMenuState) categoryReload(world w.World) {
@@ -96,11 +97,6 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 	st.generateList(world)
 }
 
-// TODO: 後で整理する
-func (st *InventoryMenuState) SetCategory(category ItemCategoryType) {
-	st.category = category
-}
-
 // ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
@@ -111,7 +107,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.categoryReload(world)
 
 	// 種類トグル
-	toggleContainer := st.newToggleContainer(world)
+	st.toggleCategoryContainer = eui.NewRowContainer()
+	st.reloadToggleContainer(world)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
@@ -128,7 +125,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(toggleContainer)
+		rootContainer.AddChild(st.toggleCategoryContainer)
 
 		rootContainer.AddChild(st.actionContainer)
 		rootContainer.AddChild(widget.NewContainer())
@@ -245,39 +242,48 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				log.Fatalf("unexpected entry: %#v", entity)
 			}
 
-			useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-				consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
-				switch consumable.TargetType.TargetNum {
-				case gc.TargetSingle:
-					st.initPartyWindow(world)
-					st.partyWindow.SetLocation(getWinRect())
+			useButton := eui.NewButton("使う　",
+				world,
+				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+					consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
+					switch consumable.TargetType.TargetNum {
+					case gc.TargetSingle:
+						st.initPartyWindow(world)
+						st.partyWindow.SetLocation(getWinRect())
 
-					st.ui.AddWindow(st.partyWindow)
-					actionWindow.Close()
-					st.selectedItem = entity
-					st.generateList(world)
-				case gc.TargetAll:
-					effects.ItemTrigger(nil, entity, effects.Party{}, world)
-					actionWindow.Close()
-					st.categoryReload(world)
-				}
-			}, world)
+						st.ui.AddWindow(st.partyWindow)
+						actionWindow.Close()
+						st.selectedItem = entity
+						st.generateList(world)
+					case gc.TargetAll:
+						effects.ItemTrigger(nil, entity, effects.Party{}, world)
+						actionWindow.Close()
+						st.categoryReload(world)
+					}
+				}),
+			)
 			if entity.HasComponent(gameComponents.Consumable) {
 				windowContainer.AddChild(useButton)
 			}
 
-			dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
-				world.Manager.DeleteEntity(entity)
-				actionWindow.Close()
-				st.categoryReload(world)
-			}, world)
+			dropButton := eui.NewButton("捨てる",
+				world,
+				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+					world.Manager.DeleteEntity(entity)
+					actionWindow.Close()
+					st.categoryReload(world)
+				}),
+			)
 			if !entity.HasComponent(gameComponents.Material) {
 				windowContainer.AddChild(dropButton)
 			}
 
-			closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-				actionWindow.Close()
-			}, world)
+			closeButton := eui.NewButton("閉じる",
+				world,
+				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+					actionWindow.Close()
+				}),
+			)
 			windowContainer.AddChild(closeButton)
 
 			actionWindow.SetLocation(setWinRect())
@@ -315,11 +321,14 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		memberContainer := eui.NewVerticalContainer()
-		partyButton := eui.NewItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
-			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
-			st.partyWindow.Close()
-			st.categoryReload(world)
-		}, world)
+		partyButton := eui.NewButton("使う",
+			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
+				st.partyWindow.Close()
+				st.categoryReload(world)
+			}),
+		)
 		memberContainer.AddChild(partyButton)
 		views.AddMemberBar(world, memberContainer, entity)
 
@@ -327,16 +336,56 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 	}))
 }
 
-func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
-	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeItem) }, world)
-	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeCard) }, world)
-	toggleWearableButton := eui.NewItemButton("防具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeWearable) }, world)
-	toggleMaterialButton := eui.NewItemButton("素材", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeMaterial) }, world)
-	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleCardButton)
-	toggleContainer.AddChild(toggleWearableButton)
-	toggleContainer.AddChild(toggleMaterialButton)
+func (st *InventoryMenuState) reloadToggleContainer(world w.World) {
+	st.toggleCategoryContainer.RemoveChildren()
 
-	return toggleContainer
+	toggleConsumableButton := eui.NewButton("道具",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeItem)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+	toggleCardButton := eui.NewButton("手札",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeCard)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+	toggleWearableButton := eui.NewButton("防具",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeWearable)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+	toggleMaterialButton := eui.NewButton("素材",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeMaterial)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+
+	switch st.category {
+	case ItemCategoryTypeItem:
+		toggleConsumableButton.GetWidget().Disabled = true
+	case ItemCategoryTypeWearable:
+		toggleWearableButton.GetWidget().Disabled = true
+	case ItemCategoryTypeCard:
+		toggleCardButton.GetWidget().Disabled = true
+	case ItemCategoryTypeMaterial:
+		toggleMaterialButton.GetWidget().Disabled = true
+	default:
+		log.Fatal("未定義のcategory")
+	}
+	st.toggleCategoryContainer.AddChild(toggleConsumableButton)
+	st.toggleCategoryContainer.AddChild(toggleCardButton)
+	st.toggleCategoryContainer.AddChild(toggleWearableButton)
+	st.toggleCategoryContainer.AddChild(toggleMaterialButton)
 }

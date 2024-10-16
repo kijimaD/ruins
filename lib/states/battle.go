@@ -419,9 +419,10 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		vc := eui.NewVerticalContainer()
 		st.cardSpecContainer.AddChild(vc)
 
-		btn := eui.NewItemButton(
+		btn := eui.NewButton(
 			"選択",
-			func(args *widget.ButtonClickedEventArgs) {
+			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				cl := loader.EntityComponentList{}
 				cl.Game = append(cl.Game, components.GameComponentList{
 					BattleCommand: &gc.BattleCommand{
@@ -445,9 +446,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
 					st.phase = &phaseChooseAction{owner: members[st.curMemberIndex]}
 				}
-
-			},
-			world,
+			}),
 		)
 		vc.AddChild(btn)
 

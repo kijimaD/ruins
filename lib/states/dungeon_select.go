@@ -72,12 +72,12 @@ func (st *DungeonSelectState) updateMenuContainer(world w.World) {
 
 	for _, data := range dungeonSelectTrans {
 		data := data
-		btn := eui.NewItemButton(
+		btn := eui.NewButton(
 			data.label,
-			func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &data.trans
-			},
 			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			}),
 		)
 		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.dungeonDescContainer.RemoveChildren()

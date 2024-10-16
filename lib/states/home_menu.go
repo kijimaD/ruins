@@ -171,7 +171,7 @@ var homeMenuTrans = []struct {
 	},
 	{
 		label: "合成",
-		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{category: ItemCategoryTypeItem}}},
+		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{}}},
 		desc:  "アイテムを合成する",
 	},
 	{
@@ -181,7 +181,7 @@ var homeMenuTrans = []struct {
 	},
 	{
 		label: "所持",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: ItemCategoryTypeItem}}},
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}},
 		desc:  "所持品を確認する",
 	},
 	{
@@ -202,12 +202,12 @@ func (st *HomeMenuState) updateActionList(world w.World) {
 
 	for _, data := range homeMenuTrans {
 		data := data
-		btn := eui.NewItemButton(
+		btn := eui.NewButton(
 			data.label,
-			func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &data.trans
-			},
 			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			}),
 		)
 		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.actionDescContainer.RemoveChildren()
