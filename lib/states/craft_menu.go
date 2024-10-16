@@ -20,7 +20,6 @@ import (
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/craft"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -220,7 +219,8 @@ func (st *CraftMenuState) generateActionContainer(world world.World) {
 			if st.hoveredItem != entity {
 				st.hoveredItem = entity
 			}
-			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			desc := gameComponents.Description.Get(entity).(*gc.Description)
+			st.itemDesc.Label = desc.Description
 			views.UpdateSpec(world, st.specContainer, entity)
 			st.updateRecipeList(world)
 		})

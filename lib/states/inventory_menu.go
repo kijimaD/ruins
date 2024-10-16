@@ -222,7 +222,8 @@ func (st *InventoryMenuState) generateList(world world.World) {
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
-			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			desc := gameComponents.Description.Get(entity).(*gc.Description)
+			st.itemDesc.Label = desc.Description
 			views.UpdateSpec(world, st.specContainer, entity)
 		})
 		st.actionContainer.AddChild(itemButton)

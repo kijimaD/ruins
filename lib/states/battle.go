@@ -340,7 +340,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				log.Fatal("unexpected entry detect!")
 			}
 			name := gameComponents.Name.Get(v).(*gc.Name)
-			card := simple.GetCard(world, v)
+			card := gameComponents.Card.Get(v).(*gc.Card)
 			return fmt.Sprintf("%s(%d)", name.Name, card.Cost)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
@@ -360,8 +360,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			)
 			st.cardSpecContainer.AddChild(transContainer)
 
-			desc := simple.GetDescription(world, entity)
-			attack := simple.GetAttack(world, entity)
+			desc := gameComponents.Description.Get(entity).(*gc.Description)
+			attack := gameComponents.Attack.Get(entity).(*gc.Attack)
 			text := fmt.Sprintf(
 				`%s
 命中率 %d
@@ -383,7 +383,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			card := simple.GetCard(world, cardEntity)
+			card := gameComponents.Card.Get(cardEntity).(*gc.Card)
 			if card == nil {
 				log.Fatal("unexpected error: entityがcardを保持していない")
 			}
