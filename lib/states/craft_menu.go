@@ -109,7 +109,7 @@ func (st *CraftMenuState) SetCategory(category ItemCategoryType) {
 
 func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテムが入るコンテナ
-	st.actionContainer = eui.NewScrollContentContainer()
+	st.actionContainer = eui.NewRowContainer()
 	st.categoryReload(world)
 
 	// アイテムの説明文
