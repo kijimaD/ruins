@@ -245,7 +245,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				log.Fatalf("unexpected entry: %#v", entity)
 			}
 
-			useButton := eui.NewItemButton("使う　",
+			useButton := eui.NewButton("使う　",
 				world,
 				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 					consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
@@ -269,7 +269,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				windowContainer.AddChild(useButton)
 			}
 
-			dropButton := eui.NewItemButton("捨てる",
+			dropButton := eui.NewButton("捨てる",
 				world,
 				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 					world.Manager.DeleteEntity(entity)
@@ -281,7 +281,7 @@ func (st *InventoryMenuState) generateList(world world.World) {
 				windowContainer.AddChild(dropButton)
 			}
 
-			closeButton := eui.NewItemButton("閉じる",
+			closeButton := eui.NewButton("閉じる",
 				world,
 				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 					actionWindow.Close()
@@ -324,7 +324,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		memberContainer := eui.NewVerticalContainer()
-		partyButton := eui.NewItemButton("使う",
+		partyButton := eui.NewButton("使う",
 			world,
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
@@ -341,25 +341,25 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具",
+	toggleConsumableButton := eui.NewButton("道具",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeItem)
 		}),
 	)
-	toggleCardButton := eui.NewItemButton("手札",
+	toggleCardButton := eui.NewButton("手札",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeCard)
 		}),
 	)
-	toggleWearableButton := eui.NewItemButton("防具",
+	toggleWearableButton := eui.NewButton("防具",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeWearable)
 		}),
 	)
-	toggleMaterialButton := eui.NewItemButton("素材",
+	toggleMaterialButton := eui.NewButton("素材",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeMaterial)

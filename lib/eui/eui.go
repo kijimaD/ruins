@@ -251,7 +251,7 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 
 // button ================
 
-func NewItemButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.Button {
+func NewButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.Button {
 	res := world.Resources.UIResources
 	return widget.NewButton(
 		append([]widget.ButtonOpt{

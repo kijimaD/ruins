@@ -73,7 +73,7 @@ func (st *DungeonMenuState) updateMenuContainer(world w.World) {
 
 	for _, data := range dungeonMenuTrans {
 		data := data
-		btn := eui.NewItemButton(
+		btn := eui.NewButton(
 			data.label,
 			world,
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {

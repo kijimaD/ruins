@@ -419,7 +419,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		vc := eui.NewVerticalContainer()
 		st.cardSpecContainer.AddChild(vc)
 
-		btn := eui.NewItemButton(
+		btn := eui.NewButton(
 			"選択",
 			world,
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {

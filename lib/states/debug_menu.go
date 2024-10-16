@@ -75,7 +75,7 @@ func (st *DebugMenuState) updateMenuContainer(world w.World) {
 
 	for _, data := range debugMenuTrans {
 		data := data
-		btn := eui.NewItemButton(
+		btn := eui.NewButton(
 			data.label,
 			world,
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {

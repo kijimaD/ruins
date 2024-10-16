@@ -206,7 +206,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 				log.Fatal("unexpected entry detect!")
 			}
 
-			equipButton := eui.NewItemButton("装備する",
+			equipButton := eui.NewButton("装備する",
 				world,
 				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 					st.setItems(world)
@@ -222,7 +222,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 			windowContainer.AddChild(equipButton)
 
 			if v.entity != nil {
-				disarmButton := eui.NewItemButton("外す",
+				disarmButton := eui.NewButton("外す",
 					world,
 					widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 						equips.Disarm(world, *v.entity)
@@ -233,7 +233,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 				windowContainer.AddChild(disarmButton)
 			}
 
-			closeButton := eui.NewItemButton("閉じる",
+			closeButton := eui.NewButton("閉じる",
 				world,
 				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 					actionWindow.Close()
@@ -319,7 +319,7 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 		world,
 	)
 	st.actionContainer.AddChild(list)
-	st.actionContainer.AddChild(eui.NewItemButton(
+	st.actionContainer.AddChild(eui.NewButton(
 		"戻る",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
@@ -337,7 +337,7 @@ func (st *EquipMenuState) reloadEquipTargetContainer(world w.World, visible bool
 	if !visible {
 		return
 	}
-	toggleTargetWearButton := eui.NewItemButton("防具",
+	toggleTargetWearButton := eui.NewButton("防具",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.equipTarget = equipTargetWear
@@ -345,7 +345,7 @@ func (st *EquipMenuState) reloadEquipTargetContainer(world w.World, visible bool
 			st.reloadEquipTargetContainer(world, visible)
 		}),
 	)
-	toggleTargetCardButton := eui.NewItemButton("手札",
+	toggleTargetCardButton := eui.NewButton("手札",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.equipTarget = equipTargetCard
@@ -374,7 +374,7 @@ func (st *EquipMenuState) reloadSubMenu(world w.World, visible bool, reloadFunc 
 			members = append(members, entity)
 		})
 
-		prevMemberButton := eui.NewItemButton("前",
+		prevMemberButton := eui.NewButton("前",
 			world,
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				// Goでは負の剰余は負のままになる
@@ -388,7 +388,7 @@ func (st *EquipMenuState) reloadSubMenu(world w.World, visible bool, reloadFunc 
 				st.reloadAbilityContainer(world)
 			}),
 		)
-		nextMemberButton := eui.NewItemButton("次",
+		nextMemberButton := eui.NewButton("次",
 			world,
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				st.curMemberIdx = (st.curMemberIdx + 1) % len(members)

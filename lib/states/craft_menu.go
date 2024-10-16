@@ -119,19 +119,19 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	st.queryMenuConsumable(world)
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具",
+	toggleConsumableButton := eui.NewButton("道具",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeItem)
 		}),
 	)
-	toggleWearableButton := eui.NewItemButton("装備",
+	toggleWearableButton := eui.NewButton("装備",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeWearable)
 		}),
 	)
-	toggleCardButton := eui.NewItemButton("手札",
+	toggleCardButton := eui.NewButton("手札",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.setCategoryReload(world, ItemCategoryTypeCard)
@@ -278,7 +278,7 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 
 	views.UpdateSpec(world, resultContainer, entity)
 
-	closeButton := eui.NewItemButton("閉じる",
+	closeButton := eui.NewButton("閉じる",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			st.resultWindow.Close()
@@ -314,7 +314,7 @@ func (st *CraftMenuState) updateRecipeList(world w.World) {
 // useButton.GetWidget().Disabled = true を使ってボタンを非活性にする方が楽でよさそうなのだが、非活性にすると描画の色まわりでヌルポになる。色は設定しているのに...
 func (st *CraftMenuState) initWindowContainer(world w.World, name string, windowContainer *widget.Container, actionWindow *widget.Window) {
 	windowContainer.RemoveChildren()
-	useButton := eui.NewItemButton("合成する",
+	useButton := eui.NewButton("合成する",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			resultEntity, err := craft.Craft(world, name)
@@ -333,7 +333,7 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 		windowContainer.AddChild(useButton)
 	}
 
-	closeButton := eui.NewItemButton("閉じる",
+	closeButton := eui.NewButton("閉じる",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			actionWindow.Close()
