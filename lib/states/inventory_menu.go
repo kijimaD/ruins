@@ -15,6 +15,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
@@ -24,14 +25,13 @@ import (
 type InventoryMenuState struct {
 	ui *ebitenui.UI
 
-	selectedItem       ecs.Entity        // 選択中のアイテム
-	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
-	items              []ecs.Entity      // 表示対象とするアイテム
-	itemDesc           *widget.Text      // アイテムの概要
-	actionContainer    *widget.Container // アクションの起点となるコンテナ
-	specContainer      *widget.Container // 性能表示のコンテナ
-	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
-	category           ItemCategoryType
+	selectedItem    ecs.Entity        // 選択中のアイテム
+	items           []ecs.Entity      // 表示対象とするアイテム
+	itemDesc        *widget.Text      // アイテムの概要
+	actionContainer *widget.Container // アクションの起点となるコンテナ
+	specContainer   *widget.Container // 性能表示のコンテナ
+	partyWindow     *widget.Window    // 仲間を選択するウィンドウ
+	category        ItemCategoryType
 }
 
 func (st InventoryMenuState) String() string {
@@ -204,66 +204,94 @@ func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	count := fmt.Sprintf("合計 %02d個", len(st.items))
 	st.actionContainer.AddChild(eui.NewMenuText(count, world))
+
+	entities := []any{}
 	for _, entity := range st.items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		entities = append(entities, entity)
+	}
 
-		windowContainer := eui.NewWindowContainer(world)
-		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(entity).(*gc.Name).Name
 
-		// アイテムの名前がラベルについたボタン
-		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.SetLocation(setWinRect())
-			st.ui.AddWindow(actionWindow)
-		}, world)
-
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			return string(name)
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
 			desc := gameComponents.Description.Get(entity).(*gc.Description)
 			st.itemDesc.Label = desc.Description
 			views.UpdateSpec(world, st.specContainer, entity)
-		})
-		st.actionContainer.AddChild(itemButton)
+		}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			windowContainer := eui.NewWindowContainer(world)
+			titleContainer := eui.NewWindowHeaderContainer("アクション", world)
+			actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
-		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
-			switch consumable.TargetType.TargetNum {
-			case gc.TargetSingle:
-				st.initPartyWindow(world)
-				st.partyWindow.SetLocation(getWinRect())
-
-				st.ui.AddWindow(st.partyWindow)
-				actionWindow.Close()
-				st.selectedItem = entity
-				st.selectedItemButton = itemButton
-			case gc.TargetAll:
-				effects.ItemTrigger(nil, entity, effects.Party{}, world)
-				actionWindow.Close()
-				st.actionContainer.RemoveChild(itemButton)
-				st.categoryReload(world)
+			entity, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatalf("unexpected entry: %#v", entity)
 			}
-		}, world)
-		if entity.HasComponent(gameComponents.Consumable) {
-			windowContainer.AddChild(useButton)
-		}
 
-		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
-			world.Manager.DeleteEntity(entity)
-			actionWindow.Close()
-			st.categoryReload(world)
-		}, world)
-		if !entity.HasComponent(gameComponents.Material) {
-			windowContainer.AddChild(dropButton)
-		}
+			useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
+				consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
+				switch consumable.TargetType.TargetNum {
+				case gc.TargetSingle:
+					st.initPartyWindow(world)
+					st.partyWindow.SetLocation(getWinRect())
 
-		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		}, world)
-		windowContainer.AddChild(closeButton)
+					st.ui.AddWindow(st.partyWindow)
+					actionWindow.Close()
+					st.selectedItem = entity
+					st.generateList(world)
+				case gc.TargetAll:
+					effects.ItemTrigger(nil, entity, effects.Party{}, world)
+					actionWindow.Close()
+					st.categoryReload(world)
+				}
+			}, world)
+			if entity.HasComponent(gameComponents.Consumable) {
+				windowContainer.AddChild(useButton)
+			}
+
+			dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
+				world.Manager.DeleteEntity(entity)
+				actionWindow.Close()
+				st.categoryReload(world)
+			}, world)
+			if !entity.HasComponent(gameComponents.Material) {
+				windowContainer.AddChild(dropButton)
+			}
+
+			closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+				actionWindow.Close()
+			}, world)
+			windowContainer.AddChild(closeButton)
+
+			actionWindow.SetLocation(setWinRect())
+			st.ui.AddWindow(actionWindow)
+		}),
+		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(440, 400),
+		)),
 	}
+	list := eui.NewList(
+		entities,
+		opts,
+		world,
+	)
+	st.actionContainer.AddChild(list)
 }
 
 // メンバー選択画面を初期化する
@@ -284,7 +312,6 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		partyButton := eui.NewItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
-			st.actionContainer.RemoveChild(st.selectedItemButton)
 			st.categoryReload(world)
 		}, world)
 		memberContainer.AddChild(partyButton)
