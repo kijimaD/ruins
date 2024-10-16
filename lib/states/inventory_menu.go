@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -16,7 +15,6 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -106,8 +104,10 @@ func (st *InventoryMenuState) SetCategory(category ItemCategoryType) {
 // ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
+	res := world.Resources.UIResources
+
 	// 各アクションが入るコンテナ
-	st.actionContainer = eui.NewScrollContentContainer()
+	st.actionContainer = eui.NewVerticalContainer()
 	st.categoryReload(world)
 
 	// 種類トグル
@@ -118,17 +118,20 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	sc, v := eui.NewScrollContainer(st.actionContainer, world)
-	st.specContainer = st.newItemSpecContainer(world)
+	st.specContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 
-	rootContainer := eui.NewItemGridContainer()
+	rootContainer := eui.NewItemGridContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		rootContainer.AddChild(sc)
-		rootContainer.AddChild(v)
+		rootContainer.AddChild(st.actionContainer)
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(st.specContainer)
 
 		rootContainer.AddChild(itemDescContainer)
@@ -202,14 +205,13 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 // 使用などでアイテム数が変動した場合は再実行する必要がある
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	count := fmt.Sprintf("合計 %02d個", len(st.items))
-	st.actionContainer.AddChild(eui.NewMenuText(count, world))
 
 	entities := []any{}
 	for _, entity := range st.items {
 		entities = append(entities, entity)
 	}
 
+	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
 			entity, ok := e.(ecs.Entity)
@@ -283,8 +285,9 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		}),
 		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
 		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(440, 400),
+			widget.WidgetOpts.MinSize(440, 520),
 		)),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 	list := eui.NewList(
 		entities,
@@ -292,6 +295,9 @@ func (st *InventoryMenuState) generateList(world world.World) {
 		world,
 	)
 	st.actionContainer.AddChild(list)
+
+	count := fmt.Sprintf("合計 %02d個", len(st.items))
+	st.actionContainer.AddChild(eui.NewMenuText(count, world))
 }
 
 // メンバー選択画面を初期化する
@@ -333,23 +339,4 @@ func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Containe
 	toggleContainer.AddChild(toggleMaterialButton)
 
 	return toggleContainer
-}
-
-func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Container {
-	itemSpecContainer := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
-	)
-
-	return itemSpecContainer
 }

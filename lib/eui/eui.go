@@ -43,22 +43,23 @@ func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 }
 
 // アイテム系メニューのRootとなる3x3のグリッドコンテナ
-func NewItemGridContainer() *widget.Container {
+func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				// アイテム, スクロール, アイテム性能で3列になっている
-				widget.GridLayoutOpts.Columns(3),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    20,
-					Bottom: 20,
-					Left:   20,
-					Right:  20,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					// アイテム, スクロール, アイテム性能で3列になっている
+					widget.GridLayoutOpts.Columns(3),
+					widget.GridLayoutOpts.Spacing(4, 4),
+					widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    4,
+						Bottom: 4,
+						Left:   4,
+						Right:  4,
+					}),
+				)),
+		}, opts...)...,
 	)
 }
 
@@ -69,13 +70,13 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget
 		widget.ContainerOpts.Layout(
 			widget.NewGridLayout(
 				widget.GridLayoutOpts.Columns(1),
-				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Spacing(4, 4),
 				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
 				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
+					Top:    4,
+					Bottom: 4,
+					Left:   4,
+					Right:  4,
 				}),
 			)),
 	)
@@ -88,17 +89,16 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget
 // 横分割コンテナ
 func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget.Container {
 	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
 		widget.ContainerOpts.Layout(
 			widget.NewGridLayout(
 				widget.GridLayoutOpts.Columns(2),
-				widget.GridLayoutOpts.Spacing(2, 0),
+				widget.GridLayoutOpts.Spacing(4, 4),
 				widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
 				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
+					Top:    4,
+					Bottom: 4,
+					Left:   4,
+					Right:  4,
 				}),
 			)),
 	)
@@ -218,8 +218,9 @@ func NewMenuText(title string, world w.World) *widget.Text {
 }
 
 func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
+	res := world.Resources.UIResources
 	text := widget.NewText(
-		widget.TextOpts.Text(title, *LoadFont(world), color),
+		widget.TextOpts.Text(title, res.Text.Face, styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),

@@ -112,7 +112,10 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	rootContainer := eui.NewItemGridContainer()
+	res := world.Resources.UIResources
+	rootContainer := eui.NewItemGridContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 	{
 		rootContainer.AddChild(st.equipTargetContainer)
 		rootContainer.AddChild(widget.NewContainer())
@@ -161,7 +164,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 				log.Fatal("unexpected entry detect!")
 			}
 
-			var name = " "
+			var name = "-"
 			if v.entity != nil {
 				name = gameComponents.Name.Get(*v.entity).(*gc.Name).Name
 			}
