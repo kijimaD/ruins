@@ -8,57 +8,37 @@ import (
 )
 
 // 意味がないのでこれらのGet系ヘルパーは削除する。
-func GetCard(world w.World, target ecs.Entity) *components.Card {
-	var result *components.Card
+func GetCard(world w.World, entity ecs.Entity) *components.Card {
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Card).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Card) {
-			result = gameComponents.Card.Get(entity).(*gc.Card)
-		}
-	}))
+	card := gameComponents.Card.Get(entity).(*gc.Card)
 
-	return result
+	return card
 }
 
-func GetAttack(world w.World, target ecs.Entity) *components.Attack {
-	var result *components.Attack
+func GetAttack(world w.World, entity ecs.Entity) *components.Attack {
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Attack).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Attack) {
-			result = gameComponents.Attack.Get(entity).(*gc.Attack)
-		}
-	}))
+	attack := gameComponents.Attack.Get(entity).(*gc.Attack)
 
-	return result
+	return attack
 }
 
-func GetWearable(world w.World, target ecs.Entity) *components.Wearable {
-	var result *components.Wearable
+func GetWearable(world w.World, entity ecs.Entity) *components.Wearable {
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Wearable).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Wearable) {
-			result = gameComponents.Wearable.Get(entity).(*gc.Wearable)
-		}
-	}))
+	wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
 
-	return result
+	return wearable
 }
 
-func GetMaterial(world w.World, target ecs.Entity) *components.Material {
-	var result *components.Material
+func GetMaterial(world w.World, entity ecs.Entity) *components.Material {
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Material) {
-			result = gameComponents.Material.Get(entity).(*gc.Material)
-		}
-	}))
+	material := gameComponents.Material.Get(entity).(*gc.Material)
 
-	return result
+	return material
 }
 
-func GetDescription(world w.World, target ecs.Entity) components.Description {
+func GetDescription(world w.World, entity ecs.Entity) components.Description {
 	gameComponents := world.Components.Game.(*gc.Components)
-	description := gameComponents.Description.Get(target).(*gc.Description)
+	description := gameComponents.Description.Get(entity).(*gc.Description)
 
 	return *description
 }
