@@ -96,11 +96,6 @@ func (st *InventoryMenuState) categoryReload(world w.World) {
 	st.generateList(world)
 }
 
-// TODO: 後で整理する
-func (st *InventoryMenuState) SetCategory(category ItemCategoryType) {
-	st.category = category
-}
-
 // ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {

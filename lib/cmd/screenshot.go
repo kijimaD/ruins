@@ -44,7 +44,6 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.IntroState{}, mode)
 	case gs.InventoryMenuState{}.String():
 		st := &gs.InventoryMenuState{}
-		st.SetCategory(states.ItemCategoryTypeCard)
 		vrt.RunTestGame(st, mode)
 	case gs.MainMenuState{}.String():
 		vrt.RunTestGame(&gs.MainMenuState{}, mode)
