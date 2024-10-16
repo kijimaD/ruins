@@ -71,9 +71,8 @@ func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image) {
 // ================
 var _ haveCategory = &InventoryMenuState{}
 
-func (st *InventoryMenuState) setCategoryReload(world w.World, category ItemCategoryType) {
+func (st *InventoryMenuState) setCategory(world w.World, category ItemCategoryType) {
 	st.category = category
-	st.categoryReload(world)
 }
 
 func (st *InventoryMenuState) categoryReload(world w.World) {

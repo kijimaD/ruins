@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/kijimaD/ruins/lib/states"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
 	"github.com/urfave/cli/v2"
@@ -28,7 +27,6 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.BattleState{}, mode)
 	case gs.CraftMenuState{}.String():
 		st := &gs.CraftMenuState{}
-		st.SetCategory(states.ItemCategoryTypeItem)
 		vrt.RunTestGame(st, mode)
 	case gs.DebugMenuState{}.String():
 		vrt.RunTestGame(&gs.DebugMenuState{}, mode)

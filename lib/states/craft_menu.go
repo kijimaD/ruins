@@ -77,9 +77,8 @@ func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {
 
 var _ haveCategory = &CraftMenuState{}
 
-func (st *CraftMenuState) setCategoryReload(world w.World, category ItemCategoryType) {
+func (st *CraftMenuState) setCategory(world w.World, category ItemCategoryType) {
 	st.category = category
-	st.categoryReload(world)
 }
 
 func (st *CraftMenuState) categoryReload(world w.World) {
@@ -98,11 +97,6 @@ func (st *CraftMenuState) categoryReload(world w.World) {
 	}
 
 	st.generateActionContainer(world)
-}
-
-// TODO: あとで整理する
-func (st *CraftMenuState) SetCategory(category ItemCategoryType) {
-	st.category = category
 }
 
 // ================
