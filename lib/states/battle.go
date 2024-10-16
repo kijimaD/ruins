@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
+	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -17,6 +18,7 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	"github.com/kijimaD/ruins/lib/views"
@@ -187,7 +189,9 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 
-	st.memberContainer = eui.NewRowContainer()
+	st.memberContainer = eui.NewRowContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 	st.updateMemberContainer(world)
 
 	actionContainer := eui.NewRowContainer()

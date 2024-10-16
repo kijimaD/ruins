@@ -86,20 +86,22 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ..
 }
 
 // 横分割コンテナ
-func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget.Container {
+func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ...widget.ContainerOpt) *widget.Container {
 	split := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(2),
-				widget.GridLayoutOpts.Spacing(4, 4),
-				widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    4,
-					Bottom: 4,
-					Left:   4,
-					Right:  4,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					widget.GridLayoutOpts.Columns(2),
+					widget.GridLayoutOpts.Spacing(4, 4),
+					widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    4,
+						Bottom: 4,
+						Left:   4,
+						Right:  4,
+					}),
+				)),
+		}, opts...)...,
 	)
 	split.AddChild(right)
 	split.AddChild(left)

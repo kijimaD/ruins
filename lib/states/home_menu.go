@@ -3,6 +3,7 @@ package states
 
 import (
 	"github.com/ebitenui/ebitenui"
+	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -11,6 +12,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
@@ -23,9 +25,15 @@ type HomeMenuState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
 
-	memberContainer     *widget.Container // メンバー一覧コンテナ
-	actionListContainer *widget.Container // 選択肢アクション一覧コンテナ
-	actionDescContainer *widget.Container // 選択肢アクションの説明コンテナ
+	// 背景
+	bg *ebiten.Image
+
+	// メンバー一覧コンテナ
+	memberContainer *widget.Container
+	// 選択肢アクション一覧コンテナ
+	actionListContainer *widget.Container
+	// 選択肢アクションの説明コンテナ
+	actionDescContainer *widget.Container
 }
 
 func (st HomeMenuState) String() string {
@@ -83,13 +91,17 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		equips.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 	}
 
-	// ステータス反映(最大HP)
-	_ = gs.EquipmentChangedSystem(world)
+	{
+		// ステータス反映(最大HP)
+		_ = gs.EquipmentChangedSystem(world)
+		// 完全回復
+		effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
+		effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
+		effects.RunEffectQueue(world)
+	}
 
-	// 完全回復
-	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-	effects.RunEffectQueue(world)
+	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
+	st.bg = bg.Texture.Image
 
 	st.ui = st.initUI(world)
 }
@@ -116,6 +128,10 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 }
 
 func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
+	if st.bg != nil {
+		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
+	}
+
 	st.ui.Draw(screen)
 }
 
@@ -123,7 +139,9 @@ func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
 
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
-	st.memberContainer = eui.NewRowContainer()
+	st.memberContainer = eui.NewRowContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 
 	st.actionListContainer = eui.NewRowContainer()
 	st.actionDescContainer = eui.NewRowContainer()
