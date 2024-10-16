@@ -180,6 +180,7 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	)
 	st.reloadPolicy(world)
 
+	// 非表示にできるように背景が設定されていない
 	st.cardSpecContainer = eui.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(600, 120),
@@ -352,29 +353,15 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				st.selectedItem = entity
 			}
 			st.cardSpecContainer.RemoveChildren()
-			transContainer := eui.NewRowContainer(
+			// 透明度つきの背景を設定したコンテナ。cardSpecContainerは背景が設定されておらず非表示にできるようになっている
+			transContainer := eui.NewVerticalContainer(
 				widget.ContainerOpts.WidgetOpts(
 					widget.WidgetOpts.MinSize(700, 120),
 				),
 				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 			)
+			views.UpdateSpec(world, transContainer, entity)
 			st.cardSpecContainer.AddChild(transContainer)
-
-			desc := gameComponents.Description.Get(entity).(*gc.Description)
-			attack := gameComponents.Attack.Get(entity).(*gc.Attack)
-			text := fmt.Sprintf(
-				`%s
-命中率 %d
-攻撃力 %d
-属性 %s %s
-`,
-				desc.Description,
-				attack.Accuracy,
-				attack.Damage,
-				attack.Element,
-				attack.AttackCategory,
-			)
-			transContainer.AddChild(eui.NewMenuText(text, world))
 
 			return
 		}),
