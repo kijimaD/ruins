@@ -258,8 +258,8 @@ func (st *InventoryMenuState) generateList(world world.World) {
 					case gc.TargetAll:
 						effects.ItemTrigger(nil, entity, effects.Party{}, world)
 						actionWindow.Close()
-						st.categoryReload(world)
 					}
+					st.categoryReload(world)
 				}),
 			)
 			if entity.HasComponent(gameComponents.Consumable) {
