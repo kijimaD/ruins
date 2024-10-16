@@ -64,21 +64,22 @@ func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 }
 
 // 縦分割コンテナ
-func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
+func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ...widget.ContainerOpt) *widget.Container {
 	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(1),
-				widget.GridLayoutOpts.Spacing(4, 4),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    4,
-					Bottom: 4,
-					Left:   4,
-					Right:  4,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					widget.GridLayoutOpts.Columns(1),
+					widget.GridLayoutOpts.Spacing(4, 4),
+					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    4,
+						Bottom: 4,
+						Left:   4,
+						Right:  4,
+					}),
+				)),
+		}, opts...)...,
 	)
 	split.AddChild(top)
 	split.AddChild(bottom)
