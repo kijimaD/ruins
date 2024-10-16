@@ -100,7 +100,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		effects.RunEffectQueue(world)
 	}
 
-	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
+	bg := (*world.Resources.SpriteSheets)["bg_cup1"]
 	st.bg = bg.Texture.Image
 
 	st.ui = st.initUI(world)
