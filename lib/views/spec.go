@@ -27,34 +27,34 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 		}
 
 		if entity.HasComponent(gameComponents.Attack) {
-			v := gameComponents.Attack.Get(entity).(*gc.Attack)
-			targetContainer.AddChild(eui.NewBodyText(v.AttackCategory.String(), styles.TextColor, world))
+			attack := gameComponents.Attack.Get(entity).(*gc.Attack)
+			targetContainer.AddChild(eui.NewBodyText(attack.AttackCategory.String(), styles.TextColor, world))
 
-			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(v.Accuracy))
-			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
-
-			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(v.Damage))
+			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(attack.Damage))
 			targetContainer.AddChild(eui.NewBodyText(damage, styles.TextColor, world))
 
-			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(v.AttackCount))
+			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(attack.Accuracy))
+			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
+
+			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(attack.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
-			if v.Element != components.ElementTypeNone {
-				targetContainer.AddChild(damageAttrText(world, v.Element, v.Element.String()))
+			if attack.Element != components.ElementTypeNone {
+				targetContainer.AddChild(damageAttrText(world, attack.Element, attack.Element.String()))
 			}
 		}
 		if entity.HasComponent(gameComponents.Wearable) {
-			v := gameComponents.Wearable.Get(entity).(*gc.Wearable)
-			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, v.EquipmentCategory)
+			wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
+			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, wearable.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
-			defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, v.Defense)
+			defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, wearable.Defense)
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
-			addEquipBonus(targetContainer, v.EquipBonus, world)
+			addEquipBonus(targetContainer, wearable.EquipBonus, world)
 		}
 		if entity.HasComponent(gameComponents.Card) {
-			v := gameComponents.Card.Get(entity).(*gc.Card)
-			cost := fmt.Sprintf("コスト %d", v.Cost)
+			card := gameComponents.Card.Get(entity).(*gc.Card)
+			cost := fmt.Sprintf("コスト %d", card.Cost)
 			targetContainer.AddChild(eui.NewBodyText(cost, styles.TextColor, world))
 		}
 	}

@@ -2,10 +2,8 @@ package eui
 
 import (
 	"image/color"
-	"math"
 
 	"github.com/ebitenui/ebitenui/image"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/euiext"
@@ -43,41 +41,43 @@ func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 }
 
 // アイテム系メニューのRootとなる3x3のグリッドコンテナ
-func NewItemGridContainer() *widget.Container {
+func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				// アイテム, スクロール, アイテム性能で3列になっている
-				widget.GridLayoutOpts.Columns(3),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    20,
-					Bottom: 20,
-					Left:   20,
-					Right:  20,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					// アイテム, スクロール, アイテム性能で3列になっている
+					widget.GridLayoutOpts.Columns(3),
+					widget.GridLayoutOpts.Spacing(4, 4),
+					widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    4,
+						Bottom: 4,
+						Left:   4,
+						Right:  4,
+					}),
+				)),
+		}, opts...)...,
 	)
 }
 
 // 縦分割コンテナ
-func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget.Container {
+func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ...widget.ContainerOpt) *widget.Container {
 	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(1),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					widget.GridLayoutOpts.Columns(1),
+					widget.GridLayoutOpts.Spacing(4, 4),
+					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    4,
+						Bottom: 4,
+						Left:   4,
+						Right:  4,
+					}),
+				)),
+		}, opts...)...,
 	)
 	split.AddChild(top)
 	split.AddChild(bottom)
@@ -86,79 +86,27 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container) *widget
 }
 
 // 横分割コンテナ
-func NewWSplitContainer(right *widget.Container, left *widget.Container) *widget.Container {
+func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ...widget.ContainerOpt) *widget.Container {
 	split := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.DebugColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(2),
-				widget.GridLayoutOpts.Spacing(2, 0),
-				widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
-				widget.GridLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2,
-					Left:   2,
-					Right:  2,
-				}),
-			)),
+		append([]widget.ContainerOpt{
+			widget.ContainerOpts.Layout(
+				widget.NewGridLayout(
+					widget.GridLayoutOpts.Columns(2),
+					widget.GridLayoutOpts.Spacing(4, 4),
+					widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
+					widget.GridLayoutOpts.Padding(widget.Insets{
+						Top:    4,
+						Bottom: 4,
+						Left:   4,
+						Right:  4,
+					}),
+				)),
+		}, opts...)...,
 	)
 	split.AddChild(right)
 	split.AddChild(left)
 
 	return split
-}
-
-// スクロールコンテナとスクロールバー
-func NewScrollContainer(content widget.HasWidget, world w.World) (*widget.ScrollContainer, *widget.Slider) {
-	res := world.Resources.UIResources
-
-	scrollContainer := widget.NewScrollContainer(
-		widget.ScrollContainerOpts.Content(content),
-		widget.ScrollContainerOpts.StretchContentWidth(),
-		widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-			Idle: e_image.NewNineSliceColor(styles.ForegroundColor),
-			Mask: e_image.NewNineSliceColor(styles.ForegroundColor),
-		}),
-	)
-	pageSizeFunc := func() int {
-		return int(math.Round(float64(scrollContainer.ContentRect().Dy()) / float64(content.GetWidget().Rect.Dy()) * 1000))
-	}
-	vSlider := widget.NewSlider(
-		widget.SliderOpts.Direction(widget.DirectionVertical),
-		widget.SliderOpts.MinMax(0, 1000),
-		widget.SliderOpts.PageSizeFunc(pageSizeFunc),
-		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
-			scrollContainer.ScrollTop = float64(args.Slider.Current) / 1000
-		}),
-		widget.SliderOpts.TrackPadding(widget.Insets{4, 4, 4, 4}),
-		widget.SliderOpts.Images(res.Slider.TrackImage, res.Slider.Handle),
-	)
-	scrollContainer.GetWidget().ScrolledEvent.AddHandler(func(args interface{}) {
-		a := args.(*widget.WidgetScrolledEventArgs)
-		p := pageSizeFunc() / 3
-		if p < 1 {
-			p = 1
-		}
-		vSlider.Current -= int(math.Round(a.Y * float64(p)))
-	})
-
-	return scrollContainer, vSlider
-}
-
-// スクロールコンテナの中身になるコンテナ
-func NewScrollContentContainer() *widget.Container {
-	return widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(2),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    4,
-					Bottom: 4,
-					Left:   4,
-					Right:  4,
-				}),
-			)))
 }
 
 // ウィンドウの本体
@@ -218,8 +166,9 @@ func NewMenuText(title string, world w.World) *widget.Text {
 }
 
 func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
+	res := world.Resources.UIResources
 	text := widget.NewText(
-		widget.TextOpts.Text(title, *LoadFont(world), color),
+		widget.TextOpts.Text(title, res.Text.Face, styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -295,6 +244,7 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 			euiext.ListOpts.Entries(entries),
 			euiext.ListOpts.EntryFontFace(res.List.Face),
 			euiext.ListOpts.EntryTextPadding(res.List.EntryPadding),
+			euiext.ListOpts.AllowReselect(),
 		}, listOpts...)...,
 	)
 }

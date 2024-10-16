@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -16,11 +15,11 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/craft"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -110,7 +109,7 @@ func (st *CraftMenuState) SetCategory(category ItemCategoryType) {
 
 func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	// 各アイテムが入るコンテナ
-	st.actionContainer = eui.NewScrollContentContainer()
+	st.actionContainer = eui.NewRowContainer()
 	st.categoryReload(world)
 
 	// アイテムの説明文
@@ -127,18 +126,20 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	toggleContainer.AddChild(toggleWearableButton)
 	toggleContainer.AddChild(toggleCardButton)
 
-	st.recipeList = st.newItemSpecContainer(world)
-	st.specContainer = st.newItemSpecContainer(world)
+	st.recipeList = eui.NewVerticalContainer()
+	st.specContainer = eui.NewVerticalContainer()
 
-	rootContainer := eui.NewItemGridContainer()
+	res := world.Resources.UIResources
+	rootContainer := eui.NewItemGridContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 	{
 		rootContainer.AddChild(eui.NewMenuText("合成", world))
 		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		sc, v := eui.NewScrollContainer(st.actionContainer, world)
-		rootContainer.AddChild(sc)
-		rootContainer.AddChild(v)
+		rootContainer.AddChild(st.actionContainer)
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(eui.NewVSplitContainer(st.specContainer, st.recipeList))
 
 		rootContainer.AddChild(itemDescContainer)
@@ -199,52 +200,61 @@ func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 // itemsからactionContainerを生成する
 func (st *CraftMenuState) generateActionContainer(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-
+	entities := []any{}
 	for _, entity := range st.items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		entities = append(entities, entity)
+	}
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(entity).(*gc.Name)
 
-		windowContainer := eui.NewWindowContainer(world)
-		actionWindow := eui.NewSmallWindow(
-			eui.NewWindowHeaderContainer("アクション", world),
-			windowContainer,
-		)
-
-		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.SetLocation(setWinRect())
-			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
-			st.ui.AddWindow(actionWindow)
-		}, world)
-
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			return string(name.Name)
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
 			if st.hoveredItem != entity {
 				st.hoveredItem = entity
 			}
-			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			desc := gameComponents.Description.Get(entity).(*gc.Description)
+			st.itemDesc.Label = desc.Description
 			views.UpdateSpec(world, st.specContainer, entity)
 			st.updateRecipeList(world)
-		})
-		st.actionContainer.AddChild(itemButton)
+		}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			entity, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(entity).(*gc.Name)
+			windowContainer := eui.NewWindowContainer(world)
+			actionWindow := eui.NewSmallWindow(
+				eui.NewWindowHeaderContainer("アクション", world),
+				windowContainer,
+			)
+
+			actionWindow.SetLocation(setWinRect())
+			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
+			st.ui.AddWindow(actionWindow)
+		}),
+		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(440, 400),
+		)),
 	}
-}
-
-func (st *CraftMenuState) newItemSpecContainer(world w.World) *widget.Container {
-	itemSpecContainer := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
+	list := eui.NewList(
+		entities,
+		opts,
+		world,
 	)
-
-	return itemSpecContainer
+	st.actionContainer.AddChild(list)
 }
 
 func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {

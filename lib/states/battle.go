@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
+	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -17,6 +18,7 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	"github.com/kijimaD/ruins/lib/views"
@@ -180,13 +182,16 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	)
 	st.reloadPolicy(world)
 
+	// 非表示にできるように背景が設定されていない
 	st.cardSpecContainer = eui.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(600, 120),
 		),
 	)
 
-	st.memberContainer = eui.NewRowContainer()
+	st.memberContainer = eui.NewRowContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	)
 	st.updateMemberContainer(world)
 
 	actionContainer := eui.NewRowContainer()
@@ -339,8 +344,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			name := simple.GetName(world, v)
-			card := simple.GetCard(world, v)
+			name := gameComponents.Name.Get(v).(*gc.Name)
+			card := gameComponents.Card.Get(v).(*gc.Card)
 			return fmt.Sprintf("%s(%d)", name.Name, card.Cost)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
@@ -352,29 +357,15 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				st.selectedItem = entity
 			}
 			st.cardSpecContainer.RemoveChildren()
-			transContainer := eui.NewRowContainer(
+			// 透明度つきの背景を設定したコンテナ。cardSpecContainerは背景が設定されておらず非表示にできるようになっている
+			transContainer := eui.NewVerticalContainer(
 				widget.ContainerOpts.WidgetOpts(
 					widget.WidgetOpts.MinSize(700, 120),
 				),
 				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 			)
+			views.UpdateSpec(world, transContainer, entity)
 			st.cardSpecContainer.AddChild(transContainer)
-
-			desc := simple.GetDescription(world, entity)
-			attack := simple.GetAttack(world, entity)
-			text := fmt.Sprintf(
-				`%s
-命中率 %d
-攻撃力 %d
-属性 %s %s
-`,
-				desc.Description,
-				attack.Accuracy,
-				attack.Damage,
-				attack.Element,
-				attack.AttackCategory,
-			)
-			transContainer.AddChild(eui.NewMenuText(text, world))
 
 			return
 		}),
@@ -383,7 +374,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			card := simple.GetCard(world, cardEntity)
+			card := gameComponents.Card.Get(cardEntity).(*gc.Card)
 			if card == nil {
 				log.Fatal("unexpected error: entityがcardを保持していない")
 			}
@@ -407,7 +398,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			members = append(members, entity)
 		})
 		member := members[st.curMemberIndex]
-		name := simple.GetName(world, member)
+		name := gameComponents.Name.Get(member).(*gc.Name)
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
 }

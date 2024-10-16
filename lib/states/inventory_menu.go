@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -15,7 +14,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -24,14 +23,13 @@ import (
 type InventoryMenuState struct {
 	ui *ebitenui.UI
 
-	selectedItem       ecs.Entity        // 選択中のアイテム
-	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
-	items              []ecs.Entity      // 表示対象とするアイテム
-	itemDesc           *widget.Text      // アイテムの概要
-	actionContainer    *widget.Container // アクションの起点となるコンテナ
-	specContainer      *widget.Container // 性能表示のコンテナ
-	partyWindow        *widget.Window    // 仲間を選択するウィンドウ
-	category           ItemCategoryType
+	selectedItem    ecs.Entity        // 選択中のアイテム
+	items           []ecs.Entity      // 表示対象とするアイテム
+	itemDesc        *widget.Text      // アイテムの概要
+	actionContainer *widget.Container // アクションの起点となるコンテナ
+	specContainer   *widget.Container // 性能表示のコンテナ
+	partyWindow     *widget.Window    // 仲間を選択するウィンドウ
+	category        ItemCategoryType
 }
 
 func (st InventoryMenuState) String() string {
@@ -106,8 +104,10 @@ func (st *InventoryMenuState) SetCategory(category ItemCategoryType) {
 // ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
+	res := world.Resources.UIResources
+
 	// 各アクションが入るコンテナ
-	st.actionContainer = eui.NewScrollContentContainer()
+	st.actionContainer = eui.NewVerticalContainer()
 	st.categoryReload(world)
 
 	// 種類トグル
@@ -118,17 +118,20 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	sc, v := eui.NewScrollContainer(st.actionContainer, world)
-	st.specContainer = st.newItemSpecContainer(world)
+	st.specContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 
-	rootContainer := eui.NewItemGridContainer()
+	rootContainer := eui.NewItemGridContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(toggleContainer)
 
-		rootContainer.AddChild(sc)
-		rootContainer.AddChild(v)
+		rootContainer.AddChild(st.actionContainer)
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(st.specContainer)
 
 		rootContainer.AddChild(itemDescContainer)
@@ -202,67 +205,99 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 // 使用などでアイテム数が変動した場合は再実行する必要がある
 func (st *InventoryMenuState) generateList(world world.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	count := fmt.Sprintf("合計 %02d個", len(st.items))
-	st.actionContainer.AddChild(eui.NewMenuText(count, world))
+
+	entities := []any{}
 	for _, entity := range st.items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		entities = append(entities, entity)
+	}
 
-		windowContainer := eui.NewWindowContainer(world)
-		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
+	res := world.Resources.UIResources
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(entity).(*gc.Name).Name
 
-		// アイテムの名前がラベルについたボタン
-		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.SetLocation(setWinRect())
-			st.ui.AddWindow(actionWindow)
-		}, world)
-
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+			return string(name)
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
 			if st.selectedItem != entity {
 				st.selectedItem = entity
 			}
-			st.itemDesc.Label = simple.GetDescription(world, entity).Description
+			desc := gameComponents.Description.Get(entity).(*gc.Description)
+			st.itemDesc.Label = desc.Description
 			views.UpdateSpec(world, st.specContainer, entity)
-		})
-		st.actionContainer.AddChild(itemButton)
+		}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			windowContainer := eui.NewWindowContainer(world)
+			titleContainer := eui.NewWindowHeaderContainer("アクション", world)
+			actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
-		useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
-			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
-			switch consumable.TargetType.TargetNum {
-			case gc.TargetSingle:
-				st.initPartyWindow(world)
-				st.partyWindow.SetLocation(getWinRect())
-
-				st.ui.AddWindow(st.partyWindow)
-				actionWindow.Close()
-				st.selectedItem = entity
-				st.selectedItemButton = itemButton
-			case gc.TargetAll:
-				effects.ItemTrigger(nil, entity, effects.Party{}, world)
-				actionWindow.Close()
-				st.actionContainer.RemoveChild(itemButton)
-				st.categoryReload(world)
+			entity, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatalf("unexpected entry: %#v", entity)
 			}
-		}, world)
-		if entity.HasComponent(gameComponents.Consumable) {
-			windowContainer.AddChild(useButton)
-		}
 
-		dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
-			world.Manager.DeleteEntity(entity)
-			actionWindow.Close()
-			st.categoryReload(world)
-		}, world)
-		if !entity.HasComponent(gameComponents.Material) {
-			windowContainer.AddChild(dropButton)
-		}
+			useButton := eui.NewItemButton("使う　", func(args *widget.ButtonClickedEventArgs) {
+				consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
+				switch consumable.TargetType.TargetNum {
+				case gc.TargetSingle:
+					st.initPartyWindow(world)
+					st.partyWindow.SetLocation(getWinRect())
 
-		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		}, world)
-		windowContainer.AddChild(closeButton)
+					st.ui.AddWindow(st.partyWindow)
+					actionWindow.Close()
+					st.selectedItem = entity
+					st.generateList(world)
+				case gc.TargetAll:
+					effects.ItemTrigger(nil, entity, effects.Party{}, world)
+					actionWindow.Close()
+					st.categoryReload(world)
+				}
+			}, world)
+			if entity.HasComponent(gameComponents.Consumable) {
+				windowContainer.AddChild(useButton)
+			}
+
+			dropButton := eui.NewItemButton("捨てる", func(args *widget.ButtonClickedEventArgs) {
+				world.Manager.DeleteEntity(entity)
+				actionWindow.Close()
+				st.categoryReload(world)
+			}, world)
+			if !entity.HasComponent(gameComponents.Material) {
+				windowContainer.AddChild(dropButton)
+			}
+
+			closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+				actionWindow.Close()
+			}, world)
+			windowContainer.AddChild(closeButton)
+
+			actionWindow.SetLocation(setWinRect())
+			st.ui.AddWindow(actionWindow)
+		}),
+		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(440, 520),
+		)),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
+	list := eui.NewList(
+		entities,
+		opts,
+		world,
+	)
+	st.actionContainer.AddChild(list)
+
+	count := fmt.Sprintf("合計 %02d個", len(st.items))
+	st.actionContainer.AddChild(eui.NewMenuText(count, world))
 }
 
 // メンバー選択画面を初期化する
@@ -283,7 +318,6 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		partyButton := eui.NewItemButton("使う", func(args *widget.ButtonClickedEventArgs) {
 			effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 			st.partyWindow.Close()
-			st.actionContainer.RemoveChild(st.selectedItemButton)
 			st.categoryReload(world)
 		}, world)
 		memberContainer.AddChild(partyButton)
@@ -305,23 +339,4 @@ func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Containe
 	toggleContainer.AddChild(toggleMaterialButton)
 
 	return toggleContainer
-}
-
-func (st *InventoryMenuState) newItemSpecContainer(world w.World) *widget.Container {
-	itemSpecContainer := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.ForegroundColor)),
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(4),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    10,
-					Bottom: 10,
-					Left:   10,
-					Right:  10,
-				}),
-			)),
-	)
-
-	return itemSpecContainer
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/consts"
@@ -25,16 +26,26 @@ import (
 type EquipMenuState struct {
 	ui *ebitenui.UI
 
-	slots                []*ecs.Entity     // スロット一覧
-	items                []ecs.Entity      // インベントリにあるアイテム一覧
-	subMenuContainer     *widget.Container // 右上のサブメニュー
-	actionContainer      *widget.Container // 操作の起点となるメインメニュー
-	specContainer        *widget.Container // 性能コンテナ
-	abilityContainer     *widget.Container // メンバーの能力表示コンテナ
-	equipTargetContainer *widget.Container // 装備対象の切り替えコンテナ
-	itemDesc             *widget.Text      // アイテムの説明
-	curMemberIdx         int               // 選択中の味方
-	equipTarget          equipTarget       // 装備対象。防具もしくは手札
+	// スロット一覧
+	slots []*ecs.Entity
+	// インベントリにあるアイテム一覧
+	items []ecs.Entity
+	// 右上のサブメニュー
+	subMenuContainer *widget.Container
+	// 操作の起点となるメインメニュー
+	actionContainer *widget.Container
+	// 性能コンテナ
+	specContainer *widget.Container
+	// メンバーの能力表示コンテナ
+	abilityContainer *widget.Container
+	// 装備対象の切り替えコンテナ
+	equipTargetContainer *widget.Container
+	// アイテムの説明
+	itemDesc *widget.Text
+	// 選択中の味方
+	curMemberIdx int
+	// 装備対象。防具もしくは手札
+	equipTarget equipTarget
 }
 
 func (st EquipMenuState) String() string {
@@ -101,21 +112,28 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	rootContainer := eui.NewItemGridContainer()
+	res := world.Resources.UIResources
+	rootContainer := eui.NewItemGridContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 	{
 		rootContainer.AddChild(st.equipTargetContainer)
 		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(st.subMenuContainer)
 
-		sc, v := eui.NewScrollContainer(st.actionContainer, world)
-		rootContainer.AddChild(sc)
-		rootContainer.AddChild(v)
+		rootContainer.AddChild(st.actionContainer)
+		rootContainer.AddChild(widget.NewContainer())
 		rootContainer.AddChild(eui.NewWSplitContainer(st.specContainer, st.abilityContainer))
 
 		rootContainer.AddChild(st.itemDesc)
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
+}
+
+type equipActionEntry struct {
+	entity     *ecs.Entity
+	slotNumber int
 }
 
 // アクションコンテナを生成する
@@ -130,60 +148,105 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 	st.setSlots(world, member)
 
 	gameComponents := world.Components.Game.(*gc.Components)
+	slots := []any{}
 	for i, v := range st.slots {
-		windowContainer := eui.NewWindowContainer(world)
-		titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-		actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
-
-		v := v
-		i := i
-		var name = ""
-		var desc = " "
-		if v != nil {
-			name = gameComponents.Name.Get(*v).(*gc.Name).Name
-			desc = gameComponents.Description.Get(*v).(*gc.Description).Description
+		entry := equipActionEntry{
+			entity:     v,
+			slotNumber: i,
 		}
+		slots = append(slots, entry)
+	}
 
-		slotButton := eui.NewItemButton(fmt.Sprintf("%s", name), func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.SetLocation(setWinRect())
-			st.ui.AddWindow(actionWindow)
-		}, world)
-		slotButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			v, ok := e.(equipActionEntry)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			var name = "-"
+			if v.entity != nil {
+				name = gameComponents.Name.Get(*v.entity).(*gc.Name).Name
+			}
+
+			return string(name)
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			if e == nil {
+				return
+			}
+
+			v, ok := e.(equipActionEntry)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			var desc = " "
+			if v.entity != nil {
+				desc = gameComponents.Description.Get(*v.entity).(*gc.Description).Description
+			}
+
 			st.itemDesc.Label = desc
-			if v != nil {
+			if v.entity != nil {
 				// 該当スロットに装備がある場合はその性能を表示する
-				views.UpdateSpec(world, st.specContainer, *v)
+				views.UpdateSpec(world, st.specContainer, *v.entity)
 			} else {
 				// 非表示
 				st.specContainer.RemoveChildren()
 			}
-		})
-		equipButton := eui.NewItemButton("装備する", func(args *widget.ButtonClickedEventArgs) {
-			st.setItems(world)
-			f := func() { st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(i), v) }
-			f()
-			st.reloadSubMenu(world, false, f)
-			st.reloadEquipTargetContainer(world, false)
-			actionWindow.Close()
-		}, world)
-		windowContainer.AddChild(equipButton)
+		}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			windowContainer := eui.NewWindowContainer(world)
+			titleContainer := eui.NewWindowHeaderContainer("アクション", world)
+			actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
 
-		if v != nil {
-			disarmButton := eui.NewItemButton("外す", func(args *widget.ButtonClickedEventArgs) {
-				equips.Disarm(world, *v)
-				st.generateActionContainer(world)
+			v, ok := args.Entry.(equipActionEntry)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			equipButton := eui.NewItemButton("装備する", func(args *widget.ButtonClickedEventArgs) {
+				st.setItems(world)
+				f := func() {
+					st.generateActionContainerEquip(world, member, gc.EquipmentSlotNumber(v.slotNumber), v.entity)
+				}
+				f()
+				st.reloadSubMenu(world, false, f)
+				st.reloadEquipTargetContainer(world, false)
 				actionWindow.Close()
 			}, world)
-			windowContainer.AddChild(disarmButton)
-		}
+			windowContainer.AddChild(equipButton)
 
-		closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		}, world)
-		windowContainer.AddChild(closeButton)
+			if v.entity != nil {
+				disarmButton := eui.NewItemButton("外す", func(args *widget.ButtonClickedEventArgs) {
+					equips.Disarm(world, *v.entity)
+					st.generateActionContainer(world)
+					actionWindow.Close()
+				}, world)
+				windowContainer.AddChild(disarmButton)
+			}
 
-		st.actionContainer.AddChild(slotButton)
+			closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
+				actionWindow.Close()
+			}, world)
+			windowContainer.AddChild(closeButton)
+
+			actionWindow.SetLocation(setWinRect())
+			st.ui.AddWindow(actionWindow)
+		}),
+		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(440, 400),
+		)),
 	}
+	list := eui.NewList(
+		slots,
+		opts,
+		world,
+	)
+
+	st.actionContainer.AddChild(list)
 }
 
 // インベントリにある装備選択コンテナを生成する
@@ -192,11 +255,39 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 	st.actionContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
+	entities := []any{}
 	for _, entity := range st.items {
-		entity := entity
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		entities = append(entities, entity)
+	}
 
-		itemButton := eui.NewItemButton(name.Name, func(args *widget.ButtonClickedEventArgs) {
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(entity).(*gc.Name).Name
+
+			return string(name)
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			desc := gameComponents.Description.Get(entity).(*gc.Description).Description
+			st.itemDesc.Label = desc
+			views.UpdateSpec(world, st.specContainer, entity)
+		}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			entity, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+
+			// 装備
 			if previousEquipment != nil {
 				equips.Disarm(world, *previousEquipment)
 			}
@@ -206,14 +297,24 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 			st.generateActionContainer(world)
 			st.reloadSubMenu(world, true, func() {})
 			st.reloadEquipTargetContainer(world, true)
-		}, world)
-
-		itemButton.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			st.itemDesc.Label = simple.GetDescription(world, entity).Description
-			views.UpdateSpec(world, st.specContainer, entity)
-		})
-		st.actionContainer.AddChild(itemButton)
+		}),
+		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
+		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(440, 400),
+		)),
 	}
+
+	list := eui.NewList(
+		entities,
+		opts,
+		world,
+	)
+	st.actionContainer.AddChild(list)
+	st.actionContainer.AddChild(eui.NewItemButton("戻る", func(args *widget.ButtonClickedEventArgs) {
+		st.generateActionContainer(world)
+		st.reloadSubMenu(world, true, func() {})
+		st.reloadEquipTargetContainer(world, true)
+	}, world))
 }
 
 func (st *EquipMenuState) reloadEquipTargetContainer(world w.World, visible bool) {
