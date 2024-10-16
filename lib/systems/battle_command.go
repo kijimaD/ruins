@@ -7,7 +7,6 @@ import (
 	"github.com/kijimaD/ruins/lib/effects"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -26,8 +25,8 @@ func BattleCommandSystem(world w.World) {
 		attack := gameComponents.Attack.Get(wayEntity).(*gc.Attack)
 		if attack != nil {
 			{
-				ownerName := simple.GetName(world, cmd.Owner)
-				wayName := simple.GetName(world, cmd.Way)
+				ownerName := gameComponents.Name.Get(cmd.Owner).(*gc.Name)
+				wayName := gameComponents.Name.Get(cmd.Way).(*gc.Name)
 				entry := fmt.Sprintf("%sは、%sで攻撃。", ownerName.Name, wayName.Name)
 				gamelog.BattleLog.Append(entry)
 			}
@@ -37,7 +36,7 @@ func BattleCommandSystem(world w.World) {
 			damage := attack.Damage + attrs.Strength.Total
 			effects.AddEffect(&ownerEntity, effects.Damage{Amount: damage}, effects.Single{Target: cmd.Target})
 			{
-				targetName := simple.GetName(world, cmd.Target)
+				targetName := gameComponents.Name.Get(cmd.Target).(*gc.Name)
 				entry := fmt.Sprintf("%sに%dのダメージ。", targetName.Name, damage)
 				gamelog.BattleLog.Append(entry)
 			}

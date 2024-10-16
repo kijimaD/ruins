@@ -339,7 +339,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			name := simple.GetName(world, v)
+			name := gameComponents.Name.Get(v).(*gc.Name)
 			card := simple.GetCard(world, v)
 			return fmt.Sprintf("%s(%d)", name.Name, card.Cost)
 		}),
@@ -407,7 +407,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			members = append(members, entity)
 		})
 		member := members[st.curMemberIndex]
-		name := simple.GetName(world, member)
+		name := gameComponents.Name.Get(member).(*gc.Name)
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
 }

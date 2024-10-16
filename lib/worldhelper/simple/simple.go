@@ -7,6 +7,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// 意味がないのでこれらのGet系ヘルパーは削除する。
 func GetCard(world w.World, target ecs.Entity) *components.Card {
 	var result *components.Card
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -56,29 +57,10 @@ func GetMaterial(world w.World, target ecs.Entity) *components.Material {
 }
 
 func GetDescription(world w.World, target ecs.Entity) components.Description {
-	result := components.Description{}
 	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Description) {
-			description := gameComponents.Description.Get(entity).(*gc.Description)
-			result = *description
-		}
-	}))
+	description := gameComponents.Description.Get(target).(*gc.Description)
 
-	return result
-}
-
-func GetName(world w.World, target ecs.Entity) components.Name {
-	result := components.Name{}
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == target && entity.HasComponent(gameComponents.Name) {
-			name := gameComponents.Name.Get(entity).(*gc.Name)
-			result = *name
-		}
-	}))
-
-	return result
+	return *description
 }
 
 // 所持中の素材
