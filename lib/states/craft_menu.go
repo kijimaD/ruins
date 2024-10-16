@@ -119,9 +119,24 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	st.queryMenuConsumable(world)
 	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewItemButton("道具", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeItem) }, world)
-	toggleWearableButton := eui.NewItemButton("装備", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeWearable) }, world)
-	toggleCardButton := eui.NewItemButton("手札", func(args *widget.ButtonClickedEventArgs) { st.setCategoryReload(world, ItemCategoryTypeCard) }, world)
+	toggleConsumableButton := eui.NewItemButton("道具",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategoryReload(world, ItemCategoryTypeItem)
+		}),
+	)
+	toggleWearableButton := eui.NewItemButton("装備",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategoryReload(world, ItemCategoryTypeWearable)
+		}),
+	)
+	toggleCardButton := eui.NewItemButton("手札",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategoryReload(world, ItemCategoryTypeCard)
+		}),
+	)
 	toggleContainer.AddChild(toggleConsumableButton)
 	toggleContainer.AddChild(toggleWearableButton)
 	toggleContainer.AddChild(toggleCardButton)
@@ -263,9 +278,12 @@ func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
 
 	views.UpdateSpec(world, resultContainer, entity)
 
-	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-		st.resultWindow.Close()
-	}, world)
+	closeButton := eui.NewItemButton("閉じる",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.resultWindow.Close()
+		}),
+	)
 	resultContainer.AddChild(closeButton)
 }
 
@@ -296,24 +314,30 @@ func (st *CraftMenuState) updateRecipeList(world w.World) {
 // useButton.GetWidget().Disabled = true を使ってボタンを非活性にする方が楽でよさそうなのだが、非活性にすると描画の色まわりでヌルポになる。色は設定しているのに...
 func (st *CraftMenuState) initWindowContainer(world w.World, name string, windowContainer *widget.Container, actionWindow *widget.Window) {
 	windowContainer.RemoveChildren()
-	useButton := eui.NewItemButton("合成する", func(args *widget.ButtonClickedEventArgs) {
-		resultEntity, err := craft.Craft(world, name)
-		if err != nil {
-			log.Fatal(err)
-		}
-		st.updateRecipeList(world)
+	useButton := eui.NewItemButton("合成する",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			resultEntity, err := craft.Craft(world, name)
+			if err != nil {
+				log.Fatal(err)
+			}
+			st.updateRecipeList(world)
 
-		actionWindow.Close()
-		st.initResultWindow(world, *resultEntity)
-		st.resultWindow.SetLocation(getWinRect())
-		st.ui.AddWindow(st.resultWindow)
-	}, world)
+			actionWindow.Close()
+			st.initResultWindow(world, *resultEntity)
+			st.resultWindow.SetLocation(getWinRect())
+			st.ui.AddWindow(st.resultWindow)
+		}),
+	)
 	if craft.CanCraft(world, name) {
 		windowContainer.AddChild(useButton)
 	}
 
-	closeButton := eui.NewItemButton("閉じる", func(args *widget.ButtonClickedEventArgs) {
-		actionWindow.Close()
-	}, world)
+	closeButton := eui.NewItemButton("閉じる",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			actionWindow.Close()
+		}),
+	)
 	windowContainer.AddChild(closeButton)
 }

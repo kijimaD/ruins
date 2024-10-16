@@ -204,10 +204,10 @@ func (st *HomeMenuState) updateActionList(world w.World) {
 		data := data
 		btn := eui.NewItemButton(
 			data.label,
-			func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &data.trans
-			},
 			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			}),
 		)
 		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
 			st.actionDescContainer.RemoveChildren()

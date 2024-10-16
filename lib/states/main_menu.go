@@ -76,10 +76,10 @@ func (st *MainMenuState) updateMenuContainer(world w.World) {
 		data := data
 		btn := eui.NewItemButton(
 			data.label,
-			func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &data.trans
-			},
 			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				st.trans = &data.trans
+			}),
 		)
 		st.mainMenuContainer.AddChild(btn)
 	}
