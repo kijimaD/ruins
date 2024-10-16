@@ -32,8 +32,9 @@ type CraftMenuState struct {
 	itemDesc           *widget.Text      // アイテムの概要
 	actionContainer    *widget.Container // アクションの起点となるコンテナ
 	specContainer      *widget.Container // 性能表示のコンテナ
-	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	recipeList         *widget.Container // レシピリストのコンテナ
+	toggleContainer    *widget.Container // カテゴリ切り替えのコンテナ
+	resultWindow       *widget.Window    // 合成結果ウィンドウ
 	category           ItemCategoryType
 }
 
@@ -48,6 +49,7 @@ func (st *CraftMenuState) OnPause(world w.World) {}
 func (st *CraftMenuState) OnResume(world w.World) {}
 
 func (st *CraftMenuState) OnStart(world w.World) {
+	st.category = ItemCategoryTypeItem
 	st.ui = st.initUI(world)
 }
 
@@ -106,34 +108,15 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	st.actionContainer = eui.NewRowContainer()
 	st.categoryReload(world)
 
+	st.toggleContainer = eui.NewRowContainer()
+	st.reloadToggleContainer(world)
+
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
 	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
 	st.queryMenuConsumable(world)
-	toggleContainer := eui.NewRowContainer()
-	toggleConsumableButton := eui.NewButton("道具",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeItem)
-		}),
-	)
-	toggleWearableButton := eui.NewButton("装備",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeWearable)
-		}),
-	)
-	toggleCardButton := eui.NewButton("手札",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeCard)
-		}),
-	)
-	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleWearableButton)
-	toggleContainer.AddChild(toggleCardButton)
 
 	st.recipeList = eui.NewVerticalContainer()
 	st.specContainer = eui.NewVerticalContainer()
@@ -145,7 +128,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		rootContainer.AddChild(eui.NewMenuText("合成", world))
 		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(toggleContainer)
+		rootContainer.AddChild(st.toggleContainer)
 
 		rootContainer.AddChild(st.actionContainer)
 		rootContainer.AddChild(widget.NewContainer())
@@ -334,4 +317,46 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 		}),
 	)
 	windowContainer.AddChild(closeButton)
+}
+
+func (st *CraftMenuState) reloadToggleContainer(world w.World) {
+	st.toggleContainer.RemoveChildren()
+
+	toggleConsumableButton := eui.NewButton("道具",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeItem)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+	toggleWearableButton := eui.NewButton("装備",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeWearable)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+	toggleCardButton := eui.NewButton("手札",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.setCategory(world, ItemCategoryTypeCard)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
+		}),
+	)
+
+	switch st.category {
+	case ItemCategoryTypeItem:
+		toggleConsumableButton.GetWidget().Disabled = true
+	case ItemCategoryTypeWearable:
+		toggleWearableButton.GetWidget().Disabled = true
+	case ItemCategoryTypeCard:
+		toggleCardButton.GetWidget().Disabled = true
+	}
+
+	st.toggleContainer.AddChild(toggleConsumableButton)
+	st.toggleContainer.AddChild(toggleWearableButton)
+	st.toggleContainer.AddChild(toggleCardButton)
 }

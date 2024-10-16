@@ -171,7 +171,7 @@ var homeMenuTrans = []struct {
 	},
 	{
 		label: "合成",
-		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{category: ItemCategoryTypeItem}}},
+		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{}}},
 		desc:  "アイテムを合成する",
 	},
 	{
@@ -181,7 +181,7 @@ var homeMenuTrans = []struct {
 	},
 	{
 		label: "所持",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{category: ItemCategoryTypeItem}}},
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}},
 		desc:  "所持品を確認する",
 	},
 	{

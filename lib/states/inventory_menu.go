@@ -23,13 +23,14 @@ import (
 type InventoryMenuState struct {
 	ui *ebitenui.UI
 
-	selectedItem    ecs.Entity        // 選択中のアイテム
-	items           []ecs.Entity      // 表示対象とするアイテム
-	itemDesc        *widget.Text      // アイテムの概要
-	actionContainer *widget.Container // アクションの起点となるコンテナ
-	specContainer   *widget.Container // 性能表示のコンテナ
-	partyWindow     *widget.Window    // 仲間を選択するウィンドウ
-	category        ItemCategoryType
+	selectedItem            ecs.Entity        // 選択中のアイテム
+	items                   []ecs.Entity      // 表示対象とするアイテム
+	itemDesc                *widget.Text      // アイテムの概要
+	actionContainer         *widget.Container // アクションの起点となるコンテナ
+	specContainer           *widget.Container // 性能表示のコンテナ
+	toggleCategoryContainer *widget.Container // カテゴリを切り替えるコンテナ
+	partyWindow             *widget.Window    // 仲間を選択するウィンドウ
+	category                ItemCategoryType
 }
 
 func (st InventoryMenuState) String() string {
@@ -43,6 +44,7 @@ func (st *InventoryMenuState) OnPause(world w.World) {}
 func (st *InventoryMenuState) OnResume(world w.World) {}
 
 func (st *InventoryMenuState) OnStart(world w.World) {
+	st.category = ItemCategoryTypeItem
 	st.ui = st.initUI(world)
 }
 
@@ -105,7 +107,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.categoryReload(world)
 
 	// 種類トグル
-	toggleContainer := st.newToggleContainer(world)
+	st.toggleCategoryContainer = eui.NewRowContainer()
+	st.reloadToggleContainer(world)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
@@ -122,7 +125,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(toggleContainer)
+		rootContainer.AddChild(st.toggleCategoryContainer)
 
 		rootContainer.AddChild(st.actionContainer)
 		rootContainer.AddChild(widget.NewContainer())
@@ -333,36 +336,56 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 	}))
 }
 
-func (st *InventoryMenuState) newToggleContainer(world w.World) *widget.Container {
-	toggleContainer := eui.NewRowContainer()
+func (st *InventoryMenuState) reloadToggleContainer(world w.World) {
+	st.toggleCategoryContainer.RemoveChildren()
+
 	toggleConsumableButton := eui.NewButton("道具",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeItem)
+			st.setCategory(world, ItemCategoryTypeItem)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
 		}),
 	)
 	toggleCardButton := eui.NewButton("手札",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeCard)
+			st.setCategory(world, ItemCategoryTypeCard)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
 		}),
 	)
 	toggleWearableButton := eui.NewButton("防具",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeWearable)
+			st.setCategory(world, ItemCategoryTypeWearable)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
 		}),
 	)
 	toggleMaterialButton := eui.NewButton("素材",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategoryReload(world, ItemCategoryTypeMaterial)
+			st.setCategory(world, ItemCategoryTypeMaterial)
+			st.categoryReload(world)
+			st.reloadToggleContainer(world)
 		}),
 	)
-	toggleContainer.AddChild(toggleConsumableButton)
-	toggleContainer.AddChild(toggleCardButton)
-	toggleContainer.AddChild(toggleWearableButton)
-	toggleContainer.AddChild(toggleMaterialButton)
 
-	return toggleContainer
+	switch st.category {
+	case ItemCategoryTypeItem:
+		toggleConsumableButton.GetWidget().Disabled = true
+	case ItemCategoryTypeWearable:
+		toggleWearableButton.GetWidget().Disabled = true
+	case ItemCategoryTypeCard:
+		toggleCardButton.GetWidget().Disabled = true
+	case ItemCategoryTypeMaterial:
+		toggleMaterialButton.GetWidget().Disabled = true
+	default:
+		log.Fatal("未定義のcategory")
+	}
+	st.toggleCategoryContainer.AddChild(toggleConsumableButton)
+	st.toggleCategoryContainer.AddChild(toggleCardButton)
+	st.toggleCategoryContainer.AddChild(toggleWearableButton)
+	st.toggleCategoryContainer.AddChild(toggleMaterialButton)
 }
