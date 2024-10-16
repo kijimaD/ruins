@@ -143,14 +143,14 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
 	)
 
-	st.actionListContainer = eui.NewRowContainer()
+	st.actionListContainer = eui.NewVerticalContainer()
 	st.actionDescContainer = eui.NewRowContainer()
 	st.actionDescContainer.AddChild(eui.NewMenuText(" ", world))
 
-	actionContainer := eui.NewVSplitContainer(st.actionListContainer, st.actionDescContainer)
 	rootContainer.AddChild(
 		st.memberContainer,
-		actionContainer,
+		st.actionDescContainer,
+		st.actionListContainer,
 	)
 
 	st.updateActionList(world)
