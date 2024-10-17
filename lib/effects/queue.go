@@ -46,7 +46,7 @@ func RunEffectQueue(world w.World) {
 // 単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
 func TargetApplicator(world w.World, es EffectSpawner) {
 	switch e := es.EffectType.(type) {
-	case Damage, Healing, RecoveryStamina:
+	case Damage, Healing, ConsumptionStamina, RecoveryStamina:
 		v, ok := es.Targets.(Single)
 		if ok {
 			AffectEntity(world, es, utils.GetPtr(v.Target))
@@ -74,7 +74,7 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 			ItemTrigger(nil, e.Item, es.Targets, world)
 		}
 	default:
-		log.Fatalf("対応してないEffectType: %T", e)
+		log.Fatalf("TargetApplicator, 対応してないEffectType: %T", e)
 	}
 }
 
@@ -84,6 +84,8 @@ func AffectEntity(world w.World, es EffectSpawner, target *ecs.Entity) {
 		InflictDamage(world, es, *target)
 	case Healing:
 		HealDamage(world, es, *target)
+	case ConsumptionStamina:
+		ConsumeStamina(world, es, *target)
 	case RecoveryStamina:
 		RecoverStamina(world, es, *target)
 	case WarpNext:
@@ -91,6 +93,6 @@ func AffectEntity(world w.World, es EffectSpawner, target *ecs.Entity) {
 	case WarpEscape:
 		WarpEscapeTask(world)
 	default:
-		log.Fatalf("対応してないEffectType: %T", e)
+		log.Fatalf("AffectEntity, 対応してないEffectType: %T", e)
 	}
 }

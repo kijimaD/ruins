@@ -36,6 +36,23 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	}
 }
 
+func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	pools := gameComponents.Pools.Get(target).(*gc.Pools)
+	v, ok := consume.EffectType.(ConsumptionStamina)
+	if !ok {
+		log.Print("ConsumeStaminaがついてない")
+	}
+	switch at := v.Amount.(type) {
+	case gc.RatioAmount:
+		pools.SP.Current = mathutil.Max(0, pools.SP.Current-at.Calc(pools.SP.Max))
+	case gc.NumeralAmount:
+		pools.SP.Current = mathutil.Max(0, pools.SP.Current-at.Calc())
+	default:
+		log.Fatalf("unexpected: %T", at)
+	}
+}
+
 func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
