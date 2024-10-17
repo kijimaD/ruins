@@ -71,10 +71,7 @@ func (st *BattleState) OnPause(world w.World) {}
 func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
-	enemy := spawner.SpawnEnemy(world, "軽戦車")
-	_ = gs.EquipmentChangedSystem(world) // これをしないとHP/SPが設定されない
-	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: enemy})
-	effects.RunEffectQueue(world)
+	_ = spawner.SpawnEnemy(world, "軽戦車")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image

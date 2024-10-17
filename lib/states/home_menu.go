@@ -8,12 +8,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
-	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/equips"
 	"github.com/kijimaD/ruins/lib/worldhelper/material"
@@ -44,7 +42,9 @@ func (st HomeMenuState) String() string {
 
 func (st *HomeMenuState) OnPause(world w.World) {}
 
-func (st *HomeMenuState) OnResume(world w.World) {}
+func (st *HomeMenuState) OnResume(world w.World) {
+	st.updateMemberContainer(world)
+}
 
 func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用
@@ -91,15 +91,6 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		equips.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 	}
 
-	{
-		// ステータス反映(最大HP)
-		_ = gs.EquipmentChangedSystem(world)
-		// 完全回復
-		effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-		effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-		effects.RunEffectQueue(world)
-	}
-
 	bg := (*world.Resources.SpriteSheets)["bg_cup1"]
 	st.bg = bg.Texture.Image
 
@@ -109,9 +100,6 @@ func (st *HomeMenuState) OnStart(world w.World) {
 func (st *HomeMenuState) OnStop(world w.World) {}
 
 func (st *HomeMenuState) Update(world w.World) states.Transition {
-	effects.RunEffectQueue(world)
-	_ = gs.EquipmentChangedSystem(world)
-
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
