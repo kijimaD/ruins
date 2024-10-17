@@ -71,10 +71,7 @@ func (st *BattleState) OnPause(world w.World) {}
 func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
-	enemy := spawner.SpawnEnemy(world, "軽戦車")
-	_ = gs.EquipmentChangedSystem(world) // これをしないとHP/SPが設定されない
-	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: enemy})
-	effects.RunEffectQueue(world)
+	_ = spawner.SpawnEnemy(world, "軽戦車")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
@@ -317,15 +314,24 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	equipCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
+	usableCards := []any{}   // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
+	unusableCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationEquipped,
 		gameComponents.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		card := gameComponents.Card.Get(entity).(*gc.Card)
+		ownerPools := gameComponents.Pools.Get(currentPhase.owner).(*gc.Pools)
 		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if currentPhase.owner == equipped.Owner {
-			equipCards = append(equipCards, entity)
+			if ownerPools.SP.Current >= card.Cost {
+				// 使用可能
+				usableCards = append(usableCards, entity)
+			} else {
+				// 使用不可
+				unusableCards = append(unusableCards, entity)
+			}
 		}
 	}))
 
@@ -335,7 +341,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		gameComponents.Card,
 		gameComponents.ItemLocationNone,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipCards = append(equipCards, entity)
+		usableCards = append(usableCards, entity)
 	}))
 
 	res := world.Resources.UIResources
@@ -388,11 +394,22 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 	list := eui.NewList(
-		equipCards,
+		usableCards,
 		opts,
 		world,
 	)
 	st.selectContainer.AddChild(list)
+
+	if len(unusableCards) > 0 {
+		notAvaliableList := eui.NewList(
+			unusableCards,
+			opts,
+			world,
+		)
+		notAvaliableList.GetWidget().Disabled = true
+		st.selectContainer.AddChild(notAvaliableList)
+	}
+
 	{
 		members := []ecs.Entity{}
 		simple.InPartyMember(world, func(entity ecs.Entity) {

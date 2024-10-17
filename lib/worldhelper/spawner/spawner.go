@@ -2,6 +2,7 @@ package spawner
 
 import (
 	"github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -9,6 +10,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	gs "github.com/kijimaD/ruins/lib/systems"
 )
 
 // ================
@@ -156,6 +158,7 @@ func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	componentList.Game = append(componentList.Game, rawMaster.GenerateMember(name, inParty))
 	entities := loader.AddEntities(world, componentList)
+	fullRecover(world, entities[len(entities)-1])
 
 	return entities[len(entities)-1]
 }
@@ -178,8 +181,19 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 		cl,
 	)
 	entities := loader.AddEntities(world, componentList)
+	fullRecover(world, entities[len(entities)-1])
 
 	return entities[len(entities)-1]
+}
+
+// 完全回復させる
+func fullRecover(world w.World, entity ecs.Entity) {
+	// ステータス反映(最大HP, SP)
+	_ = gs.EquipmentChangedSystem(world)
+	// 回復
+	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
+	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
+	effects.RunEffectQueue(world)
 }
 
 // 所持素材の個数を0で初期化する
