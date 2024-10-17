@@ -10,8 +10,8 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// カード使用としてeffectに移したほうがいいかも
-// effects.ItemTrigger() 的な
+// 1回1回実行して結果を得られるようになっている
+// クリックごとにコマンドの結果を見るということができる
 func BattleCommandSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	if firstEntity := ecs.GetFirst(world.Manager.Join(
@@ -21,8 +21,8 @@ func BattleCommandSystem(world w.World) {
 		cmd := gameComponents.BattleCommand.Get(entity).(*gc.BattleCommand)
 
 		// wayから攻撃の属性を取り出す
-		wayEntity := cmd.Way
-		attack := gameComponents.Attack.Get(wayEntity).(*gc.Attack)
+		attack := gameComponents.Attack.Get(cmd.Way).(*gc.Attack)
+		card := gameComponents.Card.Get(cmd.Way).(*gc.Card)
 		if attack != nil {
 			{
 				ownerName := gameComponents.Name.Get(cmd.Owner).(*gc.Name)
@@ -35,6 +35,7 @@ func BattleCommandSystem(world w.World) {
 			attrs := gameComponents.Attributes.Get(ownerEntity).(*gc.Attributes)
 			damage := attack.Damage + attrs.Strength.Total
 			effects.AddEffect(&ownerEntity, effects.Damage{Amount: damage}, effects.Single{Target: cmd.Target})
+			effects.AddEffect(&ownerEntity, effects.ConsumptionStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}, effects.Single{Target: cmd.Owner})
 			{
 				targetName := gameComponents.Name.Get(cmd.Target).(*gc.Name)
 				entry := fmt.Sprintf("%sに%dのダメージ。", targetName.Name, damage)

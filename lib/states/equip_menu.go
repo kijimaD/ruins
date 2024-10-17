@@ -418,8 +418,6 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 			continue
 		}
 		views.AddMemberBar(world, st.abilityContainer, entity)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), styles.TextColor, world))
 
 		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
 		st.abilityContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), styles.TextColor, world))

@@ -130,6 +130,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.updateEnemyListContainer(world)
 		st.reloadExecute(world)
 		st.reloadMsg(world)
+		st.updateMemberContainer(world)
 
 		// commandが残っていればクリック待ちにする
 		commandCount := 0
