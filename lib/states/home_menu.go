@@ -62,6 +62,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 		card1 := spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 		card2 := spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+		card3 := spawner.SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
 		spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
 		spawner.SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
 		armor := spawner.SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
@@ -77,7 +78,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 		ishihara := spawner.SpawnMember(world, "イシハラ", true)
-		spawner.SpawnMember(world, "シラセ", true)
+		shirase := spawner.SpawnMember(world, "シラセ", true)
 		spawner.SpawnMember(world, "タチバナ", true)
 		spawner.SpawnAllMaterials(world)
 		material.PlusAmount("鉄", 40, world)
@@ -88,6 +89,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 
 		equips.Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
 		equips.Equip(world, card2, ishihara, gc.EquipmentSlotNumber(0))
+		equips.Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
 		equips.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 	}
 

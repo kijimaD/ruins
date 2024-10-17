@@ -127,7 +127,7 @@ Name = "電撃グレネード"
 Description = "放電物質を投射する擲弾銃"
 
 [item.card]
-Cost = 2
+Cost = 3
 TargetFaction = "ENEMY"
 TargetNum = "SINGLE"
 
@@ -143,7 +143,7 @@ Name = "冷凍グレネード"
 Description = "極低温物質を投射する擲弾銃"
 
 [item.card]
-Cost = 2
+Cost = 3
 TargetFaction = "ENEMY"
 TargetNum = "SINGLE"
 
@@ -153,6 +153,22 @@ Damage = 25
 AttackCount = 1
 Element = "CHILL"
 AttackCategory = "RIFLE"
+
+[[item]]
+Name = "M72 LAW"
+Description = "成形炸薬弾を投射する対戦車ロケット弾発射機"
+
+[item.card]
+Cost = 14
+TargetFaction = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 85
+Damage = 34
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
 
 # wearable ================
 
