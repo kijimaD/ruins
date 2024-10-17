@@ -120,6 +120,9 @@
 				<dd><a href="index.html#AffectEntity">func AffectEntity(world w.World, es EffectSpawner, target *ecs.Entity)</a></dd>
 			
 				
+				<dd><a href="index.html#ConsumeStamina">func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity)</a></dd>
+			
+				
 				<dd><a href="index.html#HealDamage">func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity)</a></dd>
 			
 				
@@ -143,6 +146,11 @@
 				
 				<dd><a href="index.html#WarpNextTask">func WarpNextTask(world w.World)</a></dd>
 			
+			
+				
+				<dd><a href="index.html#ConsumptionStamina">type ConsumptionStamina</a></dd>
+				
+				
 			
 				
 				<dd><a href="index.html#Damage">type Damage</a></dd>
@@ -257,12 +265,25 @@
 		
 			
 			
-			<h2 id="AffectEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=1915:1985#L71">AffectEntity</a>
+			<h2 id="AffectEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=1953:2023#L71">AffectEntity</a>
 				<a class="permalink" href="index.html#AffectEntity">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AffectEntity(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, es <a href="index.html#EffectSpawner">EffectSpawner</a>, target *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="ConsumeStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1134:1210#L29">ConsumeStamina</a>
+				<a class="permalink" href="index.html#ConsumeStamina">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ConsumeStamina(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, consume <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
 			
 			
 			
@@ -311,7 +332,7 @@
 		
 			
 			
-			<h2 id="RecoverStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1134:1210#L29">RecoverStamina</a>
+			<h2 id="RecoverStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1708:1784#L46">RecoverStamina</a>
 				<a class="permalink" href="index.html#RecoverStamina">&#xb6;</a>
 				
 				
@@ -352,7 +373,7 @@
 		
 			
 			
-			<h2 id="WarpEscapeTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1879:1913#L51">WarpEscapeTask</a>
+			<h2 id="WarpEscapeTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2453:2487#L68">WarpEscapeTask</a>
 				<a class="permalink" href="index.html#WarpEscapeTask">&#xb6;</a>
 				
 				
@@ -365,7 +386,7 @@
 		
 			
 			
-			<h2 id="WarpNextTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1727:1759#L46">WarpNextTask</a>
+			<h2 id="WarpNextTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2301:2333#L63">WarpNextTask</a>
 				<a class="permalink" href="index.html#WarpNextTask">&#xb6;</a>
 				
 				
@@ -376,6 +397,32 @@
 			
 
 		
+		
+			
+			
+			<h2 id="ConsumptionStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=405:459#L19">ConsumptionStamina</a>
+				<a class="permalink" href="index.html#ConsumptionStamina">&#xb6;</a>
+				
+				
+			</h2>
+			<p>スタミナを消費する
+
+			<pre>type ConsumptionStamina struct {
+<span id="ConsumptionStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
 		
 			
 			
@@ -483,7 +530,7 @@
 		
 			
 			
-			<h2 id="ItemUse">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=552:592#L28">ItemUse</a>
+			<h2 id="ItemUse">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=705:745#L37">ItemUse</a>
 				<a class="permalink" href="index.html#ItemUse">&#xb6;</a>
 				
 				
@@ -555,7 +602,7 @@
 		
 			
 			
-			<h2 id="RecoveryStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=405:456#L19">RecoveryStamina</a>
+			<h2 id="RecoveryStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=558:609#L28">RecoveryStamina</a>
 				<a class="permalink" href="index.html#RecoveryStamina">&#xb6;</a>
 				
 				
@@ -630,7 +677,7 @@
 		
 			
 			
-			<h2 id="WarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=767:791#L44">WarpEscape</a>
+			<h2 id="WarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=920:944#L53">WarpEscape</a>
 				<a class="permalink" href="index.html#WarpEscape">&#xb6;</a>
 				
 				
@@ -654,7 +701,7 @@
 		
 			
 			
-			<h2 id="WarpNext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=677:699#L37">WarpNext</a>
+			<h2 id="WarpNext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=830:852#L46">WarpNext</a>
 				<a class="permalink" href="index.html#WarpNext">&#xb6;</a>
 				
 				
