@@ -203,13 +203,13 @@ type Attack struct {
 }
 
 // ================
-// 派閥
+// 所属派閥。絶対的な指定
 type FactionType fmt.Stringer
 
 var (
-	// 味方
+	// 味方(プレイヤー側)
 	FactionAlly FactionType = FactionAllyData{}
-	// 敵
+	// 敵性(プレイヤーと敵対)
 	FactionEnemy FactionType = FactionEnemyData{}
 )
 
