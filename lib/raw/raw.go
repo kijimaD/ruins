@@ -44,15 +44,15 @@ type ProvidesHealing struct {
 }
 
 type Consumable struct {
-	UsableScene   string
-	TargetFaction string
-	TargetNum     string
+	UsableScene string
+	TargetGroup string
+	TargetNum   string
 }
 
 type Card struct {
-	Cost          int
-	TargetFaction string
-	TargetNum     string
+	Cost        int
+	TargetGroup string
+	TargetNum   string
 }
 
 type Attack struct {
@@ -153,15 +153,15 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	cl.Description = &gc.Description{Description: item.Description}
 
 	if item.Consumable != nil {
-		if err := gc.TargetFactionType(item.Consumable.TargetFaction).Valid(); err != nil {
+		if err := gc.TargetGroupType(item.Consumable.TargetGroup).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		targetType := gc.TargetType{
-			TargetFaction: gc.TargetFactionType(item.Consumable.TargetFaction),
-			TargetNum:     gc.TargetNumType(item.Consumable.TargetNum),
+			TargetGroup: gc.TargetGroupType(item.Consumable.TargetGroup),
+			TargetNum:   gc.TargetNumType(item.Consumable.TargetNum),
 		}
 
 		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
@@ -189,7 +189,7 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	}
 
 	if item.Card != nil {
-		if err := gc.TargetFactionType(item.Card.TargetFaction).Valid(); err != nil {
+		if err := gc.TargetGroupType(item.Card.TargetGroup).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
@@ -198,8 +198,8 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 
 		cl.Card = &gc.Card{
 			TargetType: gc.TargetType{
-				TargetFaction: gc.TargetFactionType(item.Card.TargetFaction),
-				TargetNum:     gc.TargetNumType(item.Card.TargetNum),
+				TargetGroup: gc.TargetGroupType(item.Card.TargetGroup),
+				TargetNum:   gc.TargetNumType(item.Card.TargetNum),
 			},
 			Cost: item.Card.Cost,
 		}

@@ -39,19 +39,19 @@ func (enum TargetNumType) Valid() error {
 
 // ================
 
-// ターゲットの種別
-type TargetFactionType string
+// 使用者から見たターゲットの種別。相対的な指定なので、所有者が敵グループだと対象グループは逆転する
+type TargetGroupType string
 
 const (
-	TargetFactionAlly  = TargetFactionType("ALLY")  // 味方
-	TargetFactionEnemy = TargetFactionType("ENEMY") // 敵
-	TargetFactionCard  = TargetFactionType("CARD")  // カード
-	TargetFactionNone  = TargetFactionType("NONE")  // なし
+	TargetGroupAlly  = TargetGroupType("ALLY")  // 味方
+	TargetGroupEnemy = TargetGroupType("ENEMY") // 敵
+	TargetGroupCard  = TargetGroupType("CARD")  // カード
+	TargetGroupNone  = TargetGroupType("NONE")  // なし
 )
 
-func (enum TargetFactionType) Valid() error {
+func (enum TargetGroupType) Valid() error {
 	switch enum {
-	case TargetFactionAlly, TargetFactionEnemy, TargetFactionNone:
+	case TargetGroupAlly, TargetGroupEnemy, TargetGroupCard, TargetGroupNone:
 		return nil
 	}
 

@@ -10,7 +10,7 @@ Description = "体力を半分程度回復する"
 
 [item.consumable]
 UsableScene = "ANY"
-TargetFaction = "ALLY"
+TargetGroup = "ALLY"
 TargetNum = "SINGLE"
 
 [item.provides_healing]
@@ -23,7 +23,7 @@ Description = "全員の体力を半分程度回復する"
 
 [item.consumable]
 UsableScene = "ANY"
-TargetFaction = "ALLY"
+TargetGroup = "ALLY"
 TargetNum = "ALL"
 
 [item.provides_healing]
@@ -37,7 +37,7 @@ InflictsDamage = 20
 
 [item.consumable]
 UsableScene = "BATTLE"
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "ALL"
 
 # card ================
@@ -48,7 +48,7 @@ Description = "勢いをつけて体を接触させてダメージを与える"
 
 [item.card]
 Cost = 0
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -64,7 +64,7 @@ Description = "旅行の土産でおなじみの、木でできた刃のない�
 
 [item.card]
 Cost = 2
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -80,7 +80,7 @@ Description = "鉄で作られた軽いナイフ"
 
 [item.card]
 Cost = 2
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -96,7 +96,7 @@ Description = "樹脂素材を多用した自動拳銃"
 
 [item.card]
 Cost = 2
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -112,7 +112,7 @@ Description = "光線を発射する拳銃"
 
 [item.card]
 Cost = 2
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -128,7 +128,7 @@ Description = "放電物質を投射する擲弾銃"
 
 [item.card]
 Cost = 3
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -144,7 +144,7 @@ Description = "極低温物質を投射する擲弾銃"
 
 [item.card]
 Cost = 3
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
@@ -160,11 +160,27 @@ Description = "成形炸薬弾を投射する対戦車ロケット弾発射機"
 
 [item.card]
 Cost = 14
-TargetFaction = "ENEMY"
+TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
 [item.attack]
 Accuracy = 85
+Damage = 34
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "50ミリ砲"
+Description = "取り回しがよい車両用の大砲"
+
+[item.card]
+Cost = 20
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 90
 Damage = 34
 AttackCount = 1
 Element = "NONE"

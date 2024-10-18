@@ -15,8 +15,8 @@ type Attribute struct {
 
 // 選択対象
 type TargetType struct {
-	TargetFaction TargetFactionType // 対象派閥
-	TargetNum     TargetNumType
+	TargetGroup TargetGroupType
+	TargetNum   TargetNumType
 }
 
 // 合成の元になる素材
