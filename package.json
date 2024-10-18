@@ -16,10 +16,8 @@
     "url": "https://github.com/kijimaD/ruins/issues"
   },
   "homepage": "https://github.com/kijimaD/ruins",
-  "devDependencies": {
-    "semantic-release": "^24.0.0",
-    "semantic-release-cli": "^5.4.4"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "release": {
     "plugins": [
       "@semantic-release/commit-analyzer",
