@@ -175,7 +175,7 @@ Name = "50ミリ砲"
 Description = "取り回しがよい車両用の大砲"
 
 [item.card]
-Cost = 20
+Cost = 14
 TargetGroup = "ENEMY"
 TargetNum = "SINGLE"
 
@@ -183,6 +183,22 @@ TargetNum = "SINGLE"
 Accuracy = 90
 Damage = 34
 AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "M1919重機関銃"
+Description = "車載型の空冷式機関銃"
+
+[item.card]
+Cost = 10
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 90
+Damage = 8
+AttackCount = 4
 Element = "NONE"
 AttackCategory = "CANON"
 
@@ -388,3 +404,30 @@ Sensation = 5
 Dexterity = 5
 Agility = 5
 Defense = 5
+
+[[member]]
+Name = "ライム"
+[member.attributes]
+Vitality = 7
+Strength = 8
+Sensation = 4
+Dexterity = 5
+Agility = 6
+Defense = 4
+
+# command table ================
+
+[[command_table]]
+Name = "軽戦車"
+[[command_table.table]]
+Card = "50ミリ砲"
+Weight = 0.5
+[[command_table.table]]
+Card = "7.6mm機関銃"
+Weight = 0.5
+
+[[command_table]]
+Name = "ライム"
+[[command_table.table]]
+Card = "体当たり"
+Weight = 1.0

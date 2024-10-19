@@ -47,6 +47,9 @@ type GameComponentList struct {
 	EquipmentChanged *EquipmentChanged
 	ProvidesHealing  *ProvidesHealing
 	InflictsDamage   *InflictsDamage
+
+	// battle ================
+	CommandTable *CommandTable
 }
 
 // componentsを溜めるスライス群
@@ -92,6 +95,9 @@ type Components struct {
 	EquipmentChanged *ecs.NullComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
+
+	// battle ================
+	CommandTable *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
@@ -200,6 +206,11 @@ type Attack struct {
 	AttackCount    int         // 攻撃回数
 	Element        ElementType // 攻撃属性
 	AttackCategory AttackType  // 攻撃種別
+}
+
+// AI用の、戦闘コマンドテーブル名
+type CommandTable struct {
+	Name string
 }
 
 // ================

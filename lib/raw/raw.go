@@ -11,18 +11,20 @@ import (
 )
 
 type RawMaster struct {
-	Raws          Raws
-	ItemIndex     map[string]int
-	MaterialIndex map[string]int
-	RecipeIndex   map[string]int
-	MemberIndex   map[string]int
+	Raws              Raws
+	ItemIndex         map[string]int
+	MaterialIndex     map[string]int
+	RecipeIndex       map[string]int
+	MemberIndex       map[string]int
+	CommandTableIndex map[string]int
 }
 
 type Raws struct {
-	Items     []Item     `toml:"item"`
-	Materials []Material `toml:"material"`
-	Recipes   []Recipe   `toml:"recipe"`
-	Members   []Member   `toml:"member"`
+	Items         []Item         `toml:"item"`
+	Materials     []Material     `toml:"material"`
+	Recipes       []Recipe       `toml:"recipe"`
+	Members       []Member       `toml:"member"`
+	CommandTables []CommandTable `toml:"command_table"`
 }
 
 type Item struct {
@@ -86,6 +88,16 @@ type Member struct {
 	Attributes Attributes `toml:"attributes"`
 }
 
+type CommandTable struct {
+	Name  string
+	Table []CommandTableEntry `toml:"table"`
+}
+
+type CommandTableEntry struct {
+	Card   string
+	Weight float64
+}
+
 type Attributes struct {
 	Vitality  int
 	Strength  int
@@ -122,6 +134,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw.MaterialIndex = map[string]int{}
 	rw.RecipeIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
+	rw.CommandTableIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
@@ -135,6 +148,9 @@ func Load(entityMetadataContent string) RawMaster {
 	}
 	for i, member := range rw.Raws.Members {
 		rw.MemberIndex[member.Name] = i
+	}
+	for i, commandTable := range rw.Raws.CommandTables {
+		rw.CommandTableIndex[commandTable.Name] = i
 	}
 
 	return rw
@@ -300,6 +316,7 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
+
 	cl := components.GameComponentList{}
 	cl.Name = &gc.Name{Name: member.Name}
 	cl.Attributes = &gc.Attributes{
@@ -314,6 +331,12 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 		Level: 1,
 	}
 	cl.EquipmentChanged = &gc.EquipmentChanged{}
+
+	commandTableIdx, ok := rw.CommandTableIndex[name]
+	if ok {
+		commandTable := rw.Raws.CommandTables[commandTableIdx]
+		cl.CommandTable = &gc.CommandTable{Name: commandTable.Name}
+	}
 
 	return cl
 }
@@ -333,4 +356,14 @@ func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
 	cl.FactionType = &gc.FactionEnemy
 
 	return cl
+}
+
+func (rw *RawMaster) GetCommandTable(name string) CommandTable {
+	ctIdx, ok := rw.CommandTableIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	commandTable := rw.Raws.CommandTables[ctIdx]
+
+	return commandTable
 }
