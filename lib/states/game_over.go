@@ -2,11 +2,13 @@ package states
 
 import (
 	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/styles"
 )
 
 type GameOverState struct {
@@ -66,6 +68,9 @@ func (st *GameOverState) Draw(world w.World, screen *ebiten.Image) {
 
 func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
+
+	res := world.Resources.UIResources
+	rootContainer.AddChild(widget.NewText(widget.TextOpts.Text("GAME OVER...", res.Text.BigTitleFace, styles.TextColor)))
 
 	return &ebitenui.UI{Container: rootContainer}
 }
