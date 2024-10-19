@@ -215,3 +215,13 @@ func SpawnAllRecipes(world w.World) {
 		loader.AddEntities(world, componentList)
 	}
 }
+
+// 敵が使う用。マスタとなるカードを初期化する
+func SpawnAllCards(world w.World) {
+	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+	for k, _ := range rawMaster.ItemIndex {
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, rawMaster.GenerateItem(k, gc.ItemLocationNone))
+		loader.AddEntities(world, componentList)
+	}
+}

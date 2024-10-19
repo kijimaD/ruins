@@ -57,8 +57,6 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		memberCount++
 	}))
 	if memberCount == 0 {
-		spawner.SpawnItem(world, "体当たり", gc.ItemLocationNone)
-
 		spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 		card1 := spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 		card2 := spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
@@ -86,6 +84,7 @@ func (st *HomeMenuState) OnStart(world w.World) {
 		material.PlusAmount("緑ハーブ", 2, world)
 		material.PlusAmount("フェライトコア", 30, world)
 		spawner.SpawnAllRecipes(world)
+		spawner.SpawnAllCards(world)
 
 		equips.Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
 		equips.Equip(world, card2, ishihara, gc.EquipmentSlotNumber(0))

@@ -115,9 +115,22 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
 		case *phaseEnemyActionSelect:
+			gameComponents := world.Components.Game.(*gc.Components)
+
+			// マスタとして事前に生成されたカードエンティティをメモしておく
+			masterCardEntityMap := map[string]ecs.Entity{}
+			world.Manager.Join(
+				gameComponents.Name,
+				gameComponents.Item,
+				gameComponents.Card,
+				gameComponents.ItemLocationNone,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				name := gameComponents.Name.Get(entity).(*gc.Name)
+				masterCardEntityMap[name.Name] = entity
+			}))
+
 			// 敵のコマンドを投入する
 			// UIはない。1回だけ実行して敵コマンドを投入し、次のステートにいく
-			gameComponents := world.Components.Game.(*gc.Components)
 			world.Manager.Join(
 				gameComponents.FactionEnemy,
 				gameComponents.Attributes,
@@ -128,10 +141,6 @@ func (st *BattleState) Update(world w.World) states.Transition {
 				rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 				ct := rawMaster.GetCommandTable(ctComponent.Name)
 				name := ct.SelectByWeight()
-
-				// テーブルから攻撃カードを生成し選択する。毎回削除する必要がある
-				// TODO: マスターのカードを生成しておくか?
-				cardEntity := spawner.SpawnItem(world, name, gc.ItemLocationNone)
 
 				// プレイヤーキャラから選択
 				allys := []ecs.Entity{}
@@ -150,7 +159,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 					BattleCommand: &gc.BattleCommand{
 						Owner:  entity,
 						Target: targetEntity,
-						Way:    cardEntity,
+						Way:    masterCardEntityMap[name],
 					},
 				})
 				loader.AddEntities(world, cl)
@@ -405,6 +414,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			name := gameComponents.Name.Get(v).(*gc.Name)
 			card := gameComponents.Card.Get(v).(*gc.Card)
+
 			return fmt.Sprintf("%s (%d)", name.Name, card.Cost)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
