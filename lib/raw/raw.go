@@ -88,16 +88,6 @@ type Member struct {
 	Attributes Attributes `toml:"attributes"`
 }
 
-type CommandTable struct {
-	Name  string
-	Table []CommandTableEntry `toml:"table"`
-}
-
-type CommandTableEntry struct {
-	Card   string
-	Weight float64
-}
-
 type Attributes struct {
 	Vitality  int
 	Strength  int

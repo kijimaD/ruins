@@ -419,15 +419,15 @@ Defense = 4
 
 [[command_table]]
 Name = "軽戦車"
-[[command_table.table]]
+[[command_table.entries]]
 Card = "50ミリ砲"
 Weight = 0.5
-[[command_table.table]]
-Card = "7.6mm機関銃"
+[[command_table.entries]]
+Card = "M1919重機関銃"
 Weight = 0.5
 
 [[command_table]]
 Name = "ライム"
-[[command_table.table]]
+[[command_table.entries]]
 Card = "体当たり"
 Weight = 1.0

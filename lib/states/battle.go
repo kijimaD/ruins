@@ -3,6 +3,7 @@ package states
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -114,6 +115,46 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
 		case *phaseEnemyActionSelect:
+			// 敵のコマンドを投入する
+			// UIはない。1回だけ実行して敵コマンドを投入し、次のステートにいく
+			gameComponents := world.Components.Game.(*gc.Components)
+			world.Manager.Join(
+				gameComponents.FactionEnemy,
+				gameComponents.Attributes,
+				gameComponents.CommandTable,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				// テーブル取得
+				ctComponent := gameComponents.CommandTable.Get(entity).(*gc.CommandTable)
+				rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+				ct := rawMaster.GetCommandTable(ctComponent.Name)
+				name := ct.SelectByWeight()
+
+				// テーブルから攻撃カードを生成し選択する。毎回削除する必要がある
+				// TODO: マスターのカードを生成しておくか?
+				cardEntity := spawner.SpawnItem(world, name, gc.ItemLocationNone)
+
+				// プレイヤーキャラから選択
+				allys := []ecs.Entity{}
+				world.Manager.Join(
+					gameComponents.Name,
+					gameComponents.FactionAlly,
+					gameComponents.Pools,
+				).Visit(ecs.Visit(func(entity ecs.Entity) {
+					allys = append(allys, entity)
+				}))
+				targetEntity := allys[rand.IntN(len(allys))]
+
+				// 攻撃カードによって対象を選択
+				cl := loader.EntityComponentList{}
+				cl.Game = append(cl.Game, components.GameComponentList{
+					BattleCommand: &gc.BattleCommand{
+						Owner:  entity,
+						Target: targetEntity,
+						Way:    cardEntity,
+					},
+				})
+				loader.AddEntities(world, cl)
+			}))
 
 			st.phase = &phaseExecute{}
 		case *phaseExecute:
@@ -342,12 +383,17 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}))
 
 	// 装備がなくても詰まないようにデフォルトの攻撃手段を追加する
+	// TODO: わかりにくいのでコンポーネント化したほうがいいかも
 	world.Manager.Join(
+		gameComponents.Name,
 		gameComponents.Item,
 		gameComponents.Card,
 		gameComponents.ItemLocationNone,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		usableCards = append(usableCards, entity)
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		if name.Name == "体当たり" {
+			usableCards = append(usableCards, entity)
+		}
 	}))
 
 	res := world.Resources.UIResources
