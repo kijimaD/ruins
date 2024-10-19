@@ -8,7 +8,7 @@ type battlePhase interface {
 	isBattlePhase()
 }
 
-// 開戦 / 逃走
+// 開戦 / 逃走 を選択する
 type phaseChoosePolicy struct{}
 
 func (p *phaseChoosePolicy) isBattlePhase() {}
@@ -27,6 +27,10 @@ type phaseChooseTarget struct {
 }
 
 func (p *phaseChooseTarget) isBattlePhase() {}
+
+type phaseEnemyActionSelect struct{}
+
+func (p *phaseEnemyActionSelect) isBattlePhase() {}
 
 // 戦闘実行
 type phaseExecute struct{}

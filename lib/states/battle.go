@@ -3,6 +3,7 @@ package states
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
@@ -18,6 +19,7 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
@@ -103,6 +105,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	st.ui.Update()
 
 	// ステートが変わった最初の1回だけ実行される
+	// TODO: 複雑化しているので、ここもstates packageを使ってやったほうがいい
 	if st.phase != st.prevPhase {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
@@ -111,6 +114,58 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			st.reloadAction(world, v)
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
+		case *phaseEnemyActionSelect:
+			gameComponents := world.Components.Game.(*gc.Components)
+
+			// マスタとして事前に生成されたカードエンティティをメモしておく
+			masterCardEntityMap := map[string]ecs.Entity{}
+			world.Manager.Join(
+				gameComponents.Name,
+				gameComponents.Item,
+				gameComponents.Card,
+				gameComponents.ItemLocationNone,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				name := gameComponents.Name.Get(entity).(*gc.Name)
+				masterCardEntityMap[name.Name] = entity
+			}))
+
+			// 敵のコマンドを投入する
+			// UIはない。1回だけ実行して敵コマンドを投入し、次のステートにいく
+			world.Manager.Join(
+				gameComponents.FactionEnemy,
+				gameComponents.Attributes,
+				gameComponents.CommandTable,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				// テーブル取得
+				ctComponent := gameComponents.CommandTable.Get(entity).(*gc.CommandTable)
+				rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+				ct := rawMaster.GetCommandTable(ctComponent.Name)
+				name := ct.SelectByWeight()
+
+				// プレイヤーキャラから選択
+				allys := []ecs.Entity{}
+				world.Manager.Join(
+					gameComponents.Name,
+					gameComponents.FactionAlly,
+					gameComponents.Pools,
+				).Visit(ecs.Visit(func(entity ecs.Entity) {
+					allys = append(allys, entity)
+				}))
+				targetEntity := allys[rand.IntN(len(allys))]
+
+				// 攻撃カードによって対象を選択
+				cl := loader.EntityComponentList{}
+				cl.Game = append(cl.Game, components.GameComponentList{
+					BattleCommand: &gc.BattleCommand{
+						Owner:  entity,
+						Target: targetEntity,
+						Way:    masterCardEntityMap[name],
+					},
+				})
+				loader.AddEntities(world, cl)
+			}))
+
+			st.phase = &phaseExecute{}
 		case *phaseExecute:
 		case *phaseResult:
 		}
@@ -122,6 +177,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseChoosePolicy:
 	case *phaseChooseAction:
 	case *phaseChooseTarget:
+	case *phaseEnemyActionSelect:
 	case *phaseExecute:
 		effects.RunEffectQueue(world)
 		st.updateEnemyListContainer(world)
@@ -336,12 +392,17 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}))
 
 	// 装備がなくても詰まないようにデフォルトの攻撃手段を追加する
+	// TODO: わかりにくいのでコンポーネント化したほうがいいかも
 	world.Manager.Join(
+		gameComponents.Name,
 		gameComponents.Item,
 		gameComponents.Card,
 		gameComponents.ItemLocationNone,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		usableCards = append(usableCards, entity)
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		if name.Name == "体当たり" {
+			usableCards = append(usableCards, entity)
+		}
 	}))
 
 	res := world.Resources.UIResources
@@ -353,7 +414,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			name := gameComponents.Name.Get(v).(*gc.Name)
 			card := gameComponents.Card.Get(v).(*gc.Card)
-			return fmt.Sprintf("%s(%d)", name.Name, card.Cost)
+
+			return fmt.Sprintf("%s (%d)", name.Name, card.Cost)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
 			entity, ok := e.(ecs.Entity)
@@ -458,7 +520,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 				})
 				if st.curMemberIndex >= len(members)-1 {
 					st.curMemberIndex = 0
-					st.phase = &phaseExecute{}
+					st.phase = &phaseEnemyActionSelect{}
 					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
 				} else {
 					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
@@ -538,6 +600,7 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,
+		gameComponents.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))

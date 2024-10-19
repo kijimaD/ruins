@@ -47,6 +47,9 @@ type GameComponentList struct {
 	EquipmentChanged *EquipmentChanged
 	ProvidesHealing  *ProvidesHealing
 	InflictsDamage   *InflictsDamage
+
+	// battle ================
+	CommandTable *CommandTable
 }
 
 // componentsを溜めるスライス群
@@ -92,6 +95,9 @@ type Components struct {
 	EquipmentChanged *ecs.NullComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
+
+	// battle ================
+	CommandTable *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
@@ -202,14 +208,19 @@ type Attack struct {
 	AttackCategory AttackType  // 攻撃種別
 }
 
+// AI用の、戦闘コマンドテーブル名
+type CommandTable struct {
+	Name string
+}
+
 // ================
-// 派閥
+// 所属派閥。絶対的な指定
 type FactionType fmt.Stringer
 
 var (
-	// 味方
+	// 味方(プレイヤー側)
 	FactionAlly FactionType = FactionAllyData{}
-	// 敵
+	// 敵性(プレイヤーと敵対)
 	FactionEnemy FactionType = FactionEnemyData{}
 )
 
