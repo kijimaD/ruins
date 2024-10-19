@@ -398,7 +398,7 @@ Defense = 0
 [[member]]
 Name = "軽戦車"
 [member.attributes]
-Vitality = 8
+Vitality = 12
 Strength = 8
 Sensation = 5
 Dexterity = 5
