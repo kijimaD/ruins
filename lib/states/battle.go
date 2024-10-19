@@ -405,7 +405,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			name := gameComponents.Name.Get(v).(*gc.Name)
 			card := gameComponents.Card.Get(v).(*gc.Card)
-			return fmt.Sprintf("%s(%d)", name.Name, card.Cost)
+			return fmt.Sprintf("%s (%d)", name.Name, card.Cost)
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
 			entity, ok := e.(ecs.Entity)

@@ -22,7 +22,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 
 	name := gameComponents.Name.Get(entity).(*gc.Name)
 	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-	memberContainer.AddChild(eui.NewMenuText(fmt.Sprintf("%s LV %d", name.Name, pools.Level), world))
+	memberContainer.AddChild(eui.NewMenuText(fmt.Sprintf("%s", name.Name), world))
 	hpLabel := widget.NewText(
 		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),
 	)
@@ -82,6 +82,10 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 		widget.ProgressBarOpts.Values(0, pools.SP.Max, pools.SP.Current),
 	)
 	memberContainer.AddChild(spProgressbar)
+	levelLabel := widget.NewText(
+		widget.TextOpts.Text(fmt.Sprintf("Lv %d", pools.Level), res.Text.SmallFace, styles.TextColor),
+	)
+	memberContainer.AddChild(levelLabel)
 
 	targetContainer.AddChild(memberContainer)
 }
