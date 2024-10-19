@@ -299,6 +299,32 @@
 				
 			
 				
+				<dd><a href="index.html#GameOverState">type GameOverState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.Draw">func (st *GameOverState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnPause">func (st *GameOverState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnResume">func (st *GameOverState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnStart">func (st *GameOverState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnStop">func (st *GameOverState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.String">func (st GameOverState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.Update">func (st *GameOverState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
 				<dd><a href="index.html#HomeMenuState">type HomeMenuState</a></dd>
 				
 				
@@ -433,6 +459,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go">equip_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go">field_menu.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go">game_over.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go">home_menu.go</a>
 			
@@ -1230,6 +1258,115 @@
 		
 			
 			
+			<h2 id="GameOverState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=349:454#L4">GameOverState</a>
+				<a class="permalink" href="index.html#GameOverState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type GameOverState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="GameOverState.Draw">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=1355:1421#L49">Draw</a>
+					<a class="permalink" href="index.html#GameOverState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GameOverState.OnPause">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=557:604#L18">OnPause</a>
+					<a class="permalink" href="index.html#GameOverState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GameOverState.OnResume">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=609:657#L20">OnResume</a>
+					<a class="permalink" href="index.html#GameOverState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GameOverState.OnStart">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=662:709#L22">OnStart</a>
+					<a class="permalink" href="index.html#GameOverState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GameOverState.OnStop">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=824:870#L29">OnStop</a>
+					<a class="permalink" href="index.html#GameOverState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GameOverState.String">func (GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=456:495#L12">String</a>
+					<a class="permalink" href="index.html#GameOverState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#GameOverState">GameOverState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="GameOverState.Update">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=875:939#L31">Update</a>
+					<a class="permalink" href="index.html#GameOverState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="HomeMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=710:1061#L12">HomeMenuState</a>
 				<a class="permalink" href="index.html#HomeMenuState">&#xb6;</a>
 				
@@ -1591,7 +1728,7 @@
 		
 			
 			
-			<h2 id="MainMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=326:439#L5">MainMenuState</a>
+			<h2 id="MainMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=349:462#L4">MainMenuState</a>
 				<a class="permalink" href="index.html#MainMenuState">&#xb6;</a>
 				
 				
@@ -1614,7 +1751,7 @@
 
 			
 				
-				<h3 id="MainMenuState.Draw">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1097:1163#L44">Draw</a>
+				<h3 id="MainMenuState.Draw">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1120:1186#L43">Draw</a>
 					<a class="permalink" href="index.html#MainMenuState.Draw">&#xb6;</a>
 					
 					
@@ -1626,7 +1763,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnPause">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=542:589#L18">OnPause</a>
+				<h3 id="MainMenuState.OnPause">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=565:612#L17">OnPause</a>
 					<a class="permalink" href="index.html#MainMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -1638,7 +1775,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnResume">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=594:642#L20">OnResume</a>
+				<h3 id="MainMenuState.OnResume">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=617:665#L19">OnResume</a>
 					<a class="permalink" href="index.html#MainMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -1650,7 +1787,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnStart">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=647:694#L22">OnStart</a>
+				<h3 id="MainMenuState.OnStart">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=670:717#L21">OnStart</a>
 					<a class="permalink" href="index.html#MainMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -1662,7 +1799,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnStop">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=726:772#L26">OnStop</a>
+				<h3 id="MainMenuState.OnStop">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=749:795#L25">OnStop</a>
 					<a class="permalink" href="index.html#MainMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -1674,7 +1811,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.String">func (MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=441:480#L12">String</a>
+				<h3 id="MainMenuState.String">func (MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=464:503#L11">String</a>
 					<a class="permalink" href="index.html#MainMenuState.String">&#xb6;</a>
 					
 					
@@ -1686,7 +1823,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.Update">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=777:841#L28">Update</a>
+				<h3 id="MainMenuState.Update">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=800:864#L27">Update</a>
 					<a class="permalink" href="index.html#MainMenuState.Update">&#xb6;</a>
 					
 					
