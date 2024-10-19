@@ -18,6 +18,7 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
@@ -103,6 +104,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	st.ui.Update()
 
 	// ステートが変わった最初の1回だけ実行される
+	// TODO: 複雑化しているので、ここもstates packageを使ってやったほうがいい
 	if st.phase != st.prevPhase {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
@@ -111,6 +113,9 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			st.reloadAction(world, v)
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
+		case *phaseEnemyActionSelect:
+
+			st.phase = &phaseExecute{}
 		case *phaseExecute:
 		case *phaseResult:
 		}
@@ -122,6 +127,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseChoosePolicy:
 	case *phaseChooseAction:
 	case *phaseChooseTarget:
+	case *phaseEnemyActionSelect:
 	case *phaseExecute:
 		effects.RunEffectQueue(world)
 		st.updateEnemyListContainer(world)
@@ -458,7 +464,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 				})
 				if st.curMemberIndex >= len(members)-1 {
 					st.curMemberIndex = 0
-					st.phase = &phaseExecute{}
+					st.phase = &phaseEnemyActionSelect{}
 					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
 				} else {
 					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
@@ -538,6 +544,7 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,
+		gameComponents.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))
