@@ -108,6 +108,11 @@ var debugMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&BattleState{}}},
 	},
 	{
+		label: "ゲームオーバー",
+		f:     func(world w.World) {},
+		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}},
+	},
+	{
 		label: "閉じる",
 		f:     func(world w.World) {},
 		trans: states.Transition{Type: states.TransPop},
