@@ -20,7 +20,7 @@ type GameOverState struct {
 }
 
 func (st GameOverState) String() string {
-	return "GameOverState"
+	return "GameOver"
 }
 
 // State interface ================
