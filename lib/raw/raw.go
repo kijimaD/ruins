@@ -17,6 +17,7 @@ type RawMaster struct {
 	RecipeIndex       map[string]int
 	MemberIndex       map[string]int
 	CommandTableIndex map[string]int
+	SpriteSheetIndex  map[string]int
 }
 
 type Raws struct {
@@ -25,6 +26,7 @@ type Raws struct {
 	Recipes       []Recipe       `toml:"recipe"`
 	Members       []Member       `toml:"member"`
 	CommandTables []CommandTable `toml:"command_table"`
+	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
 }
 
 type Item struct {
@@ -84,9 +86,8 @@ type Material struct {
 }
 
 type Member struct {
-	Name                      string
-	Attributes                Attributes `toml:"attributes"`
-	BattleBodySpriteSheetName *string
+	Name       string
+	Attributes Attributes `toml:"attributes"`
 }
 
 type Attributes struct {
@@ -126,6 +127,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw.RecipeIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
 	rw.CommandTableIndex = map[string]int{}
+	rw.SpriteSheetIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
@@ -142,6 +144,9 @@ func Load(entityMetadataContent string) RawMaster {
 	}
 	for i, commandTable := range rw.Raws.CommandTables {
 		rw.CommandTableIndex[commandTable.Name] = i
+	}
+	for i, spriteSheet := range rw.Raws.SpriteSheets {
+		rw.SpriteSheetIndex[spriteSheet.Name] = i
 	}
 
 	return rw
@@ -346,14 +351,17 @@ func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionEnemy
 
-	memberIdx, ok := rw.MemberIndex[name]
+	spriteSheetIdx, ok := rw.SpriteSheetIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
-	member := rw.Raws.Members[memberIdx]
-	if member.BattleBodySpriteSheetName != nil {
-		cl.BattleBodyRender = &gc.BattleBodyRender{
-			SpriteSheetName: *member.BattleBodySpriteSheetName,
+	spriteSheet := rw.Raws.SpriteSheets[spriteSheetIdx]
+	if spriteSheet.BattleBody != nil {
+		cl.Render = &gc.Render{
+			BattleBody: &gc.SheetImage{
+				SheetName:   spriteSheet.BattleBody.SheetName,
+				SheetNumber: spriteSheet.BattleBody.SheetNumber,
+			},
 		}
 	}
 

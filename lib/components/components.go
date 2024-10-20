@@ -14,6 +14,7 @@ type GameComponentList struct {
 	// general ================
 	Name        *Name
 	Description *Description
+	Render      *Render
 
 	// item ================
 	Item             *Item
@@ -49,8 +50,7 @@ type GameComponentList struct {
 	InflictsDamage   *InflictsDamage
 
 	// battle ================
-	CommandTable     *CommandTable
-	BattleBodyRender *BattleBodyRender
+	CommandTable *CommandTable
 }
 
 // componentsを溜めるスライス群
@@ -59,6 +59,7 @@ type Components struct {
 	// general ================
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
+	Render      *ecs.SliceComponent
 
 	// item ================
 	Item                   *ecs.NullComponent
@@ -98,8 +99,7 @@ type Components struct {
 	InflictsDamage   *ecs.SliceComponent
 
 	// battle ================
-	CommandTable     *ecs.SliceComponent
-	BattleBodyRender *ecs.SliceComponent
+	CommandTable *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
@@ -213,6 +213,23 @@ type Attack struct {
 // AI用の、戦闘コマンドテーブル名
 type CommandTable struct {
 	Name string
+}
+
+// 描画対象物。
+// resource のスプライトシートから画像を特定するために必要な情報。
+// Renderはスプライトシートの情報はresourceに持たせ、特定に必要な
+// 情報だけ保持している。
+// また、場面ごとにフィールドを分けて保持している。
+//
+// SpriteRenderはSpriteを内部に持っていて初期化が面倒な面がある。
+type Render struct {
+	// 戦闘中の立ち絵
+	BattleBody *SheetImage
+}
+
+type SheetImage struct {
+	SheetName   string
+	SheetNumber *int
 }
 
 // ================

@@ -323,7 +323,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		gameComponents.FactionEnemy,
 		gameComponents.Attributes,
 		gameComponents.Pools,
-		gameComponents.BattleBodyRender,
+		gameComponents.Render,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		{
 			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
@@ -335,8 +335,8 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
 		)
 		{
-			render := gameComponents.BattleBodyRender.Get(entity).(*gc.BattleBodyRender)
-			sheets := (*world.Resources.SpriteSheets)[render.SpriteSheetName]
+			render := gameComponents.Render.Get(entity).(*gc.Render)
+			sheets := (*world.Resources.SpriteSheets)[render.BattleBody.SheetName]
 			graphic := widget.NewGraphic(
 				widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 					Stretch: true,

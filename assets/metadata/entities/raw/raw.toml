@@ -413,7 +413,6 @@ Defense = 0
 
 [[member]]
 Name = "軽戦車"
-BattleBodySpriteSheetName = "front_tank1"
 [member.attributes]
 Vitality = 12
 Strength = 8
@@ -424,7 +423,6 @@ Defense = 5
 
 [[member]]
 Name = "火の玉"
-BattleBodySpriteSheetName = "front_flame1"
 [member.attributes]
 Vitality = 7
 Strength = 8
@@ -453,3 +451,14 @@ Weight = 0.8
 Card = "溶解液"
 Weight = 0.2
 
+# sheets ================
+
+[[sprite_sheet]]
+Name = "軽戦車"
+[sprite_sheet.battle_body]
+SheetName = "front_tank1"
+
+[[sprite_sheet]]
+Name = "火の玉"
+[sprite_sheet.battle_body]
+SheetName = "front_flame1"
