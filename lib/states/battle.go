@@ -77,6 +77,7 @@ func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
 	_ = spawner.SpawnEnemy(world, "軽戦車")
+	_ = spawner.SpawnEnemy(world, "フレイム")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
@@ -272,7 +273,17 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
-	st.enemyListContainer = st.initEnemyContainer()
+	st.enemyListContainer = eui.NewRowContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position:  widget.RowLayoutPositionCenter,
+				Stretch:   true,
+				MaxWidth:  400,
+				MaxHeight: 200,
+			}),
+			widget.WidgetOpts.MinSize(0, 600),
+		),
+	)
 	st.updateEnemyListContainer(world)
 
 	st.selectContainer = eui.NewVerticalContainer(
@@ -303,23 +314,6 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-func (st *BattleState) initEnemyContainer() *widget.Container {
-	return eui.NewRowContainer(
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position:  widget.RowLayoutPositionCenter,
-				Stretch:   true,
-				MaxWidth:  200,
-				MaxHeight: 200,
-			}),
-			widget.WidgetOpts.MinSize(0, 600),
-		),
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		)),
-	)
-}
-
 // 敵一覧を更新する
 func (st *BattleState) updateEnemyListContainer(world w.World) {
 	st.enemyListContainer.RemoveChildren()
@@ -336,6 +330,9 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 				return
 			}
 		}
+		container := widget.NewContainer(
+			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
+		)
 		{
 			// とりあえず仮の画像
 			tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
@@ -345,15 +342,16 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 				})),
 				widget.GraphicOpts.Image(tankSS.Texture.Image),
 			)
-			st.enemyListContainer.AddChild(graphic)
+			container.AddChild(graphic)
 		}
-
 		{
 			name := gameComponents.Name.Get(entity).(*gc.Name)
 			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 			text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-			st.enemyListContainer.AddChild(eui.NewMenuText(text, world))
+			container.AddChild(eui.NewMenuText(text, world))
 		}
+
+		st.enemyListContainer.AddChild(container)
 	}))
 }
 
