@@ -173,7 +173,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	}
 
 	// 毎回実行される
-	switch st.phase.(type) {
+	switch v := st.phase.(type) {
 	case *phaseChoosePolicy:
 	case *phaseChooseAction:
 	case *phaseChooseTarget:
@@ -185,9 +185,31 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 		st.updateMemberContainer(world)
 
+		gameComponents := world.Components.Game.(*gc.Components)
+
+		// 敵が全員死んでいたらリザルトフェーズに遷移する
+		liveEnemyCount := 0
+		world.Manager.Join(
+			gameComponents.Name,
+			gameComponents.FactionEnemy,
+			gameComponents.Attributes,
+			gameComponents.Pools,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+			liveEnemyCount += 1
+		}))
+		if liveEnemyCount == 0 {
+			gamelog.BattleLog.Flush()
+			gamelog.BattleLog.Append("敵を全滅させた。")
+			st.phase = &phaseResult{}
+			return states.Transition{Type: states.TransNone}
+		}
+
 		// commandが残っていればクリック待ちにする
 		commandCount := 0
-		gameComponents := world.Components.Game.(*gc.Components)
 		world.Manager.Join(
 			gameComponents.BattleCommand,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -204,13 +226,25 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			return states.Transition{Type: states.TransNone}
 		}
 
-		// 選択完了
+		// 処理完了
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
 			gamelog.BattleLog.Flush()
 		}
 	case *phaseResult:
+		st.reloadMsg(world)
+
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			v.actionCount += 1
+		}
+
+		switch v.actionCount {
+		case 0:
+			// 処理する
+		default:
+			return states.Transition{Type: states.TransPop}
+		}
 	}
 
 	return states.Transition{Type: states.TransNone}
@@ -570,6 +604,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
+
 			return v
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),

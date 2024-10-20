@@ -14,6 +14,7 @@ import (
 
 // 1回1回実行して結果を得られるようになっている
 // クリックごとにコマンドの結果を見るということができる
+// TODO: Targetがすでに死んでいたときを考慮していない。死んでいた場合は次の選択肢の敵にターゲットを変えるのが自然だろう
 func BattleCommandSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -60,11 +61,6 @@ func BattleCommandSystem(world w.World) {
 		damage := attack.Damage + attrs.Strength.Total
 		effects.AddEffect(&ownerEntity, effects.Damage{Amount: damage}, effects.Single{Target: cmd.Target})
 		effects.AddEffect(&ownerEntity, effects.ConsumptionStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}, effects.Single{Target: cmd.Owner})
-		{
-			targetName := gameComponents.Name.Get(cmd.Target).(*gc.Name)
-			entry := fmt.Sprintf("%sに%dのダメージ。", targetName.Name, damage)
-			gamelog.BattleLog.Append(entry)
-		}
 	}
 
 	world.Manager.DeleteEntity(entity)

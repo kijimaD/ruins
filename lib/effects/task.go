@@ -1,10 +1,12 @@
 package effects
 
 import (
+	"fmt"
 	"log"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -16,6 +18,14 @@ func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
 	v, ok := damage.EffectType.(Damage)
 	if ok {
 		pools.HP.Current = mathutil.Max(0, pools.HP.Current-v.Amount)
+
+		name := gameComponents.Name.Get(target).(*gc.Name)
+		entry := fmt.Sprintf("%sに%dのダメージ。", name.Name, v.Amount)
+		gamelog.BattleLog.Append(entry)
+
+		if pools.HP.Current == 0 {
+			gamelog.BattleLog.Append(fmt.Sprintf("%sは倒れた。", name.Name))
+		}
 	}
 }
 
