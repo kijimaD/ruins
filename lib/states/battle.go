@@ -250,8 +250,6 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			case 0:
 				st.resultWindow = st.initResultWindow(world)
 				st.ui.AddWindow(st.resultWindow)
-			case 1:
-				fmt.Println("click 1")
 			default:
 				return states.Transition{Type: states.TransPop}
 			}
@@ -329,8 +327,15 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.FactionEnemy,
+		gameComponents.Attributes,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		{
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+		}
 		{
 			// とりあえず仮の画像
 			tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
@@ -654,13 +659,17 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 }
 
 func (st *BattleState) initResultWindow(world w.World) *widget.Window {
+	res := world.Resources.UIResources
 	const width = 800
 	const height = 400
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 
 	content := eui.NewWindowContainer(world)
-	content.AddChild(eui.NewMenuText("獲得", world))
+	// 経験値をプラスする
+	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
+	// 素材を入手する
+	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
 	resultWindow := widget.NewWindow(
 		widget.WindowOpts.Contents(content),
 		widget.WindowOpts.Modal(),
