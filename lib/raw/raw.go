@@ -84,8 +84,9 @@ type Material struct {
 }
 
 type Member struct {
-	Name       string
-	Attributes Attributes `toml:"attributes"`
+	Name                      string
+	Attributes                Attributes `toml:"attributes"`
+	BattleBodySpriteSheetName *string
 }
 
 type Attributes struct {
@@ -344,6 +345,17 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameCo
 func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionEnemy
+
+	memberIdx, ok := rw.MemberIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	member := rw.Raws.Members[memberIdx]
+	if member.BattleBodySpriteSheetName != nil {
+		cl.BattleBodyRender = &gc.BattleBodyRender{
+			SpriteSheetName: *member.BattleBodySpriteSheetName,
+		}
+	}
 
 	return cl
 }

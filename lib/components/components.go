@@ -49,7 +49,8 @@ type GameComponentList struct {
 	InflictsDamage   *InflictsDamage
 
 	// battle ================
-	CommandTable *CommandTable
+	CommandTable     *CommandTable
+	BattleBodyRender *BattleBodyRender
 }
 
 // componentsを溜めるスライス群
@@ -97,7 +98,8 @@ type Components struct {
 	InflictsDamage   *ecs.SliceComponent
 
 	// battle ================
-	CommandTable *ecs.SliceComponent
+	CommandTable     *ecs.SliceComponent
+	BattleBodyRender *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象

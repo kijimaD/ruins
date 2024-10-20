@@ -64,3 +64,9 @@ texture_image = "file/front/tank1.png"
 sprites = [
     { x = 0, y = 0, width = 300, height = 180 },
 ]
+
+[sprite_sheet.front_flame1]
+texture_image = "file/front/flame1.png"
+sprites = [
+    { x = 0, y = 0, width = 200, height = 200 },
+]

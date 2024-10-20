@@ -10,3 +10,7 @@ type BattleCommand struct {
 	// 行動方法(カードEntity)
 	Way ecs.Entity
 }
+
+type BattleBodyRender struct {
+	SpriteSheetName string
+}

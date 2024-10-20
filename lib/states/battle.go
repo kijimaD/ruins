@@ -77,7 +77,7 @@ func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
 	_ = spawner.SpawnEnemy(world, "軽戦車")
-	_ = spawner.SpawnEnemy(world, "フレイム")
+	_ = spawner.SpawnEnemy(world, "火の玉")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
@@ -323,6 +323,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		gameComponents.FactionEnemy,
 		gameComponents.Attributes,
 		gameComponents.Pools,
+		gameComponents.BattleBodyRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		{
 			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
@@ -334,13 +335,13 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
 		)
 		{
-			// とりあえず仮の画像
-			tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
+			render := gameComponents.BattleBodyRender.Get(entity).(*gc.BattleBodyRender)
+			sheets := (*world.Resources.SpriteSheets)[render.SpriteSheetName]
 			graphic := widget.NewGraphic(
 				widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 					Stretch: true,
 				})),
-				widget.GraphicOpts.Image(tankSS.Texture.Image),
+				widget.GraphicOpts.Image(sheets.Texture.Image),
 			)
 			container.AddChild(graphic)
 		}
