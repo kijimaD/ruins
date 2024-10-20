@@ -94,8 +94,10 @@ func (st *BattleState) OnStop(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
-
 	gamelog.BattleLog.Flush()
+
+	// FIXME: state transition: popで削除されてくれない。stateインスタンスが使い回されているように見える
+	st.phase = nil
 }
 
 func (st *BattleState) Update(world w.World) states.Transition {
