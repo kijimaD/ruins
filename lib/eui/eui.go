@@ -114,7 +114,7 @@ func NewWindowContainer(world w.World) *widget.Container {
 	res := world.Resources.UIResources
 
 	return widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(res.Panel.Image),
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 			widget.RowLayoutOpts.Padding(widget.Insets{
@@ -127,7 +127,7 @@ func NewWindowContainer(world w.World) *widget.Container {
 		)),
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.GridLayoutData{
-				MaxHeight: 160,
+				MaxHeight: 500,
 			}),
 		),
 	)
@@ -141,7 +141,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
-		widget.TextOpts.Text(title, *LoadFont(world), styles.TextColor),
+		widget.TextOpts.Text(title, res.Text.TitleFace, styles.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 			VerticalPosition:   widget.AnchorLayoutPositionCenter,

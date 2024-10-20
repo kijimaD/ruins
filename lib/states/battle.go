@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"image"
 	"log"
 	"math/rand/v2"
 
@@ -55,6 +56,8 @@ type BattleState struct {
 	selectContainer *widget.Container
 	// 味方表示コンテナ
 	memberContainer *widget.Container
+	// 結果ウィンドウ
+	resultWindow *widget.Window
 
 	// 選択中のアイテム
 	selectedItem ecs.Entity
@@ -236,14 +239,16 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			switch v.actionCount {
+			case 0:
+				st.resultWindow = st.initResultWindow(world)
+				st.ui.AddWindow(st.resultWindow)
+			case 1:
+				fmt.Println("click 1")
+			default:
+				return states.Transition{Type: states.TransPop}
+			}
 			v.actionCount += 1
-		}
-
-		switch v.actionCount {
-		case 0:
-			// 処理する
-		default:
-			return states.Transition{Type: states.TransPop}
 		}
 	}
 
@@ -639,4 +644,25 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))
+}
+
+func (st *BattleState) initResultWindow(world w.World) *widget.Window {
+	const width = 800
+	const height = 400
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
+	content := eui.NewWindowContainer(world)
+	content.AddChild(eui.NewMenuText("獲得", world))
+	resultWindow := widget.NewWindow(
+		widget.WindowOpts.Contents(content),
+		widget.WindowOpts.Modal(),
+		widget.WindowOpts.MinSize(width, height),
+		widget.WindowOpts.MaxSize(width, height),
+	)
+	rect := image.Rect(0, 0, screenWidth/2+width/2, screenHeight/2+height/2)
+	rect = rect.Add(image.Point{screenWidth/2 - width/2, screenHeight/2 - height/2})
+	resultWindow.SetLocation(rect)
+
+	return resultWindow
 }
