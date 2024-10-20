@@ -665,9 +665,12 @@ func (st *BattleState) initResultWindow(world w.World) *widget.Window {
 	screenHeight := world.Resources.ScreenDimensions.Height
 
 	content := eui.NewWindowContainer(world)
-	// 経験値をプラスする
+	// TODO: 経験値をプラスする
+	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
+	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
 	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
-	// 素材を入手する
+	// TODO: 素材を入手する
+	// 素材テーブルを追加して、敵の種類によってドロップアイテムを決定する
 	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
 	resultWindow := widget.NewWindow(
 		widget.WindowOpts.Contents(content),
