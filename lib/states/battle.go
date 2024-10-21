@@ -122,6 +122,17 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		case *phaseChoosePolicy:
 			st.reloadPolicy(world)
 		case *phaseChooseAction:
+			gameComponents := world.Components.Game.(*gc.Components)
+			members := []ecs.Entity{}
+			simple.InPartyMember(world, func(entity ecs.Entity) {
+				members = append(members, entity)
+			})
+			member := members[st.curMemberIndex]
+			pools := gameComponents.Pools.Get(member).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				// 死んでいる場合は命令できない。次のメンバーに進む
+				st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
+			}
 			st.reloadAction(world, v)
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
@@ -546,6 +557,14 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 敵キャラごとにターゲット選択ボタンを作成する
+		{
+			// 生きている敵のみ対象とする
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+		}
+
 		vc := eui.NewVerticalContainer()
 		st.cardSpecContainer.AddChild(vc)
 
@@ -569,10 +588,12 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 					members = append(members, entity)
 				})
 				if st.curMemberIndex >= len(members)-1 {
+					// 選択完了
 					st.curMemberIndex = 0
 					st.phase = &phaseEnemyActionSelect{}
 					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
 				} else {
+					// 次のメンバー
 					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
 					st.phase = &phaseChooseAction{owner: members[st.curMemberIndex]}
 				}

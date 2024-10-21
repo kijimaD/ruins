@@ -44,6 +44,16 @@ func BattleCommandSystem(world w.World) {
 
 	entity := bcEntities[0]
 	cmd := gameComponents.BattleCommand.Get(entity).(*gc.BattleCommand)
+	{
+		ownerPools := gameComponents.Pools.Get(cmd.Owner).(*gc.Pools)
+		// 持ち主が死んでいる場合はコマンドを削除する
+		if ownerPools.HP.Current == 0 {
+			world.Manager.DeleteEntity(entity)
+			BattleCommandSystem(world)
+
+			return
+		}
+	}
 
 	// wayから攻撃の属性を取り出す
 	attack := gameComponents.Attack.Get(cmd.Way).(*gc.Attack)
