@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"image"
 	"log"
 	"math/rand/v2"
 
@@ -55,6 +56,8 @@ type BattleState struct {
 	selectContainer *widget.Container
 	// 味方表示コンテナ
 	memberContainer *widget.Container
+	// 結果ウィンドウ
+	resultWindow *widget.Window
 
 	// 選択中のアイテム
 	selectedItem ecs.Entity
@@ -74,6 +77,7 @@ func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
 	_ = spawner.SpawnEnemy(world, "軽戦車")
+	_ = spawner.SpawnEnemy(world, "火の玉")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
@@ -91,8 +95,15 @@ func (st *BattleState) OnStop(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
-
+	world.Manager.Join(
+		gameComponents.BattleCommand,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.DeleteEntity(entity)
+	}))
 	gamelog.BattleLog.Flush()
+
+	// FIXME: state transition: popで削除されてくれない。stateインスタンスが使い回されているように見える
+	st.phase = nil
 }
 
 func (st *BattleState) Update(world w.World) states.Transition {
@@ -173,7 +184,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	}
 
 	// 毎回実行される
-	switch st.phase.(type) {
+	switch v := st.phase.(type) {
 	case *phaseChoosePolicy:
 	case *phaseChooseAction:
 	case *phaseChooseTarget:
@@ -185,9 +196,31 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 		st.updateMemberContainer(world)
 
+		gameComponents := world.Components.Game.(*gc.Components)
+
+		// 敵が全員死んでいたらリザルトフェーズに遷移する
+		liveEnemyCount := 0
+		world.Manager.Join(
+			gameComponents.Name,
+			gameComponents.FactionEnemy,
+			gameComponents.Attributes,
+			gameComponents.Pools,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+			liveEnemyCount += 1
+		}))
+		if liveEnemyCount == 0 {
+			gamelog.BattleLog.Flush()
+			gamelog.BattleLog.Append("敵を全滅させた。")
+			st.phase = &phaseResult{}
+			return states.Transition{Type: states.TransNone}
+		}
+
 		// commandが残っていればクリック待ちにする
 		commandCount := 0
-		gameComponents := world.Components.Game.(*gc.Components)
 		world.Manager.Join(
 			gameComponents.BattleCommand,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -204,13 +237,25 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			return states.Transition{Type: states.TransNone}
 		}
 
-		// 選択完了
+		// 処理完了
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
 			gamelog.BattleLog.Flush()
 		}
 	case *phaseResult:
+		st.reloadMsg(world)
+
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			switch v.actionCount {
+			case 0:
+				st.resultWindow = st.initResultWindow(world)
+				st.ui.AddWindow(st.resultWindow)
+			default:
+				return states.Transition{Type: states.TransPop}
+			}
+			v.actionCount += 1
+		}
 	}
 
 	return states.Transition{Type: states.TransNone}
@@ -228,7 +273,17 @@ func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
-	st.enemyListContainer = st.initEnemyContainer()
+	st.enemyListContainer = eui.NewRowContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position:  widget.RowLayoutPositionCenter,
+				Stretch:   true,
+				MaxWidth:  400,
+				MaxHeight: 200,
+			}),
+			widget.WidgetOpts.MinSize(0, 600),
+		),
+	)
 	st.updateEnemyListContainer(world)
 
 	st.selectContainer = eui.NewVerticalContainer(
@@ -259,23 +314,6 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-func (st *BattleState) initEnemyContainer() *widget.Container {
-	return eui.NewRowContainer(
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position:  widget.RowLayoutPositionCenter,
-				Stretch:   true,
-				MaxWidth:  200,
-				MaxHeight: 200,
-			}),
-			widget.WidgetOpts.MinSize(0, 600),
-		),
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		)),
-	)
-}
-
 // 敵一覧を更新する
 func (st *BattleState) updateEnemyListContainer(world w.World) {
 	st.enemyListContainer.RemoveChildren()
@@ -283,26 +321,38 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.FactionEnemy,
+		gameComponents.Attributes,
 		gameComponents.Pools,
+		gameComponents.Render,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		{
-			// とりあえず仮の画像
-			tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+		}
+		container := widget.NewContainer(
+			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
+		)
+		{
+			render := gameComponents.Render.Get(entity).(*gc.Render)
+			sheets := (*world.Resources.SpriteSheets)[render.BattleBody.SheetName]
 			graphic := widget.NewGraphic(
 				widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 					Stretch: true,
 				})),
-				widget.GraphicOpts.Image(tankSS.Texture.Image),
+				widget.GraphicOpts.Image(sheets.Texture.Image),
 			)
-			st.enemyListContainer.AddChild(graphic)
+			container.AddChild(graphic)
 		}
-
 		{
 			name := gameComponents.Name.Get(entity).(*gc.Name)
 			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 			text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-			st.enemyListContainer.AddChild(eui.NewMenuText(text, world))
+			container.AddChild(eui.NewMenuText(text, world))
 		}
+
+		st.enemyListContainer.AddChild(container)
 	}))
 }
 
@@ -570,6 +620,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
+
 			return v
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
@@ -604,4 +655,32 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))
+}
+
+func (st *BattleState) initResultWindow(world w.World) *widget.Window {
+	res := world.Resources.UIResources
+	const width = 800
+	const height = 400
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
+	content := eui.NewWindowContainer(world)
+	// TODO: 経験値をプラスする
+	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
+	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
+	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
+	// TODO: 素材を入手する
+	// 素材テーブルを追加して、敵の種類によってドロップアイテムを決定する
+	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
+	resultWindow := widget.NewWindow(
+		widget.WindowOpts.Contents(content),
+		widget.WindowOpts.Modal(),
+		widget.WindowOpts.MinSize(width, height),
+		widget.WindowOpts.MaxSize(width, height),
+	)
+	rect := image.Rect(0, 0, screenWidth/2+width/2, screenHeight/2+height/2)
+	rect = rect.Add(image.Point{screenWidth/2 - width/2, screenHeight/2 - height/2})
+	resultWindow.SetLocation(rect)
+
+	return resultWindow
 }

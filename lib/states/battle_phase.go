@@ -38,6 +38,8 @@ type phaseExecute struct{}
 func (p *phaseExecute) isBattlePhase() {}
 
 // リザルト画面
-type phaseResult struct{}
+type phaseResult struct {
+	actionCount int
+}
 
 func (p *phaseResult) isBattlePhase() {}

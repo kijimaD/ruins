@@ -168,14 +168,7 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 
-	// とりあえず仮画像
-	tankSS := (*world.Resources.SpriteSheets)["front_tank1"]
 	cl := rawMaster.GenerateEnemy(name)
-	cl.SpriteRender = &ec.SpriteRender{
-		SpriteSheet:  &tankSS,
-		SpriteNumber: 0,
-		Depth:        ec.DepthNumFloor,
-	}
 	componentList.Game = append(
 		componentList.Game,
 		cl,

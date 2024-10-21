@@ -202,6 +202,22 @@ AttackCount = 4
 Element = "NONE"
 AttackCategory = "CANON"
 
+[[item]]
+Name = "溶解液"
+Description = "濃度の高い強酸性の液体"
+
+[item.card]
+Cost = 8
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 80
+Damage = 14
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
+
 # wearable ================
 
 [[item]]
@@ -406,7 +422,7 @@ Agility = 5
 Defense = 5
 
 [[member]]
-Name = "ライム"
+Name = "火の玉"
 [member.attributes]
 Vitality = 7
 Strength = 8
@@ -427,7 +443,22 @@ Card = "M1919重機関銃"
 Weight = 0.5
 
 [[command_table]]
-Name = "ライム"
+Name = "火の玉"
 [[command_table.entries]]
 Card = "体当たり"
-Weight = 1.0
+Weight = 0.8
+[[command_table.entries]]
+Card = "溶解液"
+Weight = 0.2
+
+# sheets ================
+
+[[sprite_sheet]]
+Name = "軽戦車"
+[sprite_sheet.battle_body]
+SheetName = "front_tank1"
+
+[[sprite_sheet]]
+Name = "火の玉"
+[sprite_sheet.battle_body]
+SheetName = "front_flame1"
