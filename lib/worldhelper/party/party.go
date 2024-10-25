@@ -3,6 +3,7 @@ package party
 import (
 	"errors"
 	"log"
+	"math/rand/v2"
 
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -12,12 +13,13 @@ import (
 	"github.com/yourbasic/bit"
 )
 
-// グルーピングする単位
-// 味方あるいは敵がある
+// グルーピングする単位。味方あるいは敵がある
 type Party struct {
 	// メンバー一覧
+	// entityの番号順に並んでいるという前提で書いている
+	// 後々並びが変わることもあるだろうから、そのときに対応する
 	members []ecs.Entity
-	// 死んでいる場合はnilが入る
+	// 死んでいる場合はnilが入る。membersと同じ長さになる
 	lives []*ecs.Entity
 	// 現在のインデックス。0始まり
 	cur int
@@ -46,7 +48,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 			gameComponents.CommandTable,
 		)
 	default:
-		log.Fatalf("invalid case: %v")
+		log.Fatalf("invalid case: %v", factionType)
 	}
 	members := []ecs.Entity{}
 	q.Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -78,9 +80,45 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 	return party, nil
 }
 
+// entityから派閥を判定して、partyを初期化する
+func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
+	var party Party
+	var err error
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	switch {
+	case entity.HasComponent(gameComponents.FactionAlly):
+		party, err = NewParty(world, gc.FactionAlly)
+		if err != nil {
+			return party, err
+		}
+	case entity.HasComponent(gameComponents.FactionEnemy):
+		party, err = NewParty(world, gc.FactionEnemy)
+		if err != nil {
+			return party, err
+		}
+	default:
+		return party, errors.New("味方でも敵でもないエンティティが指定された")
+	}
+
+	return party, nil
+}
+
 // 選択中のentityを返す
 func (p *Party) Value() *ecs.Entity {
 	return p.lives[p.cur]
+}
+
+// 生存エンティティの数を返す
+func (p *Party) LivesLen() int {
+	count := 0
+	for _, l := range p.lives {
+		if l != nil {
+			count += 1
+		}
+	}
+
+	return count
 }
 
 var reachEdgeError = errors.New("reach edge error")
@@ -115,6 +153,60 @@ func (p *Party) Prev() error {
 
 		return nil
 	}
+}
+
+// curを進めずに取得だけする
+func (p *Party) GetNext() (ecs.Entity, error) {
+	cur := p.cur
+	for {
+		memo := cur
+		cur = mathutil.Min(cur+1, len(p.members)-1)
+		if memo == cur {
+			// 末端に到達してcurが変化しなかった
+			return 0, reachEdgeError
+		}
+		if p.lives[cur] == nil {
+			continue
+		}
+
+		break
+	}
+
+	return *p.lives[cur], nil
+}
+
+// curを戻さずに取得だけする
+func (p *Party) GetPrev() (ecs.Entity, error) {
+	cur := p.cur
+	for {
+		memo := cur
+		cur = mathutil.Max(cur-1, 0)
+		if memo == cur {
+			// 末端に到達してcurが変化しなかった
+			return 0, reachEdgeError
+		}
+		if p.lives[cur] == nil {
+			continue
+		}
+
+		break
+	}
+
+	return *p.lives[cur], nil
+}
+
+// 生存エンティティからランダムに選択する
+func (p *Party) GetRandom() (ecs.Entity, error) {
+	lives := []ecs.Entity{}
+	for _, live := range p.lives {
+		lives = append(lives, *live)
+	}
+	if len(lives) == 0 {
+		return 0, errors.New("生存エンティティが存在しない")
+	}
+	idx := rand.IntN(len(lives) - 1)
+
+	return lives[idx], nil
 }
 
 func (p *Party) next() error {

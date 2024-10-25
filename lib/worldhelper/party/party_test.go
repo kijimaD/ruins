@@ -40,6 +40,78 @@ func TestNext(t *testing.T) {
 	}
 }
 
+func TestGetNext(t *testing.T) {
+	party := Party{
+		members: []ecs.Entity{0, 1, 2, 3},
+		lives: []*ecs.Entity{
+			utils.GetPtr(ecs.Entity(0)),
+			nil,
+			utils.GetPtr(ecs.Entity(2)),
+			utils.GetPtr(ecs.Entity(3)),
+		},
+		cur: 0,
+	}
+	{
+		// nilを飛ばして0->2で取得できる
+		v, err := party.GetNext()
+		assert.NoError(t, err)
+		assert.Equal(t, 2, int(v))
+	}
+	{
+		party.Next()
+	}
+	{
+		// 2->3
+		v, err := party.GetNext()
+		assert.NoError(t, err)
+		assert.Equal(t, 3, int(v))
+	}
+	{
+		party.Next()
+	}
+	{
+		// 末端に到達した
+		_, err := party.GetNext()
+		assert.Error(t, err)
+	}
+}
+
+func TestGetPrev(t *testing.T) {
+	party := Party{
+		members: []ecs.Entity{0, 1, 2, 3},
+		lives: []*ecs.Entity{
+			utils.GetPtr(ecs.Entity(0)),
+			nil,
+			utils.GetPtr(ecs.Entity(2)),
+			utils.GetPtr(ecs.Entity(3)),
+		},
+		cur: 3,
+	}
+	{
+		// 3->2
+		v, err := party.GetPrev()
+		assert.NoError(t, err)
+		assert.Equal(t, 2, int(v))
+	}
+	{
+		party.Prev()
+	}
+	{
+		// nilを飛ばして2->0で取得できる
+		v, err := party.GetPrev()
+		assert.NoError(t, err)
+		assert.Equal(t, 0, int(v))
+	}
+	{
+		party.Prev()
+	}
+	{
+		// 末端に到達した
+		_, err := party.GetPrev()
+		assert.Error(t, err)
+	}
+}
+
 func TestPrev(t *testing.T) {
 	party := Party{
 		members: []ecs.Entity{0, 1, 2},

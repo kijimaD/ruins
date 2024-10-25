@@ -206,6 +206,26 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 		gameComponents := world.Components.Game.(*gc.Components)
 
+		// 味方が全員死んでいたらゲームオーバーにする
+		liveAllyCount := 0
+		world.Manager.Join(
+			gameComponents.Name,
+			gameComponents.FactionAlly,
+			gameComponents.Attributes,
+			gameComponents.Pools,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+			liveAllyCount += 1
+		}))
+		if liveAllyCount == 0 {
+			gamelog.BattleLog.Flush()
+			gamelog.BattleLog.Append("全滅した。")
+			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
+		}
+
 		// 敵が全員死んでいたらリザルトフェーズに遷移する
 		liveEnemyCount := 0
 		world.Manager.Join(
@@ -576,7 +596,6 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 				err := st.party.Next()
 				if err == nil {
 					// 次のメンバー
-					st.party.Next()
 					st.phase = &phaseChooseAction{owner: *st.party.Value()}
 				} else {
 					// 全員分完了

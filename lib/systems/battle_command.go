@@ -2,6 +2,7 @@ package systems
 
 import (
 	"fmt"
+	"log"
 	"math/rand/v2"
 	"sort"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/effects"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/worldhelper/party"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -46,12 +48,37 @@ func BattleCommandSystem(world w.World) {
 	cmd := gameComponents.BattleCommand.Get(entity).(*gc.BattleCommand)
 	{
 		ownerPools := gameComponents.Pools.Get(cmd.Owner).(*gc.Pools)
-		// 持ち主が死んでいる場合はコマンドを削除する
+		// 持ち主が死んでいる場合はコマンドを削除して処理を中断する
 		if ownerPools.HP.Current == 0 {
 			world.Manager.DeleteEntity(entity)
 			BattleCommandSystem(world)
 
 			return
+		}
+	}
+	{
+		targetPools := gameComponents.Pools.Get(cmd.Target).(*gc.Pools)
+		// ターゲットが死んでいる場合は同じ派閥の別の生存エンティティに変更する
+		if targetPools.HP.Current == 0 {
+			p, err := party.NewByEntity(world, cmd.Target)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			var newTarget ecs.Entity
+			if p.LivesLen() == 1 {
+				newTarget = *p.Value()
+			} else {
+				newTarget, err = p.GetPrev()
+				if err != nil {
+					var err2 error
+					newTarget, err2 = p.GetNext()
+					if err2 != nil {
+						log.Fatal(err)
+					}
+				}
+			}
+			cmd.Target = newTarget
 		}
 	}
 
