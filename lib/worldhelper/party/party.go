@@ -78,23 +78,12 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 	return party, nil
 }
 
-// entityを返す
+// 選択中のentityを返す
 func (p *Party) Value() *ecs.Entity {
 	return p.lives[p.cur]
 }
 
 var reachEdgeError = errors.New("reach edge error")
-
-func (p *Party) next() error {
-	memo := p.cur
-	p.cur = mathutil.Min(p.cur+1, len(p.members)-1)
-	if memo == p.cur {
-		// 末端に到達してcurが変化しなかった
-		return reachEdgeError
-	}
-
-	return nil
-}
 
 // curを進める
 func (p *Party) Next() error {
@@ -112,17 +101,6 @@ func (p *Party) Next() error {
 	}
 }
 
-func (p *Party) prev() error {
-	memo := p.cur
-	p.cur = mathutil.Max(p.cur-1, 0)
-	if memo == p.cur {
-		// 末端に到達してcurが変化しなかった
-		return reachEdgeError
-	}
-
-	return nil
-}
-
 // curを戻す
 func (p *Party) Prev() error {
 	for {
@@ -137,4 +115,26 @@ func (p *Party) Prev() error {
 
 		return nil
 	}
+}
+
+func (p *Party) next() error {
+	memo := p.cur
+	p.cur = mathutil.Min(p.cur+1, len(p.members)-1)
+	if memo == p.cur {
+		// 末端に到達してcurが変化しなかった
+		return reachEdgeError
+	}
+
+	return nil
+}
+
+func (p *Party) prev() error {
+	memo := p.cur
+	p.cur = mathutil.Max(p.cur-1, 0)
+	if memo == p.cur {
+		// 末端に到達してcurが変化しなかった
+		return reachEdgeError
+	}
+
+	return nil
 }
