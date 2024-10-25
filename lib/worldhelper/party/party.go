@@ -2,6 +2,7 @@ package party
 
 import (
 	"errors"
+	"log"
 
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -25,7 +26,7 @@ type Party struct {
 // memberは仲間入れ替えなどをしないと減ったりしない
 // 派閥を指定して取得する
 // 最初にセットされるインデックスは生存しているエンティティである
-// みんな生きていない場合は異常である。エラーとする
+// みんな生きていない場合は想定していない。エラーを返す
 func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -44,6 +45,8 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 			gameComponents.Attributes,
 			gameComponents.CommandTable,
 		)
+	default:
+		log.Fatalf("invalid case: %v")
 	}
 	members := []ecs.Entity{}
 	q.Visit(ecs.Visit(func(entity ecs.Entity) {
