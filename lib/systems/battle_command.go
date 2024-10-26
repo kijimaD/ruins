@@ -14,11 +14,21 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 1回1回実行して結果を得られるようになっている
-// クリックごとにコマンドの結果を見るということができる
-// TODO: Targetがすでに死んでいたときを考慮していない。死んでいた場合は次の選択肢の敵にターゲットを変えるのが自然だろう
+// 1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
+// クリックごとにコマンドの結果を見られるようにするため
 func BattleCommandSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
+
+	// 持ち主が死んでいるBattleCommandを削除する
+	world.Manager.Join(
+		gameComponents.BattleCommand,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		cmd := gameComponents.BattleCommand.Get(entity).(*gc.BattleCommand)
+		ownerPools := gameComponents.Pools.Get(cmd.Owner).(*gc.Pools)
+		if ownerPools.HP.Current == 0 {
+			world.Manager.DeleteEntity(entity)
+		}
+	}))
 
 	// ownerの素早さが一番高いものでソートする
 	bcEntities := []ecs.Entity{}
@@ -44,18 +54,9 @@ func BattleCommandSystem(world w.World) {
 		return isum < jsum
 	})
 
+	// 最も素早さが高いコマンドを実行する
 	entity := bcEntities[0]
 	cmd := gameComponents.BattleCommand.Get(entity).(*gc.BattleCommand)
-	{
-		ownerPools := gameComponents.Pools.Get(cmd.Owner).(*gc.Pools)
-		// 持ち主が死んでいる場合はコマンドを削除して処理を中断する
-		if ownerPools.HP.Current == 0 {
-			world.Manager.DeleteEntity(entity)
-			BattleCommandSystem(world)
-
-			return
-		}
-	}
 	{
 		targetPools := gameComponents.Pools.Get(cmd.Target).(*gc.Pools)
 		// ターゲットが死んでいる場合は同じ派閥の別の生存エンティティに変更する

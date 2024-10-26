@@ -220,14 +220,12 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 		gameComponents := world.Components.Game.(*gc.Components)
 
-		// commandが残っていればクリック待ちにする
 		commandCount := 0
 		world.Manager.Join(
 			gameComponents.BattleCommand,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			commandCount += 1
 		}))
-
 		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
