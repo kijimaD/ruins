@@ -43,3 +43,7 @@ type phaseResult struct {
 }
 
 func (p *phaseResult) isBattlePhase() {}
+
+type phaseGameOver struct{}
+
+func (p *phaseGameOver) isBattlePhase() {}

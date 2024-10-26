@@ -185,6 +185,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			st.phase = &phaseExecute{}
 		case *phaseExecute:
 		case *phaseResult:
+		case *phaseGameOver:
 		}
 		st.prevPhase = st.phase
 	}
@@ -209,7 +210,8 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		case systems.BattleExtinctionNone:
 		case systems.BattleExtinctionAlly:
 			gamelog.BattleLog.Append("全滅した。")
-			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
+			st.phase = &phaseGameOver{}
+			return states.Transition{Type: states.TransNone}
 		case systems.BattleExtinctionMonster:
 			gamelog.BattleLog.Append("敵を全滅させた。")
 			st.phase = &phaseResult{}
@@ -254,6 +256,12 @@ func (st *BattleState) Update(world w.World) states.Transition {
 				return states.Transition{Type: states.TransPop}
 			}
 			v.actionCount += 1
+		}
+	case *phaseGameOver:
+		st.reloadMsg(world)
+
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
 		}
 	}
 
