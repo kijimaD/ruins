@@ -12,7 +12,8 @@ import (
 
 // 戦闘終了後に経験値や素材を獲得する
 // 通貨も取得するか?
-func BattleDropSystem(world w.World) {
+// 表示用に獲得した素材を返す
+func BattleDropSystem(world w.World) []string {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -31,7 +32,10 @@ func BattleDropSystem(world w.World) {
 	}))
 
 	rand.Shuffle(len(cands), func(i, j int) { cands[i], cands[j] = cands[j], cands[i] })
-	for _, cand := range cands[0:3] {
+	resultCands := cands[0:3]
+	for _, cand := range resultCands {
 		material.PlusAmount(cand, 1, world)
 	}
+
+	return resultCands
 }
