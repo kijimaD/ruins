@@ -29,6 +29,7 @@ type Raws struct {
 	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
 }
 
+// items ================
 type Item struct {
 	Name            string
 	Description     string
@@ -80,11 +81,25 @@ type EquipBonus struct {
 	Agility   int
 }
 
+// material ================
 type Material struct {
 	Name        string
 	Description string
 }
 
+// recipe ================
+type Recipe struct {
+	Name   string
+	Inputs []RecipeInput `toml:"inputs"`
+}
+
+// 合成の元になる素材
+type RecipeInput struct {
+	Name   string
+	Amount int
+}
+
+// member ================
 type Member struct {
 	Name       string
 	Attributes Attributes `toml:"attributes"`
@@ -97,18 +112,6 @@ type Attributes struct {
 	Dexterity int
 	Agility   int
 	Defense   int
-}
-
-// レシピ
-type Recipe struct {
-	Name   string
-	Inputs []RecipeInput `toml:"inputs"`
-}
-
-// 合成の元になる素材
-type RecipeInput struct {
-	Name   string
-	Amount int
 }
 
 func LoadFromFile(path string) RawMaster {
