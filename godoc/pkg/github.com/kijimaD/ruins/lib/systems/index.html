@@ -130,6 +130,14 @@
 				<dd><a href="index.html#RenderSpriteSystem">func RenderSpriteSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
 			
+				
+				<dd><a href="index.html#BattleExtinctionType">type BattleExtinctionType</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BattleExtinctionSystem">func BattleExtinctionSystem(world w.World) BattleExtinctionType</a></dd>
+				
+				
+			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -142,6 +150,8 @@
 			<span style="font-size:90%">
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go">battle_command.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go">battle_extinction.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/darkness.go">darkness.go</a>
 			
@@ -166,15 +176,14 @@
 		
 			
 			
-			<h2 id="BattleCommandSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go?s=592:631#L8">BattleCommandSystem</a>
+			<h2 id="BattleCommandSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go?s=510:549#L9">BattleCommandSystem</a>
 				<a class="permalink" href="index.html#BattleCommandSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func BattleCommandSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			<p>1回1回実行して結果を得られるようになっている
-クリックごとにコマンドの結果を見るということができる
-TODO: Targetがすでに死んでいたときを考慮していない。死んでいた場合は次の選択肢の敵にターゲットを変えるのが自然だろう
+			<p>1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
+クリックごとにコマンドの結果を見られるようにするため
 
 			
 			
@@ -249,6 +258,47 @@ TODO: マイナスにならないようにする
 			
 
 		
+		
+			
+			
+			<h2 id="BattleExtinctionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=157:186#L1">BattleExtinctionType</a>
+				<a class="permalink" href="index.html#BattleExtinctionType">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type BattleExtinctionType <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				
+				<pre>const (
+    <span id="BattleExtinctionNone">BattleExtinctionNone</span> <a href="index.html#BattleExtinctionType">BattleExtinctionType</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span id="BattleExtinctionAlly">BattleExtinctionAlly</span>
+    <span id="BattleExtinctionMonster">BattleExtinctionMonster</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="BattleExtinctionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=342:405#L8">BattleExtinctionSystem</a>
+					<a class="permalink" href="index.html#BattleExtinctionSystem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func BattleExtinctionSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="index.html#BattleExtinctionType">BattleExtinctionType</a></pre>
+				<p>敵や味方の全滅をチェックする
+
+				
+				
+			
+
+			
 		
 	
 
