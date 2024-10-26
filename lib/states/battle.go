@@ -576,10 +576,6 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 					st.phase = &phaseChooseAction{owner: *st.party.Value()}
 				} else {
 					// 全員分完了
-					st.party, err = party.NewParty(world, components.FactionAlly)
-					if err != nil {
-						log.Fatal(err)
-					}
 					st.phase = &phaseEnemyActionSelect{}
 					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
 				}
