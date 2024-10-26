@@ -343,6 +343,12 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 		cl.CommandTable = &gc.CommandTable{Name: commandTable.Name}
 	}
 
+	dropTableIdx, ok := rw.DropTableIndex[name]
+	if ok {
+		dropTable := rw.Raws.DropTables[dropTableIdx]
+		cl.DropTable = &gc.DropTable{Name: dropTable.Name}
+	}
+
 	return cl
 }
 
