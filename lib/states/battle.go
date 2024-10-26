@@ -22,6 +22,7 @@ import (
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/worldhelper/party"
@@ -204,48 +205,18 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 		st.updateMemberContainer(world)
 
-		gameComponents := world.Components.Game.(*gc.Components)
-
-		// 味方が全員死んでいたらゲームオーバーにする
-		liveAllyCount := 0
-		world.Manager.Join(
-			gameComponents.Name,
-			gameComponents.FactionAlly,
-			gameComponents.Attributes,
-			gameComponents.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
-			liveAllyCount += 1
-		}))
-		if liveAllyCount == 0 {
-			gamelog.BattleLog.Flush()
+		switch systems.BattleExtinctionSystem(world) {
+		case systems.BattleExtinctionNone:
+		case systems.BattleExtinctionAlly:
 			gamelog.BattleLog.Append("全滅した。")
 			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
-		}
-
-		// 敵が全員死んでいたらリザルトフェーズに遷移する
-		liveEnemyCount := 0
-		world.Manager.Join(
-			gameComponents.Name,
-			gameComponents.FactionEnemy,
-			gameComponents.Attributes,
-			gameComponents.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
-			liveEnemyCount += 1
-		}))
-		if liveEnemyCount == 0 {
-			gamelog.BattleLog.Flush()
+		case systems.BattleExtinctionMonster:
 			gamelog.BattleLog.Append("敵を全滅させた。")
 			st.phase = &phaseResult{}
 			return states.Transition{Type: states.TransNone}
 		}
+
+		gameComponents := world.Components.Game.(*gc.Components)
 
 		// commandが残っていればクリック待ちにする
 		commandCount := 0
@@ -255,7 +226,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			commandCount += 1
 		}))
 
-		if commandCount != 0 {
+		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
