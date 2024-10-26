@@ -17,6 +17,7 @@ type RawMaster struct {
 	RecipeIndex       map[string]int
 	MemberIndex       map[string]int
 	CommandTableIndex map[string]int
+	DropTableIndex    map[string]int
 	SpriteSheetIndex  map[string]int
 }
 
@@ -26,6 +27,7 @@ type Raws struct {
 	Recipes       []Recipe       `toml:"recipe"`
 	Members       []Member       `toml:"member"`
 	CommandTables []CommandTable `toml:"command_table"`
+	DropTables    []DropTable    `toml:"drop_table"`
 	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
 }
 
@@ -130,6 +132,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw.RecipeIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
 	rw.CommandTableIndex = map[string]int{}
+	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
@@ -147,6 +150,9 @@ func Load(entityMetadataContent string) RawMaster {
 	}
 	for i, commandTable := range rw.Raws.CommandTables {
 		rw.CommandTableIndex[commandTable.Name] = i
+	}
+	for i, dropTable := range rw.Raws.DropTables {
+		rw.DropTableIndex[dropTable.Name] = i
 	}
 	for i, spriteSheet := range rw.Raws.SpriteSheets {
 		rw.SpriteSheetIndex[spriteSheet.Name] = i
@@ -379,4 +385,14 @@ func (rw *RawMaster) GetCommandTable(name string) CommandTable {
 	commandTable := rw.Raws.CommandTables[ctIdx]
 
 	return commandTable
+}
+
+func (rw *RawMaster) GetDropTable(name string) DropTable {
+	dtIdx, ok := rw.DropTableIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	dropTable := rw.Raws.DropTables[dtIdx]
+
+	return dropTable
 }
