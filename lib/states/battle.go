@@ -22,9 +22,10 @@ import (
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
-	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	"github.com/kijimaD/ruins/lib/views"
+	"github.com/kijimaD/ruins/lib/worldhelper/party"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -43,10 +44,10 @@ type BattleState struct {
 	phase battlePhase
 	// 1個前のサブステート。サブステート変更を検知するのに使う
 	prevPhase battlePhase
-	// 現在処理中のメンバーのインデックス。メンバーごとにコマンドを発行するため
-	curMemberIndex int
 	// テキスト送り待ち状態
 	isWaitClick bool
+	// 味方パーティ
+	party party.Party
 
 	// 背景
 	bg *ebiten.Image
@@ -120,6 +121,11 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	if st.phase != st.prevPhase {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
+			var err error
+			st.party, err = party.NewParty(world, components.FactionAlly)
+			if err != nil {
+				log.Fatal(err)
+			}
 			st.reloadPolicy(world)
 		case *phaseChooseAction:
 			st.reloadAction(world, v)
@@ -179,12 +185,16 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			st.phase = &phaseExecute{}
 		case *phaseExecute:
 		case *phaseResult:
+		case *phaseGameOver:
 		}
 		st.prevPhase = st.phase
 	}
 
 	// 毎回実行される
 	switch v := st.phase.(type) {
+	case nil:
+		// 戦闘ステート開始直後に実行される
+		st.phase = &phaseChoosePolicy{}
 	case *phaseChoosePolicy:
 	case *phaseChooseAction:
 	case *phaseChooseTarget:
@@ -196,38 +206,27 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 		st.updateMemberContainer(world)
 
-		gameComponents := world.Components.Game.(*gc.Components)
-
-		// 敵が全員死んでいたらリザルトフェーズに遷移する
-		liveEnemyCount := 0
-		world.Manager.Join(
-			gameComponents.Name,
-			gameComponents.FactionEnemy,
-			gameComponents.Attributes,
-			gameComponents.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
-			liveEnemyCount += 1
-		}))
-		if liveEnemyCount == 0 {
-			gamelog.BattleLog.Flush()
+		switch systems.BattleExtinctionSystem(world) {
+		case systems.BattleExtinctionNone:
+		case systems.BattleExtinctionAlly:
+			gamelog.BattleLog.Append("全滅した。")
+			st.phase = &phaseGameOver{}
+			return states.Transition{Type: states.TransNone}
+		case systems.BattleExtinctionMonster:
 			gamelog.BattleLog.Append("敵を全滅させた。")
 			st.phase = &phaseResult{}
 			return states.Transition{Type: states.TransNone}
 		}
 
-		// commandが残っていればクリック待ちにする
+		gameComponents := world.Components.Game.(*gc.Components)
+
 		commandCount := 0
 		world.Manager.Join(
 			gameComponents.BattleCommand,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			commandCount += 1
 		}))
-
-		if commandCount != 0 {
+		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
@@ -255,6 +254,12 @@ func (st *BattleState) Update(world w.World) states.Transition {
 				return states.Transition{Type: states.TransPop}
 			}
 			v.actionCount += 1
+		}
+	case *phaseGameOver:
+		st.reloadMsg(world)
+
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
 		}
 	}
 
@@ -393,8 +398,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 				simple.InPartyMember(world, func(entity ecs.Entity) {
 					members = append(members, entity)
 				})
-				owner := members[st.curMemberIndex]
-				st.phase = &phaseChooseAction{owner: owner}
+				st.phase = &phaseChooseAction{owner: *st.party.Value()}
 			case policyEntryItem:
 				// TODO: 未実装
 			case policyEntryEscape:
@@ -523,12 +527,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}
 
 	{
-		members := []ecs.Entity{}
-		simple.InPartyMember(world, func(entity ecs.Entity) {
-			members = append(members, entity)
-		})
-		member := members[st.curMemberIndex]
-		name := gameComponents.Name.Get(member).(*gc.Name)
+		name := gameComponents.Name.Get(*st.party.Value()).(*gc.Name)
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
 }
@@ -546,6 +545,14 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 敵キャラごとにターゲット選択ボタンを作成する
+		{
+			// 生きている敵のみ対象とする
+			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			if pools.HP.Current == 0 {
+				return
+			}
+		}
+
 		vc := eui.NewVerticalContainer()
 		st.cardSpecContainer.AddChild(vc)
 
@@ -563,18 +570,14 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 				})
 				loader.AddEntities(world, cl)
 
-				// みんな出揃ったらExecuteに、揃ってなかったらメンバーをインクリメントしてコマンド選択ステートへ
-				members := []ecs.Entity{}
-				simple.InPartyMember(world, func(entity ecs.Entity) {
-					members = append(members, entity)
-				})
-				if st.curMemberIndex >= len(members)-1 {
-					st.curMemberIndex = 0
+				err := st.party.Next()
+				if err == nil {
+					// 次のメンバー
+					st.phase = &phaseChooseAction{owner: *st.party.Value()}
+				} else {
+					// 全員分完了
 					st.phase = &phaseEnemyActionSelect{}
 					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
-				} else {
-					st.curMemberIndex = mathutil.Min(st.curMemberIndex+1, len(members)-1)
-					st.phase = &phaseChooseAction{owner: members[st.curMemberIndex]}
 				}
 			}),
 		)
