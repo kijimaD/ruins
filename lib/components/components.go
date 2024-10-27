@@ -153,8 +153,13 @@ type Wearable struct {
 type InParty struct{}
 
 type Pools struct {
-	HP    Pool
-	SP    Pool
+	// 生命
+	HP Pool
+	// 特殊行動力
+	SP Pool
+	// 経験値
+	XP int
+	// レベル
 	Level int
 }
 
