@@ -248,8 +248,8 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			switch v.actionCount {
 			case 0:
-				materialNames := systems.BattleDropSystem(world)
-				st.resultWindow = st.initResultWindow(world, materialNames)
+				dropResult := systems.BattleDropSystem(world)
+				st.resultWindow = st.initResultWindow(world, dropResult)
 				st.ui.AddWindow(st.resultWindow)
 			default:
 				return states.Transition{Type: states.TransPop}
@@ -661,7 +661,7 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	}))
 }
 
-func (st *BattleState) initResultWindow(world w.World, materialNames []string) *widget.Window {
+func (st *BattleState) initResultWindow(world w.World, dropResult systems.DropResult) *widget.Window {
 	res := world.Resources.UIResources
 	const width = 800
 	const height = 400
@@ -694,7 +694,6 @@ func (st *BattleState) initResultWindow(world w.World, materialNames []string) *
 		)
 		content.AddChild(entryContainer)
 
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		entryContainer.AddChild(
 			widget.NewText(
@@ -703,17 +702,28 @@ func (st *BattleState) initResultWindow(world w.World, materialNames []string) *
 				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 			),
 		)
+		xpBefore := dropResult.XPBefore[entity]
+		xpAfter := dropResult.XPAfter[entity]
 		entryContainer.AddChild(
 			widget.NewText(
-				widget.TextOpts.Text(fmt.Sprintf("%d", pools.XP), res.Text.Face, styles.TextColor),
+				widget.TextOpts.Text(fmt.Sprintf("%d → %d", xpBefore, xpAfter), res.Text.Face, styles.TextColor),
 				widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
 				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 			),
 		)
+		if dropResult.IsLevelUp[entity] {
+			entryContainer.AddChild(
+				widget.NewText(
+					widget.TextOpts.Text("Lv ↑", res.Text.Face, styles.TextColor),
+					widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
+					widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
+				),
+			)
+		}
 	}))
 
 	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
-	for _, mn := range materialNames {
+	for _, mn := range dropResult.MaterialNames {
 		text := fmt.Sprintf("  %s", mn)
 		content.AddChild(widget.NewText(widget.TextOpts.Text(text, res.Text.Face, styles.TextColor)))
 	}

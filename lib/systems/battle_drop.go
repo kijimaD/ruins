@@ -11,11 +11,33 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+const (
+	LevelUpThreshold = 100
+)
+
+// UI用に渡す実行結果
+type DropResult struct {
+	// 獲得した素材名
+	MaterialNames []string
+	// 獲得前の経験値
+	XPBefore map[ecs.Entity]int
+	// 獲得後の経験値
+	XPAfter map[ecs.Entity]int
+	// レベルアップしたかどうか
+	IsLevelUp map[ecs.Entity]bool
+}
+
 // 戦闘終了後に経験値や素材を獲得する
 // 獲得した素材名を返す
-func BattleDropSystem(world w.World) []string {
+func BattleDropSystem(world w.World) DropResult {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	gameComponents := world.Components.Game.(*gc.Components)
+	result := DropResult{
+		MaterialNames: []string{},
+		XPBefore:      map[ecs.Entity]int{},
+		XPAfter:       map[ecs.Entity]int{},
+		IsLevelUp:     map[ecs.Entity]bool{},
+	}
 
 	// 素材を獲得する
 	cands := []string{}
@@ -32,10 +54,11 @@ func BattleDropSystem(world w.World) []string {
 		}
 	}))
 	rand.Shuffle(len(cands), func(i, j int) { cands[i], cands[j] = cands[j], cands[i] })
-	resultCands := cands[0:3]
-	for _, cand := range resultCands {
+	result.MaterialNames = cands[0:3]
+	for _, cand := range result.MaterialNames {
 		material.PlusAmount(cand, 1, world)
 	}
+	result.XPBefore = getMemberXP(world)
 
 	// 経験値を獲得する
 	world.Manager.Join(
@@ -57,10 +80,25 @@ func BattleDropSystem(world w.World) []string {
 			multiplier := calcExpMultiplier(levelDiff)
 			allyPools.XP += int(dt.XpBase * multiplier)
 		}))
+	}))
+	result.XPAfter = getMemberXP(world)
 
+	// 経験値を見てレベルを上げる
+	world.Manager.Join(
+		gameComponents.Name,
+		gameComponents.FactionAlly,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		if pools.XP >= LevelUpThreshold {
+			result.IsLevelUp[entity] = true
+
+			pools.Level += 1
+			pools.XP = 0
+		}
 	}))
 
-	return resultCands
+	return result
 }
 
 // 倍率を計算する
@@ -77,4 +115,21 @@ func calcExpMultiplier(levelDiff int) float64 {
 	}
 
 	return expMultiplier
+}
+
+// メンバーごとの経験値を取得する
+func getMemberXP(world w.World) map[ecs.Entity]int {
+	gameComponents := world.Components.Game.(*gc.Components)
+	xpMap := map[ecs.Entity]int{}
+
+	world.Manager.Join(
+		gameComponents.Name,
+		gameComponents.FactionAlly,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		xpMap[entity] = pools.XP
+	}))
+
+	return xpMap
 }
