@@ -109,6 +109,8 @@
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
 			
 			
 				
@@ -138,6 +140,14 @@
 				
 				
 			
+				
+				<dd><a href="index.html#DropResult">type DropResult</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BattleDropSystem">func BattleDropSystem(world w.World) DropResult</a></dd>
+				
+				
+			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -150,6 +160,8 @@
 			<span style="font-size:90%">
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go">battle_command.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go">battle_drop.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go">battle_extinction.go</a>
 			
@@ -171,6 +183,14 @@
 
 		
 
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span id="LevelUpThreshold">LevelUpThreshold</span> = 100
+)</pre>
+			
 		
 		
 		
@@ -293,6 +313,52 @@ TODO: マイナスにならないようにする
 				</h3>
 				<pre>func BattleExtinctionSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="index.html#BattleExtinctionType">BattleExtinctionType</a></pre>
 				<p>敵や味方の全滅をチェックする
+
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="DropResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=336:593#L9">DropResult</a>
+				<a class="permalink" href="index.html#DropResult">&#xb6;</a>
+				
+				
+			</h2>
+			<p>UI用に渡す実行結果
+
+			<pre>type DropResult struct {
+    <span class="comment">// 獲得した素材名</span>
+<span id="DropResult.MaterialNames"></span>    MaterialNames []<a href="http://localhost:8888/pkg/builtin/#string">string</a>
+    <span class="comment">// 獲得前の経験値</span>
+<span id="DropResult.XPBefore"></span>    XPBefore map[<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// 獲得後の経験値</span>
+<span id="DropResult.XPAfter"></span>    XPAfter map[<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// レベルアップしたかどうか</span>
+<span id="DropResult.IsLevelUp"></span>    IsLevelUp map[<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="BattleDropSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=684:731#L22">BattleDropSystem</a>
+					<a class="permalink" href="index.html#BattleDropSystem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func BattleDropSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="index.html#DropResult">DropResult</a></pre>
+				<p>戦闘終了後に経験値や素材を獲得する
+獲得した素材名を返す
 
 				
 				
