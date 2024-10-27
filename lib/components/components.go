@@ -51,6 +51,7 @@ type GameComponentList struct {
 
 	// battle ================
 	CommandTable *CommandTable
+	DropTable    *DropTable
 }
 
 // componentsを溜めるスライス群
@@ -100,6 +101,7 @@ type Components struct {
 
 	// battle ================
 	CommandTable *ecs.SliceComponent
+	DropTable    *ecs.SliceComponent
 }
 
 // フィールドで操作対象となる対象
@@ -151,8 +153,13 @@ type Wearable struct {
 type InParty struct{}
 
 type Pools struct {
-	HP    Pool
-	SP    Pool
+	// 生命
+	HP Pool
+	// 特殊行動力
+	SP Pool
+	// 経験値
+	XP int
+	// レベル
 	Level int
 }
 
@@ -212,6 +219,11 @@ type Attack struct {
 
 // AI用の、戦闘コマンドテーブル名
 type CommandTable struct {
+	Name string
+}
+
+// ドロップテーブル名
+type DropTable struct {
 	Name string
 }
 

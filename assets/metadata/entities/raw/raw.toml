@@ -451,6 +451,28 @@ Weight = 0.8
 Card = "溶解液"
 Weight = 0.2
 
+# drop table ================
+
+[[drop_table]]
+Name = "軽戦車"
+XpBase = 10
+[[ drop_table.entries]]
+Material = "鉄"
+Weight = 0.4
+[[drop_table.entries]]
+Material = "鉄くず"
+Weight = 0.4
+[[drop_table.entries]]
+Material = "フェライトコア"
+Weight = 0.2
+
+[[drop_table]]
+Name = "火の玉"
+XpBase = 5
+[[drop_table.entries]]
+Material = "鉄くず"
+Weight = 1.0
+
 # sheets ================
 
 [[sprite_sheet]]

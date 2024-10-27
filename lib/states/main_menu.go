@@ -8,7 +8,6 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/styles"
 )
 
 type MainMenuState struct {
@@ -60,9 +59,6 @@ func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
 func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
 	st.mainMenuContainer = eui.NewVerticalContainer()
-
-	res := world.Resources.UIResources
-	rootContainer.AddChild(widget.NewText(widget.TextOpts.Text("Ruins", res.Text.BigTitleFace, styles.TextColor)))
 	rootContainer.AddChild(st.mainMenuContainer)
 
 	st.updateMenuContainer(world)
@@ -95,7 +91,7 @@ var mainMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}},
 	},
 	{
-		label: "拠点メニュー",
+		label: "拠点",
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
 	},
 	{

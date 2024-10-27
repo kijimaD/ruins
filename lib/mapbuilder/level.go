@@ -2,7 +2,7 @@ package mapbuilder
 
 import (
 	"log"
-	"math/rand"
+	"math/rand/v2"
 
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -28,8 +28,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("進行ワープホールの生成に失敗した")
 			}
-			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
+			x := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
 			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				chain.BuildData.Tiles[tileIdx] = TileWarpNext
@@ -46,8 +46,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("帰還ワープホールの生成に失敗した")
 			}
-			x := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
+			x := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
 			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
@@ -64,8 +64,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("操作対象キャラの生成に失敗した")
 			}
-			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
-			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
+			tx := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
+			ty := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
 			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
 				failCount++
 				continue
@@ -81,14 +81,14 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	// フィールドにNPCを生成する
 	{
 		failCount := 0
-		total := rand.Intn(10 + 10)
+		total := rand.IntN(10 + 10)
 		successCount := 0
 		for {
 			if failCount > 200 {
 				log.Fatal("NPCの生成に失敗した")
 			}
-			tx := gc.Row(rand.Intn(int(chain.BuildData.Level.TileWidth)))
-			ty := gc.Col(rand.Intn(int(chain.BuildData.Level.TileHeight)))
+			tx := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
+			ty := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
 			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
 				failCount++
 				continue

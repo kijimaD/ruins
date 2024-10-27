@@ -17,6 +17,7 @@ type RawMaster struct {
 	RecipeIndex       map[string]int
 	MemberIndex       map[string]int
 	CommandTableIndex map[string]int
+	DropTableIndex    map[string]int
 	SpriteSheetIndex  map[string]int
 }
 
@@ -26,9 +27,11 @@ type Raws struct {
 	Recipes       []Recipe       `toml:"recipe"`
 	Members       []Member       `toml:"member"`
 	CommandTables []CommandTable `toml:"command_table"`
+	DropTables    []DropTable    `toml:"drop_table"`
 	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
 }
 
+// items ================
 type Item struct {
 	Name            string
 	Description     string
@@ -80,11 +83,25 @@ type EquipBonus struct {
 	Agility   int
 }
 
+// material ================
 type Material struct {
 	Name        string
 	Description string
 }
 
+// recipe ================
+type Recipe struct {
+	Name   string
+	Inputs []RecipeInput `toml:"inputs"`
+}
+
+// 合成の元になる素材
+type RecipeInput struct {
+	Name   string
+	Amount int
+}
+
+// member ================
 type Member struct {
 	Name       string
 	Attributes Attributes `toml:"attributes"`
@@ -97,18 +114,6 @@ type Attributes struct {
 	Dexterity int
 	Agility   int
 	Defense   int
-}
-
-// レシピ
-type Recipe struct {
-	Name   string
-	Inputs []RecipeInput `toml:"inputs"`
-}
-
-// 合成の元になる素材
-type RecipeInput struct {
-	Name   string
-	Amount int
 }
 
 func LoadFromFile(path string) RawMaster {
@@ -127,6 +132,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw.RecipeIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
 	rw.CommandTableIndex = map[string]int{}
+	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
 	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
 
@@ -144,6 +150,9 @@ func Load(entityMetadataContent string) RawMaster {
 	}
 	for i, commandTable := range rw.Raws.CommandTables {
 		rw.CommandTableIndex[commandTable.Name] = i
+	}
+	for i, dropTable := range rw.Raws.DropTables {
+		rw.DropTableIndex[dropTable.Name] = i
 	}
 	for i, spriteSheet := range rw.Raws.SpriteSheets {
 		rw.SpriteSheetIndex[spriteSheet.Name] = i
@@ -334,6 +343,12 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 		cl.CommandTable = &gc.CommandTable{Name: commandTable.Name}
 	}
 
+	dropTableIdx, ok := rw.DropTableIndex[name]
+	if ok {
+		dropTable := rw.Raws.DropTables[dropTableIdx]
+		cl.DropTable = &gc.DropTable{Name: dropTable.Name}
+	}
+
 	return cl
 }
 
@@ -376,4 +391,14 @@ func (rw *RawMaster) GetCommandTable(name string) CommandTable {
 	commandTable := rw.Raws.CommandTables[ctIdx]
 
 	return commandTable
+}
+
+func (rw *RawMaster) GetDropTable(name string) DropTable {
+	dtIdx, ok := rw.DropTableIndex[name]
+	if !ok {
+		log.Fatalf("キーが存在しない: %s", name)
+	}
+	dropTable := rw.Raws.DropTables[dtIdx]
+
+	return dropTable
 }
