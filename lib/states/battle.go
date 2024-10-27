@@ -248,7 +248,8 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			switch v.actionCount {
 			case 0:
-				st.resultWindow = st.initResultWindow(world)
+				materialNames := systems.BattleDropSystem(world)
+				st.resultWindow = st.initResultWindow(world, materialNames)
 				st.ui.AddWindow(st.resultWindow)
 			default:
 				return states.Transition{Type: states.TransPop}
@@ -660,7 +661,7 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	}))
 }
 
-func (st *BattleState) initResultWindow(world w.World) *widget.Window {
+func (st *BattleState) initResultWindow(world w.World, materialNames []string) *widget.Window {
 	res := world.Resources.UIResources
 	const width = 800
 	const height = 400
@@ -672,9 +673,50 @@ func (st *BattleState) initResultWindow(world w.World) *widget.Window {
 	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
 	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
 	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
-	// TODO: 素材を入手する
-	// 素材テーブルを追加して、敵の種類によってドロップアイテムを決定する
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(
+		gameComponents.FactionAlly,
+		gameComponents.InParty,
+		gameComponents.Attributes,
+		gameComponents.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		entryContainer := eui.NewRowContainer(
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.MinSize(200, 0),
+			),
+			widget.ContainerOpts.Layout(widget.NewRowLayout(
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    0,
+					Bottom: 0,
+					Left:   20,
+				}),
+			)),
+		)
+		content.AddChild(entryContainer)
+
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		entryContainer.AddChild(
+			widget.NewText(
+				widget.TextOpts.Text(name.Name, res.Text.Face, styles.TextColor),
+				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
+				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
+			),
+		)
+		entryContainer.AddChild(
+			widget.NewText(
+				widget.TextOpts.Text(fmt.Sprintf("%d", pools.XP), res.Text.Face, styles.TextColor),
+				widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
+				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
+			),
+		)
+	}))
+
 	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
+	for _, mn := range materialNames {
+		text := fmt.Sprintf("  %s", mn)
+		content.AddChild(widget.NewText(widget.TextOpts.Text(text, res.Text.Face, styles.TextColor)))
+	}
 	resultWindow := widget.NewWindow(
 		widget.WindowOpts.Contents(content),
 		widget.WindowOpts.Modal(),
