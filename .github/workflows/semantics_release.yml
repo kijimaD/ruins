@@ -20,4 +20,4 @@ jobs:
       - name: Releaser
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: npx semantic-release
+        run: semantic-release
