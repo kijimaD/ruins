@@ -11,8 +11,8 @@ var (
 	BattleLog SafeSlice
 	// フィールド用
 	FieldLog SafeSlice
-	// イベントでのステータス変化を通知する用
-	EventLog SafeSlice
+	// 会話シーンでステータス変化を通知する用
+	SceneLog SafeSlice
 )
 
 type SafeSlice struct {

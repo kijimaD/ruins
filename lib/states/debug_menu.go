@@ -118,11 +118,11 @@ var debugMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{
 			&MessageState{
 				textFunc: utils.GetPtr(func() string {
-					return strings.Join(gamelog.EventLog.Latest(10), ",")
+					return strings.Join(gamelog.SceneLog.Latest(10), ",")
 				})},
 			&ExecState{f: func(world w.World) {
 				material.PlusAmount("鉄", 1, world)
-				gamelog.EventLog.Append("鉄を手に入れた")
+				gamelog.SceneLog.Append("鉄を手に入れた")
 			}},
 			&MessageState{text: "「びっくりしたな」\n「何か落ちてるぞ」"},
 			&BattleState{},
