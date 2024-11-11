@@ -113,20 +113,41 @@ var debugMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&BattleState{}}},
 	},
 	{
-		label: "汎用イベント開始",
+		label: "汎用戦闘イベント開始",
 		f:     func(world w.World) {},
 		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{
 			&MessageState{
 				textFunc: utils.GetPtr(func() string {
-					return strings.Join(gamelog.SceneLog.Latest(10), ",")
+					return strings.Join(gamelog.SceneLog.Latest(10), "\n")
 				})},
 			&ExecState{f: func(world w.World) {
 				material.PlusAmount("鉄", 1, world)
+				// FIXME: どうして複数回実行したときSceneLogが蓄積してないのかわからない
+				// Flush()してないのに...
 				gamelog.SceneLog.Append("鉄を手に入れた")
 			}},
 			&MessageState{text: "「びっくりしたな」\n「何か落ちてるぞ」"},
 			&BattleState{},
-			&MessageState{text: "「何か動いた」\n\n...\n\n「敵だ!」"},
+			&MessageState{text: "「何か動いた」\n「...敵だ!」"},
+		}},
+	},
+	{
+		label: "汎用アイテム入手イベント開始",
+		f:     func(world w.World) {},
+		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{
+			&MessageState{
+				textFunc: utils.GetPtr(func() string {
+					return strings.Join(gamelog.SceneLog.Latest(10), "\n")
+				})},
+			&ExecState{f: func(world w.World) {
+				material.PlusAmount("鉄", 1, world)
+				gamelog.SceneLog.Append("鉄を1個手に入れた")
+				material.PlusAmount("木の棒", 1, world)
+				gamelog.SceneLog.Append("木の棒を1個手に入れた")
+				material.PlusAmount("フェライトコア", 1, world)
+				gamelog.SceneLog.Append("フェライトコアを2個手に入れた")
+			}},
+			&MessageState{text: "「倉庫だな。役立ちそうなものはもらっていこう」"},
 		}},
 	},
 	{
