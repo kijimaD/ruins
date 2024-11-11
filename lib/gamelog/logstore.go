@@ -7,8 +7,12 @@ import (
 )
 
 var (
+	// 戦闘用
 	BattleLog SafeSlice
-	FieldLog  SafeSlice
+	// フィールド用
+	FieldLog SafeSlice
+	// イベントでのステータス変化を通知する用
+	EventLog SafeSlice
 )
 
 type SafeSlice struct {

@@ -24,8 +24,10 @@ cmd Dungeon
 cmd DungeonMenu
 cmd DungeonSelect
 cmd EquipMenu
+cmd Exec
 cmd GameOver
 cmd HomeMenu
 cmd Intro
 cmd InventoryMenu
 cmd MainMenu
+cmd Message

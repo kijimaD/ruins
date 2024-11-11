@@ -36,6 +36,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.DungeonSelectState{}, mode)
 	case gs.EquipMenuState{}.String():
 		vrt.RunTestGame(&gs.EquipMenuState{}, mode)
+	case gs.ExecState{}.String():
+		vrt.RunTestGame(&gs.ExecState{}, mode)
 	case gs.HomeMenuState{}.String():
 		vrt.RunTestGame(&gs.HomeMenuState{}, mode)
 	case gs.IntroState{}.String():
@@ -45,6 +47,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(st, mode)
 	case gs.MainMenuState{}.String():
 		vrt.RunTestGame(&gs.MainMenuState{}, mode)
+	case gs.MessageState{}.String():
+		vrt.RunTestGame(&gs.MessageState{}, mode)
 	case gs.DungeonState{}.String():
 		vrt.RunTestGame(&gs.DungeonState{}, mode)
 	case gs.GameOverState{}.String():
