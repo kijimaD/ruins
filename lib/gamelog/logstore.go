@@ -15,11 +15,13 @@ var (
 	SceneLog SafeSlice
 )
 
+// TODO: 無限に追加される可能性があるので、最大の長さを設定する
 type SafeSlice struct {
 	content []string
 	mu      sync.Mutex
 }
 
+// ログを追加する
 func (s *SafeSlice) Append(value string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -27,6 +29,7 @@ func (s *SafeSlice) Append(value string) {
 	s.content = append(s.content, value)
 }
 
+// 新しい順にログを取り出す。副作用はない
 func (s *SafeSlice) Latest(num int) []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -38,6 +41,7 @@ func (s *SafeSlice) Latest(num int) []string {
 	return copiedSlice[len(s.content)-l:]
 }
 
+// ログの内容を消す
 func (s *SafeSlice) Flush() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
