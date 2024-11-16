@@ -41,6 +41,25 @@ func (s *SafeSlice) Latest(num int) []string {
 	return copiedSlice[len(s.content)-l:]
 }
 
+// 新しい順にログを取り出す。取得した分は消える
+func (s *SafeSlice) Pop(num int) []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	// 削除して長さが変わるのでメモしておく
+	originalLen := len(s.content)
+	// 実際に取得する長さ
+	actualLen := int(mathutil.Min(len(s.content), num))
+
+	copiedSlice := make([]string, len(s.content))
+	copy(copiedSlice, s.content)
+
+	// 最初のnum分排除
+	s.content = s.content[:originalLen-actualLen]
+
+	return copiedSlice[originalLen-actualLen:]
+}
+
 // ログの内容を消す
 func (s *SafeSlice) Flush() {
 	s.mu.Lock()
