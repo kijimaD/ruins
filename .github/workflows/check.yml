@@ -79,8 +79,6 @@ jobs:
             git commit -m "chore: update by GitHub Actions"
             git push
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.WRITE_PACKAGE }}
 
   # lint:
   #   needs: setup
