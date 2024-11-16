@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.23.2";</script>
+<script>var goVersion = "go1.23.3";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -111,9 +111,13 @@
 			<div id="manual-nav">
 			<dl>
 			
-				<dd><a href="index.html#pkg-constants">Constants</a></dd>
 			
 			
+				
+				<dd><a href="index.html#ItemGetEvent1">func ItemGetEvent1() []es.State</a></dd>
+			
+				
+				<dd><a href="index.html#RaidEvent1">func RaidEvent1() []es.State</a></dd>
 			
 			
 				
@@ -299,6 +303,32 @@
 				
 			
 				
+				<dd><a href="index.html#ExecState">type ExecState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.Draw">func (st *ExecState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.OnPause">func (st *ExecState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.OnResume">func (st *ExecState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.OnStart">func (st *ExecState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.OnStop">func (st *ExecState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.String">func (st ExecState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ExecState.Update">func (st *ExecState) Update(world w.World) states.Transition</a></dd>
+				
+			
+				
 				<dd><a href="index.html#GameOverState">type GameOverState</a></dd>
 				
 				
@@ -433,6 +463,32 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.Update">func (st *MainMenuState) Update(world w.World) states.Transition</a></dd>
 				
 			
+				
+				<dd><a href="index.html#MessageState">type MessageState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.Draw">func (st *MessageState) Draw(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnPause">func (st *MessageState) OnPause(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnResume">func (st *MessageState) OnResume(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnStart">func (st *MessageState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnStop">func (st *MessageState) OnStop(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.String">func (st MessageState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.Update">func (st *MessageState) Update(world w.World) states.Transition</a></dd>
+				
+			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -458,6 +514,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go">equip_menu.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go">exec.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/field_menu.go">field_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go">game_over.go</a>
@@ -472,6 +530,10 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go">main_menu.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go">message.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go">scenes.go</a>
+			
 			</span>
 			</p>
 		
@@ -481,21 +543,40 @@
 		
 
 		
-			<h2 id="pkg-constants">Constants</h2>
+		
+		
 			
+			
+			<h2 id="ItemGetEvent1">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=307:338#L4">ItemGetEvent1</a>
+				<a class="permalink" href="index.html#ItemGetEvent1">&#xb6;</a>
 				
-				<pre>const (
-    <span class="comment">// 戦闘ログメッセージの高さ。文字分で指定する</span>
-    <span id="MessageCharBaseHeight">MessageCharBaseHeight</span> = 10
-)</pre>
-			
-		
-		
-		
-		
+				
+			</h2>
+			<pre>func ItemGetEvent1() []<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a></pre>
+			<p>汎用アイテム入手イベント
+
 			
 			
-			<h2 id="BattleState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1141:1911#L29">BattleState</a>
+
+		
+			
+			
+			<h2 id="RaidEvent1">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=1125:1153#L27">RaidEvent1</a>
+				<a class="permalink" href="index.html#RaidEvent1">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func RaidEvent1() []<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a></pre>
+			<p>汎用戦闘イベント開始
+
+			
+			
+
+		
+		
+			
+			
+			<h2 id="BattleState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1034:1804#L24">BattleState</a>
 				<a class="permalink" href="index.html#BattleState">&#xb6;</a>
 				
 				
@@ -518,7 +599,7 @@
 
 			
 				
-				<h3 id="BattleState.Draw">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=7757:7821#L260">Draw</a>
+				<h3 id="BattleState.Draw">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=7650:7714#L255">Draw</a>
 					<a class="permalink" href="index.html#BattleState.Draw">&#xb6;</a>
 					
 					
@@ -530,7 +611,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnPause">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2010:2055#L65">OnPause</a>
+				<h3 id="BattleState.OnPause">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1903:1948#L60">OnPause</a>
 					<a class="permalink" href="index.html#BattleState.OnPause">&#xb6;</a>
 					
 					
@@ -542,7 +623,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnResume">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2060:2106#L67">OnResume</a>
+				<h3 id="BattleState.OnResume">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1953:1999#L62">OnResume</a>
 					<a class="permalink" href="index.html#BattleState.OnResume">&#xb6;</a>
 					
 					
@@ -554,7 +635,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnStart">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2111:2156#L69">OnStart</a>
+				<h3 id="BattleState.OnStart">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2004:2049#L64">OnStart</a>
 					<a class="permalink" href="index.html#BattleState.OnStart">&#xb6;</a>
 					
 					
@@ -566,7 +647,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnStop">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2357:2401#L79">OnStop</a>
+				<h3 id="BattleState.OnStop">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2250:2294#L74">OnStop</a>
 					<a class="permalink" href="index.html#BattleState.OnStop">&#xb6;</a>
 					
 					
@@ -578,7 +659,7 @@
 				
 			
 				
-				<h3 id="BattleState.String">func (BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1913:1950#L59">String</a>
+				<h3 id="BattleState.String">func (BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1806:1843#L54">String</a>
 					<a class="permalink" href="index.html#BattleState.String">&#xb6;</a>
 					
 					
@@ -590,7 +671,7 @@
 				
 			
 				
-				<h3 id="BattleState.Update">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2991:3053#L100">Update</a>
+				<h3 id="BattleState.Update">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2884:2946#L95">Update</a>
 					<a class="permalink" href="index.html#BattleState.Update">&#xb6;</a>
 					
 					
@@ -1258,6 +1339,118 @@
 		
 			
 			
+			<h2 id="ExecState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=266:308#L1">ExecState</a>
+				<a class="permalink" href="index.html#ExecState">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ステート管理に乗っかりつつ任意のコマンドを実行するためのダミーステート
+
+			<pre>type ExecState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ExecState.Draw">func (*ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=1393:1455#L26">Draw</a>
+					<a class="permalink" href="index.html#ExecState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ExecState">ExecState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ExecState.OnPause">func (*ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=403:446#L10">OnPause</a>
+					<a class="permalink" href="index.html#ExecState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ExecState">ExecState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ExecState.OnResume">func (*ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=451:495#L12">OnResume</a>
+					<a class="permalink" href="index.html#ExecState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ExecState">ExecState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ExecState.OnStart">func (*ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=1183:1226#L18">OnStart</a>
+					<a class="permalink" href="index.html#ExecState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ExecState">ExecState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				<p>state pushされたときはpush時にまとめてインスタンスを作成し、スタックトップに回ってきたときに使う。トップに回ってきたときに初期化しているわけではない。つまり、OnStartにf(world)を書くと複数stateをpushしたときに即実行されてしまう。そうではなく、スタックトップに来たときに実行してほしい。
+ほかのstateではswitchを使っていることが多い。switchではstate stackを再作成して1つだけpushする。なので、stateインスタンス生成とスタックトップに来たときの時差がないため問題が起きない。
+
+				
+				
+				
+			
+				
+				<h3 id="ExecState.OnStop">func (*ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=1231:1273#L20">OnStop</a>
+					<a class="permalink" href="index.html#ExecState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ExecState">ExecState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ExecState.String">func (ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=310:345#L4">String</a>
+					<a class="permalink" href="index.html#ExecState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#ExecState">ExecState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ExecState.Update">func (*ExecState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/exec.go?s=1278:1338#L22">Update</a>
+					<a class="permalink" href="index.html#ExecState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ExecState">ExecState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="GameOverState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=349:454#L4">GameOverState</a>
 				<a class="permalink" href="index.html#GameOverState">&#xb6;</a>
 				
@@ -1835,6 +2028,115 @@
 				
 			
 		
+			
+			
+			<h2 id="MessageState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=313:430#L3">MessageState</a>
+				<a class="permalink" href="index.html#MessageState">&#xb6;</a>
+				
+				
+			</h2>
+			
+			<pre>type MessageState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MessageState.Draw">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1287:1352#L53">Draw</a>
+					<a class="permalink" href="index.html#MessageState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) Draw(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageState.OnPause">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=531:577#L17">OnPause</a>
+					<a class="permalink" href="index.html#MessageState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) OnPause(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageState.OnResume">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=582:629#L19">OnResume</a>
+					<a class="permalink" href="index.html#MessageState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) OnResume(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageState.OnStart">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=634:680#L21">OnStart</a>
+					<a class="permalink" href="index.html#MessageState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) OnStart(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageState.OnStop">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=685:730#L23">OnStop</a>
+					<a class="permalink" href="index.html#MessageState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) OnStop(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageState.String">func (MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=432:470#L11">String</a>
+					<a class="permalink" href="index.html#MessageState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#MessageState">MessageState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageState.Update">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=735:798#L25">Update</a>
+					<a class="permalink" href="index.html#MessageState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) Update(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				
+				
+				
+				
+			
+		
 	
 
 	
@@ -1846,7 +2148,7 @@
 
 
 <div id="footer">
-Build version go1.23.2.<br>
+Build version go1.23.3.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

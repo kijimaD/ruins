@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.23.2";</script>
+<script>var goVersion = "go1.23.3";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -123,7 +123,10 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Flush">func (s *SafeSlice) Flush()</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Latest">func (s *SafeSlice) Latest(num int) []string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Get">func (s *SafeSlice) Get() []string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Pop">func (s *SafeSlice) Pop() []string</a></dd>
 				
 			
 			
@@ -153,12 +156,13 @@
 		
 			
 			
-			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=136:199#L4">SafeSlice</a>
+			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=297:360#L7">SafeSlice</a>
 				<a class="permalink" href="index.html#SafeSlice">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TODO: 無限に追加される可能性があるので、最大の長さを設定する
+
 			<pre>type SafeSlice struct {
     <span class="comment">// contains filtered or unexported fields</span>
 }
@@ -169,8 +173,12 @@
 			
 				
 				<pre>var (
+    <span class="comment">// 戦闘用</span>
     <span id="BattleLog">BattleLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
-    <span id="FieldLog">FieldLog</span>  <a href="index.html#SafeSlice">SafeSlice</a>
+    <span class="comment">// フィールド用</span>
+    <span id="FieldLog">FieldLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
+    <span class="comment">// 会話シーンでステータス変化を通知する用</span>
+    <span id="SceneLog">SceneLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
 )</pre>
 			
 
@@ -182,37 +190,53 @@
 
 			
 				
-				<h3 id="SafeSlice.Append">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=201:241#L9">Append</a>
+				<h3 id="SafeSlice.Append">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=387:427#L13">Append</a>
 					<a class="permalink" href="index.html#SafeSlice.Append">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Append(value <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-				
+				<p>ログを追加する
+
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Flush">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=567:594#L27">Flush</a>
+				<h3 id="SafeSlice.Flush">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=932:959#L40">Flush</a>
 					<a class="permalink" href="index.html#SafeSlice.Flush">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Flush()</pre>
-				
+				<p>ログの内容を消す
+
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Latest">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=320:364#L16">Latest</a>
-					<a class="permalink" href="index.html#SafeSlice.Latest">&#xb6;</a>
+				<h3 id="SafeSlice.Get">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=555:589#L21">Get</a>
+					<a class="permalink" href="index.html#SafeSlice.Get">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Latest(num <a href="http://localhost:8888/pkg/builtin/#int">int</a>) []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Get() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>古い順に取り出す。副作用はない
+
 				
+				
+				
+			
+				
+				<h3 id="SafeSlice.Pop">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=818:852#L32">Pop</a>
+					<a class="permalink" href="index.html#SafeSlice.Pop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Pop() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>古い順に取り出す。取得した分は消える
+
 				
 				
 				
@@ -229,7 +253,7 @@
 
 
 <div id="footer">
-Build version go1.23.2.<br>
+Build version go1.23.3.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,
