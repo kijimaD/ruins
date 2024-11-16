@@ -11,6 +11,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -38,6 +39,8 @@ func (st InventoryMenuState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &InventoryMenuState{}
 
 func (st *InventoryMenuState) OnPause(world w.World) {}
 

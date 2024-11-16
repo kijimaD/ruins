@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
@@ -39,6 +40,8 @@ func (st HomeMenuState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &HomeMenuState{}
 
 func (st *HomeMenuState) OnPause(world w.World) {}
 

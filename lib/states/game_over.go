@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
@@ -24,6 +25,8 @@ func (st GameOverState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &GameOverState{}
 
 func (st *GameOverState) OnPause(world w.World) {}
 
