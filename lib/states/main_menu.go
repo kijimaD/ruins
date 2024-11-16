@@ -87,7 +87,7 @@ var mainMenuTrans = []struct {
 	trans states.Transition
 }{
 	{
-		label: "イントロ",
+		label: "導入",
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}},
 	},
 	{
@@ -95,7 +95,7 @@ var mainMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
 	},
 	{
-		label: "フィールド",
+		label: "探検",
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{Depth: 1}}},
 	},
 	{
