@@ -42,9 +42,3 @@
 - http://jikasei.me/font/jf-dotfont/
 - https://github.com/googlefonts/morisawa-biz-ud-gothic
 - https://www.pixilart.com
-
-## Docs
-
-WIP
-
-![images](./docs/images/20231223item.drawio.svg)

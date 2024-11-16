@@ -108,6 +108,16 @@ var debugMenuTrans = []struct {
 		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&BattleState{}}},
 	},
 	{
+		label: "汎用戦闘イベント開始",
+		f:     func(world w.World) {},
+		trans: states.Transition{Type: states.TransPush, NewStates: RaidEvent1()},
+	},
+	{
+		label: "汎用アイテム入手イベント開始",
+		f:     func(world w.World) {},
+		trans: states.Transition{Type: states.TransPush, NewStates: ItemGetEvent1()},
+	},
+	{
 		label: "ゲームオーバー",
 		f:     func(world w.World) {},
 		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}},

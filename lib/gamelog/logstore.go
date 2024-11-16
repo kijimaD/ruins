@@ -2,20 +2,24 @@ package gamelog
 
 import (
 	"sync"
-
-	"github.com/kijimaD/ruins/lib/utils/mathutil"
 )
 
 var (
+	// 戦闘用
 	BattleLog SafeSlice
-	FieldLog  SafeSlice
+	// フィールド用
+	FieldLog SafeSlice
+	// 会話シーンでステータス変化を通知する用
+	SceneLog SafeSlice
 )
 
+// TODO: 無限に追加される可能性があるので、最大の長さを設定する
 type SafeSlice struct {
 	content []string
 	mu      sync.Mutex
 }
 
+// ログを追加する
 func (s *SafeSlice) Append(value string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -23,17 +27,26 @@ func (s *SafeSlice) Append(value string) {
 	s.content = append(s.content, value)
 }
 
-func (s *SafeSlice) Latest(num int) []string {
+// 古い順に取り出す。副作用はない
+func (s *SafeSlice) Get() []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	copiedSlice := make([]string, len(s.content))
-	l := int(mathutil.Min(len(s.content), num))
 	copy(copiedSlice, s.content)
 
-	return copiedSlice[len(s.content)-l:]
+	return copiedSlice[len(s.content)-len(s.content):]
 }
 
+// 古い順に取り出す。取得した分は消える
+func (s *SafeSlice) Pop() []string {
+	result := s.Get()
+	s.Flush()
+
+	return result
+}
+
+// ログの内容を消す
 func (s *SafeSlice) Flush() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
