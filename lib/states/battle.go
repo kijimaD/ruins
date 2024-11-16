@@ -16,6 +16,7 @@ import (
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
@@ -66,6 +67,8 @@ func (st BattleState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &BattleState{}
 
 func (st *BattleState) OnPause(world w.World) {}
 

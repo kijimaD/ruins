@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
@@ -23,6 +24,8 @@ func (st DungeonMenuState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &DungeonMenuState{}
 
 func (st *DungeonMenuState) OnPause(world w.World) {}
 

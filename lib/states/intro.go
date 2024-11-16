@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/utils/msg"
@@ -41,6 +42,8 @@ var introText = `
 しばしば支配権をめぐって戦争が行われるようになった。[p]`
 
 // State interface ================
+
+var _ es.State = &IntroState{}
 
 func (st *IntroState) OnPause(world w.World) {}
 

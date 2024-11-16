@@ -3,6 +3,7 @@ package states
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
@@ -16,6 +17,8 @@ func (st ExecState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &ExecState{}
 
 func (st *ExecState) OnPause(world w.World) {}
 

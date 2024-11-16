@@ -12,6 +12,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -33,6 +34,8 @@ func (st DungeonState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &DungeonState{}
 
 func (st *DungeonState) OnPause(world w.World) {}
 

@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 )
@@ -22,6 +23,8 @@ func (st MainMenuState) String() string {
 }
 
 // State interface ================
+
+var _ es.State = &MainMenuState{}
 
 func (st *MainMenuState) OnPause(world w.World) {}
 
