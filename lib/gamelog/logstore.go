@@ -2,8 +2,6 @@ package gamelog
 
 import (
 	"sync"
-
-	"github.com/kijimaD/ruins/lib/utils/mathutil"
 )
 
 var (
@@ -29,25 +27,21 @@ func (s *SafeSlice) Append(value string) {
 	s.content = append(s.content, value)
 }
 
-// 最新num件を古い順に取り出す。副作用はない
-func (s *SafeSlice) Latest(num int) []string {
+// 古い順に取り出す。副作用はない
+func (s *SafeSlice) Get() []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	copiedSlice := make([]string, len(s.content))
-	l := int(mathutil.Min(len(s.content), num))
 	copy(copiedSlice, s.content)
 
-	return copiedSlice[len(s.content)-l:]
+	return copiedSlice[len(s.content)-len(s.content):]
 }
 
-// 最新num件を古い順に取り出す。取得した分は消える
-func (s *SafeSlice) Pop(num int) []string {
-	result := s.Latest(num)
-
-	l := int(mathutil.Min(len(s.content), num))
-	// 最初のnum分排除
-	s.content = s.content[:len(s.content)-l]
+// 古い順に取り出す。取得した分は消える
+func (s *SafeSlice) Pop() []string {
+	result := s.Get()
+	s.Flush()
 
 	return result
 }

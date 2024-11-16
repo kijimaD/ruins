@@ -31,11 +31,6 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-const (
-	// 戦闘ログメッセージの高さ。文字分で指定する
-	MessageCharBaseHeight = 10
-)
-
 type BattleState struct {
 	ui    *ebitenui.UI
 	trans *states.Transition
@@ -598,7 +593,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 	st.cardSpecContainer.RemoveChildren()
 
 	entries := []any{}
-	for _, e := range gamelog.BattleLog.Latest(MessageCharBaseHeight) {
+	for _, e := range gamelog.BattleLog.Get() {
 		entries = append(entries, e)
 	}
 	if st.isWaitClick {

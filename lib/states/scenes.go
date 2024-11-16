@@ -27,7 +27,7 @@ func ItemGetEvent1() []es.State {
 	})
 	ss = push(ss, &MessageState{
 		textFunc: utils.GetPtr(func() string {
-			return strings.Join(gamelog.SceneLog.Pop(10), "\n")
+			return strings.Join(gamelog.SceneLog.Pop(), "\n")
 		})})
 
 	return ss
@@ -48,7 +48,7 @@ func RaidEvent1() []es.State {
 	}})
 	ss = push(ss, &MessageState{
 		textFunc: utils.GetPtr(func() string {
-			return strings.Join(gamelog.SceneLog.Pop(10), "\n")
+			return strings.Join(gamelog.SceneLog.Pop(), "\n")
 		})})
 
 	return ss
