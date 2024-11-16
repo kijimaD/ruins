@@ -29,7 +29,7 @@ func (s *SafeSlice) Append(value string) {
 	s.content = append(s.content, value)
 }
 
-// 新しい順にログを取り出す。副作用はない
+// 最新num件を古い順に取り出す。副作用はない
 func (s *SafeSlice) Latest(num int) []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -41,23 +41,15 @@ func (s *SafeSlice) Latest(num int) []string {
 	return copiedSlice[len(s.content)-l:]
 }
 
-// 新しい順にログを取り出す。取得した分は消える
+// 最新num件を古い順に取り出す。取得した分は消える
 func (s *SafeSlice) Pop(num int) []string {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	result := s.Latest(num)
 
-	// 削除して長さが変わるのでメモしておく
-	originalLen := len(s.content)
-	// 実際に取得する長さ
-	actualLen := int(mathutil.Min(len(s.content), num))
-
-	copiedSlice := make([]string, len(s.content))
-	copy(copiedSlice, s.content)
-
+	l := int(mathutil.Min(len(s.content), num))
 	// 最初のnum分排除
-	s.content = s.content[:originalLen-actualLen]
+	s.content = s.content[:len(s.content)-l]
 
-	return copiedSlice[originalLen-actualLen:]
+	return result
 }
 
 // ログの内容を消す
