@@ -16,6 +16,7 @@ func ItemGetEvent1() []es.State {
 	ss = push(ss, &MessageState{text: "「倉庫だな。役立ちそうなものはもらっていこう」"})
 	ss = push(ss, &ExecState{
 		f: func(world w.World) {
+			// TODO: アイテム入手テーブルから獲得するようにする
 			material.PlusAmount("鉄", 1, world)
 			gamelog.SceneLog.Append("鉄を1個手に入れた")
 			material.PlusAmount("木の棒", 1, world)
@@ -26,7 +27,7 @@ func ItemGetEvent1() []es.State {
 	})
 	ss = push(ss, &MessageState{
 		textFunc: utils.GetPtr(func() string {
-			return strings.Join(gamelog.SceneLog.Latest(10), "\n")
+			return strings.Join(gamelog.SceneLog.Pop(10), "\n")
 		})})
 
 	return ss
@@ -43,11 +44,11 @@ func RaidEvent1() []es.State {
 		// FIXME: どうして複数回実行したときSceneLogが蓄積してないのかわからない
 		// Flush()してないのに...
 		// アイテム入手→戦闘イベントとすると前の画面が表示される
-		gamelog.SceneLog.Append("鉄を手に入れた")
+		gamelog.SceneLog.Append("鉄を1個手に入れた")
 	}})
 	ss = push(ss, &MessageState{
 		textFunc: utils.GetPtr(func() string {
-			return strings.Join(gamelog.SceneLog.Latest(10), "\n")
+			return strings.Join(gamelog.SceneLog.Pop(10), "\n")
 		})})
 
 	return ss
