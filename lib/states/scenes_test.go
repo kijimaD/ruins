@@ -9,7 +9,7 @@ import (
 
 func TestPush(t *testing.T) {
 	t.Run("先頭に追加される", func(t *testing.T) {
-		result := Push(
+		result := push(
 			[]es.State{
 				&MessageState{},
 				&BattleState{},
