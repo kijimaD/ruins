@@ -66,21 +66,19 @@ jobs:
         with:
           name: vrt
           path: vrtimages
-      # 差分があるかどうか確認
-      - name: check for changes
+      # 差分があればコミット
+      - name: commit for changes
         run: |
           # この画像は毎回差分が出てしまうのでスルー...
           git checkout vrtimages/Dungeon.png
-          if git status -s; then
-            echo "No changes to commit."
-            exit 0
+          if ! git diff --exit-code --quiet
+          then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "chore: update by GitHub Actions"
+            git push
           fi
-
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "chore: update by GitHub Actions"
-          git push
         env:
           GITHUB_TOKEN: ${{ secrets.WRITE_PACKAGE }}
 
