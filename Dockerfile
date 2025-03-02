@@ -3,7 +3,7 @@
 ########
 
 # なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
-FROM golang:1.23-bullseye AS base
+FROM golang:1.24-bullseye AS base
 RUN apt update
 RUN apt install -y \
     gcc \
