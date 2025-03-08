@@ -22,5 +22,9 @@ func LoadSpriteSheets(spriteSheetMetadataPath string) map[string]c.SpriteSheet {
 		log.Fatal(err)
 	}
 	utils.Try(toml.Decode(string(bs), &spriteSheetMetadata))
+	for k, v := range spriteSheetMetadata.SpriteSheets {
+		v.Name = k
+		spriteSheetMetadata.SpriteSheets[k] = v
+	}
 	return spriteSheetMetadata.SpriteSheets
 }

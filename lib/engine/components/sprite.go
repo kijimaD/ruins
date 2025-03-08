@@ -43,9 +43,11 @@ func (t *Texture) UnmarshalText(text []byte) error {
 
 // 画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
 type SpriteSheet struct {
-	// Texture image
+	// スプライトシートのキー名
+	Name string
+	// 読み込んだ画像データ
 	Texture Texture `toml:"texture_image"`
-	// List of sprites
+	// 画像に含まれるスプライト一覧
 	Sprites []Sprite
 }
 

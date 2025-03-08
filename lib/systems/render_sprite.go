@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"fmt"
 	"image"
 	"sort"
 
@@ -73,16 +74,31 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	}
 }
 
+func getImage(spriteRender *ec.SpriteRender) *ebiten.Image {
+	var result *ebiten.Image
+	key := fmt.Sprintf("%s/%d", spriteRender.SpriteSheet.Name, spriteRender.SpriteNumber)
+	if v, ok := spriteImageCache[key]; ok {
+		result = v
+	} else {
+		// テクスチャから欲しいスプライトを切り出す
+		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+		texture := spriteRender.SpriteSheet.Texture
+		textureWidth, textureHeight := texture.Image.Size()
+
+		left := m.Max(0, sprite.X)
+		right := m.Min(textureWidth, sprite.X+sprite.Width)
+		top := m.Max(0, sprite.Y)
+		bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
+
+		result = texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image)
+		spriteImageCache[key] = result
+	}
+
+	return result
+}
+
 func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position) {
 	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
-	texture := spriteRender.SpriteSheet.Texture
-	textureWidth, textureHeight := texture.Image.Size()
-
-	// テクスチャから欲しいスプライトを切り出す
-	left := m.Max(0, sprite.X)
-	right := m.Min(textureWidth, sprite.X+sprite.Width)
-	top := m.Max(0, sprite.Y)
-	bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
 
 	op := &spriteRender.Options
 	op.GeoM.Reset()                                                       // FIXME: Resetがないと非表示になる。なぜ?
@@ -90,5 +106,5 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRende
 	op.GeoM.Rotate(pos.Angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	camera.SetTranslate(world, op)
-	screen.DrawImage(texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image), op)
+	screen.DrawImage(getImage(spriteRender), op)
 }
