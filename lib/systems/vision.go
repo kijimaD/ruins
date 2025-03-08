@@ -12,28 +12,28 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-var (
-	visionImage *ebiten.Image // 視界を表現する黒背景
-	blackImage  *ebiten.Image // 影生成時の、マスクのベースとして使う黒画像
-)
-
 const (
-	visionNgon = 10
+	visionNgon = 12
 )
 
-// 周囲を暗くする
-func DarknessSystem(world w.World, screen *ebiten.Image) {
+var (
+	// 影生成時の、マスクのベースとして使う黒画像
+	blackImage *ebiten.Image
+)
+
+// 探索範囲エリアを表示する
+func VisionSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
-	// 毎回リセットする
-	{
-		visionImage = ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
-		visionImage.Fill(color.Black)
+	if gameResources.Level.VisionImage == nil {
+		img := ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
+		img.Fill(color.Black)
+		gameResources.Level.VisionImage = img
 	}
 
-	// 初回のみ生成
 	if blackImage == nil {
-		blackImage = ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
-		blackImage.Fill(color.Black)
+		img := ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
+		img.Fill(color.Black)
+		blackImage = img
 	}
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -49,33 +49,20 @@ func DarknessSystem(world w.World, screen *ebiten.Image) {
 	// 視界以外をグラデーションを入れながら塗りつぶし
 	// TODO: 光源用のコンポーネントを追加したほうがよさそう
 	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 500)
+		vs := visionVertices(visionNgon, pos.X, pos.Y, 160)
 		opt := &ebiten.DrawTrianglesOptions{}
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
 		for i := 0; i < visionNgon; i++ {
 			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
 		}
-		visionImage.DrawTriangles(vs, indices, blackImage, opt)
+		gameResources.Level.VisionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
-
-	// 光源の中心付近を明るくする
-	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 64)
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Blend = ebiten.BlendClear
-		indices := []uint16{}
-		for i := 0; i < visionNgon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
-		}
-		visionImage.DrawTriangles(vs, indices, blackImage, opt)
-	}
-
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
 		camera.SetTranslate(world, op)
-		screen.DrawImage(visionImage, op)
+		screen.DrawImage(gameResources.Level.VisionImage, op)
 	}
 }
 

@@ -103,6 +103,6 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 	screen.DrawImage(baseImage, nil)
 
 	gs.RenderSpriteSystem(world, screen)
-	gs.DarknessSystem(world, screen)
+	gs.VisionSystem(world, screen)
 	gs.HUDSystem(world, screen)
 }
