@@ -96,13 +96,9 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 				return
 			}
 			belowTileEntity := gameResources.Level.Entities[int(belowTileIdx)]
-			belowSpriteRender := gameComponents.SpriteRender.Get(belowTileEntity)
-			if belowSpriteRender != nil {
-				v, ok := belowSpriteRender.(*ec.SpriteRender)
-				if !ok {
-					return
-				}
-				if v.Depth == ec.DepthNumFloor {
+			belowSpriteRender, ok := gameComponents.SpriteRender.Get(belowTileEntity).(*ec.SpriteRender)
+			if ok {
+				if belowSpriteRender.Depth == ec.DepthNumFloor {
 					op := &ebiten.DrawImageOptions{}
 					op.GeoM.Translate(float64(int(grid.Row)*int(consts.TileSize)), float64(int(grid.Col)*int(consts.TileSize)+int(consts.TileSize)))
 					camera.SetTranslate(world, op)
