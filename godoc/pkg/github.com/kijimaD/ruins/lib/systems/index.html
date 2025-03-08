@@ -117,9 +117,6 @@
 				<dd><a href="index.html#BattleCommandSystem">func BattleCommandSystem(world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#DarknessSystem">func DarknessSystem(world w.World, screen *ebiten.Image)</a></dd>
-			
-				
 				<dd><a href="index.html#EquipmentChangedSystem">func EquipmentChangedSystem(world w.World) bool</a></dd>
 			
 				
@@ -130,6 +127,9 @@
 			
 				
 				<dd><a href="index.html#RenderSpriteSystem">func RenderSpriteSystem(world w.World, screen *ebiten.Image)</a></dd>
+			
+				
+				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
 			
 				
@@ -165,7 +165,7 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go">battle_extinction.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/darkness.go">darkness.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/cache.go">cache.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go">equipment_changed.go</a>
 			
@@ -174,6 +174,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_move.go">player_move.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go">render_sprite.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go">vision.go</a>
 			
 			</span>
 			</p>
@@ -204,20 +206,6 @@
 			<pre>func BattleCommandSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
 			<p>1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
 クリックごとにコマンドの結果を見られるようにするため
-
-			
-			
-
-		
-			
-			
-			<h2 id="DarknessSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/darkness.go?s=627:683#L17">DarknessSystem</a>
-				<a class="permalink" href="index.html#DarknessSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func DarknessSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>周囲を暗くする
 
 			
 			
@@ -267,13 +255,28 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=398:458#L8">RenderSpriteSystem</a>
+			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=664:724#L17">RenderSpriteSystem</a>
 				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func RenderSpriteSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+			<p>(下) タイル -&gt; 影 -&gt; スプライト (上) の順に表示する
+
 			
+			
+
+		
+			
+			
+			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=475:529#L15">VisionSystem</a>
+				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func VisionSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+			<p>探索範囲エリアを表示する
+
 			
 			
 

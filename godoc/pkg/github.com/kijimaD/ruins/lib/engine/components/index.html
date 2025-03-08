@@ -215,7 +215,7 @@
 		
 			
 			
-			<h2 id="DepthNum">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1666:1683#L55">DepthNum</a>
+			<h2 id="DepthNum">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1764:1781#L57">DepthNum</a>
 				<a class="permalink" href="index.html#DepthNum">&#xb6;</a>
 				
 				
@@ -280,7 +280,7 @@
 		
 			
 			
-			<h2 id="SpriteRender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1304:1594#L43">SpriteRender</a>
+			<h2 id="SpriteRender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1402:1692#L45">SpriteRender</a>
 				<a class="permalink" href="index.html#SpriteRender">&#xb6;</a>
 				
 				
@@ -313,7 +313,7 @@
 		
 			
 			
-			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1153:1276#L35">SpriteSheet</a>
+			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1153:1374#L35">SpriteSheet</a>
 				<a class="permalink" href="index.html#SpriteSheet">&#xb6;</a>
 				
 				
@@ -321,9 +321,11 @@
 			<p>画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
 
 			<pre>type SpriteSheet struct {
-<span id="SpriteSheet.Texture"></span>    <span class="comment">// Texture image</span>
-    Texture <a href="index.html#Texture">Texture</a> `toml:&#34;texture_image&#34;`
-    <span class="comment">// List of sprites</span>
+    <span class="comment">// スプライトシートのキー名</span>
+<span id="SpriteSheet.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+    <span class="comment">// 読み込んだ画像データ</span>
+<span id="SpriteSheet.Texture"></span>    Texture <a href="index.html#Texture">Texture</a> `toml:&#34;texture_image&#34;`
+    <span class="comment">// 画像に含まれるスプライト一覧</span>
 <span id="SpriteSheet.Sprites"></span>    Sprites []<a href="index.html#Sprite">Sprite</a>
 }
 </pre>

@@ -240,7 +240,7 @@
 		
 			
 			
-			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=322:535#L1">Game</a>
+			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=358:571#L1">Game</a>
 				<a class="permalink" href="index.html#Game">&#xb6;</a>
 				
 				
@@ -272,7 +272,7 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=556:854#L10">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=592:993#L11">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
@@ -288,6 +288,9 @@
 <span id="Level.TileSize"></span>    TileSize <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>
     <span class="comment">// タイルエンティティ群</span>
 <span id="Level.Entities"></span>    Entities []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+    <span class="comment">// 視界を表現する黒背景</span>
+    <span class="comment">// 階層移動でリセットされる</span>
+<span id="Level.VisionImage"></span>    VisionImage *ebiten.<a href="index.html#Image">Image</a>
 }
 </pre>
 
@@ -303,7 +306,7 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1364:1423#L35">AtEntity</a>
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1503:1562#L39">AtEntity</a>
 					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
 					
 					
@@ -316,7 +319,7 @@
 				
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1753:1786#L49">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1892:1925#L53">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -329,7 +332,7 @@
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1613:1645#L44">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1752:1784#L48">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -342,7 +345,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1132:1193#L27">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1271:1332#L31">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -355,7 +358,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=938:995#L22">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1077:1134#L26">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
