@@ -9,7 +9,6 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils"
 	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -102,16 +101,8 @@ func tryMove(world w.World, entity ecs.Entity, radians float64, distance float64
 	originalX := pos.X
 	originalY := pos.Y
 	radians90 := radians + math.Pi/2 // 画像の回転角度と開始角度に90度のずれがある
-	if pos.Xfloat == nil {
-		pos.Xfloat = utils.GetPtr(float64(pos.X))
-	}
-	if pos.Yfloat == nil {
-		pos.Yfloat = utils.GetPtr(float64(pos.Y))
-	}
-	pos.Xfloat = utils.GetPtr(*pos.Xfloat - math.Cos(radians90)*distance)
-	pos.Yfloat = utils.GetPtr(*pos.Yfloat - math.Sin(radians90)*distance)
-	pos.X = gc.Pixel(int(*pos.Xfloat))
-	pos.Y = gc.Pixel(int(*pos.Yfloat))
+	pos.X = gc.Pixel(float64(pos.X) - math.Cos(radians90)*distance)
+	pos.Y = gc.Pixel(float64(pos.Y) - math.Sin(radians90)*distance)
 
 	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
@@ -140,8 +131,6 @@ func tryMove(world w.World, entity ecs.Entity, radians float64, distance float64
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
-					pos.Xfloat = utils.GetPtr(float64(originalX))
-					pos.Yfloat = utils.GetPtr(float64(originalY))
 				}
 			case entity.HasComponent(gameComponents.GridElement):
 				objectGrid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
@@ -157,8 +146,6 @@ func tryMove(world w.World, entity ecs.Entity, radians float64, distance float64
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
-					pos.Xfloat = utils.GetPtr(float64(originalX))
-					pos.Yfloat = utils.GetPtr(float64(originalY))
 				}
 			}
 		}))
