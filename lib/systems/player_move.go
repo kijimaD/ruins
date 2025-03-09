@@ -9,6 +9,8 @@ import (
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -26,25 +28,21 @@ func OperatorMoveSystem(world w.World) {
 		playerPos = gameComponents.Position.Get(entity).(*gc.Position)
 	}))
 
-	const distance = 3
+	const maxSpeed = 2.0
+	const minSpeed = -1.0
 	switch {
-	case ebiten.IsKeyPressed(ebiten.KeyW) && ebiten.IsKeyPressed(ebiten.KeyD):
-		tryMove(world, playerEntity, 45, distance)
-	case ebiten.IsKeyPressed(ebiten.KeyW) && ebiten.IsKeyPressed(ebiten.KeyA):
-		tryMove(world, playerEntity, 135, distance)
-	case ebiten.IsKeyPressed(ebiten.KeyS) && ebiten.IsKeyPressed(ebiten.KeyA):
-		tryMove(world, playerEntity, 225, distance)
-	case ebiten.IsKeyPressed(ebiten.KeyS) && ebiten.IsKeyPressed(ebiten.KeyD):
-		tryMove(world, playerEntity, 315, distance)
-	case ebiten.IsKeyPressed(ebiten.KeyD):
-		tryMove(world, playerEntity, 0, distance)
 	case ebiten.IsKeyPressed(ebiten.KeyW):
-		tryMove(world, playerEntity, 90, distance)
-	case ebiten.IsKeyPressed(ebiten.KeyA):
-		tryMove(world, playerEntity, 180, distance)
+		playerPos.Speed += 0.1
+		playerPos.Speed = mathutil.Min(maxSpeed, playerPos.Speed)
 	case ebiten.IsKeyPressed(ebiten.KeyS):
-		tryMove(world, playerEntity, 270, distance)
+		playerPos.Speed -= 0.1
+		playerPos.Speed = mathutil.Max(minSpeed, playerPos.Speed)
+	case ebiten.IsKeyPressed(ebiten.KeyD):
+		playerPos.Angle += math.Pi / 90
+	case ebiten.IsKeyPressed(ebiten.KeyA):
+		playerPos.Angle -= math.Pi / 90
 	}
+	tryMove(world, playerEntity, playerPos.Angle, playerPos.Speed)
 
 	{
 		// カメラの追従
@@ -95,7 +93,7 @@ func OperatorMoveSystem(world w.World) {
 }
 
 // 角度と距離を指定して相対移動させる
-func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) {
+func tryMove(world w.World, entity ecs.Entity, radians float64, distance float64) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	pos := gameComponents.Position.Get(entity).(*gc.Position) // player pos
@@ -103,11 +101,17 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 
 	originalX := pos.X
 	originalY := pos.Y
-
-	radians := angle * math.Pi / 180.0
-	pos.Angle = (90 - angle) * math.Pi / 180.0 // 画像の回転角度と、ラジアンの角度の開始角度には90度のずれがある
-	pos.X += gc.Pixel(math.Cos(radians) * distance)
-	pos.Y -= gc.Pixel(math.Sin(radians) * distance) // ゲーム画面におけるy軸は上がマイナスであるので逆転させる
+	radians90 := radians + math.Pi/2 // 画像の回転角度と開始角度に90度のずれがある
+	if pos.Xfloat == nil {
+		pos.Xfloat = utils.GetPtr(float64(pos.X))
+	}
+	if pos.Yfloat == nil {
+		pos.Yfloat = utils.GetPtr(float64(pos.Y))
+	}
+	pos.Xfloat = utils.GetPtr(*pos.Xfloat - math.Cos(radians90)*distance)
+	pos.Yfloat = utils.GetPtr(*pos.Yfloat - math.Sin(radians90)*distance)
+	pos.X = gc.Pixel(int(*pos.Xfloat))
+	pos.Y = gc.Pixel(int(*pos.Yfloat))
 
 	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
@@ -136,6 +140,8 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
+					pos.Xfloat = utils.GetPtr(float64(originalX))
+					pos.Yfloat = utils.GetPtr(float64(originalY))
 				}
 			case entity.HasComponent(gameComponents.GridElement):
 				objectGrid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
@@ -151,6 +157,8 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
+					pos.Xfloat = utils.GetPtr(float64(originalX))
+					pos.Yfloat = utils.GetPtr(float64(originalY))
 				}
 			}
 		}))
