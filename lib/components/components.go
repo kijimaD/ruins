@@ -104,7 +104,7 @@ type Components struct {
 	DropTable    *ecs.SliceComponent
 }
 
-// フィールドで操作対象となる対象
+// フィールドでの操作対象
 type Operator struct{}
 
 // カメラ
@@ -227,6 +227,7 @@ type DropTable struct {
 	Name string
 }
 
+// FIXME: 表示する方法を統一する...
 // 描画対象物。
 // resource のスプライトシートから画像を特定するために必要な情報。
 // Renderはスプライトシートの情報はresourceに持たせ、特定に必要な

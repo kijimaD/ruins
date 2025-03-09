@@ -11,10 +11,11 @@ type Position struct {
 	X     Pixel
 	Y     Pixel
 	Angle float64 // 角度(ラジアン)。この角度分スプライトを回転させる
+	Speed float64 // 現在の速度
 }
 
-// ピクセル単位
-type Pixel int
+// ピクセル単位。計算用にfloat64
+type Pixel float64
 
 // TODO: 縦横の型を共通にする。タイル単位だということがわかればよい。TileUnitとか
 // フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
