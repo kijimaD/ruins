@@ -10,7 +10,7 @@ package components
 type Position struct {
 	X     Pixel
 	Y     Pixel
-	Angle float64 // 角度(ラジアン)。この角度分スプライトを回転させる
+	Angle float64 // 角度(度数法)。この角度分スプライトを回転させる
 	Speed float64 // 現在の速度
 }
 

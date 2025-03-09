@@ -92,7 +92,7 @@ func OperatorMoveSystem(world w.World) {
 }
 
 // 角度と距離を指定して相対移動させる
-func tryMove(world w.World, entity ecs.Entity, radians float64, distance float64) {
+func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	pos := gameComponents.Position.Get(entity).(*gc.Position) // player pos
@@ -100,9 +100,9 @@ func tryMove(world w.World, entity ecs.Entity, radians float64, distance float64
 
 	originalX := pos.X
 	originalY := pos.Y
-	radians90 := radians + math.Pi/2 // 画像の回転角度と開始角度に90度のずれがある
-	pos.X = gc.Pixel(float64(pos.X) - math.Cos(radians90)*distance)
-	pos.Y = gc.Pixel(float64(pos.Y) - math.Sin(radians90)*distance)
+	radian := angle + math.Pi/2 // 度数法 -> 弧度法
+	pos.X = gc.Pixel(float64(pos.X) - math.Cos(radian)*distance)
+	pos.Y = gc.Pixel(float64(pos.Y) - math.Sin(radian)*distance)
 
 	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
