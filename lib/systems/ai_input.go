@@ -8,7 +8,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func AIMoveSystem(world w.World) {
+func AIInputSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	world.Manager.Join(

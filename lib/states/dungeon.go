@@ -82,7 +82,7 @@ func (st *DungeonState) OnStop(world w.World) {
 
 func (st *DungeonState) Update(world w.World) states.Transition {
 	gs.PlayerInputSystem(world)
-	gs.AIMoveSystem(world)
+	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
 	effects.RunEffectQueue(world)
 
