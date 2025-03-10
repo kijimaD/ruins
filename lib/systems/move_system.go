@@ -21,6 +21,27 @@ func MoveSystem(world w.World) {
 		pos := gameComponents.Position.Get(entity).(*gc.Position)
 		tryMove(world, entity, pos.Angle, pos.Speed)
 	}))
+
+	// 操作キャラに対してタイルイベントを発行する
+	world.Manager.Join(
+		gameComponents.Position,
+		gameComponents.SpriteRender,
+		gameComponents.Operator,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		gameResources := world.Resources.Game.(*resources.Game)
+		tileEntity := gameResources.Level.AtEntity(pos.X, pos.Y)
+
+		if tileEntity.HasComponent(gameComponents.Warp) {
+			warp := gameComponents.Warp.Get(tileEntity).(*gc.Warp)
+			switch warp.Mode {
+			case gc.WarpModeNext:
+				effects.AddEffect(nil, effects.WarpNext{}, effects.None{})
+			case gc.WarpModeEscape:
+				effects.AddEffect(nil, effects.WarpEscape{}, effects.None{})
+			}
+		}
+	}))
 }
 
 // 角度と距離を指定して相対移動させる
@@ -39,10 +60,10 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	{
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
-		playerx1 := float64(int(pos.X) - sprite.Width/2 + padding)
-		playerx2 := float64(int(pos.X) + sprite.Width/2 - padding)
-		playery1 := float64(int(pos.Y) - sprite.Height/2 + padding)
-		playery2 := float64(int(pos.Y) + sprite.Height/2 - padding)
+		x1 := float64(int(pos.X) - sprite.Width/2 + padding)
+		x2 := float64(int(pos.X) + sprite.Width/2 - padding)
+		y1 := float64(int(pos.Y) - sprite.Height/2 + padding)
+		y2 := float64(int(pos.Y) + sprite.Height/2 - padding)
 
 		world.Manager.Join(
 			gameComponents.SpriteRender,
@@ -61,7 +82,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 				objectx2 := float64(int(objectPos.X) + objectSprite.Width/2)
 				objecty1 := float64(int(objectPos.Y) - objectSprite.Height/2)
 				objecty2 := float64(int(objectPos.Y) + objectSprite.Height/2)
-				if (math.Max(playerx1, objectx1) < math.Min(playerx2, objectx2)) && (math.Max(playery1, objecty1) < math.Min(playery2, objecty2)) {
+				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
@@ -76,7 +97,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 				objectx2 := float64(x + objectSprite.Width)
 				objecty1 := float64(y)
 				objecty2 := float64(y + objectSprite.Height)
-				if (math.Max(playerx1, objectx1) < math.Min(playerx2, objectx2)) && (math.Max(playery1, objecty1) < math.Min(playery2, objecty2)) {
+				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
@@ -90,7 +111,6 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	levelWidth := gameResources.Level.Width()
 	levelHeight := gameResources.Level.Height()
 
-	// +1/-1 is to stop player before it reaches the border
 	if pos.X >= gc.Pixel(levelWidth-padding) {
 		pos.X = gc.Pixel(levelWidth - padding - 1)
 	}
@@ -105,22 +125,5 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 
 	if pos.Y <= padding {
 		pos.Y = padding + 1
-	}
-
-	// タイルイベントを発行する
-	{
-		gameResources := world.Resources.Game.(*resources.Game)
-		entity := gameResources.Level.AtEntity(pos.X, pos.Y)
-
-		gameComponents := world.Components.Game.(*gc.Components)
-		if entity.HasComponent(gameComponents.Warp) {
-			warp := gameComponents.Warp.Get(entity).(*gc.Warp)
-			switch warp.Mode {
-			case gc.WarpModeNext:
-				effects.AddEffect(nil, effects.WarpNext{}, effects.None{})
-			case gc.WarpModeEscape:
-				effects.AddEffect(nil, effects.WarpEscape{}, effects.None{})
-			}
-		}
 	}
 }

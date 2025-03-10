@@ -24,7 +24,7 @@ func AIMoveSystem(world w.World) {
 
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 			pos.Angle += 1
-			pos.Speed += 1
+			pos.Speed = 0.5
 		}
 	}))
 }

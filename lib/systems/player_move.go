@@ -13,7 +13,7 @@ import (
 func PlayerInputSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	var playerPos *gc.Position // player position
+	var playerPos *gc.Position
 	world.Manager.Join(
 		gameComponents.Position,
 		gameComponents.Operator,

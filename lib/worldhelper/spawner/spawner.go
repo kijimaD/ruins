@@ -105,6 +105,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 				SpriteNumber: 3,
 				Depth:        ec.DepthNumOperator,
 			},
+			BlockPass: &gc.BlockPass{},
 		})
 		loader.AddEntities(world, componentList)
 	}
