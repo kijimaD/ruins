@@ -105,6 +105,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 				SpriteNumber: 3,
 				Depth:        ec.DepthNumOperator,
 			},
+			BlockPass: &gc.BlockPass{},
 		})
 		loader.AddEntities(world, componentList)
 	}
@@ -133,6 +134,8 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 				Depth:        ec.DepthNumTaller,
 			},
 			BlockPass: &gc.BlockPass{},
+			AIMoveFSM: &gc.AIMoveFSM{},
+			AIRoaming: &gc.AIRoaming{},
 		})
 		loader.AddEntities(world, componentList)
 	}
