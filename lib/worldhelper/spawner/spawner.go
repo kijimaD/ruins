@@ -133,6 +133,8 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 				Depth:        ec.DepthNumTaller,
 			},
 			BlockPass: &gc.BlockPass{},
+			AIMoveFSM: &gc.AIMoveFSM{},
+			AIRoaming: &gc.AIRoaming{},
 		})
 		loader.AddEntities(world, componentList)
 	}
