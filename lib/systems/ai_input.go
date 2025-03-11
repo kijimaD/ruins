@@ -1,8 +1,10 @@
 package systems
 
 import (
+	"math/rand/v2"
 	"time"
 
+	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -17,14 +19,28 @@ func AIInputSystem(world w.World) {
 		gameComponents.AIRoaming,
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		fsm := gameComponents.AIMoveFSM.Get(entity).(*gc.AIMoveFSM)
-		diff := time.Now().Sub(fsm.LastStateChange)
-		if diff.Seconds() > 2 {
-			fsm.LastStateChange = time.Now()
+		roaming := gameComponents.AIRoaming.Get(entity).(*gc.AIRoaming)
+		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		if time.Now().Sub(roaming.StartSubState).Seconds() > roaming.DurationSubState.Seconds() {
+			roaming.StartSubState = time.Now()
+			roaming.DurationSubState = time.Second * time.Duration(rand.IntN(3))
 
-			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			pos.Angle += 1
-			pos.Speed = 0.5
+			var subState components.AIRoamingSubState
+			switch rand.IntN(2) {
+			case 0:
+				subState = components.AIRoamingWaiting
+			case 1:
+				subState = components.AIRoamingDriving
+			}
+
+			switch subState {
+			case components.AIRoamingWaiting:
+				// TODO: スロットルみたいな移動用関数を作ってゆるやかに変化させるべきである
+				pos.Speed = 0
+				pos.Angle += float64(rand.IntN(91))
+			case components.AIRoamingDriving:
+				pos.Speed = 1
+			}
 		}
 	}))
 }

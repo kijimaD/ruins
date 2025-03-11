@@ -117,7 +117,13 @@ type AIMoveFSM struct {
 }
 
 // AI移動で歩き回り状態
-type AIRoaming struct{}
+type AIRoaming struct {
+	SubState AIRoamingSubState
+	// サブステートの開始時間
+	StartSubState time.Time
+	// サブステートの持続時間
+	DurationSubState time.Duration
+}
 
 // カメラ
 type Camera struct {
