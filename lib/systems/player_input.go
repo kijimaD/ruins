@@ -13,12 +13,15 @@ import (
 func PlayerInputSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
+	var playerVelocity *gc.Velocity
 	var playerPos *gc.Position
 	world.Manager.Join(
+		gameComponents.Velocity,
 		gameComponents.Position,
 		gameComponents.Operator,
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		playerVelocity = gameComponents.Velocity.Get(entity).(*gc.Velocity)
 		playerPos = gameComponents.Position.Get(entity).(*gc.Position)
 	}))
 
@@ -26,15 +29,15 @@ func PlayerInputSystem(world w.World) {
 	const minSpeed = -1.0
 	switch {
 	case ebiten.IsKeyPressed(ebiten.KeyW):
-		playerPos.Speed += 0.1
-		playerPos.Speed = mathutil.Min(maxSpeed, playerPos.Speed)
+		playerVelocity.Speed += 0.1
+		playerVelocity.Speed = mathutil.Min(maxSpeed, playerVelocity.Speed)
 	case ebiten.IsKeyPressed(ebiten.KeyS):
-		playerPos.Speed -= 0.1
-		playerPos.Speed = mathutil.Max(minSpeed, playerPos.Speed)
+		playerVelocity.Speed -= 0.1
+		playerVelocity.Speed = mathutil.Max(minSpeed, playerVelocity.Speed)
 	case ebiten.IsKeyPressed(ebiten.KeyD):
-		playerPos.Angle += math.Pi / 90
+		playerVelocity.Angle += math.Pi / 90
 	case ebiten.IsKeyPressed(ebiten.KeyA):
-		playerPos.Angle -= math.Pi / 90
+		playerVelocity.Angle -= math.Pi / 90
 	}
 
 	{

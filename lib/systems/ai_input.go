@@ -14,13 +14,14 @@ func AIInputSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	world.Manager.Join(
+		gameComponents.Velocity,
 		gameComponents.Position,
 		gameComponents.AIMoveFSM,
 		gameComponents.AIRoaming,
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		roaming := gameComponents.AIRoaming.Get(entity).(*gc.AIRoaming)
-		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
 		if time.Now().Sub(roaming.StartSubState).Seconds() > roaming.DurationSubState.Seconds() {
 			roaming.StartSubState = time.Now()
 			roaming.DurationSubState = time.Second * time.Duration(rand.IntN(3))
@@ -36,10 +37,10 @@ func AIInputSystem(world w.World) {
 			switch subState {
 			case components.AIRoamingWaiting:
 				// TODO: スロットルみたいな移動用関数を作ってゆるやかに変化させるべきである
-				pos.Speed = 0
-				pos.Angle += float64(rand.IntN(91))
+				velocity.Speed = 0
+				velocity.Angle += float64(rand.IntN(91))
 			case components.AIRoamingDriving:
-				pos.Speed = 1
+				velocity.Speed = 1
 			}
 		}
 	}))

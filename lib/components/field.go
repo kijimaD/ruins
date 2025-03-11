@@ -1,5 +1,13 @@
 package components
 
+// 移動属性
+type Velocity struct {
+	// 角度(度数法)。この角度分スプライトを回転させる
+	Angle float64
+	// 現在の速度
+	Speed float64
+}
+
 // フィールド上に座標をもって存在する。移動体に対して使う
 // スプライトはこの位置に中心を合わせて配置する
 // -----
@@ -10,11 +18,6 @@ package components
 type Position struct {
 	X Pixel
 	Y Pixel
-	// 角度(度数法)。この角度分スプライトを回転させる
-	Angle float64
-	// 現在の速度
-	// TODO: 別のComponentに分ける
-	Speed float64
 }
 
 // ピクセル単位。計算用にfloat64

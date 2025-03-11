@@ -15,11 +15,12 @@ func MoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	world.Manager.Join(
+		gameComponents.Velocity,
 		gameComponents.Position,
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := gameComponents.Position.Get(entity).(*gc.Position)
-		tryMove(world, entity, pos.Angle, pos.Speed)
+		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
+		tryMove(world, entity, velocity.Angle, velocity.Speed)
 	}))
 
 	// 操作キャラに対してタイルイベントを発行する

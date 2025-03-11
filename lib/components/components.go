@@ -36,6 +36,7 @@ type GameComponentList struct {
 	Camera       *Camera
 	Wall         *Wall
 	Warp         *Warp
+	Velocity     *Velocity
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *ec.SpriteRender
@@ -87,6 +88,7 @@ type Components struct {
 	Camera       *ecs.SliceComponent
 	Wall         *ecs.NullComponent
 	Warp         *ecs.SliceComponent
+	Velocity     *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
