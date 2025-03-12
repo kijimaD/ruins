@@ -9,6 +9,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
+// https://github.com/ebitenui/ebitenui/blob/f3f12969cce40154f0043d5ac4918143103e787a/_examples/demo/resources.go
+
 const (
 	backgroundColor = "131a22"
 
@@ -90,7 +92,7 @@ type ComboButtonResources struct {
 	Image   *widget.ButtonImage
 	Text    *widget.ButtonTextColor
 	Face    text.Face
-	Graphic *widget.ButtonImageImage
+	Graphic *widget.GraphicImage
 	Padding widget.Insets
 }
 
