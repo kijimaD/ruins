@@ -1,5 +1,23 @@
 package components
 
+// 移動属性
+type Velocity struct {
+	// 角度(度数法)。この角度分スプライトを回転させる
+	Angle float64
+	// 現在の速度
+	Speed float64
+	// スロットルモード
+	ThrottleMode ThrottleMode
+}
+
+type ThrottleMode string
+
+const (
+	ThrottleModeFront = ThrottleMode("FRONT")
+	ThrottleModeBack  = ThrottleMode("BACK")
+	ThrottleModeNope  = ThrottleMode("NOPE")
+)
+
 // フィールド上に座標をもって存在する。移動体に対して使う
 // スプライトはこの位置に中心を合わせて配置する
 // -----
@@ -8,10 +26,8 @@ package components
 // |   |
 // -----
 type Position struct {
-	X     Pixel
-	Y     Pixel
-	Angle float64 // 角度(ラジアン)。この角度分スプライトを回転させる
-	Speed float64 // 現在の速度
+	X Pixel
+	Y Pixel
 }
 
 // ピクセル単位。計算用にfloat64

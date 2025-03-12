@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"time"
 
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -30,9 +31,12 @@ type GameComponentList struct {
 
 	// field ================
 	Operator     *Operator
+	AIMoveFSM    *AIMoveFSM
+	AIRoaming    *AIRoaming
 	Camera       *Camera
 	Wall         *Wall
 	Warp         *Warp
+	Velocity     *Velocity
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *ec.SpriteRender
@@ -79,9 +83,12 @@ type Components struct {
 
 	// field ================
 	Operator     *ecs.NullComponent
+	AIMoveFSM    *ecs.SliceComponent
+	AIRoaming    *ecs.SliceComponent
 	Camera       *ecs.SliceComponent
 	Wall         *ecs.NullComponent
 	Warp         *ecs.SliceComponent
+	Velocity     *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
@@ -106,6 +113,19 @@ type Components struct {
 
 // フィールドでの操作対象
 type Operator struct{}
+
+type AIMoveFSM struct {
+	LastStateChange time.Time
+}
+
+// AI移動で歩き回り状態
+type AIRoaming struct {
+	SubState AIRoamingSubState
+	// サブステートの開始時間
+	StartSubState time.Time
+	// サブステートの持続時間
+	DurationSubState time.Duration
+}
 
 // カメラ
 type Camera struct {

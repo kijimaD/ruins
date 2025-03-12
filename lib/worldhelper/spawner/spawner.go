@@ -99,12 +99,14 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, components.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
+			Velocity: &gc.Velocity{},
 			Operator: &gc.Operator{},
 			SpriteRender: &ec.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
 				SpriteNumber: 3,
 				Depth:        ec.DepthNumOperator,
 			},
+			BlockPass: &gc.BlockPass{},
 		})
 		loader.AddEntities(world, componentList)
 	}
@@ -127,12 +129,15 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList := loader.EntityComponentList{}
 		componentList.Game = append(componentList.Game, components.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
+			Velocity: &gc.Velocity{},
 			SpriteRender: &ec.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
 				SpriteNumber: 6,
 				Depth:        ec.DepthNumTaller,
 			},
 			BlockPass: &gc.BlockPass{},
+			AIMoveFSM: &gc.AIMoveFSM{},
+			AIRoaming: &gc.AIRoaming{},
 		})
 		loader.AddEntities(world, componentList)
 	}

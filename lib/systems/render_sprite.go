@@ -62,7 +62,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 				X: gc.Pixel(int(gridElement.Row)*int(tileSize) + int(tileSize/2)),
 				Y: gc.Pixel(int(gridElement.Col)*int(tileSize) + int(tileSize/2)),
 			}
-			drawImage(world, screen, spriteRender, pos)
+			drawImage(world, screen, spriteRender, pos, 0)
 		}
 	}
 	{
@@ -112,9 +112,10 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	{
 		// 移動体
 		iSprite := 0
-		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.Position).Size())
+		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.Position, gameComponents.Velocity).Size())
 		world.Manager.Join(
 			gameComponents.SpriteRender,
+			gameComponents.Velocity,
 			gameComponents.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			entities[iSprite] = entity
@@ -128,9 +129,10 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		})
 		for _, entity := range entities {
 			// 座標描画
+			velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
-			drawImage(world, screen, spriteRender, pos)
+			drawImage(world, screen, spriteRender, pos, velocity.Angle)
 		}
 	}
 }
@@ -158,13 +160,13 @@ func getImage(spriteRender *ec.SpriteRender) *ebiten.Image {
 	return result
 }
 
-func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position) {
+func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position, angle float64) {
 	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 
 	op := &spriteRender.Options
 	op.GeoM.Reset()                                                       // FIXME: Resetがないと非表示になる。なぜ?
 	op.GeoM.Translate(float64(-sprite.Width/2), float64(-sprite.Width/2)) // 回転軸を画像の中心にする
-	op.GeoM.Rotate(pos.Angle)
+	op.GeoM.Rotate(angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	camera.SetTranslate(world, op)
 	screen.DrawImage(getImage(spriteRender), op)
