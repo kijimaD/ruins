@@ -6,7 +6,17 @@ type Velocity struct {
 	Angle float64
 	// 現在の速度
 	Speed float64
+	// スロットルモード
+	ThrottleMode ThrottleMode
 }
+
+type ThrottleMode string
+
+const (
+	ThrottleModeFront = ThrottleMode("FRONT")
+	ThrottleModeBack  = ThrottleMode("BACK")
+	ThrottleModeNope  = ThrottleMode("NOPE")
+)
 
 // フィールド上に座標をもって存在する。移動体に対して使う
 // スプライトはこの位置に中心を合わせて配置する

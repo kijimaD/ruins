@@ -4,9 +4,9 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -27,16 +27,19 @@ func PlayerInputSystem(world w.World) {
 
 	const maxSpeed = 2.0
 	const minSpeed = -1.0
-	switch {
-	case ebiten.IsKeyPressed(ebiten.KeyW):
-		playerVelocity.Speed += 0.1
-		playerVelocity.Speed = mathutil.Min(maxSpeed, playerVelocity.Speed)
-	case ebiten.IsKeyPressed(ebiten.KeyS):
-		playerVelocity.Speed -= 0.1
-		playerVelocity.Speed = mathutil.Max(minSpeed, playerVelocity.Speed)
-	case ebiten.IsKeyPressed(ebiten.KeyD):
+	// デフォルト
+	playerVelocity.ThrottleMode = components.ThrottleModeNope
+	// 同時押しがありうる
+	if ebiten.IsKeyPressed(ebiten.KeyW) {
+		playerVelocity.ThrottleMode = components.ThrottleModeFront
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyS) {
+		playerVelocity.ThrottleMode = components.ThrottleModeBack
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
 		playerVelocity.Angle += math.Pi / 90
-	case ebiten.IsKeyPressed(ebiten.KeyA):
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		playerVelocity.Angle -= math.Pi / 90
 	}
 

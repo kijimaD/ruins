@@ -3,23 +3,36 @@ package systems
 import (
 	"math"
 
+	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/utils/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func MoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
+	maxFrontSpeed := 2.0
+	maxBackSpeed := -1.0
+	accelerationSpeed := 0.05
 	world.Manager.Join(
 		gameComponents.Velocity,
 		gameComponents.Position,
 		gameComponents.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
+		switch velocity.ThrottleMode {
+		case components.ThrottleModeFront:
+			velocity.Speed = mathutil.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
+		case components.ThrottleModeBack:
+			velocity.Speed = mathutil.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
+		case components.ThrottleModeNope:
+			// 何もしない
+		}
 		tryMove(world, entity, velocity.Angle, velocity.Speed)
 	}))
 

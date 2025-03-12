@@ -36,11 +36,10 @@ func AIInputSystem(world w.World) {
 
 			switch subState {
 			case components.AIRoamingWaiting:
-				// TODO: スロットルみたいな移動用関数を作ってゆるやかに変化させるべきである
-				velocity.Speed = 0
+				velocity.ThrottleMode = components.ThrottleModeNope
 				velocity.Angle += float64(rand.IntN(91))
 			case components.AIRoamingDriving:
-				velocity.Speed = 1
+				velocity.ThrottleMode = components.ThrottleModeFront
 			}
 		}
 	}))
