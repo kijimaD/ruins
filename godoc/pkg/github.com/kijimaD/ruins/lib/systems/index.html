@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.23.6";</script>
+<script>var goVersion = "go1.23.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -114,6 +114,9 @@
 			
 			
 				
+				<dd><a href="index.html#AIInputSystem">func AIInputSystem(world w.World)</a></dd>
+			
+				
 				<dd><a href="index.html#BattleCommandSystem">func BattleCommandSystem(world w.World)</a></dd>
 			
 				
@@ -123,7 +126,10 @@
 				<dd><a href="index.html#HUDSystem">func HUDSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
 				
-				<dd><a href="index.html#OperatorMoveSystem">func OperatorMoveSystem(world w.World)</a></dd>
+				<dd><a href="index.html#MoveSystem">func MoveSystem(world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#PlayerInputSystem">func PlayerInputSystem(world w.World)</a></dd>
 			
 				
 				<dd><a href="index.html#RenderSpriteSystem">func RenderSpriteSystem(world w.World, screen *ebiten.Image)</a></dd>
@@ -159,6 +165,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go">ai_input.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go">battle_command.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go">battle_drop.go</a>
@@ -171,7 +179,9 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go">hud.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_move.go">player_move.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go">move_system.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go">player_input.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go">render_sprite.go</a>
 			
@@ -195,6 +205,19 @@
 			
 		
 		
+		
+			
+			
+			<h2 id="AIInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go?s=225:258#L3">AIInputSystem</a>
+				<a class="permalink" href="index.html#AIInputSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func AIInputSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+			
+			
+			
+
 		
 			
 			
@@ -242,12 +265,25 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="OperatorMoveSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_move.go?s=384:422#L6">OperatorMoveSystem</a>
-				<a class="permalink" href="index.html#OperatorMoveSystem">&#xb6;</a>
+			<h2 id="MoveSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go?s=391:421#L6">MoveSystem</a>
+				<a class="permalink" href="index.html#MoveSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func OperatorMoveSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+			<pre>func MoveSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=245:282#L3">PlayerInputSystem</a>
+				<a class="permalink" href="index.html#PlayerInputSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func PlayerInputSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
 			
 			
 			
@@ -380,7 +416,7 @@ TODO: マイナスにならないようにする
 
 
 <div id="footer">
-Build version go1.23.6.<br>
+Build version go1.23.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,
