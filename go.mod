@@ -1,12 +1,11 @@
 module github.com/kijimaD/ruins
 
 go 1.23.0
-
 require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/ebitenui/ebitenui v0.6.1
 	github.com/hajimehoshi/ebiten v1.12.12
-	github.com/hajimehoshi/ebiten/v2 v2.8.6
+	github.com/hajimehoshi/ebiten/v2 v2.8.7
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
 	github.com/stretchr/testify v1.10.0
@@ -20,7 +19,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325 // indirect
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
-	github.com/ebitengine/oto/v3 v3.3.2 // indirect
+	github.com/ebitengine/oto/v3 v3.3.3 // indirect
 	github.com/ebitengine/purego v0.8.0 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/go-text/typesetting v0.2.0 // indirect
