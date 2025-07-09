@@ -8,27 +8,27 @@ import (
 // Common error types for the ruins game
 var (
 	// Generic errors
-	ErrNotFound      = errors.New("not found")
-	ErrInvalidInput  = errors.New("invalid input")
-	ErrOutOfBounds   = errors.New("out of bounds")
-	
+	ErrNotFound     = errors.New("not found")
+	ErrInvalidInput = errors.New("invalid input")
+	ErrOutOfBounds  = errors.New("out of bounds")
+
 	// Entity/Component errors
 	ErrEntityNotFound    = errors.New("entity not found")
 	ErrComponentNotFound = errors.New("component not found")
 	ErrInvalidComponent  = errors.New("invalid component")
-	
+
 	// Game state errors
-	ErrInvalidState     = errors.New("invalid state")
-	ErrStateTransition  = errors.New("state transition failed")
-	
+	ErrInvalidState    = errors.New("invalid state")
+	ErrStateTransition = errors.New("state transition failed")
+
 	// Resource errors
 	ErrResourceNotFound = errors.New("resource not found")
 	ErrResourceInvalid  = errors.New("resource invalid")
-	
+
 	// Data loading errors
-	ErrDataCorrupted    = errors.New("data corrupted")
-	ErrDataMissing      = errors.New("data missing")
-	ErrParsingFailed    = errors.New("parsing failed")
+	ErrDataCorrupted = errors.New("data corrupted")
+	ErrDataMissing   = errors.New("data missing")
+	ErrParsingFailed = errors.New("parsing failed")
 )
 
 // KeyNotFoundError represents an error when a key is not found in a collection

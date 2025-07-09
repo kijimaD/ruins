@@ -16,6 +16,10 @@ build: ## ビルドする
 vrt: ## 各ステートでスクショを取得する
 	./scripts/vrt.sh
 
+.PHONY: fmt
+fmt: ## フォーマットする
+	goimports -w .
+
 .PHONY: memp
 memp: ## 実行毎に保存しているプロファイルを見る
 	go tool pprof mem.pprof
