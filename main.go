@@ -9,11 +9,6 @@ import (
 	"github.com/kijimaD/ruins/lib/cmd"
 )
 
-const (
-	minGameWidth  = 960
-	minGameHeight = 720
-)
-
 func main() {
 	app := cmd.NewMainApp()
 	err := cmd.RunMainApp(app, os.Args...)

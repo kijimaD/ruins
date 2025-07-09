@@ -3,8 +3,14 @@ package consts
 import gc "github.com/kijimaD/ruins/lib/components"
 
 const (
+	// Game window dimensions
+	MinGameWidth  = 960
+	MinGameHeight = 720
+
+	// Tile dimensions
 	TileSize gc.Pixel = 32
 
+	// UI Labels
 	HPLabel        = "HP"
 	SPLabel        = "SP"
 	VitalityLabel  = "体力"
