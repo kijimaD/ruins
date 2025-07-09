@@ -1,6 +1,6 @@
 package mathutil
 
-// Min returns the smaller of x or y.
+// xとyの小さい方を返す
 func Min[T int | float64](x, y T) T {
 	if x < y {
 		return x
@@ -8,7 +8,7 @@ func Min[T int | float64](x, y T) T {
 	return y
 }
 
-// Max returns the larger of x or y.
+// xとyの大きい方を返す
 func Max[T int | float64](x, y T) T {
 	if x > y {
 		return x
@@ -16,7 +16,7 @@ func Max[T int | float64](x, y T) T {
 	return y
 }
 
-// Clamp returns value clamped to the range [min, max].
+// valueを[min, max]の範囲に制限する
 func Clamp[T int | float64](value, min, max T) T {
 	if value < min {
 		return min
@@ -27,7 +27,7 @@ func Clamp[T int | float64](value, min, max T) T {
 	return value
 }
 
-// Abs returns the absolute value of x.
+// xの絶対値を返す
 func Abs[T int | float64](x T) T {
 	if x < 0 {
 		return -x

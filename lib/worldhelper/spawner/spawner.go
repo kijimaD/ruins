@@ -151,7 +151,11 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
-	componentList.Game = append(componentList.Game, rawMaster.GenerateItem(name, locationType))
+	gameComponent, err := rawMaster.GenerateItem(name, locationType)
+	if err != nil {
+		panic(err) // TODO: Handle error properly
+	}
+	componentList.Game = append(componentList.Game, gameComponent)
 	entities := loader.AddEntities(world, componentList)
 
 	return entities[len(entities)-1]
@@ -199,7 +203,11 @@ func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack))
+		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
+		if err != nil {
+			panic(err) // TODO: Handle error properly
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
 		loader.AddEntities(world, componentList)
 	}
 }
@@ -209,7 +217,11 @@ func SpawnAllRecipes(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.RecipeIndex {
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, rawMaster.GenerateRecipe(k))
+		gameComponent, err := rawMaster.GenerateRecipe(k)
+		if err != nil {
+			panic(err) // TODO: Handle error properly
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
 		loader.AddEntities(world, componentList)
 	}
 }
@@ -219,7 +231,11 @@ func SpawnAllCards(world w.World) {
 	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
 	for k, _ := range rawMaster.ItemIndex {
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, rawMaster.GenerateItem(k, gc.ItemLocationNone))
+		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
+		if err != nil {
+			panic(err) // TODO: Handle error properly
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
 		loader.AddEntities(world, componentList)
 	}
 }
