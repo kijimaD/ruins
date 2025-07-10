@@ -16,6 +16,8 @@ type MainMenuState struct {
 	trans *states.Transition
 
 	mainMenuContainer *widget.Container
+	menuButtons       []*widget.Button
+	focusIndex        int
 }
 
 func (st MainMenuState) String() string {
@@ -40,6 +42,9 @@ func (st *MainMenuState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransQuit}
 	}
+
+	// キーボードナビゲーション処理
+	st.handleKeyboardNavigation()
 
 	st.ui.Update()
 
@@ -71,9 +76,11 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 
 func (st *MainMenuState) updateMenuContainer(world w.World) {
 	st.mainMenuContainer.RemoveChildren()
+	st.menuButtons = make([]*widget.Button, 0, len(mainMenuTrans))
 
-	for _, data := range mainMenuTrans {
+	for i, data := range mainMenuTrans {
 		data := data
+		index := i
 		btn := eui.NewButton(
 			data.label,
 			world,
@@ -81,8 +88,87 @@ func (st *MainMenuState) updateMenuContainer(world w.World) {
 				st.trans = &data.trans
 			}),
 		)
+		
+		// 初期フォーカス設定
+		if index == 0 {
+			st.focusIndex = 0
+			st.setButtonFocus(btn, true)
+		} else {
+			st.setButtonFocus(btn, false)
+		}
+		
+		st.menuButtons = append(st.menuButtons, btn)
 		st.mainMenuContainer.AddChild(btn)
 	}
+}
+
+// キーボードナビゲーション処理
+func (st *MainMenuState) handleKeyboardNavigation() {
+	if len(st.menuButtons) == 0 {
+		return
+	}
+
+	// Shift+Tabの判定
+	isShiftPressed := ebiten.IsKeyPressed(ebiten.KeyShift)
+	
+	// 矢印キー上下、Tab/Shift+Tabでフォーカス移動
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) || (inpututil.IsKeyJustPressed(ebiten.KeyTab) && !isShiftPressed) {
+		st.moveFocusDown()
+	} else if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) || (inpututil.IsKeyJustPressed(ebiten.KeyTab) && isShiftPressed) {
+		st.moveFocusUp()
+	} else if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		// 選択されているメニューを実行
+		st.executeCurrentSelection()
+	}
+}
+
+// フォーカスを下に移動
+func (st *MainMenuState) moveFocusDown() {
+	if len(st.menuButtons) == 0 {
+		return
+	}
+
+	// 現在のフォーカスを解除
+	st.setButtonFocus(st.menuButtons[st.focusIndex], false)
+	
+	// 次のインデックスに移動（循環）
+	st.focusIndex = (st.focusIndex + 1) % len(st.menuButtons)
+	
+	// 新しいフォーカスを設定
+	st.setButtonFocus(st.menuButtons[st.focusIndex], true)
+}
+
+// フォーカスを上に移動
+func (st *MainMenuState) moveFocusUp() {
+	if len(st.menuButtons) == 0 {
+		return
+	}
+
+	// 現在のフォーカスを解除
+	st.setButtonFocus(st.menuButtons[st.focusIndex], false)
+	
+	// 前のインデックスに移動（循環）
+	st.focusIndex = (st.focusIndex - 1 + len(st.menuButtons)) % len(st.menuButtons)
+	
+	// 新しいフォーカスを設定
+	st.setButtonFocus(st.menuButtons[st.focusIndex], true)
+}
+
+// 現在選択されているメニューを実行
+func (st *MainMenuState) executeCurrentSelection() {
+	if len(st.menuButtons) > 0 && st.focusIndex >= 0 && st.focusIndex < len(mainMenuTrans) {
+		st.trans = &mainMenuTrans[st.focusIndex].trans
+	}
+}
+
+// ボタンのフォーカス状態を設定
+func (st *MainMenuState) setButtonFocus(btn *widget.Button, focused bool) {
+	if btn == nil {
+		return
+	}
+	
+	// EbitenUIのフォーカス機能を使用
+	btn.Focus(focused)
 }
 
 var mainMenuTrans = []struct {

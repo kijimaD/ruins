@@ -30,7 +30,7 @@ type DropResult struct {
 // 戦闘終了後に経験値や素材を獲得する
 // 獲得した素材名を返す
 func BattleDropSystem(world w.World) DropResult {
-	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 	gameComponents := world.Components.Game.(*gc.Components)
 	result := DropResult{
 		MaterialNames: []string{},

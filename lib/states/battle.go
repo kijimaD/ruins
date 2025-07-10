@@ -151,7 +151,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
 				// テーブル取得
 				ctComponent := gameComponents.CommandTable.Get(entity).(*gc.CommandTable)
-				rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+				rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 				ct := rawMaster.GetCommandTable(ctComponent.Name)
 				name := ct.SelectByWeight()
 

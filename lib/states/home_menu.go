@@ -48,50 +48,8 @@ func (st *HomeMenuState) OnResume(world w.World) {
 }
 
 func (st *HomeMenuState) OnStart(world w.World) {
-	// デバッグ用
-	// 初回のみ追加する
-	memberCount := 0
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.FactionAlly,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		memberCount++
-	}))
-	if memberCount == 0 {
-		worldhelper.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
-		card1 := worldhelper.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
-		card2 := worldhelper.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-		card3 := worldhelper.SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
-		armor := worldhelper.SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		ishihara := worldhelper.SpawnMember(world, "イシハラ", true)
-		shirase := worldhelper.SpawnMember(world, "シラセ", true)
-		worldhelper.SpawnMember(world, "タチバナ", true)
-		worldhelper.SpawnAllMaterials(world)
-		worldhelper.PlusAmount("鉄", 40, world)
-		worldhelper.PlusAmount("鉄くず", 4, world)
-		worldhelper.PlusAmount("緑ハーブ", 2, world)
-		worldhelper.PlusAmount("フェライトコア", 30, world)
-		worldhelper.SpawnAllRecipes(world)
-		worldhelper.SpawnAllCards(world)
-
-		worldhelper.Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
-		worldhelper.Equip(world, card2, ishihara, gc.EquipmentSlotNumber(0))
-		worldhelper.Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
-		worldhelper.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
-	}
+	// デバッグ用データ初期化（初回のみ）
+	worldhelper.InitDebugData(world)
 
 	bg := (*world.Resources.SpriteSheets)["bg_cup1"]
 	st.bg = bg.Texture.Image
