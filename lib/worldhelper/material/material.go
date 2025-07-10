@@ -3,7 +3,7 @@ package material
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils/mathutil"
+	"github.com/kijimaD/ruins/lib/utils"
 	"github.com/kijimaD/ruins/lib/worldhelper/simple"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -36,7 +36,7 @@ func changeAmount(name string, amount int, world w.World) {
 		n := gameComponents.Name.Get(entity).(*gc.Name)
 		if n.Name == name {
 			material := gameComponents.Material.Get(entity).(*gc.Material)
-			material.Amount = mathutil.Min(999, mathutil.Max(0, material.Amount+amount))
+			material.Amount = utils.Min(999, utils.Max(0, material.Amount+amount))
 		}
 	}, world)
 }

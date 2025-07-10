@@ -10,7 +10,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
-	"github.com/kijimaD/ruins/lib/utils/consts"
+	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -30,13 +30,13 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 			attack := gameComponents.Attack.Get(entity).(*gc.Attack)
 			targetContainer.AddChild(eui.NewBodyText(attack.AttackCategory.String(), styles.TextColor, world))
 
-			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(attack.Damage))
+			damage := fmt.Sprintf("%s %s", utils.DamageLabel, strconv.Itoa(attack.Damage))
 			targetContainer.AddChild(eui.NewBodyText(damage, styles.TextColor, world))
 
-			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(attack.Accuracy))
+			accuracy := fmt.Sprintf("%s %s", utils.AccuracyLabel, strconv.Itoa(attack.Accuracy))
 			targetContainer.AddChild(eui.NewBodyText(accuracy, styles.TextColor, world))
 
-			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(attack.AttackCount))
+			attackCount := fmt.Sprintf("%s %s", utils.AttackCountLabel, strconv.Itoa(attack.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
 			if attack.Element != components.ElementTypeNone {
@@ -45,10 +45,10 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 		}
 		if entity.HasComponent(gameComponents.Wearable) {
 			wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
-			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, wearable.EquipmentCategory)
+			equipmentCategory := fmt.Sprintf("%s %s", utils.EquimentCategoryLabel, wearable.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
-			defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, wearable.Defense)
+			defense := fmt.Sprintf("%s %+d", utils.DefenseLabel, wearable.Defense)
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, wearable.EquipBonus, world)
 		}
@@ -81,27 +81,27 @@ func damageAttrText(world w.World, dat components.ElementType, str string) *widg
 
 func addEquipBonus(targetContainer *widget.Container, equipBonus components.EquipBonus, world w.World) {
 	if equipBonus.Vitality != 0 {
-		vitality := fmt.Sprintf("%s %+d", consts.VitalityLabel, equipBonus.Vitality)
+		vitality := fmt.Sprintf("%s %+d", utils.VitalityLabel, equipBonus.Vitality)
 		targetContainer.AddChild(eui.NewBodyText(vitality, styles.TextColor, world))
 	}
 
 	if equipBonus.Strength != 0 {
-		strength := fmt.Sprintf("%s %+d", consts.StrengthLabel, equipBonus.Strength)
+		strength := fmt.Sprintf("%s %+d", utils.StrengthLabel, equipBonus.Strength)
 		targetContainer.AddChild(eui.NewBodyText(strength, styles.TextColor, world))
 	}
 
 	if equipBonus.Sensation != 0 {
-		sensation := fmt.Sprintf("%s %+d", consts.SensationLabel, equipBonus.Sensation)
+		sensation := fmt.Sprintf("%s %+d", utils.SensationLabel, equipBonus.Sensation)
 		targetContainer.AddChild(eui.NewBodyText(sensation, styles.TextColor, world))
 	}
 
 	if equipBonus.Dexterity != 0 {
-		dexterity := fmt.Sprintf("%s %+d", consts.DexterityLabel, equipBonus.Dexterity)
+		dexterity := fmt.Sprintf("%s %+d", utils.DexterityLabel, equipBonus.Dexterity)
 		targetContainer.AddChild(eui.NewBodyText(dexterity, styles.TextColor, world))
 	}
 
 	if equipBonus.Agility != 0 {
-		agility := fmt.Sprintf("%s %+d", consts.AgilityLabel, equipBonus.Agility)
+		agility := fmt.Sprintf("%s %+d", utils.AgilityLabel, equipBonus.Agility)
 		targetContainer.AddChild(eui.NewBodyText(agility, styles.TextColor, world))
 	}
 }

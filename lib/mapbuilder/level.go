@@ -6,7 +6,7 @@ import (
 
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils/consts"
+	"github.com/kijimaD/ruins/lib/utils"
 	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -72,8 +72,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			spawner.SpawnOperator(
 				world,
-				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
-				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
+				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize)/2),
+				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize)/2),
 			)
 			break
 		}
@@ -95,8 +95,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			spawner.SpawnNPC(
 				world,
-				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
-				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
+				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize/2)),
+				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize/2)),
 			)
 			successCount += 1
 			failCount = 0

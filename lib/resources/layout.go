@@ -3,7 +3,7 @@ package resources
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils/consts"
+	"github.com/kijimaD/ruins/lib/utils"
 )
 
 // UpdateGameLayoutはゲームウィンドウサイズを更新する。
@@ -17,8 +17,8 @@ func UpdateGameLayout(world w.World) (gc.Pixel, gc.Pixel) {
 
 	gridWidth, gridHeight := minGridWidth, minGridHeight
 
-	gameWidth := gridWidth*consts.TileSize + offsetX
-	gameHeight := gridHeight*consts.TileSize + offsetY
+	gameWidth := gridWidth*utils.TileSize + offsetX
+	gameHeight := gridHeight*utils.TileSize + offsetY
 
 	world.Resources.ScreenDimensions.Width = int(gameWidth)
 	world.Resources.ScreenDimensions.Height = int(gameHeight)

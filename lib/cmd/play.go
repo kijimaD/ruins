@@ -7,7 +7,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/game"
-	"github.com/kijimaD/ruins/lib/utils/consts"
+	"github.com/kijimaD/ruins/lib/utils"
 	"github.com/pkg/profile"
 	"github.com/urfave/cli/v2"
 
@@ -27,7 +27,7 @@ var CmdPlay = &cli.Command{
 
 func runPlay(_ *cli.Context) error {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetWindowSize(consts.MinGameWidth, consts.MinGameHeight)
+	ebiten.SetWindowSize(utils.MinGameWidth, utils.MinGameHeight)
 	ebiten.SetWindowTitle("ruins")
 
 	// プロファイラ。WASMは除外する
@@ -38,7 +38,7 @@ func runPlay(_ *cli.Context) error {
 		}()
 	}
 
-	world := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+	world := game.InitWorld(utils.MinGameWidth, utils.MinGameHeight)
 	ebiten.RunGame(&game.MainGame{
 		World:        world,
 		StateMachine: es.Init(&gs.MainMenuState{}, world),

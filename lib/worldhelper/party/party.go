@@ -8,7 +8,7 @@ import (
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils/mathutil"
+	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"github.com/yourbasic/bit"
 )
@@ -160,7 +160,7 @@ func (p *Party) GetNext() (ecs.Entity, error) {
 	cur := p.cur
 	for {
 		memo := cur
-		cur = mathutil.Min(cur+1, len(p.members)-1)
+		cur = utils.Min(cur+1, len(p.members)-1)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
 			return 0, reachEdgeError
@@ -180,7 +180,7 @@ func (p *Party) GetPrev() (ecs.Entity, error) {
 	cur := p.cur
 	for {
 		memo := cur
-		cur = mathutil.Max(cur-1, 0)
+		cur = utils.Max(cur-1, 0)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
 			return 0, reachEdgeError
@@ -211,7 +211,7 @@ func (p *Party) GetRandom() (ecs.Entity, error) {
 
 func (p *Party) next() error {
 	memo := p.cur
-	p.cur = mathutil.Min(p.cur+1, len(p.members)-1)
+	p.cur = utils.Min(p.cur+1, len(p.members)-1)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
 		return reachEdgeError
@@ -222,7 +222,7 @@ func (p *Party) next() error {
 
 func (p *Party) prev() error {
 	memo := p.cur
-	p.cur = mathutil.Max(p.cur-1, 0)
+	p.cur = utils.Max(p.cur-1, 0)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
 		return reachEdgeError
