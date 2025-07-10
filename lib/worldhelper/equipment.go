@@ -1,4 +1,4 @@
-package equips
+package worldhelper
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"

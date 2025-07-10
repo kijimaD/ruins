@@ -1,4 +1,4 @@
-package simple
+package worldhelper
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -9,7 +9,7 @@ import (
 // 所持中の素材
 // TODO: worldを先に置く
 // Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
-func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
+func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Material,
@@ -18,7 +18,7 @@ func OwnedMaterial(f func(entity ecs.Entity), world w.World) {
 }
 
 // パーティメンバー
-func InPartyMember(world w.World, f func(entity ecs.Entity)) {
+func QueryInPartyMember(world w.World, f func(entity ecs.Entity)) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.FactionAlly,

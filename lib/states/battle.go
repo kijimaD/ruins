@@ -26,9 +26,7 @@ import (
 	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/party"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
-	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -43,7 +41,7 @@ type BattleState struct {
 	// テキスト送り待ち状態
 	isWaitClick bool
 	// 味方パーティ
-	party party.Party
+	party worldhelper.Party
 
 	// 背景
 	bg *ebiten.Image
@@ -75,8 +73,8 @@ func (st *BattleState) OnPause(world w.World) {}
 func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
-	_ = spawner.SpawnEnemy(world, "軽戦車")
-	_ = spawner.SpawnEnemy(world, "火の玉")
+	_ = worldhelper.SpawnEnemy(world, "軽戦車")
+	_ = worldhelper.SpawnEnemy(world, "火の玉")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
@@ -120,7 +118,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
 			var err error
-			st.party, err = party.NewParty(world, components.FactionAlly)
+			st.party, err = worldhelper.NewParty(world, components.FactionAlly)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -394,7 +392,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			switch entry {
 			case policyEntryAttack:
 				members := []ecs.Entity{}
-				simple.InPartyMember(world, func(entity ecs.Entity) {
+				worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
 					members = append(members, entity)
 				})
 				st.phase = &phaseChooseAction{owner: *st.party.Value()}

@@ -1,4 +1,4 @@
-package party
+package worldhelper
 
 import (
 	"errors"
@@ -6,12 +6,15 @@ import (
 	"math/rand/v2"
 
 	"github.com/kijimaD/ruins/lib/components"
-	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"github.com/yourbasic/bit"
+
+	gc "github.com/kijimaD/ruins/lib/components"
+	w "github.com/kijimaD/ruins/lib/engine/world"
 )
+
+var reachEdgeError = errors.New("reach edge error")
 
 // グルーピングする単位。味方あるいは敵がある
 type Party struct {
@@ -120,8 +123,6 @@ func (p *Party) LivesLen() int {
 
 	return count
 }
-
-var reachEdgeError = errors.New("reach edge error")
 
 // curを進める
 func (p *Party) Next() error {

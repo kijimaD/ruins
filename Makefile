@@ -6,7 +6,7 @@ run: ## 実行する。スクショのキーを指定している
 
 .PHONY: test
 test: ## テストを実行する
-	go test ./... -v
+	go test ./... -v -cover
 
 .PHONY: build
 build: ## ビルドする

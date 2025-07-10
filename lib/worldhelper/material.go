@@ -1,18 +1,18 @@
-package material
+package worldhelper
 
 import (
+	"github.com/kijimaD/ruins/lib/utils"
+	ecs "github.com/x-hgg-x/goecs/v2"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // 所持している素材の数を取得する
 func GetAmount(name string, world w.World) int {
 	result := 0
 	gameComponents := world.Components.Game.(*gc.Components)
-	simple.OwnedMaterial(func(entity ecs.Entity) {
+	QueryOwnedMaterial(func(entity ecs.Entity) {
 		n := gameComponents.Name.Get(entity).(*gc.Name)
 		if n.Name == name {
 			material := gameComponents.Material.Get(entity).(*gc.Material)
@@ -32,7 +32,7 @@ func MinusAmount(name string, amount int, world w.World) {
 
 func changeAmount(name string, amount int, world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
-	simple.OwnedMaterial(func(entity ecs.Entity) {
+	QueryOwnedMaterial(func(entity ecs.Entity) {
 		n := gameComponents.Name.Get(entity).(*gc.Name)
 		if n.Name == name {
 			material := gameComponents.Material.Get(entity).(*gc.Material)

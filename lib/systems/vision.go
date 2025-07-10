@@ -8,7 +8,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils/camera"
+	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -61,7 +61,7 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 	{
 		op := &ebiten.DrawImageOptions{}
 		op.ColorScale.ScaleAlpha(1)
-		camera.SetTranslate(world, op)
+		utils.SetTranslate(world, op)
 		screen.DrawImage(gameResources.Level.VisionImage, op)
 	}
 }

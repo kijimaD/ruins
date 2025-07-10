@@ -19,8 +19,7 @@ import (
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/utils"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/equips"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -144,7 +143,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 	st.actionContainer.RemoveChildren()
 
 	members := []ecs.Entity{}
-	simple.InPartyMember(world, func(entity ecs.Entity) {
+	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
 		members = append(members, entity)
 	})
 	member := members[st.curMemberIdx]
@@ -228,7 +227,7 @@ func (st *EquipMenuState) generateActionContainer(world w.World) {
 				disarmButton := eui.NewButton("外す",
 					world,
 					widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-						equips.Disarm(world, *v.entity)
+						worldhelper.Disarm(world, *v.entity)
 						st.generateActionContainer(world)
 						actionWindow.Close()
 					}),
@@ -301,9 +300,9 @@ func (st *EquipMenuState) generateActionContainerEquip(world w.World, member ecs
 
 			// 装備
 			if previousEquipment != nil {
-				equips.Disarm(world, *previousEquipment)
+				worldhelper.Disarm(world, *previousEquipment)
 			}
-			equips.Equip(world, entity, member, targetSlot)
+			worldhelper.Equip(world, entity, member, targetSlot)
 
 			// 画面を戻す
 			st.generateActionContainer(world)
@@ -373,7 +372,7 @@ func (st *EquipMenuState) reloadSubMenu(world w.World, visible bool, reloadFunc 
 
 	if visible {
 		members := []ecs.Entity{}
-		simple.InPartyMember(world, func(entity ecs.Entity) {
+		worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
 			members = append(members, entity)
 		})
 
@@ -410,7 +409,7 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	st.abilityContainer.RemoveChildren()
 
 	members := []ecs.Entity{}
-	simple.InPartyMember(world, func(entity ecs.Entity) {
+	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
 		members = append(members, entity)
 	})
 	targetMember := members[st.curMemberIdx]
@@ -435,9 +434,9 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 func (st *EquipMenuState) setSlots(world w.World, member ecs.Entity) {
 	switch st.equipTarget {
 	case equipTargetWear:
-		st.slots = equips.GetWearEquipments(world, member)
+		st.slots = worldhelper.GetWearEquipments(world, member)
 	case equipTargetCard:
-		st.slots = equips.GetCardEquipments(world, member)
+		st.slots = worldhelper.GetCardEquipments(world, member)
 	}
 }
 

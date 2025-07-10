@@ -19,8 +19,7 @@ import (
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/craft"
-	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -276,9 +275,9 @@ func (st *CraftMenuState) updateRecipeList(world w.World) {
 		if entity == st.hoveredItem {
 			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
 			for _, input := range recipe.Inputs {
-				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, material.GetAmount(input.Name, world))
+				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, worldhelper.GetAmount(input.Name, world))
 				var color color.RGBA
-				if material.GetAmount(input.Name, world) >= input.Amount {
+				if worldhelper.GetAmount(input.Name, world) >= input.Amount {
 					color = styles.SuccessColor
 				} else {
 					color = styles.DangerColor
@@ -297,7 +296,7 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 	useButton := eui.NewButton("合成する",
 		world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			resultEntity, err := craft.Craft(world, name)
+			resultEntity, err := worldhelper.Craft(world, name)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -309,7 +308,7 @@ func (st *CraftMenuState) initWindowContainer(world w.World, name string, window
 			st.ui.AddWindow(st.resultWindow)
 		}),
 	)
-	if craft.CanCraft(world, name) {
+	if canCraft, _ := worldhelper.CanCraft(world, name); canCraft {
 		windowContainer.AddChild(useButton)
 	}
 

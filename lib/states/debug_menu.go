@@ -12,7 +12,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
-	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
 type DebugMenuState struct {
@@ -97,12 +97,12 @@ var debugMenuTrans = []struct {
 }{
 	{
 		label: "回復薬スポーン(インベントリ)",
-		f:     func(world w.World) { spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack) },
+		f:     func(world w.World) { worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack) },
 		trans: states.Transition{Type: states.TransNone},
 	},
 	{
 		label: "手榴弾スポーン(インベントリ)",
-		f:     func(world w.World) { spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack) },
+		f:     func(world w.World) { worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack) },
 		trans: states.Transition{Type: states.TransNone},
 	},
 	{

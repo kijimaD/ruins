@@ -1,4 +1,4 @@
-package spawner
+package worldhelper
 
 import (
 	"github.com/kijimaD/ruins/lib/components"
@@ -10,8 +10,9 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
-	gs "github.com/kijimaD/ruins/lib/systems"
 )
+
+// ========== 生成システム（旧spawner） ==========
 
 // ================
 // Field
@@ -190,12 +191,52 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 
 // 完全回復させる
 func fullRecover(world w.World, entity ecs.Entity) {
-	// ステータス反映(最大HP, SP)
-	_ = gs.EquipmentChangedSystem(world)
+	// 新しく生成されたエンティティの最大HP/SPを設定
+	setMaxHPSP(world, entity)
 	// 回復
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
 	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
 	effects.RunEffectQueue(world)
+}
+
+// 指定したエンティティの最大HP/SPを設定する
+func setMaxHPSP(world w.World, entity ecs.Entity) {
+	gameComponents := world.Components.Game.(*gc.Components)
+
+	if !entity.HasComponent(gameComponents.Pools) || !entity.HasComponent(gameComponents.Attributes) {
+		return
+	}
+
+	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+	attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+
+	// Totalが設定されていない場合はBaseから初期化
+	if attrs.Vitality.Total == 0 {
+		attrs.Vitality.Total = attrs.Vitality.Base
+	}
+	if attrs.Strength.Total == 0 {
+		attrs.Strength.Total = attrs.Strength.Base
+	}
+	if attrs.Sensation.Total == 0 {
+		attrs.Sensation.Total = attrs.Sensation.Base
+	}
+	if attrs.Dexterity.Total == 0 {
+		attrs.Dexterity.Total = attrs.Dexterity.Base
+	}
+	if attrs.Agility.Total == 0 {
+		attrs.Agility.Total = attrs.Agility.Base
+	}
+	if attrs.Defense.Total == 0 {
+		attrs.Defense.Total = attrs.Defense.Base
+	}
+
+	// 最大HP計算: 30+(体力*8+力+感覚)*{1+(Lv-1)*0.03}
+	pools.HP.Max = int(30 + float64(attrs.Vitality.Total*8+attrs.Strength.Total+attrs.Sensation.Total)*(1+float64(pools.Level-1)*0.03))
+	pools.HP.Current = pools.HP.Max
+
+	// 最大SP計算: (体力*2+器用さ+素早さ)*{1+(Lv-1)*0.02}
+	pools.SP.Max = int(float64(attrs.Vitality.Total*2+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*0.02))
+	pools.SP.Current = pools.SP.Max
 }
 
 // 所持素材の個数を0で初期化する
