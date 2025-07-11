@@ -4,11 +4,11 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/input"
 )
 
 type MainMenuState struct {
@@ -18,6 +18,7 @@ type MainMenuState struct {
 	mainMenuContainer *widget.Container
 	menuButtons       []*widget.Button
 	focusIndex        int
+	keyboardInput     input.KeyboardInput
 }
 
 func (st MainMenuState) String() string {
@@ -33,13 +34,16 @@ func (st *MainMenuState) OnPause(world w.World) {}
 func (st *MainMenuState) OnResume(world w.World) {}
 
 func (st *MainMenuState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.NewDefaultKeyboardInput()
+	}
 	st.ui = st.initUI(world)
 }
 
 func (st *MainMenuState) OnStop(world w.World) {}
 
 func (st *MainMenuState) Update(world w.World) states.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransQuit}
 	}
 
@@ -109,14 +113,14 @@ func (st *MainMenuState) handleKeyboardNavigation() {
 	}
 
 	// Shift+Tabの判定
-	isShiftPressed := ebiten.IsKeyPressed(ebiten.KeyShift)
+	isShiftPressed := st.keyboardInput.IsKeyPressed(ebiten.KeyShift)
 	
 	// 矢印キー上下、Tab/Shift+Tabでフォーカス移動
-	if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) || (inpututil.IsKeyJustPressed(ebiten.KeyTab) && !isShiftPressed) {
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) || (st.keyboardInput.IsKeyJustPressed(ebiten.KeyTab) && !isShiftPressed) {
 		st.moveFocusDown()
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) || (inpututil.IsKeyJustPressed(ebiten.KeyTab) && isShiftPressed) {
+	} else if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) || (st.keyboardInput.IsKeyJustPressed(ebiten.KeyTab) && isShiftPressed) {
 		st.moveFocusUp()
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+	} else if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEnter) || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
 		// 選択されているメニューを実行
 		st.executeCurrentSelection()
 	}
