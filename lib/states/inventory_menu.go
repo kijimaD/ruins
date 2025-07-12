@@ -14,6 +14,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
@@ -32,6 +33,7 @@ type InventoryMenuState struct {
 	partyWindow         *widget.Window    // 仲間を選択するウィンドウ
 	rootContainer       *widget.Container
 	tabDisplayContainer *widget.Container  // タブ表示のコンテナ
+	categoryContainer   *widget.Container  // カテゴリ一覧のコンテナ
 	trans               *states.Transition // 状態遷移
 }
 
@@ -105,6 +107,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
 			st.updateTabDisplay(world)
+			st.updateCategoryDisplay(world)
 		},
 		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
 			st.handleItemChange(world, item)
@@ -130,12 +133,16 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	st.tabDisplayContainer = eui.NewVerticalContainer()
 	st.createTabDisplayUI(world)
 
+	// カテゴリ一覧のコンテナを作成（横並び）
+	st.categoryContainer = eui.NewRowContainer()
+	st.createCategoryDisplayUI(world)
+
 	st.rootContainer = eui.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
-		st.rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
-		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(eui.NewTitleText("インベントリ", world))
+		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
 
 		st.rootContainer.AddChild(st.tabDisplayContainer) // タブとアイテム一覧の表示
@@ -366,6 +373,34 @@ func (st *InventoryMenuState) createTabDisplayUI(world w.World) {
 	st.updateTabDisplay(world)
 }
 
+// createCategoryDisplayUI はカテゴリ表示UIを作成する
+func (st *InventoryMenuState) createCategoryDisplayUI(world w.World) {
+	st.updateCategoryDisplay(world)
+}
+
+// updateCategoryDisplay はカテゴリ表示を更新する
+func (st *InventoryMenuState) updateCategoryDisplay(world w.World) {
+	// 既存の子要素をクリア
+	st.categoryContainer.RemoveChildren()
+
+	// 全カテゴリを横並びで表示
+	currentTabIndex := st.tabMenu.GetCurrentTabIndex()
+	tabs := st.createTabs(world) // 最新のタブ情報を取得
+
+	for i, tab := range tabs {
+		isSelected := i == currentTabIndex
+		if isSelected {
+			// 選択中のカテゴリは背景色付きで明るい文字色
+			categoryWidget := eui.NewListItemText(tab.Label, styles.TextColor, true, world)
+			st.categoryContainer.AddChild(categoryWidget)
+		} else {
+			// 非選択のカテゴリは背景なしでグレー文字色
+			categoryWidget := eui.NewListItemText(tab.Label, styles.ForegroundColor, false, world)
+			st.categoryContainer.AddChild(categoryWidget)
+		}
+	}
+}
+
 // updateTabDisplay はタブ表示を更新する
 func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 	// 既存の子要素をクリア
@@ -374,25 +409,27 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 	currentTab := st.tabMenu.GetCurrentTab()
 	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
 
-	// タブ名を表示
-	tabNameText := eui.NewMenuText(fmt.Sprintf("【%s】", currentTab.Label), world)
+	// タブ名を表示（サブタイトルとして）
+	tabNameText := eui.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
 	st.tabDisplayContainer.AddChild(tabNameText)
 
 	// アイテム一覧を表示
 	for i, item := range currentTab.Items {
-		itemText := item.Label
-		if i == currentItemIndex && currentItemIndex >= 0 {
-			itemText = "-> " + itemText // 選択中のアイテムにマーカーを追加
+		isSelected := i == currentItemIndex && currentItemIndex >= 0
+		if isSelected {
+			// 選択中のアイテムは背景色付きで明るい文字色
+			itemWidget := eui.NewListItemText(item.Label, styles.TextColor, true, world)
+			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
-			itemText = "   " + itemText
+			// 非選択のアイテムは背景なしでグレー文字色
+			itemWidget := eui.NewListItemText(item.Label, styles.ForegroundColor, false, world)
+			st.tabDisplayContainer.AddChild(itemWidget)
 		}
-		itemWidget := eui.NewMenuText(itemText, world)
-		st.tabDisplayContainer.AddChild(itemWidget)
 	}
 
 	// アイテムがない場合の表示
 	if len(currentTab.Items) == 0 {
-		emptyText := eui.NewMenuText("  (アイテムなし)", world)
+		emptyText := eui.NewDescriptionText("(アイテムなし)", world)
 		st.tabDisplayContainer.AddChild(emptyText)
 	}
 }
