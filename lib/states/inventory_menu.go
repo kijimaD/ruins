@@ -337,7 +337,7 @@ func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
 	}
 
 	memberCount := len(st.partyMembers)
-	
+
 	// 2x2グリッドでの移動
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
 		if st.partyFocusIndex == memberCount { // キャンセル項目から上移動
@@ -360,7 +360,7 @@ func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
 			// キャンセルから下に移動する場合、最上段のメンバーに移動
 			st.partyFocusIndex = 0
 		} else if st.partyFocusIndex < 2 { // 上段から下段へ
-			if st.partyFocusIndex + 2 < memberCount {
+			if st.partyFocusIndex+2 < memberCount {
 				st.partyFocusIndex += 2
 			} else {
 				st.partyFocusIndex = memberCount // キャンセルへ
@@ -375,8 +375,8 @@ func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
 		if st.partyFocusIndex == memberCount { // キャンセル項目は左右移動なし
 			return true
 		}
-		if st.partyFocusIndex % 2 == 0 { // 左列から右列へ（循環）
-			if st.partyFocusIndex + 1 < memberCount {
+		if st.partyFocusIndex%2 == 0 { // 左列から右列へ（循環）
+			if st.partyFocusIndex+1 < memberCount {
 				st.partyFocusIndex++
 			}
 		} else { // 右列から左列へ
@@ -389,8 +389,8 @@ func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
 		if st.partyFocusIndex == memberCount { // キャンセル項目は左右移動なし
 			return true
 		}
-		if st.partyFocusIndex % 2 == 0 { // 左列から右列へ
-			if st.partyFocusIndex + 1 < memberCount {
+		if st.partyFocusIndex%2 == 0 { // 左列から右列へ
+			if st.partyFocusIndex+1 < memberCount {
 				st.partyFocusIndex++
 			}
 		} else { // 右列から左列へ（循環）
@@ -412,7 +412,7 @@ func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
 // showActionWindow はアクションウィンドウを表示する
 func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	windowContainer := eui.NewWindowContainer(world)
-	titleContainer := eui.NewWindowHeaderContainer("アクション [↑↓:選択 Enter:実行 Esc:閉じる]", world)
+	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
 	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -455,7 +455,7 @@ func (st *InventoryMenuState) updateActionWindowDisplay(world w.World) {
 	st.actionWindow.Close()
 
 	windowContainer := eui.NewWindowContainer(world)
-	titleContainer := eui.NewWindowHeaderContainer("アクション [↑↓:選択 Enter:実行 Esc:閉じる]", world)
+	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
 	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
 	// アクション項目を表示
@@ -699,7 +699,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 // メンバー選択画面を初期化する（キーボード操作版）
 func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 	partyContainer := eui.NewWindowContainer(world)
-	titleContainer := eui.NewWindowHeaderContainer("ターゲット選択 [↑↓:選択 Enter:実行 Esc:閉じる]", world)
+	titleContainer := eui.NewWindowHeaderContainer("ターゲット選択", world)
 	st.partyWindow = eui.NewSmallWindow(titleContainer, partyContainer)
 
 	// パーティメンバーリストを作成
@@ -734,7 +734,7 @@ func (st *InventoryMenuState) updatePartyWindowDisplay(world w.World) {
 	st.partyWindow.Close()
 
 	partyContainer := eui.NewWindowContainer(world)
-	titleContainer := eui.NewWindowHeaderContainer("ターゲット選択 [↑↓←→:選択 Enter:実行 Esc:閉じる]", world)
+	titleContainer := eui.NewWindowHeaderContainer("対象選択", world)
 	st.partyWindow = eui.NewSmallWindow(titleContainer, partyContainer)
 
 	// 2x2グリッドコンテナを作成

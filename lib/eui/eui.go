@@ -267,7 +267,7 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 		widget.WindowOpts.Draggable(),
 		widget.WindowOpts.Resizeable(),
 		widget.WindowOpts.MinSize(200, 200),
-		widget.WindowOpts.MaxSize(300, 400),
+		widget.WindowOpts.MaxSize(650, 550),
 	)
 }
 
