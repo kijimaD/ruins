@@ -5,20 +5,23 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
 type DebugMenuState struct {
-	ui                 *ebitenui.UI
-	trans              *states.Transition
-	debugMenuContainer *widget.Container
+	ui            *ebitenui.UI
+	trans         *states.Transition
+	menu          *menu.Menu
+	menuBuilder   *menu.MenuUIBuilder
+	keyboardInput input.KeyboardInput
 }
 
 func (st DebugMenuState) String() string {
@@ -34,23 +37,25 @@ func (st *DebugMenuState) OnPause(world w.World) {}
 func (st *DebugMenuState) OnResume(world w.World) {}
 
 func (st *DebugMenuState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
 	st.ui = st.initUI(world)
 }
 
 func (st *DebugMenuState) OnStop(world w.World) {}
 
 func (st *DebugMenuState) Update(world w.World) states.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransPop}
-	}
+	// メニューの更新
+	st.menu.Update(st.keyboardInput)
+
+	st.ui.Update()
 
 	if st.trans != nil {
 		next := *st.trans
 		st.trans = nil
 		return next
 	}
-
-	st.ui.Update()
 
 	return states.Transition{Type: states.TransNone}
 }
@@ -65,29 +70,64 @@ func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
 	)
-	st.debugMenuContainer = eui.NewVerticalContainer()
-	rootContainer.AddChild(st.debugMenuContainer)
 
-	st.updateMenuContainer(world)
+	// Menuコンポーネントを作成
+	st.createDebugMenu(world)
+
+	// MenuのUIを構築
+	st.menuBuilder = menu.NewMenuUIBuilder(world)
+	menuContainer := st.menuBuilder.BuildUI(st.menu)
+	rootContainer.AddChild(menuContainer)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
 
-func (st *DebugMenuState) updateMenuContainer(world w.World) {
-	st.debugMenuContainer.RemoveChildren()
-
-	for _, data := range debugMenuTrans {
-		data := data
-		btn := eui.NewButton(
-			data.label,
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				data.f(world)
-				st.trans = &data.trans
-			}),
-		)
-		st.debugMenuContainer.AddChild(btn)
+// createDebugMenu はデバッグメニューを作成する
+func (st *DebugMenuState) createDebugMenu(world w.World) {
+	items := make([]menu.MenuItem, len(debugMenuTrans))
+	for i, data := range debugMenuTrans {
+		items[i] = menu.MenuItem{
+			ID:       data.label,
+			Label:    data.label,
+			UserData: i, // debugMenuTransのインデックスを保存
+		}
 	}
+
+	config := menu.MenuConfig{
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+		Columns:        0,
+	}
+
+	callbacks := menu.MenuCallbacks{
+		OnSelect: func(index int, item menu.MenuItem) {
+			st.executeDebugMenuItem(world, index)
+		},
+		OnCancel: func() {
+			st.trans = &states.Transition{Type: states.TransPop}
+		},
+		OnFocusChange: func(oldIndex, newIndex int) {
+			// フォーカス変更時にUIを更新
+			if st.menuBuilder != nil {
+				st.menuBuilder.UpdateFocus(st.menu)
+			}
+		},
+	}
+
+	st.menu = menu.NewMenu(config, callbacks)
+}
+
+// executeDebugMenuItem は選択されたデバッグメニュー項目を実行する
+func (st *DebugMenuState) executeDebugMenuItem(world w.World, index int) {
+	if index < 0 || index >= len(debugMenuTrans) {
+		return
+	}
+
+	data := debugMenuTrans[index]
+	data.f(world)
+	st.trans = &data.trans
 }
 
 var debugMenuTrans = []struct {
