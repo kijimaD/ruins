@@ -382,9 +382,9 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 	for i, item := range currentTab.Items {
 		itemText := item.Label
 		if i == currentItemIndex && currentItemIndex >= 0 {
-			itemText = "► " + itemText // 選択中のアイテムにマーカーを追加
+			itemText = "-> " + itemText // 選択中のアイテムにマーカーを追加
 		} else {
-			itemText = "  " + itemText
+			itemText = "   " + itemText
 		}
 		itemWidget := eui.NewMenuText(itemText, world)
 		st.tabDisplayContainer.AddChild(itemWidget)
