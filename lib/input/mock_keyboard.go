@@ -26,7 +26,21 @@ func (m *MockKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
 }
 
 func (m *MockKeyboardInput) IsKeyJustPressedIfDifferent(key ebiten.Key) bool {
-	return m.justPressedIfDifferent[key]
+	if !m.justPressedIfDifferent[key] {
+		return false
+	}
+
+	// グローバル状態から前回のキーを取得
+	lastKey := GlobalKeyState.GetLastPressedKey()
+
+	// 前回と同じキーの場合は無効
+	if lastKey != nil && *lastKey == key {
+		return false
+	}
+
+	// 前回と異なるキーの場合は有効
+	GlobalKeyState.SetLastPressedKey(key)
+	return true
 }
 
 // SetKeyJustPressed はテスト用にキーの状態を設定する
@@ -49,4 +63,14 @@ func (m *MockKeyboardInput) Reset() {
 	m.pressedKeys = make(map[ebiten.Key]bool)
 	m.justPressedKeys = make(map[ebiten.Key]bool)
 	m.justPressedIfDifferent = make(map[ebiten.Key]bool)
+}
+
+// ClearLastPressedKey はグローバルの最後に押されたキーをクリアする
+func (m *MockKeyboardInput) ClearLastPressedKey() {
+	GlobalKeyState.ClearLastPressedKey()
+}
+
+// ResetGlobalKeyState はグローバルキー状態をリセットする（テスト用）
+func (m *MockKeyboardInput) ResetGlobalKeyState() {
+	GlobalKeyState.ClearLastPressedKey()
 }

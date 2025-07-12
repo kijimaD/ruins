@@ -7,16 +7,16 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/euiext"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/views"
+	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -24,14 +24,14 @@ import (
 type InventoryMenuState struct {
 	ui *ebitenui.UI
 
-	selectedItem            ecs.Entity        // 選択中のアイテム
-	items                   []ecs.Entity      // 表示対象とするアイテム
-	itemDesc                *widget.Text      // アイテムの概要
-	actionContainer         *widget.Container // アクションの起点となるコンテナ
-	specContainer           *widget.Container // 性能表示のコンテナ
-	toggleCategoryContainer *widget.Container // カテゴリを切り替えるコンテナ
-	partyWindow             *widget.Window    // 仲間を選択するウィンドウ
-	category                ItemCategoryType
+	tabMenu          *tabmenu.TabMenu
+	keyboardInput    input.KeyboardInput
+	selectedItem     ecs.Entity        // 選択中のアイテム
+	itemDesc         *widget.Text      // アイテムの概要
+	specContainer    *widget.Container // 性能表示のコンテナ
+	partyWindow      *widget.Window    // 仲間を選択するウィンドウ
+	rootContainer    *widget.Container
+	trans            *states.Transition // 状態遷移
 }
 
 func (st InventoryMenuState) String() string {
@@ -47,7 +47,9 @@ func (st *InventoryMenuState) OnPause(world w.World) {}
 func (st *InventoryMenuState) OnResume(world w.World) {}
 
 func (st *InventoryMenuState) OnStart(world w.World) {
-	st.category = ItemCategoryTypeItem
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
 	st.ui = st.initUI(world)
 }
 
@@ -56,14 +58,18 @@ func (st *InventoryMenuState) OnStop(world w.World) {}
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+	if st.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
+	// 遷移が設定されていたら返す
+	if st.trans != nil {
+		trans := *st.trans
+		st.trans = nil
+		return trans
+	}
+
+	st.tabMenu.Update()
 	st.ui.Update()
 
 	return states.Transition{Type: states.TransNone}
@@ -74,44 +80,34 @@ func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image) {
 }
 
 // ================
-var _ haveCategory = &InventoryMenuState{}
-
-func (st *InventoryMenuState) setCategory(world w.World, category ItemCategoryType) {
-	st.category = category
-}
-
-func (st *InventoryMenuState) categoryReload(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
-
-	switch st.category {
-	case ItemCategoryTypeItem:
-		st.items = st.queryMenuItem(world)
-	case ItemCategoryTypeWearable:
-		st.items = st.queryMenuWearable(world)
-	case ItemCategoryTypeCard:
-		st.items = st.queryMenuCard(world)
-	case ItemCategoryTypeMaterial:
-		st.items = st.queryMenuMaterial(world)
-	default:
-		log.Fatal("未定義のcategory")
-	}
-
-	st.generateList(world)
-}
-
-// ================
 
 func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	res := world.Resources.UIResources
 
-	// 各アクションが入るコンテナ
-	st.actionContainer = eui.NewVerticalContainer()
-	st.categoryReload(world)
+	// TabMenuの設定
+	tabs := st.createTabs(world)
+	config := tabmenu.TabMenuConfig{
+		Tabs:              tabs,
+		InitialTabIndex:   0,
+		InitialItemIndex:  0,
+		WrapNavigation:    true,
+		OnlyDifferentKeys: true,
+	}
 
-	// 種類トグル
-	st.toggleCategoryContainer = eui.NewRowContainer()
-	st.reloadToggleContainer(world)
+	callbacks := tabmenu.TabMenuCallbacks{
+		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+			st.handleItemSelection(world, tab, item)
+		},
+		OnCancel: func() {
+			// Escapeでホームメニューに戻る
+			st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+		},
+		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
+			st.handleItemChange(world, item)
+		},
+	}
+
+	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
@@ -122,22 +118,149 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 
-	rootContainer := eui.NewItemGridContainer(
+	st.rootContainer = eui.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
-		rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
-		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(st.toggleCategoryContainer)
+		st.rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
+		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(widget.NewContainer()) // TabMenuはキーボードのみで操作
 
-		rootContainer.AddChild(st.actionContainer)
-		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(st.specContainer)
+		st.rootContainer.AddChild(widget.NewContainer()) // TabMenuはキーボードのみで操作
+		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(st.specContainer)
 
-		rootContainer.AddChild(itemDescContainer)
+		st.rootContainer.AddChild(itemDescContainer)
 	}
 
-	return &ebitenui.UI{Container: rootContainer}
+	return &ebitenui.UI{Container: st.rootContainer}
+}
+
+// createTabs はTabMenuで使用するタブを作成する
+func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
+	return []tabmenu.TabItem{
+		{
+			ID:    "items",
+			Label: "道具",
+			Items: st.createMenuItems(world, st.queryMenuItem(world)),
+		},
+		{
+			ID:    "cards",
+			Label: "手札",
+			Items: st.createMenuItems(world, st.queryMenuCard(world)),
+		},
+		{
+			ID:    "wearables",
+			Label: "防具",
+			Items: st.createMenuItems(world, st.queryMenuWearable(world)),
+		},
+		{
+			ID:    "materials",
+			Label: "素材",
+			Items: st.createMenuItems(world, st.queryMenuMaterial(world)),
+		},
+	}
+}
+
+// createMenuItems はECSエンティティをMenuItemに変換する
+func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.MenuItem {
+	gameComponents := world.Components.Game.(*gc.Components)
+	items := make([]menu.MenuItem, len(entities))
+
+	for i, entity := range entities {
+		name := gameComponents.Name.Get(entity).(*gc.Name).Name
+		items[i] = menu.MenuItem{
+			ID:       fmt.Sprintf("entity_%d", entity),
+			Label:    string(name),
+			UserData: entity,
+		}
+	}
+
+	return items
+}
+
+// handleItemSelection はアイテム選択時の処理
+func (st *InventoryMenuState) handleItemSelection(world w.World, tab tabmenu.TabItem, item menu.MenuItem) {
+	entity, ok := item.UserData.(ecs.Entity)
+	if !ok {
+		log.Fatal("unexpected item UserData")
+	}
+
+	st.selectedItem = entity
+	st.showActionWindow(world, entity)
+}
+
+// handleItemChange はアイテム変更時の処理（カーソル移動）
+func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem) {
+	entity, ok := item.UserData.(ecs.Entity)
+	if !ok {
+		log.Fatal("unexpected item UserData")
+	}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	desc := gameComponents.Description.Get(entity).(*gc.Description)
+	st.itemDesc.Label = desc.Description
+	views.UpdateSpec(world, st.specContainer, entity)
+}
+
+// showActionWindow はアクションウィンドウを表示する
+func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity) {
+	windowContainer := eui.NewWindowContainer(world)
+	titleContainer := eui.NewWindowHeaderContainer("アクション", world)
+	actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
+
+	gameComponents := world.Components.Game.(*gc.Components)
+
+	useButton := eui.NewButton("使う　",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
+			switch consumable.TargetType.TargetNum {
+			case gc.TargetSingle:
+				st.initPartyWindow(world)
+				st.partyWindow.SetLocation(getWinRect())
+				st.ui.AddWindow(st.partyWindow)
+				actionWindow.Close()
+				st.selectedItem = entity
+			case gc.TargetAll:
+				effects.ItemTrigger(nil, entity, effects.Party{}, world)
+				actionWindow.Close()
+			}
+			st.reloadTabs(world)
+		}),
+	)
+	if entity.HasComponent(gameComponents.Consumable) {
+		windowContainer.AddChild(useButton)
+	}
+
+	dropButton := eui.NewButton("捨てる",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			world.Manager.DeleteEntity(entity)
+			actionWindow.Close()
+			st.reloadTabs(world)
+		}),
+	)
+	if !entity.HasComponent(gameComponents.Material) {
+		windowContainer.AddChild(dropButton)
+	}
+
+	closeButton := eui.NewButton("閉じる",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			actionWindow.Close()
+		}),
+	)
+	windowContainer.AddChild(closeButton)
+
+	actionWindow.SetLocation(setWinRect())
+	st.ui.AddWindow(actionWindow)
+}
+
+// reloadTabs はタブの内容を再読み込みする
+func (st *InventoryMenuState) reloadTabs(world w.World) {
+	newTabs := st.createTabs(world)
+	st.tabMenu.UpdateTabs(newTabs)
 }
 
 func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
@@ -201,113 +324,6 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 	return items
 }
 
-// itemsからUIを生成する
-// 使用などでアイテム数が変動した場合は再実行する必要がある
-func (st *InventoryMenuState) generateList(world world.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
-
-	entities := []any{}
-	for _, entity := range st.items {
-		entities = append(entities, entity)
-	}
-
-	res := world.Resources.UIResources
-	opts := []euiext.ListOpt{
-		euiext.ListOpts.EntryLabelFunc(func(e any) string {
-			entity, ok := e.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			name := gameComponents.Name.Get(entity).(*gc.Name).Name
-
-			return string(name)
-		}),
-		euiext.ListOpts.EntryEnterFunc(func(e any) {
-			entity, ok := e.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			if st.selectedItem != entity {
-				st.selectedItem = entity
-			}
-			desc := gameComponents.Description.Get(entity).(*gc.Description)
-			st.itemDesc.Label = desc.Description
-			views.UpdateSpec(world, st.specContainer, entity)
-		}),
-		euiext.ListOpts.EntryButtonOpts(),
-		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
-			windowContainer := eui.NewWindowContainer(world)
-			titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-			actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
-
-			entity, ok := args.Entry.(ecs.Entity)
-			if !ok {
-				log.Fatalf("unexpected entry: %#v", entity)
-			}
-
-			useButton := eui.NewButton("使う　",
-				world,
-				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-					consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
-					switch consumable.TargetType.TargetNum {
-					case gc.TargetSingle:
-						st.initPartyWindow(world)
-						st.partyWindow.SetLocation(getWinRect())
-
-						st.ui.AddWindow(st.partyWindow)
-						actionWindow.Close()
-						st.selectedItem = entity
-						st.generateList(world)
-					case gc.TargetAll:
-						effects.ItemTrigger(nil, entity, effects.Party{}, world)
-						actionWindow.Close()
-					}
-					st.categoryReload(world)
-				}),
-			)
-			if entity.HasComponent(gameComponents.Consumable) {
-				windowContainer.AddChild(useButton)
-			}
-
-			dropButton := eui.NewButton("捨てる",
-				world,
-				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-					world.Manager.DeleteEntity(entity)
-					actionWindow.Close()
-					st.categoryReload(world)
-				}),
-			)
-			if !entity.HasComponent(gameComponents.Material) {
-				windowContainer.AddChild(dropButton)
-			}
-
-			closeButton := eui.NewButton("閉じる",
-				world,
-				widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-					actionWindow.Close()
-				}),
-			)
-			windowContainer.AddChild(closeButton)
-
-			actionWindow.SetLocation(setWinRect())
-			st.ui.AddWindow(actionWindow)
-		}),
-		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
-		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(440, 520),
-		)),
-		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
-	}
-	list := eui.NewList(
-		entities,
-		opts,
-		world,
-	)
-	st.actionContainer.AddChild(list)
-
-	count := fmt.Sprintf("合計 %02d個", len(st.items))
-	st.actionContainer.AddChild(eui.NewMenuText(count, world))
-}
 
 // メンバー選択画面を初期化する
 func (st *InventoryMenuState) initPartyWindow(world w.World) {
@@ -329,7 +345,7 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 				st.partyWindow.Close()
-				st.categoryReload(world)
+				st.reloadTabs(world)
 			}),
 		)
 		memberContainer.AddChild(partyButton)
@@ -339,56 +355,3 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 	}))
 }
 
-func (st *InventoryMenuState) reloadToggleContainer(world w.World) {
-	st.toggleCategoryContainer.RemoveChildren()
-
-	toggleConsumableButton := eui.NewButton("道具",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeItem)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-	toggleCardButton := eui.NewButton("手札",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeCard)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-	toggleWearableButton := eui.NewButton("防具",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeWearable)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-	toggleMaterialButton := eui.NewButton("素材",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeMaterial)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-
-	switch st.category {
-	case ItemCategoryTypeItem:
-		toggleConsumableButton.GetWidget().Disabled = true
-	case ItemCategoryTypeWearable:
-		toggleWearableButton.GetWidget().Disabled = true
-	case ItemCategoryTypeCard:
-		toggleCardButton.GetWidget().Disabled = true
-	case ItemCategoryTypeMaterial:
-		toggleMaterialButton.GetWidget().Disabled = true
-	default:
-		log.Fatal("未定義のcategory")
-	}
-	st.toggleCategoryContainer.AddChild(toggleConsumableButton)
-	st.toggleCategoryContainer.AddChild(toggleCardButton)
-	st.toggleCategoryContainer.AddChild(toggleWearableButton)
-	st.toggleCategoryContainer.AddChild(toggleMaterialButton)
-}

@@ -49,6 +49,13 @@ func InitializeWithDummyKey() {
 	GlobalKeyState.lastPressedKey = &enterKey
 }
 
+// ResetGlobalKeyStateForTest はテスト用にグローバルキー状態をリセットする
+func ResetGlobalKeyStateForTest() {
+	GlobalKeyState.mutex.Lock()
+	defer GlobalKeyState.mutex.Unlock()
+	GlobalKeyState.lastPressedKey = nil
+}
+
 // KeyboardInput はキーボード入力を抽象化するインターフェース
 type KeyboardInput interface {
 	IsKeyJustPressed(key ebiten.Key) bool
@@ -71,6 +78,11 @@ func GetSharedKeyboardInput() KeyboardInput {
 		keyboardInstance = &sharedKeyboardInput{}
 	})
 	return keyboardInstance
+}
+
+// NewDefaultKeyboardInput は新しいデフォルトキーボード入力インスタンスを返す
+func NewDefaultKeyboardInput() KeyboardInput {
+	return &sharedKeyboardInput{}
 }
 
 func (s *sharedKeyboardInput) IsKeyJustPressed(key ebiten.Key) bool {
