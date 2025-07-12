@@ -86,7 +86,7 @@ func TestMainMenuSelection(t *testing.T) {
 	state.menu.SetFocusedIndex(3)
 
 	// Enterキーで選択
-	mockInput.SetKeyJustPressed(ebiten.KeyEnter, true)
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true)
 	state.menu.Update(mockInput)
 
 	// トランジションが設定されることを確認

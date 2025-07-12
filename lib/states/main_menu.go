@@ -34,7 +34,8 @@ func (st *MainMenuState) OnResume(world w.World) {}
 
 func (st *MainMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
-		st.keyboardInput = input.NewDefaultKeyboardInput()
+		// 共有インスタンスを使用してグローバル状態を保持
+		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 	st.initMenu(world)
 	st.ui = st.initUI(world)
@@ -94,10 +95,11 @@ func (st *MainMenuState) initMenu(world w.World) {
 
 	// メニューの設定
 	config := menu.MenuConfig{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
+		Items:             items,
+		InitialIndex:      0,
+		WrapNavigation:    true,
+		Orientation:       menu.Vertical,
+		OnlyDifferentKeys: true, // 前回と異なるキーのみ受け付ける
 	}
 
 	// コールバックの設定
