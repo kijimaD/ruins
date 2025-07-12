@@ -43,13 +43,27 @@ type TabMenu struct {
 
 // NewTabMenu は新しいTabMenuを作成する
 func NewTabMenu(config TabMenuConfig, callbacks TabMenuCallbacks, keyboardInput input.KeyboardInput) *TabMenu {
-	return &TabMenu{
+	tm := &TabMenu{
 		config:           config,
 		callbacks:        callbacks,
 		currentTabIndex:  config.InitialTabIndex,
 		currentItemIndex: config.InitialItemIndex,
 		keyboardInput:    keyboardInput,
 	}
+
+	// 初期タブのアイテム数を確認してインデックスを調整
+	if len(config.Tabs) > 0 && config.InitialTabIndex < len(config.Tabs) {
+		initialTab := config.Tabs[config.InitialTabIndex]
+		if len(initialTab.Items) == 0 {
+			tm.currentItemIndex = -1
+		} else if config.InitialItemIndex >= len(initialTab.Items) {
+			tm.currentItemIndex = len(initialTab.Items) - 1
+		} else if config.InitialItemIndex < 0 {
+			tm.currentItemIndex = 0
+		}
+	}
+
+	return tm
 }
 
 // Update はタブメニューを更新する
@@ -99,7 +113,7 @@ func (tm *TabMenu) handleTabNavigation() bool {
 	} else {
 		tabPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyTab)
 	}
-	
+
 	// Shift+Tabの判定
 	if tabPressed {
 		shiftPressed := tm.keyboardInput.IsKeyPressed(ebiten.KeyShift)
@@ -194,11 +208,22 @@ func (tm *TabMenu) navigateToPreviousTab() {
 	}
 
 	if oldIndex != tm.currentTabIndex {
-		tm.currentItemIndex = 0 // タブ変更時はアイテムインデックスをリセット
-		if tm.callbacks.OnTabChange != nil {
-			tm.callbacks.OnTabChange(oldIndex, tm.currentTabIndex, tm.config.Tabs[tm.currentTabIndex])
+		// タブ変更時はアイテムインデックスをリセット
+		newTab := tm.config.Tabs[tm.currentTabIndex]
+		if len(newTab.Items) > 0 {
+			tm.currentItemIndex = 0
+		} else {
+			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
 		}
-		tm.notifyItemChange(0, 0) // 新しいタブの最初のアイテムを通知
+
+		if tm.callbacks.OnTabChange != nil {
+			tm.callbacks.OnTabChange(oldIndex, tm.currentTabIndex, newTab)
+		}
+
+		// アイテムが存在する場合のみnotifyItemChangeを呼ぶ
+		if len(newTab.Items) > 0 {
+			tm.notifyItemChange(0, 0)
+		}
 	}
 }
 
@@ -213,11 +238,22 @@ func (tm *TabMenu) navigateToNextTab() {
 	}
 
 	if oldIndex != tm.currentTabIndex {
-		tm.currentItemIndex = 0 // タブ変更時はアイテムインデックスをリセット
-		if tm.callbacks.OnTabChange != nil {
-			tm.callbacks.OnTabChange(oldIndex, tm.currentTabIndex, tm.config.Tabs[tm.currentTabIndex])
+		// タブ変更時はアイテムインデックスをリセット
+		newTab := tm.config.Tabs[tm.currentTabIndex]
+		if len(newTab.Items) > 0 {
+			tm.currentItemIndex = 0
+		} else {
+			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
 		}
-		tm.notifyItemChange(0, 0) // 新しいタブの最初のアイテムを通知
+
+		if tm.callbacks.OnTabChange != nil {
+			tm.callbacks.OnTabChange(oldIndex, tm.currentTabIndex, newTab)
+		}
+
+		// アイテムが存在する場合のみnotifyItemChangeを呼ぶ
+		if len(newTab.Items) > 0 {
+			tm.notifyItemChange(0, 0)
+		}
 	}
 }
 
@@ -234,7 +270,10 @@ func (tm *TabMenu) navigateToPreviousItem() {
 
 	oldIndex := tm.currentItemIndex
 
-	if tm.currentItemIndex > 0 {
+	// 負のインデックスの場合は最初のアイテムに移動
+	if tm.currentItemIndex < 0 {
+		tm.currentItemIndex = 0
+	} else if tm.currentItemIndex > 0 {
 		tm.currentItemIndex--
 	} else if tm.config.WrapNavigation {
 		tm.currentItemIndex = len(currentTab.Items) - 1
@@ -258,7 +297,10 @@ func (tm *TabMenu) navigateToNextItem() {
 
 	oldIndex := tm.currentItemIndex
 
-	if tm.currentItemIndex < len(currentTab.Items)-1 {
+	// 負のインデックスの場合は最初のアイテムに移動
+	if tm.currentItemIndex < 0 {
+		tm.currentItemIndex = 0
+	} else if tm.currentItemIndex < len(currentTab.Items)-1 {
 		tm.currentItemIndex++
 	} else if tm.config.WrapNavigation {
 		tm.currentItemIndex = 0
@@ -276,7 +318,7 @@ func (tm *TabMenu) selectCurrentItem() {
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
-	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) {
+	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) || tm.currentItemIndex < 0 {
 		return
 	}
 
@@ -294,7 +336,7 @@ func (tm *TabMenu) notifyItemChange(oldIndex, newIndex int) {
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
-	if len(currentTab.Items) == 0 || newIndex >= len(currentTab.Items) {
+	if len(currentTab.Items) == 0 || newIndex >= len(currentTab.Items) || newIndex < 0 {
 		return
 	}
 
@@ -324,7 +366,7 @@ func (tm *TabMenu) GetCurrentTab() TabItem {
 // GetCurrentItem は現在のアイテムを返す
 func (tm *TabMenu) GetCurrentItem() menu.MenuItem {
 	currentTab := tm.GetCurrentTab()
-	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) {
+	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) || tm.currentItemIndex < 0 {
 		return menu.MenuItem{}
 	}
 	return currentTab.Items[tm.currentItemIndex]
@@ -335,13 +377,24 @@ func (tm *TabMenu) SetTabIndex(index int) {
 	if index >= 0 && index < len(tm.config.Tabs) {
 		oldIndex := tm.currentTabIndex
 		tm.currentTabIndex = index
-		tm.currentItemIndex = 0 // タブ変更時はアイテムインデックスをリセット
+
+		// タブ変更時はアイテムインデックスをリセット
+		newTab := tm.config.Tabs[tm.currentTabIndex]
+		if len(newTab.Items) > 0 {
+			tm.currentItemIndex = 0
+		} else {
+			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
+		}
 
 		if oldIndex != tm.currentTabIndex {
 			if tm.callbacks.OnTabChange != nil {
-				tm.callbacks.OnTabChange(oldIndex, tm.currentTabIndex, tm.config.Tabs[tm.currentTabIndex])
+				tm.callbacks.OnTabChange(oldIndex, tm.currentTabIndex, newTab)
 			}
-			tm.notifyItemChange(0, 0)
+
+			// アイテムが存在する場合のみnotifyItemChangeを呼ぶ
+			if len(newTab.Items) > 0 {
+				tm.notifyItemChange(0, 0)
+			}
 		}
 	}
 }
@@ -362,7 +415,7 @@ func (tm *TabMenu) SetItemIndex(index int) {
 // UpdateTabs はタブを更新する（動的にアイテムが変更された場合）
 func (tm *TabMenu) UpdateTabs(tabs []TabItem) {
 	tm.config.Tabs = tabs
-	
+
 	// 現在のインデックスが範囲外になった場合は調整
 	if tm.currentTabIndex >= len(tabs) {
 		tm.currentTabIndex = len(tabs) - 1
@@ -370,15 +423,19 @@ func (tm *TabMenu) UpdateTabs(tabs []TabItem) {
 			tm.currentTabIndex = 0
 		}
 	}
-	
+
 	// 現在のタブのアイテムインデックスを調整
 	if len(tabs) > 0 && tm.currentTabIndex < len(tabs) {
 		currentTab := tabs[tm.currentTabIndex]
-		if tm.currentItemIndex >= len(currentTab.Items) {
+		if len(currentTab.Items) == 0 {
+			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
+		} else if tm.currentItemIndex >= len(currentTab.Items) {
 			tm.currentItemIndex = len(currentTab.Items) - 1
-			if tm.currentItemIndex < 0 {
-				tm.currentItemIndex = 0
-			}
+		} else if tm.currentItemIndex < 0 {
+			tm.currentItemIndex = 0
 		}
+
+		// UpdateTabsは内部状態の更新のみを行い、コールバックは呼ばない
+		// コールバックは呼び出し元で必要に応じて実行される
 	}
 }

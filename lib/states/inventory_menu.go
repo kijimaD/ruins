@@ -24,14 +24,15 @@ import (
 type InventoryMenuState struct {
 	ui *ebitenui.UI
 
-	tabMenu          *tabmenu.TabMenu
-	keyboardInput    input.KeyboardInput
-	selectedItem     ecs.Entity        // 選択中のアイテム
-	itemDesc         *widget.Text      // アイテムの概要
-	specContainer    *widget.Container // 性能表示のコンテナ
-	partyWindow      *widget.Window    // 仲間を選択するウィンドウ
-	rootContainer    *widget.Container
-	trans            *states.Transition // 状態遷移
+	tabMenu             *tabmenu.TabMenu
+	keyboardInput       input.KeyboardInput
+	selectedItem        ecs.Entity        // 選択中のアイテム
+	itemDesc            *widget.Text      // アイテムの概要
+	specContainer       *widget.Container // 性能表示のコンテナ
+	partyWindow         *widget.Window    // 仲間を選択するウィンドウ
+	rootContainer       *widget.Container
+	tabDisplayContainer *widget.Container  // タブ表示のコンテナ
+	trans               *states.Transition // 状態遷移
 }
 
 func (st InventoryMenuState) String() string {
@@ -91,7 +92,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
 		WrapNavigation:    true,
-		OnlyDifferentKeys: true,
+		OnlyDifferentKeys: false, // 一時的にfalseにしてテスト
 	}
 
 	callbacks := tabmenu.TabMenuCallbacks{
@@ -102,8 +103,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			// Escapeでホームメニューに戻る
 			st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 		},
+		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
+			st.updateTabDisplay(world)
+		},
 		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
 			st.handleItemChange(world, item)
+			st.updateTabDisplay(world)
 		},
 	}
 
@@ -118,15 +123,22 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 
+	// 初期状態の表示を更新
+	st.updateInitialItemDisplay(world)
+
+	// タブ表示のコンテナを作成
+	st.tabDisplayContainer = eui.NewVerticalContainer()
+	st.createTabDisplayUI(world)
+
 	st.rootContainer = eui.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
 		st.rootContainer.AddChild(eui.NewMenuText("インベントリ", world))
 		st.rootContainer.AddChild(widget.NewContainer())
-		st.rootContainer.AddChild(widget.NewContainer()) // TabMenuはキーボードのみで操作
+		st.rootContainer.AddChild(widget.NewContainer())
 
-		st.rootContainer.AddChild(widget.NewContainer()) // TabMenuはキーボードのみで操作
+		st.rootContainer.AddChild(st.tabDisplayContainer) // タブとアイテム一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
 		st.rootContainer.AddChild(st.specContainer)
 
@@ -138,7 +150,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 
 // createTabs はTabMenuで使用するタブを作成する
 func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
-	return []tabmenu.TabItem{
+	tabs := []tabmenu.TabItem{
 		{
 			ID:    "items",
 			Label: "道具",
@@ -160,6 +172,8 @@ func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
 			Items: st.createMenuItems(world, st.queryMenuMaterial(world)),
 		},
 	}
+
+	return tabs
 }
 
 // createMenuItems はECSエンティティをMenuItemに変換する
@@ -192,13 +206,34 @@ func (st *InventoryMenuState) handleItemSelection(world w.World, tab tabmenu.Tab
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
 func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem) {
+	// 無効なアイテムの場合は何もしない
+	if item.UserData == nil {
+		st.itemDesc.Label = " "
+		st.specContainer.RemoveChildren()
+		return
+	}
+
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Fatal("unexpected item UserData")
 	}
 
 	gameComponents := world.Components.Game.(*gc.Components)
+
+	// Descriptionコンポーネントの存在チェック
+	if !entity.HasComponent(gameComponents.Description) {
+		st.itemDesc.Label = "説明なし"
+		st.specContainer.RemoveChildren()
+		return
+	}
+
 	desc := gameComponents.Description.Get(entity).(*gc.Description)
+	if desc == nil {
+		st.itemDesc.Label = "説明なし"
+		st.specContainer.RemoveChildren()
+		return
+	}
+
 	st.itemDesc.Label = desc.Description
 	views.UpdateSpec(world, st.specContainer, entity)
 }
@@ -261,6 +296,8 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 func (st *InventoryMenuState) reloadTabs(world w.World) {
 	newTabs := st.createTabs(world)
 	st.tabMenu.UpdateTabs(newTabs)
+	// UpdateTabs後に表示を更新
+	st.updateTabDisplay(world)
 }
 
 func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
@@ -324,6 +361,52 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 	return items
 }
 
+// createTabDisplayUI はタブ表示UIを作成する
+func (st *InventoryMenuState) createTabDisplayUI(world w.World) {
+	st.updateTabDisplay(world)
+}
+
+// updateTabDisplay はタブ表示を更新する
+func (st *InventoryMenuState) updateTabDisplay(world w.World) {
+	// 既存の子要素をクリア
+	st.tabDisplayContainer.RemoveChildren()
+
+	currentTab := st.tabMenu.GetCurrentTab()
+	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+
+	// タブ名を表示
+	tabNameText := eui.NewMenuText(fmt.Sprintf("【%s】", currentTab.Label), world)
+	st.tabDisplayContainer.AddChild(tabNameText)
+
+	// アイテム一覧を表示
+	for i, item := range currentTab.Items {
+		itemText := item.Label
+		if i == currentItemIndex && currentItemIndex >= 0 {
+			itemText = "► " + itemText // 選択中のアイテムにマーカーを追加
+		} else {
+			itemText = "  " + itemText
+		}
+		itemWidget := eui.NewMenuText(itemText, world)
+		st.tabDisplayContainer.AddChild(itemWidget)
+	}
+
+	// アイテムがない場合の表示
+	if len(currentTab.Items) == 0 {
+		emptyText := eui.NewMenuText("  (アイテムなし)", world)
+		st.tabDisplayContainer.AddChild(emptyText)
+	}
+}
+
+// updateInitialItemDisplay は初期状態のアイテム表示を更新する
+func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
+	currentTab := st.tabMenu.GetCurrentTab()
+	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+
+	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
+		currentItem := currentTab.Items[currentItemIndex]
+		st.handleItemChange(world, currentItem)
+	}
+}
 
 // メンバー選択画面を初期化する
 func (st *InventoryMenuState) initPartyWindow(world w.World) {
@@ -354,4 +437,3 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 		rowContainer.AddChild(memberContainer)
 	}))
 }
-
