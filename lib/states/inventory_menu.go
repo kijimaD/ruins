@@ -35,6 +35,12 @@ type InventoryMenuState struct {
 	tabDisplayContainer *widget.Container  // タブ表示のコンテナ
 	categoryContainer   *widget.Container  // カテゴリ一覧のコンテナ
 	trans               *states.Transition // 状態遷移
+
+	// ウィンドウ操作用
+	actionWindow     *widget.Window // アクション選択ウィンドウ
+	actionFocusIndex int            // アクションウィンドウ内のフォーカス
+	actionItems      []string       // アクション項目リスト
+	isWindowMode     bool           // ウィンドウ操作モードかどうか
 }
 
 func (st InventoryMenuState) String() string {
@@ -70,6 +76,13 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 		trans := *st.trans
 		st.trans = nil
 		return trans
+	}
+
+	// ウィンドウモードの場合はウィンドウ操作を優先
+	if st.isWindowMode {
+		if st.updateWindowMode(world) {
+			return states.Transition{Type: states.TransNone}
+		}
 	}
 
 	st.tabMenu.Update()
@@ -245,64 +258,150 @@ func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem
 	views.UpdateSpec(world, st.specContainer, entity)
 }
 
+// updateWindowMode はウィンドウモード時の操作を処理する
+func (st *InventoryMenuState) updateWindowMode(world w.World) bool {
+	// Escapeでウィンドウモードを終了
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		st.closeActionWindow()
+		return false
+	}
+
+	// 上下矢印でフォーカス移動
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+		st.actionFocusIndex--
+		if st.actionFocusIndex < 0 {
+			st.actionFocusIndex = len(st.actionItems) - 1
+		}
+		st.updateActionWindowDisplay(world)
+		return true
+	}
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+		st.actionFocusIndex++
+		if st.actionFocusIndex >= len(st.actionItems) {
+			st.actionFocusIndex = 0
+		}
+		st.updateActionWindowDisplay(world)
+		return true
+	}
+
+	// Enterで選択実行
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEnter) || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+		st.executeActionItem(world)
+		return true
+	}
+
+	return true
+}
+
+// closeActionWindow はアクションウィンドウを閉じる
+func (st *InventoryMenuState) closeActionWindow() {
+	if st.actionWindow != nil {
+		st.actionWindow.Close()
+		st.actionWindow = nil
+	}
+	st.isWindowMode = false
+	st.actionFocusIndex = 0
+	st.actionItems = nil
+}
+
 // showActionWindow はアクションウィンドウを表示する
 func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	windowContainer := eui.NewWindowContainer(world)
-	titleContainer := eui.NewWindowHeaderContainer("アクション", world)
-	actionWindow := eui.NewSmallWindow(titleContainer, windowContainer)
+	titleContainer := eui.NewWindowHeaderContainer("アクション [↑↓:選択 Enter:実行 Esc:閉じる]", world)
+	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
 	gameComponents := world.Components.Game.(*gc.Components)
 
-	useButton := eui.NewButton("使う　",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
-			switch consumable.TargetType.TargetNum {
-			case gc.TargetSingle:
-				actionWindow.Close()
-				st.initPartyWindow(world)
-				st.ui.AddWindow(st.partyWindow)
-				st.selectedItem = entity
-				// TargetSingleの場合は、パーティウィンドウでの使用後に更新されるため、ここでは更新しない
-			case gc.TargetAll:
-				effects.ItemTrigger(nil, entity, effects.Party{}, world)
-				actionWindow.Close()
-				st.reloadTabs(world)
-				// 表示を更新
-				st.updateTabDisplay(world)
-				st.updateCategoryDisplay(world)
-			}
-		}),
-	)
+	// アクション項目を準備
+	st.actionItems = []string{}
+	st.selectedItem = entity
+
+	// 使用可能なアクションを登録
 	if entity.HasComponent(gameComponents.Consumable) {
-		windowContainer.AddChild(useButton)
+		st.actionItems = append(st.actionItems, "使う")
+	}
+	if !entity.HasComponent(gameComponents.Material) {
+		st.actionItems = append(st.actionItems, "捨てる")
+	}
+	st.actionItems = append(st.actionItems, "閉じる")
+
+	st.actionFocusIndex = 0
+	st.isWindowMode = true
+
+	// UI要素を作成（表示のみ、操作はキーボードで行う）
+	st.createActionWindowUI(world, windowContainer, entity)
+
+	st.actionWindow.SetLocation(getCenterWinRect())
+	st.ui.AddWindow(st.actionWindow)
+}
+
+// createActionWindowUI はアクションウィンドウのUI要素を作成する
+func (st *InventoryMenuState) createActionWindowUI(world w.World, container *widget.Container, entity ecs.Entity) {
+	st.updateActionWindowDisplay(world)
+}
+
+// updateActionWindowDisplay はアクションウィンドウの表示を更新する
+func (st *InventoryMenuState) updateActionWindowDisplay(world w.World) {
+	if st.actionWindow == nil {
+		return
 	}
 
-	dropButton := eui.NewButton("捨てる",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			world.Manager.DeleteEntity(entity)
-			actionWindow.Close()
+	// 既存のウィンドウを閉じて新しく作成
+	st.actionWindow.Close()
+
+	windowContainer := eui.NewWindowContainer(world)
+	titleContainer := eui.NewWindowHeaderContainer("アクション [↑↓:選択 Enter:実行 Esc:閉じる]", world)
+	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
+
+	// アクション項目を表示
+	for i, action := range st.actionItems {
+		var actionWidget *widget.Container
+		isSelected := i == st.actionFocusIndex
+		if isSelected {
+			actionWidget = eui.NewListItemText("-> "+action, styles.TextColor, true, world)
+		} else {
+			actionWidget = eui.NewListItemText("   "+action, styles.ForegroundColor, false, world)
+		}
+		windowContainer.AddChild(actionWidget)
+	}
+
+	st.actionWindow.SetLocation(getCenterWinRect())
+	st.ui.AddWindow(st.actionWindow)
+}
+
+// executeActionItem は選択されたアクション項目を実行する
+func (st *InventoryMenuState) executeActionItem(world w.World) {
+	if st.actionFocusIndex >= len(st.actionItems) {
+		return
+	}
+
+	selectedAction := st.actionItems[st.actionFocusIndex]
+	gameComponents := world.Components.Game.(*gc.Components)
+
+	switch selectedAction {
+	case "使う":
+		consumable := gameComponents.Consumable.Get(st.selectedItem).(*gc.Consumable)
+		switch consumable.TargetType.TargetNum {
+		case gc.TargetSingle:
+			st.closeActionWindow()
+			st.initPartyWindow(world)
+			st.ui.AddWindow(st.partyWindow)
+		case gc.TargetAll:
+			effects.ItemTrigger(nil, st.selectedItem, effects.Party{}, world)
+			st.closeActionWindow()
 			st.reloadTabs(world)
-			// 表示を更新
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
-		}),
-	)
-	if !entity.HasComponent(gameComponents.Material) {
-		windowContainer.AddChild(dropButton)
+		}
+	case "捨てる":
+		world.Manager.DeleteEntity(st.selectedItem)
+		st.closeActionWindow()
+		st.reloadTabs(world)
+		st.updateTabDisplay(world)
+		st.updateCategoryDisplay(world)
+	case "閉じる":
+		st.closeActionWindow()
 	}
-
-	closeButton := eui.NewButton("閉じる",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		}),
-	)
-	windowContainer.AddChild(closeButton)
-
-	actionWindow.SetLocation(getCenterWinRect())
-	st.ui.AddWindow(actionWindow)
 }
 
 // reloadTabs はタブの内容を再読み込みする
