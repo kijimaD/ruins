@@ -1,19 +1,21 @@
 package input
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 // MockKeyboardInput はテスト用のモックキーボード入力実装
 type MockKeyboardInput struct {
-	pressedKeys            map[ebiten.Key]bool
-	justPressedKeys        map[ebiten.Key]bool
-	justPressedIfDifferent map[ebiten.Key]bool
+	pressedKeys           map[ebiten.Key]bool
+	justPressedKeys       map[ebiten.Key]bool
+	previousEnterSession  bool // 前回のEnterキーセッション状態
 }
 
 func NewMockKeyboardInput() *MockKeyboardInput {
 	return &MockKeyboardInput{
-		pressedKeys:            make(map[ebiten.Key]bool),
-		justPressedKeys:        make(map[ebiten.Key]bool),
-		justPressedIfDifferent: make(map[ebiten.Key]bool),
+		pressedKeys:          make(map[ebiten.Key]bool),
+		justPressedKeys:     make(map[ebiten.Key]bool),
+		previousEnterSession: false,
 	}
 }
 
@@ -23,24 +25,6 @@ func (m *MockKeyboardInput) IsKeyJustPressed(key ebiten.Key) bool {
 
 func (m *MockKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
 	return m.pressedKeys[key]
-}
-
-func (m *MockKeyboardInput) IsKeyJustPressedIfDifferent(key ebiten.Key) bool {
-	if !m.justPressedIfDifferent[key] {
-		return false
-	}
-
-	// グローバル状態から前回のキーを取得
-	lastKey := GlobalKeyState.GetLastPressedKey()
-
-	// 前回と同じキーの場合は無効
-	if lastKey != nil && *lastKey == key {
-		return false
-	}
-
-	// 前回と異なるキーの場合は有効
-	GlobalKeyState.SetLastPressedKey(key)
-	return true
 }
 
 // SetKeyJustPressed はテスト用にキーの状態を設定する
@@ -53,24 +37,37 @@ func (m *MockKeyboardInput) SetKeyPressed(key ebiten.Key, pressed bool) {
 	m.pressedKeys[key] = pressed
 }
 
-// SetKeyJustPressedIfDifferent はテスト用に異なるキー検出の状態を設定
-func (m *MockKeyboardInput) SetKeyJustPressedIfDifferent(key ebiten.Key, pressed bool) {
-	m.justPressedIfDifferent[key] = pressed
-}
-
 // Reset は全てのキー状態をリセットする
 func (m *MockKeyboardInput) Reset() {
 	m.pressedKeys = make(map[ebiten.Key]bool)
 	m.justPressedKeys = make(map[ebiten.Key]bool)
-	m.justPressedIfDifferent = make(map[ebiten.Key]bool)
+	m.previousEnterSession = false
 }
 
-// ClearLastPressedKey はグローバルの最後に押されたキーをクリアする
-func (m *MockKeyboardInput) ClearLastPressedKey() {
-	GlobalKeyState.ClearLastPressedKey()
+// IsEnterJustPressedOnce はモック用の押下-押上ワンセット検出
+func (m *MockKeyboardInput) IsEnterJustPressedOnce() bool {
+	// 現在のEnterキーセッション状態を取得
+	currentlyInSession := m.pressedKeys[ebiten.KeyEnter]
+	wasInSession := m.previousEnterSession
+
+	// セッション状態を更新
+	m.previousEnterSession = currentlyInSession
+
+	// セッション終了時（押下から押上への遷移）のみtrueを返す
+	if wasInSession && !currentlyInSession {
+		return true
+	}
+
+	return false
 }
 
-// ResetGlobalKeyState はグローバルキー状態をリセットする（テスト用）
-func (m *MockKeyboardInput) ResetGlobalKeyState() {
-	GlobalKeyState.ClearLastPressedKey()
+// SimulateEnterPressRelease はテスト用にEnterキーの押下-押上をシミュレートする
+func (m *MockKeyboardInput) SimulateEnterPressRelease() {
+	// セッション開始（押下状態に設定）
+	m.SetKeyPressed(ebiten.KeyEnter, true)
+	m.IsEnterJustPressedOnce() // セッション状態を更新
+
+	// セッション終了（押上状態に設定）
+	m.SetKeyPressed(ebiten.KeyEnter, false)
+	// この時点でIsEnterJustPressedOnce()がtrueを返すはず（1セット完了）
 }

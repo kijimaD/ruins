@@ -9,58 +9,41 @@ import (
 
 // GlobalKeyState はグローバルなキー状態を管理する
 var GlobalKeyState = &globalKeyState{
-	lastPressedKey: nil,
+	enterPressSession: false,
 }
 
 // globalKeyState はアプリケーション全体で共有されるキー状態
 type globalKeyState struct {
-	lastPressedKey *ebiten.Key
-	mutex          sync.RWMutex
+	enterPressSession bool // Enterキーの押下セッション状態（押下中かどうか）
+	mutex             sync.RWMutex
 }
 
-// SetLastPressedKey は最後に押されたキーを設定する
-func (g *globalKeyState) SetLastPressedKey(key ebiten.Key) {
+// SetEnterPressSession はEnterキーの押下セッション状態を設定する
+func (g *globalKeyState) SetEnterPressSession(inSession bool) {
 	g.mutex.Lock()
 	defer g.mutex.Unlock()
-	g.lastPressedKey = &key
+	g.enterPressSession = inSession
 }
 
-// GetLastPressedKey は最後に押されたキーを取得する
-func (g *globalKeyState) GetLastPressedKey() *ebiten.Key {
+// IsInEnterPressSession はEnterキーが押下セッション中かどうかを取得する
+func (g *globalKeyState) IsInEnterPressSession() bool {
 	g.mutex.RLock()
 	defer g.mutex.RUnlock()
-	return g.lastPressedKey
-}
-
-// ClearLastPressedKey は最後に押されたキーをクリアする
-func (g *globalKeyState) ClearLastPressedKey() {
-	g.mutex.Lock()
-	defer g.mutex.Unlock()
-	g.lastPressedKey = nil
-}
-
-// InitializeWithDummyKey はアプリケーション開始時にキー状態を初期化する
-func InitializeWithDummyKey() {
-	GlobalKeyState.mutex.Lock()
-	defer GlobalKeyState.mutex.Unlock()
-
-	// 初回のEnterキー重複実行を防ぐため、Enterを既に押された状態にする
-	enterKey := ebiten.KeyEnter
-	GlobalKeyState.lastPressedKey = &enterKey
+	return g.enterPressSession
 }
 
 // ResetGlobalKeyStateForTest はテスト用にグローバルキー状態をリセットする
 func ResetGlobalKeyStateForTest() {
 	GlobalKeyState.mutex.Lock()
 	defer GlobalKeyState.mutex.Unlock()
-	GlobalKeyState.lastPressedKey = nil
+	GlobalKeyState.enterPressSession = false // Enterキーセッション状態をリセット
 }
 
 // KeyboardInput はキーボード入力を抽象化するインターフェース
 type KeyboardInput interface {
 	IsKeyJustPressed(key ebiten.Key) bool
 	IsKeyPressed(key ebiten.Key) bool
-	IsKeyJustPressedIfDifferent(key ebiten.Key) bool // 前回と異なるキーの場合のみtrue
+	IsEnterJustPressedOnce() bool // Enterキーが押下-押上のワンセットで押されたかどうか
 }
 
 // sharedKeyboardInput はシングルトンのキーボード入力実装
@@ -93,21 +76,19 @@ func (s *sharedKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
 	return ebiten.IsKeyPressed(key)
 }
 
-// IsKeyJustPressedIfDifferent は前回と異なるキーが押された場合のみtrueを返す
-func (s *sharedKeyboardInput) IsKeyJustPressedIfDifferent(key ebiten.Key) bool {
-	if !inpututil.IsKeyJustPressed(key) {
-		return false
+// IsEnterJustPressedOnce はEnterキーが押下-押上のワンセットで押されたかどうかを返す
+func (s *sharedKeyboardInput) IsEnterJustPressedOnce() bool {
+	// 現在のEnterキーの物理状態を取得
+	currentlyPressed := ebiten.IsKeyPressed(ebiten.KeyEnter)
+	wasInSession := GlobalKeyState.IsInEnterPressSession()
+
+	// セッション状態を更新
+	GlobalKeyState.SetEnterPressSession(currentlyPressed)
+
+	// セッション終了時（押下から押上への遷移）のみtrueを返す（1セット完了）
+	if wasInSession && !currentlyPressed {
+		return true
 	}
 
-	// グローバル状態から前回のキーを取得
-	lastKey := GlobalKeyState.GetLastPressedKey()
-
-	// 前回と同じキーの場合は無効
-	if lastKey != nil && *lastKey == key {
-		return false
-	}
-
-	// 前回と異なるキーの場合は有効
-	GlobalKeyState.SetLastPressedKey(key)
-	return true
+	return false
 }
