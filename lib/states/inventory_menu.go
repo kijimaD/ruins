@@ -73,7 +73,7 @@ func (st *InventoryMenuState) OnStop(world w.World) {}
 func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)
 
-	if st.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeySlash) {
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
@@ -116,11 +116,10 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	// TabMenuの設定
 	tabs := st.createTabs(world)
 	config := tabmenu.TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
-		WrapNavigation:    true,
-		OnlyDifferentKeys: false, // 一時的にfalseにしてテスト
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
 	}
 
 	callbacks := tabmenu.TabMenuCallbacks{
@@ -297,8 +296,8 @@ func (st *InventoryMenuState) updateWindowMode(world w.World) bool {
 		return true
 	}
 
-	// Enterで選択実行
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEnter) || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+	// Enterで選択実行（押下-押上ワンセット）
+	if st.keyboardInput.IsEnterJustPressedOnce() || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
 		st.executeActionItem(world)
 		return true
 	}
@@ -400,8 +399,8 @@ func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
 		return true
 	}
 
-	// Enterでメンバー選択実行
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEnter) || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+	// Enterでメンバー選択実行（押下-押上ワンセット）
+	if st.keyboardInput.IsEnterJustPressedOnce() || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
 		st.executePartySelection(world)
 		return true
 	}

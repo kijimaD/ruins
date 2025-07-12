@@ -7,7 +7,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/game"
-	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/utils"
 	"github.com/pkg/profile"
 	"github.com/urfave/cli/v2"
@@ -38,9 +37,6 @@ func runPlay(_ *cli.Context) error {
 			log.Fatal(http.ListenAndServe("localhost:6060", nil))
 		}()
 	}
-
-	// グローバルキー状態をダミーキーで初期化
-	input.InitializeWithDummyKey()
 
 	world := game.InitWorld(utils.MinGameWidth, utils.MinGameHeight)
 	ebiten.RunGame(&game.MainGame{

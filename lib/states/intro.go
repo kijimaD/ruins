@@ -10,15 +10,17 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/utils/msg"
 )
 
 type IntroState struct {
-	ui    *ebitenui.UI
-	trans *states.Transition
-	queue msg.Queue
-	cycle int
-	bg    *ebiten.Image
+	ui            *ebitenui.UI
+	trans         *states.Transition
+	queue         msg.Queue
+	cycle         int
+	bg            *ebiten.Image
+	keyboardInput input.KeyboardInput
 
 	messageContainer *widget.Container
 }
@@ -50,6 +52,9 @@ func (st *IntroState) OnPause(world w.World) {}
 func (st *IntroState) OnResume(world w.World) {}
 
 func (st *IntroState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
 	st.queue = msg.NewQueueFromText(introText)
 	st.ui = st.initUI(world)
 }
@@ -71,11 +76,11 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	st.cycle++
 
 	switch {
-	case inpututil.IsKeyJustPressed(ebiten.KeyEnter):
+	case st.keyboardInput.IsEnterJustPressedOnce():
 		queueResult = st.queue.Pop()
 	case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
 		queueResult = st.queue.Pop()
-	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
+	case st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape):
 		// debug
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 	}

@@ -153,9 +153,9 @@ func (m *Menu) handleKeyboard() {
 		handled = true
 	}
 
-	// 選択（どちらも常に連続クリック防止）
-	enterPressed := m.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEnter)
-	spacePressed := m.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeySpace)
+	// 選択（Enterは押下-押上ワンセット、Spaceは通常）
+	enterPressed := m.keyboardInput.IsEnterJustPressedOnce()
+	spacePressed := m.keyboardInput.IsKeyJustPressed(ebiten.KeySpace)
 
 	if enterPressed || spacePressed {
 		m.selectCurrent()

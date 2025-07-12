@@ -15,11 +15,10 @@ type TabItem struct {
 
 // TabMenuConfig はタブメニューの設定
 type TabMenuConfig struct {
-	Tabs              []TabItem
-	InitialTabIndex   int
-	InitialItemIndex  int
-	WrapNavigation    bool // タブ/アイテム両方で端循環するか
-	OnlyDifferentKeys bool // 前回と異なるキーのみ受け付けるか
+	Tabs             []TabItem
+	InitialTabIndex  int
+	InitialItemIndex int
+	WrapNavigation   bool // タブ/アイテム両方で端循環するか
 }
 
 // TabMenuCallbacks はタブメニューのコールバック
@@ -95,26 +94,12 @@ func (tm *TabMenu) Update() bool {
 
 // handleTabNavigation はタブ切り替えを処理する
 func (tm *TabMenu) handleTabNavigation() bool {
-	var leftPressed, rightPressed, tabPressed, shiftTabPressed bool
-
-	// ナビゲーションキー（矢印キー、Tab/Shift+Tab）はOnlyDifferentKeysの対象外とする
-	// これにより一貫したナビゲーション体験を提供する
-	if tm.config.OnlyDifferentKeys {
-		leftPressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyArrowLeft)
-		rightPressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyArrowRight)
-	} else {
-		leftPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowLeft)
-		rightPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowRight)
-	}
-
-	// Tab/Shift+Tabキー
-	if tm.config.OnlyDifferentKeys {
-		tabPressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyTab)
-	} else {
-		tabPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyTab)
-	}
+	leftPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowLeft)
+	rightPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowRight)
+	tabPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyTab)
 
 	// Shift+Tabの判定
+	var shiftTabPressed bool
 	if tabPressed {
 		shiftPressed := tm.keyboardInput.IsKeyPressed(ebiten.KeyShift)
 		if shiftPressed {
@@ -136,15 +121,8 @@ func (tm *TabMenu) handleTabNavigation() bool {
 
 // handleItemNavigation はアイテム選択を処理する
 func (tm *TabMenu) handleItemNavigation() bool {
-	var upPressed, downPressed bool
-
-	if tm.config.OnlyDifferentKeys {
-		upPressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyArrowUp)
-		downPressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyArrowDown)
-	} else {
-		upPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)
-		downPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)
-	}
+	upPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)
+	downPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)
 
 	if upPressed {
 		tm.navigateToPreviousItem()
@@ -159,15 +137,10 @@ func (tm *TabMenu) handleItemNavigation() bool {
 
 // handleSelection は選択を処理する
 func (tm *TabMenu) handleSelection() bool {
-	var enterPressed, spacePressed bool
-
-	if tm.config.OnlyDifferentKeys {
-		enterPressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEnter)
-		spacePressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeySpace)
-	} else {
-		enterPressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyEnter)
-		spacePressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeySpace)
-	}
+	// Enterキーは押下-押上ワンセット制御を使用
+	enterPressed := tm.keyboardInput.IsEnterJustPressedOnce()
+	// Spaceキーは通常の処理
+	spacePressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeySpace)
 
 	if enterPressed || spacePressed {
 		tm.selectCurrentItem()
@@ -179,13 +152,7 @@ func (tm *TabMenu) handleSelection() bool {
 
 // handleCancel はキャンセルを処理する
 func (tm *TabMenu) handleCancel() bool {
-	var escapePressed bool
-
-	if tm.config.OnlyDifferentKeys {
-		escapePressed = tm.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEscape)
-	} else {
-		escapePressed = tm.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape)
-	}
+	escapePressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape)
 
 	if escapePressed {
 		if tm.callbacks.OnCancel != nil {
