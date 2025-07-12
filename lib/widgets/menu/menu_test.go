@@ -132,7 +132,9 @@ func TestMenuSelection(t *testing.T) {
 
 	// モックキーボード入力を作成
 	mockInput := input.NewMockKeyboardInput()
-	mockInput.SetKeyJustPressed(ebiten.KeyEnter, true)
+	// Enterキーは常にIsKeyJustPressedIfDifferentを使用するように変更されたため
+	mockInput.ClearLastPressedKey() // 前回のキー情報をクリア
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true)
 
 	// メニューを更新
 	menu.Update(mockInput)
@@ -287,11 +289,171 @@ func TestMenuDisabledItems(t *testing.T) {
 	// 無効なアイテムでEnterを押しても選択されないことを確認
 	menu.focusedIndex = 1 // 強制的に無効なアイテムにフォーカス
 	mockInput := input.NewMockKeyboardInput()
-	mockInput.SetKeyJustPressed(ebiten.KeyEnter, true)
+	mockInput.ClearLastPressedKey() // 前回のキー情報をクリア
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true)
 
 	menu.Update(mockInput)
 
 	if selectionCalled {
 		t.Error("無効なアイテムが選択された")
+	}
+}
+
+func TestMenuSpaceSelection(t *testing.T) {
+	items := []MenuItem{
+		{ID: "1", Label: "Item 1"},
+		{ID: "2", Label: "Item 2"},
+		{ID: "3", Label: "Item 3"},
+	}
+
+	var selectedIndex int
+	var selectedItem MenuItem
+	var selectionCalled bool
+
+	config := MenuConfig{
+		Items:        items,
+		InitialIndex: 0,
+	}
+
+	callbacks := MenuCallbacks{
+		OnSelect: func(index int, item MenuItem) {
+			selectedIndex = index
+			selectedItem = item
+			selectionCalled = true
+		},
+	}
+
+	menu := NewMenu(config, callbacks)
+
+	// モックキーボード入力を作成
+	mockInput := input.NewMockKeyboardInput()
+	// Spaceキーも常にIsKeyJustPressedIfDifferentを使用するように変更されたため
+	mockInput.ClearLastPressedKey() // 前回のキー情報をクリア
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeySpace, true)
+
+	// メニューを更新
+	menu.Update(mockInput)
+
+	// 結果を検証
+	if !selectionCalled {
+		t.Error("OnSelectコールバックが呼ばれていない")
+	}
+
+	if selectedIndex != 0 {
+		t.Errorf("期待される選択インデックス: 0, 実際: %d", selectedIndex)
+	}
+
+	if selectedItem.ID != "1" {
+		t.Errorf("期待される選択アイテムID: 1, 実際: %s", selectedItem.ID)
+	}
+}
+
+func TestMenuConsecutiveEnterPrevention(t *testing.T) {
+	items := []MenuItem{
+		{ID: "1", Label: "Item 1"},
+		{ID: "2", Label: "Item 2"},
+	}
+
+	var selectionCount int
+
+	config := MenuConfig{
+		Items:        items,
+		InitialIndex: 0,
+	}
+
+	callbacks := MenuCallbacks{
+		OnSelect: func(index int, item MenuItem) {
+			selectionCount++
+		},
+	}
+
+	menu := NewMenu(config, callbacks)
+	mockInput := input.NewMockKeyboardInput()
+
+	// 1回目のEnter - これは成功するはず
+	mockInput.ClearLastPressedKey()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true)
+	menu.Update(mockInput)
+
+	if selectionCount != 1 {
+		t.Errorf("1回目の選択が失敗: 期待 1, 実際 %d", selectionCount)
+	}
+
+	// 2回目の連続Enter - これは無視されるはず
+	mockInput.Reset()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true) // 前回と同じキーなので無視される
+	menu.Update(mockInput)
+
+	if selectionCount != 1 {
+		t.Errorf("連続Enterが防止されていない: 期待 1, 実際 %d", selectionCount)
+	}
+
+	// 別のキーを押してからEnter - これは成功するはず
+	mockInput.Reset()
+	mockInput.ClearLastPressedKey()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowDown, true) // 別のキーを先に押す
+	menu.Update(mockInput)
+
+	mockInput.Reset()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true) // 今度は成功するはず
+	menu.Update(mockInput)
+
+	if selectionCount != 2 {
+		t.Errorf("別キー後のEnterが失敗: 期待 2, 実際 %d", selectionCount)
+	}
+}
+
+func TestMenuConsecutiveSpacePrevention(t *testing.T) {
+	items := []MenuItem{
+		{ID: "1", Label: "Item 1"},
+		{ID: "2", Label: "Item 2"},
+	}
+
+	var selectionCount int
+
+	config := MenuConfig{
+		Items:        items,
+		InitialIndex: 0,
+	}
+
+	callbacks := MenuCallbacks{
+		OnSelect: func(index int, item MenuItem) {
+			selectionCount++
+		},
+	}
+
+	menu := NewMenu(config, callbacks)
+	mockInput := input.NewMockKeyboardInput()
+
+	// 1回目のSpace - これは成功するはず
+	mockInput.ClearLastPressedKey()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeySpace, true)
+	menu.Update(mockInput)
+
+	if selectionCount != 1 {
+		t.Errorf("1回目の選択が失敗: 期待 1, 実際 %d", selectionCount)
+	}
+
+	// 2回目の連続Space - これは無視されるはず
+	mockInput.Reset()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeySpace, true) // 前回と同じキーなので無視される
+	menu.Update(mockInput)
+
+	if selectionCount != 1 {
+		t.Errorf("連続Spaceが防止されていない: 期待 1, 実際 %d", selectionCount)
+	}
+
+	// 別のキーを押してからSpace - これは成功するはず
+	mockInput.Reset()
+	mockInput.ClearLastPressedKey()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowUp, true) // 別のキーを先に押す
+	menu.Update(mockInput)
+
+	mockInput.Reset()
+	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeySpace, true) // 今度は成功するはず
+	menu.Update(mockInput)
+
+	if selectionCount != 2 {
+		t.Errorf("別キー後のSpaceが失敗: 期待 2, 実際 %d", selectionCount)
 	}
 }
