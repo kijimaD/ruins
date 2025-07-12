@@ -39,7 +39,6 @@ func testTabSwitching(t *testing.T) {
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
 		WrapNavigation:    true,
-		OnlyDifferentKeys: true,
 	}
 
 	tabChangeCount := 0
@@ -58,7 +57,7 @@ func testTabSwitching(t *testing.T) {
 	}
 
 	// 右矢印でタブ2に移動
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowRight, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -70,7 +69,7 @@ func testTabSwitching(t *testing.T) {
 	}
 
 	// 左矢印でタブ1に戻る
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowLeft, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -92,7 +91,6 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
 		WrapNavigation:    true,
-		OnlyDifferentKeys: true,
 	}
 
 	tabChangeCount := 0
@@ -111,7 +109,7 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 
 	// Tabキーでタブ2に移動
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyTab, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -123,9 +121,8 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 
 	// Shift+Tabでタブ1に戻る（前回のTabキーをリセット）
-	mockInput.ResetGlobalKeyState()
 	mockInput.SetKeyPressed(ebiten.KeyShift, true)
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyTab, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -137,9 +134,8 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 
 	// 最初のタブでShift+Tab → 最後のタブに循環
-	mockInput.ResetGlobalKeyState()
 	mockInput.SetKeyPressed(ebiten.KeyShift, true)
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyTab, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -148,9 +144,8 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 
 	// 最後のタブでTab → 最初のタブに循環
-	// 前回のShift+TabでTabキーがグローバル状態に記録されているため、異なるキーを一度設定してリセット
-	mockInput.ResetGlobalKeyState()
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyTab, true)
+	mockInput.SetKeyPressed(ebiten.KeyShift, false) // Shiftキーを離す
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -178,7 +173,6 @@ func testItemNavigation(t *testing.T) {
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
 		WrapNavigation:    true,
-		OnlyDifferentKeys: true,
 	}
 
 	itemChangeCount := 0
@@ -197,7 +191,7 @@ func testItemNavigation(t *testing.T) {
 	}
 
 	// 下矢印でアイテム2に移動
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowDown, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyArrowDown, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -209,7 +203,7 @@ func testItemNavigation(t *testing.T) {
 	}
 
 	// 上矢印でアイテム1に戻る
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowUp, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyArrowUp, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -229,14 +223,13 @@ func testWrapNavigation(t *testing.T) {
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
 		WrapNavigation:    true,
-		OnlyDifferentKeys: true,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
 	tabMenu := NewTabMenu(config, TabMenuCallbacks{}, mockInput)
 
 	// 最初のタブで左矢印 → 最後のタブに循環
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowLeft, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -245,7 +238,7 @@ func testWrapNavigation(t *testing.T) {
 	}
 
 	// 最後のタブで右矢印 → 最初のタブに循環
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyArrowRight, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
@@ -269,7 +262,6 @@ func testSelection(t *testing.T) {
 		Tabs:              tabs,
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
-		OnlyDifferentKeys: true,
 	}
 
 	var selectedItem menu.MenuItem
@@ -282,8 +274,8 @@ func testSelection(t *testing.T) {
 	mockInput := input.NewMockKeyboardInput()
 	tabMenu := NewTabMenu(config, callbacks, mockInput)
 
-	// Enterキーで選択
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true)
+	// Enterキーで選択（セッションベース）
+	mockInput.SimulateEnterPressRelease()
 	tabMenu.Update()
 
 	if selectedItem.ID != "item1" {
@@ -300,7 +292,6 @@ func testCancel(t *testing.T) {
 		Tabs:              tabs,
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
-		OnlyDifferentKeys: true,
 	}
 
 	cancelCalled := false
@@ -314,7 +305,7 @@ func testCancel(t *testing.T) {
 	tabMenu := NewTabMenu(config, callbacks, mockInput)
 
 	// Escapeキーでキャンセル
-	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEscape, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyEscape, true)
 	tabMenu.Update()
 
 	if !cancelCalled {
@@ -339,7 +330,6 @@ func TestTabMenuGetters(t *testing.T) {
 		Tabs:              tabs,
 		InitialTabIndex:   0,
 		InitialItemIndex:  1,
-		OnlyDifferentKeys: true,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
@@ -374,7 +364,6 @@ func TestTabMenuSetters(t *testing.T) {
 		Tabs:              tabs,
 		InitialTabIndex:   0,
 		InitialItemIndex:  0,
-		OnlyDifferentKeys: true,
 	}
 
 	mockInput := input.NewMockKeyboardInput()

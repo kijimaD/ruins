@@ -85,8 +85,8 @@ func TestMainMenuSelection(t *testing.T) {
 	// 「終了」項目にフォーカス移動（インデックス3）
 	state.menu.SetFocusedIndex(3)
 
-	// Enterキーで選択（時間ベース制限）
-	mockInput.SetKeyJustPressed(ebiten.KeyEnter, true)
+	// Enterキーで選択（セッションベース）
+	mockInput.SimulateEnterPressRelease()
 	state.menu.Update(mockInput)
 
 	// トランジションが設定されることを確認
