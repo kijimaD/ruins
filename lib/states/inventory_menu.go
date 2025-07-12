@@ -259,16 +259,19 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 			consumable := gameComponents.Consumable.Get(entity).(*gc.Consumable)
 			switch consumable.TargetType.TargetNum {
 			case gc.TargetSingle:
-				st.initPartyWindow(world)
-				st.partyWindow.SetLocation(getWinRect())
-				st.ui.AddWindow(st.partyWindow)
 				actionWindow.Close()
+				st.initPartyWindow(world)
+				st.ui.AddWindow(st.partyWindow)
 				st.selectedItem = entity
+				// TargetSingleの場合は、パーティウィンドウでの使用後に更新されるため、ここでは更新しない
 			case gc.TargetAll:
 				effects.ItemTrigger(nil, entity, effects.Party{}, world)
 				actionWindow.Close()
+				st.reloadTabs(world)
+				// 表示を更新
+				st.updateTabDisplay(world)
+				st.updateCategoryDisplay(world)
 			}
-			st.reloadTabs(world)
 		}),
 	)
 	if entity.HasComponent(gameComponents.Consumable) {
@@ -281,6 +284,9 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 			world.Manager.DeleteEntity(entity)
 			actionWindow.Close()
 			st.reloadTabs(world)
+			// 表示を更新
+			st.updateTabDisplay(world)
+			st.updateCategoryDisplay(world)
 		}),
 	)
 	if !entity.HasComponent(gameComponents.Material) {
@@ -295,7 +301,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	)
 	windowContainer.AddChild(closeButton)
 
-	actionWindow.SetLocation(setWinRect())
+	actionWindow.SetLocation(getCenterWinRect())
 	st.ui.AddWindow(actionWindow)
 }
 
@@ -449,6 +455,11 @@ func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
 func (st *InventoryMenuState) initPartyWindow(world w.World) {
 	partyContainer := eui.NewWindowContainer(world)
 	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
+
+	// ウィンドウを画面中央に配置
+	st.partyWindow.SetLocation(getCenterWinRect())
+
+	// メンバー選択エリア
 	rowContainer := eui.NewRowContainer()
 	partyContainer.AddChild(rowContainer)
 
@@ -466,6 +477,9 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
 				st.partyWindow.Close()
 				st.reloadTabs(world)
+				// 表示を更新
+				st.updateTabDisplay(world)
+				st.updateCategoryDisplay(world)
 			}),
 		)
 		memberContainer.AddChild(partyButton)
@@ -473,4 +487,13 @@ func (st *InventoryMenuState) initPartyWindow(world w.World) {
 
 		rowContainer.AddChild(memberContainer)
 	}))
+
+	// キャンセルボタンを追加
+	cancelButton := eui.NewButton("キャンセル",
+		world,
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			st.partyWindow.Close()
+		}),
+	)
+	partyContainer.AddChild(cancelButton)
 }

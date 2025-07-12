@@ -24,6 +24,17 @@ func getWinRect() image.Rectangle {
 	return winRect
 }
 
+func getCenterWinRect() image.Rectangle {
+	screenWidth, screenHeight := ebiten.WindowSize()
+	windowWidth, windowHeight := 400, 300 // パーティウィンドウの想定サイズ（少し大きめ）
+
+	x := (screenWidth - windowWidth) / 2
+	y := (screenHeight - windowHeight) / 2
+
+	rect := image.Rect(x, y, x+windowWidth, y+windowHeight)
+	return rect
+}
+
 // ================
 
 type ItemCategoryType string
