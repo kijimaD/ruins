@@ -85,7 +85,7 @@ func TestMainMenuSelection(t *testing.T) {
 	// 「終了」項目にフォーカス移動（インデックス3）
 	state.menu.SetFocusedIndex(3)
 
-	// Enterキーで選択
+	// Enterキーで選択（OnlyDifferentKeysが有効なのでSetKeyJustPressedIfDifferentを使用）
 	mockInput.SetKeyJustPressedIfDifferent(ebiten.KeyEnter, true)
 	state.menu.Update(mockInput)
 

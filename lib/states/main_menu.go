@@ -34,7 +34,6 @@ func (st *MainMenuState) OnResume(world w.World) {}
 
 func (st *MainMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
-		// 共有インスタンスを使用してグローバル状態を保持
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 	st.initMenu(world)
@@ -99,7 +98,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 		InitialIndex:      0,
 		WrapNavigation:    true,
 		Orientation:       menu.Vertical,
-		OnlyDifferentKeys: true, // 前回と異なるキーのみ受け付ける
+		OnlyDifferentKeys: true, // 異なるキーのみ受け付ける
 	}
 
 	// コールバックの設定

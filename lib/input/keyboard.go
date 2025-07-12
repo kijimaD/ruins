@@ -39,9 +39,14 @@ func (g *globalKeyState) ClearLastPressedKey() {
 	g.lastPressedKey = nil
 }
 
-// ResetForTest はテスト用にグローバル状態をリセットする
-func ResetGlobalKeyStateForTest() {
-	GlobalKeyState.ClearLastPressedKey()
+// InitializeWithDummyKey はアプリケーション開始時にキー状態を初期化する
+func InitializeWithDummyKey() {
+	GlobalKeyState.mutex.Lock()
+	defer GlobalKeyState.mutex.Unlock()
+
+	// 初回のEnterキー重複実行を防ぐため、Enterを既に押された状態にする
+	enterKey := ebiten.KeyEnter
+	GlobalKeyState.lastPressedKey = &enterKey
 }
 
 // KeyboardInput はキーボード入力を抽象化するインターフェース
@@ -49,60 +54,48 @@ type KeyboardInput interface {
 	IsKeyJustPressed(key ebiten.Key) bool
 	IsKeyPressed(key ebiten.Key) bool
 	IsKeyJustPressedIfDifferent(key ebiten.Key) bool // 前回と異なるキーの場合のみtrue
-	ClearLastPressedKey()                            // 最後に押されたキーをクリア
 }
 
-// DefaultKeyboardInput はEbitenのキーボード入力をラップする実装
-type DefaultKeyboardInput struct {
-	// グローバル状態を使用するため、ローカルフィールドは不要
-}
+// sharedKeyboardInput はシングルトンのキーボード入力実装
+type sharedKeyboardInput struct{}
 
 var (
-	// sharedKeyboardInput は共有されるキーボード入力インスタンス
-	sharedKeyboardInput KeyboardInput
-	once                sync.Once
+	// keyboardInstance は共有されるキーボード入力インスタンス
+	keyboardInstance KeyboardInput
+	once             sync.Once
 )
 
 // GetSharedKeyboardInput は共有されるキーボード入力インスタンスを返す
 func GetSharedKeyboardInput() KeyboardInput {
 	once.Do(func() {
-		sharedKeyboardInput = &DefaultKeyboardInput{}
+		keyboardInstance = &sharedKeyboardInput{}
 	})
-	return sharedKeyboardInput
+	return keyboardInstance
 }
 
-func NewDefaultKeyboardInput() KeyboardInput {
-	return &DefaultKeyboardInput{}
-}
-
-func (d *DefaultKeyboardInput) IsKeyJustPressed(key ebiten.Key) bool {
+func (s *sharedKeyboardInput) IsKeyJustPressed(key ebiten.Key) bool {
 	return inpututil.IsKeyJustPressed(key)
 }
 
-func (d *DefaultKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
+func (s *sharedKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
 	return ebiten.IsKeyPressed(key)
 }
 
 // IsKeyJustPressedIfDifferent は前回と異なるキーが押された場合のみtrueを返す
-func (d *DefaultKeyboardInput) IsKeyJustPressedIfDifferent(key ebiten.Key) bool {
+func (s *sharedKeyboardInput) IsKeyJustPressedIfDifferent(key ebiten.Key) bool {
 	if !inpututil.IsKeyJustPressed(key) {
 		return false
 	}
-	
+
 	// グローバル状態から前回のキーを取得
 	lastKey := GlobalKeyState.GetLastPressedKey()
-	
+
 	// 前回と同じキーの場合は無効
 	if lastKey != nil && *lastKey == key {
 		return false
 	}
-	
-	// 前回と異なるキー（または初回）の場合は有効
+
+	// 前回と異なるキーの場合は有効
 	GlobalKeyState.SetLastPressedKey(key)
 	return true
-}
-
-// ClearLastPressedKey は最後に押されたキーの記録をクリアする
-func (d *DefaultKeyboardInput) ClearLastPressedKey() {
-	GlobalKeyState.ClearLastPressedKey()
 }

@@ -4,18 +4,16 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 // MockKeyboardInput はテスト用のモックキーボード入力実装
 type MockKeyboardInput struct {
-	pressedKeys              map[ebiten.Key]bool
-	justPressedKeys          map[ebiten.Key]bool
-	justPressedIfDifferentKeys map[ebiten.Key]bool
-	lastPressedKey           *ebiten.Key
+	pressedKeys            map[ebiten.Key]bool
+	justPressedKeys        map[ebiten.Key]bool
+	justPressedIfDifferent map[ebiten.Key]bool
 }
 
 func NewMockKeyboardInput() *MockKeyboardInput {
 	return &MockKeyboardInput{
-		pressedKeys:              make(map[ebiten.Key]bool),
-		justPressedKeys:          make(map[ebiten.Key]bool),
-		justPressedIfDifferentKeys: make(map[ebiten.Key]bool),
-		lastPressedKey:           nil,
+		pressedKeys:            make(map[ebiten.Key]bool),
+		justPressedKeys:        make(map[ebiten.Key]bool),
+		justPressedIfDifferent: make(map[ebiten.Key]bool),
 	}
 }
 
@@ -28,13 +26,7 @@ func (m *MockKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
 }
 
 func (m *MockKeyboardInput) IsKeyJustPressedIfDifferent(key ebiten.Key) bool {
-	// テスト用はローカル状態を使用
-	return m.justPressedIfDifferentKeys[key]
-}
-
-func (m *MockKeyboardInput) ClearLastPressedKey() {
-	// テスト用はローカル状態を使用
-	m.lastPressedKey = nil
+	return m.justPressedIfDifferent[key]
 }
 
 // SetKeyJustPressed はテスト用にキーの状態を設定する
@@ -47,18 +39,14 @@ func (m *MockKeyboardInput) SetKeyPressed(key ebiten.Key, pressed bool) {
 	m.pressedKeys[key] = pressed
 }
 
-// SetKeyJustPressedIfDifferent はテスト用に異なるキー押下の状態を設定する
+// SetKeyJustPressedIfDifferent はテスト用に異なるキー検出の状態を設定
 func (m *MockKeyboardInput) SetKeyJustPressedIfDifferent(key ebiten.Key, pressed bool) {
-	m.justPressedIfDifferentKeys[key] = pressed
-	if pressed {
-		m.lastPressedKey = &key
-	}
+	m.justPressedIfDifferent[key] = pressed
 }
 
 // Reset は全てのキー状態をリセットする
 func (m *MockKeyboardInput) Reset() {
 	m.pressedKeys = make(map[ebiten.Key]bool)
 	m.justPressedKeys = make(map[ebiten.Key]bool)
-	m.justPressedIfDifferentKeys = make(map[ebiten.Key]bool)
-	m.lastPressedKey = nil
+	m.justPressedIfDifferent = make(map[ebiten.Key]bool)
 }
