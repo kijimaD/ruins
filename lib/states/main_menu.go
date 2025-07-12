@@ -94,11 +94,10 @@ func (st *MainMenuState) initMenu(world w.World) {
 
 	// メニューの設定
 	config := menu.MenuConfig{
-		Items:             items,
-		InitialIndex:      0,
-		WrapNavigation:    true,
-		Orientation:       menu.Vertical,
-		OnlyDifferentKeys: true, // 異なるキーのみ受け付ける
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
 	}
 
 	// コールバックの設定

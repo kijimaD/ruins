@@ -26,12 +26,11 @@ const (
 
 // MenuConfig はメニューの設定
 type MenuConfig struct {
-	Items             []MenuItem
-	InitialIndex      int
-	WrapNavigation    bool        // 端で循環するか
-	Orientation       Orientation // Vertical or Horizontal
-	Columns           int         // グリッド表示時の列数（0=リスト表示）
-	OnlyDifferentKeys bool        // 前回と異なるキーのみ受け付けるか
+	Items          []MenuItem
+	InitialIndex   int
+	WrapNavigation bool        // 端で循環するか
+	Orientation    Orientation // Vertical or Horizontal
+	Columns        int         // グリッド表示時の列数（0=リスト表示）
 }
 
 // MenuCallbacks はメニューのコールバック
@@ -154,17 +153,9 @@ func (m *Menu) handleKeyboard() {
 		handled = true
 	}
 
-	// 選択（OnlyDifferentKeysが有効な場合は異なるキーのみ受け付ける）
-	enterPressed := false
-	spacePressed := false
-
-	if m.config.OnlyDifferentKeys {
-		enterPressed = m.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEnter)
-		spacePressed = m.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeySpace)
-	} else {
-		enterPressed = m.keyboardInput.IsKeyJustPressed(ebiten.KeyEnter)
-		spacePressed = m.keyboardInput.IsKeyJustPressed(ebiten.KeySpace)
-	}
+	// 選択（どちらも常に連続クリック防止）
+	enterPressed := m.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEnter)
+	spacePressed := m.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeySpace)
 
 	if enterPressed || spacePressed {
 		m.selectCurrent()
