@@ -9,12 +9,14 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
 type GameOverState struct {
-	ui    *ebitenui.UI
-	trans *states.Transition
+	ui            *ebitenui.UI
+	trans         *states.Transition
+	keyboardInput input.KeyboardInput
 
 	// 背景
 	bg *ebiten.Image
@@ -33,6 +35,10 @@ func (st *GameOverState) OnPause(world w.World) {}
 func (st *GameOverState) OnResume(world w.World) {}
 
 func (st *GameOverState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
+
 	bg := (*world.Resources.SpriteSheets)["bg_explosion1"]
 	st.bg = bg.Texture.Image
 
@@ -42,8 +48,9 @@ func (st *GameOverState) OnStart(world w.World) {
 func (st *GameOverState) OnStop(world w.World) {}
 
 func (st *GameOverState) Update(world w.World) states.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyEscape) ||
+	// 連続クリック防止
+	if st.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEnter) ||
+		st.keyboardInput.IsKeyJustPressedIfDifferent(ebiten.KeyEscape) ||
 		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 	}
