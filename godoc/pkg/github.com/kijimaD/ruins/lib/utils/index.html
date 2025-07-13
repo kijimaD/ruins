@@ -111,10 +111,29 @@
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
 				
+				<dd><a href="index.html#Abs">func Abs[T int | float64](x T) T</a></dd>
+			
+				
+				<dd><a href="index.html#Clamp">func Clamp[T int | float64](value, min, max T) T</a></dd>
+			
+				
 				<dd><a href="index.html#GetPtr">func GetPtr[T any](x T) *T</a></dd>
+			
+				
+				<dd><a href="index.html#Max">func Max[T int | float64](x, y T) T</a></dd>
+			
+				
+				<dd><a href="index.html#Min">func Min[T int | float64](x, y T) T</a></dd>
+			
+				
+				<dd><a href="index.html#SetTranslate">func SetTranslate(world w.World, op *ebiten.DrawImageOptions)</a></dd>
 			
 			
 			
@@ -139,17 +158,123 @@
 		
 
 		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span class="comment">// ゲームウィンドウの寸法</span>
+    <span id="MinGameWidth">MinGameWidth</span>  = 960
+    <span id="MinGameHeight">MinGameHeight</span> = 720
+
+    <span class="comment">// タイルの寸法</span>
+    <span id="TileSize">TileSize</span> <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a> = 32
+
+    <span class="comment">// UIラベル</span>
+    <span id="HPLabel">HPLabel</span>        = &#34;HP&#34;
+    <span id="SPLabel">SPLabel</span>        = &#34;SP&#34;
+    <span id="VitalityLabel">VitalityLabel</span>  = &#34;体力&#34;
+    <span id="StrengthLabel">StrengthLabel</span>  = &#34;筋力&#34;
+    <span id="SensationLabel">SensationLabel</span> = &#34;感覚&#34;
+    <span id="DexterityLabel">DexterityLabel</span> = &#34;器用&#34;
+    <span id="AgilityLabel">AgilityLabel</span>   = &#34;敏捷&#34;
+    <span id="DefenseLabel">DefenseLabel</span>   = &#34;防御&#34;
+
+    <span id="AccuracyLabel">AccuracyLabel</span>         = &#34;命中&#34;
+    <span id="DamageLabel">DamageLabel</span>           = &#34;攻撃力&#34;
+    <span id="AttackCountLabel">AttackCountLabel</span>      = &#34;回数&#34;
+    <span id="EquimentCategoryLabel">EquimentCategoryLabel</span> = &#34;部位&#34;
+)</pre>
+			
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>ビルド時に挿入する
+
+				<pre>var <span id="AppVersion">AppVersion</span> = &#34;v0.0.0&#34;</pre>
+			
 		
 		
 			
 			
-			<h2 id="GetPtr">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=15:41#L1">GetPtr</a>
+			<h2 id="Abs">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=1371:1403#L65">Abs</a>
+				<a class="permalink" href="index.html#Abs">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Abs[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](x T) T</pre>
+			<p>xの絶対値を返す
+
+			
+			
+
+		
+			
+			
+			<h2 id="Clamp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=1209:1257#L54">Clamp</a>
+				<a class="permalink" href="index.html#Clamp">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Clamp[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](value, min, max T) T</pre>
+			<p>valueを[min, max]の範囲に制限する
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetPtr">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=846:872#L31">GetPtr</a>
 				<a class="permalink" href="index.html#GetPtr">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func GetPtr[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>](x T) *T</pre>
 			
+			
+			
+
+		
+			
+			
+			<h2 id="Max">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=1086:1121#L46">Max</a>
+				<a class="permalink" href="index.html#Max">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Max[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](x, y T) T</pre>
+			<p>xとyの大きい方を返す
+
+			
+			
+
+		
+			
+			
+			<h2 id="Min">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=976:1011#L38">Min</a>
+				<a class="permalink" href="index.html#Min">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func Min[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](x, y T) T</pre>
+			<p>xとyの小さい方を返す
+
+			
+			
+
+		
+			
+			
+			<h2 id="SetTranslate">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/utils.go?s=1613:1674#L76">SetTranslate</a>
+				<a class="permalink" href="index.html#SetTranslate">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SetTranslate(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, op *ebiten.<a href="index.html#DrawImageOptions">DrawImageOptions</a>)</pre>
+			<p>カメラを考慮した画像配置オプションをセットする
+TODO: ズーム率を追加する
+
 			
 			
 
@@ -184,51 +309,7 @@
 				<tr>
 				
 					<td class="pkg-name" style="padding-left: 0px;">
-						<a href="camera/index.html">camera</a>
-					</td>
-				
-					<td class="pkg-synopsis">
-						
-					</td>
-				</tr>
-			
-				<tr>
-				
-					<td class="pkg-name" style="padding-left: 0px;">
-						<a href="consts/index.html">consts</a>
-					</td>
-				
-					<td class="pkg-synopsis">
-						
-					</td>
-				</tr>
-			
-				<tr>
-				
-					<td class="pkg-name" style="padding-left: 0px;">
-						<a href="mathutil/index.html">mathutil</a>
-					</td>
-				
-					<td class="pkg-synopsis">
-						
-					</td>
-				</tr>
-			
-				<tr>
-				
-					<td class="pkg-name" style="padding-left: 0px;">
 						<a href="msg/index.html">msg</a>
-					</td>
-				
-					<td class="pkg-synopsis">
-						
-					</td>
-				</tr>
-			
-				<tr>
-				
-					<td class="pkg-name" style="padding-left: 0px;">
-						<a href="vutil/index.html">vutil</a>
 					</td>
 				
 					<td class="pkg-synopsis">

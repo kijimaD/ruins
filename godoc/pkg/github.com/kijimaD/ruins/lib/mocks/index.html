@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>mocks - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="../../../../../../lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.23.10";</script>
+<script src="../../../../../../lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8888/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8888/pkg/">GoDoc</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8888/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package mocks
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/kijimaD/ruins/lib/mocks"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+			
+				
+				<dd><a href="index.html#InputHandler">type InputHandler</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#MockInputHandler">type MockInputHandler</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMockInputHandler">func NewMockInputHandler() *MockInputHandler</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.EndFrame">func (m *MockInputHandler) EndFrame()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.GetCursorPosition">func (m *MockInputHandler) GetCursorPosition() (int, int)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.GetWheel">func (m *MockInputHandler) GetWheel() (float64, float64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.IsKeyJustPressed">func (m *MockInputHandler) IsKeyJustPressed(key ebiten.Key) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.IsKeyPressed">func (m *MockInputHandler) IsKeyPressed(key ebiten.Key) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.PressKey">func (m *MockInputHandler) PressKey(key ebiten.Key)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.ReleaseAllKeys">func (m *MockInputHandler) ReleaseAllKeys()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.ReleaseKey">func (m *MockInputHandler) ReleaseKey(key ebiten.Key)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.SetCursorPosition">func (m *MockInputHandler) SetCursorPosition(x, y int)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockInputHandler.SetWheel">func (m *MockInputHandler) SetWheel(x, y float64)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MockRandomGenerator">type MockRandomGenerator</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMockRandomGenerator">func NewMockRandomGenerator() *MockRandomGenerator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.AddFloat64Value">func (m *MockRandomGenerator) AddFloat64Value(value float64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.AddIntValue">func (m *MockRandomGenerator) AddIntValue(value int)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.Float64">func (m *MockRandomGenerator) Float64() float64</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.Intn">func (m *MockRandomGenerator) Intn(n int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.Reset">func (m *MockRandomGenerator) Reset()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.Seed">func (m *MockRandomGenerator) Seed(seed int64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.SetFloat64Values">func (m *MockRandomGenerator) SetFloat64Values(values ...float64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.SetIntValues">func (m *MockRandomGenerator) SetIntValues(values ...int)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MockRandomGenerator.Shuffle">func (m *MockRandomGenerator) Shuffle(n int, swap func(i, j int))</a></dd>
+				
+			
+				
+				<dd><a href="index.html#RandomGenerator">type RandomGenerator</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#RealRandomGenerator">type RealRandomGenerator</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewRealRandomGenerator">func NewRealRandomGenerator(seed int64) *RealRandomGenerator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RealRandomGenerator.Float64">func (r *RealRandomGenerator) Float64() float64</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RealRandomGenerator.Intn">func (r *RealRandomGenerator) Intn(n int) int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RealRandomGenerator.Seed">func (r *RealRandomGenerator) Seed(seed int64)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RealRandomGenerator.Shuffle">func (r *RealRandomGenerator) Shuffle(n int, swap func(i, j int))</a></dd>
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go">input.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go">random.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+		
+		
+			
+			
+			<h2 id="InputHandler">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=115:283#L1">InputHandler</a>
+				<a class="permalink" href="index.html#InputHandler">&#xb6;</a>
+				
+				
+			</h2>
+			<p>入力ハンドラーのインターフェース
+
+			<pre>type InputHandler interface {
+    IsKeyPressed(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+    IsKeyJustPressed(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+    GetWheel() (<a href="http://localhost:8888/pkg/builtin/#float64">float64</a>, <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)
+    GetCursorPosition() (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="MockInputHandler">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=334:490#L6">MockInputHandler</a>
+				<a class="permalink" href="index.html#MockInputHandler">&#xb6;</a>
+				
+				
+			</h2>
+			<p>テスト用のモック入力ハンドラー
+
+			<pre>type MockInputHandler struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewMockInputHandler">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=550:594#L14">NewMockInputHandler</a>
+					<a class="permalink" href="index.html#NewMockInputHandler">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewMockInputHandler() *<a href="index.html#MockInputHandler">MockInputHandler</a></pre>
+				<p>新しいモック入力ハンドラーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="MockInputHandler.EndFrame">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=2069:2106#L72">EndFrame</a>
+					<a class="permalink" href="index.html#MockInputHandler.EndFrame">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) EndFrame()</pre>
+				<p>フレーム終了時の処理（JustPressedをリセット）
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.GetCursorPosition">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1174:1231#L37">GetCursorPosition</a>
+					<a class="permalink" href="index.html#MockInputHandler.GetCursorPosition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) GetCursorPosition() (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>カーソル位置を返す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.GetWheel">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1054:1110#L32">GetWheel</a>
+					<a class="permalink" href="index.html#MockInputHandler.GetWheel">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) GetWheel() (<a href="http://localhost:8888/pkg/builtin/#float64">float64</a>, <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
+				<p>マウスホイールの値を返す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.IsKeyJustPressed">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=913:977#L27">IsKeyJustPressed</a>
+					<a class="permalink" href="index.html#MockInputHandler.IsKeyJustPressed">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) IsKeyJustPressed(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>キーが今フレームで押されたかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.IsKeyPressed">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=765:825#L22">IsKeyPressed</a>
+					<a class="permalink" href="index.html#MockInputHandler.IsKeyPressed">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) IsKeyPressed(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>キーが押されているかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.PressKey">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1329:1380#L44">PressKey</a>
+					<a class="permalink" href="index.html#MockInputHandler.PressKey">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) PressKey(key ebiten.<a href="index.html#Key">Key</a>)</pre>
+				<p>キーを押す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.ReleaseAllKeys">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1610:1653#L56">ReleaseAllKeys</a>
+					<a class="permalink" href="index.html#MockInputHandler.ReleaseAllKeys">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) ReleaseAllKeys()</pre>
+				<p>全てのキーを離す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.ReleaseKey">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1463:1516#L50">ReleaseKey</a>
+					<a class="permalink" href="index.html#MockInputHandler.ReleaseKey">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) ReleaseKey(key ebiten.<a href="index.html#Key">Key</a>)</pre>
+				<p>キーを離す
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.SetCursorPosition">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1914:1968#L67">SetCursorPosition</a>
+					<a class="permalink" href="index.html#MockInputHandler.SetCursorPosition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) SetCursorPosition(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>カーソル位置を設定する
+
+				
+				
+				
+			
+				
+				<h3 id="MockInputHandler.SetWheel">func (*MockInputHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/input.go?s=1795:1844#L62">SetWheel</a>
+					<a class="permalink" href="index.html#MockInputHandler.SetWheel">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockInputHandler">MockInputHandler</a>) SetWheel(x, y <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
+				<p>マウスホイールの値を設定する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MockRandomGenerator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=253:356#L6">MockRandomGenerator</a>
+				<a class="permalink" href="index.html#MockRandomGenerator">&#xb6;</a>
+				
+				
+			</h2>
+			<p>テスト用のモック乱数生成器
+
+			<pre>type MockRandomGenerator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewMockRandomGenerator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=410:460#L14">NewMockRandomGenerator</a>
+					<a class="permalink" href="index.html#NewMockRandomGenerator">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewMockRandomGenerator() *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a></pre>
+				<p>新しいモック乱数生成器を作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="MockRandomGenerator.AddFloat64Value">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=1725:1785#L66">AddFloat64Value</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.AddFloat64Value">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) AddFloat64Value(value <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
+				<p>次に返すFloat64値を追加する
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.AddIntValue">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=1864:1916#L71">AddIntValue</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.AddIntValue">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) AddIntValue(value <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>次に返すInt値を追加する
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.Float64">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=593:640#L22">Float64</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.Float64">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) Float64() <a href="http://localhost:8888/pkg/builtin/#float64">float64</a></pre>
+				<p>予め設定された値を順番に返す
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.Intn">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=828:873#L32">Intn</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.Intn">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) Intn(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>予め設定された整数値を順番に返す
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.Reset">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2007:2044#L76">Reset</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.Reset">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) Reset()</pre>
+				<p>インデックスをリセットする
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.Seed">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=1291:1337#L47">Seed</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.Seed">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) Seed(seed <a href="http://localhost:8888/pkg/builtin/#int64">int64</a>)</pre>
+				<p>シードは無視する
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.SetFloat64Values">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=1445:1510#L54">SetFloat64Values</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.SetFloat64Values">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) SetFloat64Values(values ...<a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
+				<p>Float64で返す値を設定する
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.SetIntValues">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=1583:1640#L60">SetIntValues</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.SetIntValues">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) SetIntValues(values ...<a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>Intnで返す値を設定する
+
+				
+				
+				
+			
+				
+				<h3 id="MockRandomGenerator.Shuffle">func (*MockRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=1109:1174#L42">Shuffle</a>
+					<a class="permalink" href="index.html#MockRandomGenerator.Shuffle">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MockRandomGenerator">MockRandomGenerator</a>) Shuffle(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>, swap func(i, j <a href="http://localhost:8888/pkg/builtin/#int">int</a>))</pre>
+				<p>何もしない（テストでは順序を固定したい場合が多い）
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="RandomGenerator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=83:208#L1">RandomGenerator</a>
+				<a class="permalink" href="index.html#RandomGenerator">&#xb6;</a>
+				
+				
+			</h2>
+			<p>乱数生成のインターフェース
+
+			<pre>type RandomGenerator interface {
+    Float64() <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+    Intn(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    Shuffle(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>, swap func(i, j <a href="http://localhost:8888/pkg/builtin/#int">int</a>))
+    Seed(seed <a href="http://localhost:8888/pkg/builtin/#int64">int64</a>)
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="RealRandomGenerator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2131:2182#L82">RealRandomGenerator</a>
+				<a class="permalink" href="index.html#RealRandomGenerator">&#xb6;</a>
+				
+				
+			</h2>
+			<p>実際のrand.Randを使用する乱数生成器
+
+			<pre>type RealRandomGenerator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewRealRandomGenerator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2236:2296#L87">NewRealRandomGenerator</a>
+					<a class="permalink" href="index.html#NewRealRandomGenerator">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewRealRandomGenerator(seed <a href="http://localhost:8888/pkg/builtin/#int64">int64</a>) *<a href="index.html#RealRandomGenerator">RealRandomGenerator</a></pre>
+				<p>新しい実際の乱数生成器を作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="RealRandomGenerator.Float64">func (*RealRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2374:2421#L93">Float64</a>
+					<a class="permalink" href="index.html#RealRandomGenerator.Float64">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r *<a href="index.html#RealRandomGenerator">RealRandomGenerator</a>) Float64() <a href="http://localhost:8888/pkg/builtin/#float64">float64</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RealRandomGenerator.Intn">func (*RealRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2451:2496#L97">Intn</a>
+					<a class="permalink" href="index.html#RealRandomGenerator.Intn">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r *<a href="index.html#RealRandomGenerator">RealRandomGenerator</a>) Intn(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RealRandomGenerator.Seed">func (*RealRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2619:2665#L105">Seed</a>
+					<a class="permalink" href="index.html#RealRandomGenerator.Seed">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r *<a href="index.html#RealRandomGenerator">RealRandomGenerator</a>) Seed(seed <a href="http://localhost:8888/pkg/builtin/#int64">int64</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RealRandomGenerator.Shuffle">func (*RealRandomGenerator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mocks/random.go?s=2524:2589#L101">Shuffle</a>
+					<a class="permalink" href="index.html#RealRandomGenerator.Shuffle">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r *<a href="index.html#RealRandomGenerator">RealRandomGenerator</a>) Shuffle(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>, swap func(i, j <a href="http://localhost:8888/pkg/builtin/#int">int</a>))</pre>
+				
+				
+				
+				
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.23.10.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8888/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

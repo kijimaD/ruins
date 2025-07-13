@@ -664,15 +664,16 @@
 		
 			
 			
-			<h2 id="Amounter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=928:965#L35">Amounter</a>
+			<h2 id="Amounter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1226:1315#L36">Amounter</a>
 				<a class="permalink" href="index.html#Amounter">&#xb6;</a>
 				
 				
 			</h2>
 			<p>================
+量を計算するためのインターフェース
 
 			<pre>type Amounter interface {
-    Amount()
+    Amount() <span class="comment">// 量計算を識別するマーカーメソッド</span>
 }</pre>
 
 			
@@ -767,7 +768,7 @@
 		
 			
 			
-			<h2 id="Attribute">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=191:369#L1">Attribute</a>
+			<h2 id="Attribute">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=204:382#L1">Attribute</a>
 				<a class="permalink" href="index.html#Attribute">&#xb6;</a>
 				
 				
@@ -1217,7 +1218,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=634:835#L19">EquipBonus</a>
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=767:1078#L19">EquipBonus</a>
 				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
 				
 				
@@ -1225,11 +1226,12 @@ Join時はこのフィールドでクエリする
 			<p>装備品のオプショナルな性能。武器・防具で共通する
 
 			<pre>type EquipBonus struct {
-<span id="EquipBonus.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="EquipBonus.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="EquipBonus.Sensation"></span>    Sensation <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="EquipBonus.Dexterity"></span>    Dexterity <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="EquipBonus.Agility"></span>    Agility   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="EquipBonus.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 体力ボーナス</span>
+<span id="EquipBonus.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 筋力ボーナス</span>
+<span id="EquipBonus.Sensation"></span>    Sensation <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 感覚ボーナス</span>
+<span id="EquipBonus.Dexterity"></span>    Dexterity <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 器用ボーナス</span>
+<span id="EquipBonus.Agility"></span>    Agility   <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 敏捷ボーナス</span>
+
 }
 </pre>
 
@@ -1271,7 +1273,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=878:906#L32">EquipmentSlotNumber</a>
+			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1121:1149#L32">EquipmentSlotNumber</a>
 				<a class="permalink" href="index.html#EquipmentSlotNumber">&#xb6;</a>
 				
 				
@@ -1858,7 +1860,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="NumeralAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1230:1272#L54">NumeralAmount</a>
+			<h2 id="NumeralAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1691:1746#L58">NumeralAmount</a>
 				<a class="permalink" href="index.html#NumeralAmount">&#xb6;</a>
 				
 				
@@ -1866,7 +1868,7 @@ Join時はこのフィールドでクエリする
 			<p>絶対量指定
 
 			<pre>type NumeralAmount struct {
-<span id="NumeralAmount.Numeral"></span>    Numeral <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="NumeralAmount.Numeral"></span>    Numeral <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 絶対量</span>
 }
 </pre>
 
@@ -1882,25 +1884,27 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="NumeralAmount.Amount">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1274:1306#L58">Amount</a>
+				<h3 id="NumeralAmount.Amount">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1793:1825#L63">Amount</a>
 					<a class="permalink" href="index.html#NumeralAmount.Amount">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (na <a href="index.html#NumeralAmount">NumeralAmount</a>) Amount()</pre>
-				
+				<p>Amounterインターフェースの実装
+
 				
 				
 				
 			
 				
-				<h3 id="NumeralAmount.Calc">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1310:1344#L59">Calc</a>
+				<h3 id="NumeralAmount.Calc">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1861:1895#L66">Calc</a>
 					<a class="permalink" href="index.html#NumeralAmount.Calc">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (na <a href="index.html#NumeralAmount">NumeralAmount</a>) Calc() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				
+				<p>固定の数値量を返す
+
 				
 				
 				
@@ -1955,7 +1959,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Pool">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=78:155#L1">Pool</a>
+			<h2 id="Pool">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=78:168#L1">Pool</a>
 				<a class="permalink" href="index.html#Pool">&#xb6;</a>
 				
 				
@@ -1964,7 +1968,7 @@ Join時はこのフィールドでクエリする
 
 			<pre>type Pool struct {
 <span id="Pool.Max"></span>    Max     <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 計算式で算出される</span>
-<span id="Pool.Current"></span>    Current <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Pool.Current"></span>    Current <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 現在値</span>
 }
 </pre>
 
@@ -2074,7 +2078,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="RatioAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1015:1057#L42">RatioAmount</a>
+			<h2 id="RatioAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1365:1417#L43">RatioAmount</a>
 				<a class="permalink" href="index.html#RatioAmount">&#xb6;</a>
 				
 				
@@ -2082,7 +2086,7 @@ Join時はこのフィールドでクエリする
 			<p>倍率指定
 
 			<pre>type RatioAmount struct {
-<span id="RatioAmount.Ratio"></span>    Ratio <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+<span id="RatioAmount.Ratio"></span>    Ratio <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 倍率</span>
 }
 </pre>
 
@@ -2098,25 +2102,27 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="RatioAmount.Amount">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1059:1089#L46">Amount</a>
+				<h3 id="RatioAmount.Amount">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1464:1494#L48">Amount</a>
 					<a class="permalink" href="index.html#RatioAmount.Amount">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ra <a href="index.html#RatioAmount">RatioAmount</a>) Amount()</pre>
-				
+				<p>Amounterインターフェースの実装
+
 				
 				
 				
 			
 				
-				<h3 id="RatioAmount.Calc">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1093:1133#L47">Calc</a>
+				<h3 id="RatioAmount.Calc">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1554:1594#L51">Calc</a>
 					<a class="permalink" href="index.html#RatioAmount.Calc">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ra <a href="index.html#RatioAmount">RatioAmount</a>) Calc(base <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				
+				<p>倍率と基準値から実際の量を計算する
+
 				
 				
 				
@@ -2150,7 +2156,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=502:556#L13">RecipeInput</a>
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=606:689#L13">RecipeInput</a>
 				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
 				
 				
@@ -2158,8 +2164,8 @@ Join時はこのフィールドでクエリする
 			<p>合成の元になる素材
 
 			<pre>type RecipeInput struct {
-<span id="RecipeInput.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="RecipeInput.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="RecipeInput.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a> <span class="comment">// 素材名</span>
+<span id="RecipeInput.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 必要量</span>
 }
 </pre>
 
@@ -2353,7 +2359,7 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="TargetType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=387:469#L7">TargetType</a>
+			<h2 id="TargetType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=400:573#L7">TargetType</a>
 				<a class="permalink" href="index.html#TargetType">&#xb6;</a>
 				
 				
@@ -2361,8 +2367,8 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 			<p>選択対象
 
 			<pre>type TargetType struct {
-<span id="TargetType.TargetGroup"></span>    TargetGroup <a href="index.html#TargetGroupType">TargetGroupType</a>
-<span id="TargetType.TargetNum"></span>    TargetNum   <a href="index.html#TargetNumType">TargetNumType</a>
+<span id="TargetType.TargetGroup"></span>    TargetGroup <a href="index.html#TargetGroupType">TargetGroupType</a> <span class="comment">// 対象グループ（味方、敵など）</span>
+<span id="TargetType.TargetNum"></span>    TargetNum   <a href="index.html#TargetNumType">TargetNumType</a>   <span class="comment">// 対象数（単体、複数、全体）</span>
 }
 </pre>
 

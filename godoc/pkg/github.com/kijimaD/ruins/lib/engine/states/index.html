@@ -113,6 +113,23 @@
 			
 			
 				
+				<dd><a href="index.html#BaseState">type BaseState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.ClearTransition">func (bs *BaseState) ClearTransition()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.ConsumeTransition">func (bs *BaseState) ConsumeTransition() Transition</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.GetTransition">func (bs *BaseState) GetTransition() *Transition</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.SetTransition">func (bs *BaseState) SetTransition(trans Transition)</a></dd>
+				
+			
+				
 				<dd><a href="index.html#State">type State</a></dd>
 				
 				
@@ -129,6 +146,11 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Update">func (sm *StateMachine) Update(world w.World)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#StateWithTransition">type StateWithTransition</a></dd>
+				
 				
 			
 				
@@ -152,6 +174,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go">base.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go">lib.go</a>
 			
 			</span>
@@ -165,6 +189,84 @@
 		
 		
 		
+		
+			
+			
+			<h2 id="BaseState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=85:129#L1">BaseState</a>
+				<a class="permalink" href="index.html#BaseState">&#xb6;</a>
+				
+				
+			</h2>
+			<p>BaseState は共通のtransition管理を持つベース構造体
+
+			<pre>type BaseState struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="BaseState.ClearTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=419:457#L9">ClearTransition</a>
+					<a class="permalink" href="index.html#BaseState.ClearTransition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) ClearTransition()</pre>
+				<p>ClearTransition は遷移をクリアする
+
+				
+				
+				
+			
+				
+				<h3 id="BaseState.ConsumeTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=531:582#L14">ConsumeTransition</a>
+					<a class="permalink" href="index.html#BaseState.ConsumeTransition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) ConsumeTransition() <a href="index.html#Transition">Transition</a></pre>
+				<p>ConsumeTransition は遷移を消費して返す
+
+				
+				
+				
+			
+				
+				<h3 id="BaseState.GetTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=301:349#L4">GetTransition</a>
+					<a class="permalink" href="index.html#BaseState.GetTransition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) GetTransition() *<a href="index.html#Transition">Transition</a></pre>
+				<p>GetTransition は現在の遷移を取得する
+
+				
+				
+				
+			
+				
+				<h3 id="BaseState.SetTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=173:225#L1">SetTransition</a>
+					<a class="permalink" href="index.html#BaseState.SetTransition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) SetTransition(trans <a href="index.html#Transition">Transition</a>)</pre>
+				<p>SetTransition は遷移を設定する
+
+				
+				
+				
+			
 		
 			
 			
@@ -227,7 +329,7 @@ Only the top state is active.
 
 			
 				
-				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1528:1574#L51">Init</a>
+				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1866:1912#L60">Init</a>
 					<a class="permalink" href="index.html#Init">&#xb6;</a>
 					
 					
@@ -241,7 +343,7 @@ Only the top state is active.
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2333:2398#L85">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2671:2736#L94">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
@@ -254,7 +356,7 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1701:1746#L57">Update</a>
+				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2039:2084#L66">Update</a>
 					<a class="permalink" href="index.html#StateMachine.Update">&#xb6;</a>
 					
 					
@@ -265,6 +367,33 @@ Only the top state is active.
 				
 				
 				
+			
+		
+			
+			
+			<h2 id="StateWithTransition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=790:883#L24">StateWithTransition</a>
+				<a class="permalink" href="index.html#StateWithTransition">&#xb6;</a>
+				
+				
+			</h2>
+			<p>StateWithTransition はtransition管理機能を持つstateのインターフェース
+
+			<pre>type StateWithTransition interface {
+    <a href="index.html#State">State</a>
+    GetTransition() *<a href="index.html#Transition">Transition</a>
+    ClearTransition()
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
 			
 		
 			
