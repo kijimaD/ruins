@@ -6,8 +6,8 @@ import (
 
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils/consts"
-	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
+	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 )
@@ -70,10 +70,10 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 				failCount++
 				continue
 			}
-			spawner.SpawnOperator(
+			worldhelper.SpawnOperator(
 				world,
-				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
-				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
+				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize)/2),
+				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize)/2),
 			)
 			break
 		}
@@ -93,10 +93,10 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 				failCount++
 				continue
 			}
-			spawner.SpawnNPC(
+			worldhelper.SpawnNPC(
 				world,
-				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
-				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
+				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize/2)),
+				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize/2)),
 			)
 			successCount += 1
 			failCount = 0
@@ -112,16 +112,16 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 		x, y := chain.BuildData.Level.XYTileCoord(i)
 		switch t {
 		case TileFloor:
-			chain.BuildData.Level.Entities[i] = spawner.SpawnFloor(world, gc.Row(x), gc.Col(y))
+			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFloor(world, gc.Row(x), gc.Col(y))
 		case TileWall:
 			// 近傍4タイルにフロアがあるときだけ壁にする
 			if chain.BuildData.AdjacentOrthoAnyFloor(i) {
-				chain.BuildData.Level.Entities[i] = spawner.SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+				chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWall(world, gc.Row(x), gc.Col(y))
 			}
 		case TileWarpNext:
-			chain.BuildData.Level.Entities[i] = spawner.SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
 		case TileWarpEscape:
-			chain.BuildData.Level.Entities[i] = spawner.SpawnFieldWarpEscape(world, gc.Row(x), gc.Col(y))
+			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWarpEscape(world, gc.Row(x), gc.Col(y))
 		}
 	}
 

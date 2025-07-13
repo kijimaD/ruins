@@ -10,7 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/effects"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/worldhelper/party"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -61,7 +61,7 @@ func BattleCommandSystem(world w.World) {
 		targetPools := gameComponents.Pools.Get(cmd.Target).(*gc.Pools)
 		// ターゲットが死んでいる場合は同じ派閥の別の生存エンティティに変更する
 		if targetPools.HP.Current == 0 {
-			p, err := party.NewByEntity(world, cmd.Target)
+			p, err := worldhelper.NewByEntity(world, cmd.Target)
 			if err != nil {
 				log.Fatal(err)
 			}

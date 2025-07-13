@@ -13,8 +13,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 
-	"github.com/kijimaD/ruins/lib/utils/camera"
-	"github.com/kijimaD/ruins/lib/utils/consts"
+	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -30,11 +29,11 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 
 	// 初回のみ生成
 	if wallShadowImage == nil {
-		wallShadowImage = ebiten.NewImage(int(consts.TileSize), int(consts.TileSize/2))
+		wallShadowImage = ebiten.NewImage(int(utils.TileSize), int(utils.TileSize/2))
 		wallShadowImage.Fill(color.RGBA{0, 0, 0, 80})
 	}
 	if moverShadowImage == nil {
-		moverShadowImage = ebiten.NewImage(int(consts.TileSize-6-2), int(consts.TileSize/2))
+		moverShadowImage = ebiten.NewImage(int(utils.TileSize-6-2), int(utils.TileSize/2))
 		moverShadowImage.Fill(color.RGBA{0, 0, 0, 120})
 	}
 	{
@@ -74,7 +73,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(int(pos.X)-12), float64(pos.Y))
-			camera.SetTranslate(world, op)
+			utils.SetTranslate(world, op)
 			if moverShadowImage != nil {
 				screen.DrawImage(moverShadowImage, op)
 			}
@@ -100,8 +99,8 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			if ok {
 				if belowSpriteRender.Depth == ec.DepthNumFloor {
 					op := &ebiten.DrawImageOptions{}
-					op.GeoM.Translate(float64(int(grid.Row)*int(consts.TileSize)), float64(int(grid.Col)*int(consts.TileSize)+int(consts.TileSize)))
-					camera.SetTranslate(world, op)
+					op.GeoM.Translate(float64(int(grid.Row)*int(utils.TileSize)), float64(int(grid.Col)*int(utils.TileSize)+int(utils.TileSize)))
+					utils.SetTranslate(world, op)
 					if wallShadowImage != nil {
 						screen.DrawImage(wallShadowImage, op)
 					}
@@ -168,6 +167,6 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRende
 	op.GeoM.Translate(float64(-sprite.Width/2), float64(-sprite.Width/2)) // 回転軸を画像の中心にする
 	op.GeoM.Rotate(angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
-	camera.SetTranslate(world, op)
+	utils.SetTranslate(world, op)
 	screen.DrawImage(getImage(spriteRender), op)
 }

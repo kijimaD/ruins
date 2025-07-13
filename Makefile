@@ -6,7 +6,7 @@ run: ## 実行する。スクショのキーを指定している
 
 .PHONY: test
 test: ## テストを実行する
-	go test ./... -v
+	go test ./... -v -cover
 
 .PHONY: build
 build: ## ビルドする
@@ -15,6 +15,10 @@ build: ## ビルドする
 .PHONY: vrt
 vrt: ## 各ステートでスクショを取得する
 	./scripts/vrt.sh
+
+.PHONY: fmt
+fmt: ## フォーマットする
+	goimports -w .
 
 .PHONY: memp
 memp: ## 実行毎に保存しているプロファイルを見る

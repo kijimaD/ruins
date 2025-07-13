@@ -9,11 +9,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/engine/loader"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	ew "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	gr "github.com/kijimaD/ruins/lib/resources"
 )
@@ -63,22 +61,33 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
+	// ResourceManagerを使用してリソースを読み込む
+	resourceManager := gr.NewDefaultResourceManager()
+
 	// Load controls
 	axes := []string{}
 	actions := []string{
 		gr.MoveUpAction, gr.MoveDownAction, gr.MoveLeftAction, gr.MoveRightAction,
 	}
-	controls, inputHandler := loader.LoadControls("config/controls.toml", axes, actions)
+	controls, inputHandler, err := resourceManager.LoadControls(axes, actions)
+	if err != nil {
+		log.Fatal(err)
+	}
 	world.Resources.Controls = &controls
 	world.Resources.InputHandler = &inputHandler
 
 	// Load sprite sheets
-	spriteSheets := loader.LoadSpriteSheets("metadata/spritesheets/spritesheets.toml")
-
+	spriteSheets, err := resourceManager.LoadSpriteSheets()
+	if err != nil {
+		log.Fatal(err)
+	}
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts
-	fonts := loader.LoadFonts("metadata/fonts/fonts.toml")
+	fonts, err := resourceManager.LoadFonts()
+	if err != nil {
+		log.Fatal(err)
+	}
 	world.Resources.Fonts = &fonts
 
 	defaultFont := (*world.Resources.Fonts)["kappa"]
@@ -94,7 +103,10 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	world.Resources.UIResources = uir
 
 	// load raws
-	rw := raw.LoadFromFile("metadata/entities/raw/raw.toml")
+	rw, err := resourceManager.LoadRaws()
+	if err != nil {
+		log.Fatal(err)
+	}
 	world.Resources.RawMaster = rw
 
 	world.Resources.Game = &resources.Game{}

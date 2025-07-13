@@ -8,35 +8,47 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/engine/world"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/euiext"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/craft"
-	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type CraftMenuState struct {
+	states.BaseState
 	ui *ebitenui.UI
 
-	hoveredItem        ecs.Entity        // ホバー中のアイテム
-	selectedItemButton *widget.Button    // 使用済みのアイテムのボタン
-	items              []ecs.Entity      // 表示対象とするアイテム
-	itemDesc           *widget.Text      // アイテムの概要
-	actionContainer    *widget.Container // アクションの起点となるコンテナ
-	specContainer      *widget.Container // 性能表示のコンテナ
-	recipeList         *widget.Container // レシピリストのコンテナ
-	toggleContainer    *widget.Container // カテゴリ切り替えのコンテナ
-	resultWindow       *widget.Window    // 合成結果ウィンドウ
-	category           ItemCategoryType
+	tabMenu             *tabmenu.TabMenu
+	keyboardInput       input.KeyboardInput
+	selectedItem        ecs.Entity        // 選択中のアイテム
+	itemDesc            *widget.Text      // アイテムの概要
+	specContainer       *widget.Container // 性能表示のコンテナ
+	recipeList          *widget.Container // レシピリストのコンテナ
+	resultWindow        *widget.Window    // 合成結果ウィンドウ
+	rootContainer       *widget.Container
+	tabDisplayContainer *widget.Container // タブ表示のコンテナ
+	categoryContainer   *widget.Container // カテゴリ一覧のコンテナ
+
+	// アクション選択ウィンドウ用
+	actionWindow     *widget.Window // アクション選択ウィンドウ
+	actionFocusIndex int            // アクションウィンドウ内のフォーカス
+	actionItems      []string       // アクション項目リスト
+	isWindowMode     bool           // ウィンドウ操作モードかどうか
+
+	// 結果ウィンドウ用
+	resultFocusIndex int        // 結果ウィンドウ内のフォーカス
+	resultItems      []string   // 結果ウィンドウの項目リスト
+	resultEntity     ecs.Entity // 生成された結果アイテムのエンティティ
+	isResultMode     bool       // 結果ウィンドウ操作モードかどうか
 }
 
 func (st CraftMenuState) String() string {
@@ -52,7 +64,9 @@ func (st *CraftMenuState) OnPause(world w.World) {}
 func (st *CraftMenuState) OnResume(world w.World) {}
 
 func (st *CraftMenuState) OnStart(world w.World) {
-	st.category = ItemCategoryTypeItem
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
 	st.ui = st.initUI(world)
 }
 
@@ -61,17 +75,28 @@ func (st *CraftMenuState) OnStop(world w.World) {}
 func (st *CraftMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
+	// ウィンドウモードの場合はウィンドウ操作を優先
+	if st.isWindowMode {
+		if st.updateWindowMode(world) {
+			return states.Transition{Type: states.TransNone}
+		}
+	}
+
+	// 結果ウィンドウモードの場合は結果ウィンドウ操作を優先
+	if st.isResultMode {
+		if st.updateResultMode(world) {
+			return states.Transition{Type: states.TransNone}
+		}
+	}
+
+	st.tabMenu.Update()
 	st.ui.Update()
 
-	return states.Transition{Type: states.TransNone}
+	return st.ConsumeTransition()
 }
 
 func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {
@@ -80,67 +105,164 @@ func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {
 
 // ================
 
-var _ haveCategory = &CraftMenuState{}
+func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
+	res := world.Resources.UIResources
 
-func (st *CraftMenuState) setCategory(world w.World, category ItemCategoryType) {
-	st.category = category
-}
-
-func (st *CraftMenuState) categoryReload(world w.World) {
-	st.actionContainer.RemoveChildren()
-	st.items = []ecs.Entity{}
-
-	switch st.category {
-	case ItemCategoryTypeItem:
-		st.items = st.queryMenuConsumable(world)
-	case ItemCategoryTypeCard:
-		st.items = st.queryMenuCard(world)
-	case ItemCategoryTypeWearable:
-		st.items = st.queryMenuWearable(world)
-	default:
-		log.Fatal("未定義のcategory")
+	// TabMenuの設定
+	tabs := st.createTabs(world)
+	config := tabmenu.TabMenuConfig{
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
 	}
 
-	st.generateActionContainer(world)
-}
+	callbacks := tabmenu.TabMenuCallbacks{
+		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+			st.handleItemSelection(world, tab, item)
+		},
+		OnCancel: func() {
+			// Escapeでホームメニューに戻る
+			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}})
+		},
+		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
+			st.updateTabDisplay(world)
+			st.updateCategoryDisplay(world)
+		},
+		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
+			st.handleItemChange(world, item)
+			st.updateTabDisplay(world)
+		},
+	}
 
-// ================
-
-func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
-	// 各アイテムが入るコンテナ
-	st.actionContainer = eui.NewRowContainer()
-	st.categoryReload(world)
-
-	st.toggleContainer = eui.NewRowContainer()
-	st.reloadToggleContainer(world)
+	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
 
 	// アイテムの説明文
 	itemDescContainer := eui.NewRowContainer()
-	st.itemDesc = eui.NewMenuText(" ", world) // 空白だと初期状態の縦サイズがなくなる
+	st.itemDesc = eui.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	st.queryMenuConsumable(world)
-
+	st.specContainer = eui.NewVerticalContainer(
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
 	st.recipeList = eui.NewVerticalContainer()
-	st.specContainer = eui.NewVerticalContainer()
 
-	res := world.Resources.UIResources
-	rootContainer := eui.NewItemGridContainer(
+	// 初期状態の表示を更新
+	st.updateInitialItemDisplay(world)
+
+	// タブ表示のコンテナを作成
+	st.tabDisplayContainer = eui.NewVerticalContainer()
+	st.createTabDisplayUI(world)
+
+	// カテゴリ一覧のコンテナを作成（横並び）
+	st.categoryContainer = eui.NewRowContainer()
+	st.createCategoryDisplayUI(world)
+
+	st.rootContainer = eui.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
-		rootContainer.AddChild(eui.NewMenuText("合成", world))
-		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(st.toggleContainer)
+		st.rootContainer.AddChild(eui.NewTitleText("合成", world))
+		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
+		st.rootContainer.AddChild(widget.NewContainer())
 
-		rootContainer.AddChild(st.actionContainer)
-		rootContainer.AddChild(widget.NewContainer())
-		rootContainer.AddChild(eui.NewVSplitContainer(st.specContainer, st.recipeList))
+		st.rootContainer.AddChild(st.tabDisplayContainer) // タブとアイテム一覧の表示
+		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(eui.NewVSplitContainer(st.specContainer, st.recipeList))
 
-		rootContainer.AddChild(itemDescContainer)
+		st.rootContainer.AddChild(itemDescContainer)
 	}
 
-	return &ebitenui.UI{Container: rootContainer}
+	return &ebitenui.UI{Container: st.rootContainer}
+}
+
+// createTabs はTabMenuで使用するタブを作成する
+func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
+	tabs := []tabmenu.TabItem{
+		{
+			ID:    "consumables",
+			Label: "道具",
+			Items: st.createMenuItems(world, st.queryMenuConsumable(world)),
+		},
+		{
+			ID:    "cards",
+			Label: "手札",
+			Items: st.createMenuItems(world, st.queryMenuCard(world)),
+		},
+		{
+			ID:    "wearables",
+			Label: "装備",
+			Items: st.createMenuItems(world, st.queryMenuWearable(world)),
+		},
+	}
+
+	return tabs
+}
+
+// createMenuItems はECSエンティティをMenuItemに変換する
+func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.MenuItem {
+	gameComponents := world.Components.Game.(*gc.Components)
+	items := make([]menu.MenuItem, len(entities))
+
+	for i, entity := range entities {
+		name := gameComponents.Name.Get(entity).(*gc.Name).Name
+		items[i] = menu.MenuItem{
+			ID:       fmt.Sprintf("entity_%d", entity),
+			Label:    string(name),
+			UserData: entity,
+		}
+	}
+
+	return items
+}
+
+// handleItemSelection はアイテム選択時の処理
+func (st *CraftMenuState) handleItemSelection(world w.World, tab tabmenu.TabItem, item menu.MenuItem) {
+	entity, ok := item.UserData.(ecs.Entity)
+	if !ok {
+		log.Fatal("unexpected item UserData")
+	}
+
+	st.selectedItem = entity
+	st.showActionWindow(world, entity)
+}
+
+// handleItemChange はアイテム変更時の処理（カーソル移動）
+func (st *CraftMenuState) handleItemChange(world w.World, item menu.MenuItem) {
+	// 無効なアイテムの場合は何もしない
+	if item.UserData == nil {
+		st.itemDesc.Label = " "
+		st.specContainer.RemoveChildren()
+		st.recipeList.RemoveChildren()
+		return
+	}
+
+	entity, ok := item.UserData.(ecs.Entity)
+	if !ok {
+		log.Fatal("unexpected item UserData")
+	}
+
+	gameComponents := world.Components.Game.(*gc.Components)
+
+	// Descriptionコンポーネントの存在チェック
+	if !entity.HasComponent(gameComponents.Description) {
+		st.itemDesc.Label = "説明なし"
+		st.specContainer.RemoveChildren()
+		st.recipeList.RemoveChildren()
+		return
+	}
+
+	desc := gameComponents.Description.Get(entity).(*gc.Description)
+	if desc == nil {
+		st.itemDesc.Label = "説明なし"
+		st.specContainer.RemoveChildren()
+		st.recipeList.RemoveChildren()
+		return
+	}
+
+	st.itemDesc.Label = desc.Description
+	views.UpdateSpec(world, st.specContainer, entity)
+	st.updateRecipeList(world, entity)
 }
 
 func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
@@ -192,93 +314,72 @@ func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	return items
 }
 
-// itemsからactionContainerを生成する
-func (st *CraftMenuState) generateActionContainer(world world.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	entities := []any{}
-	for _, entity := range st.items {
-		entities = append(entities, entity)
-	}
-	opts := []euiext.ListOpt{
-		euiext.ListOpts.EntryLabelFunc(func(e any) string {
-			entity, ok := e.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			name := gameComponents.Name.Get(entity).(*gc.Name)
+// showResultWindow は合成結果ウィンドウを表示する
+func (st *CraftMenuState) showResultWindow(world w.World, entity ecs.Entity) {
+	windowContainer := eui.NewWindowContainer(world)
+	titleContainer := eui.NewWindowHeaderContainer("合成結果", world)
+	st.resultWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
-			return string(name.Name)
-		}),
-		euiext.ListOpts.EntryEnterFunc(func(e any) {
-			entity, ok := e.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			if st.hoveredItem != entity {
-				st.hoveredItem = entity
-			}
-			desc := gameComponents.Description.Get(entity).(*gc.Description)
-			st.itemDesc.Label = desc.Description
-			views.UpdateSpec(world, st.specContainer, entity)
-			st.updateRecipeList(world)
-		}),
-		euiext.ListOpts.EntryButtonOpts(),
-		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
-			entity, ok := args.Entry.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			name := gameComponents.Name.Get(entity).(*gc.Name)
-			windowContainer := eui.NewWindowContainer(world)
-			actionWindow := eui.NewSmallWindow(
-				eui.NewWindowHeaderContainer("アクション", world),
-				windowContainer,
-			)
+	// 結果項目を準備
+	st.resultItems = []string{"閉じる"}
+	st.resultFocusIndex = 0
+	st.resultEntity = entity // 生成されたアイテムのエンティティを保存
+	st.isResultMode = true
 
-			actionWindow.SetLocation(setWinRect())
-			st.initWindowContainer(world, name.Name, windowContainer, actionWindow)
-			st.ui.AddWindow(actionWindow)
-		}),
-		euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(10)),
-		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(440, 400),
-		)),
-	}
-	list := eui.NewList(
-		entities,
-		opts,
-		world,
-	)
-	st.actionContainer.AddChild(list)
+	// UI要素を作成（表示のみ、操作はキーボードで行う）
+	st.createResultWindowUI(world, windowContainer, entity)
+
+	st.resultWindow.SetLocation(getCenterWinRect())
+	st.ui.AddWindow(st.resultWindow)
 }
 
-func (st *CraftMenuState) initResultWindow(world w.World, entity ecs.Entity) {
-	resultContainer := eui.NewWindowContainer(world)
-	st.resultWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("合成結果", world), resultContainer)
+// createResultWindowUI は結果ウィンドウのUI要素を作成する
+func (st *CraftMenuState) createResultWindowUI(world w.World, container *widget.Container, entity ecs.Entity) {
+	// アイテム詳細を表示
+	views.UpdateSpec(world, container, entity)
 
-	views.UpdateSpec(world, resultContainer, entity)
-
-	closeButton := eui.NewButton("閉じる",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.resultWindow.Close()
-		}),
-	)
-	resultContainer.AddChild(closeButton)
+	st.updateResultWindowDisplay(world)
 }
 
-func (st *CraftMenuState) updateRecipeList(world w.World) {
+// updateResultWindowDisplay は結果ウィンドウの表示を更新する
+func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
+	if st.resultWindow == nil {
+		return
+	}
+
+	// 既存のウィンドウを閉じて新しく作成
+	st.resultWindow.Close()
+
+	windowContainer := eui.NewWindowContainer(world)
+	titleContainer := eui.NewWindowHeaderContainer("合成結果", world)
+	st.resultWindow = eui.NewSmallWindow(titleContainer, windowContainer)
+
+	// アイテム詳細を表示（生成されたアイテムの値を使用）
+	views.UpdateSpec(world, windowContainer, st.resultEntity)
+
+	// ボタン項目を表示
+	for i, action := range st.resultItems {
+		isSelected := i == st.resultFocusIndex
+		actionWidget := eui.NewListItemText(action, styles.TextColor, isSelected, world)
+		windowContainer.AddChild(actionWidget)
+	}
+
+	st.resultWindow.SetLocation(getCenterWinRect())
+	st.ui.AddWindow(st.resultWindow)
+}
+
+func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	st.recipeList.RemoveChildren()
 	world.Manager.Join(
 		gameComponents.Recipe,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == st.hoveredItem {
+		if entity == targetEntity {
 			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
 			for _, input := range recipe.Inputs {
-				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, material.GetAmount(input.Name, world))
+				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, worldhelper.GetAmount(input.Name, world))
 				var color color.RGBA
-				if material.GetAmount(input.Name, world) >= input.Amount {
+				if worldhelper.GetAmount(input.Name, world) >= input.Amount {
 					color = styles.SuccessColor
 				} else {
 					color = styles.DangerColor
@@ -290,76 +391,280 @@ func (st *CraftMenuState) updateRecipeList(world w.World) {
 	}))
 }
 
-// アクションウィンドウはクリックのたびに毎回中身を作り直す
-// useButton.GetWidget().Disabled = true を使ってボタンを非活性にする方が楽でよさそうなのだが、非活性にすると描画の色まわりでヌルポになる。色は設定しているのに...
-func (st *CraftMenuState) initWindowContainer(world w.World, name string, windowContainer *widget.Container, actionWindow *widget.Window) {
-	windowContainer.RemoveChildren()
-	useButton := eui.NewButton("合成する",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			resultEntity, err := craft.Craft(world, name)
-			if err != nil {
-				log.Fatal(err)
-			}
-			st.updateRecipeList(world)
+// showActionWindow はアクションウィンドウを表示する
+func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
+	windowContainer := eui.NewWindowContainer(world)
+	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
+	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
-			actionWindow.Close()
-			st.initResultWindow(world, *resultEntity)
-			st.resultWindow.SetLocation(getWinRect())
-			st.ui.AddWindow(st.resultWindow)
-		}),
-	)
-	if craft.CanCraft(world, name) {
-		windowContainer.AddChild(useButton)
+	gameComponents := world.Components.Game.(*gc.Components)
+	name := gameComponents.Name.Get(entity).(*gc.Name)
+
+	// アクション項目を準備
+	st.actionItems = []string{}
+	st.selectedItem = entity
+
+	// 合成可能かチェック
+	if canCraft, _ := worldhelper.CanCraft(world, name.Name); canCraft {
+		st.actionItems = append(st.actionItems, "合成する")
 	}
+	st.actionItems = append(st.actionItems, "閉じる")
 
-	closeButton := eui.NewButton("閉じる",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			actionWindow.Close()
-		}),
-	)
-	windowContainer.AddChild(closeButton)
+	st.actionFocusIndex = 0
+	st.isWindowMode = true
+
+	// UI要素を作成（表示のみ、操作はキーボードで行う）
+	st.createActionWindowUI(world, windowContainer, entity)
+
+	st.actionWindow.SetLocation(getCenterWinRect())
+	st.ui.AddWindow(st.actionWindow)
 }
 
-func (st *CraftMenuState) reloadToggleContainer(world w.World) {
-	st.toggleContainer.RemoveChildren()
+// createActionWindowUI はアクションウィンドウのUI要素を作成する
+func (st *CraftMenuState) createActionWindowUI(world w.World, container *widget.Container, entity ecs.Entity) {
+	st.updateActionWindowDisplay(world)
+}
 
-	toggleConsumableButton := eui.NewButton("道具",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeItem)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-	toggleWearableButton := eui.NewButton("装備",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeWearable)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-	toggleCardButton := eui.NewButton("手札",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.setCategory(world, ItemCategoryTypeCard)
-			st.categoryReload(world)
-			st.reloadToggleContainer(world)
-		}),
-	)
-
-	switch st.category {
-	case ItemCategoryTypeItem:
-		toggleConsumableButton.GetWidget().Disabled = true
-	case ItemCategoryTypeWearable:
-		toggleWearableButton.GetWidget().Disabled = true
-	case ItemCategoryTypeCard:
-		toggleCardButton.GetWidget().Disabled = true
+// updateActionWindowDisplay はアクションウィンドウの表示を更新する
+func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
+	if st.actionWindow == nil {
+		return
 	}
 
-	st.toggleContainer.AddChild(toggleConsumableButton)
-	st.toggleContainer.AddChild(toggleWearableButton)
-	st.toggleContainer.AddChild(toggleCardButton)
+	// 既存のウィンドウを閉じて新しく作成
+	st.actionWindow.Close()
+
+	windowContainer := eui.NewWindowContainer(world)
+	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
+	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
+
+	// アクション項目を表示
+	for i, action := range st.actionItems {
+		isSelected := i == st.actionFocusIndex
+		actionWidget := eui.NewListItemText(action, styles.TextColor, isSelected, world)
+		windowContainer.AddChild(actionWidget)
+	}
+
+	st.actionWindow.SetLocation(getCenterWinRect())
+	st.ui.AddWindow(st.actionWindow)
+}
+
+// updateWindowMode はウィンドウモード時の操作を処理する
+func (st *CraftMenuState) updateWindowMode(world w.World) bool {
+	// Escapeでウィンドウモードを終了
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		st.closeActionWindow()
+		return false
+	}
+
+	// 上下矢印でフォーカス移動
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+		st.actionFocusIndex--
+		if st.actionFocusIndex < 0 {
+			st.actionFocusIndex = len(st.actionItems) - 1
+		}
+		st.updateActionWindowDisplay(world)
+		return true
+	}
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+		st.actionFocusIndex++
+		if st.actionFocusIndex >= len(st.actionItems) {
+			st.actionFocusIndex = 0
+		}
+		st.updateActionWindowDisplay(world)
+		return true
+	}
+
+	// Enterで選択実行（押下-押上ワンセット）
+	if st.keyboardInput.IsEnterJustPressedOnce() || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+		st.executeActionItem(world)
+		return true
+	}
+
+	return true
+}
+
+// updateResultMode は結果ウィンドウモード時の操作を処理する
+func (st *CraftMenuState) updateResultMode(world w.World) bool {
+	// Escapeで結果ウィンドウモードを終了
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		st.closeResultWindow()
+		return false
+	}
+
+	// 上下矢印でフォーカス移動
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+		st.resultFocusIndex--
+		if st.resultFocusIndex < 0 {
+			st.resultFocusIndex = len(st.resultItems) - 1
+		}
+		st.updateResultWindowDisplay(world)
+		return true
+	}
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+		st.resultFocusIndex++
+		if st.resultFocusIndex >= len(st.resultItems) {
+			st.resultFocusIndex = 0
+		}
+		st.updateResultWindowDisplay(world)
+		return true
+	}
+
+	// Enterで選択実行（押下-押上ワンセット）
+	if st.keyboardInput.IsEnterJustPressedOnce() || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+		st.executeResultItem(world)
+		return true
+	}
+
+	return true
+}
+
+// closeActionWindow はアクションウィンドウを閉じる
+func (st *CraftMenuState) closeActionWindow() {
+	if st.actionWindow != nil {
+		st.actionWindow.Close()
+		st.actionWindow = nil
+	}
+	st.isWindowMode = false
+	st.actionFocusIndex = 0
+	st.actionItems = nil
+}
+
+// closeResultWindow は結果ウィンドウを閉じる
+func (st *CraftMenuState) closeResultWindow() {
+	if st.resultWindow != nil {
+		st.resultWindow.Close()
+		st.resultWindow = nil
+	}
+	st.isResultMode = false
+	st.resultFocusIndex = 0
+	st.resultItems = nil
+	st.resultEntity = 0 // エンティティIDをリセット
+}
+
+// executeResultItem は選択された結果項目を実行する
+func (st *CraftMenuState) executeResultItem(world w.World) {
+	if st.resultFocusIndex >= len(st.resultItems) {
+		return
+	}
+
+	selectedAction := st.resultItems[st.resultFocusIndex]
+
+	switch selectedAction {
+	case "閉じる":
+		st.closeResultWindow()
+	}
+}
+
+// executeActionItem は選択されたアクション項目を実行する
+func (st *CraftMenuState) executeActionItem(world w.World) {
+	if st.actionFocusIndex >= len(st.actionItems) {
+		return
+	}
+
+	selectedAction := st.actionItems[st.actionFocusIndex]
+	gameComponents := world.Components.Game.(*gc.Components)
+	name := gameComponents.Name.Get(st.selectedItem).(*gc.Name)
+
+	switch selectedAction {
+	case "合成する":
+		resultEntity, err := worldhelper.Craft(world, name.Name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		st.updateRecipeList(world, st.selectedItem)
+
+		st.closeActionWindow()
+		st.showResultWindow(world, *resultEntity)
+		st.reloadTabs(world)
+		st.updateTabDisplay(world)
+		st.updateCategoryDisplay(world)
+	case "閉じる":
+		st.closeActionWindow()
+	}
+}
+
+// reloadTabs はタブの内容を再読み込みする
+func (st *CraftMenuState) reloadTabs(world w.World) {
+	newTabs := st.createTabs(world)
+	st.tabMenu.UpdateTabs(newTabs)
+	// UpdateTabs後に表示を更新
+	st.updateTabDisplay(world)
+}
+
+// createTabDisplayUI はタブ表示UIを作成する
+func (st *CraftMenuState) createTabDisplayUI(world w.World) {
+	st.updateTabDisplay(world)
+}
+
+// createCategoryDisplayUI はカテゴリ表示UIを作成する
+func (st *CraftMenuState) createCategoryDisplayUI(world w.World) {
+	st.updateCategoryDisplay(world)
+}
+
+// updateCategoryDisplay はカテゴリ表示を更新する
+func (st *CraftMenuState) updateCategoryDisplay(world w.World) {
+	// 既存の子要素をクリア
+	st.categoryContainer.RemoveChildren()
+
+	// 全カテゴリを横並びで表示
+	currentTabIndex := st.tabMenu.GetCurrentTabIndex()
+	tabs := st.createTabs(world) // 最新のタブ情報を取得
+
+	for i, tab := range tabs {
+		isSelected := i == currentTabIndex
+		if isSelected {
+			// 選択中のカテゴリは背景色付きで明るい文字色
+			categoryWidget := eui.NewListItemText(tab.Label, styles.TextColor, true, world)
+			st.categoryContainer.AddChild(categoryWidget)
+		} else {
+			// 非選択のカテゴリは背景なしでグレー文字色
+			categoryWidget := eui.NewListItemText(tab.Label, styles.ForegroundColor, false, world)
+			st.categoryContainer.AddChild(categoryWidget)
+		}
+	}
+}
+
+// updateTabDisplay はタブ表示を更新する
+func (st *CraftMenuState) updateTabDisplay(world w.World) {
+	// 既存の子要素をクリア
+	st.tabDisplayContainer.RemoveChildren()
+
+	currentTab := st.tabMenu.GetCurrentTab()
+	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+
+	// タブ名を表示（サブタイトルとして）
+	tabNameText := eui.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
+	st.tabDisplayContainer.AddChild(tabNameText)
+
+	// アイテム一覧を表示
+	for i, item := range currentTab.Items {
+		isSelected := i == currentItemIndex && currentItemIndex >= 0
+		if isSelected {
+			// 選択中のアイテムは背景色付きで明るい文字色
+			itemWidget := eui.NewListItemText(item.Label, styles.TextColor, true, world)
+			st.tabDisplayContainer.AddChild(itemWidget)
+		} else {
+			// 非選択のアイテムは背景なしでグレー文字色
+			itemWidget := eui.NewListItemText(item.Label, styles.ForegroundColor, false, world)
+			st.tabDisplayContainer.AddChild(itemWidget)
+		}
+	}
+
+	// アイテムがない場合の表示
+	if len(currentTab.Items) == 0 {
+		emptyText := eui.NewDescriptionText("(アイテムなし)", world)
+		st.tabDisplayContainer.AddChild(emptyText)
+	}
+}
+
+// updateInitialItemDisplay は初期状態のアイテム表示を更新する
+func (st *CraftMenuState) updateInitialItemDisplay(world w.World) {
+	currentTab := st.tabMenu.GetCurrentTab()
+	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+
+	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
+		currentItem := currentTab.Items[currentItemIndex]
+		st.handleItemChange(world, currentItem)
+	}
 }

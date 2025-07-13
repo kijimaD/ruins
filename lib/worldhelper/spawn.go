@@ -1,0 +1,282 @@
+package worldhelper
+
+import (
+	"github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/effects"
+	"github.com/kijimaD/ruins/lib/engine/loader"
+	"github.com/kijimaD/ruins/lib/raw"
+	ecs "github.com/x-hgg-x/goecs/v2"
+
+	gc "github.com/kijimaD/ruins/lib/components"
+	ec "github.com/kijimaD/ruins/lib/engine/components"
+	w "github.com/kijimaD/ruins/lib/engine/world"
+)
+
+// ========== 生成システム（旧spawner） ==========
+
+// ================
+// Field
+// ================
+
+// フィールド上に表示される床を生成する
+func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, components.GameComponentList{
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 2,
+			Depth:        ec.DepthNumFloor,
+		},
+	})
+
+	return loader.AddEntities(world, componentList)[0]
+}
+
+// フィールド上に表示される壁を生成する
+func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, components.GameComponentList{
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 1,
+			Depth:        ec.DepthNumTaller,
+		},
+		BlockView: &gc.BlockView{},
+		BlockPass: &gc.BlockPass{},
+	})
+
+	return loader.AddEntities(world, componentList)[0]
+}
+
+// フィールド上に表示される進行ワープホールを生成する
+func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+	SpawnFloor(world, x, y) // 下敷き描画
+
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, components.GameComponentList{
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 4,
+			Depth:        ec.DepthNumRug,
+		},
+		Warp: &gc.Warp{Mode: gc.WarpModeNext},
+	})
+
+	return loader.AddEntities(world, componentList)[0]
+}
+
+// フィールド上に表示される脱出ワープホールを生成する
+func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+	SpawnFloor(world, x, y) // 下敷き描画
+
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	componentList := loader.EntityComponentList{}
+	componentList.Game = append(componentList.Game, components.GameComponentList{
+		GridElement: &gc.GridElement{Row: x, Col: y},
+		SpriteRender: &ec.SpriteRender{
+			SpriteSheet:  &fieldSpriteSheet,
+			SpriteNumber: 5,
+			Depth:        ec.DepthNumRug,
+		},
+		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
+	})
+
+	return loader.AddEntities(world, componentList)[0]
+}
+
+// フィールド上に表示される操作対象キャラを生成する。
+// TODO: エンティティが重複しているときにエラーを返す。
+// TODO: 置けるタイル以外が指定されるとエラーを返す。
+// デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
+func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, components.GameComponentList{
+			Position: &gc.Position{X: x, Y: y},
+			Velocity: &gc.Velocity{},
+			Operator: &gc.Operator{},
+			SpriteRender: &ec.SpriteRender{
+				SpriteSheet:  &fieldSpriteSheet,
+				SpriteNumber: 3,
+				Depth:        ec.DepthNumOperator,
+			},
+			BlockPass: &gc.BlockPass{},
+		})
+		loader.AddEntities(world, componentList)
+	}
+	// カメラ
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, components.GameComponentList{
+			Position: &gc.Position{X: x, Y: y},
+			Camera:   &gc.Camera{Scale: 0.1, ScaleTo: 1},
+		})
+		loader.AddEntities(world, componentList)
+	}
+}
+
+// フィールド上に表示されるNPCを生成する
+// TODO: 接触すると戦闘開始するようにする
+func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
+	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
+	{
+		componentList := loader.EntityComponentList{}
+		componentList.Game = append(componentList.Game, components.GameComponentList{
+			Position: &gc.Position{X: x, Y: y},
+			Velocity: &gc.Velocity{},
+			SpriteRender: &ec.SpriteRender{
+				SpriteSheet:  &fieldSpriteSheet,
+				SpriteNumber: 6,
+				Depth:        ec.DepthNumTaller,
+			},
+			BlockPass: &gc.BlockPass{},
+			AIMoveFSM: &gc.AIMoveFSM{},
+			AIRoaming: &gc.AIRoaming{},
+		})
+		loader.AddEntities(world, componentList)
+	}
+}
+
+// ================
+// Item
+// ================
+
+// アイテムを生成する
+func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs.Entity {
+	componentList := loader.EntityComponentList{}
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	gameComponent, err := rawMaster.GenerateItem(name, locationType)
+	if err != nil {
+		panic(err) // TODO: Handle error properly
+	}
+	componentList.Game = append(componentList.Game, gameComponent)
+	entities := loader.AddEntities(world, componentList)
+
+	return entities[len(entities)-1]
+}
+
+// パーティに追加可能なキャラを生成する
+func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
+	componentList := loader.EntityComponentList{}
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	componentList.Game = append(componentList.Game, rawMaster.GenerateMember(name, inParty))
+	entities := loader.AddEntities(world, componentList)
+	fullRecover(world, entities[len(entities)-1])
+
+	return entities[len(entities)-1]
+}
+
+// 戦闘に参加する敵キャラを生成する
+func SpawnEnemy(world w.World, name string) ecs.Entity {
+	componentList := loader.EntityComponentList{}
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+
+	cl := rawMaster.GenerateEnemy(name)
+	componentList.Game = append(
+		componentList.Game,
+		cl,
+	)
+	entities := loader.AddEntities(world, componentList)
+	fullRecover(world, entities[len(entities)-1])
+
+	return entities[len(entities)-1]
+}
+
+// 完全回復させる
+func fullRecover(world w.World, entity ecs.Entity) {
+	// 新しく生成されたエンティティの最大HP/SPを設定
+	setMaxHPSP(world, entity)
+	// 回復
+	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
+	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
+	effects.RunEffectQueue(world)
+}
+
+// 指定したエンティティの最大HP/SPを設定する
+func setMaxHPSP(world w.World, entity ecs.Entity) {
+	gameComponents := world.Components.Game.(*gc.Components)
+
+	if !entity.HasComponent(gameComponents.Pools) || !entity.HasComponent(gameComponents.Attributes) {
+		return
+	}
+
+	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+	attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+
+	// Totalが設定されていない場合はBaseから初期化
+	if attrs.Vitality.Total == 0 {
+		attrs.Vitality.Total = attrs.Vitality.Base
+	}
+	if attrs.Strength.Total == 0 {
+		attrs.Strength.Total = attrs.Strength.Base
+	}
+	if attrs.Sensation.Total == 0 {
+		attrs.Sensation.Total = attrs.Sensation.Base
+	}
+	if attrs.Dexterity.Total == 0 {
+		attrs.Dexterity.Total = attrs.Dexterity.Base
+	}
+	if attrs.Agility.Total == 0 {
+		attrs.Agility.Total = attrs.Agility.Base
+	}
+	if attrs.Defense.Total == 0 {
+		attrs.Defense.Total = attrs.Defense.Base
+	}
+
+	// 最大HP計算: 30+(体力*8+力+感覚)*{1+(Lv-1)*0.03}
+	pools.HP.Max = int(30 + float64(attrs.Vitality.Total*8+attrs.Strength.Total+attrs.Sensation.Total)*(1+float64(pools.Level-1)*0.03))
+	pools.HP.Current = pools.HP.Max
+
+	// 最大SP計算: (体力*2+器用さ+素早さ)*{1+(Lv-1)*0.02}
+	pools.SP.Max = int(float64(attrs.Vitality.Total*2+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*0.02))
+	pools.SP.Current = pools.SP.Max
+}
+
+// 所持素材の個数を0で初期化する
+func SpawnAllMaterials(world w.World) {
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	for k, _ := range rawMaster.MaterialIndex {
+		componentList := loader.EntityComponentList{}
+		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
+		if err != nil {
+			panic(err) // TODO: Handle error properly
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
+		loader.AddEntities(world, componentList)
+	}
+}
+
+// レシピ初期化
+func SpawnAllRecipes(world w.World) {
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	for k, _ := range rawMaster.RecipeIndex {
+		componentList := loader.EntityComponentList{}
+		gameComponent, err := rawMaster.GenerateRecipe(k)
+		if err != nil {
+			panic(err) // TODO: Handle error properly
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
+		loader.AddEntities(world, componentList)
+	}
+}
+
+// 敵が使う用。マスタとなるカードを初期化する
+func SpawnAllCards(world w.World) {
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	for k, _ := range rawMaster.ItemIndex {
+		componentList := loader.EntityComponentList{}
+		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
+		if err != nil {
+			panic(err) // TODO: Handle error properly
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
+		loader.AddEntities(world, componentList)
+	}
+}

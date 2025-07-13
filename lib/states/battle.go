@@ -10,7 +10,6 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
@@ -21,20 +20,21 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/party"
-	"github.com/kijimaD/ruins/lib/worldhelper/simple"
-	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
+	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type BattleState struct {
-	ui    *ebitenui.UI
-	trans *states.Transition
+	states.BaseState
+	ui            *ebitenui.UI
+	keyboardInput input.KeyboardInput
 
 	// 現在のサブステート
 	phase battlePhase
@@ -43,7 +43,7 @@ type BattleState struct {
 	// テキスト送り待ち状態
 	isWaitClick bool
 	// 味方パーティ
-	party party.Party
+	party worldhelper.Party
 
 	// 背景
 	bg *ebiten.Image
@@ -60,6 +60,10 @@ type BattleState struct {
 	selectedItem ecs.Entity
 	// カードの説明表示コンテナ
 	cardSpecContainer *widget.Container
+
+	// メニューコンポーネント
+	currentMenu   *menu.Menu
+	menuUIBuilder *menu.MenuUIBuilder
 }
 
 func (st BattleState) String() string {
@@ -75,8 +79,15 @@ func (st *BattleState) OnPause(world w.World) {}
 func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
-	_ = spawner.SpawnEnemy(world, "軽戦車")
-	_ = spawner.SpawnEnemy(world, "火の玉")
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
+
+	// MenuUIBuilderを初期化
+	st.menuUIBuilder = menu.NewMenuUIBuilder(world)
+
+	_ = worldhelper.SpawnEnemy(world, "軽戦車")
+	_ = worldhelper.SpawnEnemy(world, "火の玉")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
@@ -106,13 +117,15 @@ func (st *BattleState) OnStop(world w.World) {
 }
 
 func (st *BattleState) Update(world w.World) states.Transition {
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
 	st.ui.Update()
+
+	// キーボード選択処理（選択フェーズのみ、ログ表示中は除く）
+	if !st.isWaitClick && st.currentMenu != nil {
+		switch st.phase.(type) {
+		case *phaseChoosePolicy, *phaseChooseAction, *phaseChooseTarget:
+			st.currentMenu.Update(st.keyboardInput)
+		}
+	}
 
 	// ステートが変わった最初の1回だけ実行される
 	// TODO: 複雑化しているので、ここもstates packageを使ってやったほうがいい
@@ -120,7 +133,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
 			var err error
-			st.party, err = party.NewParty(world, components.FactionAlly)
+			st.party, err = worldhelper.NewParty(world, components.FactionAlly)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -153,7 +166,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
 				// テーブル取得
 				ctComponent := gameComponents.CommandTable.Get(entity).(*gc.CommandTable)
-				rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+				rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 				ct := rawMaster.GetCommandTable(ctComponent.Name)
 				name := ct.SelectByWeight()
 
@@ -227,7 +240,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
-			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			if st.keyboardInput.IsEnterJustPressedOnce() {
 				gs.BattleCommandSystem(world)
 				st.isWaitClick = false
 			}
@@ -235,7 +248,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		}
 
 		// 処理完了
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if st.keyboardInput.IsEnterJustPressedOnce() {
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
 			gamelog.BattleLog.Flush()
@@ -243,7 +256,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseResult:
 		st.reloadMsg(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if st.keyboardInput.IsEnterJustPressedOnce() {
 			switch v.actionCount {
 			case 0:
 				dropResult := systems.BattleDropSystem(world)
@@ -257,12 +270,12 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseGameOver:
 		st.reloadMsg(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if st.keyboardInput.IsEnterJustPressedOnce() {
 			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
 		}
 	}
 
-	return states.Transition{Type: states.TransNone}
+	return st.ConsumeTransition()
 }
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
@@ -373,47 +386,60 @@ const (
 func (st *BattleState) reloadPolicy(world w.World) {
 	st.selectContainer.RemoveChildren()
 
-	entries := []any{
-		policyEntryAttack,
-		policyEntryItem,
-		policyEntryEscape,
+	// MenuItemを作成
+	items := []menu.MenuItem{
+		{
+			ID:       "attack",
+			Label:    string(policyEntryAttack),
+			UserData: policyEntryAttack,
+		},
+		{
+			ID:       "item",
+			Label:    string(policyEntryItem),
+			UserData: policyEntryItem,
+			Disabled: true, // TODO: 未実装のため無効化
+		},
+		{
+			ID:       "escape",
+			Label:    string(policyEntryEscape),
+			UserData: policyEntryEscape,
+		},
 	}
-	res := world.Resources.UIResources
-	opts := []euiext.ListOpt{
-		euiext.ListOpts.EntryLabelFunc(func(e any) string {
-			v, ok := e.(policyEntry)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			return string(v)
-		}),
-		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
-		euiext.ListOpts.EntryButtonOpts(),
-		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
-			entry := args.Entry.(policyEntry)
+
+	// Menuの設定
+	config := menu.MenuConfig{
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+	}
+
+	// コールバックの設定
+	callbacks := menu.MenuCallbacks{
+		OnSelect: func(index int, item menu.MenuItem) {
+			entry := item.UserData.(policyEntry)
 			switch entry {
 			case policyEntryAttack:
 				members := []ecs.Entity{}
-				simple.InPartyMember(world, func(entity ecs.Entity) {
+				worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
 					members = append(members, entity)
 				})
 				st.phase = &phaseChooseAction{owner: *st.party.Value()}
 			case policyEntryItem:
 				// TODO: 未実装
 			case policyEntryEscape:
-				st.trans = &states.Transition{Type: states.TransPop}
-			default:
-				log.Fatal("unexpected entry detect!")
+				st.SetTransition(states.Transition{Type: states.TransPop})
 			}
-		}),
-		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
+		},
+		OnFocusChange: func(oldIndex, newIndex int) {
+			st.menuUIBuilder.UpdateFocus(st.currentMenu)
+		},
 	}
-	list := eui.NewList(
-		entries,
-		opts,
-		world,
-	)
-	st.selectContainer.AddChild(list)
+
+	// Menuを作成してUIを構築
+	st.currentMenu = menu.NewMenu(config, callbacks)
+	menuContainer := st.menuUIBuilder.BuildUI(st.currentMenu)
+	st.selectContainer.AddChild(menuContainer)
 }
 
 // ================
@@ -423,8 +449,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	usableCards := []any{}   // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
-	unusableCards := []any{} // 実際にはecs.Entityが入る。Listで受け取るのが[]anyだからそうしている
+	usableCards := []ecs.Entity{}
+	unusableCards := []ecs.Entity{}
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationEquipped,
@@ -458,44 +484,46 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		}
 	}))
 
-	res := world.Resources.UIResources
-	opts := []euiext.ListOpt{
-		euiext.ListOpts.EntryLabelFunc(func(e any) string {
-			v, ok := e.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
-			name := gameComponents.Name.Get(v).(*gc.Name)
-			card := gameComponents.Card.Get(v).(*gc.Card)
+	// MenuItemを作成
+	items := make([]menu.MenuItem, len(usableCards))
+	for i, entity := range usableCards {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		card := gameComponents.Card.Get(entity).(*gc.Card)
+		items[i] = menu.MenuItem{
+			ID:       fmt.Sprintf("card_%d", entity),
+			Label:    fmt.Sprintf("%s (%d)", name.Name, card.Cost),
+			UserData: entity,
+		}
+	}
 
-			return fmt.Sprintf("%s (%d)", name.Name, card.Cost)
-		}),
-		euiext.ListOpts.EntryEnterFunc(func(e any) {
-			entity, ok := e.(ecs.Entity)
-			if !ok {
-				return
-			}
-			if st.selectedItem != entity {
-				st.selectedItem = entity
-			}
-			st.cardSpecContainer.RemoveChildren()
-			// 透明度つきの背景を設定したコンテナ。cardSpecContainerは背景が設定されておらず非表示にできるようになっている
-			transContainer := eui.NewVerticalContainer(
-				widget.ContainerOpts.WidgetOpts(
-					widget.WidgetOpts.MinSize(700, 120),
-				),
-				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
-			)
-			views.UpdateSpec(world, transContainer, entity)
-			st.cardSpecContainer.AddChild(transContainer)
+	// 使用不可カードも追加（無効化状態で）
+	for _, entity := range unusableCards {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		card := gameComponents.Card.Get(entity).(*gc.Card)
+		items = append(items, menu.MenuItem{
+			ID:       fmt.Sprintf("card_disabled_%d", entity),
+			Label:    fmt.Sprintf("%s (%d)", name.Name, card.Cost),
+			UserData: entity,
+			Disabled: true,
+		})
+	}
 
-			return
-		}),
-		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
-			cardEntity, ok := args.Entry.(ecs.Entity)
-			if !ok {
-				log.Fatal("unexpected entry detect!")
-			}
+	if len(items) == 0 {
+		return
+	}
+
+	// Menuの設定
+	config := menu.MenuConfig{
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+	}
+
+	// コールバックの設定
+	callbacks := menu.MenuCallbacks{
+		OnSelect: func(index int, item menu.MenuItem) {
+			cardEntity := item.UserData.(ecs.Entity)
 			card := gameComponents.Card.Get(cardEntity).(*gc.Card)
 			if card == nil {
 				log.Fatal("unexpected error: entityがcardを保持していない")
@@ -504,31 +532,48 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 				owner: currentPhase.owner,
 				way:   cardEntity,
 			}
-			st.cardSpecContainer.RemoveChildren() // 選択し終わったら消す。こうするより非表示にしたほうがいいかもしれない
-		}),
-		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
-	}
-	list := eui.NewList(
-		usableCards,
-		opts,
-		world,
-	)
-	st.selectContainer.AddChild(list)
-
-	if len(unusableCards) > 0 {
-		notAvaliableList := eui.NewList(
-			unusableCards,
-			opts,
-			world,
-		)
-		notAvaliableList.GetWidget().Disabled = true
-		st.selectContainer.AddChild(notAvaliableList)
+			st.cardSpecContainer.RemoveChildren()
+		},
+		OnFocusChange: func(oldIndex, newIndex int) {
+			if newIndex >= 0 && newIndex < len(items) {
+				entity := items[newIndex].UserData.(ecs.Entity)
+				st.selectedItem = entity
+				st.updateCardSpec(world, entity)
+			}
+			st.menuUIBuilder.UpdateFocus(st.currentMenu)
+		},
 	}
 
+	// Menuを作成してUIを構築
+	st.currentMenu = menu.NewMenu(config, callbacks)
+	menuContainer := st.menuUIBuilder.BuildUI(st.currentMenu)
+	st.selectContainer.AddChild(menuContainer)
+
+	// 初期状態でカードの詳細を表示
+	if len(usableCards) > 0 {
+		st.selectedItem = usableCards[0]
+		st.updateCardSpec(world, usableCards[0])
+	}
+
+	// プレイヤー名を表示
 	{
 		name := gameComponents.Name.Get(*st.party.Value()).(*gc.Name)
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
+}
+
+// updateCardSpec はカードの詳細情報を更新する
+func (st *BattleState) updateCardSpec(world w.World, entity ecs.Entity) {
+	st.cardSpecContainer.RemoveChildren()
+	res := world.Resources.UIResources
+	transContainer := eui.NewVerticalContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(700, 120),
+		),
+		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+	)
+	views.UpdateSpec(world, transContainer, entity)
+	st.cardSpecContainer.AddChild(transContainer)
 }
 
 // ================
@@ -538,55 +583,78 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
+
+	// 生きている敵をリストアップ
+	enemies := []ecs.Entity{}
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.FactionEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// 敵キャラごとにターゲット選択ボタンを作成する
-		{
-			// 生きている敵のみ対象とする
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
+		// 生きている敵のみ対象とする
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		if pools.HP.Current == 0 {
+			return
 		}
 
-		vc := eui.NewVerticalContainer()
-		st.cardSpecContainer.AddChild(vc)
-
-		btn := eui.NewButton(
-			"選択",
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				cl := loader.EntityComponentList{}
-				cl.Game = append(cl.Game, components.GameComponentList{
-					BattleCommand: &gc.BattleCommand{
-						Owner:  currentPhase.owner,
-						Target: entity,
-						Way:    currentPhase.way,
-					},
-				})
-				loader.AddEntities(world, cl)
-
-				err := st.party.Next()
-				if err == nil {
-					// 次のメンバー
-					st.phase = &phaseChooseAction{owner: *st.party.Value()}
-				} else {
-					// 全員分完了
-					st.phase = &phaseEnemyActionSelect{}
-					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
-				}
-			}),
-		)
-		vc.AddChild(btn)
-
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-		vc.AddChild(eui.NewMenuText(text, world))
+		// 敵をリストに追加
+		enemies = append(enemies, entity)
 	}))
+
+	if len(enemies) == 0 {
+		return
+	}
+
+	// MenuItemを作成
+	items := make([]menu.MenuItem, len(enemies))
+	for i, entity := range enemies {
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		items[i] = menu.MenuItem{
+			ID:       fmt.Sprintf("enemy_%d", entity),
+			Label:    fmt.Sprintf("%s", name.Name),
+			UserData: entity,
+		}
+	}
+
+	// Menuの設定
+	config := menu.MenuConfig{
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+	}
+
+	// コールバックの設定
+	callbacks := menu.MenuCallbacks{
+		OnSelect: func(index int, item menu.MenuItem) {
+			targetEntity := item.UserData.(ecs.Entity)
+			cl := loader.EntityComponentList{}
+			cl.Game = append(cl.Game, components.GameComponentList{
+				BattleCommand: &gc.BattleCommand{
+					Owner:  currentPhase.owner,
+					Target: targetEntity,
+					Way:    currentPhase.way,
+				},
+			})
+			loader.AddEntities(world, cl)
+
+			err := st.party.Next()
+			if err == nil {
+				st.phase = &phaseChooseAction{owner: *st.party.Value()}
+			} else {
+				st.phase = &phaseEnemyActionSelect{}
+				gs.BattleCommandSystem(world)
+			}
+		},
+		OnFocusChange: func(oldIndex, newIndex int) {
+			st.menuUIBuilder.UpdateFocus(st.currentMenu)
+		},
+	}
+
+	// Menuを作成してUIを構築
+	st.currentMenu = menu.NewMenu(config, callbacks)
+	menuContainer := st.menuUIBuilder.BuildUI(st.currentMenu)
+	st.selectContainer.AddChild(menuContainer)
 }
 
 // ================

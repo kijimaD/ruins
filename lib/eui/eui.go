@@ -153,6 +153,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 
 // text ================
 
+// 汎用メニューテキスト（既存との互換性のため維持）
 func NewMenuText(title string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	text := widget.NewText(
@@ -163,6 +164,39 @@ func NewMenuText(title string, world w.World) *widget.Text {
 	)
 
 	return text
+}
+
+// タイトル用テキスト（大きめ、目立つ）
+func NewTitleText(text string, world w.World) *widget.Text {
+	res := world.Resources.UIResources
+	return widget.NewText(
+		widget.TextOpts.Text(text, res.Text.TitleFace, styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
+}
+
+// サブタイトル用テキスト（中サイズ）
+func NewSubtitleText(text string, world w.World) *widget.Text {
+	res := world.Resources.UIResources
+	return widget.NewText(
+		widget.TextOpts.Text(text, res.Text.Face, styles.TextColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
+}
+
+// 説明文用テキスト（小さめ、補助的）
+func NewDescriptionText(text string, world w.World) *widget.Text {
+	res := world.Resources.UIResources
+	return widget.NewText(
+		widget.TextOpts.Text(text, res.Text.SmallFace, styles.ForegroundColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+		),
+	)
 }
 
 func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
@@ -177,6 +211,50 @@ func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
 	return text
 }
 
+// リスト項目用テキスト（背景色変更で選択状態を表現）
+func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w.World) *widget.Container {
+	res := world.Resources.UIResources
+
+	var backgroundColor *image.NineSlice
+	if isSelected {
+		// 選択中は背景色を付ける
+		backgroundColor = image.NewNineSliceColor(styles.ButtonHoverColor)
+	} else {
+		// 非選択は背景なし（透明）
+		backgroundColor = image.NewNineSliceColor(styles.TransparentColor)
+	}
+
+	container := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(backgroundColor),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true, // 横幅を親コンテナに合わせる
+			}),
+			widget.WidgetOpts.MinSize(120, 0), // 最小横幅を固定
+		),
+	)
+
+	textWidget := widget.NewText(
+		widget.TextOpts.Text(text, res.Text.Face, textColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionStart, // 左寄せ
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				Padding: widget.Insets{ // 縦パディングを小さく、横パディングは適度に
+					Top:    2,
+					Bottom: 2,
+					Left:   8,
+					Right:  8,
+				},
+			}),
+		),
+	)
+
+	container.AddChild(textWidget)
+	return container
+}
+
 // window ================
 
 // ウィンドウ
@@ -189,7 +267,7 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 		widget.WindowOpts.Draggable(),
 		widget.WindowOpts.Resizeable(),
 		widget.WindowOpts.MinSize(200, 200),
-		widget.WindowOpts.MaxSize(300, 400),
+		widget.WindowOpts.MaxSize(650, 550),
 	)
 }
 

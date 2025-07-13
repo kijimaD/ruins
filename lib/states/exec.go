@@ -8,12 +8,21 @@ import (
 )
 
 // ステート管理に乗っかりつつ任意のコマンドを実行するためのダミーステート
+// 処理の中身は呼び出し側で注入する
 type ExecState struct {
+	states.BaseState
 	f func(w.World)
 }
 
 func (st ExecState) String() string {
 	return "Exec"
+}
+
+// NewExecState は新しいExecStateを作成する
+func NewExecState(f func(w.World)) *ExecState {
+	return &ExecState{
+		f: f,
+	}
 }
 
 // State interface ================
@@ -33,7 +42,14 @@ func (st *ExecState) OnStart(world w.World) {}
 func (st *ExecState) OnStop(world w.World) {}
 
 func (st *ExecState) Update(world w.World) states.Transition {
+	// BaseStateの共通処理を使用
+	if transition := st.ConsumeTransition(); transition.Type != states.TransNone {
+		return transition
+	}
 	return states.Transition{Type: states.TransPop}
 }
 
-func (st *ExecState) Draw(world w.World, screen *ebiten.Image) {}
+func (st *ExecState) Draw(world w.World, screen *ebiten.Image) {
+	// 何も表示しないので、ユーザーにはわからない状態
+	// デバッグ用に何かを表示したい場合はここに追加
+}

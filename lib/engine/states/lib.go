@@ -57,6 +57,15 @@ type StateMachine struct {
 	lastTransition Transition
 }
 
+// 全てのstateのOnResume時に実行される共通処理
+// メソッドにする
+func hookOnResume(state State, world w.World) {
+	// StateWithTransitionインターフェースを実装している場合は遷移をクリアする
+	if stateWithTrans, ok := state.(StateWithTransition); ok {
+		stateWithTrans.ClearTransition()
+	}
+}
+
 // Init creates a new state machine with an initial state
 func Init(s State, world w.World) StateMachine {
 	s.OnStart(world)
@@ -102,6 +111,9 @@ func (sm *StateMachine) _Pop(world w.World) {
 	sm.states = sm.states[:len(sm.states)-1]
 
 	if len(sm.states) > 0 {
+		// 共通のOnResume処理を実行
+		hookOnResume(sm.states[len(sm.states)-1], world)
+		// 各stateのOnResumeを実行
 		sm.states[len(sm.states)-1].OnResume(world)
 	}
 }

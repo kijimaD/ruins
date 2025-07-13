@@ -46,7 +46,8 @@ func TestGenerateItem(t *testing.T) {
 name = "リペア"
 `
 	raw := Load(str)
-	entity := raw.GenerateItem("リペア", gc.ItemLocationInBackpack)
+	entity, err := raw.GenerateItem("リペア", gc.ItemLocationInBackpack)
+	assert.NoError(t, err)
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
 	assert.NotNil(t, entity.Description)

@@ -12,25 +12,26 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/worldhelper/equips"
-	"github.com/kijimaD/ruins/lib/worldhelper/material"
-	"github.com/kijimaD/ruins/lib/worldhelper/spawner"
+	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 type HomeMenuState struct {
-	ui    *ebitenui.UI
-	trans *states.Transition
+	states.BaseState
+	ui            *ebitenui.UI
+	menu          *menu.Menu
+	uiBuilder     *menu.MenuUIBuilder
+	keyboardInput input.KeyboardInput
 
 	// 背景
 	bg *ebiten.Image
 
 	// メンバー一覧コンテナ
 	memberContainer *widget.Container
-	// 選択肢アクション一覧コンテナ
-	actionListContainer *widget.Container
 	// 選択肢アクションの説明コンテナ
 	actionDescContainer *widget.Container
 }
@@ -47,57 +48,24 @@ func (st *HomeMenuState) OnPause(world w.World) {}
 
 func (st *HomeMenuState) OnResume(world w.World) {
 	st.updateMemberContainer(world)
+	// フォーカス状態を更新
+	if st.uiBuilder != nil && st.menu != nil {
+		st.uiBuilder.UpdateFocus(st.menu)
+	}
 }
 
 func (st *HomeMenuState) OnStart(world w.World) {
-	// デバッグ用
-	// 初回のみ追加する
-	memberCount := 0
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.FactionAlly,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		memberCount++
-	}))
-	if memberCount == 0 {
-		spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
-		card1 := spawner.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
-		card2 := spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-		card3 := spawner.SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
-		armor := spawner.SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		spawner.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-		ishihara := spawner.SpawnMember(world, "イシハラ", true)
-		shirase := spawner.SpawnMember(world, "シラセ", true)
-		spawner.SpawnMember(world, "タチバナ", true)
-		spawner.SpawnAllMaterials(world)
-		material.PlusAmount("鉄", 40, world)
-		material.PlusAmount("鉄くず", 4, world)
-		material.PlusAmount("緑ハーブ", 2, world)
-		material.PlusAmount("フェライトコア", 30, world)
-		spawner.SpawnAllRecipes(world)
-		spawner.SpawnAllCards(world)
+	// デバッグ用データ初期化（初回のみ）
+	worldhelper.InitDebugData(world)
 
-		equips.Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
-		equips.Equip(world, card2, ishihara, gc.EquipmentSlotNumber(0))
-		equips.Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
-		equips.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 
 	bg := (*world.Resources.SpriteSheets)["bg_cup1"]
 	st.bg = bg.Texture.Image
 
+	st.initMenu(world)
 	st.ui = st.initUI(world)
 }
 
@@ -108,15 +76,13 @@ func (st *HomeMenuState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
+	// メニューの更新
+	st.menu.Update(st.keyboardInput)
+
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
@@ -127,6 +93,105 @@ func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
+// initMenu はメニューコンポーネントを初期化する
+func (st *HomeMenuState) initMenu(world w.World) {
+	// メニュー項目の定義（homeMenuTransから変換）
+	items := []menu.MenuItem{
+		{
+			ID:          "departure",
+			Label:       "出発",
+			Description: "遺跡に出発する",
+			UserData:    states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}},
+		},
+		{
+			ID:          "craft",
+			Label:       "合成",
+			Description: "アイテムを合成する",
+			UserData:    states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{}}},
+		},
+		{
+			ID:          "replace",
+			Label:       "入替",
+			Description: "仲間を入れ替える(未実装)",
+			UserData:    states.Transition{Type: states.TransNone},
+		},
+		{
+			ID:          "inventory",
+			Label:       "所持",
+			Description: "所持品を確認する",
+			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}},
+		},
+		{
+			ID:          "equipment",
+			Label:       "装備",
+			Description: "装備を変更する",
+			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}},
+		},
+		{
+			ID:          "exit",
+			Label:       "終了",
+			Description: "タイトル画面に戻る",
+			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}},
+		},
+	}
+
+	// メニューの設定
+	config := menu.MenuConfig{
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+	}
+
+	// コールバックの設定
+	callbacks := menu.MenuCallbacks{
+		OnSelect: func(index int, item menu.MenuItem) {
+			// 選択されたアイテムのUserDataからTransitionを取得
+			if trans, ok := item.UserData.(states.Transition); ok {
+				st.SetTransition(trans)
+			}
+		},
+		OnCancel: func() {
+			// Escapeキーが押された時の処理（タイトル画面に戻る）
+			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}})
+		},
+		OnFocusChange: func(oldIndex, newIndex int) {
+			// フォーカス変更時に説明文を更新
+			st.updateActionDescription(world, newIndex)
+			// フォーカス変更時にUIを更新
+			if st.uiBuilder != nil {
+				st.uiBuilder.UpdateFocus(st.menu)
+			}
+		},
+		OnHover: func(index int, item menu.MenuItem) {
+			// ホバー時に説明文を更新
+			st.updateActionDescription(world, index)
+		},
+	}
+
+	// メニューを作成
+	st.menu = menu.NewMenu(config, callbacks)
+
+	// UIビルダーを作成
+	st.uiBuilder = menu.NewMenuUIBuilder(world)
+}
+
+// updateActionDescription は選択された項目の説明文を更新する
+func (st *HomeMenuState) updateActionDescription(world w.World, index int) {
+	if st.actionDescContainer == nil || st.menu == nil {
+		return
+	}
+
+	items := st.menu.GetItems()
+	if index < 0 || index >= len(items) {
+		return
+	}
+
+	st.actionDescContainer.RemoveChildren()
+	st.actionDescContainer.AddChild(eui.NewMenuText(items[index].Description, world))
+	st.updateMemberContainer(world)
+}
+
 // ================
 
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
@@ -135,80 +200,23 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
 	)
 
-	st.actionListContainer = eui.NewVerticalContainer()
 	st.actionDescContainer = eui.NewRowContainer()
 	st.actionDescContainer.AddChild(eui.NewMenuText(" ", world))
+
+	// メニューのUIを構築してコンテナに追加
+	menuContainer := st.uiBuilder.BuildUI(st.menu)
 
 	rootContainer.AddChild(
 		st.memberContainer,
 		st.actionDescContainer,
-		st.actionListContainer,
+		menuContainer,
 	)
 
-	st.updateActionList(world)
 	st.updateMemberContainer(world)
+	// 初期状態の説明文を設定
+	st.updateActionDescription(world, st.menu.GetFocusedIndex())
 
 	return &ebitenui.UI{Container: rootContainer}
-}
-
-var homeMenuTrans = []struct {
-	label string
-	trans states.Transition
-	desc  string
-}{
-	{
-		label: "出発",
-		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}},
-		desc:  "遺跡に出発する",
-	},
-	{
-		label: "合成",
-		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{}}},
-		desc:  "アイテムを合成する",
-	},
-	{
-		label: "入替",
-		trans: states.Transition{Type: states.TransNone},
-		desc:  "仲間を入れ替える(未実装)",
-	},
-	{
-		label: "所持",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}},
-		desc:  "所持品を確認する",
-	},
-	{
-		label: "装備",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}},
-		desc:  "装備を変更する",
-	},
-	{
-		label: "終了",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}},
-		desc:  "タイトル画面に戻る",
-	},
-}
-
-// 選択肢を更新する
-func (st *HomeMenuState) updateActionList(world w.World) {
-	st.actionListContainer.RemoveChildren()
-
-	for _, data := range homeMenuTrans {
-		data := data
-		btn := eui.NewButton(
-			data.label,
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &data.trans
-			}),
-		)
-		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			st.actionDescContainer.RemoveChildren()
-			st.actionDescContainer.AddChild(eui.NewMenuText(data.desc, world))
-
-			st.updateMemberContainer(world)
-		})
-		st.actionListContainer.AddChild(btn)
-	}
 }
 
 // メンバー一覧を更新する

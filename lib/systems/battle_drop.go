@@ -7,7 +7,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/worldhelper/material"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -30,7 +30,7 @@ type DropResult struct {
 // 戦闘終了後に経験値や素材を獲得する
 // 獲得した素材名を返す
 func BattleDropSystem(world w.World) DropResult {
-	rawMaster := world.Resources.RawMaster.(raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 	gameComponents := world.Components.Game.(*gc.Components)
 	result := DropResult{
 		MaterialNames: []string{},
@@ -56,7 +56,7 @@ func BattleDropSystem(world w.World) DropResult {
 	rand.Shuffle(len(cands), func(i, j int) { cands[i], cands[j] = cands[j], cands[i] })
 	result.MaterialNames = cands[0:3]
 	for _, cand := range result.MaterialNames {
-		material.PlusAmount(cand, 1, world)
+		worldhelper.PlusAmount(cand, 1, world)
 	}
 	result.XPBefore = getMemberXP(world)
 
