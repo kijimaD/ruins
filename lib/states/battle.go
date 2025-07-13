@@ -390,7 +390,16 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			return string(v)
+			
+			// 選択中の項目にマーカーを表示
+			label := string(v)
+			for i, item := range st.selectionItems {
+				if item == e && i == st.currentSelection {
+					label = "▶ " + label
+					break
+				}
+			}
+			return label
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
 		euiext.ListOpts.EntryButtonOpts(),
@@ -470,7 +479,17 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		// 最初のカードの詳細を表示
 		entity := usableCards[0].(ecs.Entity)
 		st.selectedItem = entity
-		st.updateSelectionDisplay(world)
+		st.cardSpecContainer.RemoveChildren()
+		
+		res := world.Resources.UIResources
+		transContainer := eui.NewVerticalContainer(
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.MinSize(700, 120),
+			),
+			widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+		)
+		views.UpdateSpec(world, transContainer, entity)
+		st.cardSpecContainer.AddChild(transContainer)
 	}
 
 	res := world.Resources.UIResources
@@ -483,7 +502,15 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			name := gameComponents.Name.Get(v).(*gc.Name)
 			card := gameComponents.Card.Get(v).(*gc.Card)
 
-			return fmt.Sprintf("%s (%d)", name.Name, card.Cost)
+			// 選択中の項目にマーカーを表示
+			label := fmt.Sprintf("%s (%d)", name.Name, card.Cost)
+			for i, item := range st.selectionItems {
+				if item == e && i == st.currentSelection {
+					label = "▶ " + label
+					break
+				}
+			}
+			return label
 		}),
 		euiext.ListOpts.EntryEnterFunc(func(e any) {
 			entity, ok := e.(ecs.Entity)
@@ -791,22 +818,16 @@ func (st *BattleState) handleKeyboardSelection(world w.World) {
 
 // updateSelectionDisplay は選択状態の表示を更新する
 func (st *BattleState) updateSelectionDisplay(world w.World) {
-	switch st.phase.(type) {
+	switch p := st.phase.(type) {
+	case *phaseChoosePolicy:
+		// ポリシー選択のUIを再描画（キーボード選択初期化をスキップ）
+		st.reloadPolicyUI(world)
 	case *phaseChooseAction:
-		// カード詳細を表示
-		if st.currentSelection >= 0 && st.currentSelection < len(st.selectionItems) {
-			entity := st.selectionItems[st.currentSelection].(ecs.Entity)
-			st.selectedItem = entity
-			st.cardSpecContainer.RemoveChildren()
-			
-			res := world.Resources.UIResources
-			transContainer := eui.NewVerticalContainer(
-				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(700, 120)),
-				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
-			)
-			views.UpdateSpec(world, transContainer, entity)
-			st.cardSpecContainer.AddChild(transContainer)
-		}
+		// アクション選択のUIを再描画（キーボード選択初期化をスキップ）
+		st.reloadActionUI(world, p)
+	case *phaseChooseTarget:
+		// ターゲット選択のUIを再描画（キーボード選択初期化をスキップ）
+		st.reloadTargetUI(world, p)
 	}
 }
 
@@ -860,5 +881,206 @@ func (st *BattleState) executeSelection(world w.World) {
 			st.phase = &phaseEnemyActionSelect{}
 			gs.BattleCommandSystem(world) // 初回実行
 		}
+	}
+}
+
+// reloadPolicyUI はポリシー選択UIのみを再描画する（キーボード選択初期化なし）
+func (st *BattleState) reloadPolicyUI(world w.World) {
+	st.selectContainer.RemoveChildren()
+
+	entries := []any{
+		policyEntryAttack,
+		policyEntryItem,
+		policyEntryEscape,
+	}
+	
+	res := world.Resources.UIResources
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			v, ok := e.(policyEntry)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			
+			// 選択中の項目にマーカーを表示
+			label := string(v)
+			for i, item := range st.selectionItems {
+				if item == e && i == st.currentSelection {
+					label = "▶ " + label
+					break
+				}
+			}
+			return label
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
+		euiext.ListOpts.EntryButtonOpts(),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			entry := args.Entry.(policyEntry)
+			switch entry {
+			case policyEntryAttack:
+				members := []ecs.Entity{}
+				worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+					members = append(members, entity)
+				})
+				st.phase = &phaseChooseAction{owner: *st.party.Value()}
+			case policyEntryItem:
+				// TODO: 未実装
+			case policyEntryEscape:
+				st.SetTransition(states.Transition{Type: states.TransPop})
+			default:
+				log.Fatal("unexpected entry detect!")
+			}
+		}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
+	}
+	list := eui.NewList(
+		entries,
+		opts,
+		world,
+	)
+	st.selectContainer.AddChild(list)
+}
+
+// reloadActionUI はアクション選択UIのみを再描画する（キーボード選択初期化なし）
+func (st *BattleState) reloadActionUI(world w.World, currentPhase *phaseChooseAction) {
+	st.selectContainer.RemoveChildren()
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	usableCards := []any{}
+	
+	// 使用可能カードを再収集（st.selectionItemsから取得）
+	for _, item := range st.selectionItems {
+		usableCards = append(usableCards, item)
+	}
+
+	res := world.Resources.UIResources
+	opts := []euiext.ListOpt{
+		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+			v, ok := e.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			name := gameComponents.Name.Get(v).(*gc.Name)
+			card := gameComponents.Card.Get(v).(*gc.Card)
+
+			// 選択中の項目にマーカーを表示
+			label := fmt.Sprintf("%s (%d)", name.Name, card.Cost)
+			for i, item := range st.selectionItems {
+				if item == e && i == st.currentSelection {
+					label = "▶ " + label
+					break
+				}
+			}
+			return label
+		}),
+		euiext.ListOpts.EntryEnterFunc(func(e any) {
+			entity, ok := e.(ecs.Entity)
+			if !ok {
+				return
+			}
+			if st.selectedItem != entity {
+				st.selectedItem = entity
+			}
+			st.cardSpecContainer.RemoveChildren()
+			transContainer := eui.NewVerticalContainer(
+				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(700, 120)),
+				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+			)
+			views.UpdateSpec(world, transContainer, entity)
+			st.cardSpecContainer.AddChild(transContainer)
+		}),
+		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {
+			cardEntity, ok := args.Entry.(ecs.Entity)
+			if !ok {
+				log.Fatal("unexpected entry detect!")
+			}
+			card := gameComponents.Card.Get(cardEntity).(*gc.Card)
+			if card == nil {
+				log.Fatal("unexpected error: entityがcardを保持していない")
+			}
+			st.phase = &phaseChooseTarget{
+				owner: currentPhase.owner,
+				way:   cardEntity,
+			}
+			st.cardSpecContainer.RemoveChildren()
+		}),
+		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
+	}
+	list := eui.NewList(
+		usableCards,
+		opts,
+		world,
+	)
+	st.selectContainer.AddChild(list)
+
+	// 現在選択されているカードの詳細を表示
+	if st.currentSelection >= 0 && st.currentSelection < len(st.selectionItems) {
+		entity := st.selectionItems[st.currentSelection].(ecs.Entity)
+		st.selectedItem = entity
+		st.cardSpecContainer.RemoveChildren()
+		
+		transContainer := eui.NewVerticalContainer(
+			widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(700, 120)),
+			widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+		)
+		views.UpdateSpec(world, transContainer, entity)
+		st.cardSpecContainer.AddChild(transContainer)
+	}
+
+	{
+		name := gameComponents.Name.Get(*st.party.Value()).(*gc.Name)
+		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
+	}
+}
+
+// reloadTargetUI はターゲット選択UIのみを再描画する（キーボード選択初期化なし）
+func (st *BattleState) reloadTargetUI(world w.World, currentPhase *phaseChooseTarget) {
+	st.selectContainer.RemoveChildren()
+	st.cardSpecContainer.RemoveChildren()
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	
+	// 敵エンティティを再収集（st.selectionItemsから取得）
+	for i, item := range st.selectionItems {
+		entity := item.(ecs.Entity)
+		
+		vc := eui.NewVerticalContainer()
+		st.cardSpecContainer.AddChild(vc)
+
+		// 選択中の項目を視覚的に区別
+		buttonText := "選択"
+		if i == st.currentSelection {
+			buttonText = "▶ " + buttonText
+		}
+
+		btn := eui.NewButton(
+			buttonText,
+			world,
+			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				cl := loader.EntityComponentList{}
+				cl.Game = append(cl.Game, components.GameComponentList{
+					BattleCommand: &gc.BattleCommand{
+						Owner:  currentPhase.owner,
+						Target: entity,
+						Way:    currentPhase.way,
+					},
+				})
+				loader.AddEntities(world, cl)
+
+				err := st.party.Next()
+				if err == nil {
+					st.phase = &phaseChooseAction{owner: *st.party.Value()}
+				} else {
+					st.phase = &phaseEnemyActionSelect{}
+					gs.BattleCommandSystem(world)
+				}
+			}),
+		)
+		vc.AddChild(btn)
+
+		name := gameComponents.Name.Get(entity).(*gc.Name)
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+		vc.AddChild(eui.NewMenuText(text, world))
 	}
 }
