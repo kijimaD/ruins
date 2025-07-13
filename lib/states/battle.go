@@ -58,6 +58,10 @@ type BattleState struct {
 	selectedItem ecs.Entity
 	// カードの説明表示コンテナ
 	cardSpecContainer *widget.Container
+
+	// キーボード選択用フィールド
+	currentSelection int     // 現在の選択インデックス
+	selectionItems   []any   // 選択可能な項目リスト
 }
 
 func (st BattleState) String() string {
@@ -105,6 +109,11 @@ func (st *BattleState) OnStop(world w.World) {
 
 func (st *BattleState) Update(world w.World) states.Transition {
 	st.ui.Update()
+
+	// キーボード選択処理（ログ表示中は除く）
+	if !st.isWaitClick {
+		st.handleKeyboardSelection(world)
+	}
 
 	// ステートが変わった最初の1回だけ実行される
 	// TODO: 複雑化しているので、ここもstates packageを使ってやったほうがいい
@@ -219,7 +228,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
-			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 				gs.BattleCommandSystem(world)
 				st.isWaitClick = false
 			}
@@ -227,7 +236,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		}
 
 		// 処理完了
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
 			gamelog.BattleLog.Flush()
@@ -235,7 +244,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseResult:
 		st.reloadMsg(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			switch v.actionCount {
 			case 0:
 				dropResult := systems.BattleDropSystem(world)
@@ -249,7 +258,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseGameOver:
 		st.reloadMsg(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
 		}
 	}
@@ -370,6 +379,10 @@ func (st *BattleState) reloadPolicy(world w.World) {
 		policyEntryItem,
 		policyEntryEscape,
 	}
+	
+	// キーボード選択の初期化
+	st.selectionItems = entries
+	st.currentSelection = 0
 	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
@@ -449,6 +462,16 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			usableCards = append(usableCards, entity)
 		}
 	}))
+
+	// キーボード選択の初期化（使用可能カードのみ）
+	st.selectionItems = usableCards
+	st.currentSelection = 0
+	if len(usableCards) > 0 {
+		// 最初のカードの詳細を表示
+		entity := usableCards[0].(ecs.Entity)
+		st.selectedItem = entity
+		st.updateSelectionDisplay(world)
+	}
 
 	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
@@ -530,19 +553,22 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
+	
+	// 生きている敵をリストアップ
+	enemies := []any{}
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.FactionEnemy,
 		gameComponents.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// 敵キャラごとにターゲット選択ボタンを作成する
-		{
-			// 生きている敵のみ対象とする
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
+		// 生きている敵のみ対象とする
+		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		if pools.HP.Current == 0 {
+			return
 		}
+		
+		// 敵をリストに追加
+		enemies = append(enemies, entity)
 
 		vc := eui.NewVerticalContainer()
 		st.cardSpecContainer.AddChild(vc)
@@ -575,10 +601,14 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		vc.AddChild(btn)
 
 		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		pools = gameComponents.Pools.Get(entity).(*gc.Pools)
 		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
 		vc.AddChild(eui.NewMenuText(text, world))
 	}))
+	
+	// キーボード選択の初期化
+	st.selectionItems = enemies
+	st.currentSelection = 0
 }
 
 // ================
@@ -728,4 +758,107 @@ func (st *BattleState) initResultWindow(world w.World, dropResult systems.DropRe
 	resultWindow.SetLocation(rect)
 
 	return resultWindow
+}
+
+// handleKeyboardSelection はキーボードでの選択処理を行う
+func (st *BattleState) handleKeyboardSelection(world w.World) {
+	// 選択可能な項目がない場合は何もしない
+	if len(st.selectionItems) == 0 {
+		return
+	}
+
+	// 上下キーで選択を移動
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) || inpututil.IsKeyJustPressed(ebiten.KeyW) {
+		st.currentSelection--
+		if st.currentSelection < 0 {
+			st.currentSelection = len(st.selectionItems) - 1
+		}
+		st.updateSelectionDisplay(world)
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) || inpututil.IsKeyJustPressed(ebiten.KeyS) {
+		st.currentSelection++
+		if st.currentSelection >= len(st.selectionItems) {
+			st.currentSelection = 0
+		}
+		st.updateSelectionDisplay(world)
+	}
+
+	// エンターキーで決定
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		st.executeSelection(world)
+	}
+}
+
+// updateSelectionDisplay は選択状態の表示を更新する
+func (st *BattleState) updateSelectionDisplay(world w.World) {
+	switch st.phase.(type) {
+	case *phaseChooseAction:
+		// カード詳細を表示
+		if st.currentSelection >= 0 && st.currentSelection < len(st.selectionItems) {
+			entity := st.selectionItems[st.currentSelection].(ecs.Entity)
+			st.selectedItem = entity
+			st.cardSpecContainer.RemoveChildren()
+			
+			res := world.Resources.UIResources
+			transContainer := eui.NewVerticalContainer(
+				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(700, 120)),
+				widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
+			)
+			views.UpdateSpec(world, transContainer, entity)
+			st.cardSpecContainer.AddChild(transContainer)
+		}
+	}
+}
+
+// executeSelection は現在の選択を実行する
+func (st *BattleState) executeSelection(world w.World) {
+	if st.currentSelection < 0 || st.currentSelection >= len(st.selectionItems) {
+		return
+	}
+
+	switch p := st.phase.(type) {
+	case *phaseChoosePolicy:
+		entry := st.selectionItems[st.currentSelection].(policyEntry)
+		switch entry {
+		case policyEntryAttack:
+			members := []ecs.Entity{}
+			worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+				members = append(members, entity)
+			})
+			st.phase = &phaseChooseAction{owner: *st.party.Value()}
+		case policyEntryItem:
+			// TODO: 未実装
+		case policyEntryEscape:
+			st.SetTransition(states.Transition{Type: states.TransPop})
+		}
+	case *phaseChooseAction:
+		cardEntity := st.selectionItems[st.currentSelection].(ecs.Entity)
+		st.phase = &phaseChooseTarget{
+			owner: p.owner,
+			way:   cardEntity,
+		}
+		st.cardSpecContainer.RemoveChildren()
+	case *phaseChooseTarget:
+		entity := st.selectionItems[st.currentSelection].(ecs.Entity)
+		
+		cl := loader.EntityComponentList{}
+		cl.Game = append(cl.Game, components.GameComponentList{
+			BattleCommand: &gc.BattleCommand{
+				Owner:  p.owner,
+				Target: entity,
+				Way:    p.way,
+			},
+		})
+		loader.AddEntities(world, cl)
+
+		err := st.party.Next()
+		if err == nil {
+			// 次のメンバー
+			st.phase = &phaseChooseAction{owner: *st.party.Value()}
+		} else {
+			// 全員分完了
+			st.phase = &phaseEnemyActionSelect{}
+			gs.BattleCommandSystem(world) // 初回実行
+		}
+	}
 }
