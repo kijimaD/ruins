@@ -39,6 +39,8 @@ type EquipMenuState struct {
 
 	// 選択中の味方
 	curMemberIdx int
+	// 現在のタブインデックス（装備選択時の復元用）
+	previousTabIndex int
 
 	// アクション選択ウィンドウ用
 	actionWindow     *widget.Window // アクション選択ウィンドウ
@@ -50,6 +52,7 @@ type EquipMenuState struct {
 	isEquipMode       bool                   // 装備選択モードかどうか
 	equipSlotNumber   gc.EquipmentSlotNumber // 装備スロット番号
 	previousEquipment *ecs.Entity            // 前の装備
+	equipTargetMember ecs.Entity             // 装備対象のメンバー
 }
 
 func (st EquipMenuState) String() string {
@@ -391,7 +394,34 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 	// 既存の子要素をクリア
 	st.categoryContainer.RemoveChildren()
 
-	// 全カテゴリを横並びで表示
+	// 装備選択モードの場合は、全メンバーを表示して装備対象をハイライト
+	// 選択中かをエンティティIDで比較している
+	if st.isEquipMode {
+		members := []ecs.Entity{}
+		worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+			members = append(members, entity)
+		})
+
+		gameComponents := world.Components.Game.(*gc.Components)
+		for _, member := range members {
+			memberName := gameComponents.Name.Get(member).(*gc.Name).Name
+			isTargetMember := member == st.equipTargetMember
+
+			if isTargetMember {
+				// 装備対象のメンバーは背景色付きで明るい文字色
+				categoryWidget := eui.NewListItemText(memberName, styles.TextColor, true, world)
+				st.categoryContainer.AddChild(categoryWidget)
+			} else {
+				// その他のメンバーは背景なしでグレー文字色
+				categoryWidget := eui.NewListItemText(memberName, styles.ForegroundColor, false, world)
+				st.categoryContainer.AddChild(categoryWidget)
+			}
+		}
+		return
+	}
+
+	// 通常モード: 全カテゴリを横並びで表示
+	// 選択中かをタブ番号で比較している
 	currentTabIndex := st.tabMenu.GetCurrentTabIndex()
 	tabs := st.createTabs(world) // 最新のタブ情報を取得
 
@@ -662,9 +692,13 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 	equipType := userData["equipType"].(equipTarget)
 	previousEquipment := userData["entity"].(*ecs.Entity)
 
+	// 現在のタブインデックスを保存
+	st.previousTabIndex = st.tabMenu.GetCurrentTabIndex()
+
 	st.isEquipMode = true
 	st.equipSlotNumber = gc.EquipmentSlotNumber(slotNumber)
 	st.previousEquipment = previousEquipment
+	st.equipTargetMember = member // 装備対象のメンバーを保存
 
 	// 装備選択用のタブを作成
 	var items []ecs.Entity
@@ -720,19 +754,8 @@ func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Menu
 		worldhelper.Disarm(world, *st.previousEquipment)
 	}
 
-	// 新しい装備を装着
-	currentTab := st.tabMenu.GetCurrentTab()
-	var memberIdx int
-	fmt.Sscanf(currentTab.ID, "member_%d", &memberIdx)
-
-	members := []ecs.Entity{}
-	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
-		members = append(members, entity)
-	})
-
-	if memberIdx < len(members) {
-		worldhelper.Equip(world, entity, members[memberIdx], st.equipSlotNumber)
-	}
+	// 保存されたメンバーに新しい装備を装着
+	worldhelper.Equip(world, entity, st.equipTargetMember, st.equipSlotNumber)
 
 	// 装備モードを終了して元の表示に戻る
 	st.exitEquipMode(world)
@@ -755,9 +778,17 @@ func (st *EquipMenuState) exitEquipMode(world w.World) {
 	st.isEquipMode = false
 	st.equipSlotNumber = 0
 	st.previousEquipment = nil
+	st.equipTargetMember = 0 // メンバー情報をクリア
 
 	// 元のタブに戻る
-	st.reloadTabs(world)
+	newTabs := st.createTabs(world)
+	st.tabMenu.UpdateTabs(newTabs)
+
+	// 保存されたタブインデックスに復元
+	if st.previousTabIndex >= 0 && st.previousTabIndex < len(newTabs) {
+		st.tabMenu.SetTabIndex(st.previousTabIndex)
+	}
+
 	st.updateTabDisplay(world)
 	st.updateCategoryDisplay(world)
 	st.updateAbilityDisplay(world)
