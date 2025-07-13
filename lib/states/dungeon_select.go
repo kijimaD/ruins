@@ -4,18 +4,21 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
 type DungeonSelectState struct {
-	ui                     *ebitenui.UI
-	trans                  *states.Transition
-	dungeonSelectContainer *widget.Container
-	dungeonDescContainer   *widget.Container
+	ui                   *ebitenui.UI
+	trans                *states.Transition
+	menu                 *menu.Menu
+	uiBuilder            *menu.MenuUIBuilder
+	keyboardInput        input.KeyboardInput
+	dungeonDescContainer *widget.Container
 }
 
 func (st DungeonSelectState) String() string {
@@ -28,26 +31,39 @@ var _ es.State = &DungeonSelectState{}
 
 func (st *DungeonSelectState) OnPause(world w.World) {}
 
-func (st *DungeonSelectState) OnResume(world w.World) {}
+func (st *DungeonSelectState) OnResume(world w.World) {
+	// フォーカス状態を更新
+	if st.uiBuilder != nil && st.menu != nil {
+		st.uiBuilder.UpdateFocus(st.menu)
+	}
+}
 
 func (st *DungeonSelectState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
+
+	st.initMenu(world)
 	st.ui = st.initUI(world)
 }
 
 func (st *DungeonSelectState) OnStop(world w.World) {}
 
 func (st *DungeonSelectState) Update(world w.World) states.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransPop}
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
+
+	// メニューの更新
+	st.menu.Update(st.keyboardInput)
+
+	st.ui.Update()
 
 	if st.trans != nil {
 		next := *st.trans
 		st.trans = nil
 		return next
 	}
-
-	st.ui.Update()
 
 	return states.Transition{Type: states.TransNone}
 }
@@ -56,38 +72,101 @@ func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
+// ================
+
+// initMenu はメニューコンポーネントを初期化する
+func (st *DungeonSelectState) initMenu(world w.World) {
+	// メニュー項目の定義（dungeonSelectTransから変換）
+	items := []menu.MenuItem{}
+	for _, data := range dungeonSelectTrans {
+		items = append(items, menu.MenuItem{
+			ID:          data.label, // ラベルをIDとして使用
+			Label:       data.label,
+			Description: data.desc,
+			UserData:    data.trans,
+		})
+	}
+
+	// メニューの設定
+	config := menu.MenuConfig{
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+	}
+
+	// コールバックの設定
+	callbacks := menu.MenuCallbacks{
+		OnSelect: func(index int, item menu.MenuItem) {
+			// 選択されたアイテムのUserDataからTransitionを取得
+			if trans, ok := item.UserData.(states.Transition); ok {
+				st.trans = &trans
+			}
+		},
+		OnCancel: func() {
+			// Escapeキーの処理はUpdate()で直接行うため、ここでは何もしない
+		},
+		OnFocusChange: func(oldIndex, newIndex int) {
+			// フォーカス変更時に説明文を更新
+			st.updateActionDescription(world, newIndex)
+			// フォーカス変更時にUIを更新
+			if st.uiBuilder != nil {
+				st.uiBuilder.UpdateFocus(st.menu)
+			}
+		},
+		OnHover: func(index int, item menu.MenuItem) {
+			// ホバー時に説明文を更新
+			st.updateActionDescription(world, index)
+		},
+	}
+
+	// メニューを作成
+	st.menu = menu.NewMenu(config, callbacks)
+
+	// UIビルダーを作成
+	st.uiBuilder = menu.NewMenuUIBuilder(world)
+}
+
+// updateActionDescription は選択された項目の説明文を更新する
+func (st *DungeonSelectState) updateActionDescription(world w.World, index int) {
+	if st.dungeonDescContainer == nil || st.menu == nil {
+		return
+	}
+
+	items := st.menu.GetItems()
+	if index < 0 || index >= len(items) {
+		return
+	}
+
+	st.dungeonDescContainer.RemoveChildren()
+	st.dungeonDescContainer.AddChild(eui.NewMenuText(items[index].Description, world))
+}
+
 func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
 
-	st.dungeonSelectContainer = eui.NewRowContainer()
-	rootContainer.AddChild(st.dungeonSelectContainer)
+	// メニューと説明文を横並びにするためのコンテナ
+	horizontalContainer := eui.NewRowContainer()
 
-	st.dungeonDescContainer = eui.NewRowContainer()
-	rootContainer.AddChild(st.dungeonDescContainer)
+	// メニューのUIを構築
+	menuContainer := st.uiBuilder.BuildUI(st.menu)
 
-	st.updateMenuContainer(world)
+	// 説明文用のコンテナ
+	st.dungeonDescContainer = eui.NewVerticalContainer()
+	st.dungeonDescContainer.AddChild(eui.NewMenuText(" ", world))
+
+	// 左側にメニュー、右側に説明文を配置
+	horizontalContainer.AddChild(
+		menuContainer,
+		st.dungeonDescContainer,
+	)
+
+	rootContainer.AddChild(horizontalContainer)
+
+	// 初期状態の説明文を設定
+	st.updateActionDescription(world, st.menu.GetFocusedIndex())
 
 	return &ebitenui.UI{Container: rootContainer}
-}
-
-func (st *DungeonSelectState) updateMenuContainer(world w.World) {
-	st.dungeonSelectContainer.RemoveChildren()
-
-	for _, data := range dungeonSelectTrans {
-		data := data
-		btn := eui.NewButton(
-			data.label,
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				st.trans = &data.trans
-			}),
-		)
-		btn.GetWidget().CursorEnterEvent.AddHandler(func(args interface{}) {
-			st.dungeonDescContainer.RemoveChildren()
-			st.dungeonDescContainer.AddChild(eui.NewMenuText(data.desc, world))
-		})
-		st.dungeonSelectContainer.AddChild(btn)
-	}
 }
 
 // MEMO: まだtransは全部同じ
