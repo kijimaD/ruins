@@ -8,12 +8,16 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
+// FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
+// 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type MessageState struct {
-	ui    *ebitenui.UI
-	trans *states.Transition
+	ui            *ebitenui.UI
+	trans         *states.Transition
+	keyboardInput input.KeyboardInput
 
 	text     string
 	textFunc *func() string
@@ -31,7 +35,11 @@ func (st *MessageState) OnPause(world w.World) {}
 
 func (st *MessageState) OnResume(world w.World) {}
 
-func (st *MessageState) OnStart(world w.World) {}
+func (st *MessageState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
+}
 
 func (st *MessageState) OnStop(world w.World) {}
 
@@ -40,6 +48,9 @@ func (st *MessageState) Update(world w.World) states.Transition {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransQuit}
+	}
+	if st.keyboardInput.IsEnterJustPressedOnce() {
+		return states.Transition{Type: states.TransPop}
 	}
 
 	if st.textFunc != nil {
@@ -54,10 +65,6 @@ func (st *MessageState) Update(world w.World) states.Transition {
 		next := *st.trans
 		st.trans = nil
 		return next
-	}
-
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		return states.Transition{Type: states.TransPop}
 	}
 
 	return states.Transition{Type: states.TransNone}

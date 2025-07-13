@@ -8,6 +8,9 @@ import (
 )
 
 // ステート管理に乗っかりつつ任意のコマンドを実行するためのダミーステート
+//
+// FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
+// 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type ExecState struct {
 	f func(w.World)
 }
