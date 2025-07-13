@@ -24,6 +24,7 @@ import (
 )
 
 type CraftMenuState struct {
+	states.BaseState
 	ui *ebitenui.UI
 
 	hoveredItem        ecs.Entity        // ホバー中のアイテム
@@ -70,7 +71,8 @@ func (st *CraftMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {

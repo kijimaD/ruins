@@ -26,6 +26,7 @@ var (
 )
 
 type DungeonState struct {
+	states.BaseState
 	Depth int
 }
 
@@ -98,7 +99,8 @@ func (st *DungeonState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
 	}
 
-	return states.Transition{}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {

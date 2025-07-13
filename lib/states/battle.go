@@ -31,8 +31,8 @@ import (
 )
 
 type BattleState struct {
-	ui    *ebitenui.UI
-	trans *states.Transition
+	states.BaseState
+	ui *ebitenui.UI
 
 	// 現在のサブステート
 	phase battlePhase
@@ -104,12 +104,6 @@ func (st *BattleState) OnStop(world w.World) {
 }
 
 func (st *BattleState) Update(world w.World) states.Transition {
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
 	st.ui.Update()
 
 	// ステートが変わった最初の1回だけ実行される
@@ -260,7 +254,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		}
 	}
 
-	return states.Transition{Type: states.TransNone}
+	return st.ConsumeTransition()
 }
 
 func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
@@ -399,7 +393,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			case policyEntryItem:
 				// TODO: 未実装
 			case policyEntryEscape:
-				st.trans = &states.Transition{Type: states.TransPop}
+				st.SetTransition(states.Transition{Type: states.TransPop})
 			default:
 				log.Fatal("unexpected entry detect!")
 			}

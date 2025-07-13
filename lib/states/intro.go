@@ -15,8 +15,8 @@ import (
 )
 
 type IntroState struct {
+	states.BaseState
 	ui            *ebitenui.UI
-	trans         *states.Transition
 	queue         msg.Queue
 	cycle         int
 	bg            *ebiten.Image
@@ -93,13 +93,8 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	st.updateMessageContainer(world)
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *IntroState) Draw(world w.World, screen *ebiten.Image) {

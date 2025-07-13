@@ -24,6 +24,7 @@ import (
 )
 
 type InventoryMenuState struct {
+	states.BaseState
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -33,9 +34,8 @@ type InventoryMenuState struct {
 	specContainer       *widget.Container // 性能表示のコンテナ
 	partyWindow         *widget.Window    // 仲間を選択するウィンドウ
 	rootContainer       *widget.Container
-	tabDisplayContainer *widget.Container  // タブ表示のコンテナ
-	categoryContainer   *widget.Container  // カテゴリ一覧のコンテナ
-	trans               *states.Transition // 状態遷移
+	tabDisplayContainer *widget.Container // タブ表示のコンテナ
+	categoryContainer   *widget.Container // カテゴリ一覧のコンテナ
 
 	// アクション選択ウィンドウ用
 	actionWindow     *widget.Window // アクション選択ウィンドウ
@@ -77,13 +77,6 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
 	}
 
-	// 遷移が設定されていたら返す
-	if st.trans != nil {
-		trans := *st.trans
-		st.trans = nil
-		return trans
-	}
-
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
@@ -101,7 +94,7 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	st.tabMenu.Update()
 	st.ui.Update()
 
-	return states.Transition{Type: states.TransNone}
+	return st.ConsumeTransition()
 }
 
 func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image) {
@@ -128,7 +121,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.trans = &states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}})
 		},
 		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
 			st.updateTabDisplay(world)

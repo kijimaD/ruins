@@ -13,8 +13,8 @@ import (
 )
 
 type DungeonSelectState struct {
+	states.BaseState
 	ui                   *ebitenui.UI
-	trans                *states.Transition
 	menu                 *menu.Menu
 	uiBuilder            *menu.MenuUIBuilder
 	keyboardInput        input.KeyboardInput
@@ -59,13 +59,8 @@ func (st *DungeonSelectState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {
@@ -100,7 +95,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 		OnSelect: func(index int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(states.Transition); ok {
-				st.trans = &trans
+				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {

@@ -90,10 +90,10 @@ func TestMainMenuSelection(t *testing.T) {
 	state.menu.Update(mockInput)
 
 	// トランジションが設定されることを確認
-	if state.trans == nil {
+	if state.GetTransition() == nil {
 		t.Error("トランジションが設定されていない")
-	} else if state.trans.Type != states.TransQuit {
-		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.trans.Type)
+	} else if state.GetTransition().Type != states.TransQuit {
+		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.GetTransition().Type)
 	}
 }
 
@@ -114,10 +114,10 @@ func TestMainMenuCancel(t *testing.T) {
 	state.menu.Update(mockInput)
 
 	// トランジションが設定されることを確認
-	if state.trans == nil {
+	if state.GetTransition() == nil {
 		t.Error("トランジションが設定されていない")
-	} else if state.trans.Type != states.TransQuit {
-		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.trans.Type)
+	} else if state.GetTransition().Type != states.TransQuit {
+		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.GetTransition().Type)
 	}
 }
 

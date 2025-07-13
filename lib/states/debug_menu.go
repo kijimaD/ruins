@@ -17,8 +17,8 @@ import (
 )
 
 type DebugMenuState struct {
+	states.BaseState
 	ui            *ebitenui.UI
-	trans         *states.Transition
 	menu          *menu.Menu
 	menuBuilder   *menu.MenuUIBuilder
 	keyboardInput input.KeyboardInput
@@ -51,13 +51,8 @@ func (st *DebugMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *DebugMenuState) Draw(world w.World, screen *ebiten.Image) {
@@ -106,7 +101,7 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 			st.executeDebugMenuItem(world, index)
 		},
 		OnCancel: func() {
-			st.trans = &states.Transition{Type: states.TransPop}
+			st.SetTransition(states.Transition{Type: states.TransPop})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時にUIを更新
@@ -127,7 +122,7 @@ func (st *DebugMenuState) executeDebugMenuItem(world w.World, index int) {
 
 	data := debugMenuTrans[index]
 	data.f(world)
-	st.trans = &data.trans
+	st.SetTransition(data.trans)
 }
 
 var debugMenuTrans = []struct {

@@ -13,8 +13,8 @@ import (
 
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
+	states.BaseState
 	ui            *ebitenui.UI
-	trans         *states.Transition
 	menu          *menu.Menu
 	uiBuilder     *menu.MenuUIBuilder
 	keyboardInput input.KeyboardInput
@@ -50,13 +50,8 @@ func (st *MainMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
@@ -105,12 +100,12 @@ func (st *MainMenuState) initMenu(world w.World) {
 		OnSelect: func(index int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(states.Transition); ok {
-				st.trans = &trans
+				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理
-			st.trans = &states.Transition{Type: states.TransQuit}
+			st.SetTransition(states.Transition{Type: states.TransQuit})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時にUIを更新

@@ -15,8 +15,8 @@ import (
 )
 
 type DungeonMenuState struct {
+	states.BaseState
 	ui            *ebitenui.UI
-	trans         *states.Transition
 	menu          *menu.Menu
 	uiBuilder     *menu.MenuUIBuilder
 	keyboardInput input.KeyboardInput
@@ -56,13 +56,8 @@ func (st *DungeonMenuState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *DungeonMenuState) Draw(world w.World, screen *ebiten.Image) {
@@ -101,11 +96,11 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(index int, item menu.MenuItem) {
 			if trans, ok := item.UserData.(states.Transition); ok {
-				st.trans = &trans
+				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
-			st.trans = &states.Transition{Type: states.TransPop}
+			st.SetTransition(states.Transition{Type: states.TransPop})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時にUIを更新

@@ -15,8 +15,8 @@ import (
 // FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
 // 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type MessageState struct {
+	states.BaseState
 	ui            *ebitenui.UI
-	trans         *states.Transition
 	keyboardInput input.KeyboardInput
 
 	text     string
@@ -61,13 +61,8 @@ func (st *MessageState) Update(world w.World) states.Transition {
 
 	st.ui.Update()
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *MessageState) Draw(world w.World, screen *ebiten.Image) {

@@ -8,10 +8,9 @@ import (
 )
 
 // ステート管理に乗っかりつつ任意のコマンドを実行するためのダミーステート
-//
-// FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
-// 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
+// 処理の中身は呼び出し側で注入する
 type ExecState struct {
+	states.BaseState
 	f func(w.World)
 }
 
@@ -43,6 +42,10 @@ func (st *ExecState) OnStart(world w.World) {}
 func (st *ExecState) OnStop(world w.World) {}
 
 func (st *ExecState) Update(world w.World) states.Transition {
+	// BaseStateの共通処理を使用
+	if transition := st.ConsumeTransition(); transition.Type != states.TransNone {
+		return transition
+	}
 	return states.Transition{Type: states.TransPop}
 }
 

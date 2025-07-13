@@ -13,8 +13,8 @@ import (
 )
 
 type GameOverState struct {
+	states.BaseState
 	ui            *ebitenui.UI
-	trans         *states.Transition
 	keyboardInput input.KeyboardInput
 
 	// 背景
@@ -51,15 +51,10 @@ func (st *GameOverState) Update(world w.World) states.Transition {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 	}
 
-	if st.trans != nil {
-		next := *st.trans
-		st.trans = nil
-		return next
-	}
-
 	st.ui.Update()
 
-	return states.Transition{Type: states.TransNone}
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
 }
 
 func (st *GameOverState) Draw(world w.World, screen *ebiten.Image) {
