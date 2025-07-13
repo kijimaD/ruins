@@ -60,8 +60,8 @@ type BattleState struct {
 	cardSpecContainer *widget.Container
 
 	// キーボード選択用フィールド
-	currentSelection int     // 現在の選択インデックス
-	selectionItems   []any   // 選択可能な項目リスト
+	currentSelection int   // 現在の選択インデックス
+	selectionItems   []any // 選択可能な項目リスト
 }
 
 func (st BattleState) String() string {
@@ -379,7 +379,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 		policyEntryItem,
 		policyEntryEscape,
 	}
-	
+
 	// キーボード選択の初期化
 	st.selectionItems = entries
 	st.currentSelection = 0
@@ -390,7 +390,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			
+
 			// 選択中の項目にマーカーを表示
 			label := string(v)
 			for i, item := range st.selectionItems {
@@ -480,7 +480,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 		entity := usableCards[0].(ecs.Entity)
 		st.selectedItem = entity
 		st.cardSpecContainer.RemoveChildren()
-		
+
 		res := world.Resources.UIResources
 		transContainer := eui.NewVerticalContainer(
 			widget.ContainerOpts.WidgetOpts(
@@ -576,11 +576,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 // ================
 
 func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarget) {
-	st.selectContainer.RemoveChildren()
-	st.cardSpecContainer.RemoveChildren()
-
 	gameComponents := world.Components.Game.(*gc.Components)
-	
+
 	// 生きている敵をリストアップ
 	enemies := []any{}
 	world.Manager.Join(
@@ -593,49 +590,17 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		if pools.HP.Current == 0 {
 			return
 		}
-		
+
 		// 敵をリストに追加
 		enemies = append(enemies, entity)
-
-		vc := eui.NewVerticalContainer()
-		st.cardSpecContainer.AddChild(vc)
-
-		btn := eui.NewButton(
-			"選択",
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				cl := loader.EntityComponentList{}
-				cl.Game = append(cl.Game, components.GameComponentList{
-					BattleCommand: &gc.BattleCommand{
-						Owner:  currentPhase.owner,
-						Target: entity,
-						Way:    currentPhase.way,
-					},
-				})
-				loader.AddEntities(world, cl)
-
-				err := st.party.Next()
-				if err == nil {
-					// 次のメンバー
-					st.phase = &phaseChooseAction{owner: *st.party.Value()}
-				} else {
-					// 全員分完了
-					st.phase = &phaseEnemyActionSelect{}
-					gs.BattleCommandSystem(world) // 初回実行。以降は全部消化するまでクリックで実行する
-				}
-			}),
-		)
-		vc.AddChild(btn)
-
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools = gameComponents.Pools.Get(entity).(*gc.Pools)
-		text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
-		vc.AddChild(eui.NewMenuText(text, world))
 	}))
-	
+
 	// キーボード選択の初期化
 	st.selectionItems = enemies
 	st.currentSelection = 0
+
+	// UIを表示（カーソルも含む）
+	st.reloadTargetUI(world, currentPhase)
 }
 
 // ================
@@ -861,7 +826,7 @@ func (st *BattleState) executeSelection(world w.World) {
 		st.cardSpecContainer.RemoveChildren()
 	case *phaseChooseTarget:
 		entity := st.selectionItems[st.currentSelection].(ecs.Entity)
-		
+
 		cl := loader.EntityComponentList{}
 		cl.Game = append(cl.Game, components.GameComponentList{
 			BattleCommand: &gc.BattleCommand{
@@ -893,7 +858,7 @@ func (st *BattleState) reloadPolicyUI(world w.World) {
 		policyEntryItem,
 		policyEntryEscape,
 	}
-	
+
 	res := world.Resources.UIResources
 	opts := []euiext.ListOpt{
 		euiext.ListOpts.EntryLabelFunc(func(e any) string {
@@ -901,7 +866,7 @@ func (st *BattleState) reloadPolicyUI(world w.World) {
 			if !ok {
 				log.Fatal("unexpected entry detect!")
 			}
-			
+
 			// 選択中の項目にマーカーを表示
 			label := string(v)
 			for i, item := range st.selectionItems {
@@ -947,7 +912,7 @@ func (st *BattleState) reloadActionUI(world w.World, currentPhase *phaseChooseAc
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	usableCards := []any{}
-	
+
 	// 使用可能カードを再収集（st.selectionItemsから取得）
 	for _, item := range st.selectionItems {
 		usableCards = append(usableCards, item)
@@ -1018,7 +983,7 @@ func (st *BattleState) reloadActionUI(world w.World, currentPhase *phaseChooseAc
 		entity := st.selectionItems[st.currentSelection].(ecs.Entity)
 		st.selectedItem = entity
 		st.cardSpecContainer.RemoveChildren()
-		
+
 		transContainer := eui.NewVerticalContainer(
 			widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(700, 120)),
 			widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
@@ -1039,11 +1004,11 @@ func (st *BattleState) reloadTargetUI(world w.World, currentPhase *phaseChooseTa
 	st.cardSpecContainer.RemoveChildren()
 
 	gameComponents := world.Components.Game.(*gc.Components)
-	
+
 	// 敵エンティティを再収集（st.selectionItemsから取得）
 	for i, item := range st.selectionItems {
 		entity := item.(ecs.Entity)
-		
+
 		vc := eui.NewVerticalContainer()
 		st.cardSpecContainer.AddChild(vc)
 
