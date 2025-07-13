@@ -21,6 +21,7 @@ import (
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/systems"
@@ -32,7 +33,8 @@ import (
 
 type BattleState struct {
 	states.BaseState
-	ui *ebitenui.UI
+	ui            *ebitenui.UI
+	keyboardInput input.KeyboardInput
 
 	// 現在のサブステート
 	phase battlePhase
@@ -77,6 +79,10 @@ func (st *BattleState) OnPause(world w.World) {}
 func (st *BattleState) OnResume(world w.World) {}
 
 func (st *BattleState) OnStart(world w.World) {
+	if st.keyboardInput == nil {
+		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
+
 	_ = worldhelper.SpawnEnemy(world, "軽戦車")
 	_ = worldhelper.SpawnEnemy(world, "火の玉")
 
@@ -110,9 +116,12 @@ func (st *BattleState) OnStop(world w.World) {
 func (st *BattleState) Update(world w.World) states.Transition {
 	st.ui.Update()
 
-	// キーボード選択処理（ログ表示中は除く）
+	// キーボード選択処理（選択フェーズのみ、ログ表示中は除く）
 	if !st.isWaitClick {
-		st.handleKeyboardSelection(world)
+		switch st.phase.(type) {
+		case *phaseChoosePolicy, *phaseChooseAction, *phaseChooseTarget:
+			st.handleKeyboardSelection(world)
+		}
 	}
 
 	// ステートが変わった最初の1回だけ実行される
@@ -228,7 +237,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
 			st.isWaitClick = true
-			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			if st.keyboardInput.IsEnterJustPressedOnce() {
 				gs.BattleCommandSystem(world)
 				st.isWaitClick = false
 			}
@@ -236,7 +245,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		}
 
 		// 処理完了
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		if st.keyboardInput.IsEnterJustPressedOnce() {
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
 			gamelog.BattleLog.Flush()
@@ -244,7 +253,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseResult:
 		st.reloadMsg(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		if st.keyboardInput.IsEnterJustPressedOnce() {
 			switch v.actionCount {
 			case 0:
 				dropResult := systems.BattleDropSystem(world)
@@ -258,7 +267,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 	case *phaseGameOver:
 		st.reloadMsg(world)
 
-		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		if st.keyboardInput.IsEnterJustPressedOnce() {
 			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
 		}
 	}
@@ -775,8 +784,7 @@ func (st *BattleState) handleKeyboardSelection(world w.World) {
 		st.updateSelectionDisplay(world)
 	}
 
-	// エンターキーで決定
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+	if st.keyboardInput.IsEnterJustPressedOnce() {
 		st.executeSelection(world)
 	}
 }
