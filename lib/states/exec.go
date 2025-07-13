@@ -16,6 +16,13 @@ func (st ExecState) String() string {
 	return "Exec"
 }
 
+// NewExecState は新しいExecStateを作成する
+func NewExecState(f func(w.World)) *ExecState {
+	return &ExecState{
+		f: f,
+	}
+}
+
 // State interface ================
 
 var _ es.State = &ExecState{}
@@ -36,4 +43,7 @@ func (st *ExecState) Update(world w.World) states.Transition {
 	return states.Transition{Type: states.TransPop}
 }
 
-func (st *ExecState) Draw(world w.World, screen *ebiten.Image) {}
+func (st *ExecState) Draw(world w.World, screen *ebiten.Image) {
+	// 何も表示しないので、ユーザーにはわからない状態
+	// デバッグ用に何かを表示したい場合はここに追加
+}
