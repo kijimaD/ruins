@@ -609,10 +609,9 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	items := make([]menu.MenuItem, len(enemies))
 	for i, entity := range enemies {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("enemy_%d", entity),
-			Label:    fmt.Sprintf("%s (%d/%d)", name.Name, pools.HP.Current, pools.HP.Max),
+			Label:    fmt.Sprintf("%s", name.Name),
 			UserData: entity,
 		}
 	}
@@ -806,8 +805,3 @@ func (st *BattleState) initResultWindow(world w.World, dropResult systems.DropRe
 
 	return resultWindow
 }
-
-// TODO: handleKeyboardSelectionメソッドは削除。Menuコンポーネントで代替
-
-
-
