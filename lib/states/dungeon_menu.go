@@ -125,4 +125,3 @@ func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
 
 	return &ebitenui.UI{Container: rootContainer}
 }
-

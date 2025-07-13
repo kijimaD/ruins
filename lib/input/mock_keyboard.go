@@ -6,15 +6,15 @@ import (
 
 // MockKeyboardInput はテスト用のモックキーボード入力実装
 type MockKeyboardInput struct {
-	pressedKeys           map[ebiten.Key]bool
-	justPressedKeys       map[ebiten.Key]bool
-	previousEnterSession  bool // 前回のEnterキーセッション状態
+	pressedKeys          map[ebiten.Key]bool
+	justPressedKeys      map[ebiten.Key]bool
+	previousEnterSession bool // 前回のEnterキーセッション状態
 }
 
 func NewMockKeyboardInput() *MockKeyboardInput {
 	return &MockKeyboardInput{
 		pressedKeys:          make(map[ebiten.Key]bool),
-		justPressedKeys:     make(map[ebiten.Key]bool),
+		justPressedKeys:      make(map[ebiten.Key]bool),
 		previousEnterSession: false,
 	}
 }

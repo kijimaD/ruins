@@ -37,7 +37,7 @@ type CraftMenuState struct {
 	rootContainer       *widget.Container
 	tabDisplayContainer *widget.Container // タブ表示のコンテナ
 	categoryContainer   *widget.Container // カテゴリ一覧のコンテナ
-	
+
 	// アクション選択ウィンドウ用
 	actionWindow     *widget.Window // アクション選択ウィンドウ
 	actionFocusIndex int            // アクションウィンドウ内のフォーカス
@@ -314,7 +314,6 @@ func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	return items
 }
 
-
 // showResultWindow は合成結果ウィンドウを表示する
 func (st *CraftMenuState) showResultWindow(world w.World, entity ecs.Entity) {
 	windowContainer := eui.NewWindowContainer(world)
@@ -338,7 +337,7 @@ func (st *CraftMenuState) showResultWindow(world w.World, entity ecs.Entity) {
 func (st *CraftMenuState) createResultWindowUI(world w.World, container *widget.Container, entity ecs.Entity) {
 	// アイテム詳細を表示
 	views.UpdateSpec(world, container, entity)
-	
+
 	st.updateResultWindowDisplay(world)
 }
 

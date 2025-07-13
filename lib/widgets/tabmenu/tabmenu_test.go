@@ -35,10 +35,10 @@ func testTabSwitching(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
-		WrapNavigation:    true,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
 	}
 
 	tabChangeCount := 0
@@ -87,10 +87,10 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
-		WrapNavigation:    true,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
 	}
 
 	tabChangeCount := 0
@@ -169,10 +169,10 @@ func testItemNavigation(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
-		WrapNavigation:    true,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
 	}
 
 	itemChangeCount := 0
@@ -219,10 +219,10 @@ func testWrapNavigation(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
-		WrapNavigation:    true,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
@@ -259,9 +259,9 @@ func testSelection(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
 	}
 
 	var selectedItem menu.MenuItem
@@ -289,9 +289,9 @@ func testCancel(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
 	}
 
 	cancelCalled := false
@@ -327,9 +327,9 @@ func TestTabMenuGetters(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  1,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 1,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
@@ -361,9 +361,9 @@ func TestTabMenuSetters(t *testing.T) {
 	}
 
 	config := TabMenuConfig{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
