@@ -124,7 +124,8 @@ type NamedParams struct {
 	Map map[string]string
 }
 
-func (n *NamedParams) expressionNode() {}
+func (n *NamedParams) expressionNode()      {}
+func (n *NamedParams) TokenLiteral() string { return "map" }
 func (n *NamedParams) String() string {
 	var out bytes.Buffer
 
