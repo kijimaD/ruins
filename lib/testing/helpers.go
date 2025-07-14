@@ -3,16 +3,15 @@ package testing
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 )
 
 // テスト用のプレイヤーコンポーネントを作成する
-func CreateTestPlayer(t *testing.T) components.GameComponentList {
+func CreateTestPlayer(t *testing.T) gc.GameComponentList {
 	t.Helper()
 
-	return components.GameComponentList{
+	return gc.GameComponentList{
 		Name:     &gc.Name{Name: "テストプレイヤー"},
 		Position: &gc.Position{X: 100, Y: 100},
 		Pools: &gc.Pools{
@@ -34,10 +33,10 @@ func CreateTestPlayer(t *testing.T) components.GameComponentList {
 }
 
 // テスト用の敵コンポーネントを作成する
-func CreateTestEnemy(t *testing.T, name string) components.GameComponentList {
+func CreateTestEnemy(t *testing.T, name string) gc.GameComponentList {
 	t.Helper()
 
-	return components.GameComponentList{
+	return gc.GameComponentList{
 		Name:     &gc.Name{Name: name},
 		Position: &gc.Position{X: 200, Y: 200},
 		Pools: &gc.Pools{
@@ -59,10 +58,10 @@ func CreateTestEnemy(t *testing.T, name string) components.GameComponentList {
 }
 
 // テスト用のアイテムコンポーネントを作成する
-func CreateTestItem(t *testing.T, name string, itemType TestItemType) components.GameComponentList {
+func CreateTestItem(t *testing.T, name string, itemType TestItemType) gc.GameComponentList {
 	t.Helper()
 
-	base := components.GameComponentList{
+	base := gc.GameComponentList{
 		Item:             &gc.Item{},
 		Name:             &gc.Name{Name: name},
 		Description:      &gc.Description{Description: "テスト用アイテム"},
@@ -168,11 +167,11 @@ func CreateTestBattleScenario(t *testing.T) TestBattleScenario {
 
 	return TestBattleScenario{
 		Player: CreateTestPlayer(t),
-		Enemies: []components.GameComponentList{
+		Enemies: []gc.GameComponentList{
 			CreateTestEnemy(t, "スライム"),
 			CreateTestEnemy(t, "ゴブリン"),
 		},
-		Items: []components.GameComponentList{
+		Items: []gc.GameComponentList{
 			CreateTestItem(t, "テスト剣", TestItemTypeWeapon),
 			CreateTestItem(t, "テスト薬草", TestItemTypeConsumable),
 		},
@@ -181,7 +180,7 @@ func CreateTestBattleScenario(t *testing.T) TestBattleScenario {
 
 // テスト用バトルシナリオの構造体
 type TestBattleScenario struct {
-	Player  components.GameComponentList
-	Enemies []components.GameComponentList
-	Items   []components.GameComponentList
+	Player  gc.GameComponentList
+	Enemies []gc.GameComponentList
+	Items   []gc.GameComponentList
 }

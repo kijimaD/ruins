@@ -3,14 +3,13 @@ package testing
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
 // テスト用のエンティティビルダー
 type EntityBuilder struct {
 	t          *testing.T
-	components components.GameComponentList
+	components gc.GameComponentList
 }
 
 // 新しいエンティティビルダーを作成する
@@ -18,7 +17,7 @@ func NewEntityBuilder(t *testing.T) *EntityBuilder {
 	t.Helper()
 	return &EntityBuilder{
 		t:          t,
-		components: components.GameComponentList{},
+		components: gc.GameComponentList{},
 	}
 }
 
@@ -143,7 +142,7 @@ func (b *EntityBuilder) WithDescription(description string) *EntityBuilder {
 }
 
 // 最終的なコンポーネントリストを返す
-func (b *EntityBuilder) Build() components.GameComponentList {
+func (b *EntityBuilder) Build() gc.GameComponentList {
 	b.t.Helper()
 	return b.components
 }
@@ -151,7 +150,7 @@ func (b *EntityBuilder) Build() components.GameComponentList {
 // 複数のエンティティを作成するためのヘルパー
 type MultiEntityBuilder struct {
 	t        *testing.T
-	entities []components.GameComponentList
+	entities []gc.GameComponentList
 }
 
 // 複数エンティティビルダーを作成する
@@ -159,12 +158,12 @@ func NewMultiEntityBuilder(t *testing.T) *MultiEntityBuilder {
 	t.Helper()
 	return &MultiEntityBuilder{
 		t:        t,
-		entities: []components.GameComponentList{},
+		entities: []gc.GameComponentList{},
 	}
 }
 
 // エンティティを追加する
-func (mb *MultiEntityBuilder) Add(entity components.GameComponentList) *MultiEntityBuilder {
+func (mb *MultiEntityBuilder) Add(entity gc.GameComponentList) *MultiEntityBuilder {
 	mb.t.Helper()
 	mb.entities = append(mb.entities, entity)
 	return mb
@@ -180,7 +179,7 @@ func (mb *MultiEntityBuilder) AddBuilder(builderFunc func(*EntityBuilder) *Entit
 }
 
 // 最終的なエンティティリストを返す
-func (mb *MultiEntityBuilder) Build() []components.GameComponentList {
+func (mb *MultiEntityBuilder) Build() []gc.GameComponentList {
 	mb.t.Helper()
 	return mb.entities
 }
@@ -188,7 +187,7 @@ func (mb *MultiEntityBuilder) Build() []components.GameComponentList {
 // よく使われるエンティティパターンのヘルパー関数
 
 // 標準的なプレイヤーを作成する
-func CreateStandardPlayer(t *testing.T) components.GameComponentList {
+func CreateStandardPlayer(t *testing.T) gc.GameComponentList {
 	t.Helper()
 	return NewEntityBuilder(t).
 		WithName("プレイヤー").
@@ -201,7 +200,7 @@ func CreateStandardPlayer(t *testing.T) components.GameComponentList {
 }
 
 // 標準的な敵を作成する
-func CreateStandardEnemy(t *testing.T, name string) components.GameComponentList {
+func CreateStandardEnemy(t *testing.T, name string) gc.GameComponentList {
 	t.Helper()
 	return NewEntityBuilder(t).
 		WithName(name).
@@ -214,7 +213,7 @@ func CreateStandardEnemy(t *testing.T, name string) components.GameComponentList
 }
 
 // 標準的な武器を作成する
-func CreateStandardWeapon(t *testing.T, name string, damage, accuracy int) components.GameComponentList {
+func CreateStandardWeapon(t *testing.T, name string, damage, accuracy int) gc.GameComponentList {
 	t.Helper()
 	return NewEntityBuilder(t).
 		WithName(name).
@@ -224,7 +223,7 @@ func CreateStandardWeapon(t *testing.T, name string, damage, accuracy int) compo
 }
 
 // 標準的な回復アイテムを作成する
-func CreateStandardPotion(t *testing.T, name string, healAmount int) components.GameComponentList {
+func CreateStandardPotion(t *testing.T, name string, healAmount int) gc.GameComponentList {
 	t.Helper()
 	return NewEntityBuilder(t).
 		WithName(name).

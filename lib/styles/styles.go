@@ -33,9 +33,10 @@ var (
 	WindowHeaderColor = RGB(0x939393)
 
 	// ボタン
-	ButtonIdleColor    = RGB(0xaaaaaa)
-	ButtonHoverColor   = RGB(0x828296)
-	ButtonPressedColor = RGB(0x646478)
+	ButtonIdleColor     = RGB(0xaaaaaa)
+	ButtonHoverColor    = RGB(0x828296)
+	ButtonPressedColor  = RGB(0x646478)
+	ButtonDisabledColor = RGB(0x555555)
 
 	SuccessColor = RGB(0x198754)
 	DangerColor  = RGB(0xdc3545)

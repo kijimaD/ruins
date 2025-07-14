@@ -10,7 +10,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -24,7 +23,7 @@ import (
 )
 
 type InventoryMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -70,24 +69,24 @@ func (st *InventoryMenuState) OnStart(world w.World) {
 
 func (st *InventoryMenuState) OnStop(world w.World) {}
 
-func (st *InventoryMenuState) Update(world w.World) states.Transition {
+func (st *InventoryMenuState) Update(world w.World) es.Transition {
 	effects.RunEffectQueue(world)
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
 	// パーティ選択モードの場合はパーティ操作を優先
 	if st.isPartyMode {
 		if st.updatePartyMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
@@ -121,7 +120,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}})
 		},
 		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
 			st.updateTabDisplay(world)
@@ -210,7 +209,7 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 		name := gameComponents.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("entity_%d", entity),
-			Label:    string(name),
+			Label:    name,
 			UserData: entity,
 		}
 	}
@@ -641,53 +640,6 @@ func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
 	}
 }
 
-// メンバー選択画面を初期化する
-func (st *InventoryMenuState) initPartyWindow(world w.World) {
-	partyContainer := eui.NewWindowContainer(world)
-	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
-
-	// ウィンドウを画面中央に配置
-	st.partyWindow.SetLocation(getCenterWinRect())
-
-	// メンバー選択エリア
-	rowContainer := eui.NewRowContainer()
-	partyContainer.AddChild(rowContainer)
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
-		gameComponents.Name,
-		gameComponents.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		memberContainer := eui.NewVerticalContainer()
-		partyButton := eui.NewButton("使う",
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
-				st.partyWindow.Close()
-				st.reloadTabs(world)
-				// 表示を更新
-				st.updateTabDisplay(world)
-				st.updateCategoryDisplay(world)
-			}),
-		)
-		memberContainer.AddChild(partyButton)
-		views.AddMemberBar(world, memberContainer, entity)
-
-		rowContainer.AddChild(memberContainer)
-	}))
-
-	// キャンセルボタンを追加
-	cancelButton := eui.NewButton("キャンセル",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.partyWindow.Close()
-		}),
-	)
-	partyContainer.AddChild(cancelButton)
-}
-
 // メンバー選択画面を初期化する（キーボード操作版）
 func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 	partyContainer := eui.NewWindowContainer(world)
@@ -781,7 +733,7 @@ func (st *InventoryMenuState) executePartySelection(world w.World) {
 
 	// 選択されたメンバーでアイテムを使用
 	selectedMember := st.partyMembers[st.partyFocusIndex]
-	effects.ItemTrigger(nil, st.selectedItem, effects.Single{selectedMember}, world)
+	effects.ItemTrigger(nil, st.selectedItem, effects.Single{Target: selectedMember}, world)
 
 	st.closePartyWindow()
 	st.reloadTabs(world)

@@ -39,10 +39,13 @@ func runPlay(_ *cli.Context) error {
 	}
 
 	world := game.InitWorld(utils.MinGameWidth, utils.MinGameHeight)
-	ebiten.RunGame(&game.MainGame{
+	err := ebiten.RunGame(&game.MainGame{
 		World:        world,
 		StateMachine: es.Init(&gs.MainMenuState{}, world),
 	})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

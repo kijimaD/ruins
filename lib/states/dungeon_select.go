@@ -4,7 +4,6 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -13,7 +12,7 @@ import (
 )
 
 type DungeonSelectState struct {
-	states.BaseState
+	es.BaseState
 	ui                   *ebitenui.UI
 	menu                 *menu.Menu
 	uiBuilder            *menu.MenuUIBuilder
@@ -49,9 +48,9 @@ func (st *DungeonSelectState) OnStart(world w.World) {
 
 func (st *DungeonSelectState) OnStop(world w.World) {}
 
-func (st *DungeonSelectState) Update(world w.World) states.Transition {
+func (st *DungeonSelectState) Update(world w.World) es.Transition {
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}}
 	}
 
 	// メニューの更新
@@ -94,7 +93,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(index int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
-			if trans, ok := item.UserData.(states.Transition); ok {
+			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
 			}
 		},
@@ -168,26 +167,26 @@ func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
 var dungeonSelectTrans = []struct {
 	label string
 	desc  string
-	trans states.Transition
+	trans es.Transition
 }{
 	{
 		label: "森の遺跡",
 		desc:  "鬱蒼とした森の奥地にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{Depth: 1}}},
+		trans: es.Transition{Type: es.TransReplace, NewStates: []es.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "山の遺跡",
 		desc:  "切り立った山の洞窟にある遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{Depth: 1}}},
+		trans: es.Transition{Type: es.TransReplace, NewStates: []es.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "塔の遺跡",
 		desc:  "雲にまで届く塔を持つ遺跡",
-		trans: states.Transition{Type: states.TransReplace, NewStates: []states.State{&DungeonState{Depth: 1}}},
+		trans: es.Transition{Type: es.TransReplace, NewStates: []es.State{&DungeonState{Depth: 1}}},
 	},
 	{
 		label: "拠点メニューに戻る",
 		desc:  "",
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
+		trans: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}},
 	},
 }

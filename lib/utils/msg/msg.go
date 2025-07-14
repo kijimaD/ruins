@@ -96,9 +96,7 @@ type msgEmit struct {
 	nlCount int
 }
 
-func (e *msgEmit) PreHook() {
-	return
-}
+func (e *msgEmit) PreHook() {}
 
 // 1つ位置を進めて1文字得る
 func (e *msgEmit) Run(q *Queue) {
@@ -119,7 +117,6 @@ func (e *msgEmit) Run(q *Queue) {
 	if e.pos > len(e.body)-1 {
 		q.deactivate()
 	}
-	return
 }
 
 // ================
@@ -127,15 +124,12 @@ func (e *msgEmit) Run(q *Queue) {
 // ページをフラッシュする
 type flush struct{}
 
-func (e *flush) PreHook() {
-	return
-}
+func (e *flush) PreHook() {}
 
 func (e *flush) Run(q *Queue) {
 	q.buf = ""
 	q.deactivate()
 	q.Pop()
-	return
 }
 
 // ================
@@ -144,13 +138,10 @@ type ChangeBg struct {
 	Source string
 }
 
-func (c *ChangeBg) PreHook() {
-	return
-}
+func (c *ChangeBg) PreHook() {}
 
 func (c *ChangeBg) Run(q *Queue) {
 	q.Pop()
-	return
 }
 
 // ================
@@ -158,15 +149,12 @@ func (c *ChangeBg) Run(q *Queue) {
 // 行末クリック待ち
 type lineEndWait struct{}
 
-func (l *lineEndWait) PreHook() {
-	return
-}
+func (l *lineEndWait) PreHook() {}
 
 func (l *lineEndWait) Run(q *Queue) {
 	q.buf = q.buf + "\n"
 	q.deactivate()
 	q.Pop()
-	return
 }
 
 // ================
@@ -174,30 +162,24 @@ func (l *lineEndWait) Run(q *Queue) {
 // 未実装
 type notImplement struct{}
 
-func (l *notImplement) PreHook() {
-	return
-}
+func (l *notImplement) PreHook() {}
 
 func (l *notImplement) Run(q *Queue) {
 	q.buf = ""
 	q.deactivate()
 	q.Pop()
-	return
 }
 
 // ================
 type wait struct {
-	durationMsec time.Duration
+	duration time.Duration
 }
 
-func (w *wait) PreHook() {
-	return
-}
+func (w *wait) PreHook() {}
 
 func (w *wait) Run(q *Queue) {
-	time.Sleep(w.durationMsec)
+	time.Sleep(w.duration)
 	q.buf = ""
 	q.deactivate()
 	q.Pop()
-	return
 }

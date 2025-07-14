@@ -1,17 +1,12 @@
 package states
 
 import (
-	"bytes"
-	"image"
 	"image/color"
-	"log"
 
-	"github.com/hajimehoshi/ebiten/examples/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
@@ -22,11 +17,10 @@ import (
 
 var (
 	baseImage *ebiten.Image // 一番下にある黒背景
-	bgImage   *ebiten.Image // 床を表現する
 )
 
 type DungeonState struct {
-	states.BaseState
+	es.BaseState
 	Depth int
 }
 
@@ -46,11 +40,6 @@ func (st *DungeonState) OnStart(world w.World) {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 	baseImage = ebiten.NewImage(screenWidth, screenHeight)
-	img, _, err := image.Decode(bytes.NewReader(images.Tile_png))
-	if err != nil {
-		log.Fatal(err)
-	}
-	bgImage = ebiten.NewImageFromImage(img)
 	baseImage.Fill(color.Black)
 
 	gameResources := world.Resources.Game.(*resources.Game)
@@ -81,22 +70,22 @@ func (st *DungeonState) OnStop(world w.World) {
 	gameResources.StateEvent = resources.StateEventNone
 }
 
-func (st *DungeonState) Update(world w.World) states.Transition {
+func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.PlayerInputSystem(world)
 	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
 	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DungeonMenuState{}}}
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{Depth: gameResources.Depth + 1}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&DungeonState{Depth: gameResources.Depth + 1}}}
 	case resources.StateEventWarpEscape:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}}
 	}
 
 	// BaseStateの共通処理を使用

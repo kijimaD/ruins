@@ -1,7 +1,6 @@
 package worldhelper
 
 import (
-	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/raw"
@@ -22,7 +21,7 @@ import (
 func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, components.GameComponentList{
+	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -38,7 +37,7 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, components.GameComponentList{
+	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -58,7 +57,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, components.GameComponentList{
+	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -77,7 +76,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
-	componentList.Game = append(componentList.Game, components.GameComponentList{
+	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &ec.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
@@ -98,7 +97,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, components.GameComponentList{
+		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{},
 			Operator: &gc.Operator{},
@@ -114,7 +113,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 	// カメラ
 	{
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, components.GameComponentList{
+		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Camera:   &gc.Camera{Scale: 0.1, ScaleTo: 1},
 		})
@@ -128,7 +127,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := loader.EntityComponentList{}
-		componentList.Game = append(componentList.Game, components.GameComponentList{
+		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{},
 			SpriteRender: &ec.SpriteRender{
@@ -242,7 +241,7 @@ func setMaxHPSP(world w.World, entity ecs.Entity) {
 // 所持素材の個数を0で初期化する
 func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
-	for k, _ := range rawMaster.MaterialIndex {
+	for k := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
 		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
 		if err != nil {
@@ -256,7 +255,7 @@ func SpawnAllMaterials(world w.World) {
 // レシピ初期化
 func SpawnAllRecipes(world w.World) {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
-	for k, _ := range rawMaster.RecipeIndex {
+	for k := range rawMaster.RecipeIndex {
 		componentList := loader.EntityComponentList{}
 		gameComponent, err := rawMaster.GenerateRecipe(k)
 		if err != nil {
@@ -270,7 +269,7 @@ func SpawnAllRecipes(world w.World) {
 // 敵が使う用。マスタとなるカードを初期化する
 func SpawnAllCards(world w.World) {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
-	for k, _ := range rawMaster.ItemIndex {
+	for k := range rawMaster.ItemIndex {
 		componentList := loader.EntityComponentList{}
 		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
 		if err != nil {

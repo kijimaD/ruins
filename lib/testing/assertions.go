@@ -3,7 +3,6 @@ package testing
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
@@ -95,7 +94,7 @@ func AssertAttack(t *testing.T, component *gc.Attack, expectedDamage, expectedAc
 }
 
 // コンポーネントの存在確認
-func AssertHasComponent(t *testing.T, componentList components.GameComponentList, componentName string) {
+func AssertHasComponent(t *testing.T, componentList gc.GameComponentList, componentName string) {
 	t.Helper()
 	switch componentName {
 	case "Player":
@@ -128,7 +127,7 @@ func AssertHasComponent(t *testing.T, componentList components.GameComponentList
 }
 
 // コンポーネントの非存在確認
-func AssertNotHasComponent(t *testing.T, componentList components.GameComponentList, componentName string) {
+func AssertNotHasComponent(t *testing.T, componentList gc.GameComponentList, componentName string) {
 	t.Helper()
 	switch componentName {
 	case "Player":

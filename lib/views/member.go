@@ -22,7 +22,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 
 	name := gameComponents.Name.Get(entity).(*gc.Name)
 	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-	memberContainer.AddChild(eui.NewMenuText(fmt.Sprintf("%s", name.Name), world))
+	memberContainer.AddChild(eui.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
 		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", utils.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),
 	)

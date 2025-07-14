@@ -5,7 +5,6 @@ import (
 	"log"
 	"math/rand/v2"
 
-	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"github.com/yourbasic/bit"
@@ -14,7 +13,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
-var reachEdgeError = errors.New("reach edge error")
+var errReachEdge = errors.New("reach edge error")
 
 // グルーピングする単位。味方あるいは敵がある
 type Party struct {
@@ -37,13 +36,13 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 
 	var q *bit.Set
 	switch factionType {
-	case components.FactionAlly:
+	case gc.FactionAlly:
 		q = world.Manager.Join(
 			gameComponents.FactionAlly,
 			gameComponents.Pools,
 			gameComponents.Attributes,
 		)
-	case components.FactionEnemy:
+	case gc.FactionEnemy:
 		q = world.Manager.Join(
 			gameComponents.FactionEnemy,
 			gameComponents.Pools,
@@ -164,7 +163,7 @@ func (p *Party) GetNext() (ecs.Entity, error) {
 		cur = utils.Min(cur+1, len(p.members)-1)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
-			return 0, reachEdgeError
+			return 0, errReachEdge
 		}
 		if p.lives[cur] == nil {
 			continue
@@ -184,7 +183,7 @@ func (p *Party) GetPrev() (ecs.Entity, error) {
 		cur = utils.Max(cur-1, 0)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
-			return 0, reachEdgeError
+			return 0, errReachEdge
 		}
 		if p.lives[cur] == nil {
 			continue
@@ -215,7 +214,7 @@ func (p *Party) next() error {
 	p.cur = utils.Min(p.cur+1, len(p.members)-1)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
-		return reachEdgeError
+		return errReachEdge
 	}
 
 	return nil
@@ -226,7 +225,7 @@ func (p *Party) prev() error {
 	p.cur = utils.Max(p.cur-1, 0)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
-		return reachEdgeError
+		return errReachEdge
 	}
 
 	return nil

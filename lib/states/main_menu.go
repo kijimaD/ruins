@@ -3,7 +3,6 @@ package states
 import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -13,7 +12,7 @@ import (
 
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.MenuUIBuilder
@@ -42,7 +41,7 @@ func (st *MainMenuState) OnStart(world w.World) {
 
 func (st *MainMenuState) OnStop(world w.World) {}
 
-func (st *MainMenuState) Update(world w.World) states.Transition {
+func (st *MainMenuState) Update(world w.World) es.Transition {
 	// Escapeキーでの終了処理はメニューのOnCancelで処理するため、ここでは削除
 
 	// メニューの更新
@@ -68,22 +67,22 @@ func (st *MainMenuState) initMenu(world w.World) {
 		{
 			ID:       "intro",
 			Label:    "導入",
-			UserData: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&IntroState{}}},
+			UserData: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&IntroState{}}},
 		},
 		{
 			ID:       "home",
 			Label:    "拠点",
-			UserData: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}},
+			UserData: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}},
 		},
 		{
 			ID:       "explore",
 			Label:    "探検",
-			UserData: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&DungeonState{Depth: 1}}},
+			UserData: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&DungeonState{Depth: 1}}},
 		},
 		{
 			ID:       "exit",
 			Label:    "終了",
-			UserData: states.Transition{Type: states.TransQuit},
+			UserData: es.Transition{Type: es.TransQuit},
 		},
 	}
 
@@ -99,13 +98,13 @@ func (st *MainMenuState) initMenu(world w.World) {
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(index int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
-			if trans, ok := item.UserData.(states.Transition); ok {
+			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理
-			st.SetTransition(states.Transition{Type: states.TransQuit})
+			st.SetTransition(es.Transition{Type: es.TransQuit})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時にUIを更新

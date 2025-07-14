@@ -21,7 +21,7 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 		roomDistances := map[int]float64{}
 		centerX, centerY := room.Center()
 		for j, otherRoom := range buildData.Rooms {
-			isExist, _ := connected[j]
+			isExist := connected[j]
 			if i != j && !isExist {
 				oCenterX, oCenterY := otherRoom.Center()
 				distance := math.Sqrt(math.Pow(float64(centerX-oCenterX), 2) + math.Pow(float64(centerY-oCenterY), 2))
@@ -41,18 +41,12 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 			ps2 := bresenhamPoints(point{x: centerX - 1, y: centerY}, point{x: destCenterX - 1, y: destCenterY})
 			ps3 := bresenhamPoints(point{x: centerX, y: centerY - 1}, point{x: destCenterX, y: destCenterY - 1})
 			points := []point{}
-			for _, p := range ps1 {
-				points = append(points, p)
-			}
-			for _, p := range ps2 {
-				points = append(points, p)
-			}
-			for _, p := range ps3 {
-				points = append(points, p)
-			}
+			points = append(points, ps1...)
+			points = append(points, ps2...)
+			points = append(points, ps3...)
 			corridor := []resources.TileIdx{}
 			for _, p := range points {
-				idx := buildData.Level.XYTileIndex(gc.Row(p.x), gc.Col(p.y))
+				idx := buildData.Level.XYTileIndex(p.x, p.y)
 				if 0 < int(idx) && int(idx) < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 && buildData.Tiles[idx] == TileWall {
 					buildData.Tiles[idx] = TileFloor
 				}

@@ -5,7 +5,6 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -15,7 +14,7 @@ import (
 )
 
 type DungeonMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.MenuUIBuilder
@@ -50,7 +49,7 @@ func (st *DungeonMenuState) OnStart(world w.World) {
 
 func (st *DungeonMenuState) OnStop(world w.World) {}
 
-func (st *DungeonMenuState) Update(world w.World) states.Transition {
+func (st *DungeonMenuState) Update(world w.World) es.Transition {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 
@@ -74,13 +73,13 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			ID:          "close",
 			Label:       "閉じる",
 			Description: "ダンジョンメニューを閉じる",
-			UserData:    states.Transition{Type: states.TransPop},
+			UserData:    es.Transition{Type: es.TransPop},
 		},
 		{
 			ID:          "exit",
 			Label:       "終了",
 			Description: "メインメニューに戻る",
-			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}},
 		},
 	}
 
@@ -95,12 +94,12 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 	// コールバック設定
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(index int, item menu.MenuItem) {
-			if trans, ok := item.UserData.(states.Transition); ok {
+			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
-			st.SetTransition(states.Transition{Type: states.TransPop})
+			st.SetTransition(es.Transition{Type: es.TransPop})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時にUIを更新

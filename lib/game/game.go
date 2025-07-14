@@ -12,7 +12,6 @@ import (
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	ew "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/resources"
 	gr "github.com/kijimaD/ruins/lib/resources"
 )
 
@@ -109,7 +108,7 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	}
 	world.Resources.RawMaster = rw
 
-	world.Resources.Game = &resources.Game{}
+	world.Resources.Game = &gr.Game{}
 
 	return world
 }

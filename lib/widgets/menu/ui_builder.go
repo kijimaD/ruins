@@ -97,21 +97,18 @@ func (b *MenuUIBuilder) createMenuButton(menu *Menu, index int, item MenuItem) *
 		item.Label,
 		b.world,
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			if !item.Disabled {
-				menu.SetFocusedIndex(index)
-				menu.selectCurrent()
-			}
+			menu.SetFocusedIndex(index)
+			menu.selectCurrent()
 		}),
 	)
 
 	// 無効化されたアイテムの処理
 	if item.Disabled {
-		// ここで無効化の見た目を設定（グレーアウトなど）
-		// 既存のeuiが対応していれば使用
+		btn.GetWidget().Disabled = true
 	}
 
-	// 初期フォーカス設定
-	if isFocused {
+	// 初期フォーカス設定（無効化されていない場合のみ）
+	if isFocused && !item.Disabled {
 		btn.Focus(true)
 	}
 

@@ -6,7 +6,6 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -15,7 +14,7 @@ import (
 )
 
 type IntroState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	queue         msg.Queue
 	cycle         int
@@ -61,7 +60,7 @@ func (st *IntroState) OnStart(world w.World) {
 
 func (st *IntroState) OnStop(world w.World) {}
 
-func (st *IntroState) Update(world w.World) states.Transition {
+func (st *IntroState) Update(world w.World) es.Transition {
 	var queueResult msg.QueueState
 
 	if v, ok := st.queue.Head().(*msg.ChangeBg); ok {
@@ -82,12 +81,12 @@ func (st *IntroState) Update(world w.World) states.Transition {
 		queueResult = st.queue.Pop()
 	case st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape):
 		// debug
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
 	}
 
 	switch queueResult {
 	case msg.QueueStateFinish:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
 	}
 
 	st.updateMessageContainer(world)

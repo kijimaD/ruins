@@ -3,7 +3,6 @@ package systems
 import (
 	"math"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	ec "github.com/kijimaD/ruins/lib/engine/components"
@@ -26,11 +25,11 @@ func MoveSystem(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
 		switch velocity.ThrottleMode {
-		case components.ThrottleModeFront:
+		case gc.ThrottleModeFront:
 			velocity.Speed = utils.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
-		case components.ThrottleModeBack:
+		case gc.ThrottleModeBack:
 			velocity.Speed = utils.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
-		case components.ThrottleModeNope:
+		case gc.ThrottleModeNope:
 			// 何もしない
 		}
 		tryMove(world, entity, velocity.Angle, velocity.Speed)

@@ -37,7 +37,7 @@ func (e *Evaluator) Eval(node Node) Event {
 			if err != nil {
 				log.Fatal(err)
 			}
-			eve = &wait{durationMsec: duration}
+			eve = &wait{duration: duration}
 		}
 		e.Events = append(e.Events, eve)
 		return eve

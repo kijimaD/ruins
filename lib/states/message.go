@@ -5,7 +5,6 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/input"
@@ -15,7 +14,7 @@ import (
 // FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
 // 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type MessageState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 
@@ -43,14 +42,14 @@ func (st *MessageState) OnStart(world w.World) {
 
 func (st *MessageState) OnStop(world w.World) {}
 
-func (st *MessageState) Update(world w.World) states.Transition {
+func (st *MessageState) Update(world w.World) es.Transition {
 	st.ui = st.reloadUI(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransQuit}
+		return es.Transition{Type: es.TransQuit}
 	}
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return states.Transition{Type: states.TransPop}
+		return es.Transition{Type: es.TransPop}
 	}
 
 	if st.textFunc != nil {

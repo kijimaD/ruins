@@ -83,15 +83,6 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-// のぞき見(peek)。readChar()の、文字解析器を進めないバージョン。先読みだけを行う
-func (l *Lexer) peekChar() byte {
-	if l.readPosition >= len(l.input) {
-		return 0
-	} else {
-		return l.input[l.readPosition] // 次の位置を返す
-	}
-}
-
 func (l *Lexer) readText() string {
 	position := l.position
 	for {

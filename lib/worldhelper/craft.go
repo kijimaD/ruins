@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand/v2"
 
-	"github.com/kijimaD/ruins/lib/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -56,8 +55,8 @@ func consumeMaterials(world w.World, goal string) {
 }
 
 // 指定したレシピに必要な素材一覧
-func requiredMaterials(world w.World, goal string) []components.RecipeInput {
-	required := []components.RecipeInput{}
+func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
+	required := []gc.RecipeInput{}
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Recipe,
@@ -66,9 +65,7 @@ func requiredMaterials(world w.World, goal string) []components.RecipeInput {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		if name.Name == goal {
 			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
-			for _, r := range recipe.Inputs {
-				required = append(required, r)
-			}
+			required = append(required, recipe.Inputs...)
 		}
 	}))
 

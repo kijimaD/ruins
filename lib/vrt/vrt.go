@@ -14,13 +14,12 @@ import (
 	gs "github.com/kijimaD/ruins/lib/systems"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
-var regularTermination = errors.New("テスト環境における、想定どおりの終了")
+var errRegularTermination = errors.New("テスト環境における、想定どおりの終了")
 
 type TestGame struct {
 	game.MainGame
@@ -39,7 +38,7 @@ func (g *TestGame) Update() error {
 	}
 
 	// エラーを返さないと、実行終了しない
-	return regularTermination
+	return errRegularTermination
 }
 
 const outputDirName = "vrtimages"
@@ -53,12 +52,18 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 		return
 	}
 
-	_ = os.Mkdir(outputDirName, dirPerm)
+	if err := os.Mkdir(outputDirName, dirPerm); err != nil && !os.IsExist(err) {
+		log.Fatal(err)
+	}
 	file, err := os.Create(path.Join(outputDirName, fmt.Sprintf("%s.png", g.outputPath)))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Failed to close file: %v", err)
+		}
+	}()
 
 	err = png.Encode(file, screen)
 	if err != nil {
@@ -66,7 +71,7 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 	}
 }
 
-func RunTestGame(state states.State, outputPath string) {
+func RunTestGame(state es.State, outputPath string) {
 	world := game.InitWorld(960, 720)
 
 	worldhelper.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
@@ -96,7 +101,10 @@ func RunTestGame(state states.State, outputPath string) {
 	worldhelper.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 
 	// 装備変更後にステータスを更新
-	_ = gs.EquipmentChangedSystem(world)
+	if changed := gs.EquipmentChangedSystem(world); !changed {
+		// 装備変更が期待されていた場合はログ出力
+		log.Println("Equipment change was not detected")
+	}
 
 	// 完全回復
 	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
@@ -113,7 +121,7 @@ func RunTestGame(state states.State, outputPath string) {
 		outputPath: outputPath,
 	}
 
-	if err := ebiten.RunGame(g); err != nil && err != regularTermination {
+	if err := ebiten.RunGame(g); err != nil && err != errRegularTermination {
 		log.Fatal(err)
 	}
 }

@@ -110,7 +110,7 @@ func TestAddEffect(t *testing.T) {
 func TestEffectTypeInterface(t *testing.T) {
 	t.Run("all effect types implement interface", func(t *testing.T) {
 		// すべてのエフェクトタイプがEffectTypeインターフェースを実装していることを確認
-		var effects []EffectType = []EffectType{
+		var effects = []EffectType{
 			Damage{Amount: 10},
 			Healing{Amount: gc.NumeralAmount{Numeral: 20}},
 			ConsumptionStamina{Amount: gc.NumeralAmount{Numeral: 5}},

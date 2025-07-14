@@ -60,15 +60,6 @@ func (p *Parser) Errors() []string {
 	return p.errors
 }
 
-// エラーを追加する
-func (p *Parser) peekError(t TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
-		t,
-		p.peekToken.Type,
-	)
-	p.errors = append(p.errors, msg)
-}
-
 // 次のトークンに進む
 func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
@@ -104,25 +95,9 @@ func (p *Parser) parseExpressionStatement() *ExpressionStatement {
 	return stmt
 }
 
-// 現在のトークンと引数の型を比較する
-func (p *Parser) curTokenIs(t TokenType) bool {
-	return p.curToken.Type == t
-}
-
 // 次のトークンと引数の型を比較する
 func (p *Parser) peekTokenIs(t TokenType) bool {
 	return p.peekToken.Type == t
-}
-
-// peekTokenの型をチェックし、その型が正しい場合に限ってnextTokenを読んで、トークンを進める
-func (p *Parser) expectPeek(t TokenType) bool {
-	if p.peekTokenIs(t) {
-		p.nextToken()
-		return true
-	} else {
-		p.peekError(t)
-		return false
-	}
 }
 
 // 構文解析関数を登録する

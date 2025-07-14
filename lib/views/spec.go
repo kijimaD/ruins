@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -39,7 +38,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 			attackCount := fmt.Sprintf("%s %s", utils.AttackCountLabel, strconv.Itoa(attack.AttackCount))
 			targetContainer.AddChild(eui.NewBodyText(attackCount, styles.TextColor, world))
 
-			if attack.Element != components.ElementTypeNone {
+			if attack.Element != gc.ElementTypeNone {
 				targetContainer.AddChild(damageAttrText(world, attack.Element, attack.Element.String()))
 			}
 		}
@@ -61,16 +60,16 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 }
 
 // 属性によって色付けする
-func damageAttrText(world w.World, dat components.ElementType, str string) *widget.Text {
+func damageAttrText(world w.World, dat gc.ElementType, str string) *widget.Text {
 	var text *widget.Text
 	switch dat {
-	case components.ElementTypeFire:
+	case gc.ElementTypeFire:
 		text = eui.NewBodyText(str, styles.FireColor, world)
-	case components.ElementTypeThunder:
+	case gc.ElementTypeThunder:
 		text = eui.NewBodyText(str, styles.ThunderColor, world)
-	case components.ElementTypeChill:
+	case gc.ElementTypeChill:
 		text = eui.NewBodyText(str, styles.ChillColor, world)
-	case components.ElementTypePhoton:
+	case gc.ElementTypePhoton:
 		text = eui.NewBodyText(str, styles.PhotonColor, world)
 	default:
 		text = eui.NewBodyText(str, styles.TextColor, world)
@@ -79,7 +78,7 @@ func damageAttrText(world w.World, dat components.ElementType, str string) *widg
 	return text
 }
 
-func addEquipBonus(targetContainer *widget.Container, equipBonus components.EquipBonus, world w.World) {
+func addEquipBonus(targetContainer *widget.Container, equipBonus gc.EquipBonus, world w.World) {
 	if equipBonus.Vitality != 0 {
 		vitality := fmt.Sprintf("%s %+d", utils.VitalityLabel, equipBonus.Vitality)
 		targetContainer.AddChild(eui.NewBodyText(vitality, styles.TextColor, world))

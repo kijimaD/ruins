@@ -50,7 +50,7 @@ func TestNone(t *testing.T) {
 func TestTargetsInterface(t *testing.T) {
 	t.Run("all target types implement interface", func(t *testing.T) {
 		// すべてのターゲットタイプがTargetsインターフェースを実装していることを確認
-		var targets []Targets = []Targets{
+		var targets = []Targets{
 			Party{},
 			Single{Target: ecs.Entity(123)},
 			None{},

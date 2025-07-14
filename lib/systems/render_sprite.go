@@ -145,7 +145,8 @@ func getImage(spriteRender *ec.SpriteRender) *ebiten.Image {
 		// テクスチャから欲しいスプライトを切り出す
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		texture := spriteRender.SpriteSheet.Texture
-		textureWidth, textureHeight := texture.Image.Size()
+		textureWidth := texture.Image.Bounds().Dx()
+		textureHeight := texture.Image.Bounds().Dy()
 
 		left := m.Max(0, sprite.X)
 		right := m.Min(textureWidth, sprite.X+sprite.Width)

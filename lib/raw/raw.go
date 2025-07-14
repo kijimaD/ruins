@@ -5,7 +5,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/utils"
 	"github.com/kijimaD/ruins/lib/errors"
@@ -135,7 +134,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw.CommandTableIndex = map[string]int{}
 	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
-	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
+	utils.Try(toml.Decode(entityMetadataContent, &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
@@ -162,13 +161,13 @@ func Load(entityMetadataContent string) RawMaster {
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) (components.GameComponentList, error) {
+func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
-		return components.GameComponentList{}, errors.NewKeyNotFoundError(name, "ItemIndex")
+		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "ItemIndex")
 	}
 	item := rw.Raws.Items[itemIdx]
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.ItemLocationType = &locationType
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
@@ -176,10 +175,10 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 
 	if item.Consumable != nil {
 		if err := gc.TargetGroupType(item.Consumable.TargetGroup).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid target group type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid target group type")
 		}
 		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid target num type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid target num type")
 		}
 		targetType := gc.TargetType{
 			TargetGroup: gc.TargetGroupType(item.Consumable.TargetGroup),
@@ -187,7 +186,7 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 		}
 
 		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid usable scene type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid usable scene type")
 		}
 		cl.Consumable = &gc.Consumable{
 			UsableScene: gc.UsableSceneType(item.Consumable.UsableScene),
@@ -196,8 +195,8 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	}
 
 	if item.ProvidesHealing != nil {
-		if err := ValueType(item.ProvidesHealing.ValueType).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid value type")
+		if err := item.ProvidesHealing.ValueType.Valid(); err != nil {
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid value type")
 		}
 		switch item.ProvidesHealing.ValueType {
 		case PercentageType:
@@ -212,10 +211,10 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 
 	if item.Card != nil {
 		if err := gc.TargetGroupType(item.Card.TargetGroup).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid card target group type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid card target group type")
 		}
 		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid card target num type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid card target num type")
 		}
 
 		cl.Card = &gc.Card{
@@ -256,12 +255,12 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	}
 
 	if item.Wearable != nil {
-		if err := components.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
+		if err := gc.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		cl.Wearable = &gc.Wearable{
 			Defense:           item.Wearable.Defense,
-			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
+			EquipmentCategory: gc.EquipmentType(item.Wearable.EquipmentCategory),
 			EquipBonus:        bonus,
 		}
 	}
@@ -269,12 +268,12 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (components.GameComponentList, error) {
+func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
-		return components.GameComponentList{}, errors.NewKeyNotFoundError(name, "MaterialIndex")
+		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "MaterialIndex")
 	}
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.Material = &gc.Material{Amount: amount}
 	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
@@ -284,13 +283,13 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.I
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, error) {
+func (rw *RawMaster) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
-		return components.GameComponentList{}, errors.NewKeyNotFoundError(name, "RecipeIndex")
+		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "RecipeIndex")
 	}
 	recipe := rw.Raws.Recipes[recipeIdx]
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.Name = &gc.Name{Name: recipe.Name}
 	cl.Recipe = &gc.Recipe{}
 	for _, input := range recipe.Inputs {
@@ -300,7 +299,7 @@ func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, 
 	// 説明文などのため、マッチしたitemの定義から持ってくる
 	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	if err != nil {
-		return components.GameComponentList{}, errors.Wrap(err, "failed to generate item for recipe")
+		return gc.GameComponentList{}, errors.Wrap(err, "failed to generate item for recipe")
 	}
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Card != nil {
@@ -319,14 +318,14 @@ func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, 
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
+func (rw *RawMaster) GenerateFighter(name string) gc.GameComponentList {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
 
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.Name = &gc.Name{Name: member.Name}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
@@ -356,7 +355,7 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
+func (rw *RawMaster) GenerateMember(name string, inParty bool) gc.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionAlly
 	if inParty {
@@ -366,7 +365,7 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameCo
 	return cl
 }
 
-func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
+func (rw *RawMaster) GenerateEnemy(name string) gc.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionEnemy
 

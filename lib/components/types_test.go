@@ -251,7 +251,7 @@ func TestNumeralAmount(t *testing.T) {
 func TestAmounterInterface(t *testing.T) {
 	t.Run("all types implement Amounter", func(t *testing.T) {
 		// 両方の型がAmounterインターフェースを実装していることを確認
-		var amounters []Amounter = []Amounter{
+		var amounters = []Amounter{
 			RatioAmount{Ratio: 0.5},
 			NumeralAmount{Numeral: 100},
 		}

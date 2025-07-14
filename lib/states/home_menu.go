@@ -8,7 +8,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -21,7 +20,7 @@ import (
 )
 
 type HomeMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.MenuUIBuilder
@@ -71,9 +70,9 @@ func (st *HomeMenuState) OnStart(world w.World) {
 
 func (st *HomeMenuState) OnStop(world w.World) {}
 
-func (st *HomeMenuState) Update(world w.World) states.Transition {
+func (st *HomeMenuState) Update(world w.World) es.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
 	}
 
 	// メニューの更新
@@ -101,37 +100,37 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			ID:          "departure",
 			Label:       "出発",
 			Description: "遺跡に出発する",
-			UserData:    states.Transition{Type: states.TransPush, NewStates: []states.State{&DungeonSelectState{}}},
+			UserData:    es.Transition{Type: es.TransPush, NewStates: []es.State{&DungeonSelectState{}}},
 		},
 		{
 			ID:          "craft",
 			Label:       "合成",
 			Description: "アイテムを合成する",
-			UserData:    states.Transition{Type: states.TransPush, NewStates: []states.State{&CraftMenuState{}}},
+			UserData:    es.Transition{Type: es.TransPush, NewStates: []es.State{&CraftMenuState{}}},
 		},
 		{
 			ID:          "replace",
 			Label:       "入替",
 			Description: "仲間を入れ替える(未実装)",
-			UserData:    states.Transition{Type: states.TransNone},
+			UserData:    es.Transition{Type: es.TransNone},
 		},
 		{
 			ID:          "inventory",
 			Label:       "所持",
 			Description: "所持品を確認する",
-			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&InventoryMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&InventoryMenuState{}}},
 		},
 		{
 			ID:          "equipment",
 			Label:       "装備",
 			Description: "装備を変更する",
-			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&EquipMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&EquipMenuState{}}},
 		},
 		{
 			ID:          "exit",
 			Label:       "終了",
 			Description: "タイトル画面に戻る",
-			UserData:    states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}},
 		},
 	}
 
@@ -147,13 +146,13 @@ func (st *HomeMenuState) initMenu(world w.World) {
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(index int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
-			if trans, ok := item.UserData.(states.Transition); ok {
+			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理（タイトル画面に戻る）
-			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時に説明文を更新

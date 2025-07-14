@@ -32,7 +32,7 @@ func TestEval(t *testing.T) {
 		case *ChangeBg:
 			results = append(results, fmt.Sprintf("changeBg source=%s", event.Source))
 		case *wait:
-			results = append(results, fmt.Sprintf("wait time=%s", event.durationMsec))
+			results = append(results, fmt.Sprintf("wait time=%s", event.duration))
 		}
 	}
 	expect := []string{

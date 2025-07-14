@@ -4,7 +4,6 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -22,24 +21,24 @@ func AIInputSystem(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		roaming := gameComponents.AIRoaming.Get(entity).(*gc.AIRoaming)
 		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
-		if time.Now().Sub(roaming.StartSubState).Seconds() > roaming.DurationSubState.Seconds() {
+		if time.Since(roaming.StartSubState).Seconds() > roaming.DurationSubState.Seconds() {
 			roaming.StartSubState = time.Now()
 			roaming.DurationSubState = time.Second * time.Duration(rand.IntN(3))
 
-			var subState components.AIRoamingSubState
+			var subState gc.AIRoamingSubState
 			switch rand.IntN(2) {
 			case 0:
-				subState = components.AIRoamingWaiting
+				subState = gc.AIRoamingWaiting
 			case 1:
-				subState = components.AIRoamingDriving
+				subState = gc.AIRoamingDriving
 			}
 
 			switch subState {
-			case components.AIRoamingWaiting:
-				velocity.ThrottleMode = components.ThrottleModeNope
+			case gc.AIRoamingWaiting:
+				velocity.ThrottleMode = gc.ThrottleModeNope
 				velocity.Angle += float64(rand.IntN(91))
-			case components.AIRoamingDriving:
-				velocity.ThrottleMode = components.ThrottleModeFront
+			case gc.AIRoamingDriving:
+				velocity.ThrottleMode = gc.ThrottleModeFront
 			}
 		}
 	}))

@@ -35,7 +35,7 @@ func (s *SafeSlice) Get() []string {
 	copiedSlice := make([]string, len(s.content))
 	copy(copiedSlice, s.content)
 
-	return copiedSlice[len(s.content)-len(s.content):]
+	return copiedSlice
 }
 
 // 古い順に取り出す。取得した分は消える

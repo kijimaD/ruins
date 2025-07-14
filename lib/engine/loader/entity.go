@@ -44,7 +44,7 @@ func AddEntities(world w.World, entityComponentList EntityComponentList) []ecs.E
 
 	// Add game components
 	if entityComponentList.Game != nil {
-		if len(entityComponentList.Game) != len(entityComponentList.Game) {
+		if len(entityComponentList.Game) != len(entities) {
 			utils.LogFatalf("incorrect size for game component list")
 		}
 		for iEntity := range entities {

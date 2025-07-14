@@ -10,11 +10,9 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -23,7 +21,6 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
-	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -32,7 +29,7 @@ import (
 )
 
 type BattleState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 
@@ -116,7 +113,7 @@ func (st *BattleState) OnStop(world w.World) {
 	st.phase = nil
 }
 
-func (st *BattleState) Update(world w.World) states.Transition {
+func (st *BattleState) Update(world w.World) es.Transition {
 	st.ui.Update()
 
 	// キーボード選択処理（選択フェーズのみ、ログ表示中は除く）
@@ -133,7 +130,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
 			var err error
-			st.party, err = worldhelper.NewParty(world, components.FactionAlly)
+			st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -183,7 +180,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 				// 攻撃カードによって対象を選択
 				cl := loader.EntityComponentList{}
-				cl.Game = append(cl.Game, components.GameComponentList{
+				cl.Game = append(cl.Game, gc.GameComponentList{
 					BattleCommand: &gc.BattleCommand{
 						Owner:  entity,
 						Target: targetEntity,
@@ -217,16 +214,16 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 		st.updateMemberContainer(world)
 
-		switch systems.BattleExtinctionSystem(world) {
-		case systems.BattleExtinctionNone:
-		case systems.BattleExtinctionAlly:
+		switch gs.BattleExtinctionSystem(world) {
+		case gs.BattleExtinctionNone:
+		case gs.BattleExtinctionAlly:
 			gamelog.BattleLog.Append("全滅した。")
 			st.phase = &phaseGameOver{}
-			return states.Transition{Type: states.TransNone}
-		case systems.BattleExtinctionMonster:
+			return es.Transition{Type: es.TransNone}
+		case gs.BattleExtinctionMonster:
 			gamelog.BattleLog.Append("敵を全滅させた。")
 			st.phase = &phaseResult{}
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 
 		gameComponents := world.Components.Game.(*gc.Components)
@@ -244,7 +241,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 				gs.BattleCommandSystem(world)
 				st.isWaitClick = false
 			}
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 
 		// 処理完了
@@ -259,11 +256,11 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if st.keyboardInput.IsEnterJustPressedOnce() {
 			switch v.actionCount {
 			case 0:
-				dropResult := systems.BattleDropSystem(world)
+				dropResult := gs.BattleDropSystem(world)
 				st.resultWindow = st.initResultWindow(world, dropResult)
 				st.ui.AddWindow(st.resultWindow)
 			default:
-				return states.Transition{Type: states.TransPop}
+				return es.Transition{Type: es.TransPop}
 			}
 			v.actionCount += 1
 		}
@@ -271,7 +268,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 
 		if st.keyboardInput.IsEnterJustPressedOnce() {
-			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
+			return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}}
 		}
 	}
 
@@ -428,7 +425,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			case policyEntryItem:
 				// TODO: 未実装
 			case policyEntryEscape:
-				st.SetTransition(states.Transition{Type: states.TransPop})
+				st.SetTransition(es.Transition{Type: es.TransPop})
 			}
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
@@ -611,7 +608,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("enemy_%d", entity),
-			Label:    fmt.Sprintf("%s", name.Name),
+			Label:    name.Name,
 			UserData: entity,
 		}
 	}
@@ -629,7 +626,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		OnSelect: func(index int, item menu.MenuItem) {
 			targetEntity := item.UserData.(ecs.Entity)
 			cl := loader.EntityComponentList{}
-			cl.Game = append(cl.Game, components.GameComponentList{
+			cl.Game = append(cl.Game, gc.GameComponentList{
 				BattleCommand: &gc.BattleCommand{
 					Owner:  currentPhase.owner,
 					Target: targetEntity,
@@ -727,7 +724,7 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	}))
 }
 
-func (st *BattleState) initResultWindow(world w.World, dropResult systems.DropResult) *widget.Window {
+func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult) *widget.Window {
 	res := world.Resources.UIResources
 	const width = 800
 	const height = 400

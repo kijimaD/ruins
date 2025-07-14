@@ -205,7 +205,7 @@ func (rm *DefaultResourceManager) LoadAll(axes []string, actions []string) error
 
 	// Rawデータの読み込み
 	if _, err := rm.LoadRaws(); err != nil {
-		return fmt.Errorf("Rawデータの読み込みに失敗: %w", err)
+		return fmt.Errorf("rawデータの読み込みに失敗: %w", err)
 	}
 
 	return nil

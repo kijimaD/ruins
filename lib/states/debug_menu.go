@@ -6,7 +6,6 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -17,7 +16,7 @@ import (
 )
 
 type DebugMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	menuBuilder   *menu.MenuUIBuilder
@@ -45,7 +44,7 @@ func (st *DebugMenuState) OnStart(world w.World) {
 
 func (st *DebugMenuState) OnStop(world w.World) {}
 
-func (st *DebugMenuState) Update(world w.World) states.Transition {
+func (st *DebugMenuState) Update(world w.World) es.Transition {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 
@@ -101,7 +100,7 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 			st.executeDebugMenuItem(world, index)
 		},
 		OnCancel: func() {
-			st.SetTransition(states.Transition{Type: states.TransPop})
+			st.SetTransition(es.Transition{Type: es.TransPop})
 		},
 		OnFocusChange: func(oldIndex, newIndex int) {
 			// フォーカス変更時にUIを更新
@@ -128,41 +127,41 @@ func (st *DebugMenuState) executeDebugMenuItem(world w.World, index int) {
 var debugMenuTrans = []struct {
 	label string
 	f     func(world w.World)
-	trans states.Transition
+	trans es.Transition
 }{
 	{
 		label: "回復薬スポーン(インベントリ)",
 		f:     func(world w.World) { worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack) },
-		trans: states.Transition{Type: states.TransNone},
+		trans: es.Transition{Type: es.TransNone},
 	},
 	{
 		label: "手榴弾スポーン(インベントリ)",
 		f:     func(world w.World) { worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack) },
-		trans: states.Transition{Type: states.TransNone},
+		trans: es.Transition{Type: es.TransNone},
 	},
 	{
 		label: "戦闘開始",
 		f:     func(world w.World) {},
-		trans: states.Transition{Type: states.TransPush, NewStates: []states.State{&BattleState{}}},
+		trans: es.Transition{Type: es.TransPush, NewStates: []es.State{&BattleState{}}},
 	},
 	{
 		label: "汎用戦闘イベント開始",
 		f:     func(world w.World) {},
-		trans: states.Transition{Type: states.TransPush, NewStates: RaidEvent1()},
+		trans: es.Transition{Type: es.TransPush, NewStates: RaidEvent1()},
 	},
 	{
 		label: "汎用アイテム入手イベント開始",
 		f:     func(world w.World) {},
-		trans: states.Transition{Type: states.TransPush, NewStates: ItemGetEvent1()},
+		trans: es.Transition{Type: es.TransPush, NewStates: ItemGetEvent1()},
 	},
 	{
 		label: "ゲームオーバー",
 		f:     func(world w.World) {},
-		trans: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}},
+		trans: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}},
 	},
 	{
 		label: "閉じる",
 		f:     func(world w.World) {},
-		trans: states.Transition{Type: states.TransPop},
+		trans: es.Transition{Type: es.TransPop},
 	},
 }

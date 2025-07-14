@@ -35,7 +35,7 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
-			for i, _ := range entities {
+			for i := range entities {
 				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
 					continue
 				}
@@ -60,7 +60,7 @@ func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
-			for i, _ := range entities {
+			for i := range entities {
 				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
 					continue
 				}

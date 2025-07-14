@@ -4,7 +4,6 @@ package mapbuilder
 import (
 	"log"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -46,8 +45,8 @@ func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool {
 // MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせている。Positionを持つエンティティの数ぶんで検証できる
 func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool {
 	isExist := false
-	cx := components.Pixel(int(tx)*int(utils.TileSize) + int(utils.TileSize)/2)
-	cy := components.Pixel(int(ty)*int(utils.TileSize) + int(utils.TileSize)/2)
+	cx := gc.Pixel(int(tx)*int(utils.TileSize) + int(utils.TileSize)/2)
+	cy := gc.Pixel(int(ty)*int(utils.TileSize) + int(utils.TileSize)/2)
 
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -123,10 +122,10 @@ type BuilderChain struct {
 	BuildData BuilderMap
 }
 
-func NewBuilderChain(width components.Row, height components.Col) *BuilderChain {
+func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
-	for i, _ := range tiles {
+	for i := range tiles {
 		tiles[i] = TileWall
 	}
 
@@ -135,8 +134,8 @@ func NewBuilderChain(width components.Row, height components.Col) *BuilderChain 
 		Builders: []MetaMapBuilder{},
 		BuildData: BuilderMap{
 			Level: resources.Level{
-				TileWidth:  components.Row(width),
-				TileHeight: components.Col(height),
+				TileWidth:  width,
+				TileHeight: height,
 				TileSize:   utils.TileSize,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
@@ -174,7 +173,7 @@ type MetaMapBuilder interface {
 	BuildMeta(*BuilderMap)
 }
 
-func SimpleRoomBuilder(width components.Row, height components.Col) *BuilderChain {
+func SimpleRoomBuilder(width gc.Row, height gc.Col) *BuilderChain {
 	chain := NewBuilderChain(width, height)
 	chain.StartWith(RectRoomBuilder{})
 	chain.With(RoomDraw{}) // TODO: 暫定的にここで壁を埋めてるので、先に実行する必要がある

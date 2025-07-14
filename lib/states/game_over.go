@@ -4,7 +4,6 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -13,7 +12,7 @@ import (
 )
 
 type GameOverState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 
@@ -46,9 +45,9 @@ func (st *GameOverState) OnStart(world w.World) {
 
 func (st *GameOverState) OnStop(world w.World) {}
 
-func (st *GameOverState) Update(world w.World) states.Transition {
+func (st *GameOverState) Update(world w.World) es.Transition {
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
 	}
 
 	st.ui.Update()

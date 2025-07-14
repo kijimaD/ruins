@@ -67,12 +67,8 @@ func NewTabMenu(config TabMenuConfig, callbacks TabMenuCallbacks, keyboardInput 
 
 // Update はタブメニューを更新する
 func (tm *TabMenu) Update() bool {
-	handled := false
-
 	// タブ切り替え（左右矢印キー）
-	if tm.handleTabNavigation() {
-		handled = true
-	}
+	handled := tm.handleTabNavigation()
 
 	// アイテム選択（上下矢印キー）
 	if tm.handleItemNavigation() {

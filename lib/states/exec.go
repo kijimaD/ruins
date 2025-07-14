@@ -2,7 +2,6 @@ package states
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
@@ -10,7 +9,7 @@ import (
 // ステート管理に乗っかりつつ任意のコマンドを実行するためのダミーステート
 // 処理の中身は呼び出し側で注入する
 type ExecState struct {
-	states.BaseState
+	es.BaseState
 	f func(w.World)
 }
 
@@ -41,12 +40,12 @@ func (st *ExecState) OnStart(world w.World) {}
 
 func (st *ExecState) OnStop(world w.World) {}
 
-func (st *ExecState) Update(world w.World) states.Transition {
+func (st *ExecState) Update(world w.World) es.Transition {
 	// BaseStateの共通処理を使用
-	if transition := st.ConsumeTransition(); transition.Type != states.TransNone {
+	if transition := st.ConsumeTransition(); transition.Type != es.TransNone {
 		return transition
 	}
-	return states.Transition{Type: states.TransPop}
+	return es.Transition{Type: es.TransPop}
 }
 
 func (st *ExecState) Draw(world w.World, screen *ebiten.Image) {

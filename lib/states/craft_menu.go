@@ -10,7 +10,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -24,7 +23,7 @@ import (
 )
 
 type CraftMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -72,24 +71,24 @@ func (st *CraftMenuState) OnStart(world w.World) {
 
 func (st *CraftMenuState) OnStop(world w.World) {}
 
-func (st *CraftMenuState) Update(world w.World) states.Transition {
+func (st *CraftMenuState) Update(world w.World) es.Transition {
 	effects.RunEffectQueue(world)
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
 	// 結果ウィンドウモードの場合は結果ウィンドウ操作を優先
 	if st.isResultMode {
 		if st.updateResultMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
@@ -123,7 +122,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}})
 		},
 		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
 			st.updateTabDisplay(world)
@@ -208,7 +207,7 @@ func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) 
 		name := gameComponents.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("entity_%d", entity),
-			Label:    string(name),
+			Label:    name,
 			UserData: entity,
 		}
 	}

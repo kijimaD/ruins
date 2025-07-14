@@ -11,7 +11,7 @@ type ValueType string
 
 const (
 	PercentageType ValueType = "PERCENTAGE"
-	NumeralType              = "NUMERAL"
+	NumeralType    ValueType = "NUMERAL"
 )
 
 func (enum ValueType) Valid() error {
