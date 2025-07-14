@@ -45,7 +45,7 @@ RUN upx-ucl --best --ultra-brute ./bin/ruins
 # release #
 ###########
 
-FROM gcr.io/distroless/base-debian11.11:latest AS release
+FROM gcr.io/distroless/base-debian12:latest AS release
 
 COPY --from=builder /build/bin/ruins /bin/
 WORKDIR /work
