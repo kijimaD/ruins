@@ -1,4 +1,4 @@
-// Package widgets provides high-level UI components with business logic and state management.
+// Package widgets はビジネスロジックと状態管理を持つ高レベルUIコンポーネントを提供する。
 //
 // # Overview
 //

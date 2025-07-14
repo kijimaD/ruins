@@ -1,4 +1,4 @@
-// Package eui provides styled, game-specific wrapper functions for EbitenUI components.
+// Package eui はEbitenUIコンポーネントに対するスタイル付きのゲーム固有ラッパー関数を提供する。
 //
 // # Overview
 //
