@@ -10,7 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
-// 汎用的なrowコンテナ
+// NewRowContainer は汎用的なrowコンテナを作成する
 func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
 		append([]widget.ContainerOpt{
@@ -23,7 +23,7 @@ func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container {
 	)
 }
 
-// 中身が縦並びのコンテナ
+// NewVerticalContainer は中身が縦並びのコンテナを作成する
 func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
 		append([]widget.ContainerOpt{
@@ -40,7 +40,7 @@ func NewVerticalContainer(opts ...widget.ContainerOpt) *widget.Container {
 	)
 }
 
-// アイテム系メニューのRootとなる3x3のグリッドコンテナ
+// NewItemGridContainer はアイテム系メニューのRootとなる3x3のグリッドコンテナを作成する
 func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 	return widget.NewContainer(
 		append([]widget.ContainerOpt{

@@ -1,6 +1,6 @@
 package components
 
-// 移動属性
+// Velocity は移動属性
 type Velocity struct {
 	// 角度(度数法)。この角度分スプライトを回転させる
 	Angle float64
@@ -10,15 +10,19 @@ type Velocity struct {
 	ThrottleMode ThrottleMode
 }
 
+// ThrottleMode はスロットルモード
 type ThrottleMode string
 
 const (
+	// ThrottleModeFront は前進スロットルモード
 	ThrottleModeFront = ThrottleMode("FRONT")
-	ThrottleModeBack  = ThrottleMode("BACK")
-	ThrottleModeNope  = ThrottleMode("NOPE")
+	// ThrottleModeBack は後退スロットルモード
+	ThrottleModeBack = ThrottleMode("BACK")
+	// ThrottleModeNope はスロットルなし
+	ThrottleModeNope = ThrottleMode("NOPE")
 )
 
-// フィールド上に座標をもって存在する。移動体に対して使う
+// Position はフィールド上に座標をもって存在する。移動体に対して使う
 // スプライトはこの位置に中心を合わせて配置する
 // -----
 // |   |
@@ -30,11 +34,11 @@ type Position struct {
 	Y Pixel
 }
 
-// ピクセル単位。計算用にfloat64
+// Pixel はピクセル単位。計算用にfloat64
 type Pixel float64
 
+// GridElement はフィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
 // TODO: 縦横の型を共通にする。タイル単位だということがわかればよい。TileUnitとか
-// フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
 // スプライトはグリッドに沿って配置する
 // +----
 // |   |
@@ -46,17 +50,17 @@ type GridElement struct {
 	Col Col
 }
 
-// タイルの横位置。ピクセル数ではない
+// Row はタイルの横位置。ピクセル数ではない
 type Row int
 
-// タイルの縦位置。ピクセル数ではない
+// Col はタイルの縦位置。ピクセル数ではない
 type Col int
 
-// フィールド上で通過できない
+// BlockPass はフィールド上で通過できない
 type BlockPass struct{}
 
-// フィールド上で視界を遮る
+// BlockView はフィールド上で視界を遮る
 type BlockView struct{}
 
-// フィールド上で描画できる
+// Renderable はフィールド上で描画できる
 type Renderable struct{}

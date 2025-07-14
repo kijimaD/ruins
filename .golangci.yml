@@ -3,4 +3,20 @@ linters:
   # standard: [errcheck govet ineffassign staticcheck unused]
   default: standard
   enable:
-    - unconvert
+    - unconvert    # 意味のない型変換チェック
+    - revive       # golintの後継、Go標準コーディング規約
+    - misspell     # スペルミスチェック
+    - bodyclose    # HTTPレスポンスボディのclose忘れ防止
+    - goconst      # 定数化可能な文字列/数値の検出
+    - unparam      # 未使用パラメータ検出
+
+linters-settings:
+  revive:
+    # デフォルトの厳しすぎるルールを調整
+    rules:
+      - name: exported
+        severity: warning
+        disabled: false
+        arguments:
+          - "checkPrivateReceivers"
+          - "sayRepetitiveInsteadOfStutters"

@@ -96,7 +96,7 @@ func (b *MenuUIBuilder) createMenuButton(menu *Menu, index int, item MenuItem) *
 	btn := eui.NewButton(
 		item.Label,
 		b.world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 			menu.SetFocusedIndex(index)
 			menu.selectCurrent()
 		}),

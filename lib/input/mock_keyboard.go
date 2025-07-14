@@ -11,6 +11,7 @@ type MockKeyboardInput struct {
 	previousEnterSession bool // 前回のEnterキーセッション状態
 }
 
+// NewMockKeyboardInput はモックキーボード入力を作成する
 func NewMockKeyboardInput() *MockKeyboardInput {
 	return &MockKeyboardInput{
 		pressedKeys:          make(map[ebiten.Key]bool),
@@ -19,10 +20,12 @@ func NewMockKeyboardInput() *MockKeyboardInput {
 	}
 }
 
+// IsKeyJustPressed はキーが今フレームだけ押されたかを返す
 func (m *MockKeyboardInput) IsKeyJustPressed(key ebiten.Key) bool {
 	return m.justPressedKeys[key]
 }
 
+// IsKeyPressed はキーが現在押されているかを返す
 func (m *MockKeyboardInput) IsKeyPressed(key ebiten.Key) bool {
 	return m.pressedKeys[key]
 }

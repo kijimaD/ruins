@@ -59,7 +59,7 @@ type StateMachine struct {
 
 // 全てのstateのOnResume時に実行される共通処理
 // メソッドにする
-func hookOnResume(state State, world w.World) {
+func hookOnResume(state State, _ w.World) {
 	// StateWithTransitionインターフェースを実装している場合は遷移をクリアする
 	if stateWithTrans, ok := state.(StateWithTransition); ok {
 		stateWithTrans.ClearTransition()

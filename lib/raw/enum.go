@@ -2,6 +2,7 @@ package raw
 
 import "github.com/pkg/errors"
 
+// ErrInvalidEnumType はenumに無効な値が指定された場合のエラー
 var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 
 // ================

@@ -71,7 +71,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 	items := []menu.MenuItem{
 		{
 			ID:          "close",
-			Label:       "閉じる",
+			Label:       TextClose,
 			Description: "ダンジョンメニューを閉じる",
 			UserData:    es.Transition{Type: es.TransPop},
 		},

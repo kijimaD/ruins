@@ -15,7 +15,7 @@ type fontMetadata struct {
 	Fonts map[string]resources.Font `toml:"font"`
 }
 
-// フォントの設定ymlを読み込む
+// LoadFonts はフォントの設定ymlを読み込む
 func LoadFonts(fontPath string) map[string]resources.Font {
 	var fontMetadata fontMetadata
 	bs, err := assets.FS.ReadFile(fontPath)

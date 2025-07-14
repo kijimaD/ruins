@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// Parser は構文解析器を表す構造体
 type Parser struct {
 	l      *Lexer
 	errors []string
@@ -27,7 +28,9 @@ type (
 
 const (
 	_ int = iota
+	// LOWEST は最低優先度
 	LOWEST
+	// CMD はコマンド優先度
 	CMD // [...]
 )
 
@@ -36,7 +39,7 @@ var precedences = map[TokenType]int{
 	LBRACKET: CMD,
 }
 
-// 字句解析器を受け取って初期化する
+// NewParser は字句解析器を受け取って初期化する
 func NewParser(l *Lexer) *Parser {
 	p := &Parser{
 		l:      l,
@@ -55,7 +58,7 @@ func NewParser(l *Lexer) *Parser {
 	return p
 }
 
-// エラーのアクセサ
+// Errors はエラーのアクセサ
 func (p *Parser) Errors() []string {
 	return p.errors
 }
@@ -66,7 +69,7 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-// パースを開始する。トークンを1つずつ辿る
+// ParseProgram はパースを開始する。トークンを1つずつ辿る
 func (p *Parser) ParseProgram() *Program {
 	program := &Program{}
 	program.Statements = []Statement{}

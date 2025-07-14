@@ -245,7 +245,7 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.MenuItem) {
 
 	// Descriptionコンポーネントの存在チェック
 	if !entity.HasComponent(gameComponents.Description) {
-		st.itemDesc.Label = "説明なし"
+		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
 		return
@@ -253,7 +253,7 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.MenuItem) {
 
 	desc := gameComponents.Description.Get(entity).(*gc.Description)
 	if desc == nil {
-		st.itemDesc.Label = "説明なし"
+		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
 		return
@@ -320,7 +320,7 @@ func (st *CraftMenuState) showResultWindow(world w.World, entity ecs.Entity) {
 	st.resultWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
 	// 結果項目を準備
-	st.resultItems = []string{"閉じる"}
+	st.resultItems = []string{TextClose}
 	st.resultFocusIndex = 0
 	st.resultEntity = entity // 生成されたアイテムのエンティティを保存
 	st.isResultMode = true
@@ -407,7 +407,7 @@ func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	if canCraft, _ := worldhelper.CanCraft(world, name.Name); canCraft {
 		st.actionItems = append(st.actionItems, "合成する")
 	}
-	st.actionItems = append(st.actionItems, "閉じる")
+	st.actionItems = append(st.actionItems, TextClose)
 
 	st.actionFocusIndex = 0
 	st.isWindowMode = true
@@ -550,7 +550,7 @@ func (st *CraftMenuState) executeResultItem(world w.World) {
 	selectedAction := st.resultItems[st.resultFocusIndex]
 
 	switch selectedAction {
-	case "閉じる":
+	case TextClose:
 		st.closeResultWindow()
 	}
 }
@@ -578,7 +578,7 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 		st.reloadTabs(world)
 		st.updateTabDisplay(world)
 		st.updateCategoryDisplay(world)
-	case "閉じる":
+	case TextClose:
 		st.closeActionWindow()
 	}
 }

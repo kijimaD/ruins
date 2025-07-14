@@ -10,14 +10,15 @@ import (
 // ========== 定数定義 ==========
 
 const (
-	// ゲームウィンドウの寸法
-	MinGameWidth  = 960
+	// MinGameWidth はゲームウィンドウの最小幅
+	MinGameWidth = 960
+	// MinGameHeight はゲームウィンドウの最小高さ
 	MinGameHeight = 720
 
-	// タイルの寸法
+	// TileSize はタイルの寸法
 	TileSize gc.Pixel = 32
 
-	// UIラベル
+	// HPLabel はHP表示ラベル
 	HPLabel        = "HP"
 	SPLabel        = "SP"
 	VitalityLabel  = "体力"
@@ -33,18 +34,19 @@ const (
 	EquimentCategoryLabel = "部位"
 )
 
-// ビルド時に挿入する
+// AppVersion はビルド時に挿入されるアプリケーションバージョン
 var AppVersion = "v0.0.0"
 
 // ========== 汎用ユーティリティ ==========
 
+// GetPtr は値のポインタを返す
 func GetPtr[T any](x T) *T {
 	return &x
 }
 
 // ========== 数学ユーティリティ ==========
 
-// xとyの小さい方を返す
+// Min はxとyの小さい方を返す
 func Min[T int | float64](x, y T) T {
 	if x < y {
 		return x
@@ -52,7 +54,7 @@ func Min[T int | float64](x, y T) T {
 	return y
 }
 
-// xとyの大きい方を返す
+// Max はxとyの大きい方を返す
 func Max[T int | float64](x, y T) T {
 	if x > y {
 		return x
@@ -60,10 +62,10 @@ func Max[T int | float64](x, y T) T {
 	return y
 }
 
-// valueを[min, max]の範囲に制限する
-func Clamp[T int | float64](value, min, max T) T {
-	if value < min {
-		return min
+// Clamp はvalueを[min, max]の範囲に制限する
+func Clamp[T int | float64](value, minVal, max T) T {
+	if value < minVal {
+		return minVal
 	}
 	if value > max {
 		return max
@@ -71,7 +73,7 @@ func Clamp[T int | float64](value, min, max T) T {
 	return value
 }
 
-// xの絶対値を返す
+// Abs はxの絶対値を返す
 func Abs[T int | float64](x T) T {
 	if x < 0 {
 		return -x
@@ -81,7 +83,7 @@ func Abs[T int | float64](x T) T {
 
 // ========== カメラユーティリティ ==========
 
-// カメラを考慮した画像配置オプションをセットする
+// SetTranslate はカメラを考慮した画像配置オプションをセットする
 // TODO: ズーム率を追加する
 func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
 	gameComponents := world.Components.Game.(*gc.Components)

@@ -533,7 +533,7 @@ func (st *EquipMenuState) showActionWindow(world w.World, userData map[string]in
 		st.actionItems = append(st.actionItems, "外す")
 	}
 	st.actionItems = append(st.actionItems, "装備する")
-	st.actionItems = append(st.actionItems, "閉じる")
+	st.actionItems = append(st.actionItems, TextClose)
 
 	st.actionFocusIndex = 0
 	st.isWindowMode = true
@@ -646,7 +646,7 @@ func (st *EquipMenuState) executeActionItem(world w.World) {
 		st.startEquipMode(world, userData)
 	case "外す":
 		st.unequipItem(world, userData)
-	case "閉じる":
+	case TextClose:
 		st.closeActionWindow()
 	}
 }

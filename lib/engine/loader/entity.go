@@ -26,7 +26,7 @@ type EntityComponentList struct {
 }
 
 // LoadEntities creates entities with components from a TOML file
-func LoadEntities(entityMetadataContent []byte, world w.World, gameComponentList []interface{}) []ecs.Entity {
+func LoadEntities(_ []byte, world w.World, gameComponentList []interface{}) []ecs.Entity {
 	entityComponentList := EntityComponentList{
 		Game: gameComponentList,
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ErrInvalidEnumType はenumに無効な値が指定された場合のエラー
 var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 
 // ================
@@ -14,20 +15,25 @@ var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 type warpMode string
 
 const (
-	WarpModeNext   = warpMode("NEXT")
+	// WarpModeNext は次の階層へワープする
+	WarpModeNext = warpMode("NEXT")
+	// WarpModeEscape は脱出ワープする
 	WarpModeEscape = warpMode("ESCAPE")
 )
 
 // ================
 
-// ターゲット数
+// TargetNumType はターゲット数を表す
 type TargetNumType string
 
 const (
+	// TargetSingle は単体ターゲット
 	TargetSingle = TargetNumType("SINGLE")
-	TargetAll    = TargetNumType("ALL")
+	// TargetAll は全体ターゲット
+	TargetAll = TargetNumType("ALL")
 )
 
+// Valid はTargetNumTypeの値が有効かを検証する
 func (enum TargetNumType) Valid() error {
 	switch enum {
 	case TargetSingle, TargetAll:
@@ -39,16 +45,21 @@ func (enum TargetNumType) Valid() error {
 
 // ================
 
-// 使用者から見たターゲットの種別。相対的な指定なので、所有者が敵グループだと対象グループは逆転する
+// TargetGroupType は使用者から見たターゲットの種別。相対的な指定なので、所有者が敵グループだと対象グループは逆転する
 type TargetGroupType string
 
 const (
-	TargetGroupAlly  = TargetGroupType("ALLY")  // 味方
+	// TargetGroupAlly は味方グループ
+	TargetGroupAlly = TargetGroupType("ALLY") // 味方
+	// TargetGroupEnemy は敵グループ
 	TargetGroupEnemy = TargetGroupType("ENEMY") // 敵
-	TargetGroupCard  = TargetGroupType("CARD")  // カード
-	TargetGroupNone  = TargetGroupType("NONE")  // なし
+	// TargetGroupCard はカードグループ
+	TargetGroupCard = TargetGroupType("CARD") // カード
+	// TargetGroupNone はグループなし
+	TargetGroupNone = TargetGroupType("NONE") // なし
 )
 
+// Valid はTargetGroupTypeの値が有効かを検証する
 func (enum TargetGroupType) Valid() error {
 	switch enum {
 	case TargetGroupAlly, TargetGroupEnemy, TargetGroupCard, TargetGroupNone:
@@ -60,15 +71,19 @@ func (enum TargetGroupType) Valid() error {
 
 // ================
 
-// 使えるシーン
+// UsableSceneType は使えるシーンを表す
 type UsableSceneType string
 
 const (
+	// UsableSceneBattle は戦闘シーン
 	UsableSceneBattle = UsableSceneType("BATTLE") // 戦闘
-	UsableSceneField  = UsableSceneType("FIELD")  // フィールド
-	UsableSceneAny    = UsableSceneType("ANY")    // いつでも
+	// UsableSceneField はフィールドシーン
+	UsableSceneField = UsableSceneType("FIELD") // フィールド
+	// UsableSceneAny はいつでも使えるシーン
+	UsableSceneAny = UsableSceneType("ANY") // いつでも
 )
 
+// Valid はUsableSceneTypeの値が有効かを検証する
 func (enum UsableSceneType) Valid() error {
 	switch enum {
 	case UsableSceneBattle, UsableSceneField, UsableSceneAny:
@@ -80,19 +95,25 @@ func (enum UsableSceneType) Valid() error {
 
 // ================
 
-// 武器種別
-// 種別によって適用する計算式が異なる
+// AttackType は武器種別を表す。種別によって適用する計算式が異なる
 type AttackType string
 
 const (
-	AttackSword   = AttackType("SWORD")   // 刀剣
-	AttackSpear   = AttackType("SPEAR")   // 長物
+	// AttackSword は刀剣
+	AttackSword = AttackType("SWORD") // 刀剣
+	// AttackSpear は長物
+	AttackSpear = AttackType("SPEAR") // 長物
+	// AttackHandgun は拳銃
 	AttackHandgun = AttackType("HANDGUN") // 拳銃
-	AttackRifle   = AttackType("RIFLE")   // 小銃
-	AttackFist    = AttackType("FIST")    // 格闘
-	AttackCanon   = AttackType("CANON")   // 大砲
+	// AttackRifle は小銃
+	AttackRifle = AttackType("RIFLE") // 小銃
+	// AttackFist は格闘
+	AttackFist = AttackType("FIST") // 格闘
+	// AttackCanon は大砲
+	AttackCanon = AttackType("CANON") // 大砲
 )
 
+// Valid はAttackTypeの値が有効かを検証する
 func (enum AttackType) Valid() error {
 	switch enum {
 	case AttackSword, AttackSpear, AttackHandgun, AttackRifle, AttackFist, AttackCanon:
@@ -102,9 +123,9 @@ func (enum AttackType) Valid() error {
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (at AttackType) String() string {
+func (enum AttackType) String() string {
 	var result string
-	switch at {
+	switch enum {
 	case AttackSword:
 		result = "刀剣"
 	case AttackSpear:
@@ -126,16 +147,21 @@ func (at AttackType) String() string {
 
 // ================
 
-// 装備品種別
+// EquipmentType は装備品種別を表す
 type EquipmentType string
 
 const (
-	EquipmentHead    = EquipmentType("HEAD")    // 頭部
-	EquipmentTorso   = EquipmentType("TORSO")   // 胴体
-	EquipmentLegs    = EquipmentType("LEGS")    // 脚
+	// EquipmentHead は頭部装備
+	EquipmentHead = EquipmentType("HEAD") // 頭部
+	// EquipmentTorso は胴体装備
+	EquipmentTorso = EquipmentType("TORSO") // 胴体
+	// EquipmentLegs は脚装備
+	EquipmentLegs = EquipmentType("LEGS") // 脚
+	// EquipmentJewelry はアクセサリ装備
 	EquipmentJewelry = EquipmentType("JEWELRY") // アクセサリ
 )
 
+// Valid はEquipmentTypeの値が有効かを検証する
 func (enum EquipmentType) Valid() error {
 	switch enum {
 	case EquipmentHead, EquipmentTorso, EquipmentLegs, EquipmentJewelry:
@@ -145,9 +171,9 @@ func (enum EquipmentType) Valid() error {
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (es EquipmentType) String() string {
+func (enum EquipmentType) String() string {
 	var result string
-	switch es {
+	switch enum {
 	case EquipmentHead:
 		result = "頭部"
 	case EquipmentTorso:
@@ -164,17 +190,23 @@ func (es EquipmentType) String() string {
 
 // ================
 
-// 攻撃属性
+// ElementType は攻撃属性を表す
 type ElementType string
 
 const (
-	ElementTypeNone    ElementType = "NONE"
-	ElementTypeFire    ElementType = "FIRE"
+	// ElementTypeNone は属性なし
+	ElementTypeNone ElementType = "NONE"
+	// ElementTypeFire は火属性
+	ElementTypeFire ElementType = "FIRE"
+	// ElementTypeThunder は雷属性
 	ElementTypeThunder ElementType = "THUNDER"
-	ElementTypeChill   ElementType = "CHILL"
-	ElementTypePhoton  ElementType = "PHOTON"
+	// ElementTypeChill は氷属性
+	ElementTypeChill ElementType = "CHILL"
+	// ElementTypePhoton は光属性
+	ElementTypePhoton ElementType = "PHOTON"
 )
 
+// Valid はElementTypeの値が有効かを検証する
 func (enum ElementType) Valid() error {
 	switch enum {
 	case ElementTypeNone, ElementTypeFire, ElementTypeThunder, ElementTypeChill, ElementTypePhoton:
@@ -183,9 +215,9 @@ func (enum ElementType) Valid() error {
 	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
 }
 
-func (et ElementType) String() string {
+func (enum ElementType) String() string {
 	var result string
-	switch et {
+	switch enum {
 	case ElementTypeNone:
 		result = "無"
 	case ElementTypeFire:

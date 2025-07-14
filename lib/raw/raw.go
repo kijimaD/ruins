@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/errors"
 )
 
+// RawMaster はローデータを管理し、効率的な検索のためのインデックスを提供する
 type RawMaster struct {
 	Raws              Raws
 	ItemIndex         map[string]int
@@ -21,6 +22,7 @@ type RawMaster struct {
 	SpriteSheetIndex  map[string]int
 }
 
+// Raws は全てのローデータを格納する構造体
 type Raws struct {
 	Items         []Item         `toml:"item"`
 	Materials     []Material     `toml:"material"`
@@ -31,7 +33,7 @@ type Raws struct {
 	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
 }
 
-// items ================
+// Item はアイテムのローデータ
 type Item struct {
 	Name            string
 	Description     string

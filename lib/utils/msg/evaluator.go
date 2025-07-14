@@ -6,10 +6,12 @@ import (
 	"time"
 )
 
+// Evaluator はASTノードを評価する構造体
 type Evaluator struct {
 	Events []Event
 }
 
+// NewEvaluator は新しいEvaluatorを作成する
 func NewEvaluator(node Node) *Evaluator {
 	e := Evaluator{}
 	e.Eval(node)
@@ -17,6 +19,7 @@ func NewEvaluator(node Node) *Evaluator {
 	return &e
 }
 
+// Eval はノードを評価してイベントを返す
 func (e *Evaluator) Eval(node Node) Event {
 	switch node := node.(type) {
 	case *Program:
@@ -26,13 +29,13 @@ func (e *Evaluator) Eval(node Node) Event {
 	case *FunctionLiteral:
 		var eve Event
 		switch node.FuncName.Value {
-		case CMD_FLUSH:
+		case CmdFlush:
 			eve = &flush{}
-		case CMD_LINE_END_WAIT:
+		case CmdLineEndWait:
 			eve = &lineEndWait{}
-		case CMD_IMAGE:
+		case CmdImage:
 			eve = &ChangeBg{Source: node.Parameters.Map["source"]}
-		case CMD_WAIT:
+		case CmdWait:
 			duration, err := time.ParseDuration(fmt.Sprintf("%sms", node.Parameters.Map["time"]))
 			if err != nil {
 				log.Fatal(err)

@@ -246,14 +246,14 @@ func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem
 
 	// Descriptionコンポーネントの存在チェック
 	if !entity.HasComponent(gameComponents.Description) {
-		st.itemDesc.Label = "説明なし"
+		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		return
 	}
 
 	desc := gameComponents.Description.Get(entity).(*gc.Description)
 	if desc == nil {
-		st.itemDesc.Label = "説明なし"
+		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		return
 	}
@@ -419,7 +419,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	if !entity.HasComponent(gameComponents.Material) {
 		st.actionItems = append(st.actionItems, "捨てる")
 	}
-	st.actionItems = append(st.actionItems, "閉じる")
+	st.actionItems = append(st.actionItems, TextClose)
 
 	st.actionFocusIndex = 0
 	st.isWindowMode = true
@@ -489,7 +489,7 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 		st.reloadTabs(world)
 		st.updateTabDisplay(world)
 		st.updateCategoryDisplay(world)
-	case "閉じる":
+	case TextClose:
 		st.closeActionWindow()
 	}
 }

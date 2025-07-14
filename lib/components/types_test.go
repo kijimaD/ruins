@@ -205,7 +205,7 @@ func TestRatioAmount(t *testing.T) {
 		}
 	})
 
-	t.Run("Amount method exists", func(t *testing.T) {
+	t.Run("Amount method exists", func(_ *testing.T) {
 		ratio := RatioAmount{Ratio: 0.75}
 		ratio.Amount() // メソッドが存在することを確認
 	})
@@ -242,7 +242,7 @@ func TestNumeralAmount(t *testing.T) {
 		}
 	})
 
-	t.Run("Amount method exists", func(t *testing.T) {
+	t.Run("Amount method exists", func(_ *testing.T) {
 		numeral := NumeralAmount{Numeral: 50}
 		numeral.Amount() // メソッドが存在することを確認
 	})

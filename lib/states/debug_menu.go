@@ -160,7 +160,7 @@ var debugMenuTrans = []struct {
 		trans: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}},
 	},
 	{
-		label: "閉じる",
+		label: TextClose,
 		f:     func(world w.World) {},
 		trans: es.Transition{Type: es.TransPop},
 	},

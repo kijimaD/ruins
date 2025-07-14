@@ -273,7 +273,7 @@ func TestMenuDisabledItems(t *testing.T) {
 	}
 
 	callbacks := MenuCallbacks{
-		OnSelect: func(index int, item MenuItem) {
+		OnSelect: func(_ int, _ MenuItem) {
 			selectionCalled = true
 		},
 	}
@@ -362,7 +362,7 @@ func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 	}
 
 	callbacks := MenuCallbacks{
-		OnSelect: func(index int, item MenuItem) {
+		OnSelect: func(_ int, _ MenuItem) {
 			selectionCount++
 		},
 	}
@@ -397,7 +397,7 @@ func TestMenuSpaceBasicFunction(t *testing.T) {
 	}
 
 	callbacks := MenuCallbacks{
-		OnSelect: func(index int, item MenuItem) {
+		OnSelect: func(_ int, _ MenuItem) {
 			selectionCount++
 		},
 	}

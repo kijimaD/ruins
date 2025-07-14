@@ -20,6 +20,13 @@ func getCenterWinRect() image.Rectangle {
 
 // ================
 
+// 共通の文字列定数
+const (
+	// UI表示用の定数
+	TextNoDescription = "説明なし" // アイテムの説明がない場合の表示文字列
+	TextClose         = "閉じる"  // メニューやウィンドウを閉じる際の表示文字列
+)
+
 type ItemCategoryType string
 
 var (

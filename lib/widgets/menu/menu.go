@@ -20,7 +20,9 @@ type MenuItem struct {
 type Orientation int
 
 const (
+	// Vertical は縦方向配置
 	Vertical Orientation = iota
+	// Horizontal は横方向配置
 	Horizontal
 )
 

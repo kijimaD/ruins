@@ -2,13 +2,17 @@ package msg
 
 import "time"
 
+// QueueState はキューの状態を表す型
 type QueueState string
 
 const (
-	QueueStateNone   = QueueState("NONE")
+	// QueueStateNone はキューが非アクティブ状態
+	QueueStateNone = QueueState("NONE")
+	// QueueStateFinish はキューが完了状態
 	QueueStateFinish = QueueState("FINISH")
 )
 
+// Queue はイベントキューを管理する構造体
 type Queue struct {
 	events []Event
 	// 現在の表示文字列
@@ -17,6 +21,7 @@ type Queue struct {
 	active bool
 }
 
+// NewQueue は新しいQueueを作成する
 func NewQueue(events []Event) Queue {
 	q := Queue{
 		active: true,
@@ -25,6 +30,7 @@ func NewQueue(events []Event) Queue {
 	return q
 }
 
+// NewQueueFromText はテキストからQueueを作成する
 func NewQueueFromText(text string) Queue {
 	l := NewLexer(text)
 	p := NewParser(l)
@@ -34,7 +40,7 @@ func NewQueueFromText(text string) Queue {
 	return NewQueue(e.Events)
 }
 
-// キューの先端にあるイベントを実行する
+// RunHead はキューの先端にあるイベントを実行する
 func (q *Queue) RunHead() QueueState {
 	if !q.active {
 		return QueueStateNone
@@ -48,6 +54,7 @@ func (q *Queue) RunHead() QueueState {
 	return QueueStateNone
 }
 
+// Head はキューの先端イベントを返す
 func (q *Queue) Head() Event {
 	if len(q.events) == 0 {
 		return &notImplement{}
@@ -55,7 +62,7 @@ func (q *Queue) Head() Event {
 	return q.events[0]
 }
 
-// キューの先端を消して先に進める
+// Pop はキューの先端を消して先に進める
 func (q *Queue) Pop() QueueState {
 	if len(q.events) == 0 {
 		return QueueStateFinish
@@ -65,10 +72,12 @@ func (q *Queue) Pop() QueueState {
 	return QueueStateNone
 }
 
+// Display は現在の表示文字列を返す
 func (q *Queue) Display() string {
 	return q.buf
 }
 
+// SetEvents はイベントを設定する
 func (q *Queue) SetEvents(es []Event) {
 	q.events = es
 }
@@ -81,6 +90,7 @@ func (q *Queue) deactivate() {
 	q.active = false
 }
 
+// Event はイベントのインターフェース
 type Event interface {
 	PreHook()
 	Run(*Queue)
@@ -134,12 +144,15 @@ func (e *flush) Run(q *Queue) {
 
 // ================
 
+// ChangeBg は背景変更イベント
 type ChangeBg struct {
 	Source string
 }
 
+// PreHook はイベント実行前の処理
 func (c *ChangeBg) PreHook() {}
 
+// Run はイベントを実行する
 func (c *ChangeBg) Run(q *Queue) {
 	q.Pop()
 }

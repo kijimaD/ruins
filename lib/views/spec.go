@@ -13,7 +13,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 性能表示コンテナを更新する
+// UpdateSpec は性能表示コンテナを更新する
 func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	targetContainer.RemoveChildren()
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -59,7 +59,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 	}
 }
 
-// 属性によって色付けする
+// damageAttrText は属性によって色付けする
 func damageAttrText(world w.World, dat gc.ElementType, str string) *widget.Text {
 	var text *widget.Text
 	switch dat {
@@ -78,6 +78,7 @@ func damageAttrText(world w.World, dat gc.ElementType, str string) *widget.Text 
 	return text
 }
 
+// addEquipBonus は装備ボーナスを表示する
 func addEquipBonus(targetContainer *widget.Container, equipBonus gc.EquipBonus, world w.World) {
 	if equipBonus.Vitality != 0 {
 		vitality := fmt.Sprintf("%s %+d", utils.VitalityLabel, equipBonus.Vitality)

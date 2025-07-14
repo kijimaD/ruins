@@ -10,6 +10,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
+// Craft はアイテムをクラフトする
 func Craft(world w.World, name string) (*ecs.Entity, error) {
 	canCraft, err := CanCraft(world, name)
 	if err != nil {
@@ -28,7 +29,7 @@ func Craft(world w.World, name string) (*ecs.Entity, error) {
 	return &resultEntity, nil
 }
 
-// 所持数と必要数を比較してクラフト可能か判定する
+// CanCraft は所持数と必要数を比較してクラフト可能か判定する
 func CanCraft(world w.World, name string) (bool, error) {
 	required := requiredMaterials(world, name)
 	// レシピが存在しない場合はエラー
@@ -47,14 +48,14 @@ func CanCraft(world w.World, name string) (bool, error) {
 	return true, nil
 }
 
-// アイテム合成に必要な素材を消費する
+// consumeMaterials はアイテム合成に必要な素材を消費する
 func consumeMaterials(world w.World, goal string) {
 	for _, recipeInput := range requiredMaterials(world, goal) {
 		MinusAmount(recipeInput.Name, recipeInput.Amount, world)
 	}
 }
 
-// 指定したレシピに必要な素材一覧
+// requiredMaterials は指定したレシピに必要な素材一覧
 func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 	required := []gc.RecipeInput{}
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -72,6 +73,7 @@ func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 	return required
 }
 
+// randomize はアイテムにランダム値を設定する
 func randomize(world w.World, entity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	if entity.HasComponent(gameComponents.Attack) {

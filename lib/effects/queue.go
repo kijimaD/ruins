@@ -9,19 +9,22 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// EffectQueue はエフェクトのキュー
 var EffectQueue []EffectSpawner
 
+// EffectType はエフェクトの型インターフェース
 type EffectType interface {
 	isEffectType()
 }
 
-// queueの中身
+// EffectSpawner はqueueの中身
 type EffectSpawner struct {
 	Creator    *ecs.Entity
 	EffectType EffectType
 	Targets    Targets
 }
 
+// AddEffect はエフェクトをキューに追加する
 func AddEffect(creator *ecs.Entity, effectType EffectType, targets Targets) {
 	EffectQueue = append(EffectQueue, EffectSpawner{
 		Creator:    creator,
@@ -30,7 +33,7 @@ func AddEffect(creator *ecs.Entity, effectType EffectType, targets Targets) {
 	})
 }
 
-// キューに貯められたEffectSpawnerを処理する
+// RunEffectQueue はキューに貯められたEffectSpawnerを処理する
 func RunEffectQueue(world w.World) {
 	for {
 		if len(EffectQueue) > 0 {
@@ -43,7 +46,7 @@ func RunEffectQueue(world w.World) {
 	}
 }
 
-// 単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
+// TargetApplicator は単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
 func TargetApplicator(world w.World, es EffectSpawner) {
 	switch e := es.EffectType.(type) {
 	case Damage, Healing, ConsumptionStamina, RecoveryStamina:
@@ -78,6 +81,7 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 	}
 }
 
+// AffectEntity はエンティティに効果を適用する
 func AffectEntity(world w.World, es EffectSpawner, target *ecs.Entity) {
 	switch e := es.EffectType.(type) {
 	case Damage:

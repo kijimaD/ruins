@@ -14,7 +14,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 一人分のHPバーを表示する
+// AddMemberBar は一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	res := world.Resources.UIResources
 	gameComponents := world.Components.Game.(*gc.Components)
