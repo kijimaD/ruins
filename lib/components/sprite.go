@@ -4,11 +4,10 @@ import (
 	"bytes"
 	"log"
 
-	"github.com/kijimaD/ruins/assets"
-	"github.com/kijimaD/ruins/lib/engine/utils"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/kijimaD/ruins/assets"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 )
 
 // Sprite は1つ1つの意味をなす画像の位置を示す情報
@@ -68,7 +67,7 @@ type DepthNum int
 
 const (
 	// DepthNumFloor は床。最背面に表示する
-	DepthNumFloor    DepthNum = iota
+	DepthNumFloor DepthNum = iota
 	// DepthNumRug は床に置くもの。例: ワープホール、アイテム
 	DepthNumRug
 	// DepthNumTaller は高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁

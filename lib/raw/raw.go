@@ -22,7 +22,6 @@ type Master struct {
 	SpriteSheetIndex  map[string]int
 }
 
-
 // Raws は全てのローデータを格納する構造体
 type Raws struct {
 	Items         []Item         `toml:"item"`

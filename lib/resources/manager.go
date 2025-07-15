@@ -6,7 +6,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/components"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	"github.com/kijimaD/ruins/lib/raw"
 )
@@ -16,9 +16,7 @@ type ResourceManager interface {
 	// フォント関連
 	LoadFonts() (map[string]er.Font, error)
 	// スプライトシート関連
-	LoadSpriteSheets() (map[string]ec.SpriteSheet, error)
-	// コントロール関連
-	LoadControls(axes []string, actions []string) (er.Controls, er.InputHandler, error)
+	LoadSpriteSheets() (map[string]components.SpriteSheet, error)
 	// Raw(エンティティ定義)関連
 	LoadRaws() (*raw.Master, error)
 	// すべてのリソースを一括読み込み
@@ -44,9 +42,7 @@ type ResourceConfig struct {
 // ResourceCache は読み込み済みのリソースをキャッシュする
 type ResourceCache struct {
 	Fonts        map[string]er.Font
-	SpriteSheets map[string]ec.SpriteSheet
-	Controls     *er.Controls
-	InputHandler *er.InputHandler
+	SpriteSheets map[string]components.SpriteSheet
 	RawMaster    *raw.Master
 }
 
@@ -94,14 +90,14 @@ func (rm *DefaultResourceManager) LoadFonts() (map[string]er.Font, error) {
 }
 
 // LoadSpriteSheets はスプライトシートリソースを読み込む
-func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]ec.SpriteSheet, error) {
+func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]components.SpriteSheet, error) {
 	// キャッシュがあれば返す
 	if rm.cache.SpriteSheets != nil {
 		return rm.cache.SpriteSheets, nil
 	}
 
 	type spriteSheetMetadata struct {
-		SpriteSheets map[string]ec.SpriteSheet `toml:"sprite_sheet"`
+		SpriteSheets map[string]components.SpriteSheet `toml:"sprite_sheet"`
 	}
 
 	var metadata spriteSheetMetadata
@@ -122,55 +118,6 @@ func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]ec.SpriteSheet,
 
 	rm.cache.SpriteSheets = metadata.SpriteSheets
 	return metadata.SpriteSheets, nil
-}
-
-// LoadControls はコントロール設定を読み込む
-func (rm *DefaultResourceManager) LoadControls(axes []string, actions []string) (er.Controls, er.InputHandler, error) {
-	// キャッシュがあれば返す
-	if rm.cache.Controls != nil && rm.cache.InputHandler != nil {
-		return *rm.cache.Controls, *rm.cache.InputHandler, nil
-	}
-
-	type controlsConfig struct {
-		Controls er.Controls `toml:"controls"`
-	}
-
-	var config controlsConfig
-	bs, err := assets.FS.ReadFile(rm.config.ControlsPath)
-	if err != nil {
-		return er.Controls{}, er.InputHandler{}, fmt.Errorf("コントロールファイルの読み込みに失敗: %w", err)
-	}
-
-	if _, err := toml.Decode(string(bs), &config); err != nil {
-		return er.Controls{}, er.InputHandler{}, fmt.Errorf("コントロール設定のデコードに失敗: %w", err)
-	}
-
-	// InputHandlerの初期化
-	inputHandler := er.InputHandler{
-		Axes:    make(map[string]float64),
-		Actions: make(map[string]bool),
-	}
-
-	// 軸の検証
-	for _, axis := range axes {
-		if _, ok := config.Controls.Axes[axis]; !ok {
-			return er.Controls{}, er.InputHandler{}, fmt.Errorf("軸 '%s' の設定が見つかりません", axis)
-		}
-		inputHandler.Axes[axis] = 0
-	}
-
-	// アクションの検証
-	for _, action := range actions {
-		if _, ok := config.Controls.Actions[action]; !ok {
-			return er.Controls{}, er.InputHandler{}, fmt.Errorf("アクション '%s' の設定が見つかりません", action)
-		}
-		inputHandler.Actions[action] = false
-	}
-
-	rm.cache.Controls = &config.Controls
-	rm.cache.InputHandler = &inputHandler
-
-	return config.Controls, inputHandler, nil
 }
 
 // LoadRaws はRawデータを読み込む
@@ -196,11 +143,6 @@ func (rm *DefaultResourceManager) LoadAll(axes []string, actions []string) error
 	// スプライトシートの読み込み
 	if _, err := rm.LoadSpriteSheets(); err != nil {
 		return fmt.Errorf("スプライトシートの読み込みに失敗: %w", err)
-	}
-
-	// コントロールの読み込み
-	if _, _, err := rm.LoadControls(axes, actions); err != nil {
-		return fmt.Errorf("コントロールの読み込みに失敗: %w", err)
 	}
 
 	// Rawデータの読み込み

@@ -3,7 +3,6 @@ package states
 import (
 	"os"
 
-	i "github.com/kijimaD/ruins/lib/engine/systems/input"
 	"github.com/kijimaD/ruins/lib/engine/utils"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 
@@ -91,9 +90,6 @@ func (sm *StateMachine) Update(world w.World) {
 		os.Exit(0)
 	}
 
-	// Run pre-game systems
-	i.InputSystem(world)
-
 	// Run state update function with game systems
 	sm.lastTransition = sm.states[len(sm.states)-1].Update(world)
 
@@ -168,4 +164,26 @@ func (sm *StateMachine) _Quit(world w.World) {
 		sm.states = sm.states[:len(sm.states)-1]
 	}
 	os.Exit(0)
+}
+
+// GetStates は現在の状態スタックを返す（テスト用）
+func (sm *StateMachine) GetStates() []State {
+	// スライスのコピーを返して、外部からの変更を防ぐ
+	result := make([]State, len(sm.states))
+	copy(result, sm.states)
+	return result
+}
+
+// GetCurrentState は現在アクティブな状態を返す（テスト用）
+// 状態が存在しない場合はnilを返す
+func (sm *StateMachine) GetCurrentState() State {
+	if len(sm.states) == 0 {
+		return nil
+	}
+	return sm.states[len(sm.states)-1]
+}
+
+// GetStateCount は状態スタックの要素数を返す（テスト用）
+func (sm *StateMachine) GetStateCount() int {
+	return len(sm.states)
 }

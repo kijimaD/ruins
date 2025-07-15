@@ -3,9 +3,9 @@ package systems
 import (
 	"math"
 
+	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils"
@@ -63,7 +63,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	pos := gameComponents.Position.Get(entity).(*gc.Position)
-	spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+	spriteRender := gameComponents.SpriteRender.Get(entity).(*components.SpriteRender)
 
 	originalX := pos.X
 	originalY := pos.Y
@@ -89,21 +89,21 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 			switch {
 			case entityAnother.HasComponent(gameComponents.Position):
 				objectPos := gameComponents.Position.Get(entityAnother).(*gc.Position)
-				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*ec.SpriteRender)
+				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*components.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
 				objectx1 := float64(int(objectPos.X) - objectSprite.Width/2)
 				objectx2 := float64(int(objectPos.X) + objectSprite.Width/2)
 				objecty1 := float64(int(objectPos.Y) - objectSprite.Height/2)
 				objecty2 := float64(int(objectPos.Y) + objectSprite.Height/2)
-				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
+				if (max(x1, objectx1) < min(x2, objectx2)) && (max(y1, objecty1) < min(y2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY
 				}
 			case entityAnother.HasComponent(gameComponents.GridElement):
 				objectGrid := gameComponents.GridElement.Get(entityAnother).(*gc.GridElement)
-				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*ec.SpriteRender)
+				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*components.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 				x := int(objectGrid.Row) * sprite.Width
 				y := int(objectGrid.Col) * sprite.Height
@@ -111,7 +111,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 				objectx2 := float64(x + objectSprite.Width)
 				objecty1 := float64(y)
 				objecty2 := float64(y + objectSprite.Height)
-				if (math.Max(x1, objectx1) < math.Min(x2, objectx2)) && (math.Max(y1, objecty1) < math.Min(y2, objecty2)) {
+				if (max(x1, objectx1) < min(x2, objectx2)) && (max(y1, objecty1) < min(y2, objecty2)) {
 					// 衝突していれば元の位置に戻す
 					pos.X = originalX
 					pos.Y = originalY

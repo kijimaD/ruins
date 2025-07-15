@@ -20,7 +20,7 @@ const (
 	TileSize gc.Pixel = 32
 
 	// HPLabel はHP表示ラベル
-	HPLabel        = "HP"
+	HPLabel = "HP"
 	// SPLabel はSP表示ラベル
 	SPLabel = "SP"
 	// VitalityLabel は体力表示ラベル

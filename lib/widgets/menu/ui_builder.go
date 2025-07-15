@@ -7,6 +7,7 @@ import (
 )
 
 // MenuUIBuilder はメニューのUI要素を構築する
+//
 //nolint:revive // MenuUIBuilder is clear and commonly used
 type MenuUIBuilder struct {
 	world w.World

@@ -1,3 +1,4 @@
+//nolint:revive // utilsパッケージ名は汎用ユーティリティとして適切
 package utils
 
 import (

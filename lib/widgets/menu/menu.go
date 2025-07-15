@@ -7,6 +7,7 @@ import (
 )
 
 // MenuItem はメニュー項目を表す
+//
 //nolint:revive // MenuItem is clear and commonly used
 type MenuItem struct {
 	ID          string
@@ -28,6 +29,7 @@ const (
 )
 
 // MenuConfig はメニューの設定
+//
 //nolint:revive // MenuConfig is clear and commonly used
 type MenuConfig struct {
 	Items          []MenuItem
@@ -38,6 +40,7 @@ type MenuConfig struct {
 }
 
 // MenuCallbacks はメニューのコールバック
+//
 //nolint:revive // MenuCallbacks is clear and commonly used
 type MenuCallbacks struct {
 	OnSelect      func(index int, item MenuItem)

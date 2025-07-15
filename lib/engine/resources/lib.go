@@ -3,14 +3,12 @@ package resources
 import (
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"github.com/kijimaD/ruins/lib/engine/components"
+	"github.com/kijimaD/ruins/lib/components"
 )
 
 // Resources contains references to data not related to any entity
 type Resources struct {
 	ScreenDimensions *ScreenDimensions
-	Controls         *Controls
-	InputHandler     *InputHandler
 	SpriteSheets     *map[string]components.SpriteSheet
 	Fonts            *map[string]Font
 	DefaultFaces     *map[string]text.Face
@@ -24,5 +22,5 @@ type Resources struct {
 
 // InitResources initializes resources
 func InitResources() *Resources {
-	return &Resources{Controls: &Controls{}, InputHandler: &InputHandler{}}
+	return &Resources{}
 }

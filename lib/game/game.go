@@ -66,18 +66,6 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	// ResourceManagerを使用してリソースを読み込む
 	resourceManager := gr.NewDefaultResourceManager()
 
-	// Load controls
-	axes := []string{}
-	actions := []string{
-		gr.MoveUpAction, gr.MoveDownAction, gr.MoveLeftAction, gr.MoveRightAction,
-	}
-	controls, inputHandler, err := resourceManager.LoadControls(axes, actions)
-	if err != nil {
-		log.Fatal(err)
-	}
-	world.Resources.Controls = &controls
-	world.Resources.InputHandler = &inputHandler
-
 	// Load sprite sheets
 	spriteSheets, err := resourceManager.LoadSpriteSheets()
 	if err != nil {

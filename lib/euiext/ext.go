@@ -751,5 +751,5 @@ func scrollClamp(targetScroll, currentScroll float64) float64 {
 	const maxScrollStep = 0.1
 	minScroll := currentScroll - maxScrollStep
 	maxScroll := currentScroll + maxScrollStep
-	return math.Max(minScroll, math.Min(targetScroll, maxScroll))
+	return max(minScroll, min(targetScroll, maxScroll))
 }

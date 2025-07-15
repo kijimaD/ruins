@@ -31,30 +31,30 @@ var (
 	TransBlackColor = color.RGBA{0, 0, 0, 140}
 
 	// WindowBodyColor はウィンドウ本体色を表す
-	WindowBodyColor   = RGB(0x808080)
+	WindowBodyColor = RGB(0x808080)
 	// WindowHeaderColor はウィンドウヘッダー色を表す
 	WindowHeaderColor = RGB(0x939393)
 
 	// ButtonIdleColor はボタン通常色を表す
-	ButtonIdleColor     = RGB(0xaaaaaa)
+	ButtonIdleColor = RGB(0xaaaaaa)
 	// ButtonHoverColor はボタンホバー色を表す
-	ButtonHoverColor    = RGB(0x828296)
+	ButtonHoverColor = RGB(0x828296)
 	// ButtonPressedColor はボタン押下色を表す
-	ButtonPressedColor  = RGB(0x646478)
+	ButtonPressedColor = RGB(0x646478)
 	// ButtonDisabledColor はボタン無効色を表す
 	ButtonDisabledColor = RGB(0x555555)
 
 	// SuccessColor は成功色を表す
 	SuccessColor = RGB(0x198754)
 	// DangerColor は危険色を表す
-	DangerColor  = RGB(0xdc3545)
+	DangerColor = RGB(0xdc3545)
 
 	// FireColor は炎色（赤）を表す
-	FireColor    = RGB(0xc44303)
+	FireColor = RGB(0xc44303)
 	// ThunderColor は雷色（暗青）を表す
 	ThunderColor = RGB(0x4169e1)
 	// ChillColor は冷気色（明青）を表す
-	ChillColor   = RGB(0x00ffff)
+	ChillColor = RGB(0x00ffff)
 	// PhotonColor は光子色（黄）を表す
-	PhotonColor  = RGB(0xffff00)
+	PhotonColor = RGB(0xffff00)
 )

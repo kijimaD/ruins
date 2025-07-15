@@ -14,6 +14,7 @@ type TabItem struct {
 }
 
 // TabMenuConfig はタブメニューの設定
+//
 //nolint:revive // TabMenuConfig is clear and commonly used
 type TabMenuConfig struct {
 	Tabs             []TabItem
@@ -23,6 +24,7 @@ type TabMenuConfig struct {
 }
 
 // TabMenuCallbacks はタブメニューのコールバック
+//
 //nolint:revive // TabMenuCallbacks is clear and commonly used
 type TabMenuCallbacks struct {
 	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item menu.MenuItem)

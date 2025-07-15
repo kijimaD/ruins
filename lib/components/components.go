@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	ec "github.com/kijimaD/ruins/lib/engine/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -39,7 +38,7 @@ type GameComponentList struct {
 	Velocity     *Velocity
 	Position     *Position
 	GridElement  *GridElement
-	SpriteRender *ec.SpriteRender
+	SpriteRender *SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
 
