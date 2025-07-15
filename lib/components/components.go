@@ -110,6 +110,60 @@ type Components struct {
 	DropTable    *ecs.SliceComponent
 }
 
+// InitializeComponents はComponentInitializerインターフェースを実装する
+func (c *Components) InitializeComponents(manager *ecs.Manager) error {
+	// general
+	c.Name = manager.NewSliceComponent()
+	c.Description = manager.NewSliceComponent()
+	c.Render = manager.NewSliceComponent()
+
+	// item
+	c.Item = manager.NewNullComponent()
+	c.Consumable = manager.NewSliceComponent()
+	c.Pools = manager.NewSliceComponent()
+	c.Attack = manager.NewSliceComponent()
+	c.Material = manager.NewSliceComponent()
+	c.Recipe = manager.NewSliceComponent()
+	c.Wearable = manager.NewSliceComponent()
+	c.Attributes = manager.NewSliceComponent()
+	c.Card = manager.NewSliceComponent()
+	c.ItemLocationInBackpack = manager.NewNullComponent()
+	c.ItemLocationEquipped = manager.NewSliceComponent()
+	c.ItemLocationOnField = manager.NewNullComponent()
+	c.ItemLocationNone = manager.NewNullComponent()
+
+	// field
+	c.Operator = manager.NewNullComponent()
+	c.AIMoveFSM = manager.NewSliceComponent()
+	c.AIRoaming = manager.NewSliceComponent()
+	c.Camera = manager.NewSliceComponent()
+	c.Wall = manager.NewNullComponent()
+	c.Warp = manager.NewSliceComponent()
+	c.Velocity = manager.NewSliceComponent()
+	c.Position = manager.NewSliceComponent()
+	c.GridElement = manager.NewSliceComponent()
+	c.SpriteRender = manager.NewSliceComponent()
+	c.BlockView = manager.NewNullComponent()
+	c.BlockPass = manager.NewNullComponent()
+
+	// member
+	c.InParty = manager.NewNullComponent()
+	c.FactionAlly = manager.NewNullComponent()
+	c.FactionEnemy = manager.NewNullComponent()
+
+	// event
+	c.BattleCommand = manager.NewSliceComponent()
+	c.EquipmentChanged = manager.NewNullComponent()
+	c.ProvidesHealing = manager.NewSliceComponent()
+	c.InflictsDamage = manager.NewSliceComponent()
+
+	// battle
+	c.CommandTable = manager.NewSliceComponent()
+	c.DropTable = manager.NewSliceComponent()
+
+	return nil
+}
+
 // Operator はフィールドでの操作対象
 type Operator struct{}
 

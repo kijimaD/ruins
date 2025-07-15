@@ -14,7 +14,7 @@
 //	    Position: &gc.Position{X: 100, Y: 200},
 //	    Velocity: &gc.Velocity{},
 //	})
-//	
+//
 //	// ワールドへの追加
 //	entitiesResult := entities.AddEntities(world, componentList)
 //

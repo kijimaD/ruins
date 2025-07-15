@@ -1,28 +1,65 @@
 package world
 
 import (
+	gc "github.com/kijimaD/ruins/lib/components"
 	c "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/resources"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// World is the main ECS structure
-type World struct {
+// Generic は型安全なワールド型
+type Generic[T c.ComponentInitializer] struct {
 	Manager    *ecs.Manager
-	Components *c.Components
+	Components *c.Components[T]
 	Resources  *resources.Resources
 }
 
-// InitWorld initializes the world
-func InitWorld(gameComponents interface{}) World {
+// World は後方互換性のためのデフォルト型
+// TODO: 削除する
+type World struct {
+	Manager    *ecs.Manager
+	Components *LegacyComponents
+	Resources  *resources.Resources
+}
+
+// LegacyComponents は後方互換性のためのコンポーネント型
+// TODO: 削除する
+type LegacyComponents struct {
+	Game *gc.Components
+}
+
+// InitGeneric は型安全なワールド初期化
+func InitGeneric[T c.ComponentInitializer](gameComponents T) (Generic[T], error) {
 	manager := ecs.NewManager()
-	components := c.InitComponents(manager, gameComponents)
+	components, err := c.InitComponents(manager, gameComponents)
+	if err != nil {
+		return Generic[T]{}, err
+	}
 	resources := resources.InitResources()
 
-	return World{
+	return Generic[T]{
 		Manager:    manager,
 		Components: components,
 		Resources:  resources,
+	}, nil
+}
+
+// InitWorld は後方互換性のためのラッパー関数
+func InitWorld(gameComponents *gc.Components) World {
+	manager := ecs.NewManager()
+	err := gameComponents.InitializeComponents(manager)
+	if err != nil {
+		// 既存コードとの互換性のため、panicさせる
+		panic(err)
+	}
+	resources := resources.InitResources()
+
+	return World{
+		Manager: manager,
+		Components: &LegacyComponents{
+			Game: gameComponents,
+		},
+		Resources: resources,
 	}
 }
