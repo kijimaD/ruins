@@ -21,7 +21,7 @@ var (
 	blackImage *ebiten.Image
 )
 
-// 探索範囲エリアを表示する
+// VisionSystem は探索範囲エリアを表示する
 func VisionSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
 	if gameResources.Level.VisionImage == nil {

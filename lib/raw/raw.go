@@ -10,8 +10,8 @@ import (
 	"github.com/kijimaD/ruins/lib/errors"
 )
 
-// RawMaster はローデータを管理し、効率的な検索のためのインデックスを提供する
-type RawMaster struct {
+// Master はローデータを管理し、効率的な検索のためのインデックスを提供する
+type Master struct {
 	Raws              Raws
 	ItemIndex         map[string]int
 	MaterialIndex     map[string]int
@@ -21,6 +21,11 @@ type RawMaster struct {
 	DropTableIndex    map[string]int
 	SpriteSheetIndex  map[string]int
 }
+
+// RawMaster は後方互換性のためのエイリアス
+//
+//nolint:revive // 後方互換性のために必要
+type RawMaster = Master
 
 // Raws は全てのローデータを格納する構造体
 type Raws struct {
@@ -46,24 +51,28 @@ type Item struct {
 	Attack          *Attack          `toml:"attack"`
 }
 
+// ProvidesHealing は回復効果を提供する構造体
 type ProvidesHealing struct {
 	ValueType ValueType
 	Amount    int
 	Ratio     float64
 }
 
+// Consumable は消費可能なアイテムの設定
 type Consumable struct {
 	UsableScene string
 	TargetGroup string
 	TargetNum   string
 }
 
+// Card はカードアイテムの設定
 type Card struct {
 	Cost        int
 	TargetGroup string
 	TargetNum   string
 }
 
+// Attack は攻撃性能の設定
 type Attack struct {
 	Accuracy       int    // 命中率
 	Damage         int    // 攻撃力
@@ -72,11 +81,13 @@ type Attack struct {
 	AttackCategory string // 攻撃種別
 }
 
+// Wearable は装備可能アイテムの設定
 type Wearable struct {
 	Defense           int
 	EquipmentCategory string
 }
 
+// EquipBonus は装備ボーナスの設定
 type EquipBonus struct {
 	Vitality  int
 	Strength  int
@@ -85,30 +96,31 @@ type EquipBonus struct {
 	Agility   int
 }
 
-// material ================
+// Material は素材アイテムの情報
 type Material struct {
 	Name        string
 	Description string
 }
 
-// recipe ================
+// Recipe はレシピの情報
 type Recipe struct {
 	Name   string
 	Inputs []RecipeInput `toml:"inputs"`
 }
 
-// 合成の元になる素材
+// RecipeInput は合成の元になる素材
 type RecipeInput struct {
 	Name   string
 	Amount int
 }
 
-// member ================
+// Member はメンバーの情報
 type Member struct {
 	Name       string
 	Attributes Attributes `toml:"attributes"`
 }
 
+// Attributes はキャラクターの能力値
 type Attributes struct {
 	Vitality  int
 	Strength  int
@@ -118,7 +130,8 @@ type Attributes struct {
 	Defense   int
 }
 
-func LoadFromFile(path string) RawMaster {
+// LoadFromFile はファイルからローデータを読み込む
+func LoadFromFile(path string) Master {
 	bs, err := assets.FS.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
@@ -127,8 +140,9 @@ func LoadFromFile(path string) RawMaster {
 	return rw
 }
 
-func Load(entityMetadataContent string) RawMaster {
-	rw := RawMaster{}
+// Load は文字列からローデータを読み込む
+func Load(entityMetadataContent string) Master {
+	rw := Master{}
 	rw.ItemIndex = map[string]int{}
 	rw.MaterialIndex = map[string]int{}
 	rw.RecipeIndex = map[string]int{}
@@ -163,7 +177,8 @@ func Load(entityMetadataContent string) RawMaster {
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
+// GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
+func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "ItemIndex")
@@ -270,7 +285,8 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
+// GenerateMaterial は指定された名前の素材のゲームコンポーネントを生成する
+func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
 		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "MaterialIndex")
@@ -285,7 +301,8 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.I
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateRecipe(name string) (gc.GameComponentList, error) {
+// GenerateRecipe は指定された名前のレシピのゲームコンポーネントを生成する
+func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
 		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "RecipeIndex")
@@ -320,7 +337,8 @@ func (rw *RawMaster) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateFighter(name string) gc.GameComponentList {
+// GenerateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する
+func (rw *Master) GenerateFighter(name string) gc.GameComponentList {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
@@ -357,7 +375,8 @@ func (rw *RawMaster) GenerateFighter(name string) gc.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMember(name string, inParty bool) gc.GameComponentList {
+// GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
+func (rw *Master) GenerateMember(name string, inParty bool) gc.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionAlly
 	if inParty {
@@ -367,7 +386,8 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) gc.GameComponentL
 	return cl
 }
 
-func (rw *RawMaster) GenerateEnemy(name string) gc.GameComponentList {
+// GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
+func (rw *Master) GenerateEnemy(name string) gc.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionEnemy
 
@@ -388,7 +408,8 @@ func (rw *RawMaster) GenerateEnemy(name string) gc.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GetCommandTable(name string) CommandTable {
+// GetCommandTable は指定された名前のコマンドテーブルを取得する
+func (rw *Master) GetCommandTable(name string) CommandTable {
 	ctIdx, ok := rw.CommandTableIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
@@ -398,7 +419,8 @@ func (rw *RawMaster) GetCommandTable(name string) CommandTable {
 	return commandTable
 }
 
-func (rw *RawMaster) GetDropTable(name string) DropTable {
+// GetDropTable は指定された名前のドロップテーブルを取得する
+func (rw *Master) GetDropTable(name string) DropTable {
 	dtIdx, ok := rw.DropTableIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)

@@ -9,6 +9,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// PlayerInputSystem はプレイヤーからの入力を処理する
 func PlayerInputSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 

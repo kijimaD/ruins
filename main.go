@@ -1,3 +1,4 @@
+// Package main はRuinsゲームのエントリーポイント
 package main
 
 import (

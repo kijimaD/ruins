@@ -31,7 +31,7 @@ func TestPush(t *testing.T) {
 func TestExecStateAutoExecution(t *testing.T) {
 	t.Run("OnResumeで関数自動実行", func(t *testing.T) {
 		executed := false
-		execState := NewExecState(func(world w.World) {
+		execState := NewExecState(func(_ w.World) {
 			executed = true
 		})
 

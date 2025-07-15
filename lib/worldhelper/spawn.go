@@ -17,7 +17,7 @@ import (
 // Field
 // ================
 
-// フィールド上に表示される床を生成する
+// SpawnFloor はフィールド上に表示される床を生成する
 func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
@@ -33,7 +33,7 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	return loader.AddEntities(world, componentList)[0]
 }
 
-// フィールド上に表示される壁を生成する
+// SpawnFieldWall はフィールド上に表示される壁を生成する
 func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := loader.EntityComponentList{}
@@ -51,7 +51,7 @@ func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	return loader.AddEntities(world, componentList)[0]
 }
 
-// フィールド上に表示される進行ワープホールを生成する
+// SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
 func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	SpawnFloor(world, x, y) // 下敷き描画
 
@@ -70,7 +70,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	return loader.AddEntities(world, componentList)[0]
 }
 
-// フィールド上に表示される脱出ワープホールを生成する
+// SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
 func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	SpawnFloor(world, x, y) // 下敷き描画
 
@@ -89,7 +89,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	return loader.AddEntities(world, componentList)[0]
 }
 
-// フィールド上に表示される操作対象キャラを生成する。
+// SpawnOperator はフィールド上に表示される操作対象キャラを生成する
 // TODO: エンティティが重複しているときにエラーを返す。
 // TODO: 置けるタイル以外が指定されるとエラーを返す。
 // デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
@@ -121,7 +121,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 	}
 }
 
-// フィールド上に表示されるNPCを生成する
+// SpawnNPC はフィールド上に表示されるNPCを生成する
 // TODO: 接触すると戦闘開始するようにする
 func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
@@ -147,7 +147,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 // Item
 // ================
 
-// アイテムを生成する
+// SpawnItem はアイテムを生成する
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
@@ -161,7 +161,7 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs
 	return entities[len(entities)-1]
 }
 
-// パーティに追加可能なキャラを生成する
+// SpawnMember はパーティに追加可能なキャラを生成する
 func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
@@ -172,7 +172,7 @@ func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	return entities[len(entities)-1]
 }
 
-// 戦闘に参加する敵キャラを生成する
+// SpawnEnemy は戦闘に参加する敵キャラを生成する
 func SpawnEnemy(world w.World, name string) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
@@ -238,7 +238,7 @@ func setMaxHPSP(world w.World, entity ecs.Entity) {
 	pools.SP.Current = pools.SP.Max
 }
 
-// 所持素材の個数を0で初期化する
+// SpawnAllMaterials は所持素材の個数を0で初期化する
 func SpawnAllMaterials(world w.World) {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 	for k := range rawMaster.MaterialIndex {
@@ -252,7 +252,7 @@ func SpawnAllMaterials(world w.World) {
 	}
 }
 
-// レシピ初期化
+// SpawnAllRecipes はレシピ初期化
 func SpawnAllRecipes(world w.World) {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 	for k := range rawMaster.RecipeIndex {
@@ -266,7 +266,7 @@ func SpawnAllRecipes(world w.World) {
 	}
 }
 
-// 敵が使う用。マスタとなるカードを初期化する
+// SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
 func SpawnAllCards(world w.World) {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
 	for k := range rawMaster.ItemIndex {

@@ -22,7 +22,7 @@ var (
 	moverShadowImage *ebiten.Image // 動く物体が落とす影
 )
 
-// (下) タイル -> 影 -> スプライト (上) の順に表示する
+// RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)

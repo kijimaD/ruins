@@ -27,10 +27,13 @@ func (st MainMenuState) String() string {
 
 var _ es.State = &MainMenuState{}
 
-func (st *MainMenuState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *MainMenuState) OnPause(_ w.World) {}
 
-func (st *MainMenuState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *MainMenuState) OnResume(_ w.World) {}
 
+// OnStart はステート開始時の処理を行う
 func (st *MainMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -39,9 +42,11 @@ func (st *MainMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *MainMenuState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *MainMenuState) OnStop(_ w.World) {}
 
-func (st *MainMenuState) Update(world w.World) es.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *MainMenuState) Update(_ w.World) es.Transition {
 	// Escapeキーでの終了処理はメニューのOnCancelで処理するため、ここでは削除
 
 	// メニューの更新
@@ -53,6 +58,7 @@ func (st *MainMenuState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
+// Draw はスクリーンに描画する
 func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
 	bg := (*world.Resources.SpriteSheets)["bg_title1"]
 	screen.DrawImage(bg.Texture.Image, nil)
@@ -96,7 +102,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 
 	// コールバックの設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
@@ -106,7 +112,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 			// Escapeキーが押された時の処理
 			st.SetTransition(es.Transition{Type: es.TransQuit})
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, _ int) {
 			// フォーカス変更時にUIを更新
 			if st.uiBuilder != nil {
 				st.uiBuilder.UpdateFocus(st.menu)
@@ -122,7 +128,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 }
 
 // initUI はUIを初期化する
-func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
+func (st *MainMenuState) initUI(_ w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer()
 
 	// メニューのUIを構築してコンテナに追加

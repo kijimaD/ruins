@@ -11,6 +11,7 @@ import (
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
+// DungeonSelectState はダンジョン選択のゲームステート
 type DungeonSelectState struct {
 	es.BaseState
 	ui                   *ebitenui.UI
@@ -28,15 +29,18 @@ func (st DungeonSelectState) String() string {
 
 var _ es.State = &DungeonSelectState{}
 
-func (st *DungeonSelectState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *DungeonSelectState) OnPause(_ w.World) {}
 
-func (st *DungeonSelectState) OnResume(world w.World) {
+// OnResume はステートが再開される際に呼ばれる
+func (st *DungeonSelectState) OnResume(_ w.World) {
 	// フォーカス状態を更新
 	if st.uiBuilder != nil && st.menu != nil {
 		st.uiBuilder.UpdateFocus(st.menu)
 	}
 }
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *DungeonSelectState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -46,9 +50,11 @@ func (st *DungeonSelectState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *DungeonSelectState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *DungeonSelectState) OnStop(_ w.World) {}
 
-func (st *DungeonSelectState) Update(world w.World) es.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *DungeonSelectState) Update(_ w.World) es.Transition {
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}}
 	}
@@ -62,7 +68,8 @@ func (st *DungeonSelectState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *DungeonSelectState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *DungeonSelectState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
@@ -91,7 +98,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 
 	// コールバックの設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
@@ -100,7 +107,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 		OnCancel: func() {
 			// Escapeキーの処理はUpdate()で直接行うため、ここでは何もしない
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, newIndex int) {
 			// フォーカス変更時に説明文を更新
 			st.updateActionDescription(world, newIndex)
 			// フォーカス変更時にUIを更新
@@ -108,7 +115,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 				st.uiBuilder.UpdateFocus(st.menu)
 			}
 		},
-		OnHover: func(index int, item menu.MenuItem) {
+		OnHover: func(index int, _ menu.MenuItem) {
 			// ホバー時に説明文を更新
 			st.updateActionDescription(world, index)
 		},

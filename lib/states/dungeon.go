@@ -19,6 +19,7 @@ var (
 	baseImage *ebiten.Image // 一番下にある黒背景
 )
 
+// DungeonState はダンジョン探索中のゲームステート
 type DungeonState struct {
 	es.BaseState
 	Depth int
@@ -32,10 +33,13 @@ func (st DungeonState) String() string {
 
 var _ es.State = &DungeonState{}
 
-func (st *DungeonState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *DungeonState) OnPause(_ w.World) {}
 
-func (st *DungeonState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *DungeonState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *DungeonState) OnStart(world w.World) {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
@@ -47,6 +51,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	gameResources.Level = mapbuilder.NewLevel(world, 50, 50)
 }
 
+// OnStop はステートが停止される際に呼ばれる
 func (st *DungeonState) OnStop(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
@@ -70,6 +75,7 @@ func (st *DungeonState) OnStop(world w.World) {
 	gameResources.StateEvent = resources.StateEventNone
 }
 
+// Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.PlayerInputSystem(world)
 	gs.AIInputSystem(world)
@@ -92,6 +98,7 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
+// Draw はゲームステートの描画処理を行う
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 	screen.DrawImage(baseImage, nil)
 

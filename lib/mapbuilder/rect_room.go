@@ -7,13 +7,15 @@ import (
 	"github.com/kijimaD/ruins/lib/utils"
 )
 
-// 長方形の部屋を作成する
+// RectRoomBuilder は長方形の部屋を作成する
 type RectRoomBuilder struct{}
 
+// BuildInitial は初期ビルドを行う
 func (b RectRoomBuilder) BuildInitial(buildData *BuilderMap) {
 	b.BuildRooms(buildData)
 }
 
+// BuildRooms は部屋をビルドする
 func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
 	maxRooms := 4 + rand.Intn(10)
 	rooms := []Rect{}

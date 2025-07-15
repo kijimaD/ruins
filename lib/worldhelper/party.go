@@ -116,7 +116,7 @@ func (p *Party) LivesLen() int {
 	count := 0
 	for _, l := range p.lives {
 		if l != nil {
-			count += 1
+			count++
 		}
 	}
 

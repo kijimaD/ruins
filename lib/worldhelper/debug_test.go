@@ -17,7 +17,7 @@ func TestInitDebugData(t *testing.T) {
 	memberCount := 0
 	world.Manager.Join(
 		gameComponents.FactionAlly,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
 	assert.Equal(t, 0, memberCount, "初期状態では味方メンバーは0人であるべき")
@@ -29,7 +29,7 @@ func TestInitDebugData(t *testing.T) {
 	memberCount = 0
 	world.Manager.Join(
 		gameComponents.FactionAlly,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
 	assert.Equal(t, 3, memberCount, "デバッグ初期化後は味方メンバーが3人いるべき")
@@ -39,7 +39,7 @@ func TestInitDebugData(t *testing.T) {
 	memberCount = 0
 	world.Manager.Join(
 		gameComponents.FactionAlly,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
 	assert.Equal(t, 3, memberCount, "2回目の実行では味方メンバー数は変わらないべき")

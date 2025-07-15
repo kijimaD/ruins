@@ -61,7 +61,7 @@ func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 	)
 }
 
-// 縦分割コンテナ
+// NewVSplitContainer は縦分割コンテナを作成する
 func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ...widget.ContainerOpt) *widget.Container {
 	split := widget.NewContainer(
 		append([]widget.ContainerOpt{
@@ -85,7 +85,7 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ..
 	return split
 }
 
-// 横分割コンテナ
+// NewWSplitContainer は横分割コンテナを作成する
 func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ...widget.ContainerOpt) *widget.Container {
 	split := widget.NewContainer(
 		append([]widget.ContainerOpt{
@@ -109,7 +109,7 @@ func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ..
 	return split
 }
 
-// ウィンドウの本体
+// NewWindowContainer はウィンドウの本体を作成する
 func NewWindowContainer(world w.World) *widget.Container {
 	res := world.Resources.UIResources
 
@@ -133,7 +133,7 @@ func NewWindowContainer(world w.World) *widget.Container {
 	)
 }
 
-// ウィンドウのヘッダー
+// NewWindowHeaderContainer はウィンドウのヘッダーを作成する
 func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 	res := world.Resources.UIResources
 	container := widget.NewContainer(
@@ -153,7 +153,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 
 // text ================
 
-// 汎用メニューテキスト（既存との互換性のため維持）
+// NewMenuText は汎用メニューテキストを作成する（既存との互換性のため維持）
 func NewMenuText(title string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	text := widget.NewText(
@@ -166,7 +166,7 @@ func NewMenuText(title string, world w.World) *widget.Text {
 	return text
 }
 
-// タイトル用テキスト（大きめ、目立つ）
+// NewTitleText はタイトル用テキストを作成する（大きめ、目立つ）
 func NewTitleText(text string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	return widget.NewText(
@@ -177,7 +177,7 @@ func NewTitleText(text string, world w.World) *widget.Text {
 	)
 }
 
-// サブタイトル用テキスト（中サイズ）
+// NewSubtitleText はサブタイトル用テキストを作成する（中サイズ）
 func NewSubtitleText(text string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	return widget.NewText(
@@ -188,7 +188,7 @@ func NewSubtitleText(text string, world w.World) *widget.Text {
 	)
 }
 
-// 説明文用テキスト（小さめ、補助的）
+// NewDescriptionText は説明文用テキストを作成する（小さめ、補助的）
 func NewDescriptionText(text string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	return widget.NewText(
@@ -199,7 +199,8 @@ func NewDescriptionText(text string, world w.World) *widget.Text {
 	)
 }
 
-func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
+// NewBodyText は本文用テキストを作成する
+func NewBodyText(title string, _ color.RGBA, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	text := widget.NewText(
 		widget.TextOpts.Text(title, res.Text.Face, styles.TextColor),
@@ -211,7 +212,7 @@ func NewBodyText(title string, color color.RGBA, world w.World) *widget.Text {
 	return text
 }
 
-// リスト項目用テキスト（背景色変更で選択状態を表現）
+// NewListItemText はリスト項目用テキストを作成する（背景色変更で選択状態を表現）
 func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w.World) *widget.Container {
 	res := world.Resources.UIResources
 
@@ -257,7 +258,7 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w
 
 // window ================
 
-// ウィンドウ
+// NewSmallWindow は小さなウィンドウを作成する
 func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.Window {
 	return widget.NewWindow(
 		widget.WindowOpts.Contents(content),
@@ -273,6 +274,7 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 
 // list ================
 
+// NewList はリストウィジェットを作成する
 func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.List {
 	res := world.Resources.UIResources
 
@@ -309,7 +311,7 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 				DisabledSelected:           color.NRGBA{R: 100, G: 100, B: 100, A: 255},
 				DisabledSelectedBackground: color.NRGBA{R: 100, G: 100, B: 100, A: 255},
 			}),
-			euiext.ListOpts.EntryLabelFunc(func(e interface{}) string { return "" }),
+			euiext.ListOpts.EntryLabelFunc(func(_ interface{}) string { return "" }),
 			euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
 			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 			euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.Image)),
@@ -329,6 +331,7 @@ func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.Li
 
 // button ================
 
+// NewButton はボタンウィジェットを作成する
 func NewButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.Button {
 	res := world.Resources.UIResources
 	return widget.NewButton(
@@ -349,6 +352,7 @@ func NewButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.But
 
 // opts ================
 
+// BaseRowLayoutOpts は基本的な行レイアウトオプションを返す
 func BaseRowLayoutOpts() []widget.RowLayoutOpt {
 	return []widget.RowLayoutOpt{
 		widget.RowLayoutOpts.Spacing(4),

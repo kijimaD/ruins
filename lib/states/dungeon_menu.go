@@ -13,6 +13,7 @@ import (
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
+// DungeonMenuState はダンジョン内メニューのゲームステート
 type DungeonMenuState struct {
 	es.BaseState
 	ui            *ebitenui.UI
@@ -29,15 +30,18 @@ func (st DungeonMenuState) String() string {
 
 var _ es.State = &DungeonMenuState{}
 
-func (st *DungeonMenuState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *DungeonMenuState) OnPause(_ w.World) {}
 
-func (st *DungeonMenuState) OnResume(world w.World) {
+// OnResume はステートが再開される際に呼ばれる
+func (st *DungeonMenuState) OnResume(_ w.World) {
 	// フォーカス状態を更新
 	if st.uiBuilder != nil && st.menu != nil {
 		st.uiBuilder.UpdateFocus(st.menu)
 	}
 }
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *DungeonMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -47,9 +51,11 @@ func (st *DungeonMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *DungeonMenuState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *DungeonMenuState) OnStop(_ w.World) {}
 
-func (st *DungeonMenuState) Update(world w.World) es.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *DungeonMenuState) Update(_ w.World) es.Transition {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 
@@ -59,14 +65,15 @@ func (st *DungeonMenuState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *DungeonMenuState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *DungeonMenuState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
 // ================
 
 // initMenu はメニューコンポーネントを初期化する
-func (st *DungeonMenuState) initMenu(world w.World) {
+func (st *DungeonMenuState) initMenu(_ w.World) {
 	// メニュー項目の定義
 	items := []menu.MenuItem{
 		{
@@ -93,7 +100,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 
 	// コールバック設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
 			}
@@ -101,7 +108,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 		OnCancel: func() {
 			st.SetTransition(es.Transition{Type: es.TransPop})
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, _ int) {
 			// フォーカス変更時にUIを更新
 			if st.uiBuilder != nil {
 				st.uiBuilder.UpdateFocus(st.menu)

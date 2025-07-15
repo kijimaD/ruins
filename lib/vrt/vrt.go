@@ -21,19 +21,21 @@ import (
 
 var errRegularTermination = errors.New("テスト環境における、想定どおりの終了")
 
+// TestGame はビジュアルリグレッションテスト用のゲーム構造体
 type TestGame struct {
 	game.MainGame
 	gameCount  int
 	outputPath string
 }
 
+// Update はゲームの更新処理を行う
 func (g *TestGame) Update() error {
 	// テストの前に実行される
 	g.StateMachine.Update(g.World)
 
 	// 10フレームだけ実行する。更新→描画の順なので、1度は更新しないと描画されない
 	if g.gameCount < 10 {
-		g.gameCount += 1
+		g.gameCount++
 		return nil
 	}
 
@@ -44,6 +46,7 @@ func (g *TestGame) Update() error {
 const outputDirName = "vrtimages"
 const dirPerm = 0o755
 
+// Draw はゲームの描画処理を行う
 func (g *TestGame) Draw(screen *ebiten.Image) {
 	g.StateMachine.Draw(g.World, screen)
 
@@ -71,6 +74,7 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 	}
 }
 
+// RunTestGame はテストゲームを実行してスクリーンショットを保存する
 func RunTestGame(state es.State, outputPath string) {
 	world := game.InitWorld(960, 720)
 

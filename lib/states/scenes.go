@@ -10,7 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
-// 汎用アイテム入手イベント
+// ItemGetEvent1 は汎用アイテム入手イベント
 func ItemGetEvent1() []es.State {
 	ss := []es.State{}
 	ss = push(ss, &MessageState{text: "「倉庫だな。役立ちそうなものはもらっていこう」"})
@@ -31,7 +31,7 @@ func ItemGetEvent1() []es.State {
 	return ss
 }
 
-// 汎用戦闘イベント開始
+// RaidEvent1 は汎用戦闘イベント開始
 func RaidEvent1() []es.State {
 	ss := []es.State{}
 	ss = push(ss, &MessageState{text: "「何か動いた」\n「...敵だ!」"})

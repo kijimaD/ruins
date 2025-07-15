@@ -6,15 +6,19 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// BattleExtinctionType は戦闘終了の種類を表す
 type BattleExtinctionType int
 
 const (
+	// BattleExtinctionNone は戦闘継続状態を表す
 	BattleExtinctionNone BattleExtinctionType = iota
+	// BattleExtinctionAlly は味方が全滅した状態を表す
 	BattleExtinctionAlly
+	// BattleExtinctionMonster は敵が全滅した状態を表す
 	BattleExtinctionMonster
 )
 
-// 敵や味方の全滅をチェックする
+// BattleExtinctionSystem は敵や味方の全滅をチェックする
 func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 	gameComponents := world.Components.Game.(*gc.Components)
 
@@ -30,7 +34,7 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		if pools.HP.Current == 0 {
 			return
 		}
-		liveAllyCount += 1
+		liveAllyCount++
 	}))
 	if liveAllyCount == 0 {
 		return BattleExtinctionAlly
@@ -48,7 +52,7 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		if pools.HP.Current == 0 {
 			return
 		}
-		liveEnemyCount += 1
+		liveEnemyCount++
 	}))
 	if liveEnemyCount == 0 {
 		return BattleExtinctionMonster

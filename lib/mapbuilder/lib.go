@@ -1,3 +1,4 @@
+// Package mapbuilder はマップ生成機能を提供する
 // 参考: https://bfnightly.bracketproductions.com
 package mapbuilder
 
@@ -11,7 +12,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 階層のタイルを作る元になる概念の集合体
+// BuilderMap は階層のタイルを作る元になる概念の集合体
 type BuilderMap struct {
 	// 階層情報
 	Level resources.Level
@@ -25,7 +26,7 @@ type BuilderMap struct {
 	Corridors [][]resources.TileIdx
 }
 
-// 指定タイル座標がスポーン可能かを返す
+// IsSpawnableTile は指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
 func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
@@ -63,7 +64,7 @@ func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool
 	return isExist
 }
 
-// 上にあるタイルを調べる
+// UpTile は上にあるタイルを調べる
 func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile {
 	targetIdx := resources.TileIdx(int(idx) - int(bm.Level.TileWidth))
 	if targetIdx < 0 {
@@ -73,7 +74,7 @@ func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile {
 	return bm.Tiles[targetIdx]
 }
 
-// 下にあるタイルを調べる
+// DownTile は下にあるタイルを調べる
 func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile {
 	targetIdx := int(idx) + int(bm.Level.TileHeight)
 	if targetIdx > len(bm.Tiles)-1 {
@@ -83,7 +84,7 @@ func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile {
 	return bm.Tiles[targetIdx]
 }
 
-// 右にあるタイルを調べる
+// LeftTile は左にあるタイルを調べる
 func (bm BuilderMap) LeftTile(idx resources.TileIdx) Tile {
 	targetIdx := idx - 1
 	if targetIdx < 0 {
@@ -93,7 +94,7 @@ func (bm BuilderMap) LeftTile(idx resources.TileIdx) Tile {
 	return bm.Tiles[targetIdx]
 }
 
-// 左にあるタイルを調べる
+// RightTile は右にあるタイルを調べる
 func (bm BuilderMap) RightTile(idx resources.TileIdx) Tile {
 	targetIdx := idx + 1
 	if int(targetIdx) > len(bm.Tiles)-1 {
@@ -103,7 +104,7 @@ func (bm BuilderMap) RightTile(idx resources.TileIdx) Tile {
 	return bm.Tiles[targetIdx]
 }
 
-// 直交する近傍4タイルに床があるか判定する
+// AdjacentOrthoAnyFloor は直交する近傍4タイルに床があるか判定する
 func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 	return bm.UpTile(idx) == TileFloor ||
 		bm.DownTile(idx) == TileFloor ||
@@ -115,13 +116,14 @@ func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 		bm.LeftTile(idx) == TileWarpNext
 }
 
-// 階層データBuilderMapに対して適用する生成ロジックを保持する構造体
+// BuilderChain は階層データBuilderMapに対して適用する生成ロジックを保持する構造体
 type BuilderChain struct {
 	Starter   *InitialMapBuilder
 	Builders  []MetaMapBuilder
 	BuildData BuilderMap
 }
 
+// NewBuilderChain は新しいビルダーチェーンを作成する
 func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
@@ -146,14 +148,17 @@ func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 	}
 }
 
+// StartWith は初期ビルダーを設定する
 func (b *BuilderChain) StartWith(initialMapBuilder InitialMapBuilder) {
 	b.Starter = &initialMapBuilder
 }
 
+// With はメタビルダーを追加する
 func (b *BuilderChain) With(metaMapBuilder MetaMapBuilder) {
 	b.Builders = append(b.Builders, metaMapBuilder)
 }
 
+// Build はビルダーチェーンを実行してマップを生成する
 func (b *BuilderChain) Build() {
 	if b.Starter == nil {
 		log.Fatal("empty starter builder!")
@@ -165,14 +170,17 @@ func (b *BuilderChain) Build() {
 	}
 }
 
+// InitialMapBuilder は初期マップをビルドするインターフェース
 type InitialMapBuilder interface {
 	BuildInitial(*BuilderMap)
 }
 
+// MetaMapBuilder はメタ情報をビルドするインターフェース
 type MetaMapBuilder interface {
 	BuildMeta(*BuilderMap)
 }
 
+// SimpleRoomBuilder はシンプルな部屋ビルダーを作成する
 func SimpleRoomBuilder(width gc.Row, height gc.Col) *BuilderChain {
 	chain := NewBuilderChain(width, height)
 	chain.StartWith(RectRoomBuilder{})

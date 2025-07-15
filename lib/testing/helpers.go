@@ -7,7 +7,7 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 )
 
-// テスト用のプレイヤーコンポーネントを作成する
+// CreateTestPlayer はテスト用のプレイヤーコンポーネントを作成する
 func CreateTestPlayer(t *testing.T) gc.GameComponentList {
 	t.Helper()
 
@@ -32,7 +32,7 @@ func CreateTestPlayer(t *testing.T) gc.GameComponentList {
 	}
 }
 
-// テスト用の敵コンポーネントを作成する
+// CreateTestEnemy はテスト用の敵コンポーネントを作成する
 func CreateTestEnemy(t *testing.T, name string) gc.GameComponentList {
 	t.Helper()
 
@@ -57,7 +57,7 @@ func CreateTestEnemy(t *testing.T, name string) gc.GameComponentList {
 	}
 }
 
-// テスト用のアイテムコンポーネントを作成する
+// CreateTestItem はテスト用のアイテムコンポーネントを作成する
 func CreateTestItem(t *testing.T, name string, itemType TestItemType) gc.GameComponentList {
 	t.Helper()
 
@@ -99,20 +99,23 @@ func CreateTestItem(t *testing.T, name string, itemType TestItemType) gc.GameCom
 	return base
 }
 
-// テスト用アイテムタイプの定義
+// TestItemType はテスト用アイテムタイプの定義
 type TestItemType int
 
 const (
+	// TestItemTypeWeapon は武器タイプを表す
 	TestItemTypeWeapon TestItemType = iota
+	// TestItemTypeConsumable は消耗品タイプを表す
 	TestItemTypeConsumable
+	// TestItemTypeMaterial は素材タイプを表す
 	TestItemTypeMaterial
 )
 
-// テスト用のRawMasterを作成する
-func CreateTestRawMaster(t *testing.T) raw.RawMaster {
+// CreateTestRawMaster はテスト用のRawMasterを作成する
+func CreateTestRawMaster(t *testing.T) raw.Master {
 	t.Helper()
 
-	return raw.RawMaster{
+	return raw.Master{
 		Raws: raw.Raws{
 			Items: []raw.Item{
 				{
@@ -161,7 +164,7 @@ func CreateTestRawMaster(t *testing.T) raw.RawMaster {
 	}
 }
 
-// テスト用のバトルシナリオを作成する
+// CreateTestBattleScenario はテスト用のバトルシナリオを作成する
 func CreateTestBattleScenario(t *testing.T) TestBattleScenario {
 	t.Helper()
 
@@ -178,7 +181,7 @@ func CreateTestBattleScenario(t *testing.T) TestBattleScenario {
 	}
 }
 
-// テスト用バトルシナリオの構造体
+// TestBattleScenario はテスト用バトルシナリオの構造体
 type TestBattleScenario struct {
 	Player  gc.GameComponentList
 	Enemies []gc.GameComponentList

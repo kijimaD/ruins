@@ -8,7 +8,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
-// 所持している素材の数を取得する
+// GetAmount は所持している素材の数を取得する
 func GetAmount(name string, world w.World) int {
 	result := 0
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -22,10 +22,12 @@ func GetAmount(name string, world w.World) int {
 	return result
 }
 
+// PlusAmount は素材の数を増やす
 func PlusAmount(name string, amount int, world w.World) {
 	changeAmount(name, amount, world)
 }
 
+// MinusAmount は素材の数を減らす
 func MinusAmount(name string, amount int, world w.World) {
 	changeAmount(name, -amount, world)
 }

@@ -1,3 +1,4 @@
+//nolint:revive // utils package name is acceptable for utility functions
 package utils
 
 import "github.com/hajimehoshi/ebiten/v2"

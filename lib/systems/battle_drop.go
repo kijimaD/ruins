@@ -12,10 +12,11 @@ import (
 )
 
 const (
+	// LevelUpThreshold はレベルアップに必要な経験値の闾値
 	LevelUpThreshold = 100
 )
 
-// UI用に渡す実行結果
+// DropResult は UI用に渡す実行結果
 type DropResult struct {
 	// 獲得した素材名
 	MaterialNames []string
@@ -27,7 +28,7 @@ type DropResult struct {
 	IsLevelUp map[ecs.Entity]bool
 }
 
-// 戦闘終了後に経験値や素材を獲得する
+// BattleDropSystem は戦闘終了後に経験値や素材を獲得する
 // 獲得した素材名を返す
 func BattleDropSystem(world w.World) DropResult {
 	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
@@ -93,7 +94,7 @@ func BattleDropSystem(world w.World) DropResult {
 		if pools.XP >= LevelUpThreshold {
 			result.IsLevelUp[entity] = true
 
-			pools.Level += 1
+			pools.Level++
 			pools.XP = 0
 		}
 	}))

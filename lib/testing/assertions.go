@@ -6,7 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// 位置のアサーション
+// AssertPosition は位置のアサーションを行う
 func AssertPosition(t *testing.T, component *gc.Position, expectedX, expectedY float64) {
 	t.Helper()
 	if component == nil {
@@ -19,7 +19,7 @@ func AssertPosition(t *testing.T, component *gc.Position, expectedX, expectedY f
 	}
 }
 
-// 体力のアサーション
+// AssertPools は体力のアサーションを行う
 func AssertPools(t *testing.T, component *gc.Pools, expectedHPCurrent, expectedHPMax int) {
 	t.Helper()
 	if component == nil {
@@ -36,7 +36,7 @@ func AssertPools(t *testing.T, component *gc.Pools, expectedHPCurrent, expectedH
 	}
 }
 
-// 属性のアサーション
+// AssertAttribute は属性のアサーションを行う
 func AssertAttribute(t *testing.T, attribute gc.Attribute, expectedBase, expectedModifier, expectedTotal int) {
 	t.Helper()
 	if attribute.Base != expectedBase {
@@ -53,7 +53,7 @@ func AssertAttribute(t *testing.T, attribute gc.Attribute, expectedBase, expecte
 	}
 }
 
-// 名前のアサーション
+// AssertName は名前のアサーションを行う
 func AssertName(t *testing.T, component *gc.Name, expectedName string) {
 	t.Helper()
 	if component == nil {
@@ -66,8 +66,8 @@ func AssertName(t *testing.T, component *gc.Name, expectedName string) {
 	}
 }
 
-// レンダリングのアサーション（簡略版）
-func AssertRender(t *testing.T, component *gc.Render, expectedSheet string) {
+// AssertRender はレンダリングのアサーションを行う（簡略版）
+func AssertRender(t *testing.T, component *gc.Render, _ string) {
 	t.Helper()
 	if component == nil {
 		t.Error("レンダリングコンポーネントがnilです")
@@ -76,7 +76,7 @@ func AssertRender(t *testing.T, component *gc.Render, expectedSheet string) {
 	// 実際のレンダリング構造は複雑なので、簡単なチェックに留める
 }
 
-// 攻撃力のアサーション
+// AssertAttack は攻撃力のアサーションを行う
 func AssertAttack(t *testing.T, component *gc.Attack, expectedDamage, expectedAccuracy int) {
 	t.Helper()
 	if component == nil {
@@ -93,7 +93,7 @@ func AssertAttack(t *testing.T, component *gc.Attack, expectedDamage, expectedAc
 	}
 }
 
-// コンポーネントの存在確認
+// AssertHasComponent はコンポーネントの存在確認を行う
 func AssertHasComponent(t *testing.T, componentList gc.GameComponentList, componentName string) {
 	t.Helper()
 	switch componentName {
@@ -126,7 +126,7 @@ func AssertHasComponent(t *testing.T, componentList gc.GameComponentList, compon
 	}
 }
 
-// コンポーネントの非存在確認
+// AssertNotHasComponent はコンポーネントの非存在確認を行う
 func AssertNotHasComponent(t *testing.T, componentList gc.GameComponentList, componentName string) {
 	t.Helper()
 	switch componentName {
@@ -147,7 +147,7 @@ func AssertNotHasComponent(t *testing.T, componentList gc.GameComponentList, com
 	}
 }
 
-// 素材の量のアサーション
+// AssertMaterialAmount は素材の量のアサーションを行う
 func AssertMaterialAmount(t *testing.T, component *gc.Material, expectedAmount int) {
 	t.Helper()
 	if component == nil {
@@ -160,7 +160,7 @@ func AssertMaterialAmount(t *testing.T, component *gc.Material, expectedAmount i
 	}
 }
 
-// 回復量のアサーション
+// AssertHealingAmount は回復量のアサーションを行う
 func AssertHealingAmount(t *testing.T, component *gc.ProvidesHealing, expectedAmount int) {
 	t.Helper()
 	if component == nil {
@@ -179,16 +179,16 @@ func AssertHealingAmount(t *testing.T, component *gc.ProvidesHealing, expectedAm
 	}
 }
 
-// 範囲内の値かチェック
-func AssertInRange(t *testing.T, value, min, max int, description string) {
+// AssertInRange は範囲内の値かチェックする
+func AssertInRange(t *testing.T, value, minVal, maxVal int, description string) {
 	t.Helper()
-	if value < min || value > max {
+	if value < minVal || value > maxVal {
 		t.Errorf("%sが範囲外です: 期待値[%d, %d], 実際値%d",
-			description, min, max, value)
+			description, minVal, maxVal, value)
 	}
 }
 
-// 2つの値が等しいかチェック
+// AssertEqual は2つの値が等しいかチェックする
 func AssertEqual(t *testing.T, actual, expected interface{}, description string) {
 	t.Helper()
 	if actual != expected {
@@ -197,7 +197,7 @@ func AssertEqual(t *testing.T, actual, expected interface{}, description string)
 	}
 }
 
-// 値がnilでないかチェック
+// AssertNotNil は値がnilでないかチェックする
 func AssertNotNil(t *testing.T, value interface{}, description string) {
 	t.Helper()
 	if value == nil {
@@ -205,7 +205,7 @@ func AssertNotNil(t *testing.T, value interface{}, description string) {
 	}
 }
 
-// 値がnilかチェック
+// AssertNil は値がnilかチェックする
 func AssertNil(t *testing.T, value interface{}, description string) {
 	t.Helper()
 	if value != nil {

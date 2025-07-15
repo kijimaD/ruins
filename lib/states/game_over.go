@@ -11,6 +11,7 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
+// GameOverState はゲームオーバーのゲームステート
 type GameOverState struct {
 	es.BaseState
 	ui            *ebitenui.UI
@@ -28,10 +29,13 @@ func (st GameOverState) String() string {
 
 var _ es.State = &GameOverState{}
 
-func (st *GameOverState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *GameOverState) OnPause(_ w.World) {}
 
-func (st *GameOverState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *GameOverState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *GameOverState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -43,9 +47,11 @@ func (st *GameOverState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *GameOverState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *GameOverState) OnStop(_ w.World) {}
 
-func (st *GameOverState) Update(world w.World) es.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *GameOverState) Update(_ w.World) es.Transition {
 	if st.keyboardInput.IsEnterJustPressedOnce() {
 		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
 	}
@@ -56,7 +62,8 @@ func (st *GameOverState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *GameOverState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image) {
 	if st.bg != nil {
 		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
 	}

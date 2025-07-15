@@ -22,6 +22,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// CraftMenuState はクラフトメニューのゲームステート
 type CraftMenuState struct {
 	es.BaseState
 	ui *ebitenui.UI
@@ -58,10 +59,13 @@ func (st CraftMenuState) String() string {
 
 var _ es.State = &CraftMenuState{}
 
-func (st *CraftMenuState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *CraftMenuState) OnPause(_ w.World) {}
 
-func (st *CraftMenuState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *CraftMenuState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *CraftMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -69,8 +73,10 @@ func (st *CraftMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *CraftMenuState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *CraftMenuState) OnStop(_ w.World) {}
 
+// Update はゲームステートの更新処理を行う
 func (st *CraftMenuState) Update(world w.World) es.Transition {
 	effects.RunEffectQueue(world)
 
@@ -98,7 +104,8 @@ func (st *CraftMenuState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *CraftMenuState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *CraftMenuState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
@@ -117,18 +124,18 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.TabMenuCallbacks{
-		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.MenuItem) {
 			st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
 			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}})
 		},
-		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
+		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
+		OnItemChange: func(_ int, _, _ int, item menu.MenuItem) {
 			st.handleItemChange(world, item)
 			st.updateTabDisplay(world)
 		},
@@ -216,7 +223,7 @@ func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) 
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *CraftMenuState) handleItemSelection(world w.World, tab tabmenu.TabItem, item menu.MenuItem) {
+func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.MenuItem) {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Fatal("unexpected item UserData")
@@ -420,7 +427,7 @@ func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 }
 
 // createActionWindowUI はアクションウィンドウのUI要素を作成する
-func (st *CraftMenuState) createActionWindowUI(world w.World, container *widget.Container, entity ecs.Entity) {
+func (st *CraftMenuState) createActionWindowUI(world w.World, _ *widget.Container, _ ecs.Entity) {
 	st.updateActionWindowDisplay(world)
 }
 
@@ -542,7 +549,7 @@ func (st *CraftMenuState) closeResultWindow() {
 }
 
 // executeResultItem は選択された結果項目を実行する
-func (st *CraftMenuState) executeResultItem(world w.World) {
+func (st *CraftMenuState) executeResultItem(_ w.World) {
 	if st.resultFocusIndex >= len(st.resultItems) {
 		return
 	}

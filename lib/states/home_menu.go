@@ -1,4 +1,4 @@
-// 拠点でのコマンド選択画面
+// Package states は拠点でのコマンド選択画面
 package states
 
 import (
@@ -19,6 +19,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// HomeMenuState は拠点メニューのゲームステート
 type HomeMenuState struct {
 	es.BaseState
 	ui            *ebitenui.UI
@@ -43,8 +44,10 @@ func (st HomeMenuState) String() string {
 
 var _ es.State = &HomeMenuState{}
 
-func (st *HomeMenuState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *HomeMenuState) OnPause(_ w.World) {}
 
+// OnResume はステートが再開される際に呼ばれる
 func (st *HomeMenuState) OnResume(world w.World) {
 	st.updateMemberContainer(world)
 	// フォーカス状態を更新
@@ -53,6 +56,7 @@ func (st *HomeMenuState) OnResume(world w.World) {
 	}
 }
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *HomeMenuState) OnStart(world w.World) {
 	// デバッグ用データ初期化（初回のみ）
 	worldhelper.InitDebugData(world)
@@ -68,9 +72,11 @@ func (st *HomeMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *HomeMenuState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *HomeMenuState) OnStop(_ w.World) {}
 
-func (st *HomeMenuState) Update(world w.World) es.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *HomeMenuState) Update(_ w.World) es.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
 	}
@@ -84,7 +90,8 @@ func (st *HomeMenuState) Update(world w.World) es.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *HomeMenuState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *HomeMenuState) Draw(_ w.World, screen *ebiten.Image) {
 	if st.bg != nil {
 		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
 	}
@@ -144,7 +151,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 
 	// コールバックの設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
@@ -154,7 +161,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			// Escapeキーが押された時の処理（タイトル画面に戻る）
 			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}})
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, newIndex int) {
 			// フォーカス変更時に説明文を更新
 			st.updateActionDescription(world, newIndex)
 			// フォーカス変更時にUIを更新
@@ -162,7 +169,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 				st.uiBuilder.UpdateFocus(st.menu)
 			}
 		},
-		OnHover: func(index int, item menu.MenuItem) {
+		OnHover: func(index int, _ menu.MenuItem) {
 			// ホバー時に説明文を更新
 			st.updateActionDescription(world, index)
 		},

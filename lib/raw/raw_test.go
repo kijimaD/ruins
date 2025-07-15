@@ -19,7 +19,7 @@ description = "半分程度回復する"
 `
 	raw := Load(str)
 
-	expect := RawMaster{
+	expect := Master{
 		Raws: Raws{
 			Items: []Item{
 				Item{Name: "リペア", Description: "半分程度回復する"},

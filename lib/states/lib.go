@@ -27,15 +27,16 @@ const (
 	TextClose         = "閉じる"  // メニューやウィンドウを閉じる際の表示文字列
 )
 
+// ItemCategoryType はアイテムのカテゴリーを表す
 type ItemCategoryType string
 
 var (
-	// 道具
+	// ItemCategoryTypeItem は道具を表す
 	ItemCategoryTypeItem ItemCategoryType = "ITEM"
-	// 手札
+	// ItemCategoryTypeCard は手札を表す
 	ItemCategoryTypeCard ItemCategoryType = "CARD"
-	// 装備
+	// ItemCategoryTypeWearable は装備を表す
 	ItemCategoryTypeWearable ItemCategoryType = "WEARABLE"
-	// 素材
+	// ItemCategoryTypeMaterial は素材を表す
 	ItemCategoryTypeMaterial ItemCategoryType = "MATERIAL"
 )

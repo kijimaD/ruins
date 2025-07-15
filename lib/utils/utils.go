@@ -1,3 +1,4 @@
+//nolint:revive // utils package name is acceptable for utility functions
 package utils
 
 import (
@@ -20,17 +21,28 @@ const (
 
 	// HPLabel はHP表示ラベル
 	HPLabel        = "HP"
-	SPLabel        = "SP"
-	VitalityLabel  = "体力"
-	StrengthLabel  = "筋力"
+	// SPLabel はSP表示ラベル
+	SPLabel = "SP"
+	// VitalityLabel は体力表示ラベル
+	VitalityLabel = "体力"
+	// StrengthLabel は筋力表示ラベル
+	StrengthLabel = "筋力"
+	// SensationLabel は感覚表示ラベル
 	SensationLabel = "感覚"
+	// DexterityLabel は器用表示ラベル
 	DexterityLabel = "器用"
-	AgilityLabel   = "敏捷"
-	DefenseLabel   = "防御"
+	// AgilityLabel は敏捷表示ラベル
+	AgilityLabel = "敏捷"
+	// DefenseLabel は防御表示ラベル
+	DefenseLabel = "防御"
 
-	AccuracyLabel         = "命中"
-	DamageLabel           = "攻撃力"
-	AttackCountLabel      = "回数"
+	// AccuracyLabel は命中表示ラベル
+	AccuracyLabel = "命中"
+	// DamageLabel は攻撃力表示ラベル
+	DamageLabel = "攻撃力"
+	// AttackCountLabel は攻撃回数表示ラベル
+	AttackCountLabel = "回数"
+	// EquimentCategoryLabel は装備部位表示ラベル
 	EquimentCategoryLabel = "部位"
 )
 
@@ -63,12 +75,12 @@ func Max[T int | float64](x, y T) T {
 }
 
 // Clamp はvalueを[min, max]の範囲に制限する
-func Clamp[T int | float64](value, minVal, max T) T {
+func Clamp[T int | float64](value, minVal, maxVal T) T {
 	if value < minVal {
 		return minVal
 	}
-	if value > max {
-		return max
+	if value > maxVal {
+		return maxVal
 	}
 	return value
 }

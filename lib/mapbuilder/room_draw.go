@@ -1,7 +1,9 @@
 package mapbuilder
 
+// RoomDraw は部屋を描画するビルダー
 type RoomDraw struct{}
 
+// BuildMeta はメタデータをビルドする
 func (b RoomDraw) BuildMeta(buildData *BuilderMap) {
 	b.build(buildData)
 }

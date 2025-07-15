@@ -67,10 +67,10 @@ func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
 }
 
 // RecoverStamina はスタミナを回復する
-func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
+func RecoverStamina(world w.World, recoveryEffect EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
-	v, ok := recover.EffectType.(RecoveryStamina)
+	v, ok := recoveryEffect.EffectType.(RecoveryStamina)
 	if !ok {
 		log.Print("RecoverStaminaがついてない")
 	}

@@ -12,6 +12,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// MoveSystem はエンティティの移動処理を行う
 func MoveSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 

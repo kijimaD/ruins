@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// CmdScreenshot はスクリーンショットを撮影するコマンド
 var CmdScreenshot = &cli.Command{
 	Name:        "screenshot",
 	Usage:       "screenshot",

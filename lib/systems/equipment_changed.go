@@ -7,7 +7,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
+// EquipmentChangedSystem は装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
 // TODO: 最大HP/SPの更新はここでやったほうがよさそう
 // TODO: マイナスにならないようにする
 func EquipmentChangedSystem(world w.World) bool {
