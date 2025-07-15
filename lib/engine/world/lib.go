@@ -24,7 +24,7 @@ type World struct {
 }
 
 // LegacyComponents は後方互換性のためのコンポーネント型
-// TODO: 削除する
+// TODO: 実装なのでここにあるべきではない。移動する
 type LegacyComponents struct {
 	Game *gc.Components
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/engine/utils"
 	"github.com/kijimaD/ruins/lib/errors"
 )
 
@@ -145,7 +144,10 @@ func Load(entityMetadataContent string) Master {
 	rw.CommandTableIndex = map[string]int{}
 	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
-	utils.Try(toml.Decode(entityMetadataContent, &rw.Raws))
+	_, err := toml.Decode(entityMetadataContent, &rw.Raws)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i

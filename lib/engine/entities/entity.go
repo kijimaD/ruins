@@ -5,7 +5,6 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/kijimaD/ruins/lib/engine/utils"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -28,7 +27,7 @@ func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity 
 	// Add game components
 	if entityComponentList.Game != nil {
 		if len(entityComponentList.Game) != len(entities) {
-			utils.LogFatalf("incorrect size for game component list")
+			log.Fatal("incorrect size for game component list")
 		}
 		for iEntity := range entities {
 			AddEntityComponents(entities[iEntity], world.Components.Game, entityComponentList.Game[iEntity])
