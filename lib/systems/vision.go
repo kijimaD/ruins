@@ -54,7 +54,9 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		opt.Blend = ebiten.BlendSourceIn
 		indices := []uint16{}
 		for i := 0; i < visionNgon; i++ {
-			indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
+			if i < 65536 && visionNgon < 65536 { // uint16範囲チェック
+				indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
+			}
 		}
 		gameResources.Level.VisionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}

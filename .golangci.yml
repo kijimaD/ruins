@@ -3,9 +3,11 @@ linters:
   # standard: [errcheck govet ineffassign staticcheck unused]
   default: standard
   enable:
-    - unconvert    # 意味のない型変換チェック
-    - revive       # golintの後継、Go標準コーディング規約
-    - misspell     # スペルミスチェック
-    - bodyclose    # HTTPレスポンスボディのclose忘れ防止
-    - goconst      # 定数化可能な文字列/数値の検出
-    - unparam      # 未使用パラメータ検出
+    - unconvert      # 意味のない型変換チェック
+    - revive         # golintの後継、Go標準コーディング規約
+    - misspell       # スペルミスチェック
+    - bodyclose      # HTTPレスポンスボディのclose忘れ防止
+    - goconst        # 定数化可能な文字列/数値の検出
+    - unparam        # 未使用パラメータ検出
+    - copyloopvar    # ループ変数コピー問題検出（重要なバグ防止）
+    - prealloc       # パフォーマンス最適化：スライス事前割り当て

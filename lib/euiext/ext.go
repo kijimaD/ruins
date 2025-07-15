@@ -511,7 +511,6 @@ func (l *List) createWidget() {
 
 	l.buttons = make([]*widget.Button, 0, len(l.entries))
 	for _, e := range l.entries {
-		e := e
 		but := l.createEntry(e)
 
 		l.buttons = append(l.buttons, but)
