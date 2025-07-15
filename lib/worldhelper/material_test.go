@@ -13,9 +13,9 @@ func TestGetAmount(t *testing.T) {
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
-	materialEntity.AddComponent(world.Components.Game.Material, &gc.Material{Amount: 10})
-	materialEntity.AddComponent(world.Components.Game.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	materialEntity.AddComponent(world.Components.Game.Name, &gc.Name{Name: "鉄"})
+	materialEntity.AddComponent(world.Components.Material, &gc.Material{Amount: 10})
+	materialEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	materialEntity.AddComponent(world.Components.Name, &gc.Name{Name: "鉄"})
 
 	// 素材の数量を取得
 	amount := GetAmount("鉄", world)
@@ -34,9 +34,9 @@ func TestPlusMinusAmount(t *testing.T) {
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
-	materialEntity.AddComponent(world.Components.Game.Material, &gc.Material{Amount: 10})
-	materialEntity.AddComponent(world.Components.Game.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	materialEntity.AddComponent(world.Components.Game.Name, &gc.Name{Name: "鉄"})
+	materialEntity.AddComponent(world.Components.Material, &gc.Material{Amount: 10})
+	materialEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	materialEntity.AddComponent(world.Components.Name, &gc.Name{Name: "鉄"})
 
 	// 数量を増加
 	PlusAmount("鉄", 5, world)

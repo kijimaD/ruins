@@ -38,10 +38,10 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 
 	var pos *gc.Position
 	world.Manager.Join(
-		world.Components.Game.Position,
-		world.Components.Game.Operator,
+		world.Components.Position,
+		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos = world.Components.Game.Position.Get(entity).(*gc.Position)
+		pos = world.Components.Position.Get(entity).(*gc.Position)
 	}))
 
 	// 視界以外をグラデーションを入れながら塗りつぶし

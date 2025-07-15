@@ -16,6 +16,6 @@ func TestInitWorld(t *testing.T) {
 		assert.NotNil(t, world.Manager)
 		assert.NotNil(t, world.Components)
 		assert.NotNil(t, world.Resources)
-		assert.NotNil(t, world.Components.Game)
+		assert.NotNil(t, world.Components)
 	})
 }

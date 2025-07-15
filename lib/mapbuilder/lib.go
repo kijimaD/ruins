@@ -50,9 +50,9 @@ func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool
 	cy := gc.Pixel(int(ty)*int(utils.TileSize) + int(utils.TileSize)/2)
 
 	world.Manager.Join(
-		world.Components.Game.Position,
+		world.Components.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := world.Components.Game.Position.Get(entity).(*gc.Position)
+		pos := world.Components.Position.Get(entity).(*gc.Position)
 		if pos.X == cx && pos.Y == cy {
 			isExist = true
 

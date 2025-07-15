@@ -10,15 +10,15 @@ import (
 // Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
 func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	world.Manager.Join(
-		world.Components.Game.Material,
-		world.Components.Game.ItemLocationInBackpack,
+		world.Components.Material,
+		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(f))
 }
 
 // QueryInPartyMember はパーティメンバー
 func QueryInPartyMember(world w.World, f func(entity ecs.Entity)) {
 	world.Manager.Join(
-		world.Components.Game.FactionAlly,
-		world.Components.Game.InParty,
+		world.Components.FactionAlly,
+		world.Components.InParty,
 	).Visit(ecs.Visit(f))
 }

@@ -212,7 +212,7 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 	items := make([]menu.MenuItem, len(entities))
 
 	for i, entity := range entities {
-		name := world.Components.Game.Name.Get(entity).(*gc.Name).Name
+		name := world.Components.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("entity_%d", entity),
 			Label:    name,
@@ -249,13 +249,13 @@ func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem
 	}
 
 	// Descriptionコンポーネントの存在チェック
-	if !entity.HasComponent(world.Components.Game.Description) {
+	if !entity.HasComponent(world.Components.Description) {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		return
 	}
 
-	desc := world.Components.Game.Description.Get(entity).(*gc.Description)
+	desc := world.Components.Description.Get(entity).(*gc.Description)
 	if desc == nil {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
@@ -415,10 +415,10 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	st.selectedItem = entity
 
 	// 使用可能なアクションを登録
-	if entity.HasComponent(world.Components.Game.Consumable) {
+	if entity.HasComponent(world.Components.Consumable) {
 		st.actionItems = append(st.actionItems, "使う")
 	}
-	if !entity.HasComponent(world.Components.Game.Material) {
+	if !entity.HasComponent(world.Components.Material) {
 		st.actionItems = append(st.actionItems, "捨てる")
 	}
 	st.actionItems = append(st.actionItems, TextClose)
@@ -472,7 +472,7 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 
 	switch selectedAction {
 	case "使う":
-		consumable := world.Components.Game.Consumable.Get(st.selectedItem).(*gc.Consumable)
+		consumable := world.Components.Consumable.Get(st.selectedItem).(*gc.Consumable)
 		switch consumable.TargetType.TargetNum {
 		case gc.TargetSingle:
 			st.closeActionWindow()
@@ -507,10 +507,10 @@ func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	world.Manager.Join(
-		world.Components.Game.Item,
-		world.Components.Game.ItemLocationInBackpack,
-		world.Components.Game.Wearable.Not(),
-		world.Components.Game.Card.Not(),
+		world.Components.Item,
+		world.Components.ItemLocationInBackpack,
+		world.Components.Wearable.Not(),
+		world.Components.Card.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -522,9 +522,9 @@ func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	world.Manager.Join(
-		world.Components.Game.Item,
-		world.Components.Game.Card,
-		world.Components.Game.ItemLocationInBackpack,
+		world.Components.Item,
+		world.Components.Card,
+		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -536,9 +536,9 @@ func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	world.Manager.Join(
-		world.Components.Game.Item,
-		world.Components.Game.Wearable,
-		world.Components.Game.ItemLocationInBackpack,
+		world.Components.Item,
+		world.Components.Wearable,
+		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -550,7 +550,7 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	worldhelper.QueryOwnedMaterial(func(entity ecs.Entity) {
-		material := world.Components.Game.Material.Get(entity).(*gc.Material)
+		material := world.Components.Material.Get(entity).(*gc.Material)
 		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
 		if material.Amount > 0 {
 			items = append(items, entity)
@@ -646,10 +646,10 @@ func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 	// パーティメンバーリストを作成
 	st.partyMembers = []ecs.Entity{}
 	world.Manager.Join(
-		world.Components.Game.FactionAlly,
-		world.Components.Game.InParty,
-		world.Components.Game.Name,
-		world.Components.Game.Pools,
+		world.Components.FactionAlly,
+		world.Components.InParty,
+		world.Components.Name,
+		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.partyMembers = append(st.partyMembers, entity)
 	}))

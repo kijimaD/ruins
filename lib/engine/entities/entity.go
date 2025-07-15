@@ -21,7 +21,7 @@ func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity 
 	entities := make([]ecs.Entity, len(entityComponentList.Game))
 	for iEntity := range entityComponentList.Game {
 		entities[iEntity] = world.Manager.NewEntity()
-		AddEntityComponents(entities[iEntity], world.Components.Game, entityComponentList.Game[iEntity])
+		AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
 	}
 
 	// Add game components
@@ -30,7 +30,7 @@ func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity 
 			log.Fatal("incorrect size for game component list")
 		}
 		for iEntity := range entities {
-			AddEntityComponents(entities[iEntity], world.Components.Game, entityComponentList.Game[iEntity])
+			AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
 		}
 	}
 	return entities

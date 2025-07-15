@@ -101,11 +101,11 @@ func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
 	var camera *gc.Camera
 	var cPos *gc.Position
 	world.Manager.Join(
-		world.Components.Game.Camera,
-		world.Components.Game.Position,
+		world.Components.Camera,
+		world.Components.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		camera = world.Components.Game.Camera.Get(entity).(*gc.Camera)
-		cPos = world.Components.Game.Position.Get(entity).(*gc.Position)
+		camera = world.Components.Camera.Get(entity).(*gc.Camera)
+		cPos = world.Components.Position.Get(entity).(*gc.Position)
 	}))
 
 	cx, cy := float64(world.Resources.ScreenDimensions.Width/2), float64(world.Resources.ScreenDimensions.Height/2)

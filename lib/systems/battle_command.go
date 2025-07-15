@@ -21,10 +21,10 @@ func BattleCommandSystem(world w.World) {
 
 	// 持ち主が死んでいるBattleCommandを削除する
 	world.Manager.Join(
-		world.Components.Game.BattleCommand,
+		world.Components.BattleCommand,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		cmd := world.Components.Game.BattleCommand.Get(entity).(*gc.BattleCommand)
-		ownerPools := world.Components.Game.Pools.Get(cmd.Owner).(*gc.Pools)
+		cmd := world.Components.BattleCommand.Get(entity).(*gc.BattleCommand)
+		ownerPools := world.Components.Pools.Get(cmd.Owner).(*gc.Pools)
 		if ownerPools.HP.Current == 0 {
 			world.Manager.DeleteEntity(entity)
 		}
@@ -33,7 +33,7 @@ func BattleCommandSystem(world w.World) {
 	// ownerの素早さが一番高いものでソートする
 	bcEntities := []ecs.Entity{}
 	world.Manager.Join(
-		world.Components.Game.BattleCommand,
+		world.Components.BattleCommand,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		bcEntities = append(bcEntities, entity)
 	}))
@@ -41,11 +41,11 @@ func BattleCommandSystem(world w.World) {
 		return
 	}
 	sort.Slice(bcEntities, func(i, j int) bool {
-		ibc := world.Components.Game.BattleCommand.Get(bcEntities[i]).(*gc.BattleCommand)
-		jbc := world.Components.Game.BattleCommand.Get(bcEntities[j]).(*gc.BattleCommand)
+		ibc := world.Components.BattleCommand.Get(bcEntities[i]).(*gc.BattleCommand)
+		jbc := world.Components.BattleCommand.Get(bcEntities[j]).(*gc.BattleCommand)
 
-		iOwnerAttributes := world.Components.Game.Attributes.Get(ibc.Owner).(*gc.Attributes)
-		jOwnerAttributes := world.Components.Game.Attributes.Get(jbc.Owner).(*gc.Attributes)
+		iOwnerAttributes := world.Components.Attributes.Get(ibc.Owner).(*gc.Attributes)
+		jOwnerAttributes := world.Components.Attributes.Get(jbc.Owner).(*gc.Attributes)
 
 		// ランダムな小数を付加して等しくならないようにする
 		isum := float64(iOwnerAttributes.Agility.Total) + rand.Float64()
@@ -56,9 +56,9 @@ func BattleCommandSystem(world w.World) {
 
 	// 最も素早さが高いコマンドを実行する
 	entity := bcEntities[0]
-	cmd := world.Components.Game.BattleCommand.Get(entity).(*gc.BattleCommand)
+	cmd := world.Components.BattleCommand.Get(entity).(*gc.BattleCommand)
 	{
-		targetPools := world.Components.Game.Pools.Get(cmd.Target).(*gc.Pools)
+		targetPools := world.Components.Pools.Get(cmd.Target).(*gc.Pools)
 		// ターゲットが死んでいる場合は同じ派閥の別の生存エンティティに変更する
 		if targetPools.HP.Current == 0 {
 			p, err := worldhelper.NewByEntity(world, cmd.Target)
@@ -84,18 +84,18 @@ func BattleCommandSystem(world w.World) {
 	}
 
 	// wayから攻撃の属性を取り出す
-	attack := world.Components.Game.Attack.Get(cmd.Way).(*gc.Attack)
-	card := world.Components.Game.Card.Get(cmd.Way).(*gc.Card)
+	attack := world.Components.Attack.Get(cmd.Way).(*gc.Attack)
+	card := world.Components.Card.Get(cmd.Way).(*gc.Card)
 	if attack != nil {
 		{
-			ownerName := world.Components.Game.Name.Get(cmd.Owner).(*gc.Name)
-			wayName := world.Components.Game.Name.Get(cmd.Way).(*gc.Name)
+			ownerName := world.Components.Name.Get(cmd.Owner).(*gc.Name)
+			wayName := world.Components.Name.Get(cmd.Way).(*gc.Name)
 			entry := fmt.Sprintf("%sは、%sで攻撃。", ownerName.Name, wayName.Name)
 			gamelog.BattleLog.Append(entry)
 		}
 
 		ownerEntity := cmd.Owner
-		attrs := world.Components.Game.Attributes.Get(ownerEntity).(*gc.Attributes)
+		attrs := world.Components.Attributes.Get(ownerEntity).(*gc.Attributes)
 		damage := attack.Damage + attrs.Strength.Total
 		effects.AddEffect(&ownerEntity, effects.Damage{Amount: damage}, effects.Single{Target: cmd.Target})
 		effects.AddEffect(&ownerEntity, effects.ConsumptionStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}, effects.Single{Target: cmd.Owner})

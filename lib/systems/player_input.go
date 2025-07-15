@@ -15,13 +15,13 @@ func PlayerInputSystem(world w.World) {
 	var playerVelocity *gc.Velocity
 	var playerPos *gc.Position
 	world.Manager.Join(
-		world.Components.Game.Velocity,
-		world.Components.Game.Position,
-		world.Components.Game.Operator,
-		world.Components.Game.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.Operator,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerVelocity = world.Components.Game.Velocity.Get(entity).(*gc.Velocity)
-		playerPos = world.Components.Game.Position.Get(entity).(*gc.Position)
+		playerVelocity = world.Components.Velocity.Get(entity).(*gc.Velocity)
+		playerPos = world.Components.Position.Get(entity).(*gc.Position)
 	}))
 
 	// デフォルト
@@ -45,11 +45,11 @@ func PlayerInputSystem(world w.World) {
 		var camera *gc.Camera
 		var cPos *gc.Position
 		world.Manager.Join(
-			world.Components.Game.Camera,
-			world.Components.Game.Position,
+			world.Components.Camera,
+			world.Components.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			camera = world.Components.Game.Camera.Get(entity).(*gc.Camera)
-			cPos = world.Components.Game.Position.Get(entity).(*gc.Position)
+			camera = world.Components.Camera.Get(entity).(*gc.Camera)
+			cPos = world.Components.Position.Get(entity).(*gc.Position)
 		}))
 		cPos.X = playerPos.X
 		cPos.Y = playerPos.Y

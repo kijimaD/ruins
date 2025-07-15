@@ -19,8 +19,8 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 	res := world.Resources.UIResources
 	memberContainer := eui.NewVerticalContainer()
 
-	name := world.Components.Game.Name.Get(entity).(*gc.Name)
-	pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
+	name := world.Components.Name.Get(entity).(*gc.Name)
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
 	memberContainer.AddChild(eui.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
 		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", utils.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),

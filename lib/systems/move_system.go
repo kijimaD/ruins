@@ -18,11 +18,11 @@ func MoveSystem(world w.World) {
 	maxBackSpeed := -1.0
 	accelerationSpeed := 0.05
 	world.Manager.Join(
-		world.Components.Game.Velocity,
-		world.Components.Game.Position,
-		world.Components.Game.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		velocity := world.Components.Game.Velocity.Get(entity).(*gc.Velocity)
+		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		switch velocity.ThrottleMode {
 		case gc.ThrottleModeFront:
 			velocity.Speed = utils.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
@@ -36,16 +36,16 @@ func MoveSystem(world w.World) {
 
 	// 操作キャラに対してタイルイベントを発行する
 	world.Manager.Join(
-		world.Components.Game.Position,
-		world.Components.Game.SpriteRender,
-		world.Components.Game.Operator,
+		world.Components.Position,
+		world.Components.SpriteRender,
+		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := world.Components.Game.Position.Get(entity).(*gc.Position)
+		pos := world.Components.Position.Get(entity).(*gc.Position)
 		gameResources := world.Resources.Game.(*resources.Game)
 		tileEntity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
-		if tileEntity.HasComponent(world.Components.Game.Warp) {
-			warp := world.Components.Game.Warp.Get(tileEntity).(*gc.Warp)
+		if tileEntity.HasComponent(world.Components.Warp) {
+			warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
 			switch warp.Mode {
 			case gc.WarpModeNext:
 				effects.AddEffect(nil, effects.WarpNext{}, effects.None{})
@@ -59,8 +59,8 @@ func MoveSystem(world w.World) {
 // 角度と距離を指定して相対移動させる
 func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) {
 
-	pos := world.Components.Game.Position.Get(entity).(*gc.Position)
-	spriteRender := world.Components.Game.SpriteRender.Get(entity).(*gc.SpriteRender)
+	pos := world.Components.Position.Get(entity).(*gc.Position)
+	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 
 	originalX := pos.X
 	originalY := pos.Y
@@ -77,16 +77,16 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 		y2 := float64(int(pos.Y) + sprite.Height/2 - padding)
 
 		world.Manager.Join(
-			world.Components.Game.SpriteRender,
-			world.Components.Game.BlockPass,
+			world.Components.SpriteRender,
+			world.Components.BlockPass,
 		).Visit(ecs.Visit(func(entityAnother ecs.Entity) {
 			if entity == entityAnother {
 				return
 			}
 			switch {
-			case entityAnother.HasComponent(world.Components.Game.Position):
-				objectPos := world.Components.Game.Position.Get(entityAnother).(*gc.Position)
-				objectSpriteRender := world.Components.Game.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
+			case entityAnother.HasComponent(world.Components.Position):
+				objectPos := world.Components.Position.Get(entityAnother).(*gc.Position)
+				objectSpriteRender := world.Components.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
 				objectx1 := float64(int(objectPos.X) - objectSprite.Width/2)
@@ -98,9 +98,9 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 					pos.X = originalX
 					pos.Y = originalY
 				}
-			case entityAnother.HasComponent(world.Components.Game.GridElement):
-				objectGrid := world.Components.Game.GridElement.Get(entityAnother).(*gc.GridElement)
-				objectSpriteRender := world.Components.Game.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
+			case entityAnother.HasComponent(world.Components.GridElement):
+				objectGrid := world.Components.GridElement.Get(entityAnother).(*gc.GridElement)
+				objectSpriteRender := world.Components.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 				x := int(objectGrid.Row) * sprite.Width
 				y := int(objectGrid.Col) * sprite.Height

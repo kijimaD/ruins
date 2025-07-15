@@ -13,14 +13,14 @@ import (
 func AIInputSystem(world w.World) {
 
 	world.Manager.Join(
-		world.Components.Game.Velocity,
-		world.Components.Game.Position,
-		world.Components.Game.AIMoveFSM,
-		world.Components.Game.AIRoaming,
-		world.Components.Game.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.AIMoveFSM,
+		world.Components.AIRoaming,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		roaming := world.Components.Game.AIRoaming.Get(entity).(*gc.AIRoaming)
-		velocity := world.Components.Game.Velocity.Get(entity).(*gc.Velocity)
+		roaming := world.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
+		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		if time.Since(roaming.StartSubState).Seconds() > roaming.DurationSubState.Seconds() {
 			roaming.StartSubState = time.Now()
 			roaming.DurationSubState = time.Second * time.Duration(rand.IntN(3))

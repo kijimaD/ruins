@@ -14,12 +14,12 @@ import (
 
 // InflictDamage はダメージを与える
 func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
-	pools := world.Components.Game.Pools.Get(target).(*gc.Pools)
+	pools := world.Components.Pools.Get(target).(*gc.Pools)
 	v, ok := damage.EffectType.(Damage)
 	if ok {
 		pools.HP.Current = utils.Max(0, pools.HP.Current-v.Amount)
 
-		name := world.Components.Game.Name.Get(target).(*gc.Name)
+		name := world.Components.Name.Get(target).(*gc.Name)
 		entry := fmt.Sprintf("%sに%dのダメージ。", name.Name, v.Amount)
 		gamelog.BattleLog.Append(entry)
 
@@ -31,7 +31,7 @@ func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
 
 // HealDamage はダメージを回復する
 func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
-	pools := world.Components.Game.Pools.Get(target).(*gc.Pools)
+	pools := world.Components.Pools.Get(target).(*gc.Pools)
 	v, ok := healing.EffectType.(Healing)
 	if !ok {
 		log.Print("Healingがついてない")
@@ -48,7 +48,7 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 
 // ConsumeStamina はスタミナを消費する
 func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
-	pools := world.Components.Game.Pools.Get(target).(*gc.Pools)
+	pools := world.Components.Pools.Get(target).(*gc.Pools)
 	v, ok := consume.EffectType.(ConsumptionStamina)
 	if !ok {
 		log.Print("ConsumeStaminaがついてない")
@@ -65,7 +65,7 @@ func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
 
 // RecoverStamina はスタミナを回復する
 func RecoverStamina(world w.World, recoveryEffect EffectSpawner, target ecs.Entity) {
-	pools := world.Components.Game.Pools.Get(target).(*gc.Pools)
+	pools := world.Components.Pools.Get(target).(*gc.Pools)
 	v, ok := recoveryEffect.EffectType.(RecoveryStamina)
 	if !ok {
 		log.Print("RecoverStaminaがついてない")

@@ -17,12 +17,12 @@ func HUDSystem(world w.World, screen *ebiten.Image) {
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", gameResources.Depth), 0, 200)
 
 	world.Manager.Join(
-		world.Components.Game.Velocity,
-		world.Components.Game.Position,
-		world.Components.Game.Operator,
-		world.Components.Game.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.Operator,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		velocity := world.Components.Game.Velocity.Get(entity).(*gc.Velocity)
+		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("speed: %.2f", velocity.Speed), 0, 220)
 	}))
 }

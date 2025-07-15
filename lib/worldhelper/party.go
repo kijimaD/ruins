@@ -36,16 +36,16 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 	switch factionType {
 	case gc.FactionAlly:
 		q = world.Manager.Join(
-			world.Components.Game.FactionAlly,
-			world.Components.Game.Pools,
-			world.Components.Game.Attributes,
+			world.Components.FactionAlly,
+			world.Components.Pools,
+			world.Components.Attributes,
 		)
 	case gc.FactionEnemy:
 		q = world.Manager.Join(
-			world.Components.Game.FactionEnemy,
-			world.Components.Game.Pools,
-			world.Components.Game.Attributes,
-			world.Components.Game.CommandTable,
+			world.Components.FactionEnemy,
+			world.Components.Pools,
+			world.Components.Attributes,
+			world.Components.CommandTable,
 		)
 	default:
 		log.Fatalf("invalid case: %v", factionType)
@@ -57,7 +57,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 
 	lives := []*ecs.Entity{}
 	for _, member := range members {
-		pools := world.Components.Game.Pools.Get(member).(*gc.Pools)
+		pools := world.Components.Pools.Get(member).(*gc.Pools)
 		if pools.HP.Current == 0 {
 			lives = append(lives, nil)
 		} else {
@@ -86,12 +86,12 @@ func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
 	var err error
 
 	switch {
-	case entity.HasComponent(world.Components.Game.FactionAlly):
+	case entity.HasComponent(world.Components.FactionAlly):
 		party, err = NewParty(world, gc.FactionAlly)
 		if err != nil {
 			return party, err
 		}
-	case entity.HasComponent(world.Components.Game.FactionEnemy):
+	case entity.HasComponent(world.Components.FactionEnemy):
 		party, err = NewParty(world, gc.FactionEnemy)
 		if err != nil {
 			return party, err

@@ -17,7 +17,7 @@ func TestInitGeneric(t *testing.T) {
 		assert.NotNil(t, world.Manager)
 		assert.NotNil(t, world.Components)
 		assert.NotNil(t, world.Resources)
-		assert.NotNil(t, world.Components.Game)
+		assert.NotNil(t, world.Components)
 
 		// 型安全性の確認
 		assert.IsType(t, &gc.Components{}, world.Components.Game)

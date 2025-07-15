@@ -56,8 +56,8 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 		_, ok = es.Targets.(Party)
 		if ok {
 			world.Manager.Join(
-				world.Components.Game.FactionAlly,
-				world.Components.Game.InParty,
+				world.Components.FactionAlly,
+				world.Components.InParty,
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
 				AffectEntity(world, es, utils.GetPtr(entity))
 			}))

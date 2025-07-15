@@ -18,9 +18,9 @@ type World struct {
 }
 
 // InitWorld は初期化する
-func InitWorld(gameComponents *gc.Components) World {
+func InitWorld(c *gc.Components) World {
 	manager := ecs.NewManager()
-	err := gameComponents.InitializeComponents(manager)
+	err := c.InitializeComponents(manager)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,7 +28,7 @@ func InitWorld(gameComponents *gc.Components) World {
 
 	return World{
 		Manager:    manager,
-		Components: gameComponents,
+		Components: c,
 		Resources:  resources,
 	}
 }
