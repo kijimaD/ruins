@@ -1,4 +1,4 @@
-package loader
+package entities
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntityComponentList(t *testing.T) {
+func TestComponentList(t *testing.T) {
 	t.Run("create entity component list", func(t *testing.T) {
 		gameComponents := []interface{}{
 			gc.GameComponentList{
@@ -15,7 +15,7 @@ func TestEntityComponentList(t *testing.T) {
 			},
 		}
 
-		list := EntityComponentList{
+		list := ComponentList{
 			Game: gameComponents,
 		}
 
@@ -23,7 +23,7 @@ func TestEntityComponentList(t *testing.T) {
 	})
 
 	t.Run("empty entity component list", func(t *testing.T) {
-		list := EntityComponentList{}
+		list := ComponentList{}
 		assert.Nil(t, list.Game, "空のリストでGameがnilでない")
 	})
 }
@@ -31,7 +31,7 @@ func TestEntityComponentList(t *testing.T) {
 func TestAddEntities(t *testing.T) {
 	t.Run("basic functionality test", func(t *testing.T) {
 		// 循環依存を避けるため、基本的な機能のみテスト
-		entityComponentList := EntityComponentList{
+		entityComponentList := ComponentList{
 			Game: []interface{}{
 				gc.GameComponentList{
 					Name: &gc.Name{Name: "テストエンティティ"},

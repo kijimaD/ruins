@@ -12,7 +12,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/loader"
+	"github.com/kijimaD/ruins/lib/engine/entities"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -185,7 +185,7 @@ func (st *BattleState) Update(world w.World) es.Transition {
 				targetEntity := allys[rand.IntN(len(allys))]
 
 				// 攻撃カードによって対象を選択
-				cl := loader.EntityComponentList{}
+				cl := entities.ComponentList{}
 				cl.Game = append(cl.Game, gc.GameComponentList{
 					BattleCommand: &gc.BattleCommand{
 						Owner:  entity,
@@ -193,7 +193,7 @@ func (st *BattleState) Update(world w.World) es.Transition {
 						Way:    masterCardEntityMap[name],
 					},
 				})
-				loader.AddEntities(world, cl)
+				entities.AddEntities(world, cl)
 			}))
 
 			st.phase = &phaseExecute{}
@@ -632,7 +632,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(_ int, item menu.MenuItem) {
 			targetEntity := item.UserData.(ecs.Entity)
-			cl := loader.EntityComponentList{}
+			cl := entities.ComponentList{}
 			cl.Game = append(cl.Game, gc.GameComponentList{
 				BattleCommand: &gc.BattleCommand{
 					Owner:  currentPhase.owner,
@@ -640,7 +640,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 					Way:    currentPhase.way,
 				},
 			})
-			loader.AddEntities(world, cl)
+			entities.AddEntities(world, cl)
 
 			err := st.party.Next()
 			if err == nil {

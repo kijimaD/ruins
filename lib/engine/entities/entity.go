@@ -1,4 +1,4 @@
-package loader
+package entities
 
 import (
 	"fmt"
@@ -11,13 +11,13 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// EntityComponentList is a list of preloaded entities with components
-type EntityComponentList struct {
+// ComponentList is a list of preloaded entities with components
+type ComponentList struct {
 	Game []interface{}
 }
 
 // AddEntities adds entities with engine and game components
-func AddEntities(world w.World, entityComponentList EntityComponentList) []ecs.Entity {
+func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity {
 	// Create new entities and add engine components
 	entities := make([]ecs.Entity, len(entityComponentList.Game))
 	for iEntity := range entityComponentList.Game {
