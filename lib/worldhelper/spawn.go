@@ -150,7 +150,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 // SpawnItem はアイテムを生成する
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs.Entity {
 	componentList := loader.EntityComponentList{}
-	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	gameComponent, err := rawMaster.GenerateItem(name, locationType)
 	if err != nil {
 		panic(err) // TODO: Handle error properly
@@ -164,7 +164,7 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs
 // SpawnMember はパーティに追加可能なキャラを生成する
 func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := loader.EntityComponentList{}
-	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	componentList.Game = append(componentList.Game, rawMaster.GenerateMember(name, inParty))
 	entities := loader.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
@@ -175,7 +175,7 @@ func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 // SpawnEnemy は戦闘に参加する敵キャラを生成する
 func SpawnEnemy(world w.World, name string) ecs.Entity {
 	componentList := loader.EntityComponentList{}
-	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
 	cl := rawMaster.GenerateEnemy(name)
 	componentList.Game = append(
@@ -240,7 +240,7 @@ func setMaxHPSP(world w.World, entity ecs.Entity) {
 
 // SpawnAllMaterials は所持素材の個数を0で初期化する
 func SpawnAllMaterials(world w.World) {
-	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.MaterialIndex {
 		componentList := loader.EntityComponentList{}
 		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
@@ -254,7 +254,7 @@ func SpawnAllMaterials(world w.World) {
 
 // SpawnAllRecipes はレシピ初期化
 func SpawnAllRecipes(world w.World) {
-	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.RecipeIndex {
 		componentList := loader.EntityComponentList{}
 		gameComponent, err := rawMaster.GenerateRecipe(k)
@@ -268,7 +268,7 @@ func SpawnAllRecipes(world w.World) {
 
 // SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
 func SpawnAllCards(world w.World) {
-	rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.ItemIndex {
 		componentList := loader.EntityComponentList{}
 		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)

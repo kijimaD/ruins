@@ -20,7 +20,7 @@ type ResourceManager interface {
 	// コントロール関連
 	LoadControls(axes []string, actions []string) (er.Controls, er.InputHandler, error)
 	// Raw(エンティティ定義)関連
-	LoadRaws() (*raw.RawMaster, error)
+	LoadRaws() (*raw.Master, error)
 	// すべてのリソースを一括読み込み
 	LoadAll(axes []string, actions []string) error
 }
@@ -47,7 +47,7 @@ type ResourceCache struct {
 	SpriteSheets map[string]ec.SpriteSheet
 	Controls     *er.Controls
 	InputHandler *er.InputHandler
-	RawMaster    *raw.RawMaster
+	RawMaster    *raw.Master
 }
 
 // NewResourceManager は新しいResourceManagerを作成する
@@ -174,7 +174,7 @@ func (rm *DefaultResourceManager) LoadControls(axes []string, actions []string) 
 }
 
 // LoadRaws はRawデータを読み込む
-func (rm *DefaultResourceManager) LoadRaws() (*raw.RawMaster, error) {
+func (rm *DefaultResourceManager) LoadRaws() (*raw.Master, error) {
 	// キャッシュがあれば返す
 	if rm.cache.RawMaster != nil {
 		return rm.cache.RawMaster, nil

@@ -22,10 +22,6 @@ type Master struct {
 	SpriteSheetIndex  map[string]int
 }
 
-// RawMaster は後方互換性のためのエイリアス
-//
-//nolint:revive // 後方互換性のために必要
-type RawMaster = Master
 
 // Raws は全てのローデータを格納する構造体
 type Raws struct {

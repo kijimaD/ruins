@@ -111,7 +111,7 @@ const (
 	TestItemTypeMaterial
 )
 
-// CreateTestRawMaster はテスト用のRawMasterを作成する
+// CreateTestRawMaster はテスト用のMasterを作成する
 func CreateTestRawMaster(t *testing.T) raw.Master {
 	t.Helper()
 
