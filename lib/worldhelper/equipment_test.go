@@ -10,7 +10,7 @@ import (
 
 func TestEquipDisarm(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// アイテムエンティティを作成
 	item := world.Manager.NewEntity()

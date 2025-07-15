@@ -10,7 +10,7 @@ import (
 
 func TestCanCraft(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// レシピエンティティを作成
 	recipe := world.Manager.NewEntity()
@@ -60,7 +60,7 @@ func TestCanCraft(t *testing.T) {
 
 func TestCraft(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 存在しないレシピでのクラフト試行
 	result, err := Craft(world, "存在しない武器")

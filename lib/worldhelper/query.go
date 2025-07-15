@@ -1,7 +1,6 @@
 package worldhelper
 
 import (
-	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -10,7 +9,7 @@ import (
 // TODO: worldを先に置く
 // Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
 func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Material,
 		gameComponents.ItemLocationInBackpack,
@@ -19,7 +18,7 @@ func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
 
 // QueryInPartyMember はパーティメンバー
 func QueryInPartyMember(world w.World, f func(entity ecs.Entity)) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,

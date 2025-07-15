@@ -11,7 +11,7 @@ import (
 
 // AIInputSystem は AI制御されたエンティティの入力処理を行う
 func AIInputSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	world.Manager.Join(
 		gameComponents.Velocity,

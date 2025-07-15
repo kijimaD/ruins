@@ -12,7 +12,7 @@ import (
 // TODO: マイナスにならないようにする
 func EquipmentChangedSystem(world w.World) bool {
 	running := false
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.EquipmentChanged,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {

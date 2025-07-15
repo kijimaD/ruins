@@ -209,7 +209,7 @@ func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
 
 // createMenuItems はECSエンティティをMenuItemに変換する
 func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.MenuItem {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	items := make([]menu.MenuItem, len(entities))
 
 	for i, entity := range entities {
@@ -249,7 +249,7 @@ func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem
 		log.Fatal("unexpected item UserData")
 	}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// Descriptionコンポーネントの存在チェック
 	if !entity.HasComponent(gameComponents.Description) {
@@ -413,7 +413,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
 	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// アクション項目を準備
 	st.actionItems = []string{}
@@ -474,7 +474,7 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	switch selectedAction {
 	case "使う":
@@ -512,7 +512,7 @@ func (st *InventoryMenuState) reloadTabs(world w.World) {
 func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationInBackpack,
@@ -528,7 +528,7 @@ func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Card,
@@ -543,7 +543,7 @@ func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.Wearable,
@@ -558,7 +558,7 @@ func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	worldhelper.QueryOwnedMaterial(func(entity ecs.Entity) {
 		material := gameComponents.Material.Get(entity).(*gc.Material)
 		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
@@ -655,7 +655,7 @@ func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 
 	// パーティメンバーリストを作成
 	st.partyMembers = []ecs.Entity{}
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,

@@ -32,7 +32,7 @@ type Party struct {
 // 最初にセットされるインデックスは生存しているエンティティである
 // みんな生きていない場合は想定していない。エラーを返す
 func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	var q *bit.Set
 	switch factionType {
@@ -87,7 +87,7 @@ func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
 	var party Party
 	var err error
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	switch {
 	case entity.HasComponent(gameComponents.FactionAlly):
 		party, err = NewParty(world, gc.FactionAlly)

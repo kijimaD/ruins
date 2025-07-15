@@ -7,7 +7,6 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -228,7 +227,7 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 // メンバー一覧を更新する
 func (st *HomeMenuState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,

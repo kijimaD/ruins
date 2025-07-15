@@ -3,7 +3,6 @@ package effects
 import (
 	"log"
 
-	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -56,7 +55,7 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 		}
 		_, ok = es.Targets.(Party)
 		if ok {
-			gameComponents := world.Components.Game.(*gc.Components)
+			gameComponents := world.Components.Game
 			world.Manager.Join(
 				gameComponents.FactionAlly,
 				gameComponents.InParty,

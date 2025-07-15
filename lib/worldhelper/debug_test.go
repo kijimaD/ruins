@@ -3,7 +3,6 @@ package worldhelper
 import (
 	"testing"
 
-	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -11,7 +10,7 @@ import (
 
 func TestInitDebugData(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 初期状態では味方メンバーは0人
 	memberCount := 0

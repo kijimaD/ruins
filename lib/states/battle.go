@@ -99,7 +99,7 @@ func (st *BattleState) OnStart(world w.World) {
 // OnStop はステートが停止される際に呼ばれる
 func (st *BattleState) OnStop(world w.World) {
 	// 後片付け
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.FactionEnemy,
@@ -146,7 +146,7 @@ func (st *BattleState) Update(world w.World) es.Transition {
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
 		case *phaseEnemyActionSelect:
-			gameComponents := world.Components.Game.(*gc.Components)
+			gameComponents := world.Components.Game
 
 			// マスタとして事前に生成されたカードエンティティをメモしておく
 			masterCardEntityMap := map[string]ecs.Entity{}
@@ -232,7 +232,7 @@ func (st *BattleState) Update(world w.World) es.Transition {
 			return es.Transition{Type: es.TransNone}
 		}
 
-		gameComponents := world.Components.Game.(*gc.Components)
+		gameComponents := world.Components.Game
 
 		commandCount := 0
 		world.Manager.Join(
@@ -338,7 +338,7 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 // 敵一覧を更新する
 func (st *BattleState) updateEnemyListContainer(world w.World) {
 	st.enemyListContainer.RemoveChildren()
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Name,
 		gameComponents.FactionEnemy,
@@ -452,7 +452,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	st.selectContainer.RemoveChildren()
 	st.cardSpecContainer.RemoveChildren()
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	usableCards := []ecs.Entity{}
 	unusableCards := []ecs.Entity{}
 	world.Manager.Join(
@@ -586,7 +586,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	st.selectContainer.RemoveChildren()
 	st.cardSpecContainer.RemoveChildren()
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 生きている敵をリストアップ
 	enemies := []ecs.Entity{}
@@ -721,7 +721,7 @@ func (st *BattleState) reloadExecute(world w.World) {
 // メンバー一覧を更新する
 func (st *BattleState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,
@@ -743,7 +743,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
 	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
 	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.FactionAlly,
 		gameComponents.InParty,

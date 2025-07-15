@@ -20,7 +20,7 @@ const (
 
 // BattleExtinctionSystem は敵や味方の全滅をチェックする
 func BattleExtinctionSystem(world w.World) BattleExtinctionType {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 味方が全員死んでいたらゲームオーバーにする
 	liveAllyCount := 0

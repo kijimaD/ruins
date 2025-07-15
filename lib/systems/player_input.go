@@ -11,7 +11,7 @@ import (
 
 // PlayerInputSystem はプレイヤーからの入力を処理する
 func PlayerInputSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	var playerVelocity *gc.Velocity
 	var playerPos *gc.Position

@@ -10,7 +10,7 @@ import (
 
 func TestGetAmount(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
@@ -32,7 +32,7 @@ func TestGetAmount(t *testing.T) {
 
 func TestPlusMinusAmount(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()

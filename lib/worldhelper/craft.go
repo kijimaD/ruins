@@ -58,7 +58,7 @@ func consumeMaterials(world w.World, goal string) {
 // requiredMaterials は指定したレシピに必要な素材一覧
 func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 	required := []gc.RecipeInput{}
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Recipe,
 		gameComponents.Name,
@@ -75,7 +75,7 @@ func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 
 // randomize はアイテムにランダム値を設定する
 func randomize(world w.World, entity ecs.Entity) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	if entity.HasComponent(gameComponents.Attack) {
 		attack := gameComponents.Attack.Get(entity).(*gc.Attack)
 

@@ -200,7 +200,7 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 	})
 
 	tabs := []tabmenu.TabItem{}
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 各メンバーごとにタブを作成（防具と手札のスロットを統合）
 	for memberIdx, member := range members {
@@ -221,7 +221,7 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 
 // createAllSlotItems は防具と手札の全スロットのMenuItemを作成する
 func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.MenuItem {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	items := []menu.MenuItem{}
 
 	// 防具スロットを追加
@@ -303,7 +303,7 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.MenuItem) {
 			log.Fatal("unexpected item UserData")
 		}
 
-		gameComponents := world.Components.Game.(*gc.Components)
+		gameComponents := world.Components.Game
 		if entity.HasComponent(gameComponents.Description) {
 			desc := gameComponents.Description.Get(entity).(*gc.Description)
 			st.itemDesc.Label = desc.Description
@@ -318,7 +318,7 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.MenuItem) {
 
 		slotEntity := userData["entity"].(*ecs.Entity)
 		if slotEntity != nil {
-			gameComponents := world.Components.Game.(*gc.Components)
+			gameComponents := world.Components.Game
 			if (*slotEntity).HasComponent(gameComponents.Description) {
 				desc := gameComponents.Description.Get(*slotEntity).(*gc.Description)
 				st.itemDesc.Label = desc.Description
@@ -372,7 +372,7 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 			members = append(members, entity)
 		})
 
-		gameComponents := world.Components.Game.(*gc.Components)
+		gameComponents := world.Components.Game
 		for _, member := range members {
 			memberName := gameComponents.Name.Get(member).(*gc.Name).Name
 			isTargetMember := member == st.equipTargetMember
@@ -480,7 +480,7 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	}
 
 	targetMember := members[memberIdx]
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	views.AddMemberBar(world, st.abilityContainer, targetMember)
 
@@ -497,7 +497,7 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 func (st *EquipMenuState) queryMenuWear(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationInBackpack,
@@ -513,7 +513,7 @@ func (st *EquipMenuState) queryMenuWear(world w.World) []ecs.Entity {
 func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationInBackpack,
@@ -700,7 +700,7 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 
 // createEquipMenuItems は装備選択用のMenuItemを作成する
 func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []menu.MenuItem {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	items := make([]menu.MenuItem, len(entities))
 
 	for i, entity := range entities {

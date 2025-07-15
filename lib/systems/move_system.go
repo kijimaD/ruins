@@ -13,7 +13,7 @@ import (
 
 // MoveSystem はエンティティの移動処理を行う
 func MoveSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	maxFrontSpeed := 2.0
 	maxBackSpeed := -1.0
@@ -59,7 +59,7 @@ func MoveSystem(world w.World) {
 
 // 角度と距離を指定して相対移動させる
 func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	pos := gameComponents.Position.Get(entity).(*gc.Position)
 	spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)

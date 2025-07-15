@@ -10,7 +10,7 @@ import (
 
 func TestNewParty(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 味方キャラクターを作成
 	ally1 := world.Manager.NewEntity()
@@ -55,7 +55,7 @@ func TestNewParty(t *testing.T) {
 
 func TestNewByEntity(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 味方エンティティを作成
 	ally := world.Manager.NewEntity()
@@ -85,7 +85,7 @@ func TestNewByEntity(t *testing.T) {
 
 func TestPartyNavigation(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 3人の味方キャラクターを作成（1人は死亡状態）
 	ally1 := world.Manager.NewEntity()

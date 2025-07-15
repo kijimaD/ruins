@@ -11,7 +11,7 @@ import (
 
 func TestQueryOwnedMaterial(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
@@ -41,7 +41,7 @@ func TestQueryOwnedMaterial(t *testing.T) {
 
 func TestQueryInPartyMember(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// パーティメンバーを作成
 	partyMember := world.Manager.NewEntity()

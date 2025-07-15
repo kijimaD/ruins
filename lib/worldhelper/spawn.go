@@ -199,7 +199,7 @@ func fullRecover(world w.World, entity ecs.Entity) {
 
 // 指定したエンティティの最大HP/SPを設定する
 func setMaxHPSP(world w.World, entity ecs.Entity) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	if !entity.HasComponent(gameComponents.Pools) || !entity.HasComponent(gameComponents.Attributes) {
 		return

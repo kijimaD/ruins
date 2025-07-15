@@ -8,7 +8,7 @@ import (
 
 // Equip は装備する
 func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.EquipmentSlotNumber) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	item.AddComponent(gameComponents.ItemLocationEquipped, &gc.LocationEquipped{Owner: owner, EquipmentSlot: slotNumber})
 	item.RemoveComponent(gameComponents.ItemLocationInBackpack)
 	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
@@ -16,7 +16,7 @@ func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.Equip
 
 // Disarm は装備を外す
 func Disarm(world w.World, item ecs.Entity) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	item.AddComponent(gameComponents.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
 	item.RemoveComponent(gameComponents.ItemLocationEquipped)
 	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
@@ -27,7 +27,7 @@ func Disarm(world w.World, item ecs.Entity) {
 func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	entities := make([]*ecs.Entity, 4)
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationEquipped,
@@ -52,7 +52,7 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	entities := make([]*ecs.Entity, 8)
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Item,
 		gameComponents.ItemLocationEquipped,

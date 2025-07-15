@@ -10,7 +10,7 @@ import (
 
 func TestSetMaxHPSP(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	tests := []struct {
 		name        string
@@ -127,7 +127,7 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 
 func TestFullRecover(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// テスト用エンティティを作成
 	entity := world.Manager.NewEntity()

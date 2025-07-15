@@ -32,7 +32,7 @@ type DropResult struct {
 // 獲得した素材名を返す
 func BattleDropSystem(world w.World) DropResult {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	result := DropResult{
 		MaterialNames: []string{},
 		XPBefore:      map[ecs.Entity]int{},
@@ -120,7 +120,7 @@ func calcExpMultiplier(levelDiff int) float64 {
 
 // メンバーごとの経験値を取得する
 func getMemberXP(world w.World) map[ecs.Entity]int {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	xpMap := map[ecs.Entity]int{}
 
 	world.Manager.Join(

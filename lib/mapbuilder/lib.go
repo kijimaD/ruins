@@ -49,7 +49,7 @@ func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool
 	cx := gc.Pixel(int(tx)*int(utils.TileSize) + int(utils.TileSize)/2)
 	cy := gc.Pixel(int(ty)*int(utils.TileSize) + int(utils.TileSize)/2)
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	world.Manager.Join(
 		gameComponents.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {

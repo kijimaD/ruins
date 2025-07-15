@@ -13,7 +13,7 @@ import (
 func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World) {
 	eventTrigger(creator, item, targets, world)
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	_, ok := gameComponents.Consumable.Get(item).(*gc.Consumable)
 	if ok {
 		world.Manager.DeleteEntity(item)
@@ -28,7 +28,7 @@ func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.
 
 // アイテムからコンポーネントを取り出し、対応したEffectを追加する
 func eventTrigger(creator *ecs.Entity, entity ecs.Entity, targets Targets, world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	healing, ok := gameComponents.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
 	if ok {
 		AddEffect(creator, Healing{Amount: healing.Amount}, targets)

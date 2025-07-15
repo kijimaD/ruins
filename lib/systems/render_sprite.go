@@ -22,7 +22,7 @@ var (
 
 // RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	// 初回のみ生成

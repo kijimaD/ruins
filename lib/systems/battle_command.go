@@ -18,7 +18,7 @@ import (
 // 1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
 // クリックごとにコマンドの結果を見られるようにするため
 func BattleCommandSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	// 持ち主が死んでいるBattleCommandを削除する
 	world.Manager.Join(

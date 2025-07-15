@@ -16,7 +16,7 @@ import (
 // UpdateSpec は性能表示コンテナを更新する
 func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	targetContainer.RemoveChildren()
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	{
 		if entity.HasComponent(gameComponents.Material) {

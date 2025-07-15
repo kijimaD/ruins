@@ -17,7 +17,7 @@ import (
 // AddMemberBar は一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	res := world.Resources.UIResources
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	memberContainer := eui.NewVerticalContainer()
 
 	name := gameComponents.Name.Get(entity).(*gc.Name)

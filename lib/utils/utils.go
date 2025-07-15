@@ -98,7 +98,7 @@ func Abs[T int | float64](x T) T {
 // SetTranslate はカメラを考慮した画像配置オプションをセットする
 // TODO: ズーム率を追加する
 func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 	var camera *gc.Camera
 	var cPos *gc.Position
 	world.Manager.Join(

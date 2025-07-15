@@ -36,7 +36,7 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		blackImage = img
 	}
 
-	gameComponents := world.Components.Game.(*gc.Components)
+	gameComponents := world.Components.Game
 
 	var pos *gc.Position
 	world.Manager.Join(
