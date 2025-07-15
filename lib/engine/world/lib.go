@@ -1,7 +1,6 @@
 package world
 
 import (
-	gc "github.com/kijimaD/ruins/lib/components"
 	c "github.com/kijimaD/ruins/lib/engine/components"
 	"github.com/kijimaD/ruins/lib/engine/resources"
 
@@ -12,14 +11,6 @@ import (
 type Generic[T c.ComponentInitializer] struct {
 	Manager    *ecs.Manager
 	Components *c.Components[T]
-	Resources  *resources.Resources
-}
-
-// World は後方互換性のためのデフォルト型
-// TODO: 具体に移動する
-type World struct {
-	Manager    *ecs.Manager
-	Components *gc.GameComponents
 	Resources  *resources.Resources
 }
 
@@ -37,23 +28,4 @@ func InitGeneric[T c.ComponentInitializer](gameComponents T) (Generic[T], error)
 		Components: components,
 		Resources:  resources,
 	}, nil
-}
-
-// InitWorld は後方互換性のためのラッパー関数
-func InitWorld(gameComponents *gc.Components) World {
-	manager := ecs.NewManager()
-	err := gameComponents.InitializeComponents(manager)
-	if err != nil {
-		// 既存コードとの互換性のため、panicさせる
-		panic(err)
-	}
-	resources := resources.InitResources()
-
-	return World{
-		Manager: manager,
-		Components: &gc.GameComponents{
-			Game: gameComponents,
-		},
-		Resources: resources,
-	}
 }
