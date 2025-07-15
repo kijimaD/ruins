@@ -16,17 +16,11 @@ type Generic[T c.ComponentInitializer] struct {
 }
 
 // World は後方互換性のためのデフォルト型
-// TODO: 削除する
+// TODO: 具体に移動する
 type World struct {
 	Manager    *ecs.Manager
-	Components *LegacyComponents
+	Components *gc.GameComponents
 	Resources  *resources.Resources
-}
-
-// LegacyComponents は後方互換性のためのコンポーネント型
-// TODO: 実装なのでここにあるべきではない。移動する
-type LegacyComponents struct {
-	Game *gc.Components
 }
 
 // InitGeneric は型安全なワールド初期化
@@ -57,7 +51,7 @@ func InitWorld(gameComponents *gc.Components) World {
 
 	return World{
 		Manager: manager,
-		Components: &LegacyComponents{
+		Components: &gc.GameComponents{
 			Game: gameComponents,
 		},
 		Resources: resources,
