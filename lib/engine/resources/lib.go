@@ -20,6 +20,12 @@ type Resources struct {
 	UIResources      *UIResources
 }
 
+// ScreenDimensions contains current screen dimensions
+type ScreenDimensions struct {
+	Width  int
+	Height int
+}
+
 // InitResources initializes resources
 func InitResources() *Resources {
 	return &Resources{}
