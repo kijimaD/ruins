@@ -99,16 +99,15 @@ func (st *BattleState) OnStart(world w.World) {
 // OnStop はステートが停止される際に呼ばれる
 func (st *BattleState) OnStop(world w.World) {
 	// 後片付け
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionEnemy,
-		gameComponents.Attributes,
+		world.Components.Game.Name,
+		world.Components.Game.FactionEnemy,
+		world.Components.Game.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
 	world.Manager.Join(
-		gameComponents.BattleCommand,
+		world.Components.Game.BattleCommand,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
@@ -146,29 +145,28 @@ func (st *BattleState) Update(world w.World) es.Transition {
 		case *phaseChooseTarget:
 			st.reloadTarget(world, v)
 		case *phaseEnemyActionSelect:
-			gameComponents := world.Components.Game
 
 			// マスタとして事前に生成されたカードエンティティをメモしておく
 			masterCardEntityMap := map[string]ecs.Entity{}
 			world.Manager.Join(
-				gameComponents.Name,
-				gameComponents.Item,
-				gameComponents.Card,
-				gameComponents.ItemLocationNone,
+				world.Components.Game.Name,
+				world.Components.Game.Item,
+				world.Components.Game.Card,
+				world.Components.Game.ItemLocationNone,
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				name := gameComponents.Name.Get(entity).(*gc.Name)
+				name := world.Components.Game.Name.Get(entity).(*gc.Name)
 				masterCardEntityMap[name.Name] = entity
 			}))
 
 			// 敵のコマンドを投入する
 			// UIはない。1回だけ実行して敵コマンドを投入し、次のステートにいく
 			world.Manager.Join(
-				gameComponents.FactionEnemy,
-				gameComponents.Attributes,
-				gameComponents.CommandTable,
+				world.Components.Game.FactionEnemy,
+				world.Components.Game.Attributes,
+				world.Components.Game.CommandTable,
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
 				// テーブル取得
-				ctComponent := gameComponents.CommandTable.Get(entity).(*gc.CommandTable)
+				ctComponent := world.Components.Game.CommandTable.Get(entity).(*gc.CommandTable)
 				rawMaster := world.Resources.RawMaster.(*raw.Master)
 				ct := rawMaster.GetCommandTable(ctComponent.Name)
 				name := ct.SelectByWeight()
@@ -176,9 +174,9 @@ func (st *BattleState) Update(world w.World) es.Transition {
 				// プレイヤーキャラから選択
 				allys := []ecs.Entity{}
 				world.Manager.Join(
-					gameComponents.Name,
-					gameComponents.FactionAlly,
-					gameComponents.Pools,
+					world.Components.Game.Name,
+					world.Components.Game.FactionAlly,
+					world.Components.Game.Pools,
 				).Visit(ecs.Visit(func(entity ecs.Entity) {
 					allys = append(allys, entity)
 				}))
@@ -232,11 +230,9 @@ func (st *BattleState) Update(world w.World) es.Transition {
 			return es.Transition{Type: es.TransNone}
 		}
 
-		gameComponents := world.Components.Game
-
 		commandCount := 0
 		world.Manager.Join(
-			gameComponents.BattleCommand,
+			world.Components.Game.BattleCommand,
 		).Visit(ecs.Visit(func(_ ecs.Entity) {
 			commandCount++
 		}))
@@ -338,16 +334,15 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 // 敵一覧を更新する
 func (st *BattleState) updateEnemyListContainer(world w.World) {
 	st.enemyListContainer.RemoveChildren()
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionEnemy,
-		gameComponents.Attributes,
-		gameComponents.Pools,
-		gameComponents.Render,
+		world.Components.Game.Name,
+		world.Components.Game.FactionEnemy,
+		world.Components.Game.Attributes,
+		world.Components.Game.Pools,
+		world.Components.Game.Render,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		{
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 			if pools.HP.Current == 0 {
 				return
 			}
@@ -356,7 +351,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
 		)
 		{
-			render := gameComponents.Render.Get(entity).(*gc.Render)
+			render := world.Components.Game.Render.Get(entity).(*gc.Render)
 			sheets := (*world.Resources.SpriteSheets)[render.BattleBody.SheetName]
 			graphic := widget.NewGraphic(
 				widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
@@ -367,8 +362,8 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 			container.AddChild(graphic)
 		}
 		{
-			name := gameComponents.Name.Get(entity).(*gc.Name)
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			name := world.Components.Game.Name.Get(entity).(*gc.Name)
+			pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 			text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
 			container.AddChild(eui.NewMenuText(text, world))
 		}
@@ -452,17 +447,16 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	st.selectContainer.RemoveChildren()
 	st.cardSpecContainer.RemoveChildren()
 
-	gameComponents := world.Components.Game
 	usableCards := []ecs.Entity{}
 	unusableCards := []ecs.Entity{}
 	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.ItemLocationEquipped,
-		gameComponents.Card,
+		world.Components.Game.Item,
+		world.Components.Game.ItemLocationEquipped,
+		world.Components.Game.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		card := gameComponents.Card.Get(entity).(*gc.Card)
-		ownerPools := gameComponents.Pools.Get(currentPhase.owner).(*gc.Pools)
-		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+		card := world.Components.Game.Card.Get(entity).(*gc.Card)
+		ownerPools := world.Components.Game.Pools.Get(currentPhase.owner).(*gc.Pools)
+		equipped := world.Components.Game.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if currentPhase.owner == equipped.Owner {
 			if ownerPools.SP.Current >= card.Cost {
 				// 使用可能
@@ -477,12 +471,12 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	// 装備がなくても詰まないようにデフォルトの攻撃手段を追加する
 	// TODO: わかりにくいのでコンポーネント化したほうがいいかも
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Item,
-		gameComponents.Card,
-		gameComponents.ItemLocationNone,
+		world.Components.Game.Name,
+		world.Components.Game.Item,
+		world.Components.Game.Card,
+		world.Components.Game.ItemLocationNone,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
 		if name.Name == "体当たり" {
 			usableCards = append(usableCards, entity)
 		}
@@ -491,8 +485,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	// MenuItemを作成
 	items := make([]menu.MenuItem, len(usableCards))
 	for i, entity := range usableCards {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		card := gameComponents.Card.Get(entity).(*gc.Card)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
+		card := world.Components.Game.Card.Get(entity).(*gc.Card)
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("card_%d", entity),
 			Label:    fmt.Sprintf("%s (%d)", name.Name, card.Cost),
@@ -502,8 +496,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 
 	// 使用不可カードも追加（無効化状態で）
 	for _, entity := range unusableCards {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
-		card := gameComponents.Card.Get(entity).(*gc.Card)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
+		card := world.Components.Game.Card.Get(entity).(*gc.Card)
 		items = append(items, menu.MenuItem{
 			ID:       fmt.Sprintf("card_disabled_%d", entity),
 			Label:    fmt.Sprintf("%s (%d)", name.Name, card.Cost),
@@ -528,7 +522,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	callbacks := menu.MenuCallbacks{
 		OnSelect: func(_ int, item menu.MenuItem) {
 			cardEntity := item.UserData.(ecs.Entity)
-			card := gameComponents.Card.Get(cardEntity).(*gc.Card)
+			card := world.Components.Game.Card.Get(cardEntity).(*gc.Card)
 			if card == nil {
 				log.Fatal("unexpected error: entityがcardを保持していない")
 			}
@@ -561,7 +555,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 
 	// プレイヤー名を表示
 	{
-		name := gameComponents.Name.Get(*st.party.Value()).(*gc.Name)
+		name := world.Components.Game.Name.Get(*st.party.Value()).(*gc.Name)
 		st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
 	}
 }
@@ -586,17 +580,15 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	st.selectContainer.RemoveChildren()
 	st.cardSpecContainer.RemoveChildren()
 
-	gameComponents := world.Components.Game
-
 	// 生きている敵をリストアップ
 	enemies := []ecs.Entity{}
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionEnemy,
-		gameComponents.Pools,
+		world.Components.Game.Name,
+		world.Components.Game.FactionEnemy,
+		world.Components.Game.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		// 生きている敵のみ対象とする
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 		if pools.HP.Current == 0 {
 			return
 		}
@@ -612,7 +604,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	// MenuItemを作成
 	items := make([]menu.MenuItem, len(enemies))
 	for i, entity := range enemies {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("enemy_%d", entity),
 			Label:    name.Name,
@@ -721,11 +713,10 @@ func (st *BattleState) reloadExecute(world w.World) {
 // メンバー一覧を更新する
 func (st *BattleState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
-		gameComponents.Attributes,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.InParty,
+		world.Components.Game.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))
@@ -743,12 +734,11 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
 	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
 	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
-		gameComponents.Attributes,
-		gameComponents.Pools,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.InParty,
+		world.Components.Game.Attributes,
+		world.Components.Game.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		entryContainer := eui.NewRowContainer(
 			widget.ContainerOpts.WidgetOpts(
@@ -764,7 +754,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		)
 		content.AddChild(entryContainer)
 
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
 		entryContainer.AddChild(
 			widget.NewText(
 				widget.TextOpts.Text(name.Name, res.Text.Face, styles.TextColor),

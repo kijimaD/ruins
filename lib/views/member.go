@@ -17,11 +17,10 @@ import (
 // AddMemberBar は一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	res := world.Resources.UIResources
-	gameComponents := world.Components.Game
 	memberContainer := eui.NewVerticalContainer()
 
-	name := gameComponents.Name.Get(entity).(*gc.Name)
-	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+	name := world.Components.Game.Name.Get(entity).(*gc.Name)
+	pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 	memberContainer.AddChild(eui.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
 		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", utils.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),

@@ -11,18 +11,17 @@ import (
 
 // PlayerInputSystem はプレイヤーからの入力を処理する
 func PlayerInputSystem(world w.World) {
-	gameComponents := world.Components.Game
 
 	var playerVelocity *gc.Velocity
 	var playerPos *gc.Position
 	world.Manager.Join(
-		gameComponents.Velocity,
-		gameComponents.Position,
-		gameComponents.Operator,
-		gameComponents.SpriteRender,
+		world.Components.Game.Velocity,
+		world.Components.Game.Position,
+		world.Components.Game.Operator,
+		world.Components.Game.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerVelocity = gameComponents.Velocity.Get(entity).(*gc.Velocity)
-		playerPos = gameComponents.Position.Get(entity).(*gc.Position)
+		playerVelocity = world.Components.Game.Velocity.Get(entity).(*gc.Velocity)
+		playerPos = world.Components.Game.Position.Get(entity).(*gc.Position)
 	}))
 
 	// デフォルト
@@ -46,11 +45,11 @@ func PlayerInputSystem(world w.World) {
 		var camera *gc.Camera
 		var cPos *gc.Position
 		world.Manager.Join(
-			gameComponents.Camera,
-			gameComponents.Position,
+			world.Components.Game.Camera,
+			world.Components.Game.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			camera = gameComponents.Camera.Get(entity).(*gc.Camera)
-			cPos = gameComponents.Position.Get(entity).(*gc.Position)
+			camera = world.Components.Game.Camera.Get(entity).(*gc.Camera)
+			cPos = world.Components.Game.Position.Get(entity).(*gc.Position)
 		}))
 		cPos.X = playerPos.X
 		cPos.Y = playerPos.Y

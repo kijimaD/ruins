@@ -52,19 +52,18 @@ func (st *DungeonState) OnStart(world w.World) {
 
 // OnStop はステートが停止される際に呼ばれる
 func (st *DungeonState) OnStop(world w.World) {
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.SpriteRender,
+		world.Components.Game.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
 	world.Manager.Join(
-		gameComponents.Position,
+		world.Components.Game.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
 	world.Manager.Join(
-		gameComponents.GridElement,
+		world.Components.Game.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))

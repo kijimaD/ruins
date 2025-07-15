@@ -207,11 +207,10 @@ func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
 
 // createMenuItems はECSエンティティをMenuItemに変換する
 func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.MenuItem {
-	gameComponents := world.Components.Game
 	items := make([]menu.MenuItem, len(entities))
 
 	for i, entity := range entities {
-		name := gameComponents.Name.Get(entity).(*gc.Name).Name
+		name := world.Components.Game.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("entity_%d", entity),
 			Label:    name,
@@ -248,17 +247,15 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.MenuItem) {
 		log.Fatal("unexpected item UserData")
 	}
 
-	gameComponents := world.Components.Game
-
 	// Descriptionコンポーネントの存在チェック
-	if !entity.HasComponent(gameComponents.Description) {
+	if !entity.HasComponent(world.Components.Game.Description) {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
 		return
 	}
 
-	desc := gameComponents.Description.Get(entity).(*gc.Description)
+	desc := world.Components.Game.Description.Get(entity).(*gc.Description)
 	if desc == nil {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
@@ -274,13 +271,12 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.MenuItem) {
 func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Recipe,
-		gameComponents.Consumable,
+		world.Components.Game.Name,
+		world.Components.Game.Recipe,
+		world.Components.Game.Consumable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity.HasComponent(gameComponents.Card) {
+		if entity.HasComponent(world.Components.Game.Card) {
 			return
 		}
 
@@ -293,11 +289,10 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
 func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Recipe,
-		gameComponents.Card,
+		world.Components.Game.Name,
+		world.Components.Game.Recipe,
+		world.Components.Game.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -308,11 +303,10 @@ func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {
 func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.Recipe,
-		gameComponents.Wearable,
+		world.Components.Game.Name,
+		world.Components.Game.Recipe,
+		world.Components.Game.Wearable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -375,13 +369,12 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 }
 
 func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entity) {
-	gameComponents := world.Components.Game
 	st.recipeList.RemoveChildren()
 	world.Manager.Join(
-		gameComponents.Recipe,
+		world.Components.Game.Recipe,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if entity == targetEntity {
-			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
+			recipe := world.Components.Game.Recipe.Get(entity).(*gc.Recipe)
 			for _, input := range recipe.Inputs {
 				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, worldhelper.GetAmount(input.Name, world))
 				var color color.RGBA
@@ -403,8 +396,7 @@ func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
 	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
-	gameComponents := world.Components.Game
-	name := gameComponents.Name.Get(entity).(*gc.Name)
+	name := world.Components.Game.Name.Get(entity).(*gc.Name)
 
 	// アクション項目を準備
 	st.actionItems = []string{}
@@ -569,8 +561,7 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
-	gameComponents := world.Components.Game
-	name := gameComponents.Name.Get(st.selectedItem).(*gc.Name)
+	name := world.Components.Game.Name.Get(st.selectedItem).(*gc.Name)
 
 	switch selectedAction {
 	case "合成する":

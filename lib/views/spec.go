@@ -16,17 +16,16 @@ import (
 // UpdateSpec は性能表示コンテナを更新する
 func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	targetContainer.RemoveChildren()
-	gameComponents := world.Components.Game
 
 	{
-		if entity.HasComponent(gameComponents.Material) {
-			v := gameComponents.Material.Get(entity).(*gc.Material)
+		if entity.HasComponent(world.Components.Game.Material) {
+			v := world.Components.Game.Material.Get(entity).(*gc.Material)
 			amount := fmt.Sprintf("%d 個", v.Amount)
 			targetContainer.AddChild(eui.NewBodyText(amount, styles.TextColor, world))
 		}
 
-		if entity.HasComponent(gameComponents.Attack) {
-			attack := gameComponents.Attack.Get(entity).(*gc.Attack)
+		if entity.HasComponent(world.Components.Game.Attack) {
+			attack := world.Components.Game.Attack.Get(entity).(*gc.Attack)
 			targetContainer.AddChild(eui.NewBodyText(attack.AttackCategory.String(), styles.TextColor, world))
 
 			damage := fmt.Sprintf("%s %s", utils.DamageLabel, strconv.Itoa(attack.Damage))
@@ -42,8 +41,8 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 				targetContainer.AddChild(damageAttrText(world, attack.Element, attack.Element.String()))
 			}
 		}
-		if entity.HasComponent(gameComponents.Wearable) {
-			wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
+		if entity.HasComponent(world.Components.Game.Wearable) {
+			wearable := world.Components.Game.Wearable.Get(entity).(*gc.Wearable)
 			equipmentCategory := fmt.Sprintf("%s %s", utils.EquimentCategoryLabel, wearable.EquipmentCategory)
 			targetContainer.AddChild(eui.NewBodyText(equipmentCategory, styles.TextColor, world))
 
@@ -51,8 +50,8 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 			targetContainer.AddChild(eui.NewBodyText(defense, styles.TextColor, world))
 			addEquipBonus(targetContainer, wearable.EquipBonus, world)
 		}
-		if entity.HasComponent(gameComponents.Card) {
-			card := gameComponents.Card.Get(entity).(*gc.Card)
+		if entity.HasComponent(world.Components.Game.Card) {
+			card := world.Components.Game.Card.Get(entity).(*gc.Card)
 			cost := fmt.Sprintf("コスト %d", card.Cost)
 			targetContainer.AddChild(eui.NewBodyText(cost, styles.TextColor, world))
 		}

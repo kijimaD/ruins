@@ -227,10 +227,9 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 // メンバー一覧を更新する
 func (st *HomeMenuState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.InParty,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))

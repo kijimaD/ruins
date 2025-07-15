@@ -9,18 +9,16 @@ import (
 // TODO: worldを先に置く
 // Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
 func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Material,
-		gameComponents.ItemLocationInBackpack,
+		world.Components.Game.Material,
+		world.Components.Game.ItemLocationInBackpack,
 	).Visit(ecs.Visit(f))
 }
 
 // QueryInPartyMember はパーティメンバー
 func QueryInPartyMember(world w.World, f func(entity ecs.Entity)) {
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.InParty,
 	).Visit(ecs.Visit(f))
 }

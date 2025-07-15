@@ -58,14 +58,13 @@ func consumeMaterials(world w.World, goal string) {
 // requiredMaterials は指定したレシピに必要な素材一覧
 func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 	required := []gc.RecipeInput{}
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.Recipe,
-		gameComponents.Name,
+		world.Components.Game.Recipe,
+		world.Components.Game.Name,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
 		if name.Name == goal {
-			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
+			recipe := world.Components.Game.Recipe.Get(entity).(*gc.Recipe)
 			required = append(required, recipe.Inputs...)
 		}
 	}))
@@ -75,15 +74,14 @@ func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 
 // randomize はアイテムにランダム値を設定する
 func randomize(world w.World, entity ecs.Entity) {
-	gameComponents := world.Components.Game
-	if entity.HasComponent(gameComponents.Attack) {
-		attack := gameComponents.Attack.Get(entity).(*gc.Attack)
+	if entity.HasComponent(world.Components.Game.Attack) {
+		attack := world.Components.Game.Attack.Get(entity).(*gc.Attack)
 
 		attack.Accuracy += (-10 + rand.IntN(20)) // -10 ~ +9
 		attack.Damage += (-5 + rand.IntN(15))    // -5  ~ +9
 	}
-	if entity.HasComponent(gameComponents.Wearable) {
-		wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
+	if entity.HasComponent(world.Components.Game.Wearable) {
+		wearable := world.Components.Game.Wearable.Get(entity).(*gc.Wearable)
 
 		wearable.Defense += (-4 + rand.IntN(20)) // -4 ~ +9
 	}

@@ -11,9 +11,8 @@ import (
 func InitDebugData(world w.World) {
 	// 既に味方メンバーが存在するかチェック
 	memberCount := 0
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.FactionAlly,
+		world.Components.Game.FactionAlly,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))

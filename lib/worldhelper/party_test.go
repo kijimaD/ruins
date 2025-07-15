@@ -10,26 +10,25 @@ import (
 
 func TestNewParty(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game
 
 	// 味方キャラクターを作成
 	ally1 := world.Manager.NewEntity()
-	ally1.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	ally1.AddComponent(gameComponents.Pools, &gc.Pools{
+	ally1.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	ally1.AddComponent(world.Components.Game.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 100, Max: 100},
 		Level: 1,
 	})
-	ally1.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	ally1.AddComponent(world.Components.Game.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 10, Total: 10},
 	})
 
 	ally2 := world.Manager.NewEntity()
-	ally2.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	ally2.AddComponent(gameComponents.Pools, &gc.Pools{
+	ally2.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	ally2.AddComponent(world.Components.Game.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 0, Max: 50}, // 死亡状態
 		Level: 1,
 	})
-	ally2.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	ally2.AddComponent(world.Components.Game.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 8, Total: 8},
 	})
 
@@ -45,7 +44,7 @@ func TestNewParty(t *testing.T) {
 	// 現在選択されているメンバーが生存していることを確認
 	currentMember := party.Value()
 	assert.NotNil(t, currentMember, "現在のメンバーがnilであってはいけない")
-	currentPools := gameComponents.Pools.Get(*currentMember).(*gc.Pools)
+	currentPools := world.Components.Game.Pools.Get(*currentMember).(*gc.Pools)
 	assert.Greater(t, currentPools.HP.Current, 0, "現在のメンバーは生存していなければならない")
 
 	// クリーンアップ
@@ -55,16 +54,15 @@ func TestNewParty(t *testing.T) {
 
 func TestNewByEntity(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game
 
 	// 味方エンティティを作成
 	ally := world.Manager.NewEntity()
-	ally.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	ally.AddComponent(gameComponents.Pools, &gc.Pools{
+	ally.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	ally.AddComponent(world.Components.Game.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 100, Max: 100},
 		Level: 1,
 	})
-	ally.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	ally.AddComponent(world.Components.Game.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 10, Total: 10},
 	})
 
@@ -85,36 +83,35 @@ func TestNewByEntity(t *testing.T) {
 
 func TestPartyNavigation(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game
 
 	// 3人の味方キャラクターを作成（1人は死亡状態）
 	ally1 := world.Manager.NewEntity()
-	ally1.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	ally1.AddComponent(gameComponents.Pools, &gc.Pools{
+	ally1.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	ally1.AddComponent(world.Components.Game.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 100, Max: 100},
 		Level: 1,
 	})
-	ally1.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	ally1.AddComponent(world.Components.Game.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 10, Total: 10},
 	})
 
 	ally2 := world.Manager.NewEntity()
-	ally2.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	ally2.AddComponent(gameComponents.Pools, &gc.Pools{
+	ally2.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	ally2.AddComponent(world.Components.Game.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 0, Max: 50}, // 死亡状態
 		Level: 1,
 	})
-	ally2.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	ally2.AddComponent(world.Components.Game.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 8, Total: 8},
 	})
 
 	ally3 := world.Manager.NewEntity()
-	ally3.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	ally3.AddComponent(gameComponents.Pools, &gc.Pools{
+	ally3.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	ally3.AddComponent(world.Components.Game.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 75, Max: 75},
 		Level: 1,
 	})
-	ally3.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	ally3.AddComponent(world.Components.Game.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 9, Total: 9},
 	})
 
@@ -133,7 +130,7 @@ func TestPartyNavigation(t *testing.T) {
 	assert.NotEqual(t, currentMember, nextMember, "次のメンバーは現在のメンバーと異なるべき")
 
 	// 生存しているメンバーのみがナビゲーションの対象であることを確認
-	nextPools := gameComponents.Pools.Get(*nextMember).(*gc.Pools)
+	nextPools := world.Components.Game.Pools.Get(*nextMember).(*gc.Pools)
 	assert.Greater(t, nextPools.HP.Current, 0, "ナビゲーション対象は生存メンバーでなければならない")
 
 	// 前のメンバーに戻る

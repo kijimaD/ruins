@@ -11,18 +11,17 @@ import (
 
 func TestQueryOwnedMaterial(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
-	materialEntity.AddComponent(gameComponents.Material, &gc.Material{Amount: 5})
-	materialEntity.AddComponent(gameComponents.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	materialEntity.AddComponent(gameComponents.Name, &gc.Name{Name: "テスト素材"})
+	materialEntity.AddComponent(world.Components.Game.Material, &gc.Material{Amount: 5})
+	materialEntity.AddComponent(world.Components.Game.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	materialEntity.AddComponent(world.Components.Game.Name, &gc.Name{Name: "テスト素材"})
 
 	// 素材でないエンティティを作成（除外されることを確認）
 	nonMaterialEntity := world.Manager.NewEntity()
-	nonMaterialEntity.AddComponent(gameComponents.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	nonMaterialEntity.AddComponent(gameComponents.Name, &gc.Name{Name: "テストアイテム"})
+	nonMaterialEntity.AddComponent(world.Components.Game.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	nonMaterialEntity.AddComponent(world.Components.Game.Name, &gc.Name{Name: "テストアイテム"})
 
 	// クエリを実行
 	var foundEntities []ecs.Entity
@@ -41,18 +40,17 @@ func TestQueryOwnedMaterial(t *testing.T) {
 
 func TestQueryInPartyMember(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game
 
 	// パーティメンバーを作成
 	partyMember := world.Manager.NewEntity()
-	partyMember.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	partyMember.AddComponent(gameComponents.InParty, &gc.InParty{})
-	partyMember.AddComponent(gameComponents.Name, &gc.Name{Name: "パーティメンバー"})
+	partyMember.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	partyMember.AddComponent(world.Components.Game.InParty, &gc.InParty{})
+	partyMember.AddComponent(world.Components.Game.Name, &gc.Name{Name: "パーティメンバー"})
 
 	// 味方だがパーティにいないメンバーを作成
 	allyMember := world.Manager.NewEntity()
-	allyMember.AddComponent(gameComponents.FactionAlly, &gc.FactionAlly)
-	allyMember.AddComponent(gameComponents.Name, &gc.Name{Name: "味方メンバー"})
+	allyMember.AddComponent(world.Components.Game.FactionAlly, &gc.FactionAlly)
+	allyMember.AddComponent(world.Components.Game.Name, &gc.Name{Name: "味方メンバー"})
 
 	// クエリを実行
 	var foundEntities []ecs.Entity

@@ -32,7 +32,6 @@ type DropResult struct {
 // 獲得した素材名を返す
 func BattleDropSystem(world w.World) DropResult {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponents := world.Components.Game
 	result := DropResult{
 		MaterialNames: []string{},
 		XPBefore:      map[ecs.Entity]int{},
@@ -43,12 +42,12 @@ func BattleDropSystem(world w.World) DropResult {
 	// 素材を獲得する
 	cands := []string{}
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionEnemy,
-		gameComponents.Attributes,
-		gameComponents.DropTable,
+		world.Components.Game.Name,
+		world.Components.Game.FactionEnemy,
+		world.Components.Game.Attributes,
+		world.Components.Game.DropTable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		name := world.Components.Game.Name.Get(entity).(*gc.Name)
 		dt := rawMaster.GetDropTable(name.Name)
 		for i := 0; i < 3; i++ {
 			cands = append(cands, dt.SelectByWeight())
@@ -63,20 +62,20 @@ func BattleDropSystem(world w.World) DropResult {
 
 	// 経験値を獲得する
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionEnemy,
-		gameComponents.Pools,
-		gameComponents.DropTable,
+		world.Components.Game.Name,
+		world.Components.Game.FactionEnemy,
+		world.Components.Game.Pools,
+		world.Components.Game.DropTable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		enemyName := gameComponents.Name.Get(entity).(*gc.Name)
-		enemyPools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		enemyName := world.Components.Game.Name.Get(entity).(*gc.Name)
+		enemyPools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 		dt := rawMaster.GetDropTable(enemyName.Name)
 		world.Manager.Join(
-			gameComponents.Name,
-			gameComponents.FactionAlly,
-			gameComponents.Pools,
+			world.Components.Game.Name,
+			world.Components.Game.FactionAlly,
+			world.Components.Game.Pools,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			allyPools := gameComponents.Pools.Get(entity).(*gc.Pools)
+			allyPools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 			levelDiff := enemyPools.Level - allyPools.Level
 			multiplier := calcExpMultiplier(levelDiff)
 			allyPools.XP += int(dt.XpBase * multiplier)
@@ -86,11 +85,11 @@ func BattleDropSystem(world w.World) DropResult {
 
 	// 経験値を見てレベルを上げる
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionAlly,
-		gameComponents.Pools,
+		world.Components.Game.Name,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 		if pools.XP >= LevelUpThreshold {
 			result.IsLevelUp[entity] = true
 
@@ -120,15 +119,14 @@ func calcExpMultiplier(levelDiff int) float64 {
 
 // メンバーごとの経験値を取得する
 func getMemberXP(world w.World) map[ecs.Entity]int {
-	gameComponents := world.Components.Game
 	xpMap := map[ecs.Entity]int{}
 
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionAlly,
-		gameComponents.Pools,
+		world.Components.Game.Name,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 		xpMap[entity] = pools.XP
 	}))
 

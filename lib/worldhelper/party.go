@@ -32,22 +32,20 @@ type Party struct {
 // 最初にセットされるインデックスは生存しているエンティティである
 // みんな生きていない場合は想定していない。エラーを返す
 func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
-	gameComponents := world.Components.Game
-
 	var q *bit.Set
 	switch factionType {
 	case gc.FactionAlly:
 		q = world.Manager.Join(
-			gameComponents.FactionAlly,
-			gameComponents.Pools,
-			gameComponents.Attributes,
+			world.Components.Game.FactionAlly,
+			world.Components.Game.Pools,
+			world.Components.Game.Attributes,
 		)
 	case gc.FactionEnemy:
 		q = world.Manager.Join(
-			gameComponents.FactionEnemy,
-			gameComponents.Pools,
-			gameComponents.Attributes,
-			gameComponents.CommandTable,
+			world.Components.Game.FactionEnemy,
+			world.Components.Game.Pools,
+			world.Components.Game.Attributes,
+			world.Components.Game.CommandTable,
 		)
 	default:
 		log.Fatalf("invalid case: %v", factionType)
@@ -59,7 +57,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 
 	lives := []*ecs.Entity{}
 	for _, member := range members {
-		pools := gameComponents.Pools.Get(member).(*gc.Pools)
+		pools := world.Components.Game.Pools.Get(member).(*gc.Pools)
 		if pools.HP.Current == 0 {
 			lives = append(lives, nil)
 		} else {
@@ -87,14 +85,13 @@ func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
 	var party Party
 	var err error
 
-	gameComponents := world.Components.Game
 	switch {
-	case entity.HasComponent(gameComponents.FactionAlly):
+	case entity.HasComponent(world.Components.Game.FactionAlly):
 		party, err = NewParty(world, gc.FactionAlly)
 		if err != nil {
 			return party, err
 		}
-	case entity.HasComponent(gameComponents.FactionEnemy):
+	case entity.HasComponent(world.Components.Game.FactionEnemy):
 		party, err = NewParty(world, gc.FactionEnemy)
 		if err != nil {
 			return party, err

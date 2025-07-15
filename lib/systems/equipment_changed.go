@@ -12,12 +12,11 @@ import (
 // TODO: マイナスにならないようにする
 func EquipmentChangedSystem(world w.World) bool {
 	running := false
-	gameComponents := world.Components.Game
 	world.Manager.Join(
-		gameComponents.EquipmentChanged,
+		world.Components.Game.EquipmentChanged,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		running = true
-		entity.RemoveComponent(gameComponents.EquipmentChanged)
+		entity.RemoveComponent(world.Components.Game.EquipmentChanged)
 	}))
 
 	if !running {
@@ -26,9 +25,9 @@ func EquipmentChangedSystem(world w.World) bool {
 
 	// 初期化
 	world.Manager.Join(
-		gameComponents.Attributes,
+		world.Components.Game.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+		attrs := world.Components.Game.Attributes.Get(entity).(*gc.Attributes)
 
 		attrs.Vitality.Modifier = 0
 		attrs.Vitality.Total = attrs.Vitality.Base
@@ -45,14 +44,14 @@ func EquipmentChangedSystem(world w.World) bool {
 	}))
 
 	world.Manager.Join(
-		gameComponents.ItemLocationEquipped,
-		gameComponents.Wearable,
+		world.Components.Game.ItemLocationEquipped,
+		world.Components.Game.Wearable,
 	).Visit(ecs.Visit(func(item ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(item).(*gc.LocationEquipped)
-		wearable := gameComponents.Wearable.Get(item).(*gc.Wearable)
+		equipped := world.Components.Game.ItemLocationEquipped.Get(item).(*gc.LocationEquipped)
+		wearable := world.Components.Game.Wearable.Get(item).(*gc.Wearable)
 
 		owner := equipped.Owner
-		attrs := gameComponents.Attributes.Get(owner).(*gc.Attributes)
+		attrs := world.Components.Game.Attributes.Get(owner).(*gc.Attributes)
 
 		attrs.Defense.Modifier += wearable.Defense
 		attrs.Defense.Total = attrs.Defense.Base + attrs.Defense.Modifier
@@ -70,11 +69,11 @@ func EquipmentChangedSystem(world w.World) bool {
 	}))
 
 	world.Manager.Join(
-		gameComponents.Pools,
-		gameComponents.Attributes,
+		world.Components.Game.Pools,
+		world.Components.Game.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+		pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
+		attrs := world.Components.Game.Attributes.Get(entity).(*gc.Attributes)
 
 		pools.HP.Max = maxHP(attrs, pools)
 		pools.HP.Current = utils.Min(pools.HP.Max, pools.HP.Current)

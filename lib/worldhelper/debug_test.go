@@ -10,12 +10,11 @@ import (
 
 func TestInitDebugData(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game
 
 	// 初期状態では味方メンバーは0人
 	memberCount := 0
 	world.Manager.Join(
-		gameComponents.FactionAlly,
+		world.Components.Game.FactionAlly,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
@@ -27,7 +26,7 @@ func TestInitDebugData(t *testing.T) {
 	// 初期化後は味方メンバーが3人いるはず
 	memberCount = 0
 	world.Manager.Join(
-		gameComponents.FactionAlly,
+		world.Components.Game.FactionAlly,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
@@ -37,7 +36,7 @@ func TestInitDebugData(t *testing.T) {
 	InitDebugData(world)
 	memberCount = 0
 	world.Manager.Join(
-		gameComponents.FactionAlly,
+		world.Components.Game.FactionAlly,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))

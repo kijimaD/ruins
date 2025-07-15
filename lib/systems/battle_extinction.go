@@ -20,17 +20,16 @@ const (
 
 // BattleExtinctionSystem は敵や味方の全滅をチェックする
 func BattleExtinctionSystem(world w.World) BattleExtinctionType {
-	gameComponents := world.Components.Game
 
 	// 味方が全員死んでいたらゲームオーバーにする
 	liveAllyCount := 0
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionAlly,
-		gameComponents.Attributes,
-		gameComponents.Pools,
+		world.Components.Game.Name,
+		world.Components.Game.FactionAlly,
+		world.Components.Game.Attributes,
+		world.Components.Game.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 		if pools.HP.Current == 0 {
 			return
 		}
@@ -43,12 +42,12 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 	// 敵が全員死んでいたらリザルトフェーズに遷移する
 	liveEnemyCount := 0
 	world.Manager.Join(
-		gameComponents.Name,
-		gameComponents.FactionEnemy,
-		gameComponents.Attributes,
-		gameComponents.Pools,
+		world.Components.Game.Name,
+		world.Components.Game.FactionEnemy,
+		world.Components.Game.Attributes,
+		world.Components.Game.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+		pools := world.Components.Game.Pools.Get(entity).(*gc.Pools)
 		if pools.HP.Current == 0 {
 			return
 		}
