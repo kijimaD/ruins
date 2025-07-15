@@ -1,6 +1,10 @@
 package raw
 
-import "github.com/pkg/errors"
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+)
 
 // ErrInvalidEnumType はenumに無効な値が指定された場合のエラー
 var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
@@ -24,5 +28,5 @@ func (enum ValueType) Valid() error {
 	case PercentageType, NumeralType:
 		return nil
 	}
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }

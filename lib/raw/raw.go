@@ -1,6 +1,7 @@
 package raw
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/BurntSushi/toml"
@@ -189,10 +190,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Consumable != nil {
 		if err := gc.TargetGroupType(item.Consumable.TargetGroup).Valid(); err != nil {
-			return gc.GameComponentList{}, errors.Wrap(err, "invalid target group type")
+			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid target group type", err)
 		}
 		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
-			return gc.GameComponentList{}, errors.Wrap(err, "invalid target num type")
+			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid target num type", err)
 		}
 		targetType := gc.TargetType{
 			TargetGroup: gc.TargetGroupType(item.Consumable.TargetGroup),
@@ -200,7 +201,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 		}
 
 		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
-			return gc.GameComponentList{}, errors.Wrap(err, "invalid usable scene type")
+			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid usable scene type", err)
 		}
 		cl.Consumable = &gc.Consumable{
 			UsableScene: gc.UsableSceneType(item.Consumable.UsableScene),
@@ -210,7 +211,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.ProvidesHealing != nil {
 		if err := item.ProvidesHealing.ValueType.Valid(); err != nil {
-			return gc.GameComponentList{}, errors.Wrap(err, "invalid value type")
+			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid value type", err)
 		}
 		switch item.ProvidesHealing.ValueType {
 		case PercentageType:
@@ -225,10 +226,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Card != nil {
 		if err := gc.TargetGroupType(item.Card.TargetGroup).Valid(); err != nil {
-			return gc.GameComponentList{}, errors.Wrap(err, "invalid card target group type")
+			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid card target group type", err)
 		}
 		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
-			return gc.GameComponentList{}, errors.Wrap(err, "invalid card target num type")
+			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid card target num type", err)
 		}
 
 		cl.Card = &gc.Card{
@@ -315,7 +316,7 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	// 説明文などのため、マッチしたitemの定義から持ってくる
 	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	if err != nil {
-		return gc.GameComponentList{}, errors.Wrap(err, "failed to generate item for recipe")
+		return gc.GameComponentList{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
 	}
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Card != nil {

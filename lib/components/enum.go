@@ -1,6 +1,7 @@
 package components
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/pkg/errors"
@@ -40,7 +41,7 @@ func (enum TargetNumType) Valid() error {
 		return nil
 	}
 
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }
 
 // ================
@@ -66,7 +67,7 @@ func (enum TargetGroupType) Valid() error {
 		return nil
 	}
 
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }
 
 // ================
@@ -90,7 +91,7 @@ func (enum UsableSceneType) Valid() error {
 		return nil
 	}
 
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }
 
 // ================
@@ -120,7 +121,7 @@ func (enum AttackType) Valid() error {
 		return nil
 	}
 
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }
 
 func (enum AttackType) String() string {
@@ -168,7 +169,7 @@ func (enum EquipmentType) Valid() error {
 		return nil
 	}
 
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }
 
 func (enum EquipmentType) String() string {
@@ -212,7 +213,7 @@ func (enum ElementType) Valid() error {
 	case ElementTypeNone, ElementTypeFire, ElementTypeThunder, ElementTypeChill, ElementTypePhoton:
 		return nil
 	}
-	return errors.Wrapf(ErrInvalidEnumType, "get %s", enum)
+	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
 }
 
 func (enum ElementType) String() string {

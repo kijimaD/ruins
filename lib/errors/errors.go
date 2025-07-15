@@ -16,19 +16,3 @@ func (e KeyNotFoundError) Error() string {
 func NewKeyNotFoundError(key, collection string) error {
 	return KeyNotFoundError{Key: key, Collection: collection}
 }
-
-// Wrap wraps an error with additional context
-func Wrap(err error, message string) error {
-	if err == nil {
-		return nil
-	}
-	return fmt.Errorf("%s: %w", message, err)
-}
-
-// Wrapf wraps an error with formatted additional context
-func Wrapf(err error, format string, args ...interface{}) error {
-	if err == nil {
-		return nil
-	}
-	return fmt.Errorf(format+": %w", append(args, err)...)
-}
