@@ -93,7 +93,9 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package utils はゲームエンジンのユーティリティ関数と定数を提供する。
+データ構造、型変換、および汎用ヘルパー機能を含む。
+
 				
 			</div>
 		</div>
@@ -109,8 +111,6 @@
 			<div id="manual-nav">
 			<dl>
 			
-			
-				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
 				
@@ -137,6 +137,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/keymap.go">keymap.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go">log.go</a>
@@ -151,168 +153,10 @@
 
 		
 		
-			<h2 id="pkg-variables">Variables</h2>
-			
-				<p>GamepadButtonMap is a gamepad button mapping
-
-				<pre>var <span id="GamepadButtonMap">GamepadButtonMap</span> = map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]ebiten.<a href="index.html#GamepadButton">GamepadButton</a>{
-    &#34;GamepadButton0&#34;:  ebiten.<a href="index.html#GamepadButton0">GamepadButton0</a>,
-    &#34;GamepadButton1&#34;:  ebiten.<a href="index.html#GamepadButton1">GamepadButton1</a>,
-    &#34;GamepadButton2&#34;:  ebiten.<a href="index.html#GamepadButton2">GamepadButton2</a>,
-    &#34;GamepadButton3&#34;:  ebiten.<a href="index.html#GamepadButton3">GamepadButton3</a>,
-    &#34;GamepadButton4&#34;:  ebiten.<a href="index.html#GamepadButton4">GamepadButton4</a>,
-    &#34;GamepadButton5&#34;:  ebiten.<a href="index.html#GamepadButton5">GamepadButton5</a>,
-    &#34;GamepadButton6&#34;:  ebiten.<a href="index.html#GamepadButton6">GamepadButton6</a>,
-    &#34;GamepadButton7&#34;:  ebiten.<a href="index.html#GamepadButton7">GamepadButton7</a>,
-    &#34;GamepadButton8&#34;:  ebiten.<a href="index.html#GamepadButton8">GamepadButton8</a>,
-    &#34;GamepadButton9&#34;:  ebiten.<a href="index.html#GamepadButton9">GamepadButton9</a>,
-    &#34;GamepadButton10&#34;: ebiten.<a href="index.html#GamepadButton10">GamepadButton10</a>,
-    &#34;GamepadButton11&#34;: ebiten.<a href="index.html#GamepadButton11">GamepadButton11</a>,
-    &#34;GamepadButton12&#34;: ebiten.<a href="index.html#GamepadButton12">GamepadButton12</a>,
-    &#34;GamepadButton13&#34;: ebiten.<a href="index.html#GamepadButton13">GamepadButton13</a>,
-    &#34;GamepadButton14&#34;: ebiten.<a href="index.html#GamepadButton14">GamepadButton14</a>,
-    &#34;GamepadButton15&#34;: ebiten.<a href="index.html#GamepadButton15">GamepadButton15</a>,
-    &#34;GamepadButton16&#34;: ebiten.<a href="index.html#GamepadButton16">GamepadButton16</a>,
-    &#34;GamepadButton17&#34;: ebiten.<a href="index.html#GamepadButton17">GamepadButton17</a>,
-    &#34;GamepadButton18&#34;: ebiten.<a href="index.html#GamepadButton18">GamepadButton18</a>,
-    &#34;GamepadButton19&#34;: ebiten.<a href="index.html#GamepadButton19">GamepadButton19</a>,
-    &#34;GamepadButton20&#34;: ebiten.<a href="index.html#GamepadButton20">GamepadButton20</a>,
-    &#34;GamepadButton21&#34;: ebiten.<a href="index.html#GamepadButton21">GamepadButton21</a>,
-    &#34;GamepadButton22&#34;: ebiten.<a href="index.html#GamepadButton22">GamepadButton22</a>,
-    &#34;GamepadButton23&#34;: ebiten.<a href="index.html#GamepadButton23">GamepadButton23</a>,
-    &#34;GamepadButton24&#34;: ebiten.<a href="index.html#GamepadButton24">GamepadButton24</a>,
-    &#34;GamepadButton25&#34;: ebiten.<a href="index.html#GamepadButton25">GamepadButton25</a>,
-    &#34;GamepadButton26&#34;: ebiten.<a href="index.html#GamepadButton26">GamepadButton26</a>,
-    &#34;GamepadButton27&#34;: ebiten.<a href="index.html#GamepadButton27">GamepadButton27</a>,
-    &#34;GamepadButton28&#34;: ebiten.<a href="index.html#GamepadButton28">GamepadButton28</a>,
-    &#34;GamepadButton29&#34;: ebiten.<a href="index.html#GamepadButton29">GamepadButton29</a>,
-    &#34;GamepadButton30&#34;: ebiten.<a href="index.html#GamepadButton30">GamepadButton30</a>,
-    &#34;GamepadButton31&#34;: ebiten.<a href="index.html#GamepadButton31">GamepadButton31</a>,
-}</pre>
-			
-				<p>KeyMap is a US keyboard mapping
-
-				<pre>var <span id="KeyMap">KeyMap</span> = map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]ebiten.<a href="index.html#Key">Key</a>{
-    &#34;A&#34;:              ebiten.<a href="index.html#KeyA">KeyA</a>,
-    &#34;B&#34;:              ebiten.<a href="index.html#KeyB">KeyB</a>,
-    &#34;C&#34;:              ebiten.<a href="index.html#KeyC">KeyC</a>,
-    &#34;D&#34;:              ebiten.<a href="index.html#KeyD">KeyD</a>,
-    &#34;E&#34;:              ebiten.<a href="index.html#KeyE">KeyE</a>,
-    &#34;F&#34;:              ebiten.<a href="index.html#KeyF">KeyF</a>,
-    &#34;G&#34;:              ebiten.<a href="index.html#KeyG">KeyG</a>,
-    &#34;H&#34;:              ebiten.<a href="index.html#KeyH">KeyH</a>,
-    &#34;I&#34;:              ebiten.<a href="index.html#KeyI">KeyI</a>,
-    &#34;J&#34;:              ebiten.<a href="index.html#KeyJ">KeyJ</a>,
-    &#34;K&#34;:              ebiten.<a href="index.html#KeyK">KeyK</a>,
-    &#34;L&#34;:              ebiten.<a href="index.html#KeyL">KeyL</a>,
-    &#34;M&#34;:              ebiten.<a href="index.html#KeyM">KeyM</a>,
-    &#34;N&#34;:              ebiten.<a href="index.html#KeyN">KeyN</a>,
-    &#34;O&#34;:              ebiten.<a href="index.html#KeyO">KeyO</a>,
-    &#34;P&#34;:              ebiten.<a href="index.html#KeyP">KeyP</a>,
-    &#34;Q&#34;:              ebiten.<a href="index.html#KeyQ">KeyQ</a>,
-    &#34;R&#34;:              ebiten.<a href="index.html#KeyR">KeyR</a>,
-    &#34;S&#34;:              ebiten.<a href="index.html#KeyS">KeyS</a>,
-    &#34;T&#34;:              ebiten.<a href="index.html#KeyT">KeyT</a>,
-    &#34;U&#34;:              ebiten.<a href="index.html#KeyU">KeyU</a>,
-    &#34;V&#34;:              ebiten.<a href="index.html#KeyV">KeyV</a>,
-    &#34;W&#34;:              ebiten.<a href="index.html#KeyW">KeyW</a>,
-    &#34;X&#34;:              ebiten.<a href="index.html#KeyX">KeyX</a>,
-    &#34;Y&#34;:              ebiten.<a href="index.html#KeyY">KeyY</a>,
-    &#34;Z&#34;:              ebiten.<a href="index.html#KeyZ">KeyZ</a>,
-    &#34;AltLeft&#34;:        ebiten.<a href="index.html#KeyAltLeft">KeyAltLeft</a>,
-    &#34;AltRight&#34;:       ebiten.<a href="index.html#KeyAltRight">KeyAltRight</a>,
-    &#34;Down&#34;:           ebiten.<a href="index.html#KeyArrowDown">KeyArrowDown</a>,
-    &#34;Left&#34;:           ebiten.<a href="index.html#KeyArrowLeft">KeyArrowLeft</a>,
-    &#34;Right&#34;:          ebiten.<a href="index.html#KeyArrowRight">KeyArrowRight</a>,
-    &#34;Up&#34;:             ebiten.<a href="index.html#KeyArrowUp">KeyArrowUp</a>,
-    &#34;Backquote&#34;:      ebiten.<a href="index.html#KeyBackquote">KeyBackquote</a>,
-    &#34;Backslash&#34;:      ebiten.<a href="index.html#KeyBackslash">KeyBackslash</a>,
-    &#34;Backspace&#34;:      ebiten.<a href="index.html#KeyBackspace">KeyBackspace</a>,
-    &#34;BracketLeft&#34;:    ebiten.<a href="index.html#KeyBracketLeft">KeyBracketLeft</a>,
-    &#34;BracketRight&#34;:   ebiten.<a href="index.html#KeyBracketRight">KeyBracketRight</a>,
-    &#34;CapsLock&#34;:       ebiten.<a href="index.html#KeyCapsLock">KeyCapsLock</a>,
-    &#34;Comma&#34;:          ebiten.<a href="index.html#KeyComma">KeyComma</a>,
-    &#34;ContextMenu&#34;:    ebiten.<a href="index.html#KeyContextMenu">KeyContextMenu</a>,
-    &#34;ControlLeft&#34;:    ebiten.<a href="index.html#KeyControlLeft">KeyControlLeft</a>,
-    &#34;ControlRight&#34;:   ebiten.<a href="index.html#KeyControlRight">KeyControlRight</a>,
-    &#34;Delete&#34;:         ebiten.<a href="index.html#KeyDelete">KeyDelete</a>,
-    &#34;0&#34;:              ebiten.<a href="index.html#KeyDigit0">KeyDigit0</a>,
-    &#34;1&#34;:              ebiten.<a href="index.html#KeyDigit1">KeyDigit1</a>,
-    &#34;2&#34;:              ebiten.<a href="index.html#KeyDigit2">KeyDigit2</a>,
-    &#34;3&#34;:              ebiten.<a href="index.html#KeyDigit3">KeyDigit3</a>,
-    &#34;4&#34;:              ebiten.<a href="index.html#KeyDigit4">KeyDigit4</a>,
-    &#34;5&#34;:              ebiten.<a href="index.html#KeyDigit5">KeyDigit5</a>,
-    &#34;6&#34;:              ebiten.<a href="index.html#KeyDigit6">KeyDigit6</a>,
-    &#34;7&#34;:              ebiten.<a href="index.html#KeyDigit7">KeyDigit7</a>,
-    &#34;8&#34;:              ebiten.<a href="index.html#KeyDigit8">KeyDigit8</a>,
-    &#34;9&#34;:              ebiten.<a href="index.html#KeyDigit9">KeyDigit9</a>,
-    &#34;End&#34;:            ebiten.<a href="index.html#KeyEnd">KeyEnd</a>,
-    &#34;Enter&#34;:          ebiten.<a href="index.html#KeyEnter">KeyEnter</a>,
-    &#34;Equal&#34;:          ebiten.<a href="index.html#KeyEqual">KeyEqual</a>,
-    &#34;Escape&#34;:         ebiten.<a href="index.html#KeyEscape">KeyEscape</a>,
-    &#34;F1&#34;:             ebiten.<a href="index.html#KeyF1">KeyF1</a>,
-    &#34;F2&#34;:             ebiten.<a href="index.html#KeyF2">KeyF2</a>,
-    &#34;F3&#34;:             ebiten.<a href="index.html#KeyF3">KeyF3</a>,
-    &#34;F4&#34;:             ebiten.<a href="index.html#KeyF4">KeyF4</a>,
-    &#34;F5&#34;:             ebiten.<a href="index.html#KeyF5">KeyF5</a>,
-    &#34;F6&#34;:             ebiten.<a href="index.html#KeyF6">KeyF6</a>,
-    &#34;F7&#34;:             ebiten.<a href="index.html#KeyF7">KeyF7</a>,
-    &#34;F8&#34;:             ebiten.<a href="index.html#KeyF8">KeyF8</a>,
-    &#34;F9&#34;:             ebiten.<a href="index.html#KeyF9">KeyF9</a>,
-    &#34;F10&#34;:            ebiten.<a href="index.html#KeyF10">KeyF10</a>,
-    &#34;F11&#34;:            ebiten.<a href="index.html#KeyF11">KeyF11</a>,
-    &#34;F12&#34;:            ebiten.<a href="index.html#KeyF12">KeyF12</a>,
-    &#34;Home&#34;:           ebiten.<a href="index.html#KeyHome">KeyHome</a>,
-    &#34;Insert&#34;:         ebiten.<a href="index.html#KeyInsert">KeyInsert</a>,
-    &#34;MetaLeft&#34;:       ebiten.<a href="index.html#KeyMetaLeft">KeyMetaLeft</a>,
-    &#34;MetaRight&#34;:      ebiten.<a href="index.html#KeyMetaRight">KeyMetaRight</a>,
-    &#34;Minus&#34;:          ebiten.<a href="index.html#KeyMinus">KeyMinus</a>,
-    &#34;NumLock&#34;:        ebiten.<a href="index.html#KeyNumLock">KeyNumLock</a>,
-    &#34;Numpad0&#34;:        ebiten.<a href="index.html#KeyNumpad0">KeyNumpad0</a>,
-    &#34;Numpad1&#34;:        ebiten.<a href="index.html#KeyNumpad1">KeyNumpad1</a>,
-    &#34;Numpad2&#34;:        ebiten.<a href="index.html#KeyNumpad2">KeyNumpad2</a>,
-    &#34;Numpad3&#34;:        ebiten.<a href="index.html#KeyNumpad3">KeyNumpad3</a>,
-    &#34;Numpad4&#34;:        ebiten.<a href="index.html#KeyNumpad4">KeyNumpad4</a>,
-    &#34;Numpad5&#34;:        ebiten.<a href="index.html#KeyNumpad5">KeyNumpad5</a>,
-    &#34;Numpad6&#34;:        ebiten.<a href="index.html#KeyNumpad6">KeyNumpad6</a>,
-    &#34;Numpad7&#34;:        ebiten.<a href="index.html#KeyNumpad7">KeyNumpad7</a>,
-    &#34;Numpad8&#34;:        ebiten.<a href="index.html#KeyNumpad8">KeyNumpad8</a>,
-    &#34;Numpad9&#34;:        ebiten.<a href="index.html#KeyNumpad9">KeyNumpad9</a>,
-    &#34;NumpadAdd&#34;:      ebiten.<a href="index.html#KeyNumpadAdd">KeyNumpadAdd</a>,
-    &#34;NumpadDecimal&#34;:  ebiten.<a href="index.html#KeyNumpadDecimal">KeyNumpadDecimal</a>,
-    &#34;NumpadDivide&#34;:   ebiten.<a href="index.html#KeyNumpadDivide">KeyNumpadDivide</a>,
-    &#34;NumpadEnter&#34;:    ebiten.<a href="index.html#KeyNumpadEnter">KeyNumpadEnter</a>,
-    &#34;NumpadEqual&#34;:    ebiten.<a href="index.html#KeyNumpadEqual">KeyNumpadEqual</a>,
-    &#34;NumpadMultiply&#34;: ebiten.<a href="index.html#KeyNumpadMultiply">KeyNumpadMultiply</a>,
-    &#34;NumpadSubtract&#34;: ebiten.<a href="index.html#KeyNumpadSubtract">KeyNumpadSubtract</a>,
-    &#34;PageDown&#34;:       ebiten.<a href="index.html#KeyPageDown">KeyPageDown</a>,
-    &#34;PageUp&#34;:         ebiten.<a href="index.html#KeyPageUp">KeyPageUp</a>,
-    &#34;Pause&#34;:          ebiten.<a href="index.html#KeyPause">KeyPause</a>,
-    &#34;Period&#34;:         ebiten.<a href="index.html#KeyPeriod">KeyPeriod</a>,
-    &#34;PrintScreen&#34;:    ebiten.<a href="index.html#KeyPrintScreen">KeyPrintScreen</a>,
-    &#34;Quote&#34;:          ebiten.<a href="index.html#KeyQuote">KeyQuote</a>,
-    &#34;ScrollLock&#34;:     ebiten.<a href="index.html#KeyScrollLock">KeyScrollLock</a>,
-    &#34;Semicolon&#34;:      ebiten.<a href="index.html#KeySemicolon">KeySemicolon</a>,
-    &#34;ShiftLeft&#34;:      ebiten.<a href="index.html#KeyShiftLeft">KeyShiftLeft</a>,
-    &#34;ShiftRight&#34;:     ebiten.<a href="index.html#KeyShiftRight">KeyShiftRight</a>,
-    &#34;Slash&#34;:          ebiten.<a href="index.html#KeySlash">KeySlash</a>,
-    &#34;Space&#34;:          ebiten.<a href="index.html#KeySpace">KeySpace</a>,
-    &#34;Tab&#34;:            ebiten.<a href="index.html#KeyTab">KeyTab</a>,
-}</pre>
-			
-				<p>MouseButtonMap is a mouse button mapping
-
-				<pre>var <span id="MouseButtonMap">MouseButtonMap</span> = map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]ebiten.<a href="index.html#MouseButton">MouseButton</a>{
-    &#34;MouseButtonLeft&#34;:   ebiten.<a href="index.html#MouseButtonLeft">MouseButtonLeft</a>,
-    &#34;MouseButtonRight&#34;:  ebiten.<a href="index.html#MouseButtonRight">MouseButtonRight</a>,
-    &#34;MouseButtonMiddle&#34;: ebiten.<a href="index.html#MouseButtonMiddle">MouseButtonMiddle</a>,
-}</pre>
-			
-		
 		
 			
 			
-			<h2 id="LogError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=588:612#L26">LogError</a>
+			<h2 id="LogError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=676:700#L27">LogError</a>
 				<a class="permalink" href="index.html#LogError">&#xb6;</a>
 				
 				
@@ -326,7 +170,7 @@
 		
 			
 			
-			<h2 id="LogFatalf">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=699:741#L31">LogFatalf</a>
+			<h2 id="LogFatalf">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=787:829#L32">LogFatalf</a>
 				<a class="permalink" href="index.html#LogFatalf">&#xb6;</a>
 				
 				
@@ -340,7 +184,7 @@
 		
 			
 			
-			<h2 id="Try">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=895:930#L36">Try</a>
+			<h2 id="Try">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=983:1018#L37">Try</a>
 				<a class="permalink" href="index.html#Try">&#xb6;</a>
 				
 				
@@ -354,7 +198,7 @@
 		
 			
 			
-			<h2 id="Try2">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=1070:1123#L42">Try2</a>
+			<h2 id="Try2">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/utils/log.go?s=1158:1211#L43">Try2</a>
 				<a class="permalink" href="index.html#Try2">&#xb6;</a>
 				
 				

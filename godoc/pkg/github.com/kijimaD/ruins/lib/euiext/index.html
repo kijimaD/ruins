@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package euiext provides extended UI functionality.
+
 				
 			</div>
 		</div>
@@ -286,6 +287,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go">ext.go</a>
 			
 			</span>
@@ -302,12 +305,13 @@
 		
 			
 			
-			<h2 id="List">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=308:1915#L7">List</a>
+			<h2 id="List">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=373:1980#L8">List</a>
 				<a class="permalink" href="index.html#List">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>List is an extended list widget with additional functionality
+
 			<pre>type List struct {
 <span id="List.EntrySelectedEvent"></span>    EntrySelectedEvent *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/event/">event</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/event/#Event">Event</a>
     <span class="comment">// contains filtered or unexported fields</span>
@@ -324,26 +328,27 @@
 
 			
 				
-				<h3 id="NewList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2687:2726#L84">NewList</a>
+				<h3 id="NewList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=3360:3399#L95">NewList</a>
 					<a class="permalink" href="index.html#NewList">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewList(listOpts ...<a href="index.html#ListOpt">ListOpt</a>) *<a href="index.html#List">List</a></pre>
-				
+				<p>NewList creates a new List widget with the specified options
+
 				
 				
 			
 
 			
 				
-				<h3 id="List.AddEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=14923:14957#L576">AddEntry</a>
+				<h3 id="List.AddEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=17257:17291#L618">AddEntry</a>
 					<a class="permalink" href="index.html#List.AddEntry">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) AddEntry(entry <a href="http://localhost:8888/pkg/builtin/#any">any</a>)</pre>
-				<p>Add a new entry to the end of the list
+				<p>AddEntry adds a new entry to the end of the list
 Note: Duplicates will not be added
 
 				
@@ -351,184 +356,195 @@ Note: Duplicates will not be added
 				
 			
 				
-				<h3 id="List.AddFocus">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8830:8908#L351">AddFocus</a>
+				<h3 id="List.AddFocus">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10992:11070#L391">AddFocus</a>
 					<a class="permalink" href="index.html#List.AddFocus">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) AddFocus(direction <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#FocusDirection">FocusDirection</a>, focus <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Focuser">Focuser</a>)</pre>
-				
+				<p>AddFocus adds a focuser for the given direction
+
 				
 				
 				
 			
 				
-				<h3 id="List.Entries">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=15224:15254#L588">Entries</a>
+				<h3 id="List.Entries">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=17567:17597#L630">Entries</a>
 					<a class="permalink" href="index.html#List.Entries">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) Entries() []<a href="http://localhost:8888/pkg/builtin/#any">any</a></pre>
-				<p>Return the current entries in the list
+				<p>Entries returns the current entries in the list
 
 				
 				
 				
 			
 				
-				<h3 id="List.Focus">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8479:8513#L333">Focus</a>
+				<h3 id="List.Focus">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10439:10473#L369">Focus</a>
 					<a class="permalink" href="index.html#List.Focus">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) Focus(focused <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
-				
+				<p>Focus sets the focus state of the list
+
 				
 				
 				
 			
 				
-				<h3 id="List.FocusNext">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9491:9517#L376">FocusNext</a>
+				<h3 id="List.FocusNext">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=11696:11722#L417">FocusNext</a>
 					<a class="permalink" href="index.html#List.FocusNext">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) FocusNext()</pre>
-				
+				<p>FocusNext moves focus to the next entry
+
 				
 				
 				
 			
 				
-				<h3 id="List.FocusPrevious">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9855:9885#L393">FocusPrevious</a>
+				<h3 id="List.FocusPrevious">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=12111:12141#L435">FocusPrevious</a>
 					<a class="permalink" href="index.html#List.FocusPrevious">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) FocusPrevious()</pre>
-				
+				<p>FocusPrevious moves focus to the previous entry
+
 				
 				
 				
 			
 				
-				<h3 id="List.GetFocus">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8723:8794#L347">GetFocus</a>
+				<h3 id="List.GetFocus">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10834:10905#L386">GetFocus</a>
 					<a class="permalink" href="index.html#List.GetFocus">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) GetFocus(direction <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#FocusDirection">FocusDirection</a>) <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Focuser">Focuser</a></pre>
-				
+				<p>GetFocus returns the focuser for the given direction
+
 				
 				
 				
 			
 				
-				<h3 id="List.GetWidget">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7389:7430#L276">GetWidget</a>
+				<h3 id="List.GetWidget">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9025:9066#L305">GetWidget</a>
 					<a class="permalink" href="index.html#List.GetWidget">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) GetWidget() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Widget">Widget</a></pre>
-				
+				<p>GetWidget returns the underlying widget
+
 				
 				
 				
 			
 				
-				<h3 id="List.IsFocused">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8614:8645#L339">IsFocused</a>
+				<h3 id="List.IsFocused">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10623:10654#L376">IsFocused</a>
 					<a class="permalink" href="index.html#List.IsFocused">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) IsFocused() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				
+				<p>IsFocused returns whether the list is focused
+
 				
 				
 				
 			
 				
-				<h3 id="List.PreferredSize">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7481:7522#L281">PreferredSize</a>
+				<h3 id="List.PreferredSize">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9173:9214#L311">PreferredSize</a>
 					<a class="permalink" href="index.html#List.PreferredSize">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) PreferredSize() (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				
+				<p>PreferredSize returns the preferred size of the list
+
 				
 				
 				
 			
 				
-				<h3 id="List.RemoveEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=14260:14297#L548">RemoveEntry</a>
+				<h3 id="List.RemoveEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=16584:16621#L590">RemoveEntry</a>
 					<a class="permalink" href="index.html#List.RemoveEntry">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) RemoveEntry(entry <a href="http://localhost:8888/pkg/builtin/#any">any</a>)</pre>
-				<p>Remove the passed in entry from the list if it exists
+				<p>RemoveEntry removes the passed in entry from the list if it exists
 
 				
 				
 				
 			
 				
-				<h3 id="List.Render">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7883:7926#L301">Render</a>
+				<h3 id="List.Render">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9768:9811#L335">Render</a>
 					<a class="permalink" href="index.html#List.Render">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) Render(screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="List.RequestRelayout">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7679:7711#L291">RequestRelayout</a>
-					<a class="permalink" href="index.html#List.RequestRelayout">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (l *<a href="index.html#List">List</a>) RequestRelayout()</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="List.SelectFocused">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10224:10254#L410">SelectFocused</a>
-					<a class="permalink" href="index.html#List.SelectFocused">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (l *<a href="index.html#List">List</a>) SelectFocused()</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="List.SelectedEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=15342:15376#L594">SelectedEntry</a>
-					<a class="permalink" href="index.html#List.SelectedEntry">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (l *<a href="index.html#List">List</a>) SelectedEntry() <a href="http://localhost:8888/pkg/builtin/#any">any</a></pre>
-				<p>Return the currently selected entry in the list
+				<p>Render renders the list to the screen
 
 				
 				
 				
 			
 				
-				<h3 id="List.SetEntries">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=13652:13695#L523">SetEntries</a>
+				<h3 id="List.RequestRelayout">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9467:9499#L323">RequestRelayout</a>
+					<a class="permalink" href="index.html#List.RequestRelayout">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#List">List</a>) RequestRelayout()</pre>
+				<p>RequestRelayout requests a relayout of the list
+
+				
+				
+				
+			
+				
+				<h3 id="List.SelectFocused">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=12533:12563#L453">SelectFocused</a>
+					<a class="permalink" href="index.html#List.SelectFocused">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#List">List</a>) SelectFocused()</pre>
+				<p>SelectFocused selects the currently focused entry
+
+				
+				
+				
+			
+				
+				<h3 id="List.SelectedEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=17700:17734#L636">SelectedEntry</a>
+					<a class="permalink" href="index.html#List.SelectedEntry">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#List">List</a>) SelectedEntry() <a href="http://localhost:8888/pkg/builtin/#any">any</a></pre>
+				<p>SelectedEntry returns the currently selected entry in the list
+
+				
+				
+				
+			
+				
+				<h3 id="List.SetEntries">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=15963:16006#L565">SetEntries</a>
 					<a class="permalink" href="index.html#List.SetEntries">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) SetEntries(newEntries []<a href="http://localhost:8888/pkg/builtin/#any">any</a>)</pre>
-				<p>Updates the entries in the list.
+				<p>SetEntries updates the entries in the list.
 Note: Duplicates will be removed.
 
 				
@@ -536,62 +552,66 @@ Note: Duplicates will be removed.
 				
 			
 				
-				<h3 id="List.SetLocation">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7577:7623#L286">SetLocation</a>
+				<h3 id="List.SetLocation">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9314:9360#L317">SetLocation</a>
 					<a class="permalink" href="index.html#List.SetLocation">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) SetLocation(rect <a href="http://localhost:8888/pkg/image/">img</a>.<a href="http://localhost:8888/pkg/image/#Rectangle">Rectangle</a>)</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="List.SetSelectedEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=15466:15508#L600">SetSelectedEntry</a>
-					<a class="permalink" href="index.html#List.SetSelectedEntry">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (l *<a href="index.html#List">List</a>) SetSelectedEntry(entry <a href="http://localhost:8888/pkg/builtin/#any">any</a>)</pre>
-				<p>Set the Selected Entry to e if it is found.
+				<p>SetLocation sets the location of the list
 
 				
 				
 				
 			
 				
-				<h3 id="List.SetupInputLayer">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7761:7830#L296">SetupInputLayer</a>
+				<h3 id="List.SetSelectedEntry">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=17842:17884#L642">SetSelectedEntry</a>
+					<a class="permalink" href="index.html#List.SetSelectedEntry">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#List">List</a>) SetSelectedEntry(entry <a href="http://localhost:8888/pkg/builtin/#any">any</a>)</pre>
+				<p>SetSelectedEntry sets the Selected Entry to e if it is found.
+
+				
+				
+				
+			
+				
+				<h3 id="List.SetupInputLayer">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=9605:9674#L329">SetupInputLayer</a>
 					<a class="permalink" href="index.html#List.SetupInputLayer">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) SetupInputLayer(def <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/input/">input</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/input/#DeferredSetupInputLayerFunc">DeferredSetupInputLayerFunc</a>)</pre>
-				
+				<p>SetupInputLayer sets up the input layer for the list
+
 				
 				
 				
 			
 				
-				<h3 id="List.TabOrder">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8669:8698#L343">TabOrder</a>
+				<h3 id="List.TabOrder">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10724:10753#L381">TabOrder</a>
 					<a class="permalink" href="index.html#List.TabOrder">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) TabOrder() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				
+				<p>TabOrder returns the tab order of the list
+
 				
 				
 				
 			
 				
-				<h3 id="List.Update">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8362:8385#L324">Update</a>
+				<h3 id="List.Update">func (*List) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=10280:10303#L359">Update</a>
 					<a class="permalink" href="index.html#List.Update">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#List">List</a>) Update()</pre>
-				
+				<p>Update updates the list state
+
 				
 				
 				
@@ -599,12 +619,13 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListEntryColor">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2025:2455#L59">ListEntryColor</a>
+			<h2 id="ListEntryColor">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2361:2791#L65">ListEntryColor</a>
 				<a class="permalink" href="index.html#ListEntryColor">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListEntryColor defines colors for list entries in different states
+
 			<pre>type ListEntryColor struct {
 <span id="ListEntryColor.Unselected"></span>    Unselected                 <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#Color">Color</a>
 <span id="ListEntryColor.Selected"></span>    Selected                   <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#Color">Color</a>
@@ -633,12 +654,13 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListEntryEnterFunc">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=1988:2023#L57">ListEntryEnterFunc</a>
+			<h2 id="ListEntryEnterFunc">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2254:2289#L62">ListEntryEnterFunc</a>
 				<a class="permalink" href="index.html#ListEntryEnterFunc">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListEntryEnterFunc is a function called when entering a list entry
+
 			<pre>type ListEntryEnterFunc func(e <a href="http://localhost:8888/pkg/builtin/#any">any</a>)</pre>
 
 			
@@ -655,12 +677,13 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListEntryLabelFunc">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=1945:1987#L56">ListEntryLabelFunc</a>
+			<h2 id="ListEntryLabelFunc">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2140:2182#L59">ListEntryLabelFunc</a>
 				<a class="permalink" href="index.html#ListEntryLabelFunc">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListEntryLabelFunc is a function that returns a label for a list entry
+
 			<pre>type ListEntryLabelFunc func(e <a href="http://localhost:8888/pkg/builtin/#any">any</a>) <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
@@ -677,12 +700,13 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListEntrySelectedEventArgs">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2457:2558#L72">ListEntrySelectedEventArgs</a>
+			<h2 id="ListEntrySelectedEventArgs">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2874:2975#L79">ListEntrySelectedEventArgs</a>
 				<a class="permalink" href="index.html#ListEntrySelectedEventArgs">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListEntrySelectedEventArgs contains arguments for list entry selection events
+
 			<pre>type ListEntrySelectedEventArgs struct {
 <span id="ListEntrySelectedEventArgs.List"></span>    List          *<a href="index.html#List">List</a>
 <span id="ListEntrySelectedEventArgs.Entry"></span>    Entry         <a href="http://localhost:8888/pkg/builtin/#any">any</a>
@@ -704,12 +728,13 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListEntrySelectedHandlerFunc">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2560:2632#L78">ListEntrySelectedHandlerFunc</a>
+			<h2 id="ListEntrySelectedHandlerFunc">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=3060:3132#L86">ListEntrySelectedHandlerFunc</a>
 				<a class="permalink" href="index.html#ListEntrySelectedHandlerFunc">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListEntrySelectedHandlerFunc is a function called when a list entry is selected
+
 			<pre>type ListEntrySelectedHandlerFunc func(args *<a href="index.html#ListEntrySelectedEventArgs">ListEntrySelectedEventArgs</a>)</pre>
 
 			
@@ -726,12 +751,13 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListOpt">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=1917:1943#L54">ListOpt</a>
+			<h2 id="ListOpt">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2038:2064#L56">ListOpt</a>
 				<a class="permalink" href="index.html#ListOpt">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListOpt is an option function for List configuration
+
 			<pre>type ListOpt func(l *<a href="index.html#List">List</a>)</pre>
 
 			
@@ -748,19 +774,21 @@ Note: Duplicates will be removed.
 		
 			
 			
-			<h2 id="ListOptions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=2634:2659#L80">ListOptions</a>
+			<h2 id="ListOptions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=3189:3214#L89">ListOptions</a>
 				<a class="permalink" href="index.html#ListOptions">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListOptions provides options for List configuration
+
 			<pre>type ListOptions struct{}
 </pre>
 
 			
 
 			
-				
+				<p>ListOpts provides a global instance of ListOptions
+
 				<pre>var <span id="ListOpts">ListOpts</span> <a href="index.html#ListOptions">ListOptions</a></pre>
 			
 
@@ -772,151 +800,163 @@ Note: Duplicates will be removed.
 
 			
 				
-				<h3 id="ListOptions.AllowReselect">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7024:7068#L257">AllowReselect</a>
+				<h3 id="ListOptions.AllowReselect">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8573:8617#L284">AllowReselect</a>
 					<a class="permalink" href="index.html#ListOptions.AllowReselect">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) AllowReselect() <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>AllowReselect allows reselecting the same entry
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.ContainerOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=3858:3929#L134">ContainerOpts</a>
+				<h3 id="ListOptions.ContainerOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4584:4655#L146">ContainerOpts</a>
 					<a class="permalink" href="index.html#ListOptions.ContainerOpts">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) ContainerOpts(opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ContainerOpt">ContainerOpt</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>ContainerOpts sets container options for the list
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.ControlWidgetSpacing">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4501:4557#L158">ControlWidgetSpacing</a>
+				<h3 id="ListOptions.ControlWidgetSpacing">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5461:5517#L174">ControlWidgetSpacing</a>
 					<a class="permalink" href="index.html#ListOptions.ControlWidgetSpacing">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) ControlWidgetSpacing(s <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>ControlWidgetSpacing sets the spacing between control widgets
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.DisableDefaultKeys">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5352:5409#L200">DisableDefaultKeys</a>
+				<h3 id="ListOptions.DisableDefaultKeys">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6681:6738#L223">DisableDefaultKeys</a>
 					<a class="permalink" href="index.html#ListOptions.DisableDefaultKeys">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) DisableDefaultKeys(val <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>DisableDefaultKeys disables default key handling
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.Entries">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4847:4892#L176">Entries</a>
+				<h3 id="ListOptions.Entries">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5948:5993#L195">Entries</a>
 					<a class="permalink" href="index.html#ListOptions.Entries">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) Entries(e []<a href="http://localhost:8888/pkg/builtin/#any">any</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>Entries sets the entries for the list
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryButtonOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4196:4266#L146">EntryButtonOpts</a>
+				<h3 id="ListOptions.EntryButtonOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5044:5114#L160">EntryButtonOpts</a>
 					<a class="permalink" href="index.html#ListOptions.EntryButtonOpts">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntryButtonOpts(opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonOpt">ButtonOpt</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntryButtonOpts sets button options for list entries
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryColor">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5471:5529#L206">EntryColor</a>
+				<h3 id="ListOptions.EntryColor">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6847:6905#L230">EntryColor</a>
 					<a class="permalink" href="index.html#ListOptions.EntryColor">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntryColor(c *<a href="index.html#ListEntryColor">ListEntryColor</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntryColor sets the colors for list entries
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryEnterFunc">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5125:5190#L188">EntryEnterFunc</a>
+				<h3 id="ListOptions.EntryEnterFunc">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6354:6419#L209">EntryEnterFunc</a>
 					<a class="permalink" href="index.html#ListOptions.EntryEnterFunc">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntryEnterFunc(f <a href="index.html#ListEntryEnterFunc">ListEntryEnterFunc</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntryEnterFunc sets the function called when entering an entry
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryFontFace">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5246:5301#L194">EntryFontFace</a>
+				<h3 id="ListOptions.EntryFontFace">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6523:6578#L216">EntryFontFace</a>
 					<a class="permalink" href="index.html#ListOptions.EntryFontFace">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntryFontFace(f text.<a href="index.html#Face">Face</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntryFontFace sets the font face for entries
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryLabelFunc">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5004:5069#L182">EntryLabelFunc</a>
+				<h3 id="ListOptions.EntryLabelFunc">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6167:6232#L202">EntryLabelFunc</a>
 					<a class="permalink" href="index.html#ListOptions.EntryLabelFunc">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntryLabelFunc(f <a href="index.html#ListEntryLabelFunc">ListEntryLabelFunc</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntryLabelFunc sets the function to get labels for entries
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntrySelectedHandler">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6813:6894#L249">EntrySelectedHandler</a>
+				<h3 id="ListOptions.EntrySelectedHandler">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8311:8392#L275">EntrySelectedHandler</a>
 					<a class="permalink" href="index.html#ListOptions.EntrySelectedHandler">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntrySelectedHandler(f <a href="index.html#ListEntrySelectedHandlerFunc">ListEntrySelectedHandlerFunc</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntrySelectedHandler sets the handler for entry selection events
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryTextPadding">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6394:6456#L234">EntryTextPadding</a>
+				<h3 id="ListOptions.EntryTextPadding">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7824:7886#L259">EntryTextPadding</a>
 					<a class="permalink" href="index.html#ListOptions.EntryTextPadding">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) EntryTextPadding(i <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Insets">Insets</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>EntryTextPadding sets the text padding for entries
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.EntryTextPosition">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=6618:6710#L242">EntryTextPosition</a>
+				<h3 id="ListOptions.EntryTextPosition">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8048:8140#L267">EntryTextPosition</a>
 					<a class="permalink" href="index.html#ListOptions.EntryTextPosition">&#xb6;</a>
 					
 					
@@ -930,43 +970,46 @@ Defaults to both TextPositionCenter.
 				
 			
 				
-				<h3 id="ListOptions.HideHorizontalSlider">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4619:4670#L164">HideHorizontalSlider</a>
+				<h3 id="ListOptions.HideHorizontalSlider">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5631:5682#L181">HideHorizontalSlider</a>
 					<a class="permalink" href="index.html#ListOptions.HideHorizontalSlider">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) HideHorizontalSlider() <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>HideHorizontalSlider hides the horizontal slider
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.HideVerticalSlider">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4735:4784#L170">HideVerticalSlider</a>
+				<h3 id="ListOptions.HideVerticalSlider">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5795:5844#L188">HideVerticalSlider</a>
 					<a class="permalink" href="index.html#ListOptions.HideVerticalSlider">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) HideVerticalSlider() <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>HideVerticalSlider hides the vertical slider
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.ScrollContainerOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4015:4098#L140">ScrollContainerOpts</a>
+				<h3 id="ListOptions.ScrollContainerOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4807:4890#L153">ScrollContainerOpts</a>
 					<a class="permalink" href="index.html#ListOptions.ScrollContainerOpts">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) ScrollContainerOpts(opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ScrollContainerOpt">ScrollContainerOpt</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>ScrollContainerOpts sets scroll container options for the list
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.SelectFocus">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7183:7225#L264">SelectFocus</a>
+				<h3 id="ListOptions.SelectFocus">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8732:8774#L291">SelectFocus</a>
 					<a class="permalink" href="index.html#ListOptions.SelectFocus">&#xb6;</a>
 					
 					
@@ -979,25 +1022,27 @@ Defaults to both TextPositionCenter.
 				
 			
 				
-				<h3 id="ListOptions.SliderOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=4356:4421#L152">SliderOpts</a>
+				<h3 id="ListOptions.SliderOpts">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=5251:5316#L167">SliderOpts</a>
 					<a class="permalink" href="index.html#ListOptions.SliderOpts">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) SliderOpts(opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#SliderOpt">SliderOpt</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>SliderOpts sets slider options for the list
+
 				
 				
 				
 			
 				
-				<h3 id="ListOptions.TabOrder">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=7281:7332#L270">TabOrder</a>
+				<h3 id="ListOptions.TabOrder">func (ListOptions) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/euiext/ext.go?s=8874:8925#L298">TabOrder</a>
 					<a class="permalink" href="index.html#ListOptions.TabOrder">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (o <a href="index.html#ListOptions">ListOptions</a>) TabOrder(tabOrder <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#ListOpt">ListOpt</a></pre>
-				
+				<p>TabOrder sets the tab order for the list
+
 				
 				
 				

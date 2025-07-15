@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package components はゲームコンポーネントの定義と実装を提供する。
+
 				
 			</div>
 		</div>
@@ -146,7 +147,7 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#AttackType.String">func (at AttackType) String() string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#AttackType.String">func (enum AttackType) String() string</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#AttackType.Valid">func (enum AttackType) Valid() error</a></dd>
@@ -208,6 +209,11 @@
 				
 			
 				
+				<dd><a href="index.html#DepthNum">type DepthNum</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#Description">type Description</a></dd>
 				
 				
@@ -222,7 +228,7 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ElementType.String">func (et ElementType) String() string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ElementType.String">func (enum ElementType) String() string</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#ElementType.Valid">func (enum ElementType) Valid() error</a></dd>
@@ -248,7 +254,7 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#EquipmentType.String">func (es EquipmentType) String() string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipmentType.String">func (enum EquipmentType) String() string</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#EquipmentType.Valid">func (enum EquipmentType) Valid() error</a></dd>
@@ -430,6 +436,21 @@
 				
 			
 				
+				<dd><a href="index.html#Sprite">type Sprite</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#SpriteRender">type SpriteRender</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#SpriteSheet">type SpriteSheet</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#TargetGroupType">type TargetGroupType</a></dd>
 				
 				
@@ -448,6 +469,14 @@
 				
 				<dd><a href="index.html#TargetType">type TargetType</a></dd>
 				
+				
+			
+				
+				<dd><a href="index.html#Texture">type Texture</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Texture.UnmarshalText">func (t *Texture) UnmarshalText(text []byte) error</a></dd>
 				
 			
 				
@@ -500,9 +529,13 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go">components.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go">enum.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go">field.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go">sprite.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go">types.go</a>
 			
@@ -519,67 +552,94 @@
 			
 				
 				<pre>const (
+    <span class="comment">// AIRoamingWaiting はAI徘徊における待機状態</span>
     <span id="AIRoamingWaiting">AIRoamingWaiting</span> = <a href="index.html#AIRoamingSubState">AIRoamingSubState</a>(&#34;WAIT&#34;)
+    <span class="comment">// AIRoamingDriving はAI徘徊における移動状態</span>
     <span id="AIRoamingDriving">AIRoamingDriving</span> = <a href="index.html#AIRoamingSubState">AIRoamingSubState</a>(&#34;DRIVING&#34;)
 )</pre>
 			
 				
 				<pre>const (
-    <span id="WarpModeNext">WarpModeNext</span>   = warpMode(&#34;NEXT&#34;)
+    <span class="comment">// WarpModeNext は次の階層へワープする</span>
+    <span id="WarpModeNext">WarpModeNext</span> = warpMode(&#34;NEXT&#34;)
+    <span class="comment">// WarpModeEscape は脱出ワープする</span>
     <span id="WarpModeEscape">WarpModeEscape</span> = warpMode(&#34;ESCAPE&#34;)
 )</pre>
 			
 				
 				<pre>const (
+    <span class="comment">// TargetSingle は単体ターゲット</span>
     <span id="TargetSingle">TargetSingle</span> = <a href="index.html#TargetNumType">TargetNumType</a>(&#34;SINGLE&#34;)
-    <span id="TargetAll">TargetAll</span>    = <a href="index.html#TargetNumType">TargetNumType</a>(&#34;ALL&#34;)
+    <span class="comment">// TargetAll は全体ターゲット</span>
+    <span id="TargetAll">TargetAll</span> = <a href="index.html#TargetNumType">TargetNumType</a>(&#34;ALL&#34;)
 )</pre>
 			
 				
 				<pre>const (
-    <span id="TargetGroupAlly">TargetGroupAlly</span>  = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;ALLY&#34;)  <span class="comment">// 味方</span>
+    <span class="comment">// TargetGroupAlly は味方グループ</span>
+    <span id="TargetGroupAlly">TargetGroupAlly</span> = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;ALLY&#34;) <span class="comment">// 味方</span>
+    <span class="comment">// TargetGroupEnemy は敵グループ</span>
     <span id="TargetGroupEnemy">TargetGroupEnemy</span> = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;ENEMY&#34;) <span class="comment">// 敵</span>
-    <span id="TargetGroupCard">TargetGroupCard</span>  = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;CARD&#34;)  <span class="comment">// カード</span>
-    <span id="TargetGroupNone">TargetGroupNone</span>  = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;NONE&#34;)  <span class="comment">// なし</span>
+    <span class="comment">// TargetGroupCard はカードグループ</span>
+    <span id="TargetGroupCard">TargetGroupCard</span> = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;CARD&#34;) <span class="comment">// カード</span>
+    <span class="comment">// TargetGroupNone はグループなし</span>
+    <span id="TargetGroupNone">TargetGroupNone</span> = <a href="index.html#TargetGroupType">TargetGroupType</a>(&#34;NONE&#34;) <span class="comment">// なし</span>
 )</pre>
 			
 				
 				<pre>const (
+    <span class="comment">// UsableSceneBattle は戦闘シーン</span>
     <span id="UsableSceneBattle">UsableSceneBattle</span> = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;BATTLE&#34;) <span class="comment">// 戦闘</span>
-    <span id="UsableSceneField">UsableSceneField</span>  = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;FIELD&#34;)  <span class="comment">// フィールド</span>
-    <span id="UsableSceneAny">UsableSceneAny</span>    = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;ANY&#34;)    <span class="comment">// いつでも</span>
+    <span class="comment">// UsableSceneField はフィールドシーン</span>
+    <span id="UsableSceneField">UsableSceneField</span> = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;FIELD&#34;) <span class="comment">// フィールド</span>
+    <span class="comment">// UsableSceneAny はいつでも使えるシーン</span>
+    <span id="UsableSceneAny">UsableSceneAny</span> = <a href="index.html#UsableSceneType">UsableSceneType</a>(&#34;ANY&#34;) <span class="comment">// いつでも</span>
 )</pre>
 			
 				
 				<pre>const (
-    <span id="AttackSword">AttackSword</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;SWORD&#34;)   <span class="comment">// 刀剣</span>
-    <span id="AttackSpear">AttackSpear</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;SPEAR&#34;)   <span class="comment">// 長物</span>
+    <span class="comment">// AttackSword は刀剣</span>
+    <span id="AttackSword">AttackSword</span> = <a href="index.html#AttackType">AttackType</a>(&#34;SWORD&#34;) <span class="comment">// 刀剣</span>
+    <span class="comment">// AttackSpear は長物</span>
+    <span id="AttackSpear">AttackSpear</span> = <a href="index.html#AttackType">AttackType</a>(&#34;SPEAR&#34;) <span class="comment">// 長物</span>
+    <span class="comment">// AttackHandgun は拳銃</span>
     <span id="AttackHandgun">AttackHandgun</span> = <a href="index.html#AttackType">AttackType</a>(&#34;HANDGUN&#34;) <span class="comment">// 拳銃</span>
-    <span id="AttackRifle">AttackRifle</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;RIFLE&#34;)   <span class="comment">// 小銃</span>
-    <span id="AttackFist">AttackFist</span>    = <a href="index.html#AttackType">AttackType</a>(&#34;FIST&#34;)    <span class="comment">// 格闘</span>
-    <span id="AttackCanon">AttackCanon</span>   = <a href="index.html#AttackType">AttackType</a>(&#34;CANON&#34;)   <span class="comment">// 大砲</span>
+    <span class="comment">// AttackRifle は小銃</span>
+    <span id="AttackRifle">AttackRifle</span> = <a href="index.html#AttackType">AttackType</a>(&#34;RIFLE&#34;) <span class="comment">// 小銃</span>
+    <span class="comment">// AttackFist は格闘</span>
+    <span id="AttackFist">AttackFist</span> = <a href="index.html#AttackType">AttackType</a>(&#34;FIST&#34;) <span class="comment">// 格闘</span>
+    <span class="comment">// AttackCanon は大砲</span>
+    <span id="AttackCanon">AttackCanon</span> = <a href="index.html#AttackType">AttackType</a>(&#34;CANON&#34;) <span class="comment">// 大砲</span>
 )</pre>
 			
 				
 				<pre>const (
-    <span id="EquipmentHead">EquipmentHead</span>    = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;HEAD&#34;)    <span class="comment">// 頭部</span>
-    <span id="EquipmentTorso">EquipmentTorso</span>   = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;TORSO&#34;)   <span class="comment">// 胴体</span>
-    <span id="EquipmentLegs">EquipmentLegs</span>    = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;LEGS&#34;)    <span class="comment">// 脚</span>
+    <span class="comment">// EquipmentHead は頭部装備</span>
+    <span id="EquipmentHead">EquipmentHead</span> = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;HEAD&#34;) <span class="comment">// 頭部</span>
+    <span class="comment">// EquipmentTorso は胴体装備</span>
+    <span id="EquipmentTorso">EquipmentTorso</span> = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;TORSO&#34;) <span class="comment">// 胴体</span>
+    <span class="comment">// EquipmentLegs は脚装備</span>
+    <span id="EquipmentLegs">EquipmentLegs</span> = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;LEGS&#34;) <span class="comment">// 脚</span>
+    <span class="comment">// EquipmentJewelry はアクセサリ装備</span>
     <span id="EquipmentJewelry">EquipmentJewelry</span> = <a href="index.html#EquipmentType">EquipmentType</a>(&#34;JEWELRY&#34;) <span class="comment">// アクセサリ</span>
 )</pre>
 			
 				
 				<pre>const (
+    <span class="comment">// ThrottleModeFront は前進スロットルモード</span>
     <span id="ThrottleModeFront">ThrottleModeFront</span> = <a href="index.html#ThrottleMode">ThrottleMode</a>(&#34;FRONT&#34;)
-    <span id="ThrottleModeBack">ThrottleModeBack</span>  = <a href="index.html#ThrottleMode">ThrottleMode</a>(&#34;BACK&#34;)
-    <span id="ThrottleModeNope">ThrottleModeNope</span>  = <a href="index.html#ThrottleMode">ThrottleMode</a>(&#34;NOPE&#34;)
+    <span class="comment">// ThrottleModeBack は後退スロットルモード</span>
+    <span id="ThrottleModeBack">ThrottleModeBack</span> = <a href="index.html#ThrottleMode">ThrottleMode</a>(&#34;BACK&#34;)
+    <span class="comment">// ThrottleModeNope はスロットルなし</span>
+    <span id="ThrottleModeNope">ThrottleModeNope</span> = <a href="index.html#ThrottleMode">ThrottleMode</a>(&#34;NOPE&#34;)
 )</pre>
 			
 		
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
-				
+				<p>ErrInvalidEnumType はenumに無効な値が指定された場合のエラー
+
 				<pre>var <span id="ErrInvalidEnumType">ErrInvalidEnumType</span> = <a href="http://localhost:8888/pkg/github.com/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/github.com/pkg/errors/#New">New</a>(&#34;enumに無効な値が指定された&#34;)</pre>
 			
 		
@@ -587,12 +647,13 @@
 		
 			
 			
-			<h2 id="AIMoveFSM">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3230:3282#L107">AIMoveFSM</a>
+			<h2 id="AIMoveFSM">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3270:3322#L107">AIMoveFSM</a>
 				<a class="permalink" href="index.html#AIMoveFSM">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>AIMoveFSM はAI移動の有限状態マシン
+
 			<pre>type AIMoveFSM struct {
 <span id="AIMoveFSM.LastStateChange"></span>    LastStateChange <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Time">Time</a>
 }
@@ -612,12 +673,12 @@
 		
 			
 			
-			<h2 id="AIRoaming">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3317:3503#L112">AIRoaming</a>
+			<h2 id="AIRoaming">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3370:3556#L112">AIRoaming</a>
 				<a class="permalink" href="index.html#AIRoaming">&#xb6;</a>
 				
 				
 			</h2>
-			<p>AI移動で歩き回り状態
+			<p>AIRoaming はAI移動で歩き回り状態
 
 			<pre>type AIRoaming struct {
 <span id="AIRoaming.SubState"></span>    SubState <a href="index.html#AIRoamingSubState">AIRoamingSubState</a>
@@ -642,12 +703,13 @@
 		
 			
 			
-			<h2 id="AIRoamingSubState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/ai.go?s=20:49#L1">AIRoamingSubState</a>
+			<h2 id="AIRoamingSubState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/ai.go?s=83:112#L1">AIRoamingSubState</a>
 				<a class="permalink" href="index.html#AIRoamingSubState">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>AIRoamingSubState はAI徘徊行動のサブ状態を表す
+
 			<pre>type AIRoamingSubState <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
@@ -664,13 +726,12 @@
 		
 			
 			
-			<h2 id="Amounter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1226:1315#L36">Amounter</a>
+			<h2 id="Amounter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1305:1394#L35">Amounter</a>
 				<a class="permalink" href="index.html#Amounter">&#xb6;</a>
 				
 				
 			</h2>
-			<p>================
-量を計算するためのインターフェース
+			<p>Amounter は量を計算するためのインターフェース
 
 			<pre>type Amounter interface {
     Amount() <span class="comment">// 量計算を識別するマーカーメソッド</span>
@@ -690,12 +751,12 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6282:6518#L222">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6589:6825#L223">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
 			</h2>
-			<p>攻撃の性質。攻撃毎にこの数値と作用対象のステータスを加味して、最終的なダメージ量を決定する
+			<p>Attack は攻撃の性質。攻撃毎にこの数値と作用対象のステータスを加味して、最終的なダメージ量を決定する
 
 			<pre>type Attack struct {
 <span id="Attack.Accuracy"></span>    Accuracy       <a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// 命中率</span>
@@ -720,13 +781,12 @@
 		
 			
 			
-			<h2 id="AttackType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1810:1832#L75">AttackType</a>
+			<h2 id="AttackType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2636:2658#L89">AttackType</a>
 				<a class="permalink" href="index.html#AttackType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>武器種別
-種別によって適用する計算式が異なる
+			<p>AttackType は武器種別を表す。種別によって適用する計算式が異なる
 
 			<pre>type AttackType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -742,25 +802,26 @@
 
 			
 				
-				<h3 id="AttackType.String">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2355:2391#L95">String</a>
+				<h3 id="AttackType.String">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3372:3410#L116">String</a>
 					<a class="permalink" href="index.html#AttackType.String">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (at <a href="index.html#AttackType">AttackType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<pre>func (enum <a href="index.html#AttackType">AttackType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 				
 				
 				
 				
 			
 				
-				<h3 id="AttackType.Valid">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2139:2175#L86">Valid</a>
+				<h3 id="AttackType.Valid">func (AttackType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3156:3192#L107">Valid</a>
 					<a class="permalink" href="index.html#AttackType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#AttackType">AttackType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はAttackTypeの値が有効かを検証する
+
 				
 				
 				
@@ -768,12 +829,12 @@
 		
 			
 			
-			<h2 id="Attribute">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=204:382#L1">Attribute</a>
+			<h2 id="Attribute">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=225:403#L1">Attribute</a>
 				<a class="permalink" href="index.html#Attribute">&#xb6;</a>
 				
 				
 			</h2>
-			<p>変動するパラメータ値
+			<p>Attribute は変動するパラメータ値
 
 			<pre>type Attribute struct {
 <span id="Attribute.Base"></span>    Base     <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 固有の値</span>
@@ -796,12 +857,12 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4681:5182#L177">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4891:5392#L178">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
 			</h2>
-			<p>エンティティが持つステータス値。各種計算式で使う
+			<p>Attributes はエンティティが持つステータス値。各種計算式で使う
 
 			<pre>type Attributes struct {
 <span id="Attributes.Vitality"></span>    Vitality  <a href="index.html#Attribute">Attribute</a> <span class="comment">// 体力。丈夫さ、持久力、しぶとさ。HPやSPに影響する</span>
@@ -827,12 +888,13 @@
 		
 			
 			
-			<h2 id="BattleCommand">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/battle.go?s=62:259#L1">BattleCommand</a>
+			<h2 id="BattleCommand">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/battle.go?s=128:325#L1">BattleCommand</a>
 				<a class="permalink" href="index.html#BattleCommand">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>BattleCommand は戦闘における行動コマンドを表す
+
 			<pre>type BattleCommand struct {
     <span class="comment">// 行動主体(死んだらこの攻撃は実行されない}</span>
 <span id="BattleCommand.Owner"></span>    Owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
@@ -857,12 +919,12 @@
 		
 			
 			
-			<h2 id="BlockPass">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1270:1293#L46">BlockPass</a>
+			<h2 id="BlockPass">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1544:1567#L50">BlockPass</a>
 				<a class="permalink" href="index.html#BlockPass">&#xb6;</a>
 				
 				
 			</h2>
-			<p>フィールド上で通過できない
+			<p>BlockPass はフィールド上で通過できない
 
 			<pre>type BlockPass struct{}
 </pre>
@@ -881,12 +943,12 @@
 		
 			
 			
-			<h2 id="BlockView">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1335:1358#L49">BlockView</a>
+			<h2 id="BlockView">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1622:1645#L53">BlockView</a>
 				<a class="permalink" href="index.html#BlockView">&#xb6;</a>
 				
 				
 			</h2>
-			<p>フィールド上で視界を遮る
+			<p>BlockView はフィールド上で視界を遮る
 
 			<pre>type BlockView struct{}
 </pre>
@@ -905,12 +967,12 @@
 		
 			
 			
-			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3518:3574#L121">Camera</a>
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3581:3637#L121">Camera</a>
 				<a class="permalink" href="index.html#Camera">&#xb6;</a>
 				
 				
 			</h2>
-			<p>カメラ
+			<p>Camera はカメラ
 
 			<pre>type Camera struct {
 <span id="Camera.Scale"></span>    Scale   <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
@@ -932,12 +994,12 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6082:6141#L216">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6379:6438#L217">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
 			</h2>
-			<p>カードは戦闘中に選択するコマンド
+			<p>Card はカードは戦闘中に選択するコマンド
 攻撃、防御、回復など、人に影響を及ぼすものをアクションカードという
 
 			<pre>type Card struct {
@@ -960,12 +1022,12 @@
 		
 			
 			
-			<h2 id="Col">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1213:1225#L43">Col</a>
+			<h2 id="Col">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1474:1486#L47">Col</a>
 				<a class="permalink" href="index.html#Col">&#xb6;</a>
 				
 				
 			</h2>
-			<p>タイルの縦位置。ピクセル数ではない
+			<p>Col はタイルの縦位置。ピクセル数ではない
 
 			<pre>type Col <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
@@ -983,12 +1045,12 @@
 		
 			
 			
-			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6568:6609#L231">CommandTable</a>
+			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6891:6932#L232">CommandTable</a>
 				<a class="permalink" href="index.html#CommandTable">&#xb6;</a>
 				
 				
 			</h2>
-			<p>AI用の、戦闘コマンドテーブル名
+			<p>CommandTable はAI用の、戦闘コマンドテーブル名
 
 			<pre>type CommandTable struct {
 <span id="CommandTable.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -1009,12 +1071,12 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1582:3167#L53">Components</a>
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1561:3146#L52">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
 			</h2>
-			<p>componentsを溜めるスライス群
+			<p>Components はcomponentsを溜めるスライス群
 Join時はこのフィールドでクエリする
 
 			<pre>type Components struct {
@@ -1083,12 +1145,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3947:4026#L140">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4048:4127#L140">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
 			</h2>
-			<p>消耗品。一度使うとなくなる
+			<p>Consumable は消耗品。一度使うとなくなる
 
 			<pre>type Consumable struct {
 <span id="Consumable.UsableScene"></span>    UsableScene <a href="index.html#UsableSceneType">UsableSceneType</a>
@@ -1110,12 +1172,47 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4086:4133#L151">Description</a>
+			<h2 id="DepthNum">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1793:1810#L56">DepthNum</a>
+				<a class="permalink" href="index.html#DepthNum">&#xb6;</a>
+				
+				
+			</h2>
+			<p>DepthNum はオブジェクトの描画順。小さい値を先に描画する
+
+			<pre>type DepthNum <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				
+				<pre>const (
+    <span class="comment">// DepthNumFloor は床。最背面に表示する</span>
+    <span id="DepthNumFloor">DepthNumFloor</span> <a href="index.html#DepthNum">DepthNum</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span class="comment">// DepthNumRug は床に置くもの。例: ワープホール、アイテム</span>
+    <span id="DepthNumRug">DepthNumRug</span>
+    <span class="comment">// DepthNumTaller は高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁</span>
+    <span id="DepthNumTaller">DepthNumTaller</span>
+    <span class="comment">// DepthNumOperator は操作キャラを最も手前に表示する</span>
+    <span id="DepthNumOperator">DepthNumOperator</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4210:4257#L151">Description</a>
 				<a class="permalink" href="index.html#Description">&#xb6;</a>
 				
 				
 			</h2>
-			<p>説明
+			<p>Description は説明
 
 			<pre>type Description struct {
 <span id="Description.Description"></span>    Description <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -1136,12 +1233,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6642:6680#L236">DropTable</a>
+			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6978:7016#L237">DropTable</a>
 				<a class="permalink" href="index.html#DropTable">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ドロップテーブル名
+			<p>DropTable はドロップテーブル名
 
 			<pre>type DropTable struct {
 <span id="DropTable.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -1162,23 +1259,28 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="ElementType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3588:3611#L158">ElementType</a>
+			<h2 id="ElementType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4852:4875#L184">ElementType</a>
 				<a class="permalink" href="index.html#ElementType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>攻撃属性
+			<p>ElementType は攻撃属性を表す
 
 			<pre>type ElementType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
 				
 				<pre>const (
-    <span id="ElementTypeNone">ElementTypeNone</span>    <a href="index.html#ElementType">ElementType</a> = &#34;NONE&#34;
-    <span id="ElementTypeFire">ElementTypeFire</span>    <a href="index.html#ElementType">ElementType</a> = &#34;FIRE&#34;
+    <span class="comment">// ElementTypeNone は属性なし</span>
+    <span id="ElementTypeNone">ElementTypeNone</span> <a href="index.html#ElementType">ElementType</a> = &#34;NONE&#34;
+    <span class="comment">// ElementTypeFire は火属性</span>
+    <span id="ElementTypeFire">ElementTypeFire</span> <a href="index.html#ElementType">ElementType</a> = &#34;FIRE&#34;
+    <span class="comment">// ElementTypeThunder は雷属性</span>
     <span id="ElementTypeThunder">ElementTypeThunder</span> <a href="index.html#ElementType">ElementType</a> = &#34;THUNDER&#34;
-    <span id="ElementTypeChill">ElementTypeChill</span>   <a href="index.html#ElementType">ElementType</a> = &#34;CHILL&#34;
-    <span id="ElementTypePhoton">ElementTypePhoton</span>  <a href="index.html#ElementType">ElementType</a> = &#34;PHOTON&#34;
+    <span class="comment">// ElementTypeChill は氷属性</span>
+    <span id="ElementTypeChill">ElementTypeChill</span> <a href="index.html#ElementType">ElementType</a> = &#34;CHILL&#34;
+    <span class="comment">// ElementTypePhoton は光属性</span>
+    <span id="ElementTypePhoton">ElementTypePhoton</span> <a href="index.html#ElementType">ElementType</a> = &#34;PHOTON&#34;
 )</pre>
 			
 
@@ -1192,25 +1294,26 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="ElementType.String">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4063:4100#L176">String</a>
+				<h3 id="ElementType.String">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=5549:5588#L208">String</a>
 					<a class="permalink" href="index.html#ElementType.String">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (et <a href="index.html#ElementType">ElementType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<pre>func (enum <a href="index.html#ElementType">ElementType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 				
 				
 				
 				
 			
 				
-				<h3 id="ElementType.Valid">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3835:3872#L168">Valid</a>
+				<h3 id="ElementType.Valid">func (ElementType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=5321:5358#L200">Valid</a>
 					<a class="permalink" href="index.html#ElementType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#ElementType">ElementType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はElementTypeの値が有効かを検証する
+
 				
 				
 				
@@ -1218,12 +1321,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=767:1078#L19">EquipBonus</a>
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=831:1142#L19">EquipBonus</a>
 				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
 				
 				
 			</h2>
-			<p>装備品のオプショナルな性能。武器・防具で共通する
+			<p>EquipBonus は装備品のオプショナルな性能。武器・防具で共通する
 
 			<pre>type EquipBonus struct {
 <span id="EquipBonus.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 体力ボーナス</span>
@@ -1249,12 +1352,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5895:5925#L212">EquipmentChanged</a>
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6184:6214#L213">EquipmentChanged</a>
 				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
 				
 				
 			</h2>
-			<p>装備変更が行われたことを示すダーティーフラグ
+			<p>EquipmentChanged は装備変更が行われたことを示すダーティーフラグ
 
 			<pre>type EquipmentChanged struct{}
 </pre>
@@ -1273,12 +1376,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1121:1149#L32">EquipmentSlotNumber</a>
+			<h2 id="EquipmentSlotNumber">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1208:1236#L32">EquipmentSlotNumber</a>
 				<a class="permalink" href="index.html#EquipmentSlotNumber">&#xb6;</a>
 				
 				
 			</h2>
-			<p>装備スロット番号。0始まり
+			<p>EquipmentSlotNumber は装備スロット番号。0始まり
 
 			<pre>type EquipmentSlotNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
@@ -1296,12 +1399,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipmentType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2768:2793#L120">EquipmentType</a>
+			<h2 id="EquipmentType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3815:3840#L141">EquipmentType</a>
 				<a class="permalink" href="index.html#EquipmentType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>装備品種別
+			<p>EquipmentType は装備品種別を表す
 
 			<pre>type EquipmentType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -1317,25 +1420,26 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="EquipmentType.String">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3236:3275#L138">String</a>
+				<h3 id="EquipmentType.String">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4472:4513#L164">String</a>
 					<a class="permalink" href="index.html#EquipmentType.String">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (es <a href="index.html#EquipmentType">EquipmentType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<pre>func (enum <a href="index.html#EquipmentType">EquipmentType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 				
 				
 				
 				
 			
 				
-				<h3 id="EquipmentType.Valid">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=3032:3071#L129">Valid</a>
+				<h3 id="EquipmentType.Valid">func (EquipmentType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=4268:4307#L155">Valid</a>
 					<a class="permalink" href="index.html#EquipmentType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#EquipmentType">EquipmentType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はEquipmentTypeの値が有効かを検証する
+
 				
 				
 				
@@ -1343,12 +1447,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7536:7565#L269">FactionAllyData</a>
+			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7991:8020#L271">FactionAllyData</a>
 				<a class="permalink" href="index.html#FactionAllyData">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>FactionAllyData は味方派閥データ
+
 			<pre>type FactionAllyData struct{}
 </pre>
 
@@ -1364,7 +1469,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7567:7607#L271">String</a>
+				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8022:8062#L273">String</a>
 					<a class="permalink" href="index.html#FactionAllyData.String">&#xb6;</a>
 					
 					
@@ -1378,12 +1483,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7635:7665#L275">FactionEnemyData</a>
+			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8135:8165#L278">FactionEnemyData</a>
 				<a class="permalink" href="index.html#FactionEnemyData">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>FactionEnemyData は敵性派閥データ
+
 			<pre>type FactionEnemyData struct{}
 </pre>
 
@@ -1399,7 +1505,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7667:7708#L277">String</a>
+				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8167:8208#L280">String</a>
 					<a class="permalink" href="index.html#FactionEnemyData.String">&#xb6;</a>
 					
 					
@@ -1413,13 +1519,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7336:7365#L260">FactionType</a>
+			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7716:7745#L261">FactionType</a>
 				<a class="permalink" href="index.html#FactionType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>================
-所属派閥。絶対的な指定
+			<p>FactionType は所属派閥。絶対的な指定
 
 			<pre>type FactionType <a href="http://localhost:8888/pkg/fmt/">fmt</a>.<a href="http://localhost:8888/pkg/fmt/#Stringer">Stringer</a></pre>
 
@@ -1428,9 +1533,9 @@ Join時はこのフィールドでクエリする
 			
 				
 				<pre>var (
-    <span class="comment">// 味方(プレイヤー側)</span>
+    <span class="comment">// FactionAlly は味方(プレイヤー側)</span>
     <span id="FactionAlly">FactionAlly</span> <a href="index.html#FactionType">FactionType</a> = <a href="index.html#FactionAllyData">FactionAllyData</a>{}
-    <span class="comment">// 敵性(プレイヤーと敵対)</span>
+    <span class="comment">// FactionEnemy は敵性(プレイヤーと敵対)</span>
     <span id="FactionEnemy">FactionEnemy</span> <a href="index.html#FactionType">FactionType</a> = <a href="index.html#FactionEnemyData">FactionEnemyData</a>{}
 )</pre>
 			
@@ -1445,12 +1550,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=409:1486#L4">GameComponentList</a>
+			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=377:1451#L3">GameComponentList</a>
 				<a class="permalink" href="index.html#GameComponentList">&#xb6;</a>
 				
 				
 			</h2>
-			<p>コンポーネントのリストが格納されたオブジェクト。
+			<p>GameComponentList はコンポーネントのリストが格納されたオブジェクト。
 この構造体を元にエンティティに対してコンポーネントを作成する。
 フィールドの型や値に応じて、対応するECSコンポーネントを取得する。
 
@@ -1482,7 +1587,7 @@ Join時はこのフィールドでクエリする
 <span id="GameComponentList.Velocity"></span>    Velocity     *<a href="index.html#Velocity">Velocity</a>
 <span id="GameComponentList.Position"></span>    Position     *<a href="index.html#Position">Position</a>
 <span id="GameComponentList.GridElement"></span>    GridElement  *<a href="index.html#GridElement">GridElement</a>
-<span id="GameComponentList.SpriteRender"></span>    SpriteRender *<a href="../engine/components/index.html">ec</a>.<a href="../engine/components/index.html#SpriteRender">SpriteRender</a>
+<span id="GameComponentList.SpriteRender"></span>    SpriteRender *<a href="index.html#SpriteRender">SpriteRender</a>
 <span id="GameComponentList.BlockView"></span>    BlockView    *<a href="index.html#BlockView">BlockView</a>
 <span id="GameComponentList.BlockPass"></span>    BlockPass    *<a href="index.html#BlockPass">BlockPass</a>
 
@@ -1516,13 +1621,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="GridElement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1042:1087#L34">GridElement</a>
+			<h2 id="GridElement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1289:1334#L38">GridElement</a>
 				<a class="permalink" href="index.html#GridElement">&#xb6;</a>
 				
 				
 			</h2>
-			<p>TODO: 縦横の型を共通にする。タイル単位だということがわかればよい。TileUnitとか
-フィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
+			<p>GridElement はフィールド上にグリッドに沿って存在する。静的なステージオブジェクトに使う
+TODO: 縦横の型を共通にする。タイル単位だということがわかればよい。TileUnitとか
 スプライトはグリッドに沿って配置する
 +----
 |   |
@@ -1550,12 +1655,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4463:4484#L163">InParty</a>
+			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4610:4631#L163">InParty</a>
 				<a class="permalink" href="index.html#InParty">&#xb6;</a>
 				
 				
 			</h2>
-			<p>冒険パーティに参加している状態
+			<p>InParty は冒険パーティに参加している状態
 
 			<pre>type InParty struct{}
 </pre>
@@ -1574,12 +1679,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5448:5490#L194">InflictsDamage</a>
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5695:5737#L195">InflictsDamage</a>
 				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ダメージを与える性質
+			<p>InflictsDamage はダメージを与える性質
 直接的な数値が作用し、ステータスなどは考慮されない
 
 			<pre>type InflictsDamage struct {
@@ -1601,12 +1706,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3884:3902#L137">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3971:3989#L137">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
 			</h2>
-			<p>キャラクターが保持できるもの
+			<p>Item はキャラクターが保持できるもの
 装備品、カード、回復アイテム、売却アイテム
 
 			<pre>type Item struct{}
@@ -1626,13 +1731,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7782:7816#L283">ItemLocationType</a>
+			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8282:8316#L285">ItemLocationType</a>
 				<a class="permalink" href="index.html#ItemLocationType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>================
-アイテムの場所
+			<p>ItemLocationType はアイテムの場所
 
 			<pre>type ItemLocationType <a href="http://localhost:8888/pkg/fmt/">fmt</a>.<a href="http://localhost:8888/pkg/fmt/#Stringer">Stringer</a></pre>
 
@@ -1641,13 +1745,13 @@ Join時はこのフィールドでクエリする
 			
 				
 				<pre>var (
-    <span class="comment">// バックパック内</span>
+    <span class="comment">// ItemLocationInBackpack はバックパック内</span>
     <span id="ItemLocationInBackpack">ItemLocationInBackpack</span> <a href="index.html#ItemLocationType">ItemLocationType</a> = <a href="index.html#LocationInBackpack">LocationInBackpack</a>{}
-    <span class="comment">// 味方が装備中</span>
+    <span class="comment">// ItemLocationEquipped は味方が装備中</span>
     <span id="ItemLocationEquipped">ItemLocationEquipped</span> <a href="index.html#ItemLocationType">ItemLocationType</a> = <a href="index.html#LocationEquipped">LocationEquipped</a>{}
-    <span class="comment">// フィールド上</span>
+    <span class="comment">// ItemLocationOnField はフィールド上</span>
     <span id="ItemLocationOnField">ItemLocationOnField</span> <a href="index.html#ItemLocationType">ItemLocationType</a> = <a href="index.html#LocationOnField">LocationOnField</a>{}
-    <span class="comment">// いずれにも存在しない。マスター用</span>
+    <span class="comment">// ItemLocationNone はいずれにも存在しない。マスター用</span>
     <span id="ItemLocationNone">ItemLocationNone</span> <a href="index.html#ItemLocationType">ItemLocationType</a> = <a href="index.html#LocationNone">LocationNone</a>{}
 )</pre>
 			
@@ -1662,12 +1766,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8302:8395#L302">LocationEquipped</a>
+			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8987:9080#L306">LocationEquipped</a>
 				<a class="permalink" href="index.html#LocationEquipped">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>LocationEquipped は装備中位置
+
 			<pre>type LocationEquipped struct {
 <span id="LocationEquipped.Owner"></span>    Owner         <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
 <span id="LocationEquipped.EquipmentSlot"></span>    EquipmentSlot <a href="index.html#EquipmentSlotNumber">EquipmentSlotNumber</a>
@@ -1686,7 +1791,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8397:8438#L307">String</a>
+				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9082:9123#L311">String</a>
 					<a class="permalink" href="index.html#LocationEquipped.String">&#xb6;</a>
 					
 					
@@ -1700,12 +1805,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8186:8218#L296">LocationInBackpack</a>
+			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8832:8864#L299">LocationInBackpack</a>
 				<a class="permalink" href="index.html#LocationInBackpack">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>LocationInBackpack はバックパック内位置
+
 			<pre>type LocationInBackpack struct{}
 </pre>
 
@@ -1721,7 +1827,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8220:8263#L298">String</a>
+				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8866:8909#L301">String</a>
 					<a class="permalink" href="index.html#LocationInBackpack.String">&#xb6;</a>
 					
 					
@@ -1735,12 +1841,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="LocationNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8582:8608#L317">LocationNone</a>
+			<h2 id="LocationNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9346:9372#L323">LocationNone</a>
 				<a class="permalink" href="index.html#LocationNone">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>LocationNone は位置なし
+
 			<pre>type LocationNone struct{}
 </pre>
 
@@ -1756,7 +1863,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="LocationNone.String">func (LocationNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8610:8647#L319">String</a>
+				<h3 id="LocationNone.String">func (LocationNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9374:9411#L325">String</a>
 					<a class="permalink" href="index.html#LocationNone.String">&#xb6;</a>
 					
 					
@@ -1770,12 +1877,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8475:8504#L311">LocationOnField</a>
+			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9207:9236#L316">LocationOnField</a>
 				<a class="permalink" href="index.html#LocationOnField">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>LocationOnField はフィールド上位置
+
 			<pre>type LocationOnField struct{}
 </pre>
 
@@ -1791,7 +1899,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8506:8546#L313">String</a>
+				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9238:9278#L318">String</a>
 					<a class="permalink" href="index.html#LocationOnField.String">&#xb6;</a>
 					
 					
@@ -1805,12 +1913,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5713:5749#L202">Material</a>
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5972:6008#L203">Material</a>
 				<a class="permalink" href="index.html#Material">&#xb6;</a>
 				
 				
 			</h2>
-			<p>合成素材
+			<p>Material は合成素材
 アイテムとの違い:
 - 個々のインスタンスで性能の違いはなく、単に数量だけを見る
 - 複数の単位で扱うのでAmountを持つ。x3を合成で使ったりする
@@ -1834,12 +1942,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4041:4074#L146">Name</a>
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4150:4183#L146">Name</a>
 				<a class="permalink" href="index.html#Name">&#xb6;</a>
 				
 				
 			</h2>
-			<p>表示名
+			<p>Name は表示名
 
 			<pre>type Name struct {
 <span id="Name.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -1860,12 +1968,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="NumeralAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1691:1746#L58">NumeralAmount</a>
+			<h2 id="NumeralAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1820:1875#L57">NumeralAmount</a>
 				<a class="permalink" href="index.html#NumeralAmount">&#xb6;</a>
 				
 				
 			</h2>
-			<p>絶対量指定
+			<p>NumeralAmount は絶対量指定
 
 			<pre>type NumeralAmount struct {
 <span id="NumeralAmount.Numeral"></span>    Numeral <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 絶対量</span>
@@ -1884,26 +1992,26 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="NumeralAmount.Amount">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1793:1825#L63">Amount</a>
+				<h3 id="NumeralAmount.Amount">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1932:1964#L62">Amount</a>
 					<a class="permalink" href="index.html#NumeralAmount.Amount">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (na <a href="index.html#NumeralAmount">NumeralAmount</a>) Amount()</pre>
-				<p>Amounterインターフェースの実装
+				<p>Amount はAmounterインターフェースの実装
 
 				
 				
 				
 			
 				
-				<h3 id="NumeralAmount.Calc">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1861:1895#L66">Calc</a>
+				<h3 id="NumeralAmount.Calc">func (NumeralAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=2008:2042#L65">Calc</a>
 					<a class="permalink" href="index.html#NumeralAmount.Calc">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (na <a href="index.html#NumeralAmount">NumeralAmount</a>) Calc() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				<p>固定の数値量を返す
+				<p>Calc は固定の数値量を返す
 
 				
 				
@@ -1912,12 +2020,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Operator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3206:3228#L105">Operator</a>
+			<h2 id="Operator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3197:3219#L104">Operator</a>
 				<a class="permalink" href="index.html#Operator">&#xb6;</a>
 				
 				
 			</h2>
-			<p>フィールドでの操作対象
+			<p>Operator はフィールドでの操作対象
 
 			<pre>type Operator struct{}
 </pre>
@@ -1936,12 +2044,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Pixel">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=693:711#L24">Pixel</a>
+			<h2 id="Pixel">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=925:943#L28">Pixel</a>
 				<a class="permalink" href="index.html#Pixel">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ピクセル単位。計算用にfloat64
+			<p>Pixel はピクセル単位。計算用にfloat64
 
 			<pre>type Pixel <a href="http://localhost:8888/pkg/builtin/#float64">float64</a></pre>
 
@@ -1959,12 +2067,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Pool">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=78:168#L1">Pool</a>
+			<h2 id="Pool">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=86:176#L1">Pool</a>
 				<a class="permalink" href="index.html#Pool">&#xb6;</a>
 				
 				
 			</h2>
-			<p>最大値と現在値を持つようなパラメータ
+			<p>Pool は最大値と現在値を持つようなパラメータ
 
 			<pre>type Pool struct {
 <span id="Pool.Max"></span>    Max     <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 計算式で算出される</span>
@@ -1986,12 +2094,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4486:4603#L165">Pools</a>
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4682:4799#L166">Pools</a>
 				<a class="permalink" href="index.html#Pools">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Pools はキャラクターのプール情報
+
 			<pre>type Pools struct {
     <span class="comment">// 生命</span>
 <span id="Pools.HP"></span>    HP <a href="index.html#Pool">Pool</a>
@@ -2018,12 +2127,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Position">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=605:647#L18">Position</a>
+			<h2 id="Position">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=828:870#L22">Position</a>
 				<a class="permalink" href="index.html#Position">&#xb6;</a>
 				
 				
 			</h2>
-			<p>フィールド上に座標をもって存在する。移動体に対して使う
+			<p>Position はフィールド上に座標をもって存在する。移動体に対して使う
 スプライトはこの位置に中心を合わせて配置する
 -----
 |   |
@@ -2051,12 +2160,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5285:5333#L188">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5514:5562#L189">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
 			</h2>
-			<p>回復する性質
+			<p>ProvidesHealing は回復する性質
 直接的な数値が作用し、ステータスなどは考慮されない
 
 			<pre>type ProvidesHealing struct {
@@ -2078,12 +2187,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="RatioAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1365:1417#L43">RatioAmount</a>
+			<h2 id="RatioAmount">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1459:1511#L42">RatioAmount</a>
 				<a class="permalink" href="index.html#RatioAmount">&#xb6;</a>
 				
 				
 			</h2>
-			<p>倍率指定
+			<p>RatioAmount は倍率指定
 
 			<pre>type RatioAmount struct {
 <span id="RatioAmount.Ratio"></span>    Ratio <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 倍率</span>
@@ -2102,26 +2211,26 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="RatioAmount.Amount">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1464:1494#L48">Amount</a>
+				<h3 id="RatioAmount.Amount">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1568:1598#L47">Amount</a>
 					<a class="permalink" href="index.html#RatioAmount.Amount">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ra <a href="index.html#RatioAmount">RatioAmount</a>) Amount()</pre>
-				<p>Amounterインターフェースの実装
+				<p>Amount はAmounterインターフェースの実装
 
 				
 				
 				
 			
 				
-				<h3 id="RatioAmount.Calc">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1554:1594#L51">Calc</a>
+				<h3 id="RatioAmount.Calc">func (RatioAmount) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=1666:1706#L50">Calc</a>
 					<a class="permalink" href="index.html#RatioAmount.Calc">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ra <a href="index.html#RatioAmount">RatioAmount</a>) Calc(base <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				<p>倍率と基準値から実際の量を計算する
+				<p>Calc は倍率と基準値から実際の量を計算する
 
 				
 				
@@ -2130,12 +2239,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5779:5823#L207">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6048:6092#L208">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
 			</h2>
-			<p>合成に必要な素材
+			<p>Recipe は合成に必要な素材
 
 			<pre>type Recipe struct {
 <span id="Recipe.Inputs"></span>    Inputs []<a href="index.html#RecipeInput">RecipeInput</a>
@@ -2156,12 +2265,12 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=606:689#L13">RecipeInput</a>
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=656:739#L13">RecipeInput</a>
 				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
 				
 				
 			</h2>
-			<p>合成の元になる素材
+			<p>RecipeInput は合成の元になる素材
 
 			<pre>type RecipeInput struct {
 <span id="RecipeInput.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a> <span class="comment">// 素材名</span>
@@ -2183,13 +2292,13 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Render">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7139:7211#L248">Render</a>
+			<h2 id="Render">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7485:7557#L249">Render</a>
 				<a class="permalink" href="index.html#Render">&#xb6;</a>
 				
 				
 			</h2>
-			<p>FIXME: 表示する方法を統一する...
-描画対象物。
+			<p>Render は描画対象物。
+FIXME: 表示する方法を統一する...
 resource のスプライトシートから画像を特定するために必要な情報。
 Renderはスプライトシートの情報はresourceに持たせ、特定に必要な
 情報だけ保持している。
@@ -2216,12 +2325,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="Renderable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1400:1424#L52">Renderable</a>
+			<h2 id="Renderable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1701:1725#L56">Renderable</a>
 				<a class="permalink" href="index.html#Renderable">&#xb6;</a>
 				
 				
 			</h2>
-			<p>フィールド上で描画できる
+			<p>Renderable はフィールド上で描画できる
 
 			<pre>type Renderable struct{}
 </pre>
@@ -2240,12 +2349,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="Row">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1144:1156#L40">Row</a>
+			<h2 id="Row">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=1398:1410#L44">Row</a>
 				<a class="permalink" href="index.html#Row">&#xb6;</a>
 				
 				
 			</h2>
-			<p>タイルの横位置。ピクセル数ではない
+			<p>Row はタイルの横位置。ピクセル数ではない
 
 			<pre>type Row <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
@@ -2263,12 +2372,13 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7213:7277#L253">SheetImage</a>
+			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7598:7662#L255">SheetImage</a>
 				<a class="permalink" href="index.html#SheetImage">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>SheetImage はシート画像情報
+
 			<pre>type SheetImage struct {
 <span id="SheetImage.SheetName"></span>    SheetName   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="SheetImage.SheetNumber"></span>    SheetNumber *<a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -2289,12 +2399,110 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="TargetGroupType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=783:810#L33">TargetGroupType</a>
+			<h2 id="Sprite">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=359:581#L5">Sprite</a>
+				<a class="permalink" href="index.html#Sprite">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Sprite は1つ1つの意味をなす画像の位置を示す情報
+1ファイルに対して複数のスプライトが定義されている
+
+			<pre>type Sprite struct {
+    <span class="comment">// Horizontal position of the sprite in the sprite sheet</span>
+<span id="Sprite.X"></span>    X <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// Vertical position of the sprite in the sprite sheet</span>
+<span id="Sprite.Y"></span>    Y <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Sprite.Width"></span>    <span class="comment">// Width of the sprite</span>
+    Width <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Sprite.Height"></span>    <span class="comment">// Height of the sprite</span>
+    Height <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="SpriteRender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1419:1709#L44">SpriteRender</a>
+				<a class="permalink" href="index.html#SpriteRender">&#xb6;</a>
+				
+				
+			</h2>
+			<p>SpriteRender component
+
+			<pre>type SpriteRender struct {
+    <span class="comment">// スプライトシートファイル</span>
+<span id="SpriteRender.SpriteSheet"></span>    SpriteSheet *<a href="index.html#SpriteSheet">SpriteSheet</a>
+    <span class="comment">// スプライトシートでのインデックス</span>
+<span id="SpriteRender.SpriteNumber"></span>    SpriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// 描画順。小さい順に先に(下に)描画する</span>
+<span id="SpriteRender.Depth"></span>    Depth <a href="index.html#DepthNum">DepthNum</a>
+    <span class="comment">// Draw options</span>
+<span id="SpriteRender.Options"></span>    Options ebiten.<a href="index.html#DrawImageOptions">DrawImageOptions</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1170:1391#L34">SpriteSheet</a>
+				<a class="permalink" href="index.html#SpriteSheet">&#xb6;</a>
+				
+				
+			</h2>
+			<p>SpriteSheet は画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
+
+			<pre>type SpriteSheet struct {
+    <span class="comment">// スプライトシートのキー名</span>
+<span id="SpriteSheet.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+    <span class="comment">// 読み込んだ画像データ</span>
+<span id="SpriteSheet.Texture"></span>    Texture <a href="index.html#Texture">Texture</a> `toml:&#34;texture_image&#34;`
+    <span class="comment">// 画像に含まれるスプライト一覧</span>
+<span id="SpriteSheet.Sprites"></span>    Sprites []<a href="index.html#Sprite">Sprite</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="TargetGroupType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1139:1166#L39">TargetGroupType</a>
 				<a class="permalink" href="index.html#TargetGroupType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>使用者から見たターゲットの種別。相対的な指定なので、所有者が敵グループだと対象グループは逆転する
+			<p>TargetGroupType は使用者から見たターゲットの種別。相対的な指定なので、所有者が敵グループだと対象グループは逆転する
 
 			<pre>type TargetGroupType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -2310,13 +2518,14 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 
 			
 				
-				<h3 id="TargetGroupType.Valid">func (TargetGroupType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1043:1084#L42">Valid</a>
+				<h3 id="TargetGroupType.Valid">func (TargetGroupType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1623:1664#L53">Valid</a>
 					<a class="permalink" href="index.html#TargetGroupType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#TargetGroupType">TargetGroupType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はTargetGroupTypeの値が有効かを検証する
+
 				
 				
 				
@@ -2324,12 +2533,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="TargetNumType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=334:359#L14">TargetNumType</a>
+			<h2 id="TargetNumType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=534:559#L17">TargetNumType</a>
 				<a class="permalink" href="index.html#TargetNumType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ターゲット数
+			<p>TargetNumType はターゲット数を表す
 
 			<pre>type TargetNumType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -2345,13 +2554,14 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 
 			
 				
-				<h3 id="TargetNumType.Valid">func (TargetNumType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=449:488#L21">Valid</a>
+				<h3 id="TargetNumType.Valid">func (TargetNumType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=786:825#L27">Valid</a>
 					<a class="permalink" href="index.html#TargetNumType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#TargetNumType">TargetNumType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はTargetNumTypeの値が有効かを検証する
+
 				
 				
 				
@@ -2359,12 +2569,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="TargetType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=400:573#L7">TargetType</a>
+			<h2 id="TargetType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=435:608#L7">TargetType</a>
 				<a class="permalink" href="index.html#TargetType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>選択対象
+			<p>TargetType は選択対象
 
 			<pre>type TargetType struct {
 <span id="TargetType.TargetGroup"></span>    TargetGroup <a href="index.html#TargetGroupType">TargetGroupType</a> <span class="comment">// 対象グループ（味方、敵など）</span>
@@ -2386,12 +2596,53 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="ThrottleMode">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=241:265#L3">ThrottleMode</a>
+			<h2 id="Texture">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=658:720#L17">Texture</a>
+				<a class="permalink" href="index.html#Texture">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Texture は複数のスプライトが格納された画像ファイル
+
+			<pre>type Texture struct {
+    <span class="comment">// Texture image</span>
+<span id="Texture.Image"></span>    Image *ebiten.<a href="index.html#Image">Image</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Texture.UnmarshalText">func (*Texture) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=777:827#L23">UnmarshalText</a>
+					<a class="permalink" href="index.html#Texture.UnmarshalText">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Texture">Texture</a>) UnmarshalText(text []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>UnmarshalText fills structure fields from text data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ThrottleMode">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=297:321#L4">ThrottleMode</a>
 				<a class="permalink" href="index.html#ThrottleMode">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ThrottleMode はスロットルモード
+
 			<pre>type ThrottleMode <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
@@ -2408,12 +2659,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="UsableSceneType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1297:1324#L54">UsableSceneType</a>
+			<h2 id="UsableSceneType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1905:1932#L65">UsableSceneType</a>
 				<a class="permalink" href="index.html#UsableSceneType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>使えるシーン
+			<p>UsableSceneType は使えるシーンを表す
 
 			<pre>type UsableSceneType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -2429,13 +2680,14 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 
 			
 				
-				<h3 id="UsableSceneType.Valid">func (UsableSceneType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=1523:1564#L62">Valid</a>
+				<h3 id="UsableSceneType.Valid">func (UsableSceneType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go?s=2327:2368#L77">Valid</a>
 					<a class="permalink" href="index.html#UsableSceneType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#UsableSceneType">UsableSceneType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はUsableSceneTypeの値が有効かを検証する
+
 				
 				
 				
@@ -2443,12 +2695,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="Velocity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=36:239#L1">Velocity</a>
+			<h2 id="Velocity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go?s=48:251#L1">Velocity</a>
 				<a class="permalink" href="index.html#Velocity">&#xb6;</a>
 				
 				
 			</h2>
-			<p>移動属性
+			<p>Velocity は移動属性
 
 			<pre>type Velocity struct {
     <span class="comment">// 角度(度数法)。この角度分スプライトを回転させる</span>
@@ -2474,12 +2726,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="Wall">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3583:3601#L127">Wall</a>
+			<h2 id="Wall">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3654:3672#L127">Wall</a>
 				<a class="permalink" href="index.html#Wall">&#xb6;</a>
 				
 				
 			</h2>
-			<p>壁
+			<p>Wall は壁
 
 			<pre>type Wall struct{}
 </pre>
@@ -2498,12 +2750,12 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3734:3769#L131">Warp</a>
+			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3813:3848#L131">Warp</a>
 				<a class="permalink" href="index.html#Warp">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ワープパッド
+			<p>Warp はワープパッド
 TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
 
 			<pre>type Warp struct {
@@ -2525,12 +2777,12 @@ TODO: 接触をトリガーに何かさせたいことはよくあるので、�
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4223:4412#L156">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4359:4548#L156">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
 			</h2>
-			<p>装備品。キャラクタが装備することでパラメータを変更できる
+			<p>Wearable は装備品。キャラクタが装備することでパラメータを変更できる
 
 			<pre>type Wearable struct {
 <span id="Wearable.Defense"></span>    Defense           <a href="http://localhost:8888/pkg/builtin/#int">int</a>           <span class="comment">// 防御力</span>

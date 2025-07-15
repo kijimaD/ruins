@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package game はメインゲームの実装を提供する。
+
 				
 			</div>
 		</div>
@@ -123,7 +124,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Draw">func (game *MainGame) Draw(screen *ebiten.Image)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Layout">func (game *MainGame) Layout(outsideWidth, outsideHeight int) (int, int)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Layout">func (game *MainGame) Layout(_, _ int) (int, int)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Update">func (game *MainGame) Update() error</a></dd>
@@ -140,6 +141,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go">game.go</a>
 			
 			</span>
@@ -155,13 +158,14 @@
 		
 			
 			
-			<h2 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=1602:1662#L49">InitWorld</a>
+			<h2 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=1696:1756#L51">InitWorld</a>
 				<a class="permalink" href="index.html#InitWorld">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func InitWorld(minGameWidth <a href="http://localhost:8888/pkg/builtin/#int">int</a>, minGameHeight <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="../engine/world/index.html">ew</a>.<a href="../engine/world/index.html#World">World</a></pre>
-			
+			<p>InitWorld はゲームワールドを初期化する
+
 			
 			
 
@@ -169,12 +173,12 @@
 		
 			
 			
-			<h2 id="MainGame">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=509:586#L10">MainGame</a>
+			<h2 id="MainGame">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=468:545#L9">MainGame</a>
 				<a class="permalink" href="index.html#MainGame">&#xb6;</a>
 				
 				
 			</h2>
-			<p>mainGameはebiten.Game interfaceを満たす
+			<p>MainGame はebiten.Game interfaceを満たす
 
 			<pre>type MainGame struct {
 <span id="MainGame.World"></span>    World        <a href="../engine/world/index.html">ew</a>.<a href="../engine/world/index.html#World">World</a>
@@ -194,38 +198,40 @@
 
 			
 				
-				<h3 id="MainGame.Draw">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=892:940#L28">Draw</a>
+				<h3 id="MainGame.Draw">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=930:978#L29">Draw</a>
 					<a class="permalink" href="index.html#MainGame.Draw">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Draw(screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="MainGame.Layout">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=656:728#L16">Layout</a>
-					<a class="permalink" href="index.html#MainGame.Layout">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Layout(outsideWidth, outsideHeight <a href="http://localhost:8888/pkg/builtin/#int">int</a>) (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				<p>interface methodのため、シグネチャは変更できない
+				<p>Draw はゲームの描画処理を行う
 
 				
 				
 				
 			
 				
-				<h3 id="MainGame.Update">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=799:835#L22">Update</a>
+				<h3 id="MainGame.Layout">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=625:674#L15">Layout</a>
+					<a class="permalink" href="index.html#MainGame.Layout">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Layout(_, _ <a href="http://localhost:8888/pkg/builtin/#int">int</a>) (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>Layout はinterface methodのため、シグネチャは変更できない
+
+				
+				
+				
+			
+				
+				<h3 id="MainGame.Update">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/game/game.go?s=792:828#L22">Update</a>
 					<a class="permalink" href="index.html#MainGame.Update">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Update() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Update はゲームの更新処理を行う
+
 				
 				
 				

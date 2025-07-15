@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package msg provides message parsing and evaluation functionality.
+
 				
 			</div>
 		</div>
@@ -208,6 +209,9 @@
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#NamedParams.String">func (n *NamedParams) String() string</a></dd>
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NamedParams.TokenLiteral">func (n *NamedParams) TokenLiteral() string</a></dd>
+				
 			
 				
 				<dd><a href="index.html#Node">type Node</a></dd>
@@ -312,6 +316,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go">ast.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go">evaluator.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go">lexer.go</a>
@@ -335,35 +341,52 @@
 			
 				
 				<pre>const (
-    <span id="QueueStateNone">QueueStateNone</span>   = <a href="index.html#QueueState">QueueState</a>(&#34;NONE&#34;)
+    <span class="comment">// QueueStateNone はキューが非アクティブ状態</span>
+    <span id="QueueStateNone">QueueStateNone</span> = <a href="index.html#QueueState">QueueState</a>(&#34;NONE&#34;)
+    <span class="comment">// QueueStateFinish はキューが完了状態</span>
     <span id="QueueStateFinish">QueueStateFinish</span> = <a href="index.html#QueueState">QueueState</a>(&#34;FINISH&#34;)
 )</pre>
 			
 				
 				<pre>const (
+
+    <span class="comment">// LOWEST は最低優先度</span>
     <span id="LOWEST">LOWEST</span> <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-    <span id="CMD">CMD</span>    <span class="comment">// [...]</span>
+    <span class="comment">// CMD はコマンド優先度</span>
+    <span id="CMD">CMD</span> <span class="comment">// [...]</span>
 )</pre>
 			
 				
 				<pre>const (
+    <span class="comment">// ILLEGAL は不正なトークン</span>
     <span id="ILLEGAL">ILLEGAL</span> = &#34;ILLEGAL&#34;
-    <span id="EOF">EOF</span>     = &#34;EOF&#34;
+    <span class="comment">// EOF はファイル終端</span>
+    <span id="EOF">EOF</span> = &#34;EOF&#34;
 
-    <span class="comment">// 識別子 + リテラル。数値や変数名など、予約語ではないもの。</span>
+    <span class="comment">// STRING は識別子 + リテラル。数値や変数名など、予約語ではないもの。</span>
     <span id="STRING">STRING</span> = &#34;STRING&#34;
-    <span id="IDENT">IDENT</span>  = &#34;IDENT&#34;
-    <span id="TEXT">TEXT</span>   = &#34;TEXT&#34;
+    <span class="comment">// IDENT は識別子</span>
+    <span id="IDENT">IDENT</span> = &#34;IDENT&#34;
+    <span class="comment">// TEXT はテキスト</span>
+    <span id="TEXT">TEXT</span> = &#34;TEXT&#34;
 
+    <span class="comment">// LBRACKET は左角括弧</span>
     <span id="LBRACKET">LBRACKET</span> = &#34;[&#34;
+    <span class="comment">// RBRACKET は右角括弧</span>
     <span id="RBRACKET">RBRACKET</span> = &#34;]&#34;
-    <span id="COMMA">COMMA</span>    = &#34;,&#34;
-    <span id="EQUAL">EQUAL</span>    = &#34;=&#34;
+    <span class="comment">// COMMA はカンマ</span>
+    <span id="COMMA">COMMA</span> = &#34;,&#34;
+    <span class="comment">// EQUAL は等号</span>
+    <span id="EQUAL">EQUAL</span> = &#34;=&#34;
 
-    <span id="CMD_FLUSH">CMD_FLUSH</span>         = &#34;p&#34;
-    <span id="CMD_LINE_END_WAIT">CMD_LINE_END_WAIT</span> = &#34;l&#34;
-    <span id="CMD_IMAGE">CMD_IMAGE</span>         = &#34;image&#34;
-    <span id="CMD_WAIT">CMD_WAIT</span>          = &#34;wait&#34;
+    <span class="comment">// CmdFlush はフラッシュコマンド</span>
+    <span id="CmdFlush">CmdFlush</span> = &#34;p&#34;
+    <span class="comment">// CmdLineEndWait は行末待機コマンド</span>
+    <span id="CmdLineEndWait">CmdLineEndWait</span> = &#34;l&#34;
+    <span class="comment">// CmdImage はイメージコマンド</span>
+    <span id="CmdImage">CmdImage</span> = &#34;image&#34;
+    <span class="comment">// CmdWait は待機コマンド</span>
+    <span id="CmdWait">CmdWait</span> = &#34;wait&#34;
 )</pre>
 			
 		
@@ -372,12 +395,13 @@
 		
 			
 			
-			<h2 id="ChangeBg">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=2188:2227#L133">ChangeBg</a>
+			<h2 id="ChangeBg">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=2726:2765#L138">ChangeBg</a>
 				<a class="permalink" href="index.html#ChangeBg">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ChangeBg は背景変更イベント
+
 			<pre>type ChangeBg struct {
 <span id="ChangeBg.Source"></span>    Source <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
@@ -395,25 +419,27 @@
 
 			
 				
-				<h3 id="ChangeBg.PreHook">func (*ChangeBg) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=2229:2257#L137">PreHook</a>
+				<h3 id="ChangeBg.PreHook">func (*ChangeBg) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=2812:2840#L143">PreHook</a>
 					<a class="permalink" href="index.html#ChangeBg.PreHook">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (c *<a href="index.html#ChangeBg">ChangeBg</a>) PreHook()</pre>
-				
+				<p>PreHook はイベント実行前の処理
+
 				
 				
 				
 			
 				
-				<h3 id="ChangeBg.Run">func (*ChangeBg) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=2271:2303#L141">Run</a>
+				<h3 id="ChangeBg.Run">func (*ChangeBg) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=2883:2915#L146">Run</a>
 					<a class="permalink" href="index.html#ChangeBg.Run">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (c *<a href="index.html#ChangeBg">ChangeBg</a>) Run(q *<a href="index.html#Queue">Queue</a>)</pre>
-				
+				<p>Run はイベントを実行する
+
 				
 				
 				
@@ -421,12 +447,13 @@
 		
 			
 			
-			<h2 id="CmdExpression">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1218:1325#L53">CmdExpression</a>
+			<h2 id="CmdExpression">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1581:1688#L59">CmdExpression</a>
 				<a class="permalink" href="index.html#CmdExpression">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>CmdExpression はコマンド式を表すノード
+
 			<pre>type CmdExpression struct {
 <span id="CmdExpression.Token"></span>    Token      <a href="index.html#Token">Token</a> <span class="comment">// &#39;[&#39;トークン</span>
 <span id="CmdExpression.Expression"></span>    Expression <a href="index.html#Expression">Expression</a>
@@ -446,7 +473,7 @@
 
 			
 				
-				<h3 id="CmdExpression.String">func (*CmdExpression) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1452:1492#L61">String</a>
+				<h3 id="CmdExpression.String">func (*CmdExpression) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1870:1910#L69">String</a>
 					<a class="permalink" href="index.html#CmdExpression.String">&#xb6;</a>
 					
 					
@@ -458,13 +485,14 @@
 				
 			
 				
-				<h3 id="CmdExpression.TokenLiteral">func (*CmdExpression) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1377:1423#L60">TokenLiteral</a>
+				<h3 id="CmdExpression.TokenLiteral">func (*CmdExpression) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1795:1841#L68">TokenLiteral</a>
 					<a class="permalink" href="index.html#CmdExpression.TokenLiteral">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ie *<a href="index.html#CmdExpression">CmdExpression</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>TokenLiteral はトークンのリテラル値を返す
+
 				
 				
 				
@@ -472,12 +500,13 @@
 		
 			
 			
-			<h2 id="Evaluator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go?s=47:88#L1">Evaluator</a>
+			<h2 id="Evaluator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go?s=100:141#L1">Evaluator</a>
 				<a class="permalink" href="index.html#Evaluator">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Evaluator はASTノードを評価する構造体
+
 			<pre>type Evaluator struct {
 <span id="Evaluator.Events"></span>    Events []<a href="index.html#Event">Event</a>
 }
@@ -493,26 +522,28 @@
 
 			
 				
-				<h3 id="NewEvaluator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go?s=90:129#L3">NewEvaluator</a>
+				<h3 id="NewEvaluator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go?s=196:235#L5">NewEvaluator</a>
 					<a class="permalink" href="index.html#NewEvaluator">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewEvaluator(node <a href="index.html#Node">Node</a>) *<a href="index.html#Evaluator">Evaluator</a></pre>
-				
+				<p>NewEvaluator は新しいEvaluatorを作成する
+
 				
 				
 			
 
 			
 				
-				<h3 id="Evaluator.Eval">func (*Evaluator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go?s=179:220#L10">Eval</a>
+				<h3 id="Evaluator.Eval">func (*Evaluator) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/evaluator.go?s=342:383#L13">Eval</a>
 					<a class="permalink" href="index.html#Evaluator.Eval">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (e *<a href="index.html#Evaluator">Evaluator</a>) Eval(node <a href="index.html#Node">Node</a>) <a href="index.html#Event">Event</a></pre>
-				
+				<p>Eval はノードを評価してイベントを返す
+
 				
 				
 				
@@ -520,12 +551,13 @@
 		
 			
 			
-			<h2 id="Event">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1360:1408#L74">Event</a>
+			<h2 id="Event">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1892:1940#L84">Event</a>
 				<a class="permalink" href="index.html#Event">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Event はイベントのインターフェース
+
 			<pre>type Event interface {
     PreHook()
     Run(*<a href="index.html#Queue">Queue</a>)
@@ -545,12 +577,13 @@
 		
 			
 			
-			<h2 id="Expression">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=163:216#L8">Expression</a>
+			<h2 id="Expression">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=351:404#L11">Expression</a>
 				<a class="permalink" href="index.html#Expression">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Expression は式ノードのインターフェース
+
 			<pre>type Expression interface {
     <a href="index.html#Node">Node</a>
     <span class="comment">// contains filtered or unexported methods</span>
@@ -570,12 +603,13 @@
 		
 			
 			
-			<h2 id="ExpressionStatement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=826:954#L39">ExpressionStatement</a>
+			<h2 id="ExpressionStatement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1081:1209#L42">ExpressionStatement</a>
 				<a class="permalink" href="index.html#ExpressionStatement">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ExpressionStatement は式文を表すノード
+
 			<pre>type ExpressionStatement struct {
 <span id="ExpressionStatement.Token"></span>    Token      <a href="index.html#Token">Token</a>      <span class="comment">// 式の最初のトークン</span>
 <span id="ExpressionStatement.Expression"></span>    Expression <a href="index.html#Expression">Expression</a> <span class="comment">// 式を保持</span>
@@ -594,7 +628,7 @@
 
 			
 				
-				<h3 id="ExpressionStatement.String">func (*ExpressionStatement) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1093:1139#L46">String</a>
+				<h3 id="ExpressionStatement.String">func (*ExpressionStatement) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1402:1448#L51">String</a>
 					<a class="permalink" href="index.html#ExpressionStatement.String">&#xb6;</a>
 					
 					
@@ -606,13 +640,14 @@
 				
 			
 				
-				<h3 id="ExpressionStatement.TokenLiteral">func (*ExpressionStatement) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1012:1064#L45">TokenLiteral</a>
+				<h3 id="ExpressionStatement.TokenLiteral">func (*ExpressionStatement) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1321:1373#L50">TokenLiteral</a>
 					<a class="permalink" href="index.html#ExpressionStatement.TokenLiteral">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (es *<a href="index.html#ExpressionStatement">ExpressionStatement</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>TokenLiteral はトークンのリテラル値を返す
+
 				
 				
 				
@@ -620,12 +655,13 @@
 		
 			
 			
-			<h2 id="FunctionLiteral">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1879:1975#L80">FunctionLiteral</a>
+			<h2 id="FunctionLiteral">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2472:2568#L92">FunctionLiteral</a>
 				<a class="permalink" href="index.html#FunctionLiteral">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>FunctionLiteral は関数リテラルを表すノード
+
 			<pre>type FunctionLiteral struct {
 <span id="FunctionLiteral.Token"></span>    Token      <a href="index.html#Token">Token</a>
 <span id="FunctionLiteral.FuncName"></span>    FuncName   <a href="index.html#Identifier">Identifier</a>
@@ -645,7 +681,7 @@
 
 			
 				
-				<h3 id="FunctionLiteral.String">func (*FunctionLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2250:2292#L88">String</a>
+				<h3 id="FunctionLiteral.String">func (*FunctionLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2897:2939#L101">String</a>
 					<a class="permalink" href="index.html#FunctionLiteral.String">&#xb6;</a>
 					
 					
@@ -657,13 +693,14 @@
 				
 			
 				
-				<h3 id="FunctionLiteral.TokenLiteral">func (*FunctionLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2173:2221#L87">TokenLiteral</a>
+				<h3 id="FunctionLiteral.TokenLiteral">func (*FunctionLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2820:2868#L100">TokenLiteral</a>
 					<a class="permalink" href="index.html#FunctionLiteral.TokenLiteral">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (fl *<a href="index.html#FunctionLiteral">FunctionLiteral</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>TokenLiteral はトークンのリテラル値を返す
+
 				
 				
 				
@@ -671,12 +708,13 @@
 		
 			
 			
-			<h2 id="Identifier">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2568:2649#L104">Identifier</a>
+			<h2 id="Identifier">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=3251:3332#L118">Identifier</a>
 				<a class="permalink" href="index.html#Identifier">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Identifier は識別子を表す
+
 			<pre>type Identifier struct {
 <span id="Identifier.Token"></span>    Token <a href="index.html#Token">Token</a> <span class="comment">// token.IDENT トークン</span>
 <span id="Identifier.Value"></span>    Value <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -695,7 +733,7 @@
 
 			
 				
-				<h3 id="Identifier.String">func (*Identifier) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2767:2803#L111">String</a>
+				<h3 id="Identifier.String">func (*Identifier) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=3505:3541#L127">String</a>
 					<a class="permalink" href="index.html#Identifier.String">&#xb6;</a>
 					
 					
@@ -707,13 +745,14 @@
 				
 			
 				
-				<h3 id="Identifier.TokenLiteral">func (*Identifier) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2697:2739#L110">TokenLiteral</a>
+				<h3 id="Identifier.TokenLiteral">func (*Identifier) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=3435:3477#L126">TokenLiteral</a>
 					<a class="permalink" href="index.html#Identifier.TokenLiteral">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (i *<a href="index.html#Identifier">Identifier</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>TokenLiteral はトークンの文字列表現を返す
+
 				
 				
 				
@@ -721,12 +760,13 @@
 		
 			
 			
-			<h2 id="Lexer">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go?s=13:205#L1">Lexer</a>
+			<h2 id="Lexer">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go?s=59:251#L1">Lexer</a>
 				<a class="permalink" href="index.html#Lexer">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Lexer は字句解析器を表す構造体
+
 			<pre>type Lexer struct {
 <span id="Lexer.OnIdent"></span>    OnIdent <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// contains filtered or unexported fields</span>
@@ -743,26 +783,27 @@
 
 			
 				
-				<h3 id="NewLexer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go?s=207:241#L1">NewLexer</a>
+				<h3 id="NewLexer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go?s=298:332#L3">NewLexer</a>
 					<a class="permalink" href="index.html#NewLexer">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewLexer(input <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#Lexer">Lexer</a></pre>
-				
+				<p>NewLexer は新しいLexerを作成する
+
 				
 				
 			
 
 			
 				
-				<h3 id="Lexer.NextToken">func (*Lexer) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go?s=656:689#L19">NextToken</a>
+				<h3 id="Lexer.NextToken">func (*Lexer) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/lexer.go?s=757:790#L21">NextToken</a>
 					<a class="permalink" href="index.html#Lexer.NextToken">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#Lexer">Lexer</a>) NextToken() <a href="index.html#Token">Token</a></pre>
-				<p>現在の1文字を読みこんでトークンを返す
+				<p>NextToken は現在の1文字を読みこんでトークンを返す
 
 				
 				
@@ -771,12 +812,13 @@
 		
 			
 			
-			<h2 id="NamedParams">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2830:2880#L113">NamedParams</a>
+			<h2 id="NamedParams">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=3623:3673#L130">NamedParams</a>
 				<a class="permalink" href="index.html#NamedParams">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>NamedParams は名前付きパラメータを表す
+
 			<pre>type NamedParams struct {
 <span id="NamedParams.Map"></span>    Map map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
@@ -794,7 +836,7 @@
 
 			
 				
-				<h3 id="NamedParams.String">func (*NamedParams) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2924:2961#L118">String</a>
+				<h3 id="NamedParams.String">func (*NamedParams) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=3838:3875#L138">String</a>
 					<a class="permalink" href="index.html#NamedParams.String">&#xb6;</a>
 					
 					
@@ -805,15 +847,29 @@
 				
 				
 			
+				
+				<h3 id="NamedParams.TokenLiteral">func (*NamedParams) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=3777:3820#L137">TokenLiteral</a>
+					<a class="permalink" href="index.html#NamedParams.TokenLiteral">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n *<a href="index.html#NamedParams">NamedParams</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>TokenLiteral はトークンの文字列表現を返す
+
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="Node">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=45:108#L1">Node</a>
+			<h2 id="Node">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=102:165#L1">Node</a>
 				<a class="permalink" href="index.html#Node">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Node はASTノードの基底インターフェース
+
 			<pre>type Node interface {
     TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a>
     String() <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -833,12 +889,13 @@
 		
 			
 			
-			<h2 id="Parser">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=39:286#L1">Parser</a>
+			<h2 id="Parser">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=86:333#L1">Parser</a>
 				<a class="permalink" href="index.html#Parser">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Parser は構文解析器を表す構造体
+
 			<pre>type Parser struct {
     <span class="comment">// contains filtered or unexported fields</span>
 }
@@ -854,13 +911,13 @@
 
 			
 				
-				<h3 id="NewParser">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=775:807#L30">NewParser</a>
+				<h3 id="NewParser">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=898:930#L33">NewParser</a>
 					<a class="permalink" href="index.html#NewParser">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewParser(l *<a href="index.html#Lexer">Lexer</a>) *<a href="index.html#Parser">Parser</a></pre>
-				<p>字句解析器を受け取って初期化する
+				<p>NewParser は字句解析器を受け取って初期化する
 
 				
 				
@@ -868,26 +925,26 @@
 
 			
 				
-				<h3 id="Parser.Errors">func (*Parser) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=1199:1233#L49">Errors</a>
+				<h3 id="Parser.Errors">func (*Parser) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=1332:1366#L52">Errors</a>
 					<a class="permalink" href="index.html#Parser.Errors">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (p *<a href="index.html#Parser">Parser</a>) Errors() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>エラーのアクセサ
+				<p>Errors はエラーのアクセサ
 
 				
 				
 				
 			
 				
-				<h3 id="Parser.ParseProgram">func (*Parser) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=1643:1683#L69">ParseProgram</a>
+				<h3 id="Parser.ParseProgram">func (*Parser) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/parser.go?s=1589:1629#L63">ParseProgram</a>
 					<a class="permalink" href="index.html#Parser.ParseProgram">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (p *<a href="index.html#Parser">Parser</a>) ParseProgram() *<a href="index.html#Program">Program</a></pre>
-				<p>パースを開始する。トークンを1つずつ辿る
+				<p>ParseProgram はパースを開始する。トークンを1つずつ辿る
 
 				
 				
@@ -896,12 +953,12 @@
 		
 			
 			
-			<h2 id="Program">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=294:341#L14">Program</a>
+			<h2 id="Program">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=493:540#L17">Program</a>
 				<a class="permalink" href="index.html#Program">&#xb6;</a>
 				
 				
 			</h2>
-			<p>構文解析器が生成する全てのASTのルートノードになる
+			<p>Program は構文解析器が生成する全てのASTのルートノードになる
 
 			<pre>type Program struct {
 <span id="Program.Statements"></span>    Statements []<a href="index.html#Statement">Statement</a>
@@ -920,7 +977,7 @@
 
 			
 				
-				<h3 id="Program.String">func (*Program) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=675:708#L29">String</a>
+				<h3 id="Program.String">func (*Program) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=879:912#L31">String</a>
 					<a class="permalink" href="index.html#Program.String">&#xb6;</a>
 					
 					
@@ -934,13 +991,13 @@
 				
 			
 				
-				<h3 id="Program.TokenLiteral">func (*Program) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=408:447#L19">TokenLiteral</a>
+				<h3 id="Program.TokenLiteral">func (*Program) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=623:662#L22">TokenLiteral</a>
 					<a class="permalink" href="index.html#Program.TokenLiteral">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (p *<a href="index.html#Program">Program</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>インターフェースで定義されている関数の1つ
+				<p>TokenLiteral はインターフェースで定義されている関数の1つ
 
 				
 				
@@ -949,12 +1006,13 @@
 		
 			
 			
-			<h2 id="Queue">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=143:276#L2">Queue</a>
+			<h2 id="Queue">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=355:488#L6">Queue</a>
 				<a class="permalink" href="index.html#Queue">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Queue はイベントキューを管理する構造体
+
 			<pre>type Queue struct {
     <span class="comment">// contains filtered or unexported fields</span>
 }
@@ -970,87 +1028,92 @@
 
 			
 				
-				<h3 id="NewQueue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=278:313#L10">NewQueue</a>
+				<h3 id="NewQueue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=535:570#L15">NewQueue</a>
 					<a class="permalink" href="index.html#NewQueue">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewQueue(events []<a href="index.html#Event">Event</a>) <a href="index.html#Queue">Queue</a></pre>
-				
+				<p>NewQueue は新しいQueueを作成する
+
 				
 				
 			
 				
-				<h3 id="NewQueueFromText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=379:419#L18">NewQueueFromText</a>
+				<h3 id="NewQueueFromText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=698:738#L24">NewQueueFromText</a>
 					<a class="permalink" href="index.html#NewQueueFromText">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewQueueFromText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#Queue">Queue</a></pre>
-				
+				<p>NewQueueFromText はテキストからQueueを作成する
+
 				
 				
 			
 
 			
 				
-				<h3 id="Queue.Display">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1149:1181#L58">Display</a>
+				<h3 id="Queue.Display">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1585:1617#L66">Display</a>
 					<a class="permalink" href="index.html#Queue.Display">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (q *<a href="index.html#Queue">Queue</a>) Display() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>Display は現在の表示文字列を返す
+
 				
 				
 				
 			
 				
-				<h3 id="Queue.Head">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=814:842#L41">Head</a>
+				<h3 id="Queue.Head">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1195:1223#L48">Head</a>
 					<a class="permalink" href="index.html#Queue.Head">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (q *<a href="index.html#Queue">Queue</a>) Head() <a href="index.html#Event">Event</a></pre>
-				
+				<p>Head はキューの先端イベントを返す
+
 				
 				
 				
 			
 				
-				<h3 id="Queue.Pop">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=970:1002#L49">Pop</a>
+				<h3 id="Queue.Pop">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1358:1390#L56">Pop</a>
 					<a class="permalink" href="index.html#Queue.Pop">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (q *<a href="index.html#Queue">Queue</a>) Pop() <a href="index.html#QueueState">QueueState</a></pre>
-				<p>キューの先端を消して先に進める
+				<p>Pop はキューの先端を消して先に進める
 
 				
 				
 				
 			
 				
-				<h3 id="Queue.RunHead">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=608:644#L28">RunHead</a>
+				<h3 id="Queue.RunHead">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=938:974#L34">RunHead</a>
 					<a class="permalink" href="index.html#Queue.RunHead">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (q *<a href="index.html#Queue">Queue</a>) RunHead() <a href="index.html#QueueState">QueueState</a></pre>
-				<p>キューの先端にあるイベントを実行する
+				<p>RunHead はキューの先端にあるイベントを実行する
 
 				
 				
 				
 			
 				
-				<h3 id="Queue.SetEvents">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1201:1238#L62">SetEvents</a>
+				<h3 id="Queue.SetEvents">func (*Queue) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=1681:1718#L71">SetEvents</a>
 					<a class="permalink" href="index.html#Queue.SetEvents">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (q *<a href="index.html#Queue">Queue</a>) SetEvents(es []<a href="index.html#Event">Event</a>)</pre>
-				
+				<p>SetEvents はイベントを設定する
+
 				
 				
 				
@@ -1058,12 +1121,13 @@
 		
 			
 			
-			<h2 id="QueueState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=28:50#L1">QueueState</a>
+			<h2 id="QueueState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/msg.go?s=76:98#L1">QueueState</a>
 				<a class="permalink" href="index.html#QueueState">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>QueueState はキューの状態を表す型
+
 			<pre>type QueueState <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
@@ -1080,12 +1144,13 @@
 		
 			
 			
-			<h2 id="Statement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=110:161#L3">Statement</a>
+			<h2 id="Statement">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=241:292#L5">Statement</a>
 				<a class="permalink" href="index.html#Statement">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Statement はステートメントノードのインターフェース
+
 			<pre>type Statement interface {
     <a href="index.html#Node">Node</a>
     <span class="comment">// contains filtered or unexported methods</span>
@@ -1105,12 +1170,13 @@
 		
 			
 			
-			<h2 id="TextLiteral">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1628:1682#L71">TextLiteral</a>
+			<h2 id="TextLiteral">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2107:2161#L80">TextLiteral</a>
 				<a class="permalink" href="index.html#TextLiteral">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TextLiteral はテキストリテラルを表すノード
+
 			<pre>type TextLiteral struct {
 <span id="TextLiteral.Token"></span>    Token <a href="index.html#Token">Token</a>
 <span id="TextLiteral.Value"></span>    Value <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -1129,7 +1195,7 @@
 
 			
 				
-				<h3 id="TextLiteral.String">func (*TextLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1805:1843#L78">String</a>
+				<h3 id="TextLiteral.String">func (*TextLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2339:2377#L89">String</a>
 					<a class="permalink" href="index.html#TextLiteral.String">&#xb6;</a>
 					
 					
@@ -1141,13 +1207,14 @@
 				
 			
 				
-				<h3 id="TextLiteral.TokenLiteral">func (*TextLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=1732:1776#L77">TokenLiteral</a>
+				<h3 id="TextLiteral.TokenLiteral">func (*TextLiteral) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/ast.go?s=2266:2310#L88">TokenLiteral</a>
 					<a class="permalink" href="index.html#TextLiteral.TokenLiteral">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (sl *<a href="index.html#TextLiteral">TextLiteral</a>) TokenLiteral() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>TokenLiteral はトークンのリテラル値を返す
+
 				
 				
 				
@@ -1155,12 +1222,13 @@
 		
 			
 			
-			<h2 id="Token">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/token.go?s=36:92#L1">Token</a>
+			<h2 id="Token">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/token.go?s=129:185#L1">Token</a>
 				<a class="permalink" href="index.html#Token">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Token はトークンを表す構造体
+
 			<pre>type Token struct {
 <span id="Token.Type"></span>    Type    <a href="index.html#TokenType">TokenType</a>
 <span id="Token.Literal"></span>    Literal <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -1181,12 +1249,13 @@
 		
 			
 			
-			<h2 id="TokenType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/token.go?s=13:34#L1">TokenType</a>
+			<h2 id="TokenType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/token.go?s=63:84#L1">TokenType</a>
 				<a class="permalink" href="index.html#TokenType">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TokenType はトークンの種類を表す型
+
 			<pre>type TokenType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
@@ -1199,13 +1268,13 @@
 
 			
 				
-				<h3 id="LookupIdent">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/token.go?s=593:633#L24">LookupIdent</a>
+				<h3 id="LookupIdent">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/utils/msg/token.go?s=1049:1089#L38">LookupIdent</a>
 					<a class="permalink" href="index.html#LookupIdent">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func LookupIdent(ident <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#TokenType">TokenType</a></pre>
-				<p>予約語の場合はその種類を、それ以外の場合はIDENTを返す
+				<p>LookupIdent は予約語の場合はその種類を、それ以外の場合はIDENTを返す
 
 				
 				

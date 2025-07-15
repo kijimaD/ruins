@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package systems はゲームシステムの実装を提供する。
+
 				
 			</div>
 		</div>
@@ -175,6 +176,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/cache.go">cache.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go">equipment_changed.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go">hud.go</a>
@@ -200,6 +203,7 @@
 			
 				
 				<pre>const (
+    <span class="comment">// LevelUpThreshold はレベルアップに必要な経験値の闾値</span>
     <span id="LevelUpThreshold">LevelUpThreshold</span> = 100
 )</pre>
 			
@@ -208,26 +212,28 @@
 		
 			
 			
-			<h2 id="AIInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go?s=225:258#L3">AIInputSystem</a>
+			<h2 id="AIInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go?s=263:296#L3">AIInputSystem</a>
 				<a class="permalink" href="index.html#AIInputSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AIInputSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			
+			<p>AIInputSystem は AI制御されたエンティティの入力処理を行う
+
 			
 			
 
 		
 			
 			
-			<h2 id="BattleCommandSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go?s=504:543#L9">BattleCommandSystem</a>
+			<h2 id="BattleCommandSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go?s=570:609#L10">BattleCommandSystem</a>
 				<a class="permalink" href="index.html#BattleCommandSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func BattleCommandSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			<p>1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
+			<p>BattleCommandSystem は戦闘中のコマンド処理を行う
+1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
 クリックごとにコマンドの結果を見られるようにするため
 
 			
@@ -236,13 +242,13 @@
 		
 			
 			
-			<h2 id="EquipmentChangedSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go?s=425:472#L3">EquipmentChangedSystem</a>
+			<h2 id="EquipmentChangedSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go?s=451:498#L3">EquipmentChangedSystem</a>
 				<a class="permalink" href="index.html#EquipmentChangedSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func EquipmentChangedSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-			<p>装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
+			<p>EquipmentChangedSystem は装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
 TODO: 最大HP/SPの更新はここでやったほうがよさそう
 TODO: マイナスにならないようにする
 
@@ -252,52 +258,55 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=290:341#L4">HUDSystem</a>
+			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=345:396#L5">HUDSystem</a>
 				<a class="permalink" href="index.html#HUDSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func HUDSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			
+			<p>HUDSystem はゲームの HUD 情報を描画する
+
 			
 			
 
 		
 			
 			
-			<h2 id="MoveSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go?s=382:412#L6">MoveSystem</a>
+			<h2 id="MoveSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go?s=346:376#L5">MoveSystem</a>
 				<a class="permalink" href="index.html#MoveSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func MoveSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			
+			<p>MoveSystem はエンティティの移動処理を行う
+
 			
 			
 
 		
 			
 			
-			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=245:282#L3">PlayerInputSystem</a>
+			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=272:309#L3">PlayerInputSystem</a>
 				<a class="permalink" href="index.html#PlayerInputSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func PlayerInputSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			
+			<p>PlayerInputSystem はプレイヤーからの入力を処理する
+
 			
 			
 
 		
 			
 			
-			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=612:672#L16">RenderSpriteSystem</a>
+			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=536:596#L14">RenderSpriteSystem</a>
 				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func RenderSpriteSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>(下) タイル -&gt; 影 -&gt; スプライト (上) の順に表示する
+			<p>RenderSpriteSystem は (下) タイル -&gt; 影 -&gt; スプライト (上) の順に表示する
 
 			
 			
@@ -305,13 +314,13 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=468:522#L15">VisionSystem</a>
+			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=484:538#L15">VisionSystem</a>
 				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func VisionSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>探索範囲エリアを表示する
+			<p>VisionSystem は探索範囲エリアを表示する
 
 			
 			
@@ -320,19 +329,23 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="BattleExtinctionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=157:186#L1">BattleExtinctionType</a>
+			<h2 id="BattleExtinctionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=215:244#L1">BattleExtinctionType</a>
 				<a class="permalink" href="index.html#BattleExtinctionType">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>BattleExtinctionType は戦闘終了の種類を表す
+
 			<pre>type BattleExtinctionType <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
 			
 				
 				<pre>const (
+    <span class="comment">// BattleExtinctionNone は戦闘継続状態を表す</span>
     <span id="BattleExtinctionNone">BattleExtinctionNone</span> <a href="index.html#BattleExtinctionType">BattleExtinctionType</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span class="comment">// BattleExtinctionAlly は味方が全滅した状態を表す</span>
     <span id="BattleExtinctionAlly">BattleExtinctionAlly</span>
+    <span class="comment">// BattleExtinctionMonster は敵が全滅した状態を表す</span>
     <span id="BattleExtinctionMonster">BattleExtinctionMonster</span>
 )</pre>
 			
@@ -345,13 +358,13 @@ TODO: マイナスにならないようにする
 
 			
 				
-				<h3 id="BattleExtinctionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=342:405#L8">BattleExtinctionSystem</a>
+				<h3 id="BattleExtinctionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=612:675#L12">BattleExtinctionSystem</a>
 					<a class="permalink" href="index.html#BattleExtinctionSystem">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func BattleExtinctionSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="index.html#BattleExtinctionType">BattleExtinctionType</a></pre>
-				<p>敵や味方の全滅をチェックする
+				<p>BattleExtinctionSystem は敵や味方の全滅をチェックする
 
 				
 				
@@ -361,12 +374,12 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="DropResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=327:584#L9">DropResult</a>
+			<h2 id="DropResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=415:672#L10">DropResult</a>
 				<a class="permalink" href="index.html#DropResult">&#xb6;</a>
 				
 				
 			</h2>
-			<p>UI用に渡す実行結果
+			<p>DropResult は UI用に渡す実行結果
 
 			<pre>type DropResult struct {
     <span class="comment">// 獲得した素材名</span>
@@ -390,13 +403,13 @@ TODO: マイナスにならないようにする
 
 			
 				
-				<h3 id="BattleDropSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=675:722#L22">BattleDropSystem</a>
+				<h3 id="BattleDropSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=783:830#L23">BattleDropSystem</a>
 					<a class="permalink" href="index.html#BattleDropSystem">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func BattleDropSystem(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) <a href="index.html#DropResult">DropResult</a></pre>
-				<p>戦闘終了後に経験値や素材を獲得する
+				<p>BattleDropSystem は戦闘終了後に経験値や素材を獲得する
 獲得した素材名を返す
 
 				

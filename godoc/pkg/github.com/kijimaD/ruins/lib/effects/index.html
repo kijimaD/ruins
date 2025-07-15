@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package effects はゲームエフェクトシステムの実装を提供する。
+
 				
 			</div>
 		</div>
@@ -132,7 +133,7 @@
 				<dd><a href="index.html#ItemTrigger">func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#RecoverStamina">func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity)</a></dd>
+				<dd><a href="index.html#RecoverStamina">func RecoverStamina(world w.World, recoveryEffect EffectSpawner, target ecs.Entity)</a></dd>
 			
 				
 				<dd><a href="index.html#RunEffectQueue">func RunEffectQueue(world w.World)</a></dd>
@@ -223,6 +224,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go">effects.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go">queue.go</a>
@@ -245,85 +248,91 @@
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
-				
+				<p>EffectQueue はエフェクトのキュー
+
 				<pre>var <span id="EffectQueue">EffectQueue</span> []<a href="index.html#EffectSpawner">EffectSpawner</a></pre>
 			
 		
 		
 			
 			
-			<h2 id="AddEffect">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=399:474#L15">AddEffect</a>
+			<h2 id="AddEffect">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=584:659#L18">AddEffect</a>
 				<a class="permalink" href="index.html#AddEffect">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AddEffect(creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, effectType <a href="index.html#EffectType">EffectType</a>, targets <a href="index.html#Targets">Targets</a>)</pre>
-			
+			<p>AddEffect はエフェクトをキューに追加する
+
 			
 			
 
 		
 			
 			
-			<h2 id="AffectEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=1953:2023#L71">AffectEntity</a>
+			<h2 id="AffectEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=2238:2308#L75">AffectEntity</a>
 				<a class="permalink" href="index.html#AffectEntity">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AffectEntity(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, es <a href="index.html#EffectSpawner">EffectSpawner</a>, target *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			
+			<p>AffectEntity はエンティティに効果を適用する
+
 			
 			
 
 		
 			
 			
-			<h2 id="ConsumeStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1431:1507#L39">ConsumeStamina</a>
+			<h2 id="ConsumeStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1570:1646#L42">ConsumeStamina</a>
 				<a class="permalink" href="index.html#ConsumeStamina">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func ConsumeStamina(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, consume <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			
+			<p>ConsumeStamina はスタミナを消費する
+
 			
 			
 
 		
 			
 			
-			<h2 id="HealDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=863:935#L22">HealDamage</a>
+			<h2 id="HealDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=953:1025#L24">HealDamage</a>
 				<a class="permalink" href="index.html#HealDamage">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func HealDamage(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, healing <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			
+			<p>HealDamage はダメージを回復する
+
 			
 			
 
 		
 			
 			
-			<h2 id="InflictDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=292:366#L5">InflictDamage</a>
+			<h2 id="InflictDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=337:411#L6">InflictDamage</a>
 				<a class="permalink" href="index.html#InflictDamage">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func InflictDamage(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, damage <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			
+			<p>InflictDamage はダメージを与える
+
 			
 			
 
 		
 			
 			
-			<h2 id="ItemTrigger">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/trigger.go?s=290:376#L3">ItemTrigger</a>
+			<h2 id="ItemTrigger">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/trigger.go?s=305:391#L3">ItemTrigger</a>
 				<a class="permalink" href="index.html#ItemTrigger">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func ItemTrigger(creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, item <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, targets <a href="index.html#Targets">Targets</a>, world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			<p>アイテムについたComponentからEffectを登録する
+			<p>ItemTrigger はアイテムについたComponentからEffectを登録する
 消費アイテムはなくなる
 
 			
@@ -332,26 +341,27 @@
 		
 			
 			
-			<h2 id="RecoverStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1999:2075#L56">RecoverStamina</a>
+			<h2 id="RecoverStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2187:2270#L60">RecoverStamina</a>
 				<a class="permalink" href="index.html#RecoverStamina">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func RecoverStamina(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, recover <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			
+			<pre>func RecoverStamina(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, recoveryEffect <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+			<p>RecoverStamina はスタミナを回復する
+
 			
 			
 
 		
 			
 			
-			<h2 id="RunEffectQueue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=665:699#L24">RunEffectQueue</a>
+			<h2 id="RunEffectQueue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=868:902#L27">RunEffectQueue</a>
 				<a class="permalink" href="index.html#RunEffectQueue">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func RunEffectQueue(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			<p>キューに貯められたEffectSpawnerを処理する
+			<p>RunEffectQueue はキューに貯められたEffectSpawnerを処理する
 
 			
 			
@@ -359,13 +369,13 @@
 		
 			
 			
-			<h2 id="TargetApplicator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=956:1010#L37">TargetApplicator</a>
+			<h2 id="TargetApplicator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=1179:1233#L40">TargetApplicator</a>
 				<a class="permalink" href="index.html#TargetApplicator">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func TargetApplicator(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>, es <a href="index.html#EffectSpawner">EffectSpawner</a>)</pre>
-			<p>単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
+			<p>TargetApplicator は単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
 
 			
 			
@@ -373,26 +383,28 @@
 		
 			
 			
-			<h2 id="WarpEscapeTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2738:2772#L78">WarpEscapeTask</a>
+			<h2 id="WarpEscapeTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=3042:3076#L84">WarpEscapeTask</a>
 				<a class="permalink" href="index.html#WarpEscapeTask">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func WarpEscapeTask(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			
+			<p>WarpEscapeTask はゲームから脱出する
+
 			
 			
 
 		
 			
 			
-			<h2 id="WarpNextTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2586:2618#L73">WarpNextTask</a>
+			<h2 id="WarpNextTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2841:2873#L78">WarpNextTask</a>
 				<a class="permalink" href="index.html#WarpNextTask">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func WarpNextTask(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>)</pre>
-			
+			<p>WarpNextTask は次のフロアにワープする
+
 			
 			
 
@@ -400,12 +412,12 @@
 		
 			
 			
-			<h2 id="ConsumptionStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=405:459#L19">ConsumptionStamina</a>
+			<h2 id="ConsumptionStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=448:502#L19">ConsumptionStamina</a>
 				<a class="permalink" href="index.html#ConsumptionStamina">&#xb6;</a>
 				
 				
 			</h2>
-			<p>スタミナを消費する
+			<p>ConsumptionStamina はスタミナを消費する
 
 			<pre>type ConsumptionStamina struct {
 <span id="ConsumptionStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
@@ -426,12 +438,12 @@
 		
 			
 			
-			<h2 id="Damage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=159:193#L1">Damage</a>
+			<h2 id="Damage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=169:203#L1">Damage</a>
 				<a class="permalink" href="index.html#Damage">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ダメージを与える
+			<p>Damage はダメージを与える
 
 			<pre>type Damage struct {
 <span id="Damage.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -452,12 +464,12 @@
 		
 			
 			
-			<h2 id="EffectSpawner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=301:397#L9">EffectSpawner</a>
+			<h2 id="EffectSpawner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=427:523#L11">EffectSpawner</a>
 				<a class="permalink" href="index.html#EffectSpawner">&#xb6;</a>
 				
 				
 			</h2>
-			<p>queueの中身
+			<p>EffectSpawner はqueueの中身
 
 			<pre>type EffectSpawner struct {
 <span id="EffectSpawner.Creator"></span>    Creator    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
@@ -480,12 +492,13 @@
 		
 			
 			
-			<h2 id="EffectType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=236:281#L4">EffectType</a>
+			<h2 id="EffectType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=345:390#L6">EffectType</a>
 				<a class="permalink" href="index.html#EffectType">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>EffectType はエフェクトの型インターフェース
+
 			<pre>type EffectType interface {
     <span class="comment">// contains filtered or unexported methods</span>
 }</pre>
@@ -504,12 +517,12 @@
 		
 			
 			
-			<h2 id="Healing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=274:317#L10">Healing</a>
+			<h2 id="Healing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=295:338#L10">Healing</a>
 				<a class="permalink" href="index.html#Healing">&#xb6;</a>
 				
 				
 			</h2>
-			<p>体力を回復する
+			<p>Healing は体力を回復する
 
 			<pre>type Healing struct {
 <span id="Healing.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
@@ -530,12 +543,12 @@
 		
 			
 			
-			<h2 id="ItemUse">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=705:745#L37">ItemUse</a>
+			<h2 id="ItemUse">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=778:818#L37">ItemUse</a>
 				<a class="permalink" href="index.html#ItemUse">&#xb6;</a>
 				
 				
 			</h2>
-			<p>アイテムを使用する
+			<p>ItemUse はアイテムを使用する
 
 			<pre>type ItemUse struct {
 <span id="ItemUse.Item"></span>    Item <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
@@ -556,12 +569,13 @@
 		
 			
 			
-			<h2 id="None">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=220:238#L9">None</a>
+			<h2 id="None">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=385:403#L13">None</a>
 				<a class="permalink" href="index.html#None">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>None はターゲットなし
+
 			<pre>type None struct{}
 </pre>
 
@@ -579,12 +593,13 @@
 		
 			
 			
-			<h2 id="Party">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=99:118#L1">Party</a>
+			<h2 id="Party">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=196:215#L1">Party</a>
 				<a class="permalink" href="index.html#Party">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Party はパーティターゲット
+
 			<pre>type Party struct{}
 </pre>
 
@@ -602,12 +617,12 @@
 		
 			
 			
-			<h2 id="RecoveryStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=558:609#L28">RecoveryStamina</a>
+			<h2 id="RecoveryStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=620:671#L28">RecoveryStamina</a>
 				<a class="permalink" href="index.html#RecoveryStamina">&#xb6;</a>
 				
 				
 			</h2>
-			<p>スタミナを回復する
+			<p>RecoveryStamina はスタミナを回復する
 
 			<pre>type RecoveryStamina struct {
 <span id="RecoveryStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
@@ -628,12 +643,13 @@
 		
 			
 			
-			<h2 id="Single">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=148:189#L3">Single</a>
+			<h2 id="Single">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=280:321#L6">Single</a>
 				<a class="permalink" href="index.html#Single">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Single は単体ターゲット
+
 			<pre>type Single struct {
 <span id="Single.Target"></span>    Target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
 }
@@ -653,12 +669,13 @@
 		
 			
 			
-			<h2 id="Targets">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=59:97#L1">Targets</a>
+			<h2 id="Targets">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=116:154#L1">Targets</a>
 				<a class="permalink" href="index.html#Targets">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Targets はターゲットのインターフェース
+
 			<pre>type Targets interface {
     <span class="comment">// contains filtered or unexported methods</span>
 }</pre>
@@ -677,12 +694,12 @@
 		
 			
 			
-			<h2 id="WarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=920:944#L53">WarpEscape</a>
+			<h2 id="WarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=1019:1043#L53">WarpEscape</a>
 				<a class="permalink" href="index.html#WarpEscape">&#xb6;</a>
 				
 				
 			</h2>
-			<p>脱出
+			<p>WarpEscape は脱出
 
 			<pre>type WarpEscape struct{}
 </pre>
@@ -701,12 +718,12 @@
 		
 			
 			
-			<h2 id="WarpNext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=830:852#L46">WarpNext</a>
+			<h2 id="WarpNext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=915:937#L46">WarpNext</a>
 				<a class="permalink" href="index.html#WarpNext">&#xb6;</a>
 				
 				
 			</h2>
-			<p>次階層に移動する
+			<p>WarpNext は次階層に移動する
 
 			<pre>type WarpNext struct{}
 </pre>

@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package testing はテストユーティリティとヘルパーを提供する。
+
 				
 			</div>
 		</div>
@@ -121,13 +122,13 @@
 				<dd><a href="index.html#AssertEqual">func AssertEqual(t *testing.T, actual, expected interface{}, description string)</a></dd>
 			
 				
-				<dd><a href="index.html#AssertHasComponent">func AssertHasComponent(t *testing.T, componentList components.GameComponentList, componentName string)</a></dd>
+				<dd><a href="index.html#AssertHasComponent">func AssertHasComponent(t *testing.T, componentList gc.GameComponentList, componentName string)</a></dd>
 			
 				
 				<dd><a href="index.html#AssertHealingAmount">func AssertHealingAmount(t *testing.T, component *gc.ProvidesHealing, expectedAmount int)</a></dd>
 			
 				
-				<dd><a href="index.html#AssertInRange">func AssertInRange(t *testing.T, value, min, max int, description string)</a></dd>
+				<dd><a href="index.html#AssertInRange">func AssertInRange(t *testing.T, value, minVal, maxVal int, description string)</a></dd>
 			
 				
 				<dd><a href="index.html#AssertMaterialAmount">func AssertMaterialAmount(t *testing.T, component *gc.Material, expectedAmount int)</a></dd>
@@ -139,7 +140,7 @@
 				<dd><a href="index.html#AssertNil">func AssertNil(t *testing.T, value interface{}, description string)</a></dd>
 			
 				
-				<dd><a href="index.html#AssertNotHasComponent">func AssertNotHasComponent(t *testing.T, componentList components.GameComponentList, componentName string)</a></dd>
+				<dd><a href="index.html#AssertNotHasComponent">func AssertNotHasComponent(t *testing.T, componentList gc.GameComponentList, componentName string)</a></dd>
 			
 				
 				<dd><a href="index.html#AssertNotNil">func AssertNotNil(t *testing.T, value interface{}, description string)</a></dd>
@@ -151,31 +152,31 @@
 				<dd><a href="index.html#AssertPosition">func AssertPosition(t *testing.T, component *gc.Position, expectedX, expectedY float64)</a></dd>
 			
 				
-				<dd><a href="index.html#AssertRender">func AssertRender(t *testing.T, component *gc.Render, expectedSheet string)</a></dd>
+				<dd><a href="index.html#AssertRender">func AssertRender(t *testing.T, component *gc.Render, _ string)</a></dd>
 			
 				
-				<dd><a href="index.html#CreateStandardEnemy">func CreateStandardEnemy(t *testing.T, name string) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateStandardEnemy">func CreateStandardEnemy(t *testing.T, name string) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateStandardPlayer">func CreateStandardPlayer(t *testing.T) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateStandardPlayer">func CreateStandardPlayer(t *testing.T) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateStandardPotion">func CreateStandardPotion(t *testing.T, name string, healAmount int) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateStandardPotion">func CreateStandardPotion(t *testing.T, name string, healAmount int) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateStandardWeapon">func CreateStandardWeapon(t *testing.T, name string, damage, accuracy int) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateStandardWeapon">func CreateStandardWeapon(t *testing.T, name string, damage, accuracy int) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateTestEnemy">func CreateTestEnemy(t *testing.T, name string) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateTestEnemy">func CreateTestEnemy(t *testing.T, name string) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateTestItem">func CreateTestItem(t *testing.T, name string, itemType TestItemType) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateTestItem">func CreateTestItem(t *testing.T, name string, itemType TestItemType) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateTestPlayer">func CreateTestPlayer(t *testing.T) components.GameComponentList</a></dd>
+				<dd><a href="index.html#CreateTestPlayer">func CreateTestPlayer(t *testing.T) gc.GameComponentList</a></dd>
 			
 				
-				<dd><a href="index.html#CreateTestRawMaster">func CreateTestRawMaster(t *testing.T) raw.RawMaster</a></dd>
+				<dd><a href="index.html#CreateTestRawMaster">func CreateTestRawMaster(t *testing.T) raw.Master</a></dd>
 			
 			
 				
@@ -204,13 +205,13 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.AsWeapon">func (b *EntityBuilder) AsWeapon(damage, accuracy int) *EntityBuilder</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.Build">func (b *EntityBuilder) Build() components.GameComponentList</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.Build">func (b *EntityBuilder) Build() gc.GameComponentList</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithDescription">func (b *EntityBuilder) WithDescription(description string) *EntityBuilder</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithHealth">func (b *EntityBuilder) WithHealth(current, max int) *EntityBuilder</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithHealth">func (b *EntityBuilder) WithHealth(current, maxVal int) *EntityBuilder</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithName">func (b *EntityBuilder) WithName(name string) *EntityBuilder</a></dd>
@@ -219,7 +220,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithPosition">func (b *EntityBuilder) WithPosition(x, y float64) *EntityBuilder</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithRender">func (b *EntityBuilder) WithRender(sheet string) *EntityBuilder</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithRender">func (b *EntityBuilder) WithRender(_ string) *EntityBuilder</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#EntityBuilder.WithStats">func (b *EntityBuilder) WithStats(vitality, strength, sensation, dexterity, agility, defense int) *EntityBuilder</a></dd>
@@ -233,13 +234,13 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MultiEntityBuilder.Add">func (mb *MultiEntityBuilder) Add(entity components.GameComponentList) *MultiEntityBuilder</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MultiEntityBuilder.Add">func (mb *MultiEntityBuilder) Add(entity gc.GameComponentList) *MultiEntityBuilder</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MultiEntityBuilder.AddBuilder">func (mb *MultiEntityBuilder) AddBuilder(builderFunc func(*EntityBuilder) *EntityBuilder) *MultiEntityBuilder</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MultiEntityBuilder.Build">func (mb *MultiEntityBuilder) Build() []components.GameComponentList</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MultiEntityBuilder.Build">func (mb *MultiEntityBuilder) Build() []gc.GameComponentList</a></dd>
 				
 			
 				
@@ -268,6 +269,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go">assertions.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go">entity_builder.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go">helpers.go</a>
@@ -285,13 +288,13 @@
 		
 			
 			
-			<h2 id="AssertAttack">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=2529:2620#L71">AssertAttack</a>
+			<h2 id="AssertAttack">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=2626:2717#L70">AssertAttack</a>
 				<a class="permalink" href="index.html#AssertAttack">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertAttack(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Attack">Attack</a>, expectedDamage, expectedAccuracy <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>攻撃力のアサーション
+			<p>AssertAttack は攻撃力のアサーションを行う
 
 			
 			
@@ -299,13 +302,13 @@
 		
 			
 			
-			<h2 id="AssertAttribute">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=1189:1298#L31">AssertAttribute</a>
+			<h2 id="AssertAttribute">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=1225:1334#L30">AssertAttribute</a>
 				<a class="permalink" href="index.html#AssertAttribute">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertAttribute(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, attribute <a href="../components/index.html">gc</a>.<a href="../components/index.html#Attribute">Attribute</a>, expectedBase, expectedModifier, expectedTotal <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>属性のアサーション
+			<p>AssertAttribute は属性のアサーションを行う
 
 			
 			
@@ -313,13 +316,13 @@
 		
 			
 			
-			<h2 id="AssertEqual">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6035:6115#L183">AssertEqual</a>
+			<h2 id="AssertEqual">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6308:6388#L182">AssertEqual</a>
 				<a class="permalink" href="index.html#AssertEqual">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertEqual(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, actual, expected interface{}, description <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>2つの値が等しいかチェック
+			<p>AssertEqual は2つの値が等しいかチェックする
 
 			
 			
@@ -327,13 +330,13 @@
 		
 			
 			
-			<h2 id="AssertHasComponent">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=3096:3199#L88">AssertHasComponent</a>
+			<h2 id="AssertHasComponent">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=3224:3319#L87">AssertHasComponent</a>
 				<a class="permalink" href="index.html#AssertHasComponent">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AssertHasComponent(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, componentList <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, componentName <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>コンポーネントの存在確認
+			<pre>func AssertHasComponent(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, componentList <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, componentName <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<p>AssertHasComponent はコンポーネントの存在確認を行う
 
 			
 			
@@ -341,13 +344,13 @@
 		
 			
 			
-			<h2 id="AssertHealingAmount">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=5188:5277#L155">AssertHealingAmount</a>
+			<h2 id="AssertHealingAmount">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=5399:5488#L154">AssertHealingAmount</a>
 				<a class="permalink" href="index.html#AssertHealingAmount">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertHealingAmount(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#ProvidesHealing">ProvidesHealing</a>, expectedAmount <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>回復量のアサーション
+			<p>AssertHealingAmount は回復量のアサーションを行う
 
 			
 			
@@ -355,13 +358,13 @@
 		
 			
 			
-			<h2 id="AssertInRange">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=5767:5840#L174">AssertInRange</a>
+			<h2 id="AssertInRange">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6001:6080#L173">AssertInRange</a>
 				<a class="permalink" href="index.html#AssertInRange">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AssertInRange(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, value, min, max <a href="http://localhost:8888/pkg/builtin/#int">int</a>, description <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>範囲内の値かチェック
+			<pre>func AssertInRange(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, value, minVal, maxVal <a href="http://localhost:8888/pkg/builtin/#int">int</a>, description <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<p>AssertInRange は範囲内の値かチェックする
 
 			
 			
@@ -369,13 +372,13 @@
 		
 			
 			
-			<h2 id="AssertMaterialAmount">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=4801:4884#L142">AssertMaterialAmount</a>
+			<h2 id="AssertMaterialAmount">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=4980:5063#L141">AssertMaterialAmount</a>
 				<a class="permalink" href="index.html#AssertMaterialAmount">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertMaterialAmount(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Material">Material</a>, expectedAmount <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>素材の量のアサーション
+			<p>AssertMaterialAmount は素材の量のアサーションを行う
 
 			
 			
@@ -383,13 +386,13 @@
 		
 			
 			
-			<h2 id="AssertName">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=1826:1896#L48">AssertName</a>
+			<h2 id="AssertName">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=1885:1955#L47">AssertName</a>
 				<a class="permalink" href="index.html#AssertName">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertName(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Name">Name</a>, expectedName <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>名前のアサーション
+			<p>AssertName は名前のアサーションを行う
 
 			
 			
@@ -397,13 +400,13 @@
 		
 			
 			
-			<h2 id="AssertNil">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6485:6552#L200">AssertNil</a>
+			<h2 id="AssertNil">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6799:6866#L199">AssertNil</a>
 				<a class="permalink" href="index.html#AssertNil">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertNil(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, value interface{}, description <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>値がnilかチェック
+			<p>AssertNil は値がnilかチェックする
 
 			
 			
@@ -411,13 +414,13 @@
 		
 			
 			
-			<h2 id="AssertNotHasComponent">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=4133:4239#L121">AssertNotHasComponent</a>
+			<h2 id="AssertNotHasComponent">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=4287:4385#L120">AssertNotHasComponent</a>
 				<a class="permalink" href="index.html#AssertNotHasComponent">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AssertNotHasComponent(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, componentList <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, componentName <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>コンポーネントの非存在確認
+			<pre>func AssertNotHasComponent(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, componentList <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, componentName <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<p>AssertNotHasComponent はコンポーネントの非存在確認を行う
 
 			
 			
@@ -425,13 +428,13 @@
 		
 			
 			
-			<h2 id="AssertNotNil">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6305:6375#L192">AssertNotNil</a>
+			<h2 id="AssertNotNil">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=6600:6670#L191">AssertNotNil</a>
 				<a class="permalink" href="index.html#AssertNotNil">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertNotNil(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, value interface{}, description <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>値がnilでないかチェック
+			<p>AssertNotNil は値がnilでないかチェックする
 
 			
 			
@@ -439,13 +442,13 @@
 		
 			
 			
-			<h2 id="AssertPools">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=623:712#L14">AssertPools</a>
+			<h2 id="AssertPools">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=631:720#L13">AssertPools</a>
 				<a class="permalink" href="index.html#AssertPools">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertPools(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Pools">Pools</a>, expectedHPCurrent, expectedHPMax <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-			<p>体力のアサーション
+			<p>AssertPools は体力のアサーションを行う
 
 			
 			
@@ -453,13 +456,13 @@
 		
 			
 			
-			<h2 id="AssertPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=161:248#L1">AssertPosition</a>
+			<h2 id="AssertPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=145:232#L1">AssertPosition</a>
 				<a class="permalink" href="index.html#AssertPosition">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AssertPosition(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Position">Position</a>, expectedX, expectedY <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
-			<p>位置のアサーション
+			<p>AssertPosition は位置のアサーションを行う
 
 			
 			
@@ -467,13 +470,13 @@
 		
 			
 			
-			<h2 id="AssertRender">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=2210:2285#L61">AssertRender</a>
+			<h2 id="AssertRender">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/assertions.go?s=2294:2357#L60">AssertRender</a>
 				<a class="permalink" href="index.html#AssertRender">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AssertRender(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Render">Render</a>, expectedSheet <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>レンダリングのアサーション（簡略版）
+			<pre>func AssertRender(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, component *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Render">Render</a>, _ <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<p>AssertRender はレンダリングのアサーションを行う（簡略版）
 
 			
 			
@@ -481,13 +484,13 @@
 		
 			
 			
-			<h2 id="CreateStandardEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=5515:5595#L194">CreateStandardEnemy</a>
+			<h2 id="CreateStandardEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=5749:5821#L193">CreateStandardEnemy</a>
 				<a class="permalink" href="index.html#CreateStandardEnemy">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateStandardEnemy(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>標準的な敵を作成する
+			<pre>func CreateStandardEnemy(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateStandardEnemy は標準的な敵を作成する
 
 			
 			
@@ -495,13 +498,13 @@
 		
 			
 			
-			<h2 id="CreateStandardPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=5201:5269#L181">CreateStandardPlayer</a>
+			<h2 id="CreateStandardPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=5420:5480#L180">CreateStandardPlayer</a>
 				<a class="permalink" href="index.html#CreateStandardPlayer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateStandardPlayer(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>標準的なプレイヤーを作成する
+			<pre>func CreateStandardPlayer(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateStandardPlayer は標準的なプレイヤーを作成する
 
 			
 			
@@ -509,13 +512,13 @@
 		
 			
 			
-			<h2 id="CreateStandardPotion">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=6123:6220#L217">CreateStandardPotion</a>
+			<h2 id="CreateStandardPotion">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=6389:6478#L216">CreateStandardPotion</a>
 				<a class="permalink" href="index.html#CreateStandardPotion">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateStandardPotion(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, healAmount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>標準的な回復アイテムを作成する
+			<pre>func CreateStandardPotion(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, healAmount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateStandardPotion は標準的な回復アイテムを作成する
 
 			
 			
@@ -523,13 +526,13 @@
 		
 			
 			
-			<h2 id="CreateStandardWeapon">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=5822:5925#L207">CreateStandardWeapon</a>
+			<h2 id="CreateStandardWeapon">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=6072:6167#L206">CreateStandardWeapon</a>
 				<a class="permalink" href="index.html#CreateStandardWeapon">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateStandardWeapon(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, damage, accuracy <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>標準的な武器を作成する
+			<pre>func CreateStandardWeapon(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, damage, accuracy <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateStandardWeapon は標準的な武器を作成する
 
 			
 			
@@ -537,13 +540,13 @@
 		
 			
 			
-			<h2 id="CreateTestEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=1082:1158#L27">CreateTestEnemy</a>
+			<h2 id="CreateTestEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=1062:1130#L26">CreateTestEnemy</a>
 				<a class="permalink" href="index.html#CreateTestEnemy">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateTestEnemy(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>テスト用の敵コンポーネントを作成する
+			<pre>func CreateTestEnemy(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateTestEnemy はテスト用の敵コンポーネントを作成する
 
 			
 			
@@ -551,13 +554,13 @@
 		
 			
 			
-			<h2 id="CreateTestItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=1922:2020#L52">CreateTestItem</a>
+			<h2 id="CreateTestItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=1904:1994#L51">CreateTestItem</a>
 				<a class="permalink" href="index.html#CreateTestItem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateTestItem(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, itemType <a href="index.html#TestItemType">TestItemType</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>テスト用のアイテムコンポーネントを作成する
+			<pre>func CreateTestItem(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, itemType <a href="index.html#TestItemType">TestItemType</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateTestItem はテスト用のアイテムコンポーネントを作成する
 
 			
 			
@@ -565,13 +568,13 @@
 		
 			
 			
-			<h2 id="CreateTestPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=236:300#L2">CreateTestPlayer</a>
+			<h2 id="CreateTestPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=213:269#L1">CreateTestPlayer</a>
 				<a class="permalink" href="index.html#CreateTestPlayer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateTestPlayer(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-			<p>テスト用のプレイヤーコンポーネントを作成する
+			<pre>func CreateTestPlayer(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+			<p>CreateTestPlayer はテスト用のプレイヤーコンポーネントを作成する
 
 			
 			
@@ -579,13 +582,13 @@
 		
 			
 			
-			<h2 id="CreateTestRawMaster">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=3207:3259#L103">CreateTestRawMaster</a>
+			<h2 id="CreateTestRawMaster">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=3371:3420#L105">CreateTestRawMaster</a>
 				<a class="permalink" href="index.html#CreateTestRawMaster">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func CreateTestRawMaster(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#RawMaster">RawMaster</a></pre>
-			<p>テスト用のRawMasterを作成する
+			<pre>func CreateTestRawMaster(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a></pre>
+			<p>CreateTestRawMaster はテスト用のMasterを作成する
 
 			
 			
@@ -594,12 +597,12 @@
 		
 			
 			
-			<h2 id="EntityBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=179:272#L1">EntityBuilder</a>
+			<h2 id="EntityBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=153:238#L1">EntityBuilder</a>
 				<a class="permalink" href="index.html#EntityBuilder">&#xb6;</a>
 				
 				
 			</h2>
-			<p>テスト用のエンティティビルダー
+			<p>EntityBuilder はテスト用のエンティティビルダー
 
 			<pre>type EntityBuilder struct {
     <span class="comment">// contains filtered or unexported fields</span>
@@ -616,13 +619,13 @@
 
 			
 				
-				<h3 id="NewEntityBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=332:382#L7">NewEntityBuilder</a>
+				<h3 id="NewEntityBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=318:368#L6">NewEntityBuilder</a>
 					<a class="permalink" href="index.html#NewEntityBuilder">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewEntityBuilder(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>新しいエンティティビルダーを作成する
+				<p>NewEntityBuilder は新しいエンティティビルダーを作成する
 
 				
 				
@@ -630,169 +633,169 @@
 
 			
 				
-				<h3 id="EntityBuilder.AsConsumable">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2762:2829#L96">AsConsumable</a>
+				<h3 id="EntityBuilder.AsConsumable">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2868:2935#L95">AsConsumable</a>
 					<a class="permalink" href="index.html#EntityBuilder.AsConsumable">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) AsConsumable(healAmount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>消耗品として設定する
+				<p>AsConsumable は消耗品として設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.AsEnemy">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=1966:2014#L63">AsEnemy</a>
+				<h3 id="EntityBuilder.AsEnemy">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2034:2082#L62">AsEnemy</a>
 					<a class="permalink" href="index.html#EntityBuilder.AsEnemy">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) AsEnemy() *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>敵として設定する
+				<p>AsEnemy は敵として設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.AsItem">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2126:2173#L70">AsItem</a>
+				<h3 id="EntityBuilder.AsItem">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2204:2251#L69">AsItem</a>
 					<a class="permalink" href="index.html#EntityBuilder.AsItem">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) AsItem() *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>アイテムとして設定する
+				<p>AsItem はアイテムとして設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.AsMaterial">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3193:3254#L113">AsMaterial</a>
+				<h3 id="EntityBuilder.AsMaterial">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3313:3374#L112">AsMaterial</a>
 					<a class="permalink" href="index.html#EntityBuilder.AsMaterial">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) AsMaterial(amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>素材として設定する
+				<p>AsMaterial は素材として設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.AsPlayer">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=1821:1870#L56">AsPlayer</a>
+				<h3 id="EntityBuilder.AsPlayer">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=1878:1927#L55">AsPlayer</a>
 					<a class="permalink" href="index.html#EntityBuilder.AsPlayer">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) AsPlayer() *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>プレイヤーとして設定する
+				<p>AsPlayer はプレイヤーとして設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.AsWeapon">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2326:2395#L78">AsWeapon</a>
+				<h3 id="EntityBuilder.AsWeapon">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=2416:2485#L77">AsWeapon</a>
 					<a class="permalink" href="index.html#EntityBuilder.AsWeapon">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) AsWeapon(damage, accuracy <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>武器として設定する
+				<p>AsWeapon は武器として設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.Build">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3906:3966#L136">Build</a>
+				<h3 id="EntityBuilder.Build">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4064:4116#L135">Build</a>
 					<a class="permalink" href="index.html#EntityBuilder.Build">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) Build() <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-				<p>最終的なコンポーネントリストを返す
+				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) Build() <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<p>Build は最終的なコンポーネントリストを返す
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.WithDescription">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3677:3751#L129">WithDescription</a>
+				<h3 id="EntityBuilder.WithDescription">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3826:3900#L128">WithDescription</a>
 					<a class="permalink" href="index.html#EntityBuilder.WithDescription">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithDescription(description <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>説明を設定する
+				<p>WithDescription は説明を設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.WithHealth">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=862:929#L30">WithHealth</a>
+				<h3 id="EntityBuilder.WithHealth">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=882:952#L29">WithHealth</a>
 					<a class="permalink" href="index.html#EntityBuilder.WithHealth">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithHealth(current, max <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>体力を設定する
+				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithHealth(current, maxVal <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
+				<p>WithHealth は体力を設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.WithName">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=515:575#L16">WithName</a>
+				<h3 id="EntityBuilder.WithName">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=505:565#L15">WithName</a>
 					<a class="permalink" href="index.html#EntityBuilder.WithName">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithName(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>名前を設定する
+				<p>WithName は名前を設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.WithPosition">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=672:737#L23">WithPosition</a>
+				<h3 id="EntityBuilder.WithPosition">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=678:743#L22">WithPosition</a>
 					<a class="permalink" href="index.html#EntityBuilder.WithPosition">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithPosition(x, y <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>位置を設定する
+				<p>WithPosition は位置を設定する
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.WithRender">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3402:3465#L121">WithRender</a>
+				<h3 id="EntityBuilder.WithRender">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=3536:3595#L120">WithRender</a>
 					<a class="permalink" href="index.html#EntityBuilder.WithRender">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithRender(sheet <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>レンダリングを設定する（簡略版）
+				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithRender(_ <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
+				<p>WithRender はレンダリングを設定する（簡略版）
 
 				
 				
 				
 			
 				
-				<h3 id="EntityBuilder.WithStats">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=1155:1267#L42">WithStats</a>
+				<h3 id="EntityBuilder.WithStats">func (*EntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=1200:1312#L41">WithStats</a>
 					<a class="permalink" href="index.html#EntityBuilder.WithStats">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#EntityBuilder">EntityBuilder</a>) WithStats(vitality, strength, sensation, dexterity, agility, defense <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a></pre>
-				<p>基本ステータスを設定する
+				<p>WithStats は基本ステータスを設定する
 
 				
 				
@@ -801,12 +804,12 @@
 		
 			
 			
-			<h2 id="MultiEntityBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4074:4170#L142">MultiEntityBuilder</a>
+			<h2 id="MultiEntityBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4246:4334#L141">MultiEntityBuilder</a>
 				<a class="permalink" href="index.html#MultiEntityBuilder">&#xb6;</a>
 				
 				
 			</h2>
-			<p>複数のエンティティを作成するためのヘルパー
+			<p>MultiEntityBuilder は複数のエンティティを作成するためのヘルパー
 
 			<pre>type MultiEntityBuilder struct {
     <span class="comment">// contains filtered or unexported fields</span>
@@ -823,13 +826,13 @@
 
 			
 				
-				<h3 id="NewMultiEntityBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4227:4287#L148">NewMultiEntityBuilder</a>
+				<h3 id="NewMultiEntityBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4416:4476#L147">NewMultiEntityBuilder</a>
 					<a class="permalink" href="index.html#NewMultiEntityBuilder">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewMultiEntityBuilder(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a></pre>
-				<p>複数エンティティビルダーを作成する
+				<p>NewMultiEntityBuilder は複数エンティティビルダーを作成する
 
 				
 				
@@ -837,39 +840,39 @@
 
 			
 				
-				<h3 id="MultiEntityBuilder.Add">func (*MultiEntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4435:4525#L157">Add</a>
+				<h3 id="MultiEntityBuilder.Add">func (*MultiEntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4623:4705#L156">Add</a>
 					<a class="permalink" href="index.html#MultiEntityBuilder.Add">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (mb *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a>) Add(entity <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>) *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a></pre>
-				<p>エンティティを追加する
+				<pre>func (mb *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a>) Add(entity <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>) *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a></pre>
+				<p>Add はエンティティを追加する
 
 				
 				
 				
 			
 				
-				<h3 id="MultiEntityBuilder.AddBuilder">func (*MultiEntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4661:4770#L164">AddBuilder</a>
+				<h3 id="MultiEntityBuilder.AddBuilder">func (*MultiEntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4855:4964#L163">AddBuilder</a>
 					<a class="permalink" href="index.html#MultiEntityBuilder.AddBuilder">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (mb *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a>) AddBuilder(builderFunc func(*<a href="index.html#EntityBuilder">EntityBuilder</a>) *<a href="index.html#EntityBuilder">EntityBuilder</a>) *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a></pre>
-				<p>ビルダーを使ってエンティティを追加する
+				<p>AddBuilder はビルダーを使ってエンティティを追加する
 
 				
 				
 				
 			
 				
-				<h3 id="MultiEntityBuilder.Build">func (*MultiEntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=4972:5040#L173">Build</a>
+				<h3 id="MultiEntityBuilder.Build">func (*MultiEntityBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/entity_builder.go?s=5175:5235#L172">Build</a>
 					<a class="permalink" href="index.html#MultiEntityBuilder.Build">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (mb *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a>) Build() []<a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-				<p>最終的なエンティティリストを返す
+				<pre>func (mb *<a href="index.html#MultiEntityBuilder">MultiEntityBuilder</a>) Build() []<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<p>Build は最終的なエンティティリストを返す
 
 				
 				
@@ -878,17 +881,17 @@
 		
 			
 			
-			<h2 id="TestBattleScenario">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=4858:5010#L173">TestBattleScenario</a>
+			<h2 id="TestBattleScenario">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=5050:5178#L175">TestBattleScenario</a>
 				<a class="permalink" href="index.html#TestBattleScenario">&#xb6;</a>
 				
 				
 			</h2>
-			<p>テスト用バトルシナリオの構造体
+			<p>TestBattleScenario はテスト用バトルシナリオの構造体
 
 			<pre>type TestBattleScenario struct {
-<span id="TestBattleScenario.Player"></span>    Player  <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>
-<span id="TestBattleScenario.Enemies"></span>    Enemies []<a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>
-<span id="TestBattleScenario.Items"></span>    Items   []<a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>
+<span id="TestBattleScenario.Player"></span>    Player  <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>
+<span id="TestBattleScenario.Enemies"></span>    Enemies []<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>
+<span id="TestBattleScenario.Items"></span>    Items   []<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>
 }
 </pre>
 
@@ -902,13 +905,13 @@
 
 			
 				
-				<h3 id="CreateTestBattleScenario">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=4371:4433#L156">CreateTestBattleScenario</a>
+				<h3 id="CreateTestBattleScenario">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=4557:4619#L158">CreateTestBattleScenario</a>
 					<a class="permalink" href="index.html#CreateTestBattleScenario">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func CreateTestBattleScenario(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="index.html#TestBattleScenario">TestBattleScenario</a></pre>
-				<p>テスト用のバトルシナリオを作成する
+				<p>CreateTestBattleScenario はテスト用のバトルシナリオを作成する
 
 				
 				
@@ -918,20 +921,23 @@
 		
 			
 			
-			<h2 id="TestItemType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=3044:3065#L94">TestItemType</a>
+			<h2 id="TestItemType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/testing/helpers.go?s=3026:3047#L93">TestItemType</a>
 				<a class="permalink" href="index.html#TestItemType">&#xb6;</a>
 				
 				
 			</h2>
-			<p>テスト用アイテムタイプの定義
+			<p>TestItemType はテスト用アイテムタイプの定義
 
 			<pre>type TestItemType <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
 			
 				
 				<pre>const (
+    <span class="comment">// TestItemTypeWeapon は武器タイプを表す</span>
     <span id="TestItemTypeWeapon">TestItemTypeWeapon</span> <a href="index.html#TestItemType">TestItemType</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span class="comment">// TestItemTypeConsumable は消耗品タイプを表す</span>
     <span id="TestItemTypeConsumable">TestItemTypeConsumable</span>
+    <span class="comment">// TestItemTypeMaterial は素材タイプを表す</span>
     <span id="TestItemTypeMaterial">TestItemTypeMaterial</span>
 )</pre>
 			

@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package cmd はコマンドラインインターフェースを提供する。
+
 				
 			</div>
 		</div>
@@ -133,6 +134,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go">cmd.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/play.go">play.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/screenshot.go">screenshot.go</a>
@@ -149,7 +152,8 @@
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
-				
+				<p>CmdPlay はゲームをプレイするコマンド
+
 				<pre>var <span id="CmdPlay">CmdPlay</span> = &amp;cli.<a href="index.html#Command">Command</a>{
     <a href="index.html#Name">Name</a>:        &#34;play&#34;,
     <a href="index.html#Usage">Usage</a>:       &#34;play&#34;,
@@ -158,7 +162,8 @@
     <a href="index.html#Flags">Flags</a>:       []cli.<a href="index.html#Flag">Flag</a>{},
 }</pre>
 			
-				
+				<p>CmdScreenshot はスクリーンショットを撮影するコマンド
+
 				<pre>var <span id="CmdScreenshot">CmdScreenshot</span> = &amp;cli.<a href="index.html#Command">Command</a>{
     <a href="index.html#Name">Name</a>:        &#34;screenshot&#34;,
     <a href="index.html#Usage">Usage</a>:       &#34;screenshot&#34;,
@@ -171,26 +176,28 @@
 		
 			
 			
-			<h2 id="NewMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=855:881#L9">NewMainApp</a>
+			<h2 id="NewMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=930:956#L10">NewMainApp</a>
 				<a class="permalink" href="index.html#NewMainApp">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func NewMainApp() *cli.<a href="index.html#App">App</a></pre>
-			
+			<p>NewMainApp は新しいメインアプリケーションを作成する
+
 			
 			
 
 		
 			
 			
-			<h2 id="RunMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=1253:1304#L28">RunMainApp</a>
+			<h2 id="RunMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=1394:1445#L30">RunMainApp</a>
 				<a class="permalink" href="index.html#RunMainApp">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func RunMainApp(app *cli.<a href="index.html#App">App</a>, args ...<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			
+			<p>RunMainApp はメインアプリケーションを実行する
+
 			
 			
 

@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package components はコアエンジンコンポーネントの定義を提供する。
+
 				
 			</div>
 		</div>
@@ -120,34 +121,6 @@
 				
 				
 			
-				
-				<dd><a href="index.html#DepthNum">type DepthNum</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#Sprite">type Sprite</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#SpriteRender">type SpriteRender</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#SpriteSheet">type SpriteSheet</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#Texture">type Texture</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Texture.UnmarshalText">func (t *Texture) UnmarshalText(text []byte) error</a></dd>
-				
-			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -159,9 +132,9 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go">lib.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/doc.go">doc.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go">sprite.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go">lib.go</a>
 			
 			</span>
 			</p>
@@ -211,175 +184,6 @@
 				
 			
 
-			
-		
-			
-			
-			<h2 id="DepthNum">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1764:1781#L57">DepthNum</a>
-				<a class="permalink" href="index.html#DepthNum">&#xb6;</a>
-				
-				
-			</h2>
-			<p>オブジェクトの描画順。小さい値を先に描画する
-
-			<pre>type DepthNum <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-
-			
-				
-				<pre>const (
-    <span id="DepthNumFloor">DepthNumFloor</span>    <a href="index.html#DepthNum">DepthNum</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a> <span class="comment">// 床。最背面に表示する</span>
-    <span id="DepthNumRug">DepthNumRug</span>                      <span class="comment">// 床に置くもの。例: ワープホール、アイテム</span>
-    <span id="DepthNumTaller">DepthNumTaller</span>                   <span class="comment">// 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁</span>
-    <span id="DepthNumOperator">DepthNumOperator</span>                 <span class="comment">// 操作キャラを最も手前に表示する</span>
-)</pre>
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="Sprite">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=368:590#L6">Sprite</a>
-				<a class="permalink" href="index.html#Sprite">&#xb6;</a>
-				
-				
-			</h2>
-			<p>スプライトは1つ1つの意味をなす画像の位置を示す情報
-1ファイルに対して複数のスプライトが定義されている
-
-			<pre>type Sprite struct {
-    <span class="comment">// Horizontal position of the sprite in the sprite sheet</span>
-<span id="Sprite.X"></span>    X <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-    <span class="comment">// Vertical position of the sprite in the sprite sheet</span>
-<span id="Sprite.Y"></span>    Y <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="Sprite.Width"></span>    <span class="comment">// Width of the sprite</span>
-    Width <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="Sprite.Height"></span>    <span class="comment">// Height of the sprite</span>
-    Height <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="SpriteRender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1402:1692#L45">SpriteRender</a>
-				<a class="permalink" href="index.html#SpriteRender">&#xb6;</a>
-				
-				
-			</h2>
-			<p>SpriteRender component
-
-			<pre>type SpriteRender struct {
-    <span class="comment">// スプライトシートファイル</span>
-<span id="SpriteRender.SpriteSheet"></span>    SpriteSheet *<a href="index.html#SpriteSheet">SpriteSheet</a>
-    <span class="comment">// スプライトシートでのインデックス</span>
-<span id="SpriteRender.SpriteNumber"></span>    SpriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-    <span class="comment">// 描画順。小さい順に先に(下に)描画する</span>
-<span id="SpriteRender.Depth"></span>    Depth <a href="index.html#DepthNum">DepthNum</a>
-    <span class="comment">// Draw options</span>
-<span id="SpriteRender.Options"></span>    Options ebiten.<a href="index.html#DrawImageOptions">DrawImageOptions</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=1153:1374#L35">SpriteSheet</a>
-				<a class="permalink" href="index.html#SpriteSheet">&#xb6;</a>
-				
-				
-			</h2>
-			<p>画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
-
-			<pre>type SpriteSheet struct {
-    <span class="comment">// スプライトシートのキー名</span>
-<span id="SpriteSheet.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-    <span class="comment">// 読み込んだ画像データ</span>
-<span id="SpriteSheet.Texture"></span>    Texture <a href="index.html#Texture">Texture</a> `toml:&#34;texture_image&#34;`
-    <span class="comment">// 画像に含まれるスプライト一覧</span>
-<span id="SpriteSheet.Sprites"></span>    Sprites []<a href="index.html#Sprite">Sprite</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="Texture">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=656:718#L18">Texture</a>
-				<a class="permalink" href="index.html#Texture">&#xb6;</a>
-				
-				
-			</h2>
-			<p>複数のスプライトが格納された画像ファイル
-
-			<pre>type Texture struct {
-    <span class="comment">// Texture image</span>
-<span id="Texture.Image"></span>    Image *ebiten.<a href="index.html#Image">Image</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="Texture.UnmarshalText">func (*Texture) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/sprite.go?s=775:825#L24">UnmarshalText</a>
-					<a class="permalink" href="index.html#Texture.UnmarshalText">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (t *<a href="index.html#Texture">Texture</a>) UnmarshalText(text []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>UnmarshalText fills structure fields from text data
-
-				
-				
-				
 			
 		
 	

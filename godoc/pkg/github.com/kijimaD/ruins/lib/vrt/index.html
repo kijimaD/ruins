@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package vrt はビジュアルリグレッションテストユーティリティを提供する。
+
 				
 			</div>
 		</div>
@@ -112,7 +113,7 @@
 			
 			
 				
-				<dd><a href="index.html#RunTestGame">func RunTestGame(state states.State, outputPath string)</a></dd>
+				<dd><a href="index.html#RunTestGame">func RunTestGame(state es.State, outputPath string)</a></dd>
 			
 			
 				
@@ -137,6 +138,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go">vrt.go</a>
 			
 			</span>
@@ -152,13 +155,14 @@
 		
 			
 			
-			<h2 id="RunTestGame">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=1448:1503#L59">RunTestGame</a>
+			<h2 id="RunTestGame">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=1827:1878#L68">RunTestGame</a>
 				<a class="permalink" href="index.html#RunTestGame">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func RunTestGame(state <a href="../engine/states/index.html">states</a>.<a href="../engine/states/index.html#State">State</a>, outputPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			
+			<pre>func RunTestGame(state <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>, outputPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<p>RunTestGame はテストゲームを実行してスクリーンショットを保存する
+
 			
 			
 
@@ -166,12 +170,13 @@
 		
 			
 			
-			<h2 id="TestGame">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=522:596#L15">TestGame</a>
+			<h2 id="TestGame">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=564:638#L15">TestGame</a>
 				<a class="permalink" href="index.html#TestGame">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TestGame はビジュアルリグレッションテスト用のゲーム構造体
+
 			<pre>type TestGame struct {
     <a href="../game/index.html">game</a>.<a href="../game/index.html#MainGame">MainGame</a>
     <span class="comment">// contains filtered or unexported fields</span>
@@ -190,25 +195,27 @@
 
 			
 				
-				<h3 id="TestGame.Draw">func (*TestGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=1023:1068#L38">Draw</a>
+				<h3 id="TestGame.Draw">func (*TestGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=1157:1202#L40">Draw</a>
 					<a class="permalink" href="index.html#TestGame.Draw">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (g *<a href="index.html#TestGame">TestGame</a>) Draw(screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				
+				<p>Draw はゲームの描画処理を行う
+
 				
 				
 				
 			
 				
-				<h3 id="TestGame.Update">func (*TestGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=598:631#L21">Update</a>
+				<h3 id="TestGame.Update">func (*TestGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=687:720#L22">Update</a>
 					<a class="permalink" href="index.html#TestGame.Update">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (g *<a href="index.html#TestGame">TestGame</a>) Update() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Update はゲームの更新処理を行う
+
 				
 				
 				

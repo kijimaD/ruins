@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package raw はゲームのローデータ定義とユーティリティを提供する。
+
 				
 			</div>
 		</div>
@@ -176,6 +177,41 @@
 				
 			
 				
+				<dd><a href="index.html#Master">type Master</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Load">func Load(entityMetadataContent string) Master</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#LoadFromFile">func LoadFromFile(path string) Master</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateEnemy">func (rw *Master) GenerateEnemy(name string) gc.GameComponentList</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateFighter">func (rw *Master) GenerateFighter(name string) gc.GameComponentList</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateItem">func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateMaterial">func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateMember">func (rw *Master) GenerateMember(name string, inParty bool) gc.GameComponentList</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateRecipe">func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GetCommandTable">func (rw *Master) GetCommandTable(name string) CommandTable</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GetDropTable">func (rw *Master) GetDropTable(name string) DropTable</a></dd>
+				
+			
+				
 				<dd><a href="index.html#Material">type Material</a></dd>
 				
 				
@@ -188,41 +224,6 @@
 				
 				<dd><a href="index.html#ProvidesHealing">type ProvidesHealing</a></dd>
 				
-				
-			
-				
-				<dd><a href="index.html#RawMaster">type RawMaster</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Load">func Load(entityMetadataContent string) RawMaster</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadFromFile">func LoadFromFile(path string) RawMaster</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateEnemy">func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateFighter">func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateItem">func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) (components.GameComponentList, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMaterial">func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (components.GameComponentList, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateMember">func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GenerateRecipe">func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GetCommandTable">func (rw *RawMaster) GetCommandTable(name string) CommandTable</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RawMaster.GetDropTable">func (rw *RawMaster) GetDropTable(name string) DropTable</a></dd>
 				
 			
 				
@@ -271,6 +272,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go">command_table.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go">drop_table.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go">enum.go</a>
@@ -291,7 +294,8 @@
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
-				
+				<p>ErrInvalidEnumType はenumに無効な値が指定された場合のエラー
+
 				<pre>var <span id="ErrInvalidEnumType">ErrInvalidEnumType</span> = <a href="http://localhost:8888/pkg/github.com/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/github.com/pkg/errors/#New">New</a>(&#34;enumに無効な値が指定された&#34;)</pre>
 			
 		
@@ -299,12 +303,13 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1612:1823#L56">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1939:2150#L61">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Attack は攻撃性能の設定
+
 			<pre>type Attack struct {
 <span id="Attack.Accuracy"></span>    Accuracy       <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 命中率</span>
 <span id="Attack.Damage"></span>    Damage         <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 攻撃力</span>
@@ -328,12 +333,13 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2402:2518#L101">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2913:3029#L109">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Attributes はキャラクターの能力値
+
 			<pre>type Attributes struct {
 <span id="Attributes.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Attributes.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -358,12 +364,13 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1533:1610#L50">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1825:1902#L54">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Card はカードアイテムの設定
+
 			<pre>type Card struct {
 <span id="Card.Cost"></span>    Cost        <a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Card.TargetGroup"></span>    TargetGroup <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -385,12 +392,13 @@
 		
 			
 			
-			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go?s=41:131#L1">CommandTable</a>
+			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go?s=85:175#L1">CommandTable</a>
 				<a class="permalink" href="index.html#CommandTable">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>CommandTable はコマンドテーブル
+
 			<pre>type CommandTable struct {
 <span id="CommandTable.Name"></span>    Name    <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="CommandTable.Entries"></span>    Entries []<a href="index.html#CommandTableEntry">CommandTableEntry</a> `toml:&#34;entries&#34;`
@@ -409,13 +417,14 @@
 
 			
 				
-				<h3 id="CommandTable.SelectByWeight">func (CommandTable) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go?s=199:245#L7">SelectByWeight</a>
+				<h3 id="CommandTable.SelectByWeight">func (CommandTable) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go?s=350:396#L10">SelectByWeight</a>
 					<a class="permalink" href="index.html#CommandTable.SelectByWeight">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ct <a href="index.html#CommandTable">CommandTable</a>) SelectByWeight() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>SelectByWeight は重みで選択する
+
 				
 				
 				
@@ -423,12 +432,13 @@
 		
 			
 			
-			<h2 id="CommandTableEntry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go?s=133:197#L2">CommandTableEntry</a>
+			<h2 id="CommandTableEntry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/command_table.go?s=241:305#L4">CommandTableEntry</a>
 				<a class="permalink" href="index.html#CommandTableEntry">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>CommandTableEntry はコマンドテーブルのエントリ
+
 			<pre>type CommandTableEntry struct {
 <span id="CommandTableEntry.Card"></span>    Card   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="CommandTableEntry.Weight"></span>    Weight <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
@@ -449,12 +459,13 @@
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1445:1531#L44">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1695:1781#L47">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Consumable は消費可能なアイテムの設定
+
 			<pre>type Consumable struct {
 <span id="Consumable.UsableScene"></span>    UsableScene <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="Consumable.TargetGroup"></span>    TargetGroup <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -476,12 +487,13 @@
 		
 			
 			
-			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go?s=36:137#L1">DropTable</a>
+			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go?s=77:178#L1">DropTable</a>
 				<a class="permalink" href="index.html#DropTable">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>DropTable はドロップテーブル
+
 			<pre>type DropTable struct {
 <span id="DropTable.Name"></span>    Name    <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="DropTable.XpBase"></span>    XpBase  <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
@@ -501,13 +513,14 @@
 
 			
 				
-				<h3 id="DropTable.SelectByWeight">func (DropTable) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go?s=206:249#L6">SelectByWeight</a>
+				<h3 id="DropTable.SelectByWeight">func (DropTable) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go?s=351:394#L9">SelectByWeight</a>
 					<a class="permalink" href="index.html#DropTable.SelectByWeight">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (ct <a href="index.html#DropTable">DropTable</a>) SelectByWeight() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
+				<p>SelectByWeight は重みで選択する
+
 				
 				
 				
@@ -515,12 +528,13 @@
 		
 			
 			
-			<h2 id="DropTableEntry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go?s=139:204#L1">DropTableEntry</a>
+			<h2 id="DropTableEntry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go?s=241:306#L3">DropTableEntry</a>
 				<a class="permalink" href="index.html#DropTableEntry">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>DropTableEntry はドロップテーブルのエントリ
+
 			<pre>type DropTableEntry struct {
 <span id="DropTableEntry.Material"></span>    Material <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="DropTableEntry.Weight"></span>    Weight   <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
@@ -541,12 +555,13 @@
 		
 			
 			
-			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1900:2001#L69">EquipBonus</a>
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2321:2422#L76">EquipBonus</a>
 				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>EquipBonus は装備ボーナスの設定
+
 			<pre>type EquipBonus struct {
 <span id="EquipBonus.Vitality"></span>    Vitality  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="EquipBonus.Strength"></span>    Strength  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -570,12 +585,12 @@
 		
 			
 			
-			<h2 id="Image">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/sprite_sheet.go?s=202:261#L1">Image</a>
+			<h2 id="Image">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/sprite_sheet.go?s=278:337#L1">Image</a>
 				<a class="permalink" href="index.html#Image">&#xb6;</a>
 				
 				
 			</h2>
-			<p>resource の sprite sheet から画像を特定するために必要な情報
+			<p>Image はresourceのspriteシートから画像を特定するために必要な情報
 
 			<pre>type Image struct {
 <span id="Image.SheetName"></span>    SheetName   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -597,12 +612,12 @@
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=947:1355#L26">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1084:1492#L27">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
 			</h2>
-			<p>items ================
+			<p>Item はアイテムのローデータ
 
 			<pre>type Item struct {
 <span id="Item.Name"></span>    Name            <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -631,12 +646,173 @@
 		
 			
 			
-			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2032:2096#L78">Material</a>
+			<h2 id="Master">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=335:619#L4">Master</a>
+				<a class="permalink" href="index.html#Master">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Master はローデータを管理し、効率的な検索のためのインデックスを提供する
+
+			<pre>type Master struct {
+<span id="Master.Raws"></span>    Raws              <a href="index.html#Raws">Raws</a>
+<span id="Master.ItemIndex"></span>    ItemIndex         map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.MaterialIndex"></span>    MaterialIndex     map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.RecipeIndex"></span>    RecipeIndex       map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.MemberIndex"></span>    MemberIndex       map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.CommandTableIndex"></span>    CommandTableIndex map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.DropTableIndex"></span>    DropTableIndex    map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.SpriteSheetIndex"></span>    SpriteSheetIndex  map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3308:3354#L129">Load</a>
+					<a class="permalink" href="index.html#Load">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func Load(entityMetadataContent <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#Master">Master</a></pre>
+				<p>Load は文字列からローデータを読み込む
+
+				
+				
+			
+				
+				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3099:3136#L119">LoadFromFile</a>
+					<a class="permalink" href="index.html#LoadFromFile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func LoadFromFile(path <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#Master">Master</a></pre>
+				<p>LoadFromFile はファイルからローデータを読み込む
+
+				
+				
+			
+
+			
+				
+				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11421:11486#L375">GenerateEnemy</a>
+					<a class="permalink" href="index.html#Master.GenerateEnemy">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateEnemy(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<p>GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GenerateFighter">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=9885:9952#L326">GenerateFighter</a>
+					<a class="permalink" href="index.html#Master.GenerateFighter">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateFighter(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<p>GenerateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GenerateItem">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=4418:4525#L166">GenerateItem</a>
+					<a class="permalink" href="index.html#Master.GenerateItem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GenerateMaterial">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8055:8178#L274">GenerateMaterial</a>
+					<a class="permalink" href="index.html#Master.GenerateMaterial">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>GenerateMaterial は指定された名前の素材のゲームコンポーネントを生成する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GenerateMember">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11115:11195#L364">GenerateMember</a>
+					<a class="permalink" href="index.html#Master.GenerateMember">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateMember(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, inParty <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) <a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
+				<p>GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GenerateRecipe">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8708:8783#L290">GenerateRecipe</a>
+					<a class="permalink" href="index.html#Master.GenerateRecipe">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateRecipe(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>GenerateRecipe は指定された名前のレシピのゲームコンポーネントを生成する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12034:12093#L397">GetCommandTable</a>
+					<a class="permalink" href="index.html#Master.GetCommandTable">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GetCommandTable(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#CommandTable">CommandTable</a></pre>
+				<p>GetCommandTable は指定された名前のコマンドテーブルを取得する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12355:12408#L408">GetDropTable</a>
+					<a class="permalink" href="index.html#Master.GetDropTable">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GetDropTable(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#DropTable">DropTable</a></pre>
+				<p>GetDropTable は指定された名前のドロップテーブルを取得する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2467:2531#L85">Material</a>
 				<a class="permalink" href="index.html#Material">&#xb6;</a>
 				
 				
 			</h2>
-			<p>material ================
+			<p>Material は素材アイテムの情報
 
 			<pre>type Material struct {
 <span id="Material.Name"></span>    Name        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -658,12 +834,12 @@
 		
 			
 			
-			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2316:2400#L96">Member</a>
+			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2779:2863#L103">Member</a>
 				<a class="permalink" href="index.html#Member">&#xb6;</a>
 				
 				
 			</h2>
-			<p>member ================
+			<p>Member はメンバーの情報
 
 			<pre>type Member struct {
 <span id="Member.Name"></span>    Name       <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -685,12 +861,13 @@
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1357:1443#L38">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1553:1639#L40">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ProvidesHealing は回復効果を提供する構造体
+
 			<pre>type ProvidesHealing struct {
 <span id="ProvidesHealing.ValueType"></span>    ValueType <a href="index.html#ValueType">ValueType</a>
 <span id="ProvidesHealing.Amount"></span>    Amount    <a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -712,162 +889,13 @@
 		
 			
 			
-			<h2 id="RawMaster">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=271:558#L4">RawMaster</a>
-				<a class="permalink" href="index.html#RawMaster">&#xb6;</a>
-				
-				
-			</h2>
-			
-			<pre>type RawMaster struct {
-<span id="RawMaster.Raws"></span>    Raws              <a href="index.html#Raws">Raws</a>
-<span id="RawMaster.ItemIndex"></span>    ItemIndex         map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="RawMaster.MaterialIndex"></span>    MaterialIndex     map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="RawMaster.RecipeIndex"></span>    RecipeIndex       map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="RawMaster.MemberIndex"></span>    MemberIndex       map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="RawMaster.CommandTableIndex"></span>    CommandTableIndex map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="RawMaster.DropTableIndex"></span>    DropTableIndex    map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="RawMaster.SpriteSheetIndex"></span>    SpriteSheetIndex  map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2675:2724#L119">Load</a>
-					<a class="permalink" href="index.html#Load">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func Load(entityMetadataContent <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#RawMaster">RawMaster</a></pre>
-				
-				
-				
-			
-				
-				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2520:2560#L110">LoadFromFile</a>
-					<a class="permalink" href="index.html#LoadFromFile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func LoadFromFile(path <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#RawMaster">RawMaster</a></pre>
-				
-				
-				
-			
-
-			
-				
-				<h3 id="RawMaster.GenerateEnemy">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=10381:10457#L359">GenerateEnemy</a>
-					<a class="permalink" href="index.html#RawMaster.GenerateEnemy">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateEnemy(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GenerateFighter">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=9017:9095#L312">GenerateFighter</a>
-					<a class="permalink" href="index.html#RawMaster.GenerateFighter">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateFighter(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GenerateItem">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3695:3813#L155">GenerateItem</a>
-					<a class="permalink" href="index.html#RawMaster.GenerateItem">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GenerateMaterial">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=7332:7466#L262">GenerateMaterial</a>
-					<a class="permalink" href="index.html#RawMaster.GenerateMaterial">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GenerateMember">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=10160:10251#L349">GenerateMember</a>
-					<a class="permalink" href="index.html#RawMaster.GenerateMember">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateMember(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, inParty <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) <a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GenerateRecipe">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=7909:7995#L277">GenerateRecipe</a>
-					<a class="permalink" href="index.html#RawMaster.GenerateRecipe">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GenerateRecipe(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">components</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GetCommandTable">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=10919:10981#L380">GetCommandTable</a>
-					<a class="permalink" href="index.html#RawMaster.GetCommandTable">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GetCommandTable(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#CommandTable">CommandTable</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="RawMaster.GetDropTable">func (*RawMaster) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11160:11216#L390">GetDropTable</a>
-					<a class="permalink" href="index.html#RawMaster.GetDropTable">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rw *<a href="index.html#RawMaster">RawMaster</a>) GetDropTable(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#DropTable">DropTable</a></pre>
-				
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=560:919#L15">Raws</a>
+			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=681:1040#L16">Raws</a>
 				<a class="permalink" href="index.html#Raws">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Raws は全てのローデータを格納する構造体
+
 			<pre>type Raws struct {
 <span id="Raws.Items"></span>    Items         []<a href="index.html#Item">Item</a>         `toml:&#34;item&#34;`
 <span id="Raws.Materials"></span>    Materials     []<a href="index.html#Material">Material</a>     `toml:&#34;material&#34;`
@@ -893,12 +921,12 @@
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2125:2200#L84">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2565:2640#L91">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
 			</h2>
-			<p>recipe ================
+			<p>Recipe はレシピの情報
 
 			<pre>type Recipe struct {
 <span id="Recipe.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -920,12 +948,12 @@
 		
 			
 			
-			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2233:2287#L90">RecipeInput</a>
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2688:2742#L97">RecipeInput</a>
 				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
 				
 				
 			</h2>
-			<p>合成の元になる素材
+			<p>RecipeInput は合成の元になる素材
 
 			<pre>type RecipeInput struct {
 <span id="RecipeInput.Name"></span>    Name   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
@@ -947,12 +975,13 @@
 		
 			
 			
-			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/sprite_sheet.go?s=13:119#L1">SpriteSheet</a>
+			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/sprite_sheet.go?s=80:186#L1">SpriteSheet</a>
 				<a class="permalink" href="index.html#SpriteSheet">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>SpriteSheet はスプライトシートの情報を保持する
+
 			<pre>type SpriteSheet struct {
 <span id="SpriteSheet.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
     <span class="comment">// 戦闘時の立ち絵</span>
@@ -974,19 +1003,22 @@
 		
 			
 			
-			<h2 id="ValueType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go?s=160:181#L1">ValueType</a>
+			<h2 id="ValueType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go?s=282:303#L2">ValueType</a>
 				<a class="permalink" href="index.html#ValueType">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ValueType は値のタイプを表す
+
 			<pre>type ValueType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
 				
 				<pre>const (
+    <span class="comment">// PercentageType はパーセンテージタイプを表す</span>
     <span id="PercentageType">PercentageType</span> <a href="index.html#ValueType">ValueType</a> = &#34;PERCENTAGE&#34;
-    <span id="NumeralType">NumeralType</span>              = &#34;NUMERAL&#34;
+    <span class="comment">// NumeralType は数値タイプを表す</span>
+    <span id="NumeralType">NumeralType</span> <a href="index.html#ValueType">ValueType</a> = &#34;NUMERAL&#34;
 )</pre>
 			
 
@@ -1000,13 +1032,14 @@
 
 			
 				
-				<h3 id="ValueType.Valid">func (ValueType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go?s=273:308#L7">Valid</a>
+				<h3 id="ValueType.Valid">func (ValueType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go?s=562:597#L12">Valid</a>
 					<a class="permalink" href="index.html#ValueType.Valid">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (enum <a href="index.html#ValueType">ValueType</a>) Valid() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				
+				<p>Valid はValueTypeの値が有効かどうかを検証する
+
 				
 				
 				
@@ -1014,12 +1047,13 @@
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1825:1898#L64">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2201:2274#L70">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>Wearable は装備可能アイテムの設定
+
 			<pre>type Wearable struct {
 <span id="Wearable.Defense"></span>    Defense           <a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Wearable.EquipmentCategory"></span>    EquipmentCategory <a href="http://localhost:8888/pkg/builtin/#string">string</a>

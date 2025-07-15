@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package gamelog はゲームログ機能を提供する。
+
 				
 			</div>
 		</div>
@@ -140,6 +141,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/doc.go">doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go">logstore.go</a>
 			
 			</span>
@@ -156,12 +159,13 @@
 		
 			
 			
-			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=297:360#L7">SafeSlice</a>
+			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=405:468#L8">SafeSlice</a>
 				<a class="permalink" href="index.html#SafeSlice">&#xb6;</a>
 				
 				
 			</h2>
-			<p>TODO: 無限に追加される可能性があるので、最大の長さを設定する
+			<p>SafeSlice はスレッドセーフなスライス
+TODO: 無限に追加される可能性があるので、最大の長さを設定する
 
 			<pre>type SafeSlice struct {
     <span class="comment">// contains filtered or unexported fields</span>
@@ -173,11 +177,11 @@
 			
 				
 				<pre>var (
-    <span class="comment">// 戦闘用</span>
+    <span class="comment">// BattleLog は戦闘用ログ</span>
     <span id="BattleLog">BattleLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
-    <span class="comment">// フィールド用</span>
+    <span class="comment">// FieldLog はフィールド用ログ</span>
     <span id="FieldLog">FieldLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
-    <span class="comment">// 会話シーンでステータス変化を通知する用</span>
+    <span class="comment">// SceneLog は会話シーンでステータス変化を通知する用ログ</span>
     <span id="SceneLog">SceneLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
 )</pre>
 			
@@ -190,52 +194,52 @@
 
 			
 				
-				<h3 id="SafeSlice.Append">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=387:427#L13">Append</a>
+				<h3 id="SafeSlice.Append">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=505:545#L14">Append</a>
 					<a class="permalink" href="index.html#SafeSlice.Append">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Append(value <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-				<p>ログを追加する
+				<p>Append はログを追加する
 
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Flush">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=932:959#L40">Flush</a>
+				<h3 id="SafeSlice.Flush">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1041:1068#L41">Flush</a>
 					<a class="permalink" href="index.html#SafeSlice.Flush">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Flush()</pre>
-				<p>ログの内容を消す
+				<p>Flush はログの内容を消す
 
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Get">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=555:589#L21">Get</a>
+				<h3 id="SafeSlice.Get">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=680:714#L22">Get</a>
 					<a class="permalink" href="index.html#SafeSlice.Get">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Get() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>古い順に取り出す。副作用はない
+				<p>Get は古い順に取り出す。副作用はない
 
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Pop">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=818:852#L32">Pop</a>
+				<h3 id="SafeSlice.Pop">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=918:952#L33">Pop</a>
 					<a class="permalink" href="index.html#SafeSlice.Pop">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Pop() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>古い順に取り出す。取得した分は消える
+				<p>Pop は古い順に取り出す。取得した分は消える
 
 				
 				

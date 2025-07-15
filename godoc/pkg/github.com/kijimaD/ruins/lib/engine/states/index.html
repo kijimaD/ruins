@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package states provides state management functionality.
+
 				
 			</div>
 		</div>
@@ -145,6 +146,15 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Draw">func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image)</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetCurrentState">func (sm *StateMachine) GetCurrentState() State</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStateCount">func (sm *StateMachine) GetStateCount() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStates">func (sm *StateMachine) GetStates() []State</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Update">func (sm *StateMachine) Update(world w.World)</a></dd>
 				
 			
@@ -175,6 +185,8 @@
 			<span style="font-size:90%">
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go">base.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go">lib.go</a>
 			
@@ -270,7 +282,7 @@
 		
 			
 			
-			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=831:1310#L28">State</a>
+			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=776:1255#L27">State</a>
 				<a class="permalink" href="index.html#State">&#xb6;</a>
 				
 				
@@ -306,7 +318,7 @@
 		
 			
 			
-			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1389:1468#L45">StateMachine</a>
+			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1334:1413#L44">StateMachine</a>
 				<a class="permalink" href="index.html#StateMachine">&#xb6;</a>
 				
 				
@@ -329,7 +341,7 @@ Only the top state is active.
 
 			
 				
-				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1866:1912#L60">Init</a>
+				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1807:1853#L59">Init</a>
 					<a class="permalink" href="index.html#Init">&#xb6;</a>
 					
 					
@@ -343,7 +355,7 @@ Only the top state is active.
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2671:2736#L94">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2564:2629#L90">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
@@ -356,7 +368,47 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2039:2084#L66">Update</a>
+				<h3 id="StateMachine.GetCurrentState">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4854:4901#L169">GetCurrentState</a>
+					<a class="permalink" href="index.html#StateMachine.GetCurrentState">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) GetCurrentState() <a href="index.html#State">State</a></pre>
+				<p>GetCurrentState は現在アクティブな状態を返す（テスト用）
+状態が存在しない場合はnilを返す
+
+				
+				
+				
+			
+				
+				<h3 id="StateMachine.GetStateCount">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5063:5106#L177">GetStateCount</a>
+					<a class="permalink" href="index.html#StateMachine.GetStateCount">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) GetStateCount() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>GetStateCount は状態スタックの要素数を返す（テスト用）
+
+				
+				
+				
+			
+				
+				<h3 id="StateMachine.GetStates">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4521:4564#L160">GetStates</a>
+					<a class="permalink" href="index.html#StateMachine.GetStates">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) GetStates() []<a href="index.html#State">State</a></pre>
+				<p>GetStates は現在の状態スタックを返す（テスト用）
+
+				
+				
+				
+			
+				
+				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1980:2025#L65">Update</a>
 					<a class="permalink" href="index.html#StateMachine.Update">&#xb6;</a>
 					
 					
@@ -398,7 +450,7 @@ Only the top state is active.
 		
 			
 			
-			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=253:271#L4">TransType</a>
+			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=198:216#L3">TransType</a>
 				<a class="permalink" href="index.html#TransType">&#xb6;</a>
 				
 				
@@ -437,7 +489,7 @@ Only the top state is active.
 		
 			
 			
-			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=738:804#L22">Transition</a>
+			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=683:749#L21">Transition</a>
 				<a class="permalink" href="index.html#Transition">&#xb6;</a>
 				
 				

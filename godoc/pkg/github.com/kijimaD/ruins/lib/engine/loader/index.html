@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package loader はリソース読み込み機能を提供する。
+
 				
 			</div>
 		</div>
@@ -117,26 +118,6 @@
 				
 				<dd><a href="index.html#AddEntityComponents">func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity</a></dd>
 			
-				
-				<dd><a href="index.html#LoadControls">func LoadControls(controlsConfigPath string, axes []string, actions []string) (resources.Controls, resources.InputHandler)</a></dd>
-			
-				
-				<dd><a href="index.html#LoadEntities">func LoadEntities(entityMetadataContent []byte, world w.World, gameComponentList []interface{}) []ecs.Entity</a></dd>
-			
-				
-				<dd><a href="index.html#LoadFonts">func LoadFonts(fontPath string) map[string]resources.Font</a></dd>
-			
-				
-				<dd><a href="index.html#LoadSpriteSheets">func LoadSpriteSheets(spriteSheetMetadataPath string) map[string]c.SpriteSheet</a></dd>
-			
-			
-				
-				<dd><a href="index.html#EngineComponentList">type EngineComponentList</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadEngineComponents">func LoadEngineComponents(entityMetadataContent []byte, world w.World) []EngineComponentList</a></dd>
-				
-				
 			
 				
 				<dd><a href="index.html#EntityComponentList">type EntityComponentList</a></dd>
@@ -154,13 +135,9 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/controls.go">controls.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go">entity.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/font.go">font.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/spritesheet.go">spritesheet.go</a>
 			
 			</span>
 			</p>
@@ -175,7 +152,7 @@
 		
 			
 			
-			<h2 id="AddEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=930:1015#L27">AddEntities</a>
+			<h2 id="AddEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=371:456#L10">AddEntities</a>
 				<a class="permalink" href="index.html#AddEntities">&#xb6;</a>
 				
 				
@@ -189,7 +166,7 @@
 		
 			
 			
-			<h2 id="AddEntityComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=1748:1856#L48">AddEntityComponents</a>
+			<h2 id="AddEntityComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=1173:1281#L31">AddEntityComponents</a>
 				<a class="permalink" href="index.html#AddEntityComponents">&#xb6;</a>
 				
 				
@@ -201,104 +178,10 @@
 			
 
 		
-			
-			
-			<h2 id="LoadControls">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/controls.go?s=323:445#L8">LoadControls</a>
-				<a class="permalink" href="index.html#LoadControls">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func LoadControls(controlsConfigPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>, axes []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, actions []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Controls">Controls</a>, <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#InputHandler">InputHandler</a>)</pre>
-			<p>LoadControls loads controls from a TOML file
-
-			
-			
-
 		
 			
 			
-			<h2 id="LoadEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=632:740#L19">LoadEntities</a>
-				<a class="permalink" href="index.html#LoadEntities">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func LoadEntities(entityMetadataContent []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, gameComponentList []interface{}) []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>LoadEntities creates entities with components from a TOML file
-
-			
-			
-
-		
-			
-			
-			<h2 id="LoadFonts">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/font.go?s=452:509#L9">LoadFonts</a>
-				<a class="permalink" href="index.html#LoadFonts">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func LoadFonts(fontPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>) map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Font">Font</a></pre>
-			<p>フォントの設定ymlを読み込む
-
-			
-			
-
-		
-			
-			
-			<h2 id="LoadSpriteSheets">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/spritesheet.go?s=354:432#L8">LoadSpriteSheets</a>
-				<a class="permalink" href="index.html#LoadSpriteSheets">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func LoadSpriteSheets(spriteSheetMetadataPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>) map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">c</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a></pre>
-			<p>LoadSpriteSheets loads sprite sheets from a TOML file
-
-			
-			
-
-		
-		
-			
-			
-			<h2 id="EngineComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=371:436#L9">EngineComponentList</a>
-				<a class="permalink" href="index.html#EngineComponentList">&#xb6;</a>
-				
-				
-			</h2>
-			<p>EngineComponentList is the list of engine components
-
-			<pre>type EngineComponentList struct {
-<span id="EngineComponentList.SpriteRender"></span>    SpriteRender *<a href="../components/index.html">c</a>.<a href="../components/index.html#SpriteRender">SpriteRender</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="LoadEngineComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=3861:3953#L103">LoadEngineComponents</a>
-					<a class="permalink" href="index.html#LoadEngineComponents">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func LoadEngineComponents(entityMetadataContent []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) []<a href="index.html#EngineComponentList">EngineComponentList</a></pre>
-				<p>LoadEngineComponents loads engine components from a TOML byte slice
-
-				
-				
-			
-
-			
-		
-			
-			
-			<h2 id="EntityComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=509:564#L14">EntityComponentList</a>
+			<h2 id="EntityComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/loader/entity.go?s=253:308#L5">EntityComponentList</a>
 				<a class="permalink" href="index.html#EntityComponentList">&#xb6;</a>
 				
 				

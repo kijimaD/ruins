@@ -93,7 +93,8 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package resources はゲームエンジンのリソース管理機能を提供する。
+
 				
 			</div>
 		</div>
@@ -113,27 +114,6 @@
 			
 			
 				
-				<dd><a href="index.html#Action">type Action</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#Axis">type Axis</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Axis.UnmarshalTOML">func (a *Axis) UnmarshalTOML(i interface{}) error</a></dd>
-				
-			
-				
-				<dd><a href="index.html#Button">type Button</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Button.UnmarshalTOML">func (b *Button) UnmarshalTOML(i interface{}) error</a></dd>
-				
-			
-				
 				<dd><a href="index.html#ButtonResources">type ButtonResources</a></dd>
 				
 				
@@ -145,29 +125,6 @@
 			
 				
 				<dd><a href="index.html#ComboButtonResources">type ComboButtonResources</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#ControllerAxis">type ControllerAxis</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#ControllerButton">type ControllerButton</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#ControllerButton.UnmarshalTOML">func (b *ControllerButton) UnmarshalTOML(i interface{}) error</a></dd>
-				
-			
-				
-				<dd><a href="index.html#Controls">type Controls</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#Emulated">type Emulated</a></dd>
 				
 				
 			
@@ -185,19 +142,6 @@
 				
 			
 				
-				<dd><a href="index.html#InputHandler">type InputHandler</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#Key">type Key</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Key.UnmarshalText">func (k *Key) UnmarshalText(text []byte) error</a></dd>
-				
-			
-				
 				<dd><a href="index.html#LabelResources">type LabelResources</a></dd>
 				
 				
@@ -205,19 +149,6 @@
 				
 				<dd><a href="index.html#ListResources">type ListResources</a></dd>
 				
-				
-			
-				
-				<dd><a href="index.html#MouseAxis">type MouseAxis</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#MouseButton">type MouseButton</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#MouseButton.UnmarshalText">func (b *MouseButton) UnmarshalText(text []byte) error</a></dd>
 				
 			
 				
@@ -294,9 +225,9 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/assets.go">assets.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go">controls.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/dimensions.go">dimensions.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/font.go">font.go</a>
 			
@@ -322,119 +253,13 @@
 		
 			
 			
-			<h2 id="Action">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=2680:2901#L105">Action</a>
-				<a class="permalink" href="index.html#Action">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Action contains buttons combinations with settings
-
-			<pre>type Action struct {
-<span id="Action.Combinations"></span>    <span class="comment">// Combinations contains buttons combinations</span>
-    Combinations [][]<a href="index.html#Button">Button</a>
-<span id="Action.Once"></span>    <span class="comment">// Once determines if the action should be triggered every frame when the button is pressed (default) or only once</span>
-    Once <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="Axis">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=2402:2441#L93">Axis</a>
-				<a class="permalink" href="index.html#Axis">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Axis can be an emulated axis, a gamepad axis or a mouse axis
-
-			<pre>type Axis struct {
-<span id="Axis.Value"></span>    Value interface{}
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="Axis.UnmarshalTOML">func (*Axis) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=2498:2547#L98">UnmarshalTOML</a>
-					<a class="permalink" href="index.html#Axis.UnmarshalTOML">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (a *<a href="index.html#Axis">Axis</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>UnmarshalTOML fills structure fields from TOML data
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Button">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=1642:1683#L56">Button</a>
-				<a class="permalink" href="index.html#Button">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Button can be a US keyboard key, a mouse button or a gamepad button
-
-			<pre>type Button struct {
-<span id="Button.Value"></span>    Value interface{}
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="Button.UnmarshalTOML">func (*Button) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=1740:1791#L61">UnmarshalTOML</a>
-					<a class="permalink" href="index.html#Button.UnmarshalTOML">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#Button">Button</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>UnmarshalTOML fills structure fields from TOML data
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="ButtonResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1588:1723#L63">ButtonResources</a>
+			<h2 id="ButtonResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1755:1890#L66">ButtonResources</a>
 				<a class="permalink" href="index.html#ButtonResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ButtonResources はボタンリソースを管理する
+
 			<pre>type ButtonResources struct {
 <span id="ButtonResources.Image"></span>    Image   *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonImage">ButtonImage</a>
 <span id="ButtonResources.Text"></span>    Text    *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonTextColor">ButtonTextColor</a>
@@ -457,12 +282,13 @@
 		
 			
 			
-			<h2 id="CheckboxResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1725:1838#L70">CheckboxResources</a>
+			<h2 id="CheckboxResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1968:2081#L74">CheckboxResources</a>
 				<a class="permalink" href="index.html#CheckboxResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>CheckboxResources はチェックボックスリソースを管理する
+
 			<pre>type CheckboxResources struct {
 <span id="CheckboxResources.Image"></span>    Image   *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonImage">ButtonImage</a>
 <span id="CheckboxResources.Graphic"></span>    Graphic *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#CheckboxGraphicImage">CheckboxGraphicImage</a>
@@ -484,143 +310,19 @@
 		
 			
 			
-			<h2 id="ComboButtonResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1913:2083#L81">ComboButtonResources</a>
+			<h2 id="ComboButtonResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2287:2457#L87">ComboButtonResources</a>
 				<a class="permalink" href="index.html#ComboButtonResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ComboButtonResources はコンボボタンリソースを管理する
+
 			<pre>type ComboButtonResources struct {
 <span id="ComboButtonResources.Image"></span>    Image   *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonImage">ButtonImage</a>
 <span id="ComboButtonResources.Text"></span>    Text    *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonTextColor">ButtonTextColor</a>
 <span id="ComboButtonResources.Face"></span>    Face    text.<a href="index.html#Face">Face</a>
 <span id="ComboButtonResources.Graphic"></span>    Graphic *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#GraphicImage">GraphicImage</a>
 <span id="ComboButtonResources.Padding"></span>    Padding <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Insets">Insets</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ControllerAxis">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=1990:2113#L74">ControllerAxis</a>
-				<a class="permalink" href="index.html#ControllerAxis">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ControllerAxis is a gamepad axis
-
-			<pre>type ControllerAxis struct {
-<span id="ControllerAxis.ID"></span>    ID       ebiten.<a href="index.html#GamepadID">GamepadID</a>
-<span id="ControllerAxis.Axis"></span>    Axis     <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="ControllerAxis.Invert"></span>    Invert   <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-<span id="ControllerAxis.DeadZone"></span>    DeadZone <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> `toml:&#34;dead_zone&#34;`
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ControllerButton">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=899:999#L33">ControllerButton</a>
-				<a class="permalink" href="index.html#ControllerButton">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ControllerButton is a gamepad button
-
-			<pre>type ControllerButton struct {
-<span id="ControllerButton.ID"></span>    ID            ebiten.<a href="index.html#GamepadID">GamepadID</a>
-<span id="ControllerButton.GamepadButton"></span>    GamepadButton ebiten.<a href="index.html#GamepadButton">GamepadButton</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="ControllerButton.UnmarshalTOML">func (*ControllerButton) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=1056:1117#L39">UnmarshalTOML</a>
-					<a class="permalink" href="index.html#ControllerButton.UnmarshalTOML">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#ControllerButton">ControllerButton</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>UnmarshalTOML fills structure fields from TOML data
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Controls">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=2939:3170#L113">Controls</a>
-				<a class="permalink" href="index.html#Controls">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Controls contains input controls
-
-			<pre>type Controls struct {
-<span id="Controls.Axes"></span>    <span class="comment">// Axes contains axis controls, used for inputs represented by a float value from -1 to 1</span>
-    Axes map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Axis">Axis</a>
-<span id="Controls.Actions"></span>    <span class="comment">// Actions contains buttons combinations, used for general inputs</span>
-    Actions map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Action">Action</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="Emulated">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=1904:1952#L68">Emulated</a>
-				<a class="permalink" href="index.html#Emulated">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Emulated is an emulated axis
-
-			<pre>type Emulated struct {
-<span id="Emulated.Pos"></span>    Pos <a href="index.html#Button">Button</a>
-<span id="Emulated.Neg"></span>    Neg <a href="index.html#Button">Button</a>
 }
 </pre>
 
@@ -678,12 +380,13 @@
 		
 			
 			
-			<h2 id="HeaderResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2912:3044#L125">HeaderResources</a>
+			<h2 id="HeaderResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3670:3802#L137">HeaderResources</a>
 				<a class="permalink" href="index.html#HeaderResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>HeaderResources はヘッダーリソースを管理する
+
 			<pre>type HeaderResources struct {
 <span id="HeaderResources.Background"></span>    Background *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/">image</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/#NineSlice">NineSlice</a>
 <span id="HeaderResources.Padding"></span>    Padding    <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Insets">Insets</a>
@@ -706,80 +409,13 @@
 		
 			
 			
-			<h2 id="InputHandler">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=3263:3412#L121">InputHandler</a>
-				<a class="permalink" href="index.html#InputHandler">&#xb6;</a>
-				
-				
-			</h2>
-			<p>InputHandler contains input axis values and actions corresponding to specified controls
-
-			<pre>type InputHandler struct {
-<span id="InputHandler.Axes"></span>    <span class="comment">// Axes contains input axis values</span>
-    Axes map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
-<span id="InputHandler.Actions"></span>    <span class="comment">// Actions contains input actions</span>
-    Actions map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="Key">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=201:236#L5">Key</a>
-				<a class="permalink" href="index.html#Key">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Key is a US keyboard key
-
-			<pre>type Key struct {
-<span id="Key.Key"></span>    Key ebiten.<a href="index.html#Key">Key</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="Key.UnmarshalText">func (*Key) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=293:339#L10">UnmarshalText</a>
-					<a class="permalink" href="index.html#Key.UnmarshalText">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (k *<a href="index.html#Key">Key</a>) UnmarshalText(text []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>UnmarshalText fills structure fields from text data
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="LabelResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1840:1911#L76">LabelResources</a>
+			<h2 id="LabelResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2141:2212#L81">LabelResources</a>
 				<a class="permalink" href="index.html#LabelResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>LabelResources はラベルリソースを管理する
+
 			<pre>type LabelResources struct {
 <span id="LabelResources.Text"></span>    Text *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#LabelColor">LabelColor</a>
 <span id="LabelResources.Face"></span>    Face text.<a href="index.html#Face">Face</a>
@@ -800,12 +436,13 @@
 		
 			
 			
-			<h2 id="ListResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2085:2408#L89">ListResources</a>
+			<h2 id="ListResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2516:2839#L96">ListResources</a>
 				<a class="permalink" href="index.html#ListResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ListResources はリストリソースを管理する
+
 			<pre>type ListResources struct {
 <span id="ListResources.Image"></span>    Image        *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ScrollContainerImage">ScrollContainerImage</a>
 <span id="ListResources.ImageTrans"></span>    ImageTrans   *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ScrollContainerImage">ScrollContainerImage</a>
@@ -833,77 +470,13 @@
 		
 			
 			
-			<h2 id="MouseAxis">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=2144:2179#L82">MouseAxis</a>
-				<a class="permalink" href="index.html#MouseAxis">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MouseAxis is a mouse axis
-
-			<pre>type MouseAxis struct {
-<span id="MouseAxis.Axis"></span>    Axis <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="MouseButton">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=510:569#L19">MouseButton</a>
-				<a class="permalink" href="index.html#MouseButton">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MouseButton is a mouse button
-
-			<pre>type MouseButton struct {
-<span id="MouseButton.MouseButton"></span>    MouseButton ebiten.<a href="index.html#MouseButton">MouseButton</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="MouseButton.UnmarshalText">func (*MouseButton) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/controls.go?s=626:680#L24">UnmarshalText</a>
-					<a class="permalink" href="index.html#MouseButton.UnmarshalText">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#MouseButton">MouseButton</a>) UnmarshalText(text []<a href="http://localhost:8888/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>UnmarshalText fills structure fields from text data
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="PanelResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2640:2783#L112">PanelResources</a>
+			<h2 id="PanelResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3270:3413#L122">PanelResources</a>
 				<a class="permalink" href="index.html#PanelResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>PanelResources はパネルリソースを管理する
+
 			<pre>type PanelResources struct {
 <span id="PanelResources.Image"></span>    Image      *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/">image</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/#NineSlice">NineSlice</a>
 <span id="PanelResources.ImageTrans"></span>    ImageTrans *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/">image</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/#NineSlice">NineSlice</a>
@@ -926,12 +499,13 @@
 		
 			
 			
-			<h2 id="ProgressBarResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2528:2638#L107">ProgressBarResources</a>
+			<h2 id="ProgressBarResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3100:3210#L116">ProgressBarResources</a>
 				<a class="permalink" href="index.html#ProgressBarResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ProgressBarResources はプログレスバーリソースを管理する
+
 			<pre>type ProgressBarResources struct {
 <span id="ProgressBarResources.TrackImage"></span>    TrackImage *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ProgressBarImage">ProgressBarImage</a>
 <span id="ProgressBarResources.FillImage"></span>    FillImage  *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ProgressBarImage">ProgressBarImage</a>
@@ -952,7 +526,7 @@
 		
 			
 			
-			<h2 id="Resources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=234:681#L1">Resources</a>
+			<h2 id="Resources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=227:614#L1">Resources</a>
 				<a class="permalink" href="index.html#Resources">&#xb6;</a>
 				
 				
@@ -961,9 +535,7 @@
 
 			<pre>type Resources struct {
 <span id="Resources.ScreenDimensions"></span>    ScreenDimensions *<a href="index.html#ScreenDimensions">ScreenDimensions</a>
-<span id="Resources.Controls"></span>    Controls         *<a href="index.html#Controls">Controls</a>
-<span id="Resources.InputHandler"></span>    InputHandler     *<a href="index.html#InputHandler">InputHandler</a>
-<span id="Resources.SpriteSheets"></span>    SpriteSheets     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>
+<span id="Resources.SpriteSheets"></span>    SpriteSheets     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../../components/index.html">components</a>.<a href="../../components/index.html#SpriteSheet">SpriteSheet</a>
 <span id="Resources.Fonts"></span>    Fonts            *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Font">Font</a>
 <span id="Resources.DefaultFaces"></span>    DefaultFaces     *map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]text.<a href="index.html#Face">Face</a>
 <span id="Resources.AudioContext"></span>    AudioContext     *<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/">audio</a>.<a href="http://localhost:8888/pkg/github.com/hajimehoshi/ebiten/v2/audio/#Context">Context</a>
@@ -985,7 +557,7 @@
 
 			
 				
-				<h3 id="InitResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=722:753#L16">InitResources</a>
+				<h3 id="InitResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/lib.go?s=655:686#L14">InitResources</a>
 					<a class="permalink" href="index.html#InitResources">&#xb6;</a>
 					
 					
@@ -1028,12 +600,13 @@
 		
 			
 			
-			<h2 id="SliderResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2410:2526#L101">SliderResources</a>
+			<h2 id="SliderResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2906:3022#L109">SliderResources</a>
 				<a class="permalink" href="index.html#SliderResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>SliderResources はスライダーリソースを管理する
+
 			<pre>type SliderResources struct {
 <span id="SliderResources.TrackImage"></span>    TrackImage *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#SliderTrackImage">SliderTrackImage</a>
 <span id="SliderResources.Handle"></span>    Handle     *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonImage">ButtonImage</a>
@@ -1055,12 +628,13 @@
 		
 			
 			
-			<h2 id="TabBookResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=2785:2910#L119">TabBookResources</a>
+			<h2 id="TabBookResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3481:3606#L130">TabBookResources</a>
 				<a class="permalink" href="index.html#TabBookResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TabBookResources はタブブックリソースを管理する
+
 			<pre>type TabBookResources struct {
 <span id="TabBookResources.ButtonFace"></span>    ButtonFace    text.<a href="index.html#Face">Face</a>
 <span id="TabBookResources.ButtonText"></span>    ButtonText    *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonTextColor">ButtonTextColor</a>
@@ -1082,12 +656,13 @@
 		
 			
 			
-			<h2 id="TextAreaResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3188:3435#L139">TextAreaResources</a>
+			<h2 id="TextAreaResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=4090:4337#L153">TextAreaResources</a>
 				<a class="permalink" href="index.html#TextAreaResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TextAreaResources はテキストエリアリソースを管理する
+
 			<pre>type TextAreaResources struct {
 <span id="TextAreaResources.Image"></span>    Image        *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ScrollContainerImage">ScrollContainerImage</a>
 <span id="TextAreaResources.Track"></span>    Track        *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#SliderTrackImage">SliderTrackImage</a>
@@ -1113,12 +688,13 @@
 		
 			
 			
-			<h2 id="TextInputResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3046:3186#L132">TextInputResources</a>
+			<h2 id="TextInputResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3875:4015#L145">TextInputResources</a>
 				<a class="permalink" href="index.html#TextInputResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TextInputResources はテキスト入力リソースを管理する
+
 			<pre>type TextInputResources struct {
 <span id="TextInputResources.Image"></span>    Image   *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#TextInputImage">TextInputImage</a>
 <span id="TextInputResources.Padding"></span>    Padding <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Insets">Insets</a>
@@ -1141,12 +717,13 @@
 		
 			
 			
-			<h2 id="TextResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1403:1586#L54">TextResources</a>
+			<h2 id="TextResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=1511:1694#L56">TextResources</a>
 				<a class="permalink" href="index.html#TextResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>TextResources はテキストリソースを管理する
+
 			<pre>type TextResources struct {
 <span id="TextResources.IdleColor"></span>    IdleColor     <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#Color">Color</a>
 <span id="TextResources.DisabledColor"></span>    DisabledColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#Color">Color</a>
@@ -1171,12 +748,13 @@
 		
 			
 			
-			<h2 id="ToolTipResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3437:3570#L149">ToolTipResources</a>
+			<h2 id="ToolTipResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=4408:4541#L164">ToolTipResources</a>
 				<a class="permalink" href="index.html#ToolTipResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>ToolTipResources はツールチップリソースを管理する
+
 			<pre>type ToolTipResources struct {
 <span id="ToolTipResources.Background"></span>    Background *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/">image</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/#NineSlice">NineSlice</a>
 <span id="ToolTipResources.Padding"></span>    Padding    <a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Insets">Insets</a>
@@ -1199,12 +777,13 @@
 		
 			
 			
-			<h2 id="UIResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=867:1401#L31">UIResources</a>
+			<h2 id="UIResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=915:1449#L32">UIResources</a>
 				<a class="permalink" href="index.html#UIResources">&#xb6;</a>
 				
 				
 			</h2>
-			
+			<p>UIResources はUIリソースを管理する
+
 			<pre>type UIResources struct {
 <span id="UIResources.Fonts"></span>    Fonts *fonts
 
@@ -1239,13 +818,14 @@
 
 			
 				
-				<h3 id="NewUIResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=3572:3641#L156">NewUIResources</a>
+				<h3 id="NewUIResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/resources/ui.go?s=4603:4672#L172">NewUIResources</a>
 					<a class="permalink" href="index.html#NewUIResources">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewUIResources(tfs *text.<a href="index.html#GoTextFaceSource">GoTextFaceSource</a>) (*<a href="index.html#UIResources">UIResources</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				
+				<p>NewUIResources は新しいUIリソースを作成する
+
 				
 				
 			

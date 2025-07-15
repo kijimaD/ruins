@@ -93,7 +93,10 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				
+				<p>Package resources はオブジェクトに紐付かないゲーム中の機能の役割を果たす要素を提供する。
+他の具体的なpackageから呼び出されるものであって、循環依存を防ぐため依存関係を極力含まないようにする。
+基本的なデータ構造、およびメソッドを提供する。
+
 				
 			</div>
 		</div>
@@ -131,19 +134,16 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.GetCache">func (rm *DefaultResourceManager) GetCache() *ResourceCache</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadAll">func (rm *DefaultResourceManager) LoadAll(axes []string, actions []string) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadControls">func (rm *DefaultResourceManager) LoadControls(axes []string, actions []string) (er.Controls, er.InputHandler, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadAll">func (rm *DefaultResourceManager) LoadAll(_ []string, _ []string) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadFonts">func (rm *DefaultResourceManager) LoadFonts() (map[string]er.Font, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadRaws">func (rm *DefaultResourceManager) LoadRaws() (*raw.RawMaster, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadRaws">func (rm *DefaultResourceManager) LoadRaws() (*raw.Master, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadSpriteSheets">func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]ec.SpriteSheet, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadSpriteSheets">func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]components.SpriteSheet, error)</a></dd>
 				
 			
 				
@@ -213,8 +213,6 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/controls.go">controls.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go">event.go</a>
@@ -240,35 +238,11 @@
 			
 				
 				<pre>const (
-    <span class="comment">// MoveUpAction is the action for moving up</span>
-    <span id="MoveUpAction">MoveUpAction</span> = &#34;MoveUp&#34;
-
-    <span class="comment">// MoveDownAction is the action for moving down</span>
-    <span id="MoveDownAction">MoveDownAction</span> = &#34;MoveDown&#34;
-
-    <span class="comment">// MoveLeftAction is the action for moving left</span>
-    <span id="MoveLeftAction">MoveLeftAction</span> = &#34;MoveLeft&#34;
-
-    <span class="comment">// MoveRightAction is the action for moving right</span>
-    <span id="MoveRightAction">MoveRightAction</span> = &#34;MoveRight&#34;
-
-    <span class="comment">// PreviousLevelAction is the action for switching to the previous level</span>
-    <span id="PreviousLevelAction">PreviousLevelAction</span> = &#34;PreviousLevel&#34;
-
-    <span class="comment">// NextLevelAction is the action for switching to the next level</span>
-    <span id="NextLevelAction">NextLevelAction</span> = &#34;NextLevel&#34;
-
-    <span class="comment">// RestartAction is the action for restarting the level</span>
-    <span id="RestartAction">RestartAction</span> = &#34;Restart&#34;
-
-    <span class="comment">// GoToLevelAction is the action for switching to a specific level</span>
-    <span id="GoToLevelAction">GoToLevelAction</span> = &#34;GoToLevel&#34;
-)</pre>
-			
-				
-				<pre>const (
-    <span id="StateEventNone">StateEventNone</span>       = <a href="index.html#StateEvent">StateEvent</a>(&#34;NONE&#34;)
-    <span id="StateEventWarpNext">StateEventWarpNext</span>   = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_NEXT&#34;)
+    <span class="comment">// StateEventNone はイベントなしを表す</span>
+    <span id="StateEventNone">StateEventNone</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;NONE&#34;)
+    <span class="comment">// StateEventWarpNext は次の階層への移動を表す</span>
+    <span id="StateEventWarpNext">StateEventWarpNext</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_NEXT&#34;)
+    <span class="comment">// StateEventWarpEscape は脱出を表す</span>
     <span id="StateEventWarpEscape">StateEventWarpEscape</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_ESCAPE&#34;)
 )</pre>
 			
@@ -277,7 +251,7 @@
 		
 			
 			
-			<h2 id="GetResourcePath">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=6979:7033#L215">GetResourcePath</a>
+			<h2 id="GetResourcePath">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4958:5012#L155">GetResourcePath</a>
 				<a class="permalink" href="index.html#GetResourcePath">&#xb6;</a>
 				
 				
@@ -291,13 +265,13 @@
 		
 			
 			
-			<h2 id="UpdateGameLayout">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/layout.go?s=236:293#L1">UpdateGameLayout</a>
+			<h2 id="UpdateGameLayout">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/layout.go?s=234:291#L1">UpdateGameLayout</a>
 				<a class="permalink" href="index.html#UpdateGameLayout">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func UpdateGameLayout(world <a href="../engine/world/index.html">w</a>.<a href="../engine/world/index.html#World">World</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>)</pre>
-			<p>UpdateGameLayoutはゲームウィンドウサイズを更新する。
+			<p>UpdateGameLayout はゲームウィンドウサイズを更新する
 
 			
 			
@@ -306,7 +280,7 @@
 		
 			
 			
-			<h2 id="DefaultResourceManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=910:1066#L19">DefaultResourceManager</a>
+			<h2 id="DefaultResourceManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=791:947#L17">DefaultResourceManager</a>
 				<a class="permalink" href="index.html#DefaultResourceManager">&#xb6;</a>
 				
 				
@@ -330,7 +304,7 @@
 
 			
 				
-				<h3 id="DefaultResourceManager.ClearCache">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=6809:6855#L210">ClearCache</a>
+				<h3 id="DefaultResourceManager.ClearCache">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4788:4834#L150">ClearCache</a>
 					<a class="permalink" href="index.html#DefaultResourceManager.ClearCache">&#xb6;</a>
 					
 					
@@ -343,7 +317,7 @@
 				
 			
 				
-				<h3 id="DefaultResourceManager.GetCache">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=6658:6717#L205">GetCache</a>
+				<h3 id="DefaultResourceManager.GetCache">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4637:4696#L145">GetCache</a>
 					<a class="permalink" href="index.html#DefaultResourceManager.GetCache">&#xb6;</a>
 					
 					
@@ -356,12 +330,12 @@
 				
 			
 				
-				<h3 id="DefaultResourceManager.LoadAll">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=5834:5914#L180">LoadAll</a>
+				<h3 id="DefaultResourceManager.LoadAll">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4001:4072#L125">LoadAll</a>
 					<a class="permalink" href="index.html#DefaultResourceManager.LoadAll">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadAll(axes []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, actions []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadAll(_ []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, _ []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>LoadAll はすべてのリソースを一括で読み込む
 
 				
@@ -369,20 +343,7 @@
 				
 			
 				
-				<h3 id="DefaultResourceManager.LoadControls">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=3892:4009#L118">LoadControls</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.LoadControls">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadControls(axes []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, actions []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Controls">Controls</a>, <a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#InputHandler">InputHandler</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>LoadControls はコントロール設定を読み込む
-
-				
-				
-				
-			
-				
-				<h3 id="DefaultResourceManager.LoadFonts">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=2223:2296#L62">LoadFonts</a>
+				<h3 id="DefaultResourceManager.LoadFonts">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1982:2055#L56">LoadFonts</a>
 					<a class="permalink" href="index.html#DefaultResourceManager.LoadFonts">&#xb6;</a>
 					
 					
@@ -395,12 +356,12 @@
 				
 			
 				
-				<h3 id="DefaultResourceManager.LoadRaws">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=5481:5549#L167">LoadRaws</a>
+				<h3 id="DefaultResourceManager.LoadRaws">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=3651:3716#L112">LoadRaws</a>
 					<a class="permalink" href="index.html#DefaultResourceManager.LoadRaws">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadRaws() (*<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#RawMaster">RawMaster</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadRaws() (*<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>LoadRaws はRawデータを読み込む
 
 				
@@ -408,12 +369,12 @@
 				
 			
 				
-				<h3 id="DefaultResourceManager.LoadSpriteSheets">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=2952:3039#L87">LoadSpriteSheets</a>
+				<h3 id="DefaultResourceManager.LoadSpriteSheets">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=2711:2806#L81">LoadSpriteSheets</a>
 					<a class="permalink" href="index.html#DefaultResourceManager.LoadSpriteSheets">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadSpriteSheets() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/components/index.html">ec</a>.<a href="../engine/components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadSpriteSheets() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>LoadSpriteSheets はスプライトシートリソースを読み込む
 
 				
@@ -423,12 +384,12 @@
 		
 			
 			
-			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=358:571#L1">Game</a>
+			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=366:579#L1">Game</a>
 				<a class="permalink" href="index.html#Game">&#xb6;</a>
 				
 				
 			</h2>
-			<p>冒険出発から帰還までを1セットとした情報を保持する。
+			<p>Game は冒険出発から帰還までを1セットとした情報を保持する。
 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
 
 			<pre>type Game struct {
@@ -455,12 +416,12 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=592:993#L11">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=609:1010#L11">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
 			</h2>
-			<p>現在の階層
+			<p>Level は現在の階層
 
 			<pre>type Level struct {
     <span class="comment">// 横のタイル数</span>
@@ -489,65 +450,65 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1503:1562#L39">AtEntity</a>
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1562:1621#L39">AtEntity</a>
 					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#Level">Level</a>) AtEntity(x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-				<p>xy座標から、該当するエンティティを求める
+				<p>AtEntity はxy座標から、該当するエンティティを求める
 
 				
 				
 				
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1892:1925#L53">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1970:2003#L53">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#Level">Level</a>) Height() <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a></pre>
-				<p>ステージ縦。縦の全体ピクセル数
+				<p>Height はステージ縦。縦の全体ピクセル数
 
 				
 				
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1752:1784#L48">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1820:1852#L48">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#Level">Level</a>) Width() <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a></pre>
-				<p>ステージ幅。横の全体ピクセル数
+				<p>Width はステージ幅。横の全体ピクセル数
 
 				
 				
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1271:1332#L31">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1318:1379#L31">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#Level">Level</a>) XYTileCoord(idx <a href="index.html#TileIdx">TileIdx</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>)</pre>
-				<p>タイルスライスのインデックスからタイル座標を求める
+				<p>XYTileCoord はタイルスライスのインデックスからタイル座標を求める
 
 				
 				
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1077:1134#L26">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1109:1166#L26">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (l *<a href="index.html#Level">Level</a>) XYTileIndex(tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="index.html#TileIdx">TileIdx</a></pre>
-				<p>タイル座標から、タイルスライスのインデックスを求める
+				<p>XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
 
 				
 				
@@ -556,7 +517,7 @@
 		
 			
 			
-			<h2 id="ResourceCache">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1354:1543#L35">ResourceCache</a>
+			<h2 id="ResourceCache">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1210:1346#L32">ResourceCache</a>
 				<a class="permalink" href="index.html#ResourceCache">&#xb6;</a>
 				
 				
@@ -565,10 +526,8 @@
 
 			<pre>type ResourceCache struct {
 <span id="ResourceCache.Fonts"></span>    Fonts        map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Font">Font</a>
-<span id="ResourceCache.SpriteSheets"></span>    SpriteSheets map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/components/index.html">ec</a>.<a href="../engine/components/index.html#SpriteSheet">SpriteSheet</a>
-<span id="ResourceCache.Controls"></span>    Controls     *<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Controls">Controls</a>
-<span id="ResourceCache.InputHandler"></span>    InputHandler *<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#InputHandler">InputHandler</a>
-<span id="ResourceCache.RawMaster"></span>    RawMaster    *<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#RawMaster">RawMaster</a>
+<span id="ResourceCache.SpriteSheets"></span>    SpriteSheets map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>
+<span id="ResourceCache.RawMaster"></span>    RawMaster    *<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>
 }
 </pre>
 
@@ -586,7 +545,7 @@
 		
 			
 			
-			<h2 id="ResourceConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1144:1274#L27">ResourceConfig</a>
+			<h2 id="ResourceConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1025:1130#L25">ResourceConfig</a>
 				<a class="permalink" href="index.html#ResourceConfig">&#xb6;</a>
 				
 				
@@ -596,7 +555,6 @@
 			<pre>type ResourceConfig struct {
 <span id="ResourceConfig.FontsPath"></span>    FontsPath        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="ResourceConfig.SpriteSheetsPath"></span>    SpriteSheetsPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="ResourceConfig.ControlsPath"></span>    ControlsPath     <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 <span id="ResourceConfig.RawsPath"></span>    RawsPath         <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
 </pre>
@@ -615,7 +573,7 @@
 		
 			
 			
-			<h2 id="ResourceManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=363:839#L5">ResourceManager</a>
+			<h2 id="ResourceManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=353:720#L5">ResourceManager</a>
 				<a class="permalink" href="index.html#ResourceManager">&#xb6;</a>
 				
 				
@@ -626,11 +584,9 @@
     <span class="comment">// フォント関連</span>
     LoadFonts() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Font">Font</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
     <span class="comment">// スプライトシート関連</span>
-    LoadSpriteSheets() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/components/index.html">ec</a>.<a href="../engine/components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
-    <span class="comment">// コントロール関連</span>
-    LoadControls(axes []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, actions []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Controls">Controls</a>, <a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#InputHandler">InputHandler</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
+    LoadSpriteSheets() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
     <span class="comment">// Raw(エンティティ定義)関連</span>
-    LoadRaws() (*<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#RawMaster">RawMaster</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
+    LoadRaws() (*<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
     <span class="comment">// すべてのリソースを一括読み込み</span>
     LoadAll(axes []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, actions []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
 }</pre>
@@ -645,7 +601,7 @@
 
 			
 				
-				<h3 id="NewDefaultResourceManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1856:1904#L52">NewDefaultResourceManager</a>
+				<h3 id="NewDefaultResourceManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1659:1707#L47">NewDefaultResourceManager</a>
 					<a class="permalink" href="index.html#NewDefaultResourceManager">&#xb6;</a>
 					
 					
@@ -657,7 +613,7 @@
 				
 			
 				
-				<h3 id="NewResourceManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1610:1672#L44">NewResourceManager</a>
+				<h3 id="NewResourceManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1413:1475#L39">NewResourceManager</a>
 					<a class="permalink" href="index.html#NewResourceManager">&#xb6;</a>
 					
 					
@@ -673,12 +629,12 @@
 		
 			
 			
-			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=59:81#L1">StateEvent</a>
+			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=73:95#L1">StateEvent</a>
 				<a class="permalink" href="index.html#StateEvent">&#xb6;</a>
 				
 				
 			</h2>
-			<p>フィールド上でのイベント
+			<p>StateEvent はフィールド上でのイベント
 
 			<pre>type StateEvent <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -696,12 +652,12 @@
 		
 			
 			
-			<h2 id="TileIdx">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/type.go?s=38:54#L1">TileIdx</a>
+			<h2 id="TileIdx">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/type.go?s=49:65#L1">TileIdx</a>
 				<a class="permalink" href="index.html#TileIdx">&#xb6;</a>
 				
 				
 			</h2>
-			<p>タイル番号
+			<p>TileIdx はタイル番号
 
 			<pre>type TileIdx <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
