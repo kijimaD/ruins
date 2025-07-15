@@ -35,7 +35,6 @@ type DefaultResourceManager struct {
 type ResourceConfig struct {
 	FontsPath        string
 	SpriteSheetsPath string
-	ControlsPath     string
 	RawsPath         string
 }
 
@@ -59,7 +58,6 @@ func NewDefaultResourceManager() ResourceManager {
 	return NewResourceManager(ResourceConfig{
 		FontsPath:        "metadata/fonts/fonts.toml",
 		SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
-		ControlsPath:     "config/controls.toml",
 		RawsPath:         "metadata/entities/raw/raw.toml",
 	})
 }
@@ -134,7 +132,7 @@ func (rm *DefaultResourceManager) LoadRaws() (*raw.Master, error) {
 }
 
 // LoadAll はすべてのリソースを一括で読み込む
-func (rm *DefaultResourceManager) LoadAll(axes []string, actions []string) error {
+func (rm *DefaultResourceManager) LoadAll(_ []string, _ []string) error {
 	// フォントの読み込み
 	if _, err := rm.LoadFonts(); err != nil {
 		return fmt.Errorf("フォントの読み込みに失敗: %w", err)

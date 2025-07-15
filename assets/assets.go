@@ -4,5 +4,5 @@ import "embed"
 
 // FS is the embedded file system containing game assets
 //
-//go:embed file metadata levels config
+//go:embed file metadata levels
 var FS embed.FS

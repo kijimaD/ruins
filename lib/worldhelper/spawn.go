@@ -1,7 +1,6 @@
 package worldhelper
 
 import (
-	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
 	"github.com/kijimaD/ruins/lib/raw"
@@ -23,10 +22,10 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
-		SpriteRender: &components.SpriteRender{
+		SpriteRender: &gc.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
 			SpriteNumber: 2,
-			Depth:        components.DepthNumFloor,
+			Depth:        gc.DepthNumFloor,
 		},
 	})
 
@@ -39,10 +38,10 @@ func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
-		SpriteRender: &components.SpriteRender{
+		SpriteRender: &gc.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
 			SpriteNumber: 1,
-			Depth:        components.DepthNumTaller,
+			Depth:        gc.DepthNumTaller,
 		},
 		BlockView: &gc.BlockView{},
 		BlockPass: &gc.BlockPass{},
@@ -59,10 +58,10 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
-		SpriteRender: &components.SpriteRender{
+		SpriteRender: &gc.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
 			SpriteNumber: 4,
-			Depth:        components.DepthNumRug,
+			Depth:        gc.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeNext},
 	})
@@ -78,10 +77,10 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	componentList := loader.EntityComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
-		SpriteRender: &components.SpriteRender{
+		SpriteRender: &gc.SpriteRender{
 			SpriteSheet:  &fieldSpriteSheet,
 			SpriteNumber: 5,
-			Depth:        components.DepthNumRug,
+			Depth:        gc.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
 	})
@@ -101,10 +100,10 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{},
 			Operator: &gc.Operator{},
-			SpriteRender: &components.SpriteRender{
+			SpriteRender: &gc.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
 				SpriteNumber: 3,
-				Depth:        components.DepthNumOperator,
+				Depth:        gc.DepthNumOperator,
 			},
 			BlockPass: &gc.BlockPass{},
 		})
@@ -130,10 +129,10 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{},
-			SpriteRender: &components.SpriteRender{
+			SpriteRender: &gc.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
 				SpriteNumber: 6,
-				Depth:        components.DepthNumTaller,
+				Depth:        gc.DepthNumTaller,
 			},
 			BlockPass: &gc.BlockPass{},
 			AIMoveFSM: &gc.AIMoveFSM{},

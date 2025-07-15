@@ -3,7 +3,6 @@ package systems
 import (
 	"math"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	w "github.com/kijimaD/ruins/lib/engine/world"
@@ -63,7 +62,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	pos := gameComponents.Position.Get(entity).(*gc.Position)
-	spriteRender := gameComponents.SpriteRender.Get(entity).(*components.SpriteRender)
+	spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
 
 	originalX := pos.X
 	originalY := pos.Y
@@ -89,7 +88,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 			switch {
 			case entityAnother.HasComponent(gameComponents.Position):
 				objectPos := gameComponents.Position.Get(entityAnother).(*gc.Position)
-				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*components.SpriteRender)
+				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
 				objectx1 := float64(int(objectPos.X) - objectSprite.Width/2)
@@ -103,7 +102,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 				}
 			case entityAnother.HasComponent(gameComponents.GridElement):
 				objectGrid := gameComponents.GridElement.Get(entityAnother).(*gc.GridElement)
-				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*components.SpriteRender)
+				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 				x := int(objectGrid.Row) * sprite.Width
 				y := int(objectGrid.Col) * sprite.Height

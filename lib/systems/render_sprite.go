@@ -7,7 +7,6 @@ import (
 	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -47,14 +46,14 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*components.SpriteRender)
-			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*components.SpriteRender)
+			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
+			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 			return spriteRender1.Depth < spriteRender2.Depth
 		})
 		for _, entity := range entities {
 			// タイル描画
 			gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*components.SpriteRender)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
 			tileSize := gameResources.Level.TileSize
 			pos := &gc.Position{
 				X: gc.Pixel(int(gridElement.Row)*int(tileSize) + int(tileSize/2)),
@@ -94,9 +93,9 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 				return
 			}
 			belowTileEntity := gameResources.Level.Entities[int(belowTileIdx)]
-			belowSpriteRender, ok := gameComponents.SpriteRender.Get(belowTileEntity).(*components.SpriteRender)
+			belowSpriteRender, ok := gameComponents.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
 			if ok {
-				if belowSpriteRender.Depth == components.DepthNumFloor {
+				if belowSpriteRender.Depth == gc.DepthNumFloor {
 					op := &ebiten.DrawImageOptions{}
 					op.GeoM.Translate(float64(int(grid.Row)*int(utils.TileSize)), float64(int(grid.Col)*int(utils.TileSize)+int(utils.TileSize)))
 					utils.SetTranslate(world, op)
@@ -120,8 +119,8 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*components.SpriteRender)
-			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*components.SpriteRender)
+			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
+			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 
 			return spriteRender1.Depth < spriteRender2.Depth
 		})
@@ -129,13 +128,13 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			// 座標描画
 			velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*components.SpriteRender)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
 			drawImage(world, screen, spriteRender, pos, velocity.Angle)
 		}
 	}
 }
 
-func getImage(spriteRender *components.SpriteRender) *ebiten.Image {
+func getImage(spriteRender *gc.SpriteRender) *ebiten.Image {
 	var result *ebiten.Image
 	key := fmt.Sprintf("%s/%d", spriteRender.SpriteSheet.Name, spriteRender.SpriteNumber)
 	if v, ok := spriteImageCache[key]; ok {
@@ -159,7 +158,7 @@ func getImage(spriteRender *components.SpriteRender) *ebiten.Image {
 	return result
 }
 
-func drawImage(world w.World, screen *ebiten.Image, spriteRender *components.SpriteRender, pos *gc.Position, angle float64) {
+func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) {
 	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 
 	op := &spriteRender.Options

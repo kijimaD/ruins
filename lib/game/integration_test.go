@@ -126,9 +126,8 @@ func TestResourceIntegration(t *testing.T) {
 	t.Run("全リソースタイプの読み込み確認", func(t *testing.T) {
 		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
 
-		// コントロール設定の確認
-		assert.NotNil(t, world.Resources.Controls, "コントロール設定が読み込まれていない")
-		assert.NotNil(t, world.Resources.InputHandler, "入力ハンドラが初期化されていない")
+		// リソースの基本構造確認
+		assert.NotNil(t, world.Resources, "リソース構造が初期化されていない")
 
 		// スプライトシートの確認
 		assert.NotNil(t, world.Resources.SpriteSheets, "スプライトシートが読み込まれていない")
@@ -197,8 +196,6 @@ func validateResourceLoading(t *testing.T, world ew.World) {
 		name     string
 		resource interface{}
 	}{
-		{"Controls", world.Resources.Controls},
-		{"InputHandler", world.Resources.InputHandler},
 		{"SpriteSheets", world.Resources.SpriteSheets},
 		{"Fonts", world.Resources.Fonts},
 		{"DefaultFaces", world.Resources.DefaultFaces},
