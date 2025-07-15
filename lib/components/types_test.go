@@ -205,7 +205,7 @@ func TestRatioAmount(t *testing.T) {
 		}
 	})
 
-	t.Run("Amount method exists", func(t *testing.T) {
+	t.Run("Amount method exists", func(_ *testing.T) {
 		ratio := RatioAmount{Ratio: 0.75}
 		ratio.Amount() // メソッドが存在することを確認
 	})
@@ -242,7 +242,7 @@ func TestNumeralAmount(t *testing.T) {
 		}
 	})
 
-	t.Run("Amount method exists", func(t *testing.T) {
+	t.Run("Amount method exists", func(_ *testing.T) {
 		numeral := NumeralAmount{Numeral: 50}
 		numeral.Amount() // メソッドが存在することを確認
 	})
@@ -251,7 +251,7 @@ func TestNumeralAmount(t *testing.T) {
 func TestAmounterInterface(t *testing.T) {
 	t.Run("all types implement Amounter", func(t *testing.T) {
 		// 両方の型がAmounterインターフェースを実装していることを確認
-		var amounters []Amounter = []Amounter{
+		var amounters = []Amounter{
 			RatioAmount{Ratio: 0.5},
 			NumeralAmount{Numeral: 100},
 		}

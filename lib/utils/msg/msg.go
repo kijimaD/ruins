@@ -2,13 +2,17 @@ package msg
 
 import "time"
 
+// QueueState はキューの状態を表す型
 type QueueState string
 
 const (
-	QueueStateNone   = QueueState("NONE")
+	// QueueStateNone はキューが非アクティブ状態
+	QueueStateNone = QueueState("NONE")
+	// QueueStateFinish はキューが完了状態
 	QueueStateFinish = QueueState("FINISH")
 )
 
+// Queue はイベントキューを管理する構造体
 type Queue struct {
 	events []Event
 	// 現在の表示文字列
@@ -17,6 +21,7 @@ type Queue struct {
 	active bool
 }
 
+// NewQueue は新しいQueueを作成する
 func NewQueue(events []Event) Queue {
 	q := Queue{
 		active: true,
@@ -25,6 +30,7 @@ func NewQueue(events []Event) Queue {
 	return q
 }
 
+// NewQueueFromText はテキストからQueueを作成する
 func NewQueueFromText(text string) Queue {
 	l := NewLexer(text)
 	p := NewParser(l)
@@ -34,7 +40,7 @@ func NewQueueFromText(text string) Queue {
 	return NewQueue(e.Events)
 }
 
-// キューの先端にあるイベントを実行する
+// RunHead はキューの先端にあるイベントを実行する
 func (q *Queue) RunHead() QueueState {
 	if !q.active {
 		return QueueStateNone
@@ -48,6 +54,7 @@ func (q *Queue) RunHead() QueueState {
 	return QueueStateNone
 }
 
+// Head はキューの先端イベントを返す
 func (q *Queue) Head() Event {
 	if len(q.events) == 0 {
 		return &notImplement{}
@@ -55,7 +62,7 @@ func (q *Queue) Head() Event {
 	return q.events[0]
 }
 
-// キューの先端を消して先に進める
+// Pop はキューの先端を消して先に進める
 func (q *Queue) Pop() QueueState {
 	if len(q.events) == 0 {
 		return QueueStateFinish
@@ -65,10 +72,12 @@ func (q *Queue) Pop() QueueState {
 	return QueueStateNone
 }
 
+// Display は現在の表示文字列を返す
 func (q *Queue) Display() string {
 	return q.buf
 }
 
+// SetEvents はイベントを設定する
 func (q *Queue) SetEvents(es []Event) {
 	q.events = es
 }
@@ -81,6 +90,7 @@ func (q *Queue) deactivate() {
 	q.active = false
 }
 
+// Event はイベントのインターフェース
 type Event interface {
 	PreHook()
 	Run(*Queue)
@@ -96,9 +106,7 @@ type msgEmit struct {
 	nlCount int
 }
 
-func (e *msgEmit) PreHook() {
-	return
-}
+func (e *msgEmit) PreHook() {}
 
 // 1つ位置を進めて1文字得る
 func (e *msgEmit) Run(q *Queue) {
@@ -119,7 +127,6 @@ func (e *msgEmit) Run(q *Queue) {
 	if e.pos > len(e.body)-1 {
 		q.deactivate()
 	}
-	return
 }
 
 // ================
@@ -127,30 +134,27 @@ func (e *msgEmit) Run(q *Queue) {
 // ページをフラッシュする
 type flush struct{}
 
-func (e *flush) PreHook() {
-	return
-}
+func (e *flush) PreHook() {}
 
 func (e *flush) Run(q *Queue) {
 	q.buf = ""
 	q.deactivate()
 	q.Pop()
-	return
 }
 
 // ================
 
+// ChangeBg は背景変更イベント
 type ChangeBg struct {
 	Source string
 }
 
-func (c *ChangeBg) PreHook() {
-	return
-}
+// PreHook はイベント実行前の処理
+func (c *ChangeBg) PreHook() {}
 
+// Run はイベントを実行する
 func (c *ChangeBg) Run(q *Queue) {
 	q.Pop()
-	return
 }
 
 // ================
@@ -158,15 +162,12 @@ func (c *ChangeBg) Run(q *Queue) {
 // 行末クリック待ち
 type lineEndWait struct{}
 
-func (l *lineEndWait) PreHook() {
-	return
-}
+func (l *lineEndWait) PreHook() {}
 
 func (l *lineEndWait) Run(q *Queue) {
 	q.buf = q.buf + "\n"
 	q.deactivate()
 	q.Pop()
-	return
 }
 
 // ================
@@ -174,30 +175,24 @@ func (l *lineEndWait) Run(q *Queue) {
 // 未実装
 type notImplement struct{}
 
-func (l *notImplement) PreHook() {
-	return
-}
+func (l *notImplement) PreHook() {}
 
 func (l *notImplement) Run(q *Queue) {
 	q.buf = ""
 	q.deactivate()
 	q.Pop()
-	return
 }
 
 // ================
 type wait struct {
-	durationMsec time.Duration
+	duration time.Duration
 }
 
-func (w *wait) PreHook() {
-	return
-}
+func (w *wait) PreHook() {}
 
 func (w *wait) Run(q *Queue) {
-	time.Sleep(w.durationMsec)
+	time.Sleep(w.duration)
 	q.buf = ""
 	q.deactivate()
 	q.Pop()
-	return
 }

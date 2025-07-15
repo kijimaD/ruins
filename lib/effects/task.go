@@ -12,6 +12,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// InflictDamage はダメージを与える
 func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
@@ -29,6 +30,7 @@ func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
 	}
 }
 
+// HealDamage はダメージを回復する
 func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
@@ -46,6 +48,7 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	}
 }
 
+// ConsumeStamina はスタミナを消費する
 func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
@@ -63,10 +66,11 @@ func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
 	}
 }
 
-func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
+// RecoverStamina はスタミナを回復する
+func RecoverStamina(world w.World, recoveryEffect EffectSpawner, target ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	pools := gameComponents.Pools.Get(target).(*gc.Pools)
-	v, ok := recover.EffectType.(RecoveryStamina)
+	v, ok := recoveryEffect.EffectType.(RecoveryStamina)
 	if !ok {
 		log.Print("RecoverStaminaがついてない")
 	}
@@ -80,11 +84,13 @@ func RecoverStamina(world w.World, recover EffectSpawner, target ecs.Entity) {
 	}
 }
 
+// WarpNextTask は次のフロアにワープする
 func WarpNextTask(world w.World) {
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpNext
 }
 
+// WarpEscapeTask はゲームから脱出する
 func WarpEscapeTask(world w.World) {
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpEscape

@@ -6,7 +6,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 所持中の素材
+// QueryOwnedMaterial は所持中の素材
 // TODO: worldを先に置く
 // Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
 func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
@@ -17,7 +17,7 @@ func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	).Visit(ecs.Visit(f))
 }
 
-// パーティメンバー
+// QueryInPartyMember はパーティメンバー
 func QueryInPartyMember(world w.World, f func(entity ecs.Entity)) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(

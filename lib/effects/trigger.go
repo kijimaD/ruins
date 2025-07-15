@@ -8,7 +8,7 @@ import (
 
 // AddEffectのラッパー群
 
-// アイテムについたComponentからEffectを登録する
+// ItemTrigger はアイテムについたComponentからEffectを登録する
 // 消費アイテムはなくなる
 func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World) {
 	eventTrigger(creator, item, targets, world)

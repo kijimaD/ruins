@@ -10,7 +10,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -23,8 +22,9 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// InventoryMenuState はインベントリメニューのゲームステート
 type InventoryMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -57,10 +57,13 @@ func (st InventoryMenuState) String() string {
 
 var _ es.State = &InventoryMenuState{}
 
-func (st *InventoryMenuState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *InventoryMenuState) OnPause(_ w.World) {}
 
-func (st *InventoryMenuState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *InventoryMenuState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *InventoryMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -68,26 +71,28 @@ func (st *InventoryMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *InventoryMenuState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *InventoryMenuState) OnStop(_ w.World) {}
 
-func (st *InventoryMenuState) Update(world w.World) states.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *InventoryMenuState) Update(world w.World) es.Transition {
 	effects.RunEffectQueue(world)
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
 	// パーティ選択モードの場合はパーティ操作を優先
 	if st.isPartyMode {
 		if st.updatePartyMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
@@ -97,7 +102,8 @@ func (st *InventoryMenuState) Update(world w.World) states.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *InventoryMenuState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *InventoryMenuState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
@@ -116,18 +122,18 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.TabMenuCallbacks{
-		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.MenuItem) {
 			st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}})
 		},
-		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
+		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
+		OnItemChange: func(_ int, _, _ int, item menu.MenuItem) {
 			st.handleItemChange(world, item)
 			st.updateTabDisplay(world)
 		},
@@ -210,7 +216,7 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 		name := gameComponents.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("entity_%d", entity),
-			Label:    string(name),
+			Label:    name,
 			UserData: entity,
 		}
 	}
@@ -219,7 +225,7 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *InventoryMenuState) handleItemSelection(world w.World, tab tabmenu.TabItem, item menu.MenuItem) {
+func (st *InventoryMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.MenuItem) {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Fatal("unexpected item UserData")
@@ -247,14 +253,14 @@ func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem
 
 	// Descriptionコンポーネントの存在チェック
 	if !entity.HasComponent(gameComponents.Description) {
-		st.itemDesc.Label = "説明なし"
+		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		return
 	}
 
 	desc := gameComponents.Description.Get(entity).(*gc.Description)
 	if desc == nil {
-		st.itemDesc.Label = "説明なし"
+		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		return
 	}
@@ -420,7 +426,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	if !entity.HasComponent(gameComponents.Material) {
 		st.actionItems = append(st.actionItems, "捨てる")
 	}
-	st.actionItems = append(st.actionItems, "閉じる")
+	st.actionItems = append(st.actionItems, TextClose)
 
 	st.actionFocusIndex = 0
 	st.isWindowMode = true
@@ -433,7 +439,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 }
 
 // createActionWindowUI はアクションウィンドウのUI要素を作成する
-func (st *InventoryMenuState) createActionWindowUI(world w.World, container *widget.Container, entity ecs.Entity) {
+func (st *InventoryMenuState) createActionWindowUI(world w.World, _ *widget.Container, _ ecs.Entity) {
 	st.updateActionWindowDisplay(world)
 }
 
@@ -490,7 +496,7 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 		st.reloadTabs(world)
 		st.updateTabDisplay(world)
 		st.updateCategoryDisplay(world)
-	case "閉じる":
+	case TextClose:
 		st.closeActionWindow()
 	}
 }
@@ -641,53 +647,6 @@ func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
 	}
 }
 
-// メンバー選択画面を初期化する
-func (st *InventoryMenuState) initPartyWindow(world w.World) {
-	partyContainer := eui.NewWindowContainer(world)
-	st.partyWindow = eui.NewSmallWindow(eui.NewWindowHeaderContainer("選択", world), partyContainer)
-
-	// ウィンドウを画面中央に配置
-	st.partyWindow.SetLocation(getCenterWinRect())
-
-	// メンバー選択エリア
-	rowContainer := eui.NewRowContainer()
-	partyContainer.AddChild(rowContainer)
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
-		gameComponents.Name,
-		gameComponents.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		memberContainer := eui.NewVerticalContainer()
-		partyButton := eui.NewButton("使う",
-			world,
-			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-				effects.ItemTrigger(nil, st.selectedItem, effects.Single{entity}, world)
-				st.partyWindow.Close()
-				st.reloadTabs(world)
-				// 表示を更新
-				st.updateTabDisplay(world)
-				st.updateCategoryDisplay(world)
-			}),
-		)
-		memberContainer.AddChild(partyButton)
-		views.AddMemberBar(world, memberContainer, entity)
-
-		rowContainer.AddChild(memberContainer)
-	}))
-
-	// キャンセルボタンを追加
-	cancelButton := eui.NewButton("キャンセル",
-		world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			st.partyWindow.Close()
-		}),
-	)
-	partyContainer.AddChild(cancelButton)
-}
-
 // メンバー選択画面を初期化する（キーボード操作版）
 func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 	partyContainer := eui.NewWindowContainer(world)
@@ -781,7 +740,7 @@ func (st *InventoryMenuState) executePartySelection(world w.World) {
 
 	// 選択されたメンバーでアイテムを使用
 	selectedMember := st.partyMembers[st.partyFocusIndex]
-	effects.ItemTrigger(nil, st.selectedItem, effects.Single{selectedMember}, world)
+	effects.ItemTrigger(nil, st.selectedItem, effects.Single{Target: selectedMember}, world)
 
 	st.closePartyWindow()
 	st.reloadTabs(world)

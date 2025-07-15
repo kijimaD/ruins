@@ -7,7 +7,7 @@ import (
 )
 
 // 検証する方法がわからんのでprintして確かめる用
-func TestSelectByWeight(t *testing.T) {
+func TestSelectByWeight(_ *testing.T) {
 	ct := raw.CommandTable{
 		Name: "TEST",
 		Entries: []raw.CommandTableEntry{

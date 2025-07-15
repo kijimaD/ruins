@@ -10,11 +10,9 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/loader"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -23,7 +21,6 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/styles"
-	"github.com/kijimaD/ruins/lib/systems"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -31,8 +28,9 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// BattleState は戦闘シーンのゲームステート
 type BattleState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 
@@ -74,10 +72,13 @@ func (st BattleState) String() string {
 
 var _ es.State = &BattleState{}
 
-func (st *BattleState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *BattleState) OnPause(_ w.World) {}
 
-func (st *BattleState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *BattleState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *BattleState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -95,6 +96,7 @@ func (st *BattleState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
+// OnStop はステートが停止される際に呼ばれる
 func (st *BattleState) OnStop(world w.World) {
 	// 後片付け
 	gameComponents := world.Components.Game.(*gc.Components)
@@ -116,7 +118,8 @@ func (st *BattleState) OnStop(world w.World) {
 	st.phase = nil
 }
 
-func (st *BattleState) Update(world w.World) states.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *BattleState) Update(world w.World) es.Transition {
 	st.ui.Update()
 
 	// キーボード選択処理（選択フェーズのみ、ログ表示中は除く）
@@ -133,7 +136,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		switch v := st.phase.(type) {
 		case *phaseChoosePolicy:
 			var err error
-			st.party, err = worldhelper.NewParty(world, components.FactionAlly)
+			st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -166,7 +169,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
 				// テーブル取得
 				ctComponent := gameComponents.CommandTable.Get(entity).(*gc.CommandTable)
-				rawMaster := world.Resources.RawMaster.(*raw.RawMaster)
+				rawMaster := world.Resources.RawMaster.(*raw.Master)
 				ct := rawMaster.GetCommandTable(ctComponent.Name)
 				name := ct.SelectByWeight()
 
@@ -183,7 +186,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 
 				// 攻撃カードによって対象を選択
 				cl := loader.EntityComponentList{}
-				cl.Game = append(cl.Game, components.GameComponentList{
+				cl.Game = append(cl.Game, gc.GameComponentList{
 					BattleCommand: &gc.BattleCommand{
 						Owner:  entity,
 						Target: targetEntity,
@@ -217,16 +220,16 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		st.reloadMsg(world)
 		st.updateMemberContainer(world)
 
-		switch systems.BattleExtinctionSystem(world) {
-		case systems.BattleExtinctionNone:
-		case systems.BattleExtinctionAlly:
+		switch gs.BattleExtinctionSystem(world) {
+		case gs.BattleExtinctionNone:
+		case gs.BattleExtinctionAlly:
 			gamelog.BattleLog.Append("全滅した。")
 			st.phase = &phaseGameOver{}
-			return states.Transition{Type: states.TransNone}
-		case systems.BattleExtinctionMonster:
+			return es.Transition{Type: es.TransNone}
+		case gs.BattleExtinctionMonster:
 			gamelog.BattleLog.Append("敵を全滅させた。")
 			st.phase = &phaseResult{}
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 
 		gameComponents := world.Components.Game.(*gc.Components)
@@ -234,8 +237,8 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		commandCount := 0
 		world.Manager.Join(
 			gameComponents.BattleCommand,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			commandCount += 1
+		).Visit(ecs.Visit(func(_ ecs.Entity) {
+			commandCount++
 		}))
 		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
@@ -244,7 +247,7 @@ func (st *BattleState) Update(world w.World) states.Transition {
 				gs.BattleCommandSystem(world)
 				st.isWaitClick = false
 			}
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 
 		// 処理完了
@@ -259,26 +262,27 @@ func (st *BattleState) Update(world w.World) states.Transition {
 		if st.keyboardInput.IsEnterJustPressedOnce() {
 			switch v.actionCount {
 			case 0:
-				dropResult := systems.BattleDropSystem(world)
+				dropResult := gs.BattleDropSystem(world)
 				st.resultWindow = st.initResultWindow(world, dropResult)
 				st.ui.AddWindow(st.resultWindow)
 			default:
-				return states.Transition{Type: states.TransPop}
+				return es.Transition{Type: es.TransPop}
 			}
-			v.actionCount += 1
+			v.actionCount++
 		}
 	case *phaseGameOver:
 		st.reloadMsg(world)
 
 		if st.keyboardInput.IsEnterJustPressedOnce() {
-			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameOverState{}}}
+			return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}}
 		}
 	}
 
 	return st.ConsumeTransition()
 }
 
-func (st *BattleState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *BattleState) Draw(_ w.World, screen *ebiten.Image) {
 	if st.bg != nil {
 		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
 	}
@@ -416,7 +420,7 @@ func (st *BattleState) reloadPolicy(world w.World) {
 
 	// コールバックの設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			entry := item.UserData.(policyEntry)
 			switch entry {
 			case policyEntryAttack:
@@ -428,10 +432,10 @@ func (st *BattleState) reloadPolicy(world w.World) {
 			case policyEntryItem:
 				// TODO: 未実装
 			case policyEntryEscape:
-				st.SetTransition(states.Transition{Type: states.TransPop})
+				st.SetTransition(es.Transition{Type: es.TransPop})
 			}
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, _ int) {
 			st.menuUIBuilder.UpdateFocus(st.currentMenu)
 		},
 	}
@@ -522,7 +526,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 
 	// コールバックの設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			cardEntity := item.UserData.(ecs.Entity)
 			card := gameComponents.Card.Get(cardEntity).(*gc.Card)
 			if card == nil {
@@ -534,7 +538,7 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 			}
 			st.cardSpecContainer.RemoveChildren()
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, newIndex int) {
 			if newIndex >= 0 && newIndex < len(items) {
 				entity := items[newIndex].UserData.(ecs.Entity)
 				st.selectedItem = entity
@@ -611,7 +615,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("enemy_%d", entity),
-			Label:    fmt.Sprintf("%s", name.Name),
+			Label:    name.Name,
 			UserData: entity,
 		}
 	}
@@ -626,10 +630,10 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 
 	// コールバックの設定
 	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, item menu.MenuItem) {
+		OnSelect: func(_ int, item menu.MenuItem) {
 			targetEntity := item.UserData.(ecs.Entity)
 			cl := loader.EntityComponentList{}
-			cl.Game = append(cl.Game, components.GameComponentList{
+			cl.Game = append(cl.Game, gc.GameComponentList{
 				BattleCommand: &gc.BattleCommand{
 					Owner:  currentPhase.owner,
 					Target: targetEntity,
@@ -646,7 +650,7 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 				gs.BattleCommandSystem(world)
 			}
 		},
-		OnFocusChange: func(oldIndex, newIndex int) {
+		OnFocusChange: func(_, _ int) {
 			st.menuUIBuilder.UpdateFocus(st.currentMenu)
 		},
 	}
@@ -693,8 +697,8 @@ func (st *BattleState) reloadMsg(world w.World) {
 
 			return v
 		}),
-		euiext.ListOpts.EntryEnterFunc(func(e any) {}),
-		euiext.ListOpts.EntrySelectedHandler(func(args *euiext.ListEntrySelectedEventArgs) {}),
+		euiext.ListOpts.EntryEnterFunc(func(_ any) {}),
+		euiext.ListOpts.EntrySelectedHandler(func(_ *euiext.ListEntrySelectedEventArgs) {}),
 		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
 	}
 
@@ -727,7 +731,7 @@ func (st *BattleState) updateMemberContainer(world w.World) {
 	}))
 }
 
-func (st *BattleState) initResultWindow(world w.World, dropResult systems.DropResult) *widget.Window {
+func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult) *widget.Window {
 	res := world.Resources.UIResources
 	const width = 800
 	const height = 400

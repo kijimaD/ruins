@@ -7,6 +7,8 @@ import (
 )
 
 // MenuUIBuilder はメニューのUI要素を構築する
+//
+//nolint:revive // MenuUIBuilder is clear and commonly used
 type MenuUIBuilder struct {
 	world w.World
 }
@@ -96,22 +98,19 @@ func (b *MenuUIBuilder) createMenuButton(menu *Menu, index int, item MenuItem) *
 	btn := eui.NewButton(
 		item.Label,
 		b.world,
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			if !item.Disabled {
-				menu.SetFocusedIndex(index)
-				menu.selectCurrent()
-			}
+		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
+			menu.SetFocusedIndex(index)
+			menu.selectCurrent()
 		}),
 	)
 
 	// 無効化されたアイテムの処理
 	if item.Disabled {
-		// ここで無効化の見た目を設定（グレーアウトなど）
-		// 既存のeuiが対応していれば使用
+		btn.GetWidget().Disabled = true
 	}
 
-	// 初期フォーカス設定
-	if isFocused {
+	// 初期フォーカス設定（無効化されていない場合のみ）
+	if isFocused && !item.Disabled {
 		btn.Focus(true)
 	}
 

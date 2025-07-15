@@ -1,4 +1,4 @@
-// Package tabmenu provides a tabbed menu component for keyboard navigation.
+// Package tabmenu はキーボードナビゲーション用のタブ付きメニューコンポーネントを提供する。
 //
 // TabMenuコンポーネントは、複数のタブを持つメニューシステムを提供します。
 // キーボードでのナビゲーションに最適化されており、以下の機能を持ちます：

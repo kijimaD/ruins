@@ -11,12 +11,13 @@ import (
 	"github.com/pkg/profile"
 	"github.com/urfave/cli/v2"
 
-	_ "net/http/pprof"
+	_ "net/http/pprof" // pprofのHTTPエンドポイントを登録するためのインポート
 
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gs "github.com/kijimaD/ruins/lib/states"
 )
 
+// CmdPlay はゲームをプレイするコマンド
 var CmdPlay = &cli.Command{
 	Name:        "play",
 	Usage:       "play",
@@ -39,10 +40,13 @@ func runPlay(_ *cli.Context) error {
 	}
 
 	world := game.InitWorld(utils.MinGameWidth, utils.MinGameHeight)
-	ebiten.RunGame(&game.MainGame{
+	err := ebiten.RunGame(&game.MainGame{
 		World:        world,
 		StateMachine: es.Init(&gs.MainMenuState{}, world),
 	})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

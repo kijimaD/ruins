@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// Parser は構文解析器を表す構造体
 type Parser struct {
 	l      *Lexer
 	errors []string
@@ -27,7 +28,9 @@ type (
 
 const (
 	_ int = iota
+	// LOWEST は最低優先度
 	LOWEST
+	// CMD はコマンド優先度
 	CMD // [...]
 )
 
@@ -36,7 +39,7 @@ var precedences = map[TokenType]int{
 	LBRACKET: CMD,
 }
 
-// 字句解析器を受け取って初期化する
+// NewParser は字句解析器を受け取って初期化する
 func NewParser(l *Lexer) *Parser {
 	p := &Parser{
 		l:      l,
@@ -55,18 +58,9 @@ func NewParser(l *Lexer) *Parser {
 	return p
 }
 
-// エラーのアクセサ
+// Errors はエラーのアクセサ
 func (p *Parser) Errors() []string {
 	return p.errors
-}
-
-// エラーを追加する
-func (p *Parser) peekError(t TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
-		t,
-		p.peekToken.Type,
-	)
-	p.errors = append(p.errors, msg)
 }
 
 // 次のトークンに進む
@@ -75,7 +69,7 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-// パースを開始する。トークンを1つずつ辿る
+// ParseProgram はパースを開始する。トークンを1つずつ辿る
 func (p *Parser) ParseProgram() *Program {
 	program := &Program{}
 	program.Statements = []Statement{}
@@ -104,25 +98,9 @@ func (p *Parser) parseExpressionStatement() *ExpressionStatement {
 	return stmt
 }
 
-// 現在のトークンと引数の型を比較する
-func (p *Parser) curTokenIs(t TokenType) bool {
-	return p.curToken.Type == t
-}
-
 // 次のトークンと引数の型を比較する
 func (p *Parser) peekTokenIs(t TokenType) bool {
 	return p.peekToken.Type == t
-}
-
-// peekTokenの型をチェックし、その型が正しい場合に限ってnextTokenを読んで、トークンを進める
-func (p *Parser) expectPeek(t TokenType) bool {
-	if p.peekTokenIs(t) {
-		p.nextToken()
-		return true
-	} else {
-		p.peekError(t)
-		return false
-	}
 }
 
 // 構文解析関数を登録する

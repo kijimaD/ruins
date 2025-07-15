@@ -43,7 +43,7 @@ func testTabSwitching(t *testing.T) {
 
 	tabChangeCount := 0
 	callbacks := TabMenuCallbacks{
-		OnTabChange: func(oldTabIndex, newTabIndex int, tab TabItem) {
+		OnTabChange: func(_, _ int, _ TabItem) {
 			tabChangeCount++
 		},
 	}
@@ -95,7 +95,7 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 
 	tabChangeCount := 0
 	callbacks := TabMenuCallbacks{
-		OnTabChange: func(oldTabIndex, newTabIndex int, tab TabItem) {
+		OnTabChange: func(_, _ int, _ TabItem) {
 			tabChangeCount++
 		},
 	}
@@ -177,7 +177,7 @@ func testItemNavigation(t *testing.T) {
 
 	itemChangeCount := 0
 	callbacks := TabMenuCallbacks{
-		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
+		OnItemChange: func(_ int, _, _ int, _ menu.MenuItem) {
 			itemChangeCount++
 		},
 	}
@@ -266,7 +266,7 @@ func testSelection(t *testing.T) {
 
 	var selectedItem menu.MenuItem
 	callbacks := TabMenuCallbacks{
-		OnSelectItem: func(tabIndex int, itemIndex int, tab TabItem, item menu.MenuItem) {
+		OnSelectItem: func(_, _ int, _ TabItem, item menu.MenuItem) {
 			selectedItem = item
 		},
 	}

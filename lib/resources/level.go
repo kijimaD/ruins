@@ -6,7 +6,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// 冒険出発から帰還までを1セットとした情報を保持する。
+// Game は冒険出発から帰還までを1セットとした情報を保持する。
 // 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
 type Game struct {
 	// フィールド上で発生したイベント。各stateで補足されて処理される
@@ -17,7 +17,7 @@ type Game struct {
 	Depth int
 }
 
-// 現在の階層
+// Level は現在の階層
 type Level struct {
 	// 横のタイル数
 	TileWidth gc.Row
@@ -32,12 +32,12 @@ type Level struct {
 	VisionImage *ebiten.Image
 }
 
-// タイル座標から、タイルスライスのインデックスを求める
+// XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
 func (l *Level) XYTileIndex(tx gc.Row, ty gc.Col) TileIdx {
 	return TileIdx(int(ty)*int(l.TileWidth) + int(tx))
 }
 
-// タイルスライスのインデックスからタイル座標を求める
+// XYTileCoord はタイルスライスのインデックスからタイル座標を求める
 func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
 	x := int(idx) % int(l.TileWidth)
 	y := int(idx) / int(l.TileWidth)
@@ -45,7 +45,7 @@ func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
 	return gc.Pixel(x), gc.Pixel(y)
 }
 
-// xy座標から、該当するエンティティを求める
+// AtEntity はxy座標から、該当するエンティティを求める
 func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
 	tx := gc.Row(int(x) / int(l.TileSize))
 	ty := gc.Col(int(y) / int(l.TileSize))
@@ -54,12 +54,12 @@ func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
 	return l.Entities[idx]
 }
 
-// ステージ幅。横の全体ピクセル数
+// Width はステージ幅。横の全体ピクセル数
 func (l *Level) Width() gc.Pixel {
 	return gc.Pixel(int(l.TileWidth) * int(l.TileSize))
 }
 
-// ステージ縦。縦の全体ピクセル数
+// Height はステージ縦。縦の全体ピクセル数
 func (l *Level) Height() gc.Pixel {
 	return gc.Pixel(int(l.TileHeight) * int(l.TileSize))
 }

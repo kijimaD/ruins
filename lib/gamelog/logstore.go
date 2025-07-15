@@ -5,21 +5,22 @@ import (
 )
 
 var (
-	// 戦闘用
+	// BattleLog は戦闘用ログ
 	BattleLog SafeSlice
-	// フィールド用
+	// FieldLog はフィールド用ログ
 	FieldLog SafeSlice
-	// 会話シーンでステータス変化を通知する用
+	// SceneLog は会話シーンでステータス変化を通知する用ログ
 	SceneLog SafeSlice
 )
 
+// SafeSlice はスレッドセーフなスライス
 // TODO: 無限に追加される可能性があるので、最大の長さを設定する
 type SafeSlice struct {
 	content []string
 	mu      sync.Mutex
 }
 
-// ログを追加する
+// Append はログを追加する
 func (s *SafeSlice) Append(value string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -27,7 +28,7 @@ func (s *SafeSlice) Append(value string) {
 	s.content = append(s.content, value)
 }
 
-// 古い順に取り出す。副作用はない
+// Get は古い順に取り出す。副作用はない
 func (s *SafeSlice) Get() []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -35,10 +36,10 @@ func (s *SafeSlice) Get() []string {
 	copiedSlice := make([]string, len(s.content))
 	copy(copiedSlice, s.content)
 
-	return copiedSlice[len(s.content)-len(s.content):]
+	return copiedSlice
 }
 
-// 古い順に取り出す。取得した分は消える
+// Pop は古い順に取り出す。取得した分は消える
 func (s *SafeSlice) Pop() []string {
 	result := s.Get()
 	s.Flush()
@@ -46,7 +47,7 @@ func (s *SafeSlice) Pop() []string {
 	return result
 }
 
-// ログの内容を消す
+// Flush はログの内容を消す
 func (s *SafeSlice) Flush() {
 	s.mu.Lock()
 	defer s.mu.Unlock()

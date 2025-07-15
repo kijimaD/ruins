@@ -5,7 +5,6 @@ import (
 	"log"
 	"math/rand/v2"
 
-	"github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/utils"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"github.com/yourbasic/bit"
@@ -14,9 +13,9 @@ import (
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
-var reachEdgeError = errors.New("reach edge error")
+var errReachEdge = errors.New("reach edge error")
 
-// グルーピングする単位。味方あるいは敵がある
+// Party はグルーピングする単位。味方あるいは敵がある
 type Party struct {
 	// メンバー一覧
 	// entityの番号順に並んでいるという前提で書いている
@@ -28,7 +27,7 @@ type Party struct {
 	cur int
 }
 
-// memberは仲間入れ替えなどをしないと減ったりしない
+// NewParty はmemberは仲間入れ替えなどをしないと減ったりしない
 // 派閥を指定して取得する
 // 最初にセットされるインデックスは生存しているエンティティである
 // みんな生きていない場合は想定していない。エラーを返す
@@ -37,13 +36,13 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 
 	var q *bit.Set
 	switch factionType {
-	case components.FactionAlly:
+	case gc.FactionAlly:
 		q = world.Manager.Join(
 			gameComponents.FactionAlly,
 			gameComponents.Pools,
 			gameComponents.Attributes,
 		)
-	case components.FactionEnemy:
+	case gc.FactionEnemy:
 		q = world.Manager.Join(
 			gameComponents.FactionEnemy,
 			gameComponents.Pools,
@@ -83,7 +82,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 	return party, nil
 }
 
-// entityから派閥を判定して、partyを初期化する
+// NewByEntity はentityから派閥を判定して、partyを初期化する
 func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
 	var party Party
 	var err error
@@ -107,24 +106,24 @@ func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
 	return party, nil
 }
 
-// 選択中のentityを返す
+// Value は選択中のentityを返す
 func (p *Party) Value() *ecs.Entity {
 	return p.lives[p.cur]
 }
 
-// 生存エンティティの数を返す
+// LivesLen は生存エンティティの数を返す
 func (p *Party) LivesLen() int {
 	count := 0
 	for _, l := range p.lives {
 		if l != nil {
-			count += 1
+			count++
 		}
 	}
 
 	return count
 }
 
-// curを進める
+// Next はcurを進める
 func (p *Party) Next() error {
 	for {
 		err := p.next()
@@ -140,7 +139,7 @@ func (p *Party) Next() error {
 	}
 }
 
-// curを戻す
+// Prev はcurを戻す
 func (p *Party) Prev() error {
 	for {
 		err := p.prev()
@@ -156,7 +155,7 @@ func (p *Party) Prev() error {
 	}
 }
 
-// curを進めずに取得だけする
+// GetNext はcurを進めずに取得だけする
 func (p *Party) GetNext() (ecs.Entity, error) {
 	cur := p.cur
 	for {
@@ -164,7 +163,7 @@ func (p *Party) GetNext() (ecs.Entity, error) {
 		cur = utils.Min(cur+1, len(p.members)-1)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
-			return 0, reachEdgeError
+			return 0, errReachEdge
 		}
 		if p.lives[cur] == nil {
 			continue
@@ -176,7 +175,7 @@ func (p *Party) GetNext() (ecs.Entity, error) {
 	return *p.lives[cur], nil
 }
 
-// curを戻さずに取得だけする
+// GetPrev はcurを戻さずに取得だけする
 func (p *Party) GetPrev() (ecs.Entity, error) {
 	cur := p.cur
 	for {
@@ -184,7 +183,7 @@ func (p *Party) GetPrev() (ecs.Entity, error) {
 		cur = utils.Max(cur-1, 0)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
-			return 0, reachEdgeError
+			return 0, errReachEdge
 		}
 		if p.lives[cur] == nil {
 			continue
@@ -196,7 +195,7 @@ func (p *Party) GetPrev() (ecs.Entity, error) {
 	return *p.lives[cur], nil
 }
 
-// 生存エンティティからランダムに選択する
+// GetRandom は生存エンティティからランダムに選択する
 func (p *Party) GetRandom() (ecs.Entity, error) {
 	lives := []ecs.Entity{}
 	for _, live := range p.lives {
@@ -215,7 +214,7 @@ func (p *Party) next() error {
 	p.cur = utils.Min(p.cur+1, len(p.members)-1)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
-		return reachEdgeError
+		return errReachEdge
 	}
 
 	return nil
@@ -226,7 +225,7 @@ func (p *Party) prev() error {
 	p.cur = utils.Max(p.cur-1, 0)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
-		return reachEdgeError
+		return errReachEdge
 	}
 
 	return nil

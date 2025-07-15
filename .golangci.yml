@@ -1,0 +1,19 @@
+version: "2"
+linters:
+  # standard: [errcheck govet ineffassign staticcheck unused]
+  default: standard
+  enable:
+    - unconvert      # 意味のない型変換チェック
+    - revive         # golintの後継、Go標準コーディング規約
+    - misspell       # スペルミスチェック
+    - bodyclose      # HTTPレスポンスボディのclose忘れ防止
+    - goconst        # 定数化可能な文字列/数値の検出
+    - unparam        # 未使用パラメータ検出
+    - copyloopvar    # ループ変数コピー問題検出（重要なバグ防止）
+    - prealloc       # パフォーマンス最適化：スライス事前割り当て
+    - gocyclo        # 循環複雑度チェック（テスタビリティ向上）
+    - nakedret       # 裸のreturn文検出（可読性向上）
+    - nilerr         # nilエラー処理の不備検出（重要なバグ防止）
+    - decorder       # 宣言順序チェック（コード構造の一貫性）
+    # 現状と乖離が大きいので追加しない
+    # - testpackage  # テストファイルの命名規約（テスト品質向上）

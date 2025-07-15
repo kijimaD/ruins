@@ -9,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -24,8 +23,9 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// EquipMenuState は装備メニューのゲームステート
 type EquipMenuState struct {
-	states.BaseState
+	es.BaseState
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -71,10 +71,13 @@ const (
 
 var _ es.State = &EquipMenuState{}
 
-func (st *EquipMenuState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *EquipMenuState) OnPause(_ w.World) {}
 
-func (st *EquipMenuState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *EquipMenuState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *EquipMenuState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -82,9 +85,11 @@ func (st *EquipMenuState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *EquipMenuState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *EquipMenuState) OnStop(_ w.World) {}
 
-func (st *EquipMenuState) Update(world w.World) states.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *EquipMenuState) Update(world w.World) es.Transition {
 	changed := gs.EquipmentChangedSystem(world)
 	if changed {
 		st.reloadAbilityContainer(world)
@@ -92,13 +97,13 @@ func (st *EquipMenuState) Update(world w.World) states.Transition {
 	effects.RunEffectQueue(world)
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return states.Transition{Type: states.TransPush, NewStates: []states.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return states.Transition{Type: states.TransNone}
+			return es.Transition{Type: es.TransNone}
 		}
 	}
 
@@ -108,7 +113,8 @@ func (st *EquipMenuState) Update(world w.World) states.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *EquipMenuState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
@@ -125,19 +131,19 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.TabMenuCallbacks{
-		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.MenuItem) {
 			st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HomeMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}})
 		},
-		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
+		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 			st.updateAbilityDisplay(world)
 		},
-		OnItemChange: func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem) {
+		OnItemChange: func(_ int, _, _ int, item menu.MenuItem) {
 			st.handleItemChange(world, item)
 			st.updateTabDisplay(world)
 		},
@@ -214,7 +220,7 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createAllSlotItems は防具と手札の全スロットのMenuItemを作成する
-func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, memberIdx int) []menu.MenuItem {
+func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.MenuItem {
 	gameComponents := world.Components.Game.(*gc.Components)
 	items := []menu.MenuItem{}
 
@@ -265,44 +271,8 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, m
 	return items
 }
 
-// createSlotItems は装備スロットのMenuItemを作成する
-func (st *EquipMenuState) createSlotItems(world w.World, member ecs.Entity, equipType equipTarget) []menu.MenuItem {
-	var slots []*ecs.Entity
-	switch equipType {
-	case equipTargetWear:
-		slots = worldhelper.GetWearEquipments(world, member)
-	case equipTargetCard:
-		slots = worldhelper.GetCardEquipments(world, member)
-	}
-
-	gameComponents := world.Components.Game.(*gc.Components)
-	items := make([]menu.MenuItem, len(slots))
-
-	for i, slot := range slots {
-		var name string
-		if slot != nil {
-			name = gameComponents.Name.Get(*slot).(*gc.Name).Name
-		} else {
-			name = "-"
-		}
-
-		items[i] = menu.MenuItem{
-			ID:    fmt.Sprintf("slot_%d", i),
-			Label: name,
-			UserData: map[string]interface{}{
-				"member":     member,
-				"slotNumber": i,
-				"entity":     slot,
-				"equipType":  equipType,
-			},
-		}
-	}
-
-	return items
-}
-
 // handleItemSelection はアイテム選択時の処理
-func (st *EquipMenuState) handleItemSelection(world w.World, tab tabmenu.TabItem, item menu.MenuItem) {
+func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.MenuItem) {
 	if st.isEquipMode {
 		// 装備選択モードの場合
 		st.handleEquipItemSelection(world, item)
@@ -495,7 +465,10 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	currentTab := st.tabMenu.GetCurrentTab()
 	// タブIDからメンバーIDを取得（新しいパターン: "member_0"）
 	var memberIdx int
-	fmt.Sscanf(currentTab.ID, "member_%d", &memberIdx)
+	if _, err := fmt.Sscanf(currentTab.ID, "member_%d", &memberIdx); err != nil {
+		log.Printf("Failed to parse tab ID %s: %v", currentTab.ID, err)
+		return
+	}
 
 	members := []ecs.Entity{}
 	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
@@ -567,7 +540,7 @@ func (st *EquipMenuState) showActionWindow(world w.World, userData map[string]in
 		st.actionItems = append(st.actionItems, "外す")
 	}
 	st.actionItems = append(st.actionItems, "装備する")
-	st.actionItems = append(st.actionItems, "閉じる")
+	st.actionItems = append(st.actionItems, TextClose)
 
 	st.actionFocusIndex = 0
 	st.isWindowMode = true
@@ -580,7 +553,7 @@ func (st *EquipMenuState) showActionWindow(world w.World, userData map[string]in
 }
 
 // createActionWindowUI はアクションウィンドウのUI要素を作成する
-func (st *EquipMenuState) createActionWindowUI(world w.World, container *widget.Container) {
+func (st *EquipMenuState) createActionWindowUI(world w.World, _ *widget.Container) {
 	st.updateActionWindowDisplay(world)
 }
 
@@ -680,7 +653,7 @@ func (st *EquipMenuState) executeActionItem(world w.World) {
 		st.startEquipMode(world, userData)
 	case "外す":
 		st.unequipItem(world, userData)
-	case "閉じる":
+	case TextClose:
 		st.closeActionWindow()
 	}
 }
@@ -726,7 +699,7 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 }
 
 // createEquipMenuItems は装備選択用のMenuItemを作成する
-func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, member ecs.Entity) []menu.MenuItem {
+func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []menu.MenuItem {
 	gameComponents := world.Components.Game.(*gc.Components)
 	items := make([]menu.MenuItem, len(entities))
 
@@ -734,7 +707,7 @@ func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Ent
 		name := gameComponents.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("equip_entity_%d", entity),
-			Label:    string(name),
+			Label:    name,
 			UserData: entity,
 		}
 	}

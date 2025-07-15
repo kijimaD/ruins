@@ -8,8 +8,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	ec "github.com/kijimaD/ruins/lib/engine/components"
-	m "github.com/kijimaD/ruins/lib/engine/math"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 
@@ -22,7 +20,7 @@ var (
 	moverShadowImage *ebiten.Image // 動く物体が落とす影
 )
 
-// (下) タイル -> 影 -> スプライト (上) の順に表示する
+// RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
@@ -48,14 +46,14 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*ec.SpriteRender)
-			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*ec.SpriteRender)
+			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
+			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 			return spriteRender1.Depth < spriteRender2.Depth
 		})
 		for _, entity := range entities {
 			// タイル描画
 			gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
 			tileSize := gameResources.Level.TileSize
 			pos := &gc.Position{
 				X: gc.Pixel(int(gridElement.Row)*int(tileSize) + int(tileSize/2)),
@@ -95,9 +93,9 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 				return
 			}
 			belowTileEntity := gameResources.Level.Entities[int(belowTileIdx)]
-			belowSpriteRender, ok := gameComponents.SpriteRender.Get(belowTileEntity).(*ec.SpriteRender)
+			belowSpriteRender, ok := gameComponents.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
 			if ok {
-				if belowSpriteRender.Depth == ec.DepthNumFloor {
+				if belowSpriteRender.Depth == gc.DepthNumFloor {
 					op := &ebiten.DrawImageOptions{}
 					op.GeoM.Translate(float64(int(grid.Row)*int(utils.TileSize)), float64(int(grid.Col)*int(utils.TileSize)+int(utils.TileSize)))
 					utils.SetTranslate(world, op)
@@ -121,8 +119,8 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*ec.SpriteRender)
-			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*ec.SpriteRender)
+			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
+			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 
 			return spriteRender1.Depth < spriteRender2.Depth
 		})
@@ -130,13 +128,13 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			// 座標描画
 			velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
 			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*ec.SpriteRender)
+			spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
 			drawImage(world, screen, spriteRender, pos, velocity.Angle)
 		}
 	}
 }
 
-func getImage(spriteRender *ec.SpriteRender) *ebiten.Image {
+func getImage(spriteRender *gc.SpriteRender) *ebiten.Image {
 	var result *ebiten.Image
 	key := fmt.Sprintf("%s/%d", spriteRender.SpriteSheet.Name, spriteRender.SpriteNumber)
 	if v, ok := spriteImageCache[key]; ok {
@@ -145,12 +143,13 @@ func getImage(spriteRender *ec.SpriteRender) *ebiten.Image {
 		// テクスチャから欲しいスプライトを切り出す
 		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 		texture := spriteRender.SpriteSheet.Texture
-		textureWidth, textureHeight := texture.Image.Size()
+		textureWidth := texture.Image.Bounds().Dx()
+		textureHeight := texture.Image.Bounds().Dy()
 
-		left := m.Max(0, sprite.X)
-		right := m.Min(textureWidth, sprite.X+sprite.Width)
-		top := m.Max(0, sprite.Y)
-		bottom := m.Min(textureHeight, sprite.Y+sprite.Height)
+		left := max(0, sprite.X)
+		right := min(textureWidth, sprite.X+sprite.Width)
+		top := max(0, sprite.Y)
+		bottom := min(textureHeight, sprite.Y+sprite.Height)
 
 		result = texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image)
 		spriteImageCache[key] = result
@@ -159,7 +158,7 @@ func getImage(spriteRender *ec.SpriteRender) *ebiten.Image {
 	return result
 }
 
-func drawImage(world w.World, screen *ebiten.Image, spriteRender *ec.SpriteRender, pos *gc.Position, angle float64) {
+func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) {
 	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
 
 	op := &spriteRender.Options

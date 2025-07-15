@@ -12,29 +12,30 @@ import (
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	ew "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/resources"
 	gr "github.com/kijimaD/ruins/lib/resources"
 )
 
-// mainGameはebiten.Game interfaceを満たす
+// MainGame はebiten.Game interfaceを満たす
 type MainGame struct {
 	World        ew.World
 	StateMachine es.StateMachine
 }
 
-// interface methodのため、シグネチャは変更できない
-func (game *MainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+// Layout はinterface methodのため、シグネチャは変更できない
+func (game *MainGame) Layout(_, _ int) (int, int) {
 	x, y := gr.UpdateGameLayout(game.World)
 
 	return int(x), int(y)
 }
 
+// Update はゲームの更新処理を行う
 func (game *MainGame) Update() error {
 	game.StateMachine.Update(game.World)
 
 	return nil
 }
 
+// Draw はゲームの描画処理を行う
 func (game *MainGame) Draw(screen *ebiten.Image) {
 	game.StateMachine.Draw(game.World, screen)
 
@@ -56,6 +57,7 @@ Frees: %.2fMB
 	ebitenutil.DebugPrint(screen, msg)
 }
 
+// InitWorld はゲームワールドを初期化する
 func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	world := ew.InitWorld(&gc.Components{})
 
@@ -63,18 +65,6 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 
 	// ResourceManagerを使用してリソースを読み込む
 	resourceManager := gr.NewDefaultResourceManager()
-
-	// Load controls
-	axes := []string{}
-	actions := []string{
-		gr.MoveUpAction, gr.MoveDownAction, gr.MoveLeftAction, gr.MoveRightAction,
-	}
-	controls, inputHandler, err := resourceManager.LoadControls(axes, actions)
-	if err != nil {
-		log.Fatal(err)
-	}
-	world.Resources.Controls = &controls
-	world.Resources.InputHandler = &inputHandler
 
 	// Load sprite sheets
 	spriteSheets, err := resourceManager.LoadSpriteSheets()
@@ -109,7 +99,7 @@ func InitWorld(minGameWidth int, minGameHeight int) ew.World {
 	}
 	world.Resources.RawMaster = rw
 
-	world.Resources.Game = &resources.Game{}
+	world.Resources.Game = &gr.Game{}
 
 	return world
 }

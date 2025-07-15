@@ -7,6 +7,8 @@ import (
 )
 
 // MenuItem はメニュー項目を表す
+//
+//nolint:revive // MenuItem is clear and commonly used
 type MenuItem struct {
 	ID          string
 	Label       string
@@ -20,11 +22,15 @@ type MenuItem struct {
 type Orientation int
 
 const (
+	// Vertical は縦方向配置
 	Vertical Orientation = iota
+	// Horizontal は横方向配置
 	Horizontal
 )
 
 // MenuConfig はメニューの設定
+//
+//nolint:revive // MenuConfig is clear and commonly used
 type MenuConfig struct {
 	Items          []MenuItem
 	InitialIndex   int
@@ -34,6 +40,8 @@ type MenuConfig struct {
 }
 
 // MenuCallbacks はメニューのコールバック
+//
+//nolint:revive // MenuCallbacks is clear and commonly used
 type MenuCallbacks struct {
 	OnSelect      func(index int, item MenuItem)
 	OnCancel      func()

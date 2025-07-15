@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"log"
 
-	"github.com/kijimaD/ruins/assets"
-	"github.com/kijimaD/ruins/lib/engine/utils"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/kijimaD/ruins/assets"
+	"github.com/kijimaD/ruins/lib/engine/utils"
 )
 
-// スプライトは1つ1つの意味をなす画像の位置を示す情報
+// Sprite は1つ1つの意味をなす画像の位置を示す情報
 // 1ファイルに対して複数のスプライトが定義されている
 type Sprite struct {
 	// Horizontal position of the sprite in the sprite sheet
@@ -24,7 +23,7 @@ type Sprite struct {
 	Height int
 }
 
-// 複数のスプライトが格納された画像ファイル
+// Texture は複数のスプライトが格納された画像ファイル
 type Texture struct {
 	// Texture image
 	Image *ebiten.Image
@@ -41,7 +40,7 @@ func (t *Texture) UnmarshalText(text []byte) error {
 	return nil
 }
 
-// 画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
+// SpriteSheet は画像ファイルであるテクスチャと、その位置ごとの解釈であるスプライトのマッピング
 type SpriteSheet struct {
 	// スプライトシートのキー名
 	Name string
@@ -63,12 +62,16 @@ type SpriteRender struct {
 	Options ebiten.DrawImageOptions
 }
 
-// オブジェクトの描画順。小さい値を先に描画する
+// DepthNum はオブジェクトの描画順。小さい値を先に描画する
 type DepthNum int
 
 const (
-	DepthNumFloor    DepthNum = iota // 床。最背面に表示する
-	DepthNumRug                      // 床に置くもの。例: ワープホール、アイテム
-	DepthNumTaller                   // 高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
-	DepthNumOperator                 // 操作キャラを最も手前に表示する
+	// DepthNumFloor は床。最背面に表示する
+	DepthNumFloor DepthNum = iota
+	// DepthNumRug は床に置くもの。例: ワープホール、アイテム
+	DepthNumRug
+	// DepthNumTaller は高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
+	DepthNumTaller
+	// DepthNumOperator は操作キャラを最も手前に表示する
+	DepthNumOperator
 )

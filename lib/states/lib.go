@@ -4,25 +4,7 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 )
-
-var (
-	// 2つ以上windowを開くときに同じ位置で開くために使う
-	winRect image.Rectangle
-)
-
-func setWinRect() image.Rectangle {
-	x, y := ebiten.CursorPosition()
-	winRect = image.Rect(0, 0, x, y)
-	winRect = winRect.Add(image.Point{x + 20, y + 20})
-
-	return winRect
-}
-
-func getWinRect() image.Rectangle {
-	return winRect
-}
 
 func getCenterWinRect() image.Rectangle {
 	screenWidth, screenHeight := ebiten.WindowSize()
@@ -38,23 +20,23 @@ func getCenterWinRect() image.Rectangle {
 
 // ================
 
+// 共通の文字列定数
+const (
+	// UI表示用の定数
+	TextNoDescription = "説明なし" // アイテムの説明がない場合の表示文字列
+	TextClose         = "閉じる"  // メニューやウィンドウを閉じる際の表示文字列
+)
+
+// ItemCategoryType はアイテムのカテゴリーを表す
 type ItemCategoryType string
 
 var (
-	// 道具
+	// ItemCategoryTypeItem は道具を表す
 	ItemCategoryTypeItem ItemCategoryType = "ITEM"
-	// 手札
+	// ItemCategoryTypeCard は手札を表す
 	ItemCategoryTypeCard ItemCategoryType = "CARD"
-	// 装備
+	// ItemCategoryTypeWearable は装備を表す
 	ItemCategoryTypeWearable ItemCategoryType = "WEARABLE"
-	// 素材
+	// ItemCategoryTypeMaterial は素材を表す
 	ItemCategoryTypeMaterial ItemCategoryType = "MATERIAL"
 )
-
-// ================
-
-// 単に実装形式を合わせるためのintarface
-type haveCategory interface {
-	setCategory(world w.World, category ItemCategoryType)
-	categoryReload(world w.World)
-}

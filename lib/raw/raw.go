@@ -5,13 +5,13 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/utils"
 	"github.com/kijimaD/ruins/lib/errors"
 )
 
-type RawMaster struct {
+// Master はローデータを管理し、効率的な検索のためのインデックスを提供する
+type Master struct {
 	Raws              Raws
 	ItemIndex         map[string]int
 	MaterialIndex     map[string]int
@@ -22,6 +22,7 @@ type RawMaster struct {
 	SpriteSheetIndex  map[string]int
 }
 
+// Raws は全てのローデータを格納する構造体
 type Raws struct {
 	Items         []Item         `toml:"item"`
 	Materials     []Material     `toml:"material"`
@@ -32,7 +33,7 @@ type Raws struct {
 	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
 }
 
-// items ================
+// Item はアイテムのローデータ
 type Item struct {
 	Name            string
 	Description     string
@@ -45,24 +46,28 @@ type Item struct {
 	Attack          *Attack          `toml:"attack"`
 }
 
+// ProvidesHealing は回復効果を提供する構造体
 type ProvidesHealing struct {
 	ValueType ValueType
 	Amount    int
 	Ratio     float64
 }
 
+// Consumable は消費可能なアイテムの設定
 type Consumable struct {
 	UsableScene string
 	TargetGroup string
 	TargetNum   string
 }
 
+// Card はカードアイテムの設定
 type Card struct {
 	Cost        int
 	TargetGroup string
 	TargetNum   string
 }
 
+// Attack は攻撃性能の設定
 type Attack struct {
 	Accuracy       int    // 命中率
 	Damage         int    // 攻撃力
@@ -71,11 +76,13 @@ type Attack struct {
 	AttackCategory string // 攻撃種別
 }
 
+// Wearable は装備可能アイテムの設定
 type Wearable struct {
 	Defense           int
 	EquipmentCategory string
 }
 
+// EquipBonus は装備ボーナスの設定
 type EquipBonus struct {
 	Vitality  int
 	Strength  int
@@ -84,30 +91,31 @@ type EquipBonus struct {
 	Agility   int
 }
 
-// material ================
+// Material は素材アイテムの情報
 type Material struct {
 	Name        string
 	Description string
 }
 
-// recipe ================
+// Recipe はレシピの情報
 type Recipe struct {
 	Name   string
 	Inputs []RecipeInput `toml:"inputs"`
 }
 
-// 合成の元になる素材
+// RecipeInput は合成の元になる素材
 type RecipeInput struct {
 	Name   string
 	Amount int
 }
 
-// member ================
+// Member はメンバーの情報
 type Member struct {
 	Name       string
 	Attributes Attributes `toml:"attributes"`
 }
 
+// Attributes はキャラクターの能力値
 type Attributes struct {
 	Vitality  int
 	Strength  int
@@ -117,7 +125,8 @@ type Attributes struct {
 	Defense   int
 }
 
-func LoadFromFile(path string) RawMaster {
+// LoadFromFile はファイルからローデータを読み込む
+func LoadFromFile(path string) Master {
 	bs, err := assets.FS.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
@@ -126,8 +135,9 @@ func LoadFromFile(path string) RawMaster {
 	return rw
 }
 
-func Load(entityMetadataContent string) RawMaster {
-	rw := RawMaster{}
+// Load は文字列からローデータを読み込む
+func Load(entityMetadataContent string) Master {
+	rw := Master{}
 	rw.ItemIndex = map[string]int{}
 	rw.MaterialIndex = map[string]int{}
 	rw.RecipeIndex = map[string]int{}
@@ -135,7 +145,7 @@ func Load(entityMetadataContent string) RawMaster {
 	rw.CommandTableIndex = map[string]int{}
 	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
-	utils.Try(toml.Decode(string(entityMetadataContent), &rw.Raws))
+	utils.Try(toml.Decode(entityMetadataContent, &rw.Raws))
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
@@ -162,13 +172,14 @@ func Load(entityMetadataContent string) RawMaster {
 	return rw
 }
 
-func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType) (components.GameComponentList, error) {
+// GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
+func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
-		return components.GameComponentList{}, errors.NewKeyNotFoundError(name, "ItemIndex")
+		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "ItemIndex")
 	}
 	item := rw.Raws.Items[itemIdx]
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.ItemLocationType = &locationType
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
@@ -176,10 +187,10 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 
 	if item.Consumable != nil {
 		if err := gc.TargetGroupType(item.Consumable.TargetGroup).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid target group type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid target group type")
 		}
 		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid target num type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid target num type")
 		}
 		targetType := gc.TargetType{
 			TargetGroup: gc.TargetGroupType(item.Consumable.TargetGroup),
@@ -187,7 +198,7 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 		}
 
 		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid usable scene type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid usable scene type")
 		}
 		cl.Consumable = &gc.Consumable{
 			UsableScene: gc.UsableSceneType(item.Consumable.UsableScene),
@@ -196,8 +207,8 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	}
 
 	if item.ProvidesHealing != nil {
-		if err := ValueType(item.ProvidesHealing.ValueType).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid value type")
+		if err := item.ProvidesHealing.ValueType.Valid(); err != nil {
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid value type")
 		}
 		switch item.ProvidesHealing.ValueType {
 		case PercentageType:
@@ -212,10 +223,10 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 
 	if item.Card != nil {
 		if err := gc.TargetGroupType(item.Card.TargetGroup).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid card target group type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid card target group type")
 		}
 		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
-			return components.GameComponentList{}, errors.Wrap(err, "invalid card target num type")
+			return gc.GameComponentList{}, errors.Wrap(err, "invalid card target num type")
 		}
 
 		cl.Card = &gc.Card{
@@ -256,12 +267,12 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	}
 
 	if item.Wearable != nil {
-		if err := components.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
+		if err := gc.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
 			log.Fatal(err)
 		}
 		cl.Wearable = &gc.Wearable{
 			Defense:           item.Wearable.Defense,
-			EquipmentCategory: components.EquipmentType(item.Wearable.EquipmentCategory),
+			EquipmentCategory: gc.EquipmentType(item.Wearable.EquipmentCategory),
 			EquipBonus:        bonus,
 		}
 	}
@@ -269,12 +280,13 @@ func (rw *RawMaster) GenerateItem(name string, locationType gc.ItemLocationType)
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (components.GameComponentList, error) {
+// GenerateMaterial は指定された名前の素材のゲームコンポーネントを生成する
+func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
-		return components.GameComponentList{}, errors.NewKeyNotFoundError(name, "MaterialIndex")
+		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "MaterialIndex")
 	}
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.Material = &gc.Material{Amount: amount}
 	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
@@ -284,13 +296,14 @@ func (rw *RawMaster) GenerateMaterial(name string, amount int, locationType gc.I
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, error) {
+// GenerateRecipe は指定された名前のレシピのゲームコンポーネントを生成する
+func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
-		return components.GameComponentList{}, errors.NewKeyNotFoundError(name, "RecipeIndex")
+		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "RecipeIndex")
 	}
 	recipe := rw.Raws.Recipes[recipeIdx]
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.Name = &gc.Name{Name: recipe.Name}
 	cl.Recipe = &gc.Recipe{}
 	for _, input := range recipe.Inputs {
@@ -300,7 +313,7 @@ func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, 
 	// 説明文などのため、マッチしたitemの定義から持ってくる
 	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	if err != nil {
-		return components.GameComponentList{}, errors.Wrap(err, "failed to generate item for recipe")
+		return gc.GameComponentList{}, errors.Wrap(err, "failed to generate item for recipe")
 	}
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Card != nil {
@@ -319,14 +332,15 @@ func (rw *RawMaster) GenerateRecipe(name string) (components.GameComponentList, 
 	return cl, nil
 }
 
-func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
+// GenerateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する
+func (rw *Master) GenerateFighter(name string) gc.GameComponentList {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
 
-	cl := components.GameComponentList{}
+	cl := gc.GameComponentList{}
 	cl.Name = &gc.Name{Name: member.Name}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
@@ -356,7 +370,8 @@ func (rw *RawMaster) GenerateFighter(name string) components.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameComponentList {
+// GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
+func (rw *Master) GenerateMember(name string, inParty bool) gc.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionAlly
 	if inParty {
@@ -366,7 +381,8 @@ func (rw *RawMaster) GenerateMember(name string, inParty bool) components.GameCo
 	return cl
 }
 
-func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
+// GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
+func (rw *Master) GenerateEnemy(name string) gc.GameComponentList {
 	cl := rw.GenerateFighter(name)
 	cl.FactionType = &gc.FactionEnemy
 
@@ -387,7 +403,8 @@ func (rw *RawMaster) GenerateEnemy(name string) components.GameComponentList {
 	return cl
 }
 
-func (rw *RawMaster) GetCommandTable(name string) CommandTable {
+// GetCommandTable は指定された名前のコマンドテーブルを取得する
+func (rw *Master) GetCommandTable(name string) CommandTable {
 	ctIdx, ok := rw.CommandTableIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)
@@ -397,7 +414,8 @@ func (rw *RawMaster) GetCommandTable(name string) CommandTable {
 	return commandTable
 }
 
-func (rw *RawMaster) GetDropTable(name string) DropTable {
+// GetDropTable は指定された名前のドロップテーブルを取得する
+func (rw *Master) GetDropTable(name string) DropTable {
 	dtIdx, ok := rw.DropTableIndex[name]
 	if !ok {
 		log.Fatalf("キーが存在しない: %s", name)

@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"log"
+
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 
@@ -13,7 +15,13 @@ func newImageFromFile(path string) (*ebiten.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			// ログ出力するが、エラーは元の処理に影響させない
+			// この関数は読み取り専用なので、Close失敗は通常問題ない
+			log.Print(err)
+		}
+	}()
 	i, _, err := ebitenutil.NewImageFromReader(f)
 	return i, err
 }

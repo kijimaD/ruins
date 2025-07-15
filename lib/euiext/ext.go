@@ -14,6 +14,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
+// List is an extended list widget with additional functionality
 type List struct {
 	EntrySelectedEvent *event.Event
 
@@ -61,11 +62,16 @@ type List struct {
 	entryButtonOpts []widget.ButtonOpt
 }
 
+// ListOpt is an option function for List configuration
 type ListOpt func(l *List)
 
+// ListEntryLabelFunc is a function that returns a label for a list entry
 type ListEntryLabelFunc func(e any) string
+
+// ListEntryEnterFunc is a function called when entering a list entry
 type ListEntryEnterFunc func(e any)
 
+// ListEntryColor defines colors for list entries in different states
 type ListEntryColor struct {
 	Unselected                 color.Color
 	Selected                   color.Color
@@ -79,18 +85,23 @@ type ListEntryColor struct {
 	DisabledSelectedBackground color.Color
 }
 
+// ListEntrySelectedEventArgs contains arguments for list entry selection events
 type ListEntrySelectedEventArgs struct {
 	List          *List
 	Entry         any
 	PreviousEntry any
 }
 
+// ListEntrySelectedHandlerFunc is a function called when a list entry is selected
 type ListEntrySelectedHandlerFunc func(args *ListEntrySelectedEventArgs)
 
+// ListOptions provides options for List configuration
 type ListOptions struct{}
 
+// ListOpts provides a global instance of ListOptions
 var ListOpts ListOptions
 
+// NewList creates a new List widget with the specified options
 func NewList(listOpts ...ListOpt) *List {
 	l := &List{
 		EntrySelectedEvent: &event.Event{},
@@ -141,78 +152,91 @@ func (l *List) validate() {
 	}
 }
 
+// ContainerOpts sets container options for the list
 func (o ListOptions) ContainerOpts(opts ...widget.ContainerOpt) ListOpt {
 	return func(l *List) {
 		l.containerOpts = append(l.containerOpts, opts...)
 	}
 }
 
+// ScrollContainerOpts sets scroll container options for the list
 func (o ListOptions) ScrollContainerOpts(opts ...widget.ScrollContainerOpt) ListOpt {
 	return func(l *List) {
 		l.scrollContainerOpts = append(l.scrollContainerOpts, opts...)
 	}
 }
 
+// EntryButtonOpts sets button options for list entries
 func (o ListOptions) EntryButtonOpts(opts ...widget.ButtonOpt) ListOpt {
 	return func(l *List) {
 		l.entryButtonOpts = append(l.entryButtonOpts, opts...)
 	}
 }
 
+// SliderOpts sets slider options for the list
 func (o ListOptions) SliderOpts(opts ...widget.SliderOpt) ListOpt {
 	return func(l *List) {
 		l.sliderOpts = append(l.sliderOpts, opts...)
 	}
 }
 
+// ControlWidgetSpacing sets the spacing between control widgets
 func (o ListOptions) ControlWidgetSpacing(s int) ListOpt {
 	return func(l *List) {
 		l.controlWidgetSpacing = s
 	}
 }
 
+// HideHorizontalSlider hides the horizontal slider
 func (o ListOptions) HideHorizontalSlider() ListOpt {
 	return func(l *List) {
 		l.hideHorizontalSlider = true
 	}
 }
 
+// HideVerticalSlider hides the vertical slider
 func (o ListOptions) HideVerticalSlider() ListOpt {
 	return func(l *List) {
 		l.hideVerticalSlider = true
 	}
 }
 
+// Entries sets the entries for the list
 func (o ListOptions) Entries(e []any) ListOpt {
 	return func(l *List) {
 		l.entries = slices.CompactFunc(e, func(a any, b any) bool { return a == b })
 	}
 }
 
+// EntryLabelFunc sets the function to get labels for entries
 func (o ListOptions) EntryLabelFunc(f ListEntryLabelFunc) ListOpt {
 	return func(l *List) {
 		l.entryLabelFunc = f
 	}
 }
 
+// EntryEnterFunc sets the function called when entering an entry
 func (o ListOptions) EntryEnterFunc(f ListEntryEnterFunc) ListOpt {
 	return func(l *List) {
 		l.entryEnterFunc = f
 	}
 }
 
+// EntryFontFace sets the font face for entries
 func (o ListOptions) EntryFontFace(f text.Face) ListOpt {
 	return func(l *List) {
 		l.entryFace = f
 	}
 }
 
+// DisableDefaultKeys disables default key handling
 func (o ListOptions) DisableDefaultKeys(val bool) ListOpt {
 	return func(l *List) {
 		l.disableDefaultKeys = val
 	}
 }
 
+// EntryColor sets the colors for list entries
 func (o ListOptions) EntryColor(c *ListEntryColor) ListOpt {
 	return func(l *List) {
 		l.entryUnselectedColor = &widget.ButtonImage{
@@ -241,6 +265,7 @@ func (o ListOptions) EntryColor(c *ListEntryColor) ListOpt {
 	}
 }
 
+// EntryTextPadding sets the text padding for entries
 func (o ListOptions) EntryTextPadding(i widget.Insets) ListOpt {
 	return func(l *List) {
 		l.entryTextPadding = i
@@ -256,6 +281,7 @@ func (o ListOptions) EntryTextPosition(h widget.TextPosition, v widget.TextPosit
 	}
 }
 
+// EntrySelectedHandler sets the handler for entry selection events
 func (o ListOptions) EntrySelectedHandler(f ListEntrySelectedHandlerFunc) ListOpt {
 	return func(l *List) {
 		l.EntrySelectedEvent.AddHandler(func(args any) {
@@ -264,6 +290,7 @@ func (o ListOptions) EntrySelectedHandler(f ListEntrySelectedHandlerFunc) ListOp
 	}
 }
 
+// AllowReselect allows reselecting the same entry
 func (o ListOptions) AllowReselect() ListOpt {
 	return func(l *List) {
 		l.allowReselect = true
@@ -277,37 +304,44 @@ func (o ListOptions) SelectFocus() ListOpt {
 	}
 }
 
+// TabOrder sets the tab order for the list
 func (o ListOptions) TabOrder(tabOrder int) ListOpt {
 	return func(l *List) {
 		l.tabOrder = tabOrder
 	}
 }
 
+// GetWidget returns the underlying widget
 func (l *List) GetWidget() *widget.Widget {
 	l.init.Do()
 	return l.container.GetWidget()
 }
 
+// PreferredSize returns the preferred size of the list
 func (l *List) PreferredSize() (int, int) {
 	l.init.Do()
 	return l.container.PreferredSize()
 }
 
+// SetLocation sets the location of the list
 func (l *List) SetLocation(rect img.Rectangle) {
 	l.init.Do()
 	l.container.GetWidget().Rect = rect
 }
 
+// RequestRelayout requests a relayout of the list
 func (l *List) RequestRelayout() {
 	l.init.Do()
 	l.container.RequestRelayout()
 }
 
+// SetupInputLayer sets up the input layer for the list
 func (l *List) SetupInputLayer(def input.DeferredSetupInputLayerFunc) {
 	l.init.Do()
 	l.container.SetupInputLayer(def)
 }
 
+// Render renders the list to the screen
 func (l *List) Render(screen *ebiten.Image) {
 	l.init.Do()
 
@@ -331,6 +365,7 @@ func (l *List) Render(screen *ebiten.Image) {
 	l.container.Render(screen)
 }
 
+// Update updates the list state
 func (l *List) Update() {
 	l.init.Do()
 
@@ -340,24 +375,29 @@ func (l *List) Update() {
 
 /** Focuser Interface - Start **/
 
+// Focus sets the focus state of the list
 func (l *List) Focus(focused bool) {
 	l.init.Do()
 	l.GetWidget().FireFocusEvent(l, focused, img.Point{-1, -1})
 	l.focused = focused
 }
 
+// IsFocused returns whether the list is focused
 func (l *List) IsFocused() bool {
 	return l.focused
 }
 
+// TabOrder returns the tab order of the list
 func (l *List) TabOrder() int {
 	return l.tabOrder
 }
 
+// GetFocus returns the focuser for the given direction
 func (l *List) GetFocus(direction widget.FocusDirection) widget.Focuser {
 	return l.focusMap[direction]
 }
 
+// AddFocus adds a focuser for the given direction
 func (l *List) AddFocus(direction widget.FocusDirection, focus widget.Focuser) {
 	l.focusMap[direction] = focus
 }
@@ -383,6 +423,7 @@ func (l *List) handleInput() {
 	}
 }
 
+// FocusNext moves focus to the next entry
 func (l *List) FocusNext() {
 	if len(l.buttons) > 0 {
 		direction := 1
@@ -400,6 +441,7 @@ func (l *List) FocusNext() {
 	}
 }
 
+// FocusPrevious moves focus to the previous entry
 func (l *List) FocusPrevious() {
 	if len(l.buttons) > 0 {
 		direction := -1
@@ -417,6 +459,7 @@ func (l *List) FocusPrevious() {
 	}
 }
 
+// SelectFocused selects the currently focused entry
 func (l *List) SelectFocused() {
 	if l.focusIndex >= 0 && l.focusIndex < len(l.buttons) {
 		l.scrollVisible(l.buttons[l.focusIndex])
@@ -468,7 +511,6 @@ func (l *List) createWidget() {
 
 	l.buttons = make([]*widget.Button, 0, len(l.entries))
 	for _, e := range l.entries {
-		e := e
 		but := l.createEntry(e)
 
 		l.buttons = append(l.buttons, but)
@@ -528,7 +570,7 @@ func (l *List) createWidget() {
 
 }
 
-// Updates the entries in the list.
+// SetEntries updates the entries in the list.
 // Note: Duplicates will be removed.
 func (l *List) SetEntries(newEntries []any) {
 	//Remove old entries
@@ -554,7 +596,7 @@ func (l *List) SetEntries(newEntries []any) {
 	l.resetFocusIndex()
 }
 
-// Remove the passed in entry from the list if it exists
+// RemoveEntry removes the passed in entry from the list if it exists
 func (l *List) RemoveEntry(entry any) {
 	l.init.Do()
 
@@ -581,7 +623,7 @@ func (l *List) RemoveEntry(entry any) {
 	}
 }
 
-// Add a new entry to the end of the list
+// AddEntry adds a new entry to the end of the list
 // Note: Duplicates will not be added
 func (l *List) AddEntry(entry any) {
 	l.init.Do()
@@ -594,19 +636,19 @@ func (l *List) AddEntry(entry any) {
 	l.resetFocusIndex()
 }
 
-// Return the current entries in the list
+// Entries returns the current entries in the list
 func (l *List) Entries() []any {
 	l.init.Do()
 	return l.entries
 }
 
-// Return the currently selected entry in the list
+// SelectedEntry returns the currently selected entry in the list
 func (l *List) SelectedEntry() any {
 	l.init.Do()
 	return l.selectedEntry
 }
 
-// Set the Selected Entry to e if it is found.
+// SetSelectedEntry sets the Selected Entry to e if it is found.
 func (l *List) SetSelectedEntry(entry any) {
 	l.setSelectedEntry(entry, false)
 }
@@ -654,7 +696,7 @@ func (l *List) createEntry(entry any) *widget.Button {
 			widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 				l.setSelectedEntry(entry, true)
 			}),
-			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
+			widget.ButtonOpts.CursorEnteredHandler(func(_ *widget.ButtonHoverEventArgs) {
 				l.entryEnterFunc(entry)
 			}),
 		}, l.entryButtonOpts...)...,
@@ -709,5 +751,5 @@ func scrollClamp(targetScroll, currentScroll float64) float64 {
 	const maxScrollStep = 0.1
 	minScroll := currentScroll - maxScrollStep
 	maxScroll := currentScroll + maxScrollStep
-	return math.Max(minScroll, math.Min(targetScroll, maxScroll))
+	return max(minScroll, min(targetScroll, maxScroll))
 }

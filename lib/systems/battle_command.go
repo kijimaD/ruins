@@ -14,6 +14,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// BattleCommandSystem は戦闘中のコマンド処理を行う
 // 1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
 // クリックごとにコマンドの結果を見られるようにするため
 func BattleCommandSystem(world w.World) {

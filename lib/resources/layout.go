@@ -6,7 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/utils"
 )
 
-// UpdateGameLayoutはゲームウィンドウサイズを更新する。
+// UpdateGameLayout はゲームウィンドウサイズを更新する
 func UpdateGameLayout(world w.World) (gc.Pixel, gc.Pixel) {
 	const (
 		offsetX       gc.Pixel = 0

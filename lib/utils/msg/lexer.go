@@ -1,5 +1,6 @@
 package msg
 
+// Lexer は字句解析器を表す構造体
 type Lexer struct {
 	input        string
 	position     int // 現在検査中のバイトchの位置
@@ -8,6 +9,7 @@ type Lexer struct {
 	OnIdent      bool
 }
 
+// NewLexer は新しいLexerを作成する
 func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
@@ -22,10 +24,10 @@ func (l *Lexer) readChar() {
 		l.ch = l.input[l.readPosition]
 	}
 	l.position = l.readPosition
-	l.readPosition += 1
+	l.readPosition++
 }
 
-// 現在の1文字を読みこんでトークンを返す
+// NextToken は現在の1文字を読みこんでトークンを返す
 func (l *Lexer) NextToken() Token {
 	var tok Token
 
@@ -51,11 +53,10 @@ func (l *Lexer) NextToken() Token {
 			tok.Literal = l.readIdentifier()
 			tok.Type = LookupIdent(tok.Literal) // 予約語
 			return tok
-		} else {
-			tok.Literal = l.readText()
-			tok.Type = TEXT
-			return tok
 		}
+		tok.Literal = l.readText()
+		tok.Type = TEXT
+		return tok
 	}
 
 	l.readChar()
@@ -80,15 +81,6 @@ func (l *Lexer) readIdentifier() string {
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
-	}
-}
-
-// のぞき見(peek)。readChar()の、文字解析器を進めないバージョン。先読みだけを行う
-func (l *Lexer) peekChar() byte {
-	if l.readPosition >= len(l.input) {
-		return 0
-	} else {
-		return l.input[l.readPosition] // 次の位置を返す
 	}
 }
 

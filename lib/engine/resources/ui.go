@@ -38,6 +38,7 @@ const (
 	separatorColor = listDisabledSelectedBackground
 )
 
+// UIResources はUIリソースを管理する
 type UIResources struct {
 	Fonts *fonts
 
@@ -61,6 +62,7 @@ type UIResources struct {
 	ToolTip     *ToolTipResources
 }
 
+// TextResources はテキストリソースを管理する
 type TextResources struct {
 	IdleColor     color.Color
 	DisabledColor color.Color
@@ -70,6 +72,7 @@ type TextResources struct {
 	SmallFace     text.Face
 }
 
+// ButtonResources はボタンリソースを管理する
 type ButtonResources struct {
 	Image   *widget.ButtonImage
 	Text    *widget.ButtonTextColor
@@ -77,17 +80,20 @@ type ButtonResources struct {
 	Padding widget.Insets
 }
 
+// CheckboxResources はチェックボックスリソースを管理する
 type CheckboxResources struct {
 	Image   *widget.ButtonImage
 	Graphic *widget.CheckboxGraphicImage
 	Spacing int
 }
 
+// LabelResources はラベルリソースを管理する
 type LabelResources struct {
 	Text *widget.LabelColor
 	Face text.Face
 }
 
+// ComboButtonResources はコンボボタンリソースを管理する
 type ComboButtonResources struct {
 	Image   *widget.ButtonImage
 	Text    *widget.ButtonTextColor
@@ -96,6 +102,7 @@ type ComboButtonResources struct {
 	Padding widget.Insets
 }
 
+// ListResources はリストリソースを管理する
 type ListResources struct {
 	Image        *widget.ScrollContainerImage
 	ImageTrans   *widget.ScrollContainerImage
@@ -108,17 +115,20 @@ type ListResources struct {
 	EntryPadding widget.Insets
 }
 
+// SliderResources はスライダーリソースを管理する
 type SliderResources struct {
 	TrackImage *widget.SliderTrackImage
 	Handle     *widget.ButtonImage
 	HandleSize int
 }
 
+// ProgressBarResources はプログレスバーリソースを管理する
 type ProgressBarResources struct {
 	TrackImage *widget.ProgressBarImage
 	FillImage  *widget.ProgressBarImage
 }
 
+// PanelResources はパネルリソースを管理する
 type PanelResources struct {
 	Image      *image.NineSlice
 	ImageTrans *image.NineSlice
@@ -126,12 +136,14 @@ type PanelResources struct {
 	Padding    widget.Insets
 }
 
+// TabBookResources はタブブックリソースを管理する
 type TabBookResources struct {
 	ButtonFace    text.Face
 	ButtonText    *widget.ButtonTextColor
 	ButtonPadding widget.Insets
 }
 
+// HeaderResources はヘッダーリソースを管理する
 type HeaderResources struct {
 	Background *image.NineSlice
 	Padding    widget.Insets
@@ -139,6 +151,7 @@ type HeaderResources struct {
 	Color      color.Color
 }
 
+// TextInputResources はテキスト入力リソースを管理する
 type TextInputResources struct {
 	Image   *widget.TextInputImage
 	Padding widget.Insets
@@ -146,6 +159,7 @@ type TextInputResources struct {
 	Color   *widget.TextInputColor
 }
 
+// TextAreaResources はテキストエリアリソースを管理する
 type TextAreaResources struct {
 	Image        *widget.ScrollContainerImage
 	Track        *widget.SliderTrackImage
@@ -156,6 +170,7 @@ type TextAreaResources struct {
 	EntryPadding widget.Insets
 }
 
+// ToolTipResources はツールチップリソースを管理する
 type ToolTipResources struct {
 	Background *image.NineSlice
 	Padding    widget.Insets
@@ -163,13 +178,11 @@ type ToolTipResources struct {
 	Color      color.Color
 }
 
+// NewUIResources は新しいUIリソースを作成する
 func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error) {
 	background := image.NewNineSliceColor(hexToColor(backgroundColor))
 
-	fonts, err := loadFonts(tfs)
-	if err != nil {
-		return nil, err
-	}
+	fonts := loadFonts(tfs)
 
 	button, err := newButtonResources(fonts)
 	if err != nil {
@@ -206,10 +219,7 @@ func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error) {
 		return nil, err
 	}
 
-	tabBook, err := newTabBookResources(fonts)
-	if err != nil {
-		return nil, err
-	}
+	tabBook := newTabBookResources(fonts)
 
 	header, err := newHeaderResources(fonts)
 	if err != nil {
@@ -271,7 +281,7 @@ func newButtonResources(fonts *fonts) (*ButtonResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	pressed_hover, err := loadImageNineSlice("assets/graphics/button-selected-hover.png", 12, 0)
+	pressedHover, err := loadImageNineSlice("assets/graphics/button-selected-hover.png", 12, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +299,7 @@ func newButtonResources(fonts *fonts) (*ButtonResources, error) {
 		Idle:         idle,
 		Hover:        hover,
 		Pressed:      pressed,
-		PressedHover: pressed_hover,
+		PressedHover: pressedHover,
 		Disabled:     disabled,
 	}
 
@@ -568,7 +578,7 @@ func newProgressBarResources() (*ProgressBarResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	fill_idle, err := newImageFromFile("assets/graphics/progressbar-fill-idle.png")
+	fillIdle, err := newImageFromFile("assets/graphics/progressbar-fill-idle.png")
 	if err != nil {
 		return nil, err
 	}
@@ -585,9 +595,9 @@ func newProgressBarResources() (*ProgressBarResources, error) {
 		},
 
 		FillImage: &widget.ProgressBarImage{
-			Idle:     image.NewNineSlice(fill_idle, [3]int{4, 11, 4}, [3]int{2, 2, 2}),
-			Hover:    image.NewNineSlice(fill_idle, [3]int{4, 11, 4}, [3]int{2, 2, 2}),
-			Disabled: image.NewNineSlice(fill_idle, [3]int{4, 11, 4}, [3]int{2, 2, 2}),
+			Idle:     image.NewNineSlice(fillIdle, [3]int{4, 11, 4}, [3]int{2, 2, 2}),
+			Hover:    image.NewNineSlice(fillIdle, [3]int{4, 11, 4}, [3]int{2, 2, 2}),
+			Disabled: image.NewNineSlice(fillIdle, [3]int{4, 11, 4}, [3]int{2, 2, 2}),
 		},
 	}, nil
 }
@@ -617,8 +627,7 @@ func newPanelResources() (*PanelResources, error) {
 	}, nil
 }
 
-func newTabBookResources(fonts *fonts) (*TabBookResources, error) {
-
+func newTabBookResources(fonts *fonts) *TabBookResources {
 	return &TabBookResources{
 		ButtonFace: fonts.face,
 
@@ -631,7 +640,7 @@ func newTabBookResources(fonts *fonts) (*TabBookResources, error) {
 			Left:  30,
 			Right: 30,
 		},
-	}, nil
+	}
 }
 
 func newHeaderResources(fonts *fonts) (*HeaderResources, error) {
@@ -791,8 +800,8 @@ func hexToColor(h string) color.Color {
 	}
 
 	return color.NRGBA{
-		R: uint8(u & 0xff0000 >> 16),
-		G: uint8(u & 0xff00 >> 8),
+		R: uint8((u & 0xff0000) >> 16),
+		G: uint8((u & 0xff00) >> 8),
 		B: uint8(u & 0xff),
 		A: 255,
 	}

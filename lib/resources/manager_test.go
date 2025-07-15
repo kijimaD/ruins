@@ -18,7 +18,6 @@ func TestNewDefaultResourceManager(t *testing.T) {
 	// デフォルトパスの確認
 	assert.Equal(t, "metadata/fonts/fonts.toml", drm.config.FontsPath)
 	assert.Equal(t, "metadata/spritesheets/spritesheets.toml", drm.config.SpriteSheetsPath)
-	assert.Equal(t, "config/controls.toml", drm.config.ControlsPath)
 	assert.Equal(t, "metadata/entities/raw/raw.toml", drm.config.RawsPath)
 }
 
@@ -26,7 +25,6 @@ func TestNewResourceManager(t *testing.T) {
 	config := ResourceConfig{
 		FontsPath:        "custom/fonts.toml",
 		SpriteSheetsPath: "custom/sprites.toml",
-		ControlsPath:     "custom/controls.toml",
 		RawsPath:         "custom/raw.toml",
 	}
 
@@ -39,7 +37,6 @@ func TestNewResourceManager(t *testing.T) {
 	// カスタムパスの確認
 	assert.Equal(t, config.FontsPath, drm.config.FontsPath)
 	assert.Equal(t, config.SpriteSheetsPath, drm.config.SpriteSheetsPath)
-	assert.Equal(t, config.ControlsPath, drm.config.ControlsPath)
 	assert.Equal(t, config.RawsPath, drm.config.RawsPath)
 }
 
@@ -105,40 +102,6 @@ func TestLoadSpriteSheets(t *testing.T) {
 	})
 }
 
-func TestLoadControls(t *testing.T) {
-	t.Run("正常にコントロールを読み込める", func(t *testing.T) {
-		rm := NewDefaultResourceManager()
-		axes := []string{}
-		actions := []string{MoveUpAction, MoveDownAction, MoveLeftAction, MoveRightAction}
-
-		controls, inputHandler, err := rm.LoadControls(axes, actions)
-
-		assert.NoError(t, err)
-		assert.NotNil(t, controls)
-		assert.NotNil(t, inputHandler)
-
-		// InputHandlerの初期化確認
-		assert.NotNil(t, inputHandler.Axes)
-		assert.NotNil(t, inputHandler.Actions)
-		assert.Len(t, inputHandler.Actions, len(actions))
-
-		// すべてのアクションがfalseで初期化されていることを確認
-		for _, action := range actions {
-			assert.False(t, inputHandler.Actions[action])
-		}
-	})
-
-	t.Run("存在しないアクションの場合", func(t *testing.T) {
-		rm := NewDefaultResourceManager()
-		axes := []string{}
-		actions := []string{"InvalidAction"}
-
-		_, _, err := rm.LoadControls(axes, actions)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "アクション 'InvalidAction' の設定が見つかりません")
-	})
-}
-
 func TestLoadRaws(t *testing.T) {
 	t.Run("正常にRawデータを読み込める", func(t *testing.T) {
 		rm := NewDefaultResourceManager()
@@ -157,7 +120,7 @@ func TestLoadAll(t *testing.T) {
 	t.Run("すべてのリソースを一括で読み込める", func(t *testing.T) {
 		rm := NewDefaultResourceManager()
 		axes := []string{}
-		actions := []string{MoveUpAction, MoveDownAction, MoveLeftAction, MoveRightAction}
+		actions := []string{}
 
 		err := rm.LoadAll(axes, actions)
 		assert.NoError(t, err)
@@ -166,8 +129,6 @@ func TestLoadAll(t *testing.T) {
 		drm := rm.(*DefaultResourceManager)
 		assert.NotNil(t, drm.cache.Fonts)
 		assert.NotNil(t, drm.cache.SpriteSheets)
-		assert.NotNil(t, drm.cache.Controls)
-		assert.NotNil(t, drm.cache.InputHandler)
 		assert.NotNil(t, drm.cache.RawMaster)
 	})
 
@@ -175,7 +136,6 @@ func TestLoadAll(t *testing.T) {
 		config := ResourceConfig{
 			FontsPath:        "invalid/fonts.toml",
 			SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
-			ControlsPath:     "config/controls.toml",
 			RawsPath:         "metadata/entities/raw/raw.toml",
 		}
 		rm := NewResourceManager(config)
@@ -191,7 +151,7 @@ func TestClearCache(t *testing.T) {
 	drm := rm.(*DefaultResourceManager)
 
 	// リソースを読み込んでキャッシュを作成
-	err := rm.LoadAll([]string{}, []string{MoveUpAction})
+	err := rm.LoadAll([]string{}, []string{})
 	require.NoError(t, err)
 
 	// キャッシュが存在することを確認
@@ -203,8 +163,6 @@ func TestClearCache(t *testing.T) {
 	// キャッシュがクリアされていることを確認
 	assert.Nil(t, drm.cache.Fonts)
 	assert.Nil(t, drm.cache.SpriteSheets)
-	assert.Nil(t, drm.cache.Controls)
-	assert.Nil(t, drm.cache.InputHandler)
 	assert.Nil(t, drm.cache.RawMaster)
 }
 

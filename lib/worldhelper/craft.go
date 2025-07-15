@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"math/rand/v2"
 
-	"github.com/kijimaD/ruins/lib/components"
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 )
 
+// Craft はアイテムをクラフトする
 func Craft(world w.World, name string) (*ecs.Entity, error) {
 	canCraft, err := CanCraft(world, name)
 	if err != nil {
@@ -29,7 +29,7 @@ func Craft(world w.World, name string) (*ecs.Entity, error) {
 	return &resultEntity, nil
 }
 
-// 所持数と必要数を比較してクラフト可能か判定する
+// CanCraft は所持数と必要数を比較してクラフト可能か判定する
 func CanCraft(world w.World, name string) (bool, error) {
 	required := requiredMaterials(world, name)
 	// レシピが存在しない場合はエラー
@@ -48,16 +48,16 @@ func CanCraft(world w.World, name string) (bool, error) {
 	return true, nil
 }
 
-// アイテム合成に必要な素材を消費する
+// consumeMaterials はアイテム合成に必要な素材を消費する
 func consumeMaterials(world w.World, goal string) {
 	for _, recipeInput := range requiredMaterials(world, goal) {
 		MinusAmount(recipeInput.Name, recipeInput.Amount, world)
 	}
 }
 
-// 指定したレシピに必要な素材一覧
-func requiredMaterials(world w.World, goal string) []components.RecipeInput {
-	required := []components.RecipeInput{}
+// requiredMaterials は指定したレシピに必要な素材一覧
+func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
+	required := []gc.RecipeInput{}
 	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
 		gameComponents.Recipe,
@@ -66,15 +66,14 @@ func requiredMaterials(world w.World, goal string) []components.RecipeInput {
 		name := gameComponents.Name.Get(entity).(*gc.Name)
 		if name.Name == goal {
 			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
-			for _, r := range recipe.Inputs {
-				required = append(required, r)
-			}
+			required = append(required, recipe.Inputs...)
 		}
 	}))
 
 	return required
 }
 
+// randomize はアイテムにランダム値を設定する
 func randomize(world w.World, entity ecs.Entity) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	if entity.HasComponent(gameComponents.Attack) {

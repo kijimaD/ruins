@@ -12,7 +12,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// 新規に階層を生成する。
+// NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
 func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	gameResources := world.Resources.Game.(*resources.Game)
@@ -98,7 +98,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize/2)),
 				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize/2)),
 			)
-			successCount += 1
+			successCount++
 			failCount = 0
 			if successCount > total {
 				break

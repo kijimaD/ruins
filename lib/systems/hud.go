@@ -11,6 +11,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// HUDSystem はゲームの HUD 情報を描画する
 func HUDSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Game.(*resources.Game)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", gameResources.Depth), 0, 200)

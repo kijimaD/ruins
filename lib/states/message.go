@@ -5,17 +5,17 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
+// MessageState はメッセージ表示用のステート
 // FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
 // 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type MessageState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 
@@ -31,26 +31,31 @@ func (st MessageState) String() string {
 
 var _ es.State = &MessageState{}
 
-func (st *MessageState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *MessageState) OnPause(_ w.World) {}
 
-func (st *MessageState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *MessageState) OnResume(_ w.World) {}
 
-func (st *MessageState) OnStart(world w.World) {
+// OnStart はステートが開始される際に呼ばれる
+func (st *MessageState) OnStart(_ w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 }
 
-func (st *MessageState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *MessageState) OnStop(_ w.World) {}
 
-func (st *MessageState) Update(world w.World) states.Transition {
+// Update はメッセージステートの更新処理を行う
+func (st *MessageState) Update(world w.World) es.Transition {
 	st.ui = st.reloadUI(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransQuit}
+		return es.Transition{Type: es.TransQuit}
 	}
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return states.Transition{Type: states.TransPop}
+		return es.Transition{Type: es.TransPop}
 	}
 
 	if st.textFunc != nil {
@@ -65,7 +70,8 @@ func (st *MessageState) Update(world w.World) states.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *MessageState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 

@@ -3,16 +3,15 @@ package testing
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/components"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 )
 
-// テスト用のプレイヤーコンポーネントを作成する
-func CreateTestPlayer(t *testing.T) components.GameComponentList {
+// CreateTestPlayer はテスト用のプレイヤーコンポーネントを作成する
+func CreateTestPlayer(t *testing.T) gc.GameComponentList {
 	t.Helper()
 
-	return components.GameComponentList{
+	return gc.GameComponentList{
 		Name:     &gc.Name{Name: "テストプレイヤー"},
 		Position: &gc.Position{X: 100, Y: 100},
 		Pools: &gc.Pools{
@@ -33,11 +32,11 @@ func CreateTestPlayer(t *testing.T) components.GameComponentList {
 	}
 }
 
-// テスト用の敵コンポーネントを作成する
-func CreateTestEnemy(t *testing.T, name string) components.GameComponentList {
+// CreateTestEnemy はテスト用の敵コンポーネントを作成する
+func CreateTestEnemy(t *testing.T, name string) gc.GameComponentList {
 	t.Helper()
 
-	return components.GameComponentList{
+	return gc.GameComponentList{
 		Name:     &gc.Name{Name: name},
 		Position: &gc.Position{X: 200, Y: 200},
 		Pools: &gc.Pools{
@@ -58,11 +57,11 @@ func CreateTestEnemy(t *testing.T, name string) components.GameComponentList {
 	}
 }
 
-// テスト用のアイテムコンポーネントを作成する
-func CreateTestItem(t *testing.T, name string, itemType TestItemType) components.GameComponentList {
+// CreateTestItem はテスト用のアイテムコンポーネントを作成する
+func CreateTestItem(t *testing.T, name string, itemType TestItemType) gc.GameComponentList {
 	t.Helper()
 
-	base := components.GameComponentList{
+	base := gc.GameComponentList{
 		Item:             &gc.Item{},
 		Name:             &gc.Name{Name: name},
 		Description:      &gc.Description{Description: "テスト用アイテム"},
@@ -100,20 +99,23 @@ func CreateTestItem(t *testing.T, name string, itemType TestItemType) components
 	return base
 }
 
-// テスト用アイテムタイプの定義
+// TestItemType はテスト用アイテムタイプの定義
 type TestItemType int
 
 const (
+	// TestItemTypeWeapon は武器タイプを表す
 	TestItemTypeWeapon TestItemType = iota
+	// TestItemTypeConsumable は消耗品タイプを表す
 	TestItemTypeConsumable
+	// TestItemTypeMaterial は素材タイプを表す
 	TestItemTypeMaterial
 )
 
-// テスト用のRawMasterを作成する
-func CreateTestRawMaster(t *testing.T) raw.RawMaster {
+// CreateTestRawMaster はテスト用のMasterを作成する
+func CreateTestRawMaster(t *testing.T) raw.Master {
 	t.Helper()
 
-	return raw.RawMaster{
+	return raw.Master{
 		Raws: raw.Raws{
 			Items: []raw.Item{
 				{
@@ -162,26 +164,26 @@ func CreateTestRawMaster(t *testing.T) raw.RawMaster {
 	}
 }
 
-// テスト用のバトルシナリオを作成する
+// CreateTestBattleScenario はテスト用のバトルシナリオを作成する
 func CreateTestBattleScenario(t *testing.T) TestBattleScenario {
 	t.Helper()
 
 	return TestBattleScenario{
 		Player: CreateTestPlayer(t),
-		Enemies: []components.GameComponentList{
+		Enemies: []gc.GameComponentList{
 			CreateTestEnemy(t, "スライム"),
 			CreateTestEnemy(t, "ゴブリン"),
 		},
-		Items: []components.GameComponentList{
+		Items: []gc.GameComponentList{
 			CreateTestItem(t, "テスト剣", TestItemTypeWeapon),
 			CreateTestItem(t, "テスト薬草", TestItemTypeConsumable),
 		},
 	}
 }
 
-// テスト用バトルシナリオの構造体
+// TestBattleScenario はテスト用バトルシナリオの構造体
 type TestBattleScenario struct {
-	Player  components.GameComponentList
-	Enemies []components.GameComponentList
-	Items   []components.GameComponentList
+	Player  gc.GameComponentList
+	Enemies []gc.GameComponentList
+	Items   []gc.GameComponentList
 }

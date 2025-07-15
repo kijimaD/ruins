@@ -1,4 +1,4 @@
-// Package menu provides a reusable, keyboard-navigable menu widget with state management.
+// Package menu は状態管理を持つ再利用可能なキーボードナビゲーション対応メニューウィジェットを提供する。
 //
 // # Overview
 //

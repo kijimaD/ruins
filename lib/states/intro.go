@@ -1,4 +1,4 @@
-// ゲームの導入テキストを表示するステート
+// Package states はゲームの導入テキストを表示するステート
 package states
 
 import (
@@ -6,7 +6,6 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/engine/states"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -14,8 +13,9 @@ import (
 	"github.com/kijimaD/ruins/lib/utils/msg"
 )
 
+// IntroState はイントロのゲームステート
 type IntroState struct {
-	states.BaseState
+	es.BaseState
 	ui            *ebitenui.UI
 	queue         msg.Queue
 	cycle         int
@@ -47,10 +47,13 @@ var introText = `
 
 var _ es.State = &IntroState{}
 
-func (st *IntroState) OnPause(world w.World) {}
+// OnPause はステートが一時停止される際に呼ばれる
+func (st *IntroState) OnPause(_ w.World) {}
 
-func (st *IntroState) OnResume(world w.World) {}
+// OnResume はステートが再開される際に呼ばれる
+func (st *IntroState) OnResume(_ w.World) {}
 
+// OnStart はステートが開始される際に呼ばれる
 func (st *IntroState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
@@ -59,9 +62,11 @@ func (st *IntroState) OnStart(world w.World) {
 	st.ui = st.initUI(world)
 }
 
-func (st *IntroState) OnStop(world w.World) {}
+// OnStop はステートが停止される際に呼ばれる
+func (st *IntroState) OnStop(_ w.World) {}
 
-func (st *IntroState) Update(world w.World) states.Transition {
+// Update はゲームステートの更新処理を行う
+func (st *IntroState) Update(world w.World) es.Transition {
 	var queueResult msg.QueueState
 
 	if v, ok := st.queue.Head().(*msg.ChangeBg); ok {
@@ -82,12 +87,12 @@ func (st *IntroState) Update(world w.World) states.Transition {
 		queueResult = st.queue.Pop()
 	case st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape):
 		// debug
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
 	}
 
 	switch queueResult {
 	case msg.QueueStateFinish:
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
 	}
 
 	st.updateMessageContainer(world)
@@ -97,7 +102,8 @@ func (st *IntroState) Update(world w.World) states.Transition {
 	return st.ConsumeTransition()
 }
 
-func (st *IntroState) Draw(world w.World, screen *ebiten.Image) {
+// Draw はゲームステートの描画処理を行う
+func (st *IntroState) Draw(_ w.World, screen *ebiten.Image) {
 	// ebitenui で背景をいい感じにするにはどうすればよいのだろう
 	opts := &ebiten.DrawImageOptions{}
 	if st.bg != nil {

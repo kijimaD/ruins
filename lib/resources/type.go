@@ -1,4 +1,4 @@
 package resources
 
-// タイル番号
+// TileIdx はタイル番号
 type TileIdx int

@@ -8,6 +8,7 @@ import (
 	"github.com/kijimaD/ruins/lib/styles"
 )
 
+// LoadButtonImage はボタンイメージを読み込む
 // TODO: いい感じにしたい
 func LoadButtonImage() *widget.ButtonImage {
 	idle := e_image.NewNineSliceColor(styles.ButtonIdleColor)
@@ -25,6 +26,7 @@ func LoadButtonImage() *widget.ButtonImage {
 	}
 }
 
+// LoadFont はフォントを読み込む
 // TODO: いい感じにしたい
 func LoadFont(world w.World) *text.Face {
 	face := (*world.Resources.DefaultFaces)["kappa"]

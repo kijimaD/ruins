@@ -3,7 +3,7 @@
 ########
 
 # なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
-FROM golang:1.24-bullseye AS base
+FROM golang:1.24.5-bullseye AS base
 RUN apt update
 RUN apt install -y \
     gcc \
@@ -45,7 +45,7 @@ RUN upx-ucl --best --ultra-brute ./bin/ruins
 # release #
 ###########
 
-FROM gcr.io/distroless/base-debian11:latest AS release
+FROM gcr.io/distroless/base-debian12:latest AS release
 
 COPY --from=builder /build/bin/ruins /bin/
 WORKDIR /work
@@ -55,5 +55,5 @@ ENTRYPOINT ["ruins"]
 # node #
 ########
 
-FROM node:24 as releaser
+FROM node:24.4.0 AS releaser
 RUN yarn install
