@@ -13,7 +13,7 @@ import (
 // World はゲーム全体に必要な情報を保持する
 type World struct {
 	Manager    *ecs.Manager
-	Components *gc.GameComponents
+	Components *gc.Components
 	Resources  *resources.Resources
 }
 
@@ -27,10 +27,8 @@ func InitWorld(gameComponents *gc.Components) World {
 	resources := resources.InitResources()
 
 	return World{
-		Manager: manager,
-		Components: &gc.GameComponents{
-			Game: gameComponents,
-		},
-		Resources: resources,
+		Manager:    manager,
+		Components: gameComponents,
+		Resources:  resources,
 	}
 }

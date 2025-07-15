@@ -57,11 +57,6 @@ type GameComponentList struct {
 	DropTable    *DropTable
 }
 
-// GameComponents は後方互換性のためのコンポーネント型
-type GameComponents struct {
-	Game *Components
-}
-
 // Components はcomponentsを溜めるスライス群
 // Join時はこのフィールドでクエリする
 type Components struct {
