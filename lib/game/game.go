@@ -11,8 +11,8 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	ew "github.com/kijimaD/ruins/lib/engine/world"
 	gr "github.com/kijimaD/ruins/lib/resources"
+	ew "github.com/kijimaD/ruins/lib/world"
 )
 
 // MainGame はebiten.Game interfaceを満たす

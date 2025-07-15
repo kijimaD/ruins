@@ -8,9 +8,9 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	ew "github.com/kijimaD/ruins/lib/engine/world"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/utils"
+	ew "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 )
 

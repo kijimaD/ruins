@@ -6,8 +6,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/engine/resources"
 	"github.com/kijimaD/ruins/lib/engine/states"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/input"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 func TestMainMenuNavigation(t *testing.T) {

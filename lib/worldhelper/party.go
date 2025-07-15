@@ -10,7 +10,7 @@ import (
 	"github.com/yourbasic/bit"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 var errReachEdge = errors.New("reach edge error")

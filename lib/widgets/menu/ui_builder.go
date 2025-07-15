@@ -2,8 +2,8 @@ package menu
 
 import (
 	"github.com/ebitenui/ebitenui/widget"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MenuUIBuilder はメニューのUI要素を構築する

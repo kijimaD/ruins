@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )

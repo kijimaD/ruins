@@ -5,7 +5,7 @@ import (
 
 	"github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 )
 

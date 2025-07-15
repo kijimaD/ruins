@@ -2,8 +2,8 @@ package resources
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/utils"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // UpdateGameLayout はゲームウィンドウサイズを更新する

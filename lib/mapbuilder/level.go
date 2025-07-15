@@ -4,9 +4,9 @@ import (
 	"log"
 	"math/rand/v2"
 
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/utils"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 
 	gc "github.com/kijimaD/ruins/lib/components"

@@ -5,9 +5,9 @@ import (
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // NewRowContainer は汎用的なrowコンテナを作成する

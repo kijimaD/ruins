@@ -7,19 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInitWorld(t *testing.T) {
-	t.Run("後方互換性のあるInitWorldが動作する", func(t *testing.T) {
-		gameComponents := &gc.Components{}
-
-		world := InitWorld(gameComponents)
-
-		assert.NotNil(t, world.Manager)
-		assert.NotNil(t, world.Components)
-		assert.NotNil(t, world.Resources)
-		assert.NotNil(t, world.Components.Game)
-	})
-}
-
 func TestInitGeneric(t *testing.T) {
 	t.Run("型安全なInitGenericが動作する", func(t *testing.T) {
 		gameComponents := &gc.Components{}

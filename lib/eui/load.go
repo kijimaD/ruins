@@ -4,8 +4,8 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/styles"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // LoadButtonImage はボタンイメージを読み込む
