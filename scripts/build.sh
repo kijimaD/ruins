@@ -52,14 +52,14 @@ cmd() {
 start() {
     docker build . --target $BUILD_STAGE_TARGET -t $BUILDER_IMAGE_NAME
 
-    cmd "${APP_NAME}_linux_amd64" linux amd64 1
-    cmd "${APP_NAME}_windows_amd64" windows amd64 0
+    cmd "bin/${APP_NAME}_linux_amd64" linux amd64 1
+    cmd "bin/${APP_NAME}_windows_amd64" windows amd64 0
 
     # no such instruction になる...
     # cmd "${APP_NAME}_linux_arm64" linux arm64 1
     # cmd "${APP_NAME}_windows_arm64" windows arm64 0
 
-    cmd "${APP_NAME}_js_wasm" js wasm 0
+    cmd "wasm/game.wasm" js wasm 0
 }
 
 start
