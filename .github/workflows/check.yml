@@ -61,10 +61,10 @@ jobs:
 
           make test
           make vrt
-      - name: install
-        run: make tools-install
+      - name: set up
+        uses: actions/setup-go@v5
       - name: lint
-        run: make lint # buildできる環境でないと、エラーになる。jobを分けるのが望ましいが、面倒なのでここに書く
+        run: make tools-install lint # buildできる環境でないと、エラーになる。jobを分けるのが望ましいが、面倒なのでここに書く
       - name: upload result
         uses: actions/upload-artifact@v4
         with:
