@@ -1,10 +1,10 @@
 package states
 
 import (
+	"log"
 	"os"
 
-	"github.com/kijimaD/ruins/lib/engine/utils"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -132,7 +132,7 @@ func (sm *StateMachine) _Push(world w.World, newStates []State) {
 // Remove the active state and replace it by a new one
 func (sm *StateMachine) _Switch(world w.World, newStates []State) {
 	if len(newStates) != 1 {
-		utils.LogFatalf("switch transition accept only one new state")
+		log.Fatal()
 	}
 
 	sm.states[len(sm.states)-1].OnStop(world)

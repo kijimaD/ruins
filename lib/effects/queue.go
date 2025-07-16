@@ -3,9 +3,8 @@ package effects
 import (
 	"log"
 
-	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/helpers"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -52,16 +51,15 @@ func TargetApplicator(world w.World, es EffectSpawner) {
 	case Damage, Healing, ConsumptionStamina, RecoveryStamina:
 		v, ok := es.Targets.(Single)
 		if ok {
-			AffectEntity(world, es, utils.GetPtr(v.Target))
+			AffectEntity(world, es, helpers.GetPtr(v.Target))
 		}
 		_, ok = es.Targets.(Party)
 		if ok {
-			gameComponents := world.Components.Game.(*gc.Components)
 			world.Manager.Join(
-				gameComponents.FactionAlly,
-				gameComponents.InParty,
+				world.Components.FactionAlly,
+				world.Components.InParty,
 			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				AffectEntity(world, es, utils.GetPtr(entity))
+				AffectEntity(world, es, helpers.GetPtr(entity))
 			}))
 		}
 	case WarpNext, WarpEscape:

@@ -4,9 +4,9 @@ import (
 	"log"
 	"math/rand/v2"
 
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -72,8 +72,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			worldhelper.SpawnOperator(
 				world,
-				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize)/2),
-				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize)/2),
+				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
+				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
 			)
 			break
 		}
@@ -95,8 +95,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			}
 			worldhelper.SpawnNPC(
 				world,
-				gc.Pixel(int(tx)*int(utils.TileSize)+int(utils.TileSize/2)),
-				gc.Pixel(int(ty)*int(utils.TileSize)+int(utils.TileSize/2)),
+				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
+				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
 			)
 			successCount++
 			failCount = 0

@@ -2,8 +2,8 @@ package systems
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/mathutil"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -12,12 +12,11 @@ import (
 // TODO: マイナスにならないようにする
 func EquipmentChangedSystem(world w.World) bool {
 	running := false
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.EquipmentChanged,
+		world.Components.EquipmentChanged,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		running = true
-		entity.RemoveComponent(gameComponents.EquipmentChanged)
+		entity.RemoveComponent(world.Components.EquipmentChanged)
 	}))
 
 	if !running {
@@ -26,9 +25,9 @@ func EquipmentChangedSystem(world w.World) bool {
 
 	// 初期化
 	world.Manager.Join(
-		gameComponents.Attributes,
+		world.Components.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 
 		attrs.Vitality.Modifier = 0
 		attrs.Vitality.Total = attrs.Vitality.Base
@@ -45,14 +44,14 @@ func EquipmentChangedSystem(world w.World) bool {
 	}))
 
 	world.Manager.Join(
-		gameComponents.ItemLocationEquipped,
-		gameComponents.Wearable,
+		world.Components.ItemLocationEquipped,
+		world.Components.Wearable,
 	).Visit(ecs.Visit(func(item ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(item).(*gc.LocationEquipped)
-		wearable := gameComponents.Wearable.Get(item).(*gc.Wearable)
+		equipped := world.Components.ItemLocationEquipped.Get(item).(*gc.LocationEquipped)
+		wearable := world.Components.Wearable.Get(item).(*gc.Wearable)
 
 		owner := equipped.Owner
-		attrs := gameComponents.Attributes.Get(owner).(*gc.Attributes)
+		attrs := world.Components.Attributes.Get(owner).(*gc.Attributes)
 
 		attrs.Defense.Modifier += wearable.Defense
 		attrs.Defense.Total = attrs.Defense.Base + attrs.Defense.Modifier
@@ -70,16 +69,16 @@ func EquipmentChangedSystem(world w.World) bool {
 	}))
 
 	world.Manager.Join(
-		gameComponents.Pools,
-		gameComponents.Attributes,
+		world.Components.Pools,
+		world.Components.Attributes,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-		attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+		pools := world.Components.Pools.Get(entity).(*gc.Pools)
+		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 
 		pools.HP.Max = maxHP(attrs, pools)
-		pools.HP.Current = utils.Min(pools.HP.Max, pools.HP.Current)
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current)
 		pools.SP.Max = maxSP(attrs, pools)
-		pools.SP.Current = utils.Min(pools.SP.Max, pools.SP.Current)
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current)
 	}))
 
 	return true

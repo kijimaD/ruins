@@ -2,7 +2,7 @@ package worldhelper
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -11,9 +11,8 @@ import (
 func InitDebugData(world w.World) {
 	// 既に味方メンバーが存在するかチェック
 	memberCount := 0
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.FactionAlly,
+		world.Components.FactionAlly,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))

@@ -7,7 +7,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // Craft はアイテムをクラフトする
@@ -58,14 +58,13 @@ func consumeMaterials(world w.World, goal string) {
 // requiredMaterials は指定したレシピに必要な素材一覧
 func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 	required := []gc.RecipeInput{}
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Recipe,
-		gameComponents.Name,
+		world.Components.Recipe,
+		world.Components.Name,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := gameComponents.Name.Get(entity).(*gc.Name)
+		name := world.Components.Name.Get(entity).(*gc.Name)
 		if name.Name == goal {
-			recipe := gameComponents.Recipe.Get(entity).(*gc.Recipe)
+			recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
 			required = append(required, recipe.Inputs...)
 		}
 	}))
@@ -75,15 +74,14 @@ func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
 
 // randomize はアイテムにランダム値を設定する
 func randomize(world w.World, entity ecs.Entity) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	if entity.HasComponent(gameComponents.Attack) {
-		attack := gameComponents.Attack.Get(entity).(*gc.Attack)
+	if entity.HasComponent(world.Components.Attack) {
+		attack := world.Components.Attack.Get(entity).(*gc.Attack)
 
 		attack.Accuracy += (-10 + rand.IntN(20)) // -10 ~ +9
 		attack.Damage += (-5 + rand.IntN(15))    // -5  ~ +9
 	}
-	if entity.HasComponent(gameComponents.Wearable) {
-		wearable := gameComponents.Wearable.Get(entity).(*gc.Wearable)
+	if entity.HasComponent(world.Components.Wearable) {
+		wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
 
 		wearable.Defense += (-4 + rand.IntN(20)) // -4 ~ +9
 	}

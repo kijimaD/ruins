@@ -11,13 +11,13 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	ew "github.com/kijimaD/ruins/lib/engine/world"
 	gr "github.com/kijimaD/ruins/lib/resources"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MainGame はebiten.Game interfaceを満たす
 type MainGame struct {
-	World        ew.World
+	World        w.World
 	StateMachine es.StateMachine
 }
 
@@ -58,8 +58,8 @@ Frees: %.2fMB
 }
 
 // InitWorld はゲームワールドを初期化する
-func InitWorld(minGameWidth int, minGameHeight int) ew.World {
-	world := ew.InitWorld(&gc.Components{})
+func InitWorld(minGameWidth int, minGameHeight int) w.World {
+	world := w.InitWorld(&gc.Components{})
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 

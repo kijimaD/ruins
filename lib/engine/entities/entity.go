@@ -1,37 +1,36 @@
-package loader
+package entities
 
 import (
 	"fmt"
 	"log"
 	"reflect"
 
-	"github.com/kijimaD/ruins/lib/engine/utils"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// EntityComponentList is a list of preloaded entities with components
-type EntityComponentList struct {
+// ComponentList is a list of preloaded entities with components
+type ComponentList struct {
 	Game []interface{}
 }
 
 // AddEntities adds entities with engine and game components
-func AddEntities(world w.World, entityComponentList EntityComponentList) []ecs.Entity {
+func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity {
 	// Create new entities and add engine components
 	entities := make([]ecs.Entity, len(entityComponentList.Game))
 	for iEntity := range entityComponentList.Game {
 		entities[iEntity] = world.Manager.NewEntity()
-		AddEntityComponents(entities[iEntity], world.Components.Game, entityComponentList.Game[iEntity])
+		AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
 	}
 
 	// Add game components
 	if entityComponentList.Game != nil {
 		if len(entityComponentList.Game) != len(entities) {
-			utils.LogFatalf("incorrect size for game component list")
+			log.Fatal("incorrect size for game component list")
 		}
 		for iEntity := range entities {
-			AddEntityComponents(entities[iEntity], world.Components.Game, entityComponentList.Game[iEntity])
+			AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
 		}
 	}
 	return entities

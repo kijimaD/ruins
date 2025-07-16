@@ -11,13 +11,13 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -209,11 +209,10 @@ func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
 
 // createMenuItems はECSエンティティをMenuItemに変換する
 func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.MenuItem {
-	gameComponents := world.Components.Game.(*gc.Components)
 	items := make([]menu.MenuItem, len(entities))
 
 	for i, entity := range entities {
-		name := gameComponents.Name.Get(entity).(*gc.Name).Name
+		name := world.Components.Name.Get(entity).(*gc.Name).Name
 		items[i] = menu.MenuItem{
 			ID:       fmt.Sprintf("entity_%d", entity),
 			Label:    name,
@@ -249,16 +248,14 @@ func (st *InventoryMenuState) handleItemChange(world w.World, item menu.MenuItem
 		log.Fatal("unexpected item UserData")
 	}
 
-	gameComponents := world.Components.Game.(*gc.Components)
-
 	// Descriptionコンポーネントの存在チェック
-	if !entity.HasComponent(gameComponents.Description) {
+	if !entity.HasComponent(world.Components.Description) {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		return
 	}
 
-	desc := gameComponents.Description.Get(entity).(*gc.Description)
+	desc := world.Components.Description.Get(entity).(*gc.Description)
 	if desc == nil {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
@@ -413,17 +410,15 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	titleContainer := eui.NewWindowHeaderContainer("アクション選択", world)
 	st.actionWindow = eui.NewSmallWindow(titleContainer, windowContainer)
 
-	gameComponents := world.Components.Game.(*gc.Components)
-
 	// アクション項目を準備
 	st.actionItems = []string{}
 	st.selectedItem = entity
 
 	// 使用可能なアクションを登録
-	if entity.HasComponent(gameComponents.Consumable) {
+	if entity.HasComponent(world.Components.Consumable) {
 		st.actionItems = append(st.actionItems, "使う")
 	}
-	if !entity.HasComponent(gameComponents.Material) {
+	if !entity.HasComponent(world.Components.Material) {
 		st.actionItems = append(st.actionItems, "捨てる")
 	}
 	st.actionItems = append(st.actionItems, TextClose)
@@ -474,11 +469,10 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	switch selectedAction {
 	case "使う":
-		consumable := gameComponents.Consumable.Get(st.selectedItem).(*gc.Consumable)
+		consumable := world.Components.Consumable.Get(st.selectedItem).(*gc.Consumable)
 		switch consumable.TargetType.TargetNum {
 		case gc.TargetSingle:
 			st.closeActionWindow()
@@ -512,12 +506,11 @@ func (st *InventoryMenuState) reloadTabs(world w.World) {
 func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.ItemLocationInBackpack,
-		gameComponents.Wearable.Not(),
-		gameComponents.Card.Not(),
+		world.Components.Item,
+		world.Components.ItemLocationInBackpack,
+		world.Components.Wearable.Not(),
+		world.Components.Card.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -528,11 +521,10 @@ func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.Card,
-		gameComponents.ItemLocationInBackpack,
+		world.Components.Item,
+		world.Components.Card,
+		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -543,11 +535,10 @@ func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.Wearable,
-		gameComponents.ItemLocationInBackpack,
+		world.Components.Item,
+		world.Components.Wearable,
+		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -558,9 +549,8 @@ func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	worldhelper.QueryOwnedMaterial(func(entity ecs.Entity) {
-		material := gameComponents.Material.Get(entity).(*gc.Material)
+		material := world.Components.Material.Get(entity).(*gc.Material)
 		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
 		if material.Amount > 0 {
 			items = append(items, entity)
@@ -655,12 +645,11 @@ func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 
 	// パーティメンバーリストを作成
 	st.partyMembers = []ecs.Entity{}
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
-		gameComponents.Name,
-		gameComponents.Pools,
+		world.Components.FactionAlly,
+		world.Components.InParty,
+		world.Components.Name,
+		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		st.partyMembers = append(st.partyMembers, entity)
 	}))

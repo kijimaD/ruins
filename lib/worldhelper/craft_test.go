@@ -10,28 +10,27 @@ import (
 
 func TestCanCraft(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	// レシピエンティティを作成
 	recipe := world.Manager.NewEntity()
-	recipe.AddComponent(gameComponents.Recipe, &gc.Recipe{
+	recipe.AddComponent(world.Components.Recipe, &gc.Recipe{
 		Inputs: []gc.RecipeInput{
 			{Name: "鉄", Amount: 2},
 			{Name: "木", Amount: 1},
 		},
 	})
-	recipe.AddComponent(gameComponents.Name, &gc.Name{Name: "鉄剣"})
+	recipe.AddComponent(world.Components.Name, &gc.Name{Name: "鉄剣"})
 
 	// 必要な素材を作成（十分な量）
 	ironMaterial := world.Manager.NewEntity()
-	ironMaterial.AddComponent(gameComponents.Material, &gc.Material{Amount: 5})
-	ironMaterial.AddComponent(gameComponents.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	ironMaterial.AddComponent(gameComponents.Name, &gc.Name{Name: "鉄"})
+	ironMaterial.AddComponent(world.Components.Material, &gc.Material{Amount: 5})
+	ironMaterial.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	ironMaterial.AddComponent(world.Components.Name, &gc.Name{Name: "鉄"})
 
 	woodMaterial := world.Manager.NewEntity()
-	woodMaterial.AddComponent(gameComponents.Material, &gc.Material{Amount: 2})
-	woodMaterial.AddComponent(gameComponents.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	woodMaterial.AddComponent(gameComponents.Name, &gc.Name{Name: "木"})
+	woodMaterial.AddComponent(world.Components.Material, &gc.Material{Amount: 2})
+	woodMaterial.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	woodMaterial.AddComponent(world.Components.Name, &gc.Name{Name: "木"})
 
 	// クラフト可能かテスト
 	canCraft, err := CanCraft(world, "鉄剣")
@@ -39,7 +38,7 @@ func TestCanCraft(t *testing.T) {
 	assert.NoError(t, err, "十分な素材があるときはエラーが発生してはいけない")
 
 	// 素材が不足している場合のテスト
-	woodMaterialComp := gameComponents.Material.Get(woodMaterial).(*gc.Material)
+	woodMaterialComp := world.Components.Material.Get(woodMaterial).(*gc.Material)
 	woodMaterialComp.Amount = 0 // 木の量を0にする
 
 	canCraft, err = CanCraft(world, "鉄剣")
@@ -60,7 +59,6 @@ func TestCanCraft(t *testing.T) {
 
 func TestCraft(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	// 存在しないレシピでのクラフト試行
 	result, err := Craft(world, "存在しない武器")
@@ -70,12 +68,12 @@ func TestCraft(t *testing.T) {
 
 	// レシピエンティティを作成
 	recipe := world.Manager.NewEntity()
-	recipe.AddComponent(gameComponents.Recipe, &gc.Recipe{
+	recipe.AddComponent(world.Components.Recipe, &gc.Recipe{
 		Inputs: []gc.RecipeInput{
 			{Name: "鉄", Amount: 1},
 		},
 	})
-	recipe.AddComponent(gameComponents.Name, &gc.Name{Name: "簡単な剣"})
+	recipe.AddComponent(world.Components.Name, &gc.Name{Name: "簡単な剣"})
 
 	// 素材不足でのクラフト試行
 	result, err = Craft(world, "簡単な剣")

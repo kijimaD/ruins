@@ -8,10 +8,11 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/resources"
+	w "github.com/kijimaD/ruins/lib/world"
 
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/camera"
+	"github.com/kijimaD/ruins/lib/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -22,38 +23,37 @@ var (
 
 // RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
-	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	// 初回のみ生成
 	if wallShadowImage == nil {
-		wallShadowImage = ebiten.NewImage(int(utils.TileSize), int(utils.TileSize/2))
+		wallShadowImage = ebiten.NewImage(int(consts.TileSize), int(consts.TileSize/2))
 		wallShadowImage.Fill(color.RGBA{0, 0, 0, 80})
 	}
 	if moverShadowImage == nil {
-		moverShadowImage = ebiten.NewImage(int(utils.TileSize-6-2), int(utils.TileSize/2))
+		moverShadowImage = ebiten.NewImage(int(consts.TileSize-6-2), int(consts.TileSize/2))
 		moverShadowImage.Fill(color.RGBA{0, 0, 0, 120})
 	}
 	{
 		// グリッド
 		iSprite := 0
-		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.GridElement).Size())
+		entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement).Size())
 		world.Manager.Join(
-			gameComponents.SpriteRender,
-			gameComponents.GridElement,
+			world.Components.SpriteRender,
+			world.Components.GridElement,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			entities[iSprite] = entity
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
-			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
+			spriteRender1 := world.Components.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
+			spriteRender2 := world.Components.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 			return spriteRender1.Depth < spriteRender2.Depth
 		})
 		for _, entity := range entities {
 			// タイル描画
-			gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
+			gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+			spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 			tileSize := gameResources.Level.TileSize
 			pos := &gc.Position{
 				X: gc.Pixel(int(gridElement.Row)*int(tileSize) + int(tileSize/2)),
@@ -65,13 +65,13 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	{
 		// 移動体の影。影をキャストする用のコンポーネントを追加したほうがよさそう
 		world.Manager.Join(
-			gameComponents.SpriteRender,
-			gameComponents.Position,
+			world.Components.SpriteRender,
+			world.Components.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			pos := gameComponents.Position.Get(entity).(*gc.Position)
+			pos := world.Components.Position.Get(entity).(*gc.Position)
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(int(pos.X)-12), float64(pos.Y))
-			utils.SetTranslate(world, op)
+			camera.SetTranslate(world, op)
 			if moverShadowImage != nil {
 				screen.DrawImage(moverShadowImage, op)
 			}
@@ -81,24 +81,24 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		// 壁の影。影をキャストする用のコンポーネントを追加したほうがよさそう
 		// 下のタイルがフロアであれば追加する
 		world.Manager.Join(
-			gameComponents.SpriteRender,
-			gameComponents.GridElement,
-			gameComponents.BlockView,
-			gameComponents.BlockPass,
+			world.Components.SpriteRender,
+			world.Components.GridElement,
+			world.Components.BlockView,
+			world.Components.BlockPass,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			grid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+			grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 			gameResources := world.Resources.Game.(*resources.Game)
 			belowTileIdx := gameResources.Level.XYTileIndex(grid.Row, grid.Col+1)
 			if (belowTileIdx < 0) || (int(belowTileIdx) > len(gameResources.Level.Entities)-1) {
 				return
 			}
 			belowTileEntity := gameResources.Level.Entities[int(belowTileIdx)]
-			belowSpriteRender, ok := gameComponents.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
+			belowSpriteRender, ok := world.Components.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
 			if ok {
 				if belowSpriteRender.Depth == gc.DepthNumFloor {
 					op := &ebiten.DrawImageOptions{}
-					op.GeoM.Translate(float64(int(grid.Row)*int(utils.TileSize)), float64(int(grid.Col)*int(utils.TileSize)+int(utils.TileSize)))
-					utils.SetTranslate(world, op)
+					op.GeoM.Translate(float64(int(grid.Row)*int(consts.TileSize)), float64(int(grid.Col)*int(consts.TileSize)+int(consts.TileSize)))
+					camera.SetTranslate(world, op)
 					if wallShadowImage != nil {
 						screen.DrawImage(wallShadowImage, op)
 					}
@@ -109,26 +109,26 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	{
 		// 移動体
 		iSprite := 0
-		entities := make([]ecs.Entity, world.Manager.Join(gameComponents.SpriteRender, gameComponents.Position, gameComponents.Velocity).Size())
+		entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.Position, world.Components.Velocity).Size())
 		world.Manager.Join(
-			gameComponents.SpriteRender,
-			gameComponents.Velocity,
-			gameComponents.Position,
+			world.Components.SpriteRender,
+			world.Components.Velocity,
+			world.Components.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			entities[iSprite] = entity
 			iSprite++
 		}))
 		sort.Slice(entities, func(i, j int) bool {
-			spriteRender1 := gameComponents.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
-			spriteRender2 := gameComponents.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
+			spriteRender1 := world.Components.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
+			spriteRender2 := world.Components.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 
 			return spriteRender1.Depth < spriteRender2.Depth
 		})
 		for _, entity := range entities {
 			// 座標描画
-			velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
-			pos := gameComponents.Position.Get(entity).(*gc.Position)
-			spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
+			velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
+			pos := world.Components.Position.Get(entity).(*gc.Position)
+			spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 			drawImage(world, screen, spriteRender, pos, velocity.Angle)
 		}
 	}
@@ -166,6 +166,6 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	op.GeoM.Translate(float64(-sprite.Width/2), float64(-sprite.Width/2)) // 回転軸を画像の中心にする
 	op.GeoM.Rotate(angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
-	utils.SetTranslate(world, op)
+	camera.SetTranslate(world, op)
 	screen.DrawImage(getImage(spriteRender), op)
 }

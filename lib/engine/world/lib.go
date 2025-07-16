@@ -7,22 +7,25 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// World is the main ECS structure
-type World struct {
+// Generic は型安全なワールド型
+type Generic[T c.ComponentInitializer] struct {
 	Manager    *ecs.Manager
-	Components *c.Components
+	Components *c.Components[T]
 	Resources  *resources.Resources
 }
 
-// InitWorld initializes the world
-func InitWorld(gameComponents interface{}) World {
+// InitGeneric は型安全なワールド初期化
+func InitGeneric[T c.ComponentInitializer](gameComponents T) (Generic[T], error) {
 	manager := ecs.NewManager()
-	components := c.InitComponents(manager, gameComponents)
+	components, err := c.InitComponents(manager, gameComponents)
+	if err != nil {
+		return Generic[T]{}, err
+	}
 	resources := resources.InitResources()
 
-	return World{
+	return Generic[T]{
 		Manager:    manager,
 		Components: components,
 		Resources:  resources,
-	}
+	}, nil
 }

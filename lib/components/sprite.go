@@ -7,7 +7,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/kijimaD/ruins/assets"
-	"github.com/kijimaD/ruins/lib/engine/utils"
 )
 
 // Sprite は1つ1つの意味をなす画像の位置を示す情報
@@ -35,7 +34,10 @@ func (t *Texture) UnmarshalText(text []byte) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	textureImage, _ := utils.Try2(ebitenutil.NewImageFromReader(bytes.NewReader(bs)))
+	textureImage, _, err := ebitenutil.NewImageFromReader(bytes.NewReader(bs))
+	if err != nil {
+		log.Fatal(err)
+	}
 	t.Image = textureImage
 	return nil
 }

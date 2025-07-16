@@ -5,23 +5,22 @@ import (
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // AIInputSystem は AI制御されたエンティティの入力処理を行う
 func AIInputSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	world.Manager.Join(
-		gameComponents.Velocity,
-		gameComponents.Position,
-		gameComponents.AIMoveFSM,
-		gameComponents.AIRoaming,
-		gameComponents.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.AIMoveFSM,
+		world.Components.AIRoaming,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		roaming := gameComponents.AIRoaming.Get(entity).(*gc.AIRoaming)
-		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
+		roaming := world.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
+		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		if time.Since(roaming.StartSubState).Seconds() > roaming.DurationSubState.Seconds() {
 			roaming.StartSubState = time.Now()
 			roaming.DurationSubState = time.Second * time.Duration(rand.IntN(3))

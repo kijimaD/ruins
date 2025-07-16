@@ -10,7 +10,6 @@ import (
 
 func TestSetMaxHPSP(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	tests := []struct {
 		name        string
@@ -68,7 +67,7 @@ func TestSetMaxHPSP(t *testing.T) {
 			entity := world.Manager.NewEntity()
 
 			// Attributesコンポーネントを追加（BaseとTotalを0に設定してsetMaxHPSPの初期化をテスト）
-			entity.AddComponent(gameComponents.Attributes, &gc.Attributes{
+			entity.AddComponent(world.Components.Attributes, &gc.Attributes{
 				Vitality:  gc.Attribute{Base: tt.vitality, Total: 0},
 				Strength:  gc.Attribute{Base: tt.strength, Total: 0},
 				Sensation: gc.Attribute{Base: tt.sensation, Total: 0},
@@ -78,7 +77,7 @@ func TestSetMaxHPSP(t *testing.T) {
 			})
 
 			// Poolsコンポーネントを追加
-			entity.AddComponent(gameComponents.Pools, &gc.Pools{
+			entity.AddComponent(world.Components.Pools, &gc.Pools{
 				Level: tt.level,
 				HP:    gc.Pool{Current: 0, Max: 0},
 				SP:    gc.Pool{Current: 0, Max: 0},
@@ -88,8 +87,8 @@ func TestSetMaxHPSP(t *testing.T) {
 			setMaxHPSP(world, entity)
 
 			// 結果を検証
-			pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-			attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+			pools := world.Components.Pools.Get(entity).(*gc.Pools)
+			attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 
 			// Totalが正しく初期化されたことを確認
 			assert.Equal(t, tt.vitality, attrs.Vitality.Total, "体力のTotal値が正しく初期化されていない")
@@ -127,11 +126,10 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 
 func TestFullRecover(t *testing.T) {
 	world := game.InitWorld(960, 720)
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	// テスト用エンティティを作成
 	entity := world.Manager.NewEntity()
-	entity.AddComponent(gameComponents.Attributes, &gc.Attributes{
+	entity.AddComponent(world.Components.Attributes, &gc.Attributes{
 		Vitality:  gc.Attribute{Base: 10, Total: 0},
 		Strength:  gc.Attribute{Base: 8, Total: 0},
 		Sensation: gc.Attribute{Base: 7, Total: 0},
@@ -139,7 +137,7 @@ func TestFullRecover(t *testing.T) {
 		Agility:   gc.Attribute{Base: 9, Total: 0},
 		Defense:   gc.Attribute{Base: 5, Total: 0},
 	})
-	entity.AddComponent(gameComponents.Pools, &gc.Pools{
+	entity.AddComponent(world.Components.Pools, &gc.Pools{
 		Level: 1,
 		HP:    gc.Pool{Current: 0, Max: 0},
 		SP:    gc.Pool{Current: 0, Max: 0},
@@ -149,8 +147,8 @@ func TestFullRecover(t *testing.T) {
 	fullRecover(world, entity)
 
 	// 結果を検証
-	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
-	attrs := gameComponents.Attributes.Get(entity).(*gc.Attributes)
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
+	attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 
 	// 属性のTotalが正しく設定されたことを確認
 	assert.Equal(t, 10, attrs.Vitality.Total, "体力のTotal値が正しく設定されていない")

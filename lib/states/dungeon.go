@@ -5,13 +5,12 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -53,19 +52,18 @@ func (st *DungeonState) OnStart(world w.World) {
 
 // OnStop はステートが停止される際に呼ばれる
 func (st *DungeonState) OnStop(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.SpriteRender,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
 	world.Manager.Join(
-		gameComponents.Position,
+		world.Components.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
 	world.Manager.Join(
-		gameComponents.GridElement,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))

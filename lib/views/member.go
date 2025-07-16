@@ -7,24 +7,23 @@ import (
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
-	"github.com/kijimaD/ruins/lib/utils"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // AddMemberBar は一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	res := world.Resources.UIResources
-	gameComponents := world.Components.Game.(*gc.Components)
 	memberContainer := eui.NewVerticalContainer()
 
-	name := gameComponents.Name.Get(entity).(*gc.Name)
-	pools := gameComponents.Pools.Get(entity).(*gc.Pools)
+	name := world.Components.Name.Get(entity).(*gc.Name)
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
 	memberContainer.AddChild(eui.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", utils.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),
 	)
 	memberContainer.AddChild(hpLabel)
 
@@ -54,7 +53,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 	memberContainer.AddChild(hpProgressbar)
 
 	spLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", utils.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, styles.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, styles.TextColor),
 	)
 	memberContainer.AddChild(spLabel)
 

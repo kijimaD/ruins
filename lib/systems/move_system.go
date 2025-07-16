@@ -5,30 +5,29 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	"github.com/kijimaD/ruins/lib/mathutil"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // MoveSystem はエンティティの移動処理を行う
 func MoveSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	maxFrontSpeed := 2.0
 	maxBackSpeed := -1.0
 	accelerationSpeed := 0.05
 	world.Manager.Join(
-		gameComponents.Velocity,
-		gameComponents.Position,
-		gameComponents.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		velocity := gameComponents.Velocity.Get(entity).(*gc.Velocity)
+		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		switch velocity.ThrottleMode {
 		case gc.ThrottleModeFront:
-			velocity.Speed = utils.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
+			velocity.Speed = mathutil.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
 		case gc.ThrottleModeBack:
-			velocity.Speed = utils.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
+			velocity.Speed = mathutil.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
 		case gc.ThrottleModeNope:
 			// 何もしない
 		}
@@ -37,16 +36,16 @@ func MoveSystem(world w.World) {
 
 	// 操作キャラに対してタイルイベントを発行する
 	world.Manager.Join(
-		gameComponents.Position,
-		gameComponents.SpriteRender,
-		gameComponents.Operator,
+		world.Components.Position,
+		world.Components.SpriteRender,
+		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := gameComponents.Position.Get(entity).(*gc.Position)
+		pos := world.Components.Position.Get(entity).(*gc.Position)
 		gameResources := world.Resources.Game.(*resources.Game)
 		tileEntity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
-		if tileEntity.HasComponent(gameComponents.Warp) {
-			warp := gameComponents.Warp.Get(tileEntity).(*gc.Warp)
+		if tileEntity.HasComponent(world.Components.Warp) {
+			warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
 			switch warp.Mode {
 			case gc.WarpModeNext:
 				effects.AddEffect(nil, effects.WarpNext{}, effects.None{})
@@ -59,10 +58,9 @@ func MoveSystem(world w.World) {
 
 // 角度と距離を指定して相対移動させる
 func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) {
-	gameComponents := world.Components.Game.(*gc.Components)
 
-	pos := gameComponents.Position.Get(entity).(*gc.Position)
-	spriteRender := gameComponents.SpriteRender.Get(entity).(*gc.SpriteRender)
+	pos := world.Components.Position.Get(entity).(*gc.Position)
+	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 
 	originalX := pos.X
 	originalY := pos.Y
@@ -79,16 +77,16 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 		y2 := float64(int(pos.Y) + sprite.Height/2 - padding)
 
 		world.Manager.Join(
-			gameComponents.SpriteRender,
-			gameComponents.BlockPass,
+			world.Components.SpriteRender,
+			world.Components.BlockPass,
 		).Visit(ecs.Visit(func(entityAnother ecs.Entity) {
 			if entity == entityAnother {
 				return
 			}
 			switch {
-			case entityAnother.HasComponent(gameComponents.Position):
-				objectPos := gameComponents.Position.Get(entityAnother).(*gc.Position)
-				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
+			case entityAnother.HasComponent(world.Components.Position):
+				objectPos := world.Components.Position.Get(entityAnother).(*gc.Position)
+				objectSpriteRender := world.Components.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
 				objectx1 := float64(int(objectPos.X) - objectSprite.Width/2)
@@ -100,9 +98,9 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 					pos.X = originalX
 					pos.Y = originalY
 				}
-			case entityAnother.HasComponent(gameComponents.GridElement):
-				objectGrid := gameComponents.GridElement.Get(entityAnother).(*gc.GridElement)
-				objectSpriteRender := gameComponents.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
+			case entityAnother.HasComponent(world.Components.GridElement):
+				objectGrid := world.Components.GridElement.Get(entityAnother).(*gc.GridElement)
+				objectSpriteRender := world.Components.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
 				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 				x := int(objectGrid.Row) * sprite.Width
 				y := int(objectGrid.Col) * sprite.Height

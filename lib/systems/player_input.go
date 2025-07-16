@@ -5,24 +5,23 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // PlayerInputSystem はプレイヤーからの入力を処理する
 func PlayerInputSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
 
 	var playerVelocity *gc.Velocity
 	var playerPos *gc.Position
 	world.Manager.Join(
-		gameComponents.Velocity,
-		gameComponents.Position,
-		gameComponents.Operator,
-		gameComponents.SpriteRender,
+		world.Components.Velocity,
+		world.Components.Position,
+		world.Components.Operator,
+		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerVelocity = gameComponents.Velocity.Get(entity).(*gc.Velocity)
-		playerPos = gameComponents.Position.Get(entity).(*gc.Position)
+		playerVelocity = world.Components.Velocity.Get(entity).(*gc.Velocity)
+		playerPos = world.Components.Position.Get(entity).(*gc.Position)
 	}))
 
 	// デフォルト
@@ -46,11 +45,11 @@ func PlayerInputSystem(world w.World) {
 		var camera *gc.Camera
 		var cPos *gc.Position
 		world.Manager.Join(
-			gameComponents.Camera,
-			gameComponents.Position,
+			world.Components.Camera,
+			world.Components.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			camera = gameComponents.Camera.Get(entity).(*gc.Camera)
-			cPos = gameComponents.Position.Get(entity).(*gc.Position)
+			camera = world.Components.Camera.Get(entity).(*gc.Camera)
+			cPos = world.Components.Position.Get(entity).(*gc.Position)
 		}))
 		cPos.X = playerPos.X
 		cPos.Y = playerPos.Y

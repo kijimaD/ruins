@@ -7,14 +7,13 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	w "github.com/kijimaD/ruins/lib/engine/world"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -228,10 +227,9 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 // メンバー一覧を更新する
 func (st *HomeMenuState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.FactionAlly,
-		gameComponents.InParty,
+		world.Components.FactionAlly,
+		world.Components.InParty,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		views.AddMemberBar(world, st.memberContainer, entity)
 	}))

@@ -2,24 +2,22 @@ package worldhelper
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // Equip は装備する
 func Equip(world w.World, item ecs.Entity, owner ecs.Entity, slotNumber gc.EquipmentSlotNumber) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	item.AddComponent(gameComponents.ItemLocationEquipped, &gc.LocationEquipped{Owner: owner, EquipmentSlot: slotNumber})
-	item.RemoveComponent(gameComponents.ItemLocationInBackpack)
-	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
+	item.AddComponent(world.Components.ItemLocationEquipped, &gc.LocationEquipped{Owner: owner, EquipmentSlot: slotNumber})
+	item.RemoveComponent(world.Components.ItemLocationInBackpack)
+	item.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 }
 
 // Disarm は装備を外す
 func Disarm(world w.World, item ecs.Entity) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	item.AddComponent(gameComponents.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	item.RemoveComponent(gameComponents.ItemLocationEquipped)
-	item.AddComponent(gameComponents.EquipmentChanged, &gc.EquipmentChanged{})
+	item.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	item.RemoveComponent(world.Components.ItemLocationEquipped)
+	item.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 }
 
 // GetWearEquipments は指定キャラクターの装備中の防具一覧を取得する
@@ -27,13 +25,12 @@ func Disarm(world w.World, item ecs.Entity) {
 func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	entities := make([]*ecs.Entity, 4)
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.ItemLocationEquipped,
-		gameComponents.Wearable,
+		world.Components.Item,
+		world.Components.ItemLocationEquipped,
+		world.Components.Wearable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
 			for i := range entities {
 				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
@@ -52,13 +49,12 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	entities := make([]*ecs.Entity, 8)
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	world.Manager.Join(
-		gameComponents.Item,
-		gameComponents.ItemLocationEquipped,
-		gameComponents.Card,
+		world.Components.Item,
+		world.Components.ItemLocationEquipped,
+		world.Components.Card,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := gameComponents.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
 			for i := range entities {
 				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {

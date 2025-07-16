@@ -5,12 +5,12 @@ import (
 	"log"
 	"math/rand/v2"
 
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"github.com/yourbasic/bit"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/engine/world"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 var errReachEdge = errors.New("reach edge error")
@@ -32,22 +32,20 @@ type Party struct {
 // 最初にセットされるインデックスは生存しているエンティティである
 // みんな生きていない場合は想定していない。エラーを返す
 func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
-	gameComponents := world.Components.Game.(*gc.Components)
-
 	var q *bit.Set
 	switch factionType {
 	case gc.FactionAlly:
 		q = world.Manager.Join(
-			gameComponents.FactionAlly,
-			gameComponents.Pools,
-			gameComponents.Attributes,
+			world.Components.FactionAlly,
+			world.Components.Pools,
+			world.Components.Attributes,
 		)
 	case gc.FactionEnemy:
 		q = world.Manager.Join(
-			gameComponents.FactionEnemy,
-			gameComponents.Pools,
-			gameComponents.Attributes,
-			gameComponents.CommandTable,
+			world.Components.FactionEnemy,
+			world.Components.Pools,
+			world.Components.Attributes,
+			world.Components.CommandTable,
 		)
 	default:
 		log.Fatalf("invalid case: %v", factionType)
@@ -59,7 +57,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 
 	lives := []*ecs.Entity{}
 	for _, member := range members {
-		pools := gameComponents.Pools.Get(member).(*gc.Pools)
+		pools := world.Components.Pools.Get(member).(*gc.Pools)
 		if pools.HP.Current == 0 {
 			lives = append(lives, nil)
 		} else {
@@ -87,14 +85,13 @@ func NewByEntity(world w.World, entity ecs.Entity) (Party, error) {
 	var party Party
 	var err error
 
-	gameComponents := world.Components.Game.(*gc.Components)
 	switch {
-	case entity.HasComponent(gameComponents.FactionAlly):
+	case entity.HasComponent(world.Components.FactionAlly):
 		party, err = NewParty(world, gc.FactionAlly)
 		if err != nil {
 			return party, err
 		}
-	case entity.HasComponent(gameComponents.FactionEnemy):
+	case entity.HasComponent(world.Components.FactionEnemy):
 		party, err = NewParty(world, gc.FactionEnemy)
 		if err != nil {
 			return party, err
@@ -160,7 +157,7 @@ func (p *Party) GetNext() (ecs.Entity, error) {
 	cur := p.cur
 	for {
 		memo := cur
-		cur = utils.Min(cur+1, len(p.members)-1)
+		cur = mathutil.Min(cur+1, len(p.members)-1)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
 			return 0, errReachEdge
@@ -180,7 +177,7 @@ func (p *Party) GetPrev() (ecs.Entity, error) {
 	cur := p.cur
 	for {
 		memo := cur
-		cur = utils.Max(cur-1, 0)
+		cur = mathutil.Max(cur-1, 0)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
 			return 0, errReachEdge
@@ -211,7 +208,7 @@ func (p *Party) GetRandom() (ecs.Entity, error) {
 
 func (p *Party) next() error {
 	memo := p.cur
-	p.cur = utils.Min(p.cur+1, len(p.members)-1)
+	p.cur = mathutil.Min(p.cur+1, len(p.members)-1)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
 		return errReachEdge
@@ -222,7 +219,7 @@ func (p *Party) next() error {
 
 func (p *Party) prev() error {
 	memo := p.cur
-	p.cur = utils.Max(p.cur-1, 0)
+	p.cur = mathutil.Max(p.cur-1, 0)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
 		return errReachEdge
