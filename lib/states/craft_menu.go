@@ -329,7 +329,7 @@ func (st *CraftMenuState) showResultWindow(world w.World, entity ecs.Entity) {
 	// UI要素を作成（表示のみ、操作はキーボードで行う）
 	st.createResultWindowUI(world, windowContainer, entity)
 
-	st.resultWindow.SetLocation(getCenterWinRect())
+	st.resultWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.resultWindow)
 }
 
@@ -364,7 +364,7 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 		windowContainer.AddChild(actionWidget)
 	}
 
-	st.resultWindow.SetLocation(getCenterWinRect())
+	st.resultWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.resultWindow)
 }
 
@@ -414,7 +414,7 @@ func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	// UI要素を作成（表示のみ、操作はキーボードで行う）
 	st.createActionWindowUI(world, windowContainer, entity)
 
-	st.actionWindow.SetLocation(getCenterWinRect())
+	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
 }
 
@@ -443,7 +443,7 @@ func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
 		windowContainer.AddChild(actionWidget)
 	}
 
-	st.actionWindow.SetLocation(getCenterWinRect())
+	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
 }
 

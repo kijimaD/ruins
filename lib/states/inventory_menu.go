@@ -429,7 +429,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	// UI要素を作成（表示のみ、操作はキーボードで行う）
 	st.createActionWindowUI(world, windowContainer, entity)
 
-	st.actionWindow.SetLocation(getCenterWinRect())
+	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
 }
 
@@ -458,7 +458,7 @@ func (st *InventoryMenuState) updateActionWindowDisplay(world w.World) {
 		windowContainer.AddChild(actionWidget)
 	}
 
-	st.actionWindow.SetLocation(getCenterWinRect())
+	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
 }
 
@@ -660,7 +660,7 @@ func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 	// UI要素を作成
 	st.updatePartyWindowDisplay(world)
 
-	st.partyWindow.SetLocation(getCenterWinRect())
+	st.partyWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.partyWindow)
 }
 
@@ -715,7 +715,7 @@ func (st *InventoryMenuState) updatePartyWindowDisplay(world w.World) {
 	cancelWidget := eui.NewListItemText("キャンセル", styles.TextColor, isSelected, world)
 	partyContainer.AddChild(cancelWidget)
 
-	st.partyWindow.SetLocation(getCenterWinRect())
+	st.partyWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.partyWindow)
 }
 

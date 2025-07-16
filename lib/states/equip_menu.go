@@ -540,7 +540,7 @@ func (st *EquipMenuState) showActionWindow(world w.World, userData map[string]in
 	// UI要素を作成（表示のみ、操作はキーボードで行う）
 	st.createActionWindowUI(world, windowContainer)
 
-	st.actionWindow.SetLocation(getCenterWinRect())
+	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
 }
 
@@ -569,7 +569,7 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 		windowContainer.AddChild(actionWidget)
 	}
 
-	st.actionWindow.SetLocation(getCenterWinRect())
+	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
 }
 
