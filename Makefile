@@ -28,7 +28,6 @@ lint: ## Linterを実行する
 
 .PHONY: tools-install
 tools-install: ## 開発ツールをインストールする
-	@go mod download
 	@go install golang.org/x/tools/cmd/goimports@latest
 	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && \
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v2.2.2)
