@@ -6,8 +6,8 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/mathutil"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -17,7 +17,7 @@ func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity) {
 	pools := world.Components.Pools.Get(target).(*gc.Pools)
 	v, ok := damage.EffectType.(Damage)
 	if ok {
-		pools.HP.Current = utils.Max(0, pools.HP.Current-v.Amount)
+		pools.HP.Current = mathutil.Max(0, pools.HP.Current-v.Amount)
 
 		name := world.Components.Name.Get(target).(*gc.Name)
 		entry := fmt.Sprintf("%sに%dのダメージ。", name.Name, v.Amount)
@@ -38,9 +38,9 @@ func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity) {
 	}
 	switch at := v.Amount.(type) {
 	case gc.RatioAmount:
-		pools.HP.Current = utils.Min(pools.HP.Max, pools.HP.Current+at.Calc(pools.HP.Max))
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+at.Calc(pools.HP.Max))
 	case gc.NumeralAmount:
-		pools.HP.Current = utils.Min(pools.HP.Max, pools.HP.Current+at.Calc())
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+at.Calc())
 	default:
 		log.Fatalf("unexpected: %T", at)
 	}
@@ -55,9 +55,9 @@ func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity) {
 	}
 	switch at := v.Amount.(type) {
 	case gc.RatioAmount:
-		pools.SP.Current = utils.Max(0, pools.SP.Current-at.Calc(pools.SP.Max))
+		pools.SP.Current = mathutil.Max(0, pools.SP.Current-at.Calc(pools.SP.Max))
 	case gc.NumeralAmount:
-		pools.SP.Current = utils.Max(0, pools.SP.Current-at.Calc())
+		pools.SP.Current = mathutil.Max(0, pools.SP.Current-at.Calc())
 	default:
 		log.Fatalf("unexpected: %T", at)
 	}
@@ -72,9 +72,9 @@ func RecoverStamina(world w.World, recoveryEffect EffectSpawner, target ecs.Enti
 	}
 	switch at := v.Amount.(type) {
 	case gc.RatioAmount:
-		pools.SP.Current = utils.Min(pools.SP.Max, pools.SP.Current+at.Calc(pools.SP.Max))
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+at.Calc(pools.SP.Max))
 	case gc.NumeralAmount:
-		pools.SP.Current = utils.Min(pools.SP.Max, pools.SP.Current+at.Calc())
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+at.Calc())
 	default:
 		log.Fatalf("unexpected: %T", at)
 	}

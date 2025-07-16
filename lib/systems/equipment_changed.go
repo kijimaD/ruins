@@ -2,7 +2,7 @@ package systems
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/mathutil"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -76,9 +76,9 @@ func EquipmentChangedSystem(world w.World) bool {
 		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 
 		pools.HP.Max = maxHP(attrs, pools)
-		pools.HP.Current = utils.Min(pools.HP.Max, pools.HP.Current)
+		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current)
 		pools.SP.Max = maxSP(attrs, pools)
-		pools.SP.Current = utils.Min(pools.SP.Max, pools.SP.Current)
+		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current)
 	}))
 
 	return true

@@ -9,7 +9,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/utils/msg"
+	"github.com/kijimaD/ruins/lib/msg"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 

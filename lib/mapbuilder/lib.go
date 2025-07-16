@@ -6,8 +6,8 @@ import (
 	"log"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -46,8 +46,8 @@ func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool {
 // MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせている。Positionを持つエンティティの数ぶんで検証できる
 func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool {
 	isExist := false
-	cx := gc.Pixel(int(tx)*int(utils.TileSize) + int(utils.TileSize)/2)
-	cy := gc.Pixel(int(ty)*int(utils.TileSize) + int(utils.TileSize)/2)
+	cx := gc.Pixel(int(tx)*int(consts.TileSize) + int(consts.TileSize)/2)
+	cy := gc.Pixel(int(ty)*int(consts.TileSize) + int(consts.TileSize)/2)
 
 	world.Manager.Join(
 		world.Components.Position,
@@ -137,7 +137,7 @@ func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 			Level: resources.Level{
 				TileWidth:  width,
 				TileHeight: height,
-				TileSize:   utils.TileSize,
+				TileSize:   consts.TileSize,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
 			Tiles:     tiles,

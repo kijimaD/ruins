@@ -5,7 +5,7 @@ import (
 	"log"
 	"math/rand/v2"
 
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 	"github.com/yourbasic/bit"
 
@@ -157,7 +157,7 @@ func (p *Party) GetNext() (ecs.Entity, error) {
 	cur := p.cur
 	for {
 		memo := cur
-		cur = utils.Min(cur+1, len(p.members)-1)
+		cur = mathutil.Min(cur+1, len(p.members)-1)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
 			return 0, errReachEdge
@@ -177,7 +177,7 @@ func (p *Party) GetPrev() (ecs.Entity, error) {
 	cur := p.cur
 	for {
 		memo := cur
-		cur = utils.Max(cur-1, 0)
+		cur = mathutil.Max(cur-1, 0)
 		if memo == cur {
 			// 末端に到達してcurが変化しなかった
 			return 0, errReachEdge
@@ -208,7 +208,7 @@ func (p *Party) GetRandom() (ecs.Entity, error) {
 
 func (p *Party) next() error {
 	memo := p.cur
-	p.cur = utils.Min(p.cur+1, len(p.members)-1)
+	p.cur = mathutil.Min(p.cur+1, len(p.members)-1)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
 		return errReachEdge
@@ -219,7 +219,7 @@ func (p *Party) next() error {
 
 func (p *Party) prev() error {
 	memo := p.cur
-	p.cur = utils.Max(p.cur-1, 0)
+	p.cur = mathutil.Max(p.cur-1, 0)
 	if memo == p.cur {
 		// 末端に到達してcurが変化しなかった
 		return errReachEdge

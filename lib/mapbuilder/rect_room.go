@@ -4,7 +4,7 @@ import (
 	"math/rand"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/mathutil"
 )
 
 // RectRoomBuilder は長方形の部屋を作成する
@@ -26,9 +26,9 @@ func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
 		h := 2 + rand.Intn(8)
 		newRoom := Rect{
 			X1: gc.Row(x),
-			X2: gc.Row(utils.Min(x+w, int(buildData.Level.TileWidth))),
+			X2: gc.Row(mathutil.Min(x+w, int(buildData.Level.TileWidth))),
 			Y1: gc.Col(y),
-			Y2: gc.Col(utils.Min(y+h, int(buildData.Level.TileHeight))),
+			Y2: gc.Col(mathutil.Min(y+h, int(buildData.Level.TileHeight))),
 		}
 		rooms = append(rooms, newRoom)
 	}

@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/urfave/cli/v2"
 )
 
@@ -23,7 +23,7 @@ func NewMainApp() *cli.App {
 	app.Usage = "ruins [subcommand] [args]"
 	app.Description = "This is RPG!"
 	app.DefaultCommand = CmdPlay.Name
-	app.Version = utils.AppVersion
+	app.Version = consts.AppVersion
 	app.EnableBashCompletion = true
 	app.Commands = []*cli.Command{
 		CmdPlay,

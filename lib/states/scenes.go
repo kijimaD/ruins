@@ -5,7 +5,7 @@ import (
 
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/utils"
+	"github.com/kijimaD/ruins/lib/helpers"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
@@ -24,7 +24,7 @@ func ItemGetEvent1() []es.State {
 		gamelog.SceneLog.Append("フェライトコアを2個手に入れた")
 	}))
 	ss = push(ss, &MessageState{
-		textFunc: utils.GetPtr(func() string {
+		textFunc: helpers.GetPtr(func() string {
 			return strings.Join(gamelog.SceneLog.Pop(), "\n")
 		})})
 
@@ -45,7 +45,7 @@ func RaidEvent1() []es.State {
 		gamelog.SceneLog.Append("鉄を1個手に入れた")
 	}))
 	ss = push(ss, &MessageState{
-		textFunc: utils.GetPtr(func() string {
+		textFunc: helpers.GetPtr(func() string {
 			return strings.Join(gamelog.SceneLog.Pop(), "\n")
 		})})
 

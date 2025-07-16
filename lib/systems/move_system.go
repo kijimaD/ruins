@@ -5,8 +5,8 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
+	"github.com/kijimaD/ruins/lib/mathutil"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/utils"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -25,9 +25,9 @@ func MoveSystem(world w.World) {
 		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		switch velocity.ThrottleMode {
 		case gc.ThrottleModeFront:
-			velocity.Speed = utils.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
+			velocity.Speed = mathutil.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
 		case gc.ThrottleModeBack:
-			velocity.Speed = utils.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
+			velocity.Speed = mathutil.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
 		case gc.ThrottleModeNope:
 			// 何もしない
 		}

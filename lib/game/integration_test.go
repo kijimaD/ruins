@@ -6,10 +6,10 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gs "github.com/kijimaD/ruins/lib/states"
-	"github.com/kijimaD/ruins/lib/utils"
 	ew "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 )
@@ -21,7 +21,7 @@ func TestGameInitializationIntegration(t *testing.T) {
 		initialMemStats := getMemoryStats()
 
 		// 1. ワールドの初期化
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 
 		// 2. ワールドの基本検証
 		validateWorldInitialization(t, world)
@@ -49,15 +49,15 @@ func TestGameInitializationIntegration(t *testing.T) {
 		// 最小限のリソースでの初期化テスト
 		world := ew.InitWorld(&gc.Components{})
 		world.Resources.ScreenDimensions = &er.ScreenDimensions{
-			Width:  utils.MinGameWidth,
-			Height: utils.MinGameHeight,
+			Width:  consts.MinGameWidth,
+			Height: consts.MinGameHeight,
 		}
 
 		// 基本構造の確認
 		assert.NotNil(t, world.Resources, "ワールドリソースが初期化されていない")
 		assert.NotNil(t, world.Resources.ScreenDimensions, "画面サイズが設定されていない")
-		assert.Equal(t, utils.MinGameWidth, world.Resources.ScreenDimensions.Width, "画面幅が正しくない")
-		assert.Equal(t, utils.MinGameHeight, world.Resources.ScreenDimensions.Height, "画面高さが正しくない")
+		assert.Equal(t, consts.MinGameWidth, world.Resources.ScreenDimensions.Width, "画面幅が正しくない")
+		assert.Equal(t, consts.MinGameHeight, world.Resources.ScreenDimensions.Height, "画面高さが正しくない")
 	})
 }
 
@@ -65,7 +65,7 @@ func TestGameInitializationIntegration(t *testing.T) {
 func TestMainGameLifecycle(t *testing.T) {
 	t.Run("ゲームループの基本動作", func(t *testing.T) {
 		// 完全なワールドを使用（テスト用の最小限ワールドではUIリソースが不足）
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		game := &MainGame{
 			World:        world,
 			StateMachine: es.Init(&gs.MainMenuState{}, world),
@@ -73,15 +73,15 @@ func TestMainGameLifecycle(t *testing.T) {
 
 		// Layout関数のテスト
 		width, height := game.Layout(0, 0) // パラメータは無視される
-		assert.Equal(t, utils.MinGameWidth, width, "レイアウト幅が正しくない")
-		assert.Equal(t, utils.MinGameHeight, height, "レイアウト高さが正しくない")
+		assert.Equal(t, consts.MinGameWidth, width, "レイアウト幅が正しくない")
+		assert.Equal(t, consts.MinGameHeight, height, "レイアウト高さが正しくない")
 
 		// Update関数のテスト（エラーが発生しないことを確認）
 		err := game.Update()
 		assert.NoError(t, err, "Updateでエラーが発生")
 
 		// Draw関数のテスト（パニックしないことを確認）
-		screen := ebiten.NewImage(utils.MinGameWidth, utils.MinGameHeight)
+		screen := ebiten.NewImage(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NotPanics(t, func() {
 			game.Draw(screen)
 		}, "Drawでパニックが発生")
@@ -89,7 +89,7 @@ func TestMainGameLifecycle(t *testing.T) {
 
 	t.Run("状態遷移の動作確認", func(t *testing.T) {
 		// 完全なワールドを使用
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		initialState := &gs.MainMenuState{}
 		stateMachine := es.Init(initialState, world)
 
@@ -124,7 +124,7 @@ func TestMainGameLifecycle(t *testing.T) {
 // TestResourceIntegration はリソース統合テスト
 func TestResourceIntegration(t *testing.T) {
 	t.Run("全リソースタイプの読み込み確認", func(t *testing.T) {
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 
 		// リソースの基本構造確認
 		assert.NotNil(t, world.Resources, "リソース構造が初期化されていない")
@@ -155,7 +155,7 @@ func TestResourceIntegration(t *testing.T) {
 	})
 
 	t.Run("リソースの整合性確認", func(t *testing.T) {
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 
 		// フォントとフェイスの整合性
 		fonts := *world.Resources.Fonts
@@ -183,8 +183,8 @@ func TestResourceIntegration(t *testing.T) {
 func validateWorldInitialization(t *testing.T, world ew.World) {
 	assert.NotNil(t, world.Resources, "ワールドリソースがnil")
 	assert.NotNil(t, world.Resources.ScreenDimensions, "画面サイズがnil")
-	assert.Equal(t, utils.MinGameWidth, world.Resources.ScreenDimensions.Width, "画面幅が正しくない")
-	assert.Equal(t, utils.MinGameHeight, world.Resources.ScreenDimensions.Height, "画面高さが正しくない")
+	assert.Equal(t, consts.MinGameWidth, world.Resources.ScreenDimensions.Width, "画面幅が正しくない")
+	assert.Equal(t, consts.MinGameHeight, world.Resources.ScreenDimensions.Height, "画面高さが正しくない")
 	assert.NotNil(t, world.Manager, "ECSマネージャがnil")
 	assert.NotNil(t, world.Components, "コンポーネントがnil")
 }
@@ -288,13 +288,13 @@ func BenchmarkGameInitialization(b *testing.B) {
 	b.Run("InitWorld", func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			_ = InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+			_ = InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		}
 	})
 
 	b.Run("StateMachineCreation", func(b *testing.B) {
 		// 完全なワールドを使用（テスト用最小限ワールドではUIリソース不足）
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			_ = es.Init(&gs.MainMenuState{}, world)
@@ -303,7 +303,7 @@ func BenchmarkGameInitialization(b *testing.B) {
 
 	b.Run("MainGameCreation", func(b *testing.B) {
 		// 完全なワールドを使用
-		world := InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		stateMachine := es.Init(&gs.MainMenuState{}, world)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -321,7 +321,7 @@ func TestGameInitializationTimeouts(t *testing.T) {
 		done := make(chan bool, 1)
 
 		go func() {
-			_ = InitWorld(utils.MinGameWidth, utils.MinGameHeight)
+			_ = InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 			done <- true
 		}()
 
