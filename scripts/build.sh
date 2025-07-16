@@ -46,7 +46,7 @@ cmd() {
            --env GOARCH=$goarch \
            --env CGO_ENABLED=$cgo \
            $BUILDER_IMAGE_NAME \
-           go build -o $output -buildvcs=false -ldflags "-X github.com/kijimaD/ruins/lib/utils/consts.AppVersion=$APP_VERSION" .
+           go build -o $output -buildvcs=false -ldflags "-X github.com/kijimaD/ruins/lib/consts.AppVersion=$APP_VERSION" .
 }
 
 start() {
