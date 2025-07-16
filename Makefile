@@ -22,18 +22,16 @@ fmt: ## フォーマットする
 
 .PHONY: lint
 lint: ## Linterを実行する
-	@echo "Checking formatting..."
-	@gofmt -l ./... | grep -E '\.go$$' && echo "Code needs formatting. Run 'make fmt'" && exit 1 || echo "Code is properly formatted"
-	@echo "Checking imports..."
-	@goimports -l ./... | grep -E '\.go$$' && echo "Imports need formatting. Run 'make goimports'" && exit 1 || echo "Imports are properly formatted"
+	@go build -o /dev/null . # buildが通らない状態でlinter実行するとミスリードなエラーが出るので先に試す
 	@echo "Running golangci-lint..."
 	@golangci-lint run -v ./...
 
 .PHONY: tools-install
 tools-install: ## 開発ツールをインストールする
+	@go mod download
 	@go install golang.org/x/tools/cmd/goimports@latest
 	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin)
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v2.2.2)
 
 .PHONY: check
 check: test build fmt lint ## 一気にチェックする
