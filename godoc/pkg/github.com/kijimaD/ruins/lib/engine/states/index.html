@@ -282,7 +282,7 @@
 		
 			
 			
-			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=776:1255#L27">State</a>
+			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=731:1210#L27">State</a>
 				<a class="permalink" href="index.html#State">&#xb6;</a>
 				
 				
@@ -291,17 +291,17 @@
 
 			<pre>type State interface {
     <span class="comment">// Executed when the state begins</span>
-    OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)
+    OnStart(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
     <span class="comment">// Executed when the state exits</span>
-    OnStop(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)
+    OnStop(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
     <span class="comment">// Executed when a new state is pushed over this one</span>
-    OnPause(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)
+    OnPause(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
     <span class="comment">// Executed when the state become active again (states pushed over this one have been popped)</span>
-    OnResume(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)
+    OnResume(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
     <span class="comment">// Executed on every frame when the state is active</span>
-    Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="index.html#Transition">Transition</a>
+    Update(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) <a href="index.html#Transition">Transition</a>
     <span class="comment">// 描画</span>
-    Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)
+    Draw(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)
 }</pre>
 
 			
@@ -318,7 +318,7 @@
 		
 			
 			
-			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1334:1413#L44">StateMachine</a>
+			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1289:1368#L44">StateMachine</a>
 				<a class="permalink" href="index.html#StateMachine">&#xb6;</a>
 				
 				
@@ -341,12 +341,12 @@ Only the top state is active.
 
 			
 				
-				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1807:1853#L59">Init</a>
+				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1762:1808#L59">Init</a>
 					<a class="permalink" href="index.html#Init">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func Init(s <a href="index.html#State">State</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="index.html#StateMachine">StateMachine</a></pre>
+				<pre>func Init(s <a href="index.html#State">State</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) <a href="index.html#StateMachine">StateMachine</a></pre>
 				<p>Init creates a new state machine with an initial state
 
 				
@@ -355,12 +355,12 @@ Only the top state is active.
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2564:2629#L90">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2519:2584#L90">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Draw(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
 				<p>Draw draws the screen after a state update
 
 				
@@ -368,7 +368,7 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.GetCurrentState">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4854:4901#L169">GetCurrentState</a>
+				<h3 id="StateMachine.GetCurrentState">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4758:4805#L169">GetCurrentState</a>
 					<a class="permalink" href="index.html#StateMachine.GetCurrentState">&#xb6;</a>
 					
 					
@@ -382,7 +382,7 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.GetStateCount">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5063:5106#L177">GetStateCount</a>
+				<h3 id="StateMachine.GetStateCount">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4967:5010#L177">GetStateCount</a>
 					<a class="permalink" href="index.html#StateMachine.GetStateCount">&#xb6;</a>
 					
 					
@@ -395,7 +395,7 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.GetStates">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4521:4564#L160">GetStates</a>
+				<h3 id="StateMachine.GetStates">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4425:4468#L160">GetStates</a>
 					<a class="permalink" href="index.html#StateMachine.GetStates">&#xb6;</a>
 					
 					
@@ -408,12 +408,12 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1980:2025#L65">Update</a>
+				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1935:1980#L65">Update</a>
 					<a class="permalink" href="index.html#StateMachine.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Update(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)</pre>
 				<p>Update updates the state machine
 
 				
@@ -450,7 +450,7 @@ Only the top state is active.
 		
 			
 			
-			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=198:216#L3">TransType</a>
+			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=153:171#L3">TransType</a>
 				<a class="permalink" href="index.html#TransType">&#xb6;</a>
 				
 				
@@ -489,7 +489,7 @@ Only the top state is active.
 		
 			
 			
-			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=683:749#L21">Transition</a>
+			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=638:704#L21">Transition</a>
 				<a class="permalink" href="index.html#Transition">&#xb6;</a>
 				
 				

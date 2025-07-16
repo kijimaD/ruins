@@ -114,10 +114,15 @@
 			
 			
 				
+				<dd><a href="index.html#ComponentInitializer">type ComponentInitializer</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#Components">type Components</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#InitComponents">func InitComponents(manager *ecs.Manager, gameComponents interface{}) *Components</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#InitComponents">func InitComponents[T ComponentInitializer](manager *ecs.Manager, gameComponents T) (*Components[T], error)</a></dd>
 				
 				
 			
@@ -150,15 +155,40 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go?s=129:173#L1">Components</a>
+			<h2 id="ComponentInitializer">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go?s=169:258#L1">ComponentInitializer</a>
+				<a class="permalink" href="index.html#ComponentInitializer">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ComponentInitializer はコンポーネントの初期化を行うインターフェース
+
+			<pre>type ComponentInitializer interface {
+    InitializeComponents(manager *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go?s=332:390#L5">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Components contains engine and game components
+			<p>Components はジェネリクス型を使用した型安全な実装
 
-			<pre>type Components struct {
-<span id="Components.Game"></span>    Game interface{}
+			<pre>type Components[T <a href="index.html#ComponentInitializer">ComponentInitializer</a>] struct {
+<span id="Components.Game"></span>    Game T
 }
 </pre>
 
@@ -172,13 +202,13 @@
 
 			
 				
-				<h3 id="InitComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go?s=216:297#L5">InitComponents</a>
+				<h3 id="InitComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/components/lib.go?s=468:575#L10">InitComponents</a>
 					<a class="permalink" href="index.html#InitComponents">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func InitComponents(manager *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a>, gameComponents interface{}) *<a href="index.html#Components">Components</a></pre>
-				<p>InitComponents initializes components
+				<pre>func InitComponents[T <a href="index.html#ComponentInitializer">ComponentInitializer</a>](manager *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a>, gameComponents T) (*<a href="index.html#Components">Components</a>[T], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>InitComponents はジェネリクス型を使用した型安全な実装
 
 				
 				

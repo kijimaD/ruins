@@ -111,20 +111,9 @@
 			<dl>
 			
 			
-				<dd><a href="index.html#pkg-variables">Variables</a></dd>
-			
 			
 				
 				<dd><a href="index.html#NewKeyNotFoundError">func NewKeyNotFoundError(key, collection string) error</a></dd>
-			
-				
-				<dd><a href="index.html#NewValidationError">func NewValidationError(field string, value interface{}, message string) error</a></dd>
-			
-				
-				<dd><a href="index.html#Wrap">func Wrap(err error, message string) error</a></dd>
-			
-				
-				<dd><a href="index.html#Wrapf">func Wrapf(err error, format string, args ...interface{}) error</a></dd>
 			
 			
 				
@@ -133,14 +122,6 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#KeyNotFoundError.Error">func (e KeyNotFoundError) Error() string</a></dd>
-				
-			
-				
-				<dd><a href="index.html#ValidationError">type ValidationError</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#ValidationError.Error">func (e ValidationError) Error() string</a></dd>
 				
 			
 			
@@ -168,40 +149,10 @@
 
 		
 		
-			<h2 id="pkg-variables">Variables</h2>
-			
-				<p>Common error types for the ruins game
-
-				<pre>var (
-    <span class="comment">// Generic errors</span>
-    <span id="ErrNotFound">ErrNotFound</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;not found&#34;)
-    <span id="ErrInvalidInput">ErrInvalidInput</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;invalid input&#34;)
-    <span id="ErrOutOfBounds">ErrOutOfBounds</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;out of bounds&#34;)
-
-    <span class="comment">// Entity/Component errors</span>
-    <span id="ErrEntityNotFound">ErrEntityNotFound</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;entity not found&#34;)
-    <span id="ErrComponentNotFound">ErrComponentNotFound</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;component not found&#34;)
-    <span id="ErrInvalidComponent">ErrInvalidComponent</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;invalid component&#34;)
-
-    <span class="comment">// Game state errors</span>
-    <span id="ErrInvalidState">ErrInvalidState</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;invalid state&#34;)
-    <span id="ErrStateTransition">ErrStateTransition</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;state transition failed&#34;)
-
-    <span class="comment">// Resource errors</span>
-    <span id="ErrResourceNotFound">ErrResourceNotFound</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;resource not found&#34;)
-    <span id="ErrResourceInvalid">ErrResourceInvalid</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;resource invalid&#34;)
-
-    <span class="comment">// Data loading errors</span>
-    <span id="ErrDataCorrupted">ErrDataCorrupted</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;data corrupted&#34;)
-    <span id="ErrDataMissing">ErrDataMissing</span>   = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;data missing&#34;)
-    <span id="ErrParsingFailed">ErrParsingFailed</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;parsing failed&#34;)
-)</pre>
-			
-		
 		
 			
 			
-			<h2 id="NewKeyNotFoundError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=1203:1257#L35">NewKeyNotFoundError</a>
+			<h2 id="NewKeyNotFoundError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=350:404#L6">NewKeyNotFoundError</a>
 				<a class="permalink" href="index.html#NewKeyNotFoundError">&#xb6;</a>
 				
 				
@@ -213,52 +164,10 @@
 			
 
 		
-			
-			
-			<h2 id="NewValidationError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=1660:1738#L51">NewValidationError</a>
-				<a class="permalink" href="index.html#NewValidationError">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewValidationError(field <a href="http://localhost:8888/pkg/builtin/#string">string</a>, value interface{}, message <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>NewValidationError creates a new ValidationError
-
-			
-			
-
 		
 			
 			
-			<h2 id="Wrap">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=1861:1903#L56">Wrap</a>
-				<a class="permalink" href="index.html#Wrap">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func Wrap(err <a href="http://localhost:8888/pkg/builtin/#error">error</a>, message <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>Wrap wraps an error with additional context
-
-			
-			
-
-		
-			
-			
-			<h2 id="Wrapf">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=2043:2106#L64">Wrapf</a>
-				<a class="permalink" href="index.html#Wrapf">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func Wrapf(err <a href="http://localhost:8888/pkg/builtin/#error">error</a>, format <a href="http://localhost:8888/pkg/builtin/#string">string</a>, args ...interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>Wrapf wraps an error with formatted additional context
-
-			
-			
-
-		
-		
-			
-			
-			<h2 id="KeyNotFoundError">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=963:1033#L25">KeyNotFoundError</a>
+			<h2 id="KeyNotFoundError">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=110:180#L1">KeyNotFoundError</a>
 				<a class="permalink" href="index.html#KeyNotFoundError">&#xb6;</a>
 				
 				
@@ -283,52 +192,12 @@
 
 			
 				
-				<h3 id="KeyNotFoundError.Error">func (KeyNotFoundError) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=1035:1075#L30">Error</a>
+				<h3 id="KeyNotFoundError.Error">func (KeyNotFoundError) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=182:222#L1">Error</a>
 					<a class="permalink" href="index.html#KeyNotFoundError.Error">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (e <a href="index.html#KeyNotFoundError">KeyNotFoundError</a>) Error() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="ValidationError">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=1379:1463#L40">ValidationError</a>
-				<a class="permalink" href="index.html#ValidationError">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ValidationError represents an error during validation
-
-			<pre>type ValidationError struct {
-<span id="ValidationError.Field"></span>    Field   <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="ValidationError.Value"></span>    Value   interface{}
-<span id="ValidationError.Message"></span>    Message <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="ValidationError.Error">func (ValidationError) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/errors/errors.go?s=1465:1504#L46">Error</a>
-					<a class="permalink" href="index.html#ValidationError.Error">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (e <a href="index.html#ValidationError">ValidationError</a>) Error() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 				
 				
 				
