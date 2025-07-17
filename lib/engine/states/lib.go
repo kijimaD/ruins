@@ -3,7 +3,9 @@ package states
 import (
 	"log"
 	"os"
+	"reflect"
 
+	"github.com/kijimaD/ruins/lib/logger"
 	w "github.com/kijimaD/ruins/lib/world"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -54,6 +56,7 @@ type State interface {
 type StateMachine struct {
 	states         []State
 	lastTransition Transition
+	logger         *logger.Logger
 }
 
 // 全てのstateのOnResume時に実行される共通処理
@@ -67,22 +70,33 @@ func hookOnResume(state State, _ w.World) {
 
 // Init creates a new state machine with an initial state
 func Init(s State, world w.World) StateMachine {
+	l := logger.New(logger.CategoryTransition)
+	l.Debug("ステートマシン初期化", "初期ステート", getStateName(s))
 	s.OnStart(world)
-	return StateMachine{[]State{s}, Transition{TransNone, []State{}}}
+	return StateMachine{
+		states:         []State{s},
+		lastTransition: Transition{TransNone, []State{}},
+		logger:         l,
+	}
 }
 
 // Update updates the state machine
 func (sm *StateMachine) Update(world w.World) {
 	switch sm.lastTransition.Type {
 	case TransPop:
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Pop", "スタック深度", len(sm.states))
 		sm._Pop(world)
 	case TransPush:
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Push", "スタック深度", len(sm.states), "新しいステート数", len(sm.lastTransition.NewStates))
 		sm._Push(world, sm.lastTransition.NewStates)
 	case TransSwitch:
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Switch", "スタック深度", len(sm.states), "新しいステート", getStateName(sm.lastTransition.NewStates[0]))
 		sm._Switch(world, sm.lastTransition.NewStates)
 	case TransReplace:
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Replace", "スタック深度", len(sm.states), "新しいステート数", len(sm.lastTransition.NewStates))
 		sm._Replace(world, sm.lastTransition.NewStates)
 	case TransQuit:
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Quit", "スタック深度", len(sm.states))
 		sm._Quit(world)
 	}
 
@@ -103,27 +117,36 @@ func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image) {
 
 // Remove the active state and resume the next state
 func (sm *StateMachine) _Pop(world w.World) {
-	sm.states[len(sm.states)-1].OnStop(world)
+	currentState := sm.states[len(sm.states)-1]
+	sm.logger.Debug("ステート終了", "ステート", getStateName(currentState))
+	currentState.OnStop(world)
 	sm.states = sm.states[:len(sm.states)-1]
 
 	if len(sm.states) > 0 {
+		resumeState := sm.states[len(sm.states)-1]
+		sm.logger.Debug("ステート再開", "ステート", getStateName(resumeState), "新しいスタック深度", len(sm.states))
 		// 共通のOnResume処理を実行
-		hookOnResume(sm.states[len(sm.states)-1], world)
+		hookOnResume(resumeState, world)
 		// 各stateのOnResumeを実行
-		sm.states[len(sm.states)-1].OnResume(world)
+		resumeState.OnResume(world)
 	}
 }
 
 // Pause the active state and add new states to the stack
 func (sm *StateMachine) _Push(world w.World, newStates []State) {
 	if len(newStates) > 0 {
-		sm.states[len(sm.states)-1].OnPause(world)
+		currentState := sm.states[len(sm.states)-1]
+		sm.logger.Debug("ステート一時停止", "ステート", getStateName(currentState))
+		currentState.OnPause(world)
 
 		for _, state := range newStates[:len(newStates)-1] {
+			sm.logger.Debug("ステート開始（一時停止）", "ステート", getStateName(state))
 			state.OnStart(world)
 			state.OnPause(world)
 		}
-		newStates[len(newStates)-1].OnStart(world)
+		activeState := newStates[len(newStates)-1]
+		sm.logger.Debug("ステート開始（アクティブ）", "ステート", getStateName(activeState), "新しいスタック深度", len(sm.states)+len(newStates))
+		activeState.OnStart(world)
 
 		sm.states = append(sm.states, newStates...)
 	}
@@ -132,37 +155,55 @@ func (sm *StateMachine) _Push(world w.World, newStates []State) {
 // Remove the active state and replace it by a new one
 func (sm *StateMachine) _Switch(world w.World, newStates []State) {
 	if len(newStates) != 1 {
+		sm.logger.Error("Switch遷移でのステート数が不正", "期待値", 1, "実際の値", len(newStates))
 		log.Fatal()
 	}
 
-	sm.states[len(sm.states)-1].OnStop(world)
-	newStates[0].OnStart(world)
-	sm.states[len(sm.states)-1] = newStates[0]
+	currentState := sm.states[len(sm.states)-1]
+	newState := newStates[0]
+	sm.logger.Debug("ステート切り替え", "旧ステート", getStateName(currentState), "新ステート", getStateName(newState))
+	
+	currentState.OnStop(world)
+	newState.OnStart(world)
+	sm.states[len(sm.states)-1] = newState
 }
 
 // Remove all states and insert a new stack
 func (sm *StateMachine) _Replace(world w.World, newStates []State) {
+	sm.logger.Debug("全ステート置換開始", "現在のスタック数", len(sm.states), "新しいスタック数", len(newStates))
+	
 	for len(sm.states) > 0 {
-		sm.states[len(sm.states)-1].OnStop(world)
+		currentState := sm.states[len(sm.states)-1]
+		sm.logger.Debug("ステート終了（置換）", "ステート", getStateName(currentState))
+		currentState.OnStop(world)
 		sm.states = sm.states[:len(sm.states)-1]
 	}
 
 	if len(newStates) > 0 {
 		for _, state := range newStates[:len(newStates)-1] {
+			sm.logger.Debug("ステート開始（一時停止）", "ステート", getStateName(state))
 			state.OnStart(world)
 			state.OnPause(world)
 		}
-		newStates[len(newStates)-1].OnStart(world)
+		activeState := newStates[len(newStates)-1]
+		sm.logger.Debug("ステート開始（アクティブ）", "ステート", getStateName(activeState))
+		activeState.OnStart(world)
 	}
 	sm.states = newStates
 }
 
 // Remove all states and quit
 func (sm *StateMachine) _Quit(world w.World) {
+	sm.logger.Debug("アプリケーション終了開始", "現在のスタック数", len(sm.states))
+	
 	for len(sm.states) > 0 {
-		sm.states[len(sm.states)-1].OnStop(world)
+		currentState := sm.states[len(sm.states)-1]
+		sm.logger.Debug("ステート終了（終了）", "ステート", getStateName(currentState))
+		currentState.OnStop(world)
 		sm.states = sm.states[:len(sm.states)-1]
 	}
+	
+	sm.logger.Debug("アプリケーション終了")
 	os.Exit(0)
 }
 
@@ -186,4 +227,12 @@ func (sm *StateMachine) GetCurrentState() State {
 // GetStateCount は状態スタックの要素数を返す（テスト用）
 func (sm *StateMachine) GetStateCount() int {
 	return len(sm.states)
+}
+
+// getStateName はステートの型名を取得する
+func getStateName(state State) string {
+	if state == nil {
+		return "nil"
+	}
+	return reflect.TypeOf(state).String()
 }
