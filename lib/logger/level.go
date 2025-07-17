@@ -29,7 +29,7 @@ func (l Level) String() string {
 	}
 }
 
-// parseLevel は文字列からレベルを解析する
+// parseLevel は文字列(環境変数由来)からレベルを解析する
 func parseLevel(s string) Level {
 	switch s {
 	case "debug", "DEBUG":

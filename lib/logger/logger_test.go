@@ -26,9 +26,9 @@ func captureOutput(f func()) string {
 }
 
 func TestLoggerNew(t *testing.T) {
-	logger := New(ContextBattle)
-	if logger.context != ContextBattle {
-		t.Errorf("期待値: %s, 実際: %s", ContextBattle, logger.context)
+	logger := New(CategoryBattle)
+	if logger.category != CategoryBattle {
+		t.Errorf("期待値: %s, 実際: %s", CategoryBattle, logger.category)
 	}
 	if len(logger.fields) != 0 {
 		t.Errorf("fieldsは空であるべき")
@@ -36,7 +36,7 @@ func TestLoggerNew(t *testing.T) {
 }
 
 func TestLoggerWithField(t *testing.T) {
-	logger := New(ContextBattle)
+	logger := New(CategoryBattle)
 	newLogger := logger.WithField("key", "value")
 
 	if len(logger.fields) != 0 {
@@ -48,7 +48,7 @@ func TestLoggerWithField(t *testing.T) {
 }
 
 func TestLoggerWithFields(t *testing.T) {
-	logger := New(ContextBattle)
+	logger := New(CategoryBattle)
 	fields := map[string]interface{}{
 		"key1": "value1",
 		"key2": 42,
@@ -66,13 +66,13 @@ func TestLoggerWithFields(t *testing.T) {
 func TestLogLevelFiltering(t *testing.T) {
 	// テスト用の設定
 	SetConfig(Config{
-		DefaultLevel:  LevelInfo,
-		ContextLevels: make(map[Context]Level),
-		TimeFormat:    "2006-01-02T15:04:05.000Z",
+		DefaultLevel:   LevelInfo,
+		CategoryLevels: make(map[Category]Level),
+		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
-	logger := New(ContextBattle)
+	logger := New(CategoryBattle)
 
 	// Debugログは出力されない
 	output := captureOutput(func() {
@@ -92,44 +92,44 @@ func TestLogLevelFiltering(t *testing.T) {
 }
 
 func TestContextLevelFiltering(t *testing.T) {
-	// コンテキスト別設定
+	// カテゴリ別設定
 	SetConfig(Config{
 		DefaultLevel: LevelWarn,
-		ContextLevels: map[Context]Level{
-			ContextBattle: LevelDebug,
+		CategoryLevels: map[Category]Level{
+			CategoryBattle: LevelDebug,
 		},
 		TimeFormat: "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
-	// Battleコンテキストはデバッグレベルが有効
-	battleLogger := New(ContextBattle)
+	// Battleカテゴリはデバッグレベルが有効
+	battleLogger := New(CategoryBattle)
 	output := captureOutput(func() {
 		battleLogger.Debug("戦闘デバッグ")
 	})
 	if output == "" {
-		t.Errorf("Battleコンテキストのデバッグログは出力されるべき")
+		t.Errorf("Battleカテゴリのデバッグログは出力されるべき")
 	}
 
-	// Moveコンテキストはデフォルト（Warn）レベル
-	moveLogger := New(ContextMove)
+	// Moveカテゴリはデフォルト（Warn）レベル
+	moveLogger := New(CategoryMove)
 	output = captureOutput(func() {
 		moveLogger.Info("移動情報")
 	})
 	if output != "" {
-		t.Errorf("Moveコンテキストの情報ログは出力されないべき")
+		t.Errorf("Moveカテゴリの情報ログは出力されないべき")
 	}
 }
 
 func TestJSONOutput(t *testing.T) {
 	SetConfig(Config{
-		DefaultLevel:  LevelDebug,
-		ContextLevels: make(map[Context]Level),
-		TimeFormat:    "2006-01-02T15:04:05.000Z",
+		DefaultLevel:   LevelDebug,
+		CategoryLevels: make(map[Category]Level),
+		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
-	logger := New(ContextBattle)
+	logger := New(CategoryBattle)
 	output := captureOutput(func() {
 		logger.Info("テストメッセージ", "key1", "value1", "key2", 42)
 	})
@@ -144,8 +144,8 @@ func TestJSONOutput(t *testing.T) {
 	if entry["level"] != "INFO" {
 		t.Errorf("levelが正しくない: %v", entry["level"])
 	}
-	if entry["context"] != "battle" {
-		t.Errorf("contextが正しくない: %v", entry["context"])
+	if entry["category"] != "battle" {
+		t.Errorf("categoryが正しくない: %v", entry["category"])
 	}
 	if entry["message"] != "テストメッセージ" {
 		t.Errorf("messageが正しくない: %v", entry["message"])
@@ -162,36 +162,36 @@ func TestIsDebugEnabled(t *testing.T) {
 	tests := []struct {
 		name          string
 		config        Config
-		context       Context
+		category      Category
 		expectEnabled bool
 	}{
 		{
 			name: "デフォルトレベルがDebug",
 			config: Config{
-				DefaultLevel:  LevelDebug,
-				ContextLevels: make(map[Context]Level),
+				DefaultLevel:   LevelDebug,
+				CategoryLevels: make(map[Category]Level),
 			},
-			context:       ContextBattle,
+			category:      CategoryBattle,
 			expectEnabled: true,
 		},
 		{
 			name: "デフォルトレベルがInfo",
 			config: Config{
-				DefaultLevel:  LevelInfo,
-				ContextLevels: make(map[Context]Level),
+				DefaultLevel:   LevelInfo,
+				CategoryLevels: make(map[Category]Level),
 			},
-			context:       ContextBattle,
+			category:      CategoryBattle,
 			expectEnabled: false,
 		},
 		{
-			name: "コンテキスト別設定でDebug有効",
+			name: "カテゴリ別設定でDebug有効",
 			config: Config{
 				DefaultLevel: LevelInfo,
-				ContextLevels: map[Context]Level{
-					ContextBattle: LevelDebug,
+				CategoryLevels: map[Category]Level{
+					CategoryBattle: LevelDebug,
 				},
 			},
-			context:       ContextBattle,
+			category:      CategoryBattle,
 			expectEnabled: true,
 		},
 	}
@@ -201,7 +201,7 @@ func TestIsDebugEnabled(t *testing.T) {
 			SetConfig(tt.config)
 			defer ResetConfig()
 
-			logger := New(tt.context)
+			logger := New(tt.category)
 			if logger.IsDebugEnabled() != tt.expectEnabled {
 				t.Errorf("期待値: %v, 実際: %v", tt.expectEnabled, logger.IsDebugEnabled())
 			}
@@ -237,15 +237,15 @@ func TestParseLevel(t *testing.T) {
 	}
 }
 
-func TestParseContextLevels(t *testing.T) {
+func TestParseCategoryLevels(t *testing.T) {
 	input := "battle=debug,render=warn,invalid"
-	result := parseContextLevels(input)
+	result := parseCategoryLevels(input)
 
-	if result[ContextBattle] != LevelDebug {
-		t.Errorf("battleコンテキストのレベルが正しくない")
+	if result[CategoryBattle] != LevelDebug {
+		t.Errorf("battleカテゴリのレベルが正しくない")
 	}
-	if result[ContextRender] != LevelWarn {
-		t.Errorf("renderコンテキストのレベルが正しくない")
+	if result[CategoryRender] != LevelWarn {
+		t.Errorf("renderカテゴリのレベルが正しくない")
 	}
 	if _, exists := result["invalid"]; exists {
 		t.Errorf("無効な形式は無視されるべき")
@@ -254,13 +254,13 @@ func TestParseContextLevels(t *testing.T) {
 
 func TestLoggerOutput(t *testing.T) {
 	SetConfig(Config{
-		DefaultLevel:  LevelDebug,
-		ContextLevels: make(map[Context]Level),
-		TimeFormat:    "2006-01-02T15:04:05.000Z",
+		DefaultLevel:   LevelDebug,
+		CategoryLevels: make(map[Category]Level),
+		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
-	logger := New(ContextBattle).WithField("session", "test123")
+	logger := New(CategoryBattle).WithField("session", "test123")
 
 	// 各レベルのテスト
 	tests := []struct {

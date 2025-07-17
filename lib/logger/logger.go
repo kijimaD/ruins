@@ -8,25 +8,25 @@ import (
 	"time"
 )
 
-// Logger はコンテキスト付きロガー
+// Logger はカテゴリ付きロガー
 type Logger struct {
-	context Context
-	fields  map[string]interface{}
+	category Category
+	fields   map[string]interface{}
 }
 
 // New は新しいロガーを作成する
-func New(context Context) *Logger {
+func New(category Category) *Logger {
 	return &Logger{
-		context: context,
-		fields:  make(map[string]interface{}),
+		category: category,
+		fields:   make(map[string]interface{}),
 	}
 }
 
 // WithField はフィールドを追加した新しいロガーを返す
 func (l *Logger) WithField(key string, value interface{}) *Logger {
 	newLogger := &Logger{
-		context: l.context,
-		fields:  make(map[string]interface{}),
+		category: l.category,
+		fields:   make(map[string]interface{}),
 	}
 	for k, v := range l.fields {
 		newLogger.fields[k] = v
@@ -38,8 +38,8 @@ func (l *Logger) WithField(key string, value interface{}) *Logger {
 // WithFields は複数フィールドを追加した新しいロガーを返す
 func (l *Logger) WithFields(fields map[string]interface{}) *Logger {
 	newLogger := &Logger{
-		context: l.context,
-		fields:  make(map[string]interface{}),
+		category: l.category,
+		fields:   make(map[string]interface{}),
 	}
 	for k, v := range l.fields {
 		newLogger.fields[k] = v
@@ -78,23 +78,23 @@ func (l *Logger) Fatal(msg string, keysAndValues ...interface{}) {
 
 // IsDebugEnabled はデバッグレベルが有効かチェックする
 func (l *Logger) IsDebugEnabled() bool {
-	contextLevel, exists := globalConfig.ContextLevels[l.context]
+	categoryLevel, exists := globalConfig.CategoryLevels[l.category]
 	if !exists {
-		contextLevel = globalConfig.DefaultLevel
+		categoryLevel = globalConfig.DefaultLevel
 	}
-	return LevelDebug >= contextLevel
+	return LevelDebug >= categoryLevel
 }
 
 // log は実際のログ出力処理を行う
 func (l *Logger) log(level Level, msg string, keysAndValues ...interface{}) {
-	// コンテキスト別レベルチェック
-	contextLevel, exists := globalConfig.ContextLevels[l.context]
+	// カテゴリ別レベルチェック
+	categoryLevel, exists := globalConfig.CategoryLevels[l.category]
 	if !exists {
-		contextLevel = globalConfig.DefaultLevel
+		categoryLevel = globalConfig.DefaultLevel
 	}
 
 	// レベルが不足していれば早期リターン
-	if level < contextLevel {
+	if level < categoryLevel {
 		return
 	}
 
@@ -102,7 +102,7 @@ func (l *Logger) log(level Level, msg string, keysAndValues ...interface{}) {
 	entry := make(map[string]interface{})
 	entry["timestamp"] = time.Now().Format(globalConfig.TimeFormat)
 	entry["level"] = level.String()
-	entry["context"] = string(l.context)
+	entry["category"] = string(l.category)
 	entry["message"] = msg
 
 	// 呼び出し元情報を追加

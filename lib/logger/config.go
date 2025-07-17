@@ -10,8 +10,8 @@ type Config struct {
 	// デフォルトログレベル
 	DefaultLevel Level
 
-	// コンテキスト別ログレベル
-	ContextLevels map[Context]Level
+	// カテゴリ別ログレベル
+	CategoryLevels map[Category]Level
 
 	// タイムスタンプ形式
 	TimeFormat string
@@ -19,9 +19,9 @@ type Config struct {
 
 // デフォルト設定
 var defaultConfig = Config{
-	DefaultLevel:  LevelInfo,
-	ContextLevels: make(map[Context]Level),
-	TimeFormat:    "2006-01-02T15:04:05.000Z",
+	DefaultLevel:   LevelInfo,
+	CategoryLevels: make(map[Category]Level),
+	TimeFormat:     "2006-01-02T15:04:05.000Z",
 }
 
 // グローバル設定（初期化時に環境変数から読み込み）
@@ -36,24 +36,24 @@ func loadConfig() Config {
 		config.DefaultLevel = parseLevel(level)
 	}
 
-	// LOG_CONTEXTS環境変数 (例: "battle=debug,render=warn")
-	if contexts := os.Getenv("LOG_CONTEXTS"); contexts != "" {
-		config.ContextLevels = parseContextLevels(contexts)
+	// LOG_CATEGORIES環境変数 (例: "battle=debug,render=warn")
+	if categories := os.Getenv("LOG_CATEGORIES"); categories != "" {
+		config.CategoryLevels = parseCategoryLevels(categories)
 	}
 
 	return config
 }
 
-// parseContextLevels はコンテキスト別レベル設定を解析する
-func parseContextLevels(s string) map[Context]Level {
-	result := make(map[Context]Level)
+// parseCategoryLevels はカテゴリ別レベル設定を解析する
+func parseCategoryLevels(s string) map[Category]Level {
+	result := make(map[Category]Level)
 	pairs := strings.Split(s, ",")
 	for _, pair := range pairs {
 		parts := strings.Split(strings.TrimSpace(pair), "=")
 		if len(parts) == 2 {
-			context := Context(parts[0])
+			category := Category(parts[0])
 			level := parseLevel(parts[1])
-			result[context] = level
+			result[category] = level
 		}
 	}
 	return result
