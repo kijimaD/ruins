@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"fmt"
 	"math"
 	"math/rand/v2"
 
@@ -48,7 +49,10 @@ func BattleDropSystem(world w.World) DropResult {
 		world.Components.DropTable,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := world.Components.Name.Get(entity).(*gc.Name)
-		dt := rawMaster.GetDropTable(name.Name)
+		dt, err := rawMaster.GetDropTable(name.Name)
+		if err != nil {
+			panic(fmt.Sprintf("GetDropTable failed: %v", err))
+		}
 		for i := 0; i < 3; i++ {
 			cands = append(cands, dt.SelectByWeight())
 		}
@@ -69,7 +73,10 @@ func BattleDropSystem(world w.World) DropResult {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		enemyName := world.Components.Name.Get(entity).(*gc.Name)
 		enemyPools := world.Components.Pools.Get(entity).(*gc.Pools)
-		dt := rawMaster.GetDropTable(enemyName.Name)
+		dt, err := rawMaster.GetDropTable(enemyName.Name)
+		if err != nil {
+			panic(fmt.Sprintf("GetDropTable failed: %v", err))
+		}
 		world.Manager.Join(
 			world.Components.Name,
 			world.Components.FactionAlly,

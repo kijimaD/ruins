@@ -6,10 +6,12 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSetMaxHPSP(t *testing.T) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
 
 	tests := []struct {
 		name        string
@@ -110,7 +112,8 @@ func TestSetMaxHPSP(t *testing.T) {
 }
 
 func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
 
 	// 必要なコンポーネントがないエンティティ
 	entity := world.Manager.NewEntity()
@@ -125,7 +128,8 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 }
 
 func TestFullRecover(t *testing.T) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
 
 	// テスト用エンティティを作成
 	entity := world.Manager.NewEntity()

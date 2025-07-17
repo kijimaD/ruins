@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"log"
 	"runtime"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -58,8 +57,11 @@ Frees: %.2fMB
 }
 
 // InitWorld はゲームワールドを初期化する
-func InitWorld(minGameWidth int, minGameHeight int) w.World {
-	world := w.InitWorld(&gc.Components{})
+func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
+	world, err := w.InitWorld(&gc.Components{})
+	if err != nil {
+		return w.World{}, err
+	}
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
@@ -69,14 +71,14 @@ func InitWorld(minGameWidth int, minGameHeight int) w.World {
 	// Load sprite sheets
 	spriteSheets, err := resourceManager.LoadSpriteSheets()
 	if err != nil {
-		log.Fatal(err)
+		return w.World{}, err
 	}
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts
 	fonts, err := resourceManager.LoadFonts()
 	if err != nil {
-		log.Fatal(err)
+		return w.World{}, err
 	}
 	world.Resources.Fonts = &fonts
 
@@ -88,18 +90,18 @@ func InitWorld(minGameWidth int, minGameHeight int) w.World {
 	// load UI resources
 	uir, err := er.NewUIResources(defaultFont.FaceSource)
 	if err != nil {
-		log.Fatal(err)
+		return w.World{}, err
 	}
 	world.Resources.UIResources = uir
 
 	// load raws
 	rw, err := resourceManager.LoadRaws()
 	if err != nil {
-		log.Fatal(err)
+		return w.World{}, err
 	}
 	world.Resources.RawMaster = rw
 
 	world.Resources.Game = &gr.Game{}
 
-	return world
+	return world, nil
 }

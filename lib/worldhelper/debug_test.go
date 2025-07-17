@@ -5,11 +5,13 @@ import (
 
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestInitDebugData(t *testing.T) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
 
 	// 初期状態では味方メンバーは0人
 	memberCount := 0

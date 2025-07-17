@@ -7,6 +7,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // TestState はテスト用の状態実装
@@ -206,5 +207,7 @@ func TestStateMachineTransitions(t *testing.T) {
 // createTestWorld はテスト用のワールドを作成
 func createTestWorld() w.World {
 	// 適切なワールドを作成してInputSystemエラーを回避
-	return w.InitWorld(&gc.Components{})
+	world, err := w.InitWorld(&gc.Components{})
+	require.NoError(t, err)
+	return world
 }

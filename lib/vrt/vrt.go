@@ -76,7 +76,10 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 
 // RunTestGame はテストゲームを実行してスクリーンショットを保存する
 func RunTestGame(state es.State, outputPath string) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	if err != nil {
+		panic(fmt.Sprintf("InitWorld failed: %v", err))
+	}
 
 	worldhelper.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 	worldhelper.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)

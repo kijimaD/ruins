@@ -2,7 +2,6 @@ package components
 
 import (
 	"bytes"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -32,11 +31,11 @@ type Texture struct {
 func (t *Texture) UnmarshalText(text []byte) error {
 	bs, err := assets.FS.ReadFile(string(text))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	textureImage, _, err := ebitenutil.NewImageFromReader(bytes.NewReader(bs))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	t.Image = textureImage
 	return nil

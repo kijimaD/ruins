@@ -2,8 +2,6 @@
 package world
 
 import (
-	"log"
-
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/resources"
 
@@ -18,11 +16,11 @@ type World struct {
 }
 
 // InitWorld は初期化する
-func InitWorld(c *gc.Components) World {
+func InitWorld(c *gc.Components) (World, error) {
 	manager := ecs.NewManager()
 	err := c.InitializeComponents(manager)
 	if err != nil {
-		log.Fatal(err)
+		return World{}, err
 	}
 	resources := resources.InitResources()
 
@@ -30,5 +28,5 @@ func InitWorld(c *gc.Components) World {
 		Manager:    manager,
 		Components: c,
 		Resources:  resources,
-	}
+	}, nil
 }

@@ -12,6 +12,7 @@ import (
 	gs "github.com/kijimaD/ruins/lib/states"
 	ew "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // TestGameInitializationIntegration はゲーム初期化の統合テスト
@@ -21,7 +22,8 @@ func TestGameInitializationIntegration(t *testing.T) {
 		initialMemStats := getMemoryStats()
 
 		// 1. ワールドの初期化
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(t, err)
 
 		// 2. ワールドの基本検証
 		validateWorldInitialization(t, world)
@@ -47,7 +49,8 @@ func TestGameInitializationIntegration(t *testing.T) {
 
 	t.Run("部分的な初期化テスト", func(t *testing.T) {
 		// 最小限のリソースでの初期化テスト
-		world := ew.InitWorld(&gc.Components{})
+		world, err := ew.InitWorld(&gc.Components{})
+		require.NoError(t, err)
 		world.Resources.ScreenDimensions = &er.ScreenDimensions{
 			Width:  consts.MinGameWidth,
 			Height: consts.MinGameHeight,
@@ -65,7 +68,8 @@ func TestGameInitializationIntegration(t *testing.T) {
 func TestMainGameLifecycle(t *testing.T) {
 	t.Run("ゲームループの基本動作", func(t *testing.T) {
 		// 完全なワールドを使用（テスト用の最小限ワールドではUIリソースが不足）
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(t, err)
 		game := &MainGame{
 			World:        world,
 			StateMachine: es.Init(&gs.MainMenuState{}, world),
@@ -77,7 +81,7 @@ func TestMainGameLifecycle(t *testing.T) {
 		assert.Equal(t, consts.MinGameHeight, height, "レイアウト高さが正しくない")
 
 		// Update関数のテスト（エラーが発生しないことを確認）
-		err := game.Update()
+		err = game.Update()
 		assert.NoError(t, err, "Updateでエラーが発生")
 
 		// Draw関数のテスト（パニックしないことを確認）
@@ -89,7 +93,8 @@ func TestMainGameLifecycle(t *testing.T) {
 
 	t.Run("状態遷移の動作確認", func(t *testing.T) {
 		// 完全なワールドを使用
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(t, err)
 		initialState := &gs.MainMenuState{}
 		stateMachine := es.Init(initialState, world)
 
@@ -124,7 +129,8 @@ func TestMainGameLifecycle(t *testing.T) {
 // TestResourceIntegration はリソース統合テスト
 func TestResourceIntegration(t *testing.T) {
 	t.Run("全リソースタイプの読み込み確認", func(t *testing.T) {
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(t, err)
 
 		// リソースの基本構造確認
 		assert.NotNil(t, world.Resources, "リソース構造が初期化されていない")
@@ -155,7 +161,8 @@ func TestResourceIntegration(t *testing.T) {
 	})
 
 	t.Run("リソースの整合性確認", func(t *testing.T) {
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(t, err)
 
 		// フォントとフェイスの整合性
 		fonts := *world.Resources.Fonts
@@ -288,13 +295,15 @@ func BenchmarkGameInitialization(b *testing.B) {
 	b.Run("InitWorld", func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			_ = InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+			_, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+			require.NoError(b, err)
 		}
 	})
 
 	b.Run("StateMachineCreation", func(b *testing.B) {
 		// 完全なワールドを使用（テスト用最小限ワールドではUIリソース不足）
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(b, err)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			_ = es.Init(&gs.MainMenuState{}, world)
@@ -303,7 +312,8 @@ func BenchmarkGameInitialization(b *testing.B) {
 
 	b.Run("MainGameCreation", func(b *testing.B) {
 		// 完全なワールドを使用
-		world := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		require.NoError(b, err)
 		stateMachine := es.Init(&gs.MainMenuState{}, world)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -321,7 +331,8 @@ func TestGameInitializationTimeouts(t *testing.T) {
 		done := make(chan bool, 1)
 
 		go func() {
-			_ = InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+			_, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+			require.NoError(t, err)
 			done <- true
 		}()
 

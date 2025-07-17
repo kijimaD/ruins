@@ -1,6 +1,8 @@
 package worldhelper
 
 import (
+	"fmt"
+	
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/raw"
@@ -164,7 +166,11 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs
 func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	componentList.Game = append(componentList.Game, rawMaster.GenerateMember(name, inParty))
+	memberComp, err := rawMaster.GenerateMember(name, inParty)
+	if err != nil {
+		panic(fmt.Sprintf("GenerateMember failed: %v", err))
+	}
+	componentList.Game = append(componentList.Game, memberComp)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
 
@@ -176,7 +182,10 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
-	cl := rawMaster.GenerateEnemy(name)
+	cl, err := rawMaster.GenerateEnemy(name)
+	if err != nil {
+		panic(fmt.Sprintf("GenerateEnemy failed: %v", err))
+	}
 	componentList.Game = append(
 		componentList.Game,
 		cl,

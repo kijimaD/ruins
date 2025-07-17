@@ -17,7 +17,8 @@ description = "半分程度回復する"
 name = "回復薬"
 description = "半分程度回復する"
 `
-	raw := Load(str)
+	raw, err := Load(str)
+	assert.NoError(t, err)
 
 	expect := Master{
 		Raws: Raws{
@@ -45,7 +46,8 @@ func TestGenerateItem(t *testing.T) {
 [[item]]
 name = "リペア"
 `
-	raw := Load(str)
+	raw, err := Load(str)
+	assert.NoError(t, err)
 	entity, err := raw.GenerateItem("リペア", gc.ItemLocationInBackpack)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.Name)
