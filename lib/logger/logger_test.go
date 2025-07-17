@@ -17,11 +17,11 @@ func captureOutput(f func()) string {
 
 	f()
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = old
 
 	var buf bytes.Buffer
-	io.Copy(&buf, r)
+	_, _ = io.Copy(&buf, r)
 	return buf.String()
 }
 
@@ -141,7 +141,8 @@ func TestJSONOutput(t *testing.T) {
 	}
 
 	// 必須フィールドの確認
-	if entry["level"] != "INFO" {
+	const expectedLevel = "INFO"
+	if entry["level"] != expectedLevel {
 		t.Errorf("levelが正しくない: %v", entry["level"])
 	}
 	if entry["category"] != "battle" {

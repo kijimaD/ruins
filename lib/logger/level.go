@@ -4,10 +4,15 @@ package logger
 type Level int
 
 const (
+	// LevelDebug はデバッグレベルのログ
 	LevelDebug Level = iota
+	// LevelInfo は情報レベルのログ
 	LevelInfo
+	// LevelWarn は警告レベルのログ
 	LevelWarn
+	// LevelError はエラーレベルのログ
 	LevelError
+	// LevelFatal は致命的エラーレベルのログ
 	LevelFatal
 )
 
