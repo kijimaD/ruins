@@ -53,7 +53,7 @@ func (ts *TestState) Draw(_ w.World, _ *ebiten.Image) {
 // TestGetStatesMethods はGetStatesメソッド群のテスト
 func TestGetStatesMethods(t *testing.T) {
 	t.Run("初期状態での動作確認", func(t *testing.T) {
-		world := createTestWorld()
+		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 
 		// StateMachineの初期化
@@ -78,7 +78,7 @@ func TestGetStatesMethods(t *testing.T) {
 	})
 
 	t.Run("状態の不変性確認", func(t *testing.T) {
-		world := createTestWorld()
+		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
@@ -116,7 +116,7 @@ func TestGetStatesMethods(t *testing.T) {
 // TestStateMachineTransitions は状態遷移のテスト
 func TestStateMachineTransitions(t *testing.T) {
 	t.Run("Push遷移のテスト", func(t *testing.T) {
-		world := createTestWorld()
+		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
@@ -148,7 +148,7 @@ func TestStateMachineTransitions(t *testing.T) {
 	})
 
 	t.Run("Pop遷移のテスト", func(t *testing.T) {
-		world := createTestWorld()
+		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
@@ -178,7 +178,7 @@ func TestStateMachineTransitions(t *testing.T) {
 	})
 
 	t.Run("Switch遷移のテスト", func(t *testing.T) {
-		world := createTestWorld()
+		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
@@ -205,7 +205,7 @@ func TestStateMachineTransitions(t *testing.T) {
 }
 
 // createTestWorld はテスト用のワールドを作成
-func createTestWorld() w.World {
+func createTestWorld(t *testing.T) w.World {
 	// 適切なワールドを作成してInputSystemエラーを回避
 	world, err := w.InitWorld(&gc.Components{})
 	require.NoError(t, err)
