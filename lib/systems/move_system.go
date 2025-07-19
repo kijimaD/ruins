@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"log"
 	"math"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -46,11 +47,19 @@ func MoveSystem(world w.World) {
 
 		if tileEntity.HasComponent(world.Components.Warp) {
 			warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
+			processor := effects.NewProcessor()
+
 			switch warp.Mode {
 			case gc.WarpModeNext:
-				effects.AddEffect(nil, effects.WarpNext{}, effects.None{})
+				warpEffect := effects.MovementWarpNext{}
+				processor.AddEffect(warpEffect, nil)
 			case gc.WarpModeEscape:
-				effects.AddEffect(nil, effects.WarpEscape{}, effects.None{})
+				escapeEffect := effects.MovementWarpEscape{}
+				processor.AddEffect(escapeEffect, nil)
+			}
+
+			if err := processor.Execute(world); err != nil {
+				log.Printf("ワープエフェクト実行エラー: %v", err)
 			}
 		}
 	}))

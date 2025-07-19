@@ -162,7 +162,7 @@ func (sm *StateMachine) _Switch(world w.World, newStates []State) {
 	currentState := sm.states[len(sm.states)-1]
 	newState := newStates[0]
 	sm.logger.Debug("ステート切り替え", "旧ステート", getStateName(currentState), "新ステート", getStateName(newState))
-	
+
 	currentState.OnStop(world)
 	newState.OnStart(world)
 	sm.states[len(sm.states)-1] = newState
@@ -171,7 +171,7 @@ func (sm *StateMachine) _Switch(world w.World, newStates []State) {
 // Remove all states and insert a new stack
 func (sm *StateMachine) _Replace(world w.World, newStates []State) {
 	sm.logger.Debug("全ステート置換開始", "現在のスタック数", len(sm.states), "新しいスタック数", len(newStates))
-	
+
 	for len(sm.states) > 0 {
 		currentState := sm.states[len(sm.states)-1]
 		sm.logger.Debug("ステート終了（置換）", "ステート", getStateName(currentState))
@@ -195,14 +195,14 @@ func (sm *StateMachine) _Replace(world w.World, newStates []State) {
 // Remove all states and quit
 func (sm *StateMachine) _Quit(world w.World) {
 	sm.logger.Debug("アプリケーション終了開始", "現在のスタック数", len(sm.states))
-	
+
 	for len(sm.states) > 0 {
 		currentState := sm.states[len(sm.states)-1]
 		sm.logger.Debug("ステート終了（終了）", "ステート", getStateName(currentState))
 		currentState.OnStop(world)
 		sm.states = sm.states[:len(sm.states)-1]
 	}
-	
+
 	sm.logger.Debug("アプリケーション終了")
 	os.Exit(0)
 }
