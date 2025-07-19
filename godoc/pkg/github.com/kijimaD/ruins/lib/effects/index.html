@@ -94,6 +94,39 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package effects はゲームエフェクトシステムの実装を提供する。
+<p>このパッケージは型安全で拡張性の高いエフェクトシステムを提供します。
+主要な設計原則:
+<p>1. 型安全性: Effectインターフェースによる型安全なエフェクト管理
+2. 責務分離: エフェクト定義、ターゲット選択、実行処理の明確な分離
+3. テスタビリティ: 各エフェクトの独立したテストが可能
+4. 拡張性: 新しいエフェクトタイプの簡単な追加
+<p>基本的な使用方法:
+<pre>processor := effects.NewProcessor()
+
+// ダメージエフェクト
+damage := effects.Damage{Amount: 50, Source: effects.DamageSourceWeapon}
+processor.AddEffect(damage, &amp;attacker, target)
+
+// ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）
+healing := effects.Healing{Amount: gc.NumeralAmount{Numeral: 30}}
+processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetParty{}, &amp;gamelog.BattleLog, world)
+
+// 非戦闘時の回復（ゲームログ出力なし）
+processor.AddTargetedEffect(healing, &amp;healer, effects.TargetParty{}, world)
+
+// エフェクト実行
+if err := processor.Execute(world); err != nil {
+    log.Printf(&quot;エフェクト実行エラー: %v&quot;, err)
+}
+</pre>
+<p>エフェクトタイプ:
+<p>combat.go    - 戦闘関連エフェクト（ダメージ、Healing統合型、スタミナ）
+recovery.go  - 非戦闘時の全回復エフェクト（FullRecoveryHP/SP）
+movement.go  - 移動関連エフェクト（ワープ、脱出）
+item.go      - アイテム関連エフェクト（使用、消費）
+<p>パッケージ構成:
+<p>processor.go - エフェクト実行管理システム
+target.go    - ターゲット選択システム
 
 				
 			</div>
@@ -111,60 +144,109 @@
 			<dl>
 			
 			
-				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
 				
-				<dd><a href="index.html#AddEffect">func AddEffect(creator *ecs.Entity, effectType EffectType, targets Targets)</a></dd>
+				<dd><a href="index.html#ConsumeItem">type ConsumeItem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConsumeItem.Apply">func (c ConsumeItem) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConsumeItem.String">func (c ConsumeItem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConsumeItem.Validate">func (c ConsumeItem) Validate(world w.World, _ *Scope) error</a></dd>
+				
 			
 				
-				<dd><a href="index.html#AffectEntity">func AffectEntity(world w.World, es EffectSpawner, target *ecs.Entity)</a></dd>
+				<dd><a href="index.html#ConsumeStamina">type ConsumeStamina</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConsumeStamina.Apply">func (c ConsumeStamina) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConsumeStamina.String">func (c ConsumeStamina) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConsumeStamina.Validate">func (c ConsumeStamina) Validate(world w.World, scope *Scope) error</a></dd>
+				
 			
 				
-				<dd><a href="index.html#ConsumeStamina">func ConsumeStamina(world w.World, consume EffectSpawner, target ecs.Entity)</a></dd>
-			
+				<dd><a href="index.html#CreateItem">type CreateItem</a></dd>
 				
-				<dd><a href="index.html#HealDamage">func HealDamage(world w.World, healing EffectSpawner, target ecs.Entity)</a></dd>
-			
 				
-				<dd><a href="index.html#InflictDamage">func InflictDamage(world w.World, damage EffectSpawner, target ecs.Entity)</a></dd>
-			
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CreateItem.Apply">func (c CreateItem) Apply(world w.World, scope *Scope) error</a></dd>
 				
-				<dd><a href="index.html#ItemTrigger">func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.World)</a></dd>
-			
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CreateItem.String">func (c CreateItem) String() string</a></dd>
 				
-				<dd><a href="index.html#RecoverStamina">func RecoverStamina(world w.World, recoveryEffect EffectSpawner, target ecs.Entity)</a></dd>
-			
-				
-				<dd><a href="index.html#RunEffectQueue">func RunEffectQueue(world w.World)</a></dd>
-			
-				
-				<dd><a href="index.html#TargetApplicator">func TargetApplicator(world w.World, es EffectSpawner)</a></dd>
-			
-				
-				<dd><a href="index.html#WarpEscapeTask">func WarpEscapeTask(world w.World)</a></dd>
-			
-				
-				<dd><a href="index.html#WarpNextTask">func WarpNextTask(world w.World)</a></dd>
-			
-			
-				
-				<dd><a href="index.html#ConsumptionStamina">type ConsumptionStamina</a></dd>
-				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CreateItem.Validate">func (c CreateItem) Validate(_ w.World, _ *Scope) error</a></dd>
 				
 			
 				
 				<dd><a href="index.html#Damage">type Damage</a></dd>
 				
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Damage.Apply">func (d Damage) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Damage.String">func (d Damage) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Damage.Validate">func (d Damage) Validate(world w.World, scope *Scope) error</a></dd>
+				
 			
 				
-				<dd><a href="index.html#EffectSpawner">type EffectSpawner</a></dd>
+				<dd><a href="index.html#DamageSource">type DamageSource</a></dd>
 				
 				
 			
 				
-				<dd><a href="index.html#EffectType">type EffectType</a></dd>
+				<dd><a href="index.html#Effect">type Effect</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#EffectExecution">type EffectExecution</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#FullRecoveryHP">type FullRecoveryHP</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FullRecoveryHP.Apply">func (f FullRecoveryHP) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FullRecoveryHP.String">func (f FullRecoveryHP) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FullRecoveryHP.Validate">func (f FullRecoveryHP) Validate(world w.World, scope *Scope) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#FullRecoverySP">type FullRecoverySP</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FullRecoverySP.Apply">func (f FullRecoverySP) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FullRecoverySP.String">func (f FullRecoverySP) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FullRecoverySP.Validate">func (f FullRecoverySP) Validate(world w.World, scope *Scope) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#GameLogAppender">type GameLogAppender</a></dd>
 				
 				
 			
@@ -172,45 +254,195 @@
 				<dd><a href="index.html#Healing">type Healing</a></dd>
 				
 				
-			
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Healing.Apply">func (h Healing) Apply(world w.World, scope *Scope) error</a></dd>
 				
-				<dd><a href="index.html#ItemUse">type ItemUse</a></dd>
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Healing.String">func (h Healing) String() string</a></dd>
 				
-				
-			
-				
-				<dd><a href="index.html#None">type None</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#Party">type Party</a></dd>
-				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Healing.Validate">func (h Healing) Validate(world w.World, scope *Scope) error</a></dd>
 				
 			
 				
-				<dd><a href="index.html#RecoveryStamina">type RecoveryStamina</a></dd>
+				<dd><a href="index.html#MovementWarpEscape">type MovementWarpEscape</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpEscape.Apply">func (m MovementWarpEscape) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpEscape.String">func (m MovementWarpEscape) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpEscape.Validate">func (m MovementWarpEscape) Validate(_ w.World, _ *Scope) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MovementWarpNext">type MovementWarpNext</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpNext.Apply">func (m MovementWarpNext) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpNext.String">func (m MovementWarpNext) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpNext.Validate">func (m MovementWarpNext) Validate(_ w.World, _ *Scope) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MovementWarpToFloor">type MovementWarpToFloor</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpToFloor.Apply">func (m MovementWarpToFloor) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpToFloor.String">func (m MovementWarpToFloor) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MovementWarpToFloor.Validate">func (m MovementWarpToFloor) Validate(_ w.World, _ *Scope) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Processor">type Processor</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewProcessor">func NewProcessor() *Processor</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.AddEffect">func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs.Entity)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.AddEffectWithLogger">func (p *Processor) AddEffectWithLogger(effect Effect, creator *ecs.Entity, logger GameLogAppender, targets ...ecs.Entity)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.AddTargetedEffect">func (p *Processor) AddTargetedEffect(effect Effect, creator *ecs.Entity, selector TargetSelector, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.AddTargetedEffectWithLogger">func (p *Processor) AddTargetedEffectWithLogger(effect Effect, creator *ecs.Entity, selector TargetSelector, logger GameLogAppender, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.Clear">func (p *Processor) Clear()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.Execute">func (p *Processor) Execute(world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.IsEmpty">func (p *Processor) IsEmpty() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.QueueSize">func (p *Processor) QueueSize() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.QueuedEffects">func (p *Processor) QueuedEffects() []Effect</a></dd>
+				
+			
+				
+				<dd><a href="index.html#RestoreStamina">type RestoreStamina</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RestoreStamina.Apply">func (r RestoreStamina) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RestoreStamina.String">func (r RestoreStamina) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RestoreStamina.Validate">func (r RestoreStamina) Validate(world w.World, scope *Scope) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Scope">type Scope</a></dd>
 				
 				
 			
 				
-				<dd><a href="index.html#Single">type Single</a></dd>
+				<dd><a href="index.html#TargetAliveParty">type TargetAliveParty</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetAliveParty.SelectTargets">func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetAliveParty.String">func (a TargetAliveParty) String() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetAllEnemies">type TargetAllEnemies</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetAllEnemies.SelectTargets">func (a TargetAllEnemies) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetAllEnemies.String">func (a TargetAllEnemies) String() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetDeadParty">type TargetDeadParty</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetDeadParty.SelectTargets">func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetDeadParty.String">func (d TargetDeadParty) String() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetNone">type TargetNone</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetNone.SelectTargets">func (n TargetNone) SelectTargets(_ w.World) ([]ecs.Entity, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetNone.String">func (n TargetNone) String() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetParty">type TargetParty</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetParty.SelectTargets">func (p TargetParty) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetParty.String">func (p TargetParty) String() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TargetSelector">type TargetSelector</a></dd>
 				
 				
 			
 				
-				<dd><a href="index.html#Targets">type Targets</a></dd>
+				<dd><a href="index.html#TargetSingle">type TargetSingle</a></dd>
 				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetSingle.SelectTargets">func (s TargetSingle) SelectTargets(_ w.World) ([]ecs.Entity, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetSingle.String">func (s TargetSingle) String() string</a></dd>
 				
 			
 				
-				<dd><a href="index.html#WarpEscape">type WarpEscape</a></dd>
+				<dd><a href="index.html#UseItem">type UseItem</a></dd>
 				
 				
-			
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#UseItem.Apply">func (u UseItem) Apply(world w.World, scope *Scope) error</a></dd>
 				
-				<dd><a href="index.html#WarpNext">type WarpNext</a></dd>
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#UseItem.String">func (u UseItem) String() string</a></dd>
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#UseItem.Validate">func (u UseItem) Validate(world w.World, scope *Scope) error</a></dd>
 				
 			
 			
@@ -224,17 +456,25 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go">combat.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go">damage.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/doc.go">doc.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go">effects.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/healing.go">healing.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go">queue.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go">item.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go">movement.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go">processor.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go">recovery.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go">stamina.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go">target.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go">task.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/trigger.go">trigger.go</a>
 			
 			</span>
 			</p>
@@ -246,181 +486,83 @@
 
 		
 		
-			<h2 id="pkg-variables">Variables</h2>
-			
-				<p>EffectQueue はエフェクトのキュー
-
-				<pre>var <span id="EffectQueue">EffectQueue</span> []<a href="index.html#EffectSpawner">EffectSpawner</a></pre>
-			
 		
 		
 			
 			
-			<h2 id="AddEffect">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=533:608#L17">AddEffect</a>
-				<a class="permalink" href="index.html#AddEffect">&#xb6;</a>
+			<h2 id="ConsumeItem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=3245:3317#L85">ConsumeItem</a>
+				<a class="permalink" href="index.html#ConsumeItem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AddEffect(creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, effectType <a href="index.html#EffectType">EffectType</a>, targets <a href="index.html#Targets">Targets</a>)</pre>
-			<p>AddEffect はエフェクトをキューに追加する
+			<p>ConsumeItem は単純にアイテムを消費するエフェクト（効果なし）
+
+			<pre>type ConsumeItem struct {
+<span id="ConsumeItem.Item"></span>    Item <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a> <span class="comment">// 消費するアイテム</span>
+}
+</pre>
+
+			
+
+			
 
 			
 			
+			
 
+			
+
+			
+				
+				<h3 id="ConsumeItem.Apply">func (ConsumeItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=3380:3441#L90">Apply</a>
+					<a class="permalink" href="index.html#ConsumeItem.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#ConsumeItem">ConsumeItem</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はアイテム消費エフェクトを適用する
+
+				
+				
+				
+			
+				
+				<h3 id="ConsumeItem.String">func (ConsumeItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=3925:3961#L108">String</a>
+					<a class="permalink" href="index.html#ConsumeItem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#ConsumeItem">ConsumeItem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ConsumeItem.Validate">func (ConsumeItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=3638:3698#L100">Validate</a>
+					<a class="permalink" href="index.html#ConsumeItem.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#ConsumeItem">ConsumeItem</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はアイテム消費エフェクトの妥当性を検証する
+
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="AffectEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=2135:2205#L73">AffectEntity</a>
-				<a class="permalink" href="index.html#AffectEntity">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func AffectEntity(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, es <a href="index.html#EffectSpawner">EffectSpawner</a>, target *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			<p>AffectEntity はエンティティに効果を適用する
-
-			
-			
-
-		
-			
-			
-			<h2 id="ConsumeStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=1465:1541#L40">ConsumeStamina</a>
+			<h2 id="ConsumeStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=238:331#L3">ConsumeStamina</a>
 				<a class="permalink" href="index.html#ConsumeStamina">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func ConsumeStamina(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, consume <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			<p>ConsumeStamina はスタミナを消費する
+			<p>ConsumeStamina はスタミナを消費するエフェクト
 
-			
-			
-
-		
-			
-			
-			<h2 id="HealDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=898:970#L23">HealDamage</a>
-				<a class="permalink" href="index.html#HealDamage">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func HealDamage(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, healing <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			<p>HealDamage はダメージを回復する
-
-			
-			
-
-		
-			
-			
-			<h2 id="InflictDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=333:407#L6">InflictDamage</a>
-				<a class="permalink" href="index.html#InflictDamage">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func InflictDamage(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, damage <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			<p>InflictDamage はダメージを与える
-
-			
-			
-
-		
-			
-			
-			<h2 id="ItemTrigger">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/trigger.go?s=298:384#L3">ItemTrigger</a>
-				<a class="permalink" href="index.html#ItemTrigger">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func ItemTrigger(creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, item <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, targets <a href="index.html#Targets">Targets</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>ItemTrigger はアイテムについたComponentからEffectを登録する
-消費アイテムはなくなる
-
-			
-			
-
-		
-			
-			
-			<h2 id="RecoverStamina">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2032:2115#L57">RecoverStamina</a>
-				<a class="permalink" href="index.html#RecoverStamina">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func RecoverStamina(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, recoveryEffect <a href="index.html#EffectSpawner">EffectSpawner</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
-			<p>RecoverStamina はスタミナを回復する
-
-			
-			
-
-		
-			
-			
-			<h2 id="RunEffectQueue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=817:851#L26">RunEffectQueue</a>
-				<a class="permalink" href="index.html#RunEffectQueue">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func RunEffectQueue(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>RunEffectQueue はキューに貯められたEffectSpawnerを処理する
-
-			
-			
-
-		
-			
-			
-			<h2 id="TargetApplicator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=1128:1182#L39">TargetApplicator</a>
-				<a class="permalink" href="index.html#TargetApplicator">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func TargetApplicator(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, es <a href="index.html#EffectSpawner">EffectSpawner</a>)</pre>
-			<p>TargetApplicator は単数or複数Targetを処理する。最終的にAffectEntityが呼ばれるのは同じ
-
-			
-			
-
-		
-			
-			
-			<h2 id="WarpEscapeTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2837:2871#L80">WarpEscapeTask</a>
-				<a class="permalink" href="index.html#WarpEscapeTask">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func WarpEscapeTask(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>WarpEscapeTask はゲームから脱出する
-
-			
-			
-
-		
-			
-			
-			<h2 id="WarpNextTask">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/task.go?s=2636:2668#L74">WarpNextTask</a>
-				<a class="permalink" href="index.html#WarpNextTask">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func WarpNextTask(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>WarpNextTask は次のフロアにワープする
-
-			
-			
-
-		
-		
-			
-			
-			<h2 id="ConsumptionStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=448:502#L19">ConsumptionStamina</a>
-				<a class="permalink" href="index.html#ConsumptionStamina">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ConsumptionStamina はスタミナを消費する
-
-			<pre>type ConsumptionStamina struct {
-<span id="ConsumptionStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
+			<pre>type ConsumeStamina struct {
+<span id="ConsumeStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a> <span class="comment">// 消費量（固定値または割合）</span>
 }
 </pre>
 
@@ -435,18 +577,122 @@
 			
 
 			
+				
+				<h3 id="ConsumeStamina.Apply">func (ConsumeStamina) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=412:476#L8">Apply</a>
+					<a class="permalink" href="index.html#ConsumeStamina.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#ConsumeStamina">ConsumeStamina</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はスタミナ消費エフェクトをターゲットに適用する
+
+				
+				
+				
+			
+				
+				<h3 id="ConsumeStamina.String">func (ConsumeStamina) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=1756:1795#L49">String</a>
+					<a class="permalink" href="index.html#ConsumeStamina.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#ConsumeStamina">ConsumeStamina</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ConsumeStamina.Validate">func (ConsumeStamina) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=1203:1270#L32">Validate</a>
+					<a class="permalink" href="index.html#ConsumeStamina.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#ConsumeStamina">ConsumeStamina</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はスタミナ消費エフェクトの妥当性を検証する
+
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="Damage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=169:203#L1">Damage</a>
+			<h2 id="CreateItem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=4095:4211#L113">CreateItem</a>
+				<a class="permalink" href="index.html#CreateItem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CreateItem はアイテムを生成するエフェクト（将来拡張用）
+
+			<pre>type CreateItem struct {
+<span id="CreateItem.ItemType"></span>    ItemType <a href="http://localhost:8888/pkg/builtin/#string">string</a> <span class="comment">// 生成するアイテムのタイプ</span>
+<span id="CreateItem.Quantity"></span>    Quantity <a href="http://localhost:8888/pkg/builtin/#int">int</a>    <span class="comment">// 生成数量</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CreateItem.Apply">func (CreateItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=4274:4334#L119">Apply</a>
+					<a class="permalink" href="index.html#CreateItem.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CreateItem">CreateItem</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はアイテム生成エフェクトを適用する
+
+				
+				
+				
+			
+				
+				<h3 id="CreateItem.String">func (CreateItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=5272:5307#L150">String</a>
+					<a class="permalink" href="index.html#CreateItem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CreateItem">CreateItem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="CreateItem.Validate">func (CreateItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=4997:5052#L140">Validate</a>
+					<a class="permalink" href="index.html#CreateItem.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CreateItem">CreateItem</a>) Validate(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はアイテム生成エフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Damage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go?s=605:716#L14">Damage</a>
 				<a class="permalink" href="index.html#Damage">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Damage はダメージを与える
+			<p>Damage はダメージを与えるエフェクト
 
 			<pre>type Damage struct {
-<span id="Damage.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Damage.Amount"></span>    Amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// ダメージ量</span>
+<span id="Damage.Source"></span>    Source <a href="index.html#DamageSource">DamageSource</a> <span class="comment">// ダメージの発生源</span>
 }
 </pre>
 
@@ -461,23 +707,64 @@
 			
 
 			
+				
+				<h3 id="Damage.Apply">func (Damage) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go?s=791:847#L20">Apply</a>
+					<a class="permalink" href="index.html#Damage.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d <a href="index.html#Damage">Damage</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はダメージエフェクトをターゲットに適用する
+
+				
+				
+				
+			
+				
+				<h3 id="Damage.String">func (Damage) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go?s=2043:2074#L62">String</a>
+					<a class="permalink" href="index.html#Damage.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d <a href="index.html#Damage">Damage</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="Damage.Validate">func (Damage) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go?s=1506:1565#L45">Validate</a>
+					<a class="permalink" href="index.html#Damage.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d <a href="index.html#Damage">Damage</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はダメージエフェクトの妥当性を検証する
+
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="EffectSpawner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=376:472#L10">EffectSpawner</a>
-				<a class="permalink" href="index.html#EffectSpawner">&#xb6;</a>
+			<h2 id="DamageSource">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go?s=262:283#L4">DamageSource</a>
+				<a class="permalink" href="index.html#DamageSource">&#xb6;</a>
 				
 				
 			</h2>
-			<p>EffectSpawner はqueueの中身
+			<p>DamageSource はダメージの発生源を示す
 
-			<pre>type EffectSpawner struct {
-<span id="EffectSpawner.Creator"></span>    Creator    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
-<span id="EffectSpawner.EffectType"></span>    EffectType <a href="index.html#EffectType">EffectType</a>
-<span id="EffectSpawner.Targets"></span>    Targets    <a href="index.html#Targets">Targets</a>
-}
-</pre>
+			<pre>type DamageSource <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
 
+			
+				
+				<pre>const (
+    <span class="comment">// DamageSourceWeapon は武器によるダメージを表す</span>
+    <span id="DamageSourceWeapon">DamageSourceWeapon</span> <a href="index.html#DamageSource">DamageSource</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a> <span class="comment">// 武器によるダメージ</span>
+    <span class="comment">// DamageSourceItem はアイテムによるダメージを表す</span>
+    <span id="DamageSourceItem">DamageSourceItem</span> <span class="comment">// アイテムによるダメージ</span>
+)</pre>
 			
 
 			
@@ -492,15 +779,22 @@
 		
 			
 			
-			<h2 id="EffectType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/queue.go?s=294:339#L5">EffectType</a>
-				<a class="permalink" href="index.html#EffectType">&#xb6;</a>
+			<h2 id="Effect">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=622:937#L11">Effect</a>
+				<a class="permalink" href="index.html#Effect">&#xb6;</a>
 				
 				
 			</h2>
-			<p>EffectType はエフェクトの型インターフェース
+			<p>Effect はゲーム内の効果を表す核心インターフェース
 
-			<pre>type EffectType interface {
-    <span class="comment">// contains filtered or unexported methods</span>
+			<pre>type Effect interface {
+    <span class="comment">// Apply は効果を実際に適用する</span>
+    Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
+
+    <span class="comment">// Validate は効果の適用前に妥当性を検証する</span>
+    Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
+
+    <span class="comment">// String は効果の文字列表現を返す（ログとデバッグ用）</span>
+    String() <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }</pre>
 
 			
@@ -517,15 +811,664 @@
 		
 			
 			
-			<h2 id="Healing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=295:338#L10">Healing</a>
+			<h2 id="EffectExecution">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=213:330#L2">EffectExecution</a>
+				<a class="permalink" href="index.html#EffectExecution">&#xb6;</a>
+				
+				
+			</h2>
+			<p>EffectExecution はキューに蓄積される実行単位
+
+			<pre>type EffectExecution struct {
+<span id="EffectExecution.Effect"></span>    Effect <a href="index.html#Effect">Effect</a> <span class="comment">// 実行する効果</span>
+<span id="EffectExecution.Scope"></span>    Scope  *<a href="index.html#Scope">Scope</a> <span class="comment">// エフェクトの影響範囲</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="FullRecoveryHP">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=220:248#L2">FullRecoveryHP</a>
+				<a class="permalink" href="index.html#FullRecoveryHP">&#xb6;</a>
+				
+				
+			</h2>
+			<p>FullRecoveryHP は非戦闘時のHP全回復エフェクト（ログ出力なし）
+
+			<pre>type FullRecoveryHP struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="FullRecoveryHP.Apply">func (FullRecoveryHP) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=334:398#L5">Apply</a>
+					<a class="permalink" href="index.html#FullRecoveryHP.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#FullRecoveryHP">FullRecoveryHP</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply は非戦闘時HP全回復エフェクトをターゲットに適用する
+
+				
+				
+				
+			
+				
+				<h3 id="FullRecoveryHP.String">func (FullRecoveryHP) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=1205:1244#L33">String</a>
+					<a class="permalink" href="index.html#FullRecoveryHP.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#FullRecoveryHP">FullRecoveryHP</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="FullRecoveryHP.Validate">func (FullRecoveryHP) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=764:831#L19">Validate</a>
+					<a class="permalink" href="index.html#FullRecoveryHP.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#FullRecoveryHP">FullRecoveryHP</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate は非戦闘時HP全回復エフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="FullRecoverySP">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=1362:1390#L38">FullRecoverySP</a>
+				<a class="permalink" href="index.html#FullRecoverySP">&#xb6;</a>
+				
+				
+			</h2>
+			<p>FullRecoverySP は非戦闘時のSP全回復エフェクト（ログ出力なし）
+
+			<pre>type FullRecoverySP struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="FullRecoverySP.Apply">func (FullRecoverySP) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=1476:1540#L41">Apply</a>
+					<a class="permalink" href="index.html#FullRecoverySP.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#FullRecoverySP">FullRecoverySP</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply は非戦闘時SP全回復エフェクトをターゲットに適用する
+
+				
+				
+				
+			
+				
+				<h3 id="FullRecoverySP.String">func (FullRecoverySP) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=2347:2386#L69">String</a>
+					<a class="permalink" href="index.html#FullRecoverySP.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#FullRecoverySP">FullRecoverySP</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="FullRecoverySP.Validate">func (FullRecoverySP) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go?s=1906:1973#L55">Validate</a>
+					<a class="permalink" href="index.html#FullRecoverySP.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#FullRecoverySP">FullRecoverySP</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate は非戦闘時SP全回復エフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="GameLogAppender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=175:231#L1">GameLogAppender</a>
+				<a class="permalink" href="index.html#GameLogAppender">&#xb6;</a>
+				
+				
+			</h2>
+			<p>GameLogAppender はゲームログ出力のインターフェース
+
+			<pre>type GameLogAppender interface {
+    Append(entry <a href="http://localhost:8888/pkg/builtin/#string">string</a>)
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Healing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/healing.go?s=290:376#L4">Healing</a>
 				<a class="permalink" href="index.html#Healing">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Healing は体力を回復する
+			<p>Healing は体力を回復するエフェクト（戦闘・非戦闘共用）
 
 			<pre>type Healing struct {
-<span id="Healing.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
+<span id="Healing.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a> <span class="comment">// 回復量（固定値または割合）</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Healing.Apply">func (Healing) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/healing.go?s=447:504#L9">Apply</a>
+					<a class="permalink" href="index.html#Healing.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h <a href="index.html#Healing">Healing</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はHP回復エフェクトをターゲットに適用する
+
+				
+				
+				
+			
+				
+				<h3 id="Healing.String">func (Healing) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/healing.go?s=1884:1916#L55">String</a>
+					<a class="permalink" href="index.html#Healing.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h <a href="index.html#Healing">Healing</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="Healing.Validate">func (Healing) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/healing.go?s=1362:1422#L38">Validate</a>
+					<a class="permalink" href="index.html#Healing.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h <a href="index.html#Healing">Healing</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はHP回復エフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MovementWarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=864:896#L24">MovementWarpEscape</a>
+				<a class="permalink" href="index.html#MovementWarpEscape">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MovementWarpEscape はダンジョンから脱出するエフェクト
+
+			<pre>type MovementWarpEscape struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MovementWarpEscape.Apply">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=980:1048#L27">Apply</a>
+					<a class="permalink" href="index.html#MovementWarpEscape.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpEscape">MovementWarpEscape</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はダンジョンからの脱出ワープエフェクトを適用する
+
+				
+				
+				
+			
+				
+				<h3 id="MovementWarpEscape.String">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1427:1470#L42">String</a>
+					<a class="permalink" href="index.html#MovementWarpEscape.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpEscape">MovementWarpEscape</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MovementWarpEscape.Validate">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1346:1409#L38">Validate</a>
+					<a class="permalink" href="index.html#MovementWarpEscape.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpEscape">MovementWarpEscape</a>) Validate(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はダンジョンからの脱出ワープエフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MovementWarpNext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=185:215#L1">MovementWarpNext</a>
+				<a class="permalink" href="index.html#MovementWarpNext">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MovementWarpNext は次の階層に移動するエフェクト
+
+			<pre>type MovementWarpNext struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MovementWarpNext.Apply">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=287:353#L4">Apply</a>
+					<a class="permalink" href="index.html#MovementWarpNext.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpNext">MovementWarpNext</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply は次の階層へのワープエフェクトを適用する
+
+				
+				
+				
+			
+				
+				<h3 id="MovementWarpNext.String">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=716:757#L19">String</a>
+					<a class="permalink" href="index.html#MovementWarpNext.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpNext">MovementWarpNext</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MovementWarpNext.Validate">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=637:698#L15">Validate</a>
+					<a class="permalink" href="index.html#MovementWarpNext.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpNext">MovementWarpNext</a>) Validate(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate は次の階層へのワープエフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MovementWarpToFloor">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1601:1672#L47">MovementWarpToFloor</a>
+				<a class="permalink" href="index.html#MovementWarpToFloor">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MovementWarpToFloor は特定の階層にワープするエフェクト（将来拡張用）
+
+			<pre>type MovementWarpToFloor struct {
+<span id="MovementWarpToFloor.Floor"></span>    Floor <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// ワープ先の階層</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MovementWarpToFloor.Apply">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1747:1816#L52">Apply</a>
+					<a class="permalink" href="index.html#MovementWarpToFloor.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpToFloor">MovementWarpToFloor</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply は特定の階層へのワープエフェクトを適用する
+
+				
+				
+				
+			
+				
+				<h3 id="MovementWarpToFloor.String">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=2289:2333#L70">String</a>
+					<a class="permalink" href="index.html#MovementWarpToFloor.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpToFloor">MovementWarpToFloor</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MovementWarpToFloor.Validate">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=2103:2167#L63">Validate</a>
+					<a class="permalink" href="index.html#MovementWarpToFloor.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m <a href="index.html#MovementWarpToFloor">MovementWarpToFloor</a>) Validate(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate は特定の階層へのワープエフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Processor">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=406:533#L8">Processor</a>
+				<a class="permalink" href="index.html#Processor">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Processor はエフェクトの実行管理を行うプロセッサー
+
+			<pre>type Processor struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewProcessor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=597:627#L14">NewProcessor</a>
+					<a class="permalink" href="index.html#NewProcessor">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewProcessor() *<a href="index.html#Processor">Processor</a></pre>
+				<p>NewProcessor は新しいプロセッサーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="Processor.AddEffect">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=798:886#L22">AddEffect</a>
+					<a class="permalink" href="index.html#Processor.AddEffect">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) AddEffect(effect <a href="index.html#Effect">Effect</a>, creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, targets ...<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+				<p>AddEffect はエフェクトをキューに追加する
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.AddEffectWithLogger">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=1036:1158#L27">AddEffectWithLogger</a>
+					<a class="permalink" href="index.html#Processor.AddEffectWithLogger">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) AddEffectWithLogger(effect <a href="index.html#Effect">Effect</a>, creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, logger <a href="index.html#GameLogAppender">GameLogAppender</a>, targets ...<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+				<p>AddEffectWithLogger はエフェクトをLoggerとともにキューに追加する
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.AddTargetedEffect">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=4042:4161#L128">AddTargetedEffect</a>
+					<a class="permalink" href="index.html#Processor.AddTargetedEffect">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) AddTargetedEffect(effect <a href="index.html#Effect">Effect</a>, creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, selector <a href="index.html#TargetSelector">TargetSelector</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>AddTargetedEffect はターゲットセレクタを使用してエフェクトをキューに追加する便利関数
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.AddTargetedEffectWithLogger">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=4384:4537#L133">AddTargetedEffectWithLogger</a>
+					<a class="permalink" href="index.html#Processor.AddTargetedEffectWithLogger">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) AddTargetedEffectWithLogger(effect <a href="index.html#Effect">Effect</a>, creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, selector <a href="index.html#TargetSelector">TargetSelector</a>, logger <a href="index.html#GameLogAppender">GameLogAppender</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>AddTargetedEffectWithLogger はターゲットセレクタとLoggerを使用してエフェクトをキューに追加する便利関数
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.Clear">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=2335:2362#L68">Clear</a>
+					<a class="permalink" href="index.html#Processor.Clear">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) Clear()</pre>
+				<p>Clear はキューをクリアする（テストやリセット用）
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.Execute">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=1515:1563#L43">Execute</a>
+					<a class="permalink" href="index.html#Processor.Execute">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) Execute(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Execute はキュー内のすべてのエフェクトを順次実行する
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.IsEmpty">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=2664:2698#L80">IsEmpty</a>
+					<a class="permalink" href="index.html#Processor.IsEmpty">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) IsEmpty() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsEmpty はキューが空かどうかを判定する
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.QueueSize">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=2545:2580#L75">QueueSize</a>
+					<a class="permalink" href="index.html#Processor.QueueSize">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) QueueSize() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>QueueSize は現在のキューサイズを返す
+
+				
+				
+				
+			
+				
+				<h3 id="Processor.QueuedEffects">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go?s=2817:2861#L85">QueuedEffects</a>
+					<a class="permalink" href="index.html#Processor.QueuedEffects">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) QueuedEffects() []<a href="index.html#Effect">Effect</a></pre>
+				<p>QueuedEffects はキュー内のエフェクト一覧を返す（デバッグ用）
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="RestoreStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=1917:2010#L54">RestoreStamina</a>
+				<a class="permalink" href="index.html#RestoreStamina">&#xb6;</a>
+				
+				
+			</h2>
+			<p>RestoreStamina はスタミナを回復するエフェクト
+
+			<pre>type RestoreStamina struct {
+<span id="RestoreStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a> <span class="comment">// 回復量（固定値または割合）</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RestoreStamina.Apply">func (RestoreStamina) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=2091:2155#L59">Apply</a>
+					<a class="permalink" href="index.html#RestoreStamina.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RestoreStamina">RestoreStamina</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はスタミナ回復エフェクトをターゲットに適用する
+
+				
+				
+				
+			
+				
+				<h3 id="RestoreStamina.String">func (RestoreStamina) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=3457:3496#L100">String</a>
+					<a class="permalink" href="index.html#RestoreStamina.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RestoreStamina">RestoreStamina</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="RestoreStamina.Validate">func (RestoreStamina) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go?s=2904:2971#L83">Validate</a>
+					<a class="permalink" href="index.html#RestoreStamina.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RestoreStamina">RestoreStamina</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はスタミナ回復エフェクトの妥当性を検証する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Scope">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=291:546#L4">Scope</a>
+				<a class="permalink" href="index.html#Scope">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Scope はエフェクトの影響範囲を保持する
+
+			<pre>type Scope struct {
+<span id="Scope.Creator"></span>    Creator *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>     <span class="comment">// 効果の発動者（nilの場合もある）</span>
+<span id="Scope.Targets"></span>    Targets []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>    <span class="comment">// 効果の対象エンティティ一覧</span>
+<span id="Scope.Logger"></span>    Logger  <a href="index.html#GameLogAppender">GameLogAppender</a> <span class="comment">// ゲームログ出力先（nilの場合はログ出力なし）</span>
 }
 </pre>
 
@@ -543,16 +1486,14 @@
 		
 			
 			
-			<h2 id="ItemUse">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=778:818#L37">ItemUse</a>
-				<a class="permalink" href="index.html#ItemUse">&#xb6;</a>
+			<h2 id="TargetAliveParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1943:1973#L62">TargetAliveParty</a>
+				<a class="permalink" href="index.html#TargetAliveParty">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ItemUse はアイテムを使用する
+			<p>TargetAliveParty は生きているパーティメンバーのみをターゲットとする
 
-			<pre>type ItemUse struct {
-<span id="ItemUse.Item"></span>    Item <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
-}
+			<pre>type TargetAliveParty struct{}
 </pre>
 
 			
@@ -566,17 +1507,42 @@
 			
 
 			
+				
+				<h3 id="TargetAliveParty.SelectTargets">func (TargetAliveParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2077:2153#L65">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetAliveParty.SelectTargets">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (a <a href="index.html#TargetAliveParty">TargetAliveParty</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets は生存しているパーティメンバーをターゲットとして選択する
+
+				
+				
+				
+			
+				
+				<h3 id="TargetAliveParty.String">func (TargetAliveParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2628:2669#L84">String</a>
+					<a class="permalink" href="index.html#TargetAliveParty.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (a <a href="index.html#TargetAliveParty">TargetAliveParty</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="None">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=385:403#L13">None</a>
-				<a class="permalink" href="index.html#None">&#xb6;</a>
+			<h2 id="TargetAllEnemies">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1397:1427#L44">TargetAllEnemies</a>
+				<a class="permalink" href="index.html#TargetAllEnemies">&#xb6;</a>
 				
 				
 			</h2>
-			<p>None はターゲットなし
+			<p>TargetAllEnemies はすべての敵ターゲットセレクタ
 
-			<pre>type None struct{}
+			<pre>type TargetAllEnemies struct{}
 </pre>
 
 			
@@ -590,17 +1556,42 @@
 			
 
 			
+				
+				<h3 id="TargetAllEnemies.SelectTargets">func (TargetAllEnemies) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1504:1580#L47">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetAllEnemies.SelectTargets">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (a <a href="index.html#TargetAllEnemies">TargetAllEnemies</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets はすべての敵をターゲットとして選択する
+
+				
+				
+				
+			
+				
+				<h3 id="TargetAllEnemies.String">func (TargetAllEnemies) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1773:1814#L57">String</a>
+					<a class="permalink" href="index.html#TargetAllEnemies.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (a <a href="index.html#TargetAllEnemies">TargetAllEnemies</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="Party">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=196:215#L1">Party</a>
-				<a class="permalink" href="index.html#Party">&#xb6;</a>
+			<h2 id="TargetDeadParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2800:2829#L89">TargetDeadParty</a>
+				<a class="permalink" href="index.html#TargetDeadParty">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Party はパーティターゲット
+			<p>TargetDeadParty は死亡しているパーティメンバーのみをターゲットとする
 
-			<pre>type Party struct{}
+			<pre>type TargetDeadParty struct{}
 </pre>
 
 			
@@ -614,19 +1605,42 @@
 			
 
 			
+				
+				<h3 id="TargetDeadParty.SelectTargets">func (TargetDeadParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2933:3008#L92">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetDeadParty.SelectTargets">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d <a href="index.html#TargetDeadParty">TargetDeadParty</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets は死亡しているパーティメンバーをターゲットとして選択する
+
+				
+				
+				
+			
+				
+				<h3 id="TargetDeadParty.String">func (TargetDeadParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3484:3524#L111">String</a>
+					<a class="permalink" href="index.html#TargetDeadParty.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d <a href="index.html#TargetDeadParty">TargetDeadParty</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="RecoveryStamina">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=620:671#L28">RecoveryStamina</a>
-				<a class="permalink" href="index.html#RecoveryStamina">&#xb6;</a>
+			<h2 id="TargetNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3628:3652#L116">TargetNone</a>
+				<a class="permalink" href="index.html#TargetNone">&#xb6;</a>
 				
 				
 			</h2>
-			<p>RecoveryStamina はスタミナを回復する
+			<p>TargetNone はターゲット不要のエフェクト用セレクタ
 
-			<pre>type RecoveryStamina struct {
-<span id="RecoveryStamina.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a>
-}
+			<pre>type TargetNone struct{}
 </pre>
 
 			
@@ -640,19 +1654,42 @@
 			
 
 			
+				
+				<h3 id="TargetNone.SelectTargets">func (TargetNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3759:3825#L119">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetNone.SelectTargets">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n <a href="index.html#TargetNone">TargetNone</a>) SelectTargets(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets はターゲット不要のエフェクト用の空のターゲットリストを返す
+
+				
+				
+				
+			
+				
+				<h3 id="TargetNone.String">func (TargetNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3859:3894#L123">String</a>
+					<a class="permalink" href="index.html#TargetNone.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n <a href="index.html#TargetNone">TargetNone</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="Single">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=280:321#L6">Single</a>
-				<a class="permalink" href="index.html#Single">&#xb6;</a>
+			<h2 id="TargetParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=871:896#L25">TargetParty</a>
+				<a class="permalink" href="index.html#TargetParty">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Single は単体ターゲット
+			<p>TargetParty はパーティ全体ターゲットセレクタ
 
-			<pre>type Single struct {
-<span id="Single.Target"></span>    Target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
-}
+			<pre>type TargetParty struct{}
 </pre>
 
 			
@@ -666,18 +1703,47 @@
 			
 
 			
+				
+				<h3 id="TargetParty.SelectTargets">func (TargetParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=976:1047#L28">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetParty.SelectTargets">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p <a href="index.html#TargetParty">TargetParty</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets はパーティ全体をターゲットとして選択する
+
+				
+				
+				
+			
+				
+				<h3 id="TargetParty.String">func (TargetParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1267:1303#L39">String</a>
+					<a class="permalink" href="index.html#TargetParty.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (p <a href="index.html#TargetParty">TargetParty</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
 		
 			
 			
-			<h2 id="Targets">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=116:154#L1">Targets</a>
-				<a class="permalink" href="index.html#Targets">&#xb6;</a>
+			<h2 id="TargetSelector">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=234:470#L2">TargetSelector</a>
+				<a class="permalink" href="index.html#TargetSelector">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Targets はターゲットのインターフェース
+			<p>TargetSelector はターゲット選択戦略のインターフェース
 
-			<pre>type Targets interface {
-    <span class="comment">// contains filtered or unexported methods</span>
+			<pre>type TargetSelector interface {
+    <span class="comment">// SelectTargets は指定された条件に基づいてターゲットを選択する</span>
+    SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
+
+    <span class="comment">// String はセレクタの説明を返す</span>
+    String() <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }</pre>
 
 			
@@ -694,14 +1760,16 @@
 		
 			
 			
-			<h2 id="WarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=1019:1043#L53">WarpEscape</a>
-				<a class="permalink" href="index.html#WarpEscape">&#xb6;</a>
+			<h2 id="TargetSingle">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=525:572#L11">TargetSingle</a>
+				<a class="permalink" href="index.html#TargetSingle">&#xb6;</a>
 				
 				
 			</h2>
-			<p>WarpEscape は脱出
+			<p>TargetSingle は単体ターゲットセレクタ
 
-			<pre>type WarpEscape struct{}
+			<pre>type TargetSingle struct {
+<span id="TargetSingle.Entity"></span>    Entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+}
 </pre>
 
 			
@@ -714,18 +1782,46 @@
 
 			
 
+			
+				
+				<h3 id="TargetSingle.SelectTargets">func (TargetSingle) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=631:699#L16">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetSingle.SelectTargets">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (s <a href="index.html#TargetSingle">TargetSingle</a>) SelectTargets(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets は単体ターゲットを選択する
+
+				
+				
+				
+			
+				
+				<h3 id="TargetSingle.String">func (TargetSingle) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=741:778#L20">String</a>
+					<a class="permalink" href="index.html#TargetSingle.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (s <a href="index.html#TargetSingle">TargetSingle</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
 			
 		
 			
 			
-			<h2 id="WarpNext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/effects.go?s=915:937#L46">WarpNext</a>
-				<a class="permalink" href="index.html#WarpNext">&#xb6;</a>
+			<h2 id="UseItem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=403:492#L6">UseItem</a>
+				<a class="permalink" href="index.html#UseItem">&#xb6;</a>
 				
 				
 			</h2>
-			<p>WarpNext は次階層に移動する
+			<p>UseItem はアイテムを使用するエフェクト
+アイテムのコンポーネントに基づいて他のエフェクトに分解される
 
-			<pre>type WarpNext struct{}
+			<pre>type UseItem struct {
+<span id="UseItem.Item"></span>    Item <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a> <span class="comment">// 使用するアイテムのエンティティ</span>
+}
 </pre>
 
 			
@@ -738,6 +1834,44 @@
 
 			
 
+			
+				
+				<h3 id="UseItem.Apply">func (UseItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=555:612#L11">Apply</a>
+					<a class="permalink" href="index.html#UseItem.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (u <a href="index.html#UseItem">UseItem</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply はアイテム使用エフェクトを適用する
+
+				
+				
+				
+			
+				
+				<h3 id="UseItem.String">func (UseItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=3076:3108#L80">String</a>
+					<a class="permalink" href="index.html#UseItem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (u <a href="index.html#UseItem">UseItem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="UseItem.Validate">func (UseItem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/item.go?s=2018:2078#L53">Validate</a>
+					<a class="permalink" href="index.html#UseItem.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (u <a href="index.html#UseItem">UseItem</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はアイテム使用エフェクトの妥当性を検証する
+
+				
+				
+				
 			
 		
 	
