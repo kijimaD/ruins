@@ -2,7 +2,6 @@ package components
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/pkg/errors"
 )
@@ -140,7 +139,7 @@ func (enum AttackType) String() string {
 	case AttackCanon:
 		result = "大砲"
 	default:
-		log.Fatal("invalid attack type")
+		panic("invalid attack type")
 	}
 
 	return result
@@ -184,7 +183,7 @@ func (enum EquipmentType) String() string {
 	case EquipmentJewelry:
 		result = "装飾"
 	default:
-		log.Fatal("invalid equiment slot type")
+		panic("invalid equiment slot type")
 	}
 	return result
 }
@@ -230,7 +229,7 @@ func (enum ElementType) String() string {
 	case ElementTypePhoton:
 		result = "光"
 	default:
-		log.Fatal("invalid element type")
+		panic("invalid element type")
 	}
 	return result
 }

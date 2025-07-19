@@ -121,88 +121,137 @@ func (st *BattleState) OnStop(world w.World) {
 func (st *BattleState) Update(world w.World) es.Transition {
 	st.ui.Update()
 
-	// キーボード選択処理（選択フェーズのみ、ログ表示中は除く）
+	// キーボード入力処理
+	st.handleKeyboardInput()
+
+	// フェーズ初期化処理
+	st.handlePhaseInitialization(world)
+
+	// フェーズ更新処理
+	return st.handlePhaseUpdate(world)
+}
+
+// handleKeyboardInput はキーボード選択処理を行う（選択フェーズのみ、ログ表示中は除く）
+func (st *BattleState) handleKeyboardInput() {
 	if !st.isWaitClick && st.currentMenu != nil {
 		switch st.phase.(type) {
 		case *phaseChoosePolicy, *phaseChooseAction, *phaseChooseTarget:
 			st.currentMenu.Update(st.keyboardInput)
 		}
 	}
+}
 
-	// ステートが変わった最初の1回だけ実行される
-	// TODO: 複雑化しているので、ここもstates packageを使ってやったほうがいい
-	if st.phase != st.prevPhase {
-		switch v := st.phase.(type) {
-		case *phaseChoosePolicy:
-			var err error
-			st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
-			if err != nil {
-				log.Fatal(err)
-			}
-			st.reloadPolicy(world)
-		case *phaseChooseAction:
-			st.reloadAction(world, v)
-		case *phaseChooseTarget:
-			st.reloadTarget(world, v)
-		case *phaseEnemyActionSelect:
-
-			// マスタとして事前に生成されたカードエンティティをメモしておく
-			masterCardEntityMap := map[string]ecs.Entity{}
-			world.Manager.Join(
-				world.Components.Name,
-				world.Components.Item,
-				world.Components.Card,
-				world.Components.ItemLocationNone,
-			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				name := world.Components.Name.Get(entity).(*gc.Name)
-				masterCardEntityMap[name.Name] = entity
-			}))
-
-			// 敵のコマンドを投入する
-			// UIはない。1回だけ実行して敵コマンドを投入し、次のステートにいく
-			world.Manager.Join(
-				world.Components.FactionEnemy,
-				world.Components.Attributes,
-				world.Components.CommandTable,
-			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				// テーブル取得
-				ctComponent := world.Components.CommandTable.Get(entity).(*gc.CommandTable)
-				rawMaster := world.Resources.RawMaster.(*raw.Master)
-				ct := rawMaster.GetCommandTable(ctComponent.Name)
-				name := ct.SelectByWeight()
-
-				// プレイヤーキャラから選択
-				allys := []ecs.Entity{}
-				world.Manager.Join(
-					world.Components.Name,
-					world.Components.FactionAlly,
-					world.Components.Pools,
-				).Visit(ecs.Visit(func(entity ecs.Entity) {
-					allys = append(allys, entity)
-				}))
-				targetEntity := allys[rand.IntN(len(allys))]
-
-				// 攻撃カードによって対象を選択
-				cl := entities.ComponentList{}
-				cl.Game = append(cl.Game, gc.GameComponentList{
-					BattleCommand: &gc.BattleCommand{
-						Owner:  entity,
-						Target: targetEntity,
-						Way:    masterCardEntityMap[name],
-					},
-				})
-				entities.AddEntities(world, cl)
-			}))
-
-			st.phase = &phaseExecute{}
-		case *phaseExecute:
-		case *phaseResult:
-		case *phaseGameOver:
-		}
-		st.prevPhase = st.phase
+// handlePhaseInitialization はフェーズ変更時の初期化処理を行う
+func (st *BattleState) handlePhaseInitialization(world w.World) {
+	if st.phase == st.prevPhase {
+		return
 	}
 
-	// 毎回実行される
+	switch v := st.phase.(type) {
+	case *phaseChoosePolicy:
+		st.initChoosePolicyPhase(world)
+	case *phaseChooseAction:
+		st.reloadAction(world, v)
+	case *phaseChooseTarget:
+		st.reloadTarget(world, v)
+	case *phaseEnemyActionSelect:
+		st.handleEnemyActionSelect(world)
+	case *phaseExecute:
+	case *phaseResult:
+	case *phaseGameOver:
+	}
+	st.prevPhase = st.phase
+}
+
+// initChoosePolicyPhase は政策選択フェーズの初期化を行う
+func (st *BattleState) initChoosePolicyPhase(world w.World) {
+	var err error
+	st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
+	if err != nil {
+		log.Fatal(err)
+	}
+	st.reloadPolicy(world)
+}
+
+// handleEnemyActionSelect は敵アクション選択フェーズの処理を行う
+func (st *BattleState) handleEnemyActionSelect(world w.World) {
+	// マスタとして事前に生成されたカードエンティティをメモしておく
+	masterCardEntityMap := st.buildMasterCardEntityMap(world)
+
+	// 敵のコマンドを投入する
+	st.processEnemyCommands(world, masterCardEntityMap)
+
+	st.phase = &phaseExecute{}
+}
+
+// buildMasterCardEntityMap はマスターカードエンティティのマップを構築する
+func (st *BattleState) buildMasterCardEntityMap(world w.World) map[string]ecs.Entity {
+	masterCardEntityMap := map[string]ecs.Entity{}
+	world.Manager.Join(
+		world.Components.Name,
+		world.Components.Item,
+		world.Components.Card,
+		world.Components.ItemLocationNone,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		name := world.Components.Name.Get(entity).(*gc.Name)
+		masterCardEntityMap[name.Name] = entity
+	}))
+	return masterCardEntityMap
+}
+
+// processEnemyCommands は敵のコマンド処理を行う
+func (st *BattleState) processEnemyCommands(world w.World, masterCardEntityMap map[string]ecs.Entity) {
+	world.Manager.Join(
+		world.Components.FactionEnemy,
+		world.Components.Attributes,
+		world.Components.CommandTable,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		st.processEnemyCommand(world, entity, masterCardEntityMap)
+	}))
+}
+
+// processEnemyCommand は単体の敵エンティティのコマンド処理を行う
+func (st *BattleState) processEnemyCommand(world w.World, entity ecs.Entity, masterCardEntityMap map[string]ecs.Entity) {
+	// テーブル取得
+	ctComponent := world.Components.CommandTable.Get(entity).(*gc.CommandTable)
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	ct, err := rawMaster.GetCommandTable(ctComponent.Name)
+	if err != nil {
+		panic(fmt.Sprintf("GetCommandTable failed: %v", err))
+	}
+	name := ct.SelectByWeight()
+
+	// プレイヤーキャラから選択
+	allys := st.getAllyEntities(world)
+	targetEntity := allys[rand.IntN(len(allys))]
+
+	// 攻撃カードによって対象を選択
+	cl := entities.ComponentList{}
+	cl.Game = append(cl.Game, gc.GameComponentList{
+		BattleCommand: &gc.BattleCommand{
+			Owner:  entity,
+			Target: targetEntity,
+			Way:    masterCardEntityMap[name],
+		},
+	})
+	entities.AddEntities(world, cl)
+}
+
+// getAllyEntities は味方エンティティのリストを取得する
+func (st *BattleState) getAllyEntities(world w.World) []ecs.Entity {
+	allys := []ecs.Entity{}
+	world.Manager.Join(
+		world.Components.Name,
+		world.Components.FactionAlly,
+		world.Components.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		allys = append(allys, entity)
+	}))
+	return allys
+}
+
+// handlePhaseUpdate は毎回実行されるフェーズ更新処理を行う
+func (st *BattleState) handlePhaseUpdate(world w.World) es.Transition {
 	switch v := st.phase.(type) {
 	case nil:
 		// 戦闘ステート開始直後に実行される
@@ -212,69 +261,110 @@ func (st *BattleState) Update(world w.World) es.Transition {
 	case *phaseChooseTarget:
 	case *phaseEnemyActionSelect:
 	case *phaseExecute:
-		effects.RunEffectQueue(world)
-		st.updateEnemyListContainer(world)
-		st.reloadExecute(world)
-		st.reloadMsg(world)
-		st.updateMemberContainer(world)
-
-		switch gs.BattleExtinctionSystem(world) {
-		case gs.BattleExtinctionNone:
-		case gs.BattleExtinctionAlly:
-			gamelog.BattleLog.Append("全滅した。")
-			st.phase = &phaseGameOver{}
-			return es.Transition{Type: es.TransNone}
-		case gs.BattleExtinctionMonster:
-			gamelog.BattleLog.Append("敵を全滅させた。")
-			st.phase = &phaseResult{}
-			return es.Transition{Type: es.TransNone}
-		}
-
-		commandCount := 0
-		world.Manager.Join(
-			world.Components.BattleCommand,
-		).Visit(ecs.Visit(func(_ ecs.Entity) {
-			commandCount++
-		}))
-		if commandCount > 0 {
-			// 未処理のコマンドがまだ残っている
-			st.isWaitClick = true
-			if st.keyboardInput.IsEnterJustPressedOnce() {
-				gs.BattleCommandSystem(world)
-				st.isWaitClick = false
-			}
-			return es.Transition{Type: es.TransNone}
-		}
-
-		// 処理完了
-		if st.keyboardInput.IsEnterJustPressedOnce() {
-			st.phase = &phaseChoosePolicy{}
-			st.isWaitClick = false
-			gamelog.BattleLog.Flush()
-		}
+		return st.handleExecutePhase(world)
 	case *phaseResult:
-		st.reloadMsg(world)
-
-		if st.keyboardInput.IsEnterJustPressedOnce() {
-			switch v.actionCount {
-			case 0:
-				dropResult := gs.BattleDropSystem(world)
-				st.resultWindow = st.initResultWindow(world, dropResult)
-				st.ui.AddWindow(st.resultWindow)
-			default:
-				return es.Transition{Type: es.TransPop}
-			}
-			v.actionCount++
-		}
+		return st.handleResultPhase(world, v)
 	case *phaseGameOver:
-		st.reloadMsg(world)
-
-		if st.keyboardInput.IsEnterJustPressedOnce() {
-			return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}}
-		}
+		return st.handleGameOverPhase(world)
 	}
 
 	return st.ConsumeTransition()
+}
+
+// handleExecutePhase は実行フェーズの処理を行う
+func (st *BattleState) handleExecutePhase(world w.World) es.Transition {
+	effects.RunEffectQueue(world)
+	st.updateEnemyListContainer(world)
+	st.reloadExecute(world)
+	st.reloadMsg(world)
+	st.updateMemberContainer(world)
+
+	// 戦闘終了判定
+	if transition := st.checkBattleExtinction(world); transition.Type != es.TransNone {
+		return transition
+	}
+
+	// コマンド実行処理
+	return st.handleCommandExecution(world)
+}
+
+// checkBattleExtinction は戦闘終了条件をチェックする
+func (st *BattleState) checkBattleExtinction(world w.World) es.Transition {
+	switch gs.BattleExtinctionSystem(world) {
+	case gs.BattleExtinctionNone:
+		return es.Transition{Type: es.TransNone}
+	case gs.BattleExtinctionAlly:
+		gamelog.BattleLog.Append("全滅した。")
+		st.phase = &phaseGameOver{}
+		return es.Transition{Type: es.TransNone}
+	case gs.BattleExtinctionMonster:
+		gamelog.BattleLog.Append("敵を全滅させた。")
+		st.phase = &phaseResult{}
+		return es.Transition{Type: es.TransNone}
+	default:
+		return es.Transition{Type: es.TransNone}
+	}
+}
+
+// handleCommandExecution はコマンド実行処理を行う
+func (st *BattleState) handleCommandExecution(world w.World) es.Transition {
+	commandCount := st.countBattleCommands(world)
+	if commandCount > 0 {
+		// 未処理のコマンドがまだ残っている
+		st.isWaitClick = true
+		if st.keyboardInput.IsEnterJustPressedOnce() {
+			gs.BattleCommandSystem(world)
+			st.isWaitClick = false
+		}
+		return es.Transition{Type: es.TransNone}
+	}
+
+	// 処理完了
+	if st.keyboardInput.IsEnterJustPressedOnce() {
+		st.phase = &phaseChoosePolicy{}
+		st.isWaitClick = false
+		gamelog.BattleLog.Flush()
+	}
+	return es.Transition{Type: es.TransNone}
+}
+
+// countBattleCommands は戦闘コマンド数をカウントする
+func (st *BattleState) countBattleCommands(world w.World) int {
+	commandCount := 0
+	world.Manager.Join(
+		world.Components.BattleCommand,
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
+		commandCount++
+	}))
+	return commandCount
+}
+
+// handleResultPhase は結果フェーズの処理を行う
+func (st *BattleState) handleResultPhase(world w.World, v *phaseResult) es.Transition {
+	st.reloadMsg(world)
+
+	if st.keyboardInput.IsEnterJustPressedOnce() {
+		switch v.actionCount {
+		case 0:
+			dropResult := gs.BattleDropSystem(world)
+			st.resultWindow = st.initResultWindow(world, dropResult)
+			st.ui.AddWindow(st.resultWindow)
+		default:
+			return es.Transition{Type: es.TransPop}
+		}
+		v.actionCount++
+	}
+	return es.Transition{Type: es.TransNone}
+}
+
+// handleGameOverPhase はゲームオーバーフェーズの処理を行う
+func (st *BattleState) handleGameOverPhase(world w.World) es.Transition {
+	st.reloadMsg(world)
+
+	if st.keyboardInput.IsEnterJustPressedOnce() {
+		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}}
+	}
+	return es.Transition{Type: es.TransNone}
 }
 
 // Draw はゲームステートの描画処理を行う

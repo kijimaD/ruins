@@ -11,8 +11,9 @@ func TestInitWorld(t *testing.T) {
 	t.Run("InitWorldが動作する", func(t *testing.T) {
 		gameComponents := &gc.Components{}
 
-		world := InitWorld(gameComponents)
+		world, err := InitWorld(gameComponents)
 
+		assert.NoError(t, err)
 		assert.NotNil(t, world.Manager)
 		assert.NotNil(t, world.Components)
 		assert.NotNil(t, world.Resources)

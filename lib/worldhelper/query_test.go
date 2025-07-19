@@ -6,11 +6,13 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestQueryOwnedMaterial(t *testing.T) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
@@ -39,7 +41,8 @@ func TestQueryOwnedMaterial(t *testing.T) {
 }
 
 func TestQueryInPartyMember(t *testing.T) {
-	world := game.InitWorld(960, 720)
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
 
 	// パーティメンバーを作成
 	partyMember := world.Manager.NewEntity()

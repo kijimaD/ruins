@@ -2,7 +2,6 @@ package raw
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
@@ -126,17 +125,20 @@ type Attributes struct {
 }
 
 // LoadFromFile はファイルからローデータを読み込む
-func LoadFromFile(path string) Master {
+func LoadFromFile(path string) (Master, error) {
 	bs, err := assets.FS.ReadFile(path)
 	if err != nil {
-		log.Fatal(err)
+		return Master{}, err
 	}
-	rw := Load(string(bs))
-	return rw
+	rw, err := Load(string(bs))
+	if err != nil {
+		return Master{}, err
+	}
+	return rw, nil
 }
 
 // Load は文字列からローデータを読み込む
-func Load(entityMetadataContent string) Master {
+func Load(entityMetadataContent string) (Master, error) {
 	rw := Master{}
 	rw.ItemIndex = map[string]int{}
 	rw.MaterialIndex = map[string]int{}
@@ -147,7 +149,7 @@ func Load(entityMetadataContent string) Master {
 	rw.SpriteSheetIndex = map[string]int{}
 	_, err := toml.Decode(entityMetadataContent, &rw.Raws)
 	if err != nil {
-		log.Fatal(err)
+		return Master{}, err
 	}
 
 	for i, item := range rw.Raws.Items {
@@ -172,7 +174,7 @@ func Load(entityMetadataContent string) Master {
 		rw.SpriteSheetIndex[spriteSheet.Name] = i
 	}
 
-	return rw
+	return rw, nil
 }
 
 // GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
@@ -243,10 +245,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Attack != nil {
 		if err := gc.ElementType(item.Attack.Element).Valid(); err != nil {
-			log.Fatal(err)
+			return gc.GameComponentList{}, err
 		}
 		if err := gc.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
-			log.Fatal(err)
+			return gc.GameComponentList{}, err
 		}
 
 		cl.Attack = &gc.Attack{
@@ -271,7 +273,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Wearable != nil {
 		if err := gc.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
-			log.Fatal(err)
+			return gc.GameComponentList{}, err
 		}
 		cl.Wearable = &gc.Wearable{
 			Defense:           item.Wearable.Defense,
@@ -336,10 +338,10 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 }
 
 // GenerateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する
-func (rw *Master) GenerateFighter(name string) gc.GameComponentList {
+func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
-		log.Fatalf("キーが存在しない: %s", name)
+		return gc.GameComponentList{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
 
@@ -370,28 +372,34 @@ func (rw *Master) GenerateFighter(name string) gc.GameComponentList {
 		cl.DropTable = &gc.DropTable{Name: dropTable.Name}
 	}
 
-	return cl
+	return cl, nil
 }
 
 // GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
-func (rw *Master) GenerateMember(name string, inParty bool) gc.GameComponentList {
-	cl := rw.GenerateFighter(name)
+func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentList, error) {
+	cl, err := rw.GenerateFighter(name)
+	if err != nil {
+		return gc.GameComponentList{}, err
+	}
 	cl.FactionType = &gc.FactionAlly
 	if inParty {
 		cl.InParty = &gc.InParty{}
 	}
 
-	return cl
+	return cl, nil
 }
 
 // GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
-func (rw *Master) GenerateEnemy(name string) gc.GameComponentList {
-	cl := rw.GenerateFighter(name)
+func (rw *Master) GenerateEnemy(name string) (gc.GameComponentList, error) {
+	cl, err := rw.GenerateFighter(name)
+	if err != nil {
+		return gc.GameComponentList{}, err
+	}
 	cl.FactionType = &gc.FactionEnemy
 
 	spriteSheetIdx, ok := rw.SpriteSheetIndex[name]
 	if !ok {
-		log.Fatalf("キーが存在しない: %s", name)
+		return gc.GameComponentList{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
 	spriteSheet := rw.Raws.SpriteSheets[spriteSheetIdx]
 	if spriteSheet.BattleBody != nil {
@@ -403,27 +411,27 @@ func (rw *Master) GenerateEnemy(name string) gc.GameComponentList {
 		}
 	}
 
-	return cl
+	return cl, nil
 }
 
 // GetCommandTable は指定された名前のコマンドテーブルを取得する
-func (rw *Master) GetCommandTable(name string) CommandTable {
+func (rw *Master) GetCommandTable(name string) (CommandTable, error) {
 	ctIdx, ok := rw.CommandTableIndex[name]
 	if !ok {
-		log.Fatalf("キーが存在しない: %s", name)
+		return CommandTable{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
 	commandTable := rw.Raws.CommandTables[ctIdx]
 
-	return commandTable
+	return commandTable, nil
 }
 
 // GetDropTable は指定された名前のドロップテーブルを取得する
-func (rw *Master) GetDropTable(name string) DropTable {
+func (rw *Master) GetDropTable(name string) (DropTable, error) {
 	dtIdx, ok := rw.DropTableIndex[name]
 	if !ok {
-		log.Fatalf("キーが存在しない: %s", name)
+		return DropTable{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
 	dropTable := rw.Raws.DropTables[dtIdx]
 
-	return dropTable
+	return dropTable, nil
 }

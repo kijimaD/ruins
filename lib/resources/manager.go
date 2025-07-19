@@ -125,7 +125,10 @@ func (rm *DefaultResourceManager) LoadRaws() (*raw.Master, error) {
 		return rm.cache.RawMaster, nil
 	}
 
-	rawMaster := raw.LoadFromFile(rm.config.RawsPath)
+	rawMaster, err := raw.LoadFromFile(rm.config.RawsPath)
+	if err != nil {
+		return nil, err
+	}
 	rm.cache.RawMaster = &rawMaster
 
 	return &rawMaster, nil
