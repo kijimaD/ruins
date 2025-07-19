@@ -200,10 +200,20 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 func fullRecover(world w.World, entity ecs.Entity) {
 	// 新しく生成されたエンティティの最大HP/SPを設定
 	setMaxHPSP(world, entity)
-	// 回復
-	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
-	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Single{Target: entity})
-	effects.RunEffectQueue(world)
+	
+	// 新しいエフェクトシステムで回復
+	processor := effects.NewProcessor()
+	
+	// HP全回復
+	hpEffect := effects.FullRecoveryHP{}
+	processor.AddEffect(hpEffect, nil, entity)
+	
+	// SP全回復
+	spEffect := effects.FullRecoverySP{}
+	processor.AddEffect(spEffect, nil, entity)
+	
+	// エフェクト実行
+	processor.Execute(world)
 }
 
 // 指定したエンティティの最大HP/SPを設定する
