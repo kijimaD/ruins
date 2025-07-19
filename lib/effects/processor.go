@@ -10,8 +10,8 @@ import (
 
 // EffectExecution はキューに蓄積される実行単位
 type EffectExecution struct {
-	Effect  Effect   // 実行する効果
-	Context *Context // 実行コンテキスト
+	Effect Effect // 実行する効果
+	Scope  *Scope // エフェクトの影響範囲
 }
 
 // Processor はエフェクトの実行管理を行うプロセッサー
@@ -28,22 +28,20 @@ func NewProcessor() *Processor {
 	}
 }
 
-
 // AddEffect はエフェクトをキューに追加する
 func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs.Entity) {
-	ctx := &Context{
+	scope := &Scope{
 		Creator: creator,
 		Targets: targets,
 	}
 
 	p.queue = append(p.queue, EffectExecution{
-		Effect:  effect,
-		Context: ctx,
+		Effect: effect,
+		Scope:  scope,
 	})
 
 	p.logger.Debug("エフェクトをキューに追加", "effect", effect.String(), "targets", len(targets))
 }
-
 
 // Execute はキュー内のすべてのエフェクトを順次実行する
 func (p *Processor) Execute(world w.World) error {
@@ -54,15 +52,9 @@ func (p *Processor) Execute(world w.World) error {
 		execution := p.queue[0]
 		p.queue = p.queue[1:]
 
-		// エフェクトの妥当性を検証
-		if err := execution.Effect.Validate(world, execution.Context); err != nil {
-			p.logger.Error("エフェクト検証失敗", "effect", execution.Effect.String(), "error", err)
-			return fmt.Errorf("エフェクト検証失敗 %s: %w", execution.Effect, err)
-		}
-
-		// エフェクトを実行
+		// エフェクトを実行（Apply内でValidateが呼ばれる）
 		p.logger.Debug("エフェクト実行", "effect", execution.Effect.String())
-		err := execution.Effect.Apply(world, execution.Context)
+		err := execution.Effect.Apply(world, execution.Scope)
 
 		if err != nil {
 			p.logger.Error("エフェクト実行失敗", "effect", execution.Effect.String(), "error", err)

@@ -10,13 +10,17 @@ import (
 // MovementWarpNext は次の階層に移動するエフェクト
 type MovementWarpNext struct{}
 
-func (m MovementWarpNext) Apply(world w.World, ctx *Context) error {
+func (m MovementWarpNext) Apply(world w.World, scope *Scope) error {
+	if err := m.Validate(world, scope); err != nil {
+		return err
+	}
+
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpNext
 	return nil
 }
 
-func (m MovementWarpNext) Validate(world w.World, ctx *Context) error {
+func (m MovementWarpNext) Validate(world w.World, scope *Scope) error {
 	return nil
 }
 
@@ -27,13 +31,17 @@ func (w MovementWarpNext) String() string {
 // MovementWarpEscape はダンジョンから脱出するエフェクト
 type MovementWarpEscape struct{}
 
-func (m MovementWarpEscape) Apply(world w.World, ctx *Context) error {
+func (m MovementWarpEscape) Apply(world w.World, scope *Scope) error {
+	if err := m.Validate(world, scope); err != nil {
+		return err
+	}
+
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpEscape
 	return nil
 }
 
-func (m MovementWarpEscape) Validate(world w.World, ctx *Context) error {
+func (m MovementWarpEscape) Validate(world w.World, scope *Scope) error {
 	return nil
 }
 
@@ -46,13 +54,17 @@ type MovementWarpToFloor struct {
 	Floor int // ワープ先の階層
 }
 
-func (m MovementWarpToFloor) Apply(world w.World, ctx *Context) error {
+func (m MovementWarpToFloor) Apply(world w.World, scope *Scope) error {
+	if err := m.Validate(world, scope); err != nil {
+		return err
+	}
+
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpNext
 	return nil
 }
 
-func (m MovementWarpToFloor) Validate(world w.World, ctx *Context) error {
+func (m MovementWarpToFloor) Validate(world w.World, scope *Scope) error {
 	if m.Floor < 1 {
 		return fmt.Errorf("階層は1以上である必要があります: %d", m.Floor)
 	}

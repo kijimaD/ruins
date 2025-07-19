@@ -11,8 +11,8 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// Context はエフェクト実行時のコンテキスト情報を保持する
-type Context struct {
+// Scope はエフェクトの影響範囲を保持する
+type Scope struct {
 	Creator *ecs.Entity  // 効果の発動者（nilの場合もある）
 	Targets []ecs.Entity // 効果の対象エンティティ一覧
 }
@@ -20,10 +20,10 @@ type Context struct {
 // Effect はゲーム内の効果を表す核心インターフェース
 type Effect interface {
 	// Apply は効果を実際に適用する
-	Apply(world w.World, ctx *Context) error
+	Apply(world w.World, scope *Scope) error
 
 	// Validate は効果の適用前に妥当性を検証する
-	Validate(world w.World, ctx *Context) error
+	Validate(world w.World, scope *Scope) error
 
 	// String は効果の文字列表現を返す（ログとデバッグ用）
 	String() string
@@ -43,8 +43,12 @@ type CombatDamage struct {
 	Source DamageSource // ダメージの発生源
 }
 
-func (d CombatDamage) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (d CombatDamage) Apply(world w.World, scope *Scope) error {
+	if err := d.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
@@ -63,16 +67,16 @@ func (d CombatDamage) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (d CombatDamage) Validate(world w.World, ctx *Context) error {
+func (d CombatDamage) Validate(world w.World, scope *Scope) error {
 	if d.Amount < 0 {
 		return errors.New("ダメージは0以上である必要があります")
 	}
-	if len(ctx.Targets) == 0 {
+	if len(scope.Targets) == 0 {
 		return errors.New("ダメージ対象が指定されていません")
 	}
 
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
@@ -115,8 +119,12 @@ type CombatHealing struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
-func (h CombatHealing) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (h CombatHealing) Apply(world w.World, scope *Scope) error {
+	if err := h.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
@@ -139,16 +147,16 @@ func (h CombatHealing) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (h CombatHealing) Validate(world w.World, ctx *Context) error {
+func (h CombatHealing) Validate(world w.World, scope *Scope) error {
 	if h.Amount == nil {
 		return errors.New("回復量が指定されていません")
 	}
-	if len(ctx.Targets) == 0 {
+	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
 	}
 
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
@@ -173,8 +181,12 @@ type ConsumeStamina struct {
 	Amount gc.Amounter // 消費量（固定値または割合）
 }
 
-func (c ConsumeStamina) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (c ConsumeStamina) Apply(world w.World, scope *Scope) error {
+	if err := c.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
@@ -192,16 +204,16 @@ func (c ConsumeStamina) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (c ConsumeStamina) Validate(world w.World, ctx *Context) error {
+func (c ConsumeStamina) Validate(world w.World, scope *Scope) error {
 	if c.Amount == nil {
 		return errors.New("スタミナ消費量が指定されていません")
 	}
-	if len(ctx.Targets) == 0 {
+	if len(scope.Targets) == 0 {
 		return errors.New("スタミナ消費対象が指定されていません")
 	}
 
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
@@ -218,8 +230,12 @@ type RestoreStamina struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
-func (r RestoreStamina) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (r RestoreStamina) Apply(world w.World, scope *Scope) error {
+	if err := r.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
@@ -237,16 +253,16 @@ func (r RestoreStamina) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (r RestoreStamina) Validate(world w.World, ctx *Context) error {
+func (r RestoreStamina) Validate(world w.World, scope *Scope) error {
 	if r.Amount == nil {
 		return errors.New("スタミナ回復量が指定されていません")
 	}
-	if len(ctx.Targets) == 0 {
+	if len(scope.Targets) == 0 {
 		return errors.New("スタミナ回復対象が指定されていません")
 	}
 
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}

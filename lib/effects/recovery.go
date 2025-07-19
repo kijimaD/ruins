@@ -12,8 +12,12 @@ import (
 // FullRecoveryHP は非戦闘時のHP全回復エフェクト（ログ出力なし）
 type FullRecoveryHP struct{}
 
-func (f FullRecoveryHP) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (f FullRecoveryHP) Apply(world w.World, scope *Scope) error {
+	if err := f.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 		pools.HP.Current = pools.HP.Max
@@ -21,13 +25,13 @@ func (f FullRecoveryHP) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (f FullRecoveryHP) Validate(world w.World, ctx *Context) error {
-	if len(ctx.Targets) == 0 {
+func (f FullRecoveryHP) Validate(world w.World, scope *Scope) error {
+	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
 	}
-	
+
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
@@ -42,8 +46,12 @@ func (f FullRecoveryHP) String() string {
 // FullRecoverySP は非戦闘時のSP全回復エフェクト（ログ出力なし）
 type FullRecoverySP struct{}
 
-func (f FullRecoverySP) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (f FullRecoverySP) Apply(world w.World, scope *Scope) error {
+	if err := f.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 		pools.SP.Current = pools.SP.Max
@@ -51,13 +59,13 @@ func (f FullRecoverySP) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (f FullRecoverySP) Validate(world w.World, ctx *Context) error {
-	if len(ctx.Targets) == 0 {
+func (f FullRecoverySP) Validate(world w.World, scope *Scope) error {
+	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
 	}
-	
+
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
@@ -74,8 +82,12 @@ type RecoveryHP struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
-func (r RecoveryHP) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (r RecoveryHP) Apply(world w.World, scope *Scope) error {
+	if err := r.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
@@ -93,16 +105,16 @@ func (r RecoveryHP) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (r RecoveryHP) Validate(world w.World, ctx *Context) error {
+func (r RecoveryHP) Validate(world w.World, scope *Scope) error {
 	if r.Amount == nil {
 		return errors.New("回復量が指定されていません")
 	}
-	if len(ctx.Targets) == 0 {
+	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
 	}
-	
+
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
@@ -119,8 +131,12 @@ type RecoverySP struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
-func (r RecoverySP) Apply(world w.World, ctx *Context) error {
-	for _, target := range ctx.Targets {
+func (r RecoverySP) Apply(world w.World, scope *Scope) error {
+	if err := r.Validate(world, scope); err != nil {
+		return err
+	}
+
+	for _, target := range scope.Targets {
 		// Validateで事前確認済みのためnilチェック不要
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
@@ -138,16 +154,16 @@ func (r RecoverySP) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (r RecoverySP) Validate(world w.World, ctx *Context) error {
+func (r RecoverySP) Validate(world w.World, scope *Scope) error {
 	if r.Amount == nil {
 		return errors.New("回復量が指定されていません")
 	}
-	if len(ctx.Targets) == 0 {
+	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
 	}
-	
+
 	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range ctx.Targets {
+	for _, target := range scope.Targets {
 		if world.Components.Pools.Get(target) == nil {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}

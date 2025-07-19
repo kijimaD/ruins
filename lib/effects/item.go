@@ -17,7 +17,11 @@ type UseItem struct {
 	Item ecs.Entity // 使用するアイテムのエンティティ
 }
 
-func (u UseItem) Apply(world w.World, ctx *Context) error {
+func (u UseItem) Apply(world w.World, scope *Scope) error {
+	if err := u.Validate(world, scope); err != nil {
+		return err
+	}
+
 	// アイテムのコンポーネントを読み取って対応するエフェクトを直接適用
 
 	// 回復効果があるかチェック
@@ -26,12 +30,8 @@ func (u UseItem) Apply(world w.World, ctx *Context) error {
 		// アイテムによる回復は非戦闘時の回復として処理（ログ出力なし）
 		healingEffect := RecoveryHP{Amount: healingComponent.Amount}
 
-		// Validateで事前検証
-		if err := healingEffect.Validate(world, ctx); err != nil {
-			return fmt.Errorf("回復エフェクト検証失敗: %w", err)
-		}
-
-		if err := healingEffect.Apply(world, ctx); err != nil {
+		// Apply内でValidateが呼ばれるため直接呼び出し
+		if err := healingEffect.Apply(world, scope); err != nil {
 			return fmt.Errorf("回復エフェクト適用失敗: %w", err)
 		}
 	}
@@ -44,12 +44,8 @@ func (u UseItem) Apply(world w.World, ctx *Context) error {
 			Source: DamageSourceItem,
 		}
 
-		// Validateで事前検証
-		if err := damageEffect.Validate(world, ctx); err != nil {
-			return fmt.Errorf("ダメージエフェクト検証失敗: %w", err)
-		}
-
-		if err := damageEffect.Apply(world, ctx); err != nil {
+		// Apply内でValidateが呼ばれるため直接呼び出し
+		if err := damageEffect.Apply(world, scope); err != nil {
 			return fmt.Errorf("ダメージエフェクト適用失敗: %w", err)
 		}
 	}
@@ -62,7 +58,7 @@ func (u UseItem) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (u UseItem) Validate(world w.World, ctx *Context) error {
+func (u UseItem) Validate(world w.World, scope *Scope) error {
 	// アイテムエンティティにItemコンポーネントがあるかチェック
 	if !u.Item.HasComponent(world.Components.Item) {
 		return errors.New("無効なアイテムエンティティです")
@@ -84,7 +80,7 @@ func (u UseItem) Validate(world w.World, ctx *Context) error {
 	// アイテム効果のターゲットのPoolsコンポーネント存在確認
 	// 回復またはダメージ効果がある場合、ターゲットにPoolsコンポーネントが必要
 	if world.Components.ProvidesHealing.Get(u.Item) != nil || world.Components.InflictsDamage.Get(u.Item) != nil {
-		for _, target := range ctx.Targets {
+		for _, target := range scope.Targets {
 			if world.Components.Pools.Get(target) == nil {
 				return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 			}
@@ -103,12 +99,16 @@ type ConsumeItem struct {
 	Item ecs.Entity // 消費するアイテム
 }
 
-func (c ConsumeItem) Apply(world w.World, ctx *Context) error {
+func (c ConsumeItem) Apply(world w.World, scope *Scope) error {
+	if err := c.Validate(world, scope); err != nil {
+		return err
+	}
+
 	world.Manager.DeleteEntity(c.Item)
 	return nil
 }
 
-func (c ConsumeItem) Validate(world w.World, ctx *Context) error {
+func (c ConsumeItem) Validate(world w.World, scope *Scope) error {
 	// アイテムエンティティにItemコンポーネントがあるかチェック
 	if !c.Item.HasComponent(world.Components.Item) {
 		return errors.New("無効なアイテムエンティティです")
@@ -126,10 +126,14 @@ type CreateItem struct {
 	Quantity int    // 生成数量
 }
 
-func (c CreateItem) Apply(world w.World, ctx *Context) error {
+func (c CreateItem) Apply(world w.World, scope *Scope) error {
+	if err := c.Validate(world, scope); err != nil {
+		return err
+	}
+
 	// RawMasterを直接使用してアイテムを生成（循環インポート回避）
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	
+
 	for i := 0; i < c.Quantity; i++ {
 		componentList := entities.ComponentList{}
 		gameComponent, err := rawMaster.GenerateItem(c.ItemType, gc.ItemLocationInBackpack)
@@ -142,7 +146,7 @@ func (c CreateItem) Apply(world w.World, ctx *Context) error {
 	return nil
 }
 
-func (c CreateItem) Validate(world w.World, ctx *Context) error {
+func (c CreateItem) Validate(world w.World, scope *Scope) error {
 	if c.ItemType == "" {
 		return errors.New("アイテムタイプが指定されていません")
 	}
