@@ -20,7 +20,7 @@
 //
 //	// ターゲットセレクタを使用
 //	healing := effects.CombatHealing{Amount: gc.NumeralAmount{Numeral: 30}}
-//	processor.AddTargetedEffect(healing, &healer, effects.PartyTargets{}, world)
+//	processor.AddTargetedEffect(healing, &healer, effects.TargetParty{}, world)
 //
 //	// エフェクト実行
 //	if err := processor.Execute(world); err != nil {

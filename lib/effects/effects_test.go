@@ -39,17 +39,17 @@ func TestEffectSystem(t *testing.T) {
 		
 		entity := world.Manager.NewEntity()
 		
-		singleTarget := SingleTarget{Entity: entity}
-		assert.Equal(t, "SingleTarget", singleTarget.String())
+		singleTarget := TargetSingle{Entity: entity}
+		assert.Equal(t, "TargetSingle", singleTarget.String())
 		
-		partyTargets := PartyTargets{}
-		assert.Equal(t, "PartyTargets", partyTargets.String())
+		partyTargets := TargetParty{}
+		assert.Equal(t, "TargetParty", partyTargets.String())
 		
-		allEnemies := AllEnemies{}
-		assert.Equal(t, "AllEnemies", allEnemies.String())
+		allEnemies := TargetAllEnemies{}
+		assert.Equal(t, "TargetAllEnemies", allEnemies.String())
 		
-		noTarget := NoTarget{}
-		assert.Equal(t, "NoTarget", noTarget.String())
+		noTarget := TargetNone{}
+		assert.Equal(t, "TargetNone", noTarget.String())
 	})
 	
 	t.Run("エフェクトの検証", func(t *testing.T) {

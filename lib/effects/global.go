@@ -123,7 +123,7 @@ func ItemTrigger(creator *ecs.Entity, item ecs.Entity, targets Targets, world w.
 			log.Printf("アイテムエフェクト追加エラー: %v", err)
 		}
 	case Party:
-		selector := PartyTargets{}
+		selector := TargetParty{}
 		if err := globalProcessor.AddTargetedEffect(useItemEffect, creator, selector, world); err != nil {
 			log.Printf("アイテムエフェクト追加エラー: %v", err)
 		}

@@ -17,23 +17,23 @@ type TargetSelector interface {
 	String() string
 }
 
-// SingleTarget は単体ターゲットセレクタ
-type SingleTarget struct {
+// TargetSingle は単体ターゲットセレクタ
+type TargetSingle struct {
 	Entity ecs.Entity
 }
 
-func (s SingleTarget) SelectTargets(world w.World) ([]ecs.Entity, error) {
+func (s TargetSingle) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return []ecs.Entity{s.Entity}, nil
 }
 
-func (s SingleTarget) String() string {
-	return "SingleTarget"
+func (s TargetSingle) String() string {
+	return "TargetSingle"
 }
 
-// PartyTargets はパーティ全体ターゲットセレクタ
-type PartyTargets struct{}
+// TargetParty はパーティ全体ターゲットセレクタ
+type TargetParty struct{}
 
-func (p PartyTargets) SelectTargets(world w.World) ([]ecs.Entity, error) {
+func (p TargetParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
 		world.Components.FactionAlly,
@@ -44,14 +44,14 @@ func (p PartyTargets) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return targets, nil
 }
 
-func (p PartyTargets) String() string {
-	return "PartyTargets"
+func (p TargetParty) String() string {
+	return "TargetParty"
 }
 
-// AllEnemies はすべての敵ターゲットセレクタ
-type AllEnemies struct{}
+// TargetAllEnemies はすべての敵ターゲットセレクタ
+type TargetAllEnemies struct{}
 
-func (a AllEnemies) SelectTargets(world w.World) ([]ecs.Entity, error) {
+func (a TargetAllEnemies) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
 		world.Components.FactionEnemy,
@@ -61,14 +61,14 @@ func (a AllEnemies) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return targets, nil
 }
 
-func (a AllEnemies) String() string {
-	return "AllEnemies"
+func (a TargetAllEnemies) String() string {
+	return "TargetAllEnemies"
 }
 
-// AlivePartyMembers は生きているパーティメンバーのみをターゲットとする
-type AlivePartyMembers struct{}
+// TargetAliveParty は生きているパーティメンバーのみをターゲットとする
+type TargetAliveParty struct{}
 
-func (a AlivePartyMembers) SelectTargets(world w.World) ([]ecs.Entity, error) {
+func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
 		world.Components.FactionAlly,
@@ -87,14 +87,14 @@ func (a AlivePartyMembers) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return targets, nil
 }
 
-func (a AlivePartyMembers) String() string {
-	return "AlivePartyMembers"
+func (a TargetAliveParty) String() string {
+	return "TargetAliveParty"
 }
 
-// DeadPartyMembers は死亡しているパーティメンバーのみをターゲットとする
-type DeadPartyMembers struct{}
+// TargetDeadParty は死亡しているパーティメンバーのみをターゲットとする
+type TargetDeadParty struct{}
 
-func (d DeadPartyMembers) SelectTargets(world w.World) ([]ecs.Entity, error) {
+func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
 		world.Components.FactionAlly,
@@ -113,19 +113,19 @@ func (d DeadPartyMembers) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return targets, nil
 }
 
-func (d DeadPartyMembers) String() string {
-	return "DeadPartyMembers"
+func (d TargetDeadParty) String() string {
+	return "TargetDeadParty"
 }
 
-// NoTarget はターゲット不要のエフェクト用セレクタ
-type NoTarget struct{}
+// TargetNone はターゲット不要のエフェクト用セレクタ
+type TargetNone struct{}
 
-func (n NoTarget) SelectTargets(world w.World) ([]ecs.Entity, error) {
+func (n TargetNone) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return []ecs.Entity{}, nil
 }
 
-func (n NoTarget) String() string {
-	return "NoTarget"
+func (n TargetNone) String() string {
+	return "TargetNone"
 }
 
 // AddTargetedEffect はターゲットセレクタを使用してエフェクトをキューに追加する便利関数
