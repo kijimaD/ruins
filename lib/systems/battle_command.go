@@ -100,7 +100,7 @@ func BattleCommandSystem(world w.World) {
 		
 		// 新しいエフェクトシステムを使用
 		processor := effects.NewProcessor()
-		damageEffect := effects.CombatDamage{Amount: damage, Source: effects.DamageSourceWeapon}
+		damageEffect := effects.Damage{Amount: damage, Source: effects.DamageSourceWeapon}
 		staminaEffect := effects.ConsumeStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}
 		
 		processor.AddEffectWithLogger(damageEffect, &ownerEntity, &gamelog.BattleLog, cmd.Target)

@@ -15,7 +15,7 @@
 //	processor := effects.NewProcessor()
 //
 //	// ダメージエフェクト
-//	damage := effects.CombatDamage{Amount: 50, Source: effects.DamageSourceWeapon}
+//	damage := effects.Damage{Amount: 50, Source: effects.DamageSourceWeapon}
 //	processor.AddEffect(damage, &attacker, target)
 //
 //	// ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）

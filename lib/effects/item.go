@@ -40,7 +40,7 @@ func (u UseItem) Apply(world w.World, scope *Scope) error {
 	// ダメージ効果があるかチェック
 	if damage := world.Components.InflictsDamage.Get(u.Item); damage != nil {
 		damageComponent := damage.(*gc.InflictsDamage)
-		damageEffect := CombatDamage{
+		damageEffect := Damage{
 			Amount: damageComponent.Amount,
 			Source: DamageSourceItem,
 		}

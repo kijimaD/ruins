@@ -78,7 +78,7 @@ func TestEffectSystem(t *testing.T) {
 	})
 
 	t.Run("エフェクトの文字列表現", func(t *testing.T) {
-		damage := CombatDamage{Amount: 50, Source: DamageSourceWeapon}
+		damage := Damage{Amount: 50, Source: DamageSourceWeapon}
 		assert.Equal(t, "Damage(50, 武器)", damage.String())
 
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
@@ -115,14 +115,14 @@ func TestEffectSystem(t *testing.T) {
 		assert.NoError(t, err)
 
 		// 負のダメージは無効
-		damage := CombatDamage{Amount: -10, Source: DamageSourceWeapon}
+		damage := Damage{Amount: -10, Source: DamageSourceWeapon}
 		scope := &Scope{Targets: []ecs.Entity{ecs.Entity(1)}}
 		err = damage.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "ダメージは0以上")
 
 		// ターゲットなしは無効
-		validDamage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
+		validDamage := Damage{Amount: 10, Source: DamageSourceWeapon}
 		emptyScope := &Scope{Targets: []ecs.Entity{}}
 		err = validDamage.Validate(world, emptyScope)
 		assert.Error(t, err)
@@ -137,7 +137,7 @@ func TestEffectSystem(t *testing.T) {
 		entityWithoutPools := createTestEntity(world)
 
 		// ダメージエフェクトでPoolsコンポーネントがないターゲットを検証
-		damage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
+		damage := Damage{Amount: 10, Source: DamageSourceWeapon}
 		ctxWithInvalidTarget := &Scope{
 			Targets: []ecs.Entity{entityWithoutPools},
 		}
@@ -183,7 +183,7 @@ func TestCombatEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 100, 50)
 
 		// ダメージエフェクトを適用
-		damage := CombatDamage{Amount: 25, Source: DamageSourceWeapon}
+		damage := Damage{Amount: 25, Source: DamageSourceWeapon}
 		scope := &Scope{Targets: []ecs.Entity{player}}
 
 		err = damage.Validate(world, scope)
@@ -522,7 +522,7 @@ func TestProcessor(t *testing.T) {
 
 		// 複数のエフェクトをキューに追加
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 20}}
-		damage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
+		damage := Damage{Amount: 10, Source: DamageSourceWeapon}
 
 		processor.AddEffect(healing, nil, player)
 		assert.Equal(t, 1, processor.QueueSize())
@@ -548,7 +548,7 @@ func TestProcessor(t *testing.T) {
 		processor := NewProcessor()
 
 		// 無効なエフェクト（負のダメージ）を追加
-		invalidDamage := CombatDamage{Amount: -10, Source: DamageSourceWeapon}
+		invalidDamage := Damage{Amount: -10, Source: DamageSourceWeapon}
 		processor.AddEffect(invalidDamage, nil, ecs.Entity(1))
 
 		// 実行時に検証エラーが発生することを確認（Apply内でValidateが呼ばれるためエフェクト実行失敗になる）
@@ -562,7 +562,7 @@ func TestProcessor(t *testing.T) {
 
 		// 複数のエフェクトを追加
 		processor.AddEffect(Healing{Amount: gc.NumeralAmount{Numeral: 10}}, nil, ecs.Entity(1))
-		processor.AddEffect(CombatDamage{Amount: 5, Source: DamageSourceWeapon}, nil, ecs.Entity(1))
+		processor.AddEffect(Damage{Amount: 5, Source: DamageSourceWeapon}, nil, ecs.Entity(1))
 
 		assert.Equal(t, 2, processor.QueueSize())
 		assert.False(t, processor.IsEmpty())
@@ -655,7 +655,7 @@ func TestLoggerIntegration(t *testing.T) {
 		mockLogger := &MockLogger{}
 
 		// ダメージエフェクトをLoggerとともに実行
-		damage := CombatDamage{Amount: 25, Source: DamageSourceWeapon}
+		damage := Damage{Amount: 25, Source: DamageSourceWeapon}
 		scope := &Scope{
 			Targets: []ecs.Entity{player},
 			Logger:  mockLogger,
@@ -731,7 +731,7 @@ func TestLoggerIntegration(t *testing.T) {
 		processor := NewProcessor()
 
 		// battle_command.goと同じ方法でダメージエフェクトを実行
-		damageEffect := CombatDamage{Amount: 25, Source: DamageSourceWeapon}
+		damageEffect := Damage{Amount: 25, Source: DamageSourceWeapon}
 		processor.AddEffectWithLogger(damageEffect, nil, &gamelog.BattleLog, player)
 
 		err = processor.Execute(world)

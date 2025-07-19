@@ -44,14 +44,14 @@ const (
 	DamageSourceItem                       // アイテムによるダメージ
 )
 
-// CombatDamage はダメージを与えるエフェクト
-type CombatDamage struct {
+// Damage はダメージを与えるエフェクト
+type Damage struct {
 	Amount int          // ダメージ量
 	Source DamageSource // ダメージの発生源
 }
 
 // Apply はダメージエフェクトをターゲットに適用する
-func (d CombatDamage) Apply(world w.World, scope *Scope) error {
+func (d Damage) Apply(world w.World, scope *Scope) error {
 	if err := d.Validate(world, scope); err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (d CombatDamage) Apply(world w.World, scope *Scope) error {
 }
 
 // Validate はダメージエフェクトの妥当性を検証する
-func (d CombatDamage) Validate(world w.World, scope *Scope) error {
+func (d Damage) Validate(world w.World, scope *Scope) error {
 	if d.Amount < 0 {
 		return errors.New("ダメージは0以上である必要があります")
 	}
@@ -93,11 +93,11 @@ func (d CombatDamage) Validate(world w.World, scope *Scope) error {
 	return nil
 }
 
-func (d CombatDamage) String() string {
+func (d Damage) String() string {
 	return fmt.Sprintf("Damage(%d, %s)", d.Amount, d.sourceString())
 }
 
-func (d CombatDamage) logDamage(world w.World, target ecs.Entity, amount int, logger GameLogAppender) {
+func (d Damage) logDamage(world w.World, target ecs.Entity, amount int, logger GameLogAppender) {
 	if logger == nil {
 		return // ゲームログ出力先が指定されていない場合は何もしない
 	}
@@ -108,7 +108,7 @@ func (d CombatDamage) logDamage(world w.World, target ecs.Entity, amount int, lo
 	}
 }
 
-func (d CombatDamage) logDeath(world w.World, target ecs.Entity, logger GameLogAppender) {
+func (d Damage) logDeath(world w.World, target ecs.Entity, logger GameLogAppender) {
 	if logger == nil {
 		return // ゲームログ出力先が指定されていない場合は何もしない
 	}
@@ -118,7 +118,7 @@ func (d CombatDamage) logDeath(world w.World, target ecs.Entity, logger GameLogA
 	}
 }
 
-func (d CombatDamage) sourceString() string {
+func (d Damage) sourceString() string {
 	switch d.Source {
 	case DamageSourceWeapon:
 		return "武器"
