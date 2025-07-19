@@ -139,5 +139,6 @@ func (p *Processor) AddTargetedEffect(effect Effect, creator *ecs.Entity, select
 		p.logger.Debug("ターゲットが見つかりませんでした: %s", selector)
 	}
 
-	return p.AddEffect(effect, creator, targets...)
+	p.AddEffect(effect, creator, targets...)
+	return nil
 }

@@ -103,12 +103,8 @@ func BattleCommandSystem(world w.World) {
 		damageEffect := effects.CombatDamage{Amount: damage, Source: effects.DamageSourceWeapon}
 		staminaEffect := effects.ConsumeStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}
 		
-		if err := processor.AddEffect(damageEffect, &ownerEntity, cmd.Target); err != nil {
-			log.Printf("ダメージエフェクト追加エラー: %v", err)
-		}
-		if err := processor.AddEffect(staminaEffect, &ownerEntity, cmd.Owner); err != nil {
-			log.Printf("スタミナ消費エフェクト追加エラー: %v", err)
-		}
+		processor.AddEffect(damageEffect, &ownerEntity, cmd.Target)
+		processor.AddEffect(staminaEffect, &ownerEntity, cmd.Owner)
 		if err := processor.Execute(world); err != nil {
 			log.Printf("エフェクト実行エラー: %v", err)
 		}

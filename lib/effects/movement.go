@@ -47,10 +47,22 @@ type MovementWarpToFloor struct {
 }
 
 func (m MovementWarpToFloor) Apply(world w.World, ctx *Context) error {
-	// TODO: 特定階層へのワープ機能を実装
-	// 現在は次階層へのワープと同じ動作
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventWarpNext
+	
+	// 現在の階層と比較して適切なワープを決定
+	currentDepth := gameResources.Depth
+	
+	if m.Floor > currentDepth {
+		// より深い階層へのワープ（次へ進む）
+		gameResources.StateEvent = resources.StateEventWarpNext
+	} else if m.Floor < currentDepth {
+		// より浅い階層へのワープ（脱出として扱う）
+		gameResources.StateEvent = resources.StateEventWarpEscape
+	} else {
+		// 同じ階層の場合は何もしない
+		return nil
+	}
+	
 	return nil
 }
 

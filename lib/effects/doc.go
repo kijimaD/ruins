@@ -34,8 +34,8 @@
 // movement.go  - 移動関連エフェクト（ワープ、脱出）
 // item.go      - アイテム関連エフェクト（使用、消費）
 //
-// 下位互換性:
+// パッケージ構成:
 //
-// global.go では既存コードとの互換性を保つためのアダプター層を提供しています。
-// 既存のAddEffect(), RunEffectQueue(), ItemTrigger()関数は引き続き使用できます。
+// processor.go - エフェクト実行管理システム
+// target.go    - ターゲット選択システム
 package effects

@@ -52,14 +52,10 @@ func MoveSystem(world w.World) {
 			switch warp.Mode {
 			case gc.WarpModeNext:
 				warpEffect := effects.MovementWarpNext{}
-				if err := processor.AddEffect(warpEffect, nil); err != nil {
-					log.Printf("ワープエフェクト追加エラー: %v", err)
-				}
+				processor.AddEffect(warpEffect, nil)
 			case gc.WarpModeEscape:
 				escapeEffect := effects.MovementWarpEscape{}
-				if err := processor.AddEffect(escapeEffect, nil); err != nil {
-					log.Printf("脱出エフェクト追加エラー: %v", err)
-				}
+				processor.AddEffect(escapeEffect, nil)
 			}
 			
 			if err := processor.Execute(world); err != nil {

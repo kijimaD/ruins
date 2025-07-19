@@ -738,9 +738,7 @@ func (st *InventoryMenuState) executePartySelection(world w.World) {
 	selectedMember := st.partyMembers[st.partyFocusIndex]
 	processor := effects.NewProcessor()
 	useItemEffect := effects.UseItem{Item: st.selectedItem}
-	if err := processor.AddEffect(useItemEffect, nil, selectedMember); err != nil {
-		log.Printf("アイテムエフェクト追加エラー: %v", err)
-	}
+	processor.AddEffect(useItemEffect, nil, selectedMember)
 	if err := processor.Execute(world); err != nil {
 		log.Printf("アイテムエフェクト実行エラー: %v", err)
 	}

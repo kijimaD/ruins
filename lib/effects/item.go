@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/engine/entities"
+	"github.com/kijimaD/ruins/lib/raw"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -61,8 +63,8 @@ func (u UseItem) Apply(world w.World, ctx *Context) error {
 }
 
 func (u UseItem) Validate(world w.World, ctx *Context) error {
-	// アイテムエンティティが有効かチェック
-	if u.Item == 0 {
+	// アイテムエンティティにItemコンポーネントがあるかチェック
+	if !u.Item.HasComponent(world.Components.Item) {
 		return errors.New("無効なアイテムエンティティです")
 	}
 
@@ -102,14 +104,13 @@ type ConsumeItem struct {
 }
 
 func (c ConsumeItem) Apply(world w.World, ctx *Context) error {
-	if c.Item != 0 {
-		world.Manager.DeleteEntity(c.Item)
-	}
+	world.Manager.DeleteEntity(c.Item)
 	return nil
 }
 
 func (c ConsumeItem) Validate(world w.World, ctx *Context) error {
-	if c.Item == 0 {
+	// アイテムエンティティにItemコンポーネントがあるかチェック
+	if !c.Item.HasComponent(world.Components.Item) {
 		return errors.New("無効なアイテムエンティティです")
 	}
 	return nil
@@ -126,8 +127,18 @@ type CreateItem struct {
 }
 
 func (c CreateItem) Apply(world w.World, ctx *Context) error {
-	// TODO: アイテム生成機能を実装
-	// 現在はプレースホルダー
+	// RawMasterを直接使用してアイテムを生成（循環インポート回避）
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	
+	for i := 0; i < c.Quantity; i++ {
+		componentList := entities.ComponentList{}
+		gameComponent, err := rawMaster.GenerateItem(c.ItemType, gc.ItemLocationInBackpack)
+		if err != nil {
+			return fmt.Errorf("アイテム生成失敗: %w", err)
+		}
+		componentList.Game = append(componentList.Game, gameComponent)
+		entities.AddEntities(world, componentList)
+	}
 	return nil
 }
 

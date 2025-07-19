@@ -13,19 +13,9 @@ type EffectExecution struct {
 	Context *Context // 実行コンテキスト
 }
 
-// ProcessorHooks はプロセッサーの実行時フックを定義する
-type ProcessorHooks struct {
-	// BeforeEffect は各エフェクト実行前に呼ばれる
-	BeforeEffect func(Effect, *Context)
-
-	// AfterEffect は各エフェクト実行後に呼ばれる（エラーの有無に関わらず）
-	AfterEffect func(Effect, *Context, error)
-}
-
 // Processor はエフェクトの実行管理を行うプロセッサー
 type Processor struct {
 	queue  []EffectExecution // エフェクト実行キュー
-	hooks  ProcessorHooks    // 実行時フック
 	logger Logger            // ログ出力
 }
 
@@ -33,14 +23,8 @@ type Processor struct {
 func NewProcessor() *Processor {
 	return &Processor{
 		queue:  make([]EffectExecution, 0),
-		hooks:  ProcessorHooks{},
 		logger: defaultLogger{},
 	}
-}
-
-// SetHooks はプロセッサーのフックを設定する
-func (p *Processor) SetHooks(hooks ProcessorHooks) {
-	p.hooks = hooks
 }
 
 // SetLogger はカスタムログ出力を設定する
@@ -49,7 +33,7 @@ func (p *Processor) SetLogger(logger Logger) {
 }
 
 // AddEffect はエフェクトをキューに追加する
-func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs.Entity) error {
+func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs.Entity) {
 	ctx := &Context{
 		Creator: creator,
 		Targets: targets,
@@ -61,8 +45,8 @@ func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs
 	})
 
 	p.logger.Debug("エフェクトをキューに追加: %s (対象: %d体)", effect, len(targets))
-	return nil
 }
+
 
 // Execute はキュー内のすべてのエフェクトを順次実行する
 func (p *Processor) Execute(world w.World) error {
@@ -79,19 +63,9 @@ func (p *Processor) Execute(world w.World) error {
 			return fmt.Errorf("エフェクト検証失敗 %s: %w", execution.Effect, err)
 		}
 
-		// 実行前フック
-		if p.hooks.BeforeEffect != nil {
-			p.hooks.BeforeEffect(execution.Effect, execution.Context)
-		}
-
 		// エフェクトを実行
 		p.logger.Debug("エフェクト実行: %s", execution.Effect)
 		err := execution.Effect.Apply(world, execution.Context)
-
-		// 実行後フック（エラーの有無に関わらず呼ぶ）
-		if p.hooks.AfterEffect != nil {
-			p.hooks.AfterEffect(execution.Effect, execution.Context, err)
-		}
 
 		if err != nil {
 			p.logger.Error("エフェクト実行失敗: %s - %v", execution.Effect, err)
