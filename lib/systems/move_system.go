@@ -48,7 +48,7 @@ func MoveSystem(world w.World) {
 		if tileEntity.HasComponent(world.Components.Warp) {
 			warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
 			processor := effects.NewProcessor()
-			
+
 			switch warp.Mode {
 			case gc.WarpModeNext:
 				warpEffect := effects.MovementWarpNext{}
@@ -57,7 +57,7 @@ func MoveSystem(world w.World) {
 				escapeEffect := effects.MovementWarpEscape{}
 				processor.AddEffect(escapeEffect, nil)
 			}
-			
+
 			if err := processor.Execute(world); err != nil {
 				log.Printf("ワープエフェクト実行エラー: %v", err)
 			}

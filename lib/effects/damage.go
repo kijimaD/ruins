@@ -17,7 +17,7 @@ const (
 	// DamageSourceWeapon は武器によるダメージを表す
 	DamageSourceWeapon DamageSource = iota // 武器によるダメージ
 	// DamageSourceItem はアイテムによるダメージを表す
-	DamageSourceItem                       // アイテムによるダメージ
+	DamageSourceItem // アイテムによるダメージ
 )
 
 // Damage はダメージを与えるエフェクト

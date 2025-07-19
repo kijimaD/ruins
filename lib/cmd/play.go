@@ -43,7 +43,7 @@ func runPlay(_ *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	
+
 	err = ebiten.RunGame(&game.MainGame{
 		World:        world,
 		StateMachine: es.Init(&gs.MainMenuState{}, world),

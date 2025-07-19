@@ -2,7 +2,7 @@ package worldhelper
 
 import (
 	"fmt"
-	
+
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/raw"
@@ -200,18 +200,18 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 func fullRecover(world w.World, entity ecs.Entity) {
 	// 新しく生成されたエンティティの最大HP/SPを設定
 	setMaxHPSP(world, entity)
-	
+
 	// 新しいエフェクトシステムで回復
 	processor := effects.NewProcessor()
-	
+
 	// HP全回復
 	hpEffect := effects.FullRecoveryHP{}
 	processor.AddEffect(hpEffect, nil, entity)
-	
+
 	// SP全回復
 	spEffect := effects.FullRecoverySP{}
 	processor.AddEffect(spEffect, nil, entity)
-	
+
 	// エフェクト実行
 	_ = processor.Execute(world) // エラーが発生した場合もリカバリーは続行する（ログ出力はProcessor内で行われる）
 }

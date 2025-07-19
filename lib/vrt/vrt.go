@@ -117,7 +117,7 @@ func RunTestGame(state es.State, outputPath string) {
 	processor := effects.NewProcessor()
 	healingEffect := effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
 	staminaEffect := effects.RestoreStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
-	
+
 	partySelector := effects.TargetParty{}
 	if err := processor.AddTargetedEffect(healingEffect, nil, partySelector, world); err != nil {
 		log.Printf("回復エフェクト追加エラー: %v", err)

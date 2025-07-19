@@ -12,9 +12,9 @@ type GameLogAppender interface {
 
 // Scope はエフェクトの影響範囲を保持する
 type Scope struct {
-	Creator *ecs.Entity      // 効果の発動者（nilの場合もある）
-	Targets []ecs.Entity     // 効果の対象エンティティ一覧
-	Logger  GameLogAppender  // ゲームログ出力先（nilの場合はログ出力なし）
+	Creator *ecs.Entity     // 効果の発動者（nilの場合もある）
+	Targets []ecs.Entity    // 効果の対象エンティティ一覧
+	Logger  GameLogAppender // ゲームログ出力先（nilの場合はログ出力なし）
 }
 
 // Effect はゲーム内の効果を表す核心インターフェース
