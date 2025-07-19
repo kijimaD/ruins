@@ -28,7 +28,7 @@
   - 最初にコピペして作成をはじめ、改変していった
   - ECSの使い方まわりで大きく参考にした
 - https://github.com/x-hgg-x/goecsengine
-  - sokoban-goの依存ライブラリ。改変しないと不便なことがけっこうあったので、コピペしてコードに含めた
+  - sokoban-goの依存ライブラリ。ECSまわりの実装を参考にした
 - https://bfnihtly.bracketproductions.com/
   - 設定ファイルによるファクトリまわりを参考にした
 - https://krkrz.github.io/krkr2doc/kag3doc/contents/

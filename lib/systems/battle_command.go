@@ -98,7 +98,6 @@ func BattleCommandSystem(world w.World) {
 		attrs := world.Components.Attributes.Get(ownerEntity).(*gc.Attributes)
 		damage := attack.Damage + attrs.Strength.Total
 
-		// 新しいエフェクトシステムを使用
 		processor := effects.NewProcessor()
 		damageEffect := effects.Damage{Amount: damage, Source: effects.DamageSourceWeapon}
 		staminaEffect := effects.ConsumeStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}

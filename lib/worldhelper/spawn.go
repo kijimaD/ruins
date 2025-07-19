@@ -201,7 +201,6 @@ func fullRecover(world w.World, entity ecs.Entity) {
 	// 新しく生成されたエンティティの最大HP/SPを設定
 	setMaxHPSP(world, entity)
 
-	// 新しいエフェクトシステムで回復
 	processor := effects.NewProcessor()
 
 	// HP全回復
