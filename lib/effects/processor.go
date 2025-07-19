@@ -3,6 +3,7 @@ package effects
 import (
 	"fmt"
 
+	"github.com/kijimaD/ruins/lib/logger"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -16,21 +17,17 @@ type EffectExecution struct {
 // Processor はエフェクトの実行管理を行うプロセッサー
 type Processor struct {
 	queue  []EffectExecution // エフェクト実行キュー
-	logger Logger            // ログ出力
+	logger *logger.Logger    // ログ出力
 }
 
 // NewProcessor は新しいプロセッサーを作成する
 func NewProcessor() *Processor {
 	return &Processor{
 		queue:  make([]EffectExecution, 0),
-		logger: defaultLogger{},
+		logger: logger.New(logger.CategoryEffect),
 	}
 }
 
-// SetLogger はカスタムログ出力を設定する
-func (p *Processor) SetLogger(logger Logger) {
-	p.logger = logger
-}
 
 // AddEffect はエフェクトをキューに追加する
 func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs.Entity) {
@@ -44,13 +41,13 @@ func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs
 		Context: ctx,
 	})
 
-	p.logger.Debug("エフェクトをキューに追加: %s (対象: %d体)", effect, len(targets))
+	p.logger.Debug("エフェクトをキューに追加", "effect", effect.String(), "targets", len(targets))
 }
 
 
 // Execute はキュー内のすべてのエフェクトを順次実行する
 func (p *Processor) Execute(world w.World) error {
-	p.logger.Debug("エフェクトキュー実行開始 (キューサイズ: %d)", len(p.queue))
+	p.logger.Debug("エフェクトキュー実行開始", "queue_size", len(p.queue))
 
 	executed := 0
 	for len(p.queue) > 0 {
@@ -59,23 +56,23 @@ func (p *Processor) Execute(world w.World) error {
 
 		// エフェクトの妥当性を検証
 		if err := execution.Effect.Validate(world, execution.Context); err != nil {
-			p.logger.Error("エフェクト検証失敗: %s - %v", execution.Effect, err)
+			p.logger.Error("エフェクト検証失敗", "effect", execution.Effect.String(), "error", err)
 			return fmt.Errorf("エフェクト検証失敗 %s: %w", execution.Effect, err)
 		}
 
 		// エフェクトを実行
-		p.logger.Debug("エフェクト実行: %s", execution.Effect)
+		p.logger.Debug("エフェクト実行", "effect", execution.Effect.String())
 		err := execution.Effect.Apply(world, execution.Context)
 
 		if err != nil {
-			p.logger.Error("エフェクト実行失敗: %s - %v", execution.Effect, err)
+			p.logger.Error("エフェクト実行失敗", "effect", execution.Effect.String(), "error", err)
 			return fmt.Errorf("エフェクト実行失敗 %s: %w", execution.Effect, err)
 		}
 
 		executed++
 	}
 
-	p.logger.Debug("エフェクトキュー実行完了 (実行数: %d)", executed)
+	p.logger.Debug("エフェクトキュー実行完了", "executed", executed)
 	return nil
 }
 
@@ -83,7 +80,7 @@ func (p *Processor) Execute(world w.World) error {
 func (p *Processor) Clear() {
 	cleared := len(p.queue)
 	p.queue = p.queue[:0]
-	p.logger.Debug("エフェクトキューをクリア (クリア数: %d)", cleared)
+	p.logger.Debug("エフェクトキューをクリア", "cleared", cleared)
 }
 
 // QueueSize は現在のキューサイズを返す
