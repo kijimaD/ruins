@@ -33,7 +33,9 @@ type Effect interface {
 type DamageSource int
 
 const (
+	// DamageSourceWeapon は武器によるダメージを表す
 	DamageSourceWeapon DamageSource = iota // 武器によるダメージ
+	// DamageSourceItem はアイテムによるダメージを表す
 	DamageSourceItem                       // アイテムによるダメージ
 )
 
@@ -43,6 +45,7 @@ type CombatDamage struct {
 	Source DamageSource // ダメージの発生源
 }
 
+// Apply はダメージエフェクトをターゲットに適用する
 func (d CombatDamage) Apply(world w.World, scope *Scope) error {
 	if err := d.Validate(world, scope); err != nil {
 		return err
@@ -67,6 +70,7 @@ func (d CombatDamage) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate はダメージエフェクトの妥当性を検証する
 func (d CombatDamage) Validate(world w.World, scope *Scope) error {
 	if d.Amount < 0 {
 		return errors.New("ダメージは0以上である必要があります")
@@ -119,6 +123,7 @@ type CombatHealing struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
+// Apply は戦闘時回復エフェクトをターゲットに適用する
 func (h CombatHealing) Apply(world w.World, scope *Scope) error {
 	if err := h.Validate(world, scope); err != nil {
 		return err
@@ -147,6 +152,7 @@ func (h CombatHealing) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate は戦闘時回復エフェクトの妥当性を検証する
 func (h CombatHealing) Validate(world w.World, scope *Scope) error {
 	if h.Amount == nil {
 		return errors.New("回復量が指定されていません")
@@ -181,6 +187,7 @@ type ConsumeStamina struct {
 	Amount gc.Amounter // 消費量（固定値または割合）
 }
 
+// Apply はスタミナ消費エフェクトをターゲットに適用する
 func (c ConsumeStamina) Apply(world w.World, scope *Scope) error {
 	if err := c.Validate(world, scope); err != nil {
 		return err
@@ -204,6 +211,7 @@ func (c ConsumeStamina) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate はスタミナ消費エフェクトの妥当性を検証する
 func (c ConsumeStamina) Validate(world w.World, scope *Scope) error {
 	if c.Amount == nil {
 		return errors.New("スタミナ消費量が指定されていません")
@@ -230,6 +238,7 @@ type RestoreStamina struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
+// Apply はスタミナ回復エフェクトをターゲットに適用する
 func (r RestoreStamina) Apply(world w.World, scope *Scope) error {
 	if err := r.Validate(world, scope); err != nil {
 		return err
@@ -253,6 +262,7 @@ func (r RestoreStamina) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate はスタミナ回復エフェクトの妥当性を検証する
 func (r RestoreStamina) Validate(world w.World, scope *Scope) error {
 	if r.Amount == nil {
 		return errors.New("スタミナ回復量が指定されていません")

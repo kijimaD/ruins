@@ -411,7 +411,7 @@ func TestItemEffects(t *testing.T) {
 
 		// 生成前のアイテム数を数える（Name コンポーネントを持つエンティティ）
 		initialCount := 0
-		world.Manager.Join(world.Components.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.Join(world.Components.Name).Visit(ecs.Visit(func(_ ecs.Entity) {
 			initialCount++
 		}))
 
@@ -426,7 +426,7 @@ func TestItemEffects(t *testing.T) {
 
 		// アイテムが生成されたことを確認（3個増えている）
 		finalCount := 0
-		world.Manager.Join(world.Components.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
+		world.Manager.Join(world.Components.Name).Visit(ecs.Visit(func(_ ecs.Entity) {
 			finalCount++
 		}))
 		assert.Equal(t, initialCount+3, finalCount)

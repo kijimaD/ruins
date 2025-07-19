@@ -17,6 +17,7 @@ type UseItem struct {
 	Item ecs.Entity // 使用するアイテムのエンティティ
 }
 
+// Apply はアイテム使用エフェクトを適用する
 func (u UseItem) Apply(world w.World, scope *Scope) error {
 	if err := u.Validate(world, scope); err != nil {
 		return err
@@ -58,6 +59,7 @@ func (u UseItem) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate はアイテム使用エフェクトの妥当性を検証する
 func (u UseItem) Validate(world w.World, scope *Scope) error {
 	// アイテムエンティティにItemコンポーネントがあるかチェック
 	if !u.Item.HasComponent(world.Components.Item) {
@@ -65,13 +67,8 @@ func (u UseItem) Validate(world w.World, scope *Scope) error {
 	}
 
 	// 何らかの効果があるかチェック
-	hasEffect := false
-	if world.Components.ProvidesHealing.Get(u.Item) != nil {
-		hasEffect = true
-	}
-	if world.Components.InflictsDamage.Get(u.Item) != nil {
-		hasEffect = true
-	}
+	hasEffect := world.Components.ProvidesHealing.Get(u.Item) != nil ||
+		world.Components.InflictsDamage.Get(u.Item) != nil
 
 	if !hasEffect {
 		return errors.New("このアイテムには効果がありません")
@@ -99,6 +96,7 @@ type ConsumeItem struct {
 	Item ecs.Entity // 消費するアイテム
 }
 
+// Apply はアイテム消費エフェクトを適用する
 func (c ConsumeItem) Apply(world w.World, scope *Scope) error {
 	if err := c.Validate(world, scope); err != nil {
 		return err
@@ -108,7 +106,8 @@ func (c ConsumeItem) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
-func (c ConsumeItem) Validate(world w.World, scope *Scope) error {
+// Validate はアイテム消費エフェクトの妥当性を検証する
+func (c ConsumeItem) Validate(world w.World, _ *Scope) error {
 	// アイテムエンティティにItemコンポーネントがあるかチェック
 	if !c.Item.HasComponent(world.Components.Item) {
 		return errors.New("無効なアイテムエンティティです")
@@ -126,6 +125,7 @@ type CreateItem struct {
 	Quantity int    // 生成数量
 }
 
+// Apply はアイテム生成エフェクトを適用する
 func (c CreateItem) Apply(world w.World, scope *Scope) error {
 	if err := c.Validate(world, scope); err != nil {
 		return err
@@ -146,7 +146,8 @@ func (c CreateItem) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
-func (c CreateItem) Validate(world w.World, scope *Scope) error {
+// Validate はアイテム生成エフェクトの妥当性を検証する
+func (c CreateItem) Validate(_ w.World, _ *Scope) error {
 	if c.ItemType == "" {
 		return errors.New("アイテムタイプが指定されていません")
 	}

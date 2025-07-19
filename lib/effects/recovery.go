@@ -12,6 +12,7 @@ import (
 // FullRecoveryHP は非戦闘時のHP全回復エフェクト（ログ出力なし）
 type FullRecoveryHP struct{}
 
+// Apply は非戦闘時HP全回復エフェクトをターゲットに適用する
 func (f FullRecoveryHP) Apply(world w.World, scope *Scope) error {
 	if err := f.Validate(world, scope); err != nil {
 		return err
@@ -25,6 +26,7 @@ func (f FullRecoveryHP) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate は非戦闘時HP全回復エフェクトの妥当性を検証する
 func (f FullRecoveryHP) Validate(world w.World, scope *Scope) error {
 	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
@@ -46,6 +48,7 @@ func (f FullRecoveryHP) String() string {
 // FullRecoverySP は非戦闘時のSP全回復エフェクト（ログ出力なし）
 type FullRecoverySP struct{}
 
+// Apply は非戦闘時SP全回復エフェクトをターゲットに適用する
 func (f FullRecoverySP) Apply(world w.World, scope *Scope) error {
 	if err := f.Validate(world, scope); err != nil {
 		return err
@@ -59,6 +62,7 @@ func (f FullRecoverySP) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate は非戦闘時SP全回復エフェクトの妥当性を検証する
 func (f FullRecoverySP) Validate(world w.World, scope *Scope) error {
 	if len(scope.Targets) == 0 {
 		return errors.New("回復対象が指定されていません")
@@ -82,6 +86,7 @@ type RecoveryHP struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
+// Apply は非戦闘時HP部分回復エフェクトをターゲットに適用する
 func (r RecoveryHP) Apply(world w.World, scope *Scope) error {
 	if err := r.Validate(world, scope); err != nil {
 		return err
@@ -105,6 +110,7 @@ func (r RecoveryHP) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate は非戦闘時HP部分回復エフェクトの妥当性を検証する
 func (r RecoveryHP) Validate(world w.World, scope *Scope) error {
 	if r.Amount == nil {
 		return errors.New("回復量が指定されていません")
@@ -131,6 +137,7 @@ type RecoverySP struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
+// Apply は非戦闘時SP部分回復エフェクトをターゲットに適用する
 func (r RecoverySP) Apply(world w.World, scope *Scope) error {
 	if err := r.Validate(world, scope); err != nil {
 		return err
@@ -154,6 +161,7 @@ func (r RecoverySP) Apply(world w.World, scope *Scope) error {
 	return nil
 }
 
+// Validate は非戦闘時SP部分回復エフェクトの妥当性を検証する
 func (r RecoverySP) Validate(world w.World, scope *Scope) error {
 	if r.Amount == nil {
 		return errors.New("回復量が指定されていません")

@@ -213,7 +213,7 @@ func fullRecover(world w.World, entity ecs.Entity) {
 	processor.AddEffect(spEffect, nil, entity)
 	
 	// エフェクト実行
-	processor.Execute(world)
+	_ = processor.Execute(world) // エラーが発生した場合もリカバリーは続行する（ログ出力はProcessor内で行われる）
 }
 
 // 指定したエンティティの最大HP/SPを設定する

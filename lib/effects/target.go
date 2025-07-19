@@ -22,7 +22,8 @@ type TargetSingle struct {
 	Entity ecs.Entity
 }
 
-func (s TargetSingle) SelectTargets(world w.World) ([]ecs.Entity, error) {
+// SelectTargets は単体ターゲットを選択する
+func (s TargetSingle) SelectTargets(_ w.World) ([]ecs.Entity, error) {
 	return []ecs.Entity{s.Entity}, nil
 }
 
@@ -33,6 +34,7 @@ func (s TargetSingle) String() string {
 // TargetParty はパーティ全体ターゲットセレクタ
 type TargetParty struct{}
 
+// SelectTargets はパーティ全体をターゲットとして選択する
 func (p TargetParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
@@ -51,6 +53,7 @@ func (p TargetParty) String() string {
 // TargetAllEnemies はすべての敵ターゲットセレクタ
 type TargetAllEnemies struct{}
 
+// SelectTargets はすべての敵をターゲットとして選択する
 func (a TargetAllEnemies) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
@@ -68,6 +71,7 @@ func (a TargetAllEnemies) String() string {
 // TargetAliveParty は生きているパーティメンバーのみをターゲットとする
 type TargetAliveParty struct{}
 
+// SelectTargets は生存しているパーティメンバーをターゲットとして選択する
 func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
@@ -94,6 +98,7 @@ func (a TargetAliveParty) String() string {
 // TargetDeadParty は死亡しているパーティメンバーのみをターゲットとする
 type TargetDeadParty struct{}
 
+// SelectTargets は死亡しているパーティメンバーをターゲットとして選択する
 func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
@@ -120,7 +125,8 @@ func (d TargetDeadParty) String() string {
 // TargetNone はターゲット不要のエフェクト用セレクタ
 type TargetNone struct{}
 
-func (n TargetNone) SelectTargets(world w.World) ([]ecs.Entity, error) {
+// SelectTargets はターゲット不要のエフェクト用の空のターゲットリストを返す
+func (n TargetNone) SelectTargets(_ w.World) ([]ecs.Entity, error) {
 	return []ecs.Entity{}, nil
 }
 
