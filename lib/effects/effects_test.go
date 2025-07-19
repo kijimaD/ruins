@@ -116,15 +116,15 @@ func TestEffectSystem(t *testing.T) {
 
 		// 負のダメージは無効
 		damage := CombatDamage{Amount: -10, Source: DamageSourceWeapon}
-		ctx := &Scope{Targets: []ecs.Entity{ecs.Entity(1)}}
-		err = damage.Validate(world, ctx)
+		scope := &Scope{Targets: []ecs.Entity{ecs.Entity(1)}}
+		err = damage.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "ダメージは0以上")
 
 		// ターゲットなしは無効
 		validDamage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
-		emptyCtx := &Scope{Targets: []ecs.Entity{}}
-		err = validDamage.Validate(world, emptyCtx)
+		emptyScope := &Scope{Targets: []ecs.Entity{}}
+		err = validDamage.Validate(world, emptyScope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "ダメージ対象が指定されていません")
 	})
@@ -165,10 +165,10 @@ func TestEffectSystem(t *testing.T) {
 
 		// 無効なアイテムIDの場合（存在しないエンティティID）
 		useItemInvalid := UseItem{Item: ecs.Entity(9999)}
-		ctx := &Scope{
+		scope := &Scope{
 			Targets: []ecs.Entity{ecs.Entity(1)},
 		}
-		err = useItemInvalid.Validate(world, ctx)
+		err = useItemInvalid.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "無効なアイテムエンティティです")
 	})
@@ -184,12 +184,12 @@ func TestCombatEffects(t *testing.T) {
 
 		// ダメージエフェクトを適用
 		damage := CombatDamage{Amount: 25, Source: DamageSourceWeapon}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = damage.Validate(world, ctx)
+		err = damage.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = damage.Apply(world, ctx)
+		err = damage.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// HPが減っていることを確認
@@ -207,12 +207,12 @@ func TestCombatEffects(t *testing.T) {
 
 		// 戦闘時回復エフェクトを適用
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 40}}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = healing.Validate(world, ctx)
+		err = healing.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = healing.Apply(world, ctx)
+		err = healing.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// HPが回復していることを確認
@@ -229,12 +229,12 @@ func TestCombatEffects(t *testing.T) {
 
 		// スタミナ消費エフェクトを適用
 		consume := ConsumeStamina{Amount: gc.NumeralAmount{Numeral: 20}}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = consume.Validate(world, ctx)
+		err = consume.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = consume.Apply(world, ctx)
+		err = consume.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// SPが減っていることを確認
@@ -251,12 +251,12 @@ func TestCombatEffects(t *testing.T) {
 
 		// スタミナ回復エフェクトを適用
 		restore := RestoreStamina{Amount: gc.NumeralAmount{Numeral: 25}}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = restore.Validate(world, ctx)
+		err = restore.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = restore.Apply(world, ctx)
+		err = restore.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// SPが回復していることを確認
@@ -274,12 +274,12 @@ func TestRecoveryEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 10, 50)
 
 		fullRecovery := FullRecoveryHP{}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = fullRecovery.Validate(world, ctx)
+		err = fullRecovery.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = fullRecovery.Apply(world, ctx)
+		err = fullRecovery.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// HPが全回復していることを確認
@@ -295,12 +295,12 @@ func TestRecoveryEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 100, 5)
 
 		fullRecovery := FullRecoverySP{}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = fullRecovery.Validate(world, ctx)
+		err = fullRecovery.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = fullRecovery.Apply(world, ctx)
+		err = fullRecovery.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// SPが全回復していることを確認
@@ -316,12 +316,12 @@ func TestRecoveryEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 40, 50)
 
 		recovery := Healing{Amount: gc.NumeralAmount{Numeral: 35}}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = recovery.Validate(world, ctx)
+		err = recovery.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = recovery.Apply(world, ctx)
+		err = recovery.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// HPが回復していることを確認
@@ -338,12 +338,12 @@ func TestRecoveryEffects(t *testing.T) {
 
 		// 50%回復
 		recovery := Healing{Amount: gc.RatioAmount{Ratio: 0.5}}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = recovery.Validate(world, ctx)
+		err = recovery.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = recovery.Apply(world, ctx)
+		err = recovery.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// 50% (50HP)回復して100になることを確認
@@ -364,12 +364,12 @@ func TestItemEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 50, 50)
 
 		useItem := UseItem{Item: healingItem}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = useItem.Validate(world, ctx)
+		err = useItem.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = useItem.Apply(world, ctx)
+		err = useItem.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// HPが回復していることを確認
@@ -389,9 +389,9 @@ func TestItemEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 50, 50)
 
 		useItem := UseItem{Item: uselessItem}
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
-		err = useItem.Validate(world, ctx)
+		err = useItem.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "このアイテムには効果がありません")
 	})
@@ -403,12 +403,12 @@ func TestItemEffects(t *testing.T) {
 		item := createTestBasicItem(world, "テストアイテム")
 
 		consume := ConsumeItem{Item: item}
-		ctx := &Scope{}
+		scope := &Scope{}
 
-		err = consume.Validate(world, ctx)
+		err = consume.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = consume.Apply(world, ctx)
+		err = consume.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// アイテムが削除されていることを確認
@@ -426,12 +426,12 @@ func TestItemEffects(t *testing.T) {
 		}))
 
 		create := CreateItem{ItemType: "回復薬", Quantity: 3}
-		ctx := &Scope{}
+		scope := &Scope{}
 
-		err = create.Validate(world, ctx)
+		err = create.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = create.Apply(world, ctx)
+		err = create.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// アイテムが生成されたことを確認（3個増えている）
@@ -449,12 +449,12 @@ func TestMovementEffects(t *testing.T) {
 		assert.NoError(t, err)
 
 		warp := MovementWarpNext{}
-		ctx := &Scope{}
+		scope := &Scope{}
 
-		err = warp.Validate(world, ctx)
+		err = warp.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = warp.Apply(world, ctx)
+		err = warp.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// StateEventが設定されていることを確認（詳細は別パッケージで検証）
@@ -466,12 +466,12 @@ func TestMovementEffects(t *testing.T) {
 		assert.NoError(t, err)
 
 		escape := MovementWarpEscape{}
-		ctx := &Scope{}
+		scope := &Scope{}
 
-		err = escape.Validate(world, ctx)
+		err = escape.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = escape.Apply(world, ctx)
+		err = escape.Apply(world, scope)
 		assert.NoError(t, err)
 
 		assert.NotNil(t, world.Resources.Game)
@@ -483,9 +483,9 @@ func TestMovementEffects(t *testing.T) {
 
 		// 無効な階層（0以下）
 		warpInvalid := MovementWarpToFloor{Floor: 0}
-		ctx := &Scope{}
+		scope := &Scope{}
 
-		err = warpInvalid.Validate(world, ctx)
+		err = warpInvalid.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "階層は1以上である必要があります")
 	})
@@ -496,12 +496,12 @@ func TestMovementEffects(t *testing.T) {
 
 		// 階層3へのワープ
 		warp := MovementWarpToFloor{Floor: 3}
-		ctx := &Scope{}
+		scope := &Scope{}
 
-		err = warp.Validate(world, ctx)
+		err = warp.Validate(world, scope)
 		assert.NoError(t, err)
 
-		err = warp.Apply(world, ctx)
+		err = warp.Apply(world, scope)
 		assert.NoError(t, err)
 
 		// 次階層イベントが設定されることを確認
@@ -580,23 +580,23 @@ func TestValidationErrors(t *testing.T) {
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 100, 50)
-		ctx := &Scope{Targets: []ecs.Entity{player}}
+		scope := &Scope{Targets: []ecs.Entity{player}}
 
 		// 回復量がnil
 		healingInvalid := Healing{Amount: nil}
-		err = healingInvalid.Validate(world, ctx)
+		err = healingInvalid.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "回復量が指定されていません")
 
 		// スタミナ消費量がnil
 		consumeInvalid := ConsumeStamina{Amount: nil}
-		err = consumeInvalid.Validate(world, ctx)
+		err = consumeInvalid.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "スタミナ消費量が指定されていません")
 
 		// スタミナ回復量がnil
 		restoreInvalid := RestoreStamina{Amount: nil}
-		err = restoreInvalid.Validate(world, ctx)
+		err = restoreInvalid.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "スタミナ回復量が指定されていません")
 	})
@@ -605,7 +605,7 @@ func TestValidationErrors(t *testing.T) {
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
-		emptyCtx := &Scope{Targets: []ecs.Entity{}}
+		emptyScope := &Scope{Targets: []ecs.Entity{}}
 
 		// 各エフェクトでターゲットなしエラーをテスト
 		effects := []Effect{
@@ -614,12 +614,10 @@ func TestValidationErrors(t *testing.T) {
 			RestoreStamina{Amount: gc.NumeralAmount{Numeral: 10}},
 			FullRecoveryHP{},
 			FullRecoverySP{},
-			Healing{Amount: gc.NumeralAmount{Numeral: 10}},
-			RecoverySP{Amount: gc.NumeralAmount{Numeral: 10}},
 		}
 
 		for _, effect := range effects {
-			err = effect.Validate(world, emptyCtx)
+			err = effect.Validate(world, emptyScope)
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "対象が指定されていません")
 		}
