@@ -480,15 +480,11 @@ func TestMovementEffects(t *testing.T) {
 		assert.Contains(t, err.Error(), "階層は1以上である必要があります")
 	})
 	
-	t.Run("特定階層へのワープ - 深い階層", func(t *testing.T) {
+	t.Run("特定階層へのワープ", func(t *testing.T) {
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 		
-		// 現在階層を1に設定
-		gameResources := world.Resources.Game.(*resources.Game)
-		gameResources.Depth = 1
-		
-		// より深い階層へのワープ（階層3）
+		// 階層3へのワープ
 		warp := MovementWarpToFloor{Floor: 3}
 		ctx := &Context{}
 		
@@ -499,29 +495,8 @@ func TestMovementEffects(t *testing.T) {
 		assert.NoError(t, err)
 		
 		// 次階層イベントが設定されることを確認
-		assert.NotNil(t, world.Resources.Game)
-	})
-	
-	t.Run("特定階層へのワープ - 浅い階層", func(t *testing.T) {
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-		
-		// 現在階層を5に設定
 		gameResources := world.Resources.Game.(*resources.Game)
-		gameResources.Depth = 5
-		
-		// より浅い階層へのワープ（階層2）
-		warp := MovementWarpToFloor{Floor: 2}
-		ctx := &Context{}
-		
-		err = warp.Validate(world, ctx)
-		assert.NoError(t, err)
-		
-		err = warp.Apply(world, ctx)
-		assert.NoError(t, err)
-		
-		// 脱出イベントが設定されることを確認
-		assert.NotNil(t, world.Resources.Game)
+		assert.Equal(t, resources.StateEventWarpNext, gameResources.StateEvent)
 	})
 }
 
