@@ -81,56 +81,6 @@ func (f FullRecoverySP) String() string {
 	return "FullRecoverySP"
 }
 
-// RecoveryHP は非戦闘時のHP回復エフェクト（ログ出力なし）
-type RecoveryHP struct {
-	Amount gc.Amounter // 回復量（固定値または割合）
-}
-
-// Apply は非戦闘時HP部分回復エフェクトをターゲットに適用する
-func (r RecoveryHP) Apply(world w.World, scope *Scope) error {
-	if err := r.Validate(world, scope); err != nil {
-		return err
-	}
-
-	for _, target := range scope.Targets {
-		// Validateで事前確認済みのためnilチェック不要
-		pools := world.Components.Pools.Get(target).(*gc.Pools)
-
-		switch amount := r.Amount.(type) {
-		case gc.RatioAmount:
-			healAmount := amount.Calc(pools.HP.Max)
-			pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+healAmount)
-		case gc.NumeralAmount:
-			healAmount := amount.Calc()
-			pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+healAmount)
-		default:
-			return fmt.Errorf("未対応の回復量タイプ: %T", amount)
-		}
-	}
-	return nil
-}
-
-// Validate は非戦闘時HP部分回復エフェクトの妥当性を検証する
-func (r RecoveryHP) Validate(world w.World, scope *Scope) error {
-	if r.Amount == nil {
-		return errors.New("回復量が指定されていません")
-	}
-	if len(scope.Targets) == 0 {
-		return errors.New("回復対象が指定されていません")
-	}
-
-	// ターゲットのPoolsコンポーネント存在確認
-	for _, target := range scope.Targets {
-		if world.Components.Pools.Get(target) == nil {
-			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
-		}
-	}
-	return nil
-}
-
-func (r RecoveryHP) String() string {
-	return fmt.Sprintf("RecoveryHP(%v)", r.Amount)
-}
 
 // RecoverySP は非戦闘時のSP回復エフェクト（ログ出力なし）
 type RecoverySP struct {

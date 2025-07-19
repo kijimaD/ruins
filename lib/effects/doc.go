@@ -18,8 +18,11 @@
 //	damage := effects.CombatDamage{Amount: 50, Source: effects.DamageSourceWeapon}
 //	processor.AddEffect(damage, &attacker, target)
 //
-//	// ターゲットセレクタを使用
-//	healing := effects.CombatHealing{Amount: gc.NumeralAmount{Numeral: 30}}
+//	// ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）
+//	healing := effects.Healing{Amount: gc.NumeralAmount{Numeral: 30}}
+//	processor.AddTargetedEffectWithLogger(healing, &healer, effects.TargetParty{}, &gamelog.BattleLog, world)
+//
+//	// 非戦闘時の回復（ゲームログ出力なし）
 //	processor.AddTargetedEffect(healing, &healer, effects.TargetParty{}, world)
 //
 //	// エフェクト実行
@@ -29,8 +32,8 @@
 //
 // エフェクトタイプ:
 //
-// combat.go    - 戦闘関連エフェクト（ダメージ、回復、スタミナ）
-// recovery.go  - 非戦闘時の回復エフェクト（ログ出力なし）
+// combat.go    - 戦闘関連エフェクト（ダメージ、Healing統合型、スタミナ）
+// recovery.go  - 非戦闘時の全回復エフェクト（FullRecoveryHP/SP）
 // movement.go  - 移動関連エフェクト（ワープ、脱出）
 // item.go      - アイテム関連エフェクト（使用、消費）
 //

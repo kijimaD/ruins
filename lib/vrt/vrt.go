@@ -115,7 +115,7 @@ func RunTestGame(state es.State, outputPath string) {
 
 	// 完全回復
 	processor := effects.NewProcessor()
-	healingEffect := effects.CombatHealing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
+	healingEffect := effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
 	staminaEffect := effects.RestoreStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
 	
 	partySelector := effects.TargetParty{}

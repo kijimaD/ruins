@@ -136,6 +136,11 @@ func (n TargetNone) String() string {
 
 // AddTargetedEffect はターゲットセレクタを使用してエフェクトをキューに追加する便利関数
 func (p *Processor) AddTargetedEffect(effect Effect, creator *ecs.Entity, selector TargetSelector, world w.World) error {
+	return p.AddTargetedEffectWithLogger(effect, creator, selector, nil, world)
+}
+
+// AddTargetedEffectWithLogger はターゲットセレクタとLoggerを使用してエフェクトをキューに追加する便利関数
+func (p *Processor) AddTargetedEffectWithLogger(effect Effect, creator *ecs.Entity, selector TargetSelector, logger GameLogAppender, world w.World) error {
 	targets, err := selector.SelectTargets(world)
 	if err != nil {
 		return fmt.Errorf("ターゲット選択失敗 %s: %w", selector, err)
@@ -145,6 +150,6 @@ func (p *Processor) AddTargetedEffect(effect Effect, creator *ecs.Entity, select
 		p.logger.Debug("ターゲットが見つかりませんでした: %s", selector)
 	}
 
-	p.AddEffect(effect, creator, targets...)
+	p.AddEffectWithLogger(effect, creator, logger, targets...)
 	return nil
 }

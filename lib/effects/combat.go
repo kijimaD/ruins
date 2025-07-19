@@ -5,16 +5,21 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/mathutil"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// GameLogAppender はゲームログ出力のインターフェース
+type GameLogAppender interface {
+	Append(entry string)
+}
+
 // Scope はエフェクトの影響範囲を保持する
 type Scope struct {
-	Creator *ecs.Entity  // 効果の発動者（nilの場合もある）
-	Targets []ecs.Entity // 効果の対象エンティティ一覧
+	Creator *ecs.Entity      // 効果の発動者（nilの場合もある）
+	Targets []ecs.Entity     // 効果の対象エンティティ一覧
+	Logger  GameLogAppender  // ゲームログ出力先（nilの場合はログ出力なし）
 }
 
 // Effect はゲーム内の効果を表す核心インターフェース
@@ -60,11 +65,11 @@ func (d CombatDamage) Apply(world w.World, scope *Scope) error {
 		actualDamage := originalHP - pools.HP.Current
 
 		// ダメージログを記録
-		d.logDamage(world, target, actualDamage)
+		d.logDamage(world, target, actualDamage, scope.Logger)
 
 		// 死亡チェック
 		if pools.HP.Current == 0 {
-			d.logDeath(world, target)
+			d.logDeath(world, target, scope.Logger)
 		}
 	}
 	return nil
@@ -92,18 +97,24 @@ func (d CombatDamage) String() string {
 	return fmt.Sprintf("Damage(%d, %s)", d.Amount, d.sourceString())
 }
 
-func (d CombatDamage) logDamage(world w.World, target ecs.Entity, amount int) {
+func (d CombatDamage) logDamage(world w.World, target ecs.Entity, amount int, logger GameLogAppender) {
+	if logger == nil {
+		return // ゲームログ出力先が指定されていない場合は何もしない
+	}
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
 		entry := fmt.Sprintf("%sに%dのダメージ。", name.Name, amount)
-		gamelog.BattleLog.Append(entry)
+		logger.Append(entry)
 	}
 }
 
-func (d CombatDamage) logDeath(world w.World, target ecs.Entity) {
+func (d CombatDamage) logDeath(world w.World, target ecs.Entity, logger GameLogAppender) {
+	if logger == nil {
+		return // ゲームログ出力先が指定されていない場合は何もしない
+	}
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
-		gamelog.BattleLog.Append(fmt.Sprintf("%sは倒れた。", name.Name))
+		logger.Append(fmt.Sprintf("%sは倒れた。", name.Name))
 	}
 }
 
@@ -118,13 +129,13 @@ func (d CombatDamage) sourceString() string {
 	}
 }
 
-// CombatHealing は体力を回復するエフェクト
-type CombatHealing struct {
+// Healing は体力を回復するエフェクト（戦闘・非戦闘共用）
+type Healing struct {
 	Amount gc.Amounter // 回復量（固定値または割合）
 }
 
-// Apply は戦闘時回復エフェクトをターゲットに適用する
-func (h CombatHealing) Apply(world w.World, scope *Scope) error {
+// Apply はHP回復エフェクトをターゲットに適用する
+func (h Healing) Apply(world w.World, scope *Scope) error {
 	if err := h.Validate(world, scope); err != nil {
 		return err
 	}
@@ -147,13 +158,13 @@ func (h CombatHealing) Apply(world w.World, scope *Scope) error {
 		}
 
 		actualHealing := pools.HP.Current - originalHP
-		h.logHealing(world, target, actualHealing)
+		h.logHealing(world, target, actualHealing, scope.Logger)
 	}
 	return nil
 }
 
-// Validate は戦闘時回復エフェクトの妥当性を検証する
-func (h CombatHealing) Validate(world w.World, scope *Scope) error {
+// Validate はHP回復エフェクトの妥当性を検証する
+func (h Healing) Validate(world w.World, scope *Scope) error {
 	if h.Amount == nil {
 		return errors.New("回復量が指定されていません")
 	}
@@ -170,15 +181,18 @@ func (h CombatHealing) Validate(world w.World, scope *Scope) error {
 	return nil
 }
 
-func (h CombatHealing) String() string {
+func (h Healing) String() string {
 	return fmt.Sprintf("Healing(%v)", h.Amount)
 }
 
-func (h CombatHealing) logHealing(world w.World, target ecs.Entity, amount int) {
+func (h Healing) logHealing(world w.World, target ecs.Entity, amount int, logger GameLogAppender) {
+	if logger == nil {
+		return // ゲームログ出力先が指定されていない場合は何もしない
+	}
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
 		entry := fmt.Sprintf("%sが%d回復。", name.Name, amount)
-		gamelog.BattleLog.Append(entry)
+		logger.Append(entry)
 	}
 }
 

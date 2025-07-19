@@ -30,9 +30,15 @@ func NewProcessor() *Processor {
 
 // AddEffect はエフェクトをキューに追加する
 func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs.Entity) {
+	p.AddEffectWithLogger(effect, creator, nil, targets...)
+}
+
+// AddEffectWithLogger はエフェクトをLoggerとともにキューに追加する
+func (p *Processor) AddEffectWithLogger(effect Effect, creator *ecs.Entity, logger GameLogAppender, targets ...ecs.Entity) {
 	scope := &Scope{
 		Creator: creator,
 		Targets: targets,
+		Logger:  logger,
 	}
 
 	p.queue = append(p.queue, EffectExecution{

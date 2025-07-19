@@ -7,11 +7,21 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
+
+// MockLogger はテスト用のゲームログ出力先（GameLogAppenderインターフェースを実装）
+type MockLogger struct {
+	Entries []string
+}
+
+func (m *MockLogger) Append(entry string) {
+	m.Entries = append(m.Entries, entry)
+}
 
 // テスト用のヘルパー関数：エンティティをPoolsコンポーネント付きで作成
 func createTestPlayerEntity(world w.World, hp, sp int) ecs.Entity {
@@ -71,7 +81,7 @@ func TestEffectSystem(t *testing.T) {
 		damage := CombatDamage{Amount: 50, Source: DamageSourceWeapon}
 		assert.Equal(t, "Damage(50, 武器)", damage.String())
 
-		healing := CombatHealing{Amount: gc.NumeralAmount{Numeral: 30}}
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
 		assert.Contains(t, healing.String(), "Healing")
 
 		recovery := FullRecoveryHP{}
@@ -137,7 +147,7 @@ func TestEffectSystem(t *testing.T) {
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 
 		// 回復エフェクトでも同様にチェック
-		healing := CombatHealing{Amount: gc.NumeralAmount{Numeral: 30}}
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
 		err = healing.Validate(world, ctxWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
@@ -196,7 +206,7 @@ func TestCombatEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 30, 50)
 
 		// 戦闘時回復エフェクトを適用
-		healing := CombatHealing{Amount: gc.NumeralAmount{Numeral: 40}}
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 40}}
 		ctx := &Scope{Targets: []ecs.Entity{player}}
 
 		err = healing.Validate(world, ctx)
@@ -305,7 +315,7 @@ func TestRecoveryEffects(t *testing.T) {
 
 		player := createTestPlayerEntity(world, 40, 50)
 
-		recovery := RecoveryHP{Amount: gc.NumeralAmount{Numeral: 35}}
+		recovery := Healing{Amount: gc.NumeralAmount{Numeral: 35}}
 		ctx := &Scope{Targets: []ecs.Entity{player}}
 
 		err = recovery.Validate(world, ctx)
@@ -327,7 +337,7 @@ func TestRecoveryEffects(t *testing.T) {
 		player := createTestPlayerEntity(world, 50, 25)
 
 		// 50%回復
-		recovery := RecoveryHP{Amount: gc.RatioAmount{Ratio: 0.5}}
+		recovery := Healing{Amount: gc.RatioAmount{Ratio: 0.5}}
 		ctx := &Scope{Targets: []ecs.Entity{player}}
 
 		err = recovery.Validate(world, ctx)
@@ -511,7 +521,7 @@ func TestProcessor(t *testing.T) {
 		processor := NewProcessor()
 
 		// 複数のエフェクトをキューに追加
-		healing := RecoveryHP{Amount: gc.NumeralAmount{Numeral: 20}}
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 20}}
 		damage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
 
 		processor.AddEffect(healing, nil, player)
@@ -551,7 +561,7 @@ func TestProcessor(t *testing.T) {
 		processor := NewProcessor()
 
 		// 複数のエフェクトを追加
-		processor.AddEffect(RecoveryHP{Amount: gc.NumeralAmount{Numeral: 10}}, nil, ecs.Entity(1))
+		processor.AddEffect(Healing{Amount: gc.NumeralAmount{Numeral: 10}}, nil, ecs.Entity(1))
 		processor.AddEffect(CombatDamage{Amount: 5, Source: DamageSourceWeapon}, nil, ecs.Entity(1))
 
 		assert.Equal(t, 2, processor.QueueSize())
@@ -573,7 +583,7 @@ func TestValidationErrors(t *testing.T) {
 		ctx := &Scope{Targets: []ecs.Entity{player}}
 
 		// 回復量がnil
-		healingInvalid := CombatHealing{Amount: nil}
+		healingInvalid := Healing{Amount: nil}
 		err = healingInvalid.Validate(world, ctx)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "回復量が指定されていません")
@@ -599,12 +609,12 @@ func TestValidationErrors(t *testing.T) {
 
 		// 各エフェクトでターゲットなしエラーをテスト
 		effects := []Effect{
-			CombatHealing{Amount: gc.NumeralAmount{Numeral: 10}},
+			Healing{Amount: gc.NumeralAmount{Numeral: 10}},
 			ConsumeStamina{Amount: gc.NumeralAmount{Numeral: 10}},
 			RestoreStamina{Amount: gc.NumeralAmount{Numeral: 10}},
 			FullRecoveryHP{},
 			FullRecoverySP{},
-			RecoveryHP{Amount: gc.NumeralAmount{Numeral: 10}},
+			Healing{Amount: gc.NumeralAmount{Numeral: 10}},
 			RecoverySP{Amount: gc.NumeralAmount{Numeral: 10}},
 		}
 
@@ -613,5 +623,125 @@ func TestValidationErrors(t *testing.T) {
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "対象が指定されていません")
 		}
+	})
+}
+
+func TestLoggerIntegration(t *testing.T) {
+	t.Run("戦闘時回復エフェクトのログ出力", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
+
+		player := createTestPlayerEntity(world, 50, 50)
+		mockLogger := &MockLogger{}
+
+		// 戦闘時回復エフェクトをLoggerとともに実行
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
+		scope := &Scope{
+			Targets: []ecs.Entity{player},
+			Logger:  mockLogger,
+		}
+
+		err = healing.Apply(world, scope)
+		assert.NoError(t, err)
+
+		// ログが記録されていることを確認
+		assert.Len(t, mockLogger.Entries, 1)
+		assert.Contains(t, mockLogger.Entries[0], "が30回復。")
+	})
+
+	t.Run("ダメージエフェクトのログ出力", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
+
+		player := createTestPlayerEntity(world, 100, 50)
+		mockLogger := &MockLogger{}
+
+		// ダメージエフェクトをLoggerとともに実行
+		damage := CombatDamage{Amount: 25, Source: DamageSourceWeapon}
+		scope := &Scope{
+			Targets: []ecs.Entity{player},
+			Logger:  mockLogger,
+		}
+
+		err = damage.Apply(world, scope)
+		assert.NoError(t, err)
+
+		// ダメージログが記録されていることを確認
+		assert.Len(t, mockLogger.Entries, 1)
+		assert.Contains(t, mockLogger.Entries[0], "に25のダメージ。")
+	})
+
+	t.Run("Logger無しの場合はログ出力なし", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
+
+		player := createTestPlayerEntity(world, 50, 50)
+
+		// Logger無しでエフェクト実行
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 20}}
+		scope := &Scope{
+			Targets: []ecs.Entity{player},
+			Logger:  nil, // Logger無し
+		}
+
+		err = healing.Apply(world, scope)
+		assert.NoError(t, err)
+
+		// HPは回復しているが、ログ出力はない
+		pools := world.Components.Pools.Get(player).(*gc.Pools)
+		assert.Equal(t, 70, pools.HP.Current)
+	})
+
+	t.Run("ProcessorのAddEffectWithLoggerメソッド", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
+
+		player := createTestPlayerEntity(world, 50, 50)
+		mockLogger := &MockLogger{}
+		processor := NewProcessor()
+
+		// AddEffectWithLoggerを使用してエフェクトを追加
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 25}}
+		processor.AddEffectWithLogger(healing, nil, mockLogger, player)
+
+		err = processor.Execute(world)
+		assert.NoError(t, err)
+
+		// ログが記録されていることを確認
+		assert.Len(t, mockLogger.Entries, 1)
+		assert.Contains(t, mockLogger.Entries[0], "が25回復。")
+	})
+
+	t.Run("統合されたHealingエフェクトの確認", func(t *testing.T) {
+		// 統合されたHealingエフェクトを使用
+		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
+		assert.Equal(t, "Healing({30})", healing.String())
+
+		// 同じエフェクトが戦闘・非戦闘で共用可能
+		healingForCombat := Healing{Amount: gc.NumeralAmount{Numeral: 25}}
+		assert.Equal(t, "Healing({25})", healingForCombat.String())
+	})
+
+	t.Run("gamelog.BattleLogを使った戦闘ダメージログ", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
+
+		// BattleLogをクリア
+		gamelog.BattleLog.Flush()
+
+		player := createTestPlayerEntity(world, 100, 50)
+		processor := NewProcessor()
+
+		// battle_command.goと同じ方法でダメージエフェクトを実行
+		damageEffect := CombatDamage{Amount: 25, Source: DamageSourceWeapon}
+		processor.AddEffectWithLogger(damageEffect, nil, &gamelog.BattleLog, player)
+
+		err = processor.Execute(world)
+		assert.NoError(t, err)
+
+		// BattleLogからログを取得して確認
+		logs := gamelog.BattleLog.Get()
+		assert.Len(t, logs, 1)
+		assert.Contains(t, logs[0], "に25のダメージ。")
 	})
 }

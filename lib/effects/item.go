@@ -28,8 +28,8 @@ func (u UseItem) Apply(world w.World, scope *Scope) error {
 	// 回復効果があるかチェック
 	if healing := world.Components.ProvidesHealing.Get(u.Item); healing != nil {
 		healingComponent := healing.(*gc.ProvidesHealing)
-		// アイテムによる回復は非戦闘時の回復として処理（ログ出力なし）
-		healingEffect := RecoveryHP{Amount: healingComponent.Amount}
+		// アイテムによる回復（ログ出力はscope.Loggerによる）
+		healingEffect := Healing{Amount: healingComponent.Amount}
 
 		// Apply内でValidateが呼ばれるため直接呼び出し
 		if err := healingEffect.Apply(world, scope); err != nil {
