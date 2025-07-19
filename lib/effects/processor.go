@@ -55,11 +55,6 @@ func (p *Processor) AddEffect(effect Effect, creator *ecs.Entity, targets ...ecs
 		Targets: targets,
 	}
 
-	// エフェクトの妥当性を事前検証
-	if err := effect.Validate(ctx); err != nil {
-		return fmt.Errorf("エフェクト検証失敗 %s: %w", effect, err)
-	}
-
 	p.queue = append(p.queue, EffectExecution{
 		Effect:  effect,
 		Context: ctx,
@@ -78,8 +73,11 @@ func (p *Processor) Execute(world w.World) error {
 		execution := p.queue[0]
 		p.queue = p.queue[1:]
 
-		// コンテキストにワールドを設定
-		execution.Context.World = world
+		// エフェクトの妥当性を検証
+		if err := execution.Effect.Validate(world, execution.Context); err != nil {
+			p.logger.Error("エフェクト検証失敗: %s - %v", execution.Effect, err)
+			return fmt.Errorf("エフェクト検証失敗 %s: %w", execution.Effect, err)
+		}
 
 		// 実行前フック
 		if p.hooks.BeforeEffect != nil {
@@ -88,7 +86,7 @@ func (p *Processor) Execute(world w.World) error {
 
 		// エフェクトを実行
 		p.logger.Debug("エフェクト実行: %s", execution.Effect)
-		err := execution.Effect.Apply(execution.Context)
+		err := execution.Effect.Apply(world, execution.Context)
 
 		// 実行後フック（エラーの有無に関わらず呼ぶ）
 		if p.hooks.AfterEffect != nil {

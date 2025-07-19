@@ -5,7 +5,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -78,7 +77,6 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.PlayerInputSystem(world)
 	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
-	effects.RunEffectQueue(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DungeonMenuState{}}}

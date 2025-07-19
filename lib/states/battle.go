@@ -11,7 +11,6 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -273,7 +272,6 @@ func (st *BattleState) handlePhaseUpdate(world w.World) es.Transition {
 
 // handleExecutePhase は実行フェーズの処理を行う
 func (st *BattleState) handleExecutePhase(world w.World) es.Transition {
-	effects.RunEffectQueue(world)
 	st.updateEnemyListContainer(world)
 	st.reloadExecute(world)
 	st.reloadMsg(world)

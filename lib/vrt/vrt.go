@@ -114,10 +114,20 @@ func RunTestGame(state es.State, outputPath string) {
 	}
 
 	// 完全回復
-	effects.AddEffect(nil, effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-	effects.AddEffect(nil, effects.RecoveryStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}, effects.Party{})
-
-	effects.RunEffectQueue(world)
+	processor := effects.NewProcessor()
+	healingEffect := effects.CombatHealing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
+	staminaEffect := effects.RestoreStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
+	
+	partySelector := effects.TargetParty{}
+	if err := processor.AddTargetedEffect(healingEffect, nil, partySelector, world); err != nil {
+		log.Printf("回復エフェクト追加エラー: %v", err)
+	}
+	if err := processor.AddTargetedEffect(staminaEffect, nil, partySelector, world); err != nil {
+		log.Printf("スタミナ回復エフェクト追加エラー: %v", err)
+	}
+	if err := processor.Execute(world); err != nil {
+		log.Printf("回復エフェクト実行エラー: %v", err)
+	}
 
 	g := &TestGame{
 		MainGame: game.MainGame{

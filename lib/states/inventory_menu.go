@@ -76,7 +76,6 @@ func (st *InventoryMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
 func (st *InventoryMenuState) Update(world w.World) es.Transition {
-	effects.RunEffectQueue(world)
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
@@ -478,7 +477,15 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 			st.closeActionWindow()
 			st.initPartyWindowWithKeyboard(world)
 		case gc.TargetAll:
-			effects.ItemTrigger(nil, st.selectedItem, effects.Party{}, world)
+			processor := effects.NewProcessor()
+			useItemEffect := effects.UseItem{Item: st.selectedItem}
+			partySelector := effects.TargetParty{}
+			if err := processor.AddTargetedEffect(useItemEffect, nil, partySelector, world); err != nil {
+				log.Printf("アイテムエフェクト追加エラー: %v", err)
+			}
+			if err := processor.Execute(world); err != nil {
+				log.Printf("アイテムエフェクト実行エラー: %v", err)
+			}
 			st.closeActionWindow()
 			st.reloadTabs(world)
 			st.updateTabDisplay(world)
@@ -729,7 +736,14 @@ func (st *InventoryMenuState) executePartySelection(world w.World) {
 
 	// 選択されたメンバーでアイテムを使用
 	selectedMember := st.partyMembers[st.partyFocusIndex]
-	effects.ItemTrigger(nil, st.selectedItem, effects.Single{Target: selectedMember}, world)
+	processor := effects.NewProcessor()
+	useItemEffect := effects.UseItem{Item: st.selectedItem}
+	if err := processor.AddEffect(useItemEffect, nil, selectedMember); err != nil {
+		log.Printf("アイテムエフェクト追加エラー: %v", err)
+	}
+	if err := processor.Execute(world); err != nil {
+		log.Printf("アイテムエフェクト実行エラー: %v", err)
+	}
 
 	st.closePartyWindow()
 	st.reloadTabs(world)

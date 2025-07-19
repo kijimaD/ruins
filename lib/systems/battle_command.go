@@ -97,8 +97,21 @@ func BattleCommandSystem(world w.World) {
 		ownerEntity := cmd.Owner
 		attrs := world.Components.Attributes.Get(ownerEntity).(*gc.Attributes)
 		damage := attack.Damage + attrs.Strength.Total
-		effects.AddEffect(&ownerEntity, effects.Damage{Amount: damage}, effects.Single{Target: cmd.Target})
-		effects.AddEffect(&ownerEntity, effects.ConsumptionStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}, effects.Single{Target: cmd.Owner})
+		
+		// 新しいエフェクトシステムを使用
+		processor := effects.NewProcessor()
+		damageEffect := effects.CombatDamage{Amount: damage, Source: effects.DamageSourceWeapon}
+		staminaEffect := effects.ConsumeStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}
+		
+		if err := processor.AddEffect(damageEffect, &ownerEntity, cmd.Target); err != nil {
+			log.Printf("ダメージエフェクト追加エラー: %v", err)
+		}
+		if err := processor.AddEffect(staminaEffect, &ownerEntity, cmd.Owner); err != nil {
+			log.Printf("スタミナ消費エフェクト追加エラー: %v", err)
+		}
+		if err := processor.Execute(world); err != nil {
+			log.Printf("エフェクト実行エラー: %v", err)
+		}
 	}
 
 	world.Manager.DeleteEntity(entity)

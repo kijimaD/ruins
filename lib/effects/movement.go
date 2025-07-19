@@ -1,25 +1,22 @@
 package effects
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/kijimaD/ruins/lib/resources"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MovementWarpNext は次の階層に移動するエフェクト
 type MovementWarpNext struct{}
 
-func (w MovementWarpNext) Apply(ctx *Context) error {
-	gameResources := ctx.World.Resources.Game.(*resources.Game)
+func (m MovementWarpNext) Apply(world w.World, ctx *Context) error {
+	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpNext
 	return nil
 }
 
-func (w MovementWarpNext) Validate(ctx *Context) error {
-	if ctx.World.Manager == nil {
-		return errors.New("Worldが設定されていません")
-	}
+func (m MovementWarpNext) Validate(world w.World, ctx *Context) error {
 	return nil
 }
 
@@ -30,16 +27,13 @@ func (w MovementWarpNext) String() string {
 // MovementWarpEscape はダンジョンから脱出するエフェクト
 type MovementWarpEscape struct{}
 
-func (w MovementWarpEscape) Apply(ctx *Context) error {
-	gameResources := ctx.World.Resources.Game.(*resources.Game)
+func (m MovementWarpEscape) Apply(world w.World, ctx *Context) error {
+	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpEscape
 	return nil
 }
 
-func (w MovementWarpEscape) Validate(ctx *Context) error {
-	if ctx.World.Manager == nil {
-		return errors.New("Worldが設定されていません")
-	}
+func (m MovementWarpEscape) Validate(world w.World, ctx *Context) error {
 	return nil
 }
 
@@ -52,20 +46,17 @@ type MovementWarpToFloor struct {
 	Floor int // ワープ先の階層
 }
 
-func (w MovementWarpToFloor) Apply(ctx *Context) error {
+func (m MovementWarpToFloor) Apply(world w.World, ctx *Context) error {
 	// TODO: 特定階層へのワープ機能を実装
 	// 現在は次階層へのワープと同じ動作
-	gameResources := ctx.World.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventWarpNext
 	return nil
 }
 
-func (w MovementWarpToFloor) Validate(ctx *Context) error {
-	if w.Floor < 1 {
-		return fmt.Errorf("階層は1以上である必要があります: %d", w.Floor)
-	}
-	if ctx.World.Manager == nil {
-		return errors.New("Worldが設定されていません")
+func (m MovementWarpToFloor) Validate(world w.World, ctx *Context) error {
+	if m.Floor < 1 {
+		return fmt.Errorf("階層は1以上である必要があります: %d", m.Floor)
 	}
 	return nil
 }

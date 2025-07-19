@@ -9,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
@@ -94,7 +93,6 @@ func (st *EquipMenuState) Update(world w.World) es.Transition {
 	if changed {
 		st.reloadAbilityContainer(world)
 	}
-	effects.RunEffectQueue(world)
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}

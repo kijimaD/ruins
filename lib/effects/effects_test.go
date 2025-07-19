@@ -6,7 +6,6 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/game"
-	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -53,17 +52,20 @@ func TestEffectSystem(t *testing.T) {
 	})
 	
 	t.Run("エフェクトの検証", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
+		
 		// 負のダメージは無効
 		damage := CombatDamage{Amount: -10, Source: DamageSourceWeapon}
 		ctx := &Context{Targets: []ecs.Entity{ecs.Entity(1)}}
-		err := damage.Validate(ctx)
+		err = damage.Validate(world, ctx)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "ダメージは0以上")
 		
 		// ターゲットなしは無効
 		validDamage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
 		emptyCtx := &Context{Targets: []ecs.Entity{}}
-		err = validDamage.Validate(emptyCtx)
+		err = validDamage.Validate(world, emptyCtx)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "ダメージ対象が指定されていません")
 	})
@@ -78,55 +80,37 @@ func TestEffectSystem(t *testing.T) {
 		// ダメージエフェクトでPoolsコンポーネントがないターゲットを検証
 		damage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
 		ctxWithInvalidTarget := &Context{
-			World:   world,
 			Targets: []ecs.Entity{entityWithoutPools},
 		}
 		
-		err = damage.Validate(ctxWithInvalidTarget)
+		err = damage.Validate(world, ctxWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 		
 		// 回復エフェクトでも同様にチェック
 		healing := CombatHealing{Amount: gc.NumeralAmount{Numeral: 30}}
-		err = healing.Validate(ctxWithInvalidTarget)
+		err = healing.Validate(world, ctxWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 		
 		// 非戦闘時の回復エフェクトでもチェック
 		fullRecovery := FullRecoveryHP{}
-		err = fullRecovery.Validate(ctxWithInvalidTarget)
+		err = fullRecovery.Validate(world, ctxWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 	})
 	
-	t.Run("Worldが設定されていない場合の検証", func(t *testing.T) {
-		// Worldが設定されていない場合のエラー検証
-		useItem := UseItem{Item: ecs.Entity(1)}
-		ctxWithoutWorld := &Context{
-			World: w.World{}, // 空のWorld（Manager == nil）
-			Targets: []ecs.Entity{ecs.Entity(1)},
-		}
-		
-		err := useItem.Validate(ctxWithoutWorld)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "Worldが設定されていません")
+	t.Run("無効なアイテムの検証", func(t *testing.T) {
+		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		assert.NoError(t, err)
 		
 		// 無効なアイテムIDの場合
 		useItemInvalid := UseItem{Item: ecs.Entity(0)}
-		err = useItemInvalid.Validate(ctxWithoutWorld)
+		ctx := &Context{
+			Targets: []ecs.Entity{ecs.Entity(1)},
+		}
+		err = useItemInvalid.Validate(world, ctx)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "無効なアイテムエンティティです")
-		
-		// ダメージエフェクトでも同様
-		damage := CombatDamage{Amount: 10, Source: DamageSourceWeapon}
-		err = damage.Validate(ctxWithoutWorld)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "Worldが設定されていません")
-		
-		// ワープエフェクトでも同様
-		warp := MovementWarpNext{}
-		err = warp.Validate(ctxWithoutWorld)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "Worldが設定されていません")
 	})
 }
