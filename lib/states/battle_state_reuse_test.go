@@ -3,19 +3,11 @@ package states
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 )
 
-// createBattleTestWorld はテスト用のワールドを作成する
-func createBattleTestWorld(t *testing.T) w.World {
-	t.Helper()
-	return w.World{
-		Resources: &resources.Resources{},
-	}
-}
 
 // TestBattleStateNoReuse はBattleStateが再利用されないことを確認するテスト
 func TestBattleStateNoReuse(t *testing.T) {
