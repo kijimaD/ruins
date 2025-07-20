@@ -8,6 +8,7 @@ import (
 )
 
 func TestEval(t *testing.T) {
+	t.Parallel()
 	input := `こんにちは[l]世界[p]
 ←無視される改行たたたたた。
 ←有効な改行

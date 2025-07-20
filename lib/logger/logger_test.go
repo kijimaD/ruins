@@ -26,6 +26,7 @@ func captureOutput(f func()) string {
 }
 
 func TestLoggerNew(t *testing.T) {
+	t.Parallel()
 	logger := New(CategoryBattle)
 	if logger.category != CategoryBattle {
 		t.Errorf("期待値: %s, 実際: %s", CategoryBattle, logger.category)
@@ -36,6 +37,7 @@ func TestLoggerNew(t *testing.T) {
 }
 
 func TestLoggerWithField(t *testing.T) {
+	t.Parallel()
 	logger := New(CategoryBattle)
 	newLogger := logger.WithField("key", "value")
 
@@ -48,6 +50,7 @@ func TestLoggerWithField(t *testing.T) {
 }
 
 func TestLoggerWithFields(t *testing.T) {
+	t.Parallel()
 	logger := New(CategoryBattle)
 	fields := map[string]interface{}{
 		"key1": "value1",
@@ -211,6 +214,7 @@ func TestIsDebugEnabled(t *testing.T) {
 }
 
 func TestParseLevel(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input    string
 		expected Level
@@ -230,6 +234,7 @@ func TestParseLevel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
 			result := parseLevel(tt.input)
 			if result != tt.expected {
 				t.Errorf("parseLevel(%q) = %v, 期待値: %v", tt.input, result, tt.expected)
@@ -239,6 +244,7 @@ func TestParseLevel(t *testing.T) {
 }
 
 func TestParseCategoryLevels(t *testing.T) {
+	t.Parallel()
 	input := "battle=debug,render=warn,invalid"
 	result := parseCategoryLevels(input)
 

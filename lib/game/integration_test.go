@@ -17,7 +17,9 @@ import (
 
 // TestGameInitializationIntegration はゲーム初期化の統合テスト
 func TestGameInitializationIntegration(t *testing.T) {
+	t.Parallel()
 	t.Run("完全なゲーム初期化フロー", func(t *testing.T) {
+		t.Parallel()
 		// メモリ使用量の初期値を記録
 		initialMemStats := getMemoryStats()
 
@@ -42,12 +44,14 @@ func TestGameInitializationIntegration(t *testing.T) {
 	})
 
 	t.Run("リソース読み込みエラーハンドリング", func(t *testing.T) {
+		t.Parallel()
 		// 存在しないアセットパスでの初期化テスト
 		// 注意: 実際のファイルシステムに依存するため、モックが必要な場合がある
 		t.Skip("実装予定: リソース読み込みエラーのテスト")
 	})
 
 	t.Run("部分的な初期化テスト", func(t *testing.T) {
+		t.Parallel()
 		// 最小限のリソースでの初期化テスト
 		world, err := ew.InitWorld(&gc.Components{})
 		require.NoError(t, err)
@@ -66,7 +70,9 @@ func TestGameInitializationIntegration(t *testing.T) {
 
 // TestMainGameLifecycle はMainGameのライフサイクル統合テスト
 func TestMainGameLifecycle(t *testing.T) {
+	t.Parallel()
 	t.Run("ゲームループの基本動作", func(t *testing.T) {
+		t.Parallel()
 		// 完全なワールドを使用（テスト用の最小限ワールドではUIリソースが不足）
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(t, err)
@@ -92,6 +98,7 @@ func TestMainGameLifecycle(t *testing.T) {
 	})
 
 	t.Run("状態遷移の動作確認", func(t *testing.T) {
+		t.Parallel()
 		// 完全なワールドを使用
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(t, err)
@@ -128,7 +135,9 @@ func TestMainGameLifecycle(t *testing.T) {
 
 // TestResourceIntegration はリソース統合テスト
 func TestResourceIntegration(t *testing.T) {
+	t.Parallel()
 	t.Run("全リソースタイプの読み込み確認", func(t *testing.T) {
+		t.Parallel()
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(t, err)
 
@@ -161,6 +170,7 @@ func TestResourceIntegration(t *testing.T) {
 	})
 
 	t.Run("リソースの整合性確認", func(t *testing.T) {
+		t.Parallel()
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(t, err)
 
@@ -327,7 +337,9 @@ func BenchmarkGameInitialization(b *testing.B) {
 
 // TestGameInitializationTimeouts はタイムアウトを使用した統合テスト
 func TestGameInitializationTimeouts(t *testing.T) {
+	t.Parallel()
 	t.Run("初期化処理の実行時間制限", func(t *testing.T) {
+		t.Parallel()
 		done := make(chan bool, 1)
 
 		go func() {

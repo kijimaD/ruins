@@ -10,6 +10,7 @@ import (
 // 1プロセスで、複数RunGameを呼べないため、ここで複数ケースのテストができない
 // https://github.com/hajimehoshi/ebiten/blob/be771268ede283303836afc5823389429b87fddd/run.go#L290
 // Don't call RunGame or RunGameWithOptions twice or more in one process.
-func TestRunTestGame(_ *testing.T) {
+func TestRunTestGame(t *testing.T) {
+	t.Parallel()
 	vrt.RunTestGame(&gs.MainMenuState{}, "MainMenu")
 }

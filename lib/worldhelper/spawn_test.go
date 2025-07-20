@@ -65,6 +65,10 @@ func TestSetMaxHPSP(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// 独立したworldを作成
+			world, err := game.InitWorld(960, 720)
+			require.NoError(t, err)
+
 			// エンティティを作成
 			entity := world.Manager.NewEntity()
 

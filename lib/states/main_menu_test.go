@@ -11,6 +11,7 @@ import (
 )
 
 func TestMainMenuNavigation(t *testing.T) {
+	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
@@ -46,6 +47,7 @@ func TestMainMenuNavigation(t *testing.T) {
 }
 
 func TestMainMenuCircularNavigation(t *testing.T) {
+	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
@@ -71,6 +73,7 @@ func TestMainMenuCircularNavigation(t *testing.T) {
 }
 
 func TestMainMenuSelection(t *testing.T) {
+	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
@@ -98,6 +101,7 @@ func TestMainMenuSelection(t *testing.T) {
 }
 
 func TestMainMenuCancel(t *testing.T) {
+	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
@@ -122,6 +126,7 @@ func TestMainMenuCancel(t *testing.T) {
 }
 
 func TestMainMenuItems(t *testing.T) {
+	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
@@ -153,6 +158,7 @@ func TestMainMenuItems(t *testing.T) {
 }
 
 func TestMainMenuTabNavigation(t *testing.T) {
+	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 

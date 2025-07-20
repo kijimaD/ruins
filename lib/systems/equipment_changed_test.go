@@ -8,7 +8,9 @@ import (
 )
 
 func TestMaxHP(t *testing.T) {
+	t.Parallel()
 	t.Run("calculate max HP with base stats", func(t *testing.T) {
+		t.Parallel()
 		attrs := &gc.Attributes{
 			Vitality: gc.Attribute{
 				Base:     10,
@@ -35,6 +37,7 @@ func TestMaxHP(t *testing.T) {
 	})
 
 	t.Run("calculate max HP with level bonus", func(t *testing.T) {
+		t.Parallel()
 		attrs := &gc.Attributes{
 			Vitality: gc.Attribute{
 				Base:     10,
@@ -61,6 +64,7 @@ func TestMaxHP(t *testing.T) {
 	})
 
 	t.Run("calculate max HP with high stats", func(t *testing.T) {
+		t.Parallel()
 		attrs := &gc.Attributes{
 			Vitality: gc.Attribute{
 				Base:     20,
@@ -88,7 +92,9 @@ func TestMaxHP(t *testing.T) {
 }
 
 func TestMaxSP(t *testing.T) {
+	t.Parallel()
 	t.Run("calculate max SP with base stats", func(t *testing.T) {
+		t.Parallel()
 		attrs := &gc.Attributes{
 			Vitality: gc.Attribute{
 				Base:     10,
@@ -115,6 +121,7 @@ func TestMaxSP(t *testing.T) {
 	})
 
 	t.Run("calculate max SP with level bonus", func(t *testing.T) {
+		t.Parallel()
 		attrs := &gc.Attributes{
 			Vitality: gc.Attribute{
 				Base:     10,
@@ -141,6 +148,7 @@ func TestMaxSP(t *testing.T) {
 	})
 
 	t.Run("calculate max SP with high stats", func(t *testing.T) {
+		t.Parallel()
 		attrs := &gc.Attributes{
 			Vitality: gc.Attribute{
 				Base:     20,

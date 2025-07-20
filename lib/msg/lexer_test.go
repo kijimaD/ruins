@@ -7,6 +7,7 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
+	t.Parallel()
 	input := `こんにちは[l]あああ
 ←改行した。[p]
 [image source="test.png" page="fore"]

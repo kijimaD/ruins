@@ -8,6 +8,7 @@ import (
 )
 
 func TestMenuNavigation(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name           string
 		items          []MenuItem
@@ -80,6 +81,7 @@ func TestMenuNavigation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			config := MenuConfig{
 				Items:          tt.items,
 				InitialIndex:   tt.initialIndex,
@@ -105,6 +107,7 @@ func TestMenuNavigation(t *testing.T) {
 }
 
 func TestMenuSelection(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},
@@ -153,6 +156,7 @@ func TestMenuSelection(t *testing.T) {
 }
 
 func TestMenuCancel(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"},
 	}
@@ -185,6 +189,7 @@ func TestMenuCancel(t *testing.T) {
 }
 
 func TestMenuTabNavigation(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},
@@ -222,6 +227,7 @@ func TestMenuTabNavigation(t *testing.T) {
 }
 
 func TestMenuGridNavigation(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"}, {ID: "2", Label: "Item 2"},
 		{ID: "3", Label: "Item 3"}, {ID: "4", Label: "Item 4"},
@@ -258,6 +264,7 @@ func TestMenuGridNavigation(t *testing.T) {
 }
 
 func TestMenuDisabledItems(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2", Disabled: true},
@@ -298,6 +305,7 @@ func TestMenuDisabledItems(t *testing.T) {
 }
 
 func TestMenuSpaceSelection(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},
@@ -346,6 +354,7 @@ func TestMenuSpaceSelection(t *testing.T) {
 }
 
 func TestMenuConsecutiveEnterPrevention(t *testing.T) {
+	t.Parallel()
 	// グローバル状態をリセット
 	input.ResetGlobalKeyStateForTest()
 
@@ -384,6 +393,7 @@ func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 }
 
 func TestMenuSpaceBasicFunction(t *testing.T) {
+	t.Parallel()
 	items := []MenuItem{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},

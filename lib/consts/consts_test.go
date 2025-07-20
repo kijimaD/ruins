@@ -7,6 +7,7 @@ import (
 )
 
 func TestConstants(t *testing.T) {
+	t.Parallel()
 	// 定数の値をテスト
 	assert.Equal(t, 960, MinGameWidth, "MinGameWidthの値が正しくない")
 	assert.Equal(t, 720, MinGameHeight, "MinGameHeightの値が正しくない")

@@ -8,6 +8,7 @@ import (
 )
 
 func TestLoad(t *testing.T) {
+	t.Parallel()
 	str := `
 [[item]]
 name = "リペア"
@@ -42,6 +43,7 @@ description = "半分程度回復する"
 }
 
 func TestGenerateItem(t *testing.T) {
+	t.Parallel()
 	str := `
 [[item]]
 name = "リペア"

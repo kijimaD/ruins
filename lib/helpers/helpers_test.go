@@ -7,7 +7,9 @@ import (
 )
 
 func TestGetPtr(t *testing.T) {
+	t.Parallel()
 	t.Run("int value", func(t *testing.T) {
+		t.Parallel()
 		value := 42
 		ptr := GetPtr(value)
 		assert.NotNil(t, ptr, "ポインタがnilであってはいけない")
@@ -17,6 +19,7 @@ func TestGetPtr(t *testing.T) {
 	})
 
 	t.Run("string value", func(t *testing.T) {
+		t.Parallel()
 		value := "hello"
 		ptr := GetPtr(value)
 		assert.NotNil(t, ptr, "ポインタがnilであってはいけない")
@@ -24,6 +27,7 @@ func TestGetPtr(t *testing.T) {
 	})
 
 	t.Run("float64 value", func(t *testing.T) {
+		t.Parallel()
 		value := 3.14
 		ptr := GetPtr(value)
 		assert.NotNil(t, ptr, "ポインタがnilであってはいけない")
@@ -31,6 +35,7 @@ func TestGetPtr(t *testing.T) {
 	})
 
 	t.Run("struct value", func(t *testing.T) {
+		t.Parallel()
 		type TestStruct struct {
 			Field int
 		}

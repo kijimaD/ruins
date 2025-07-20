@@ -8,7 +8,9 @@ import (
 )
 
 func TestComponentList(t *testing.T) {
+	t.Parallel()
 	t.Run("create entity component list", func(t *testing.T) {
+		t.Parallel()
 		gameComponents := []interface{}{
 			gc.GameComponentList{
 				Name: &gc.Name{Name: "テストエンティティ"},
@@ -23,13 +25,16 @@ func TestComponentList(t *testing.T) {
 	})
 
 	t.Run("empty entity component list", func(t *testing.T) {
+		t.Parallel()
 		list := ComponentList{}
 		assert.Nil(t, list.Game, "空のリストでGameがnilでない")
 	})
 }
 
 func TestAddEntities(t *testing.T) {
+	t.Parallel()
 	t.Run("basic functionality test", func(t *testing.T) {
+		t.Parallel()
 		// 循環依存を避けるため、基本的な機能のみテスト
 		entityComponentList := ComponentList{
 			Game: []interface{}{

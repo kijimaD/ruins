@@ -8,7 +8,9 @@ import (
 )
 
 func TestInitGeneric(t *testing.T) {
+	t.Parallel()
 	t.Run("型安全なInitGenericが動作する", func(t *testing.T) {
+		t.Parallel()
 		gameComponents := &gc.Components{}
 
 		world, err := InitGeneric(gameComponents)
@@ -24,6 +26,7 @@ func TestInitGeneric(t *testing.T) {
 	})
 
 	t.Run("型安全性が保たれている", func(t *testing.T) {
+		t.Parallel()
 		gameComponents := &gc.Components{}
 
 		world, err := InitGeneric(gameComponents)

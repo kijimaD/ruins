@@ -7,7 +7,9 @@ import (
 )
 
 func TestLatest(t *testing.T) {
+	t.Parallel()
 	t.Run("古い順に取得できる", func(t *testing.T) {
+		t.Parallel()
 		ss := SafeSlice{}
 		ss.Append("1")
 		ss.Append("2")
@@ -18,7 +20,9 @@ func TestLatest(t *testing.T) {
 }
 
 func TestPop(t *testing.T) {
+	t.Parallel()
 	t.Run("取得できる", func(t *testing.T) {
+		t.Parallel()
 		ss := SafeSlice{}
 		ss.Append("1")
 		ss.Append("2")
@@ -29,6 +33,7 @@ func TestPop(t *testing.T) {
 		assert.Equal(t, []string{"1", "2", "3", "4", "5"}, ss.Pop())
 	})
 	t.Run("取得した分は消える", func(t *testing.T) {
+		t.Parallel()
 		ss := SafeSlice{}
 		ss.Append("1")
 		ss.Append("2")
@@ -42,7 +47,9 @@ func TestPop(t *testing.T) {
 }
 
 func TestFlush(t *testing.T) {
+	t.Parallel()
 	t.Run("リセットできる", func(t *testing.T) {
+		t.Parallel()
 		ss := SafeSlice{}
 		ss.Append("1")
 		ss.Append("2")
