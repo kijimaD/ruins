@@ -8,12 +8,15 @@ import (
 )
 
 func TestSpriteImageCache(t *testing.T) {
+	t.Parallel()
 	t.Run("sprite image cache initialization", func(t *testing.T) {
+		t.Parallel()
 		assert.NotNil(t, spriteImageCache, "spriteImageCacheがnilになっている")
 		assert.Empty(t, spriteImageCache, "spriteImageCacheが空でない")
 	})
 
 	t.Run("sprite image cache is map", func(t *testing.T) {
+		t.Parallel()
 		// キャッシュがマップ型であることを確認
 		cache := spriteImageCache
 		assert.IsType(t, map[string]*ebiten.Image{}, cache, "spriteImageCacheの型が正しくない")
@@ -22,7 +25,9 @@ func TestSpriteImageCache(t *testing.T) {
 
 // spriteImageCacheの操作テスト（実際の画像なしでテスト）
 func TestSpriteImageCacheOperations(t *testing.T) {
+	t.Parallel()
 	t.Run("cache operations", func(t *testing.T) {
+		t.Parallel()
 		// 初期状態の確認
 		initialLen := len(spriteImageCache)
 

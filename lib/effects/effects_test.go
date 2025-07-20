@@ -70,7 +70,9 @@ func createTestBasicItem(world w.World, name string) ecs.Entity {
 }
 
 func TestEffectSystem(t *testing.T) {
+	t.Parallel()
 	t.Run("プロセッサーの基本動作", func(t *testing.T) {
+		t.Parallel()
 		processor := NewProcessor()
 		assert.NotNil(t, processor)
 		assert.True(t, processor.IsEmpty())
@@ -78,6 +80,7 @@ func TestEffectSystem(t *testing.T) {
 	})
 
 	t.Run("エフェクトの文字列表現", func(t *testing.T) {
+		t.Parallel()
 		damage := Damage{Amount: 50, Source: DamageSourceWeapon}
 		assert.Equal(t, "Damage(50, 武器)", damage.String())
 
@@ -92,6 +95,7 @@ func TestEffectSystem(t *testing.T) {
 	})
 
 	t.Run("ターゲットセレクタの文字列表現", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -111,6 +115,7 @@ func TestEffectSystem(t *testing.T) {
 	})
 
 	t.Run("エフェクトの検証", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -130,6 +135,7 @@ func TestEffectSystem(t *testing.T) {
 	})
 
 	t.Run("Poolsコンポーネントの検証", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -160,6 +166,7 @@ func TestEffectSystem(t *testing.T) {
 	})
 
 	t.Run("無効なアイテムの検証", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -175,7 +182,9 @@ func TestEffectSystem(t *testing.T) {
 }
 
 func TestCombatEffects(t *testing.T) {
+	t.Parallel()
 	t.Run("ダメージエフェクトの適用", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -199,6 +208,7 @@ func TestCombatEffects(t *testing.T) {
 	})
 
 	t.Run("戦闘時回復エフェクトの適用", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -222,6 +232,7 @@ func TestCombatEffects(t *testing.T) {
 	})
 
 	t.Run("スタミナ消費エフェクトの適用", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -244,6 +255,7 @@ func TestCombatEffects(t *testing.T) {
 	})
 
 	t.Run("スタミナ回復エフェクトの適用", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -267,7 +279,9 @@ func TestCombatEffects(t *testing.T) {
 }
 
 func TestRecoveryEffects(t *testing.T) {
+	t.Parallel()
 	t.Run("非戦闘時HP全回復", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -289,6 +303,7 @@ func TestRecoveryEffects(t *testing.T) {
 	})
 
 	t.Run("非戦闘時SP全回復", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -310,6 +325,7 @@ func TestRecoveryEffects(t *testing.T) {
 	})
 
 	t.Run("非戦闘時HP部分回復", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -331,6 +347,7 @@ func TestRecoveryEffects(t *testing.T) {
 	})
 
 	t.Run("割合回復のテスト", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -353,7 +370,9 @@ func TestRecoveryEffects(t *testing.T) {
 }
 
 func TestItemEffects(t *testing.T) {
+	t.Parallel()
 	t.Run("回復アイテムの使用", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -381,6 +400,7 @@ func TestItemEffects(t *testing.T) {
 	})
 
 	t.Run("効果のないアイテムの検証", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -397,6 +417,7 @@ func TestItemEffects(t *testing.T) {
 	})
 
 	t.Run("アイテム消費エフェクト", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -416,6 +437,7 @@ func TestItemEffects(t *testing.T) {
 	})
 
 	t.Run("アイテム生成エフェクト", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -444,7 +466,9 @@ func TestItemEffects(t *testing.T) {
 }
 
 func TestMovementEffects(t *testing.T) {
+	t.Parallel()
 	t.Run("次階層へのワープ", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -462,6 +486,7 @@ func TestMovementEffects(t *testing.T) {
 	})
 
 	t.Run("脱出ワープ", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -478,6 +503,7 @@ func TestMovementEffects(t *testing.T) {
 	})
 
 	t.Run("特定階層へのワープ - 検証エラー", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -491,6 +517,7 @@ func TestMovementEffects(t *testing.T) {
 	})
 
 	t.Run("特定階層へのワープ", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -511,7 +538,9 @@ func TestMovementEffects(t *testing.T) {
 }
 
 func TestProcessor(t *testing.T) {
+	t.Parallel()
 	t.Run("プロセッサーでのエフェクト実行", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -542,6 +571,7 @@ func TestProcessor(t *testing.T) {
 	})
 
 	t.Run("検証失敗時のエラーハンドリング", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -558,6 +588,7 @@ func TestProcessor(t *testing.T) {
 	})
 
 	t.Run("プロセッサーのクリア機能", func(t *testing.T) {
+		t.Parallel()
 		processor := NewProcessor()
 
 		// 複数のエフェクトを追加
@@ -575,7 +606,9 @@ func TestProcessor(t *testing.T) {
 }
 
 func TestValidationErrors(t *testing.T) {
+	t.Parallel()
 	t.Run("エフェクトパラメータの検証", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -602,6 +635,7 @@ func TestValidationErrors(t *testing.T) {
 	})
 
 	t.Run("ターゲットなしの検証", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -625,7 +659,9 @@ func TestValidationErrors(t *testing.T) {
 }
 
 func TestLoggerIntegration(t *testing.T) {
+	t.Parallel()
 	t.Run("戦闘時回復エフェクトのログ出力", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -648,6 +684,7 @@ func TestLoggerIntegration(t *testing.T) {
 	})
 
 	t.Run("ダメージエフェクトのログ出力", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -670,6 +707,7 @@ func TestLoggerIntegration(t *testing.T) {
 	})
 
 	t.Run("Logger無しの場合はログ出力なし", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -691,6 +729,7 @@ func TestLoggerIntegration(t *testing.T) {
 	})
 
 	t.Run("ProcessorのAddEffectWithLoggerメソッド", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
@@ -711,6 +750,7 @@ func TestLoggerIntegration(t *testing.T) {
 	})
 
 	t.Run("統合されたHealingエフェクトの確認", func(t *testing.T) {
+		t.Parallel()
 		// 統合されたHealingエフェクトを使用
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
 		assert.Equal(t, "Healing({30})", healing.String())
@@ -721,6 +761,7 @@ func TestLoggerIntegration(t *testing.T) {
 	})
 
 	t.Run("gamelog.BattleLogを使った戦闘ダメージログ", func(t *testing.T) {
+		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 

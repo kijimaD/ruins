@@ -7,6 +7,7 @@ import (
 )
 
 func TestGlobalKeyStateLogic(t *testing.T) {
+	t.Parallel()
 	// グローバルキー状態の動作テスト（Enter状態制御）
 
 	// テスト用にリセット
@@ -35,6 +36,7 @@ func TestGlobalKeyStateLogic(t *testing.T) {
 }
 
 func TestMockKeyboardInput_EnterFunction(t *testing.T) {
+	t.Parallel()
 	// テスト用にグローバル状態をリセット
 	ResetGlobalKeyStateForTest()
 
@@ -66,6 +68,7 @@ func TestMockKeyboardInput_EnterFunction(t *testing.T) {
 }
 
 func TestEnterKeyPressReleaseSequence(t *testing.T) {
+	t.Parallel()
 	// テスト用にグローバル状態をリセット
 	ResetGlobalKeyStateForTest()
 
@@ -103,6 +106,7 @@ func TestEnterKeyPressReleaseSequence(t *testing.T) {
 }
 
 func TestSharedKeyboardInput(t *testing.T) {
+	t.Parallel()
 	// 共有インスタンスのテスト
 
 	// 複数回呼び出しても同じインスタンスが返される
@@ -120,6 +124,7 @@ func TestSharedKeyboardInput(t *testing.T) {
 }
 
 func TestGlobalEnterPressStateStorage(t *testing.T) {
+	t.Parallel()
 	// テスト前にグローバル状態をリセット
 	ResetGlobalKeyStateForTest()
 

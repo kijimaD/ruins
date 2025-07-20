@@ -7,7 +7,8 @@ import (
 )
 
 // 検証する方法がわからんのでprintして確かめる用
-func TestSelectByWeight(_ *testing.T) {
+func TestSelectByWeight(t *testing.T) {
+	t.Parallel()
 	ct := raw.CommandTable{
 		Name: "TEST",
 		Entries: []raw.CommandTableEntry{

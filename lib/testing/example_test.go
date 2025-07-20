@@ -9,6 +9,7 @@ import (
 
 // テストヘルパーの使用例
 func TestEntityBuilder(t *testing.T) {
+	t.Parallel()
 	// 単体エンティティの作成
 	player := NewEntityBuilder(t).
 		WithName("テストプレイヤー").
@@ -28,6 +29,7 @@ func TestEntityBuilder(t *testing.T) {
 }
 
 func TestMultiEntityBuilder(t *testing.T) {
+	t.Parallel()
 	// 複数エンティティの作成
 	entities := NewMultiEntityBuilder(t).
 		AddBuilder(func(b *EntityBuilder) *EntityBuilder {
@@ -52,6 +54,7 @@ func TestMultiEntityBuilder(t *testing.T) {
 }
 
 func TestStandardEntities(t *testing.T) {
+	t.Parallel()
 	// 標準エンティティの作成
 	player := CreateStandardPlayer(t)
 	enemy := CreateStandardEnemy(t, "ゴブリン")
@@ -71,6 +74,7 @@ func TestStandardEntities(t *testing.T) {
 }
 
 func TestMockInput(t *testing.T) {
+	t.Parallel()
 	// モック入力の使用例
 	mockInput := mocks.NewMockInputHandler()
 
@@ -105,6 +109,7 @@ func TestMockInput(t *testing.T) {
 }
 
 func TestMockRandom(t *testing.T) {
+	t.Parallel()
 	// モック乱数の使用例
 	mockRandom := mocks.NewMockRandomGenerator()
 
@@ -135,6 +140,7 @@ func TestMockRandom(t *testing.T) {
 }
 
 func TestBattleScenarioUsage(t *testing.T) {
+	t.Parallel()
 	// バトルシナリオの使用例
 	scenario := CreateTestBattleScenario(t)
 

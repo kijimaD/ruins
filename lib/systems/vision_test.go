@@ -9,7 +9,9 @@ import (
 )
 
 func TestVisionVertices(t *testing.T) {
+	t.Parallel()
 	t.Run("create vision vertices with basic parameters", func(t *testing.T) {
+		t.Parallel()
 		num := 4
 		x := gc.Pixel(100)
 		y := gc.Pixel(200)
@@ -39,6 +41,7 @@ func TestVisionVertices(t *testing.T) {
 	})
 
 	t.Run("verify circular positioning", func(t *testing.T) {
+		t.Parallel()
 		num := 4
 		x := gc.Pixel(0)
 		y := gc.Pixel(0)
@@ -68,6 +71,7 @@ func TestVisionVertices(t *testing.T) {
 	})
 
 	t.Run("verify distance from center", func(t *testing.T) {
+		t.Parallel()
 		num := 8
 		x := gc.Pixel(50)
 		y := gc.Pixel(75)
@@ -93,6 +97,7 @@ func TestVisionVertices(t *testing.T) {
 	})
 
 	t.Run("empty vertices for zero count", func(t *testing.T) {
+		t.Parallel()
 		num := 0
 		x := gc.Pixel(100)
 		y := gc.Pixel(200)
@@ -111,6 +116,7 @@ func TestVisionVertices(t *testing.T) {
 	})
 
 	t.Run("single vertex", func(t *testing.T) {
+		t.Parallel()
 		num := 1
 		x := gc.Pixel(10)
 		y := gc.Pixel(20)

@@ -11,6 +11,7 @@ import (
 )
 
 func TestQueryOwnedMaterial(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -41,6 +42,7 @@ func TestQueryOwnedMaterial(t *testing.T) {
 }
 
 func TestQueryInPartyMember(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 

@@ -8,7 +8,9 @@ import (
 )
 
 func TestInitWorld(t *testing.T) {
+	t.Parallel()
 	t.Run("InitWorldが動作する", func(t *testing.T) {
+		t.Parallel()
 		gameComponents := &gc.Components{}
 
 		world, err := InitWorld(gameComponents)

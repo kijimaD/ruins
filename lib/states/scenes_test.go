@@ -10,7 +10,9 @@ import (
 )
 
 func TestPush(t *testing.T) {
+	t.Parallel()
 	t.Run("先頭に追加される", func(t *testing.T) {
+		t.Parallel()
 		execState := NewExecState(func(w.World) {})
 		result := push(
 			[]es.State{
@@ -29,7 +31,9 @@ func TestPush(t *testing.T) {
 }
 
 func TestExecStateAutoExecution(t *testing.T) {
+	t.Parallel()
 	t.Run("OnResumeで関数自動実行", func(t *testing.T) {
+		t.Parallel()
 		executed := false
 		execState := NewExecState(func(_ w.World) {
 			executed = true

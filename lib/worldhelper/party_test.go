@@ -10,6 +10,7 @@ import (
 )
 
 func TestNewParty(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -55,6 +56,7 @@ func TestNewParty(t *testing.T) {
 }
 
 func TestNewByEntity(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -85,6 +87,7 @@ func TestNewByEntity(t *testing.T) {
 }
 
 func TestPartyNavigation(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 

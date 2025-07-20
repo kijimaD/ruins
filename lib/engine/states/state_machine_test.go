@@ -52,7 +52,9 @@ func (ts *TestState) Draw(_ w.World, _ *ebiten.Image) {
 
 // TestGetStatesMethods はGetStatesメソッド群のテスト
 func TestGetStatesMethods(t *testing.T) {
+	t.Parallel()
 	t.Run("初期状態での動作確認", func(t *testing.T) {
+		t.Parallel()
 		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 
@@ -78,6 +80,7 @@ func TestGetStatesMethods(t *testing.T) {
 	})
 
 	t.Run("状態の不変性確認", func(t *testing.T) {
+		t.Parallel()
 		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
@@ -96,6 +99,7 @@ func TestGetStatesMethods(t *testing.T) {
 	})
 
 	t.Run("空の状態スタックでの動作", func(t *testing.T) {
+		t.Parallel()
 		// 空のStateMachineを作成（実際のゲームでは発生しないが、テスト用）
 		stateMachine := StateMachine{}
 
@@ -115,7 +119,9 @@ func TestGetStatesMethods(t *testing.T) {
 
 // TestStateMachineTransitions は状態遷移のテスト
 func TestStateMachineTransitions(t *testing.T) {
+	t.Parallel()
 	t.Run("Push遷移のテスト", func(t *testing.T) {
+		t.Parallel()
 		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
@@ -148,6 +154,7 @@ func TestStateMachineTransitions(t *testing.T) {
 	})
 
 	t.Run("Pop遷移のテスト", func(t *testing.T) {
+		t.Parallel()
 		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
@@ -178,6 +185,7 @@ func TestStateMachineTransitions(t *testing.T) {
 	})
 
 	t.Run("Switch遷移のテスト", func(t *testing.T) {
+		t.Parallel()
 		world := createTestWorld(t)
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)

@@ -10,6 +10,7 @@ import (
 )
 
 func TestGetAmount(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -32,6 +33,7 @@ func TestGetAmount(t *testing.T) {
 }
 
 func TestPlusMinusAmount(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 

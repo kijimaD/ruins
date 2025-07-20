@@ -7,6 +7,7 @@ import (
 )
 
 func TestParsingIndexExpressions(t *testing.T) {
+	t.Parallel()
 	input := `こんにちは[l]世界[p]
 ←無視される改行たたたたた。
 ←有効な改行`
@@ -53,6 +54,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 }
 
 func TestParsingCmdExpressionImage(t *testing.T) {
+	t.Parallel()
 	input := `[image a="value1" b="value2" c="test.png"]`
 
 	l := NewLexer(input)

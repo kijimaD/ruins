@@ -9,6 +9,7 @@ import (
 )
 
 func TestTabMenuNavigation(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		test func(t *testing.T)
@@ -22,7 +23,10 @@ func TestTabMenuNavigation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, tt.test)
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.test(t)
+		})
 	}
 }
 
@@ -314,6 +318,7 @@ func testCancel(t *testing.T) {
 }
 
 func TestTabMenuGetters(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{
 			ID:    "tab1",
@@ -348,6 +353,7 @@ func TestTabMenuGetters(t *testing.T) {
 }
 
 func TestTabMenuSetters(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{
 			ID:    "tab1",

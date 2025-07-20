@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewDefaultResourceManager(t *testing.T) {
+	t.Parallel()
 	rm := NewDefaultResourceManager()
 	assert.NotNil(t, rm)
 
@@ -22,6 +23,7 @@ func TestNewDefaultResourceManager(t *testing.T) {
 }
 
 func TestNewResourceManager(t *testing.T) {
+	t.Parallel()
 	config := ResourceConfig{
 		FontsPath:        "custom/fonts.toml",
 		SpriteSheetsPath: "custom/sprites.toml",
@@ -41,7 +43,9 @@ func TestNewResourceManager(t *testing.T) {
 }
 
 func TestLoadFonts(t *testing.T) {
+	t.Parallel()
 	t.Run("正常にフォントを読み込める", func(t *testing.T) {
+		t.Parallel()
 		rm := NewDefaultResourceManager()
 		fonts, err := rm.LoadFonts()
 
@@ -55,6 +59,7 @@ func TestLoadFonts(t *testing.T) {
 	})
 
 	t.Run("キャッシュから読み込む", func(t *testing.T) {
+		t.Parallel()
 		rm := NewDefaultResourceManager()
 
 		// 1回目の読み込み
@@ -70,6 +75,7 @@ func TestLoadFonts(t *testing.T) {
 	})
 
 	t.Run("存在しないファイルパスの場合", func(t *testing.T) {
+		t.Parallel()
 		config := ResourceConfig{
 			FontsPath: "invalid/path/fonts.toml",
 		}
@@ -83,7 +89,9 @@ func TestLoadFonts(t *testing.T) {
 }
 
 func TestLoadSpriteSheets(t *testing.T) {
+	t.Parallel()
 	t.Run("正常にスプライトシートを読み込める", func(t *testing.T) {
+		t.Parallel()
 		rm := NewDefaultResourceManager()
 		sprites, err := rm.LoadSpriteSheets()
 
@@ -103,7 +111,9 @@ func TestLoadSpriteSheets(t *testing.T) {
 }
 
 func TestLoadRaws(t *testing.T) {
+	t.Parallel()
 	t.Run("正常にRawデータを読み込める", func(t *testing.T) {
+		t.Parallel()
 		rm := NewDefaultResourceManager()
 		rawMaster, err := rm.LoadRaws()
 
@@ -117,7 +127,9 @@ func TestLoadRaws(t *testing.T) {
 }
 
 func TestLoadAll(t *testing.T) {
+	t.Parallel()
 	t.Run("すべてのリソースを一括で読み込める", func(t *testing.T) {
+		t.Parallel()
 		rm := NewDefaultResourceManager()
 		axes := []string{}
 		actions := []string{}
@@ -133,6 +145,7 @@ func TestLoadAll(t *testing.T) {
 	})
 
 	t.Run("一部のリソース読み込みに失敗した場合", func(t *testing.T) {
+		t.Parallel()
 		config := ResourceConfig{
 			FontsPath:        "invalid/fonts.toml",
 			SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
@@ -147,6 +160,7 @@ func TestLoadAll(t *testing.T) {
 }
 
 func TestClearCache(t *testing.T) {
+	t.Parallel()
 	rm := NewDefaultResourceManager()
 	drm := rm.(*DefaultResourceManager)
 
@@ -167,6 +181,7 @@ func TestClearCache(t *testing.T) {
 }
 
 func TestGetResourcePath(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		basePath string
@@ -195,6 +210,7 @@ func TestGetResourcePath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			result := GetResourcePath(tt.basePath, tt.filename)
 			assert.Equal(t, tt.expected, result)
 		})

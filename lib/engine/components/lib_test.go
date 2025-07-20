@@ -20,7 +20,9 @@ func (t *TestComponents) InitializeComponents(manager *ecs.Manager) error {
 }
 
 func TestInitComponents(t *testing.T) {
+	t.Parallel()
 	t.Run("正常にコンポーネントを初期化できる", func(t *testing.T) {
+		t.Parallel()
 		manager := ecs.NewManager()
 		gameComponents := &TestComponents{}
 
@@ -34,6 +36,7 @@ func TestInitComponents(t *testing.T) {
 	})
 
 	t.Run("型安全性が保たれている", func(t *testing.T) {
+		t.Parallel()
 		manager := ecs.NewManager()
 		gameComponents := &TestComponents{}
 
@@ -48,7 +51,9 @@ func TestInitComponents(t *testing.T) {
 }
 
 func TestComponentInitializer(t *testing.T) {
-	t.Run("ComponentInitializerインターフェースを実装している", func(_ *testing.T) {
+	t.Parallel()
+	t.Run("ComponentInitializerインターフェースを実装している", func(t *testing.T) {
+		t.Parallel()
 		var _ ComponentInitializer = &TestComponents{}
 	})
 }

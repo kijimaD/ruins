@@ -10,6 +10,7 @@ import (
 )
 
 func TestCalcExpMultiplier(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input  int
 		expect float64
@@ -62,6 +63,7 @@ func TestCalcExpMultiplier(t *testing.T) {
 
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Parallel()
 			got := roundUnder2(t, calcExpMultiplier(tt.input))
 			assert.Equal(t, tt.expect, got)
 		})
@@ -75,7 +77,9 @@ func roundUnder2(t *testing.T, v float64) float64 {
 }
 
 func TestDropResult(t *testing.T) {
+	t.Parallel()
 	t.Run("create drop result", func(t *testing.T) {
+		t.Parallel()
 		result := DropResult{
 			MaterialNames: []string{"鉄の鉱石", "銅の鉱石"},
 			XPBefore:      map[ecs.Entity]int{},
@@ -92,6 +96,7 @@ func TestDropResult(t *testing.T) {
 	})
 
 	t.Run("empty drop result", func(t *testing.T) {
+		t.Parallel()
 		result := DropResult{
 			MaterialNames: []string{},
 			XPBefore:      map[ecs.Entity]int{},
@@ -107,7 +112,9 @@ func TestDropResult(t *testing.T) {
 }
 
 func TestLevelUpThreshold(t *testing.T) {
+	t.Parallel()
 	t.Run("level up threshold constant", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, 100, LevelUpThreshold, "レベルアップの閾値が正しくない")
 	})
 }

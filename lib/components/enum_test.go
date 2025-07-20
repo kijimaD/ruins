@@ -8,19 +8,24 @@ import (
 )
 
 func TestWarpMode(t *testing.T) {
+	t.Parallel()
 	t.Run("warp mode constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, warpMode("NEXT"), WarpModeNext, "WarpModeNextの値が正しくない")
 		assert.Equal(t, warpMode("ESCAPE"), WarpModeEscape, "WarpModeEscapeの値が正しくない")
 	})
 }
 
 func TestTargetNumType(t *testing.T) {
+	t.Parallel()
 	t.Run("target num constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, TargetNumType("SINGLE"), TargetSingle, "TargetSingleの値が正しくない")
 		assert.Equal(t, TargetNumType("ALL"), TargetAll, "TargetAllの値が正しくない")
 	})
 
 	t.Run("valid target num types", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name      string
 			targetNum TargetNumType
@@ -34,6 +39,7 @@ func TestTargetNumType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				err := tt.targetNum.Valid()
 				if tt.wantErr {
 					assert.Error(t, err, "無効な値でエラーが発生しない")
@@ -47,7 +53,9 @@ func TestTargetNumType(t *testing.T) {
 }
 
 func TestTargetGroupType(t *testing.T) {
+	t.Parallel()
 	t.Run("target group constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, TargetGroupType("ALLY"), TargetGroupAlly, "TargetGroupAllyの値が正しくない")
 		assert.Equal(t, TargetGroupType("ENEMY"), TargetGroupEnemy, "TargetGroupEnemyの値が正しくない")
 		assert.Equal(t, TargetGroupType("CARD"), TargetGroupCard, "TargetGroupCardの値が正しくない")
@@ -55,6 +63,7 @@ func TestTargetGroupType(t *testing.T) {
 	})
 
 	t.Run("valid target group types", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name        string
 			targetGroup TargetGroupType
@@ -70,6 +79,7 @@ func TestTargetGroupType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				err := tt.targetGroup.Valid()
 				if tt.wantErr {
 					assert.Error(t, err, "無効な値でエラーが発生しない")
@@ -83,13 +93,16 @@ func TestTargetGroupType(t *testing.T) {
 }
 
 func TestUsableSceneType(t *testing.T) {
+	t.Parallel()
 	t.Run("usable scene constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, UsableSceneType("BATTLE"), UsableSceneBattle, "UsableSceneBattleの値が正しくない")
 		assert.Equal(t, UsableSceneType("FIELD"), UsableSceneField, "UsableSceneFieldの値が正しくない")
 		assert.Equal(t, UsableSceneType("ANY"), UsableSceneAny, "UsableSceneAnyの値が正しくない")
 	})
 
 	t.Run("valid usable scene types", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name        string
 			usableScene UsableSceneType
@@ -104,6 +117,7 @@ func TestUsableSceneType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				err := tt.usableScene.Valid()
 				if tt.wantErr {
 					assert.Error(t, err, "無効な値でエラーが発生しない")
@@ -117,7 +131,9 @@ func TestUsableSceneType(t *testing.T) {
 }
 
 func TestAttackType(t *testing.T) {
+	t.Parallel()
 	t.Run("attack type constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, AttackType("SWORD"), AttackSword, "AttackSwordの値が正しくない")
 		assert.Equal(t, AttackType("SPEAR"), AttackSpear, "AttackSpearの値が正しくない")
 		assert.Equal(t, AttackType("HANDGUN"), AttackHandgun, "AttackHandgunの値が正しくない")
@@ -127,6 +143,7 @@ func TestAttackType(t *testing.T) {
 	})
 
 	t.Run("valid attack types", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name       string
 			attackType AttackType
@@ -143,6 +160,7 @@ func TestAttackType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				err := tt.attackType.Valid()
 				if tt.wantErr {
 					assert.Error(t, err, "無効な値でエラーが発生しない")
@@ -155,6 +173,7 @@ func TestAttackType(t *testing.T) {
 	})
 
 	t.Run("attack type string representation", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			attackType AttackType
 			expected   string
@@ -169,6 +188,7 @@ func TestAttackType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(string(tt.attackType), func(t *testing.T) {
+				t.Parallel()
 				result := tt.attackType.String()
 				assert.Equal(t, tt.expected, result, "文字列表現が正しくない")
 			})
@@ -179,7 +199,9 @@ func TestAttackType(t *testing.T) {
 }
 
 func TestEquipmentType(t *testing.T) {
+	t.Parallel()
 	t.Run("equipment type constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, EquipmentType("HEAD"), EquipmentHead, "EquipmentHeadの値が正しくない")
 		assert.Equal(t, EquipmentType("TORSO"), EquipmentTorso, "EquipmentTorsoの値が正しくない")
 		assert.Equal(t, EquipmentType("LEGS"), EquipmentLegs, "EquipmentLegsの値が正しくない")
@@ -187,6 +209,7 @@ func TestEquipmentType(t *testing.T) {
 	})
 
 	t.Run("valid equipment types", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name          string
 			equipmentType EquipmentType
@@ -201,6 +224,7 @@ func TestEquipmentType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				err := tt.equipmentType.Valid()
 				if tt.wantErr {
 					assert.Error(t, err, "無効な値でエラーが発生しない")
@@ -213,6 +237,7 @@ func TestEquipmentType(t *testing.T) {
 	})
 
 	t.Run("equipment type string representation", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			equipmentType EquipmentType
 			expected      string
@@ -225,6 +250,7 @@ func TestEquipmentType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(string(tt.equipmentType), func(t *testing.T) {
+				t.Parallel()
 				result := tt.equipmentType.String()
 				assert.Equal(t, tt.expected, result, "文字列表現が正しくない")
 			})
@@ -233,7 +259,9 @@ func TestEquipmentType(t *testing.T) {
 }
 
 func TestElementType(t *testing.T) {
+	t.Parallel()
 	t.Run("element type constants", func(t *testing.T) {
+		t.Parallel()
 		assert.Equal(t, ElementType("NONE"), ElementTypeNone, "ElementTypeNoneの値が正しくない")
 		assert.Equal(t, ElementType("FIRE"), ElementTypeFire, "ElementTypeFireの値が正しくない")
 		assert.Equal(t, ElementType("THUNDER"), ElementTypeThunder, "ElementTypeThunderの値が正しくない")
@@ -242,6 +270,7 @@ func TestElementType(t *testing.T) {
 	})
 
 	t.Run("valid element types", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name        string
 			elementType ElementType
@@ -257,6 +286,7 @@ func TestElementType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				err := tt.elementType.Valid()
 				if tt.wantErr {
 					assert.Error(t, err, "無効な値でエラーが発生しない")
@@ -269,6 +299,7 @@ func TestElementType(t *testing.T) {
 	})
 
 	t.Run("element type string representation", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			elementType ElementType
 			expected    string
@@ -282,6 +313,7 @@ func TestElementType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(string(tt.elementType), func(t *testing.T) {
+				t.Parallel()
 				result := tt.elementType.String()
 				assert.Equal(t, tt.expected, result, "文字列表現が正しくない")
 			})

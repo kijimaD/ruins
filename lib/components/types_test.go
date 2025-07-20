@@ -7,7 +7,9 @@ import (
 )
 
 func TestPool(t *testing.T) {
+	t.Parallel()
 	t.Run("create pool", func(t *testing.T) {
+		t.Parallel()
 		pool := Pool{
 			Max:     100,
 			Current: 75,
@@ -17,6 +19,7 @@ func TestPool(t *testing.T) {
 	})
 
 	t.Run("empty pool", func(t *testing.T) {
+		t.Parallel()
 		pool := Pool{
 			Max:     50,
 			Current: 0,
@@ -26,6 +29,7 @@ func TestPool(t *testing.T) {
 	})
 
 	t.Run("full pool", func(t *testing.T) {
+		t.Parallel()
 		pool := Pool{
 			Max:     200,
 			Current: 200,
@@ -35,7 +39,9 @@ func TestPool(t *testing.T) {
 }
 
 func TestAttribute(t *testing.T) {
+	t.Parallel()
 	t.Run("create attribute", func(t *testing.T) {
+		t.Parallel()
 		attr := Attribute{
 			Base:     10,
 			Modifier: 5,
@@ -47,6 +53,7 @@ func TestAttribute(t *testing.T) {
 	})
 
 	t.Run("negative modifier", func(t *testing.T) {
+		t.Parallel()
 		attr := Attribute{
 			Base:     20,
 			Modifier: -5,
@@ -58,6 +65,7 @@ func TestAttribute(t *testing.T) {
 	})
 
 	t.Run("zero values", func(t *testing.T) {
+		t.Parallel()
 		attr := Attribute{
 			Base:     0,
 			Modifier: 0,
@@ -70,7 +78,9 @@ func TestAttribute(t *testing.T) {
 }
 
 func TestRecipeInput(t *testing.T) {
+	t.Parallel()
 	t.Run("create recipe input", func(t *testing.T) {
+		t.Parallel()
 		input := RecipeInput{
 			Name:   "鉄",
 			Amount: 3,
@@ -80,6 +90,7 @@ func TestRecipeInput(t *testing.T) {
 	})
 
 	t.Run("empty name", func(t *testing.T) {
+		t.Parallel()
 		input := RecipeInput{
 			Name:   "",
 			Amount: 1,
@@ -90,7 +101,9 @@ func TestRecipeInput(t *testing.T) {
 }
 
 func TestEquipBonus(t *testing.T) {
+	t.Parallel()
 	t.Run("create equip bonus", func(t *testing.T) {
+		t.Parallel()
 		bonus := EquipBonus{
 			Vitality:  5,
 			Strength:  3,
@@ -106,6 +119,7 @@ func TestEquipBonus(t *testing.T) {
 	})
 
 	t.Run("negative bonuses", func(t *testing.T) {
+		t.Parallel()
 		bonus := EquipBonus{
 			Vitality:  -2,
 			Strength:  -1,
@@ -122,7 +136,9 @@ func TestEquipBonus(t *testing.T) {
 }
 
 func TestTargetType(t *testing.T) {
+	t.Parallel()
 	t.Run("create target type", func(t *testing.T) {
+		t.Parallel()
 		target := TargetType{
 			TargetGroup: TargetGroupEnemy,
 			TargetNum:   TargetSingle,
@@ -132,6 +148,7 @@ func TestTargetType(t *testing.T) {
 	})
 
 	t.Run("various target combinations", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name        string
 			targetGroup TargetGroupType
@@ -147,6 +164,7 @@ func TestTargetType(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				target := TargetType{
 					TargetGroup: tt.targetGroup,
 					TargetNum:   tt.targetNum,
@@ -159,7 +177,9 @@ func TestTargetType(t *testing.T) {
 }
 
 func TestEquipmentSlotNumber(t *testing.T) {
+	t.Parallel()
 	t.Run("create slot numbers", func(t *testing.T) {
+		t.Parallel()
 		slot0 := EquipmentSlotNumber(0)
 		slot1 := EquipmentSlotNumber(1)
 		slot7 := EquipmentSlotNumber(7)
@@ -171,7 +191,9 @@ func TestEquipmentSlotNumber(t *testing.T) {
 }
 
 func TestRatioAmount(t *testing.T) {
+	t.Parallel()
 	t.Run("create ratio amount", func(t *testing.T) {
+		t.Parallel()
 		ratio := RatioAmount{Ratio: 0.5}
 		assert.Equal(t, 0.5, ratio.Ratio, "倍率が正しく設定されない")
 
@@ -181,6 +203,7 @@ func TestRatioAmount(t *testing.T) {
 	})
 
 	t.Run("calc with ratio", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name     string
 			ratio    float64
@@ -198,6 +221,7 @@ func TestRatioAmount(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				ratio := RatioAmount{Ratio: tt.ratio}
 				result := ratio.Calc(tt.base)
 				assert.Equal(t, tt.expected, result, "計算結果が正しくない")
@@ -205,14 +229,17 @@ func TestRatioAmount(t *testing.T) {
 		}
 	})
 
-	t.Run("Amount method exists", func(_ *testing.T) {
+	t.Run("Amount method exists", func(t *testing.T) {
+		t.Parallel()
 		ratio := RatioAmount{Ratio: 0.75}
 		ratio.Amount() // メソッドが存在することを確認
 	})
 }
 
 func TestNumeralAmount(t *testing.T) {
+	t.Parallel()
 	t.Run("create numeral amount", func(t *testing.T) {
+		t.Parallel()
 		numeral := NumeralAmount{Numeral: 25}
 		assert.Equal(t, 25, numeral.Numeral, "絶対量が正しく設定されない")
 
@@ -222,6 +249,7 @@ func TestNumeralAmount(t *testing.T) {
 	})
 
 	t.Run("calc numeral", func(t *testing.T) {
+		t.Parallel()
 		tests := []struct {
 			name     string
 			numeral  int
@@ -235,6 +263,7 @@ func TestNumeralAmount(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
 				numeral := NumeralAmount{Numeral: tt.numeral}
 				result := numeral.Calc()
 				assert.Equal(t, tt.expected, result, "固定値の計算結果が正しくない")
@@ -242,14 +271,17 @@ func TestNumeralAmount(t *testing.T) {
 		}
 	})
 
-	t.Run("Amount method exists", func(_ *testing.T) {
+	t.Run("Amount method exists", func(t *testing.T) {
+		t.Parallel()
 		numeral := NumeralAmount{Numeral: 50}
 		numeral.Amount() // メソッドが存在することを確認
 	})
 }
 
 func TestAmounterInterface(t *testing.T) {
+	t.Parallel()
 	t.Run("all types implement Amounter", func(t *testing.T) {
+		t.Parallel()
 		// 両方の型がAmounterインターフェースを実装していることを確認
 		var amounters = []Amounter{
 			RatioAmount{Ratio: 0.5},

@@ -3,6 +3,7 @@ package mathutil
 import "testing"
 
 func TestMin(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		x    int
@@ -17,6 +18,7 @@ func TestMin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Min(tt.x, tt.y); got != tt.want {
 				t.Errorf("Min(%d, %d) = %d, want %d", tt.x, tt.y, got, tt.want)
 			}
@@ -25,6 +27,7 @@ func TestMin(t *testing.T) {
 }
 
 func TestMinFloat(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		x    float64
@@ -38,6 +41,7 @@ func TestMinFloat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Min(tt.x, tt.y); got != tt.want {
 				t.Errorf("Min(%f, %f) = %f, want %f", tt.x, tt.y, got, tt.want)
 			}
@@ -46,6 +50,7 @@ func TestMinFloat(t *testing.T) {
 }
 
 func TestMax(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		x    int
@@ -60,6 +65,7 @@ func TestMax(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Max(tt.x, tt.y); got != tt.want {
 				t.Errorf("Max(%d, %d) = %d, want %d", tt.x, tt.y, got, tt.want)
 			}
@@ -68,6 +74,7 @@ func TestMax(t *testing.T) {
 }
 
 func TestClamp(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		value int
@@ -85,6 +92,7 @@ func TestClamp(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Clamp(tt.value, tt.min, tt.max); got != tt.want {
 				t.Errorf("Clamp(%d, %d, %d) = %d, want %d", tt.value, tt.min, tt.max, got, tt.want)
 			}
@@ -93,6 +101,7 @@ func TestClamp(t *testing.T) {
 }
 
 func TestClampFloat(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		value float64
@@ -107,6 +116,7 @@ func TestClampFloat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Clamp(tt.value, tt.min, tt.max); got != tt.want {
 				t.Errorf("Clamp(%f, %f, %f) = %f, want %f", tt.value, tt.min, tt.max, got, tt.want)
 			}
@@ -115,6 +125,7 @@ func TestClampFloat(t *testing.T) {
 }
 
 func TestAbs(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		x    int
@@ -128,6 +139,7 @@ func TestAbs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Abs(tt.x); got != tt.want {
 				t.Errorf("Abs(%d) = %d, want %d", tt.x, got, tt.want)
 			}
@@ -136,6 +148,7 @@ func TestAbs(t *testing.T) {
 }
 
 func TestAbsFloat(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		x    float64
@@ -149,6 +162,7 @@ func TestAbsFloat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := Abs(tt.x); got != tt.want {
 				t.Errorf("Abs(%f) = %f, want %f", tt.x, got, tt.want)
 			}

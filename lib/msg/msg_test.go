@@ -7,6 +7,7 @@ import (
 )
 
 func TestMsg(t *testing.T) {
+	t.Parallel()
 	q := Queue{active: true}
 	q.events = append(q.events, &msgEmit{
 		body: []rune("こんにちは"),
@@ -24,6 +25,7 @@ func TestMsg(t *testing.T) {
 }
 
 func TestWait(t *testing.T) {
+	t.Parallel()
 	q := Queue{active: true}
 	q.events = append(q.events, &msgEmit{
 		body: []rune("東京"),
@@ -46,6 +48,7 @@ func TestWait(t *testing.T) {
 }
 
 func TestBuilder(t *testing.T) {
+	t.Parallel()
 	input := `こんにちは...[p]
 今日はいかがですか`
 	l := NewLexer(input)
@@ -81,6 +84,7 @@ func TestBuilder(t *testing.T) {
 
 // 改行を自動挿入できる
 func TestNewLine(t *testing.T) {
+	t.Parallel()
 	input := `こんにちは[p]
 ああああああああああああああああああああ`
 	l := NewLexer(input)
@@ -122,6 +126,7 @@ func TestNewLine(t *testing.T) {
 
 // 意図的な改行で自動改行カウントをリセットする
 func TestNewLineResetCount(t *testing.T) {
+	t.Parallel()
 	input := `こんにちは[p]
 ああああああああああ
 ああああああああああ`
