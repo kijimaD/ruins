@@ -8,6 +8,11 @@ type battlePhase interface {
 	isBattlePhase()
 }
 
+// 敵遭遇フェーズ（「敵が現れた」メッセージ表示）
+type phaseEnemyEncounter struct{}
+
+func (p *phaseEnemyEncounter) isBattlePhase() {}
+
 // 開戦 / 逃走 を選択する
 type phaseChoosePolicy struct{}
 
