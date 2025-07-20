@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 // TestBattleStateNoReuse はBattleStateが再利用されないことを確認するテスト
 func TestBattleStateNoReuse(t *testing.T) {
 	t.Parallel()
@@ -72,7 +71,7 @@ func TestBattleStateNoReuse(t *testing.T) {
 			f            func(world w.World)
 			getTransFunc func() es.Transition
 		}
-		
+
 		for i := range debugMenuTrans {
 			if debugMenuTrans[i].label == "戦闘開始" {
 				battleEntry = &debugMenuTrans[i]
@@ -83,12 +82,12 @@ func TestBattleStateNoReuse(t *testing.T) {
 
 		// 複数回Transitionを取得してファクトリーからステートを作成
 		createdStates := []es.State{}
-		
+
 		for i := 0; i < 3; i++ {
 			transition := battleEntry.getTransFunc()
 			assert.Equal(t, es.TransPush, transition.Type)
 			assert.Len(t, transition.NewStateFuncs, 1)
-			
+
 			// ファクトリーからステートを作成
 			newState := transition.NewStateFuncs[0]()
 			createdStates = append(createdStates, newState)
@@ -97,7 +96,7 @@ func TestBattleStateNoReuse(t *testing.T) {
 		// 作成された全てのステートが異なるインスタンスであることを確認
 		for i := 0; i < len(createdStates)-1; i++ {
 			for j := i + 1; j < len(createdStates); j++ {
-				assert.NotSame(t, createdStates[i], createdStates[j], 
+				assert.NotSame(t, createdStates[i], createdStates[j],
 					"戦闘ステート%dと%dは異なるインスタンスであるべき", i, j)
 			}
 		}
@@ -114,7 +113,7 @@ func TestStateReusePrevention(t *testing.T) {
 		// 最初のBattleStateを作成してTransPopを設定（OnStartは呼ばない）
 		battle1 := NewBattleState().(*BattleState)
 		battle1.SetTransition(es.Transition{Type: es.TransPop})
-		
+
 		// GetTransitionでTransPopが設定されていることを確認
 		trans1 := battle1.GetTransition()
 		assert.NotNil(t, trans1)
@@ -122,7 +121,7 @@ func TestStateReusePrevention(t *testing.T) {
 
 		// 新しいBattleStateを作成
 		battle2 := NewBattleState().(*BattleState)
-		
+
 		// 新しいインスタンスではtransがnilであることを確認
 		trans2 := battle2.GetTransition()
 		assert.Nil(t, trans2, "新しいBattleStateインスタンスのtransフィールドはnilであるべき")

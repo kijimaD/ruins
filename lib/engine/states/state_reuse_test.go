@@ -12,7 +12,7 @@ func TestStateNoReuse(t *testing.T) {
 
 	t.Run("StateFactoryから毎回異なるインスタンスが作成される", func(t *testing.T) {
 		t.Parallel()
-		
+
 		// ファクトリー関数を定義
 		factory := func() State {
 			return &TestState{name: "TestState"}
@@ -32,7 +32,7 @@ func TestStateNoReuse(t *testing.T) {
 	t.Run("TransitionのStateFactoriesが実行時に新しいインスタンスを作成する", func(t *testing.T) {
 		t.Parallel()
 		world := createTestWorld(t)
-		
+
 		// カウンターを使用して各インスタンスを追跡
 		instanceCount := 0
 		factory := func() State {
@@ -67,11 +67,11 @@ func TestStateNoReuse(t *testing.T) {
 	t.Run("複数のPush操作で毎回新しいインスタンスが作成される", func(t *testing.T) {
 		t.Parallel()
 		world := createTestWorld(t)
-		
+
 		// 作成されたインスタンスを追跡
 		createdStates := []*TestStateWithID{}
 		idCounter := 0
-		
+
 		factory := func() State {
 			idCounter++
 			state := &TestStateWithID{
@@ -96,7 +96,7 @@ func TestStateNoReuse(t *testing.T) {
 
 		// 3つの異なるインスタンスが作成されたことを確認
 		assert.Equal(t, 3, len(createdStates), "3つのステートが作成されるべき")
-		
+
 		// 各インスタンスのIDが異なることを確認
 		assert.Equal(t, 1, createdStates[0].ID)
 		assert.Equal(t, 2, createdStates[1].ID)
@@ -105,7 +105,7 @@ func TestStateNoReuse(t *testing.T) {
 		// ポインタが異なることを確認
 		for i := 0; i < len(createdStates)-1; i++ {
 			for j := i + 1; j < len(createdStates); j++ {
-				assert.NotSame(t, createdStates[i], createdStates[j], 
+				assert.NotSame(t, createdStates[i], createdStates[j],
 					"インスタンス%dとインスタンス%dは異なるべき", i, j)
 			}
 		}
