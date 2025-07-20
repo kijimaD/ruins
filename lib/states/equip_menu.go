@@ -598,7 +598,7 @@ func (st *EquipMenuState) updateWindowMode(world w.World) bool {
 	}
 
 	// Enterで選択実行（押下-押上ワンセット）
-	if st.keyboardInput.IsEnterJustPressedOnce() || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+	if st.keyboardInput.IsEnterJustPressedOnce() {
 		st.executeActionItem(world)
 		return true
 	}

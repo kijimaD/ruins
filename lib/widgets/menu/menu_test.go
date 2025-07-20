@@ -304,54 +304,6 @@ func TestMenuDisabledItems(t *testing.T) {
 	}
 }
 
-func TestMenuSpaceSelection(t *testing.T) {
-	t.Parallel()
-	items := []MenuItem{
-		{ID: "1", Label: "Item 1"},
-		{ID: "2", Label: "Item 2"},
-		{ID: "3", Label: "Item 3"},
-	}
-
-	var selectedIndex int
-	var selectedItem MenuItem
-	var selectionCalled bool
-
-	config := MenuConfig{
-		Items:        items,
-		InitialIndex: 0,
-	}
-
-	callbacks := MenuCallbacks{
-		OnSelect: func(index int, item MenuItem) {
-			selectedIndex = index
-			selectedItem = item
-			selectionCalled = true
-		},
-	}
-
-	menu := NewMenu(config, callbacks)
-
-	// モックキーボード入力を作成
-	mockInput := input.NewMockKeyboardInput()
-	// Spaceキーは通常のIsKeyJustPressedを使用
-	mockInput.SetKeyJustPressed(ebiten.KeySpace, true)
-
-	// メニューを更新
-	menu.Update(mockInput)
-
-	// 結果を検証
-	if !selectionCalled {
-		t.Error("OnSelectコールバックが呼ばれていない")
-	}
-
-	if selectedIndex != 0 {
-		t.Errorf("期待される選択インデックス: 0, 実際: %d", selectedIndex)
-	}
-
-	if selectedItem.ID != "1" {
-		t.Errorf("期待される選択アイテムID: 1, 実際: %s", selectedItem.ID)
-	}
-}
 
 func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 	t.Parallel()
@@ -392,43 +344,3 @@ func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 	// 実際のゲーム環境では押下-押上ワンセット制限が働く
 }
 
-func TestMenuSpaceBasicFunction(t *testing.T) {
-	t.Parallel()
-	items := []MenuItem{
-		{ID: "1", Label: "Item 1"},
-		{ID: "2", Label: "Item 2"},
-	}
-
-	var selectionCount int
-
-	config := MenuConfig{
-		Items:        items,
-		InitialIndex: 0,
-	}
-
-	callbacks := MenuCallbacks{
-		OnSelect: func(_ int, _ MenuItem) {
-			selectionCount++
-		},
-	}
-
-	menu := NewMenu(config, callbacks)
-	mockInput := input.NewMockKeyboardInput()
-
-	// Spaceキーによる選択のテスト
-	mockInput.SetKeyJustPressed(ebiten.KeySpace, true)
-	menu.Update(mockInput)
-
-	if selectionCount != 1 {
-		t.Errorf("Spaceキーによる選択が失敗: 期待 1, 実際 %d", selectionCount)
-	}
-
-	// リセット後の再選択テスト
-	mockInput.Reset()
-	mockInput.SetKeyJustPressed(ebiten.KeySpace, true)
-	menu.Update(mockInput)
-
-	if selectionCount != 2 {
-		t.Errorf("リセット後のSpace選択が失敗: 期待 2, 実際 %d", selectionCount)
-	}
-}
