@@ -67,11 +67,6 @@ func (st BattleState) String() string {
 	return "Battle"
 }
 
-// NewBattleState は新しいBattleStateインスタンスを作成するファクトリー関数
-func NewBattleState() es.State {
-	return &BattleState{}
-}
-
 // State interface ================
 
 var _ es.State = &BattleState{}

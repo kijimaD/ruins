@@ -12,6 +12,11 @@ func NewIntroState() es.State {
 	return &IntroState{}
 }
 
+// NewBattleState は新しいBattleStateインスタンスを作成するファクトリー関数
+func NewBattleState() es.State {
+	return &BattleState{}
+}
+
 // NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
 func NewHomeMenuState() es.State {
 	return &HomeMenuState{}
@@ -73,7 +78,7 @@ func NewMainMenuState() es.State {
 	return &MainMenuState{}
 }
 
-// NewGameOverState は新しいGameOverStateインスタンスを作成するファクトリー関数  
+// NewGameOverState は新しいGameOverStateインスタンスを作成するファクトリー関数
 func NewGameOverState() es.State {
 	return &GameOverState{}
 }
