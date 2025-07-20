@@ -66,6 +66,7 @@ func TestLoggerWithFields(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // modifies global config
 func TestLogLevelFiltering(t *testing.T) {
 	// テスト用の設定
 	SetConfig(Config{
@@ -94,6 +95,7 @@ func TestLogLevelFiltering(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // modifies global config
 func TestContextLevelFiltering(t *testing.T) {
 	// カテゴリ別設定
 	SetConfig(Config{
@@ -124,6 +126,7 @@ func TestContextLevelFiltering(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // modifies global config
 func TestJSONOutput(t *testing.T) {
 	SetConfig(Config{
 		DefaultLevel:   LevelDebug,
@@ -162,7 +165,9 @@ func TestJSONOutput(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // modifies global config
 func TestIsDebugEnabled(t *testing.T) {
+	// t.Parallel() disabled: modifies global config
 	tests := []struct {
 		name          string
 		config        Config
@@ -202,6 +207,7 @@ func TestIsDebugEnabled(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// t.Parallel() disabled: modifies global config
 			SetConfig(tt.config)
 			defer ResetConfig()
 
@@ -214,7 +220,7 @@ func TestIsDebugEnabled(t *testing.T) {
 }
 
 func TestParseLevel(t *testing.T) {
-	t.Parallel()
+	t.Parallel() // parseLevel is a pure function, safe for parallel execution
 	tests := []struct {
 		input    string
 		expected Level
@@ -244,7 +250,7 @@ func TestParseLevel(t *testing.T) {
 }
 
 func TestParseCategoryLevels(t *testing.T) {
-	t.Parallel()
+	t.Parallel() // parseCategoryLevels is a pure function, safe for parallel execution
 	input := "battle=debug,render=warn,invalid"
 	result := parseCategoryLevels(input)
 
@@ -259,13 +265,15 @@ func TestParseCategoryLevels(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // modifies global config
 func TestLoggerOutput(t *testing.T) {
+	// t.Parallel() disabled: modifies global config
 	SetConfig(Config{
 		DefaultLevel:   LevelDebug,
 		CategoryLevels: make(map[Category]Level),
 		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
-	defer ResetConfig()
+	t.Cleanup(ResetConfig)
 
 	logger := New(CategoryBattle).WithField("session", "test123")
 
@@ -304,6 +312,7 @@ func TestLoggerOutput(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// t.Parallel() disabled: parent test modifies global config
 			output := captureOutput(func() {
 				tt.logFunc(tt.contains[0])
 			})
