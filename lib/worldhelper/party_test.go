@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+//nolint:paralleltest // uses game.InitWorld which has global state
 func TestNewParty(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -54,6 +55,7 @@ func TestNewParty(t *testing.T) {
 	world.Manager.DeleteEntity(ally2)
 }
 
+//nolint:paralleltest // uses game.InitWorld which has global state
 func TestNewByEntity(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -84,6 +86,7 @@ func TestNewByEntity(t *testing.T) {
 	world.Manager.DeleteEntity(invalidEntity)
 }
 
+//nolint:paralleltest // uses game.InitWorld which has global state
 func TestPartyNavigation(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)

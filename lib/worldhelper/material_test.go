@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+//nolint:paralleltest // uses game.InitWorld which has global state
 func TestGetAmount(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -31,6 +32,7 @@ func TestGetAmount(t *testing.T) {
 	world.Manager.DeleteEntity(materialEntity)
 }
 
+//nolint:paralleltest // uses game.InitWorld which has global state
 func TestPlusMinusAmount(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
