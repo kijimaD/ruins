@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-//nolint:paralleltest,tparallel // uses game.InitWorld which has global state
 func TestSetMaxHPSP(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name        string
 		vitality    int
@@ -63,6 +63,7 @@ func TestSetMaxHPSP(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			// 独立したworldを作成
 			world, err := game.InitWorld(960, 720)
 			require.NoError(t, err)
@@ -113,8 +114,8 @@ func TestSetMaxHPSP(t *testing.T) {
 	}
 }
 
-//nolint:paralleltest // uses game.InitWorld which has global state
 func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -130,8 +131,8 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 	world.Manager.DeleteEntity(entity)
 }
 
-//nolint:paralleltest // uses game.InitWorld which has global state
 func TestFullRecover(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 

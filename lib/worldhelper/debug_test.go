@@ -9,8 +9,8 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-//nolint:paralleltest // uses game.InitWorld which has global state
 func TestInitDebugData(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 

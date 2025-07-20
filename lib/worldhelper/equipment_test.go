@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-//nolint:paralleltest // uses game.InitWorld which has global state
 func TestEquipDisarm(t *testing.T) {
+	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
