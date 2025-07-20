@@ -95,7 +95,7 @@ func (st *EquipMenuState) Update(world w.World) es.Transition {
 	}
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
@@ -134,7 +134,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)
@@ -598,7 +598,7 @@ func (st *EquipMenuState) updateWindowMode(world w.World) bool {
 	}
 
 	// Enterで選択実行（押下-押上ワンセット）
-	if st.keyboardInput.IsEnterJustPressedOnce() || st.keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+	if st.keyboardInput.IsEnterJustPressedOnce() {
 		st.executeActionItem(world)
 		return true
 	}

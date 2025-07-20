@@ -31,8 +31,8 @@ const (
 
 // Transition is a state transition
 type Transition struct {
-	Type      TransType
-	NewStates []State
+	Type          TransType
+	NewStateFuncs []StateFactory // ファクトリー関数で動的にステートを作成する。新しいステートは毎回新規作成する
 }
 
 // State is a game state
@@ -50,6 +50,9 @@ type State interface {
 	// 描画
 	Draw(world w.World, screen *ebiten.Image)
 }
+
+// StateFactory はステートを作成するファクトリー関数の型
+type StateFactory func() State
 
 // StateMachine contains a stack of states.
 // Only the top state is active.
@@ -75,26 +78,29 @@ func Init(s State, world w.World) StateMachine {
 	s.OnStart(world)
 	return StateMachine{
 		states:         []State{s},
-		lastTransition: Transition{TransNone, []State{}},
+		lastTransition: Transition{Type: TransNone},
 		logger:         l,
 	}
 }
 
 // Update updates the state machine
 func (sm *StateMachine) Update(world w.World) {
+	// ファクトリー関数からステートを作成
+	states := sm.createStatesFromFunc()
+
 	switch sm.lastTransition.Type {
 	case TransPop:
 		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Pop", "スタック深度", len(sm.states))
 		sm._Pop(world)
 	case TransPush:
-		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Push", "スタック深度", len(sm.states), "新しいステート数", len(sm.lastTransition.NewStates))
-		sm._Push(world, sm.lastTransition.NewStates)
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Push", "スタック深度", len(sm.states), "新しいステート数", len(states))
+		sm._Push(world, states)
 	case TransSwitch:
-		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Switch", "スタック深度", len(sm.states), "新しいステート", getStateName(sm.lastTransition.NewStates[0]))
-		sm._Switch(world, sm.lastTransition.NewStates)
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Switch", "スタック深度", len(sm.states), "新しいステート", getStateName(states[0]))
+		sm._Switch(world, states)
 	case TransReplace:
-		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Replace", "スタック深度", len(sm.states), "新しいステート数", len(sm.lastTransition.NewStates))
-		sm._Replace(world, sm.lastTransition.NewStates)
+		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Replace", "スタック深度", len(sm.states), "新しいステート数", len(states))
+		sm._Replace(world, states)
 	case TransQuit:
 		sm.logger.Debug("ステート遷移開始", "遷移タイプ", "Quit", "スタック深度", len(sm.states))
 		sm._Quit(world)
@@ -108,6 +114,20 @@ func (sm *StateMachine) Update(world w.World) {
 	sm.lastTransition = sm.states[len(sm.states)-1].Update(world)
 
 	// Run post-game systems
+}
+
+// createStatesFromFunc はStateFactoriesからステートのスライスを作成する
+func (sm *StateMachine) createStatesFromFunc() []State {
+	if len(sm.lastTransition.NewStateFuncs) == 0 {
+		return []State{}
+	}
+
+	states := make([]State, len(sm.lastTransition.NewStateFuncs))
+	for i, factory := range sm.lastTransition.NewStateFuncs {
+		states[i] = factory()
+		sm.logger.Debug("ファクトリーからステート作成", "ステート", getStateName(states[i]))
+	}
+	return states
 }
 
 // Draw draws the screen after a state update
@@ -146,6 +166,7 @@ func (sm *StateMachine) _Push(world w.World, newStates []State) {
 		}
 		activeState := newStates[len(newStates)-1]
 		sm.logger.Debug("ステート開始（アクティブ）", "ステート", getStateName(activeState), "新しいスタック深度", len(sm.states)+len(newStates))
+
 		activeState.OnStart(world)
 
 		sm.states = append(sm.states, newStates...)

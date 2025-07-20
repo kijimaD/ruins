@@ -9,27 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPush(t *testing.T) {
-	t.Parallel()
-	t.Run("先頭に追加される", func(t *testing.T) {
-		t.Parallel()
-		execState := NewExecState(func(w.World) {})
-		result := push(
-			[]es.State{
-				&MessageState{},
-				&BattleState{},
-			},
-			execState,
-		)
-		expect := []es.State{
-			execState,
-			&MessageState{},
-			&BattleState{},
-		}
-		assert.Equal(t, expect, result)
-	})
-}
-
 func TestExecStateAutoExecution(t *testing.T) {
 	t.Parallel()
 	t.Run("OnResumeで関数自動実行", func(t *testing.T) {

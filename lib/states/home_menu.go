@@ -77,7 +77,7 @@ func (st *HomeMenuState) OnStop(_ w.World) {}
 // Update はゲームステートの更新処理を行う
 func (st *HomeMenuState) Update(_ w.World) es.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DebugMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
 	}
 
 	// メニューの更新
@@ -106,13 +106,13 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			ID:          "departure",
 			Label:       "出発",
 			Description: "遺跡に出発する",
-			UserData:    es.Transition{Type: es.TransPush, NewStates: []es.State{&DungeonSelectState{}}},
+			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonSelectState}},
 		},
 		{
 			ID:          "craft",
 			Label:       "合成",
 			Description: "アイテムを合成する",
-			UserData:    es.Transition{Type: es.TransPush, NewStates: []es.State{&CraftMenuState{}}},
+			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewCraftMenuState}},
 		},
 		{
 			ID:          "replace",
@@ -124,19 +124,19 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			ID:          "inventory",
 			Label:       "所持",
 			Description: "所持品を確認する",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&InventoryMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewInventoryMenuState}},
 		},
 		{
 			ID:          "equipment",
 			Label:       "装備",
 			Description: "装備を変更する",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&EquipMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewEquipMenuState}},
 		},
 		{
 			ID:          "exit",
 			Label:       "終了",
 			Description: "タイトル画面に戻る",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}},
 		},
 	}
 
@@ -158,7 +158,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理（タイトル画面に戻る）
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}})
+			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}})
 		},
 		OnFocusChange: func(_, newIndex int) {
 			// フォーカス変更時に説明文を更新

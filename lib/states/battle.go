@@ -110,10 +110,9 @@ func (st *BattleState) OnStop(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
-	gamelog.BattleLog.Flush()
 
-	// FIXME: state transition: popで削除されてくれない。stateインスタンスが使い回されているように見える
-	st.phase = nil
+	// バトルログをクリア
+	gamelog.BattleLog.Flush()
 }
 
 // Update はゲームステートの更新処理を行う
@@ -360,7 +359,7 @@ func (st *BattleState) handleGameOverPhase(world w.World) es.Transition {
 	st.reloadMsg(world)
 
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
 	}
 	return es.Transition{Type: es.TransNone}
 }

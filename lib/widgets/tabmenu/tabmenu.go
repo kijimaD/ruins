@@ -139,10 +139,8 @@ func (tm *TabMenu) handleItemNavigation() bool {
 func (tm *TabMenu) handleSelection() bool {
 	// Enterキーは押下-押上ワンセット制御を使用
 	enterPressed := tm.keyboardInput.IsEnterJustPressedOnce()
-	// Spaceキーは通常の処理
-	spacePressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeySpace)
 
-	if enterPressed || spacePressed {
+	if enterPressed {
 		tm.selectCurrentItem()
 		return true
 	}

@@ -87,12 +87,12 @@ func (st *IntroState) Update(world w.World) es.Transition {
 		queueResult = st.queue.Pop()
 	case st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape):
 		// debug
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
 	}
 
 	switch queueResult {
 	case msg.QueueStateFinish:
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
 	}
 
 	st.updateMessageContainer(world)

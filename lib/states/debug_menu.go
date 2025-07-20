@@ -128,47 +128,57 @@ func (st *DebugMenuState) executeDebugMenuItem(world w.World, index int) {
 
 	data := debugMenuTrans[index]
 	data.f(world)
-	st.SetTransition(data.trans)
+
+	// 遅延評価でTransitionを取得（毎回新しいインスタンスが作成される）
+	st.SetTransition(data.getTransFunc())
 }
 
 var debugMenuTrans = []struct {
-	label string
-	f     func(world w.World)
-	trans es.Transition
+	label        string
+	f            func(world w.World)
+	getTransFunc func() es.Transition // 遅延評価で毎回新しいTransitionを取得
 }{
 	{
-		label: "回復薬スポーン(インベントリ)",
-		f:     func(world w.World) { worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack) },
-		trans: es.Transition{Type: es.TransNone},
+		label:        "回復薬スポーン(インベントリ)",
+		f:            func(world w.World) { worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack) },
+		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
 	},
 	{
-		label: "手榴弾スポーン(インベントリ)",
-		f:     func(world w.World) { worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack) },
-		trans: es.Transition{Type: es.TransNone},
+		label:        "手榴弾スポーン(インベントリ)",
+		f:            func(world w.World) { worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack) },
+		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
 	},
 	{
 		label: "戦闘開始",
 		f:     func(_ w.World) {},
-		trans: es.Transition{Type: es.TransPush, NewStates: []es.State{&BattleState{}}},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewBattleState}}
+		},
 	},
 	{
 		label: "汎用戦闘イベント開始",
 		f:     func(_ w.World) {},
-		trans: es.Transition{Type: es.TransPush, NewStates: RaidEvent1()},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: GetRaidEvent1Factories()}
+		},
 	},
 	{
 		label: "汎用アイテム入手イベント開始",
 		f:     func(_ w.World) {},
-		trans: es.Transition{Type: es.TransPush, NewStates: ItemGetEvent1()},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: GetItemGetEvent1Factories()}
+		},
 	},
 	{
 		label: "ゲームオーバー",
 		f:     func(_ w.World) {},
-		trans: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&GameOverState{}}},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
+		},
 	},
 	{
-		label: TextClose,
-		f:     func(_ w.World) {},
-		trans: es.Transition{Type: es.TransPop},
+		label:        TextClose,
+		f:            func(_ w.World) {},
+		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransPop} },
 	},
 }

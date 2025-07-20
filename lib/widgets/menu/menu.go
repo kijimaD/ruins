@@ -161,11 +161,10 @@ func (m *Menu) handleKeyboard() {
 		handled = true
 	}
 
-	// 選択（Enterは押下-押上ワンセット、Spaceは通常）
+	// 選択（Enterは押下-押上ワンセット）
 	enterPressed := m.keyboardInput.IsEnterJustPressedOnce()
-	spacePressed := m.keyboardInput.IsKeyJustPressed(ebiten.KeySpace)
 
-	if enterPressed || spacePressed {
+	if enterPressed {
 		m.selectCurrent()
 		handled = true
 	}

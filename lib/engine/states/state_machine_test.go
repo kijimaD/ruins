@@ -129,8 +129,8 @@ func TestStateMachineTransitions(t *testing.T) {
 		// Push遷移を実行
 		newState := &TestState{name: "PushedState"}
 		stateMachine.lastTransition = Transition{
-			Type:      TransPush,
-			NewStates: []State{newState},
+			Type:          TransPush,
+			NewStateFuncs: []StateFactory{func() State { return newState }},
 		}
 		stateMachine.Update(world)
 
@@ -162,8 +162,8 @@ func TestStateMachineTransitions(t *testing.T) {
 		// まずPushして2つの状態にする
 		pushedState := &TestState{name: "PushedState"}
 		stateMachine.lastTransition = Transition{
-			Type:      TransPush,
-			NewStates: []State{pushedState},
+			Type:          TransPush,
+			NewStateFuncs: []StateFactory{func() State { return pushedState }},
 		}
 		stateMachine.Update(world)
 
@@ -193,8 +193,8 @@ func TestStateMachineTransitions(t *testing.T) {
 		// Switch遷移を実行
 		newState := &TestState{name: "SwitchedState"}
 		stateMachine.lastTransition = Transition{
-			Type:      TransSwitch,
-			NewStates: []State{newState},
+			Type:          TransSwitch,
+			NewStateFuncs: []StateFactory{func() State { return newState }},
 		}
 		stateMachine.Update(world)
 
