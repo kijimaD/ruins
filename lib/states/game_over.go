@@ -53,7 +53,7 @@ func (st *GameOverState) OnStop(_ w.World) {}
 // Update はゲームステートの更新処理を行う
 func (st *GameOverState) Update(_ w.World) es.Transition {
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
 	}
 
 	st.ui.Update()

@@ -86,7 +86,7 @@ func (st *DungeonMenuState) initMenu(_ w.World) {
 			ID:          "exit",
 			Label:       "終了",
 			Description: "メインメニューに戻る",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStates: []es.State{&MainMenuState{}}},
+			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}},
 		},
 	}
 

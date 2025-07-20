@@ -56,7 +56,7 @@ func (st *DungeonSelectState) OnStop(_ w.World) {}
 // Update はゲームステートの更新処理を行う
 func (st *DungeonSelectState) Update(_ w.World) es.Transition {
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
 	}
 
 	// メニューの更新
@@ -179,21 +179,21 @@ var dungeonSelectTrans = []struct {
 	{
 		label: "森の遺跡",
 		desc:  "鬱蒼とした森の奥地にある遺跡",
-		trans: es.Transition{Type: es.TransReplace, NewStates: []es.State{&DungeonState{Depth: 1}}},
+		trans: es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
 	},
 	{
 		label: "山の遺跡",
 		desc:  "切り立った山の洞窟にある遺跡",
-		trans: es.Transition{Type: es.TransReplace, NewStates: []es.State{&DungeonState{Depth: 1}}},
+		trans: es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
 	},
 	{
 		label: "塔の遺跡",
 		desc:  "雲にまで届く塔を持つ遺跡",
-		trans: es.Transition{Type: es.TransReplace, NewStates: []es.State{&DungeonState{Depth: 1}}},
+		trans: es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
 	},
 	{
 		label: "拠点メニューに戻る",
 		desc:  "",
-		trans: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}},
+		trans: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}},
 	},
 }

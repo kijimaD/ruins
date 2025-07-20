@@ -385,7 +385,7 @@ Amount = 1
 Name = "イシハラ"
 [member.attributes]
 Vitality = 7
-Strength = 5
+Strength = 50
 Sensation = 5
 Dexterity = 6
 Agility = 5
@@ -395,7 +395,7 @@ Defense = 0
 Name = "シラセ"
 [member.attributes]
 Vitality = 5
-Strength = 4
+Strength = 40
 Sensation = 8
 Dexterity = 7
 Agility = 7

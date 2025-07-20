@@ -10,11 +10,11 @@ import (
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
-// ItemGetEvent1 は汎用アイテム入手イベント
-func ItemGetEvent1() []es.State {
-	ss := []es.State{}
-	ss = push(ss, &MessageState{text: "「倉庫だな。役立ちそうなものはもらっていこう」"})
-	ss = push(ss, NewExecState(func(world w.World) {
+// GetItemGetEvent1Factories は汎用アイテム入手イベントのファクトリー関数配列を返す
+func GetItemGetEvent1Factories() []es.StateFactory {
+	factories := []es.StateFactory{}
+	factories = append(factories, NewMessageStateWithText("「倉庫だな。役立ちそうなものはもらっていこう」"))
+	factories = append(factories, NewExecStateWithFunc(func(world w.World) {
 		// TODO: アイテム入手テーブルから獲得するようにする
 		worldhelper.PlusAmount("鉄", 1, world)
 		gamelog.SceneLog.Append("鉄を1個手に入れた")
@@ -23,35 +23,35 @@ func ItemGetEvent1() []es.State {
 		worldhelper.PlusAmount("フェライトコア", 1, world)
 		gamelog.SceneLog.Append("フェライトコアを2個手に入れた")
 	}))
-	ss = push(ss, &MessageState{
-		textFunc: helpers.GetPtr(func() string {
-			return strings.Join(gamelog.SceneLog.Pop(), "\n")
-		})})
-
-	return ss
+	factories = append(factories, func() es.State {
+		return &MessageState{
+			textFunc: helpers.GetPtr(func() string {
+				return strings.Join(gamelog.SceneLog.Pop(), "\n")
+			}),
+		}
+	})
+	return factories
 }
 
-// RaidEvent1 は汎用戦闘イベント開始
-func RaidEvent1() []es.State {
-	ss := []es.State{}
-	ss = push(ss, &MessageState{text: "「何か動いた」\n「...敵だ!」"})
-	ss = push(ss, &BattleState{})
-	ss = push(ss, &MessageState{text: "「びっくりしたな」\n「おや、何か落ちてるぞ」"})
-	ss = push(ss, NewExecState(func(world w.World) {
+// GetRaidEvent1Factories は汎用戦闘イベントのファクトリー関数配列を返す
+func GetRaidEvent1Factories() []es.StateFactory {
+	factories := []es.StateFactory{}
+	factories = append(factories, NewMessageStateWithText("「何か動いた」\n「...敵だ!」"))
+	factories = append(factories, NewBattleState)
+	factories = append(factories, NewMessageStateWithText("「びっくりしたな」\n「おや、何か落ちてるぞ」"))
+	factories = append(factories, NewExecStateWithFunc(func(world w.World) {
 		worldhelper.PlusAmount("鉄", 1, world)
 		// FIXME: どうして複数回実行したときSceneLogが蓄積してないのかわからない
 		// Flush()してないのに...
 		// アイテム入手→戦闘イベントとすると前の画面が表示される
 		gamelog.SceneLog.Append("鉄を1個手に入れた")
 	}))
-	ss = push(ss, &MessageState{
-		textFunc: helpers.GetPtr(func() string {
-			return strings.Join(gamelog.SceneLog.Pop(), "\n")
-		})})
-
-	return ss
-}
-
-func push(stack []es.State, value es.State) []es.State {
-	return append([]es.State{value}, stack...)
+	factories = append(factories, func() es.State {
+		return &MessageState{
+			textFunc: helpers.GetPtr(func() string {
+				return strings.Join(gamelog.SceneLog.Pop(), "\n")
+			}),
+		}
+	})
+	return factories
 }

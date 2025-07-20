@@ -73,17 +73,17 @@ func (st *MainMenuState) initMenu(world w.World) {
 		{
 			ID:       "intro",
 			Label:    "導入",
-			UserData: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&IntroState{}}},
+			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewIntroState}},
 		},
 		{
 			ID:       "home",
 			Label:    "拠点",
-			UserData: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}},
+			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}},
 		},
 		{
 			ID:       "explore",
 			Label:    "探検",
-			UserData: es.Transition{Type: es.TransSwitch, NewStates: []es.State{&DungeonState{Depth: 1}}},
+			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
 		},
 		{
 			ID:       "exit",

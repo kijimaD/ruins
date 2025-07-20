@@ -79,15 +79,15 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.MoveSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition{Type: es.TransPush, NewStates: []es.State{&DungeonMenuState{}}}
+		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&DungeonState{Depth: gameResources.Depth + 1}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
 	case resources.StateEventWarpEscape:
-		return es.Transition{Type: es.TransSwitch, NewStates: []es.State{&HomeMenuState{}}}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
 	}
 
 	// BaseStateの共通処理を使用
