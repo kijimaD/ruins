@@ -232,8 +232,10 @@ func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandl
 	})
 
 	handler.typewriter.OnComplete(func() {
-		// タイプライター完了時は何もしない（Enterキー待ちのため）
-		// onCompleteコールバックはEnterキーが押されたときのみ実行
+		// UI更新
+		if handler.onUpdateUI != nil {
+			handler.onUpdateUI(handler.typewriter.GetDisplayText())
+		}
 	})
 
 	handler.typewriter.OnSkip(func() {

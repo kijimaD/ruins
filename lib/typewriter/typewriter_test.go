@@ -464,3 +464,63 @@ func TestMessageHandlerTypingSkip(t *testing.T) {
 	shouldComplete = handler.Update()
 	assert.True(t, shouldComplete) // 今度は完了を通知
 }
+
+func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(Config{
+		CharDelay:   100 * time.Millisecond, // 遅めの設定でスキップをテスト
+		SkipEnabled: true,
+	}, mockInput)
+
+	uiUpdateCount := 0
+	skipCalled := false
+	completeCalled := false
+
+	handler.SetOnUpdateUI(func(text string) {
+		uiUpdateCount++
+		t.Logf("UI Updated: %q (count: %d)", text, uiUpdateCount)
+	})
+
+	handler.SetOnSkip(func() {
+		skipCalled = true
+		t.Log("Skip called")
+	})
+
+	handler.SetOnComplete(func() bool {
+		completeCalled = true
+		t.Log("Complete called")
+		return true
+	})
+
+	handler.Start("Test message for skip")
+	t.Logf("Started. IsTyping: %v, IsComplete: %v", handler.IsTyping(), handler.IsComplete())
+
+	// 少し文字を表示させる
+	time.Sleep(120 * time.Millisecond)
+	shouldComplete := handler.Update()
+	t.Logf("After some typing. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v", 
+		handler.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
+	assert.False(t, shouldComplete)
+	assert.True(t, handler.IsTyping())
+
+	// Enterキーでスキップ
+	mockInput.SetEnterPressed(true)
+	shouldComplete = handler.Update()
+	t.Logf("After skip. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v", 
+		handler.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
+	
+	assert.True(t, skipCalled, "Skip callback should be called")
+	assert.False(t, shouldComplete, "Should not complete immediately after skip")
+	assert.True(t, handler.IsComplete(), "Handler should be in complete state")
+	assert.Equal(t, "Test message for skip", handler.GetDisplayText())
+
+	// 完了状態でもう一度Enterキーを押すと完了
+	mockInput.SetEnterPressed(true)
+	shouldComplete = handler.Update()
+	t.Logf("After second enter. shouldComplete: %v, completeCalled: %v", shouldComplete, completeCalled)
+	
+	assert.True(t, shouldComplete, "Should complete on second enter")
+	assert.True(t, completeCalled, "Complete callback should be called")
+}
