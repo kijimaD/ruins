@@ -1,0 +1,285 @@
+package typewriter
+
+import (
+	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestTypewriterBasicFlow(t *testing.T) {
+	t.Parallel()
+
+	config := Config{
+		CharDelay:   50 * time.Millisecond,
+		SkipEnabled: true,
+	}
+	tw := New(config)
+
+	completed := false
+	tw.OnComplete(func() {
+		completed = true
+	})
+
+	tw.Start("Hello")
+
+	// 初期状態確認
+	assert.True(t, tw.IsTyping())
+	assert.False(t, tw.IsComplete())
+	assert.Equal(t, "", tw.GetDisplayText())
+	assert.Equal(t, 0.0, tw.GetProgress())
+
+	// 文字送りシミュレーション
+	for i := 0; i < 20 && !completed; i++ {
+		tw.Update()
+		time.Sleep(60 * time.Millisecond)
+	}
+
+	assert.True(t, completed)
+	assert.False(t, tw.IsTyping())
+	assert.True(t, tw.IsComplete())
+	assert.Equal(t, "Hello", tw.GetDisplayText())
+	assert.Equal(t, 1.0, tw.GetProgress())
+}
+
+func TestTypewriterSkip(t *testing.T) {
+	t.Parallel()
+
+	tw := New(BattleConfig())
+
+	skipped := false
+	completed := false
+
+	tw.OnSkip(func() {
+		skipped = true
+	})
+
+	tw.OnComplete(func() {
+		completed = true
+	})
+
+	tw.Start("Long message")
+	
+	// 1文字表示後にスキップ
+	tw.Update()
+	assert.True(t, tw.IsTyping())
+	
+	tw.Skip()
+
+	assert.True(t, skipped)
+	assert.True(t, completed)
+	assert.True(t, tw.IsComplete())
+	assert.False(t, tw.IsTyping())
+	assert.Equal(t, "Long message", tw.GetDisplayText())
+	assert.Equal(t, 1.0, tw.GetProgress())
+}
+
+func TestTypewriterProgress(t *testing.T) {
+	t.Parallel()
+
+	tw := New(Config{CharDelay: 10 * time.Millisecond})
+	tw.Start("ABC")
+
+	assert.Equal(t, 0.0, tw.GetProgress())
+
+	// 1文字表示
+	time.Sleep(15 * time.Millisecond)
+	tw.Update()
+	assert.InDelta(t, 0.33, tw.GetProgress(), 0.1)
+
+	// 2文字表示
+	time.Sleep(15 * time.Millisecond)
+	tw.Update()
+	assert.InDelta(t, 0.66, tw.GetProgress(), 0.1)
+
+	// 3文字表示（完了）
+	time.Sleep(15 * time.Millisecond)
+	updated := tw.Update()
+	// 最後の文字が表示された後、次のUpdateで完了状態になる
+	if updated {
+		time.Sleep(15 * time.Millisecond)
+		tw.Update()
+	}
+	assert.Equal(t, 1.0, tw.GetProgress())
+	assert.True(t, tw.IsComplete())
+}
+
+func TestTypewriterUTF8Support(t *testing.T) {
+	t.Parallel()
+
+	tw := New(Config{CharDelay: 10 * time.Millisecond})
+	tw.Start("こんにちは")
+
+	// 日本語5文字の進行確認
+	for i := 0; i < 10; i++ {
+		time.Sleep(15 * time.Millisecond)
+		if !tw.Update() {
+			break
+		}
+	}
+
+	assert.True(t, tw.IsComplete())
+	assert.Equal(t, "こんにちは", tw.GetDisplayText())
+	assert.Equal(t, 1.0, tw.GetProgress())
+}
+
+func TestTypewriterPauseResume(t *testing.T) {
+	t.Parallel()
+
+	config := Config{
+		CharDelay:    50 * time.Millisecond,
+		PauseEnabled: true,
+	}
+	tw := New(config)
+
+	tw.Start("Test")
+	tw.Update() // 1文字表示
+
+	// 一時停止
+	tw.Pause()
+	assert.True(t, tw.IsPaused())
+	assert.False(t, tw.IsTyping())
+
+	// 一時停止中は進行しない
+	oldDisplay := tw.GetDisplayText()
+	time.Sleep(60 * time.Millisecond)
+	tw.Update()
+	assert.Equal(t, oldDisplay, tw.GetDisplayText())
+
+	// 再開
+	tw.Resume()
+	assert.False(t, tw.IsPaused())
+	assert.True(t, tw.IsTyping())
+}
+
+func TestTypewriterReset(t *testing.T) {
+	t.Parallel()
+
+	tw := New(BattleConfig())
+	tw.Start("Test message")
+	
+	// 少し待ってからUpdate（文字が表示されるまで）
+	time.Sleep(60 * time.Millisecond)
+	tw.Update()
+
+	// リセット前の状態確認
+	assert.True(t, len(tw.GetDisplayText()) > 0)
+	assert.True(t, tw.IsTyping())
+
+	// リセット
+	tw.Reset()
+
+	// リセット後の状態確認
+	assert.Equal(t, "", tw.GetDisplayText())
+	assert.False(t, tw.IsTyping())
+	assert.False(t, tw.IsComplete())
+	assert.Equal(t, 0.0, tw.GetProgress())
+	// StateIdleかつ文字数が0なので、progressは正常に0になる
+}
+
+func TestTypewriterSpecialCharDelay(t *testing.T) {
+	t.Parallel()
+
+	tw := New(Config{
+		CharDelay:        10 * time.Millisecond,
+		PunctuationDelay: 100 * time.Millisecond,
+		CommaDelay:       50 * time.Millisecond,
+	})
+
+	// 句読点での待機時間テスト
+	tw.Start("こんにちは。")
+
+	// 通常文字の表示
+	for i := 0; i < 5; i++ {
+		time.Sleep(15 * time.Millisecond)
+		tw.Update()
+	}
+
+	// 句読点前の状態
+	assert.Equal(t, "こんにちは", tw.GetDisplayText())
+
+	// 句読点表示（より長い待機時間が必要）
+	time.Sleep(15 * time.Millisecond)
+	updated := tw.Update()
+	
+	// 句読点表示後は完了状態になる
+	if updated {
+		// 句読点の追加遅延後に再度更新を試す
+		time.Sleep(110 * time.Millisecond)
+		tw.Update()
+	}
+
+	assert.Equal(t, "こんにちは。", tw.GetDisplayText())
+	assert.True(t, tw.IsComplete())
+}
+
+func TestConfigPresets(t *testing.T) {
+	t.Parallel()
+
+	// 各設定プリセットが正常に作成できることを確認
+	configs := map[string]Config{
+		"Default": DefaultConfig(),
+		"Fast":    FastConfig(),
+		"Slow":    SlowConfig(),
+		"Battle":  BattleConfig(),
+		"Dialog":  DialogConfig(),
+	}
+
+	for name, config := range configs {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			assert.Greater(t, config.CharDelay, time.Duration(0))
+			assert.GreaterOrEqual(t, config.PunctuationDelay, time.Duration(0))
+			assert.GreaterOrEqual(t, config.CommaDelay, time.Duration(0))
+			assert.GreaterOrEqual(t, config.NewlineDelay, time.Duration(0))
+
+			// プリセットでタイプライターが作成できることを確認
+			tw := New(config)
+			assert.NotNil(t, tw)
+		})
+	}
+}
+
+func TestTypewriterCallbacks(t *testing.T) {
+	t.Parallel()
+
+	tw := New(Config{CharDelay: 10 * time.Millisecond})
+
+	charCount := 0
+	var lastChar string
+	var lastIndex int
+
+	tw.OnChar(func(char string, index int) {
+		charCount++
+		lastChar = char
+		lastIndex = index
+	})
+
+	completed := false
+	tw.OnComplete(func() {
+		completed = true
+	})
+
+	tw.Start("AB")
+
+	// 1文字目
+	time.Sleep(15 * time.Millisecond)
+	tw.Update()
+	assert.Equal(t, 1, charCount)
+	assert.Equal(t, "A", lastChar)
+	assert.Equal(t, 1, lastIndex)
+
+	// 2文字目
+	time.Sleep(15 * time.Millisecond)
+	updated := tw.Update()
+	assert.Equal(t, 2, charCount)
+	assert.Equal(t, "B", lastChar)
+	assert.Equal(t, 2, lastIndex)
+	
+	// 最後の文字が表示された後、次のUpdateで完了状態になる
+	if updated {
+		time.Sleep(15 * time.Millisecond)
+		tw.Update()
+	}
+	assert.True(t, completed)
+}
