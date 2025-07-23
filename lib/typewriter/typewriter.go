@@ -10,9 +10,7 @@ type Typewriter struct {
 	config      Config
 	currentText string // 表示したい文字列
 	displayText string // 表示中の文字列
-	position    int    // 現在の文字位置（byte単位）
-	charIndex   int    // 現在の文字インデックス（文字単位）
-	totalChars  int    // 総文字数
+	position    int    // 現在のバイト位置（UTF-8対応）
 	lastUpdate  time.Time
 	state       State
 	startTime   time.Time // 開始時刻
@@ -45,8 +43,6 @@ func (t *Typewriter) Start(text string) {
 	t.currentText = text
 	t.displayText = ""
 	t.position = 0
-	t.charIndex = 0
-	t.totalChars = utf8.RuneCountInString(text)
 	t.lastUpdate = time.Now()
 	t.startTime = time.Now()
 	t.state = StateTyping
@@ -71,12 +67,12 @@ func (t *Typewriter) Update() bool {
 
 		t.displayText += charStr
 		t.position += size
-		t.charIndex++
 		t.lastUpdate = now
 
 		// 文字表示イベント
 		if t.onChar != nil {
-			t.onChar(charStr, t.charIndex)
+			charIndex := utf8.RuneCountInString(t.displayText)
+			t.onChar(charStr, charIndex)
 		}
 
 		// 特殊文字による待機時間調整
@@ -100,7 +96,6 @@ func (t *Typewriter) Skip() {
 	if t.state == StateTyping && t.config.SkipEnabled {
 		t.displayText = t.currentText
 		t.position = len(t.currentText)
-		t.charIndex = t.totalChars
 		t.state = StateComplete
 
 		if t.onSkip != nil {
@@ -149,10 +144,12 @@ func (t *Typewriter) IsPaused() bool {
 
 // GetProgress は進行状況（0.0-1.0）を返す
 func (t *Typewriter) GetProgress() float64 {
-	if t.totalChars == 0 {
+	totalChars := utf8.RuneCountInString(t.currentText)
+	if totalChars == 0 {
 		return 0.0 // テキストがない場合は0.0を返す
 	}
-	return float64(t.charIndex) / float64(t.totalChars)
+	charIndex := utf8.RuneCountInString(t.displayText)
+	return float64(charIndex) / float64(totalChars)
 }
 
 // GetElapsedTime は開始からの経過時間を返す
@@ -165,8 +162,6 @@ func (t *Typewriter) Reset() {
 	t.currentText = ""
 	t.displayText = ""
 	t.position = 0
-	t.charIndex = 0
-	t.totalChars = 0
 	t.state = StateIdle
 }
 
