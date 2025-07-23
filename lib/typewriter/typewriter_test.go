@@ -59,11 +59,11 @@ func TestTypewriterSkip(t *testing.T) {
 	})
 
 	tw.Start("Long message")
-	
+
 	// 1文字表示後にスキップ
 	tw.Update()
 	assert.True(t, tw.IsTyping())
-	
+
 	tw.Skip()
 
 	assert.True(t, skipped)
@@ -157,7 +157,7 @@ func TestTypewriterReset(t *testing.T) {
 
 	tw := New(BattleConfig())
 	tw.Start("Test message")
-	
+
 	// 少し待ってからUpdate（文字が表示されるまで）
 	time.Sleep(60 * time.Millisecond)
 	tw.Update()
@@ -201,7 +201,7 @@ func TestTypewriterSpecialCharDelay(t *testing.T) {
 	// 句読点表示（より長い待機時間が必要）
 	time.Sleep(15 * time.Millisecond)
 	updated := tw.Update()
-	
+
 	// 句読点表示後は完了状態になる
 	if updated {
 		// 句読点の追加遅延後に再度更新を試す
@@ -275,11 +275,192 @@ func TestTypewriterCallbacks(t *testing.T) {
 	assert.Equal(t, 2, charCount)
 	assert.Equal(t, "B", lastChar)
 	assert.Equal(t, 2, lastIndex)
-	
+
 	// 最後の文字が表示された後、次のUpdateで完了状態になる
 	if updated {
 		time.Sleep(15 * time.Millisecond)
 		tw.Update()
 	}
 	assert.True(t, completed)
+}
+
+// MockKeyboardInput はテスト用のキーボード入力モック
+type MockKeyboardInput struct {
+	enterPressed bool
+}
+
+func (m *MockKeyboardInput) IsEnterJustPressedOnce() bool {
+	pressed := m.enterPressed
+	m.enterPressed = false // 一度だけ押されたことにする
+	return pressed
+}
+
+func (m *MockKeyboardInput) SetEnterPressed(pressed bool) {
+	m.enterPressed = pressed
+}
+
+func TestMessageHandlerBasicFlow(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(BattleConfig(), mockInput)
+
+	uiUpdated := false
+	completed := false
+
+	handler.SetOnUpdateUI(func(text string) {
+		uiUpdated = true
+	})
+
+	handler.SetOnComplete(func() bool {
+		completed = true
+		return true
+	})
+
+	handler.Start("Hello")
+
+	// 初期状態確認
+	assert.True(t, handler.IsTyping())
+	assert.False(t, handler.IsComplete())
+	assert.Equal(t, "", handler.GetDisplayText())
+
+	// 1文字表示
+	time.Sleep(60 * time.Millisecond)
+	shouldComplete := handler.Update()
+	assert.False(t, shouldComplete)
+	assert.True(t, uiUpdated)
+	assert.True(t, len(handler.GetDisplayText()) > 0)
+
+	// Enterキーでスキップ
+	mockInput.SetEnterPressed(true)
+	shouldComplete = handler.Update()
+	assert.False(t, shouldComplete) // スキップなので完了は次回
+	assert.True(t, handler.IsComplete())
+	assert.Equal(t, "Hello", handler.GetDisplayText())
+
+	// 完了状態でEnterキーを押す
+	mockInput.SetEnterPressed(true)
+	shouldComplete = handler.Update()
+	assert.True(t, shouldComplete)
+	assert.True(t, completed)
+}
+
+func TestMessageHandlerUpdateFlow(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(Config{CharDelay: 30 * time.Millisecond}, mockInput)
+
+	charCallbackCount := 0
+	handler.SetOnChar(func(char string, index int) {
+		charCallbackCount++
+	})
+
+	handler.Start("Test")
+
+	// 通常の更新サイクル
+	for i := 0; i < 10 && !handler.IsComplete(); i++ {
+		time.Sleep(40 * time.Millisecond)
+		handler.Update()
+	}
+
+	assert.True(t, handler.IsComplete())
+	assert.Equal(t, "Test", handler.GetDisplayText())
+	assert.Equal(t, 4, charCallbackCount) // "Test" = 4文字
+}
+
+func TestMessageHandlerSkipFlow(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(BattleConfig(), mockInput)
+
+	skipCalled := false
+	handler.SetOnSkip(func() {
+		skipCalled = true
+	})
+
+	handler.Start("Long message for skip test")
+
+	// 文字送り開始
+	time.Sleep(60 * time.Millisecond)
+	handler.Update()
+	assert.True(t, handler.IsTyping())
+
+	// Enterキーでスキップ
+	mockInput.SetEnterPressed(true)
+	handler.Update()
+
+	assert.True(t, skipCalled)
+	assert.True(t, handler.IsComplete())
+	assert.Equal(t, "Long message for skip test", handler.GetDisplayText())
+}
+
+func TestMessageHandlerEnterWait(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(Config{CharDelay: 10 * time.Millisecond}, mockInput)
+
+	completed := false
+	handler.SetOnComplete(func() bool {
+		completed = true
+		return true // 完了を示す
+	})
+
+	handler.Start("Hello")
+
+	// 文字送り完了まで待つ
+	for i := 0; i < 20 && !handler.IsComplete(); i++ {
+		time.Sleep(15 * time.Millisecond)
+		shouldComplete := handler.Update()
+		assert.False(t, shouldComplete) // まだ完了しない
+	}
+
+	// 完了状態になっているはず
+	assert.True(t, handler.IsComplete())
+	assert.Equal(t, "Hello", handler.GetDisplayText())
+	assert.False(t, completed) // まだコールバックは呼ばれていない
+
+	// Enterキーを押すと完了コールバックが呼ばれ、shouldCompleteがtrueになる
+	mockInput.SetEnterPressed(true)
+	shouldComplete := handler.Update()
+
+	assert.True(t, shouldComplete) // 完了を通知
+	assert.True(t, completed)      // コールバックが呼ばれた
+}
+
+func TestMessageHandlerTypingSkip(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(Config{
+		CharDelay:   50 * time.Millisecond,
+		SkipEnabled: true,
+	}, mockInput) // 適度に遅い設定
+
+	handler.Start("This is a long message for skip testing")
+
+	// 文字が表示されるまで少し待つ
+	time.Sleep(60 * time.Millisecond)
+	handler.Update()
+	assert.True(t, handler.IsTyping())
+
+	// 少なくとも1文字は表示されているはず
+	displayText := handler.GetDisplayText()
+	assert.True(t, len(displayText) > 0)
+	assert.True(t, len(displayText) < len("This is a long message for skip testing"))
+
+	// タイピング中にEnterキーを押すとスキップ
+	mockInput.SetEnterPressed(true)
+	shouldComplete := handler.Update()
+
+	assert.False(t, shouldComplete)      // スキップ時は即座には完了しない
+	assert.True(t, handler.IsComplete()) // ただし状態は完了になる
+	assert.Equal(t, "This is a long message for skip testing", handler.GetDisplayText())
+
+	// 完了状態でもう一度Enterキーを押すと完了
+	mockInput.SetEnterPressed(true)
+	shouldComplete = handler.Update()
+	assert.True(t, shouldComplete) // 今度は完了を通知
 }

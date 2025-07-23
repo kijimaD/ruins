@@ -8,11 +8,11 @@ import (
 // Typewriter は文字送り表示を制御する汎用コンポーネント
 type Typewriter struct {
 	config      Config
-	currentText string
-	displayText string
-	position    int // 現在の文字位置（byte単位）
-	charIndex   int // 現在の文字インデックス（文字単位）
-	totalChars  int // 総文字数
+	currentText string // 表示したい文字列
+	displayText string // 表示中の文字列
+	position    int    // 現在の文字位置（byte単位）
+	charIndex   int    // 現在の文字インデックス（文字単位）
+	totalChars  int    // 総文字数
 	lastUpdate  time.Time
 	state       State
 	startTime   time.Time // 開始時刻
@@ -150,7 +150,7 @@ func (t *Typewriter) IsPaused() bool {
 // GetProgress は進行状況（0.0-1.0）を返す
 func (t *Typewriter) GetProgress() float64 {
 	if t.totalChars == 0 {
-		return 0.0  // テキストがない場合は0.0を返す
+		return 0.0 // テキストがない場合は0.0を返す
 	}
 	return float64(t.charIndex) / float64(t.totalChars)
 }
@@ -197,4 +197,122 @@ func (t *Typewriter) getSpecialCharDelay(char rune) time.Duration {
 	default:
 		return 0
 	}
+}
+
+// MessageHandler はメッセージ表示とタイプライターを統合管理する
+type MessageHandler struct {
+	typewriter *Typewriter
+
+	// フック関数
+	onUpdateUI func(text string)            // UI更新時のフック
+	onComplete func() bool                  // 完了時のフック（戻り値で状態遷移を指示）
+	onSkip     func()                       // スキップ時のフック
+	onChar     func(char string, index int) // 文字表示時のフック
+
+	// 入力処理用インターフェース
+	keyboardInput KeyboardInput
+}
+
+// KeyboardInput はキーボード入力を抽象化するインターフェース
+type KeyboardInput interface {
+	IsEnterJustPressedOnce() bool
+}
+
+// NewMessageHandler は新しいMessageHandlerを作成
+func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandler {
+	handler := &MessageHandler{
+		typewriter:    New(config),
+		keyboardInput: keyboardInput,
+	}
+
+	// タイプライター側のイベントハンドラーを設定
+	handler.typewriter.OnChar(func(char string, index int) {
+		if handler.onChar != nil {
+			handler.onChar(char, index)
+		}
+		// UI更新も文字表示時に実行
+		if handler.onUpdateUI != nil {
+			handler.onUpdateUI(handler.typewriter.GetDisplayText())
+		}
+	})
+
+	handler.typewriter.OnComplete(func() {
+		// タイプライター完了時は何もしない（Enterキー待ちのため）
+		// onCompleteコールバックはEnterキーが押されたときのみ実行
+	})
+
+	handler.typewriter.OnSkip(func() {
+		if handler.onSkip != nil {
+			handler.onSkip()
+		}
+	})
+
+	return handler
+}
+
+// Start はタイプライター表示を開始
+func (h *MessageHandler) Start(text string) {
+	h.typewriter.Start(text)
+	// 開始時にもUI更新
+	if h.onUpdateUI != nil {
+		h.onUpdateUI(h.typewriter.GetDisplayText())
+	}
+}
+
+// Update はメッセージハンドラーの更新処理（入力処理も含む）
+func (h *MessageHandler) Update() (shouldComplete bool) {
+	// タイプライター更新
+	h.typewriter.Update()
+
+	// 入力処理
+	if h.keyboardInput != nil && h.keyboardInput.IsEnterJustPressedOnce() {
+		if h.typewriter.IsTyping() {
+			// タイピング中なら文字送りスキップ
+			h.typewriter.Skip()
+			return false
+		} else if h.typewriter.IsComplete() {
+			// 完了していたら完了を通知
+			if h.onComplete != nil {
+				return h.onComplete()
+			}
+			return true
+		}
+	}
+
+	return false
+}
+
+// GetDisplayText は現在表示中のテキストを取得
+func (h *MessageHandler) GetDisplayText() string {
+	return h.typewriter.GetDisplayText()
+}
+
+// IsTyping は文字送り中かどうかを返す
+func (h *MessageHandler) IsTyping() bool {
+	return h.typewriter.IsTyping()
+}
+
+// IsComplete は完了状態かどうかを返す
+func (h *MessageHandler) IsComplete() bool {
+	return h.typewriter.IsComplete()
+}
+
+// SetOnUpdateUI はUI更新時のフックを設定
+func (h *MessageHandler) SetOnUpdateUI(callback func(text string)) {
+	h.onUpdateUI = callback
+}
+
+// SetOnComplete は完了時のフックを設定
+func (h *MessageHandler) SetOnComplete(callback func() bool) {
+	h.onComplete = callback
+}
+
+// SetOnSkip はスキップ時のフックを設定
+func (h *MessageHandler) SetOnSkip(callback func()) {
+	h.onSkip = callback
+}
+
+// SetOnChar は文字表示時のフックを設定
+func (h *MessageHandler) SetOnChar(callback func(char string, index int)) {
+	h.onChar = callback
 }
