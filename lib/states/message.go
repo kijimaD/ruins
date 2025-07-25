@@ -167,6 +167,8 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 		)),
 	)
 
+	res := world.Resources.UIResources
+
 	// メッセージ表示用のコンテナ（固定サイズ）
 	messageContainer := widget.NewContainer(
 		widget.ContainerOpts.WidgetOpts(
@@ -176,6 +178,7 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 			widget.WidgetOpts.MinSize(fixedWidth, fixedHeight), // 固定サイズを直接指定
 		),
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.BackgroundImage(res.Panel.Image), // 背景を追加
 	)
 
 	// テキスト表示用の垂直コンテナ（メッセージコンテナ内に配置）
@@ -189,8 +192,6 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 			widget.RowLayoutOpts.Spacing(2),
 		)),
 	)
-
-	res := world.Resources.UIResources
 
 	// タイプライター表示中のテキストを取得
 	currentDisplayText := st.text
