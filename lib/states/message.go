@@ -29,7 +29,6 @@ type MessageState struct {
 	// UIウィジェット参照（テキスト更新用）
 	textWidget *widget.Text
 
-
 	// 複数行表示管理。最大表示する行数
 	maxVisibleLines int
 }
@@ -149,18 +148,32 @@ func (st *MessageState) createUI(world w.World) *ebitenui.UI {
 
 // createUIWithOffset は複数行表示対応のUIを作成
 func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
+	// 全体のコンテナ（水平レイアウト）
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
 			widget.RowLayoutOpts.Padding(widget.Insets{
 				Top:    50,
 				Left:   20,
 				Right:  20,
 				Bottom: 5,
 			}),
+			widget.RowLayoutOpts.Spacing(5), // 水平方向のスペース
+		)),
+	)
+
+	// メッセージ表示用のコンテナ（垂直レイアウト）
+	messageContainer := widget.NewContainer(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+			Position: widget.RowLayoutPositionStart,
+			MaxWidth: 600, // メッセージコンテナの最大幅を制限
+		})),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 			widget.RowLayoutOpts.Spacing(2), // 行間スペース
 		)),
 	)
+
 	res := world.Resources.UIResources
 
 	// タイプライター表示中のテキストを取得
@@ -181,30 +194,56 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 
 	// 各行をテキストウィジェットとして追加
 	for i, lineText := range displayLines {
-		textWidget := widget.NewText(
-			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionStart,
-			})),
-			widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
-			widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
-		)
+		// 最後の行かつプロンプト表示が必要な場合は特別な処理
+		if i == len(displayLines)-1 && st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
+			// 最後の行とプロンプトを含む水平コンテナを作成
+			lastLineContainer := widget.NewContainer(
+				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+				})),
+				widget.ContainerOpts.Layout(widget.NewRowLayout(
+					widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+					widget.RowLayoutOpts.Spacing(5),
+				)),
+			)
 
-		// 最初のテキストウィジェットを参照として保持
-		if i == 0 {
-			st.textWidget = textWidget
+			textWidget := widget.NewText(
+				widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+				})),
+				widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
+				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
+			)
+			lastLineContainer.AddChild(textWidget)
+
+			// プロンプトコンテナを作成して追加
+			promptContainer := st.messageHandler.CreatePromptContainer(res.ComboButton.Graphic)
+			if promptContainer != nil {
+				lastLineContainer.AddChild(promptContainer)
+			}
+
+			messageContainer.AddChild(lastLineContainer)
+		} else {
+			// 通常の行
+			textWidget := widget.NewText(
+				widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+				})),
+				widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
+				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
+			)
+
+			// 最初のテキストウィジェットを参照として保持
+			if i == 0 {
+				st.textWidget = textWidget
+			}
+
+			messageContainer.AddChild(textWidget)
 		}
-
-		rootContainer.AddChild(textWidget)
 	}
 
-	// プロンプト表示（入力待ち状態の場合）
-	if st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
-		// MessageHandlerからプロンプトコンテナを取得
-		promptContainer := st.messageHandler.CreatePromptContainer(res.ComboButton.Graphic)
-		if promptContainer != nil {
-			rootContainer.AddChild(promptContainer)
-		}
-	}
+	// メッセージコンテナをルートに追加
+	rootContainer.AddChild(messageContainer)
 
 	return &ebitenui.UI{Container: rootContainer}
 }

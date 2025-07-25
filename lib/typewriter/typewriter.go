@@ -247,6 +247,8 @@ func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandl
 		if handler.onUpdateUI != nil {
 			handler.onUpdateUI(handler.typewriter.GetDisplayText())
 		}
+		// 完了時にプロンプトアニメーション開始
+		handler.promptAnimationTime = time.Now()
 	})
 
 	handler.typewriter.OnSkip(func() {
@@ -261,6 +263,8 @@ func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandl
 // Start はタイプライター表示を開始
 func (h *MessageHandler) Start(text string) {
 	h.typewriter.Start(text)
+	// 新しいテキスト開始時にプロンプトウィジェットをリセット
+	h.promptWidget = nil
 	// 開始時にもUI更新
 	if h.onUpdateUI != nil {
 		h.onUpdateUI(h.typewriter.GetDisplayText())
@@ -289,7 +293,6 @@ func (h *MessageHandler) Update() (shouldComplete bool) {
 
 	return false
 }
-
 
 // IsTyping は文字送り中かどうかを返す
 func (h *MessageHandler) IsTyping() bool {
@@ -341,7 +344,7 @@ func (h *MessageHandler) GetPromptYOffset() int {
 	if !h.IsWaitingForInput() {
 		return 0
 	}
-	
+
 	elapsedTime := time.Since(h.promptAnimationTime).Seconds()
 	animationCycle := 2.0 // 2秒で1周期
 	yOffset := int(math.Sin(elapsedTime*2*math.Pi/animationCycle) * float64(h.promptAmplitude))
@@ -353,26 +356,31 @@ func (h *MessageHandler) CreatePromptContainer(arrowImage *widget.GraphicImage) 
 	if !h.IsWaitingForInput() {
 		return nil
 	}
-	
+
 	yOffset := h.GetPromptYOffset()
-	
-	// プロンプト用のコンテナを作成（位置調整のため）
+
+	// promptWidgetが未作成の場合のみ作成
+	if h.promptWidget == nil {
+		h.promptWidget = widget.NewGraphic(
+			widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+			})),
+			widget.GraphicOpts.Image(arrowImage.Idle),
+		)
+	}
+
+	// プロンプト用のコンテナを作成（アニメーション位置調整のため）
 	promptContainer := widget.NewContainer(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+			Position: widget.RowLayoutPositionStart,
+		})),
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
-			Top: yOffset,
+			Top: yOffset, // アニメーション分の上下移動
 		}))),
 	)
-	
-	// promptWidgetを作成して保持
-	h.promptWidget = widget.NewGraphic(
-		widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionStart,
-			VerticalPosition:   widget.AnchorLayoutPositionStart,
-		})),
-		widget.GraphicOpts.Image(arrowImage.Idle),
-	)
-	
+
 	promptContainer.AddChild(h.promptWidget)
-	
+
 	return promptContainer
 }
