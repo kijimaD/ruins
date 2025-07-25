@@ -1,8 +1,11 @@
 package typewriter
 
 import (
+	"math"
 	"time"
 	"unicode/utf8"
+
+	"github.com/ebitenui/ebitenui/widget"
 )
 
 // Typewriter は文字送り表示を制御する汎用の構造
@@ -208,9 +211,10 @@ type MessageHandler struct {
 	// 入力処理用インターフェース
 	keyboardInput KeyboardInput
 
-	// プロンプト表示設定
-	promptText string // 入力待ち時に表示するプロンプトテキスト
-	showPrompt bool   // プロンプト表示の有効/無効
+	// プロンプトアニメーション用
+	promptAnimationTime time.Time
+	promptAmplitude     int
+	promptWidget        *widget.Graphic
 }
 
 // KeyboardInput はキーボード入力を抽象化するインターフェース
@@ -221,10 +225,10 @@ type KeyboardInput interface {
 // NewMessageHandler は新しいMessageHandlerを作成
 func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandler {
 	handler := &MessageHandler{
-		typewriter:    New(config),
-		keyboardInput: keyboardInput,
-		promptText:    " >", // デフォルトプロンプト
-		showPrompt:    true,
+		typewriter:          New(config),
+		keyboardInput:       keyboardInput,
+		promptAnimationTime: time.Now(),
+		promptAmplitude:     5, // 上下移動の幅（ピクセル）
 	}
 
 	// タイプライター側のイベントハンドラーを設定
@@ -239,9 +243,9 @@ func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandl
 	})
 
 	handler.typewriter.OnComplete(func() {
-		// UI更新（プロンプト付き）
+		// UI更新
 		if handler.onUpdateUI != nil {
-			handler.onUpdateUI(handler.GetDisplayTextWithPrompt())
+			handler.onUpdateUI(handler.typewriter.GetDisplayText())
 		}
 	})
 
@@ -287,18 +291,6 @@ func (h *MessageHandler) Update() (shouldComplete bool) {
 }
 
 
-// GetDisplayTextWithPrompt はプロンプト付きの表示テキストを取得
-func (h *MessageHandler) GetDisplayTextWithPrompt() string {
-	displayText := h.typewriter.GetDisplayText()
-
-	// 入力待ち状態でプロンプト表示が有効な場合はプロンプトを追加
-	if h.showPrompt && h.typewriter.IsComplete() && h.promptText != "" {
-		return displayText + h.promptText
-	}
-
-	return displayText
-}
-
 // IsTyping は文字送り中かどうかを返す
 func (h *MessageHandler) IsTyping() bool {
 	return h.typewriter.IsTyping()
@@ -329,18 +321,58 @@ func (h *MessageHandler) SetOnChar(callback func(char string, index int)) {
 	h.onChar = callback
 }
 
-// SetPrompt はプロンプトテキストを設定
-func (h *MessageHandler) SetPrompt(promptText string) {
-	h.promptText = promptText
-	h.showPrompt = promptText != ""
-}
-
-// EnablePrompt はプロンプト表示を有効にする
-func (h *MessageHandler) EnablePrompt(enable bool) {
-	h.showPrompt = enable
-}
-
 // IsWaitingForInput は入力待ち状態かどうかを返す
 func (h *MessageHandler) IsWaitingForInput() bool {
 	return h.typewriter.IsComplete()
+}
+
+// GetDisplayText は現在表示中のテキストを取得
+func (h *MessageHandler) GetDisplayText() string {
+	return h.typewriter.GetDisplayText()
+}
+
+// GetPromptWidget はプロンプトウィジェットを取得
+func (h *MessageHandler) GetPromptWidget() *widget.Graphic {
+	return h.promptWidget
+}
+
+// GetPromptYOffset はプロンプトアニメーションのY座標オフセットを取得
+func (h *MessageHandler) GetPromptYOffset() int {
+	if !h.IsWaitingForInput() {
+		return 0
+	}
+	
+	elapsedTime := time.Since(h.promptAnimationTime).Seconds()
+	animationCycle := 2.0 // 2秒で1周期
+	yOffset := int(math.Sin(elapsedTime*2*math.Pi/animationCycle) * float64(h.promptAmplitude))
+	return yOffset
+}
+
+// CreatePromptContainer はプロンプト用のコンテナを作成（UIリソースが必要）
+func (h *MessageHandler) CreatePromptContainer(arrowImage *widget.GraphicImage) *widget.Container {
+	if !h.IsWaitingForInput() {
+		return nil
+	}
+	
+	yOffset := h.GetPromptYOffset()
+	
+	// プロンプト用のコンテナを作成（位置調整のため）
+	promptContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
+			Top: yOffset,
+		}))),
+	)
+	
+	// promptWidgetを作成して保持
+	h.promptWidget = widget.NewGraphic(
+		widget.GraphicOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionStart,
+			VerticalPosition:   widget.AnchorLayoutPositionStart,
+		})),
+		widget.GraphicOpts.Image(arrowImage.Idle),
+	)
+	
+	promptContainer.AddChild(h.promptWidget)
+	
+	return promptContainer
 }

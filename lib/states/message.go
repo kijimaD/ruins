@@ -30,6 +30,7 @@ type MessageState struct {
 	// UIウィジェット参照（テキスト更新用）
 	textWidget *widget.Text
 
+
 	// 複数行表示管理。最大表示する行数
 	maxVisibleLines int
 }
@@ -133,6 +134,12 @@ func (st *MessageState) Update(world w.World) es.Transition {
 		}
 	}
 
+	// プロンプトアニメーション更新（UI再構築が必要）
+	if st.useTypewriter && st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
+		// UI再構築（アニメーション位置更新のため）
+		st.ui = st.createUIWithOffset(world)
+	}
+
 	st.ui.Update()
 
 	// BaseStateの共通処理を使用
@@ -196,7 +203,7 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 	// タイプライター表示中のテキストを取得
 	currentDisplayText := st.text
 	if st.useTypewriter && st.messageHandler != nil {
-		currentDisplayText = st.messageHandler.GetDisplayTextWithPrompt()
+		currentDisplayText = st.messageHandler.GetDisplayText()
 	}
 
 	// 現在表示中のテキストを行に分割
@@ -225,6 +232,15 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 		}
 
 		rootContainer.AddChild(textWidget)
+	}
+
+	// プロンプト表示（タイプライター使用時かつ入力待ち状態の場合）
+	if st.useTypewriter && st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
+		// MessageHandlerからプロンプトコンテナを取得
+		promptContainer := st.messageHandler.CreatePromptContainer(res.ComboButton.Graphic)
+		if promptContainer != nil {
+			rootContainer.AddChild(promptContainer)
+		}
 	}
 
 	return &ebitenui.UI{Container: rootContainer}
