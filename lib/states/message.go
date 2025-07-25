@@ -148,6 +148,11 @@ func (st *MessageState) createUI(world w.World) *ebitenui.UI {
 
 // createUIWithOffset は複数行表示対応のUIを作成
 func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
+	// 固定サイズの計算（関数の最初で計算）
+	lineHeight := 25 // 1行あたりの高さ（概算）
+	fixedHeight := lineHeight * st.maxVisibleLines
+	fixedWidth := 720 // メッセージコンテナの固定幅
+
 	// 全体のコンテナ（水平レイアウト）
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
@@ -162,15 +167,26 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 		)),
 	)
 
-	// メッセージ表示用のコンテナ（垂直レイアウト）
+	// メッセージ表示用のコンテナ（固定サイズ）
 	messageContainer := widget.NewContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-			Position: widget.RowLayoutPositionStart,
-			MaxWidth: 600, // メッセージコンテナの最大幅を制限
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionStart,
+			}),
+			widget.WidgetOpts.MinSize(fixedWidth, fixedHeight), // 固定サイズを直接指定
+		),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
+
+	// テキスト表示用の垂直コンテナ（メッセージコンテナ内に配置）
+	textContainer := widget.NewContainer(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionStart,
+			VerticalPosition:   widget.AnchorLayoutPositionStart,
 		})),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Spacing(2), // 行間スペース
+			widget.RowLayoutOpts.Spacing(2),
 		)),
 	)
 
@@ -192,58 +208,61 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 		displayLines = currentLines[len(currentLines)-st.maxVisibleLines:]
 	}
 
-	// 各行をテキストウィジェットとして追加
+	// 各行をテキストウィジェットとして追加（プロンプトは含めない）
 	for i, lineText := range displayLines {
-		// 最後の行かつプロンプト表示が必要な場合は特別な処理
-		if i == len(displayLines)-1 && st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
-			// 最後の行とプロンプトを含む水平コンテナを作成
-			lastLineContainer := widget.NewContainer(
-				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-				})),
-				widget.ContainerOpts.Layout(widget.NewRowLayout(
-					widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
-					widget.RowLayoutOpts.Spacing(5),
-				)),
-			)
+		textWidget := widget.NewText(
+			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionStart,
+				MaxWidth: fixedWidth - 20, // テキストの最大幅を制限（パディング分を考慮）
+			})),
+			widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
+			widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
+		)
 
-			textWidget := widget.NewText(
-				widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-				})),
-				widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
-				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
-			)
-			lastLineContainer.AddChild(textWidget)
-
-			// プロンプトコンテナを作成して追加
-			promptContainer := st.messageHandler.CreatePromptContainer(res.ComboButton.Graphic)
-			if promptContainer != nil {
-				lastLineContainer.AddChild(promptContainer)
-			}
-
-			messageContainer.AddChild(lastLineContainer)
-		} else {
-			// 通常の行
-			textWidget := widget.NewText(
-				widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-				})),
-				widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
-				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
-			)
-
-			// 最初のテキストウィジェットを参照として保持
-			if i == 0 {
-				st.textWidget = textWidget
-			}
-
-			messageContainer.AddChild(textWidget)
+		// 最初のテキストウィジェットを参照として保持
+		if i == 0 {
+			st.textWidget = textWidget
 		}
+
+		textContainer.AddChild(textWidget)
 	}
+
+	// テキストコンテナをメッセージコンテナに追加
+	messageContainer.AddChild(textContainer)
 
 	// メッセージコンテナをルートに追加
 	rootContainer.AddChild(messageContainer)
+
+	// プロンプト表示が必要な場合、右側に配置
+	if st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
+		// プロンプトコンテナを作成
+		promptContainer := st.messageHandler.CreatePromptContainer(res.ComboButton.Graphic)
+		if promptContainer != nil {
+			// プロンプト用の右側コンテナ（メッセージコンテナと同じ高さ）
+			promptSideContainer := widget.NewContainer(
+				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+				})),
+				widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+			)
+
+			// プロンプトをコンテナの下端に配置（固定高さのボトムに合わせる）
+			promptWrapper := widget.NewContainer(
+				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionCenter,
+					VerticalPosition:   widget.AnchorLayoutPositionStart,
+					Padding: widget.Insets{
+						Top: fixedHeight - 25, // メッセージコンテナの高さ - プロンプト高さ
+					},
+				})),
+				widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+			)
+
+			promptWrapper.AddChild(promptContainer)
+			promptSideContainer.AddChild(promptWrapper)
+			rootContainer.AddChild(promptSideContainer)
+		}
+	}
 
 	return &ebitenui.UI{Container: rootContainer}
 }
