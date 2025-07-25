@@ -1,6 +1,8 @@
 package states
 
 import (
+	"strings"
+
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -8,12 +10,11 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/typewriter"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MessageState はメッセージ表示用のステート
-// FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
-// 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type MessageState struct {
 	es.BaseState
 	ui            *ebitenui.UI
@@ -21,6 +22,16 @@ type MessageState struct {
 
 	text     string
 	textFunc *func() string
+
+	// タイプライター機能（オプション）
+	useTypewriter  bool
+	messageHandler *typewriter.MessageHandler
+
+	// UIウィジェット参照（テキスト更新用）
+	textWidget *widget.Text
+
+	// 複数行表示管理。最大表示する行数
+	maxVisibleLines int
 }
 
 func (st MessageState) String() string {
@@ -38,30 +49,88 @@ func (st *MessageState) OnPause(_ w.World) {}
 func (st *MessageState) OnResume(_ w.World) {}
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *MessageState) OnStart(_ w.World) {
+func (st *MessageState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
+	}
+
+	// 複数行表示初期化
+	st.maxVisibleLines = 4 // 最大4行表示
+
+	// タイプライター初期化（useTypewriterがtrueの場合のみ）
+	if st.useTypewriter && st.messageHandler == nil {
+		// MessageHandlerを初期化
+		st.messageHandler = typewriter.NewMessageHandler(typewriter.BattleConfig(), st.keyboardInput)
+
+		// フックを設定
+		st.setupMessageHandlerHooks(world)
+
+		if st.text != "" {
+			st.messageHandler.Start(st.text)
+		}
+	}
+
+	// 初回のUI作成
+	if st.ui == nil {
+		st.ui = st.createUI(world)
 	}
 }
 
 // OnStop はステートが停止される際に呼ばれる
 func (st *MessageState) OnStop(_ w.World) {}
 
+// setupMessageHandlerHooks はMessageHandlerのフックを設定
+func (st *MessageState) setupMessageHandlerHooks(world w.World) {
+	// UI更新フック
+	st.messageHandler.SetOnUpdateUI(func(text string) {
+		// タイプライター使用時はUIを再作成して表示を更新
+		st.ui = st.createUIWithOffset(world)
+	})
+
+	// 完了フック - MessageHandlerからの戻り値でUpdate側で制御するため、ここでは追加処理のみ
+	st.messageHandler.SetOnComplete(func() bool {
+		// 完了時の追加処理があればここに記述
+		return true
+	})
+}
+
 // Update はメッセージステートの更新処理を行う
 func (st *MessageState) Update(world w.World) es.Transition {
-	st.ui = st.reloadUI(world)
-
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransQuit}
 	}
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return es.Transition{Type: es.TransPop}
+
+	// タイプライター使用時の処理
+	if st.useTypewriter && st.messageHandler != nil {
+		// MessageHandlerに処理を委譲し、完了状態をチェック
+		shouldComplete := st.messageHandler.Update()
+		if shouldComplete {
+			return es.Transition{Type: es.TransPop}
+		}
+	} else {
+		// 従来の処理（タイプライター未使用時）
+		if st.keyboardInput.IsEnterJustPressedOnce() {
+			return es.Transition{Type: es.TransPop}
+		}
 	}
 
+	// textFunc による動的テキスト更新
 	if st.textFunc != nil {
 		f := *st.textFunc
-		st.text = f()
+		newText := f()
 		st.textFunc = nil
+
+		// 新しいテキストの場合
+		if newText != st.text {
+			st.text = newText
+
+			if st.useTypewriter && st.messageHandler != nil {
+				st.messageHandler.Start(st.text)
+			} else if st.textWidget != nil {
+				// 通常モードはテキストを直接更新
+				st.textWidget.Label = st.text
+			}
+		}
 	}
 
 	st.ui.Update()
@@ -75,21 +144,88 @@ func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
-func (st *MessageState) reloadUI(world w.World) *ebitenui.UI {
+func (st *MessageState) createUI(world w.World) *ebitenui.UI {
+	// タイプライター使用時は複数行対応のUIを使用
+	if st.useTypewriter {
+		return st.createUIWithOffset(world)
+	}
+
 	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.NewInsetsSimple(5)))),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
+			Top:    50,
+			Left:   20,
+			Right:  20,
+			Bottom: 5,
+		}))),
 	)
 	res := world.Resources.UIResources
-	text := widget.NewText(
 
+	// 表示するテキストを決定
+	displayText := st.text
+
+	// テキストウィジェットを作成して参照を保持
+	st.textWidget = widget.NewText(
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionCenter,
-			VerticalPosition:   widget.AnchorLayoutPositionCenter,
+			HorizontalPosition: widget.AnchorLayoutPositionStart,
+			VerticalPosition:   widget.AnchorLayoutPositionStart,
 		})),
-		widget.TextOpts.Text(st.text, res.Text.Face, styles.TextColor),
-		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
+		widget.TextOpts.Text(displayText, res.Text.Face, styles.TextColor),
+		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
 	)
-	rootContainer.AddChild(text)
+	rootContainer.AddChild(st.textWidget)
+
+	return &ebitenui.UI{Container: rootContainer}
+}
+
+// createUIWithOffset は複数行表示対応のUIを作成
+func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(widget.Insets{
+				Top:    50,
+				Left:   20,
+				Right:  20,
+				Bottom: 5,
+			}),
+			widget.RowLayoutOpts.Spacing(2), // 行間スペース
+		)),
+	)
+	res := world.Resources.UIResources
+
+	// タイプライター表示中のテキストを取得
+	currentDisplayText := st.text
+	if st.useTypewriter && st.messageHandler != nil {
+		currentDisplayText = st.messageHandler.GetDisplayText()
+	}
+
+	// 現在表示中のテキストを行に分割
+	currentLines := strings.Split(currentDisplayText, "\n")
+
+	// 表示する行を制限（最新のmaxVisibleLines行のみ）
+	displayLines := currentLines
+	if len(currentLines) > st.maxVisibleLines {
+		// 古い行を削除して最新の行のみ表示
+		displayLines = currentLines[len(currentLines)-st.maxVisibleLines:]
+	}
+
+	// 各行をテキストウィジェットとして追加
+	for i, lineText := range displayLines {
+		textWidget := widget.NewText(
+			widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionStart,
+			})),
+			widget.TextOpts.Text(lineText, res.Text.Face, styles.TextColor),
+			widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
+		)
+
+		// 最初のテキストウィジェットを参照として保持
+		if i == 0 {
+			st.textWidget = textWidget
+		}
+
+		rootContainer.AddChild(textWidget)
+	}
 
 	return &ebitenui.UI{Container: rootContainer}
 }

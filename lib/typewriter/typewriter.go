@@ -5,7 +5,7 @@ import (
 	"unicode/utf8"
 )
 
-// Typewriter は文字送り表示を制御する汎用コンポーネント
+// Typewriter は文字送り表示を制御する汎用の構造
 type Typewriter struct {
 	config      Config
 	currentText string // 表示したい文字列
@@ -195,6 +195,7 @@ func (t *Typewriter) getSpecialCharDelay(char rune) time.Duration {
 }
 
 // MessageHandler はメッセージ表示とタイプライターを統合管理する
+// typewriterをラップしてコントロールできるようにする
 type MessageHandler struct {
 	typewriter *Typewriter
 

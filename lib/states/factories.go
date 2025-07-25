@@ -62,7 +62,10 @@ func NewDungeonStateWithDepth(depth int) es.StateFactory {
 // NewMessageStateWithText は指定されたテキストでMessageStateインスタンスを作成するファクトリー関数
 func NewMessageStateWithText(text string) es.StateFactory {
 	return func() es.State {
-		return &MessageState{text: text}
+		return &MessageState{
+			text:          text,
+			useTypewriter: true,
+		}
 	}
 }
 
