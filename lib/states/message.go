@@ -196,7 +196,7 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 	// タイプライター表示中のテキストを取得
 	currentDisplayText := st.text
 	if st.useTypewriter && st.messageHandler != nil {
-		currentDisplayText = st.messageHandler.GetDisplayText()
+		currentDisplayText = st.messageHandler.GetDisplayTextWithPrompt()
 	}
 
 	// 現在表示中のテキストを行に分割

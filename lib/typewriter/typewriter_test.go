@@ -322,21 +322,21 @@ func TestMessageHandlerBasicFlow(t *testing.T) {
 	// 初期状態確認
 	assert.True(t, handler.IsTyping())
 	assert.False(t, handler.IsComplete())
-	assert.Equal(t, "", handler.GetDisplayText())
+	assert.Equal(t, "", handler.typewriter.GetDisplayText())
 
 	// 1文字表示
 	time.Sleep(60 * time.Millisecond)
 	shouldComplete := handler.Update()
 	assert.False(t, shouldComplete)
 	assert.True(t, uiUpdated)
-	assert.True(t, len(handler.GetDisplayText()) > 0)
+	assert.True(t, len(handler.typewriter.GetDisplayText()) > 0)
 
 	// Enterキーでスキップ
 	mockInput.SetEnterPressed(true)
 	shouldComplete = handler.Update()
 	assert.False(t, shouldComplete) // スキップなので完了は次回
 	assert.True(t, handler.IsComplete())
-	assert.Equal(t, "Hello", handler.GetDisplayText())
+	assert.Equal(t, "Hello", handler.typewriter.GetDisplayText())
 
 	// 完了状態でEnterキーを押す
 	mockInput.SetEnterPressed(true)
@@ -365,7 +365,7 @@ func TestMessageHandlerUpdateFlow(t *testing.T) {
 	}
 
 	assert.True(t, handler.IsComplete())
-	assert.Equal(t, "Test", handler.GetDisplayText())
+	assert.Equal(t, "Test", handler.typewriter.GetDisplayText())
 	assert.Equal(t, 4, charCallbackCount) // "Test" = 4文字
 }
 
@@ -393,7 +393,7 @@ func TestMessageHandlerSkipFlow(t *testing.T) {
 
 	assert.True(t, skipCalled)
 	assert.True(t, handler.IsComplete())
-	assert.Equal(t, "Long message for skip test", handler.GetDisplayText())
+	assert.Equal(t, "Long message for skip test", handler.typewriter.GetDisplayText())
 }
 
 func TestMessageHandlerEnterWait(t *testing.T) {
@@ -419,7 +419,7 @@ func TestMessageHandlerEnterWait(t *testing.T) {
 
 	// 完了状態になっているはず
 	assert.True(t, handler.IsComplete())
-	assert.Equal(t, "Hello", handler.GetDisplayText())
+	assert.Equal(t, "Hello", handler.typewriter.GetDisplayText())
 	assert.False(t, completed) // まだコールバックは呼ばれていない
 
 	// Enterキーを押すと完了コールバックが呼ばれ、shouldCompleteがtrueになる
@@ -447,7 +447,7 @@ func TestMessageHandlerTypingSkip(t *testing.T) {
 	assert.True(t, handler.IsTyping())
 
 	// 少なくとも1文字は表示されているはず
-	displayText := handler.GetDisplayText()
+	displayText := handler.typewriter.GetDisplayText()
 	assert.True(t, len(displayText) > 0)
 	assert.True(t, len(displayText) < len("This is a long message for skip testing"))
 
@@ -457,7 +457,7 @@ func TestMessageHandlerTypingSkip(t *testing.T) {
 
 	assert.False(t, shouldComplete)      // スキップ時は即座には完了しない
 	assert.True(t, handler.IsComplete()) // ただし状態は完了になる
-	assert.Equal(t, "This is a long message for skip testing", handler.GetDisplayText())
+	assert.Equal(t, "This is a long message for skip testing", handler.typewriter.GetDisplayText())
 
 	// 完了状態でもう一度Enterキーを押すと完了
 	mockInput.SetEnterPressed(true)
@@ -501,7 +501,7 @@ func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
 	time.Sleep(120 * time.Millisecond)
 	shouldComplete := handler.Update()
 	t.Logf("After some typing. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v", 
-		handler.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
+		handler.typewriter.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
 	assert.False(t, shouldComplete)
 	assert.True(t, handler.IsTyping())
 
@@ -509,12 +509,12 @@ func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
 	mockInput.SetEnterPressed(true)
 	shouldComplete = handler.Update()
 	t.Logf("After skip. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v", 
-		handler.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
+		handler.typewriter.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
 	
 	assert.True(t, skipCalled, "Skip callback should be called")
 	assert.False(t, shouldComplete, "Should not complete immediately after skip")
 	assert.True(t, handler.IsComplete(), "Handler should be in complete state")
-	assert.Equal(t, "Test message for skip", handler.GetDisplayText())
+	assert.Equal(t, "Test message for skip", handler.typewriter.GetDisplayText())
 
 	// 完了状態でもう一度Enterキーを押すと完了
 	mockInput.SetEnterPressed(true)
@@ -523,4 +523,74 @@ func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
 	
 	assert.True(t, shouldComplete, "Should complete on second enter")
 	assert.True(t, completeCalled, "Complete callback should be called")
+}
+
+func TestMessageHandlerPrompt(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(BattleConfig(), mockInput)
+
+	// デフォルトプロンプトが設定されていることを確認
+	assert.True(t, handler.showPrompt)
+	assert.Equal(t, " >", handler.promptText)
+
+	handler.Start("Hello")
+
+	// 文字送り完了まで待つ
+	for i := 0; i < 20 && !handler.IsComplete(); i++ {
+		time.Sleep(60 * time.Millisecond)
+		handler.Update()
+	}
+
+	// 完了状態でプロンプトが表示されることを確認
+	assert.True(t, handler.IsComplete())
+	assert.True(t, handler.IsWaitingForInput())
+	assert.Equal(t, "Hello", handler.typewriter.GetDisplayText())
+	assert.Equal(t, "Hello >", handler.GetDisplayTextWithPrompt())
+
+	// プロンプトを変更
+	handler.SetPrompt(" [続ける]")
+	assert.Equal(t, "Hello [続ける]", handler.GetDisplayTextWithPrompt())
+
+	// プロンプトを無効にする
+	handler.EnablePrompt(false)
+	assert.Equal(t, "Hello", handler.GetDisplayTextWithPrompt())
+
+	// プロンプトを再有効化
+	handler.EnablePrompt(true)
+	assert.Equal(t, "Hello [続ける]", handler.GetDisplayTextWithPrompt())
+}
+
+func TestMessageHandlerPromptDuringTyping(t *testing.T) {
+	t.Parallel()
+
+	mockInput := &MockKeyboardInput{}
+	handler := NewMessageHandler(Config{
+		CharDelay:   100 * time.Millisecond, // 遅い設定
+		SkipEnabled: true,
+	}, mockInput)
+
+	handler.SetPrompt(" [Enter]")
+	handler.Start("Test message")
+
+	// タイピング中はプロンプトが表示されない
+	time.Sleep(120 * time.Millisecond)
+	handler.Update()
+	
+	assert.True(t, handler.IsTyping())
+	assert.False(t, handler.IsWaitingForInput())
+	displayText := handler.typewriter.GetDisplayText()
+	assert.True(t, len(displayText) > 0 && len(displayText) < len("Test message"))
+	assert.Equal(t, displayText, handler.GetDisplayTextWithPrompt()) // プロンプトなし
+
+	// スキップして完了状態にする
+	mockInput.SetEnterPressed(true)
+	handler.Update()
+
+	// 完了後はプロンプトが表示される
+	assert.True(t, handler.IsComplete())
+	assert.True(t, handler.IsWaitingForInput())
+	assert.Equal(t, "Test message", handler.typewriter.GetDisplayText())
+	assert.Equal(t, "Test message [Enter]", handler.GetDisplayTextWithPrompt())
 }

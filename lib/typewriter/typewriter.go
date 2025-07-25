@@ -207,6 +207,10 @@ type MessageHandler struct {
 
 	// 入力処理用インターフェース
 	keyboardInput KeyboardInput
+
+	// プロンプト表示設定
+	promptText string // 入力待ち時に表示するプロンプトテキスト
+	showPrompt bool   // プロンプト表示の有効/無効
 }
 
 // KeyboardInput はキーボード入力を抽象化するインターフェース
@@ -219,6 +223,8 @@ func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandl
 	handler := &MessageHandler{
 		typewriter:    New(config),
 		keyboardInput: keyboardInput,
+		promptText:    " >", // デフォルトプロンプト
+		showPrompt:    true,
 	}
 
 	// タイプライター側のイベントハンドラーを設定
@@ -233,9 +239,9 @@ func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandl
 	})
 
 	handler.typewriter.OnComplete(func() {
-		// UI更新
+		// UI更新（プロンプト付き）
 		if handler.onUpdateUI != nil {
-			handler.onUpdateUI(handler.typewriter.GetDisplayText())
+			handler.onUpdateUI(handler.GetDisplayTextWithPrompt())
 		}
 	})
 
@@ -280,9 +286,17 @@ func (h *MessageHandler) Update() (shouldComplete bool) {
 	return false
 }
 
-// GetDisplayText は現在表示中のテキストを取得
-func (h *MessageHandler) GetDisplayText() string {
-	return h.typewriter.GetDisplayText()
+
+// GetDisplayTextWithPrompt はプロンプト付きの表示テキストを取得
+func (h *MessageHandler) GetDisplayTextWithPrompt() string {
+	displayText := h.typewriter.GetDisplayText()
+
+	// 入力待ち状態でプロンプト表示が有効な場合はプロンプトを追加
+	if h.showPrompt && h.typewriter.IsComplete() && h.promptText != "" {
+		return displayText + h.promptText
+	}
+
+	return displayText
 }
 
 // IsTyping は文字送り中かどうかを返す
@@ -313,4 +327,20 @@ func (h *MessageHandler) SetOnSkip(callback func()) {
 // SetOnChar は文字表示時のフックを設定
 func (h *MessageHandler) SetOnChar(callback func(char string, index int)) {
 	h.onChar = callback
+}
+
+// SetPrompt はプロンプトテキストを設定
+func (h *MessageHandler) SetPrompt(promptText string) {
+	h.promptText = promptText
+	h.showPrompt = promptText != ""
+}
+
+// EnablePrompt はプロンプト表示を有効にする
+func (h *MessageHandler) EnablePrompt(enable bool) {
+	h.showPrompt = enable
+}
+
+// IsWaitingForInput は入力待ち状態かどうかを返す
+func (h *MessageHandler) IsWaitingForInput() bool {
+	return h.typewriter.IsComplete()
 }
