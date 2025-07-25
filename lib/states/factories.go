@@ -63,8 +63,7 @@ func NewDungeonStateWithDepth(depth int) es.StateFactory {
 func NewMessageStateWithText(text string) es.StateFactory {
 	return func() es.State {
 		return &MessageState{
-			text:          text,
-			useTypewriter: true,
+			text: text,
 		}
 	}
 }

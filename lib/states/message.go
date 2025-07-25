@@ -23,8 +23,7 @@ type MessageState struct {
 	text     string
 	textFunc *func() string
 
-	// タイプライター機能（オプション）
-	useTypewriter  bool
+	// タイプライター機能
 	messageHandler *typewriter.MessageHandler
 
 	// UIウィジェット参照（テキスト更新用）
@@ -58,8 +57,8 @@ func (st *MessageState) OnStart(world w.World) {
 	// 複数行表示初期化
 	st.maxVisibleLines = 4 // 最大4行表示
 
-	// タイプライター初期化（useTypewriterがtrueの場合のみ）
-	if st.useTypewriter && st.messageHandler == nil {
+	// タイプライター初期化
+	if st.messageHandler == nil {
 		// MessageHandlerを初期化
 		st.messageHandler = typewriter.NewMessageHandler(typewriter.BattleConfig(), st.keyboardInput)
 
@@ -101,16 +100,11 @@ func (st *MessageState) Update(world w.World) es.Transition {
 		return es.Transition{Type: es.TransQuit}
 	}
 
-	// タイプライター使用時の処理
-	if st.useTypewriter && st.messageHandler != nil {
+	// タイプライター処理
+	if st.messageHandler != nil {
 		// MessageHandlerに処理を委譲し、完了状態をチェック
 		shouldComplete := st.messageHandler.Update()
 		if shouldComplete {
-			return es.Transition{Type: es.TransPop}
-		}
-	} else {
-		// 従来の処理（タイプライター未使用時）
-		if st.keyboardInput.IsEnterJustPressedOnce() {
 			return es.Transition{Type: es.TransPop}
 		}
 	}
@@ -125,17 +119,14 @@ func (st *MessageState) Update(world w.World) es.Transition {
 		if newText != st.text {
 			st.text = newText
 
-			if st.useTypewriter && st.messageHandler != nil {
+			if st.messageHandler != nil {
 				st.messageHandler.Start(st.text)
-			} else if st.textWidget != nil {
-				// 通常モードはテキストを直接更新
-				st.textWidget.Label = st.text
 			}
 		}
 	}
 
 	// プロンプトアニメーション更新（UI再構築が必要）
-	if st.useTypewriter && st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
+	if st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
 		// UI再構築（アニメーション位置更新のため）
 		st.ui = st.createUIWithOffset(world)
 	}
@@ -152,36 +143,8 @@ func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
 }
 
 func (st *MessageState) createUI(world w.World) *ebitenui.UI {
-	// タイプライター使用時は複数行対応のUIを使用
-	if st.useTypewriter {
-		return st.createUIWithOffset(world)
-	}
-
-	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
-			Top:    50,
-			Left:   20,
-			Right:  20,
-			Bottom: 5,
-		}))),
-	)
-	res := world.Resources.UIResources
-
-	// 表示するテキストを決定
-	displayText := st.text
-
-	// テキストウィジェットを作成して参照を保持
-	st.textWidget = widget.NewText(
-		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionStart,
-			VerticalPosition:   widget.AnchorLayoutPositionStart,
-		})),
-		widget.TextOpts.Text(displayText, res.Text.Face, styles.TextColor),
-		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionStart),
-	)
-	rootContainer.AddChild(st.textWidget)
-
-	return &ebitenui.UI{Container: rootContainer}
+	// 常にタイプライター用の複数行対応UIを使用
+	return st.createUIWithOffset(world)
 }
 
 // createUIWithOffset は複数行表示対応のUIを作成
@@ -202,7 +165,7 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 
 	// タイプライター表示中のテキストを取得
 	currentDisplayText := st.text
-	if st.useTypewriter && st.messageHandler != nil {
+	if st.messageHandler != nil {
 		currentDisplayText = st.messageHandler.GetDisplayText()
 	}
 
@@ -234,8 +197,8 @@ func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 		rootContainer.AddChild(textWidget)
 	}
 
-	// プロンプト表示（タイプライター使用時かつ入力待ち状態の場合）
-	if st.useTypewriter && st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
+	// プロンプト表示（入力待ち状態の場合）
+	if st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
 		// MessageHandlerからプロンプトコンテナを取得
 		promptContainer := st.messageHandler.CreatePromptContainer(res.ComboButton.Graphic)
 		if promptContainer != nil {
