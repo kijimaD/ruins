@@ -308,7 +308,7 @@ func TestMessageHandlerBasicFlow(t *testing.T) {
 	uiUpdated := false
 	completed := false
 
-	handler.SetOnUpdateUI(func(text string) {
+	handler.SetOnUpdateUI(func(_ string) {
 		uiUpdated = true
 	})
 
@@ -352,7 +352,7 @@ func TestMessageHandlerUpdateFlow(t *testing.T) {
 	handler := NewMessageHandler(Config{CharDelay: 30 * time.Millisecond}, mockInput)
 
 	charCallbackCount := 0
-	handler.SetOnChar(func(char string, index int) {
+	handler.SetOnChar(func(_ string, _ int) {
 		charCallbackCount++
 	})
 
@@ -500,7 +500,7 @@ func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
 	// 少し文字を表示させる
 	time.Sleep(120 * time.Millisecond)
 	shouldComplete := handler.Update()
-	t.Logf("After some typing. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v", 
+	t.Logf("After some typing. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v",
 		handler.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
 	assert.False(t, shouldComplete)
 	assert.True(t, handler.IsTyping())
@@ -508,9 +508,9 @@ func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
 	// Enterキーでスキップ
 	mockInput.SetEnterPressed(true)
 	shouldComplete = handler.Update()
-	t.Logf("After skip. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v", 
+	t.Logf("After skip. Text: %q, IsTyping: %v, IsComplete: %v, shouldComplete: %v",
 		handler.GetDisplayText(), handler.IsTyping(), handler.IsComplete(), shouldComplete)
-	
+
 	assert.True(t, skipCalled, "Skip callback should be called")
 	assert.False(t, shouldComplete, "Should not complete immediately after skip")
 	assert.True(t, handler.IsComplete(), "Handler should be in complete state")
@@ -520,7 +520,7 @@ func TestMessageHandlerSkipFlowDetailed(t *testing.T) {
 	mockInput.SetEnterPressed(true)
 	shouldComplete = handler.Update()
 	t.Logf("After second enter. shouldComplete: %v, completeCalled: %v", shouldComplete, completeCalled)
-	
+
 	assert.True(t, shouldComplete, "Should complete on second enter")
 	assert.True(t, completeCalled, "Complete callback should be called")
 }
@@ -559,7 +559,7 @@ func TestMessageHandlerWaitingState(t *testing.T) {
 	// タイピング中は入力待ち状態ではない
 	time.Sleep(120 * time.Millisecond)
 	handler.Update()
-	
+
 	assert.True(t, handler.IsTyping())
 	assert.False(t, handler.IsWaitingForInput())
 	displayText := handler.GetDisplayText()

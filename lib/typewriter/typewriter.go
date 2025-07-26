@@ -24,12 +24,17 @@ type Typewriter struct {
 	onSkip     func()
 }
 
+// State はタイプライターの状態を表す
 type State int
 
 const (
+	// StateIdle はアイドル状態
 	StateIdle State = iota
+	// StateTyping はタイピング中状態
 	StateTyping
+	// StateComplete は完了状態
 	StateComplete
+	// StatePaused は一時停止状態
 	StatePaused
 )
 

@@ -304,7 +304,6 @@ func TestMenuDisabledItems(t *testing.T) {
 	}
 }
 
-
 func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 	t.Parallel()
 	// グローバル状態をリセット
@@ -343,4 +342,3 @@ func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 	// モック環境では連続クリック防止の詳細テストは省略
 	// 実際のゲーム環境では押下-押上ワンセット制限が働く
 }
-

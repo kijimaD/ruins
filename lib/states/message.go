@@ -81,7 +81,7 @@ func (st *MessageState) OnStop(_ w.World) {}
 // setupMessageHandlerHooks はMessageHandlerのフックを設定
 func (st *MessageState) setupMessageHandlerHooks(world w.World) {
 	// UI更新フック
-	st.messageHandler.SetOnUpdateUI(func(text string) {
+	st.messageHandler.SetOnUpdateUI(func(_ string) {
 		// タイプライター使用時はUIを再作成して表示を更新
 		st.ui = st.createUIWithOffset(world)
 	})

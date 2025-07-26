@@ -4,11 +4,11 @@ import "time"
 
 // Config はタイプライターの動作設定
 type Config struct {
-	CharDelay         time.Duration // 基本的な1文字あたりの待機時間
-	PunctuationDelay  time.Duration // 句読点後の追加待機時間
-	CommaDelay        time.Duration // カンマ後の追加待機時間
-	NewlineDelay      time.Duration // 改行後の追加待機時間
-	
+	CharDelay        time.Duration // 基本的な1文字あたりの待機時間
+	PunctuationDelay time.Duration // 句読点後の追加待機時間
+	CommaDelay       time.Duration // カンマ後の追加待機時間
+	NewlineDelay     time.Duration // 改行後の追加待機時間
+
 	// 特殊設定
 	SkipEnabled       bool          // スキップ機能の有効/無効
 	PauseEnabled      bool          // 一時停止機能の有効/無効
@@ -33,13 +33,13 @@ func DefaultConfig() Config {
 // FastConfig は高速表示用設定
 func FastConfig() Config {
 	return Config{
-		CharDelay:         30 * time.Millisecond,
-		PunctuationDelay:  100 * time.Millisecond,
-		CommaDelay:        50 * time.Millisecond,
-		NewlineDelay:      200 * time.Millisecond,
-		SkipEnabled:       true,
-		PauseEnabled:      false,
-		AutoComplete:      false,
+		CharDelay:        30 * time.Millisecond,
+		PunctuationDelay: 100 * time.Millisecond,
+		CommaDelay:       50 * time.Millisecond,
+		NewlineDelay:     200 * time.Millisecond,
+		SkipEnabled:      true,
+		PauseEnabled:     false,
+		AutoComplete:     false,
 	}
 }
 
@@ -60,13 +60,13 @@ func SlowConfig() Config {
 // BattleConfig は戦闘用設定
 func BattleConfig() Config {
 	return Config{
-		CharDelay:         50 * time.Millisecond,
-		PunctuationDelay:  200 * time.Millisecond,
-		CommaDelay:        100 * time.Millisecond,
-		NewlineDelay:      400 * time.Millisecond,
-		SkipEnabled:       true,
-		PauseEnabled:      false,
-		AutoComplete:      false,
+		CharDelay:        50 * time.Millisecond,
+		PunctuationDelay: 200 * time.Millisecond,
+		CommaDelay:       100 * time.Millisecond,
+		NewlineDelay:     400 * time.Millisecond,
+		SkipEnabled:      true,
+		PauseEnabled:     false,
+		AutoComplete:     false,
 	}
 }
 
