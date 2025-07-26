@@ -5,7 +5,6 @@ import (
 
 	"image/color"
 
-	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -37,7 +36,7 @@ func DefaultUIConfig() UIConfig {
 type MessageUIBuilder struct {
 	messageHandler *MessageHandler
 	config         UIConfig
-	ui             *ebitenui.UI
+	container      *widget.Container
 }
 
 // NewMessageUIBuilder は新しいUIビルダーを作成
@@ -49,48 +48,38 @@ func NewMessageUIBuilder(messageHandler *MessageHandler, config UIConfig) *Messa
 
 	// UI更新フックを設定
 	messageHandler.SetOnUpdateUI(func(_ string) {
-		builder.ui = builder.createUI()
+		builder.container = builder.createContainer()
 	})
 
-	// 初回UI作成
-	builder.ui = builder.createUI()
+	// 初回コンテナ作成
+	builder.container = builder.createContainer()
 
 	return builder
 }
 
-// GetUI は現在のUIを取得
-func (b *MessageUIBuilder) GetUI() *ebitenui.UI {
-	return b.ui
+// GetContainer はメッセージ表示用のコンテナを取得
+func (b *MessageUIBuilder) GetContainer() *widget.Container {
+	return b.container
 }
 
 // Update はUIの更新処理（アニメーション更新など）
 func (b *MessageUIBuilder) Update() {
-	// プロンプトアニメーション更新（UI再構築が必要）
+	// プロンプトアニメーション更新（コンテナ再構築が必要）
 	if b.messageHandler != nil && b.messageHandler.IsWaitingForInput() {
-		b.ui = b.createUI()
-	}
-
-	if b.ui != nil {
-		b.ui.Update()
+		b.container = b.createContainer()
 	}
 }
 
-// createUI は複数行表示対応のUIを作成
-func (b *MessageUIBuilder) createUI() *ebitenui.UI {
+// createContainer はメッセージ表示用のコンテナを作成
+func (b *MessageUIBuilder) createContainer() *widget.Container {
 	// 固定サイズの計算
 	fixedHeight := b.config.LineHeight * b.config.MaxVisibleLines
 	fixedWidth := b.config.FixedWidth
 
-	// 全体のコンテナ（水平レイアウト）
-	rootContainer := widget.NewContainer(
+	// メッセージ全体のコンテナ（水平レイアウト）
+	container := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
-			widget.RowLayoutOpts.Padding(widget.Insets{
-				Top:    50,
-				Left:   20,
-				Right:  20,
-				Bottom: 5,
-			}),
 			widget.RowLayoutOpts.Spacing(5), // 水平方向のスペース
 		)),
 	)
@@ -164,8 +153,8 @@ func (b *MessageUIBuilder) createUI() *ebitenui.UI {
 	// テキストコンテナをメッセージコンテナに追加
 	messageContainer.AddChild(textContainer)
 
-	// メッセージコンテナをルートに追加
-	rootContainer.AddChild(messageContainer)
+	// メッセージコンテナをコンテナに追加
+	container.AddChild(messageContainer)
 
 	// プロンプト表示が必要な場合、右側に配置
 	if b.messageHandler != nil && b.messageHandler.IsWaitingForInput() && b.config.ArrowImage != nil {
@@ -194,9 +183,10 @@ func (b *MessageUIBuilder) createUI() *ebitenui.UI {
 
 			promptWrapper.AddChild(promptContainer)
 			promptSideContainer.AddChild(promptWrapper)
-			rootContainer.AddChild(promptSideContainer)
+			container.AddChild(promptSideContainer)
 		}
 	}
 
-	return &ebitenui.UI{Container: rootContainer}
+	return container
 }
+
