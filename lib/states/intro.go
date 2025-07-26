@@ -7,7 +7,6 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/typewriter"
@@ -131,25 +130,7 @@ func (st *IntroState) Update(world w.World) es.Transition {
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
 	}
 
-	// マウスクリックでスキップ
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		// 現在のメッセージを完了させて次に進む
-		st.currentIndex++
-		if st.currentIndex < len(st.texts) {
-			// 背景を更新
-			if st.currentIndex < len(introBgImages) {
-				spriteSheet := (*world.Resources.SpriteSheets)[introBgImages[st.currentIndex]]
-				st.bg = spriteSheet.Texture.Image
-			}
-			// 次のメッセージを開始
-			st.messageHandler.Start(st.texts[st.currentIndex])
-		} else {
-			// 全て完了
-			return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
-		}
-	}
-
-	// typewriter更新
+	// typewriter更新（入力処理も含む）
 	shouldComplete := st.messageHandler.Update()
 	if shouldComplete {
 		// 全てのテキストが完了

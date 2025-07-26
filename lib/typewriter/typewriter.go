@@ -6,6 +6,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/ebitenui/ebitenui/widget"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 // Typewriter は文字送り表示を制御する汎用の構造
@@ -262,8 +264,11 @@ func (h *MessageHandler) Update() (shouldComplete bool) {
 	// タイプライター更新
 	h.typewriter.Update()
 
-	// 入力処理
-	if h.keyboardInput != nil && h.keyboardInput.IsEnterJustPressedOnce() {
+	// 入力処理（Enterキーまたはマウスクリック）
+	enterPressed := h.keyboardInput != nil && h.keyboardInput.IsEnterJustPressedOnce()
+	mouseClicked := inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
+	
+	if enterPressed || mouseClicked {
 		if h.typewriter.IsTyping() {
 			// タイピング中なら文字送りスキップ
 			h.typewriter.Skip()
