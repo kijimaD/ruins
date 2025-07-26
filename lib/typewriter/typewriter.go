@@ -267,7 +267,7 @@ func (h *MessageHandler) Update() (shouldComplete bool) {
 	// 入力処理（Enterキーまたはマウスクリック）
 	enterPressed := h.keyboardInput != nil && h.keyboardInput.IsEnterJustPressedOnce()
 	mouseClicked := inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
-	
+
 	if enterPressed || mouseClicked {
 		if h.typewriter.IsTyping() {
 			// タイピング中なら文字送りスキップ
