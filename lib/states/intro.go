@@ -34,14 +34,15 @@ func (st IntroState) String() string {
 	return "Intro"
 }
 
+// 客観的に状況を語らせる
 var introTexts = []string{
-	"母が倒れてから、もう三ヶ月になる。",
-	"医者は首を振るばかりで、有効な治療法はないと言った。",
-	"それでも、俺には諦めることができない。",
-	"古い言い伝えがある。",
-	"「遺跡」の最下層の「珠」は、どんな願いも叶えるという。",
-	"迷信だと笑われても構わない。",
-	"他に方法がないのだから。",
+	"「『虚脱症』の患者がまた一人運ばれてきました。」",
+	"「どうして急に増えているんでしょうね、この病気。」",
+	"「原因も治療法もさっぱりだ。」",
+	"「あの少年も毎日来ているそうですね。」",
+	"「母親の病気を治すために、\n『遺跡』に挑もうとしているらしい。」",
+	"「『珠』の伝説を信じているんでしょうか。」",
+	"「...まあ、他に希望もないでしょうからね。」",
 }
 
 var introBgImages = []string{
@@ -50,6 +51,7 @@ var introBgImages = []string{
 	"bg_urban1",
 	"bg_crystal1",
 	"bg_crystal1",
+	"bg_jungle1",
 	"bg_jungle1",
 }
 
@@ -93,8 +95,7 @@ func (st *IntroState) OnStart(world w.World) {
 	}
 	st.uiBuilder = typewriter.NewMessageUIBuilder(st.messageHandler, uiConfig)
 
-	// コールバックを設定（message stateではSetOnUpdateUIは使用しない）
-
+	// コールバックを設定
 	st.messageHandler.SetOnComplete(func() bool {
 		// 次のテキストに進む
 		st.currentIndex++
@@ -155,10 +156,10 @@ func (st *IntroState) Update(world w.World) es.Transition {
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
 	}
 
-	// UIBuilderが存在する場合はUI更新（message stateと同様）
+	// UIBuilderが存在する場合はUI更新
 	if st.uiBuilder != nil {
 		st.uiBuilder.Update()
-		// UIBuilderの更新後、UIを再作成（message stateと同様）
+		// UIBuilderの更新後、UIを再作成
 		st.ui = st.initUI(world)
 	}
 
