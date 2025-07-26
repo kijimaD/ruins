@@ -6,6 +6,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/ebitenui/ebitenui/widget"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 // Typewriter は文字送り表示を制御する汎用の構造
@@ -70,7 +72,7 @@ func (t *Typewriter) Update() bool {
 	// 次の文字を表示
 	if t.position < len(t.currentText) {
 		// UTF-8対応の文字取得
-		char, size := utf8.DecodeRuneInString(t.currentText[t.position:])
+		_, size := utf8.DecodeRuneInString(t.currentText[t.position:])
 		charStr := t.currentText[t.position : t.position+size]
 
 		t.displayText += charStr
@@ -81,11 +83,6 @@ func (t *Typewriter) Update() bool {
 		if t.onChar != nil {
 			charIndex := utf8.RuneCountInString(t.displayText)
 			t.onChar(charStr, charIndex)
-		}
-
-		// 特殊文字による待機時間調整
-		if delay := t.getSpecialCharDelay(char); delay > 0 {
-			t.lastUpdate = t.lastUpdate.Add(delay)
 		}
 
 		return true
@@ -188,20 +185,6 @@ func (t *Typewriter) OnSkip(callback func()) {
 	t.onSkip = callback
 }
 
-// getSpecialCharDelay は特殊文字による待機時間調整
-func (t *Typewriter) getSpecialCharDelay(char rune) time.Duration {
-	switch char {
-	case '。', '！', '？':
-		return t.config.PunctuationDelay
-	case '、', '，':
-		return t.config.CommaDelay
-	case '\n':
-		return t.config.NewlineDelay
-	default:
-		return 0
-	}
-}
-
 // MessageHandler はメッセージ表示とタイプライターを統合管理する
 // typewriterをラップしてコントロールできるようにする
 type MessageHandler struct {
@@ -281,8 +264,11 @@ func (h *MessageHandler) Update() (shouldComplete bool) {
 	// タイプライター更新
 	h.typewriter.Update()
 
-	// 入力処理
-	if h.keyboardInput != nil && h.keyboardInput.IsEnterJustPressedOnce() {
+	// 入力処理（Enterキーまたはマウスクリック）
+	enterPressed := h.keyboardInput != nil && h.keyboardInput.IsEnterJustPressedOnce()
+	mouseClicked := inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
+
+	if enterPressed || mouseClicked {
 		if h.typewriter.IsTyping() {
 			// タイピング中なら文字送りスキップ
 			h.typewriter.Skip()
