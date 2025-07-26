@@ -70,7 +70,7 @@ func (t *Typewriter) Update() bool {
 	// 次の文字を表示
 	if t.position < len(t.currentText) {
 		// UTF-8対応の文字取得
-		char, size := utf8.DecodeRuneInString(t.currentText[t.position:])
+		_, size := utf8.DecodeRuneInString(t.currentText[t.position:])
 		charStr := t.currentText[t.position : t.position+size]
 
 		t.displayText += charStr
@@ -81,11 +81,6 @@ func (t *Typewriter) Update() bool {
 		if t.onChar != nil {
 			charIndex := utf8.RuneCountInString(t.displayText)
 			t.onChar(charStr, charIndex)
-		}
-
-		// 特殊文字による待機時間調整
-		if delay := t.getSpecialCharDelay(char); delay > 0 {
-			t.lastUpdate = t.lastUpdate.Add(delay)
 		}
 
 		return true
@@ -186,20 +181,6 @@ func (t *Typewriter) OnComplete(callback func()) {
 // OnSkip はスキップ時のコールバックを設定
 func (t *Typewriter) OnSkip(callback func()) {
 	t.onSkip = callback
-}
-
-// getSpecialCharDelay は特殊文字による待機時間調整
-func (t *Typewriter) getSpecialCharDelay(char rune) time.Duration {
-	switch char {
-	case '。', '！', '？':
-		return t.config.PunctuationDelay
-	case '、', '，':
-		return t.config.CommaDelay
-	case '\n':
-		return t.config.NewlineDelay
-	default:
-		return 0
-	}
 }
 
 // MessageHandler はメッセージ表示とタイプライターを統合管理する
