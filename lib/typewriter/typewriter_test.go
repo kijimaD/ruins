@@ -218,11 +218,10 @@ func TestConfigPresets(t *testing.T) {
 
 	// 各設定プリセットが正常に作成できることを確認
 	configs := map[string]Config{
-		"Default": DefaultConfig(),
-		"Fast":    FastConfig(),
-		"Slow":    SlowConfig(),
-		"Battle":  BattleConfig(),
-		"Dialog":  DialogConfig(),
+		"Fast":   FastConfig(),
+		"Slow":   SlowConfig(),
+		"Battle": BattleConfig(),
+		"Dialog": DialogConfig(),
 	}
 
 	for name, config := range configs {

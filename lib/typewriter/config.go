@@ -16,20 +16,6 @@ type Config struct {
 	AutoCompleteDelay time.Duration // 自動完了までの時間
 }
 
-// DefaultConfig はデフォルト設定を返す
-func DefaultConfig() Config {
-	return Config{
-		CharDelay:         80 * time.Millisecond,
-		PunctuationDelay:  300 * time.Millisecond,
-		CommaDelay:        150 * time.Millisecond,
-		NewlineDelay:      500 * time.Millisecond,
-		SkipEnabled:       true,
-		PauseEnabled:      true,
-		AutoComplete:      false,
-		AutoCompleteDelay: 5 * time.Second,
-	}
-}
-
 // FastConfig は高速表示用設定
 func FastConfig() Config {
 	return Config{
