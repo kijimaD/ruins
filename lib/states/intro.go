@@ -2,12 +2,13 @@
 package states
 
 import (
+	"image/color"
+
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/typewriter"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -34,11 +35,11 @@ func (st IntroState) String() string {
 
 var introTexts = []string{
 	"戦争が終わり、街には復興の槌音が響く。",
-	"古い言い伝えによると、地下深くに眠る遺跡の最下層には珠があり、どんな願いも叶えるとされる。",
-	"多くの人は迷信だと笑うが、遺跡の不思議な技術を見れば、完全に否定することもできない。",
+	"古い言い伝えによると、\n地下深くに眠る遺跡の最下層には珠があり、\nどんな願いも叶えるとされる。",
+	"多くの人は迷信だと笑うが、\n遺跡の不思議な技術を見れば、\n完全に否定することもできない。",
 	"母が倒れてから、もう三ヶ月になる。",
-	"虚脱症。原因不明の病気で、現代医学では治療法が確立されていない。",
-	"一部では『珠の力で治る』という話もあるが、医学界では相手にされていない。",
+	"虚脱症。原因不明の病気で、\n現代医学では治療法が確立されていない。",
+	"一部では『珠の力で治る』という話もあるが、\n医学界では相手にされていない。",
 	"それでも、俺には他に方法がない。",
 	"探索者登録番号二八四七、十七歳男性。",
 	"目的：遺跡探索および珠の回収。",
@@ -173,10 +174,54 @@ func (st *IntroState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 func (st *IntroState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewRowContainer()
-	st.messageContainer = eui.NewRowContainer()
-	rootContainer.AddChild(st.messageContainer)
+	// 画面幅を取得
+	screenWidth := world.Resources.ScreenDimensions.Width
 
+	// AnchorLayoutで縦中央配置を実現
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
+
+	// GridLayoutコンテナを縦方向少し上に配置
+	gridContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewGridLayout(
+			widget.GridLayoutOpts.Columns(3),
+			widget.GridLayoutOpts.Stretch([]bool{false, true, false}, []bool{true}),
+			widget.GridLayoutOpts.Spacing(0, 0),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				StretchHorizontal:  true,
+			}),
+		),
+	)
+
+	// 左スペーサー（固定幅）
+	leftSpacer := widget.NewContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(screenWidth/8, 0), // 画面の1/8
+		),
+	)
+
+	// 中央コンテナ（伸縮）
+	st.messageContainer = widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout()),
+	)
+
+	// 右スペーサー（固定幅）
+	rightSpacer := widget.NewContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(screenWidth/8, 0), // 画面の1/8
+		),
+	)
+
+	gridContainer.AddChild(leftSpacer)
+	gridContainer.AddChild(st.messageContainer)
+	gridContainer.AddChild(rightSpacer)
+
+	rootContainer.AddChild(gridContainer)
 	st.updateMessageContainer(world)
 
 	return &ebitenui.UI{Container: rootContainer}
@@ -184,5 +229,12 @@ func (st *IntroState) initUI(world w.World) *ebitenui.UI {
 
 func (st *IntroState) updateMessageContainer(world w.World) {
 	st.messageContainer.RemoveChildren()
-	st.messageContainer.AddChild(eui.NewMenuText(st.currentText, world))
+
+	// テキストを左寄せで表示
+	textWidget := widget.NewText(
+		widget.TextOpts.Text(st.currentText, (*world.Resources.DefaultFaces)["kappa"], color.RGBA{R: 255, G: 255, B: 255, A: 255}),
+		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
+	)
+
+	st.messageContainer.AddChild(textWidget)
 }
