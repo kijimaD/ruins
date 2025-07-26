@@ -83,7 +83,7 @@ func (st *MessageState) setupMessageHandlerHooks(world w.World) {
 	// UI更新フック
 	st.messageHandler.SetOnUpdateUI(func(_ string) {
 		// タイプライター使用時はUIを再作成して表示を更新
-		st.ui = st.createUIWithOffset(world)
+		st.ui = st.createUI(world)
 	})
 
 	// 完了フック - MessageHandlerからの戻り値でUpdate側で制御するため、ここでは追加処理のみ
@@ -127,7 +127,7 @@ func (st *MessageState) Update(world w.World) es.Transition {
 	// プロンプトアニメーション更新（UI再構築が必要）
 	if st.messageHandler != nil && st.messageHandler.IsWaitingForInput() {
 		// UI再構築（アニメーション位置更新のため）
-		st.ui = st.createUIWithOffset(world)
+		st.ui = st.createUI(world)
 	}
 
 	st.ui.Update()
@@ -141,13 +141,8 @@ func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
 	st.ui.Draw(screen)
 }
 
+// createUI は複数行表示対応のUIを作成
 func (st *MessageState) createUI(world w.World) *ebitenui.UI {
-	// 常にタイプライター用の複数行対応UIを使用
-	return st.createUIWithOffset(world)
-}
-
-// createUIWithOffset は複数行表示対応のUIを作成
-func (st *MessageState) createUIWithOffset(world w.World) *ebitenui.UI {
 	// 固定サイズの計算（関数の最初で計算）
 	lineHeight := 25 // 1行あたりの高さ（概算）
 	fixedHeight := lineHeight * st.maxVisibleLines
