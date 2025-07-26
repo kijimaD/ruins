@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>typewriter - Go Documentation Server</title>
+
+<link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
+
+<script>window.initFuncs = [];</script>
+<script src="../../../../../../lib/godoc/jquery.js" defer></script>
+
+
+
+<script>var goVersion = "go1.24.5";</script>
+<script src="../../../../../../lib/godoc/godocs.js" defer></script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8888/pkg/">Go Documentation Server</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8888/pkg/">GoDoc</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8888/search">
+<div id="menu">
+
+<span class="search-box"><input type="search" id="search" name="q" placeholder="Search" aria-label="Search" required><button type="submit"><span><!-- magnifying glass: --><svg width="24" height="24" viewBox="0 0 24 24"><title>submit search</title><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg></span></button></span>
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package typewriter
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/kijimaD/ruins/lib/typewriter"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				<p>Package typewriter provides a simple typewriter-style text display system.
+<p>このパッケージは、RPG風のメッセージ表示に必要な基本機能を提供します：
+- 1文字ずつの表示（タイプライター効果）
+- スキップ機能
+- カスタマイズ可能な表示速度
+- UI作成機能（MessageUIBuilder）
+<p>使用例（基本的な使い方）:
+<pre>config := typewriter.BattleConfig()
+tw := typewriter.New(config)
+
+tw.OnComplete(func() {
+    fmt.Println(&quot;表示完了&quot;)
+})
+</pre>
+<p>使用例（UI付きの使い方）:
+<pre>// MessageHandlerとUIBuilderを使用
+handler := typewriter.NewMessageHandler(typewriter.BattleConfig(), keyboardInput)
+uiConfig := typewriter.DefaultUIConfig()
+uiConfig.TextFace = yourTextFace
+uiConfig.TextColor = yourTextColor
+uiBuilder := typewriter.NewMessageUIBuilder(handler, uiConfig)
+
+// 更新ループ内で
+handler.Update()
+uiBuilder.Update()
+
+// 描画
+uiBuilder.GetUI().Draw(screen)
+
+tw.Start(&quot;こんにちは、世界！&quot;)
+
+for tw.IsTyping() {
+    tw.Update()
+    time.Sleep(16 * time.Millisecond) // 60FPS
+}
+</pre>
+
+				
+			</div>
+		</div>
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+			
+				
+				<dd><a href="index.html#Config">type Config</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BattleConfig">func BattleConfig() Config</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DialogConfig">func DialogConfig() Config</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FastConfig">func FastConfig() Config</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#SlowConfig">func SlowConfig() Config</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#KeyboardInput">type KeyboardInput</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#MessageHandler">type MessageHandler</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMessageHandler">func NewMessageHandler(config Config, keyboardInput KeyboardInput) *MessageHandler</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.CreatePromptContainer">func (h *MessageHandler) CreatePromptContainer(arrowImage *widget.GraphicImage) *widget.Container</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.GetDisplayText">func (h *MessageHandler) GetDisplayText() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.GetPromptWidget">func (h *MessageHandler) GetPromptWidget() *widget.Graphic</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.GetPromptYOffset">func (h *MessageHandler) GetPromptYOffset() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.IsComplete">func (h *MessageHandler) IsComplete() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.IsTyping">func (h *MessageHandler) IsTyping() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.IsWaitingForInput">func (h *MessageHandler) IsWaitingForInput() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.SetOnChar">func (h *MessageHandler) SetOnChar(callback func(char string, index int))</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.SetOnComplete">func (h *MessageHandler) SetOnComplete(callback func() bool)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.SetOnSkip">func (h *MessageHandler) SetOnSkip(callback func())</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.SetOnUpdateUI">func (h *MessageHandler) SetOnUpdateUI(callback func(text string))</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.Start">func (h *MessageHandler) Start(text string)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageHandler.Update">func (h *MessageHandler) Update() (shouldComplete bool)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MessageUIBuilder">type MessageUIBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMessageUIBuilder">func NewMessageUIBuilder(messageHandler *MessageHandler, config UIConfig) *MessageUIBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageUIBuilder.GetContainer">func (b *MessageUIBuilder) GetContainer() *widget.Container</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageUIBuilder.Update">func (b *MessageUIBuilder) Update()</a></dd>
+				
+			
+				
+				<dd><a href="index.html#State">type State</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Typewriter">type Typewriter</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#New">func New(config Config) *Typewriter</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.GetDisplayText">func (t *Typewriter) GetDisplayText() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.GetElapsedTime">func (t *Typewriter) GetElapsedTime() time.Duration</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.GetProgress">func (t *Typewriter) GetProgress() float64</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.IsComplete">func (t *Typewriter) IsComplete() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.IsPaused">func (t *Typewriter) IsPaused() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.IsTyping">func (t *Typewriter) IsTyping() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.OnChar">func (t *Typewriter) OnChar(callback func(char string, index int))</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.OnComplete">func (t *Typewriter) OnComplete(callback func())</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.OnSkip">func (t *Typewriter) OnSkip(callback func())</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.Pause">func (t *Typewriter) Pause()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.Reset">func (t *Typewriter) Reset()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.Resume">func (t *Typewriter) Resume()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.Skip">func (t *Typewriter) Skip()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.Start">func (t *Typewriter) Start(text string)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Typewriter.Update">func (t *Typewriter) Update() bool</a></dd>
+				
+			
+				
+				<dd><a href="index.html#UIConfig">type UIConfig</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DefaultUIConfig">func DefaultUIConfig() UIConfig</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h3>Package files</h3>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go">config.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/doc.go">doc.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go">typewriter.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go">ui.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		
+
+		
+		
+		
+		
+			
+			
+			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=85:690#L1">Config</a>
+				<a class="permalink" href="index.html#Config">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Config はタイプライターの動作設定
+
+			<pre>type Config struct {
+<span id="Config.CharDelay"></span>    CharDelay        <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Duration">Duration</a> <span class="comment">// 基本的な1文字あたりの待機時間</span>
+<span id="Config.PunctuationDelay"></span>    PunctuationDelay <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Duration">Duration</a> <span class="comment">// 句読点後の追加待機時間</span>
+<span id="Config.CommaDelay"></span>    CommaDelay       <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Duration">Duration</a> <span class="comment">// カンマ後の追加待機時間</span>
+<span id="Config.NewlineDelay"></span>    NewlineDelay     <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Duration">Duration</a> <span class="comment">// 改行後の追加待機時間</span>
+
+    <span class="comment">// 特殊設定</span>
+<span id="Config.SkipEnabled"></span>    SkipEnabled       <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>          <span class="comment">// スキップ機能の有効/無効</span>
+<span id="Config.PauseEnabled"></span>    PauseEnabled      <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>          <span class="comment">// 一時停止機能の有効/無効</span>
+<span id="Config.AutoComplete"></span>    AutoComplete      <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>          <span class="comment">// 自動完了（時間経過で完了）</span>
+<span id="Config.AutoCompleteDelay"></span>    AutoCompleteDelay <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Duration">Duration</a> <span class="comment">// 自動完了までの時間</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="BattleConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=1463:1489#L37">BattleConfig</a>
+					<a class="permalink" href="index.html#BattleConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func BattleConfig() <a href="index.html#Config">Config</a></pre>
+				<p>BattleConfig は戦闘用設定
+
+				
+				
+			
+				
+				<h3 id="DialogConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=1804:1830#L50">DialogConfig</a>
+					<a class="permalink" href="index.html#DialogConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func DialogConfig() <a href="index.html#Config">Config</a></pre>
+				<p>DialogConfig は会話用設定
+
+				
+				
+			
+				
+				<h3 id="FastConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=731:755#L10">FastConfig</a>
+					<a class="permalink" href="index.html#FastConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func FastConfig() <a href="index.html#Config">Config</a></pre>
+				<p>FastConfig は高速表示用設定
+
+				
+				
+			
+				
+				<h3 id="SlowConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=1079:1103#L23">SlowConfig</a>
+					<a class="permalink" href="index.html#SlowConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func SlowConfig() <a href="index.html#Config">Config</a></pre>
+				<p>SlowConfig はゆっくり表示用設定
+
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="KeyboardInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=5572:5635#L216">KeyboardInput</a>
+				<a class="permalink" href="index.html#KeyboardInput">&#xb6;</a>
+				
+				
+			</h2>
+			<p>KeyboardInput はキーボード入力を抽象化するインターフェース
+
+			<pre>type KeyboardInput interface {
+    IsEnterJustPressedOnce() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="MessageHandler">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=4882:5486#L197">MessageHandler</a>
+				<a class="permalink" href="index.html#MessageHandler">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MessageHandler はメッセージ表示とタイプライターを統合管理する
+typewriterをラップしてコントロールできるようにする
+
+			<pre>type MessageHandler struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewMessageHandler">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=5694:5776#L221">NewMessageHandler</a>
+					<a class="permalink" href="index.html#NewMessageHandler">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewMessageHandler(config <a href="index.html#Config">Config</a>, keyboardInput <a href="index.html#KeyboardInput">KeyboardInput</a>) *<a href="index.html#MessageHandler">MessageHandler</a></pre>
+				<p>NewMessageHandler は新しいMessageHandlerを作成
+
+				
+				
+			
+
+			
+				
+				<h3 id="MessageHandler.CreatePromptContainer">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=9420:9517#L350">CreatePromptContainer</a>
+					<a class="permalink" href="index.html#MessageHandler.CreatePromptContainer">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) CreatePromptContainer(arrowImage *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#GraphicImage">GraphicImage</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+				<p>CreatePromptContainer はプロンプト用のコンテナを作成（UIリソースが必要）
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.GetDisplayText">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=8675:8723#L328">GetDisplayText</a>
+					<a class="permalink" href="index.html#MessageHandler.GetDisplayText">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) GetDisplayText() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>GetDisplayText は現在表示中のテキストを取得
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.GetPromptWidget">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=8832:8890#L333">GetPromptWidget</a>
+					<a class="permalink" href="index.html#MessageHandler.GetPromptWidget">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) GetPromptWidget() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Graphic">Graphic</a></pre>
+				<p>GetPromptWidget はプロンプトウィジェットを取得
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.GetPromptYOffset">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=9013:9060#L338">GetPromptYOffset</a>
+					<a class="permalink" href="index.html#MessageHandler.GetPromptYOffset">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) GetPromptYOffset() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>GetPromptYOffset はプロンプトアニメーションのY座標オフセットを取得
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.IsComplete">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=7803:7845#L298">IsComplete</a>
+					<a class="permalink" href="index.html#MessageHandler.IsComplete">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) IsComplete() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsComplete は完了状態かどうかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.IsTyping">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=7674:7714#L293">IsTyping</a>
+					<a class="permalink" href="index.html#MessageHandler.IsTyping">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) IsTyping() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsTyping は文字送り中かどうかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.IsWaitingForInput">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=8525:8574#L323">IsWaitingForInput</a>
+					<a class="permalink" href="index.html#MessageHandler.IsWaitingForInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) IsWaitingForInput() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsWaitingForInput は入力待ち状態かどうかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.SetOnChar">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=8361:8434#L318">SetOnChar</a>
+					<a class="permalink" href="index.html#MessageHandler.SetOnChar">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) SetOnChar(callback func(char <a href="http://localhost:8888/pkg/builtin/#string">string</a>, index <a href="http://localhost:8888/pkg/builtin/#int">int</a>))</pre>
+				<p>SetOnChar は文字表示時のフックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.SetOnComplete">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=8086:8146#L308">SetOnComplete</a>
+					<a class="permalink" href="index.html#MessageHandler.SetOnComplete">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) SetOnComplete(callback func() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>SetOnComplete は完了時のフックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.SetOnSkip">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=8230:8281#L313">SetOnSkip</a>
+					<a class="permalink" href="index.html#MessageHandler.SetOnSkip">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) SetOnSkip(callback func())</pre>
+				<p>SetOnSkip はスキップ時のフックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.SetOnUpdateUI">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=7938:8004#L303">SetOnUpdateUI</a>
+					<a class="permalink" href="index.html#MessageHandler.SetOnUpdateUI">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) SetOnUpdateUI(callback func(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>))</pre>
+				<p>SetOnUpdateUI はUI更新時のフックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.Start">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=6739:6782#L259">Start</a>
+					<a class="permalink" href="index.html#MessageHandler.Start">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) Start(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+				<p>Start はタイプライター表示を開始
+
+				
+				
+				
+			
+				
+				<h3 id="MessageHandler.Update">func (*MessageHandler) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=7111:7166#L270">Update</a>
+					<a class="permalink" href="index.html#MessageHandler.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#MessageHandler">MessageHandler</a>) Update() (shouldComplete <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>Update はメッセージハンドラーの更新処理（入力処理も含む）
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MessageUIBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go?s=1055:1178#L26">MessageUIBuilder</a>
+				<a class="permalink" href="index.html#MessageUIBuilder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MessageUIBuilder はメッセージUI作成を統合管理
+
+			<pre>type MessageUIBuilder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewMessageUIBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go?s=1239:1330#L33">NewMessageUIBuilder</a>
+					<a class="permalink" href="index.html#NewMessageUIBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewMessageUIBuilder(messageHandler *<a href="index.html#MessageHandler">MessageHandler</a>, config <a href="index.html#UIConfig">UIConfig</a>) *<a href="index.html#MessageUIBuilder">MessageUIBuilder</a></pre>
+				<p>NewMessageUIBuilder は新しいUIビルダーを作成
+
+				
+				
+			
+
+			
+				
+				<h3 id="MessageUIBuilder.GetContainer">func (*MessageUIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go?s=1723:1782#L51">GetContainer</a>
+					<a class="permalink" href="index.html#MessageUIBuilder.GetContainer">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#MessageUIBuilder">MessageUIBuilder</a>) GetContainer() *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+				<p>GetContainer はメッセージ表示用のコンテナを取得
+
+				
+				
+				
+			
+				
+				<h3 id="MessageUIBuilder.Update">func (*MessageUIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go?s=1878:1913#L56">Update</a>
+					<a class="permalink" href="index.html#MessageUIBuilder.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#MessageUIBuilder">MessageUIBuilder</a>) Update()</pre>
+				<p>Update はUIの更新処理（アニメーション更新など）
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=621:635#L18">State</a>
+				<a class="permalink" href="index.html#State">&#xb6;</a>
+				
+				
+			</h2>
+			<p>State はタイプライターの状態を表す
+
+			<pre>type State <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				
+				<pre>const (
+    <span class="comment">// StateIdle はアイドル状態</span>
+    <span id="StateIdle">StateIdle</span> <a href="index.html#State">State</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span class="comment">// StateTyping はタイピング中状態</span>
+    <span id="StateTyping">StateTyping</span>
+    <span class="comment">// StateComplete は完了状態</span>
+    <span id="StateComplete">StateComplete</span>
+    <span class="comment">// StatePaused は一時停止状態</span>
+    <span id="StatePaused">StatePaused</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Typewriter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=170:567#L2">Typewriter</a>
+				<a class="permalink" href="index.html#Typewriter">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Typewriter は文字送り表示を制御する汎用の構造
+
+			<pre>type Typewriter struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="New">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=922:957#L32">New</a>
+					<a class="permalink" href="index.html#New">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func New(config <a href="index.html#Config">Config</a>) *<a href="index.html#Typewriter">Typewriter</a></pre>
+				<p>New は新しいTypewriterインスタンスを作成
+
+				
+				
+			
+
+			
+				
+				<h3 id="Typewriter.GetDisplayText">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=2890:2934#L124">GetDisplayText</a>
+					<a class="permalink" href="index.html#Typewriter.GetDisplayText">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) GetDisplayText() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>GetDisplayText は現在表示中のテキストを取得
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.GetElapsedTime">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=3737:3788#L154">GetElapsedTime</a>
+					<a class="permalink" href="index.html#Typewriter.GetElapsedTime">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) GetElapsedTime() <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Duration">Duration</a></pre>
+				<p>GetElapsedTime は開始からの経過時間を返す
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.GetProgress">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=3393:3435#L144">GetProgress</a>
+					<a class="permalink" href="index.html#Typewriter.GetProgress">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) GetProgress() <a href="http://localhost:8888/pkg/builtin/#float64">float64</a></pre>
+				<p>GetProgress は進行状況（0.0-1.0）を返す
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.IsComplete">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=3138:3176#L134">IsComplete</a>
+					<a class="permalink" href="index.html#Typewriter.IsComplete">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) IsComplete() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsComplete は完了状態かどうかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.IsPaused">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=3267:3303#L139">IsPaused</a>
+					<a class="permalink" href="index.html#Typewriter.IsPaused">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) IsPaused() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsPaused は一時停止中かどうかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.IsTyping">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=3014:3050#L129">IsTyping</a>
+					<a class="permalink" href="index.html#Typewriter.IsTyping">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) IsTyping() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsTyping は文字送り中かどうかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.OnChar">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=4031:4097#L167">OnChar</a>
+					<a class="permalink" href="index.html#Typewriter.OnChar">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) OnChar(callback func(char <a href="http://localhost:8888/pkg/builtin/#string">string</a>, index <a href="http://localhost:8888/pkg/builtin/#int">int</a>))</pre>
+				<p>OnChar は1文字表示時のコールバックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.OnComplete">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=4181:4229#L172">OnComplete</a>
+					<a class="permalink" href="index.html#Typewriter.OnComplete">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) OnComplete(callback func())</pre>
+				<p>OnComplete は完了時のコールバックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.OnSkip">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=4319:4363#L177">OnSkip</a>
+					<a class="permalink" href="index.html#Typewriter.OnSkip">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) OnSkip(callback func())</pre>
+				<p>OnSkip はスキップ時のコールバックを設定
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.Pause">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=2560:2588#L109">Pause</a>
+					<a class="permalink" href="index.html#Typewriter.Pause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) Pause()</pre>
+				<p>Pause は文字送りを一時停止
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.Reset">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=3860:3888#L159">Reset</a>
+					<a class="permalink" href="index.html#Typewriter.Reset">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) Reset()</pre>
+				<p>Reset は状態をリセット
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.Resume">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=2710:2739#L116">Resume</a>
+					<a class="permalink" href="index.html#Typewriter.Resume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) Resume()</pre>
+				<p>Resume は文字送りを再開
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.Skip">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=2248:2275#L93">Skip</a>
+					<a class="permalink" href="index.html#Typewriter.Skip">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) Skip()</pre>
+				<p>Skip は文字送りをスキップして完了状態にする
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.Start">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=1075:1114#L40">Start</a>
+					<a class="permalink" href="index.html#Typewriter.Start">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) Start(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+				<p>Start はタイプライター表示を開始
+
+				
+				
+				
+			
+				
+				<h3 id="Typewriter.Update">func (*Typewriter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/typewriter.go?s=1310:1344#L50">Update</a>
+					<a class="permalink" href="index.html#Typewriter.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t *<a href="index.html#Typewriter">Typewriter</a>) Update() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>Update は時間経過による状態更新を行う
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="UIConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go?s=250:769#L5">UIConfig</a>
+				<a class="permalink" href="index.html#UIConfig">&#xb6;</a>
+				
+				
+			</h2>
+			<p>UIConfig はUI作成時の設定
+
+			<pre>type UIConfig struct {
+<span id="UIConfig.MaxVisibleLines"></span>    MaxVisibleLines <a href="http://localhost:8888/pkg/builtin/#int">int</a>                  <span class="comment">// 最大表示行数（デフォルト: 4）</span>
+<span id="UIConfig.FixedWidth"></span>    FixedWidth      <a href="http://localhost:8888/pkg/builtin/#int">int</a>                  <span class="comment">// 固定幅（デフォルト: 720）</span>
+<span id="UIConfig.LineHeight"></span>    LineHeight      <a href="http://localhost:8888/pkg/builtin/#int">int</a>                  <span class="comment">// 行の高さ（デフォルト: 25）</span>
+<span id="UIConfig.TextFace"></span>    TextFace        text.<a href="index.html#Face">Face</a>            <span class="comment">// テキストのフォントフェイス</span>
+<span id="UIConfig.TextColor"></span>    TextColor       <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#Color">Color</a>          <span class="comment">// テキスト色</span>
+<span id="UIConfig.PanelImage"></span>    PanelImage      *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/">image</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/image/#NineSlice">NineSlice</a>     <span class="comment">// 背景パネル画像</span>
+<span id="UIConfig.ArrowImage"></span>    ArrowImage      *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#GraphicImage">GraphicImage</a> <span class="comment">// 矢印画像</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="DefaultUIConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/ui.go?s=829:860#L16">DefaultUIConfig</a>
+					<a class="permalink" href="index.html#DefaultUIConfig">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func DefaultUIConfig() <a href="index.html#UIConfig">UIConfig</a></pre>
+				<p>DefaultUIConfig はデフォルトのUI設定を返す
+
+				
+				
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.24.5.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8888/LICENSE">BSD license</a>.<br>
+<a href="https://golang.org/doc/tos.html">Terms of Service</a> |
+<a href="https://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+</body>
+</html>

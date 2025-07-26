@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.4";</script>
+<script>var goVersion = "go1.24.5";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -520,7 +520,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnResume">func (st *MessageState) OnResume(_ w.World)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnStart">func (st *MessageState) OnStart(_ w.World)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnStart">func (st *MessageState) OnStart(world w.World)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.OnStop">func (st *MessageState) OnStop(_ w.World)</a></dd>
@@ -529,7 +529,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.String">func (st MessageState) String() string</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.Update">func (st *MessageState) Update(world w.World) es.Transition</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.Update">func (st *MessageState) Update(_ w.World) es.Transition</a></dd>
 				
 			
 			
@@ -619,7 +619,7 @@
 		
 			
 			
-			<h2 id="GetRaidEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=1681:1728#L36">GetRaidEvent1Factories</a>
+			<h2 id="GetRaidEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=1693:1740#L36">GetRaidEvent1Factories</a>
 				<a class="permalink" href="index.html#GetRaidEvent1Factories">&#xb6;</a>
 				
 				
@@ -731,7 +731,7 @@
 		
 			
 			
-			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2356:2414#L60">NewExecStateWithFunc</a>
+			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2364:2422#L62">NewExecStateWithFunc</a>
 				<a class="permalink" href="index.html#NewExecStateWithFunc">&#xb6;</a>
 				
 				
@@ -745,7 +745,7 @@
 		
 			
 			
-			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2743:2775#L72">NewGameOverState</a>
+			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2751:2783#L74">NewGameOverState</a>
 				<a class="permalink" href="index.html#NewGameOverState">&#xb6;</a>
 				
 				
@@ -801,7 +801,7 @@
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2577:2609#L67">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2585:2617#L69">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -2365,14 +2365,12 @@
 		
 			
 			
-			<h2 id="MessageState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=598:746#L7">MessageState</a>
+			<h2 id="MessageState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=449:715#L6">MessageState</a>
 				<a class="permalink" href="index.html#MessageState">&#xb6;</a>
 				
 				
 			</h2>
 			<p>MessageState はメッセージ表示用のステート
-FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
-最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 
 			<pre>type MessageState struct {
     <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>
@@ -2392,7 +2390,7 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 
 			
 				
-				<h3 id="MessageState.Draw">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1991:2052#L64">Draw</a>
+				<h3 id="MessageState.Draw">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=4461:4522#L157">Draw</a>
 					<a class="permalink" href="index.html#MessageState.Draw">&#xb6;</a>
 					
 					
@@ -2405,7 +2403,7 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 				
 			
 				
-				<h3 id="MessageState.OnPause">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=950:992#L25">OnPause</a>
+				<h3 id="MessageState.OnPause">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=919:961#L30">OnPause</a>
 					<a class="permalink" href="index.html#MessageState.OnPause">&#xb6;</a>
 					
 					
@@ -2418,7 +2416,7 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 				
 			
 				
-				<h3 id="MessageState.OnResume">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1061:1104#L28">OnResume</a>
+				<h3 id="MessageState.OnResume">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1030:1073#L33">OnResume</a>
 					<a class="permalink" href="index.html#MessageState.OnResume">&#xb6;</a>
 					
 					
@@ -2431,12 +2429,12 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 				
 			
 				
-				<h3 id="MessageState.OnStart">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1172:1214#L31">OnStart</a>
+				<h3 id="MessageState.OnStart">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1141:1187#L36">OnStart</a>
 					<a class="permalink" href="index.html#MessageState.OnStart">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) OnStart(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
 				<p>OnStart はステートが開始される際に呼ばれる
 
 				
@@ -2444,7 +2442,7 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 				
 			
 				
-				<h3 id="MessageState.OnStop">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1367:1408#L38">OnStop</a>
+				<h3 id="MessageState.OnStop">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=3293:3334#L107">OnStop</a>
 					<a class="permalink" href="index.html#MessageState.OnStop">&#xb6;</a>
 					
 					
@@ -2457,7 +2455,7 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 				
 			
 				
-				<h3 id="MessageState.String">func (MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=748:786#L16">String</a>
+				<h3 id="MessageState.String">func (MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=717:755#L21">String</a>
 					<a class="permalink" href="index.html#MessageState.String">&#xb6;</a>
 					
 					
@@ -2469,12 +2467,12 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 				
 			
 				
-				<h3 id="MessageState.Update">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1478:1537#L41">Update</a>
+				<h3 id="MessageState.Update">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=3404:3459#L110">Update</a>
 					<a class="permalink" href="index.html#MessageState.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
+				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
 				<p>Update はメッセージステートの更新処理を行う
 
 				
@@ -2493,7 +2491,7 @@ FIXME: 最後のpopが行われたときに、遷移先でもenterが押され�
 
 
 <div id="footer">
-Build version go1.24.4.<br>
+Build version go1.24.5.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,
