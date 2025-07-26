@@ -894,7 +894,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 // 敵遭遇フェーズ
 
 // initEnemyEncounterPhase は敵遭遇フェーズの初期化を行う
-func (st *BattleState) initEnemyEncounterPhase(world w.World) {
+func (st *BattleState) initEnemyEncounterPhase(_ w.World) {
 	// 「敵が現れた」メッセージをログに追加
 	gamelog.BattleLog.Append("敵が現れた。")
 
