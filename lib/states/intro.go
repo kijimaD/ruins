@@ -26,6 +26,7 @@ type IntroState struct {
 
 	// typewriter関連フィールド
 	messageHandler   *typewriter.MessageHandler
+	uiBuilder        *typewriter.MessageUIBuilder
 	messageContainer *widget.Container
 }
 
@@ -34,16 +35,13 @@ func (st IntroState) String() string {
 }
 
 var introTexts = []string{
-	"戦争が終わり、街には復興の槌音が響く。",
-	"古い言い伝えによると、\n地下深くに眠る遺跡の最下層には珠があり、\nどんな願いも叶えるとされる。",
-	"多くの人は迷信だと笑うが、\n遺跡の不思議な技術を見れば、\n完全に否定することもできない。",
 	"母が倒れてから、もう三ヶ月になる。",
-	"虚脱症。原因不明の病気で、\n現代医学では治療法が確立されていない。",
-	"一部では『珠の力で治る』という話もあるが、\n医学界では相手にされていない。",
-	"それでも、俺には他に方法がない。",
-	"探索者登録番号二八四七、十七歳男性。",
-	"目的：遺跡探索および珠の回収。",
-	"母さん、必ず帰る。",
+	"医者は首を振るばかりで、有効な治療法はないと言った。",
+	"それでも、俺には諦めることができない。",
+	"古い言い伝えがある。",
+	"「遺跡」の最下層の「珠」は、どんな願いも叶えるという。",
+	"迷信だと笑われても構わない。",
+	"他に方法がないのだから。",
 }
 
 var introBgImages = []string{
@@ -52,10 +50,6 @@ var introBgImages = []string{
 	"bg_urban1",
 	"bg_crystal1",
 	"bg_crystal1",
-	"bg_crystal1",
-	"bg_crystal1",
-	"bg_jungle1",
-	"bg_jungle1",
 	"bg_jungle1",
 }
 
@@ -89,11 +83,17 @@ func (st *IntroState) OnStart(world w.World) {
 	// MessageHandlerを初期化
 	st.messageHandler = typewriter.NewMessageHandler(typewriter.DialogConfig(), st.keyboardInput)
 
-	// コールバックを設定
-	st.messageHandler.SetOnUpdateUI(func(text string) {
-		st.currentText = text
-		st.updateMessageContainer(world)
-	})
+	// UIBuilderを初期化
+	res := world.Resources.UIResources
+	uiConfig := typewriter.DefaultUIConfig()
+	uiConfig.TextFace = (*world.Resources.DefaultFaces)["kappa"]
+	uiConfig.TextColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+	if res != nil {
+		uiConfig.ArrowImage = res.ComboButton.Graphic
+	}
+	st.uiBuilder = typewriter.NewMessageUIBuilder(st.messageHandler, uiConfig)
+
+	// コールバックを設定（message stateではSetOnUpdateUIは使用しない）
 
 	st.messageHandler.SetOnComplete(func() bool {
 		// 次のテキストに進む
@@ -153,6 +153,13 @@ func (st *IntroState) Update(world w.World) es.Transition {
 	if shouldComplete {
 		// 全てのテキストが完了
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
+	}
+
+	// UIBuilderが存在する場合はUI更新（message stateと同様）
+	if st.uiBuilder != nil {
+		st.uiBuilder.Update()
+		// UIBuilderの更新後、UIを再作成（message stateと同様）
+		st.ui = st.initUI(world)
 	}
 
 	st.ui.Update()
@@ -230,7 +237,16 @@ func (st *IntroState) initUI(world w.World) *ebitenui.UI {
 func (st *IntroState) updateMessageContainer(world w.World) {
 	st.messageContainer.RemoveChildren()
 
-	// テキストを左寄せで表示
+	// UIBuilderが存在する場合はそのコンテナを使用（message stateと同様）
+	if st.uiBuilder != nil {
+		typewriterContainer := st.uiBuilder.GetContainer()
+		if typewriterContainer != nil {
+			st.messageContainer.AddChild(typewriterContainer)
+			return
+		}
+	}
+
+	// フォールバック: 従来のテキスト表示
 	textWidget := widget.NewText(
 		widget.TextOpts.Text(st.currentText, (*world.Resources.DefaultFaces)["kappa"], color.RGBA{R: 255, G: 255, B: 255, A: 255}),
 		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
