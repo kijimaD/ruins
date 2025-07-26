@@ -75,7 +75,7 @@ func (st *MessageState) OnStart(world w.World) {
 func (st *MessageState) createUI() *ebitenui.UI {
 	// メッセージエリアの高さを設定
 	messageHeight := 100
-	
+
 	// GridLayoutを使用して中央配置
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewGridLayout(
@@ -100,7 +100,7 @@ func (st *MessageState) createUI() *ebitenui.UI {
 				widget.RowLayoutOpts.Padding(widget.Insets{Left: 20}),
 			)),
 		)
-		
+
 		typewriterContainer := st.uiBuilder.GetContainer()
 		centerArea.AddChild(typewriterContainer)
 		rootContainer.AddChild(centerArea)
@@ -117,7 +117,7 @@ func (st *MessageState) createUI() *ebitenui.UI {
 func (st *MessageState) OnStop(_ w.World) {}
 
 // Update はメッセージステートの更新処理を行う
-func (st *MessageState) Update(world w.World) es.Transition {
+func (st *MessageState) Update(_ w.World) es.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransQuit}
 	}

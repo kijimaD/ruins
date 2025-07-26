@@ -189,4 +189,3 @@ func (b *MessageUIBuilder) createContainer() *widget.Container {
 
 	return container
 }
-
