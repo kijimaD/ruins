@@ -73,24 +73,42 @@ func (st *MessageState) OnStart(world w.World) {
 
 // createUI はtypewriterのコンテナを組み込んだUIを作成
 func (st *MessageState) createUI() *ebitenui.UI {
-	// ルートコンテナ（中央配置）
+	// メッセージエリアの高さを設定
+	messageHeight := 100
+	
+	// GridLayoutを使用して中央配置
 	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.Layout(widget.NewGridLayout(
+			widget.GridLayoutOpts.Columns(1),
+			widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, false, true}), // 上下伸縮、中央固定
+			widget.GridLayoutOpts.Spacing(0, 0),
+		)),
 	)
 
-	// typewriterのコンテナを中央に配置
-	messageWrapper := widget.NewContainer(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionCenter,
-			VerticalPosition:   widget.AnchorLayoutPositionCenter,
-		})),
-	)
+	// 上部の空きスペース
+	topSpacer := widget.NewContainer()
+	rootContainer.AddChild(topSpacer)
 
-	// UIBuilderから最新のコンテナを取得
+	// 中央のメッセージエリア
 	if st.uiBuilder != nil {
-		messageWrapper.AddChild(st.uiBuilder.GetContainer())
+		centerArea := widget.NewContainer(
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.MinSize(0, messageHeight),
+			),
+			widget.ContainerOpts.Layout(widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+				widget.RowLayoutOpts.Padding(widget.Insets{Left: 20}),
+			)),
+		)
+		
+		typewriterContainer := st.uiBuilder.GetContainer()
+		centerArea.AddChild(typewriterContainer)
+		rootContainer.AddChild(centerArea)
 	}
-	rootContainer.AddChild(messageWrapper)
+
+	// 下部の空きスペース
+	bottomSpacer := widget.NewContainer()
+	rootContainer.AddChild(bottomSpacer)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
