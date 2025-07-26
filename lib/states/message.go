@@ -8,19 +8,24 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/typewriter"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MessageState はメッセージ表示用のステート
-// FIXME: 最後のpopが行われたときに、遷移先でもenterが押された扱いになる...
-// 最後のenterを押す → 元のstateに戻る → 遷移先でenterが押される
 type MessageState struct {
 	es.BaseState
-	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 
 	text     string
 	textFunc *func() string
+
+	// タイプライター機能
+	messageHandler *typewriter.MessageHandler
+	uiBuilder      *typewriter.MessageUIBuilder
+
+	// UI
+	ui *ebitenui.UI
 }
 
 func (st MessageState) String() string {
@@ -38,33 +43,121 @@ func (st *MessageState) OnPause(_ w.World) {}
 func (st *MessageState) OnResume(_ w.World) {}
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *MessageState) OnStart(_ w.World) {
+func (st *MessageState) OnStart(world w.World) {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
+
+	// タイプライター初期化
+	if st.messageHandler == nil {
+		// MessageHandlerを初期化
+		st.messageHandler = typewriter.NewMessageHandler(typewriter.BattleConfig(), st.keyboardInput)
+
+		// UIBuilderを初期化
+		res := world.Resources.UIResources
+		uiConfig := typewriter.DefaultUIConfig()
+		uiConfig.TextFace = res.Text.Face
+		uiConfig.TextColor = styles.TextColor
+		uiConfig.PanelImage = res.Panel.Image
+		uiConfig.ArrowImage = res.ComboButton.Graphic
+		st.uiBuilder = typewriter.NewMessageUIBuilder(st.messageHandler, uiConfig)
+
+		// 初回UIを作成
+		st.ui = st.createUI()
+
+		if st.text != "" {
+			st.messageHandler.Start(st.text)
+		}
+	}
+}
+
+// createUI はtypewriterのコンテナを組み込んだUIを作成
+func (st *MessageState) createUI() *ebitenui.UI {
+	// メッセージエリアの高さを設定
+	messageHeight := 100
+
+	// GridLayoutを使用して中央配置
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewGridLayout(
+			widget.GridLayoutOpts.Columns(1),
+			widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, false, true}), // 上下伸縮、中央固定
+			widget.GridLayoutOpts.Spacing(0, 0),
+		)),
+	)
+
+	// 上部の空きスペース
+	topSpacer := widget.NewContainer()
+	rootContainer.AddChild(topSpacer)
+
+	// 中央のメッセージエリア
+	if st.uiBuilder != nil {
+		centerArea := widget.NewContainer(
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.MinSize(0, messageHeight),
+			),
+			widget.ContainerOpts.Layout(widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+				widget.RowLayoutOpts.Padding(widget.Insets{Left: 20}),
+			)),
+		)
+
+		typewriterContainer := st.uiBuilder.GetContainer()
+		centerArea.AddChild(typewriterContainer)
+		rootContainer.AddChild(centerArea)
+	}
+
+	// 下部の空きスペース
+	bottomSpacer := widget.NewContainer()
+	rootContainer.AddChild(bottomSpacer)
+
+	return &ebitenui.UI{Container: rootContainer}
 }
 
 // OnStop はステートが停止される際に呼ばれる
 func (st *MessageState) OnStop(_ w.World) {}
 
 // Update はメッセージステートの更新処理を行う
-func (st *MessageState) Update(world w.World) es.Transition {
-	st.ui = st.reloadUI(world)
-
+func (st *MessageState) Update(_ w.World) es.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransQuit}
 	}
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return es.Transition{Type: es.TransPop}
+
+	// タイプライター処理
+	if st.messageHandler != nil {
+		// MessageHandlerに処理を委譲し、完了状態をチェック
+		shouldComplete := st.messageHandler.Update()
+		if shouldComplete {
+			return es.Transition{Type: es.TransPop}
+		}
 	}
 
+	// textFunc による動的テキスト更新
 	if st.textFunc != nil {
 		f := *st.textFunc
-		st.text = f()
+		newText := f()
 		st.textFunc = nil
+
+		// 新しいテキストの場合
+		if newText != st.text {
+			st.text = newText
+
+			if st.messageHandler != nil {
+				st.messageHandler.Start(st.text)
+			}
+		}
 	}
 
-	st.ui.Update()
+	// UIBuilderが存在する場合はUI更新
+	if st.uiBuilder != nil {
+		st.uiBuilder.Update()
+		// UIBuilderの更新後、UIを再作成
+		st.ui = st.createUI()
+	}
+
+	// UI更新
+	if st.ui != nil {
+		st.ui.Update()
+	}
 
 	// BaseStateの共通処理を使用
 	return st.ConsumeTransition()
@@ -72,24 +165,7 @@ func (st *MessageState) Update(world w.World) es.Transition {
 
 // Draw はゲームステートの描画処理を行う
 func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
-	st.ui.Draw(screen)
-}
-
-func (st *MessageState) reloadUI(world w.World) *ebitenui.UI {
-	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.NewInsetsSimple(5)))),
-	)
-	res := world.Resources.UIResources
-	text := widget.NewText(
-
-		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionCenter,
-			VerticalPosition:   widget.AnchorLayoutPositionCenter,
-		})),
-		widget.TextOpts.Text(st.text, res.Text.Face, styles.TextColor),
-		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
-	)
-	rootContainer.AddChild(text)
-
-	return &ebitenui.UI{Container: rootContainer}
+	if st.ui != nil {
+		st.ui.Draw(screen)
+	}
 }

@@ -765,21 +765,21 @@ func TestLoggerIntegration(t *testing.T) {
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
-		// BattleLogをクリア
-		gamelog.BattleLog.Flush()
+		// テスト専用のBattleLogインスタンスを作成
+		testBattleLog := &gamelog.SafeSlice{}
 
 		player := createTestPlayerEntity(world, 100, 50)
 		processor := NewProcessor()
 
-		// battle_command.goと同じ方法でダメージエフェクトを実行
+		// テスト専用のBattleLogを使用してダメージエフェクトを実行
 		damageEffect := Damage{Amount: 25, Source: DamageSourceWeapon}
-		processor.AddEffectWithLogger(damageEffect, nil, &gamelog.BattleLog, player)
+		processor.AddEffectWithLogger(damageEffect, nil, testBattleLog, player)
 
 		err = processor.Execute(world)
 		assert.NoError(t, err)
 
-		// BattleLogからログを取得して確認
-		logs := gamelog.BattleLog.Get()
+		// テスト専用ログから確認
+		logs := testBattleLog.Get()
 		assert.Len(t, logs, 1)
 		assert.Contains(t, logs[0], "に25のダメージ。")
 	})
