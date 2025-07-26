@@ -146,6 +146,8 @@ func (st *BattleState) handlePhaseInitialization(world w.World) {
 	}
 
 	switch v := st.phase.(type) {
+	case *phaseEnemyEncounter:
+		st.initEnemyEncounterPhase(world)
 	case *phaseChoosePolicy:
 		st.initChoosePolicyPhase(world)
 	case *phaseChooseAction:
@@ -252,8 +254,9 @@ func (st *BattleState) getAllyEntities(world w.World) []ecs.Entity {
 func (st *BattleState) handlePhaseUpdate(world w.World) es.Transition {
 	switch v := st.phase.(type) {
 	case nil:
-		// 戦闘ステート開始直後に実行される
-		st.phase = &phaseChoosePolicy{}
+		st.phase = &phaseEnemyEncounter{}
+	case *phaseEnemyEncounter:
+		return st.handleEnemyEncounterPhase(world)
 	case *phaseChoosePolicy:
 	case *phaseChooseAction:
 	case *phaseChooseTarget:
@@ -885,4 +888,31 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	resultWindow.SetLocation(rect)
 
 	return resultWindow
+}
+
+// ================
+// 敵遭遇フェーズ
+
+// initEnemyEncounterPhase は敵遭遇フェーズの初期化を行う
+func (st *BattleState) initEnemyEncounterPhase(_ w.World) {
+	// 「敵が現れた」メッセージをログに追加
+	gamelog.BattleLog.Append("敵が現れた。")
+
+	// クリック待ち状態にする
+	st.isWaitClick = true
+}
+
+// handleEnemyEncounterPhase は敵遭遇フェーズの更新処理を行う
+func (st *BattleState) handleEnemyEncounterPhase(world w.World) es.Transition {
+	// メッセージを表示
+	st.reloadMsg(world)
+
+	// エンターキーが押されたら次のフェーズに進む
+	if st.keyboardInput.IsEnterJustPressedOnce() {
+		st.isWaitClick = false
+		gamelog.BattleLog.Flush() // メッセージをクリア
+		st.phase = &phaseChoosePolicy{}
+	}
+
+	return es.Transition{Type: es.TransNone}
 }
