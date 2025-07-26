@@ -25,11 +25,11 @@ func GetItemGetEvent1Factories() []es.StateFactory {
 	factories = then(factories, NewExecStateWithFunc(func(world w.World) {
 		// TODO: アイテム入手テーブルから獲得するようにする
 		worldhelper.PlusAmount("鉄", 1, world)
-		gamelog.SceneLog.Append("鉄を1個手に入れた")
+		gamelog.SceneLog.Append("鉄を1個手に入れた。")
 		worldhelper.PlusAmount("木の棒", 1, world)
-		gamelog.SceneLog.Append("木の棒を1個手に入れた")
+		gamelog.SceneLog.Append("木の棒を1個手に入れた。")
 		worldhelper.PlusAmount("フェライトコア", 1, world)
-		gamelog.SceneLog.Append("フェライトコアを2個手に入れた")
+		gamelog.SceneLog.Append("フェライトコアを2個手に入れた。")
 	}))
 	factories = then(factories, func() es.State {
 		return &MessageState{
