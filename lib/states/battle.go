@@ -60,7 +60,7 @@ type BattleState struct {
 
 	// メニューコンポーネント
 	currentMenu   *menu.Menu
-	menuUIBuilder *menu.MenuUIBuilder
+	menuUIBuilder *menu.UIBuilder
 }
 
 func (st BattleState) String() string {
@@ -83,8 +83,8 @@ func (st *BattleState) OnStart(world w.World) {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 
-	// MenuUIBuilderを初期化
-	st.menuUIBuilder = menu.NewMenuUIBuilder(world)
+	// UIBuilderを初期化
+	st.menuUIBuilder = menu.NewUIBuilder(world)
 
 	_ = worldhelper.SpawnEnemy(world, "軽戦車")
 	_ = worldhelper.SpawnEnemy(world, "火の玉")
@@ -358,7 +358,7 @@ const (
 
 func (st *BattleState) reloadPolicy(_ w.World) {
 	// メニューアイテムを作成
-	items := []menu.MenuItem{
+	items := []menu.Item{
 		{
 			ID:       "attack",
 			Label:    string(policyEntryAttack),
@@ -378,7 +378,7 @@ func (st *BattleState) reloadPolicy(_ w.World) {
 	}
 
 	// コールバックの設定
-	callbacks := menu.MenuCallbacks{
+	callbacks := menu.Callbacks{
 		OnSelect: st.handlePolicySelect,
 		OnFocusChange: st.handleMenuFocusChange,
 	}
@@ -388,7 +388,7 @@ func (st *BattleState) reloadPolicy(_ w.World) {
 }
 
 // handlePolicySelect は戦略選択の処理
-func (st *BattleState) handlePolicySelect(_ int, item menu.MenuItem) {
+func (st *BattleState) handlePolicySelect(_ int, item menu.Item) {
 	entry, ok := item.UserData.(policyEntry)
 	if !ok {
 		log.Printf("Invalid policy entry type: %T", item.UserData)
@@ -420,8 +420,8 @@ func (st *BattleState) reloadAction(world w.World, currentPhase *phaseChooseActi
 	}
 
 	// コールバックの設定
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(_ int, item menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(_ int, item menu.Item) {
 			st.handleActionSelect(item, currentPhase)
 		},
 		OnFocusChange: func(_, newIndex int) {
@@ -487,12 +487,12 @@ func (st *BattleState) addDefaultAttack(world w.World, usableCards *[]ecs.Entity
 }
 
 // createActionMenuItems はアクションメニューアイテムを作成
-func (st *BattleState) createActionMenuItems(world w.World, usableCards, unusableCards []ecs.Entity) []menu.MenuItem {
-	items := make([]menu.MenuItem, len(usableCards))
+func (st *BattleState) createActionMenuItems(world w.World, usableCards, unusableCards []ecs.Entity) []menu.Item {
+	items := make([]menu.Item, len(usableCards))
 	for i, entity := range usableCards {
 		name := world.Components.Name.Get(entity).(*gc.Name)
 		card := world.Components.Card.Get(entity).(*gc.Card)
-		items[i] = menu.MenuItem{
+		items[i] = menu.Item{
 			ID:       fmt.Sprintf("card_%d", entity),
 			Label:    fmt.Sprintf("%s (%d)", name.Name, card.Cost),
 			UserData: entity,
@@ -503,7 +503,7 @@ func (st *BattleState) createActionMenuItems(world w.World, usableCards, unusabl
 	for _, entity := range unusableCards {
 		name := world.Components.Name.Get(entity).(*gc.Name)
 		card := world.Components.Card.Get(entity).(*gc.Card)
-		items = append(items, menu.MenuItem{
+		items = append(items, menu.Item{
 			ID:       fmt.Sprintf("card_disabled_%d", entity),
 			Label:    fmt.Sprintf("%s (%d)", name.Name, card.Cost),
 			UserData: entity,
@@ -515,7 +515,7 @@ func (st *BattleState) createActionMenuItems(world w.World, usableCards, unusabl
 }
 
 // handleActionSelect はアクション選択の処理
-func (st *BattleState) handleActionSelect(item menu.MenuItem, currentPhase *phaseChooseAction) {
+func (st *BattleState) handleActionSelect(item menu.Item, currentPhase *phaseChooseAction) {
 	cardEntity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Printf("Invalid card entity type: %T", item.UserData)
@@ -530,7 +530,7 @@ func (st *BattleState) handleActionSelect(item menu.MenuItem, currentPhase *phas
 }
 
 // handleActionFocusChange はアクションフォーカス変更の処理
-func (st *BattleState) handleActionFocusChange(world w.World, items []menu.MenuItem, newIndex int) {
+func (st *BattleState) handleActionFocusChange(world w.World, items []menu.Item, newIndex int) {
 	if newIndex >= 0 && newIndex < len(items) {
 		if entity, ok := items[newIndex].UserData.(ecs.Entity); ok {
 			st.selectedItem = entity
@@ -575,8 +575,8 @@ func (st *BattleState) reloadTarget(world w.World, currentPhase *phaseChooseTarg
 	items := st.createTargetMenuItems(world, enemies)
 
 	// コールバックの設定
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(_ int, item menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(_ int, item menu.Item) {
 			st.handleTargetSelect(world, item, currentPhase)
 		},
 		OnFocusChange: st.handleMenuFocusChange,
@@ -603,11 +603,11 @@ func (st *BattleState) collectLiveEnemies(world w.World) []ecs.Entity {
 }
 
 // createTargetMenuItems はターゲットメニューアイテムを作成
-func (st *BattleState) createTargetMenuItems(world w.World, enemies []ecs.Entity) []menu.MenuItem {
-	items := make([]menu.MenuItem, len(enemies))
+func (st *BattleState) createTargetMenuItems(world w.World, enemies []ecs.Entity) []menu.Item {
+	items := make([]menu.Item, len(enemies))
 	for i, entity := range enemies {
 		name := world.Components.Name.Get(entity).(*gc.Name)
-		items[i] = menu.MenuItem{
+		items[i] = menu.Item{
 			ID:       fmt.Sprintf("enemy_%d", entity),
 			Label:    name.Name,
 			UserData: entity,
@@ -617,7 +617,7 @@ func (st *BattleState) createTargetMenuItems(world w.World, enemies []ecs.Entity
 }
 
 // handleTargetSelect はターゲット選択の処理
-func (st *BattleState) handleTargetSelect(world w.World, item menu.MenuItem, currentPhase *phaseChooseTarget) {
+func (st *BattleState) handleTargetSelect(world w.World, item menu.Item, currentPhase *phaseChooseTarget) {
 	targetEntity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Printf("Invalid target entity type: %T", item.UserData)
@@ -647,10 +647,10 @@ func (st *BattleState) handleTargetSelect(world w.World, item menu.MenuItem, cur
 // 共通メニュー操作 ================
 
 // createAndShowMenu はメニューを作成して表示
-func (st *BattleState) createAndShowMenu(items []menu.MenuItem, callbacks menu.MenuCallbacks) {
+func (st *BattleState) createAndShowMenu(items []menu.Item, callbacks menu.Callbacks) {
 	st.selectContainer.RemoveChildren()
 
-	config := menu.MenuConfig{
+	config := menu.Config{
 		Items:          items,
 		InitialIndex:   0,
 		WrapNavigation: true,

@@ -46,13 +46,13 @@
 //
 //	// 設定でコンポーネントを構成
 //	menu := menu.NewMenu(menu.MenuConfig{
-//		Items: []menu.MenuItem{
+//		Items: []menu.Item{
 //			{ID: "start", Label: "ゲーム開始"},
 //			{ID: "exit", Label: "終了"},
 //		},
 //		WrapNavigation: true,
 //	}, menu.MenuCallbacks{
-//		OnSelect: func(index int, item menu.MenuItem) {
+//		OnSelect: func(index int, item menu.Item) {
 //			// ビジネスロジック
 //			switch item.ID {
 //			case "start":

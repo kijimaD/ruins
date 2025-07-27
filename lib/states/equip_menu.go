@@ -121,15 +121,15 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// TabMenuの設定
 	tabs := st.createTabs(world)
-	config := tabmenu.TabMenuConfig{
+	config := tabmenu.Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
 		WrapNavigation:   true,
 	}
 
-	callbacks := tabmenu.TabMenuCallbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.MenuItem) {
+	callbacks := tabmenu.Callbacks{
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
 			st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
@@ -141,7 +141,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateCategoryDisplay(world)
 			st.updateAbilityDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.MenuItem) {
+		OnItemChange: func(_ int, _, _ int, item menu.Item) {
 			st.handleItemChange(world, item)
 			st.updateTabDisplay(world)
 		},
@@ -217,8 +217,8 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createAllSlotItems は防具と手札の全スロットのMenuItemを作成する
-func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.MenuItem {
-	items := []menu.MenuItem{}
+func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.Item {
+	items := []menu.Item{}
 
 	// 防具スロットを追加
 	wearSlots := worldhelper.GetWearEquipments(world, member)
@@ -230,7 +230,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 			name = fmt.Sprintf("防具%d: -", i+1)
 		}
 
-		items = append(items, menu.MenuItem{
+		items = append(items, menu.Item{
 			ID:    fmt.Sprintf("wear_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
@@ -252,7 +252,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 			name = fmt.Sprintf("手札%d: -", i+1)
 		}
 
-		items = append(items, menu.MenuItem{
+		items = append(items, menu.Item{
 			ID:    fmt.Sprintf("card_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
@@ -268,7 +268,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.MenuItem) {
+func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
 	if st.isEquipMode {
 		// 装備選択モードの場合
 		st.handleEquipItemSelection(world, item)
@@ -284,7 +284,7 @@ func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, 
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *EquipMenuState) handleItemChange(world w.World, item menu.MenuItem) {
+func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
@@ -689,12 +689,12 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 }
 
 // createEquipMenuItems は装備選択用のMenuItemを作成する
-func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []menu.MenuItem {
-	items := make([]menu.MenuItem, len(entities))
+func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []menu.Item {
+	items := make([]menu.Item, len(entities))
 
 	for i, entity := range entities {
 		name := world.Components.Name.Get(entity).(*gc.Name).Name
-		items[i] = menu.MenuItem{
+		items[i] = menu.Item{
 			ID:       fmt.Sprintf("equip_entity_%d", entity),
 			Label:    name,
 			UserData: entity,
@@ -705,7 +705,7 @@ func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Ent
 }
 
 // handleEquipItemSelection は装備選択時の処理
-func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.MenuItem) {
+func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item) {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Fatal("unexpected item UserData")

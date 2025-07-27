@@ -28,7 +28,7 @@
 //		{
 //			ID:    "items",
 //			Label: "道具",
-//			Items: []menu.MenuItem{
+//			Items: []menu.Item{
 //				{ID: "potion", Label: "ポーション"},
 //				{ID: "scroll", Label: "巻物"},
 //			},
@@ -36,7 +36,7 @@
 //		{
 //			ID:    "equipment",
 //			Label: "装備",
-//			Items: []menu.MenuItem{
+//			Items: []menu.Item{
 //				{ID: "sword", Label: "剣"},
 //				{ID: "armor", Label: "鎧"},
 //			},
@@ -52,7 +52,7 @@
 //	}
 //
 //	callbacks := tabmenu.TabMenuCallbacks{
-//		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+//		OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.Item) {
 //			// アイテム選択時の処理
 //		},
 //		OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {

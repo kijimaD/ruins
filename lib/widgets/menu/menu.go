@@ -6,10 +6,8 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 )
 
-// MenuItem はメニュー項目を表す
-//
-//nolint:revive // MenuItem is clear and commonly used
-type MenuItem struct {
+// Item はメニュー項目を表す
+type Item struct {
 	ID          string
 	Label       string
 	Disabled    bool
@@ -28,31 +26,27 @@ const (
 	Horizontal
 )
 
-// MenuConfig はメニューの設定
-//
-//nolint:revive // MenuConfig is clear and commonly used
-type MenuConfig struct {
-	Items          []MenuItem
+// Config はメニューの設定
+type Config struct {
+	Items          []Item
 	InitialIndex   int
 	WrapNavigation bool        // 端で循環するか
 	Orientation    Orientation // Vertical or Horizontal
 	Columns        int         // グリッド表示時の列数（0=リスト表示）
 }
 
-// MenuCallbacks はメニューのコールバック
-//
-//nolint:revive // MenuCallbacks is clear and commonly used
-type MenuCallbacks struct {
-	OnSelect      func(index int, item MenuItem)
+// Callbacks はメニューのコールバック
+type Callbacks struct {
+	OnSelect      func(index int, item Item)
 	OnCancel      func()
 	OnFocusChange func(oldIndex, newIndex int)
-	OnHover       func(index int, item MenuItem)
+	OnHover       func(index int, item Item)
 }
 
 // Menu は共通メニューコンポーネント
 type Menu struct {
-	config    MenuConfig
-	callbacks MenuCallbacks
+	config    Config
+	callbacks Callbacks
 
 	// 状態
 	focusedIndex int
@@ -67,7 +61,7 @@ type Menu struct {
 }
 
 // NewMenu はメニューを作成する
-func NewMenu(config MenuConfig, callbacks MenuCallbacks) *Menu {
+func NewMenu(config Config, callbacks Callbacks) *Menu {
 	m := &Menu{
 		config:       config,
 		callbacks:    callbacks,
@@ -108,7 +102,7 @@ func (m *Menu) SetFocusedIndex(index int) {
 }
 
 // GetItems はメニュー項目を返す
-func (m *Menu) GetItems() []MenuItem {
+func (m *Menu) GetItems() []Item {
 	return m.config.Items
 }
 
