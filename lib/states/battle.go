@@ -145,33 +145,13 @@ func (st *BattleState) handlePhaseInitialization(world w.World) {
 		return
 	}
 
-	switch v := st.phase.(type) {
-	case *phaseEnemyEncounter:
-		st.initEnemyEncounterPhase(world)
-	case *phaseChoosePolicy:
-		st.initChoosePolicyPhase(world)
-	case *phaseChooseAction:
-		st.reloadAction(world, v)
-	case *phaseChooseTarget:
-		st.reloadTarget(world, v)
-	case *phaseEnemyActionSelect:
-		st.handleEnemyActionSelect(world)
-	case *phaseExecute:
-	case *phaseResult:
-	case *phaseGameOver:
+	// フェーズのOnInitメソッドを呼び出す
+	if st.phase != nil {
+		st.phase.OnInit(st, world)
 	}
 	st.prevPhase = st.phase
 }
 
-// initChoosePolicyPhase は政策選択フェーズの初期化を行う
-func (st *BattleState) initChoosePolicyPhase(world w.World) {
-	var err error
-	st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
-	if err != nil {
-		log.Fatal(err)
-	}
-	st.reloadPolicy(world)
-}
 
 // handleEnemyActionSelect は敵アクション選択フェーズの処理を行う
 func (st *BattleState) handleEnemyActionSelect(world w.World) {
@@ -252,81 +232,15 @@ func (st *BattleState) getAllyEntities(world w.World) []ecs.Entity {
 
 // handlePhaseUpdate は毎回実行されるフェーズ更新処理を行う
 func (st *BattleState) handlePhaseUpdate(world w.World) es.Transition {
-	switch v := st.phase.(type) {
-	case nil:
+	if st.phase == nil {
 		st.phase = &phaseEnemyEncounter{}
-	case *phaseEnemyEncounter:
-		return st.handleEnemyEncounterPhase(world)
-	case *phaseChoosePolicy:
-	case *phaseChooseAction:
-	case *phaseChooseTarget:
-	case *phaseEnemyActionSelect:
-	case *phaseExecute:
-		return st.handleExecutePhase(world)
-	case *phaseResult:
-		return st.handleResultPhase(world, v)
-	case *phaseGameOver:
-		return st.handleGameOverPhase(world)
+		return st.ConsumeTransition()
 	}
-
-	return st.ConsumeTransition()
+	
+	// フェーズのOnUpdateメソッドを呼び出す
+	return st.phase.OnUpdate(st, world)
 }
 
-// handleExecutePhase は実行フェーズの処理を行う
-func (st *BattleState) handleExecutePhase(world w.World) es.Transition {
-	st.updateEnemyListContainer(world)
-	st.reloadExecute(world)
-	st.reloadMsg(world)
-	st.updateMemberContainer(world)
-
-	// 戦闘終了判定
-	if transition := st.checkBattleExtinction(world); transition.Type != es.TransNone {
-		return transition
-	}
-
-	// コマンド実行処理
-	return st.handleCommandExecution(world)
-}
-
-// checkBattleExtinction は戦闘終了条件をチェックする
-func (st *BattleState) checkBattleExtinction(world w.World) es.Transition {
-	switch gs.BattleExtinctionSystem(world) {
-	case gs.BattleExtinctionNone:
-		return es.Transition{Type: es.TransNone}
-	case gs.BattleExtinctionAlly:
-		gamelog.BattleLog.Append("全滅した。")
-		st.phase = &phaseGameOver{}
-		return es.Transition{Type: es.TransNone}
-	case gs.BattleExtinctionMonster:
-		gamelog.BattleLog.Append("敵を全滅させた。")
-		st.phase = &phaseResult{}
-		return es.Transition{Type: es.TransNone}
-	default:
-		return es.Transition{Type: es.TransNone}
-	}
-}
-
-// handleCommandExecution はコマンド実行処理を行う
-func (st *BattleState) handleCommandExecution(world w.World) es.Transition {
-	commandCount := st.countBattleCommands(world)
-	if commandCount > 0 {
-		// 未処理のコマンドがまだ残っている
-		st.isWaitClick = true
-		if st.keyboardInput.IsEnterJustPressedOnce() {
-			gs.BattleCommandSystem(world)
-			st.isWaitClick = false
-		}
-		return es.Transition{Type: es.TransNone}
-	}
-
-	// 処理完了
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.phase = &phaseChoosePolicy{}
-		st.isWaitClick = false
-		gamelog.BattleLog.Flush()
-	}
-	return es.Transition{Type: es.TransNone}
-}
 
 // countBattleCommands は戦闘コマンド数をカウントする
 func (st *BattleState) countBattleCommands(world w.World) int {
@@ -339,33 +253,6 @@ func (st *BattleState) countBattleCommands(world w.World) int {
 	return commandCount
 }
 
-// handleResultPhase は結果フェーズの処理を行う
-func (st *BattleState) handleResultPhase(world w.World, v *phaseResult) es.Transition {
-	st.reloadMsg(world)
-
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		switch v.actionCount {
-		case 0:
-			dropResult := gs.BattleDropSystem(world)
-			st.resultWindow = st.initResultWindow(world, dropResult)
-			st.ui.AddWindow(st.resultWindow)
-		default:
-			return es.Transition{Type: es.TransPop}
-		}
-		v.actionCount++
-	}
-	return es.Transition{Type: es.TransNone}
-}
-
-// handleGameOverPhase はゲームオーバーフェーズの処理を行う
-func (st *BattleState) handleGameOverPhase(world w.World) es.Transition {
-	st.reloadMsg(world)
-
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
-	}
-	return es.Transition{Type: es.TransNone}
-}
 
 // Draw はゲームステートの描画処理を行う
 func (st *BattleState) Draw(_ w.World, screen *ebiten.Image) {
@@ -794,11 +681,6 @@ func (st *BattleState) reloadMsg(world w.World) {
 
 // ================
 
-func (st *BattleState) reloadExecute(world w.World) {
-	st.updateEnemyListContainer(world)
-
-	// 処理を書く...
-}
 
 // メンバー一覧を更新する
 func (st *BattleState) updateMemberContainer(world w.World) {
@@ -890,29 +772,3 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	return resultWindow
 }
 
-// ================
-// 敵遭遇フェーズ
-
-// initEnemyEncounterPhase は敵遭遇フェーズの初期化を行う
-func (st *BattleState) initEnemyEncounterPhase(_ w.World) {
-	// 「敵が現れた」メッセージをログに追加
-	gamelog.BattleLog.Append("敵が現れた。")
-
-	// クリック待ち状態にする
-	st.isWaitClick = true
-}
-
-// handleEnemyEncounterPhase は敵遭遇フェーズの更新処理を行う
-func (st *BattleState) handleEnemyEncounterPhase(world w.World) es.Transition {
-	// メッセージを表示
-	st.reloadMsg(world)
-
-	// エンターキーが押されたら次のフェーズに進む
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.isWaitClick = false
-		gamelog.BattleLog.Flush() // メッセージをクリア
-		st.phase = &phaseChoosePolicy{}
-	}
-
-	return es.Transition{Type: es.TransNone}
-}
