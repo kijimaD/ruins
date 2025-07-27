@@ -20,7 +20,7 @@ type battlePhase interface {
 // 敵遭遇フェーズ（「敵が現れた」メッセージ表示）
 type phaseEnemyEncounter struct{}
 
-func (p *phaseEnemyEncounter) OnInit(st *BattleState, world w.World) {
+func (p *phaseEnemyEncounter) OnInit(st *BattleState, _ w.World) {
 	// 「敵が現れた」メッセージをログに追加
 	gamelog.BattleLog.Append("敵が現れた。")
 	// クリック待ち状態にする
@@ -51,7 +51,7 @@ func (p *phaseChoosePolicy) OnInit(st *BattleState, world w.World) {
 	st.reloadPolicy(world)
 }
 
-func (p *phaseChoosePolicy) OnUpdate(st *BattleState, world w.World) es.Transition {
+func (p *phaseChoosePolicy) OnUpdate(st *BattleState, _ w.World) es.Transition {
 	// 特別な更新処理はない
 	return st.ConsumeTransition()
 }
@@ -65,7 +65,7 @@ func (p *phaseChooseAction) OnInit(st *BattleState, world w.World) {
 	st.reloadAction(world, p)
 }
 
-func (p *phaseChooseAction) OnUpdate(st *BattleState, world w.World) es.Transition {
+func (p *phaseChooseAction) OnUpdate(st *BattleState, _ w.World) es.Transition {
 	// 特別な更新処理はない
 	return st.ConsumeTransition()
 }
@@ -80,7 +80,7 @@ func (p *phaseChooseTarget) OnInit(st *BattleState, world w.World) {
 	st.reloadTarget(world, p)
 }
 
-func (p *phaseChooseTarget) OnUpdate(st *BattleState, world w.World) es.Transition {
+func (p *phaseChooseTarget) OnUpdate(st *BattleState, _ w.World) es.Transition {
 	// 特別な更新処理はない
 	return st.ConsumeTransition()
 }
@@ -91,7 +91,7 @@ func (p *phaseEnemyActionSelect) OnInit(st *BattleState, world w.World) {
 	st.handleEnemyActionSelect(world)
 }
 
-func (p *phaseEnemyActionSelect) OnUpdate(st *BattleState, world w.World) es.Transition {
+func (p *phaseEnemyActionSelect) OnUpdate(st *BattleState, _ w.World) es.Transition {
 	// 特別な更新処理はない
 	return st.ConsumeTransition()
 }
@@ -99,7 +99,7 @@ func (p *phaseEnemyActionSelect) OnUpdate(st *BattleState, world w.World) es.Tra
 // 戦闘実行
 type phaseExecute struct{}
 
-func (p *phaseExecute) OnInit(st *BattleState, world w.World) {
+func (p *phaseExecute) OnInit(_ *BattleState, _ w.World) {
 	// 特別な初期化処理はない
 }
 
@@ -148,7 +148,7 @@ type phaseResult struct {
 	actionCount int
 }
 
-func (p *phaseResult) OnInit(st *BattleState, world w.World) {
+func (p *phaseResult) OnInit(_ *BattleState, _ w.World) {
 	// 特別な初期化処理はない
 }
 
@@ -160,7 +160,7 @@ func (p *phaseResult) OnUpdate(st *BattleState, world w.World) es.Transition {
 			// ドロップ処理
 			dropResult := gs.BattleDropSystem(world)
 			st.resultWindow = st.initResultWindow(world, dropResult)
-			st.ui.AddWindow(st.resultWindow)  // ウィンドウをUIに追加
+			st.ui.AddWindow(st.resultWindow) // ウィンドウをUIに追加
 			st.isWaitClick = true
 			p.actionCount++
 		case 1:
@@ -174,7 +174,7 @@ func (p *phaseResult) OnUpdate(st *BattleState, world w.World) es.Transition {
 
 type phaseGameOver struct{}
 
-func (p *phaseGameOver) OnInit(st *BattleState, world w.World) {
+func (p *phaseGameOver) OnInit(_ *BattleState, _ w.World) {
 	// 特別な初期化処理はない
 }
 

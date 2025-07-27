@@ -152,7 +152,6 @@ func (st *BattleState) handlePhaseInitialization(world w.World) {
 	st.prevPhase = st.phase
 }
 
-
 // handleEnemyActionSelect は敵アクション選択フェーズの処理を行う
 func (st *BattleState) handleEnemyActionSelect(world w.World) {
 	// マスタとして事前に生成されたカードエンティティをメモしておく
@@ -236,11 +235,10 @@ func (st *BattleState) handlePhaseUpdate(world w.World) es.Transition {
 		st.phase = &phaseEnemyEncounter{}
 		return st.ConsumeTransition()
 	}
-	
+
 	// フェーズのOnUpdateメソッドを呼び出す
 	return st.phase.OnUpdate(st, world)
 }
-
 
 // countBattleCommands は戦闘コマンド数をカウントする
 func (st *BattleState) countBattleCommands(world w.World) int {
@@ -252,7 +250,6 @@ func (st *BattleState) countBattleCommands(world w.World) int {
 	}))
 	return commandCount
 }
-
 
 // Draw はゲームステートの描画処理を行う
 func (st *BattleState) Draw(_ w.World, screen *ebiten.Image) {
@@ -681,7 +678,6 @@ func (st *BattleState) reloadMsg(world w.World) {
 
 // ================
 
-
 // メンバー一覧を更新する
 func (st *BattleState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
@@ -771,4 +767,3 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 
 	return resultWindow
 }
-
