@@ -11,7 +11,6 @@ import (
 )
 
 type battlePhase interface {
-	isBattlePhase()
 	// 初期化処理（フェーズ開始時に一度だけ呼ばれる）
 	OnInit(st *BattleState, world w.World)
 	// 更新処理（毎フレーム呼ばれる）
@@ -20,8 +19,6 @@ type battlePhase interface {
 
 // 敵遭遇フェーズ（「敵が現れた」メッセージ表示）
 type phaseEnemyEncounter struct{}
-
-func (p *phaseEnemyEncounter) isBattlePhase() {}
 
 func (p *phaseEnemyEncounter) OnInit(st *BattleState, world w.World) {
 	// 「敵が現れた」メッセージをログに追加
@@ -45,8 +42,6 @@ func (p *phaseEnemyEncounter) OnUpdate(st *BattleState, world w.World) es.Transi
 // 開戦 / 逃走 を選択する
 type phaseChoosePolicy struct{}
 
-func (p *phaseChoosePolicy) isBattlePhase() {}
-
 func (p *phaseChoosePolicy) OnInit(st *BattleState, world w.World) {
 	var err error
 	st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
@@ -69,8 +64,6 @@ type phaseChooseAction struct {
 	owner ecs.Entity
 }
 
-func (p *phaseChooseAction) isBattlePhase() {}
-
 func (p *phaseChooseAction) OnInit(st *BattleState, world w.World) {
 	st.reloadAction(world, p)
 }
@@ -86,8 +79,6 @@ type phaseChooseTarget struct {
 	way   ecs.Entity
 }
 
-func (p *phaseChooseTarget) isBattlePhase() {}
-
 func (p *phaseChooseTarget) OnInit(st *BattleState, world w.World) {
 	st.reloadTarget(world, p)
 }
@@ -98,8 +89,6 @@ func (p *phaseChooseTarget) OnUpdate(st *BattleState, world w.World) es.Transiti
 }
 
 type phaseEnemyActionSelect struct{}
-
-func (p *phaseEnemyActionSelect) isBattlePhase() {}
 
 func (p *phaseEnemyActionSelect) OnInit(st *BattleState, world w.World) {
 	st.handleEnemyActionSelect(world)
@@ -112,8 +101,6 @@ func (p *phaseEnemyActionSelect) OnUpdate(st *BattleState, world w.World) es.Tra
 
 // 戦闘実行
 type phaseExecute struct{}
-
-func (p *phaseExecute) isBattlePhase() {}
 
 func (p *phaseExecute) OnInit(st *BattleState, world w.World) {
 	// 特別な初期化処理はない
@@ -164,8 +151,6 @@ type phaseResult struct {
 	actionCount int
 }
 
-func (p *phaseResult) isBattlePhase() {}
-
 func (p *phaseResult) OnInit(st *BattleState, world w.World) {
 	// 特別な初期化処理はない
 }
@@ -191,8 +176,6 @@ func (p *phaseResult) OnUpdate(st *BattleState, world w.World) es.Transition {
 }
 
 type phaseGameOver struct{}
-
-func (p *phaseGameOver) isBattlePhase() {}
 
 func (p *phaseGameOver) OnInit(st *BattleState, world w.World) {
 	// 特別な初期化処理はない
