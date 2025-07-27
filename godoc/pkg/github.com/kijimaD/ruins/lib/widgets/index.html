@@ -137,13 +137,13 @@ ebitenui/    ← 外部ライブラリの低レベルコンポーネント
 <p>widgetsパッケージの典型的な使用例：
 <pre>// 設定でコンポーネントを構成
 menu := menu.NewMenu(menu.MenuConfig{
-	Items: []menu.MenuItem{
+	Items: []menu.Item{
 		{ID: &quot;start&quot;, Label: &quot;ゲーム開始&quot;},
 		{ID: &quot;exit&quot;, Label: &quot;終了&quot;},
 	},
 	WrapNavigation: true,
 }, menu.MenuCallbacks{
-	OnSelect: func(index int, item menu.MenuItem) {
+	OnSelect: func(index int, item menu.Item) {
 		// ビジネスロジック
 		switch item.ID {
 		case &quot;start&quot;:

@@ -117,7 +117,7 @@
 	{
 		ID:    &quot;items&quot;,
 		Label: &quot;道具&quot;,
-		Items: []menu.MenuItem{
+		Items: []menu.Item{
 			{ID: &quot;potion&quot;, Label: &quot;ポーション&quot;},
 			{ID: &quot;scroll&quot;, Label: &quot;巻物&quot;},
 		},
@@ -125,7 +125,7 @@
 	{
 		ID:    &quot;equipment&quot;,
 		Label: &quot;装備&quot;,
-		Items: []menu.MenuItem{
+		Items: []menu.Item{
 			{ID: &quot;sword&quot;, Label: &quot;剣&quot;},
 			{ID: &quot;armor&quot;, Label: &quot;鎧&quot;},
 		},
@@ -141,7 +141,7 @@ config := tabmenu.TabMenuConfig{
 }
 
 callbacks := tabmenu.TabMenuCallbacks{
-	OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.MenuItem) {
+	OnSelectItem: func(tabIndex int, itemIndex int, tab tabmenu.TabItem, item menu.Item) {
 		// アイテム選択時の処理
 	},
 	OnTabChange: func(oldTabIndex, newTabIndex int, tab tabmenu.TabItem) {
@@ -178,6 +178,16 @@ tabMenu.Update()
 			
 			
 				
+				<dd><a href="index.html#Callbacks">type Callbacks</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Config">type Config</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#TabItem">type TabItem</a></dd>
 				
 				
@@ -186,11 +196,11 @@ tabMenu.Update()
 				<dd><a href="index.html#TabMenu">type TabMenu</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewTabMenu">func NewTabMenu(config TabMenuConfig, callbacks TabMenuCallbacks, keyboardInput input.KeyboardInput) *TabMenu</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewTabMenu">func NewTabMenu(config Config, callbacks Callbacks, keyboardInput input.KeyboardInput) *TabMenu</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.GetCurrentItem">func (tm *TabMenu) GetCurrentItem() menu.MenuItem</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.GetCurrentItem">func (tm *TabMenu) GetCurrentItem() menu.Item</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.GetCurrentItemIndex">func (tm *TabMenu) GetCurrentItemIndex() int</a></dd>
@@ -212,16 +222,6 @@ tabMenu.Update()
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.UpdateTabs">func (tm *TabMenu) UpdateTabs(tabs []TabItem)</a></dd>
-				
-			
-				
-				<dd><a href="index.html#TabMenuCallbacks">type TabMenuCallbacks</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#TabMenuConfig">type TabMenuConfig</a></dd>
-				
 				
 			
 			
@@ -253,17 +253,18 @@ tabMenu.Update()
 		
 			
 			
-			<h2 id="TabItem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=193:267#L1">TabItem</a>
-				<a class="permalink" href="index.html#TabItem">&#xb6;</a>
+			<h2 id="Callbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=531:797#L15">Callbacks</a>
+				<a class="permalink" href="index.html#Callbacks">&#xb6;</a>
 				
 				
 			</h2>
-			<p>TabItem はタブの項目を定義する
+			<p>Callbacks はタブメニューのコールバック
 
-			<pre>type TabItem struct {
-<span id="TabItem.ID"></span>    ID    <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="TabItem.Label"></span>    Label <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="TabItem.Items"></span>    Items []<a href="../menu/index.html">menu</a>.<a href="../menu/index.html#MenuItem">MenuItem</a>
+			<pre>type Callbacks struct {
+<span id="Callbacks.OnSelectItem"></span>    OnSelectItem func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, itemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>)
+<span id="Callbacks.OnCancel"></span>    OnCancel     func()
+<span id="Callbacks.OnTabChange"></span>    OnTabChange  func(oldTabIndex, newTabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>)
+<span id="Callbacks.OnItemChange"></span>    OnItemChange func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, oldItemIndex, newItemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>)
 }
 </pre>
 
@@ -281,7 +282,64 @@ tabMenu.Update()
 		
 			
 			
-			<h2 id="TabMenu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1028:1198#L27">TabMenu</a>
+			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=306:473#L7">Config</a>
+				<a class="permalink" href="index.html#Config">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Config はタブメニューの設定
+
+			<pre>type Config struct {
+<span id="Config.Tabs"></span>    Tabs             []<a href="index.html#TabItem">TabItem</a>
+<span id="Config.InitialTabIndex"></span>    InitialTabIndex  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Config.InitialItemIndex"></span>    InitialItemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Config.WrapNavigation"></span>    WrapNavigation   <a href="http://localhost:8888/pkg/builtin/#bool">bool</a> <span class="comment">// タブ/アイテム両方で端循環するか</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="TabItem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=193:263#L1">TabItem</a>
+				<a class="permalink" href="index.html#TabItem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TabItem はタブの項目を定義する
+
+			<pre>type TabItem struct {
+<span id="TabItem.ID"></span>    ID    <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="TabItem.Label"></span>    Label <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="TabItem.Items"></span>    Items []<a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="TabMenu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=859:1015#L23">TabMenu</a>
 				<a class="permalink" href="index.html#TabMenu">&#xb6;</a>
 				
 				
@@ -303,12 +361,12 @@ tabMenu.Update()
 
 			
 				
-				<h3 id="NewTabMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1249:1358#L38">NewTabMenu</a>
+				<h3 id="NewTabMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1066:1161#L34">NewTabMenu</a>
 					<a class="permalink" href="index.html#NewTabMenu">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewTabMenu(config <a href="index.html#TabMenuConfig">TabMenuConfig</a>, callbacks <a href="index.html#TabMenuCallbacks">TabMenuCallbacks</a>, keyboardInput <a href="../../input/index.html">input</a>.<a href="../../input/index.html#KeyboardInput">KeyboardInput</a>) *<a href="index.html#TabMenu">TabMenu</a></pre>
+				<pre>func NewTabMenu(config <a href="index.html#Config">Config</a>, callbacks <a href="index.html#Callbacks">Callbacks</a>, keyboardInput <a href="../../input/index.html">input</a>.<a href="../../input/index.html#KeyboardInput">KeyboardInput</a>) *<a href="index.html#TabMenu">TabMenu</a></pre>
 				<p>NewTabMenu は新しいTabMenuを作成する
 
 				
@@ -317,12 +375,12 @@ tabMenu.Update()
 
 			
 				
-				<h3 id="TabMenu.GetCurrentItem">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8879:8928#L322">GetCurrentItem</a>
+				<h3 id="TabMenu.GetCurrentItem">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8682:8727#L318">GetCurrentItem</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentItem">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) GetCurrentItem() <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#MenuItem">MenuItem</a></pre>
+				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) GetCurrentItem() <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a></pre>
 				<p>GetCurrentItem は現在のアイテムを返す
 
 				
@@ -330,7 +388,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8515:8559#L309">GetCurrentItemIndex</a>
+				<h3 id="TabMenu.GetCurrentItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8318:8362#L305">GetCurrentItemIndex</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentItemIndex">&#xb6;</a>
 					
 					
@@ -343,7 +401,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentTab">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8638:8680#L314">GetCurrentTab</a>
+				<h3 id="TabMenu.GetCurrentTab">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8441:8483#L310">GetCurrentTab</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentTab">&#xb6;</a>
 					
 					
@@ -356,7 +414,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8364:8407#L304">GetCurrentTabIndex</a>
+				<h3 id="TabMenu.GetCurrentTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=8167:8210#L300">GetCurrentTabIndex</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentTabIndex">&#xb6;</a>
 					
 					
@@ -369,7 +427,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.SetItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=9990:10032#L358">SetItemIndex</a>
+				<h3 id="TabMenu.SetItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=9785:9827#L354">SetItemIndex</a>
 					<a class="permalink" href="index.html#TabMenu.SetItemIndex">&#xb6;</a>
 					
 					
@@ -382,7 +440,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.SetTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=9208:9249#L331">SetTabIndex</a>
+				<h3 id="TabMenu.SetTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=9003:9044#L327">SetTabIndex</a>
 					<a class="permalink" href="index.html#TabMenu.SetTabIndex">&#xb6;</a>
 					
 					
@@ -395,7 +453,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.Update">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=2080:2112#L63">Update</a>
+				<h3 id="TabMenu.Update">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1883:1915#L59">Update</a>
 					<a class="permalink" href="index.html#TabMenu.Update">&#xb6;</a>
 					
 					
@@ -408,7 +466,7 @@ tabMenu.Update()
 				
 			
 				
-				<h3 id="TabMenu.UpdateTabs">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=10377:10422#L371">UpdateTabs</a>
+				<h3 id="TabMenu.UpdateTabs">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=10172:10217#L367">UpdateTabs</a>
 					<a class="permalink" href="index.html#TabMenu.UpdateTabs">&#xb6;</a>
 					
 					
@@ -419,64 +477,6 @@ tabMenu.Update()
 				
 				
 				
-			
-		
-			
-			
-			<h2 id="TabMenuCallbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=685:966#L19">TabMenuCallbacks</a>
-				<a class="permalink" href="index.html#TabMenuCallbacks">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TabMenuCallbacks はタブメニューのコールバック
-
-			<pre>type TabMenuCallbacks struct {
-<span id="TabMenuCallbacks.OnSelectItem"></span>    OnSelectItem func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, itemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#MenuItem">MenuItem</a>)
-<span id="TabMenuCallbacks.OnCancel"></span>    OnCancel     func()
-<span id="TabMenuCallbacks.OnTabChange"></span>    OnTabChange  func(oldTabIndex, newTabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>)
-<span id="TabMenuCallbacks.OnItemChange"></span>    OnItemChange func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, oldItemIndex, newItemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#MenuItem">MenuItem</a>)
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="TabMenuConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=380:554#L9">TabMenuConfig</a>
-				<a class="permalink" href="index.html#TabMenuConfig">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TabMenuConfig はタブメニューの設定
-
-			<pre>type TabMenuConfig struct {
-<span id="TabMenuConfig.Tabs"></span>    Tabs             []<a href="index.html#TabItem">TabItem</a>
-<span id="TabMenuConfig.InitialTabIndex"></span>    InitialTabIndex  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="TabMenuConfig.InitialItemIndex"></span>    InitialItemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="TabMenuConfig.WrapNavigation"></span>    WrapNavigation   <a href="http://localhost:8888/pkg/builtin/#bool">bool</a> <span class="comment">// タブ/アイテム両方で端循環するか</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
 			
 		
 	

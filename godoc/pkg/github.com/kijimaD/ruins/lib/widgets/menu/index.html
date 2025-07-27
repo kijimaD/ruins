@@ -111,7 +111,7 @@
 </ul>
 <h3 id="hdr-Basic_Usage">Basic Usage</h3>
 <pre>// メニュー項目を定義
-items := []menu.MenuItem{
+items := []menu.Item{
 	{ID: &quot;start&quot;, Label: &quot;ゲーム開始&quot;},
 	{ID: &quot;load&quot;, Label: &quot;ロード&quot;},
 	{ID: &quot;exit&quot;, Label: &quot;終了&quot;},
@@ -123,7 +123,7 @@ m := menu.NewMenu(menu.MenuConfig{
 	WrapNavigation: true,
 	Orientation:    menu.Vertical,
 }, menu.MenuCallbacks{
-	OnSelect: func(index int, item menu.MenuItem) {
+	OnSelect: func(index int, item menu.Item) {
 		switch item.ID {
 		case &quot;start&quot;:
 			startNewGame()
@@ -226,10 +226,25 @@ parentContainer.AddChild(container)
 			
 			
 				
+				<dd><a href="index.html#Callbacks">type Callbacks</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Config">type Config</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Item">type Item</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#Menu">type Menu</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewMenu">func NewMenu(config MenuConfig, callbacks MenuCallbacks) *Menu</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMenu">func NewMenu(config Config, callbacks Callbacks) *Menu</a></dd>
 				
 				
 					
@@ -239,7 +254,7 @@ parentContainer.AddChild(container)
 					<dd>&nbsp; &nbsp; <a href="index.html#Menu.GetFocusedIndex">func (m *Menu) GetFocusedIndex() int</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Menu.GetItems">func (m *Menu) GetItems() []MenuItem</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Menu.GetItems">func (m *Menu) GetItems() []Item</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Menu.SetContainer">func (m *Menu) SetContainer(container *widget.Container)</a></dd>
@@ -252,37 +267,22 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<dd><a href="index.html#MenuCallbacks">type MenuCallbacks</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#MenuConfig">type MenuConfig</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#MenuItem">type MenuItem</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#MenuUIBuilder">type MenuUIBuilder</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewMenuUIBuilder">func NewMenuUIBuilder(world w.World) *MenuUIBuilder</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#MenuUIBuilder.BuildUI">func (b *MenuUIBuilder) BuildUI(menu *Menu) *widget.Container</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#MenuUIBuilder.UpdateFocus">func (b *MenuUIBuilder) UpdateFocus(menu *Menu)</a></dd>
-				
-			
-				
 				<dd><a href="index.html#Orientation">type Orientation</a></dd>
 				
+				
+			
+				
+				<dd><a href="index.html#UIBuilder">type UIBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewUIBuilder">func NewUIBuilder(world w.World) *UIBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#UIBuilder.BuildUI">func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#UIBuilder.UpdateFocus">func (b *UIBuilder) UpdateFocus(menu *Menu)</a></dd>
 				
 			
 			
@@ -316,7 +316,97 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="Menu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1369:1628#L43">Menu</a>
+			<h2 id="Callbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=924:1099#L29">Callbacks</a>
+				<a class="permalink" href="index.html#Callbacks">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Callbacks はメニューのコールバック
+
+			<pre>type Callbacks struct {
+<span id="Callbacks.OnSelect"></span>    OnSelect      func(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="index.html#Item">Item</a>)
+<span id="Callbacks.OnCancel"></span>    OnCancel      func()
+<span id="Callbacks.OnFocusChange"></span>    OnFocusChange func(oldIndex, newIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>)
+<span id="Callbacks.OnHover"></span>    OnHover       func(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="index.html#Item">Item</a>)
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=615:872#L20">Config</a>
+				<a class="permalink" href="index.html#Config">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Config はメニューの設定
+
+			<pre>type Config struct {
+<span id="Config.Items"></span>    Items          []<a href="index.html#Item">Item</a>
+<span id="Config.InitialIndex"></span>    InitialIndex   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Config.WrapNavigation"></span>    WrapNavigation <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>        <span class="comment">// 端で循環するか</span>
+<span id="Config.Orientation"></span>    Orientation    <a href="index.html#Orientation">Orientation</a> <span class="comment">// Vertical or Horizontal</span>
+<span id="Config.Columns"></span>    Columns        <a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// グリッド表示時の列数（0=リスト表示）</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=178:398#L1">Item</a>
+				<a class="permalink" href="index.html#Item">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Item はメニュー項目を表す
+
+			<pre>type Item struct {
+<span id="Item.ID"></span>    ID          <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Item.Label"></span>    Label       <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="Item.Disabled"></span>    Disabled    <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+<span id="Item.Icon"></span>    Icon        *ebiten.<a href="index.html#Image">Image</a>
+<span id="Item.Description"></span>    Description <a href="http://localhost:8888/pkg/builtin/#string">string</a>      <span class="comment">// ツールチップや説明文</span>
+<span id="Item.UserData"></span>    UserData    interface{} <span class="comment">// 任意のデータを保持</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Menu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1152:1403#L37">Menu</a>
 				<a class="permalink" href="index.html#Menu">&#xb6;</a>
 				
 				
@@ -338,12 +428,12 @@ parentContainer.AddChild(container)
 
 			
 				
-				<h3 id="NewMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1672:1734#L60">NewMenu</a>
+				<h3 id="NewMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1447:1501#L54">NewMenu</a>
 					<a class="permalink" href="index.html#NewMenu">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewMenu(config <a href="index.html#MenuConfig">MenuConfig</a>, callbacks <a href="index.html#MenuCallbacks">MenuCallbacks</a>) *<a href="index.html#Menu">Menu</a></pre>
+				<pre>func NewMenu(config <a href="index.html#Config">Config</a>, callbacks <a href="index.html#Callbacks">Callbacks</a>) *<a href="index.html#Menu">Menu</a></pre>
 				<p>NewMenu はメニューを作成する
 
 				
@@ -352,7 +442,7 @@ parentContainer.AddChild(container)
 
 			
 				
-				<h3 id="Menu.GetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2936:2983#L106">GetContainer</a>
+				<h3 id="Menu.GetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2699:2746#L100">GetContainer</a>
 					<a class="permalink" href="index.html#Menu.GetContainer">&#xb6;</a>
 					
 					
@@ -365,7 +455,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2351:2387#L84">GetFocusedIndex</a>
+				<h3 id="Menu.GetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2118:2154#L78">GetFocusedIndex</a>
 					<a class="permalink" href="index.html#Menu.GetFocusedIndex">&#xb6;</a>
 					
 					
@@ -378,12 +468,12 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetItems">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2828:2864#L101">GetItems</a>
+				<h3 id="Menu.GetItems">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2595:2627#L95">GetItems</a>
 					<a class="permalink" href="index.html#Menu.GetItems">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (m *<a href="index.html#Menu">Menu</a>) GetItems() []<a href="index.html#MenuItem">MenuItem</a></pre>
+				<pre>func (m *<a href="index.html#Menu">Menu</a>) GetItems() []<a href="index.html#Item">Item</a></pre>
 				<p>GetItems はメニュー項目を返す
 
 				
@@ -391,7 +481,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.SetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=3058:3114#L111">SetContainer</a>
+				<h3 id="Menu.SetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2821:2877#L105">SetContainer</a>
 					<a class="permalink" href="index.html#Menu.SetContainer">&#xb6;</a>
 					
 					
@@ -404,7 +494,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.SetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2481:2522#L89">SetFocusedIndex</a>
+				<h3 id="Menu.SetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2248:2289#L83">SetFocusedIndex</a>
 					<a class="permalink" href="index.html#Menu.SetFocusedIndex">&#xb6;</a>
 					
 					
@@ -417,7 +507,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.Update">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2141:2197#L78">Update</a>
+				<h3 id="Menu.Update">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1908:1964#L72">Update</a>
 					<a class="permalink" href="index.html#Menu.Update">&#xb6;</a>
 					
 					
@@ -432,161 +522,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="MenuCallbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1129:1316#L35">MenuCallbacks</a>
-				<a class="permalink" href="index.html#MenuCallbacks">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MenuCallbacks はメニューのコールバック
-
-			<pre>type MenuCallbacks struct {
-<span id="MenuCallbacks.OnSelect"></span>    OnSelect      func(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="index.html#MenuItem">MenuItem</a>)
-<span id="MenuCallbacks.OnCancel"></span>    OnCancel      func()
-<span id="MenuCallbacks.OnFocusChange"></span>    OnFocusChange func(oldIndex, newIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>)
-<span id="MenuCallbacks.OnHover"></span>    OnHover       func(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="index.html#MenuItem">MenuItem</a>)
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="MenuConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=745:1010#L24">MenuConfig</a>
-				<a class="permalink" href="index.html#MenuConfig">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MenuConfig はメニューの設定
-
-			<pre>type MenuConfig struct {
-<span id="MenuConfig.Items"></span>    Items          []<a href="index.html#MenuItem">MenuItem</a>
-<span id="MenuConfig.InitialIndex"></span>    InitialIndex   <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="MenuConfig.WrapNavigation"></span>    WrapNavigation <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>        <span class="comment">// 端で循環するか</span>
-<span id="MenuConfig.Orientation"></span>    Orientation    <a href="index.html#Orientation">Orientation</a> <span class="comment">// Vertical or Horizontal</span>
-<span id="MenuConfig.Columns"></span>    Columns        <a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// グリッド表示時の列数（0=リスト表示）</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="MenuItem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=240:464#L2">MenuItem</a>
-				<a class="permalink" href="index.html#MenuItem">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MenuItem はメニュー項目を表す
-
-			<pre>type MenuItem struct {
-<span id="MenuItem.ID"></span>    ID          <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="MenuItem.Label"></span>    Label       <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="MenuItem.Disabled"></span>    Disabled    <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-<span id="MenuItem.Icon"></span>    Icon        *ebiten.<a href="index.html#Image">Image</a>
-<span id="MenuItem.Description"></span>    Description <a href="http://localhost:8888/pkg/builtin/#string">string</a>      <span class="comment">// ツールチップや説明文</span>
-<span id="MenuItem.UserData"></span>    UserData    interface{} <span class="comment">// 任意のデータを保持</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="MenuUIBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=263:307#L2">MenuUIBuilder</a>
-				<a class="permalink" href="index.html#MenuUIBuilder">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MenuUIBuilder はメニューのUI要素を構築する
-
-			<pre>type MenuUIBuilder struct {
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewMenuUIBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=362:413#L7">NewMenuUIBuilder</a>
-					<a class="permalink" href="index.html#NewMenuUIBuilder">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewMenuUIBuilder(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="index.html#MenuUIBuilder">MenuUIBuilder</a></pre>
-				<p>NewMenuUIBuilder はUIビルダーを作成する
-
-				
-				
-			
-
-			
-				
-				<h3 id="MenuUIBuilder.BuildUI">func (*MenuUIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=515:576#L14">BuildUI</a>
-					<a class="permalink" href="index.html#MenuUIBuilder.BuildUI">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#MenuUIBuilder">MenuUIBuilder</a>) BuildUI(menu *<a href="index.html#Menu">Menu</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
-				<p>BuildUI はメニューのUI要素を構築する
-
-				
-				
-				
-			
-				
-				<h3 id="MenuUIBuilder.UpdateFocus">func (*MenuUIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=3226:3273#L111">UpdateFocus</a>
-					<a class="permalink" href="index.html#MenuUIBuilder.UpdateFocus">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#MenuUIBuilder">MenuUIBuilder</a>) UpdateFocus(menu *<a href="index.html#Menu">Menu</a>)</pre>
-				<p>UpdateFocus はメニューのフォーカス表示を更新する
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Orientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=506:526#L12">Orientation</a>
+			<h2 id="Orientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=440:460#L10">Orientation</a>
 				<a class="permalink" href="index.html#Orientation">&#xb6;</a>
 				
 				
@@ -613,6 +549,70 @@ parentContainer.AddChild(container)
 
 			
 
+			
+		
+			
+			
+			<h2 id="UIBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=196:236#L1">UIBuilder</a>
+				<a class="permalink" href="index.html#UIBuilder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>UIBuilder はメニューのUI要素を構築する
+
+			<pre>type UIBuilder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewUIBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=287:330#L5">NewUIBuilder</a>
+					<a class="permalink" href="index.html#NewUIBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewUIBuilder(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="index.html#UIBuilder">UIBuilder</a></pre>
+				<p>NewUIBuilder はUIビルダーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="UIBuilder.BuildUI">func (*UIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=428:485#L12">BuildUI</a>
+					<a class="permalink" href="index.html#UIBuilder.BuildUI">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#UIBuilder">UIBuilder</a>) BuildUI(menu *<a href="index.html#Menu">Menu</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+				<p>BuildUI はメニューのUI要素を構築する
+
+				
+				
+				
+			
+				
+				<h3 id="UIBuilder.UpdateFocus">func (*UIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=3115:3158#L109">UpdateFocus</a>
+					<a class="permalink" href="index.html#UIBuilder.UpdateFocus">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#UIBuilder">UIBuilder</a>) UpdateFocus(menu *<a href="index.html#Menu">Menu</a>)</pre>
+				<p>UpdateFocus はメニューのフォーカス表示を更新する
+
+				
+				
+				
 			
 		
 	
