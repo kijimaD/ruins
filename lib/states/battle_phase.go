@@ -116,15 +116,29 @@ func (p *phaseExecute) OnUpdate(st *BattleState, world w.World) es.Transition {
 		commandCount := st.countBattleCommands(world)
 		if commandCount > 0 {
 			// 未処理のコマンドがまだ残っている
-			st.isWaitClick = true
-			if st.keyboardInput.IsEnterJustPressedOnce() {
+			// 初回は即座に実行、2回目以降はenter待ち
+			if st.isWaitClick {
+				if st.keyboardInput.IsEnterJustPressedOnce() {
+					gs.BattleCommandSystem(world)
+				}
+			} else {
+				// 初回実行
 				gs.BattleCommandSystem(world)
-				st.isWaitClick = false
+				st.isWaitClick = true
 			}
 			return es.Transition{Type: es.TransNone}
 		}
-		// 処理完了
-		if st.keyboardInput.IsEnterJustPressedOnce() {
+		// 処理完了 - メッセージがある場合のみenter待ち
+		messages := gamelog.BattleLog.Get()
+		if len(messages) > 0 {
+			st.isWaitClick = true
+			if st.keyboardInput.IsEnterJustPressedOnce() {
+				st.phase = &phaseChoosePolicy{}
+				st.isWaitClick = false
+				gamelog.BattleLog.Flush()
+			}
+		} else {
+			// メッセージがない場合は即座に次のフェーズへ
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
 			gamelog.BattleLog.Flush()
