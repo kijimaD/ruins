@@ -46,12 +46,9 @@ func (p *phaseChoosePolicy) OnInit(st *BattleState, world w.World) {
 	var err error
 	st.party, err = worldhelper.NewParty(world, gc.FactionAlly)
 	if err != nil {
-		// TODO: エラーハンドリング
+		panic(err)
 	}
 	st.reloadPolicy(world)
-	if err != nil {
-		// TODO: エラーハンドリング
-	}
 }
 
 func (p *phaseChoosePolicy) OnUpdate(st *BattleState, world w.World) es.Transition {
