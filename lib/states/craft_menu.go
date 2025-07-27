@@ -114,15 +114,15 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// TabMenuの設定
 	tabs := st.createTabs(world)
-	config := tabmenu.TabMenuConfig{
+	config := tabmenu.Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
 		WrapNavigation:   true,
 	}
 
-	callbacks := tabmenu.TabMenuCallbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.MenuItem) {
+	callbacks := tabmenu.Callbacks{
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
 			st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
@@ -133,7 +133,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.MenuItem) {
+		OnItemChange: func(_ int, _, _ int, item menu.Item) {
 			st.handleItemChange(world, item)
 			st.updateTabDisplay(world)
 		},
@@ -204,12 +204,12 @@ func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createMenuItems はECSエンティティをMenuItemに変換する
-func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.MenuItem {
-	items := make([]menu.MenuItem, len(entities))
+func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.Item {
+	items := make([]menu.Item, len(entities))
 
 	for i, entity := range entities {
 		name := world.Components.Name.Get(entity).(*gc.Name).Name
-		items[i] = menu.MenuItem{
+		items[i] = menu.Item{
 			ID:       fmt.Sprintf("entity_%d", entity),
 			Label:    name,
 			UserData: entity,
@@ -220,7 +220,7 @@ func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) 
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.MenuItem) {
+func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		log.Fatal("unexpected item UserData")
@@ -231,7 +231,7 @@ func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, 
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *CraftMenuState) handleItemChange(world w.World, item menu.MenuItem) {
+func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "

@@ -20,7 +20,7 @@
 // # Basic Usage
 //
 //	// メニュー項目を定義
-//	items := []menu.MenuItem{
+//	items := []menu.Item{
 //		{ID: "start", Label: "ゲーム開始"},
 //		{ID: "load", Label: "ロード"},
 //		{ID: "exit", Label: "終了"},
@@ -32,7 +32,7 @@
 //		WrapNavigation: true,
 //		Orientation:    menu.Vertical,
 //	}, menu.MenuCallbacks{
-//		OnSelect: func(index int, item menu.MenuItem) {
+//		OnSelect: func(index int, item menu.Item) {
 //			switch item.ID {
 //			case "start":
 //				startNewGame()

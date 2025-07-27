@@ -33,12 +33,12 @@ func TestTabMenuNavigation(t *testing.T) {
 func testTabSwitching(t *testing.T) {
 	// テスト用のタブとアイテムを作成
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.MenuItem{{ID: "item1", Label: "アイテム1"}}},
-		{ID: "tab2", Label: "タブ2", Items: []menu.MenuItem{{ID: "item2", Label: "アイテム2"}}},
-		{ID: "tab3", Label: "タブ3", Items: []menu.MenuItem{{ID: "item3", Label: "アイテム3"}}},
+		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
+		{ID: "tab3", Label: "タブ3", Items: []menu.Item{{ID: "item3", Label: "アイテム3"}}},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
@@ -46,7 +46,7 @@ func testTabSwitching(t *testing.T) {
 	}
 
 	tabChangeCount := 0
-	callbacks := TabMenuCallbacks{
+	callbacks := Callbacks{
 		OnTabChange: func(_, _ int, _ TabItem) {
 			tabChangeCount++
 		},
@@ -85,12 +85,12 @@ func testTabSwitching(t *testing.T) {
 func testTabSwitchingWithTabKey(t *testing.T) {
 	// テスト用のタブとアイテムを作成
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.MenuItem{{ID: "item1", Label: "アイテム1"}}},
-		{ID: "tab2", Label: "タブ2", Items: []menu.MenuItem{{ID: "item2", Label: "アイテム2"}}},
-		{ID: "tab3", Label: "タブ3", Items: []menu.MenuItem{{ID: "item3", Label: "アイテム3"}}},
+		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
+		{ID: "tab3", Label: "タブ3", Items: []menu.Item{{ID: "item3", Label: "アイテム3"}}},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
@@ -98,7 +98,7 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 
 	tabChangeCount := 0
-	callbacks := TabMenuCallbacks{
+	callbacks := Callbacks{
 		OnTabChange: func(_, _ int, _ TabItem) {
 			tabChangeCount++
 		},
@@ -164,7 +164,7 @@ func testItemNavigation(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.MenuItem{
+			Items: []menu.Item{
 				{ID: "item1", Label: "アイテム1"},
 				{ID: "item2", Label: "アイテム2"},
 				{ID: "item3", Label: "アイテム3"},
@@ -172,7 +172,7 @@ func testItemNavigation(t *testing.T) {
 		},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
@@ -180,8 +180,8 @@ func testItemNavigation(t *testing.T) {
 	}
 
 	itemChangeCount := 0
-	callbacks := TabMenuCallbacks{
-		OnItemChange: func(_ int, _, _ int, _ menu.MenuItem) {
+	callbacks := Callbacks{
+		OnItemChange: func(_ int, _, _ int, _ menu.Item) {
 			itemChangeCount++
 		},
 	}
@@ -218,11 +218,11 @@ func testItemNavigation(t *testing.T) {
 
 func testWrapNavigation(t *testing.T) {
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.MenuItem{{ID: "item1", Label: "アイテム1"}}},
-		{ID: "tab2", Label: "タブ2", Items: []menu.MenuItem{{ID: "item2", Label: "アイテム2"}}},
+		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
@@ -230,7 +230,7 @@ func testWrapNavigation(t *testing.T) {
 	}
 
 	mockInput := input.NewMockKeyboardInput()
-	tabMenu := NewTabMenu(config, TabMenuCallbacks{}, mockInput)
+	tabMenu := NewTabMenu(config, Callbacks{}, mockInput)
 
 	// 最初のタブで左矢印 → 最後のタブに循環
 	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
@@ -256,21 +256,21 @@ func testSelection(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.MenuItem{
+			Items: []menu.Item{
 				{ID: "item1", Label: "アイテム1", UserData: "data1"},
 			},
 		},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
 	}
 
-	var selectedItem menu.MenuItem
-	callbacks := TabMenuCallbacks{
-		OnSelectItem: func(_, _ int, _ TabItem, item menu.MenuItem) {
+	var selectedItem menu.Item
+	callbacks := Callbacks{
+		OnSelectItem: func(_, _ int, _ TabItem, item menu.Item) {
 			selectedItem = item
 		},
 	}
@@ -289,17 +289,17 @@ func testSelection(t *testing.T) {
 
 func testCancel(t *testing.T) {
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.MenuItem{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
 	}
 
 	cancelCalled := false
-	callbacks := TabMenuCallbacks{
+	callbacks := Callbacks{
 		OnCancel: func() {
 			cancelCalled = true
 		},
@@ -323,22 +323,22 @@ func TestTabMenuGetters(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.MenuItem{
+			Items: []menu.Item{
 				{ID: "item1", Label: "アイテム1"},
 				{ID: "item2", Label: "アイテム2"},
 			},
 		},
-		{ID: "tab2", Label: "タブ2", Items: []menu.MenuItem{{ID: "item3", Label: "アイテム3"}}},
+		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item3", Label: "アイテム3"}}},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 1,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
-	tabMenu := NewTabMenu(config, TabMenuCallbacks{}, mockInput)
+	tabMenu := NewTabMenu(config, Callbacks{}, mockInput)
 
 	// 現在のタブとアイテムの確認
 	currentTab := tabMenu.GetCurrentTab()
@@ -358,22 +358,22 @@ func TestTabMenuSetters(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.MenuItem{
+			Items: []menu.Item{
 				{ID: "item1", Label: "アイテム1"},
 				{ID: "item2", Label: "アイテム2"},
 			},
 		},
-		{ID: "tab2", Label: "タブ2", Items: []menu.MenuItem{{ID: "item3", Label: "アイテム3"}}},
+		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item3", Label: "アイテム3"}}},
 	}
 
-	config := TabMenuConfig{
+	config := Config{
 		Tabs:             tabs,
 		InitialTabIndex:  0,
 		InitialItemIndex: 0,
 	}
 
 	mockInput := input.NewMockKeyboardInput()
-	tabMenu := NewTabMenu(config, TabMenuCallbacks{}, mockInput)
+	tabMenu := NewTabMenu(config, Callbacks{}, mockInput)
 
 	// タブインデックスの設定
 	tabMenu.SetTabIndex(1)

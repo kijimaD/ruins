@@ -23,7 +23,7 @@ type HomeMenuState struct {
 	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
-	uiBuilder     *menu.MenuUIBuilder
+	uiBuilder     *menu.UIBuilder
 	keyboardInput input.KeyboardInput
 
 	// 背景
@@ -101,7 +101,7 @@ func (st *HomeMenuState) Draw(_ w.World, screen *ebiten.Image) {
 // initMenu はメニューコンポーネントを初期化する
 func (st *HomeMenuState) initMenu(world w.World) {
 	// メニュー項目の定義（homeMenuTransから変換）
-	items := []menu.MenuItem{
+	items := []menu.Item{
 		{
 			ID:          "departure",
 			Label:       "出発",
@@ -141,7 +141,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 	}
 
 	// メニューの設定
-	config := menu.MenuConfig{
+	config := menu.Config{
 		Items:          items,
 		InitialIndex:   0,
 		WrapNavigation: true,
@@ -149,8 +149,8 @@ func (st *HomeMenuState) initMenu(world w.World) {
 	}
 
 	// コールバックの設定
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(_ int, item menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(_ int, item menu.Item) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
@@ -168,7 +168,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 				st.uiBuilder.UpdateFocus(st.menu)
 			}
 		},
-		OnHover: func(index int, _ menu.MenuItem) {
+		OnHover: func(index int, _ menu.Item) {
 			// ホバー時に説明文を更新
 			st.updateActionDescription(world, index)
 		},
@@ -178,7 +178,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 	st.menu = menu.NewMenu(config, callbacks)
 
 	// UIビルダーを作成
-	st.uiBuilder = menu.NewMenuUIBuilder(world)
+	st.uiBuilder = menu.NewUIBuilder(world)
 }
 
 // updateActionDescription は選択された項目の説明文を更新する

@@ -6,22 +6,20 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// MenuUIBuilder はメニューのUI要素を構築する
-//
-//nolint:revive // MenuUIBuilder is clear and commonly used
-type MenuUIBuilder struct {
+// UIBuilder はメニューのUI要素を構築する
+type UIBuilder struct {
 	world w.World
 }
 
-// NewMenuUIBuilder はUIビルダーを作成する
-func NewMenuUIBuilder(world w.World) *MenuUIBuilder {
-	return &MenuUIBuilder{
+// NewUIBuilder はUIビルダーを作成する
+func NewUIBuilder(world w.World) *UIBuilder {
+	return &UIBuilder{
 		world: world,
 	}
 }
 
 // BuildUI はメニューのUI要素を構築する
-func (b *MenuUIBuilder) BuildUI(menu *Menu) *widget.Container {
+func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container {
 	var container *widget.Container
 
 	if menu.config.Columns > 0 {
@@ -40,7 +38,7 @@ func (b *MenuUIBuilder) BuildUI(menu *Menu) *widget.Container {
 }
 
 // buildVerticalUI は垂直リスト表示のUIを構築する
-func (b *MenuUIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
+func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 	container := eui.NewVerticalContainer()
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
@@ -54,7 +52,7 @@ func (b *MenuUIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 }
 
 // buildHorizontalUI は水平リスト表示のUIを構築する
-func (b *MenuUIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
+func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 	container := eui.NewRowContainer()
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
@@ -68,7 +66,7 @@ func (b *MenuUIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 }
 
 // buildGridUI はグリッド表示のUIを構築する
-func (b *MenuUIBuilder) buildGridUI(menu *Menu) *widget.Container {
+func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
 	container := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewGridLayout(
@@ -91,7 +89,7 @@ func (b *MenuUIBuilder) buildGridUI(menu *Menu) *widget.Container {
 }
 
 // createMenuButton はメニューボタンを作成する
-func (b *MenuUIBuilder) createMenuButton(menu *Menu, index int, item MenuItem) *widget.Button {
+func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
 	// ボタンの初期フォーカス状態を設定
 	isFocused := index == menu.GetFocusedIndex()
 
@@ -118,7 +116,7 @@ func (b *MenuUIBuilder) createMenuButton(menu *Menu, index int, item MenuItem) *
 }
 
 // UpdateFocus はメニューのフォーカス表示を更新する
-func (b *MenuUIBuilder) UpdateFocus(menu *Menu) {
+func (b *UIBuilder) UpdateFocus(menu *Menu) {
 	if len(menu.itemWidgets) == 0 {
 		return
 	}

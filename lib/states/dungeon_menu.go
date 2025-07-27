@@ -18,7 +18,7 @@ type DungeonMenuState struct {
 	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
-	uiBuilder     *menu.MenuUIBuilder
+	uiBuilder     *menu.UIBuilder
 	keyboardInput input.KeyboardInput
 }
 
@@ -75,7 +75,7 @@ func (st *DungeonMenuState) Draw(_ w.World, screen *ebiten.Image) {
 // initMenu はメニューコンポーネントを初期化する
 func (st *DungeonMenuState) initMenu(_ w.World) {
 	// メニュー項目の定義
-	items := []menu.MenuItem{
+	items := []menu.Item{
 		{
 			ID:          "close",
 			Label:       TextClose,
@@ -91,7 +91,7 @@ func (st *DungeonMenuState) initMenu(_ w.World) {
 	}
 
 	// メニュー設定
-	config := menu.MenuConfig{
+	config := menu.Config{
 		Items:          items,
 		InitialIndex:   0,
 		WrapNavigation: true,
@@ -99,8 +99,8 @@ func (st *DungeonMenuState) initMenu(_ w.World) {
 	}
 
 	// コールバック設定
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(_ int, item menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(_ int, item menu.Item) {
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
 			}
@@ -125,7 +125,7 @@ func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	// UIビルダーを使用してメニューUIを構築
-	st.uiBuilder = menu.NewMenuUIBuilder(world)
+	st.uiBuilder = menu.NewUIBuilder(world)
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
 	rootContainer.AddChild(menuContainer)
 

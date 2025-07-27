@@ -20,7 +20,7 @@ type DebugMenuState struct {
 	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
-	menuBuilder   *menu.MenuUIBuilder
+	menuBuilder   *menu.UIBuilder
 	keyboardInput input.KeyboardInput
 }
 
@@ -76,7 +76,7 @@ func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
 	st.createDebugMenu(world)
 
 	// MenuのUIを構築
-	st.menuBuilder = menu.NewMenuUIBuilder(world)
+	st.menuBuilder = menu.NewUIBuilder(world)
 	menuContainer := st.menuBuilder.BuildUI(st.menu)
 	rootContainer.AddChild(menuContainer)
 
@@ -85,16 +85,16 @@ func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
 
 // createDebugMenu はデバッグメニューを作成する
 func (st *DebugMenuState) createDebugMenu(world w.World) {
-	items := make([]menu.MenuItem, len(debugMenuTrans))
+	items := make([]menu.Item, len(debugMenuTrans))
 	for i, data := range debugMenuTrans {
-		items[i] = menu.MenuItem{
+		items[i] = menu.Item{
 			ID:       data.label,
 			Label:    data.label,
 			UserData: i, // debugMenuTransのインデックスを保存
 		}
 	}
 
-	config := menu.MenuConfig{
+	config := menu.Config{
 		Items:          items,
 		InitialIndex:   0,
 		WrapNavigation: true,
@@ -102,8 +102,8 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 		Columns:        0,
 	}
 
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(index int, _ menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(index int, _ menu.Item) {
 			st.executeDebugMenuItem(world, index)
 		},
 		OnCancel: func() {

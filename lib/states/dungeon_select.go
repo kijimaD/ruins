@@ -16,7 +16,7 @@ type DungeonSelectState struct {
 	es.BaseState
 	ui                   *ebitenui.UI
 	menu                 *menu.Menu
-	uiBuilder            *menu.MenuUIBuilder
+	uiBuilder            *menu.UIBuilder
 	keyboardInput        input.KeyboardInput
 	dungeonDescContainer *widget.Container
 }
@@ -78,9 +78,9 @@ func (st *DungeonSelectState) Draw(_ w.World, screen *ebiten.Image) {
 // initMenu はメニューコンポーネントを初期化する
 func (st *DungeonSelectState) initMenu(world w.World) {
 	// メニュー項目の定義（dungeonSelectTransから変換）
-	items := []menu.MenuItem{}
+	items := []menu.Item{}
 	for _, data := range dungeonSelectTrans {
-		items = append(items, menu.MenuItem{
+		items = append(items, menu.Item{
 			ID:          data.label, // ラベルをIDとして使用
 			Label:       data.label,
 			Description: data.desc,
@@ -89,7 +89,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 	}
 
 	// メニューの設定
-	config := menu.MenuConfig{
+	config := menu.Config{
 		Items:          items,
 		InitialIndex:   0,
 		WrapNavigation: true,
@@ -97,8 +97,8 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 	}
 
 	// コールバックの設定
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(_ int, item menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(_ int, item menu.Item) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
@@ -115,7 +115,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 				st.uiBuilder.UpdateFocus(st.menu)
 			}
 		},
-		OnHover: func(index int, _ menu.MenuItem) {
+		OnHover: func(index int, _ menu.Item) {
 			// ホバー時に説明文を更新
 			st.updateActionDescription(world, index)
 		},
@@ -125,7 +125,7 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 	st.menu = menu.NewMenu(config, callbacks)
 
 	// UIビルダーを作成
-	st.uiBuilder = menu.NewMenuUIBuilder(world)
+	st.uiBuilder = menu.NewUIBuilder(world)
 }
 
 // updateActionDescription は選択された項目の説明文を更新する

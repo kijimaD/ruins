@@ -11,7 +11,7 @@ func TestMenuNavigation(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
-		items          []MenuItem
+		items          []Item
 		initialIndex   int
 		wrapNavigation bool
 		keyPress       ebiten.Key
@@ -19,7 +19,7 @@ func TestMenuNavigation(t *testing.T) {
 	}{
 		{
 			name: "下矢印キーでフォーカス移動",
-			items: []MenuItem{
+			items: []Item{
 				{ID: "1", Label: "Item 1"},
 				{ID: "2", Label: "Item 2"},
 				{ID: "3", Label: "Item 3"},
@@ -31,7 +31,7 @@ func TestMenuNavigation(t *testing.T) {
 		},
 		{
 			name: "上矢印キーでフォーカス移動",
-			items: []MenuItem{
+			items: []Item{
 				{ID: "1", Label: "Item 1"},
 				{ID: "2", Label: "Item 2"},
 				{ID: "3", Label: "Item 3"},
@@ -43,7 +43,7 @@ func TestMenuNavigation(t *testing.T) {
 		},
 		{
 			name: "無効な項目をスキップ",
-			items: []MenuItem{
+			items: []Item{
 				{ID: "1", Label: "Item 1"},
 				{ID: "2", Label: "Item 2", Disabled: true},
 				{ID: "3", Label: "Item 3"},
@@ -55,7 +55,7 @@ func TestMenuNavigation(t *testing.T) {
 		},
 		{
 			name: "循環ナビゲーション（最後から最初へ）",
-			items: []MenuItem{
+			items: []Item{
 				{ID: "1", Label: "Item 1"},
 				{ID: "2", Label: "Item 2"},
 				{ID: "3", Label: "Item 3"},
@@ -67,7 +67,7 @@ func TestMenuNavigation(t *testing.T) {
 		},
 		{
 			name: "循環ナビゲーション無効（端で停止）",
-			items: []MenuItem{
+			items: []Item{
 				{ID: "1", Label: "Item 1"},
 				{ID: "2", Label: "Item 2"},
 				{ID: "3", Label: "Item 3"},
@@ -82,14 +82,14 @@ func TestMenuNavigation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			config := MenuConfig{
+			config := Config{
 				Items:          tt.items,
 				InitialIndex:   tt.initialIndex,
 				WrapNavigation: tt.wrapNavigation,
 				Orientation:    Vertical,
 			}
 
-			menu := NewMenu(config, MenuCallbacks{})
+			menu := NewMenu(config, Callbacks{})
 
 			// モックキーボード入力を作成
 			mockInput := input.NewMockKeyboardInput()
@@ -108,23 +108,23 @@ func TestMenuNavigation(t *testing.T) {
 
 func TestMenuSelection(t *testing.T) {
 	t.Parallel()
-	items := []MenuItem{
+	items := []Item{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},
 		{ID: "3", Label: "Item 3"},
 	}
 
 	var selectedIndex int
-	var selectedItem MenuItem
+	var selectedItem Item
 	var selectionCalled bool
 
-	config := MenuConfig{
+	config := Config{
 		Items:        items,
 		InitialIndex: 1,
 	}
 
-	callbacks := MenuCallbacks{
-		OnSelect: func(index int, item MenuItem) {
+	callbacks := Callbacks{
+		OnSelect: func(index int, item Item) {
 			selectedIndex = index
 			selectedItem = item
 			selectionCalled = true
@@ -157,17 +157,17 @@ func TestMenuSelection(t *testing.T) {
 
 func TestMenuCancel(t *testing.T) {
 	t.Parallel()
-	items := []MenuItem{
+	items := []Item{
 		{ID: "1", Label: "Item 1"},
 	}
 
 	var cancelCalled bool
 
-	config := MenuConfig{
+	config := Config{
 		Items: items,
 	}
 
-	callbacks := MenuCallbacks{
+	callbacks := Callbacks{
 		OnCancel: func() {
 			cancelCalled = true
 		},
@@ -190,18 +190,18 @@ func TestMenuCancel(t *testing.T) {
 
 func TestMenuTabNavigation(t *testing.T) {
 	t.Parallel()
-	items := []MenuItem{
+	items := []Item{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},
 		{ID: "3", Label: "Item 3"},
 	}
 
-	config := MenuConfig{
+	config := Config{
 		Items:        items,
 		InitialIndex: 0,
 	}
 
-	menu := NewMenu(config, MenuCallbacks{})
+	menu := NewMenu(config, Callbacks{})
 
 	// Tabキーのテスト
 	mockInput := input.NewMockKeyboardInput()
@@ -228,19 +228,19 @@ func TestMenuTabNavigation(t *testing.T) {
 
 func TestMenuGridNavigation(t *testing.T) {
 	t.Parallel()
-	items := []MenuItem{
+	items := []Item{
 		{ID: "1", Label: "Item 1"}, {ID: "2", Label: "Item 2"},
 		{ID: "3", Label: "Item 3"}, {ID: "4", Label: "Item 4"},
 		{ID: "5", Label: "Item 5"}, {ID: "6", Label: "Item 6"},
 	}
 
-	config := MenuConfig{
+	config := Config{
 		Items:        items,
 		Columns:      2, // 2列のグリッド
 		InitialIndex: 0,
 	}
 
-	menu := NewMenu(config, MenuCallbacks{})
+	menu := NewMenu(config, Callbacks{})
 
 	// 右矢印キーのテスト（0→1）
 	mockInput := input.NewMockKeyboardInput()
@@ -265,7 +265,7 @@ func TestMenuGridNavigation(t *testing.T) {
 
 func TestMenuDisabledItems(t *testing.T) {
 	t.Parallel()
-	items := []MenuItem{
+	items := []Item{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2", Disabled: true},
 		{ID: "3", Label: "Item 3", Disabled: true},
@@ -274,13 +274,13 @@ func TestMenuDisabledItems(t *testing.T) {
 
 	var selectionCalled bool
 
-	config := MenuConfig{
+	config := Config{
 		Items:        items,
 		InitialIndex: 1, // 無効なアイテムから開始
 	}
 
-	callbacks := MenuCallbacks{
-		OnSelect: func(_ int, _ MenuItem) {
+	callbacks := Callbacks{
+		OnSelect: func(_ int, _ Item) {
 			selectionCalled = true
 		},
 	}
@@ -309,20 +309,20 @@ func TestMenuConsecutiveEnterPrevention(t *testing.T) {
 	// グローバル状態をリセット
 	input.ResetGlobalKeyStateForTest()
 
-	items := []MenuItem{
+	items := []Item{
 		{ID: "1", Label: "Item 1"},
 		{ID: "2", Label: "Item 2"},
 	}
 
 	var selectionCount int
 
-	config := MenuConfig{
+	config := Config{
 		Items:        items,
 		InitialIndex: 0,
 	}
 
-	callbacks := MenuCallbacks{
-		OnSelect: func(_ int, _ MenuItem) {
+	callbacks := Callbacks{
+		OnSelect: func(_ int, _ Item) {
 			selectionCount++
 		},
 	}

@@ -15,7 +15,7 @@ type MainMenuState struct {
 	es.BaseState
 	ui            *ebitenui.UI
 	menu          *menu.Menu
-	uiBuilder     *menu.MenuUIBuilder
+	uiBuilder     *menu.UIBuilder
 	keyboardInput input.KeyboardInput
 }
 
@@ -69,7 +69,7 @@ func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
 // initMenu はメニューコンポーネントを初期化する
 func (st *MainMenuState) initMenu(world w.World) {
 	// メニュー項目の定義
-	items := []menu.MenuItem{
+	items := []menu.Item{
 		{
 			ID:       "intro",
 			Label:    "導入",
@@ -93,7 +93,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 	}
 
 	// メニューの設定
-	config := menu.MenuConfig{
+	config := menu.Config{
 		Items:          items,
 		InitialIndex:   0,
 		WrapNavigation: true,
@@ -101,8 +101,8 @@ func (st *MainMenuState) initMenu(world w.World) {
 	}
 
 	// コールバックの設定
-	callbacks := menu.MenuCallbacks{
-		OnSelect: func(_ int, item menu.MenuItem) {
+	callbacks := menu.Callbacks{
+		OnSelect: func(_ int, item menu.Item) {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition); ok {
 				st.SetTransition(trans)
@@ -124,7 +124,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 	st.menu = menu.NewMenu(config, callbacks)
 
 	// UIビルダーを作成
-	st.uiBuilder = menu.NewMenuUIBuilder(world)
+	st.uiBuilder = menu.NewUIBuilder(world)
 }
 
 // initUI はUIを初期化する

@@ -10,33 +10,29 @@ import (
 type TabItem struct {
 	ID    string
 	Label string
-	Items []menu.MenuItem
+	Items []menu.Item
 }
 
-// TabMenuConfig はタブメニューの設定
-//
-//nolint:revive // TabMenuConfig is clear and commonly used
-type TabMenuConfig struct {
+// Config はタブメニューの設定
+type Config struct {
 	Tabs             []TabItem
 	InitialTabIndex  int
 	InitialItemIndex int
 	WrapNavigation   bool // タブ/アイテム両方で端循環するか
 }
 
-// TabMenuCallbacks はタブメニューのコールバック
-//
-//nolint:revive // TabMenuCallbacks is clear and commonly used
-type TabMenuCallbacks struct {
-	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item menu.MenuItem)
+// Callbacks はタブメニューのコールバック
+type Callbacks struct {
+	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item menu.Item)
 	OnCancel     func()
 	OnTabChange  func(oldTabIndex, newTabIndex int, tab TabItem)
-	OnItemChange func(tabIndex int, oldItemIndex, newItemIndex int, item menu.MenuItem)
+	OnItemChange func(tabIndex int, oldItemIndex, newItemIndex int, item menu.Item)
 }
 
 // TabMenu はタブ付きメニューコンポーネント
 type TabMenu struct {
-	config    TabMenuConfig
-	callbacks TabMenuCallbacks
+	config    Config
+	callbacks Callbacks
 
 	// 状態
 	currentTabIndex  int
@@ -45,7 +41,7 @@ type TabMenu struct {
 }
 
 // NewTabMenu は新しいTabMenuを作成する
-func NewTabMenu(config TabMenuConfig, callbacks TabMenuCallbacks, keyboardInput input.KeyboardInput) *TabMenu {
+func NewTabMenu(config Config, callbacks Callbacks, keyboardInput input.KeyboardInput) *TabMenu {
 	tm := &TabMenu{
 		config:           config,
 		callbacks:        callbacks,
@@ -329,10 +325,10 @@ func (tm *TabMenu) GetCurrentTab() TabItem {
 }
 
 // GetCurrentItem は現在のアイテムを返す
-func (tm *TabMenu) GetCurrentItem() menu.MenuItem {
+func (tm *TabMenu) GetCurrentItem() menu.Item {
 	currentTab := tm.GetCurrentTab()
 	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) || tm.currentItemIndex < 0 {
-		return menu.MenuItem{}
+		return menu.Item{}
 	}
 	return currentTab.Items[tm.currentItemIndex]
 }
