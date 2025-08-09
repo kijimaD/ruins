@@ -13,6 +13,7 @@ import (
 )
 
 func TestCollisionSystemBattleTransition(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldWithResources(t)
 
 	// プレイヤーと敵を近い位置に作成
@@ -36,6 +37,7 @@ func TestCollisionSystemBattleTransition(t *testing.T) {
 }
 
 func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldWithResources(t)
 
 	// プレイヤーと敵を近い位置に作成
@@ -54,6 +56,7 @@ func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
 }
 
 func TestCollisionSystemNoCollision(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldWithResources(t)
 
 	// プレイヤーと敵を離れた位置に作成
@@ -69,6 +72,7 @@ func TestCollisionSystemNoCollision(t *testing.T) {
 }
 
 func TestBattleEncounterApply(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldWithResources(t)
 
 	// テスト用エンティティを作成
@@ -103,6 +107,7 @@ func TestBattleEncounterApply(t *testing.T) {
 }
 
 func TestCollisionSystemMultipleEnemies(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldWithResources(t)
 
 	// プレイヤーと複数の敵を作成（1つは接触、1つは非接触）
@@ -119,6 +124,7 @@ func TestCollisionSystemMultipleEnemies(t *testing.T) {
 }
 
 func TestCollisionSystemWithVelocityStop(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldWithResources(t)
 
 	// 速度コンポーネント付きでエンティティを作成

@@ -24,7 +24,7 @@ func CollisionSystem(world w.World) {
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.Operator,
-	).Visit(ecs.Visit(func(playerEntity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		playerCount++
 	}))
 
@@ -33,7 +33,7 @@ func CollisionSystem(world w.World) {
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.FactionEnemy,
-	).Visit(ecs.Visit(func(enemyEntity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		enemyCount++
 	}))
 
@@ -77,7 +77,7 @@ func CollisionSystem(world w.World) {
 }
 
 // checkCollisionDistance は2つのエンティティ間の距離を返す
-func checkCollisionDistance(world w.World, entity1, entity2 ecs.Entity, pos1, pos2 *gc.Position) float64 {
+func checkCollisionDistance(_ w.World, _, _ ecs.Entity, pos1, pos2 *gc.Position) float64 {
 	// 中心間の距離を計算
 	dx := float64(pos1.X - pos2.X)
 	dy := float64(pos1.Y - pos2.Y)

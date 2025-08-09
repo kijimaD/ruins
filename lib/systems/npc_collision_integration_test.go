@@ -12,6 +12,7 @@ import (
 )
 
 func TestCollisionWithSpawnedNPC(t *testing.T) {
+	t.Parallel()
 	// 実際にSpawnNPCで生成された敵とプレイヤーの衝突をテスト
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)

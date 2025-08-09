@@ -177,6 +177,7 @@ func TestFullRecover(t *testing.T) {
 }
 
 func TestSpawnNPCHasFactionEnemy(t *testing.T) {
+	t.Parallel()
 	// NPCが敵として認識されるFactionEnemyコンポーネントを持つことを確認
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -204,7 +205,7 @@ func TestSpawnNPCHasFactionEnemy(t *testing.T) {
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.FactionEnemy,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		enemyFound = true
 	}))
 

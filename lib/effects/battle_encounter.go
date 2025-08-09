@@ -16,7 +16,7 @@ type BattleEncounter struct {
 }
 
 // Apply は戦闘遷移を実行する
-func (e *BattleEncounter) Apply(world w.World, scope *Scope) error {
+func (e *BattleEncounter) Apply(world w.World, _ *Scope) error {
 	// プレイヤーの動きを停止
 	if world.Components.Velocity.Get(e.PlayerEntity) != nil {
 		velocity := world.Components.Velocity.Get(e.PlayerEntity).(*gc.Velocity)
@@ -46,7 +46,7 @@ func (e *BattleEncounter) Apply(world w.World, scope *Scope) error {
 }
 
 // Validate は戦闘遷移前の妥当性を検証する
-func (e *BattleEncounter) Validate(world w.World, scope *Scope) error {
+func (e *BattleEncounter) Validate(_ w.World, _ *Scope) error {
 	// 実際の検証は省略（簡易実装）
 	return nil
 }

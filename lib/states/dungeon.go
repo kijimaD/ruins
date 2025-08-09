@@ -35,7 +35,7 @@ var _ es.State = &DungeonState{}
 func (st *DungeonState) OnPause(_ w.World) {}
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *DungeonState) OnResume(world w.World) {}
+func (st *DungeonState) OnResume(_ w.World) {}
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *DungeonState) OnStart(world w.World) {

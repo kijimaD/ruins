@@ -44,12 +44,12 @@ func createTestWorldForCollision(t *testing.T) w.World {
 }
 
 // createPlayerEntity は指定された位置にプレイヤーエンティティを作成する
-func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
+func createPlayerEntity(t *testing.T, world w.World, _, _ float64) {
 	t.Helper()
 
 	cl := entities.ComponentList{}
 	cl.Game = append(cl.Game, gc.GameComponentList{
-		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
+		Position:    &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(100)},
 		Operator:    &gc.Operator{},
 		FactionType: &gc.FactionAlly,
 	})

@@ -9,7 +9,7 @@ import (
 )
 
 func TestCheckCollisionSimple(t *testing.T) {
-	world := createTestWorldForCollision(t)
+	t.Parallel()
 
 	tests := []struct {
 		name        string
@@ -69,6 +69,9 @@ func TestCheckCollisionSimple(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			// 各テストで独立したワールドを作成
+			world := createTestWorldForCollision(t)
 			// テスト用のエンティティを作成
 			createEntityWithSpriteSize(t, world, float64(tt.pos1.X), float64(tt.pos1.Y), tt.size1, true)
 			createEntityWithSpriteSize(t, world, float64(tt.pos2.X), float64(tt.pos2.Y), tt.size2, false)
@@ -106,7 +109,7 @@ func TestCheckCollisionSimple(t *testing.T) {
 }
 
 func TestGetSpriteSize(t *testing.T) {
-	world := createTestWorldForCollision(t)
+	t.Parallel()
 
 	tests := []struct {
 		name     string
@@ -136,6 +139,9 @@ func TestGetSpriteSize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			// 各テストで独立したワールドを作成
+			world := createTestWorldForCollision(t)
 			// スプライト付きエンティティを作成
 			createEntityWithSprite(t, world, 100, 100, tt.width, tt.height, true)
 
@@ -156,6 +162,8 @@ func TestGetSpriteSize(t *testing.T) {
 
 	// スプライトがない場合のデフォルトサイズテスト
 	t.Run("スプライトがない場合はデフォルトサイズ", func(t *testing.T) {
+		t.Parallel()
+		world := createTestWorldForCollision(t)
 		createPlayerEntity(t, world, 100, 100)
 
 		var testEntity ecs.Entity
@@ -172,6 +180,7 @@ func TestGetSpriteSize(t *testing.T) {
 }
 
 func TestCollisionSystemWithMultipleEntities(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldForCollision(t)
 
 	// 複数のプレイヤーと敵を作成
@@ -187,6 +196,7 @@ func TestCollisionSystemWithMultipleEntities(t *testing.T) {
 }
 
 func TestCollisionSystemWithNoEntities(t *testing.T) {
+	t.Parallel()
 	world := createTestWorldForCollision(t)
 
 	// エンティティが存在しない状態でシステムを実行
