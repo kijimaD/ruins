@@ -36,15 +36,6 @@ func (e *BattleEncounter) Apply(world w.World, scope *Scope) error {
 	gameResources := world.Resources.Game.(*resources.Game)
 	gameResources.StateEvent = resources.StateEventBattleStart
 
-	// 戦闘参加エンティティ情報を一時保存
-	// BattleState作成時にこれらの情報を取得して使用する
-	if scope != nil && scope.Creator != nil {
-		gameResources.BattleTempData = &resources.BattleTempData{
-			PlayerEntity:     *scope.Creator,
-			FieldEnemyEntity: e.FieldEnemyEntity,
-		}
-	}
-
 	return nil
 }
 

@@ -29,11 +29,6 @@ func TestCollisionSystemBattleTransition(t *testing.T) {
 
 	// 戦闘開始イベントが設定されることを確認
 	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
-
-	// 戦闘用の一時データが設定されることを確認
-	assert.NotNil(t, gameResources.BattleTempData)
-	assert.NotNil(t, gameResources.BattleTempData.PlayerEntity)
-	assert.NotNil(t, gameResources.BattleTempData.FieldEnemyEntity)
 }
 
 func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
@@ -101,9 +96,6 @@ func TestBattleEncounterApply(t *testing.T) {
 	// 戦闘開始イベントが設定されることを確認
 	gameResources := world.Resources.Game.(*resources.Game)
 	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
-	assert.NotNil(t, gameResources.BattleTempData)
-	assert.Equal(t, playerEntity, gameResources.BattleTempData.PlayerEntity)
-	assert.Equal(t, enemyEntity, gameResources.BattleTempData.FieldEnemyEntity)
 }
 
 func TestCollisionSystemMultipleEnemies(t *testing.T) {

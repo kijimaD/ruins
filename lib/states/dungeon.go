@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -100,16 +101,39 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 		gameResources.StateEvent = resources.StateEventNone
 		// 戦闘開始
 		battleStateFactory := func() es.State {
-			var playerEntity, enemyEntity ecs.Entity
-			if gameResources.BattleTempData != nil {
-				playerEntity = gameResources.BattleTempData.PlayerEntity
-				enemyEntity = gameResources.BattleTempData.FieldEnemyEntity
-				// 使用後はクリア
-				gameResources.BattleTempData = nil
+			// プレイヤーエンティティを検索
+			var playerEntity ecs.Entity
+			world.Manager.Join(
+				world.Components.Position,
+				world.Components.Operator,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				playerEntity = entity
+			}))
+
+			// 最も近い敵エンティティを検索
+			var fieldEnemyEntity ecs.Entity
+			var minDistance float64 = -1
+			if playerEntity != ecs.Entity(0) {
+				playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
+				world.Manager.Join(
+					world.Components.Position,
+					world.Components.FactionEnemy,
+				).Visit(ecs.Visit(func(entity ecs.Entity) {
+					enemyPos := world.Components.Position.Get(entity).(*gc.Position)
+					dx := float64(playerPos.X - enemyPos.X)
+					dy := float64(playerPos.Y - enemyPos.Y)
+					distance := dx*dx + dy*dy // 距離の2乗で比較（平方根計算を省略）
+
+					if minDistance < 0 || distance < minDistance {
+						minDistance = distance
+						fieldEnemyEntity = entity
+					}
+				}))
 			}
+
 			return &BattleState{
-				PlayerEntity: playerEntity,
-				EnemyEntity:  enemyEntity,
+				PlayerEntity:     playerEntity,
+				FieldEnemyEntity: fieldEnemyEntity,
 			}
 		}
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{battleStateFactory}}

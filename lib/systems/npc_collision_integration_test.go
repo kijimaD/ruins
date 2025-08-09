@@ -52,9 +52,4 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 
 	// 戦闘開始イベントが設定されることを確認
 	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
-
-	// 戦闘用の一時データが設定されることを確認
-	assert.NotNil(t, gameResources.BattleTempData)
-	assert.NotNil(t, gameResources.BattleTempData.PlayerEntity)
-	assert.NotNil(t, gameResources.BattleTempData.FieldEnemyEntity)
 }

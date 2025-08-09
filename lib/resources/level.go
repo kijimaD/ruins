@@ -15,15 +15,6 @@ type Game struct {
 	Level Level
 	// 階層数
 	Depth int
-	// TODO: 戦闘開始イベントに入れる
-	// 戦闘遷移用の一時データ（BattleState作成時に使用）
-	BattleTempData *BattleTempData
-}
-
-// BattleTempData は戦闘遷移時の一時データを保持する
-type BattleTempData struct {
-	PlayerEntity     ecs.Entity
-	FieldEnemyEntity ecs.Entity
 }
 
 // Level は現在の階層
