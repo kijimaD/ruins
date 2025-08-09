@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -77,17 +78,65 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.PlayerInputSystem(world)
 	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
+	gs.CollisionSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
+
+	// TODO: StateEventリセットを共通化する
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
+		// StateEventをリセットしてから遷移
+		gameResources.StateEvent = resources.StateEventNone
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
 	case resources.StateEventWarpEscape:
+		// StateEventをリセットしてから遷移
+		gameResources.StateEvent = resources.StateEventNone
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
+	case resources.StateEventBattleStart:
+		// StateEventをリセットしてから遷移
+		gameResources.StateEvent = resources.StateEventNone
+		// 戦闘開始
+		battleStateFactory := func() es.State {
+			// プレイヤーエンティティを検索
+			var playerEntity ecs.Entity
+			world.Manager.Join(
+				world.Components.Position,
+				world.Components.Operator,
+			).Visit(ecs.Visit(func(entity ecs.Entity) {
+				playerEntity = entity
+			}))
+
+			// 最も近い敵エンティティを検索
+			var fieldEnemyEntity ecs.Entity
+			var minDistance float64 = -1
+			if playerEntity != ecs.Entity(0) {
+				playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
+				world.Manager.Join(
+					world.Components.Position,
+					world.Components.FactionEnemy,
+				).Visit(ecs.Visit(func(entity ecs.Entity) {
+					enemyPos := world.Components.Position.Get(entity).(*gc.Position)
+					dx := float64(playerPos.X - enemyPos.X)
+					dy := float64(playerPos.Y - enemyPos.Y)
+					distance := dx*dx + dy*dy // 距離の2乗で比較（平方根計算を省略）
+
+					if minDistance < 0 || distance < minDistance {
+						minDistance = distance
+						fieldEnemyEntity = entity
+					}
+				}))
+			}
+
+			return &BattleState{
+				PlayerEntity:     playerEntity,
+				FieldEnemyEntity: fieldEnemyEntity,
+			}
+		}
+		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{battleStateFactory}}
 	}
 
 	// BaseStateの共通処理を使用

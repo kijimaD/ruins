@@ -92,6 +92,10 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 			if entity == entityAnother {
 				return
 			}
+			// 敵との衝突は戦闘トリガーとなるため、移動阻害の対象外とする
+			if entityAnother.HasComponent(world.Components.FactionEnemy) {
+				return
+			}
 			switch {
 			case entityAnother.HasComponent(world.Components.Position):
 				objectPos := world.Components.Position.Get(entityAnother).(*gc.Position)
