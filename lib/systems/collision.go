@@ -62,7 +62,6 @@ func CollisionSystem(world w.World) {
 				// 戦闘遷移エフェクトを実行
 				processor := effects.NewProcessor()
 				battleEffect := &effects.BattleEncounter{
-					PlayerEntity:     playerEntity,
 					FieldEnemyEntity: enemyEntity, // フィールド上の敵シンボル
 				}
 				processor.AddEffect(battleEffect, &playerEntity)

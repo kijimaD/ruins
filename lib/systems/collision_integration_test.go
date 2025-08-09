@@ -90,12 +90,12 @@ func TestBattleEncounterApply(t *testing.T) {
 
 	// BattleEncounterエフェクトを直接テスト
 	battleEffect := &effects.BattleEncounter{
-		PlayerEntity:     playerEntity,
 		FieldEnemyEntity: enemyEntity, // フィールド上の敵シンボル
 	}
 
-	// Applyを実行
-	err := battleEffect.Apply(world, nil)
+	// Scopeにプレイヤーエンティティを設定してApplyを実行
+	scope := &effects.Scope{Creator: &playerEntity}
+	err := battleEffect.Apply(world, scope)
 	require.NoError(t, err)
 
 	// 戦闘開始イベントが設定されることを確認

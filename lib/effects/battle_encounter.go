@@ -9,19 +9,20 @@ import (
 
 // BattleEncounter はフィールドで敵と接触した時の戦闘遷移エフェクト
 type BattleEncounter struct {
-	// TODO: 不要なので消す
-	PlayerEntity ecs.Entity
 	// フィールド上の敵シンボル。勝利時に削除するのに使う
 	FieldEnemyEntity ecs.Entity
 }
 
 // Apply は戦闘遷移を実行する
-func (e *BattleEncounter) Apply(world w.World, _ *Scope) error {
+func (e *BattleEncounter) Apply(world w.World, scope *Scope) error {
 	// プレイヤーの動きを停止
-	if world.Components.Velocity.Get(e.PlayerEntity) != nil {
-		velocity := world.Components.Velocity.Get(e.PlayerEntity).(*gc.Velocity)
-		velocity.ThrottleMode = gc.ThrottleModeNope
-		velocity.Speed = 0
+	if scope != nil && scope.Creator != nil {
+		playerEntity := *scope.Creator
+		if world.Components.Velocity.Get(playerEntity) != nil {
+			velocity := world.Components.Velocity.Get(playerEntity).(*gc.Velocity)
+			velocity.ThrottleMode = gc.ThrottleModeNope
+			velocity.Speed = 0
+		}
 	}
 
 	// フィールド敵シンボルの動きを停止
@@ -37,9 +38,11 @@ func (e *BattleEncounter) Apply(world w.World, _ *Scope) error {
 
 	// 戦闘参加エンティティ情報を一時保存
 	// BattleState作成時にこれらの情報を取得して使用する
-	gameResources.BattleTempData = &resources.BattleTempData{
-		PlayerEntity:     e.PlayerEntity,
-		FieldEnemyEntity: e.FieldEnemyEntity,
+	if scope != nil && scope.Creator != nil {
+		gameResources.BattleTempData = &resources.BattleTempData{
+			PlayerEntity:     *scope.Creator,
+			FieldEnemyEntity: e.FieldEnemyEntity,
+		}
 	}
 
 	return nil
