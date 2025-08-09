@@ -7,6 +7,7 @@ import (
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestSetMaxHPSP(t *testing.T) {
@@ -173,4 +174,39 @@ func TestFullRecover(t *testing.T) {
 
 	// クリーンアップ
 	world.Manager.DeleteEntity(entity)
+}
+
+func TestSpawnNPCHasFactionEnemy(t *testing.T) {
+	// NPCが敵として認識されるFactionEnemyコンポーネントを持つことを確認
+	world, err := game.InitWorld(960, 720)
+	require.NoError(t, err)
+
+	// SpriteSheetsを初期化
+	spriteSheets := make(map[string]gc.SpriteSheet)
+	spriteSheets["field"] = gc.SpriteSheet{
+		Sprites: []gc.Sprite{
+			{Width: 32, Height: 32}, // インデックス0
+			{Width: 32, Height: 32}, // インデックス1
+			{Width: 32, Height: 32}, // インデックス2
+			{Width: 32, Height: 32}, // インデックス3
+			{Width: 32, Height: 32}, // インデックス4
+			{Width: 32, Height: 32}, // インデックス5
+			{Width: 32, Height: 32}, // インデックス6 (NPCのスプライト)
+		},
+	}
+	world.Resources.SpriteSheets = &spriteSheets
+
+	// NPCを生成
+	SpawnNPC(world, 100, 100)
+
+	// FactionEnemyコンポーネントを持つエンティティが存在することを確認
+	enemyFound := false
+	world.Manager.Join(
+		world.Components.Position,
+		world.Components.FactionEnemy,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		enemyFound = true
+	}))
+
+	assert.True(t, enemyFound, "SpawnNPCで生成されたエンティティはFactionEnemyコンポーネントを持つべき")
 }

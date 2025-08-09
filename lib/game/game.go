@@ -101,7 +101,9 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	}
 	world.Resources.RawMaster = rw
 
-	world.Resources.Game = &gr.Game{}
+	world.Resources.Game = &gr.Game{
+		StateEvent: gr.StateEventNone,
+	}
 
 	return world, nil
 }

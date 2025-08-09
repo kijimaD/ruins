@@ -35,7 +35,7 @@ var _ es.State = &DungeonState{}
 func (st *DungeonState) OnPause(_ w.World) {}
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *DungeonState) OnResume(_ w.World) {}
+func (st *DungeonState) OnResume(world w.World) {}
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *DungeonState) OnStart(world w.World) {
@@ -77,17 +77,42 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.PlayerInputSystem(world)
 	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
+	gs.CollisionSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
+
+	// TODO: StateEventリセットを共通化する
 	switch gameResources.StateEvent {
 	case resources.StateEventWarpNext:
+		// StateEventをリセットしてから遷移
+		gameResources.StateEvent = resources.StateEventNone
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
 	case resources.StateEventWarpEscape:
+		// StateEventをリセットしてから遷移
+		gameResources.StateEvent = resources.StateEventNone
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
+	case resources.StateEventBattleStart:
+		// StateEventをリセットしてから遷移
+		gameResources.StateEvent = resources.StateEventNone
+		// 戦闘開始
+		battleStateFactory := func() es.State {
+			var playerEntity, enemyEntity ecs.Entity
+			if gameResources.BattleTempData != nil {
+				playerEntity = gameResources.BattleTempData.PlayerEntity
+				enemyEntity = gameResources.BattleTempData.FieldEnemyEntity
+				// 使用後はクリア
+				gameResources.BattleTempData = nil
+			}
+			return &BattleState{
+				PlayerEntity: playerEntity,
+				EnemyEntity:  enemyEntity,
+			}
+		}
+		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{battleStateFactory}}
 	}
 
 	// BaseStateの共通処理を使用
