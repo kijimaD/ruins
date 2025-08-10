@@ -33,7 +33,7 @@ func CollisionSystem(world w.World) {
 	enemyCount := 0
 	world.Manager.Join(
 		world.Components.Position,
-		world.Components.FactionEnemy,
+		world.Components.AIMoveFSM,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		enemyCount++
 	}))
@@ -50,10 +50,10 @@ func CollisionSystem(world w.World) {
 	).Visit(ecs.Visit(func(playerEntity ecs.Entity) {
 		playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
 
-		// 敵エンティティ（FactionEnemyコンポーネントを持つ）との衝突をチェック
+		// 敵エンティティ（AIMoveFSMコンポーネントを持つ）との衝突をチェック
 		world.Manager.Join(
 			world.Components.Position,
-			world.Components.FactionEnemy,
+			world.Components.AIMoveFSM,
 		).Visit(ecs.Visit(func(enemyEntity ecs.Entity) {
 			enemyPos := world.Components.Position.Get(enemyEntity).(*gc.Position)
 

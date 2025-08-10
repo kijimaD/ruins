@@ -136,10 +136,9 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 				SpriteNumber: 6,
 				Depth:        gc.DepthNumTaller,
 			},
-			BlockPass:   &gc.BlockPass{},
-			FactionType: &gc.FactionEnemy, // 敵として認識されるように追加
-			AIMoveFSM:   &gc.AIMoveFSM{},
-			AIRoaming:   &gc.AIRoaming{},
+			BlockPass: &gc.BlockPass{},
+			AIMoveFSM: &gc.AIMoveFSM{},
+			AIRoaming: &gc.AIRoaming{},
 		})
 		entities.AddEntities(world, componentList)
 	}

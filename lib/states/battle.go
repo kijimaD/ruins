@@ -121,7 +121,7 @@ func (st *BattleState) OnStop(world w.World) {
 	gamelog.BattleLog.Flush()
 
 	// 戦闘に参加したフィールド敵エンティティを削除
-	if st.FieldEnemyEntity.HasComponent(world.Components.FactionEnemy) &&
+	if st.FieldEnemyEntity.HasComponent(world.Components.AIMoveFSM) &&
 		st.FieldEnemyEntity.HasComponent(world.Components.Position) {
 		// フィールドエンティティ（敵シンボル）を削除
 		world.Manager.DeleteEntity(st.FieldEnemyEntity)

@@ -80,8 +80,8 @@ func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
 
 	cl := entities.ComponentList{}
 	cl.Game = append(cl.Game, gc.GameComponentList{
-		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
-		FactionType: &gc.FactionEnemy,
+		Position:  &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
+		AIMoveFSM: &gc.AIMoveFSM{}, // AI制御された敵として識別
 		SpriteRender: &gc.SpriteRender{
 			SpriteNumber: 0,
 			SpriteSheet:  spriteSheet,

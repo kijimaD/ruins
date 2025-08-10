@@ -93,7 +93,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 				return
 			}
 			// 敵との衝突は戦闘トリガーとなるため、移動阻害の対象外とする
-			if entityAnother.HasComponent(world.Components.FactionEnemy) {
+			if entity.HasComponent(world.Components.Operator) && entityAnother.HasComponent(world.Components.AIMoveFSM) {
 				return
 			}
 			switch {

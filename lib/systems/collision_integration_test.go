@@ -63,7 +63,6 @@ func TestCollisionSystemNoCollision(t *testing.T) {
 	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 }
 
-
 func TestCollisionSystemMultipleEnemies(t *testing.T) {
 	t.Parallel()
 	world := createTestWorldWithResources(t)
@@ -111,8 +110,8 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 
 	cl2 := entities.ComponentList{}
 	cl2.Game = append(cl2.Game, gc.GameComponentList{
-		Position:    &gc.Position{X: 110, Y: 110},
-		FactionType: &gc.FactionEnemy,
+		Position:  &gc.Position{X: 110, Y: 110},
+		AIMoveFSM: &gc.AIMoveFSM{}, // AI制御された敵として識別
 		Velocity: &gc.Velocity{
 			Speed:        1.0,
 			ThrottleMode: gc.ThrottleModeFront,

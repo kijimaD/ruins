@@ -121,7 +121,7 @@ func (st *DungeonState) handleStateEvent(world w.World) es.Transition {
 				playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
 				world.Manager.Join(
 					world.Components.Position,
-					world.Components.FactionEnemy,
+					world.Components.AIMoveFSM,
 				).Visit(ecs.Visit(func(entity ecs.Entity) {
 					enemyPos := world.Components.Position.Get(entity).(*gc.Position)
 					dx := float64(playerPos.X - enemyPos.X)
