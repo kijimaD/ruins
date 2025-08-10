@@ -9,8 +9,8 @@ import (
 // Game は冒険出発から帰還までを1セットとした情報を保持する。
 // 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
 type Game struct {
-	// フィールド上で発生したイベント。各stateで補足されて処理される
-	StateEvent StateEvent
+	// フィールド上で発生したイベント。各stateで処理する
+	stateEvent StateEvent
 	// 現在階のフィールド情報
 	Level Level
 	// 階層数
@@ -62,4 +62,21 @@ func (l *Level) Width() gc.Pixel {
 // Height はステージ縦。縦の全体ピクセル数
 func (l *Level) Height() gc.Pixel {
 	return gc.Pixel(int(l.TileHeight) * int(l.TileSize))
+}
+
+// GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
+func (g *Game) GetStateEvent() StateEvent {
+	return g.stateEvent
+}
+
+// SetStateEvent はStateEventを設定する
+func (g *Game) SetStateEvent(event StateEvent) {
+	g.stateEvent = event
+}
+
+// ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
+func (g *Game) ConsumeStateEvent() StateEvent {
+	event := g.stateEvent
+	g.stateEvent = StateEventNone
+	return event
 }

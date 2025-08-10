@@ -123,7 +123,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 }
 
 // SpawnNPC はフィールド上に表示されるNPCを生成する
-// TODO: 接触すると戦闘開始するようにする
+// 接触すると戦闘開始する敵として動作する
 func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{

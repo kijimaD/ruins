@@ -17,7 +17,7 @@ type Scope struct {
 	Logger  GameLogAppender // ゲームログ出力先（nilの場合はログ出力なし）
 }
 
-// Effect はゲーム内の効果を表す核心インターフェース
+// Effect はゲーム内の効果を表すインターフェース
 type Effect interface {
 	// Apply は効果を実際に適用する
 	Apply(world w.World, scope *Scope) error

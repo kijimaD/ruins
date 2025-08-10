@@ -42,6 +42,9 @@ type BattleState struct {
 	// 味方パーティ
 	party worldhelper.Party
 
+	// フィールド上の敵シンボル（削除用）
+	FieldEnemyEntity ecs.Entity
+
 	// 背景
 	bg *ebiten.Image
 	// 敵表示コンテナ
@@ -86,6 +89,9 @@ func (st *BattleState) OnStart(world w.World) {
 	// UIBuilderを初期化
 	st.menuUIBuilder = menu.NewUIBuilder(world)
 
+	// フィールドの敵シンボルに基づいて実際の戦闘敵エンティティを生成
+	// 現在は簡単な実装として固定で生成する
+	// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
 	_ = worldhelper.SpawnEnemy(world, "軽戦車")
 	_ = worldhelper.SpawnEnemy(world, "火の玉")
 
@@ -113,6 +119,13 @@ func (st *BattleState) OnStop(world w.World) {
 
 	// バトルログをクリア
 	gamelog.BattleLog.Flush()
+
+	// 戦闘に参加したフィールド敵エンティティを削除
+	if st.FieldEnemyEntity.HasComponent(world.Components.AIMoveFSM) &&
+		st.FieldEnemyEntity.HasComponent(world.Components.Position) {
+		// フィールドエンティティ（敵シンボル）を削除
+		world.Manager.DeleteEntity(st.FieldEnemyEntity)
+	}
 }
 
 // Update はゲームステートの更新処理を行う
@@ -379,7 +392,7 @@ func (st *BattleState) reloadPolicy(_ w.World) {
 
 	// コールバックの設定
 	callbacks := menu.Callbacks{
-		OnSelect: st.handlePolicySelect,
+		OnSelect:      st.handlePolicySelect,
 		OnFocusChange: st.handleMenuFocusChange,
 	}
 
