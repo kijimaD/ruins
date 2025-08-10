@@ -123,13 +123,27 @@ func (st *MainMenuState) initMenu(world w.World) {
 }
 
 // initUI はUIを初期化する
-func (st *MainMenuState) initUI(_ w.World) *ebitenui.UI {
+func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
+
+	// ゲームタイトル「Ruins」のテキストを作成
+	titleText := widget.NewText(
+		widget.TextOpts.Text("Ruins", world.Resources.UIResources.Text.HugeTitleFace, world.Resources.UIResources.Text.IdleColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionStart,
+				Padding: widget.Insets{
+					Top: 100, // 画面上部から100ピクセル下に配置
+				},
+			}),
+		),
+	)
 
 	// ラッパーコンテナを作成(メニューの位置指定のため)
 	wrapperContainer := widget.NewContainer(
@@ -150,6 +164,8 @@ func (st *MainMenuState) initUI(_ w.World) *ebitenui.UI {
 	// メニューコンテナをラッパーに追加
 	wrapperContainer.AddChild(menuContainer)
 
+	// タイトルテキストとメニューをrootContainerに追加
+	rootContainer.AddChild(titleText)
 	rootContainer.AddChild(wrapperContainer)
 
 	return &ebitenui.UI{Container: rootContainer}

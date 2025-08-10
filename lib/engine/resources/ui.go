@@ -69,6 +69,7 @@ type TextResources struct {
 	Face          text.Face
 	TitleFace     text.Face
 	BigTitleFace  text.Face
+	HugeTitleFace text.Face // 特大タイトル用フォント
 	SmallFace     text.Face
 }
 
@@ -252,6 +253,7 @@ func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error) {
 			Face:          fonts.face,
 			TitleFace:     fonts.titleFace,
 			BigTitleFace:  fonts.bigTitleFace,
+			HugeTitleFace: fonts.hugeTitleFace,
 			SmallFace:     fonts.toolTipFace,
 		},
 
