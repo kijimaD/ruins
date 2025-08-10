@@ -121,6 +121,9 @@
 				<dd><a href="index.html#BattleCommandSystem">func BattleCommandSystem(world w.World)</a></dd>
 			
 				
+				<dd><a href="index.html#CollisionSystem">func CollisionSystem(world w.World)</a></dd>
+			
+				
 				<dd><a href="index.html#EquipmentChangedSystem">func EquipmentChangedSystem(world w.World) bool</a></dd>
 			
 				
@@ -176,6 +179,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/cache.go">cache.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/collision.go">collision.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go">equipment_changed.go</a>
@@ -187,6 +192,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go">player_input.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go">render_sprite.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go">test_helpers.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go">vision.go</a>
 			
@@ -235,6 +242,20 @@
 			<p>BattleCommandSystem は戦闘中のコマンド処理を行う
 1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
 クリックごとにコマンドの結果を見られるようにするため
+
+			
+			
+
+		
+			
+			
+			<h2 id="CollisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/collision.go?s=320:355#L6">CollisionSystem</a>
+				<a class="permalink" href="index.html#CollisionSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CollisionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>CollisionSystem はプレイヤーと敵の衝突を検出し、戦闘遷移を発火する
 
 			
 			

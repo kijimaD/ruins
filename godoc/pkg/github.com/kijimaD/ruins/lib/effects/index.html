@@ -147,6 +147,20 @@ target.go    - ターゲット選択システム
 			
 			
 				
+				<dd><a href="index.html#BattleEncounter">type BattleEncounter</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BattleEncounter.Apply">func (e *BattleEncounter) Apply(world w.World, scope *Scope) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BattleEncounter.String">func (e *BattleEncounter) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BattleEncounter.Validate">func (e *BattleEncounter) Validate(_ w.World, _ *Scope) error</a></dd>
+				
+			
+				
 				<dd><a href="index.html#ConsumeItem">type ConsumeItem</a></dd>
 				
 				
@@ -456,6 +470,8 @@ target.go    - ターゲット選択システム
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/battle_encounter.go">battle_encounter.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go">combat.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/damage.go">damage.go</a>
@@ -487,6 +503,72 @@ target.go    - ターゲット選択システム
 		
 		
 		
+		
+			
+			
+			<h2 id="BattleEncounter">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/battle_encounter.go?s=284:424#L1">BattleEncounter</a>
+				<a class="permalink" href="index.html#BattleEncounter">&#xb6;</a>
+				
+				
+			</h2>
+			<p>BattleEncounter はフィールドで敵と接触した時の戦闘遷移エフェクト
+
+			<pre>type BattleEncounter struct {
+    <span class="comment">// フィールド上の敵シンボル。勝利時に削除するのに使う</span>
+<span id="BattleEncounter.FieldEnemyEntity"></span>    FieldEnemyEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="BattleEncounter.Apply">func (*BattleEncounter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/battle_encounter.go?s=466:532#L7">Apply</a>
+					<a class="permalink" href="index.html#BattleEncounter.Apply">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e *<a href="index.html#BattleEncounter">BattleEncounter</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Apply は戦闘遷移を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="BattleEncounter.String">func (*BattleEncounter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/battle_encounter.go?s=1537:1578#L39">String</a>
+					<a class="permalink" href="index.html#BattleEncounter.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e *<a href="index.html#BattleEncounter">BattleEncounter</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はエフェクトの文字列表現を返す
+
+				
+				
+				
+			
+				
+				<h3 id="BattleEncounter.Validate">func (*BattleEncounter) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/battle_encounter.go?s=1355:1416#L33">Validate</a>
+					<a class="permalink" href="index.html#BattleEncounter.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e *<a href="index.html#BattleEncounter">BattleEncounter</a>) Validate(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate は戦闘遷移前の妥当性を検証する
+
+				
+				
+				
+			
 		
 			
 			
@@ -779,12 +861,12 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="Effect">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=622:937#L11">Effect</a>
+			<h2 id="Effect">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=616:931#L11">Effect</a>
 				<a class="permalink" href="index.html#Effect">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Effect はゲーム内の効果を表す核心インターフェース
+			<p>Effect はゲーム内の効果を表すインターフェース
 
 			<pre>type Effect interface {
     <span class="comment">// Apply は効果を実際に適用する</span>
@@ -1051,7 +1133,7 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="MovementWarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=864:896#L24">MovementWarpEscape</a>
+			<h2 id="MovementWarpEscape">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=866:898#L24">MovementWarpEscape</a>
 				<a class="permalink" href="index.html#MovementWarpEscape">&#xb6;</a>
 				
 				
@@ -1073,7 +1155,7 @@ target.go    - ターゲット選択システム
 
 			
 				
-				<h3 id="MovementWarpEscape.Apply">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=980:1048#L27">Apply</a>
+				<h3 id="MovementWarpEscape.Apply">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=982:1050#L27">Apply</a>
 					<a class="permalink" href="index.html#MovementWarpEscape.Apply">&#xb6;</a>
 					
 					
@@ -1086,7 +1168,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="MovementWarpEscape.String">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1427:1470#L42">String</a>
+				<h3 id="MovementWarpEscape.String">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1431:1474#L42">String</a>
 					<a class="permalink" href="index.html#MovementWarpEscape.String">&#xb6;</a>
 					
 					
@@ -1098,7 +1180,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="MovementWarpEscape.Validate">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1346:1409#L38">Validate</a>
+				<h3 id="MovementWarpEscape.Validate">func (MovementWarpEscape) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1350:1413#L38">Validate</a>
 					<a class="permalink" href="index.html#MovementWarpEscape.Validate">&#xb6;</a>
 					
 					
@@ -1148,7 +1230,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="MovementWarpNext.String">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=716:757#L19">String</a>
+				<h3 id="MovementWarpNext.String">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=718:759#L19">String</a>
 					<a class="permalink" href="index.html#MovementWarpNext.String">&#xb6;</a>
 					
 					
@@ -1160,7 +1242,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="MovementWarpNext.Validate">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=637:698#L15">Validate</a>
+				<h3 id="MovementWarpNext.Validate">func (MovementWarpNext) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=639:700#L15">Validate</a>
 					<a class="permalink" href="index.html#MovementWarpNext.Validate">&#xb6;</a>
 					
 					
@@ -1175,7 +1257,7 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="MovementWarpToFloor">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1601:1672#L47">MovementWarpToFloor</a>
+			<h2 id="MovementWarpToFloor">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1605:1676#L47">MovementWarpToFloor</a>
 				<a class="permalink" href="index.html#MovementWarpToFloor">&#xb6;</a>
 				
 				
@@ -1199,7 +1281,7 @@ target.go    - ターゲット選択システム
 
 			
 				
-				<h3 id="MovementWarpToFloor.Apply">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1747:1816#L52">Apply</a>
+				<h3 id="MovementWarpToFloor.Apply">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=1751:1820#L52">Apply</a>
 					<a class="permalink" href="index.html#MovementWarpToFloor.Apply">&#xb6;</a>
 					
 					
@@ -1212,7 +1294,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="MovementWarpToFloor.String">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=2289:2333#L70">String</a>
+				<h3 id="MovementWarpToFloor.String">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=2295:2339#L70">String</a>
 					<a class="permalink" href="index.html#MovementWarpToFloor.String">&#xb6;</a>
 					
 					
@@ -1224,7 +1306,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="MovementWarpToFloor.Validate">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=2103:2167#L63">Validate</a>
+				<h3 id="MovementWarpToFloor.Validate">func (MovementWarpToFloor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/movement.go?s=2109:2173#L63">Validate</a>
 					<a class="permalink" href="index.html#MovementWarpToFloor.Validate">&#xb6;</a>
 					
 					
