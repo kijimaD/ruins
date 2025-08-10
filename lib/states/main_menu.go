@@ -2,9 +2,9 @@ package states
 
 import (
 	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -124,11 +124,33 @@ func (st *MainMenuState) initMenu(world w.World) {
 
 // initUI はUIを初期化する
 func (st *MainMenuState) initUI(_ w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
 
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
-	rootContainer.AddChild(menuContainer)
+
+	// ラッパーコンテナを作成(メニューの位置指定のため)
+	wrapperContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionStart,
+				Padding: widget.Insets{
+					Top: 400, // メニューを下寄りにする
+				},
+			}),
+		),
+	)
+
+	// メニューコンテナをラッパーに追加
+	wrapperContainer.AddChild(menuContainer)
+
+	rootContainer.AddChild(wrapperContainer)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
