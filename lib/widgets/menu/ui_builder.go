@@ -51,6 +51,8 @@ func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 		menu.itemWidgets = append(menu.itemWidgets, btn)
 	}
 
+	b.UpdateFocus(menu)
+
 	return container
 }
 
@@ -64,6 +66,8 @@ func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 		container.AddChild(btn)
 		menu.itemWidgets = append(menu.itemWidgets, btn)
 	}
+
+	b.UpdateFocus(menu)
 
 	return container
 }
@@ -88,14 +92,13 @@ func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
 		menu.itemWidgets = append(menu.itemWidgets, btn)
 	}
 
+	b.UpdateFocus(menu)
+
 	return container
 }
 
 // createMenuButton はメニューボタンを作成する
 func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
-	// ボタンの初期フォーカス状態を設定
-	isFocused := index == menu.GetFocusedIndex()
-
 	// 半透明のボタン画像を作成
 	buttonImage := b.createTransparentButtonImage()
 
@@ -107,7 +110,7 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 			menu.selectCurrent()
 		}),
 		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(200, 32), // ボタンの最小サイズを設定（横幅200、縦幅30）
+			widget.WidgetOpts.MinSize(100, 28), // ボタンの最小サイズを設定（横幅100、縦幅28）
 		),
 		widget.ButtonOpts.Image(buttonImage), // 半透明背景を設定
 	)
@@ -117,46 +120,76 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 		btn.GetWidget().Disabled = true
 	}
 
-	// 初期フォーカス設定（無効化されていない場合のみ）
-	if isFocused && !item.Disabled {
-		btn.Focus(true)
-	}
-
 	return btn
 }
 
 // UpdateFocus はメニューのフォーカス表示を更新する
+// カーソルで選択中の要素だけボタンを変える。マウスのhoverでは色が変わらないようにしている
+// カーソル移動は独自実装なので、UIを対応させるために必要
 func (b *UIBuilder) UpdateFocus(menu *Menu) {
 	if len(menu.itemWidgets) == 0 {
 		return
 	}
 
-	// 全てのボタンのフォーカスを解除
+	// 全てのボタンのフォーカスを更新
 	for i, w := range menu.itemWidgets {
-		// widget.ButtonはinterFaceでありポインタ型ではないため、型アサーションを修正
-		if btn, ok := w.(interface{ Focus(bool) }); ok {
-			btn.Focus(i == menu.GetFocusedIndex())
+		if btn, ok := w.(*widget.Button); ok {
+			isFocused := i == menu.GetFocusedIndex()
+
+			// フォーカス状態に応じてボタンの画像を更新
+			if isFocused {
+				// フォーカス時: より明るい背景色
+				focusedImage := b.createFocusedButtonImage()
+				btn.Image = focusedImage
+			} else {
+				// 非フォーカス時: 通常の半透明背景
+				normalImage := b.createTransparentButtonImage()
+				btn.Image = normalImage
+			}
 		}
 	}
 }
 
 // createTransparentButtonImage は半透明のボタン画像を作成する
+// マウスホバーでは色が変わらず、キーボード操作（フォーカス）でのみ反応する
 func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
-	// アイドル状態: 半透明の黒（アルファ値128）
-	idle := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 128})
+	// アイドル状態: 透明
+	idle := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
 
-	// ホバー状態: 少し明るい半透明の灰色
-	hover := image.NewNineSliceColor(color.NRGBA{R: 60, G: 60, B: 60, A: 160})
+	// ホバー状態: アイドルと同じ色（マウスホバーでは変化しない）
+	hover := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
 
 	// プレス状態: さらに明るい半透明の灰色
 	pressed := image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 100, A: 180})
 
 	// 無効状態: 暗い半透明
-	disabled := image.NewNineSliceColor(color.NRGBA{R: 30, G: 30, B: 30, A: 80})
+	disabled := image.NewNineSliceColor(color.NRGBA{R: 30, G: 30, B: 30, A: 16})
 
 	return &widget.ButtonImage{
 		Idle:     idle,
 		Hover:    hover,
+		Pressed:  pressed,
+		Disabled: disabled,
+	}
+}
+
+// createFocusedButtonImage はフォーカス時の明るいボタン画像を作成する
+func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
+	// フォーカス時: より明るい半透明の灰色
+	focused := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 120})
+
+	// ホバー状態: フォーカス時と同じ色（マウスホバーでは変化しない）
+	hover := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 120})
+
+	// プレス状態: さらに明るい色
+	pressed := image.NewNineSliceColor(color.NRGBA{R: 120, G: 120, B: 120, A: 200})
+
+	// 無効状態: 暗い半透明
+	disabled := image.NewNineSliceColor(color.NRGBA{R: 30, G: 30, B: 30, A: 80})
+
+	return &widget.ButtonImage{
+		Idle:     focused,
+		Hover:    hover, // フォーカス時と同じ色でマウスホバー効果を無効化
 		Pressed:  pressed,
 		Disabled: disabled,
 	}
