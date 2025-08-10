@@ -1,6 +1,9 @@
 package menu
 
 import (
+	"image/color"
+
+	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/kijimaD/ruins/lib/eui"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -93,6 +96,9 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 	// ボタンの初期フォーカス状態を設定
 	isFocused := index == menu.GetFocusedIndex()
 
+	// 半透明のボタン画像を作成
+	buttonImage := b.createTransparentButtonImage()
+
 	btn := eui.NewButton(
 		item.Label,
 		b.world,
@@ -100,6 +106,10 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 			menu.SetFocusedIndex(index)
 			menu.selectCurrent()
 		}),
+		widget.ButtonOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(200, 32), // ボタンの最小サイズを設定（横幅200、縦幅30）
+		),
+		widget.ButtonOpts.Image(buttonImage), // 半透明背景を設定
 	)
 
 	// 無効化されたアイテムの処理
@@ -127,5 +137,27 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 		if btn, ok := w.(interface{ Focus(bool) }); ok {
 			btn.Focus(i == menu.GetFocusedIndex())
 		}
+	}
+}
+
+// createTransparentButtonImage は半透明のボタン画像を作成する
+func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
+	// アイドル状態: 半透明の黒（アルファ値128）
+	idle := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 128})
+
+	// ホバー状態: 少し明るい半透明の灰色
+	hover := image.NewNineSliceColor(color.NRGBA{R: 60, G: 60, B: 60, A: 160})
+
+	// プレス状態: さらに明るい半透明の灰色
+	pressed := image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 100, A: 180})
+
+	// 無効状態: 暗い半透明
+	disabled := image.NewNineSliceColor(color.NRGBA{R: 30, G: 30, B: 30, A: 80})
+
+	return &widget.ButtonImage{
+		Idle:     idle,
+		Hover:    hover,
+		Pressed:  pressed,
+		Disabled: disabled,
 	}
 }
