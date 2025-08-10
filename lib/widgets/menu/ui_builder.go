@@ -99,9 +99,6 @@ func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
 
 // createMenuButton はメニューボタンを作成する
 func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
-	// 半透明のボタン画像を作成
-	buttonImage := b.createTransparentButtonImage()
-
 	btn := eui.NewButton(
 		item.Label,
 		b.world,
@@ -110,9 +107,8 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 			menu.selectCurrent()
 		}),
 		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(100, 28), // ボタンの最小サイズを設定（横幅100、縦幅28）
+			widget.WidgetOpts.MinSize(100, 28), // ボタンの最小サイズを設定
 		),
-		widget.ButtonOpts.Image(buttonImage), // 半透明背景を設定
 	)
 
 	// 無効化されたアイテムの処理
