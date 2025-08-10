@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/engine/resources"
-	"github.com/kijimaD/ruins/lib/engine/states"
+	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -85,8 +85,8 @@ func TestMainMenuSelection(t *testing.T) {
 	world := createTestWorld()
 	state.initMenu(world)
 
-	// 「終了」項目にフォーカス移動（インデックス3）
-	state.menu.SetFocusedIndex(3)
+	// 「終了」項目にフォーカス移動（インデックス2）
+	state.menu.SetFocusedIndex(2)
 
 	// Enterキーで選択（セッションベース）
 	mockInput.SimulateEnterPressRelease()
@@ -95,7 +95,7 @@ func TestMainMenuSelection(t *testing.T) {
 	// トランジションが設定されることを確認
 	if state.GetTransition() == nil {
 		t.Error("トランジションが設定されていない")
-	} else if state.GetTransition().Type != states.TransQuit {
+	} else if state.GetTransition().Type != es.TransQuit {
 		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.GetTransition().Type)
 	}
 }
@@ -120,7 +120,7 @@ func TestMainMenuCancel(t *testing.T) {
 	// トランジションが設定されることを確認
 	if state.GetTransition() == nil {
 		t.Error("トランジションが設定されていない")
-	} else if state.GetTransition().Type != states.TransQuit {
+	} else if state.GetTransition().Type != es.TransQuit {
 		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.GetTransition().Type)
 	}
 }
@@ -136,7 +136,7 @@ func TestMainMenuItems(t *testing.T) {
 
 	// メニュー項目の確認
 	items := state.menu.GetItems()
-	expectedItems := []string{"intro", "home", "explore", "exit"}
+	expectedItems := []string{"home", "intro", "exit"}
 
 	if len(items) != len(expectedItems) {
 		t.Errorf("メニュー項目数が不正: 期待 %d, 実際 %d", len(expectedItems), len(items))
@@ -149,7 +149,7 @@ func TestMainMenuItems(t *testing.T) {
 	}
 
 	// ラベルの確認
-	expectedLabels := []string{"導入", "拠点", "探検", "終了"}
+	expectedLabels := []string{"拠点", "導入", "終了"}
 	for i, expectedLabel := range expectedLabels {
 		if i < len(items) && items[i].Label != expectedLabel {
 			t.Errorf("メニュー項目ラベル[%d]が不正: 期待 %s, 実際 %s", i, expectedLabel, items[i].Label)

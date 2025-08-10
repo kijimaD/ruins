@@ -23,7 +23,7 @@ var (
 
 // VisionSystem は探索範囲エリアを表示する
 func VisionSystem(world w.World, screen *ebiten.Image) {
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	if gameResources.Level.VisionImage == nil {
 		img := ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
 		img.Fill(color.Black)

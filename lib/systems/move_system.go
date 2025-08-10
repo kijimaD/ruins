@@ -1,11 +1,9 @@
 package systems
 
 import (
-	"log"
 	"math"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/mathutil"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -14,7 +12,6 @@ import (
 
 // MoveSystem はエンティティの移動処理を行う
 func MoveSystem(world w.World) {
-
 	maxFrontSpeed := 2.0
 	maxBackSpeed := -1.0
 	accelerationSpeed := 0.05
@@ -42,24 +39,17 @@ func MoveSystem(world w.World) {
 		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pos := world.Components.Position.Get(entity).(*gc.Position)
-		gameResources := world.Resources.Game.(*resources.Game)
+		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 		tileEntity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
 		if tileEntity.HasComponent(world.Components.Warp) {
 			warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
-			processor := effects.NewProcessor()
 
 			switch warp.Mode {
 			case gc.WarpModeNext:
-				warpEffect := effects.MovementWarpNext{}
-				processor.AddEffect(warpEffect, nil)
+				gameResources.SetStateEvent(resources.StateEventWarpNext)
 			case gc.WarpModeEscape:
-				escapeEffect := effects.MovementWarpEscape{}
-				processor.AddEffect(escapeEffect, nil)
-			}
-
-			if err := processor.Execute(world); err != nil {
-				log.Printf("ワープエフェクト実行エラー: %v", err)
+				gameResources.SetStateEvent(resources.StateEventWarpEscape)
 			}
 		}
 	}))
@@ -131,7 +121,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	}
 
 	padding := gc.Pixel(10)
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	levelWidth := gameResources.Level.Width()
 	levelHeight := gameResources.Level.Height()
 

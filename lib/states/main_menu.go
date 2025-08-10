@@ -1,10 +1,12 @@
 package states
 
 import (
+	"image/color"
+
 	"github.com/ebitenui/ebitenui"
+	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -71,19 +73,14 @@ func (st *MainMenuState) initMenu(world w.World) {
 	// メニュー項目の定義
 	items := []menu.Item{
 		{
-			ID:       "intro",
-			Label:    "導入",
-			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewIntroState}},
-		},
-		{
 			ID:       "home",
 			Label:    "拠点",
 			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}},
 		},
 		{
-			ID:       "explore",
-			Label:    "探検",
-			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
+			ID:       "intro",
+			Label:    "導入",
+			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewIntroState}},
 		},
 		{
 			ID:       "exit",
@@ -128,12 +125,53 @@ func (st *MainMenuState) initMenu(world w.World) {
 }
 
 // initUI はUIを初期化する
-func (st *MainMenuState) initUI(_ w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
+func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
 
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
-	rootContainer.AddChild(menuContainer)
+
+	// 深い金色/琥珀色
+	amberColor := color.NRGBA{R: 255, G: 191, B: 0, A: 255}
+
+	// ゲームタイトル「Ruins」のテキストを作成
+	titleText := widget.NewText(
+		widget.TextOpts.Text("Ruins", world.Resources.UIResources.Text.HugeTitleFace, amberColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionStart,
+				Padding: widget.Insets{
+					Top: 100, // 画面上部から100ピクセル下に配置
+				},
+			}),
+		),
+	)
+
+	// ラッパーコンテナを作成(メニューの位置指定のため)
+	wrapperContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+		)),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionStart,
+				Padding: widget.Insets{
+					Top: 400, // メニューを下寄りにする
+				},
+			}),
+		),
+	)
+
+	// メニューコンテナをラッパーに追加
+	wrapperContainer.AddChild(menuContainer)
+
+	// タイトルテキストとメニューをrootContainerに追加
+	rootContainer.AddChild(titleText)
+	rootContainer.AddChild(wrapperContainer)
 
 	return &ebitenui.UI{Container: rootContainer}
 }

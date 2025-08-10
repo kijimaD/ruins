@@ -15,7 +15,7 @@ import (
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
 func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	chain := SimpleRoomBuilder(width, height)
 	chain.Build()

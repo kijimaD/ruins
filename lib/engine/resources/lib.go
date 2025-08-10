@@ -15,7 +15,7 @@ type Resources struct {
 	AudioContext     *audio.Context
 	AudioPlayers     *map[string]*audio.Player
 	Prefabs          interface{}
-	Game             interface{}
+	Dungeon          interface{}
 	RawMaster        interface{}
 	UIResources      *UIResources
 }

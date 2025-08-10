@@ -1,6 +1,6 @@
 package resources
 
-// StateEvent はフィールド上でのイベント
+// StateEvent はフィールド上でのイベント。ステート遷移が発生する
 type StateEvent string
 
 const (

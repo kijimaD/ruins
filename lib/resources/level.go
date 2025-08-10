@@ -6,10 +6,10 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// Game は冒険出発から帰還までを1セットとした情報を保持する。
+// Dungeon は冒険出発から帰還までを1セットとした情報を保持する。
 // 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
-type Game struct {
-	// フィールド上で発生したイベント。各stateで処理する
+type Dungeon struct {
+	// ステート遷移発生イベント。各stateで処理する
 	stateEvent StateEvent
 	// 現在階のフィールド情報
 	Level Level
@@ -65,17 +65,17 @@ func (l *Level) Height() gc.Pixel {
 }
 
 // GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
-func (g *Game) GetStateEvent() StateEvent {
+func (g *Dungeon) GetStateEvent() StateEvent {
 	return g.stateEvent
 }
 
 // SetStateEvent はStateEventを設定する
-func (g *Game) SetStateEvent(event StateEvent) {
+func (g *Dungeon) SetStateEvent(event StateEvent) {
 	g.stateEvent = event
 }
 
 // ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
-func (g *Game) ConsumeStateEvent() StateEvent {
+func (g *Dungeon) ConsumeStateEvent() StateEvent {
 	event := g.stateEvent
 	g.stateEvent = StateEventNone
 	return event
