@@ -4,12 +4,9 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestCollisionSystemBattleTransition(t *testing.T) {
@@ -66,37 +63,6 @@ func TestCollisionSystemNoCollision(t *testing.T) {
 	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 }
 
-func TestBattleEncounterApply(t *testing.T) {
-	t.Parallel()
-	world := createTestWorldWithResources(t)
-
-	// テスト用エンティティを作成
-	createPlayerEntity(t, world, 100.0, 100.0)
-	createEnemyEntity(t, world, 110.0, 110.0)
-
-	// エンティティを取得
-	var playerEntity, enemyEntity ecs.Entity
-	world.Manager.Join(world.Components.Position, world.Components.Operator).Visit(ecs.Visit(func(e ecs.Entity) {
-		playerEntity = e
-	}))
-	world.Manager.Join(world.Components.Position, world.Components.FactionEnemy).Visit(ecs.Visit(func(e ecs.Entity) {
-		enemyEntity = e
-	}))
-
-	// BattleEncounterエフェクトを直接テスト
-	battleEffect := &effects.BattleEncounter{
-		FieldEnemyEntity: enemyEntity, // フィールド上の敵シンボル
-	}
-
-	// Scopeにプレイヤーエンティティを設定してApplyを実行
-	scope := &effects.Scope{Creator: &playerEntity}
-	err := battleEffect.Apply(world, scope)
-	require.NoError(t, err)
-
-	// 戦闘開始イベントが設定されることを確認
-	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
-}
 
 func TestCollisionSystemMultipleEnemies(t *testing.T) {
 	t.Parallel()
@@ -120,6 +86,12 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 	world := createTestWorldWithResources(t)
 
 	// 速度コンポーネント付きでエンティティを作成
+	spriteSheet := &gc.SpriteSheet{
+		Sprites: []gc.Sprite{
+			{Width: 32, Height: 32},
+		},
+	}
+
 	cl := entities.ComponentList{}
 	cl.Game = append(cl.Game, gc.GameComponentList{
 		Position:    &gc.Position{X: 100, Y: 100},
@@ -128,6 +100,10 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 		Velocity: &gc.Velocity{
 			Speed:        2.0,
 			ThrottleMode: gc.ThrottleModeFront,
+		},
+		SpriteRender: &gc.SpriteRender{
+			SpriteNumber: 0,
+			SpriteSheet:  spriteSheet,
 		},
 	})
 	playerEntities := entities.AddEntities(world, cl)
@@ -140,6 +116,10 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 		Velocity: &gc.Velocity{
 			Speed:        1.0,
 			ThrottleMode: gc.ThrottleModeFront,
+		},
+		SpriteRender: &gc.SpriteRender{
+			SpriteNumber: 0,
+			SpriteSheet:  spriteSheet,
 		},
 	})
 	enemyEntities := entities.AddEntities(world, cl2)

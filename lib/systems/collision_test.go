@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -152,7 +153,8 @@ func TestGetSpriteSize(t *testing.T) {
 			}))
 
 			// スプライトサイズを取得
-			size := getSpriteSize(world, testEntity)
+			size, err := getSpriteSize(world, testEntity)
+			assert.NoError(t, err)
 			assert.Equal(t, tt.expected, size)
 
 			// クリーンアップ
@@ -160,20 +162,25 @@ func TestGetSpriteSize(t *testing.T) {
 		})
 	}
 
-	// スプライトがない場合のデフォルトサイズテスト
-	t.Run("スプライトがない場合はデフォルトサイズ", func(t *testing.T) {
+	// スプライトがない場合はエラーになることを確認
+	t.Run("スプライトがない場合はエラー", func(t *testing.T) {
 		t.Parallel()
 		world := createTestWorldForCollision(t)
-		createPlayerEntity(t, world, 100, 100)
 
-		var testEntity ecs.Entity
-		world.Manager.Join(world.Components.Position, world.Components.Operator).Visit(ecs.Visit(func(e ecs.Entity) {
-			testEntity = e
-		}))
+		// SpriteRenderコンポーネントを持たないエンティティを作成
+		cl := entities.ComponentList{}
+		cl.Game = append(cl.Game, gc.GameComponentList{
+			Position:    &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(100)},
+			Operator:    &gc.Operator{},
+			FactionType: &gc.FactionAlly,
+			// SpriteRenderは意図的に含めない
+		})
+		testEntities := entities.AddEntities(world, cl)
+		testEntity := testEntities[0]
 
-		size := getSpriteSize(world, testEntity)
-		expected := spriteSize{width: 32, height: 32}
-		assert.Equal(t, expected, size)
+		_, err := getSpriteSize(world, testEntity)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "does not have SpriteRender component")
 
 		world.Manager.DeleteEntity(testEntity)
 	})
@@ -184,7 +191,7 @@ func TestCollisionSystemWithMultipleEntities(t *testing.T) {
 	world := createTestWorldForCollision(t)
 
 	// 複数のプレイヤーと敵を作成
-	createPlayerEntity(t, world, 100, 100)
+	createPlayerEntity(t, world, 101, 101)
 	createEnemyEntity(t, world, 110, 110) // 接触
 	createEnemyEntity(t, world, 200, 200) // 非接触
 	createEnemyEntity(t, world, 105, 105) // 接触

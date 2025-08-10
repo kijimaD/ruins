@@ -44,14 +44,25 @@ func createTestWorldForCollision(t *testing.T) w.World {
 }
 
 // createPlayerEntity は指定された位置にプレイヤーエンティティを作成する
-func createPlayerEntity(t *testing.T, world w.World, _, _ float64) {
+func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
 	t.Helper()
+
+	// テスト用のスプライトシートを作成
+	spriteSheet := &gc.SpriteSheet{
+		Sprites: []gc.Sprite{
+			{Width: 32, Height: 32}, // 標準サイズ
+		},
+	}
 
 	cl := entities.ComponentList{}
 	cl.Game = append(cl.Game, gc.GameComponentList{
-		Position:    &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(100)},
+		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		Operator:    &gc.Operator{},
 		FactionType: &gc.FactionAlly,
+		SpriteRender: &gc.SpriteRender{
+			SpriteNumber: 0,
+			SpriteSheet:  spriteSheet,
+		},
 	})
 	entities.AddEntities(world, cl)
 }
@@ -60,10 +71,21 @@ func createPlayerEntity(t *testing.T, world w.World, _, _ float64) {
 func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
 	t.Helper()
 
+	// テスト用のスプライトシートを作成
+	spriteSheet := &gc.SpriteSheet{
+		Sprites: []gc.Sprite{
+			{Width: 32, Height: 32}, // 標準サイズ
+		},
+	}
+
 	cl := entities.ComponentList{}
 	cl.Game = append(cl.Game, gc.GameComponentList{
 		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		FactionType: &gc.FactionEnemy,
+		SpriteRender: &gc.SpriteRender{
+			SpriteNumber: 0,
+			SpriteSheet:  spriteSheet,
+		},
 	})
 	entities.AddEntities(world, cl)
 }

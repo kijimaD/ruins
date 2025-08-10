@@ -1,11 +1,12 @@
 package systems
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"math"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -58,18 +59,21 @@ func CollisionSystem(world w.World) {
 
 			// 衝突判定（スプライトサイズを考慮した距離ベース）
 			if checkCollisionSimple(world, playerEntity, enemyEntity, playerPos, enemyPos) {
+				gameResources.SetStateEvent(resources.StateEventBattleStart)
 
-				// 戦闘遷移エフェクトを実行
-				processor := effects.NewProcessor()
-				battleEffect := &effects.BattleEncounter{
-					FieldEnemyEntity: enemyEntity, // フィールド上の敵シンボル
+				// 衝突した両エンティティの移動を停止
+				if playerVelocity := world.Components.Velocity.Get(playerEntity); playerVelocity != nil {
+					velocity := playerVelocity.(*gc.Velocity)
+					velocity.ThrottleMode = gc.ThrottleModeNope
+					velocity.Speed = 0
 				}
-				processor.AddEffect(battleEffect, &playerEntity)
+				if enemyVelocity := world.Components.Velocity.Get(enemyEntity); enemyVelocity != nil {
+					velocity := enemyVelocity.(*gc.Velocity)
+					velocity.ThrottleMode = gc.ThrottleModeNope
+					velocity.Speed = 0
+				}
 
-				if err := processor.Execute(world); err != nil {
-					// エラーログは残しておく（重要なエラー情報のため）
-					log.Printf("戦闘遷移エラー: %v", err)
-				}
+				return // 1回の衝突処理で終了
 			}
 		}))
 	}))
@@ -86,8 +90,17 @@ func checkCollisionDistance(_ w.World, _, _ ecs.Entity, pos1, pos2 *gc.Position)
 // checkCollisionSimple はスプライトサイズを考慮したシンプルな距離判定を行う
 func checkCollisionSimple(world w.World, entity1, entity2 ecs.Entity, pos1, pos2 *gc.Position) bool {
 	// 両エンティティのスプライトサイズを取得
-	size1 := getSpriteSize(world, entity1)
-	size2 := getSpriteSize(world, entity2)
+	size1, err1 := getSpriteSize(world, entity1)
+	if err1 != nil {
+		log.Printf("Entity %v sprite size error: %v", entity1, err1)
+		return false
+	}
+
+	size2, err2 := getSpriteSize(world, entity2)
+	if err2 != nil {
+		log.Printf("Entity %v sprite size error: %v", entity2, err2)
+		return false
+	}
 
 	// 衝突判定距離を計算（両スプライトの半径の合計）
 	radius1 := math.Max(float64(size1.width), float64(size1.height)) / 2
@@ -108,17 +121,22 @@ type spriteSize struct {
 }
 
 // getSpriteSize はエンティティのスプライトサイズを取得する
-func getSpriteSize(world w.World, entity ecs.Entity) spriteSize {
-	// TODO: ハードコーディングしないようにする
-	defaultSize := spriteSize{width: 32, height: 32}
-
-	if world.Components.SpriteRender.Get(entity) != nil {
-		spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		if spriteRender.SpriteSheet != nil && len(spriteRender.SpriteSheet.Sprites) > spriteRender.SpriteNumber {
-			sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
-			return spriteSize{width: sprite.Width, height: sprite.Height}
-		}
+// SpriteRenderコンポーネントが存在しない、またはスプライトが見つからない場合はエラーを返す
+func getSpriteSize(world w.World, entity ecs.Entity) (spriteSize, error) {
+	if world.Components.SpriteRender.Get(entity) == nil {
+		return spriteSize{}, fmt.Errorf("entity %v does not have SpriteRender component", entity)
 	}
 
-	return defaultSize
+	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
+	if spriteRender.SpriteSheet == nil {
+		return spriteSize{}, errors.New("SpriteSheet is nil")
+	}
+
+	if len(spriteRender.SpriteSheet.Sprites) <= spriteRender.SpriteNumber {
+		return spriteSize{}, fmt.Errorf("sprite number %d is out of range (length: %d)",
+			spriteRender.SpriteNumber, len(spriteRender.SpriteSheet.Sprites))
+	}
+
+	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+	return spriteSize{width: sprite.Width, height: sprite.Height}, nil
 }
