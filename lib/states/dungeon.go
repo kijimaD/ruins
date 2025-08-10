@@ -84,6 +84,17 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
 	}
 
+	// StateEvent処理をチェック
+	if transition := st.handleStateEvent(world); transition.Type != es.TransNone {
+		return transition
+	}
+
+	// BaseStateの共通処理を使用
+	return st.ConsumeTransition()
+}
+
+// handleStateEvent はStateEventを処理し、対応する遷移を返す
+func (st *DungeonState) handleStateEvent(world w.World) es.Transition {
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	switch gameResources.ConsumeStateEvent() {
@@ -129,10 +140,10 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 			}
 		}
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{battleStateFactory}}
+	default:
+		// StateEventNoneまたは未知のイベントの場合は何もしない
+		return es.Transition{Type: es.TransNone}
 	}
-
-	// BaseStateの共通処理を使用
-	return st.ConsumeTransition()
 }
 
 // Draw はゲームステートの描画処理を行う
