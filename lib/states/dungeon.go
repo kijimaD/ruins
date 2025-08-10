@@ -132,7 +132,6 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 			}
 
 			return &BattleState{
-				PlayerEntity:     playerEntity,
 				FieldEnemyEntity: fieldEnemyEntity,
 			}
 		}

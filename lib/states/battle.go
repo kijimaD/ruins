@@ -42,12 +42,8 @@ type BattleState struct {
 	// 味方パーティ
 	party worldhelper.Party
 
-	// フィールドから戦闘に入った時の情報
-	// TODO: 消す
-	PlayerEntity ecs.Entity
-	// TODO: 消す
-	EnemyEntity      ecs.Entity // 戦闘中の敵エンティティ
-	FieldEnemyEntity ecs.Entity // フィールド上の敵シンボル（削除用）
+	// フィールド上の敵シンボル（削除用）
+	FieldEnemyEntity ecs.Entity
 
 	// 背景
 	bg *ebiten.Image
@@ -96,18 +92,8 @@ func (st *BattleState) OnStart(world w.World) {
 	// フィールドの敵シンボルに基づいて実際の戦闘敵エンティティを生成
 	// 現在は簡単な実装として"軽戦車"を生成
 	// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
-	if st.EnemyEntity.HasComponent(world.Components.FactionEnemy) {
-		// フィールドエンティティの参照を保存（戦闘終了時の削除用）
-		st.FieldEnemyEntity = st.EnemyEntity
-		// 戦闘用の敵エンティティを生成し、EnemyEntityを置き換え
-		battleEnemyEntity := worldhelper.SpawnEnemy(world, "軽戦車")
-		// TODO: EnemyEntityを消す
-		st.EnemyEntity = battleEnemyEntity
-	} else {
-		// fallback: 既存の実装
-		_ = worldhelper.SpawnEnemy(world, "軽戦車")
-		_ = worldhelper.SpawnEnemy(world, "火の玉")
-	}
+	_ = worldhelper.SpawnEnemy(world, "軽戦車")
+	_ = worldhelper.SpawnEnemy(world, "火の玉")
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image
