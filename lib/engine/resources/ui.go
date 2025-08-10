@@ -69,7 +69,7 @@ type TextResources struct {
 	Face          text.Face
 	TitleFace     text.Face
 	BigTitleFace  text.Face
-	HugeTitleFace text.Face // 特大タイトル用フォント
+	HugeTitleFace text.Face
 	SmallFace     text.Face
 }
 

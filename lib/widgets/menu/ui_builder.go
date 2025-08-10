@@ -107,7 +107,7 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 			menu.selectCurrent()
 		}),
 		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(100, 28), // ボタンの最小サイズを設定
+			widget.WidgetOpts.MinSize(100, 28),
 		),
 	)
 
@@ -152,9 +152,6 @@ func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
 	// アイドル状態: 透明
 	idle := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
 
-	// ホバー状態: アイドルと同じ色（マウスホバーでは変化しない）
-	hover := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
-
 	// プレス状態: さらに明るい半透明の灰色
 	pressed := image.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 100, A: 180})
 
@@ -163,7 +160,7 @@ func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
 
 	return &widget.ButtonImage{
 		Idle:     idle,
-		Hover:    hover,
+		Hover:    idle, // フォーカス時と同じ色でマウスホバー効果を無効化
 		Pressed:  pressed,
 		Disabled: disabled,
 	}
@@ -174,9 +171,6 @@ func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
 	// フォーカス時: より明るい半透明の灰色
 	focused := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 120})
 
-	// ホバー状態: フォーカス時と同じ色（マウスホバーでは変化しない）
-	hover := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 120})
-
 	// プレス状態: さらに明るい色
 	pressed := image.NewNineSliceColor(color.NRGBA{R: 120, G: 120, B: 120, A: 200})
 
@@ -185,7 +179,7 @@ func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
 
 	return &widget.ButtonImage{
 		Idle:     focused,
-		Hover:    hover, // フォーカス時と同じ色でマウスホバー効果を無効化
+		Hover:    focused, // フォーカス時と同じ色でマウスホバー効果を無効化
 		Pressed:  pressed,
 		Disabled: disabled,
 	}
