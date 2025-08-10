@@ -20,7 +20,7 @@ func createTestWorldWithResources(t *testing.T) w.World {
 	require.NoError(t, err)
 
 	// Gameリソースを初期化
-	gameResource := &resources.Game{}
+	gameResource := &resources.Dungeon{}
 	gameResource.SetStateEvent(resources.StateEventNone)
 	world.Resources.Game = gameResource
 
@@ -36,7 +36,7 @@ func createTestWorldForCollision(t *testing.T) w.World {
 	require.NoError(t, err)
 
 	// Gameリソースを初期化してpanic回避
-	gameResource := &resources.Game{}
+	gameResource := &resources.Dungeon{}
 	gameResource.SetStateEvent(resources.StateEventNone)
 	world.Resources.Game = gameResource
 

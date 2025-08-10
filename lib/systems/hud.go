@@ -13,7 +13,7 @@ import (
 
 // HUDSystem はゲームの HUD 情報を描画する
 func HUDSystem(world w.World, screen *ebiten.Image) {
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Game.(*resources.Dungeon)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", gameResources.Depth), 0, 200)
 
 	world.Manager.Join(

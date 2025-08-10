@@ -45,7 +45,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	baseImage = ebiten.NewImage(screenWidth, screenHeight)
 	baseImage.Fill(color.Black)
 
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Game.(*resources.Dungeon)
 	gameResources.Depth = st.Depth
 	gameResources.Level = mapbuilder.NewLevel(world, 50, 50)
 }
@@ -69,7 +69,7 @@ func (st *DungeonState) OnStop(world w.World) {
 	}))
 
 	// reset
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Game.(*resources.Dungeon)
 	gameResources.SetStateEvent(resources.StateEventNone)
 }
 
@@ -95,7 +95,7 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
 func (st *DungeonState) handleStateEvent(world w.World) es.Transition {
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Game.(*resources.Dungeon)
 
 	switch gameResources.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:

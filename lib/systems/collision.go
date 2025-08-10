@@ -15,7 +15,7 @@ import (
 // CollisionSystem はプレイヤーと敵の衝突を検出し、戦闘遷移を発火する
 func CollisionSystem(world w.World) {
 	// 既に戦闘遷移イベントが設定されている場合は処理しない
-	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources := world.Resources.Game.(*resources.Dungeon)
 	if gameResources.GetStateEvent() != resources.StateEventNone {
 		return
 	}
