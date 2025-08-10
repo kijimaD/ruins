@@ -1,6 +1,8 @@
 package states
 
 import (
+	"image/color"
+
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -131,9 +133,12 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
 
+	// 深い金色/琥珀色
+	amberColor := color.NRGBA{R: 255, G: 191, B: 0, A: 255}
+
 	// ゲームタイトル「Ruins」のテキストを作成
 	titleText := widget.NewText(
-		widget.TextOpts.Text("Ruins", world.Resources.UIResources.Text.HugeTitleFace, world.Resources.UIResources.Text.IdleColor),
+		widget.TextOpts.Text("Ruins", world.Resources.UIResources.Text.HugeTitleFace, amberColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
