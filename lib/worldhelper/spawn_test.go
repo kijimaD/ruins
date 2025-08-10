@@ -176,9 +176,9 @@ func TestFullRecover(t *testing.T) {
 	world.Manager.DeleteEntity(entity)
 }
 
-func TestSpawnNPCHasFactionEnemy(t *testing.T) {
+func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	t.Parallel()
-	// NPCが敵として認識されるFactionEnemyコンポーネントを持つことを確認
+	// NPCが敵として認識されるAIMoveFSMコンポーネントを持つことを確認
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -200,14 +200,14 @@ func TestSpawnNPCHasFactionEnemy(t *testing.T) {
 	// NPCを生成
 	SpawnNPC(world, 100, 100)
 
-	// FactionEnemyコンポーネントを持つエンティティが存在することを確認
+	// AIMoveFSMコンポーネントを持つエンティティが存在することを確認
 	enemyFound := false
 	world.Manager.Join(
 		world.Components.Position,
-		world.Components.FactionEnemy,
+		world.Components.AIMoveFSM,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		enemyFound = true
 	}))
 
-	assert.True(t, enemyFound, "SpawnNPCで生成されたエンティティはFactionEnemyコンポーネントを持つべき")
+	assert.True(t, enemyFound, "SpawnNPCで生成されたエンティティはAIMoveFSMコンポーネントを持つべき")
 }
