@@ -9,7 +9,7 @@ import (
 // Game は冒険出発から帰還までを1セットとした情報を保持する。
 // 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
 type Game struct {
-	// フィールド上で発生したイベント。各stateで処理する
+	// ステート遷移発生イベント。各stateで処理する
 	stateEvent StateEvent
 	// 現在階のフィールド情報
 	Level Level
