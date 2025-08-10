@@ -16,7 +16,7 @@ func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 	world := createTestWorldForCollision(t)
 
 	// Levelを初期化してAtEntity呼び出しを成功させる
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Level = resources.Level{
 		TileWidth:  100,
 		TileHeight: 100,
@@ -81,7 +81,7 @@ func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 	world := createTestWorldForCollision(t)
 
 	// Levelを初期化してAtEntity呼び出しを成功させる
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Level = resources.Level{
 		TileWidth:  100,
 		TileHeight: 100,

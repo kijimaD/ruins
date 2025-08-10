@@ -20,7 +20,7 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 	// Gameリソースを初期化
 	gameResource := &resources.Dungeon{}
 	gameResource.SetStateEvent(resources.StateEventNone)
-	world.Resources.Game = gameResource
+	world.Resources.Dungeon = gameResource
 
 	// SpriteSheetsを初期化
 	spriteSheets := make(map[string]gc.SpriteSheet)
@@ -44,7 +44,7 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 	worldhelper.SpawnNPC(world, 110, 110)
 
 	// 初期状態: イベントなし
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 
 	// CollisionSystemを実行

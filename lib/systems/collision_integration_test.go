@@ -18,7 +18,7 @@ func TestCollisionSystemBattleTransition(t *testing.T) {
 	createEnemyEntity(t, world, 110.0, 110.0) // 接触する距離
 
 	// 初期状態: イベントなし
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 
 	// CollisionSystemを実行
@@ -37,7 +37,7 @@ func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
 	createEnemyEntity(t, world, 110.0, 110.0)
 
 	// 既に別のイベントが設定されている場合
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.SetStateEvent(resources.StateEventWarpNext)
 
 	// CollisionSystemを実行
@@ -59,7 +59,7 @@ func TestCollisionSystemNoCollision(t *testing.T) {
 	CollisionSystem(world)
 
 	// イベントが設定されないことを確認
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 }
 
@@ -76,7 +76,7 @@ func TestCollisionSystemMultipleEnemies(t *testing.T) {
 	CollisionSystem(world)
 
 	// 戦闘開始イベントが設定されることを確認
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }
 
@@ -137,6 +137,6 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 	assert.Equal(t, 0.0, enemyVelocity.Speed)
 
 	// 戦闘開始イベントが設定されることを確認
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }

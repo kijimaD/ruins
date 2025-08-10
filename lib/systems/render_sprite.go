@@ -23,7 +23,7 @@ var (
 
 // RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	// 初回のみ生成
 	if wallShadowImage == nil {
@@ -87,7 +87,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			world.Components.BlockPass,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
-			gameResources := world.Resources.Game.(*resources.Dungeon)
+			gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 			belowTileIdx := gameResources.Level.XYTileIndex(grid.Row, grid.Col+1)
 			if (belowTileIdx < 0) || (int(belowTileIdx) > len(gameResources.Level.Entities)-1) {
 				return

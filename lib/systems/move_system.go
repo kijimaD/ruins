@@ -39,7 +39,7 @@ func MoveSystem(world w.World) {
 		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pos := world.Components.Position.Get(entity).(*gc.Position)
-		gameResources := world.Resources.Game.(*resources.Dungeon)
+		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 		tileEntity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
 		if tileEntity.HasComponent(world.Components.Warp) {
@@ -121,7 +121,7 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	}
 
 	padding := gc.Pixel(10)
-	gameResources := world.Resources.Game.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	levelWidth := gameResources.Level.Width()
 	levelHeight := gameResources.Level.Height()
 

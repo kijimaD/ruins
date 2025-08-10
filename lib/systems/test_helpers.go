@@ -22,7 +22,7 @@ func createTestWorldWithResources(t *testing.T) w.World {
 	// Gameリソースを初期化
 	gameResource := &resources.Dungeon{}
 	gameResource.SetStateEvent(resources.StateEventNone)
-	world.Resources.Game = gameResource
+	world.Resources.Dungeon = gameResource
 
 	return world
 }
@@ -38,7 +38,7 @@ func createTestWorldForCollision(t *testing.T) w.World {
 	// Gameリソースを初期化してpanic回避
 	gameResource := &resources.Dungeon{}
 	gameResource.SetStateEvent(resources.StateEventNone)
-	world.Resources.Game = gameResource
+	world.Resources.Dungeon = gameResource
 
 	return world
 }

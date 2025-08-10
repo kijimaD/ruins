@@ -163,7 +163,7 @@ func TestResourceIntegration(t *testing.T) {
 		assert.NotNil(t, world.Resources.RawMaster, "Rawマスターが読み込まれていない")
 
 		// ゲームリソースの確認
-		assert.NotNil(t, world.Resources.Game, "ゲームリソースが初期化されていない")
+		assert.NotNil(t, world.Resources.Dungeon, "ゲームリソースが初期化されていない")
 	})
 
 	t.Run("リソースの整合性確認", func(t *testing.T) {
@@ -214,7 +214,7 @@ func validateResourceLoading(t *testing.T, world ew.World) {
 		{"DefaultFaces", world.Resources.DefaultFaces},
 		{"UIResources", world.Resources.UIResources},
 		{"RawMaster", world.Resources.RawMaster},
-		{"Game", world.Resources.Game},
+		{"Game", world.Resources.Dungeon},
 	}
 
 	for _, res := range resources {
