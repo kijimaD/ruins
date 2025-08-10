@@ -553,7 +553,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="UIBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=196:236#L1">UIBuilder</a>
+			<h2 id="UIBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=250:290#L3">UIBuilder</a>
 				<a class="permalink" href="index.html#UIBuilder">&#xb6;</a>
 				
 				
@@ -575,7 +575,7 @@ parentContainer.AddChild(container)
 
 			
 				
-				<h3 id="NewUIBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=287:330#L5">NewUIBuilder</a>
+				<h3 id="NewUIBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=341:384#L8">NewUIBuilder</a>
 					<a class="permalink" href="index.html#NewUIBuilder">&#xb6;</a>
 					
 					
@@ -589,7 +589,7 @@ parentContainer.AddChild(container)
 
 			
 				
-				<h3 id="UIBuilder.BuildUI">func (*UIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=428:485#L12">BuildUI</a>
+				<h3 id="UIBuilder.BuildUI">func (*UIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=482:539#L15">BuildUI</a>
 					<a class="permalink" href="index.html#UIBuilder.BuildUI">&#xb6;</a>
 					
 					
@@ -602,13 +602,15 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="UIBuilder.UpdateFocus">func (*UIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=3115:3158#L109">UpdateFocus</a>
+				<h3 id="UIBuilder.UpdateFocus">func (*UIBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/ui_builder.go?s=3294:3337#L115">UpdateFocus</a>
 					<a class="permalink" href="index.html#UIBuilder.UpdateFocus">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (b *<a href="index.html#UIBuilder">UIBuilder</a>) UpdateFocus(menu *<a href="index.html#Menu">Menu</a>)</pre>
 				<p>UpdateFocus はメニューのフォーカス表示を更新する
+カーソルで選択中の要素だけボタンを変える。マウスのhoverでは色が変わらないようにしている
+カーソル移動は独自実装なので、UIを対応させるために必要
 
 				
 				

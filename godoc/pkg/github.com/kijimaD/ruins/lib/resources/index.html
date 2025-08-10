@@ -147,17 +147,17 @@
 				
 			
 				
-				<dd><a href="index.html#Game">type Game</a></dd>
+				<dd><a href="index.html#Dungeon">type Dungeon</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Game.ConsumeStateEvent">func (g *Game) ConsumeStateEvent() StateEvent</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.ConsumeStateEvent">func (g *Dungeon) ConsumeStateEvent() StateEvent</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Game.GetStateEvent">func (g *Game) GetStateEvent() StateEvent</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.GetStateEvent">func (g *Dungeon) GetStateEvent() StateEvent</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Game.SetStateEvent">func (g *Game) SetStateEvent(event StateEvent)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.SetStateEvent">func (g *Dungeon) SetStateEvent(event StateEvent)</a></dd>
 				
 			
 				
@@ -395,20 +395,20 @@
 		
 			
 			
-			<h2 id="Game">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=366:561#L1">Game</a>
-				<a class="permalink" href="index.html#Game">&#xb6;</a>
+			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=369:558#L1">Dungeon</a>
+				<a class="permalink" href="index.html#Dungeon">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Game は冒険出発から帰還までを1セットとした情報を保持する。
+			<p>Dungeon は冒険出発から帰還までを1セットとした情報を保持する。
 冒険出発から帰還までは複数階層が存在し、複数階層を通しての情報を保持する必要がある。
 
-			<pre>type Game struct {
+			<pre>type Dungeon struct {
 
     <span class="comment">// 現在階のフィールド情報</span>
-<span id="Game.Level"></span>    Level <a href="index.html#Level">Level</a>
+<span id="Dungeon.Level"></span>    Level <a href="index.html#Level">Level</a>
     <span class="comment">// 階層数</span>
-<span id="Game.Depth"></span>    Depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Dungeon.Depth"></span>    Depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -425,12 +425,12 @@
 
 			
 				
-				<h3 id="Game.ConsumeStateEvent">func (*Game) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2445:2490#L68">ConsumeStateEvent</a>
-					<a class="permalink" href="index.html#Game.ConsumeStateEvent">&#xb6;</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2448:2496#L68">ConsumeStateEvent</a>
+					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (g *<a href="index.html#Game">Game</a>) ConsumeStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
+				<pre>func (g *<a href="index.html#Dungeon">Dungeon</a>) ConsumeStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
 				<p>ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
 
 				
@@ -438,12 +438,12 @@
 				
 			
 				
-				<h3 id="Game.GetStateEvent">func (*Game) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2136:2177#L58">GetStateEvent</a>
-					<a class="permalink" href="index.html#Game.GetStateEvent">&#xb6;</a>
+				<h3 id="Dungeon.GetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2133:2177#L58">GetStateEvent</a>
+					<a class="permalink" href="index.html#Dungeon.GetStateEvent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (g *<a href="index.html#Game">Game</a>) GetStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
+				<pre>func (g *<a href="index.html#Dungeon">Dungeon</a>) GetStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
 				<p>GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
 
 				
@@ -451,12 +451,12 @@
 				
 			
 				
-				<h3 id="Game.SetStateEvent">func (*Game) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2250:2296#L63">SetStateEvent</a>
-					<a class="permalink" href="index.html#Game.SetStateEvent">&#xb6;</a>
+				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2250:2299#L63">SetStateEvent</a>
+					<a class="permalink" href="index.html#Dungeon.SetStateEvent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (g *<a href="index.html#Game">Game</a>) SetStateEvent(event <a href="index.html#StateEvent">StateEvent</a>)</pre>
+				<pre>func (g *<a href="index.html#Dungeon">Dungeon</a>) SetStateEvent(event <a href="index.html#StateEvent">StateEvent</a>)</pre>
 				<p>SetStateEvent はStateEventを設定する
 
 				
@@ -466,7 +466,7 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=591:992#L11">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=588:989#L11">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
@@ -500,7 +500,7 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1544:1603#L39">AtEntity</a>
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1541:1600#L39">AtEntity</a>
 					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
 					
 					
@@ -513,7 +513,7 @@
 				
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1952:1985#L53">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1949:1982#L53">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -526,7 +526,7 @@
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1802:1834#L48">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1799:1831#L48">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -539,7 +539,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1300:1361#L31">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1297:1358#L31">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -552,7 +552,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1091:1148#L26">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1088:1145#L26">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
@@ -679,12 +679,12 @@
 		
 			
 			
-			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=73:95#L1">StateEvent</a>
+			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=109:131#L1">StateEvent</a>
 				<a class="permalink" href="index.html#StateEvent">&#xb6;</a>
 				
 				
 			</h2>
-			<p>StateEvent はフィールド上でのイベント
+			<p>StateEvent はフィールド上でのイベント。ステート遷移が発生する
 
 			<pre>type StateEvent <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
