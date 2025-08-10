@@ -17,7 +17,7 @@ func (m MovementWarpNext) Apply(world w.World, scope *Scope) error {
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventWarpNext
+	gameResources.SetStateEvent(resources.StateEventWarpNext)
 	return nil
 }
 
@@ -40,7 +40,7 @@ func (m MovementWarpEscape) Apply(world w.World, scope *Scope) error {
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventWarpEscape
+	gameResources.SetStateEvent(resources.StateEventWarpEscape)
 	return nil
 }
 
@@ -65,7 +65,7 @@ func (m MovementWarpToFloor) Apply(world w.World, scope *Scope) error {
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventWarpNext
+	gameResources.SetStateEvent(resources.StateEventWarpNext)
 	return nil
 }
 

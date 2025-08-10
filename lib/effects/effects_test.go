@@ -533,7 +533,7 @@ func TestMovementEffects(t *testing.T) {
 
 		// 次階層イベントが設定されることを確認
 		gameResources := world.Resources.Game.(*resources.Game)
-		assert.Equal(t, resources.StateEventWarpNext, gameResources.StateEvent)
+		assert.Equal(t, resources.StateEventWarpNext, gameResources.GetStateEvent())
 	})
 }
 

@@ -18,9 +18,9 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 	require.NoError(t, err)
 
 	// Gameリソースを初期化
-	world.Resources.Game = &resources.Game{
-		StateEvent: resources.StateEventNone,
-	}
+	gameResource := &resources.Game{}
+	gameResource.SetStateEvent(resources.StateEventNone)
+	world.Resources.Game = gameResource
 
 	// SpriteSheetsを初期化
 	spriteSheets := make(map[string]gc.SpriteSheet)
@@ -45,11 +45,11 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 
 	// 初期状態: イベントなし
 	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventNone, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 
 	// CollisionSystemを実行
 	CollisionSystem(world)
 
 	// 戦闘開始イベントが設定されることを確認
-	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }

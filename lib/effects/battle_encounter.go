@@ -34,7 +34,7 @@ func (e *BattleEncounter) Apply(world w.World, scope *Scope) error {
 
 	// 戦闘開始イベントを設定
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventBattleStart
+	gameResources.SetStateEvent(resources.StateEventBattleStart)
 
 	return nil
 }

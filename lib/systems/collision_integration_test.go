@@ -22,13 +22,13 @@ func TestCollisionSystemBattleTransition(t *testing.T) {
 
 	// 初期状態: イベントなし
 	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventNone, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 
 	// CollisionSystemを実行
 	CollisionSystem(world)
 
 	// 戦闘開始イベントが設定されることを確認
-	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }
 
 func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
@@ -41,13 +41,13 @@ func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
 
 	// 既に別のイベントが設定されている場合
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventWarpNext
+	gameResources.SetStateEvent(resources.StateEventWarpNext)
 
 	// CollisionSystemを実行
 	CollisionSystem(world)
 
 	// イベントが変更されないことを確認
-	assert.Equal(t, resources.StateEventWarpNext, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventWarpNext, gameResources.GetStateEvent())
 }
 
 func TestCollisionSystemNoCollision(t *testing.T) {
@@ -63,7 +63,7 @@ func TestCollisionSystemNoCollision(t *testing.T) {
 
 	// イベントが設定されないことを確認
 	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventNone, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventNone, gameResources.GetStateEvent())
 }
 
 func TestBattleEncounterApply(t *testing.T) {
@@ -95,7 +95,7 @@ func TestBattleEncounterApply(t *testing.T) {
 
 	// 戦闘開始イベントが設定されることを確認
 	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }
 
 func TestCollisionSystemMultipleEnemies(t *testing.T) {
@@ -112,7 +112,7 @@ func TestCollisionSystemMultipleEnemies(t *testing.T) {
 
 	// 戦闘開始イベントが設定されることを確認
 	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }
 
 func TestCollisionSystemWithVelocityStop(t *testing.T) {
@@ -159,5 +159,5 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 
 	// 戦闘開始イベントが設定されることを確認
 	gameResources := world.Resources.Game.(*resources.Game)
-	assert.Equal(t, resources.StateEventBattleStart, gameResources.StateEvent)
+	assert.Equal(t, resources.StateEventBattleStart, gameResources.GetStateEvent())
 }

@@ -90,7 +90,7 @@ func (st *BattleState) OnStart(world w.World) {
 	st.menuUIBuilder = menu.NewUIBuilder(world)
 
 	// フィールドの敵シンボルに基づいて実際の戦闘敵エンティティを生成
-	// 現在は簡単な実装として"軽戦車"を生成
+	// 現在は簡単な実装として固定で生成する
 	// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
 	_ = worldhelper.SpawnEnemy(world, "軽戦車")
 	_ = worldhelper.SpawnEnemy(world, "火の玉")

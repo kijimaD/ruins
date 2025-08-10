@@ -70,7 +70,7 @@ func (st *DungeonState) OnStop(world w.World) {
 
 	// reset
 	gameResources := world.Resources.Game.(*resources.Game)
-	gameResources.StateEvent = resources.StateEventNone
+	gameResources.SetStateEvent(resources.StateEventNone)
 }
 
 // Update はゲームステートの更新処理を行う
@@ -86,19 +86,12 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 
 	gameResources := world.Resources.Game.(*resources.Game)
 
-	// TODO: StateEventリセットを共通化する
-	switch gameResources.StateEvent {
+	switch gameResources.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:
-		// StateEventをリセットしてから遷移
-		gameResources.StateEvent = resources.StateEventNone
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
 	case resources.StateEventWarpEscape:
-		// StateEventをリセットしてから遷移
-		gameResources.StateEvent = resources.StateEventNone
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
 	case resources.StateEventBattleStart:
-		// StateEventをリセットしてから遷移
-		gameResources.StateEvent = resources.StateEventNone
 		// 戦闘開始
 		battleStateFactory := func() es.State {
 			// プレイヤーエンティティを検索
