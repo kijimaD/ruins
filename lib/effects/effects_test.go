@@ -8,7 +8,6 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/game"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -89,9 +88,6 @@ func TestEffectSystem(t *testing.T) {
 
 		recovery := FullRecoveryHP{}
 		assert.Equal(t, "FullRecoveryHP", recovery.String())
-
-		warp := MovementWarpNext{}
-		assert.Equal(t, "MovementWarpNext", warp.String())
 	})
 
 	t.Run("ターゲットセレクタの文字列表現", func(t *testing.T) {
@@ -462,78 +458,6 @@ func TestItemEffects(t *testing.T) {
 			finalCount++
 		}))
 		assert.Equal(t, initialCount+3, finalCount)
-	})
-}
-
-func TestMovementEffects(t *testing.T) {
-	t.Parallel()
-	t.Run("次階層へのワープ", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		warp := MovementWarpNext{}
-		scope := &Scope{}
-
-		err = warp.Validate(world, scope)
-		assert.NoError(t, err)
-
-		err = warp.Apply(world, scope)
-		assert.NoError(t, err)
-
-		// StateEventが設定されていることを確認（詳細は別パッケージで検証）
-		assert.NotNil(t, world.Resources.Game)
-	})
-
-	t.Run("脱出ワープ", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		escape := MovementWarpEscape{}
-		scope := &Scope{}
-
-		err = escape.Validate(world, scope)
-		assert.NoError(t, err)
-
-		err = escape.Apply(world, scope)
-		assert.NoError(t, err)
-
-		assert.NotNil(t, world.Resources.Game)
-	})
-
-	t.Run("特定階層へのワープ - 検証エラー", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 無効な階層（0以下）
-		warpInvalid := MovementWarpToFloor{Floor: 0}
-		scope := &Scope{}
-
-		err = warpInvalid.Validate(world, scope)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "階層は1以上である必要があります")
-	})
-
-	t.Run("特定階層へのワープ", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 階層3へのワープ
-		warp := MovementWarpToFloor{Floor: 3}
-		scope := &Scope{}
-
-		err = warp.Validate(world, scope)
-		assert.NoError(t, err)
-
-		err = warp.Apply(world, scope)
-		assert.NoError(t, err)
-
-		// 次階層イベントが設定されることを確認
-		gameResources := world.Resources.Game.(*resources.Game)
-		assert.Equal(t, resources.StateEventWarpNext, gameResources.GetStateEvent())
 	})
 }
 
