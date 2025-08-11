@@ -69,7 +69,7 @@ func (st *DebugMenuState) Draw(_ w.World, screen *ebiten.Image) {
 
 func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.BlackColor)),
 	)
 
 	// Menuコンポーネントを作成
