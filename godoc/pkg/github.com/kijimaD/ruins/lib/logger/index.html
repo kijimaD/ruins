@@ -95,16 +95,16 @@
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package logger はゲーム内の構造化ログを提供する
 <p>機能別にカテゴリを分けて、デバッグしやすいログ出力を実現する。
-環境変数でログレベルやカテゴリ別の出力制御が可能。
+configパッケージからログレベル設定を受け取り、カテゴリ別の出力制御が可能。
 <p>使用例:
 <pre>var log = logger.New(logger.CategoryBattle)
 log.Info(&quot;戦闘開始&quot;, &quot;enemy&quot;, &quot;スライム&quot;, &quot;hp&quot;, 100)
 log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot;, 5)
 </pre>
-<p>環境変数:
+<p>設定:
 <ul>
-<li>LOG_LEVEL: デフォルトログレベル (debug, info, warn, error, fatal)
-<li>LOG_CATEGORIES: カテゴリ別ログレベル (例: &quot;battle=debug,render=warn&quot;)
+<li>ログレベル: configパッケージのRUINS_LOG_LEVELから取得
+<li>カテゴリ別ログレベル: configパッケージのRUINS_LOG_CATEGORIESから取得 (例: &quot;battle=debug,render=warn&quot;)
 </ul>
 
 				
@@ -122,7 +122,12 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
 			
+			
+			
+				
+				<dd><a href="index.html#LoadFromConfig">func LoadFromConfig(logLevel, logCategories string)</a></dd>
 			
 				
 				<dd><a href="index.html#ResetConfig">func ResetConfig()</a></dd>
@@ -211,17 +216,40 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
 		
 
 		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span class="comment">// TimeFormat はタイムスタンプ形式</span>
+    <span id="TimeFormat">TimeFormat</span> = &#34;2006-01-02T15:04:05.000Z&#34;
+)</pre>
+			
+		
 		
 		
 			
 			
-			<h2 id="ResetConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=1633:1651#L58">ResetConfig</a>
+			<h2 id="LoadFromConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=1195:1246#L35">LoadFromConfig</a>
+				<a class="permalink" href="index.html#LoadFromConfig">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func LoadFromConfig(logLevel, logCategories <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<p>LoadFromConfig はconfigパッケージの設定を読み込む
+
+			
+			
+
+		
+			
+			
+			<h2 id="ResetConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=1737:1755#L55">ResetConfig</a>
 				<a class="permalink" href="index.html#ResetConfig">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func ResetConfig()</pre>
-			<p>ResetConfig は設定をデフォルトに戻す（主にテスト用）
+			<p>ResetConfig は設定をリセットする（テスト用）
 
 			
 			
@@ -229,13 +257,13 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
 		
 			
 			
-			<h2 id="SetConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=1499:1528#L53">SetConfig</a>
+			<h2 id="SetConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=1615:1644#L50">SetConfig</a>
 				<a class="permalink" href="index.html#SetConfig">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func SetConfig(config <a href="index.html#Config">Config</a>)</pre>
-			<p>SetConfig はグローバル設定を更新する（主にテスト用）
+			<p>SetConfig はグローバル設定を更新する（テスト用）
 
 			
 			
@@ -312,7 +340,7 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
 		
 			
 			
-			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=71:271#L1">Config</a>
+			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/config.go?s=163:311#L3">Config</a>
 				<a class="permalink" href="index.html#Config">&#xb6;</a>
 				
 				
@@ -325,9 +353,6 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
 
     <span class="comment">// カテゴリ別ログレベル</span>
 <span id="Config.CategoryLevels"></span>    CategoryLevels map[<a href="index.html#Category">Category</a>]<a href="index.html#Level">Level</a>
-
-    <span class="comment">// タイムスタンプ形式</span>
-<span id="Config.TimeFormat"></span>    TimeFormat <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
 </pre>
 
@@ -367,6 +392,8 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
     <span id="LevelError">LevelError</span>
     <span class="comment">// LevelFatal は致命的エラーレベルのログ</span>
     <span id="LevelFatal">LevelFatal</span>
+    <span class="comment">// LevelIgnore はすべてのログを無視する（テスト用）</span>
+    <span id="LevelIgnore">LevelIgnore</span>
 )</pre>
 			
 
@@ -380,7 +407,7 @@ log.Debug(&quot;ダメージ計算&quot;, &quot;base&quot;, 10, &quot;bonus&quot
 
 			
 				
-				<h3 id="Level.String">func (Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/level.go?s=432:462#L10">String</a>
+				<h3 id="Level.String">func (Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/logger/level.go?s=516:546#L12">String</a>
 					<a class="permalink" href="index.html#Level.String">&#xb6;</a>
 					
 					
