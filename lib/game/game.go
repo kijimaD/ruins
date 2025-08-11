@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gr "github.com/kijimaD/ruins/lib/resources"
@@ -38,22 +39,25 @@ func (game *MainGame) Update() error {
 func (game *MainGame) Draw(screen *ebiten.Image) {
 	game.StateMachine.Draw(game.World, screen)
 
-	var mem runtime.MemStats
-	runtime.ReadMemStats(&mem)
-	msg := fmt.Sprintf(`FPS: %f
+	// config設定に基づいてデバッグ情報を表示
+	cfg := config.Get()
+	if cfg.Debug {
+		var mem runtime.MemStats
+		runtime.ReadMemStats(&mem)
+		msg := fmt.Sprintf(`FPS: %f
 Alloc: %.2fMB
 TotalAlloc: %.2fMB
 Mallocs: %.2fMB
 Frees: %.2fMB
 `,
-
-		ebiten.ActualFPS(),
-		float64(mem.Alloc/1024/1024),
-		float64(mem.TotalAlloc/1024/1024), // 起動後から割り当てられたヒープオブジェクトの数。freeされてもリセットされない
-		float64(mem.Mallocs/1024/1024),    // 割り当てられているヒープオブジェクトの数。freeされたら減る
-		float64(mem.Frees/1024/1024),      // 解放されたヒープオブジェクトの数
-	)
-	ebitenutil.DebugPrint(screen, msg)
+			ebiten.ActualFPS(),
+			float64(mem.Alloc/1024/1024),
+			float64(mem.TotalAlloc/1024/1024), // 起動後から割り当てられたヒープオブジェクトの数。freeされてもリセットされない
+			float64(mem.Mallocs/1024/1024),    // 割り当てられているヒープオブジェクトの数。freeされたら減る
+			float64(mem.Frees/1024/1024),      // 解放されたヒープオブジェクトの数
+		)
+		ebitenutil.DebugPrint(screen, msg)
+	}
 }
 
 // InitWorld はゲームワールドを初期化する
