@@ -72,7 +72,6 @@ func TestLogLevelFiltering(t *testing.T) {
 	SetConfig(Config{
 		DefaultLevel:   LevelInfo,
 		CategoryLevels: make(map[Category]Level),
-		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
@@ -103,7 +102,6 @@ func TestContextLevelFiltering(t *testing.T) {
 		CategoryLevels: map[Category]Level{
 			CategoryBattle: LevelDebug,
 		},
-		TimeFormat: "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
@@ -131,7 +129,6 @@ func TestJSONOutput(t *testing.T) {
 	SetConfig(Config{
 		DefaultLevel:   LevelDebug,
 		CategoryLevels: make(map[Category]Level),
-		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
 	defer ResetConfig()
 
@@ -271,7 +268,6 @@ func TestLoggerOutput(t *testing.T) {
 	SetConfig(Config{
 		DefaultLevel:   LevelDebug,
 		CategoryLevels: make(map[Category]Level),
-		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	})
 	t.Cleanup(ResetConfig)
 

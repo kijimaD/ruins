@@ -211,17 +211,5 @@ func (c *Config) Validate() error {
 		c.PProfPort = 6060
 	}
 
-	// LogLevel の検証
-	validLogLevels := map[string]bool{
-		"debug": true,
-		"info":  true,
-		"warn":  true,
-		"error": true,
-		"fatal": true,
-	}
-	if !validLogLevels[c.LogLevel] {
-		c.LogLevel = "info" // 無効な値はinfoに修正
-	}
-
 	return nil
 }

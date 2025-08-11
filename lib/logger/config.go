@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+const (
+	// TimeFormat はタイムスタンプ形式
+	TimeFormat = "2006-01-02T15:04:05.000Z"
+)
+
 // Config はログ設定
 type Config struct {
 	// デフォルトログレベル
@@ -11,15 +16,11 @@ type Config struct {
 
 	// カテゴリ別ログレベル
 	CategoryLevels map[Category]Level
-
-	// タイムスタンプ形式
-	TimeFormat string
 }
 
 // グローバル設定（初期化時は空の設定）
 var globalConfig = Config{
 	CategoryLevels: make(map[Category]Level),
-	TimeFormat:     "2006-01-02T15:04:05.000Z",
 }
 
 // parseCategoryLevels はカテゴリ別レベル設定を解析する
@@ -42,7 +43,6 @@ func LoadFromConfig(logLevel, logCategories string) {
 	config := Config{
 		DefaultLevel:   parseLevel(logLevel),
 		CategoryLevels: make(map[Category]Level),
-		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	}
 
 	// configパッケージからのカテゴリ別ログレベル設定
@@ -62,6 +62,5 @@ func SetConfig(config Config) {
 func ResetConfig() {
 	globalConfig = Config{
 		CategoryLevels: make(map[Category]Level),
-		TimeFormat:     "2006-01-02T15:04:05.000Z",
 	}
 }

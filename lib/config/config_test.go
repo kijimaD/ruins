@@ -13,11 +13,10 @@ func TestValidate(t *testing.T) {
 		t.Parallel()
 
 		cfg := &Config{
-			WindowWidth:  100,       // 最小値以下
-			WindowHeight: 50,        // 最小値以下
-			TargetFPS:    0,         // 無効
-			PProfPort:    80,        // 範囲外
-			LogLevel:     "invalid", // 無効なログレベル
+			WindowWidth:  100, // 最小値以下
+			WindowHeight: 50,  // 最小値以下
+			TargetFPS:    0,   // 無効
+			PProfPort:    80,  // 範囲外
 		}
 
 		err := cfg.Validate()
@@ -27,7 +26,6 @@ func TestValidate(t *testing.T) {
 		assert.Equal(t, 240, cfg.WindowHeight)
 		assert.Equal(t, 60, cfg.TargetFPS)
 		assert.Equal(t, 6060, cfg.PProfPort)
-		assert.Equal(t, "info", cfg.LogLevel) // 無効な値はinfoに修正
 	})
 
 	t.Run("有効な値は変更されない", func(t *testing.T) {
@@ -38,7 +36,6 @@ func TestValidate(t *testing.T) {
 			WindowHeight: 1080,
 			TargetFPS:    144,
 			PProfPort:    8080,
-			LogLevel:     "debug",
 		}
 
 		err := cfg.Validate()
@@ -48,7 +45,6 @@ func TestValidate(t *testing.T) {
 		assert.Equal(t, 1080, cfg.WindowHeight)
 		assert.Equal(t, 144, cfg.TargetFPS)
 		assert.Equal(t, 8080, cfg.PProfPort)
-		assert.Equal(t, "debug", cfg.LogLevel)
 	})
 }
 
