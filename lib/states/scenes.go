@@ -70,7 +70,7 @@ func GetRaidEvent1Factories() []es.StateFactory {
 func GetBossEvent1Factories() []es.StateFactory {
 	factories := []es.StateFactory{}
 
-	factories = then(factories, NewBattleState)
+	factories = then(factories, NewBattleStateWithEnemies([]string{"灰の偶像"}))
 
 	return factories
 }

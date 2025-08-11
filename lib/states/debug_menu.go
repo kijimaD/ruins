@@ -149,10 +149,26 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
 	},
 	{
-		label: "戦闘開始",
+		label: "戦闘開始(単体)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{
+				NewBattleStateWithEnemies([]string{"軽戦車"}),
+			}}
+		},
+	},
+	{
+		label: "戦闘開始(複数)",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition {
 			return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewBattleState}}
+		},
+	},
+	{
+		label: "戦闘開始(ボス)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: GetBossEvent1Factories()}
 		},
 	},
 	{
@@ -160,13 +176,6 @@ var debugMenuTrans = []struct {
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition {
 			return es.Transition{Type: es.TransPush, NewStateFuncs: GetRaidEvent1Factories()}
-		},
-	},
-	{
-		label: "ボス戦闘イベント開始",
-		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransPush, NewStateFuncs: GetBossEvent1Factories()}
 		},
 	},
 	{

@@ -29,10 +29,10 @@ func TestBattleStateNoReuse(t *testing.T) {
 	t.Run("debugMenuTransから戦闘開始時に毎回新しいBattleStateが作成される", func(t *testing.T) {
 		t.Parallel()
 
-		// 戦闘開始のTransitionを取得
+		// 戦闘開始のTransitionを取得（「戦闘開始(複数)」に変更）
 		var battleTransition es.Transition
 		for _, item := range debugMenuTrans {
-			if item.label == "戦闘開始" {
+			if item.label == "戦闘開始(複数)" {
 				battleTransition = item.getTransFunc()
 				break
 			}
@@ -73,7 +73,7 @@ func TestBattleStateNoReuse(t *testing.T) {
 		}
 
 		for i := range debugMenuTrans {
-			if debugMenuTrans[i].label == "戦闘開始" {
+			if debugMenuTrans[i].label == "戦闘開始(複数)" {
 				battleEntry = &debugMenuTrans[i]
 				break
 			}
