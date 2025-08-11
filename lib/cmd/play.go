@@ -33,7 +33,7 @@ func runPlay(_ *cli.Context) error {
 	cfg := config.Get()
 
 	// ログ設定を読み込み
-	logger.LoadFromConfig(cfg.LogLevel)
+	logger.LoadFromConfig(cfg.LogLevel, cfg.LogCategories)
 
 	// デバッグモードの場合は設定を表示
 	if cfg.Debug {

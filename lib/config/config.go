@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/caarlos0/env/v11"
@@ -11,8 +10,10 @@ import (
 type Profile string
 
 const (
-	ProfileProduction  Profile = "production"  // 本番環境
-	ProfileDevelopment Profile = "development" // 開発環境
+	// ProfileProduction は本番環境プロファイル
+	ProfileProduction Profile = "production"
+	// ProfileDevelopment は開発環境プロファイル
+	ProfileDevelopment Profile = "development"
 )
 
 // Config はアプリケーションの設定を管理する
@@ -26,10 +27,11 @@ type Config struct {
 	Fullscreen   bool `env:"RUINS_FULLSCREEN"`
 
 	// デバッグ設定
-	Debug      bool   `env:"RUINS_DEBUG"`
-	LogLevel   string `env:"RUINS_LOG_LEVEL"`
-	DebugPProf bool   `env:"RUINS_DEBUG_PPROF"`
-	PProfPort  int    `env:"RUINS_PPROF_PORT"`
+	Debug         bool   `env:"RUINS_DEBUG"`
+	LogLevel      string `env:"RUINS_LOG_LEVEL"`
+	LogCategories string `env:"RUINS_LOG_CATEGORIES"`
+	DebugPProf    bool   `env:"RUINS_DEBUG_PPROF"`
+	PProfPort     int    `env:"RUINS_PPROF_PORT"`
 
 	// ゲーム設定
 	StartingState string `env:"RUINS_STARTING_STATE"`
@@ -99,6 +101,9 @@ func (c *Config) applyProductionDefaults() {
 	if os.Getenv("RUINS_LOG_LEVEL") == "" {
 		c.LogLevel = "info"
 	}
+	if os.Getenv("RUINS_LOG_CATEGORIES") == "" {
+		c.LogCategories = ""
+	}
 	if os.Getenv("RUINS_DEBUG_PPROF") == "" {
 		c.DebugPProf = false
 	}
@@ -152,6 +157,9 @@ func (c *Config) applyDevelopmentDefaults() {
 	}
 	if os.Getenv("RUINS_LOG_LEVEL") == "" {
 		c.LogLevel = "info"
+	}
+	if os.Getenv("RUINS_LOG_CATEGORIES") == "" {
+		c.LogCategories = ""
 	}
 	if os.Getenv("RUINS_DEBUG_PPROF") == "" {
 		c.DebugPProf = true
@@ -212,7 +220,7 @@ func (c *Config) Validate() error {
 		"fatal": true,
 	}
 	if !validLogLevels[c.LogLevel] {
-		return fmt.Errorf("無効なログレベル: %s", c.LogLevel)
+		c.LogLevel = "info" // 無効な値はinfoに修正
 	}
 
 	return nil

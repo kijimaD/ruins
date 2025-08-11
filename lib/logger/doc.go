@@ -11,5 +11,5 @@
 //
 // 設定:
 //   - ログレベル: configパッケージのRUINS_LOG_LEVELから取得
-//   - LOG_CATEGORIES: カテゴリ別ログレベル (例: "battle=debug,render=warn")
+//   - カテゴリ別ログレベル: configパッケージのRUINS_LOG_CATEGORIESから取得 (例: "battle=debug,render=warn")
 package logger
