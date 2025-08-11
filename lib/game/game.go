@@ -7,6 +7,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
@@ -31,6 +32,12 @@ func (game *MainGame) Layout(_, _ int) (int, int) {
 
 // Update はゲームの更新処理を行う
 func (game *MainGame) Update() error {
+	// モニター表示をトグルする
+	if inpututil.IsKeyJustPressed(ebiten.KeyF12) {
+		cfg := config.Get()
+		cfg.ToggleShowMonitor()
+	}
+
 	game.StateMachine.Update(game.World)
 
 	return nil
@@ -40,12 +47,11 @@ func (game *MainGame) Update() error {
 func (game *MainGame) Draw(screen *ebiten.Image) {
 	game.StateMachine.Draw(game.World, screen)
 
-	// config設定に基づいてデバッグ情報を表示
 	cfg := config.Get()
-	if cfg.Debug {
+	if cfg.ShowMonitor {
 		var mem runtime.MemStats
 		runtime.ReadMemStats(&mem)
-		
+
 		// 最後のGCからの経過時間を計算
 		var lastGCTime string
 		if mem.LastGC > 0 {
@@ -71,18 +77,18 @@ PauseTotalNs: %.2fms
 Goroutines: %d
 `,
 			ebiten.ActualFPS(),
-			float64(mem.Alloc/1024/1024),        // 現在割り当てられているメモリ
-			float64(mem.HeapInuse/1024/1024),    // ヒープで実際に使用中のメモリ
-			float64(mem.StackInuse/1024/1024),   // スタックで使用中のメモリ
-			float64(mem.Sys/1024/1024),          // OSから取得した総メモリ
-			float64(mem.NextGC/1024/1024),       // 次回GC実行予定サイズ
-			float64(mem.TotalAlloc/1024/1024),   // 起動後から割り当てられたヒープオブジェクトの累計バイト数
-			mem.Mallocs,                         // 割り当てられたヒープオブジェクトの回数
-			mem.Frees,                           // 解放されたヒープオブジェクトの回数
-			mem.NumGC,                           // GC実行回数
-			lastGCTime,                          // 最後のGC実行からの経過時間
-			float64(mem.PauseTotalNs)/1000000,   // GC停止時間の累計（ミリ秒）
-			runtime.NumGoroutine(),              // 実行中のGoroutine数
+			float64(mem.Alloc/1024/1024),      // 現在割り当てられているメモリ
+			float64(mem.HeapInuse/1024/1024),  // ヒープで実際に使用中のメモリ
+			float64(mem.StackInuse/1024/1024), // スタックで使用中のメモリ
+			float64(mem.Sys/1024/1024),        // OSから取得した総メモリ
+			float64(mem.NextGC/1024/1024),     // 次回GC実行予定サイズ
+			float64(mem.TotalAlloc/1024/1024), // 起動後から割り当てられたヒープオブジェクトの累計バイト数
+			mem.Mallocs,                       // 割り当てられたヒープオブジェクトの回数
+			mem.Frees,                         // 解放されたヒープオブジェクトの回数
+			mem.NumGC,                         // GC実行回数
+			lastGCTime,                        // 最後のGC実行からの経過時間
+			float64(mem.PauseTotalNs)/1000000, // GC停止時間の累計（ミリ秒）
+			runtime.NumGoroutine(),            // 実行中のGoroutine数
 		)
 		ebitenutil.DebugPrint(screen, msg)
 	}

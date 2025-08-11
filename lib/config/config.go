@@ -32,6 +32,7 @@ type Config struct {
 	LogCategories string `env:"RUINS_LOG_CATEGORIES"`
 	DebugPProf    bool   `env:"RUINS_DEBUG_PPROF"`
 	PProfPort     int    `env:"RUINS_PPROF_PORT"`
+	ShowMonitor   bool   `env:"RUINS_SHOW_MONITOR"`
 
 	// ゲーム設定
 	StartingState string `env:"RUINS_STARTING_STATE"`
@@ -110,6 +111,9 @@ func (c *Config) applyProductionDefaults() {
 	if os.Getenv("RUINS_PPROF_PORT") == "" {
 		c.PProfPort = 6060
 	}
+	if os.Getenv("RUINS_SHOW_MONITOR") == "" {
+		c.ShowMonitor = false
+	}
 
 	// ゲーム設定
 	if os.Getenv("RUINS_STARTING_STATE") == "" {
@@ -167,6 +171,9 @@ func (c *Config) applyDevelopmentDefaults() {
 	if os.Getenv("RUINS_PPROF_PORT") == "" {
 		c.PProfPort = 6060
 	}
+	if os.Getenv("RUINS_SHOW_MONITOR") == "" {
+		c.ShowMonitor = false
+	}
 
 	// ゲーム設定
 	if os.Getenv("RUINS_STARTING_STATE") == "" {
@@ -212,4 +219,9 @@ func (c *Config) Validate() error {
 	}
 
 	return nil
+}
+
+// ToggleShowMonitor はShowMonitorフラグを切り替える
+func (c *Config) ToggleShowMonitor() {
+	c.ShowMonitor = !c.ShowMonitor
 }

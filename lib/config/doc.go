@@ -22,6 +22,7 @@
 //   - RUINS_LOG_CATEGORIES: カテゴリ別ログレベル設定 (例: "battle=debug,render=warn")
 //   - RUINS_DEBUG_PPROF: pprofサーバー起動 (デフォルト: true)
 //   - RUINS_PPROF_PORT: pprofサーバーポート (デフォルト: 6060)
+//   - RUINS_SHOW_MONITOR: パフォーマンスモニター表示 (デフォルト: false)
 //
 // ## ゲーム設定
 //   - RUINS_STARTING_STATE: 開始ステート (デフォルト: main_menu)
