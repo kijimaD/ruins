@@ -75,7 +75,7 @@ func (tm *TabMenu) Update() bool {
 		handled = true
 	}
 
-	// 選択（Enter/Space）
+	// 選択（Enter）
 	if tm.handleSelection() {
 		handled = true
 	}
