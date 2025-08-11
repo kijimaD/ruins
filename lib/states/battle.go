@@ -94,6 +94,7 @@ func (st *BattleState) OnStart(world w.World) {
 	// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
 	_ = worldhelper.SpawnEnemy(world, "軽戦車")
 	_ = worldhelper.SpawnEnemy(world, "火の玉")
+	_ = worldhelper.SpawnEnemy(world, "灰の偶像") // ボス
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image

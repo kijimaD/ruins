@@ -11,8 +11,10 @@ import (
 )
 
 // then は次に実行するステートを追加する
-// stateは先頭から実行されていく。複数stateの定義が直感的に見えるようにする
-// 1 2 3 ...
+// ここで設定したstate factory要素は順に先頭にpushされる。そのとき時系列が逆転する
+// なのでstate factoryは、あとに表示するstateが先にくる
+// state factory 3, 2, 1
+// state stack 1, 2, 3
 func then(stack []es.StateFactory, value es.StateFactory) []es.StateFactory {
 	return append([]es.StateFactory{value}, stack...)
 }
@@ -60,6 +62,15 @@ func GetRaidEvent1Factories() []es.StateFactory {
 			}),
 		}
 	})
+
+	return factories
+}
+
+// GetBossEvent1Factories はボス戦のファクトリー関数配列を返す
+func GetBossEvent1Factories() []es.StateFactory {
+	factories := []es.StateFactory{}
+
+	factories = then(factories, NewBattleState)
 
 	return factories
 }

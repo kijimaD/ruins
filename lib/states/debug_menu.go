@@ -163,6 +163,13 @@ var debugMenuTrans = []struct {
 		},
 	},
 	{
+		label: "ボス戦闘イベント開始",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: GetBossEvent1Factories()}
+		},
+	},
+	{
 		label: "汎用アイテム入手イベント開始",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition {
