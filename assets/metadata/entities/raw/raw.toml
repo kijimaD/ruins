@@ -431,6 +431,16 @@ Dexterity = 5
 Agility = 6
 Defense = 4
 
+[[member]]
+Name = "灰の偶像"
+[member.attributes]
+Vitality = 12
+Strength = 23
+Sensation = 5
+Dexterity = 2
+Agility = 3
+Defense = 40
+
 # command table ================
 
 [[command_table]]
@@ -450,6 +460,12 @@ Weight = 0.8
 [[command_table.entries]]
 Card = "溶解液"
 Weight = 0.2
+
+[[command_table]]
+Name = "灰の偶像"
+[[command_table.entries]]
+Card = "体当たり"
+Weight = 1.0
 
 # drop table ================
 
@@ -473,6 +489,13 @@ XpBase = 5
 Material = "鉄くず"
 Weight = 1.0
 
+[[drop_table]]
+Name = "灰の偶像"
+XpBase = 50
+[[drop_table.entries]]
+Material = "鉄くず"
+Weight = 1.0
+
 # sheets ================
 
 [[sprite_sheet]]
@@ -484,3 +507,8 @@ SheetName = "front_tank1"
 Name = "火の玉"
 [sprite_sheet.battle_body]
 SheetName = "front_flame1"
+
+[[sprite_sheet]]
+Name = "灰の偶像"
+[sprite_sheet.battle_body]
+SheetName = "front_idol1"

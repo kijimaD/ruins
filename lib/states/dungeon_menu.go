@@ -121,7 +121,7 @@ func (st *DungeonMenuState) initMenu(_ w.World) {
 
 func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.BlackColor)),
 	)
 
 	// UIビルダーを使用してメニューUIを構築

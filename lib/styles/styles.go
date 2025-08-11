@@ -29,6 +29,8 @@ var (
 	DebugColor = RGB(0x0000FF)
 	// TransBlackColor は透過黒背景色を表す
 	TransBlackColor = color.RGBA{0, 0, 0, 140}
+	// BlackColor は非透過黒背景色を表す
+	BlackColor = color.RGBA{30, 30, 30, 255}
 
 	// WindowBodyColor はウィンドウ本体色を表す
 	WindowBodyColor = RGB(0x808080)

@@ -69,7 +69,7 @@ func (st *DebugMenuState) Draw(_ w.World, screen *ebiten.Image) {
 
 func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.BlackColor)),
 	)
 
 	// Menuコンポーネントを作成
@@ -149,10 +149,26 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
 	},
 	{
-		label: "戦闘開始",
+		label: "戦闘開始(単体)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{
+				NewBattleStateWithEnemies([]string{"軽戦車"}),
+			}}
+		},
+	},
+	{
+		label: "戦闘開始(複数)",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition {
 			return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewBattleState}}
+		},
+	},
+	{
+		label: "戦闘開始(ボス)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransPush, NewStateFuncs: GetBossEvent1Factories()}
 		},
 	},
 	{

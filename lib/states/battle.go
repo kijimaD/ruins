@@ -42,6 +42,9 @@ type BattleState struct {
 	// 味方パーティ
 	party worldhelper.Party
 
+	// 固定敵の名前リスト（指定された場合のみ使用）
+	FixedEnemies []string
+
 	// フィールド上の敵シンボル（削除用）
 	FieldEnemyEntity ecs.Entity
 
@@ -89,11 +92,18 @@ func (st *BattleState) OnStart(world w.World) {
 	// UIBuilderを初期化
 	st.menuUIBuilder = menu.NewUIBuilder(world)
 
-	// フィールドの敵シンボルに基づいて実際の戦闘敵エンティティを生成
-	// 現在は簡単な実装として固定で生成する
-	// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
-	_ = worldhelper.SpawnEnemy(world, "軽戦車")
-	_ = worldhelper.SpawnEnemy(world, "火の玉")
+	// 敵の生成
+	if len(st.FixedEnemies) > 0 {
+		// 固定敵が指定されている場合はそれを使用
+		for _, enemyName := range st.FixedEnemies {
+			_ = worldhelper.SpawnEnemy(world, enemyName)
+		}
+	} else {
+		// 指定がない場合は従来のハードコーディングされた敵を使用
+		// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
+		_ = worldhelper.SpawnEnemy(world, "軽戦車")
+		_ = worldhelper.SpawnEnemy(world, "火の玉")
+	}
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]
 	st.bg = bg.Texture.Image

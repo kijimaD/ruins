@@ -147,7 +147,7 @@ func (st *DungeonSelectState) updateActionDescription(world w.World, index int) 
 
 func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := eui.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.BlackColor)),
 	)
 
 	// メニューと説明文を横並びにするためのコンテナ
