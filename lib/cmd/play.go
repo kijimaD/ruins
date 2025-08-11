@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/pkg/profile"
 	"github.com/urfave/cli/v2"
 
@@ -30,6 +31,9 @@ var CmdPlay = &cli.Command{
 func runPlay(_ *cli.Context) error {
 	// 設定を読み込み
 	cfg := config.Get()
+
+	// ログ設定を読み込み
+	logger.LoadFromConfig(cfg.LogLevel)
 
 	// デバッグモードの場合は設定を表示
 	if cfg.Debug {

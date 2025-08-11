@@ -8,24 +8,26 @@
 //
 // ## プロファイル設定
 //   - RUINS_PROFILE: 環境プロファイル (デフォルト: production)
-//     - "production": 本番環境 (デバッグ機能無効、軽量設定)
-//     - "development": 開発環境 (デバッグ機能有効、開発効率重視)
+//   - "production": 本番環境 (デバッグ機能無効、軽量設定)
+//   - "development": 開発環境 (デバッグ機能有効、開発効率重視)
 //
 // ## ウィンドウ設定
 //   - RUINS_WINDOW_WIDTH: ウィンドウ幅 (デフォルト: 960)
-//   - RUINS_WINDOW_HEIGHT: ウィンドウ高さ (デフォルト: 720)  
+//   - RUINS_WINDOW_HEIGHT: ウィンドウ高さ (デフォルト: 720)
 //   - RUINS_FULLSCREEN: フルスクリーンモード (デフォルト: false)
 //
 // ## デバッグ設定
 //   - RUINS_DEBUG: デバッグモード (デフォルト: false)
+//   - RUINS_LOG_LEVEL: ログレベル (デフォルト: info)
+//   - "debug", "info", "warn", "error", "fatal"
 //   - RUINS_DEBUG_PPROF: pprofサーバー起動 (デフォルト: true)
 //   - RUINS_PPROF_PORT: pprofサーバーポート (デフォルト: 6060)
 //
 // ## ゲーム設定
 //   - RUINS_STARTING_STATE: 開始ステート (デフォルト: main_menu)
-//     - "main_menu": メインメニュー
-//     - "debug_menu": デバッグメニュー
-//     - "dungeon": ダンジョン
+//   - "main_menu": メインメニュー
+//   - "debug_menu": デバッグメニュー
+//   - "dungeon": ダンジョン
 //   - RUINS_SKIP_INTRO: イントロスキップ (デフォルト: false)
 //
 // ## パフォーマンス設定
@@ -40,16 +42,16 @@
 //
 //	// 設定の取得
 //	cfg := config.Get()
-//	
+//
 //	// プロファイルに基づく設定確認
 //	if cfg.Profile == config.ProfileDevelopment {
 //		log.Println("Development mode")
 //	}
-//	
+//
 //	// ウィンドウサイズの取得
 //	width := cfg.WindowWidth
 //	height := cfg.WindowHeight
-//	
+//
 //	// デバッグモードの確認
 //	if cfg.Debug {
 //		log.Println("Debug mode enabled")

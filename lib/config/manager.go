@@ -43,7 +43,7 @@ func (c *Config) String() string {
 	return fmt.Sprintf(`Config{
 	Profile: %s,
 	WindowWidth: %d, WindowHeight: %d, Fullscreen: %t,
-	Debug: %t, DebugPProf: %t, PProfPort: %d,
+	Debug: %t, LogLevel: %s, DebugPProf: %t, PProfPort: %d,
 	StartingState: %s,
 	TargetFPS: %d,
 	ProfileMemory: %t, ProfileCPU: %t, ProfileMutex: %t, ProfileTrace: %t,
@@ -51,7 +51,7 @@ func (c *Config) String() string {
 }`,
 		c.Profile,
 		c.WindowWidth, c.WindowHeight, c.Fullscreen,
-		c.Debug, c.DebugPProf, c.PProfPort,
+		c.Debug, c.LogLevel, c.DebugPProf, c.PProfPort,
 		c.StartingState,
 		c.TargetFPS,
 		c.ProfileMemory, c.ProfileCPU, c.ProfileMutex, c.ProfileTrace,

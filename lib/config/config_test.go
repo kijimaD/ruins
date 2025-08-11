@@ -34,10 +34,10 @@ func TestLoad(t *testing.T) {
 		assert.Equal(t, 720, cfg.WindowHeight)
 		assert.Equal(t, false, cfg.Fullscreen)
 		assert.Equal(t, false, cfg.Debug) // 本番ではfalse
+		assert.Equal(t, "info", cfg.LogLevel) // 本番ではinfo
 		assert.Equal(t, false, cfg.DebugPProf) // 本番ではfalse
 		assert.Equal(t, 6060, cfg.PProfPort)
 		assert.Equal(t, "main_menu", cfg.StartingState)
-		assert.Equal(t, false, cfg.SkipIntro)
 		assert.Equal(t, 60, cfg.TargetFPS)
 		assert.Equal(t, false, cfg.ProfileMemory) // 本番ではfalse
 		assert.Equal(t, false, cfg.ProfileCPU)
@@ -69,14 +69,14 @@ func TestLoad(t *testing.T) {
 		require.NoError(t, err)
 		
 		assert.Equal(t, ProfileDevelopment, cfg.Profile)
-		assert.Equal(t, 800, cfg.WindowWidth) // 開発では小さめ
-		assert.Equal(t, 600, cfg.WindowHeight) // 開発では小さめ
+		assert.Equal(t, 960, cfg.WindowWidth) // 開発でも通常サイズ
+		assert.Equal(t, 720, cfg.WindowHeight) // 開発でも通常サイズ
 		assert.Equal(t, false, cfg.Fullscreen)
 		assert.Equal(t, true, cfg.Debug) // 開発ではtrue
+		assert.Equal(t, "debug", cfg.LogLevel) // 開発ではdebug
 		assert.Equal(t, true, cfg.DebugPProf) // 開発ではtrue
 		assert.Equal(t, 6060, cfg.PProfPort)
-		assert.Equal(t, "debug_menu", cfg.StartingState) // 開発ではdebug_menu
-		assert.Equal(t, true, cfg.SkipIntro) // 開発ではtrue
+		assert.Equal(t, "home_menu", cfg.StartingState) // 開発ではhome_menu
 		assert.Equal(t, 60, cfg.TargetFPS)
 		assert.Equal(t, true, cfg.ProfileMemory) // 開発ではtrue
 		assert.Equal(t, false, cfg.ProfileCPU)
@@ -138,10 +138,11 @@ func TestValidate(t *testing.T) {
 		t.Parallel()
 		
 		cfg := &Config{
-			WindowWidth:  100, // 最小値以下
-			WindowHeight: 50,  // 最小値以下
-			TargetFPS:    0,   // 無効
-			PProfPort:    80,  // 範囲外
+			WindowWidth:  100,       // 最小値以下
+			WindowHeight: 50,        // 最小値以下
+			TargetFPS:    0,         // 無効
+			PProfPort:    80,        // 範囲外
+			LogLevel:     "invalid", // 無効なログレベル
 		}
 
 		err := cfg.Validate()
@@ -151,6 +152,7 @@ func TestValidate(t *testing.T) {
 		assert.Equal(t, 240, cfg.WindowHeight)
 		assert.Equal(t, 60, cfg.TargetFPS)
 		assert.Equal(t, 6060, cfg.PProfPort)
+		assert.Equal(t, "info", cfg.LogLevel) // 無効な値はinfoに修正
 	})
 
 	t.Run("有効な値は変更されない", func(t *testing.T) {
@@ -161,6 +163,7 @@ func TestValidate(t *testing.T) {
 			WindowHeight: 1080,
 			TargetFPS:    144,
 			PProfPort:    8080,
+			LogLevel:     "debug",
 		}
 
 		err := cfg.Validate()
@@ -170,6 +173,7 @@ func TestValidate(t *testing.T) {
 		assert.Equal(t, 1080, cfg.WindowHeight)
 		assert.Equal(t, 144, cfg.TargetFPS)
 		assert.Equal(t, 8080, cfg.PProfPort)
+		assert.Equal(t, "debug", cfg.LogLevel)
 	})
 }
 
@@ -220,6 +224,7 @@ func TestString(t *testing.T) {
 		WindowWidth:   1280,
 		WindowHeight:  720,
 		Debug:         true,
+		LogLevel:      "debug",
 		StartingState: "debug_menu",
 	}
 
@@ -228,5 +233,6 @@ func TestString(t *testing.T) {
 	assert.Contains(t, str, "WindowWidth: 1280")
 	assert.Contains(t, str, "WindowHeight: 720")
 	assert.Contains(t, str, "Debug: true")
+	assert.Contains(t, str, "LogLevel: debug")
 	assert.Contains(t, str, "StartingState: debug_menu")
 }

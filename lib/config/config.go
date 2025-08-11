@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/caarlos0/env/v11"
@@ -25,9 +26,10 @@ type Config struct {
 	Fullscreen   bool `env:"RUINS_FULLSCREEN"`
 
 	// デバッグ設定
-	Debug      bool `env:"RUINS_DEBUG"`
-	DebugPProf bool `env:"RUINS_DEBUG_PPROF"`
-	PProfPort  int  `env:"RUINS_PPROF_PORT"`
+	Debug      bool   `env:"RUINS_DEBUG"`
+	LogLevel   string `env:"RUINS_LOG_LEVEL"`
+	DebugPProf bool   `env:"RUINS_DEBUG_PPROF"`
+	PProfPort  int    `env:"RUINS_PPROF_PORT"`
 
 	// ゲーム設定
 	StartingState string `env:"RUINS_STARTING_STATE"`
@@ -94,6 +96,9 @@ func (c *Config) applyProductionDefaults() {
 	if os.Getenv("RUINS_DEBUG") == "" {
 		c.Debug = false
 	}
+	if os.Getenv("RUINS_LOG_LEVEL") == "" {
+		c.LogLevel = "info"
+	}
 	if os.Getenv("RUINS_DEBUG_PPROF") == "" {
 		c.DebugPProf = false
 	}
@@ -145,6 +150,9 @@ func (c *Config) applyDevelopmentDefaults() {
 	if os.Getenv("RUINS_DEBUG") == "" {
 		c.Debug = true
 	}
+	if os.Getenv("RUINS_LOG_LEVEL") == "" {
+		c.LogLevel = "info"
+	}
 	if os.Getenv("RUINS_DEBUG_PPROF") == "" {
 		c.DebugPProf = true
 	}
@@ -193,6 +201,18 @@ func (c *Config) Validate() error {
 	}
 	if c.PProfPort < 1024 || c.PProfPort > 65535 {
 		c.PProfPort = 6060
+	}
+
+	// LogLevel の検証
+	validLogLevels := map[string]bool{
+		"debug": true,
+		"info":  true,
+		"warn":  true,
+		"error": true,
+		"fatal": true,
+	}
+	if !validLogLevels[c.LogLevel] {
+		return fmt.Errorf("無効なログレベル: %s", c.LogLevel)
 	}
 
 	return nil

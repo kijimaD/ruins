@@ -17,32 +17,12 @@ type Config struct {
 	TimeFormat string
 }
 
-// デフォルト設定
-var defaultConfig = Config{
-	DefaultLevel:   LevelInfo,
+// グローバル設定（初期化時は空の設定）
+var globalConfig = Config{
 	CategoryLevels: make(map[Category]Level),
 	TimeFormat:     "2006-01-02T15:04:05.000Z",
 }
 
-// グローバル設定（初期化時に環境変数から読み込み）
-var globalConfig = loadConfig()
-
-// loadConfig は環境変数から設定を読み込む
-func loadConfig() Config {
-	config := defaultConfig
-
-	// LOG_LEVEL環境変数
-	if level := os.Getenv("LOG_LEVEL"); level != "" {
-		config.DefaultLevel = parseLevel(level)
-	}
-
-	// LOG_CATEGORIES環境変数 (例: "battle=debug,render=warn")
-	if categories := os.Getenv("LOG_CATEGORIES"); categories != "" {
-		config.CategoryLevels = parseCategoryLevels(categories)
-	}
-
-	return config
-}
 
 // parseCategoryLevels はカテゴリ別レベル設定を解析する
 func parseCategoryLevels(s string) map[Category]Level {
@@ -64,7 +44,33 @@ func SetConfig(config Config) {
 	globalConfig = config
 }
 
-// ResetConfig は設定をデフォルトに戻す（主にテスト用）
+// ResetConfig は設定をリセットする（主にテスト用）
 func ResetConfig() {
-	globalConfig = loadConfig()
+	globalConfig = Config{
+		CategoryLevels: make(map[Category]Level),
+		TimeFormat:     "2006-01-02T15:04:05.000Z",
+	}
+}
+
+// SetLogLevelFromConfig はconfigパッケージの設定からログレベルを設定する
+func SetLogLevelFromConfig(logLevel string) {
+	config := globalConfig
+	config.DefaultLevel = parseLevel(logLevel)
+	globalConfig = config
+}
+
+// LoadFromConfig はconfigパッケージの設定を読み込む
+func LoadFromConfig(logLevel string) {
+	config := Config{
+		DefaultLevel:   parseLevel(logLevel),
+		CategoryLevels: make(map[Category]Level),
+		TimeFormat:     "2006-01-02T15:04:05.000Z",
+	}
+	
+	// LOG_CATEGORIES環境変数 (例: "battle=debug,render=warn") 
+	if categories := os.Getenv("LOG_CATEGORIES"); categories != "" {
+		config.CategoryLevels = parseCategoryLevels(categories)
+	}
+
+	globalConfig = config
 }
