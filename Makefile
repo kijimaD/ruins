@@ -2,11 +2,11 @@
 
 .PHONY: run
 run: ## 実行する。スクショのキーを指定している
-	EBITENGINE_SCREENSHOT_KEY=1 LOG_LEVEL=info LOG_CATEGORIES=battle=debug go run .
+	RUINS_PROFILE=development go run . play
 
 .PHONY: test
 test: ## テストを実行する
-	go test -v -cover -race -shuffle=on ./...
+	RUINS_LOG_LEVEL=ignore go test -v -cover -race -shuffle=on ./...
 
 .PHONY: build
 build: ## ビルドする

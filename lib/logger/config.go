@@ -1,8 +1,12 @@
 package logger
 
 import (
-	"os"
 	"strings"
+)
+
+const (
+	// TimeFormat はタイムスタンプ形式
+	TimeFormat = "2006-01-02T15:04:05.000Z"
 )
 
 // Config はログ設定
@@ -12,36 +16,14 @@ type Config struct {
 
 	// カテゴリ別ログレベル
 	CategoryLevels map[Category]Level
-
-	// タイムスタンプ形式
-	TimeFormat string
 }
 
-// デフォルト設定
-var defaultConfig = Config{
-	DefaultLevel:   LevelInfo,
+// グローバル設定（初期化時は空の設定）
+// Config構造体のデフォルト値、環境変数によって上書きされるので、ここでの初期値はプロダクトコードでは尊重されない
+// 環境変数を読み込まないテスト時に使われる
+var globalConfig = Config{
+	DefaultLevel:   LevelIgnore,
 	CategoryLevels: make(map[Category]Level),
-	TimeFormat:     "2006-01-02T15:04:05.000Z",
-}
-
-// グローバル設定（初期化時に環境変数から読み込み）
-var globalConfig = loadConfig()
-
-// loadConfig は環境変数から設定を読み込む
-func loadConfig() Config {
-	config := defaultConfig
-
-	// LOG_LEVEL環境変数
-	if level := os.Getenv("LOG_LEVEL"); level != "" {
-		config.DefaultLevel = parseLevel(level)
-	}
-
-	// LOG_CATEGORIES環境変数 (例: "battle=debug,render=warn")
-	if categories := os.Getenv("LOG_CATEGORIES"); categories != "" {
-		config.CategoryLevels = parseCategoryLevels(categories)
-	}
-
-	return config
 }
 
 // parseCategoryLevels はカテゴリ別レベル設定を解析する
@@ -59,12 +41,30 @@ func parseCategoryLevels(s string) map[Category]Level {
 	return result
 }
 
-// SetConfig はグローバル設定を更新する（主にテスト用）
+// LoadFromConfig はconfigパッケージの設定を読み込む
+func LoadFromConfig(logLevel, logCategories string) {
+	config := Config{
+		DefaultLevel:   parseLevel(logLevel),
+		CategoryLevels: make(map[Category]Level),
+	}
+
+	// configパッケージからのカテゴリ別ログレベル設定
+	if logCategories != "" {
+		config.CategoryLevels = parseCategoryLevels(logCategories)
+	}
+
+	globalConfig = config
+}
+
+// SetConfig はグローバル設定を更新する（テスト用）
 func SetConfig(config Config) {
 	globalConfig = config
 }
 
-// ResetConfig は設定をデフォルトに戻す（主にテスト用）
+// ResetConfig は設定をリセットする（テスト用）
 func ResetConfig() {
-	globalConfig = loadConfig()
+	globalConfig = Config{
+		DefaultLevel:   LevelIgnore,
+		CategoryLevels: make(map[Category]Level),
+	}
 }

@@ -100,7 +100,7 @@ func (l *Logger) log(level Level, msg string, keysAndValues ...interface{}) {
 
 	// ログエントリを構築
 	entry := make(map[string]interface{})
-	entry["timestamp"] = time.Now().Format(globalConfig.TimeFormat)
+	entry["timestamp"] = time.Now().Format(TimeFormat)
 	entry["level"] = level.String()
 	entry["category"] = string(l.category)
 	entry["message"] = msg
