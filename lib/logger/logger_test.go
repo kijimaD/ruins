@@ -232,6 +232,8 @@ func TestParseLevel(t *testing.T) {
 		{"ERROR", LevelError},
 		{"fatal", LevelFatal},
 		{"FATAL", LevelFatal},
+		{"ignore", LevelIgnore},
+		{"IGNORE", LevelIgnore},
 		{"unknown", LevelInfo}, // デフォルト
 	}
 
@@ -317,6 +319,40 @@ func TestLoggerOutput(t *testing.T) {
 				if !strings.Contains(output, expected) {
 					t.Errorf("出力に %q が含まれていない: %s", expected, output)
 				}
+			}
+		})
+	}
+}
+
+//nolint:paralleltest
+func TestIgnoreLevel(t *testing.T) {
+	// ignoreレベルではすべてのログが出力されない
+	SetConfig(Config{
+		DefaultLevel:   LevelIgnore,
+		CategoryLevels: make(map[Category]Level),
+	})
+	defer ResetConfig()
+
+	logger := New(CategoryBattle)
+
+	// すべてのレベルのログが出力されない
+	levels := []struct {
+		name string
+		fn   func(string, ...interface{})
+	}{
+		{"Debug", logger.Debug},
+		{"Info", logger.Info},
+		{"Warn", logger.Warn},
+		{"Error", logger.Error},
+	}
+
+	for _, level := range levels {
+		t.Run(level.name, func(t *testing.T) {
+			output := captureOutput(func() {
+				level.fn("テストメッセージ")
+			})
+			if output != "" {
+				t.Errorf("%sレベルのログは出力されないべき（ignoreレベル設定時）: %s", level.name, output)
 			}
 		})
 	}

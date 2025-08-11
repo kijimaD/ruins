@@ -19,7 +19,10 @@ type Config struct {
 }
 
 // グローバル設定（初期化時は空の設定）
+// Config構造体のデフォルト値、環境変数によって上書きされるので、ここでの初期値はプロダクトコードでは尊重されない
+// 環境変数を読み込まないテスト時に使われる
 var globalConfig = Config{
+	DefaultLevel:   LevelIgnore,
 	CategoryLevels: make(map[Category]Level),
 }
 
@@ -61,6 +64,7 @@ func SetConfig(config Config) {
 // ResetConfig は設定をリセットする（テスト用）
 func ResetConfig() {
 	globalConfig = Config{
+		DefaultLevel:   LevelIgnore,
 		CategoryLevels: make(map[Category]Level),
 	}
 }

@@ -14,6 +14,8 @@ const (
 	LevelError
 	// LevelFatal は致命的エラーレベルのログ
 	LevelFatal
+	// LevelIgnore はすべてのログを無視する（テスト用）
+	LevelIgnore
 )
 
 // String はレベルを文字列で返す
@@ -29,6 +31,8 @@ func (l Level) String() string {
 		return "ERROR"
 	case LevelFatal:
 		return "FATAL"
+	case LevelIgnore:
+		return "IGNORE"
 	default:
 		return "UNKNOWN"
 	}
@@ -47,6 +51,8 @@ func parseLevel(s string) Level {
 		return LevelError
 	case "fatal", "FATAL":
 		return LevelFatal
+	case "ignore", "IGNORE":
+		return LevelIgnore
 	default:
 		return LevelInfo
 	}
