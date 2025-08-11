@@ -117,6 +117,9 @@
 			
 			
 				
+				<dd><a href="index.html#GetBossEvent1Factories">func GetBossEvent1Factories() []es.StateFactory</a></dd>
+			
+				
 				<dd><a href="index.html#GetItemGetEvent1Factories">func GetItemGetEvent1Factories() []es.StateFactory</a></dd>
 			
 				
@@ -124,6 +127,9 @@
 			
 				
 				<dd><a href="index.html#NewBattleState">func NewBattleState() es.State</a></dd>
+			
+				
+				<dd><a href="index.html#NewBattleStateWithEnemies">func NewBattleStateWithEnemies(enemies []string) es.StateFactory</a></dd>
 			
 				
 				<dd><a href="index.html#NewCraftMenuState">func NewCraftMenuState() es.State</a></dd>
@@ -605,7 +611,21 @@
 		
 			
 			
-			<h2 id="GetItemGetEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=673:723#L11">GetItemGetEvent1Factories</a>
+			<h2 id="GetBossEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=2631:2678#L60">GetBossEvent1Factories</a>
+				<a class="permalink" href="index.html#GetBossEvent1Factories">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetBossEvent1Factories() []<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateFactory">StateFactory</a></pre>
+			<p>GetBossEvent1Factories はボス戦のファクトリー関数配列を返す
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetItemGetEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=788:838#L13">GetItemGetEvent1Factories</a>
 				<a class="permalink" href="index.html#GetItemGetEvent1Factories">&#xb6;</a>
 				
 				
@@ -619,7 +639,7 @@
 		
 			
 			
-			<h2 id="GetRaidEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=1693:1740#L36">GetRaidEvent1Factories</a>
+			<h2 id="GetRaidEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=1808:1855#L38">GetRaidEvent1Factories</a>
 				<a class="permalink" href="index.html#GetRaidEvent1Factories">&#xb6;</a>
 				
 				
@@ -647,7 +667,21 @@
 		
 			
 			
-			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=960:993#L21">NewCraftMenuState</a>
+			<h2 id="NewBattleStateWithEnemies">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=607:671#L11">NewBattleStateWithEnemies</a>
+				<a class="permalink" href="index.html#NewBattleStateWithEnemies">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewBattleStateWithEnemies(enemies []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateFactory">StateFactory</a></pre>
+			<p>NewBattleStateWithEnemies は指定された敵でBattleStateを作成するファクトリー関数
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1216:1249#L30">NewCraftMenuState</a>
 				<a class="permalink" href="index.html#NewCraftMenuState">&#xb6;</a>
 				
 				
@@ -661,7 +695,7 @@
 		
 			
 			
-			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1486:1519#L36">NewDebugMenuState</a>
+			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1742:1775#L45">NewDebugMenuState</a>
 				<a class="permalink" href="index.html#NewDebugMenuState">&#xb6;</a>
 				
 				
@@ -675,7 +709,7 @@
 		
 			
 			
-			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1660:1695#L41">NewDungeonMenuState</a>
+			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1916:1951#L50">NewDungeonMenuState</a>
 				<a class="permalink" href="index.html#NewDungeonMenuState">&#xb6;</a>
 				
 				
@@ -689,7 +723,7 @@
 		
 			
 			
-			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=782:819#L16">NewDungeonSelectState</a>
+			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1038:1075#L25">NewDungeonSelectState</a>
 				<a class="permalink" href="index.html#NewDungeonSelectState">&#xb6;</a>
 				
 				
@@ -703,7 +737,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1853:1909#L46">NewDungeonStateWithDepth</a>
+			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2109:2165#L55">NewDungeonStateWithDepth</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithDepth">&#xb6;</a>
 				
 				
@@ -717,7 +751,7 @@
 		
 			
 			
-			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1316:1349#L31">NewEquipMenuState</a>
+			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1572:1605#L40">NewEquipMenuState</a>
 				<a class="permalink" href="index.html#NewEquipMenuState">&#xb6;</a>
 				
 				
@@ -731,7 +765,7 @@
 		
 			
 			
-			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2364:2422#L62">NewExecStateWithFunc</a>
+			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2620:2678#L71">NewExecStateWithFunc</a>
 				<a class="permalink" href="index.html#NewExecStateWithFunc">&#xb6;</a>
 				
 				
@@ -745,7 +779,7 @@
 		
 			
 			
-			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2751:2783#L74">NewGameOverState</a>
+			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3007:3039#L83">NewGameOverState</a>
 				<a class="permalink" href="index.html#NewGameOverState">&#xb6;</a>
 				
 				
@@ -759,7 +793,7 @@
 		
 			
 			
-			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=606:638#L11">NewHomeMenuState</a>
+			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=862:894#L20">NewHomeMenuState</a>
 				<a class="permalink" href="index.html#NewHomeMenuState">&#xb6;</a>
 				
 				
@@ -787,7 +821,7 @@
 		
 			
 			
-			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1138:1175#L26">NewInventoryMenuState</a>
+			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1394:1431#L35">NewInventoryMenuState</a>
 				<a class="permalink" href="index.html#NewInventoryMenuState">&#xb6;</a>
 				
 				
@@ -801,7 +835,7 @@
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2585:2617#L69">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2841:2873#L78">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -815,7 +849,7 @@
 		
 			
 			
-			<h2 id="NewMessageStateWithText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2111:2168#L53">NewMessageStateWithText</a>
+			<h2 id="NewMessageStateWithText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2367:2424#L62">NewMessageStateWithText</a>
 				<a class="permalink" href="index.html#NewMessageStateWithText">&#xb6;</a>
 				
 				
@@ -830,7 +864,7 @@
 		
 			
 			
-			<h2 id="BattleState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=895:1884#L21">BattleState</a>
+			<h2 id="BattleState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=895:1979#L21">BattleState</a>
 				<a class="permalink" href="index.html#BattleState">&#xb6;</a>
 				
 				
@@ -839,6 +873,9 @@
 
 			<pre>type BattleState struct {
     <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>
+
+    <span class="comment">// 固定敵の名前リスト（指定された場合のみ使用）</span>
+<span id="BattleState.FixedEnemies"></span>    FixedEnemies []<a href="http://localhost:8888/pkg/builtin/#string">string</a>
 
     <span class="comment">// フィールド上の敵シンボル（削除用）</span>
 <span id="BattleState.FieldEnemyEntity"></span>    FieldEnemyEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
@@ -858,7 +895,7 @@
 
 			
 				
-				<h3 id="BattleState.Draw">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=8199:8259#L258">Draw</a>
+				<h3 id="BattleState.Draw">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=8449:8509#L268">Draw</a>
 					<a class="permalink" href="index.html#BattleState.Draw">&#xb6;</a>
 					
 					
@@ -871,7 +908,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnPause">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2085:2126#L68">OnPause</a>
+				<h3 id="BattleState.OnPause">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2180:2221#L71">OnPause</a>
 					<a class="permalink" href="index.html#BattleState.OnPause">&#xb6;</a>
 					
 					
@@ -884,7 +921,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnResume">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2195:2237#L71">OnResume</a>
+				<h3 id="BattleState.OnResume">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2290:2332#L74">OnResume</a>
 					<a class="permalink" href="index.html#BattleState.OnResume">&#xb6;</a>
 					
 					
@@ -897,7 +934,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnStart">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2305:2350#L74">OnStart</a>
+				<h3 id="BattleState.OnStart">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2400:2445#L77">OnStart</a>
 					<a class="permalink" href="index.html#BattleState.OnStart">&#xb6;</a>
 					
 					
@@ -910,7 +947,7 @@
 				
 			
 				
-				<h3 id="BattleState.OnStop">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=3017:3061#L95">OnStop</a>
+				<h3 id="BattleState.OnStop">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=3267:3311#L105">OnStop</a>
 					<a class="permalink" href="index.html#BattleState.OnStop">&#xb6;</a>
 					
 					
@@ -923,7 +960,7 @@
 				
 			
 				
-				<h3 id="BattleState.String">func (BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1886:1923#L59">String</a>
+				<h3 id="BattleState.String">func (BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1981:2018#L62">String</a>
 					<a class="permalink" href="index.html#BattleState.String">&#xb6;</a>
 					
 					
@@ -935,7 +972,7 @@
 				
 			
 				
-				<h3 id="BattleState.Update">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=3868:3926#L122">Update</a>
+				<h3 id="BattleState.Update">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=4118:4176#L132">Update</a>
 					<a class="permalink" href="index.html#BattleState.Update">&#xb6;</a>
 					
 					
