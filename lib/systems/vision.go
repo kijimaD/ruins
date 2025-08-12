@@ -256,9 +256,8 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 		return 0.7 // 70%暗い
 	} else if normalizedDistance <= 0.95 {
 		return 0.8 // 80%暗い
-	} else {
-		return 0.9 // 90%暗い（完全に真っ暗にはしない）
 	}
+	return 0.9 // 90%暗い（完全に真っ暗にはしない）
 }
 
 // drawGradualDarknessOverlay は距離に応じた段階的暗闇を描画する
