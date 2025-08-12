@@ -158,6 +158,11 @@
 				
 				
 			
+				
+				<dd><a href="index.html#TileVisibility">type TileVisibility</a></dd>
+				
+				
+			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -219,7 +224,7 @@
 		
 			
 			
-			<h2 id="AIInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go?s=256:289#L3">AIInputSystem</a>
+			<h2 id="AIInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go?s=264:297#L4">AIInputSystem</a>
 				<a class="permalink" href="index.html#AIInputSystem">&#xb6;</a>
 				
 				
@@ -279,7 +284,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=338:389#L5">HUDSystem</a>
+			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=443:494#L9">HUDSystem</a>
 				<a class="permalink" href="index.html#HUDSystem">&#xb6;</a>
 				
 				
@@ -307,7 +312,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=265:302#L3">PlayerInputSystem</a>
+			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=350:387#L5">PlayerInputSystem</a>
 				<a class="permalink" href="index.html#PlayerInputSystem">&#xb6;</a>
 				
 				
@@ -335,13 +340,13 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=478:532#L15">VisionSystem</a>
+			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=507:561#L12">VisionSystem</a>
 				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func VisionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>VisionSystem は探索範囲エリアを表示する
+			<p>VisionSystem はタイルごとの視界を管理し、暗闇を描画する
 
 			
 			
@@ -435,6 +440,36 @@ TODO: マイナスにならないようにする
 
 				
 				
+			
+
+			
+		
+			
+			
+			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2281:2437#L81">TileVisibility</a>
+				<a class="permalink" href="index.html#TileVisibility">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TileVisibility はタイルの可視性を表す
+
+			<pre>type TileVisibility struct {
+<span id="TileVisibility.Row"></span>    Row      <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="TileVisibility.Col"></span>    Col      <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="TileVisibility.Visible"></span>    Visible  <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+<span id="TileVisibility.Distance"></span>    Distance <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+<span id="TileVisibility.Darkness"></span>    Darkness <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 0.0（明るい）から 1.0（真っ暗）</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
 			
 
 			

@@ -181,6 +181,11 @@
 				
 			
 				
+				<dd><a href="index.html#MinimapSettings">type MinimapSettings</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#ResourceCache">type ResourceCache</a></dd>
 				
 				
@@ -395,7 +400,7 @@
 		
 			
 			
-			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=369:558#L1">Dungeon</a>
+			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=369:711#L1">Dungeon</a>
 				<a class="permalink" href="index.html#Dungeon">&#xb6;</a>
 				
 				
@@ -409,6 +414,10 @@
 <span id="Dungeon.Level"></span>    Level <a href="index.html#Level">Level</a>
     <span class="comment">// 階層数</span>
 <span id="Dungeon.Depth"></span>    Depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// 探索済みタイルのマップ（キー: &#34;x,y&#34;, 値: true）</span>
+<span id="Dungeon.ExploredTiles"></span>    ExploredTiles map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+    <span class="comment">// ミニマップの設定</span>
+<span id="Dungeon.Minimap"></span>    Minimap <a href="index.html#MinimapSettings">MinimapSettings</a>
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -425,7 +434,7 @@
 
 			
 				
-				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2448:2496#L68">ConsumeStateEvent</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2601:2649#L72">ConsumeStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
@@ -438,7 +447,7 @@
 				
 			
 				
-				<h3 id="Dungeon.GetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2133:2177#L58">GetStateEvent</a>
+				<h3 id="Dungeon.GetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2286:2330#L62">GetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.GetStateEvent">&#xb6;</a>
 					
 					
@@ -451,7 +460,7 @@
 				
 			
 				
-				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2250:2299#L63">SetStateEvent</a>
+				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2403:2452#L67">SetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.SetStateEvent">&#xb6;</a>
 					
 					
@@ -466,7 +475,7 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=588:989#L11">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=741:1142#L15">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
@@ -500,7 +509,7 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1541:1600#L39">AtEntity</a>
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1694:1753#L43">AtEntity</a>
 					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
 					
 					
@@ -513,7 +522,7 @@
 				
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1949:1982#L53">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2102:2135#L57">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -526,7 +535,7 @@
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1799:1831#L48">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1952:1984#L52">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -539,7 +548,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1297:1358#L31">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1450:1511#L35">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -552,7 +561,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1088:1145#L26">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1241:1298#L30">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
@@ -563,6 +572,39 @@
 				
 				
 				
+			
+		
+			
+			
+			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2785:3076#L79">MinimapSettings</a>
+				<a class="permalink" href="index.html#MinimapSettings">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MinimapSettings はミニマップの設定を管理する
+
+			<pre>type MinimapSettings struct {
+    <span class="comment">// ミニマップのサイズ（ピクセル単位）</span>
+<span id="MinimapSettings.Width"></span>    Width  <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="MinimapSettings.Height"></span>    Height <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// ミニマップの表示位置（画面右上に配置）</span>
+<span id="MinimapSettings.OffsetX"></span>    OffsetX <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="MinimapSettings.OffsetY"></span>    OffsetY <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// ミニマップのスケール（何ピクセルで1タイルを表すか）</span>
+<span id="MinimapSettings.Scale"></span>    Scale <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
 			
 		
 			
