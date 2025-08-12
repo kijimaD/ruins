@@ -8,6 +8,8 @@ type Velocity struct {
 	Speed float64
 	// スロットルモード
 	ThrottleMode ThrottleMode
+	// 最高速度
+	MaxSpeed float64
 }
 
 // ThrottleMode はスロットルモード

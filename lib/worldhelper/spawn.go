@@ -100,7 +100,9 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
-			Velocity: &gc.Velocity{},
+			Velocity: &gc.Velocity{
+				MaxSpeed: 2.0, // プレイヤーの最高速度
+			},
 			Operator: &gc.Operator{},
 			SpriteRender: &gc.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
@@ -131,7 +133,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{
-				Speed: 0.3, // NPCの移動速度を遅く設定
+				MaxSpeed: 1.0, // プレイヤーより遅い
 			},
 			SpriteRender: &gc.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
