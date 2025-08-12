@@ -40,13 +40,18 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 				}
 			}
 			destCenterX, destCenterY := buildData.Rooms[closestIdx].Center()
-			ps1 := bresenhamPoints(point{x: centerX, y: centerY}, point{x: destCenterX, y: destCenterY})
-			ps2 := bresenhamPoints(point{x: centerX - 1, y: centerY}, point{x: destCenterX - 1, y: destCenterY})
-			ps3 := bresenhamPoints(point{x: centerX, y: centerY - 1}, point{x: destCenterX, y: destCenterY - 1})
+
 			points := []point{}
-			points = append(points, ps1...)
-			points = append(points, ps2...)
-			points = append(points, ps3...)
+			corridorWidth := 3
+			// 中心から上下左右にoffsetして複数のL字型廊下を生成
+			for offsetX := -(corridorWidth / 2); offsetX <= corridorWidth/2; offsetX++ {
+				for offsetY := -(corridorWidth / 2); offsetY <= corridorWidth/2; offsetY++ {
+					startPoint := point{x: centerX + gc.Row(offsetX), y: centerY + gc.Col(offsetY)}
+					endPoint := point{x: destCenterX + gc.Row(offsetX), y: destCenterY + gc.Col(offsetY)}
+					corridorPoints := createLShapedCorridor(startPoint, endPoint)
+					points = append(points, corridorPoints...)
+				}
+			}
 			corridor := []resources.TileIdx{}
 			for _, p := range points {
 				idx := buildData.Level.XYTileIndex(p.x, p.y)
@@ -66,47 +71,44 @@ type point struct {
 	y gc.Col
 }
 
-// https://gist.github.com/s1moe2/a85a5da7e2af25397de326d9714a6bbc#file-bresenham-go
-func bresenhamPoints(p1, p2 point) []point {
-	dx := int(math.Abs(float64(p2.x) - float64(p1.x)))
-	sx := gc.Row(-1)
-	if p1.x < p2.x {
-		sx = 1
-	}
+// createLShapedCorridor は横と縦のみのL字型廊下を生成する
+func createLShapedCorridor(start, end point) []point {
+	var points []point
 
-	dy := -int(math.Abs(float64(p2.y) - float64(p1.y)))
-	sy := gc.Col(-1)
-	if p1.y < p2.y {
-		sy = 1
-	}
-
-	err := dx + dy
-
-	points := []point{}
-
-	for {
-		points = append(points, point{p1.x, p1.y})
-
-		if p1.x == p2.x && p1.y == p2.y {
-			break
-		}
-
-		e2 := 2 * err
-
-		if e2 >= dy {
-			if p1.x == p2.x {
+	// 開始点から水平に移動
+	current := start
+	if start.x < end.x {
+		// 右に移動
+		for current.x <= end.x {
+			points = append(points, current)
+			if current.x == end.x {
 				break
 			}
-			err = err + dy
-			p1.x = p1.x + sx
+			current.x++
 		}
-
-		if e2 <= dx {
-			if p1.y == p2.y {
+	} else {
+		// 左に移動
+		for current.x >= end.x {
+			points = append(points, current)
+			if current.x == end.x {
 				break
 			}
-			err = err + dx
-			p1.y = p1.y + sy
+			current.x--
+		}
+	}
+
+	// 水平移動後の位置から垂直に移動
+	if start.y < end.y {
+		// 下に移動
+		for current.y < end.y {
+			current.y++
+			points = append(points, current)
+		}
+	} else if start.y > end.y {
+		// 上に移動
+		for current.y > end.y {
+			current.y--
+			points = append(points, current)
 		}
 	}
 

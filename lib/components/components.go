@@ -94,8 +94,8 @@ type Components struct {
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
-	BlockView *ecs.NullComponent
-	BlockPass *ecs.NullComponent
+	BlockView    *ecs.NullComponent
+	BlockPass    *ecs.NullComponent
 
 	// member ================
 	InParty      *ecs.NullComponent

@@ -48,7 +48,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Depth = st.Depth
 	gameResources.Level = mapbuilder.NewLevel(world, 50, 50)
-	
+
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
 }
