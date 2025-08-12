@@ -1,69 +1,57 @@
 package systems
 
 import (
+	"fmt"
 	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/camera"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-const (
-	visionNgon = 12
-)
-
 var (
-	// 影生成時の、マスクのベースとして使う黒画像
-	blackImage *ebiten.Image
+	// 段階的な暗闇用の画像キャッシュ（透明度レベルを増加）
+	darknessCacheImages []*ebiten.Image
 )
 
-// VisionSystem は探索範囲エリアを表示する
+// VisionSystem はタイルごとの視界を管理し、暗闇を描画する
 func VisionSystem(world w.World, screen *ebiten.Image) {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	if gameResources.Level.VisionImage == nil {
-		img := ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
-		img.Fill(color.Black)
-		gameResources.Level.VisionImage = img
-	}
-
-	if blackImage == nil {
-		img := ebiten.NewImage(int(gameResources.Level.Width()), int(gameResources.Level.Height()))
-		img.Fill(color.Black)
-		blackImage = img
-	}
-
-	var pos *gc.Position
+	// プレイヤー位置を取得
+	var playerPos *gc.Position
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos = world.Components.Position.Get(entity).(*gc.Position)
+		playerPos = world.Components.Position.Get(entity).(*gc.Position)
 	}))
 
-	// 視界以外をグラデーションを入れながら塗りつぶし
-	// TODO: 光源用のコンポーネントを追加したほうがよさそう
-	{
-		vs := visionVertices(visionNgon, pos.X, pos.Y, 160)
-		opt := &ebiten.DrawTrianglesOptions{}
-		opt.Blend = ebiten.BlendSourceIn
-		indices := []uint16{}
-		for i := 0; i < visionNgon; i++ {
-			if i < 65536 && visionNgon < 65536 { // uint16範囲チェック
-				indices = append(indices, uint16(i), uint16(i+1)%uint16(visionNgon), uint16(visionNgon))
-			}
+	if playerPos == nil {
+		return
+	}
+
+	// Dungeonリソースから探索済みマップを取得
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+
+	// タイルの可視性マップを更新
+	visionRadius := gc.Pixel(320)
+	visibilityData := calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
+
+	// 視界内のタイルを探索済みとしてマーク
+	visibleCount := 0
+	for _, tileData := range visibilityData {
+		if tileData.Visible {
+			tileKey := fmt.Sprintf("%d,%d", tileData.Row, tileData.Col)
+			gameResources.ExploredTiles[tileKey] = true
+			visibleCount++
 		}
-		gameResources.Level.VisionImage.DrawTriangles(vs, indices, blackImage, opt)
 	}
-	{
-		op := &ebiten.DrawImageOptions{}
-		op.ColorScale.ScaleAlpha(1)
-		camera.SetTranslate(world, op)
-		screen.DrawImage(gameResources.Level.VisionImage, op)
-	}
+
+	// 距離に応じた段階的暗闇を描画
+	drawGradualDarknessOverlay(world, screen, visibilityData)
 }
 
 func visionVertices(num int, x gc.Pixel, y gc.Pixel, r gc.Pixel) []ebiten.Vertex {
@@ -97,4 +85,353 @@ func visionVertices(num int, x gc.Pixel, y gc.Pixel, r gc.Pixel) []ebiten.Vertex
 	})
 
 	return vs
+}
+
+// TileVisibility はタイルの可視性を表す
+type TileVisibility struct {
+	Row      int
+	Col      int
+	Visible  bool
+	Distance float64
+	Darkness float64 // 0.0（明るい）から 1.0（真っ暗）
+}
+
+// calculateTileVisibilityWithDistance はレイキャストでタイルごとの可視性と距離を計算する
+func calculateTileVisibilityWithDistance(world w.World, playerX, playerY, radius gc.Pixel) map[string]TileVisibility {
+	tileSize := 32 // タイルサイズ（固定値、実際はgameResourcesから取得すべき）
+
+	visibilityMap := make(map[string]TileVisibility)
+
+	// プレイヤーの位置からタイル座標を計算
+	playerTileX := int(playerX) / tileSize
+	playerTileY := int(playerY) / tileSize
+
+	// 視界範囲内のタイルをチェック
+	maxTileDistance := int(radius)/tileSize + 2
+
+	for dx := -maxTileDistance; dx <= maxTileDistance; dx++ {
+		for dy := -maxTileDistance; dy <= maxTileDistance; dy++ {
+			tileX := playerTileX + dx
+			tileY := playerTileY + dy
+
+			// タイルの中心座標を計算
+			tileCenterX := float64(tileX*tileSize + tileSize/2)
+			tileCenterY := float64(tileY*tileSize + tileSize/2)
+
+			// プレイヤーからタイル中心への距離をチェック
+			distanceToTile := math.Sqrt(
+				math.Pow(tileCenterX-float64(playerX), 2) +
+					math.Pow(tileCenterY-float64(playerY), 2))
+
+			tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
+
+			if distanceToTile <= float64(radius) {
+				// レイキャストでタイルが見えるかチェック
+				visible := isTileVisibleByRaycast(world, float64(playerX), float64(playerY), tileCenterX, tileCenterY)
+
+				// 距離に応じた暗闇の計算
+				darkness := calculateDarknessByDistance(distanceToTile, float64(radius))
+
+				visibilityMap[tileKey] = TileVisibility{
+					Row:      tileX,
+					Col:      tileY,
+					Visible:  visible,
+					Distance: distanceToTile,
+					Darkness: darkness,
+				}
+			} else {
+				visibilityMap[tileKey] = TileVisibility{
+					Row:      tileX,
+					Col:      tileY,
+					Visible:  false,
+					Distance: distanceToTile,
+					Darkness: 1.0, // 視界外は完全に暗い
+				}
+			}
+		}
+	}
+
+	return visibilityMap
+}
+
+// isTileVisibleByRaycast はレイキャストでタイルが見えるかチェック
+func isTileVisibleByRaycast(world w.World, playerX, playerY, targetX, targetY float64) bool {
+	// プレイヤーからターゲットへのベクトル
+	dx := targetX - playerX
+	dy := targetY - playerY
+	distance := math.Sqrt(dx*dx + dy*dy)
+
+	if distance == 0 {
+		return true // プレイヤーの位置は常に見える
+	}
+
+	// ターゲットタイル自体がBlockViewを持つかチェック
+	targetIsWall := isBlockedByWall(world, gc.Pixel(targetX), gc.Pixel(targetY))
+
+	// プレイヤーからターゲットまでの間にあるBlockViewタイルの数を計算
+	blockViewCount := countBlockViewTilesBetween(world, playerX, playerY, targetX, targetY)
+
+	if targetIsWall {
+		// ターゲット自体が壁の場合、途中のBlockViewタイルが1つ以下なら見える
+		return blockViewCount <= 1
+	}
+
+	// 通常のタイル（床など）の場合は、途中にBlockViewタイルがないときのみ見える
+	return blockViewCount == 0
+}
+
+// countBlockViewTilesBetween はプレイヤーとターゲット間のBlockViewタイル数を数える
+func countBlockViewTilesBetween(world w.World, playerX, playerY, targetX, targetY float64) int {
+	dx := targetX - playerX
+	dy := targetY - playerY
+	distance := math.Sqrt(dx*dx + dy*dy)
+
+	if distance == 0 {
+		return 0
+	}
+
+	// 正規化
+	stepX := dx / distance
+	stepY := dy / distance
+
+	blockViewCount := 0
+	visitedTiles := make(map[string]bool) // 同じタイルを重複カウントしないため
+
+	// レイキャストでBlockViewタイルを数える
+	const stepSize = 2.0
+	for step := stepSize; step < distance-stepSize; step += stepSize {
+		rayX := playerX + stepX*step
+		rayY := playerY + stepY*step
+
+		// タイル座標に変換
+		tileSize := 32.0
+		tileX := int(rayX / tileSize)
+		tileY := int(rayY / tileSize)
+		tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
+
+		// 既にチェック済みのタイルはスキップ
+		if visitedTiles[tileKey] {
+			continue
+		}
+		visitedTiles[tileKey] = true
+
+		// タイルの中心座標
+		tileCenterX := float64(tileX)*tileSize + tileSize/2
+		tileCenterY := float64(tileY)*tileSize + tileSize/2
+
+		// このタイルがBlockViewを持つかチェック
+		if isBlockedByWall(world, gc.Pixel(tileCenterX), gc.Pixel(tileCenterY)) {
+			blockViewCount++
+		}
+	}
+
+	return blockViewCount
+}
+
+// calculateDarknessByDistance は距離に応じた暗闇レベルを計算する
+func calculateDarknessByDistance(distance, maxRadius float64) float64 {
+	if distance <= 0 {
+		return 0.0 // プレイヤーの位置は完全に明るい
+	}
+
+	// 距離の正規化 (0.0-1.0)
+	normalizedDistance := distance / maxRadius
+
+	// より滑らかな段階的暗闇レベル計算（10段階）
+	if normalizedDistance <= 0.2 {
+		return 0.0 // 近い範囲は完全に明るい
+	} else if normalizedDistance <= 0.4 {
+		return 0.1 // 10%暗い
+	} else if normalizedDistance <= 0.5 {
+		return 0.2 // 20%暗い
+	} else if normalizedDistance <= 0.6 {
+		return 0.3 // 30%暗い
+	} else if normalizedDistance <= 0.7 {
+		return 0.4 // 40%暗い
+	} else if normalizedDistance <= 0.8 {
+		return 0.5 // 50%暗い
+	} else if normalizedDistance <= 0.85 {
+		return 0.6 // 60%暗い
+	} else if normalizedDistance <= 0.9 {
+		return 0.7 // 70%暗い
+	} else if normalizedDistance <= 0.95 {
+		return 0.8 // 80%暗い
+	}
+	return 0.9 // 90%暗い（完全に真っ暗にはしない）
+}
+
+// drawGradualDarknessOverlay は距離に応じた段階的暗闇を描画する
+func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+	tileSize := int(consts.TileSize)
+
+	// カメラ位置とスケールを取得
+	var cameraPos gc.Position
+	var cameraScale float64
+	world.Manager.Join(
+		world.Components.Camera,
+		world.Components.Position,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		cameraPos = *world.Components.Position.Get(entity).(*gc.Position)
+		camera := world.Components.Camera.Get(entity).(*gc.Camera)
+		cameraScale = camera.Scale
+	}))
+
+	// 段階的暗闃用の画像を初期化（キャッシュ）
+	if len(darknessCacheImages) == 0 {
+		initializeDarknessCache(tileSize)
+	}
+
+	// 画面上に表示されるタイル範囲を計算
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
+	// スケールを考慮した実際の表示範囲を計算
+	actualScreenWidth := int(float64(screenWidth) / cameraScale)
+	actualScreenHeight := int(float64(screenHeight) / cameraScale)
+
+	// カメラオフセットを考慮した画面範囲
+	leftEdge := int(cameraPos.X) - actualScreenWidth/2
+	rightEdge := int(cameraPos.X) + actualScreenWidth/2
+	topEdge := int(cameraPos.Y) - actualScreenHeight/2
+	bottomEdge := int(cameraPos.Y) + actualScreenHeight/2
+
+	// タイル範囲に変換
+	startTileX := leftEdge/tileSize - 1
+	endTileX := rightEdge/tileSize + 1
+	startTileY := topEdge/tileSize - 1
+	endTileY := bottomEdge/tileSize + 1
+
+	// 各タイルをチェックして暗闇を描画
+	for tileX := startTileX; tileX <= endTileX; tileX++ {
+		for tileY := startTileY; tileY <= endTileY; tileY++ {
+			tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
+
+			// タイルの暗闇レベルを取得
+			darkness := 1.0 // デフォルトは完全に暗い
+			if tileData, exists := visibilityData[tileKey]; exists {
+				if tileData.Visible {
+					darkness = tileData.Darkness
+				} else {
+					darkness = 1.0 // 見えないタイルは完全に暗い
+				}
+			}
+
+			// 暗闇レベルが0より大きい場合のみ描画
+			if darkness > 0.0 {
+				// タイルの画面座標を計算（スケールを考慮）
+				worldX := float64(tileX * tileSize)
+				worldY := float64(tileY * tileSize)
+				screenX := (worldX-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
+				screenY := (worldY-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
+
+				// 暗闇レベルに応じた画像を選択して描画（スケールも適用）
+				drawDarknessAtLevelWithScale(screen, screenX, screenY, darkness, cameraScale)
+			}
+		}
+	}
+}
+
+// initializeDarknessCache は段階的暗闃用の画像キャッシュを初期化する
+func initializeDarknessCache(tileSize int) {
+	// より多くの暗闇レベルの画像を作成（10段階）
+	darknessCacheImages = make([]*ebiten.Image, 11)
+
+	// 各暗闇レベルの画像を作成
+	darknessCacheImages[0] = nil // 0.0: 暗闇なし
+
+	// 0.1から1.0まで0.1刻みで10段階作成
+	for i := 1; i <= 10; i++ {
+		darkness := float64(i) * 0.1
+		alpha := uint8(darkness * 255) // 透明度を0-255に変換
+
+		darknessCacheImages[i] = ebiten.NewImage(tileSize, tileSize)
+		darknessCacheImages[i].Fill(color.RGBA{0, 0, 0, alpha})
+	}
+}
+
+// drawDarknessAtLevelWithScale は指定した暗闇レベルで暗闇を描画する（スケール対応）
+func drawDarknessAtLevelWithScale(screen *ebiten.Image, x, y, darkness, scale float64) {
+	if darkness <= 0.0 {
+		return // 暗闇なし
+	}
+
+	// 暗闇レベルを配列インデックスに変換（0.1刻みで10段階）
+	index := int(darkness*10 + 0.5) // 四捨五入
+	if index > 10 {
+		index = 10
+	}
+	if index < 1 {
+		index = 1
+	}
+
+	darknessImage := darknessCacheImages[index]
+	if darknessImage != nil {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(scale, scale)
+		op.GeoM.Translate(x, y)
+		screen.DrawImage(darknessImage, op)
+	}
+}
+
+// isBlockedByWall は指定した位置に視界を遮る壁があるかチェックする
+func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
+	var blocked bool
+
+	// Position を持つエンティティをチェック
+	world.Manager.Join(
+		world.Components.Position,
+		world.Components.BlockView,
+		world.Components.SpriteRender,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if blocked {
+			return
+		}
+
+		pos := world.Components.Position.Get(entity).(*gc.Position)
+		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
+		spriteInfo := sprite.SpriteSheet.Sprites[sprite.SpriteNumber]
+
+		// スプライトの境界ボックス
+		left := float64(pos.X) - float64(spriteInfo.Width)/2
+		right := float64(pos.X) + float64(spriteInfo.Width)/2
+		top := float64(pos.Y) - float64(spriteInfo.Height)/2
+		bottom := float64(pos.Y) + float64(spriteInfo.Height)/2
+
+		if float64(x) >= left && float64(x) <= right &&
+			float64(y) >= top && float64(y) <= bottom {
+			blocked = true
+		}
+	}))
+
+	// GridElement を持つエンティティもチェック
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.BlockView,
+		world.Components.SpriteRender,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if blocked {
+			return
+		}
+
+		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
+		spriteInfo := sprite.SpriteSheet.Sprites[sprite.SpriteNumber]
+
+		// グリッド位置をピクセル座標に変換
+		gridX := int(grid.Row) * spriteInfo.Width
+		gridY := int(grid.Col) * spriteInfo.Height
+
+		// グリッドの境界ボックス
+		left := float64(gridX)
+		right := float64(gridX + spriteInfo.Width)
+		top := float64(gridY)
+		bottom := float64(gridY + spriteInfo.Height)
+
+		if float64(x) >= left && float64(x) <= right &&
+			float64(y) >= top && float64(y) <= bottom {
+			blocked = true
+		}
+	}))
+
+	return blocked
 }

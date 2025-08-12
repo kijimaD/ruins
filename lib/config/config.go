@@ -33,6 +33,7 @@ type Config struct {
 	DebugPProf    bool   `env:"RUINS_DEBUG_PPROF"`
 	PProfPort     int    `env:"RUINS_PPROF_PORT"`
 	ShowMonitor   bool   `env:"RUINS_SHOW_MONITOR"`
+	ShowAIDebug   bool   `env:"RUINS_SHOW_AI_DEBUG"`
 
 	// ゲーム設定
 	StartingState string `env:"RUINS_STARTING_STATE"`

@@ -12,8 +12,6 @@ import (
 
 // MoveSystem はエンティティの移動処理を行う
 func MoveSystem(world w.World) {
-	maxFrontSpeed := 2.0
-	maxBackSpeed := -1.0
 	accelerationSpeed := 0.05
 	world.Manager.Join(
 		world.Components.Velocity,
@@ -21,9 +19,13 @@ func MoveSystem(world w.World) {
 		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
+
+		maxSpeed := velocity.MaxSpeed
+		maxBackSpeed := -maxSpeed / 2 // 後退速度は最高速度の半分（負の値）
+
 		switch velocity.ThrottleMode {
 		case gc.ThrottleModeFront:
-			velocity.Speed = mathutil.Min(maxFrontSpeed, velocity.Speed+accelerationSpeed)
+			velocity.Speed = mathutil.Min(maxSpeed, velocity.Speed+accelerationSpeed)
 		case gc.ThrottleModeBack:
 			velocity.Speed = mathutil.Max(maxBackSpeed, velocity.Speed-accelerationSpeed)
 		case gc.ThrottleModeNope:
