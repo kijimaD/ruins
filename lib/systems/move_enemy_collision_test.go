@@ -34,6 +34,7 @@ func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 			Speed:        2.0,
 			Angle:        90, // 右方向に移動（90度）
 			ThrottleMode: gc.ThrottleModeFront,
+			MaxSpeed:     2.0, // 最高速度を設定
 		},
 		SpriteRender: &gc.SpriteRender{
 			SpriteSheet:  createTestSpriteSheet(),
@@ -99,6 +100,7 @@ func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 			Speed:        2.0,
 			Angle:        90, // 右方向に移動（90度）
 			ThrottleMode: gc.ThrottleModeFront,
+			MaxSpeed:     2.0, // 最高速度を設定
 		},
 		SpriteRender: &gc.SpriteRender{
 			SpriteSheet:  createTestSpriteSheet(),

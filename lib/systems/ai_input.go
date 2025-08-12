@@ -36,7 +36,7 @@ func AIInputSystem(world w.World) {
 		// 視界コンポーネントがある場合、プレイヤーとの距離をチェック
 		if entity.HasComponent(world.Components.AIVision) && playerPos != nil {
 			vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
-			
+
 			// プレイヤーとの距離を計算
 			dx := float64(playerPos.X - position.X)
 			dy := float64(playerPos.Y - position.Y)
@@ -76,7 +76,7 @@ func AIInputSystem(world w.World) {
 		if roaming.SubState == gc.AIRoamingChasing {
 			if entity.HasComponent(world.Components.AIChasing) {
 				chasing := world.Components.AIChasing.Get(entity).(*gc.AIChasing)
-				
+
 				// 最後の視認から時間が経過したら通常の徘徊に戻る
 				if time.Since(chasing.LastSeen).Seconds() > 3 {
 					roaming.SubState = gc.AIRoamingWaiting
