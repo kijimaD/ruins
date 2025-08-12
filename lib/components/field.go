@@ -66,23 +66,3 @@ type BlockView struct{}
 
 // Renderable はフィールド上で描画できる
 type Renderable struct{}
-
-// TODO: dungeonに移動する
-// ExploredMap は探索済みタイルの情報を管理する
-type ExploredMap struct {
-	// 探索済みタイルのマップ（キー: "x,y", 値: true）
-	ExploredTiles map[string]bool
-}
-
-// TODO: dungeonに移動する
-// Minimap はミニマップの設定を管理する
-type Minimap struct {
-	// ミニマップのサイズ（ピクセル単位）
-	Width  int
-	Height int
-	// ミニマップの表示位置（画面右上に配置）
-	OffsetX int
-	OffsetY int
-	// ミニマップのスケール（何ピクセルで1タイルを表すか）
-	Scale int
-}

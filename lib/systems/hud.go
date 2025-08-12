@@ -178,34 +178,34 @@ func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
 
 // drawMinimap はミニマップを画面右上に描画する
 func drawMinimap(world w.World, screen *ebiten.Image) {
-	// プレイヤー位置とExploredMapを取得
+	// プレイヤー位置を取得
 	var playerPos *gc.Position
-	var exploredMap *gc.ExploredMap
 
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.Operator,
-		world.Components.ExploredMap,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		playerPos = world.Components.Position.Get(entity).(*gc.Position)
-		exploredMap = world.Components.ExploredMap.Get(entity).(*gc.ExploredMap)
 	}))
 
-	if playerPos == nil || exploredMap == nil {
-		return // 必要なコンポーネントがない場合は描画しない
+	if playerPos == nil {
+		return // プレイヤーが見つからない場合は描画しない
 	}
 
+	// Dungeonリソースから探索済みマップとミニマップ設定を取得
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+
 	// 探索済みタイルがない場合でも、ミニマップの枠だけは表示する
-	if len(exploredMap.ExploredTiles) == 0 {
+	if len(gameResources.ExploredTiles) == 0 {
 		// 空のミニマップを描画
 		drawEmptyMinimap(world, screen)
 		return
 	}
 
 	// ミニマップの設定
-	minimapWidth := 150
-	minimapHeight := 150
-	minimapScale := 3 // 1タイルを3ピクセルで表現
+	minimapWidth := gameResources.Minimap.Width
+	minimapHeight := gameResources.Minimap.Height
+	minimapScale := gameResources.Minimap.Scale // 1タイルをscaleピクセルで表現
 	screenWidth := world.Resources.ScreenDimensions.Width
 	minimapX := screenWidth - minimapWidth - 10 // 画面右端から10ピクセル内側
 	minimapY := 10                              // 画面上端から10ピクセル下
@@ -227,7 +227,7 @@ func drawMinimap(world w.World, screen *ebiten.Image) {
 	centerY := minimapY + minimapHeight/2
 
 	// 探索済みタイルを描画
-	for tileKey := range exploredMap.ExploredTiles {
+	for tileKey := range gameResources.ExploredTiles {
 		var tileX, tileY int
 		if _, err := fmt.Sscanf(tileKey, "%d,%d", &tileX, &tileY); err != nil {
 			continue
@@ -302,8 +302,9 @@ func getTileColorForMinimap(world w.World, tileX, tileY int) color.RGBA {
 
 // drawEmptyMinimap は空のミニマップ（枠のみ）を描画する
 func drawEmptyMinimap(world w.World, screen *ebiten.Image) {
-	minimapWidth := 150
-	minimapHeight := 150
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	minimapWidth := gameResources.Minimap.Width
+	minimapHeight := gameResources.Minimap.Height
 	screenWidth := world.Resources.ScreenDimensions.Width
 	minimapX := screenWidth - minimapWidth - 10
 	minimapY := 10

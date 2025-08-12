@@ -15,6 +15,10 @@ type Dungeon struct {
 	Level Level
 	// 階層数
 	Depth int
+	// 探索済みタイルのマップ（キー: "x,y", 値: true）
+	ExploredTiles map[string]bool
+	// ミニマップの設定
+	Minimap MinimapSettings
 }
 
 // Level は現在の階層
@@ -79,4 +83,16 @@ func (g *Dungeon) ConsumeStateEvent() StateEvent {
 	event := g.stateEvent
 	g.stateEvent = StateEventNone
 	return event
+}
+
+// MinimapSettings はミニマップの設定を管理する
+type MinimapSettings struct {
+	// ミニマップのサイズ（ピクセル単位）
+	Width  int
+	Height int
+	// ミニマップの表示位置（画面右上に配置）
+	OffsetX int
+	OffsetY int
+	// ミニマップのスケール（何ピクセルで1タイルを表すか）
+	Scale int
 }

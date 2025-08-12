@@ -7,6 +7,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -31,19 +32,8 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		return
 	}
 
-	var exploredMap *gc.ExploredMap
-	world.Manager.Join(
-		world.Components.Position,
-		world.Components.Operator,
-		world.Components.ExploredMap,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		exploredMap = world.Components.ExploredMap.Get(entity).(*gc.ExploredMap)
-	}))
-
-	if exploredMap == nil {
-		// ExploredMapが見つからない場合はエラー
-		return
-	}
+	// Dungeonリソースから探索済みマップを取得
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	// タイルの可視性マップを更新
 	visionRadius := gc.Pixel(320)
@@ -54,7 +44,7 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 	for _, tileData := range visibilityData {
 		if tileData.Visible {
 			tileKey := fmt.Sprintf("%d,%d", tileData.Row, tileData.Col)
-			exploredMap.ExploredTiles[tileKey] = true
+			gameResources.ExploredTiles[tileKey] = true
 			visibleCount++
 		}
 	}

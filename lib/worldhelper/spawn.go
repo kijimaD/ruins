@@ -109,8 +109,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 				SpriteNumber: 3,
 				Depth:        gc.DepthNumOperator,
 			},
-			BlockPass:   &gc.BlockPass{},
-			ExploredMap: &gc.ExploredMap{ExploredTiles: make(map[string]bool)},
+			BlockPass: &gc.BlockPass{},
 		})
 		entities.AddEntities(world, componentList)
 	}

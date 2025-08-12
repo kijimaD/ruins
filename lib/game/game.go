@@ -144,7 +144,16 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	}
 	world.Resources.RawMaster = rw
 
-	gameResource := &gr.Dungeon{}
+	gameResource := &gr.Dungeon{
+		ExploredTiles: make(map[string]bool),
+		Minimap: gr.MinimapSettings{
+			Width:   150,
+			Height:  150,
+			OffsetX: 10,
+			OffsetY: 10,
+			Scale:   3,
+		},
+	}
 	gameResource.SetStateEvent(gr.StateEventNone)
 	world.Resources.Dungeon = gameResource
 
