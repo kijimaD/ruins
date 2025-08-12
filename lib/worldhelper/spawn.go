@@ -130,7 +130,9 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
-			Velocity: &gc.Velocity{},
+			Velocity: &gc.Velocity{
+				Speed: 0.3, // NPCの移動速度を遅く設定
+			},
 			SpriteRender: &gc.SpriteRender{
 				SpriteSheet:  &fieldSpriteSheet,
 				SpriteNumber: 6,
@@ -139,6 +141,9 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 			BlockPass: &gc.BlockPass{},
 			AIMoveFSM: &gc.AIMoveFSM{},
 			AIRoaming: &gc.AIRoaming{},
+			AIVision: &gc.AIVision{
+				ViewDistance: 150.0,
+			},
 		})
 		entities.AddEntities(world, componentList)
 	}

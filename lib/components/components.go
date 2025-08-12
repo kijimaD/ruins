@@ -2,7 +2,6 @@ package components
 
 import (
 	"fmt"
-	"time"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -32,6 +31,8 @@ type GameComponentList struct {
 	Operator     *Operator
 	AIMoveFSM    *AIMoveFSM
 	AIRoaming    *AIRoaming
+	AIVision     *AIVision
+	AIChasing    *AIChasing
 	Camera       *Camera
 	Wall         *Wall
 	Warp         *Warp
@@ -84,6 +85,8 @@ type Components struct {
 	Operator     *ecs.NullComponent
 	AIMoveFSM    *ecs.SliceComponent
 	AIRoaming    *ecs.SliceComponent
+	AIVision     *ecs.SliceComponent
+	AIChasing    *ecs.SliceComponent
 	Camera       *ecs.SliceComponent
 	Wall         *ecs.NullComponent
 	Warp         *ecs.SliceComponent
@@ -136,6 +139,8 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.Operator = manager.NewNullComponent()
 	c.AIMoveFSM = manager.NewSliceComponent()
 	c.AIRoaming = manager.NewSliceComponent()
+	c.AIVision = manager.NewSliceComponent()
+	c.AIChasing = manager.NewSliceComponent()
 	c.Camera = manager.NewSliceComponent()
 	c.Wall = manager.NewNullComponent()
 	c.Warp = manager.NewSliceComponent()
@@ -166,20 +171,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 
 // Operator はフィールドでの操作対象
 type Operator struct{}
-
-// AIMoveFSM はAI移動の有限状態マシン
-type AIMoveFSM struct {
-	LastStateChange time.Time
-}
-
-// AIRoaming はAI移動で歩き回り状態
-type AIRoaming struct {
-	SubState AIRoamingSubState
-	// サブステートの開始時間
-	StartSubState time.Time
-	// サブステートの持続時間
-	DurationSubState time.Duration
-}
 
 // Camera はカメラ
 type Camera struct {
