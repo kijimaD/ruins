@@ -14,7 +14,6 @@ import (
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
-	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
@@ -704,21 +703,9 @@ func (st *BattleState) reloadMsg(world w.World) {
 		entries = append(entries, any("▼"))
 	}
 
-	res := world.Resources.UIResources
-	opts := []euiext.ListOpt{
-		euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(world.Resources.ScreenDimensions.Width-20, 280),
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionEnd,
-				StretchVertical:    true,
-				Padding:            widget.NewInsetsSimple(50),
-			}),
-		)),
-		euiext.ListOpts.SliderOpts(
-			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4))),
-		euiext.ListOpts.EntryLabelFunc(func(e any) string {
+	// カスタムのラベル関数を定義
+	list := eui.NewMessageList(entries, world,
+		widget.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(string)
 			if !ok {
 				log.Fatal("unexpected entry detect!")
@@ -726,15 +713,6 @@ func (st *BattleState) reloadMsg(world w.World) {
 
 			return v
 		}),
-		euiext.ListOpts.EntryEnterFunc(func(_ any) {}),
-		euiext.ListOpts.EntrySelectedHandler(func(_ *euiext.ListEntrySelectedEventArgs) {}),
-		euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.ImageTrans)),
-	}
-
-	list := eui.NewList(
-		entries,
-		opts,
-		world,
 	)
 	st.selectContainer.AddChild(list)
 }

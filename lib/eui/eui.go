@@ -5,7 +5,6 @@ import (
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/kijimaD/ruins/lib/euiext"
 	"github.com/kijimaD/ruins/lib/styles"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -274,59 +273,57 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 
 // list ================
 
-// NewList はリストウィジェットを作成する
-func NewList(entries []any, listOpts []euiext.ListOpt, world w.World) *euiext.List {
+// NewMessageList はメッセージ表示用のリストウィジェットを作成する（戦闘ログなど用）
+func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widget.List {
 	res := world.Resources.UIResources
 
-	return euiext.NewList(
-		append([]euiext.ListOpt{
-			euiext.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-				widget.WidgetOpts.MinSize(150, 0),
-				widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-					HorizontalPosition: widget.AnchorLayoutPositionCenter,
-					VerticalPosition:   widget.AnchorLayoutPositionEnd,
-					StretchVertical:    true,
-					Padding:            widget.NewInsetsSimple(50),
-				}),
-			)),
-			euiext.ListOpts.Entries(entries),
-			euiext.ListOpts.ScrollContainerOpts(
-				widget.ScrollContainerOpts.Image(&widget.ScrollContainerImage{
-					Idle:     image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-					Disabled: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-					Mask:     image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
-				}),
-			),
-			euiext.ListOpts.HideHorizontalSlider(),
-			euiext.ListOpts.EntryFontFace(*LoadFont(world)),
-			euiext.ListOpts.EntryColor(&euiext.ListEntryColor{
-				Selected:                   color.NRGBA{R: 0, G: 255, B: 0, A: 255},
-				Unselected:                 color.NRGBA{R: 254, G: 255, B: 255, A: 255},
-				SelectedBackground:         color.NRGBA{R: 130, G: 130, B: 200, A: 255},
-				SelectingBackground:        color.NRGBA{R: 130, G: 130, B: 130, A: 255},
-				SelectingFocusedBackground: color.NRGBA{R: 130, G: 140, B: 170, A: 255},
-				SelectedFocusedBackground:  color.NRGBA{R: 130, G: 130, B: 170, A: 255},
-				FocusedBackground:          color.NRGBA{R: 170, G: 170, B: 180, A: 255},
-				DisabledUnselected:         color.NRGBA{R: 100, G: 100, B: 100, A: 255},
-				DisabledSelected:           color.NRGBA{R: 100, G: 100, B: 100, A: 255},
-				DisabledSelectedBackground: color.NRGBA{R: 100, G: 100, B: 100, A: 255},
+	// メッセージ表示用のデフォルトオプション
+	defaultOpts := []widget.ListOpt{
+		widget.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(world.Resources.ScreenDimensions.Width-100, 280),
+			widget.WidgetOpts.LayoutData(widget.GridLayoutData{
+				HorizontalPosition: widget.GridLayoutPositionCenter,
+				VerticalPosition:   widget.GridLayoutPositionEnd,
+				MaxHeight:          280,
 			}),
-			euiext.ListOpts.EntryLabelFunc(func(_ interface{}) string { return "" }),
-			euiext.ListOpts.EntryTextPadding(widget.NewInsetsSimple(5)),
-			euiext.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
-			euiext.ListOpts.ScrollContainerOpts(widget.ScrollContainerOpts.Image(res.List.Image)),
-			euiext.ListOpts.SliderOpts(
-				widget.SliderOpts.Images(res.List.Track, res.List.Handle),
-				widget.SliderOpts.MinHandleSize(res.List.HandleSize),
-				widget.SliderOpts.TrackPadding(res.List.TrackPadding),
-			),
-			euiext.ListOpts.HideHorizontalSlider(),
-			euiext.ListOpts.Entries(entries),
-			euiext.ListOpts.EntryFontFace(res.List.Face),
-			euiext.ListOpts.EntryTextPadding(res.List.EntryPadding),
-			euiext.ListOpts.AllowReselect(),
-		}, listOpts...)...,
-	)
+		)),
+		widget.ListOpts.SliderOpts(
+			widget.SliderOpts.MinHandleSize(5),
+			widget.SliderOpts.Images(res.List.Track, res.List.Handle),
+			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4)),
+		),
+		widget.ListOpts.Entries(entries),
+		widget.ListOpts.EntryLabelFunc(func(e any) string {
+			if str, ok := e.(string); ok {
+				return str
+			}
+			return ""
+		}),
+		widget.ListOpts.EntrySelectedHandler(func(_ *widget.ListEntrySelectedEventArgs) {}),
+		widget.ListOpts.EntryColor(&widget.ListEntryColor{
+			Selected:                  styles.TextColor,
+			Unselected:                styles.TextColor,
+			SelectedBackground:        styles.ButtonHoverColor,
+			SelectedFocusedBackground: styles.ButtonHoverColor,
+		}),
+		widget.ListOpts.EntryFontFace(res.Text.Face),
+		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
+		widget.ListOpts.EntryTextPadding(widget.Insets{
+			Top:    4,
+			Bottom: 4,
+			Left:   16,
+			Right:  16,
+		}),
+		widget.ListOpts.ScrollContainerOpts(
+			widget.ScrollContainerOpts.Image(res.List.ImageTrans),
+		),
+		widget.ListOpts.HideHorizontalSlider(),
+	}
+
+	// カスタムオプションを追加
+	allOpts := append(defaultOpts, opts...)
+
+	return widget.NewList(allOpts...)
 }
 
 // button ================

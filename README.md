@@ -95,4 +95,4 @@
 - [ ] ステージ生成でシードを使えるようにする(テストで毎回同じにできるようにする)
 - [ ] engine package で具体に対するimportを禁止する。 depguard でできるはず
 - [ ] package を engine と app に分ける
-- [ ] euiext package を消す。現状わずかに使っているだけで、移行できるため
+- [x] euiext package を消す。現状わずかに使っているだけで、移行できるため
