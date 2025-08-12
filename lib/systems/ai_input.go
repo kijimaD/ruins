@@ -43,7 +43,7 @@ func AIInputSystem(world w.World) {
 			distance := math.Sqrt(dx*dx + dy*dy)
 
 			// 距離内でかつレイキャストで視界が通る場合
-			if distance <= vision.ViewDistance && isTileVisibleByRaycast(world, float64(position.X), float64(position.Y), float64(playerPos.X), float64(playerPos.Y)) {
+			if distance <= float64(vision.ViewDistance) && isTileVisibleByRaycast(world, float64(position.X), float64(position.Y), float64(playerPos.X), float64(playerPos.Y)) {
 				// 追跡状態に移行
 				roaming.SubState = gc.AIRoamingChasing
 				roaming.StartSubState = time.Now()
@@ -85,7 +85,7 @@ func AIInputSystem(world w.World) {
 					dy := float64(playerPos.Y - position.Y)
 					distance := math.Sqrt(dx*dx + dy*dy)
 
-					if distance <= vision.ViewDistance && isTileVisibleByRaycast(world, float64(position.X), float64(position.Y), float64(playerPos.X), float64(playerPos.Y)) {
+					if distance <= float64(vision.ViewDistance) && isTileVisibleByRaycast(world, float64(position.X), float64(position.Y), float64(playerPos.X), float64(playerPos.Y)) {
 						canStillSeePlayer = true
 						chasing.LastSeen = time.Now() // 視認時間を更新
 						chasing.TargetX = float64(playerPos.X)

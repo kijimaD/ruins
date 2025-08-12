@@ -26,7 +26,7 @@ const (
 // AIVision はAIの視界システム
 type AIVision struct {
 	// ViewDistance は視界距離（ピクセル単位）
-	ViewDistance float64
+	ViewDistance Pixel
 	// TargetEntity は追跡対象のエンティティ（プレイヤーなど）
 	TargetEntity *ecs.Entity
 }

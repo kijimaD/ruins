@@ -124,7 +124,7 @@ func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
 		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
 		// カメラスケールを考慮した視界円の半径
-		scaledRadius := float32(vision.ViewDistance * cameraScale)
+		scaledRadius := float32(float64(vision.ViewDistance) * cameraScale)
 
 		// AIVision.ViewDistanceを直接使用して視界円を描画
 		drawVisionCircle(screen, float32(screenX), float32(screenY), scaledRadius)
