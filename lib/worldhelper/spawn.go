@@ -144,7 +144,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 			AIMoveFSM: &gc.AIMoveFSM{},
 			AIRoaming: &gc.AIRoaming{},
 			AIVision: &gc.AIVision{
-				ViewDistance: 150.0,
+				ViewDistance: 300.0,
 			},
 		})
 		entities.AddEntities(world, componentList)

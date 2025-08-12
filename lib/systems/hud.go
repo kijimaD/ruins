@@ -158,7 +158,7 @@ func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
 		vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
 
 		// 視界範囲に応じてスケールを調整
-		scale := vision.ViewDistance / 150.0 // 150は基準の視界距離
+		scale := vision.ViewDistance / 300.0 // 300は基準の視界距離
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Scale(scale, scale)
