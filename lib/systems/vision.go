@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	// 段階的な暗闇用の画像キャッシュ
+	// 段階的な暗闇用の画像キャッシュ（透明度レベルを増加）
 	darknessCacheImages []*ebiten.Image
 )
 
@@ -237,17 +237,28 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 	// 距離の正規化 (0.0-1.0)
 	normalizedDistance := distance / maxRadius
 
-	// 段階的な暗闇レベルを計算
-	if normalizedDistance <= 0.3 {
+	// より滑らかな段階的暗闇レベル計算（10段階）
+	if normalizedDistance <= 0.2 {
 		return 0.0 // 近い範囲は完全に明るい
+	} else if normalizedDistance <= 0.4 {
+		return 0.1 // 10%暗い
+	} else if normalizedDistance <= 0.5 {
+		return 0.2 // 20%暗い
+	} else if normalizedDistance <= 0.6 {
+		return 0.3 // 30%暗い
+	} else if normalizedDistance <= 0.7 {
+		return 0.4 // 40%暗い
+	} else if normalizedDistance <= 0.8 {
+		return 0.5 // 50%暗い
+	} else if normalizedDistance <= 0.85 {
+		return 0.6 // 60%暗い
+	} else if normalizedDistance <= 0.9 {
+		return 0.7 // 70%暗い
+	} else if normalizedDistance <= 0.95 {
+		return 0.8 // 80%暗い
+	} else {
+		return 0.9 // 90%暗い（完全に真っ暗にはしない）
 	}
-	if normalizedDistance <= 0.6 {
-		return 0.2 // 中範囲は少し暗い
-	}
-	if normalizedDistance <= 0.8 {
-		return 0.5 // 遠範囲は中程度暗い
-	}
-	return 0.8 // 端の方はかなり暗い
 }
 
 // drawGradualDarknessOverlay は距離に応じた段階的暗闇を描画する
@@ -323,46 +334,38 @@ func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityD
 
 // initializeDarknessCache は段階的暗闃用の画像キャッシュを初期化する
 func initializeDarknessCache(tileSize int) {
-	// 異なる暗闇レベルの画像を作成
-	darknessCacheImages = make([]*ebiten.Image, 5)
+	// より多くの暗闇レベルの画像を作成（10段階）
+	darknessCacheImages = make([]*ebiten.Image, 11)
 
 	// 各暗闇レベルの画像を作成
 	darknessCacheImages[0] = nil // 0.0: 暗闇なし
 
-	// 0.2: 少し暗い
-	darknessCacheImages[1] = ebiten.NewImage(tileSize, tileSize)
-	darknessCacheImages[1].Fill(color.RGBA{0, 0, 0, 51}) // 約20%の透明度
-
-	// 0.5: 中程度暗い
-	darknessCacheImages[2] = ebiten.NewImage(tileSize, tileSize)
-	darknessCacheImages[2].Fill(color.RGBA{0, 0, 0, 128}) // 約50%の透明度
-
-	// 0.8: かなり暗い
-	darknessCacheImages[3] = ebiten.NewImage(tileSize, tileSize)
-	darknessCacheImages[3].Fill(color.RGBA{0, 0, 0, 204}) // 約80%の透明度
-
-	// 1.0: 完全に暗い
-	darknessCacheImages[4] = ebiten.NewImage(tileSize, tileSize)
-	darknessCacheImages[4].Fill(color.RGBA{0, 0, 0, 255}) // 完全不透明
+	// 0.1から1.0まで0.1刻みで10段階作成
+	for i := 1; i <= 10; i++ {
+		darkness := float64(i) * 0.1
+		alpha := uint8(darkness * 255) // 透明度を0-255に変換
+		
+		darknessCacheImages[i] = ebiten.NewImage(tileSize, tileSize)
+		darknessCacheImages[i].Fill(color.RGBA{0, 0, 0, alpha})
+	}
 }
 
 // drawDarknessAtLevelWithScale は指定した暗闇レベルで暗闇を描画する（スケール対応）
 func drawDarknessAtLevelWithScale(screen *ebiten.Image, x, y, darkness, scale float64) {
-	var darknessImage *ebiten.Image
-
-	// 暗闇レベルに応じた画像を選択
 	if darkness <= 0.0 {
 		return // 暗闇なし
-	} else if darkness <= 0.2 {
-		darknessImage = darknessCacheImages[1]
-	} else if darkness <= 0.5 {
-		darknessImage = darknessCacheImages[2]
-	} else if darkness <= 0.8 {
-		darknessImage = darknessCacheImages[3]
-	} else {
-		darknessImage = darknessCacheImages[4]
 	}
 
+	// 暗闇レベルを配列インデックスに変換（0.1刻みで10段階）
+	index := int(darkness * 10 + 0.5) // 四捨五入
+	if index > 10 {
+		index = 10
+	}
+	if index < 1 {
+		index = 1
+	}
+
+	darknessImage := darknessCacheImages[index]
 	if darknessImage != nil {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Scale(scale, scale)
