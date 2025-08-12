@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-go@v5
         id: go
       - name: check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Cache
         uses: actions/cache@main
         with:
@@ -28,7 +28,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: build
         run: docker build --target release .
 
@@ -36,7 +36,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: build
         run: |
           git fetch --prune --unshallow
@@ -46,7 +46,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: build
         run: docker build --target builder -t testimage .
       # テスト実行が docker 上ではうまくいかないのでここで実行する
@@ -86,7 +86,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Get git tag(short)
         id: git-tag
