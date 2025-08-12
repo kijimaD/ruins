@@ -31,9 +31,33 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		return
 	}
 
+	var exploredMap *gc.ExploredMap
+	world.Manager.Join(
+		world.Components.Position,
+		world.Components.Operator,
+		world.Components.ExploredMap,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		exploredMap = world.Components.ExploredMap.Get(entity).(*gc.ExploredMap)
+	}))
+
+	if exploredMap == nil {
+		// ExploredMapが見つからない場合はエラー
+		return
+	}
+
 	// タイルの可視性マップを更新
 	visionRadius := gc.Pixel(320)
 	visibilityData := calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
+
+	// 視界内のタイルを探索済みとしてマーク
+	visibleCount := 0
+	for _, tileData := range visibilityData {
+		if tileData.Visible {
+			tileKey := fmt.Sprintf("%d,%d", tileData.Row, tileData.Col)
+			exploredMap.ExploredTiles[tileKey] = true
+			visibleCount++
+		}
+	}
 
 	// 距離に応じた段階的暗闇を描画
 	drawGradualDarknessOverlay(world, screen, visibilityData)

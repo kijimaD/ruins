@@ -42,6 +42,8 @@ type GameComponentList struct {
 	SpriteRender *SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
+	ExploredMap  *ExploredMap
+	Minimap      *Minimap
 
 	// member ================
 	InParty     *InParty
@@ -96,6 +98,8 @@ type Components struct {
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
+	ExploredMap  *ecs.SliceComponent
+	Minimap      *ecs.SliceComponent
 
 	// member ================
 	InParty      *ecs.NullComponent
@@ -150,6 +154,8 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.SpriteRender = manager.NewSliceComponent()
 	c.BlockView = manager.NewNullComponent()
 	c.BlockPass = manager.NewNullComponent()
+	c.ExploredMap = manager.NewSliceComponent()
+	c.Minimap = manager.NewSliceComponent()
 
 	// member
 	c.InParty = manager.NewNullComponent()
