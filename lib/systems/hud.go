@@ -44,6 +44,21 @@ func HUDSystem(world w.World, screen *ebiten.Image) {
 
 // drawAIStates はAIエンティティのステートをスプライトの近くに表示する
 func drawAIStates(world w.World, screen *ebiten.Image) {
+	// カメラ位置とスケールを取得
+	var cameraPos gc.Position
+	var cameraScale float64
+	world.Manager.Join(
+		world.Components.Camera,
+		world.Components.Position,
+	).Visit(ecs.Visit(func(camEntity ecs.Entity) {
+		cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
+		camera := world.Components.Camera.Get(camEntity).(*gc.Camera)
+		cameraScale = camera.Scale
+	}))
+
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.AIMoveFSM,
@@ -69,27 +84,33 @@ func drawAIStates(world w.World, screen *ebiten.Image) {
 			}
 		}
 
-		// スプライトの上にテキストを表示
-		// カメラのオフセットを考慮して座標を計算
-		var cameraPos gc.Position
-		world.Manager.Join(
-			world.Components.Camera,
-			world.Components.Position,
-		).Visit(ecs.Visit(func(camEntity ecs.Entity) {
-			cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
-		}))
+		// カメラスケールを考慮した画面座標に変換
+		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
+		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
-		// 画面座標に変換
-		screenX := float64(position.X-cameraPos.X) + float64(world.Resources.ScreenDimensions.Width)/2
-		screenY := float64(position.Y-cameraPos.Y) + float64(world.Resources.ScreenDimensions.Height)/2
-
-		// スプライトの上20ピクセルの位置にテキスト表示
-		ebitenutil.DebugPrintAt(screen, stateText, int(screenX)-20, int(screenY)-30)
+		// スプライトの上にテキスト表示（テキスト位置もスケールを考慮）
+		textOffsetY := 30.0 * cameraScale
+		ebitenutil.DebugPrintAt(screen, stateText, int(screenX)-20, int(screenY-textOffsetY))
 	}))
 }
 
 // drawAIVisionRanges はデバッグ時にAIの視界範囲を描画する
 func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
+	// カメラ位置とスケールを取得
+	var cameraPos gc.Position
+	var cameraScale float64
+	world.Manager.Join(
+		world.Components.Camera,
+		world.Components.Position,
+	).Visit(ecs.Visit(func(camEntity ecs.Entity) {
+		cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
+		camera := world.Components.Camera.Get(camEntity).(*gc.Camera)
+		cameraScale = camera.Scale
+	}))
+
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
 	// 各NPCの視界を描画
 	world.Manager.Join(
 		world.Components.Position,
@@ -98,23 +119,15 @@ func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
 		position := world.Components.Position.Get(entity).(*gc.Position)
 		vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
 
-		// カメラ位置を取得
-		var cameraPos gc.Position
-		world.Manager.Join(
-			world.Components.Camera,
-			world.Components.Position,
-		).Visit(ecs.Visit(func(camEntity ecs.Entity) {
-			cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
-		}))
+		// カメラスケールを考慮した画面座標に変換
+		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
+		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
-		// 画面座標に変換
-		screenWidth := world.Resources.ScreenDimensions.Width
-		screenHeight := world.Resources.ScreenDimensions.Height
-		screenX := float64(position.X-cameraPos.X) + float64(screenWidth)/2
-		screenY := float64(position.Y-cameraPos.Y) + float64(screenHeight)/2
+		// カメラスケールを考慮した視界円の半径
+		scaledRadius := float32(vision.ViewDistance * cameraScale)
 
 		// AIVision.ViewDistanceを直接使用して視界円を描画
-		drawVisionCircle(screen, float32(screenX), float32(screenY), float32(vision.ViewDistance))
+		drawVisionCircle(screen, float32(screenX), float32(screenY), scaledRadius)
 	}))
 }
 
@@ -170,13 +183,16 @@ func drawVisionCircle(screen *ebiten.Image, centerX, centerY, radius float32) {
 
 // drawAIMovementDirections はAIの進行方向を矢印で表示する
 func drawAIMovementDirections(world w.World, screen *ebiten.Image) {
-	// カメラ位置を取得
+	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
+	var cameraScale float64
 	world.Manager.Join(
 		world.Components.Camera,
 		world.Components.Position,
 	).Visit(ecs.Visit(func(camEntity ecs.Entity) {
 		cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
+		camera := world.Components.Camera.Get(camEntity).(*gc.Camera)
+		cameraScale = camera.Scale
 	}))
 
 	screenWidth := world.Resources.ScreenDimensions.Width
@@ -191,24 +207,25 @@ func drawAIMovementDirections(world w.World, screen *ebiten.Image) {
 		position := world.Components.Position.Get(entity).(*gc.Position)
 		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 
-		// 画面座標に変換
-		screenX := float64(position.X-cameraPos.X) + float64(screenWidth)/2
-		screenY := float64(position.Y-cameraPos.Y) + float64(screenHeight)/2
+		// カメラスケールを考慮した画面座標に変換
+		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
+		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
 		// 移動方向がある場合のみ描画
 		if velocity.Speed > 0 && velocity.ThrottleMode == gc.ThrottleModeFront {
-			drawDirectionArrow(screen, screenX, screenY, velocity.Angle, velocity.Speed)
+			drawDirectionArrow(screen, screenX, screenY, velocity.Angle, velocity.Speed, cameraScale)
 		}
 	}))
 }
 
 // drawDirectionArrow は指定した位置に進行方向の矢印を描画する
-func drawDirectionArrow(screen *ebiten.Image, x, y, angle, speed float64) {
-	// 矢印の長さを速度に応じて調整（最小20、最大60ピクセル）
-	length := 20.0 + speed*20.0
-	if length > 60 {
-		length = 60
+func drawDirectionArrow(screen *ebiten.Image, x, y, angle, speed, cameraScale float64) {
+	// 矢印の長さを速度に応じて調整（最小20、最大60ピクセル）、カメラスケールも考慮
+	baseLength := 20.0 + speed*20.0
+	if baseLength > 60 {
+		baseLength = 60
 	}
+	length := baseLength * cameraScale
 
 	// 角度をラジアンに変換
 	radians := angle * math.Pi / 180
@@ -217,11 +234,17 @@ func drawDirectionArrow(screen *ebiten.Image, x, y, angle, speed float64) {
 	endX := x + length*math.Cos(radians)
 	endY := y + length*math.Sin(radians)
 
+	// 線の太さもカメラスケールに応じて調整
+	strokeWidth := float32(2.0 * cameraScale)
+	if strokeWidth < 1.0 {
+		strokeWidth = 1.0
+	}
+
 	// メインラインを描画（緑色）
-	vector.StrokeLine(screen, float32(x), float32(y), float32(endX), float32(endY), 2, color.RGBA{0, 255, 0, 255}, false)
+	vector.StrokeLine(screen, float32(x), float32(y), float32(endX), float32(endY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
 
 	// 矢印の頭部を描画
-	arrowHeadLength := 10.0
+	arrowHeadLength := 10.0 * cameraScale
 	leftAngle := radians + 2.5  // 約145度
 	rightAngle := radians - 2.5 // 約-145度
 
@@ -231,8 +254,8 @@ func drawDirectionArrow(screen *ebiten.Image, x, y, angle, speed float64) {
 	rightY := endY + arrowHeadLength*math.Sin(rightAngle)
 
 	// 矢印の頭部ラインを描画
-	vector.StrokeLine(screen, float32(endX), float32(endY), float32(leftX), float32(leftY), 2, color.RGBA{0, 255, 0, 255}, false)
-	vector.StrokeLine(screen, float32(endX), float32(endY), float32(rightX), float32(rightY), 2, color.RGBA{0, 255, 0, 255}, false)
+	vector.StrokeLine(screen, float32(endX), float32(endY), float32(leftX), float32(leftY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
+	vector.StrokeLine(screen, float32(endX), float32(endY), float32(rightX), float32(rightY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
 }
 
 // drawMinimap はミニマップを画面右上に描画する
