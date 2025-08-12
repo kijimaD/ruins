@@ -8,17 +8,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"github.com/kijimaD/ruins/lib/camera"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
-)
-
-var (
-	// AI視界可視化用の円形画像
-	aiVisionCircleImage *ebiten.Image
 )
 
 // HUDSystem はゲームの HUD 情報を描画する
@@ -41,6 +35,7 @@ func HUDSystem(world w.World, screen *ebiten.Image) {
 	if cfg.ShowAIDebug {
 		drawAIVisionRanges(world, screen)
 		drawAIStates(world, screen)
+		drawAIMovementDirections(world, screen)
 	}
 
 	// ミニマップを描画
@@ -95,64 +90,6 @@ func drawAIStates(world w.World, screen *ebiten.Image) {
 
 // drawAIVisionRanges はデバッグ時にAIの視界範囲を描画する
 func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
-	// AI視界可視化用の円形画像を初期化（1回だけ）
-	if aiVisionCircleImage == nil {
-		// 円の直径を最大視界距離の2倍（300ピクセル）に設定
-		size := 300
-		aiVisionCircleImage = ebiten.NewImage(size, size)
-
-		// 半透明の緑色で円を描画
-		radius := float64(size / 2)
-		center := float64(size / 2)
-
-		// 円形の頂点を作成
-		vertices := []ebiten.Vertex{}
-		indices := []uint16{}
-
-		// 中心点
-		vertices = append(vertices, ebiten.Vertex{
-			DstX:   float32(center),
-			DstY:   float32(center),
-			SrcX:   0,
-			SrcY:   0,
-			ColorR: 0.0,
-			ColorG: 1.0,
-			ColorB: 0.0,
-			ColorA: 0.3, // 半透明
-		})
-
-		// 円周上の点
-		circlePoints := 32
-		for i := 0; i < circlePoints; i++ {
-			angle := 2 * math.Pi * float64(i) / float64(circlePoints)
-			x := center + radius*math.Cos(angle)
-			y := center + radius*math.Sin(angle)
-
-			vertices = append(vertices, ebiten.Vertex{
-				DstX:   float32(x),
-				DstY:   float32(y),
-				SrcX:   0,
-				SrcY:   0,
-				ColorR: 0.0,
-				ColorG: 1.0,
-				ColorB: 0.0,
-				ColorA: 0.3,
-			})
-
-			// 三角形のインデックス
-			if i < circlePoints {
-				indices = append(indices, 0, uint16(i+1), uint16((i+1)%circlePoints+1))
-			}
-		}
-
-		// 円を描画
-		opt := &ebiten.DrawTrianglesOptions{}
-		// 1x1ピクセルの白い画像を作成
-		whiteImg := ebiten.NewImage(1, 1)
-		whiteImg.Fill(color.White)
-		aiVisionCircleImage.DrawTriangles(vertices, indices, whiteImg, opt)
-	}
-
 	// 各NPCの視界を描画
 	world.Manager.Join(
 		world.Components.Position,
@@ -161,19 +98,141 @@ func drawAIVisionRanges(world w.World, screen *ebiten.Image) {
 		position := world.Components.Position.Get(entity).(*gc.Position)
 		vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
 
-		// 視界範囲に応じてスケールを調整
-		scale := vision.ViewDistance / 300.0 // 300は基準の視界距離
+		// カメラ位置を取得
+		var cameraPos gc.Position
+		world.Manager.Join(
+			world.Components.Camera,
+			world.Components.Position,
+		).Visit(ecs.Visit(func(camEntity ecs.Entity) {
+			cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
+		}))
 
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(scale, scale)
-		op.GeoM.Translate(
-			float64(position.X)-(300.0*scale/2.0), // 中心に配置
-			float64(position.Y)-(300.0*scale/2.0),
-		)
-		camera.SetTranslate(world, op)
+		// 画面座標に変換
+		screenWidth := world.Resources.ScreenDimensions.Width
+		screenHeight := world.Resources.ScreenDimensions.Height
+		screenX := float64(position.X-cameraPos.X) + float64(screenWidth)/2
+		screenY := float64(position.Y-cameraPos.Y) + float64(screenHeight)/2
 
-		screen.DrawImage(aiVisionCircleImage, op)
+		// AIVision.ViewDistanceを直接使用して視界円を描画
+		drawVisionCircle(screen, float32(screenX), float32(screenY), float32(vision.ViewDistance))
 	}))
+}
+
+// drawVisionCircle は指定した位置と半径で視界円を描画する
+func drawVisionCircle(screen *ebiten.Image, centerX, centerY, radius float32) {
+	// 円周上の点数
+	circlePoints := 32
+	vertices := []ebiten.Vertex{}
+	indices := []uint16{}
+
+	// 中心点
+	vertices = append(vertices, ebiten.Vertex{
+		DstX:   centerX,
+		DstY:   centerY,
+		SrcX:   0,
+		SrcY:   0,
+		ColorR: 0.0,
+		ColorG: 1.0,
+		ColorB: 0.0,
+		ColorA: 0.3, // 半透明
+	})
+
+	// 円周上の点
+	for i := 0; i < circlePoints; i++ {
+		angle := 2 * math.Pi * float64(i) / float64(circlePoints)
+		x := centerX + radius*float32(math.Cos(angle))
+		y := centerY + radius*float32(math.Sin(angle))
+
+		vertices = append(vertices, ebiten.Vertex{
+			DstX:   x,
+			DstY:   y,
+			SrcX:   0,
+			SrcY:   0,
+			ColorR: 0.0,
+			ColorG: 1.0,
+			ColorB: 0.0,
+			ColorA: 0.3,
+		})
+
+		// 三角形のインデックス
+		if i < circlePoints {
+			indices = append(indices, 0, uint16(i+1), uint16((i+1)%circlePoints+1))
+		}
+	}
+
+	// 円を描画
+	opt := &ebiten.DrawTrianglesOptions{}
+	// 1x1ピクセルの白い画像を作成
+	whiteImg := ebiten.NewImage(1, 1)
+	whiteImg.Fill(color.White)
+	screen.DrawTriangles(vertices, indices, whiteImg, opt)
+}
+
+// drawAIMovementDirections はAIの進行方向を矢印で表示する
+func drawAIMovementDirections(world w.World, screen *ebiten.Image) {
+	// カメラ位置を取得
+	var cameraPos gc.Position
+	world.Manager.Join(
+		world.Components.Camera,
+		world.Components.Position,
+	).Visit(ecs.Visit(func(camEntity ecs.Entity) {
+		cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
+	}))
+
+	screenWidth := world.Resources.ScreenDimensions.Width
+	screenHeight := world.Resources.ScreenDimensions.Height
+
+	// AIエンティティの移動方向を描画
+	world.Manager.Join(
+		world.Components.Position,
+		world.Components.Velocity,
+		world.Components.AIMoveFSM,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		position := world.Components.Position.Get(entity).(*gc.Position)
+		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
+
+		// 画面座標に変換
+		screenX := float64(position.X-cameraPos.X) + float64(screenWidth)/2
+		screenY := float64(position.Y-cameraPos.Y) + float64(screenHeight)/2
+
+		// 移動方向がある場合のみ描画
+		if velocity.Speed > 0 && velocity.ThrottleMode == gc.ThrottleModeFront {
+			drawDirectionArrow(screen, screenX, screenY, velocity.Angle, velocity.Speed)
+		}
+	}))
+}
+
+// drawDirectionArrow は指定した位置に進行方向の矢印を描画する
+func drawDirectionArrow(screen *ebiten.Image, x, y, angle, speed float64) {
+	// 矢印の長さを速度に応じて調整（最小20、最大60ピクセル）
+	length := 20.0 + speed*20.0
+	if length > 60 {
+		length = 60
+	}
+
+	// 角度をラジアンに変換
+	radians := angle * math.Pi / 180
+
+	// 矢印の先端位置
+	endX := x + length*math.Cos(radians)
+	endY := y + length*math.Sin(radians)
+
+	// メインラインを描画（緑色）
+	vector.StrokeLine(screen, float32(x), float32(y), float32(endX), float32(endY), 2, color.RGBA{0, 255, 0, 255}, false)
+
+	// 矢印の頭部を描画
+	arrowHeadLength := 10.0
+	leftAngle := radians + 2.5  // 約145度
+	rightAngle := radians - 2.5 // 約-145度
+
+	leftX := endX + arrowHeadLength*math.Cos(leftAngle)
+	leftY := endY + arrowHeadLength*math.Sin(leftAngle)
+	rightX := endX + arrowHeadLength*math.Cos(rightAngle)
+	rightY := endY + arrowHeadLength*math.Sin(rightAngle)
+
+	// 矢印の頭部ラインを描画
+	vector.StrokeLine(screen, float32(endX), float32(endY), float32(leftX), float32(leftY), 2, color.RGBA{0, 255, 0, 255}, false)
+	vector.StrokeLine(screen, float32(endX), float32(endY), float32(rightX), float32(rightY), 2, color.RGBA{0, 255, 0, 255}, false)
 }
 
 // drawMinimap はミニマップを画面右上に描画する

@@ -33,7 +33,7 @@ func AIInputSystem(world w.World) {
 		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 		position := world.Components.Position.Get(entity).(*gc.Position)
 
-		// 視界コンポーネントがある場合、プレイヤーとの距離をチェック
+		// 視界コンポーネントがある場合、プレイヤーとの距離と視界遮蔽をチェック
 		if entity.HasComponent(world.Components.AIVision) && playerPos != nil {
 			vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
 
@@ -42,8 +42,8 @@ func AIInputSystem(world w.World) {
 			dy := float64(playerPos.Y - position.Y)
 			distance := math.Sqrt(dx*dx + dy*dy)
 
-			// 視界内にプレイヤーがいる場合
-			if distance <= vision.ViewDistance {
+			// 距離内でかつレイキャストで視界が通る場合
+			if distance <= vision.ViewDistance && isTileVisibleByRaycast(world, float64(position.X), float64(position.Y), float64(playerPos.X), float64(playerPos.Y)) {
 				// 追跡状態に移行
 				roaming.SubState = gc.AIRoamingChasing
 				roaming.StartSubState = time.Now()
@@ -77,8 +77,24 @@ func AIInputSystem(world w.World) {
 			if entity.HasComponent(world.Components.AIChasing) {
 				chasing := world.Components.AIChasing.Get(entity).(*gc.AIChasing)
 
-				// 最後の視認から時間が経過したら通常の徘徊に戻る
-				if time.Since(chasing.LastSeen).Seconds() > 3 {
+				// 現在もプレイヤーが視界内にいるかチェック
+				canStillSeePlayer := false
+				if entity.HasComponent(world.Components.AIVision) {
+					vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
+					dx := float64(playerPos.X - position.X)
+					dy := float64(playerPos.Y - position.Y)
+					distance := math.Sqrt(dx*dx + dy*dy)
+
+					if distance <= vision.ViewDistance && isTileVisibleByRaycast(world, float64(position.X), float64(position.Y), float64(playerPos.X), float64(playerPos.Y)) {
+						canStillSeePlayer = true
+						chasing.LastSeen = time.Now() // 視認時間を更新
+						chasing.TargetX = float64(playerPos.X)
+						chasing.TargetY = float64(playerPos.Y)
+					}
+				}
+
+				// プレイヤーが見えなくなったら通常の徘徊に戻る
+				if !canStillSeePlayer && time.Since(chasing.LastSeen).Seconds() > 1 {
 					roaming.SubState = gc.AIRoamingWaiting
 					roaming.StartSubState = time.Now()
 					roaming.DurationSubState = time.Second * time.Duration(rand.IntN(3))

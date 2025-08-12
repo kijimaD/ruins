@@ -344,7 +344,7 @@ func initializeDarknessCache(tileSize int) {
 	for i := 1; i <= 10; i++ {
 		darkness := float64(i) * 0.1
 		alpha := uint8(darkness * 255) // 透明度を0-255に変換
-		
+
 		darknessCacheImages[i] = ebiten.NewImage(tileSize, tileSize)
 		darknessCacheImages[i].Fill(color.RGBA{0, 0, 0, alpha})
 	}
@@ -357,7 +357,7 @@ func drawDarknessAtLevelWithScale(screen *ebiten.Image, x, y, darkness, scale fl
 	}
 
 	// 暗闇レベルを配列インデックスに変換（0.1刻みで10段階）
-	index := int(darkness * 10 + 0.5) // 四捨五入
+	index := int(darkness*10 + 0.5) // 四捨五入
 	if index > 10 {
 		index = 10
 	}
