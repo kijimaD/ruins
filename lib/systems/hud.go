@@ -35,9 +35,9 @@ func HUDSystem(world w.World, screen *ebiten.Image) {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("speed: %.2f", velocity.Speed), 0, 220)
 	}))
 
-	// デバッグモード時のみAI情報表示
+	// AI デバッグ表示フラグが有効な時のみAI情報表示
 	cfg := config.Get()
-	if cfg.Debug {
+	if cfg.ShowAIDebug {
 		drawAIVisionRanges(world, screen)
 		drawAIStates(world, screen)
 	}
