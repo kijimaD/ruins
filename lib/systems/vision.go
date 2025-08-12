@@ -7,6 +7,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -251,15 +252,18 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 
 // drawGradualDarknessOverlay は距離に応じた段階的暗闇を描画する
 func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	tileSize := 32 // タイルサイズ
+	tileSize := int(consts.TileSize)
 
-	// カメラ位置を取得
+	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
+	var cameraScale float64
 	world.Manager.Join(
 		world.Components.Camera,
 		world.Components.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		cameraPos = *world.Components.Position.Get(entity).(*gc.Position)
+		camera := world.Components.Camera.Get(entity).(*gc.Camera)
+		cameraScale = camera.Scale
 	}))
 
 	// 段階的暗闃用の画像を初期化（キャッシュ）
@@ -271,11 +275,15 @@ func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityD
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 
+	// スケールを考慮した実際の表示範囲を計算
+	actualScreenWidth := int(float64(screenWidth) / cameraScale)
+	actualScreenHeight := int(float64(screenHeight) / cameraScale)
+
 	// カメラオフセットを考慮した画面範囲
-	leftEdge := int(cameraPos.X) - screenWidth/2
-	rightEdge := int(cameraPos.X) + screenWidth/2
-	topEdge := int(cameraPos.Y) - screenHeight/2
-	bottomEdge := int(cameraPos.Y) + screenHeight/2
+	leftEdge := int(cameraPos.X) - actualScreenWidth/2
+	rightEdge := int(cameraPos.X) + actualScreenWidth/2
+	topEdge := int(cameraPos.Y) - actualScreenHeight/2
+	bottomEdge := int(cameraPos.Y) + actualScreenHeight/2
 
 	// タイル範囲に変換
 	startTileX := leftEdge/tileSize - 1
@@ -300,12 +308,14 @@ func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityD
 
 			// 暗闇レベルが0より大きい場合のみ描画
 			if darkness > 0.0 {
-				// タイルの画面座標を計算
-				screenX := float64(tileX*tileSize) - float64(cameraPos.X) + float64(screenWidth)/2
-				screenY := float64(tileY*tileSize) - float64(cameraPos.Y) + float64(screenHeight)/2
+				// タイルの画面座標を計算（スケールを考慮）
+				worldX := float64(tileX * tileSize)
+				worldY := float64(tileY * tileSize)
+				screenX := (worldX-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
+				screenY := (worldY-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
-				// 暗闇レベルに応じた画像を選択して描画
-				drawDarknessAtLevel(screen, screenX, screenY, darkness)
+				// 暗闇レベルに応じた画像を選択して描画（スケールも適用）
+				drawDarknessAtLevelWithScale(screen, screenX, screenY, darkness, cameraScale)
 			}
 		}
 	}
@@ -336,8 +346,8 @@ func initializeDarknessCache(tileSize int) {
 	darknessCacheImages[4].Fill(color.RGBA{0, 0, 0, 255}) // 完全不透明
 }
 
-// drawDarknessAtLevel は指定した暗闇レベルで暗闇を描画する
-func drawDarknessAtLevel(screen *ebiten.Image, x, y, darkness float64) {
+// drawDarknessAtLevelWithScale は指定した暗闇レベルで暗闇を描画する（スケール対応）
+func drawDarknessAtLevelWithScale(screen *ebiten.Image, x, y, darkness, scale float64) {
 	var darknessImage *ebiten.Image
 
 	// 暗闇レベルに応じた画像を選択
@@ -355,6 +365,7 @@ func drawDarknessAtLevel(screen *ebiten.Image, x, y, darkness float64) {
 
 	if darknessImage != nil {
 		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(scale, scale)
 		op.GeoM.Translate(x, y)
 		screen.DrawImage(darknessImage, op)
 	}
