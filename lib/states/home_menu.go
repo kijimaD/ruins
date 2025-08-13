@@ -133,6 +133,12 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewEquipMenuState}},
 		},
 		{
+			ID:          "save",
+			Label:       "セーブ",
+			Description: "ゲームを保存する",
+			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewSaveMenuState}},
+		},
+		{
 			ID:          "exit",
 			Label:       "終了",
 			Description: "タイトル画面に戻る",

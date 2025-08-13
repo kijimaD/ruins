@@ -61,6 +61,15 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.Operator{}), components.Operator)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
+	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
+	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
+	r.registerNullComponent(reflect.TypeOf(&gc.InParty{}), components.InParty)
+	r.registerNullComponent(reflect.TypeOf(&gc.Item{}), components.Item)
+
+	// データコンポーネント
+	r.registerComponent(reflect.TypeOf(&gc.Name{}), components.Name, r.extractName, r.restoreName, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
 
 	r.initialized = true
 	return nil
@@ -107,6 +116,14 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.BlockView)
 			case "BlockPass":
 				return struct{}{}, entity.HasComponent(world.Components.BlockPass)
+			case "FactionAllyData":
+				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
+			case "FactionEnemyData":
+				return struct{}{}, entity.HasComponent(world.Components.FactionEnemy)
+			case "InParty":
+				return struct{}{}, entity.HasComponent(world.Components.InParty)
+			case "Item":
+				return struct{}{}, entity.HasComponent(world.Components.Item)
 			}
 			return nil, false
 		},
@@ -119,6 +136,14 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
 			case "BlockPass":
 				entity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
+			case "FactionAllyData":
+				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
+			case "FactionEnemyData":
+				entity.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemyData{})
+			case "InParty":
+				entity.AddComponent(world.Components.InParty, &gc.InParty{})
+			case "Item":
+				entity.AddComponent(world.Components.Item, &gc.Item{})
 			}
 			return nil
 		},
@@ -308,5 +333,59 @@ func (r *ComponentRegistry) restoreGridElement(world w.World, entity ecs.Entity,
 		return fmt.Errorf("invalid GridElement data type: %T", data)
 	}
 	entity.AddComponent(world.Components.GridElement, &grid)
+	return nil
+}
+
+// Name コンポーネントの処理
+func (r *ComponentRegistry) extractName(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Name) {
+		return nil, false
+	}
+	name := world.Components.Name.Get(entity).(*gc.Name)
+	return *name, true
+}
+
+func (r *ComponentRegistry) restoreName(world w.World, entity ecs.Entity, data interface{}) error {
+	name, ok := data.(gc.Name)
+	if !ok {
+		return fmt.Errorf("invalid Name data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Name, &name)
+	return nil
+}
+
+// Pools コンポーネントの処理
+func (r *ComponentRegistry) extractPools(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Pools) {
+		return nil, false
+	}
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
+	return *pools, true
+}
+
+func (r *ComponentRegistry) restorePools(world w.World, entity ecs.Entity, data interface{}) error {
+	pools, ok := data.(gc.Pools)
+	if !ok {
+		return fmt.Errorf("invalid Pools data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Pools, &pools)
+	return nil
+}
+
+// Attributes コンポーネントの処理
+func (r *ComponentRegistry) extractAttributes(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Attributes) {
+		return nil, false
+	}
+	attributes := world.Components.Attributes.Get(entity).(*gc.Attributes)
+	return *attributes, true
+}
+
+func (r *ComponentRegistry) restoreAttributes(world w.World, entity ecs.Entity, data interface{}) error {
+	attributes, ok := data.(gc.Attributes)
+	if !ok {
+		return fmt.Errorf("invalid Attributes data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Attributes, &attributes)
 	return nil
 }

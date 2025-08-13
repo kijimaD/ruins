@@ -148,57 +148,107 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 	entities := []EntitySaveData{}
 	processedEntities := make(map[ecs.Entity]bool) // 重複処理防止
 
+
 	// 各コンポーネント型を持つエンティティを検索
 	for _, typeInfo := range sm.componentRegistry.GetAllTypes() {
+		entityCount := 0
+		
 		// この型のコンポーネントを持つ全エンティティを取得
 		switch typeInfo.Name {
 		case "Position":
 			world.Manager.Join(world.Components.Position).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "Velocity":
 			world.Manager.Join(world.Components.Velocity).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "AIVision":
 			world.Manager.Join(world.Components.AIVision).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "AIRoaming":
 			world.Manager.Join(world.Components.AIRoaming).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "AIChasing":
 			world.Manager.Join(world.Components.AIChasing).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "Camera":
 			world.Manager.Join(world.Components.Camera).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "SpriteRender":
 			world.Manager.Join(world.Components.SpriteRender).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "GridElement":
 			world.Manager.Join(world.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "Operator":
 			world.Manager.Join(world.Components.Operator).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "BlockView":
 			world.Manager.Join(world.Components.BlockView).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		case "BlockPass":
 			world.Manager.Join(world.Components.BlockPass).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "FactionAllyData":
+			world.Manager.Join(world.Components.FactionAlly).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "FactionEnemyData":
+			world.Manager.Join(world.Components.FactionEnemy).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "InParty":
+			world.Manager.Join(world.Components.InParty).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Name":
+			world.Manager.Join(world.Components.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Pools":
+			world.Manager.Join(world.Components.Pools).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Attributes":
+			world.Manager.Join(world.Components.Attributes).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Item":
+			world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
 		}
 	}
 
+	
 	return WorldSaveData{
 		Entities: entities,
 	}, nil
