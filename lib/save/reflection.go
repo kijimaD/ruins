@@ -66,10 +66,25 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.InParty{}), components.InParty)
 	r.registerNullComponent(reflect.TypeOf(&gc.Item{}), components.Item)
 
+	// アイテム位置情報コンポーネント
+	r.registerNullComponent(reflect.TypeOf(&gc.LocationInBackpack{}), components.ItemLocationInBackpack)
+	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
+	r.registerNullComponent(reflect.TypeOf(&gc.LocationNone{}), components.ItemLocationNone)
+	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, nil)
+
 	// データコンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Name{}), components.Name, r.extractName, r.restoreName, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Description{}), components.Description, r.extractDescription, r.restoreDescription, nil)
+
+	// アイテム関連コンポーネント
+	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Card{}), components.Card, r.extractCard, r.restoreCard, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Material{}), components.Material, r.extractMaterial, r.restoreMaterial, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Recipe{}), components.Recipe, r.extractRecipe, r.restoreRecipe, nil)
 
 	r.initialized = true
 	return nil
@@ -124,6 +139,12 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.InParty)
 			case "Item":
 				return struct{}{}, entity.HasComponent(world.Components.Item)
+			case "LocationInBackpack":
+				return struct{}{}, entity.HasComponent(world.Components.ItemLocationInBackpack)
+			case "LocationOnField":
+				return struct{}{}, entity.HasComponent(world.Components.ItemLocationOnField)
+			case "LocationNone":
+				return struct{}{}, entity.HasComponent(world.Components.ItemLocationNone)
 			}
 			return nil, false
 		},
@@ -144,6 +165,12 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.InParty, &gc.InParty{})
 			case "Item":
 				entity.AddComponent(world.Components.Item, &gc.Item{})
+			case "LocationInBackpack":
+				entity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
+			case "LocationOnField":
+				entity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
+			case "LocationNone":
+				entity.AddComponent(world.Components.ItemLocationNone, &gc.LocationNone{})
 			}
 			return nil
 		},
@@ -387,5 +414,149 @@ func (r *ComponentRegistry) restoreAttributes(world w.World, entity ecs.Entity, 
 		return fmt.Errorf("invalid Attributes data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Attributes, &attributes)
+	return nil
+}
+
+// ItemLocationEquipped コンポーネントの処理
+func (r *ComponentRegistry) extractItemLocationEquipped(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.ItemLocationEquipped) {
+		return nil, false
+	}
+	equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+	return *equipped, true
+}
+
+func (r *ComponentRegistry) restoreItemLocationEquipped(world w.World, entity ecs.Entity, data interface{}) error {
+	equipped, ok := data.(gc.LocationEquipped)
+	if !ok {
+		return fmt.Errorf("invalid LocationEquipped data type: %T", data)
+	}
+	entity.AddComponent(world.Components.ItemLocationEquipped, &equipped)
+	return nil
+}
+
+// Description コンポーネントの処理
+func (r *ComponentRegistry) extractDescription(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Description) {
+		return nil, false
+	}
+	desc := world.Components.Description.Get(entity).(*gc.Description)
+	return *desc, true
+}
+
+func (r *ComponentRegistry) restoreDescription(world w.World, entity ecs.Entity, data interface{}) error {
+	desc, ok := data.(gc.Description)
+	if !ok {
+		return fmt.Errorf("invalid Description data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Description, &desc)
+	return nil
+}
+
+// Wearable コンポーネントの処理
+func (r *ComponentRegistry) extractWearable(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Wearable) {
+		return nil, false
+	}
+	wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
+	return *wearable, true
+}
+
+func (r *ComponentRegistry) restoreWearable(world w.World, entity ecs.Entity, data interface{}) error {
+	wearable, ok := data.(gc.Wearable)
+	if !ok {
+		return fmt.Errorf("invalid Wearable data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Wearable, &wearable)
+	return nil
+}
+
+// Card コンポーネントの処理
+func (r *ComponentRegistry) extractCard(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Card) {
+		return nil, false
+	}
+	card := world.Components.Card.Get(entity).(*gc.Card)
+	return *card, true
+}
+
+func (r *ComponentRegistry) restoreCard(world w.World, entity ecs.Entity, data interface{}) error {
+	card, ok := data.(gc.Card)
+	if !ok {
+		return fmt.Errorf("invalid Card data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Card, &card)
+	return nil
+}
+
+// Material コンポーネントの処理
+func (r *ComponentRegistry) extractMaterial(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Material) {
+		return nil, false
+	}
+	material := world.Components.Material.Get(entity).(*gc.Material)
+	return *material, true
+}
+
+func (r *ComponentRegistry) restoreMaterial(world w.World, entity ecs.Entity, data interface{}) error {
+	material, ok := data.(gc.Material)
+	if !ok {
+		return fmt.Errorf("invalid Material data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Material, &material)
+	return nil
+}
+
+// Consumable コンポーネントの処理
+func (r *ComponentRegistry) extractConsumable(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Consumable) {
+		return nil, false
+	}
+	consumable := world.Components.Consumable.Get(entity).(*gc.Consumable)
+	return *consumable, true
+}
+
+func (r *ComponentRegistry) restoreConsumable(world w.World, entity ecs.Entity, data interface{}) error {
+	consumable, ok := data.(gc.Consumable)
+	if !ok {
+		return fmt.Errorf("invalid Consumable data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Consumable, &consumable)
+	return nil
+}
+
+// Attack コンポーネントの処理
+func (r *ComponentRegistry) extractAttack(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Attack) {
+		return nil, false
+	}
+	attack := world.Components.Attack.Get(entity).(*gc.Attack)
+	return *attack, true
+}
+
+func (r *ComponentRegistry) restoreAttack(world w.World, entity ecs.Entity, data interface{}) error {
+	attack, ok := data.(gc.Attack)
+	if !ok {
+		return fmt.Errorf("invalid Attack data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Attack, &attack)
+	return nil
+}
+
+// Recipe コンポーネントの処理
+func (r *ComponentRegistry) extractRecipe(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Recipe) {
+		return nil, false
+	}
+	recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
+	return *recipe, true
+}
+
+func (r *ComponentRegistry) restoreRecipe(world w.World, entity ecs.Entity, data interface{}) error {
+	recipe, ok := data.(gc.Recipe)
+	if !ok {
+		return fmt.Errorf("invalid Recipe data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Recipe, &recipe)
 	return nil
 }

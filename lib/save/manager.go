@@ -148,11 +148,10 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 	entities := []EntitySaveData{}
 	processedEntities := make(map[ecs.Entity]bool) // 重複処理防止
 
-
 	// 各コンポーネント型を持つエンティティを検索
 	for _, typeInfo := range sm.componentRegistry.GetAllTypes() {
 		entityCount := 0
-		
+
 		// この型のコンポーネントを持つ全エンティティを取得
 		switch typeInfo.Name {
 		case "Position":
@@ -245,10 +244,64 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
+		case "LocationInBackpack":
+			world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "LocationEquipped":
+			world.Manager.Join(world.Components.ItemLocationEquipped).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "LocationOnField":
+			world.Manager.Join(world.Components.ItemLocationOnField).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "LocationNone":
+			world.Manager.Join(world.Components.ItemLocationNone).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Description":
+			world.Manager.Join(world.Components.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Wearable":
+			world.Manager.Join(world.Components.Wearable).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Card":
+			world.Manager.Join(world.Components.Card).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Material":
+			world.Manager.Join(world.Components.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Consumable":
+			world.Manager.Join(world.Components.Consumable).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Attack":
+			world.Manager.Join(world.Components.Attack).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "Recipe":
+			world.Manager.Join(world.Components.Recipe).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
 		}
 	}
 
-	
 	return WorldSaveData{
 		Entities: entities,
 	}, nil

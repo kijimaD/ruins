@@ -148,30 +148,30 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	var restoredPlayer ecs.Entity
 	var playerFound, npcFound bool
 
+	// まずプレイヤーを見つける
+	newWorld.Manager.Join(newWorld.Components.Operator).Visit(ecs.Visit(func(entity ecs.Entity) {
+		restoredPlayer = entity
+		playerFound = true
+
+		// Positionをチェック
+		pos := newWorld.Components.Position.Get(entity).(*gc.Position)
+		assert.Equal(t, gc.Pixel(100), pos.X)
+		assert.Equal(t, gc.Pixel(200), pos.Y)
+
+		// Velocityをチェック
+		if entity.HasComponent(newWorld.Components.Velocity) {
+			vel := newWorld.Components.Velocity.Get(entity).(*gc.Velocity)
+			assert.Equal(t, 45.0, vel.Angle)
+			assert.Equal(t, 2.5, vel.Speed)
+			assert.Equal(t, 5.0, vel.MaxSpeed)
+			assert.Equal(t, gc.ThrottleModeFront, vel.ThrottleMode)
+		}
+	}))
+
 	// エンティティの検証
 	entityCount := 0
 	newWorld.Manager.Join(newWorld.Components.Position).Visit(ecs.Visit(func(entity ecs.Entity) {
 		entityCount++
-
-		// プレイヤーを特定
-		if entity.HasComponent(newWorld.Components.Operator) {
-			restoredPlayer = entity
-			playerFound = true
-
-			// Positionをチェック
-			pos := newWorld.Components.Position.Get(entity).(*gc.Position)
-			assert.Equal(t, gc.Pixel(100), pos.X)
-			assert.Equal(t, gc.Pixel(200), pos.Y)
-
-			// Velocityをチェック
-			if entity.HasComponent(newWorld.Components.Velocity) {
-				vel := newWorld.Components.Velocity.Get(entity).(*gc.Velocity)
-				assert.Equal(t, 45.0, vel.Angle)
-				assert.Equal(t, 2.5, vel.Speed)
-				assert.Equal(t, 5.0, vel.MaxSpeed)
-				assert.Equal(t, gc.ThrottleModeFront, vel.ThrottleMode)
-			}
-		}
 
 		// NPCを特定
 		if entity.HasComponent(newWorld.Components.AIVision) {
@@ -187,7 +187,7 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 			assert.Equal(t, gc.Pixel(160), vision.ViewDistance)
 
 			// エンティティ参照が正しく復元されているかチェック
-			if vision.TargetEntity != nil {
+			if vision.TargetEntity != nil && playerFound {
 				assert.Equal(t, restoredPlayer, *vision.TargetEntity)
 			}
 

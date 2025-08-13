@@ -87,7 +87,7 @@ func (st *LoadMenuState) initMenu(world w.World) {
 
 	for i, slot := range saveSlots {
 		slotName := fmt.Sprintf("slot%d", i+1)
-		
+
 		// 存在しないスロットは無効化
 		if !slot.Exists {
 			continue
