@@ -85,8 +85,8 @@ func TestMainMenuSelection(t *testing.T) {
 	world := createTestWorld()
 	state.initMenu(world)
 
-	// 「終了」項目にフォーカス移動（インデックス2）
-	state.menu.SetFocusedIndex(2)
+	// 「終了」項目にフォーカス移動（インデックス3）
+	state.menu.SetFocusedIndex(3)
 
 	// Enterキーで選択（セッションベース）
 	mockInput.SimulateEnterPressRelease()
@@ -136,7 +136,7 @@ func TestMainMenuItems(t *testing.T) {
 
 	// メニュー項目の確認
 	items := state.menu.GetItems()
-	expectedItems := []string{"home", "intro", "exit"}
+	expectedItems := []string{"home", "load", "intro", "exit"}
 
 	if len(items) != len(expectedItems) {
 		t.Errorf("メニュー項目数が不正: 期待 %d, 実際 %d", len(expectedItems), len(items))
@@ -149,7 +149,7 @@ func TestMainMenuItems(t *testing.T) {
 	}
 
 	// ラベルの確認
-	expectedLabels := []string{"拠点", "導入", "終了"}
+	expectedLabels := []string{"拠点", "ロード", "導入", "終了"}
 	for i, expectedLabel := range expectedLabels {
 		if i < len(items) && items[i].Label != expectedLabel {
 			t.Errorf("メニュー項目ラベル[%d]が不正: 期待 %s, 実際 %s", i, expectedLabel, items[i].Label)

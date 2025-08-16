@@ -93,3 +93,13 @@ func NewMainMenuState() es.State {
 func NewGameOverState() es.State {
 	return &GameOverState{}
 }
+
+// NewSaveMenuState は新しいSaveMenuStateインスタンスを作成するファクトリー関数
+func NewSaveMenuState() es.State {
+	return &SaveMenuState{}
+}
+
+// NewLoadMenuState は新しいLoadMenuStateインスタンスを作成するファクトリー関数
+func NewLoadMenuState() es.State {
+	return &LoadMenuState{}
+}
