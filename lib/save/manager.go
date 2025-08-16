@@ -299,6 +299,21 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
+		case "EquipmentChanged":
+			world.Manager.Join(world.Components.EquipmentChanged).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "ProvidesHealing":
+			world.Manager.Join(world.Components.ProvidesHealing).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "InflictsDamage":
+			world.Manager.Join(world.Components.InflictsDamage).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
 		}
 	}
 
@@ -366,6 +381,21 @@ func (sm *SerializationManager) processEntityReferences(data interface{}, typeIn
 			}
 
 			return visionRef, nil
+		}
+	}
+
+	// LocationEquippedのOwnerを特別処理
+	if typeInfo.Name == "LocationEquipped" {
+		if equipped, ok := data.(gc.LocationEquipped); ok {
+			ownerStableID := sm.stableIDManager.GetStableID(equipped.Owner)
+			equippedRef := struct {
+				OwnerRef      StableID                 `json:"owner_ref"`
+				EquipmentSlot gc.EquipmentSlotNumber `json:"equipment_slot"`
+			}{
+				OwnerRef:      ownerStableID,
+				EquipmentSlot: equipped.EquipmentSlot,
+			}
+			return equippedRef, nil
 		}
 	}
 
@@ -464,6 +494,38 @@ func (sm *SerializationManager) restoreComponentData(jsonData interface{}, typeI
 		return vision, nil
 	}
 
+	// ProvidesHealingを特別処理（Amounterインターフェースのため）
+	if typeInfo.Name == "ProvidesHealing" {
+		// この型はreflection.goのrestoreProvidesHealingで処理されるため、
+		// ここではデータをそのまま返す
+		return jsonData, nil
+	}
+
+	// LocationEquippedを特別処理（カスタムシリアライズ形式のため）
+	if typeInfo.Name == "LocationEquipped" {
+		dataMap, ok := jsonData.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("invalid LocationEquipped JSON data type: %T", jsonData)
+		}
+
+		// EquipmentSlotを取得
+		equipmentSlotVal, exists := dataMap["equipment_slot"]
+		if !exists {
+			return nil, fmt.Errorf("equipment_slot not found in LocationEquipped data")
+		}
+		equipmentSlot, ok := equipmentSlotVal.(float64)
+		if !ok {
+			return nil, fmt.Errorf("invalid equipment_slot type: %T", equipmentSlotVal)
+		}
+
+		// LocationEquipped構造体を作成（Ownerは後で解決）
+		equipped := gc.LocationEquipped{
+			Owner:         0, // 一時的に無効なエンティティID
+			EquipmentSlot: gc.EquipmentSlotNumber(equipmentSlot),
+		}
+		return equipped, nil
+	}
+
 	// 通常のコンポーネント処理
 	// JSONデータをバイトに変換
 	jsonBytes, err := json.Marshal(jsonData)
@@ -514,6 +576,36 @@ func (sm *SerializationManager) resolveEntityReferences(world w.World, entity ec
 				} else {
 					fmt.Printf("Warning: target entity not found for stable ID: %v\n", *visionRef.TargetRef)
 				}
+			}
+		}
+	}
+
+	if typeInfo.Name == "LocationEquipped" {
+		// JSONデータを変換
+		jsonBytes, err := json.Marshal(jsonData)
+		if err != nil {
+			return err
+		}
+
+		var equippedRef struct {
+			OwnerRef      StableID                 `json:"owner_ref"`
+			EquipmentSlot gc.EquipmentSlotNumber `json:"equipment_slot"`
+		}
+
+		err = json.Unmarshal(jsonBytes, &equippedRef)
+		if err != nil {
+			return err
+		}
+
+		// LocationEquippedコンポーネントを取得
+		if entity.HasComponent(world.Components.ItemLocationEquipped) {
+			equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+
+			// エンティティ参照を解決
+			if ownerEntity, exists := sm.stableIDManager.GetEntity(equippedRef.OwnerRef); exists {
+				equipped.Owner = ownerEntity
+			} else {
+				fmt.Printf("Warning: owner entity not found for stable ID: %v\n", equippedRef.OwnerRef)
 			}
 		}
 	}

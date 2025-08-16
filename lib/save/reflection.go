@@ -70,7 +70,10 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationInBackpack{}), components.ItemLocationInBackpack)
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationNone{}), components.ItemLocationNone)
-	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, nil)
+	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, r.resolveLocationEquippedRefs)
+	
+	// 装備変更フラグ
+	r.registerNullComponent(reflect.TypeOf(&gc.EquipmentChanged{}), components.EquipmentChanged)
 
 	// データコンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Name{}), components.Name, r.extractName, r.restoreName, nil)
@@ -85,6 +88,8 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Recipe{}), components.Recipe, r.extractRecipe, r.restoreRecipe, nil)
+	r.registerComponent(reflect.TypeOf(&gc.ProvidesHealing{}), components.ProvidesHealing, r.extractProvidesHealing, r.restoreProvidesHealing, nil)
+	r.registerComponent(reflect.TypeOf(&gc.InflictsDamage{}), components.InflictsDamage, r.extractInflictsDamage, r.restoreInflictsDamage, nil)
 
 	r.initialized = true
 	return nil
@@ -145,6 +150,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationOnField)
 			case "LocationNone":
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationNone)
+			case "EquipmentChanged":
+				return struct{}{}, entity.HasComponent(world.Components.EquipmentChanged)
 			}
 			return nil, false
 		},
@@ -171,6 +178,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
 			case "LocationNone":
 				entity.AddComponent(world.Components.ItemLocationNone, &gc.LocationNone{})
+			case "EquipmentChanged":
+				entity.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 			}
 			return nil
 		},
@@ -435,6 +444,11 @@ func (r *ComponentRegistry) restoreItemLocationEquipped(world w.World, entity ec
 	return nil
 }
 
+func (r *ComponentRegistry) resolveLocationEquippedRefs(world w.World, entity ecs.Entity, data interface{}, idManager *StableIDManager) error {
+	// エンティティ参照の解決はSerializationManagerで実装
+	return nil
+}
+
 // Description コンポーネントの処理
 func (r *ComponentRegistry) extractDescription(world w.World, entity ecs.Entity) (interface{}, bool) {
 	if !entity.HasComponent(world.Components.Description) {
@@ -558,5 +572,89 @@ func (r *ComponentRegistry) restoreRecipe(world w.World, entity ecs.Entity, data
 		return fmt.Errorf("invalid Recipe data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Recipe, &recipe)
+	return nil
+}
+
+// ProvidesHealing コンポーネントの処理
+func (r *ComponentRegistry) extractProvidesHealing(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.ProvidesHealing) {
+		return nil, false
+	}
+	healing := world.Components.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
+	
+	// Amounterインターフェースを具体的な型に変換してシリアライズ
+	var amountData map[string]interface{}
+	switch a := healing.Amount.(type) {
+	case gc.RatioAmount:
+		amountData = map[string]interface{}{
+			"type":  "ratio",
+			"ratio": a.Ratio,
+		}
+	case gc.NumeralAmount:
+		amountData = map[string]interface{}{
+			"type":    "numeral",
+			"numeral": a.Numeral,
+		}
+	default:
+		// デフォルトでRatio 0.5を使用
+		amountData = map[string]interface{}{
+			"type":  "ratio",
+			"ratio": 0.5,
+		}
+	}
+	
+	return map[string]interface{}{
+		"amount": amountData,
+	}, true
+}
+
+func (r *ComponentRegistry) restoreProvidesHealing(world w.World, entity ecs.Entity, data interface{}) error {
+	dataMap, ok := data.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("invalid ProvidesHealing data type: %T", data)
+	}
+	
+	amountData, ok := dataMap["amount"].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("invalid ProvidesHealing amount data")
+	}
+	
+	var amount gc.Amounter
+	amountType, _ := amountData["type"].(string)
+	switch amountType {
+	case "ratio":
+		if ratio, ok := amountData["ratio"].(float64); ok {
+			amount = gc.RatioAmount{Ratio: ratio}
+		}
+	case "numeral":
+		if numeral, ok := amountData["numeral"].(float64); ok {
+			amount = gc.NumeralAmount{Numeral: int(numeral)}
+		}
+	default:
+		return fmt.Errorf("unknown amount type: %s", amountType)
+	}
+	
+	healing := &gc.ProvidesHealing{
+		Amount: amount,
+	}
+	entity.AddComponent(world.Components.ProvidesHealing, healing)
+	return nil
+}
+
+// InflictsDamage コンポーネントの処理
+func (r *ComponentRegistry) extractInflictsDamage(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.InflictsDamage) {
+		return nil, false
+	}
+	damage := world.Components.InflictsDamage.Get(entity).(*gc.InflictsDamage)
+	return *damage, true
+}
+
+func (r *ComponentRegistry) restoreInflictsDamage(world w.World, entity ecs.Entity, data interface{}) error {
+	damage, ok := data.(gc.InflictsDamage)
+	if !ok {
+		return fmt.Errorf("invalid InflictsDamage data type: %T", data)
+	}
+	entity.AddComponent(world.Components.InflictsDamage, &damage)
 	return nil
 }

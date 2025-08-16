@@ -48,6 +48,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		Owner:         character,
 		EquipmentSlot: gc.EquipmentSlotNumber(0), // メインハンドに相当
 	})
+	item3.AddComponent(w.Components.EquipmentChanged, &gc.EquipmentChanged{})
 
 	// セーブマネージャーを作成
 	sm := NewSerializationManager(tempDir)
@@ -94,6 +95,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 
 	// 装備アイテムが存在することを確認
 	equippedItemCount := 0
+	var loadedOwner ecs.Entity
 	newWorld.Manager.Join(
 		newWorld.Components.Item,
 		newWorld.Components.ItemLocationEquipped,
@@ -104,7 +106,13 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		// 装備情報を確認
 		equipped := newWorld.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		assert.Equal(t, gc.EquipmentSlotNumber(0), equipped.EquipmentSlot)
-		// 注: Ownerエンティティの参照は新しいエンティティIDになるため、直接比較はできない
+		
+		// Owner参照が復元されていることを確認
+		assert.NotEqual(t, ecs.Entity(0), equipped.Owner, "Owner参照が復元されていない")
+		loadedOwner = equipped.Owner
+
+		// EquipmentChangedコンポーネントも正しくロードされることを確認
+		assert.True(t, entity.HasComponent(newWorld.Components.EquipmentChanged), "EquipmentChangedコンポーネントが正しくロードされていない")
 
 		equippedItemCount++
 	}))
@@ -118,6 +126,12 @@ func TestSaveLoadItemLocations(t *testing.T) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		assert.Equal(t, "テストキャラ", name.Name)
+		
+		// この"キャラクター"が装備のOwnerとして正しく参照されていることを確認
+		if loadedOwner != 0 {
+			assert.Equal(t, entity, loadedOwner, "装備のOwner参照が正しいキャラクターを指していない")
+		}
+		
 		characterCount++
 	}))
 	assert.Equal(t, 1, characterCount, "キャラクターが正しくロードされていない")
