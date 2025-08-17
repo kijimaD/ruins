@@ -70,7 +70,15 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	pos.Y = gc.Pixel(float64(pos.Y) - math.Sin(radian)*distance)
 
 	{
-		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+		// Resourcesからスプライトシートを取得
+		if world.Resources.SpriteSheets == nil {
+			return
+		}
+		spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+		if !exists || spriteRender.SpriteNumber >= len(spriteSheet.Sprites) {
+			return
+		}
+		sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
 		padding := 4 // 1マスの道を進みやすくする
 		x1 := float64(int(pos.X) - sprite.Width/2 + padding)
 		x2 := float64(int(pos.X) + sprite.Width/2 - padding)
@@ -92,7 +100,15 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 			case entityAnother.HasComponent(world.Components.Position):
 				objectPos := world.Components.Position.Get(entityAnother).(*gc.Position)
 				objectSpriteRender := world.Components.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
-				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
+				// Objectのスプライト情報を取得
+				if world.Resources.SpriteSheets == nil {
+					return
+				}
+				objectSpriteSheet, objectExists := (*world.Resources.SpriteSheets)[objectSpriteRender.Name]
+				if !objectExists || objectSpriteRender.SpriteNumber >= len(objectSpriteSheet.Sprites) {
+					return
+				}
+				objectSprite := objectSpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 
 				objectx1 := float64(int(objectPos.X) - objectSprite.Width/2)
 				objectx2 := float64(int(objectPos.X) + objectSprite.Width/2)
@@ -106,7 +122,15 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 			case entityAnother.HasComponent(world.Components.GridElement):
 				objectGrid := world.Components.GridElement.Get(entityAnother).(*gc.GridElement)
 				objectSpriteRender := world.Components.SpriteRender.Get(entityAnother).(*gc.SpriteRender)
-				objectSprite := spriteRender.SpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
+				// Objectのスプライト情報を取得
+				if world.Resources.SpriteSheets == nil {
+					return
+				}
+				objectSpriteSheet, objectExists := (*world.Resources.SpriteSheets)[objectSpriteRender.Name]
+				if !objectExists || objectSpriteRender.SpriteNumber >= len(objectSpriteSheet.Sprites) {
+					return
+				}
+				objectSprite := objectSpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
 				x := int(objectGrid.Row) * sprite.Width
 				y := int(objectGrid.Col) * sprite.Height
 				objectx1 := float64(x)

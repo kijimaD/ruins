@@ -96,3 +96,4 @@
 - [ ] engine package で具体に対するimportを禁止する。 depguard でできるはず
 - [ ] package を engine と app に分ける
 - [x] euiext package を消す。現状わずかに使っているだけで、移行できるため
+- [ ] スプライト取得を関数化する

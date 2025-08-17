@@ -84,8 +84,13 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 	t.Parallel()
 	world := createTestWorldWithResources(t)
 
-	// 速度コンポーネント付きでエンティティを作成
-	spriteSheet := &gc.SpriteSheet{
+	// テスト用のスプライトシートをResourcesに追加
+	if world.Resources.SpriteSheets == nil {
+		sheets := make(map[string]gc.SpriteSheet)
+		world.Resources.SpriteSheets = &sheets
+	}
+	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
+		Name: "test",
 		Sprites: []gc.Sprite{
 			{Width: 32, Height: 32},
 		},
@@ -101,8 +106,8 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 			ThrottleMode: gc.ThrottleModeFront,
 		},
 		SpriteRender: &gc.SpriteRender{
-			SpriteNumber: 0,
-			SpriteSheet:  spriteSheet,
+			SpriteNumber:    0,
+			Name: "test",
 		},
 	})
 	playerEntities := entities.AddEntities(world, cl)
@@ -117,8 +122,8 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 			ThrottleMode: gc.ThrottleModeFront,
 		},
 		SpriteRender: &gc.SpriteRender{
-			SpriteNumber: 0,
-			SpriteSheet:  spriteSheet,
+			SpriteNumber:    0,
+			Name: "test",
 		},
 	})
 	enemyEntities := entities.AddEntities(world, cl2)

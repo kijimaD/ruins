@@ -128,15 +128,21 @@ func getSpriteSize(world w.World, entity ecs.Entity) (spriteSize, error) {
 	}
 
 	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-	if spriteRender.SpriteSheet == nil {
-		return spriteSize{}, errors.New("SpriteSheet is nil")
+
+	// Resourcesからスプライトシートを取得
+	if world.Resources.SpriteSheets == nil {
+		return spriteSize{}, errors.New("SpriteSheets resources not available")
+	}
+	spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+	if !exists {
+		return spriteSize{}, fmt.Errorf("SpriteSheet %s not found", spriteRender.Name)
 	}
 
-	if len(spriteRender.SpriteSheet.Sprites) <= spriteRender.SpriteNumber {
+	if len(spriteSheet.Sprites) <= spriteRender.SpriteNumber {
 		return spriteSize{}, fmt.Errorf("sprite number %d is out of range (length: %d)",
-			spriteRender.SpriteNumber, len(spriteRender.SpriteSheet.Sprites))
+			spriteRender.SpriteNumber, len(spriteSheet.Sprites))
 	}
 
-	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+	sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
 	return spriteSize{width: sprite.Width, height: sprite.Height}, nil
 }

@@ -20,12 +20,11 @@ import (
 
 // SpawnFloor はフィールド上に表示される床を生成する
 func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  &fieldSpriteSheet,
+			Name:         "field",
 			SpriteNumber: 2,
 			Depth:        gc.DepthNumFloor,
 		},
@@ -36,12 +35,11 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 
 // SpawnFieldWall はフィールド上に表示される壁を生成する
 func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  &fieldSpriteSheet,
+			Name:         "field",
 			SpriteNumber: 1,
 			Depth:        gc.DepthNumTaller,
 		},
@@ -56,12 +54,11 @@ func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	SpawnFloor(world, x, y) // 下敷き描画
 
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  &fieldSpriteSheet,
+			Name:         "field",
 			SpriteNumber: 4,
 			Depth:        gc.DepthNumRug,
 		},
@@ -75,12 +72,11 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	SpawnFloor(world, x, y) // 下敷き描画
 
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  &fieldSpriteSheet,
+			Name:         "field",
 			SpriteNumber: 5,
 			Depth:        gc.DepthNumRug,
 		},
@@ -95,7 +91,6 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 // TODO: 置けるタイル以外が指定されるとエラーを返す。
 // デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
 func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -105,7 +100,7 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 			},
 			Operator: &gc.Operator{},
 			SpriteRender: &gc.SpriteRender{
-				SpriteSheet:  &fieldSpriteSheet,
+				Name:         "field",
 				SpriteNumber: 3,
 				Depth:        gc.DepthNumOperator,
 			},
@@ -127,7 +122,6 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 // SpawnNPC はフィールド上に表示されるNPCを生成する
 // 接触すると戦闘開始する敵として動作する
 func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
-	fieldSpriteSheet := (*world.Resources.SpriteSheets)["field"]
 	{
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -136,7 +130,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 				MaxSpeed: 1.0, // プレイヤーより遅い
 			},
 			SpriteRender: &gc.SpriteRender{
-				SpriteSheet:  &fieldSpriteSheet,
+				Name:         "field",
 				SpriteNumber: 6,
 				Depth:        gc.DepthNumTaller,
 			},

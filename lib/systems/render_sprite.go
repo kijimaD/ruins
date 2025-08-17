@@ -134,15 +134,27 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	}
 }
 
-func getImage(spriteRender *gc.SpriteRender) *ebiten.Image {
+func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
 	var result *ebiten.Image
-	key := fmt.Sprintf("%s/%d", spriteRender.SpriteSheet.Name, spriteRender.SpriteNumber)
+	key := fmt.Sprintf("%s/%d", spriteRender.Name, spriteRender.SpriteNumber)
 	if v, ok := spriteImageCache[key]; ok {
 		result = v
 	} else {
+		// Resourcesからスプライトシートを取得
+		if world.Resources.SpriteSheets == nil {
+			return nil
+		}
+		spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+		if !exists {
+			return nil
+		}
+
 		// テクスチャから欲しいスプライトを切り出す
-		sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
-		texture := spriteRender.SpriteSheet.Texture
+		if spriteRender.SpriteNumber >= len(spriteSheet.Sprites) {
+			return nil
+		}
+		sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
+		texture := spriteSheet.Texture
 		textureWidth := texture.Image.Bounds().Dx()
 		textureHeight := texture.Image.Bounds().Dy()
 
@@ -159,7 +171,19 @@ func getImage(spriteRender *gc.SpriteRender) *ebiten.Image {
 }
 
 func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) {
-	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+	// Resourcesからスプライトシートを取得
+	if world.Resources.SpriteSheets == nil {
+		return
+	}
+	spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+	if !exists {
+		return
+	}
+
+	if spriteRender.SpriteNumber >= len(spriteSheet.Sprites) {
+		return
+	}
+	sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
 
 	op := &spriteRender.Options
 	op.GeoM.Reset()                                                       // FIXME: Resetがないと非表示になる。なぜ?
@@ -167,5 +191,5 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	op.GeoM.Rotate(angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	camera.SetTranslate(world, op)
-	screen.DrawImage(getImage(spriteRender), op)
+	screen.DrawImage(getImage(world, spriteRender), op)
 }
