@@ -134,7 +134,7 @@ func (st *HomeMenuState) initMenu(world w.World) {
 		},
 		{
 			ID:          "save",
-			Label:       "セーブ",
+			Label:       "書込",
 			Description: "ゲームを保存する",
 			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewSaveMenuState}},
 		},

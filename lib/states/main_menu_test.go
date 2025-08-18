@@ -149,7 +149,7 @@ func TestMainMenuItems(t *testing.T) {
 	}
 
 	// ラベルの確認
-	expectedLabels := []string{"拠点", "ロード", "導入", "終了"}
+	expectedLabels := []string{"拠点", "読込", "導入", "終了"}
 	for i, expectedLabel := range expectedLabels {
 		if i < len(items) && items[i].Label != expectedLabel {
 			t.Errorf("メニュー項目ラベル[%d]が不正: 期待 %s, 実際 %s", i, expectedLabel, items[i].Label)

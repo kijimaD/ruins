@@ -79,7 +79,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 		},
 		{
 			ID:       "load",
-			Label:    "ロード",
+			Label:    "読込",
 			UserData: es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewLoadMenuState}},
 		},
 		{

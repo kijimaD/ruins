@@ -200,7 +200,7 @@ func (st *SaveMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// タイトル
 	titleText := widget.NewText(
-		widget.TextOpts.Text("セーブ", world.Resources.UIResources.Text.TitleFace, styles.TextColor),
+		widget.TextOpts.Text("書込", world.Resources.UIResources.Text.TitleFace, styles.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
