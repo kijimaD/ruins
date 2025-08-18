@@ -171,11 +171,6 @@ func (st *LoadMenuState) initMenu(world w.World) {
 	st.uiBuilder = menu.NewUIBuilder(world)
 }
 
-// getSaveSlotInfo はセーブスロットの情報を取得する（デフォルトディレクトリ）
-func (st *LoadMenuState) getSaveSlotInfo() []SaveSlotInfo {
-	return st.getSaveSlotInfoFromDir("./saves")
-}
-
 // getSaveSlotInfoFromDir は指定ディレクトリからセーブスロット情報を取得する
 func (st *LoadMenuState) getSaveSlotInfoFromDir(saveDir string) []SaveSlotInfo {
 	slots := make([]SaveSlotInfo, 3) // 3つのセーブスロット

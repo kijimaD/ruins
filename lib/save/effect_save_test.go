@@ -13,10 +13,13 @@ import (
 )
 
 func TestSaveLoadEffectComponents(t *testing.T) {
+	t.Parallel()
 	// 一時ディレクトリを作成
 	tempDir, err := os.MkdirTemp("", "save_test_")
 	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		_ = os.RemoveAll(tempDir)
+	}()
 
 	// ワールドを作成
 	w, err := game.InitWorld(960, 720)
@@ -91,13 +94,14 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		healing := newWorld.Components.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
 		
-		if name.Name == "回復薬" {
+		switch name.Name {
+		case "回復薬":
 			// Amount インターフェースの型を確認
 			ratioAmount, ok := healing.Amount.(gc.RatioAmount)
 			assert.True(t, ok, "回復薬のAmountはRatioAmountでなければならない")
 			assert.Equal(t, 0.5, ratioAmount.Ratio)
 			healingCount++
-		} else if name.Name == "特殊アイテム" {
+		case "特殊アイテム":
 			// Amount インターフェースの型を確認
 			numeralAmount, ok := healing.Amount.(gc.NumeralAmount)
 			assert.True(t, ok, "特殊アイテムのAmountはNumeralAmountでなければならない")
@@ -116,10 +120,11 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		damage := newWorld.Components.InflictsDamage.Get(entity).(*gc.InflictsDamage)
 		
-		if name.Name == "手榴弾" {
+		switch name.Name {
+		case "手榴弾":
 			assert.Equal(t, 30, damage.Amount)
 			damageCount++
-		} else if name.Name == "特殊アイテム" {
+		case "特殊アイテム":
 			assert.Equal(t, 15, damage.Amount)
 			damageCount++
 		}
@@ -135,12 +140,13 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		consumable := newWorld.Components.Consumable.Get(entity).(*gc.Consumable)
 		
-		if name.Name == "回復薬" {
+		switch name.Name {
+		case "回復薬":
 			assert.Equal(t, gc.UsableSceneAny, consumable.UsableScene)
 			assert.Equal(t, gc.TargetGroupAlly, consumable.TargetType.TargetGroup)
 			assert.Equal(t, gc.TargetSingle, consumable.TargetType.TargetNum)
 			consumableCount++
-		} else if name.Name == "手榴弾" {
+		case "手榴弾":
 			assert.Equal(t, gc.UsableSceneBattle, consumable.UsableScene)
 			assert.Equal(t, gc.TargetGroupEnemy, consumable.TargetType.TargetGroup)
 			assert.Equal(t, gc.TargetAll, consumable.TargetType.TargetNum)

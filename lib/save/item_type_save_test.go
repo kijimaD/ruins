@@ -13,10 +13,13 @@ import (
 )
 
 func TestSaveLoadItemTypes(t *testing.T) {
+	t.Parallel()
 	// 一時ディレクトリを作成
 	tempDir, err := os.MkdirTemp("", "save_test_")
 	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		_ = os.RemoveAll(tempDir)
+	}()
 
 	// ワールドを作成
 	w, err := game.InitWorld(960, 720)

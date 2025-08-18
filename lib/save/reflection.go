@@ -155,7 +155,7 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 			}
 			return nil, false
 		},
-		RestoreFunc: func(world w.World, entity ecs.Entity, data interface{}) error {
+		RestoreFunc: func(world w.World, entity ecs.Entity, _ interface{}) error {
 			// NullComponentを追加
 			switch elemType.Name() {
 			case "Operator":
@@ -282,7 +282,7 @@ func (r *ComponentRegistry) restoreAIVision(world w.World, entity ecs.Entity, da
 	return nil
 }
 
-func (r *ComponentRegistry) resolveAIVisionRefs(world w.World, entity ecs.Entity, data interface{}, idManager *StableIDManager) error {
+func (r *ComponentRegistry) resolveAIVisionRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
 	// エンティティ参照の解決はSerializationManagerで実装
 	return nil
 }
@@ -444,7 +444,7 @@ func (r *ComponentRegistry) restoreItemLocationEquipped(world w.World, entity ec
 	return nil
 }
 
-func (r *ComponentRegistry) resolveLocationEquippedRefs(world w.World, entity ecs.Entity, data interface{}, idManager *StableIDManager) error {
+func (r *ComponentRegistry) resolveLocationEquippedRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
 	// エンティティ参照の解決はSerializationManagerで実装
 	return nil
 }

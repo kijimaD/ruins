@@ -13,10 +13,13 @@ import (
 )
 
 func TestSaveLoadXPandLevel(t *testing.T) {
+	t.Parallel()
 	// 一時ディレクトリを作成
 	tempDir, err := os.MkdirTemp("", "save_test_")
 	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		_ = os.RemoveAll(tempDir)
+	}()
 
 	// ワールドを作成
 	w, err := game.InitWorld(960, 720)
@@ -75,13 +78,14 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		pools := newWorld.Components.Pools.Get(entity).(*gc.Pools)
 		
-		if name.Name == "テストキャラ" {
+		switch name.Name {
+		case "テストキャラ":
 			assert.Equal(t, 100, pools.HP.Current, "HPが正しく復元されていない")
 			assert.Equal(t, 120, pools.HP.Max, "MaxHPが正しく復元されていない")
 			assert.Equal(t, 75, pools.XP, "XPが正しく復元されていない")
 			assert.Equal(t, 3, pools.Level, "Levelが正しく復元されていない")
 			characterCount++
-		} else if name.Name == "テストキャラ2" {
+		case "テストキャラ2":
 			assert.Equal(t, 80, pools.HP.Current, "キャラ2のHPが正しく復元されていない")
 			assert.Equal(t, 100, pools.HP.Max, "キャラ2のMaxHPが正しく復元されていない")
 			assert.Equal(t, 0, pools.XP, "キャラ2のXPが正しく復元されていない")

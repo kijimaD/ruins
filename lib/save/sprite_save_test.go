@@ -14,10 +14,13 @@ import (
 )
 
 func TestSaveLoadSpriteRender(t *testing.T) {
+	t.Parallel()
 	// 一時ディレクトリを作成
 	tempDir, err := os.MkdirTemp("", "save_test_")
 	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		_ = os.RemoveAll(tempDir)
+	}()
 
 	// ワールドを作成
 	w, err := game.InitWorld(960, 720)
@@ -92,12 +95,13 @@ func TestSaveLoadSpriteRender(t *testing.T) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		sprite := newWorld.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 
-		if name.Name == "テストエンティティ" {
+		switch name.Name {
+		case "テストエンティティ":
 			assert.Equal(t, "test_sprite", sprite.Name, "SpriteSheetNameが正しくない")
 			assert.Equal(t, 1, sprite.SpriteNumber, "SpriteNumberが正しくない")
 			assert.Equal(t, gc.DepthNum(10), sprite.Depth, "Depthが正しくない")
 			spriteCount++
-		} else if name.Name == "スプライトなしエンティティ" {
+		case "スプライトなしエンティティ":
 			assert.Equal(t, "", sprite.Name, "SpriteSheetNameが空でない")
 			assert.Equal(t, 0, sprite.SpriteNumber, "SpriteNumberが正しくない")
 			assert.Equal(t, gc.DepthNum(5), sprite.Depth, "Depthが正しくない")

@@ -23,6 +23,7 @@ func createTestWorld() w.World {
 }
 
 func TestStableIDManager(t *testing.T) {
+	t.Parallel()
 	world := createTestWorld()
 	manager := NewStableIDManager()
 
@@ -38,8 +39,8 @@ func TestStableIDManager(t *testing.T) {
 	assert.NotEqual(t, stableID1, stableID2)
 
 	// IDが安定していることを確認
-	stableID1_again := manager.GetStableID(entity1)
-	assert.Equal(t, stableID1, stableID1_again)
+	stableID1Again := manager.GetStableID(entity1)
+	assert.Equal(t, stableID1, stableID1Again)
 
 	// 逆引きが正しく動作することを確認
 	retrievedEntity1, exists1 := manager.GetEntity(stableID1)
@@ -52,6 +53,7 @@ func TestStableIDManager(t *testing.T) {
 }
 
 func TestStableIDGeneration(t *testing.T) {
+	t.Parallel()
 	world := createTestWorld()
 	manager := NewStableIDManager()
 
@@ -77,6 +79,7 @@ func TestStableIDGeneration(t *testing.T) {
 }
 
 func TestComponentRegistry(t *testing.T) {
+	t.Parallel()
 	world := createTestWorld()
 	registry := NewComponentRegistry()
 
@@ -99,9 +102,12 @@ func TestComponentRegistry(t *testing.T) {
 }
 
 func TestSerializationManager_SaveAndLoad(t *testing.T) {
+	t.Parallel()
 	// テストディレクトリを準備
 	testDir := "./test_saves"
-	defer os.RemoveAll(testDir)
+	defer func() {
+		_ = os.RemoveAll(testDir)
+	}()
 
 	// シリアライゼーションマネージャーを作成
 	manager := NewSerializationManager(testDir)
@@ -208,9 +214,12 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 }
 
 func TestSerializationManager_EmptyWorld(t *testing.T) {
+	t.Parallel()
 	// テストディレクトリを準備
 	testDir := "./test_saves_empty"
-	defer os.RemoveAll(testDir)
+	defer func() {
+		_ = os.RemoveAll(testDir)
+	}()
 
 	// シリアライゼーションマネージャーを作成
 	manager := NewSerializationManager(testDir)
@@ -229,7 +238,7 @@ func TestSerializationManager_EmptyWorld(t *testing.T) {
 
 	// エンティティが存在しないことを確認
 	entityCount := 0
-	newWorld.Manager.Join().Visit(ecs.Visit(func(entity ecs.Entity) {
+	newWorld.Manager.Join().Visit(ecs.Visit(func(_ ecs.Entity) {
 		entityCount++
 	}))
 
@@ -237,9 +246,12 @@ func TestSerializationManager_EmptyWorld(t *testing.T) {
 }
 
 func TestSerializationManager_InvalidFile(t *testing.T) {
+	t.Parallel()
 	// テストディレクトリを準備
 	testDir := "./test_saves_invalid"
-	defer os.RemoveAll(testDir)
+	defer func() {
+		_ = os.RemoveAll(testDir)
+	}()
 
 	// 無効なJSONファイルを作成
 	err := os.MkdirAll(testDir, 0755)

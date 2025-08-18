@@ -162,11 +162,6 @@ type SaveSlotInfo struct {
 	Exists      bool
 }
 
-// getSaveSlotInfo はセーブスロットの情報を取得する（デフォルトディレクトリ）
-func (st *SaveMenuState) getSaveSlotInfo() []SaveSlotInfo {
-	return st.getSaveSlotInfoFromDir("./saves")
-}
-
 // getSaveSlotInfoFromDir は指定ディレクトリからセーブスロット情報を取得する
 func (st *SaveMenuState) getSaveSlotInfoFromDir(saveDir string) []SaveSlotInfo {
 	slots := make([]SaveSlotInfo, 3) // 3つのセーブスロット

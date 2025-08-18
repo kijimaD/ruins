@@ -15,9 +15,12 @@ import (
 )
 
 func TestSaveLoadIntegration(t *testing.T) {
+	t.Parallel()
 	// テスト用ディレクトリを準備
 	testDir := "./test_save_integration"
-	defer os.RemoveAll(testDir)
+	defer func() {
+		_ = os.RemoveAll(testDir)
+	}()
 
 	// テスト用のワールドを作成
 	world, err := game.InitWorld(960, 720)
@@ -78,9 +81,12 @@ func TestSaveLoadIntegration(t *testing.T) {
 }
 
 func TestSaveSlotInfo(t *testing.T) {
+	t.Parallel()
 	// テスト用ディレクトリを準備
 	testDir := "./test_save_slots"
-	defer os.RemoveAll(testDir)
+	defer func() {
+		_ = os.RemoveAll(testDir)
+	}()
 
 	// セーブマネージャーを作成
 	saveManager := save.NewSerializationManager(testDir)

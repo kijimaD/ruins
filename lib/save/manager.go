@@ -13,8 +13,25 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// SaveData はセーブデータの最上位構造
-type SaveData struct {
+// コンポーネント名の定数
+const (
+	ComponentAIVision          = "AIVision"
+	ComponentOperator          = "Operator"
+	ComponentBlockView         = "BlockView"
+	ComponentBlockPass         = "BlockPass"
+	ComponentFactionAllyData   = "FactionAllyData"
+	ComponentFactionEnemyData  = "FactionEnemyData"
+	ComponentInParty           = "InParty"
+	ComponentItem              = "Item"
+	ComponentLocationInBackpack = "LocationInBackpack"
+	ComponentLocationEquipped  = "LocationEquipped"
+	ComponentLocationOnField   = "LocationOnField"
+	ComponentLocationNone      = "LocationNone"
+	ComponentEquipmentChanged  = "EquipmentChanged"
+)
+
+// Data はセーブデータの最上位構造
+type Data struct {
 	Version   string        `json:"version"`
 	Timestamp time.Time     `json:"timestamp"`
 	World     WorldSaveData `json:"world"`
@@ -81,7 +98,7 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	}
 
 	// セーブデータを作成
-	saveData := SaveData{
+	saveData := Data{
 		Version:   "1.0.0",
 		Timestamp: time.Now(),
 		World:     worldData,
@@ -119,7 +136,7 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 	}
 
 	// JSONをパース
-	var saveData SaveData
+	var saveData Data
 	err = json.Unmarshal(data, &saveData)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal save data: %w", err)
@@ -164,7 +181,7 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "AIVision":
+		case ComponentAIVision:
 			world.Manager.Join(world.Components.AIVision).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
@@ -194,32 +211,32 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "Operator":
+		case ComponentOperator:
 			world.Manager.Join(world.Components.Operator).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "BlockView":
+		case ComponentBlockView:
 			world.Manager.Join(world.Components.BlockView).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "BlockPass":
+		case ComponentBlockPass:
 			world.Manager.Join(world.Components.BlockPass).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "FactionAllyData":
+		case ComponentFactionAllyData:
 			world.Manager.Join(world.Components.FactionAlly).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "FactionEnemyData":
+		case ComponentFactionEnemyData:
 			world.Manager.Join(world.Components.FactionEnemy).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "InParty":
+		case ComponentInParty:
 			world.Manager.Join(world.Components.InParty).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
@@ -239,27 +256,27 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "Item":
+		case ComponentItem:
 			world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "LocationInBackpack":
+		case ComponentLocationInBackpack:
 			world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "LocationEquipped":
+		case ComponentLocationEquipped:
 			world.Manager.Join(world.Components.ItemLocationEquipped).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "LocationOnField":
+		case ComponentLocationOnField:
 			world.Manager.Join(world.Components.ItemLocationOnField).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "LocationNone":
+		case ComponentLocationNone:
 			world.Manager.Join(world.Components.ItemLocationNone).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
@@ -299,7 +316,7 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "EquipmentChanged":
+		case ComponentEquipmentChanged:
 			world.Manager.Join(world.Components.EquipmentChanged).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
@@ -343,12 +360,7 @@ func (sm *SerializationManager) processEntityForSave(entity ecs.Entity, world w.
 	for _, typeInfo := range sm.componentRegistry.GetAllTypes() {
 		if data, hasComponent := typeInfo.ExtractFunc(world, entity); hasComponent {
 			// エンティティ参照の処理
-			processedData, err := sm.processEntityReferences(data, typeInfo)
-			if err != nil {
-				// ログを出力してスキップ
-				fmt.Printf("Warning: failed to process entity references for %s: %v\n", typeInfo.Name, err)
-				processedData = data
-			}
+			processedData := sm.processEntityReferences(data, typeInfo)
 
 			entityData.Components[typeInfo.Name] = ComponentData{
 				Type: typeInfo.Name,
@@ -364,9 +376,9 @@ func (sm *SerializationManager) processEntityForSave(entity ecs.Entity, world w.
 }
 
 // processEntityReferences はエンティティ参照を安定IDに変換
-func (sm *SerializationManager) processEntityReferences(data interface{}, typeInfo *ComponentTypeInfo) (interface{}, error) {
+func (sm *SerializationManager) processEntityReferences(data interface{}, typeInfo *ComponentTypeInfo) interface{} {
 	// AIVisionのTargetEntityを特別処理
-	if typeInfo.Name == "AIVision" {
+	if typeInfo.Name == ComponentAIVision {
 		if vision, ok := data.(gc.AIVision); ok {
 			visionRef := struct {
 				ViewDistance gc.Pixel  `json:"view_distance"`
@@ -380,12 +392,12 @@ func (sm *SerializationManager) processEntityReferences(data interface{}, typeIn
 				visionRef.TargetRef = &targetStableID
 			}
 
-			return visionRef, nil
+			return visionRef
 		}
 	}
 
 	// LocationEquippedのOwnerを特別処理
-	if typeInfo.Name == "LocationEquipped" {
+	if typeInfo.Name == ComponentLocationEquipped {
 		if equipped, ok := data.(gc.LocationEquipped); ok {
 			ownerStableID := sm.stableIDManager.GetStableID(equipped.Owner)
 			equippedRef := struct {
@@ -395,12 +407,12 @@ func (sm *SerializationManager) processEntityReferences(data interface{}, typeIn
 				OwnerRef:      ownerStableID,
 				EquipmentSlot: equipped.EquipmentSlot,
 			}
-			return equippedRef, nil
+			return equippedRef
 		}
 	}
 
 	// 他の型はそのまま返す
-	return data, nil
+	return data
 }
 
 // restoreWorldData はセーブデータからワールドを復元
