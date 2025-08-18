@@ -104,7 +104,7 @@ func TestSaveSlotInfo(t *testing.T) {
 	assert.Len(t, slots, 3)
 	for i, slot := range slots {
 		assert.Equal(t, false, slot.Exists)
-		assert.Contains(t, slot.Label, "スロット")
+		assert.Contains(t, slot.Label, "[空]")
 		assert.Equal(t, "空のスロット", slot.Description)
 		t.Logf("Slot %d: %s - %s", i+1, slot.Label, slot.Description)
 	}
@@ -116,9 +116,13 @@ func TestSaveSlotInfo(t *testing.T) {
 	// セーブファイル作成後の状態
 	slots = saveMenu.getSaveSlotInfoFromDir(testDir)
 	assert.True(t, slots[0].Exists, "Slot 1 should exist")
+	assert.Contains(t, slots[0].Label, "1 [")
+	assert.NotContains(t, slots[0].Label, "[空]")
 	assert.Contains(t, slots[0].Description, "保存日時")
 	assert.False(t, slots[1].Exists, "Slot 2 should not exist")
+	assert.Contains(t, slots[1].Label, "[空]")
 	assert.False(t, slots[2].Exists, "Slot 3 should not exist")
+	assert.Contains(t, slots[2].Label, "[空]")
 
 	t.Logf("After save - Slot 1: %s - %s", slots[0].Label, slots[0].Description)
 }

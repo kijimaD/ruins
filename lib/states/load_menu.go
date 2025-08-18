@@ -88,27 +88,12 @@ func (st *LoadMenuState) initMenu(world w.World) {
 	for i, slot := range saveSlots {
 		slotName := fmt.Sprintf("slot%d", i+1)
 
-		// 存在しないスロットは無効化
-		if !slot.Exists {
-			continue
-		}
-
 		items = append(items, menu.Item{
 			ID:          slotName,
 			Label:       slot.Label,
 			Description: slot.Description,
 			UserData:    slotName,
-		})
-	}
-
-	// セーブデータがない場合
-	if len(items) == 0 {
-		items = append(items, menu.Item{
-			ID:          "no_saves",
-			Label:       "セーブデータがありません",
-			Description: "利用可能なセーブデータがありません",
-			UserData:    "no_saves",
-			Disabled:    true,
+			Disabled:    !slot.Exists, // 存在しない場合は無効化
 		})
 	}
 
@@ -183,15 +168,15 @@ func (st *LoadMenuState) getSaveSlotInfoFromDir(saveDir string) []SaveSlotInfo {
 			if fileInfo, err := os.Stat(fileName); err == nil {
 				modTime := fileInfo.ModTime()
 				slots[i] = SaveSlotInfo{
-					Label:       fmt.Sprintf("スロット %d", i+1),
-					Description: fmt.Sprintf("保存日時: %s", modTime.Format("2006/01/02 15:04:05")),
+					Label:       fmt.Sprintf("%d [%s]", i+1, modTime.Format("2006-01-02 15:04")),
+					Description: fmt.Sprintf("保存日時: %s", modTime.Format("2006-01-02 15:04:05")),
 					Exists:      true,
 				}
 			}
 		} else {
 			// ファイルが存在しない場合
 			slots[i] = SaveSlotInfo{
-				Label:       fmt.Sprintf("スロット %d", i+1),
+				Label:       fmt.Sprintf("%d [空]", i+1),
 				Description: "空のスロット",
 				Exists:      false,
 			}
