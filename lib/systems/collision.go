@@ -7,6 +7,7 @@ import (
 	"math"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -14,6 +15,12 @@ import (
 
 // CollisionSystem はプレイヤーと敵の衝突を検出し、戦闘遷移を発火する
 func CollisionSystem(world w.World) {
+	// デバッグモードが有効な場合はエンカウントを発生させない
+	cfg := config.Get()
+	if cfg.Debug {
+		return
+	}
+
 	// 既に戦闘遷移イベントが設定されている場合は処理しない
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	if gameResources.GetStateEvent() != resources.StateEventNone {
