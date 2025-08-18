@@ -15,19 +15,19 @@ import (
 
 // コンポーネント名の定数
 const (
-	ComponentAIVision          = "AIVision"
-	ComponentOperator          = "Operator"
-	ComponentBlockView         = "BlockView"
-	ComponentBlockPass         = "BlockPass"
-	ComponentFactionAllyData   = "FactionAllyData"
-	ComponentFactionEnemyData  = "FactionEnemyData"
-	ComponentInParty           = "InParty"
-	ComponentItem              = "Item"
+	ComponentAIVision           = "AIVision"
+	ComponentOperator           = "Operator"
+	ComponentBlockView          = "BlockView"
+	ComponentBlockPass          = "BlockPass"
+	ComponentFactionAllyData    = "FactionAllyData"
+	ComponentFactionEnemyData   = "FactionEnemyData"
+	ComponentInParty            = "InParty"
+	ComponentItem               = "Item"
 	ComponentLocationInBackpack = "LocationInBackpack"
-	ComponentLocationEquipped  = "LocationEquipped"
-	ComponentLocationOnField   = "LocationOnField"
-	ComponentLocationNone      = "LocationNone"
-	ComponentEquipmentChanged  = "EquipmentChanged"
+	ComponentLocationEquipped   = "LocationEquipped"
+	ComponentLocationOnField    = "LocationOnField"
+	ComponentLocationNone       = "LocationNone"
+	ComponentEquipmentChanged   = "EquipmentChanged"
 )
 
 // Data はセーブデータの最上位構造
@@ -400,7 +400,7 @@ func (sm *SerializationManager) processEntityReferences(data interface{}, typeIn
 		if equipped, ok := data.(gc.LocationEquipped); ok {
 			ownerStableID := sm.stableIDManager.GetStableID(equipped.Owner)
 			equippedRef := struct {
-				OwnerRef      StableID                 `json:"owner_ref"`
+				OwnerRef      StableID               `json:"owner_ref"`
 				EquipmentSlot gc.EquipmentSlotNumber `json:"equipment_slot"`
 			}{
 				OwnerRef:      ownerStableID,
@@ -599,7 +599,7 @@ func (sm *SerializationManager) resolveEntityReferences(world w.World, entity ec
 		}
 
 		var equippedRef struct {
-			OwnerRef      StableID                 `json:"owner_ref"`
+			OwnerRef      StableID               `json:"owner_ref"`
 			EquipmentSlot gc.EquipmentSlotNumber `json:"equipment_slot"`
 		}
 

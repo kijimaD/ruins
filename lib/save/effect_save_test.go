@@ -93,7 +93,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		healing := newWorld.Components.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
-		
+
 		switch name.Name {
 		case "回復薬":
 			// Amount インターフェースの型を確認
@@ -119,7 +119,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		damage := newWorld.Components.InflictsDamage.Get(entity).(*gc.InflictsDamage)
-		
+
 		switch name.Name {
 		case "手榴弾":
 			assert.Equal(t, 30, damage.Amount)
@@ -139,7 +139,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		consumable := newWorld.Components.Consumable.Get(entity).(*gc.Consumable)
-		
+
 		switch name.Name {
 		case "回復薬":
 			assert.Equal(t, gc.UsableSceneAny, consumable.UsableScene)

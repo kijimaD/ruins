@@ -106,8 +106,8 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 			ThrottleMode: gc.ThrottleModeFront,
 		},
 		SpriteRender: &gc.SpriteRender{
-			SpriteNumber:    0,
-			Name: "test",
+			SpriteNumber: 0,
+			Name:         "test",
 		},
 	})
 	playerEntities := entities.AddEntities(world, cl)
@@ -122,8 +122,8 @@ func TestCollisionSystemWithVelocityStop(t *testing.T) {
 			ThrottleMode: gc.ThrottleModeFront,
 		},
 		SpriteRender: &gc.SpriteRender{
-			SpriteNumber:    0,
-			Name: "test",
+			SpriteNumber: 0,
+			Name:         "test",
 		},
 	})
 	enemyEntities := entities.AddEntities(world, cl2)

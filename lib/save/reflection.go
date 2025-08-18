@@ -71,7 +71,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationNone{}), components.ItemLocationNone)
 	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, r.resolveLocationEquippedRefs)
-	
+
 	// 装備変更フラグ
 	r.registerNullComponent(reflect.TypeOf(&gc.EquipmentChanged{}), components.EquipmentChanged)
 
@@ -581,7 +581,7 @@ func (r *ComponentRegistry) extractProvidesHealing(world w.World, entity ecs.Ent
 		return nil, false
 	}
 	healing := world.Components.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
-	
+
 	// Amounterインターフェースを具体的な型に変換してシリアライズ
 	var amountData map[string]interface{}
 	switch a := healing.Amount.(type) {
@@ -602,7 +602,7 @@ func (r *ComponentRegistry) extractProvidesHealing(world w.World, entity ecs.Ent
 			"ratio": 0.5,
 		}
 	}
-	
+
 	return map[string]interface{}{
 		"amount": amountData,
 	}, true
@@ -613,12 +613,12 @@ func (r *ComponentRegistry) restoreProvidesHealing(world w.World, entity ecs.Ent
 	if !ok {
 		return fmt.Errorf("invalid ProvidesHealing data type: %T", data)
 	}
-	
+
 	amountData, ok := dataMap["amount"].(map[string]interface{})
 	if !ok {
 		return fmt.Errorf("invalid ProvidesHealing amount data")
 	}
-	
+
 	var amount gc.Amounter
 	amountType, _ := amountData["type"].(string)
 	switch amountType {
@@ -633,7 +633,7 @@ func (r *ComponentRegistry) restoreProvidesHealing(world w.World, entity ecs.Ent
 	default:
 		return fmt.Errorf("unknown amount type: %s", amountType)
 	}
-	
+
 	healing := &gc.ProvidesHealing{
 		Amount: amount,
 	}

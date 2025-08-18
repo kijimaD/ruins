@@ -109,7 +109,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		// 装備情報を確認
 		equipped := newWorld.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		assert.Equal(t, gc.EquipmentSlotNumber(0), equipped.EquipmentSlot)
-		
+
 		// Owner参照が復元されていることを確認
 		assert.NotEqual(t, ecs.Entity(0), equipped.Owner, "Owner参照が復元されていない")
 		loadedOwner = equipped.Owner
@@ -129,12 +129,12 @@ func TestSaveLoadItemLocations(t *testing.T) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		assert.Equal(t, "テストキャラ", name.Name)
-		
+
 		// この"キャラクター"が装備のOwnerとして正しく参照されていることを確認
 		if loadedOwner != 0 {
 			assert.Equal(t, entity, loadedOwner, "装備のOwner参照が正しいキャラクターを指していない")
 		}
-		
+
 		characterCount++
 	}))
 	assert.Equal(t, 1, characterCount, "キャラクターが正しくロードされていない")

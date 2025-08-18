@@ -31,10 +31,10 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 	character.AddComponent(w.Components.FactionAlly, &gc.FactionAllyData{})
 	character.AddComponent(w.Components.InParty, &gc.InParty{})
 	character.AddComponent(w.Components.Pools, &gc.Pools{
-		HP:      gc.Pool{Max: 120, Current: 100},
-		SP:      gc.Pool{Max: 50, Current: 50},
-		XP:      75,  // 75XP保持している状態
-		Level:   3,   // レベル3
+		HP:    gc.Pool{Max: 120, Current: 100},
+		SP:    gc.Pool{Max: 50, Current: 50},
+		XP:    75, // 75XP保持している状態
+		Level: 3,  // レベル3
 	})
 
 	// 別のキャラクターも作成（レベルアップ直後の状態をシミュレート）
@@ -43,10 +43,10 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 	character2.AddComponent(w.Components.FactionAlly, &gc.FactionAllyData{})
 	character2.AddComponent(w.Components.InParty, &gc.InParty{})
 	character2.AddComponent(w.Components.Pools, &gc.Pools{
-		HP:      gc.Pool{Max: 100, Current: 80},
-		SP:      gc.Pool{Max: 40, Current: 40},
-		XP:      0,   // レベルアップでリセットされた状態
-		Level:   2,   // レベル2
+		HP:    gc.Pool{Max: 100, Current: 80},
+		SP:    gc.Pool{Max: 40, Current: 40},
+		XP:    0, // レベルアップでリセットされた状態
+		Level: 2, // レベル2
 	})
 
 	// セーブマネージャーを作成
@@ -77,7 +77,7 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		pools := newWorld.Components.Pools.Get(entity).(*gc.Pools)
-		
+
 		switch name.Name {
 		case "テストキャラ":
 			assert.Equal(t, 100, pools.HP.Current, "HPが正しく復元されていない")
