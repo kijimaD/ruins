@@ -92,10 +92,7 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	}
 
 	// ワールドデータを抽出
-	worldData, err := sm.extractWorldData(world)
-	if err != nil {
-		return fmt.Errorf("failed to extract world data: %w", err)
-	}
+	worldData := sm.extractWorldData(world)
 
 	// セーブデータを作成
 	saveData := Data{
@@ -161,7 +158,9 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 }
 
 // extractWorldData はワールドからセーブデータを抽出
-func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, error) {
+//
+//nolint:gocyclo // コンポーネント種別ごとの処理が必要なため複雑度が高い
+func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 	entities := []EntitySaveData{}
 	processedEntities := make(map[ecs.Entity]bool) // 重複処理防止
 
@@ -336,7 +335,7 @@ func (sm *SerializationManager) extractWorldData(world w.World) (WorldSaveData, 
 
 	return WorldSaveData{
 		Entities: entities,
-	}, nil
+	}
 }
 
 // processEntityForSave はエンティティを処理してセーブデータに追加
