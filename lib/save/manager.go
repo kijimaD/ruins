@@ -659,32 +659,12 @@ func (sm *SerializationManager) clearWorld(world w.World) {
 
 // SaveFileExists はセーブファイルが存在するかチェックする
 func (sm *SerializationManager) SaveFileExists(slotName string) bool {
-	if runtime.GOOS == "js" {
-		// WASM環境の場合はローカルストレージをチェック
-		return sm.saveFileExistsWasm(slotName)
-	}
-
-	// デスクトップ環境の場合はファイルをチェック
-	fileName := filepath.Join(sm.saveDirectory, slotName+".json")
-	_, err := os.Stat(fileName)
-	return err == nil
+	return sm.saveFileExistsImpl(slotName)
 }
 
 // GetSaveFileTimestamp はセーブファイルのタイムスタンプを取得する
 func (sm *SerializationManager) GetSaveFileTimestamp(slotName string) (time.Time, error) {
-	if runtime.GOOS == "js" {
-		// WASM環境の場合はローカルストレージからデータを読み込んで解析
-		return sm.getSaveFileTimestampWasm(slotName)
-	}
-
-	// デスクトップ環境の場合はファイルの更新時刻を使用
-	fileName := filepath.Join(sm.saveDirectory, slotName+".json")
-	fileInfo, err := os.Stat(fileName)
-	if err != nil {
-		return time.Time{}, fmt.Errorf("failed to get file info: %w", err)
-	}
-
-	return fileInfo.ModTime(), nil
+	return sm.getSaveFileTimestampImpl(slotName)
 }
 
 // GetStableIDManager は安定IDマネージャーを取得

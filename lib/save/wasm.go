@@ -55,8 +55,8 @@ func (sm *SerializationManager) loadFromLocalStorage(slotName string) ([]byte, e
 	return []byte(item.String()), nil
 }
 
-// saveFileExistsWasm はWASM環境でセーブファイルが存在するかチェックする
-func (sm *SerializationManager) saveFileExistsWasm(slotName string) bool {
+// saveFileExistsImpl はWASM環境でセーブファイルが存在するかチェックする
+func (sm *SerializationManager) saveFileExistsImpl(slotName string) bool {
 	localStorage := js.Global().Get("localStorage")
 	if localStorage.IsUndefined() {
 		return false
@@ -67,8 +67,8 @@ func (sm *SerializationManager) saveFileExistsWasm(slotName string) bool {
 	return !item.IsNull()
 }
 
-// getSaveFileTimestampWasm はWASM環境でセーブファイルのタイムスタンプを取得する
-func (sm *SerializationManager) getSaveFileTimestampWasm(slotName string) (time.Time, error) {
+// getSaveFileTimestampImpl はWASM環境でセーブファイルのタイムスタンプを取得する
+func (sm *SerializationManager) getSaveFileTimestampImpl(slotName string) (time.Time, error) {
 	data, err := sm.loadFromLocalStorage(slotName)
 	if err != nil {
 		return time.Time{}, err
