@@ -99,16 +99,26 @@ func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
 
 // createMenuButton はメニューボタンを作成する
 func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
-	btn := eui.NewButton(
-		item.Label,
-		b.world,
+	res := b.world.Resources.UIResources
+	btn := widget.NewButton(
+		widget.ButtonOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true,
+			}),
+			widget.WidgetOpts.MinSize(100, 28),
+		),
+		widget.ButtonOpts.Image(res.Button.Image),
+		widget.ButtonOpts.Text(
+			item.Label,
+			res.Button.Face,
+			res.Button.Text,
+		),
+		widget.ButtonOpts.TextPadding(res.Button.Padding),
+		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter), // 左寄せ
 		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 			menu.SetFocusedIndex(index)
 			menu.selectCurrent()
 		}),
-		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(100, 28),
-		),
 	)
 
 	// 無効化されたアイテムの処理
