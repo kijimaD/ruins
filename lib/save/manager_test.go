@@ -307,45 +307,45 @@ func TestValidJSONButNoChecksum(t *testing.T) {
 func TestChecksumValidation(t *testing.T) {
 	t.Parallel()
 	world := createTestWorld()
-	
+
 	// テスト用のセーブディレクトリ
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
-	
+
 	// テストエンティティを作成
 	entity := world.Manager.NewEntity()
 	world.Components.Name.Set(entity, &gc.Name{Name: "TestEntity"})
-	
+
 	// セーブ実行
 	err := manager.SaveWorld(world, "test_checksum")
 	require.NoError(t, err)
-	
+
 	// セーブファイルを読み込み
 	data, err := manager.loadDataImpl("test_checksum")
 	require.NoError(t, err)
-	
+
 	// JSONをパース
 	var saveData Data
 	err = json.Unmarshal(data, &saveData)
 	require.NoError(t, err)
-	
+
 	// 正常なチェックサム検証
 	err = manager.validateChecksum(&saveData)
 	assert.NoError(t, err)
-	
+
 	// チェックサムを改ざん
 	originalChecksum := saveData.Checksum
 	saveData.Checksum = "invalid_checksum"
-	
+
 	// 改ざんされたチェックサムでの検証（失敗するはず）
 	err = manager.validateChecksum(&saveData)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "checksum mismatch")
-	
+
 	// データを改ざん（チェックサムは元に戻す）
 	saveData.Checksum = originalChecksum
 	saveData.Version = "tampered_version"
-	
+
 	// データ改ざんでの検証（失敗するはず）
 	err = manager.validateChecksum(&saveData)
 	assert.Error(t, err)
@@ -355,37 +355,37 @@ func TestChecksumValidation(t *testing.T) {
 func TestTamperedSaveDataLoad(t *testing.T) {
 	t.Parallel()
 	world := createTestWorld()
-	
+
 	// テスト用のセーブディレクトリ
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
-	
+
 	// テストエンティティを作成
 	entity := world.Manager.NewEntity()
 	world.Components.Name.Set(entity, &gc.Name{Name: "TestEntity"})
-	
+
 	// セーブ実行
 	err := manager.SaveWorld(world, "test_tampered")
 	require.NoError(t, err)
-	
+
 	// セーブファイルを直接読み込み・改ざん
 	data, err := manager.loadDataImpl("test_tampered")
 	require.NoError(t, err)
-	
+
 	var saveData Data
 	err = json.Unmarshal(data, &saveData)
 	require.NoError(t, err)
-	
+
 	// データを改ざん
 	saveData.Version = "hacked_version"
-	
+
 	// 改ざんされたデータを書き戻し
 	tamperedData, err := json.MarshalIndent(saveData, "", "  ")
 	require.NoError(t, err)
-	
+
 	err = manager.saveDataImpl("test_tampered", tamperedData)
 	require.NoError(t, err)
-	
+
 	// 改ざんされたデータのロードを試行（失敗するはず）
 	err = manager.LoadWorld(world, "test_tampered")
 	assert.Error(t, err)
@@ -395,44 +395,44 @@ func TestTamperedSaveDataLoad(t *testing.T) {
 func TestDeterministicHashCalculation(t *testing.T) {
 	t.Parallel()
 	world := createTestWorld()
-	
+
 	// テスト用のセーブディレクトリ
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
-	
+
 	// 同じテストエンティティを作成
 	entity1 := world.Manager.NewEntity()
 	world.Components.Name.Set(entity1, &gc.Name{Name: "TestEntity1"})
 	entity2 := world.Manager.NewEntity()
 	world.Components.Name.Set(entity2, &gc.Name{Name: "TestEntity2"})
-	
+
 	// セーブを複数回実行
 	err := manager.SaveWorld(world, "test_deterministic_1")
 	require.NoError(t, err)
-	
+
 	err = manager.SaveWorld(world, "test_deterministic_2")
 	require.NoError(t, err)
-	
+
 	// 両方のセーブファイルを読み込み
 	data1, err := manager.loadDataImpl("test_deterministic_1")
 	require.NoError(t, err)
-	
+
 	data2, err := manager.loadDataImpl("test_deterministic_2")
 	require.NoError(t, err)
-	
+
 	var saveData1, saveData2 Data
 	err = json.Unmarshal(data1, &saveData1)
 	require.NoError(t, err)
 	err = json.Unmarshal(data2, &saveData2)
 	require.NoError(t, err)
-	
+
 	// タイムスタンプを除いてチェックサムを再計算
 	// 同じワールド状態であれば、同じチェックサムが生成されるはず
 	saveData1.Timestamp = saveData2.Timestamp // タイムスタンプを同一にする
-	
+
 	checksum1 := manager.calculateChecksum(&saveData1)
 	checksum2 := manager.calculateChecksum(&saveData2)
-	
+
 	// 決定的ハッシュなので、同じデータからは同じハッシュが生成されるはず
 	assert.Equal(t, checksum1, checksum2, "同じワールド状態からは同じチェックサムが生成されるべき")
 }
@@ -440,28 +440,28 @@ func TestDeterministicHashCalculation(t *testing.T) {
 func TestHashConsistencyAcrossRuns(t *testing.T) {
 	t.Parallel()
 	world := createTestWorld()
-	
+
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
-	
+
 	// テストエンティティを作成（複数のコンポーネント付き）
 	entity := world.Manager.NewEntity()
 	world.Components.Name.Set(entity, &gc.Name{Name: "ConsistencyTest"})
 	world.Components.Position.Set(entity, &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(200)})
-	
+
 	// ワールドデータを抽出
 	worldData := manager.extractWorldData(world)
-	
+
 	// 同じデータから複数回ハッシュを計算
 	data := Data{
 		Version: "1.0.0",
 		World:   worldData,
 	}
-	
+
 	hash1 := manager.calculateChecksum(&data)
 	hash2 := manager.calculateChecksum(&data)
 	hash3 := manager.calculateChecksum(&data)
-	
+
 	// 同じデータからは必ず同じハッシュが生成されるはず
 	assert.Equal(t, hash1, hash2, "同一データから生成されるハッシュは一致するべき")
 	assert.Equal(t, hash2, hash3, "同一データから生成されるハッシュは一致するべき")
@@ -472,7 +472,7 @@ func TestMissingChecksumValidation(t *testing.T) {
 	t.Parallel()
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
-	
+
 	// チェックサムなしのセーブデータを作成
 	saveDataWithoutChecksum := Data{
 		Version:   "1.0.0",
@@ -482,7 +482,7 @@ func TestMissingChecksumValidation(t *testing.T) {
 		},
 		// Checksumフィールドは空
 	}
-	
+
 	// チェックサム検証（失敗するはず）
 	err := manager.validateChecksum(&saveDataWithoutChecksum)
 	assert.Error(t, err)
@@ -494,29 +494,29 @@ func TestOldSaveDataWithoutChecksum(t *testing.T) {
 	world := createTestWorld()
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
-	
+
 	// テストエンティティを作成
 	entity := world.Manager.NewEntity()
 	world.Components.Name.Set(entity, &gc.Name{Name: "TestEntity"})
-	
+
 	// チェックサムなしの古いフォーマットのセーブデータを手動作成
 	oldFormatData := map[string]interface{}{
-		"version":   "1.0.0", 
+		"version":   "1.0.0",
 		"timestamp": time.Now().Format(time.RFC3339),
 		"world": map[string]interface{}{
 			"entities": []interface{}{},
 		},
 		// checksumフィールドなし
 	}
-	
+
 	// JSONにシリアライズ
 	oldFormatJSON, err := json.MarshalIndent(oldFormatData, "", "  ")
 	require.NoError(t, err)
-	
+
 	// セーブファイルとして書き込み
 	err = manager.saveDataImpl("old_format_test", oldFormatJSON)
 	require.NoError(t, err)
-	
+
 	// 古いフォーマットのロードを試行（失敗するはず）
 	err = manager.LoadWorld(world, "old_format_test")
 	assert.Error(t, err)

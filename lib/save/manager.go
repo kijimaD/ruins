@@ -664,24 +664,24 @@ func (sm *SerializationManager) calculateChecksum(data *Data) string {
 // calculateDeterministicHash は決定的な順序でハッシュを計算する
 func (sm *SerializationManager) calculateDeterministicHash(data *Data) string {
 	hashParts := make([]string, 0, len(data.World.Entities)+1)
-	
+
 	// バージョン情報
 	hashParts = append(hashParts, fmt.Sprintf("version:%s", data.Version))
-	
+
 	// エンティティを StableID の Index でソート
 	entities := make([]EntitySaveData, len(data.World.Entities))
 	copy(entities, data.World.Entities)
-	
+
 	sort.Slice(entities, func(i, j int) bool {
 		return entities[i].StableID.Index < entities[j].StableID.Index
 	})
-	
+
 	// 各エンティティのハッシュを計算
 	for _, entity := range entities {
 		entityHash := sm.calculateEntityHash(entity)
 		hashParts = append(hashParts, fmt.Sprintf("entity:%s", entityHash))
 	}
-	
+
 	// 全体のハッシュを計算
 	finalData := fmt.Sprintf("checksum_data:%s", fmt.Sprintf("%v", hashParts))
 	hash := sha256.Sum256([]byte(finalData))
@@ -691,24 +691,24 @@ func (sm *SerializationManager) calculateDeterministicHash(data *Data) string {
 // calculateEntityHash は単一エンティティの決定的ハッシュを計算する
 func (sm *SerializationManager) calculateEntityHash(entity EntitySaveData) string {
 	parts := make([]string, 0, len(entity.Components)+1)
-	
+
 	// StableID
 	parts = append(parts, fmt.Sprintf("stable_id:%d:%d", entity.StableID.Index, entity.StableID.Generation))
-	
+
 	// コンポーネント名をソート
 	componentNames := make([]string, 0, len(entity.Components))
 	for name := range entity.Components {
 		componentNames = append(componentNames, name)
 	}
 	sort.Strings(componentNames)
-	
+
 	// 各コンポーネントのハッシュを計算
 	for _, name := range componentNames {
 		component := entity.Components[name]
 		componentHash := sm.calculateComponentHash(name, component)
 		parts = append(parts, fmt.Sprintf("component:%s:%s", name, componentHash))
 	}
-	
+
 	entityData := fmt.Sprintf("entity_data:%s", fmt.Sprintf("%v", parts))
 	hash := sha256.Sum256([]byte(entityData))
 	return hex.EncodeToString(hash[:])
@@ -718,7 +718,7 @@ func (sm *SerializationManager) calculateEntityHash(entity EntitySaveData) strin
 func (sm *SerializationManager) calculateComponentHash(name string, component ComponentData) string {
 	// シンプルな実装: コンポーネント名とデータサイズでハッシュ計算
 	// より厳密には、データの内容を決定的にシリアライズする必要がある
-	
+
 	var dataSize int
 	if component.Data != nil {
 		// JSON marshal でサイズを概算
@@ -726,7 +726,7 @@ func (sm *SerializationManager) calculateComponentHash(name string, component Co
 			dataSize = len(jsonBytes)
 		}
 	}
-	
+
 	hashData := fmt.Sprintf("component:%s:size:%d", name, dataSize)
 	hash := sha256.Sum256([]byte(hashData))
 	return hex.EncodeToString(hash[:])
@@ -737,15 +737,15 @@ func (sm *SerializationManager) validateChecksum(data *Data) error {
 	if data.Checksum == "" {
 		return fmt.Errorf("checksum field is missing: このセーブデータは改ざんされているか、古いバージョンです")
 	}
-	
+
 	// 現在のデータからチェックサムを計算
 	expectedChecksum := sm.calculateChecksum(data)
-	
+
 	// チェックサムを比較
 	if data.Checksum != expectedChecksum {
-		return fmt.Errorf("checksum mismatch: expected %s, got %s (データが改ざんされている可能性があります)", 
+		return fmt.Errorf("checksum mismatch: expected %s, got %s (データが改ざんされている可能性があります)",
 			expectedChecksum, data.Checksum)
 	}
-	
+
 	return nil
 }
