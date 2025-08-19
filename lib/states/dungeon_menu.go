@@ -1,6 +1,8 @@
 package states
 
 import (
+	"log"
+
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
@@ -81,7 +83,9 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			ID:          "close",
 			Label:       TextClose,
 			Description: "メニューを閉じる",
-			UserData:    es.Transition{Type: es.TransPop},
+			UserData: func() {
+				st.SetTransition(es.Transition{Type: es.TransPop})
+			},
 		},
 		{
 			// デバッグ用。本来の脱出パッドと同じ処理で拠点に戻る
@@ -112,10 +116,10 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 	callbacks := menu.Callbacks{
 		OnSelect: func(_ int, item menu.Item) {
 			switch userData := item.UserData.(type) {
-			case es.Transition:
-				st.SetTransition(userData)
 			case func():
 				userData()
+			default:
+				log.Fatal("想定していないデータ形式が指定された")
 			}
 		},
 		OnCancel: func() {
