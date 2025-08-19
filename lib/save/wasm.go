@@ -11,7 +11,7 @@ import (
 )
 
 // initializePlatform はWASM環境での初期化処理（特に何もしない）
-func (sm *SerializationManager) initializePlatform() {
+func (sm *SerializationManager) initImpl() {
 	// WASM環境ではディレクトリ作成は不要
 }
 
