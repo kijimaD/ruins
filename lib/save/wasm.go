@@ -3,11 +3,9 @@
 package save
 
 import (
-	"encoding/json"
 	"fmt"
 	"runtime"
 	"syscall/js"
-	"time"
 )
 
 // initializePlatform はWASM環境での初期化処理（特に何もしない）
@@ -70,20 +68,4 @@ func (sm *SerializationManager) saveFileExistsImpl(slotName string) bool {
 	key := fmt.Sprintf("ruins-savedata-%s", slotName)
 	item := localStorage.Call("getItem", key)
 	return !item.IsNull()
-}
-
-// getSaveFileTimestampImpl はWASM環境でセーブファイルのタイムスタンプを取得する
-func (sm *SerializationManager) getSaveFileTimestampImpl(slotName string) (time.Time, error) {
-	data, err := sm.loadDataImpl(slotName)
-	if err != nil {
-		return time.Time{}, err
-	}
-
-	var saveData Data
-	err = json.Unmarshal(data, &saveData)
-	if err != nil {
-		return time.Time{}, fmt.Errorf("failed to parse save data: %w", err)
-	}
-
-	return saveData.Timestamp, nil
 }

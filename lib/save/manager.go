@@ -646,8 +646,20 @@ func (sm *SerializationManager) SaveFileExists(slotName string) bool {
 }
 
 // GetSaveFileTimestamp はセーブファイルのタイムスタンプを取得する
+// JSONファイルの中身のtimestampフィールドを読み取る
 func (sm *SerializationManager) GetSaveFileTimestamp(slotName string) (time.Time, error) {
-	return sm.getSaveFileTimestampImpl(slotName)
+	data, err := sm.loadDataImpl(slotName)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	var saveData Data
+	err = json.Unmarshal(data, &saveData)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("failed to parse save data: %w", err)
+	}
+
+	return saveData.Timestamp, nil
 }
 
 // GetStableIDManager は安定IDマネージャーを取得
