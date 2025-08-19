@@ -34,7 +34,6 @@ type GameComponentList struct {
 	AIVision     *AIVision
 	AIChasing    *AIChasing
 	Camera       *Camera
-	Wall         *Wall
 	Warp         *Warp
 	Velocity     *Velocity
 	Position     *Position
@@ -88,7 +87,6 @@ type Components struct {
 	AIVision     *ecs.SliceComponent
 	AIChasing    *ecs.SliceComponent
 	Camera       *ecs.SliceComponent
-	Wall         *ecs.NullComponent
 	Warp         *ecs.SliceComponent
 	Velocity     *ecs.SliceComponent
 	Position     *ecs.SliceComponent
@@ -142,7 +140,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.AIVision = manager.NewSliceComponent()
 	c.AIChasing = manager.NewSliceComponent()
 	c.Camera = manager.NewSliceComponent()
-	c.Wall = manager.NewNullComponent()
 	c.Warp = manager.NewSliceComponent()
 	c.Velocity = manager.NewSliceComponent()
 	c.Position = manager.NewSliceComponent()
@@ -177,9 +174,6 @@ type Camera struct {
 	Scale   float64
 	ScaleTo float64
 }
-
-// Wall は壁
-type Wall struct{}
 
 // Warp はワープパッド
 // TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
