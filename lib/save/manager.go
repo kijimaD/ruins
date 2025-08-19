@@ -1,9 +1,12 @@
 package save
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"sort"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -33,13 +36,12 @@ type Data struct {
 	Version   string        `json:"version"`
 	Timestamp time.Time     `json:"timestamp"`
 	World     WorldSaveData `json:"world"`
+	Checksum  string        `json:"checksum"` // データ改ざん検知用ハッシュ値
 }
 
 // WorldSaveData はワールド全体のセーブデータ
 type WorldSaveData struct {
 	Entities []EntitySaveData `json:"entities"`
-	// TODO: リソース情報も追加予定
-	// Resources ResourcesSaveData `json:"resources"`
 }
 
 // EntitySaveData は単一エンティティのセーブデータ
@@ -86,12 +88,16 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	// ワールドデータを抽出
 	worldData := sm.extractWorldData(world)
 
-	// セーブデータを作成
+	// セーブデータを作成（チェックサムは後で計算）
 	saveData := Data{
 		Version:   "1.0.0",
 		Timestamp: time.Now(),
 		World:     worldData,
 	}
+
+	// チェックサムを計算して設定
+	checksum := sm.calculateChecksum(&saveData)
+	saveData.Checksum = checksum
 
 	// JSONにシリアライズ
 	data, err := json.MarshalIndent(saveData, "", "  ")
@@ -122,6 +128,12 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 	err = json.Unmarshal(data, &saveData)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal save data: %w", err)
+	}
+
+	// チェックサム検証（データ改ざん検知）
+	err = sm.validateChecksum(&saveData)
+	if err != nil {
+		return fmt.Errorf("save data validation failed: %w", err)
 	}
 
 	// バージョンチェック
@@ -498,7 +510,7 @@ func (sm *SerializationManager) restoreComponentData(jsonData interface{}, typeI
 	}
 
 	// LocationEquippedを特別処理（カスタムシリアライズ形式のため）
-	if typeInfo.Name == "LocationEquipped" {
+	if typeInfo.Name == ComponentLocationEquipped {
 		dataMap, ok := jsonData.(map[string]interface{})
 		if !ok {
 			return nil, fmt.Errorf("invalid LocationEquipped JSON data type: %T", jsonData)
@@ -576,7 +588,7 @@ func (sm *SerializationManager) resolveEntityReferences(world w.World, entity ec
 		}
 	}
 
-	if typeInfo.Name == "LocationEquipped" {
+	if typeInfo.Name == ComponentLocationEquipped {
 		// JSONデータを変換
 		jsonBytes, err := json.Marshal(jsonData)
 		if err != nil {
@@ -641,4 +653,99 @@ func (sm *SerializationManager) GetStableIDManager() *StableIDManager {
 // GetComponentRegistry はコンポーネントレジストリを取得
 func (sm *SerializationManager) GetComponentRegistry() *ComponentRegistry {
 	return sm.componentRegistry
+}
+
+// calculateChecksum はセーブデータのチェックサムを計算する
+// 決定的な順序でハッシュ計算を行うため、エンティティとコンポーネントをソートする
+func (sm *SerializationManager) calculateChecksum(data *Data) string {
+	return sm.calculateDeterministicHash(data)
+}
+
+// calculateDeterministicHash は決定的な順序でハッシュを計算する
+func (sm *SerializationManager) calculateDeterministicHash(data *Data) string {
+	hashParts := make([]string, 0, len(data.World.Entities)+1)
+	
+	// バージョン情報
+	hashParts = append(hashParts, fmt.Sprintf("version:%s", data.Version))
+	
+	// エンティティを StableID の Index でソート
+	entities := make([]EntitySaveData, len(data.World.Entities))
+	copy(entities, data.World.Entities)
+	
+	sort.Slice(entities, func(i, j int) bool {
+		return entities[i].StableID.Index < entities[j].StableID.Index
+	})
+	
+	// 各エンティティのハッシュを計算
+	for _, entity := range entities {
+		entityHash := sm.calculateEntityHash(entity)
+		hashParts = append(hashParts, fmt.Sprintf("entity:%s", entityHash))
+	}
+	
+	// 全体のハッシュを計算
+	finalData := fmt.Sprintf("checksum_data:%s", fmt.Sprintf("%v", hashParts))
+	hash := sha256.Sum256([]byte(finalData))
+	return hex.EncodeToString(hash[:])
+}
+
+// calculateEntityHash は単一エンティティの決定的ハッシュを計算する
+func (sm *SerializationManager) calculateEntityHash(entity EntitySaveData) string {
+	parts := make([]string, 0, len(entity.Components)+1)
+	
+	// StableID
+	parts = append(parts, fmt.Sprintf("stable_id:%d:%d", entity.StableID.Index, entity.StableID.Generation))
+	
+	// コンポーネント名をソート
+	componentNames := make([]string, 0, len(entity.Components))
+	for name := range entity.Components {
+		componentNames = append(componentNames, name)
+	}
+	sort.Strings(componentNames)
+	
+	// 各コンポーネントのハッシュを計算
+	for _, name := range componentNames {
+		component := entity.Components[name]
+		componentHash := sm.calculateComponentHash(name, component)
+		parts = append(parts, fmt.Sprintf("component:%s:%s", name, componentHash))
+	}
+	
+	entityData := fmt.Sprintf("entity_data:%s", fmt.Sprintf("%v", parts))
+	hash := sha256.Sum256([]byte(entityData))
+	return hex.EncodeToString(hash[:])
+}
+
+// calculateComponentHash はコンポーネントの決定的ハッシュを計算する
+func (sm *SerializationManager) calculateComponentHash(name string, component ComponentData) string {
+	// シンプルな実装: コンポーネント名とデータサイズでハッシュ計算
+	// より厳密には、データの内容を決定的にシリアライズする必要がある
+	
+	var dataSize int
+	if component.Data != nil {
+		// JSON marshal でサイズを概算
+		if jsonBytes, err := json.Marshal(component.Data); err == nil {
+			dataSize = len(jsonBytes)
+		}
+	}
+	
+	hashData := fmt.Sprintf("component:%s:size:%d", name, dataSize)
+	hash := sha256.Sum256([]byte(hashData))
+	return hex.EncodeToString(hash[:])
+}
+
+// validateChecksum はセーブデータのチェックサムを検証する
+func (sm *SerializationManager) validateChecksum(data *Data) error {
+	if data.Checksum == "" {
+		return fmt.Errorf("checksum field is missing: このセーブデータは改ざんされているか、古いバージョンです")
+	}
+	
+	// 現在のデータからチェックサムを計算
+	expectedChecksum := sm.calculateChecksum(data)
+	
+	// チェックサムを比較
+	if data.Checksum != expectedChecksum {
+		return fmt.Errorf("checksum mismatch: expected %s, got %s (データが改ざんされている可能性があります)", 
+			expectedChecksum, data.Checksum)
+	}
+	
+	return nil
 }

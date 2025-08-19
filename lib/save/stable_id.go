@@ -8,8 +8,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// StableID は安定したエンティティ識別子
-// Bevy ECSのアイデアを参考に、世代管理による安定IDを実装
+// StableID は安定エンティティ識別子
 type StableID struct {
 	Index      uint32 `json:"index"`      // エンティティのインデックス
 	Generation uint32 `json:"generation"` // 世代番号（削除/再利用時にインクリメント）
