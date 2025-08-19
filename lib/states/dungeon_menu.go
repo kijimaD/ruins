@@ -8,6 +8,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -73,20 +74,29 @@ func (st *DungeonMenuState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 // initMenu はメニューコンポーネントを初期化する
-func (st *DungeonMenuState) initMenu(_ w.World) {
+func (st *DungeonMenuState) initMenu(world w.World) {
 	// メニュー項目の定義
 	items := []menu.Item{
 		{
 			ID:          "close",
 			Label:       TextClose,
-			Description: "ダンジョンメニューを閉じる",
+			Description: "メニューを閉じる",
 			UserData:    es.Transition{Type: es.TransPop},
 		},
 		{
+			// デバッグ用。本来の脱出パッドと同じ処理で拠点に戻る
 			ID:          "exit",
-			Label:       "終了",
-			Description: "メインメニューに戻る",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}},
+			Label:       "脱出",
+			Description: "脱出する",
+			UserData: func() {
+				// DungeonリソースにStateEventを設定
+				gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+				gameResources.SetStateEvent(resources.StateEventWarpEscape)
+
+				// DungeonStateに戻る
+				// メニューから戻ってDungeonStateにいかないと、DungeonStateのOnStopが呼ばれず、エンティティの解放漏れが起こる
+				st.SetTransition(es.Transition{Type: es.TransPop})
+			},
 		},
 	}
 
@@ -101,8 +111,11 @@ func (st *DungeonMenuState) initMenu(_ w.World) {
 	// コールバック設定
 	callbacks := menu.Callbacks{
 		OnSelect: func(_ int, item menu.Item) {
-			if trans, ok := item.UserData.(es.Transition); ok {
-				st.SetTransition(trans)
+			switch userData := item.UserData.(type) {
+			case es.Transition:
+				st.SetTransition(userData)
+			case func():
+				userData()
 			}
 		},
 		OnCancel: func() {
