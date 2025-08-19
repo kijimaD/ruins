@@ -12,7 +12,9 @@ BUILDER_IMAGE_NAME=base
 APP_NAME=ruins
 
 # 変数的
-APP_VERSION=v0.0.0
+APP_VERSION=v0.0.0  # タグ
+APP_COMMIT=0000000  # 短縮ハッシュ
+APP_DATE=`date +%Y-%m-%d` # 日付
 
 cd `dirname $0`
 cd ../
@@ -25,6 +27,7 @@ function is_git_repo {
 
 if [ $(is_git_repo) = "true" ]; then
     APP_VERSION=`git describe --tag --abbrev=0`
+    APP_COMMIT=`git rev-parse --short HEAD`
 fi
 
 # ================
@@ -46,7 +49,7 @@ cmd() {
            --env GOARCH=$goarch \
            --env CGO_ENABLED=$cgo \
            $BUILDER_IMAGE_NAME \
-           go build -o $output -buildvcs=false -ldflags "-X github.com/kijimaD/ruins/lib/consts.AppVersion=$APP_VERSION" .
+           go build -o $output -buildvcs=false -ldflags "-X github.com/kijimaD/ruins/lib/consts.AppVersion=$APP_VERSION -X github.com/kijimaD/ruins/lib/consts.AppCommit=$APP_COMMIT -X github.com/kijimaD/ruins/lib/consts.AppDate=$APP_DATE" .
 }
 
 start() {
