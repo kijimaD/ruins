@@ -2,12 +2,15 @@ package states
 
 import (
 	"image/color"
+	"strings"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -155,6 +158,31 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 		),
 	)
 
+	// バージョン表示テキストを作成
+	versionInfo := []string{}
+	if consts.AppVersion != "v0.0.0" {
+		versionInfo = append(versionInfo, consts.AppVersion)
+	}
+	if consts.AppCommit != "0000000" {
+		versionInfo = append(versionInfo, consts.AppCommit)
+	}
+	if consts.AppDate != "0000-00-00" {
+		versionInfo = append(versionInfo, consts.AppDate)
+	}
+	versionText := widget.NewText(
+		widget.TextOpts.Text(strings.Join(versionInfo, "\n"), world.Resources.UIResources.Text.SmallFace, styles.SecondaryColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionEnd,
+				VerticalPosition:   widget.AnchorLayoutPositionEnd,
+				Padding: widget.Insets{
+					Right:  20, // 画面右端から20ピクセル左に配置
+					Bottom: 20, // 画面下端から20ピクセル上に配置
+				},
+			}),
+		),
+	)
+
 	// ラッパーコンテナを作成(メニューの位置指定のため)
 	wrapperContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
@@ -174,9 +202,10 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 	// メニューコンテナをラッパーに追加
 	wrapperContainer.AddChild(menuContainer)
 
-	// タイトルテキストとメニューをrootContainerに追加
+	// タイトルテキスト、メニュー、バージョンテキストをrootContainerに追加
 	rootContainer.AddChild(titleText)
 	rootContainer.AddChild(wrapperContainer)
+	rootContainer.AddChild(versionText)
 
 	return &ebitenui.UI{Container: rootContainer}
 }
