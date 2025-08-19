@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-// saveToLocalStorage はWASM環境でローカルストレージにデータを保存する
-func (sm *SerializationManager) saveToLocalStorage(slotName string, data []byte) error {
+// saveDataImpl はWASM環境でローカルストレージにデータを保存する
+func (sm *SerializationManager) saveDataImpl(slotName string, data []byte) error {
 	if runtime.GOOS != "js" {
 		return fmt.Errorf("localStorage is only available in WASM environment")
 	}
@@ -31,8 +31,8 @@ func (sm *SerializationManager) saveToLocalStorage(slotName string, data []byte)
 	return nil
 }
 
-// loadFromLocalStorage はWASM環境でローカルストレージからデータを読み込む
-func (sm *SerializationManager) loadFromLocalStorage(slotName string) ([]byte, error) {
+// loadDataImpl はWASM環境でローカルストレージからデータを読み込む
+func (sm *SerializationManager) loadDataImpl(slotName string) ([]byte, error) {
 	if runtime.GOOS != "js" {
 		return nil, fmt.Errorf("localStorage is only available in WASM environment")
 	}
@@ -69,7 +69,7 @@ func (sm *SerializationManager) saveFileExistsImpl(slotName string) bool {
 
 // getSaveFileTimestampImpl はWASM環境でセーブファイルのタイムスタンプを取得する
 func (sm *SerializationManager) getSaveFileTimestampImpl(slotName string) (time.Time, error) {
-	data, err := sm.loadFromLocalStorage(slotName)
+	data, err := sm.loadDataImpl(slotName)
 	if err != nil {
 		return time.Time{}, err
 	}

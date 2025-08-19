@@ -9,14 +9,32 @@ import (
 	"time"
 )
 
-// saveToLocalStorage はデスクトップ環境では使用できない
-func (sm *SerializationManager) saveToLocalStorage(_ string, _ []byte) error {
-	return fmt.Errorf("localStorage is not available in desktop environment")
+// saveDataImpl はデスクトップ環境でファイルシステムにデータを保存する
+func (sm *SerializationManager) saveDataImpl(slotName string, data []byte) error {
+	// 保存ディレクトリを作成
+	err := os.MkdirAll(sm.saveDirectory, 0755)
+	if err != nil {
+		return fmt.Errorf("failed to create save directory: %w", err)
+	}
+
+	// ファイルに書き込み
+	fileName := filepath.Join(sm.saveDirectory, slotName+".json")
+	err = os.WriteFile(fileName, data, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write save file: %w", err)
+	}
+
+	return nil
 }
 
-// loadFromLocalStorage はデスクトップ環境では使用できない
-func (sm *SerializationManager) loadFromLocalStorage(_ string) ([]byte, error) {
-	return nil, fmt.Errorf("localStorage is not available in desktop environment")
+// loadDataImpl はデスクトップ環境でファイルシステムからデータを読み込む
+func (sm *SerializationManager) loadDataImpl(slotName string) ([]byte, error) {
+	fileName := filepath.Join(sm.saveDirectory, slotName+".json")
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read save file: %w", err)
+	}
+	return data, nil
 }
 
 // saveFileExistsImpl はデスクトップ環境でセーブファイルが存在するかチェックする

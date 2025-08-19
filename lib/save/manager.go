@@ -3,10 +3,7 @@ package save
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
 	"reflect"
-	"runtime"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -102,28 +99,8 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 		return fmt.Errorf("failed to marshal save data: %w", err)
 	}
 
-	// WASM環境の場合はローカルストレージに保存
-	if runtime.GOOS == "js" {
-		return sm.saveToLocalStorage(slotName, data)
-	}
-
-	// デスクトップ環境の場合はファイルに保存
-	// 保存ディレクトリを作成(WASM環境ではスキップ)
-	if runtime.GOOS != "js" {
-		err = os.MkdirAll(sm.saveDirectory, 0755)
-		if err != nil {
-			return fmt.Errorf("failed to create save directory: %w", err)
-		}
-	}
-
-	// ファイルに書き込み
-	fileName := filepath.Join(sm.saveDirectory, slotName+".json")
-	err = os.WriteFile(fileName, data, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to write save file: %w", err)
-	}
-
-	return nil
+	// プラットフォーム固有の保存処理を実行
+	return sm.saveDataImpl(slotName, data)
 }
 
 // LoadWorld はファイルからワールドを復元
@@ -134,21 +111,10 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 		return fmt.Errorf("failed to initialize component registry: %w", err)
 	}
 
-	var data []byte
-
-	// WASM環境の場合はローカルストレージから読み込み
-	if runtime.GOOS == "js" {
-		data, err = sm.loadFromLocalStorage(slotName)
-		if err != nil {
-			return fmt.Errorf("failed to load from localStorage: %w", err)
-		}
-	} else {
-		// デスクトップ環境の場合はファイルから読み込み
-		fileName := filepath.Join(sm.saveDirectory, slotName+".json")
-		data, err = os.ReadFile(fileName)
-		if err != nil {
-			return fmt.Errorf("failed to read save file: %w", err)
-		}
+	// プラットフォーム固有のデータ読み込み処理を実行
+	data, err := sm.loadDataImpl(slotName)
+	if err != nil {
+		return fmt.Errorf("failed to load save data: %w", err)
 	}
 
 	// JSONをパース
