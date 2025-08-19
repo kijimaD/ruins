@@ -100,7 +100,7 @@ func TestSaveSlotInfo(t *testing.T) {
 	saveMenu.saveManager = saveManager
 
 	// 初期状態（セーブファイルなし）
-	slots := saveMenu.getSaveSlotInfoFromDir(testDir)
+	slots := saveMenu.getSaveSlotInfo()
 	assert.Len(t, slots, 3)
 	for i, slot := range slots {
 		assert.Equal(t, false, slot.Exists)
@@ -114,7 +114,7 @@ func TestSaveSlotInfo(t *testing.T) {
 	require.NoError(t, err)
 
 	// セーブファイル作成後の状態
-	slots = saveMenu.getSaveSlotInfoFromDir(testDir)
+	slots = saveMenu.getSaveSlotInfo()
 	assert.True(t, slots[0].Exists, "Slot 1 should exist")
 	assert.Contains(t, slots[0].Label, "1 [")
 	assert.NotContains(t, slots[0].Label, "[空]")

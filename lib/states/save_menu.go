@@ -74,7 +74,7 @@ func (st *SaveMenuState) Draw(world w.World, screen *ebiten.Image) {
 // initMenu はメニューコンポーネントを初期化する
 func (st *SaveMenuState) initMenu(world w.World) {
 	// セーブスロットの情報を取得
-	saveSlots := st.getSaveSlotInfoFromDir("./saves")
+	saveSlots := st.getSaveSlotInfo()
 
 	// メニュー項目の定義
 	items := make([]menu.Item, 0, len(saveSlots)+1)
@@ -156,8 +156,8 @@ type SaveSlotInfo struct {
 	Exists      bool
 }
 
-// getSaveSlotInfoFromDir は指定ディレクトリからセーブスロット情報を取得する
-func (st *SaveMenuState) getSaveSlotInfoFromDir(saveDir string) []SaveSlotInfo {
+// getSaveSlotInfo はセーブスロット情報を取得する
+func (st *SaveMenuState) getSaveSlotInfo() []SaveSlotInfo {
 	slots := make([]SaveSlotInfo, 3) // 3つのセーブスロット
 	for i := 0; i < 3; i++ {
 		slotName := fmt.Sprintf("slot%d", i+1)
