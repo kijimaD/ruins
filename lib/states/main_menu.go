@@ -78,6 +78,11 @@ func (st *MainMenuState) initMenu(world w.World) {
 			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}},
 		},
 		{
+			ID:       "load",
+			Label:    "読込",
+			UserData: es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewLoadMenuState}},
+		},
+		{
 			ID:       "intro",
 			Label:    "導入",
 			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewIntroState}},

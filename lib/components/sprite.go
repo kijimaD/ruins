@@ -52,9 +52,10 @@ type SpriteSheet struct {
 }
 
 // SpriteRender component
+// コンポーネントはセーブ&ロード時のシリアライズが必要なので、ファイル類をそのまま保存できない
 type SpriteRender struct {
-	// スプライトシートファイル
-	SpriteSheet *SpriteSheet
+	// スプライトシート名(画像データはResourcesから取得)
+	Name string
 	// スプライトシートでのインデックス
 	SpriteNumber int
 	// 描画順。小さい順に先に(下に)描画する

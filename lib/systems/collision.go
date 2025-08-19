@@ -7,6 +7,7 @@ import (
 	"math"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -14,6 +15,12 @@ import (
 
 // CollisionSystem はプレイヤーと敵の衝突を検出し、戦闘遷移を発火する
 func CollisionSystem(world w.World) {
+	// デバッグモードが有効な場合はエンカウントを発生させない
+	cfg := config.Get()
+	if cfg.Debug {
+		return
+	}
+
 	// 既に戦闘遷移イベントが設定されている場合は処理しない
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	if gameResources.GetStateEvent() != resources.StateEventNone {
@@ -128,15 +135,21 @@ func getSpriteSize(world w.World, entity ecs.Entity) (spriteSize, error) {
 	}
 
 	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-	if spriteRender.SpriteSheet == nil {
-		return spriteSize{}, errors.New("SpriteSheet is nil")
+
+	// Resourcesからスプライトシートを取得
+	if world.Resources.SpriteSheets == nil {
+		return spriteSize{}, errors.New("SpriteSheets resources not available")
+	}
+	spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+	if !exists {
+		return spriteSize{}, fmt.Errorf("SpriteSheet %s not found", spriteRender.Name)
 	}
 
-	if len(spriteRender.SpriteSheet.Sprites) <= spriteRender.SpriteNumber {
+	if len(spriteSheet.Sprites) <= spriteRender.SpriteNumber {
 		return spriteSize{}, fmt.Errorf("sprite number %d is out of range (length: %d)",
-			spriteRender.SpriteNumber, len(spriteRender.SpriteSheet.Sprites))
+			spriteRender.SpriteNumber, len(spriteSheet.Sprites))
 	}
 
-	sprite := spriteRender.SpriteSheet.Sprites[spriteRender.SpriteNumber]
+	sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
 	return spriteSize{width: sprite.Width, height: sprite.Height}, nil
 }

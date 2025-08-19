@@ -29,5 +29,7 @@ cmd GameOver
 cmd HomeMenu
 cmd Intro
 cmd InventoryMenu
+cmd LoadMenu
 cmd MainMenu
 cmd Message
+cmd SaveMenu

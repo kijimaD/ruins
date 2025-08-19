@@ -389,7 +389,16 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 
 		pos := world.Components.Position.Get(entity).(*gc.Position)
 		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		spriteInfo := sprite.SpriteSheet.Sprites[sprite.SpriteNumber]
+		// Resourcesからスプライトシートを取得
+		// TODO: この処理はよくあるので共通化したい
+		if world.Resources.SpriteSheets == nil {
+			return
+		}
+		spriteSheet, exists := (*world.Resources.SpriteSheets)[sprite.Name]
+		if !exists || sprite.SpriteNumber >= len(spriteSheet.Sprites) {
+			return
+		}
+		spriteInfo := spriteSheet.Sprites[sprite.SpriteNumber]
 
 		// スプライトの境界ボックス
 		left := float64(pos.X) - float64(spriteInfo.Width)/2
@@ -415,7 +424,15 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		spriteInfo := sprite.SpriteSheet.Sprites[sprite.SpriteNumber]
+		// Resourcesからスプライトシートを取得
+		if world.Resources.SpriteSheets == nil {
+			return
+		}
+		spriteSheet, exists := (*world.Resources.SpriteSheets)[sprite.Name]
+		if !exists || sprite.SpriteNumber >= len(spriteSheet.Sprites) {
+			return
+		}
+		spriteInfo := spriteSheet.Sprites[sprite.SpriteNumber]
 
 		// グリッド位置をピクセル座標に変換
 		gridX := int(grid.Row) * spriteInfo.Width

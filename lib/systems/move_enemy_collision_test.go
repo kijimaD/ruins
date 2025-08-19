@@ -15,6 +15,18 @@ func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 	// 移動システムで敵との衝突が阻害されないことを確認するテスト
 	world := createTestWorldForCollision(t)
 
+	// テスト用のスプライトシートをResourcesに追加
+	if world.Resources.SpriteSheets == nil {
+		sheets := make(map[string]gc.SpriteSheet)
+		world.Resources.SpriteSheets = &sheets
+	}
+	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
+		Name: "test",
+		Sprites: []gc.Sprite{
+			{Width: 32, Height: 32},
+		},
+	}
+
 	// Levelを初期化してAtEntity呼び出しを成功させる
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Level = resources.Level{
@@ -37,7 +49,7 @@ func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 			MaxSpeed:     2.0, // 最高速度を設定
 		},
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  createTestSpriteSheet(),
+			Name:         "test",
 			SpriteNumber: 0,
 		},
 	})
@@ -51,7 +63,7 @@ func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 		FactionType: &gc.FactionEnemy,
 		BlockPass:   &gc.BlockPass{}, // 通行阻止コンポーネント
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  createTestSpriteSheet(),
+			Name:         "test",
 			SpriteNumber: 0,
 		},
 	})
@@ -81,6 +93,18 @@ func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 	// 壁との衝突阻害が正常に動作することを確認するテスト
 	world := createTestWorldForCollision(t)
 
+	// テスト用のスプライトシートをResourcesに追加
+	if world.Resources.SpriteSheets == nil {
+		sheets := make(map[string]gc.SpriteSheet)
+		world.Resources.SpriteSheets = &sheets
+	}
+	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
+		Name: "test",
+		Sprites: []gc.Sprite{
+			{Width: 32, Height: 32},
+		},
+	}
+
 	// Levelを初期化してAtEntity呼び出しを成功させる
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Level = resources.Level{
@@ -103,7 +127,7 @@ func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 			MaxSpeed:     2.0, // 最高速度を設定
 		},
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  createTestSpriteSheet(),
+			Name:         "test",
 			SpriteNumber: 0,
 		},
 	})
@@ -117,7 +141,7 @@ func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 		BlockPass: &gc.BlockPass{},              // 通行阻止コンポーネント
 		// FactionEnemyコンポーネントなし = 壁
 		SpriteRender: &gc.SpriteRender{
-			SpriteSheet:  createTestSpriteSheet(),
+			Name:         "test",
 			SpriteNumber: 0,
 		},
 	})
@@ -139,13 +163,4 @@ func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 	finalPlayerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
 	t.Logf("移動後のプレイヤー位置: (%v, %v)", finalPlayerPos.X, finalPlayerPos.Y)
 	assert.Equal(t, initialX, finalPlayerPos.X, "プレイヤーは壁との衝突で移動を阻害されるべき")
-}
-
-// createTestSpriteSheet はテスト用のスプライトシートを作成する
-func createTestSpriteSheet() *gc.SpriteSheet {
-	return &gc.SpriteSheet{
-		Sprites: []gc.Sprite{
-			{Width: 32, Height: 32},
-		},
-	}
 }

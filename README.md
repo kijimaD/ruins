@@ -15,6 +15,8 @@
 
 <img src="./vrtimages/DungeonMenu.png" width="50%" /><img src="./vrtimages/DungeonSelect.png" width="50%" />
 
+<img src="./vrtimages/LoadMenu.png" width="50%" /><img src="./vrtimages/SaveMenu.png" width="50%" />
+
 <img src="./vrtimages/DebugMenu.png" width="50%" /><img src="./vrtimages/GameOver.png" width="50%" />
 
 各画像は全自動でキャプチャされる。最新なことをCIで保証している。
@@ -96,3 +98,4 @@
 - [ ] engine package で具体に対するimportを禁止する。 depguard でできるはず
 - [ ] package を engine と app に分ける
 - [x] euiext package を消す。現状わずかに使っているだけで、移行できるため
+- [ ] スプライト取得を関数化する

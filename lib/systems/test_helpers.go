@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kijimaD/ruins/lib/engine/entities"
@@ -47,8 +48,13 @@ func createTestWorldForCollision(t *testing.T) w.World {
 func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
 	t.Helper()
 
-	// テスト用のスプライトシートを作成
-	spriteSheet := &gc.SpriteSheet{
+	// テスト用のスプライトシートを作成してResourcesに追加
+	if world.Resources.SpriteSheets == nil {
+		sheets := make(map[string]gc.SpriteSheet)
+		world.Resources.SpriteSheets = &sheets
+	}
+	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
+		Name: "test",
 		Sprites: []gc.Sprite{
 			{Width: 32, Height: 32}, // 標準サイズ
 		},
@@ -61,7 +67,7 @@ func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
 		FactionType: &gc.FactionAlly,
 		SpriteRender: &gc.SpriteRender{
 			SpriteNumber: 0,
-			SpriteSheet:  spriteSheet,
+			Name:         "test",
 		},
 	})
 	entities.AddEntities(world, cl)
@@ -71,8 +77,13 @@ func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
 func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
 	t.Helper()
 
-	// テスト用のスプライトシートを作成
-	spriteSheet := &gc.SpriteSheet{
+	// テスト用のスプライトシートを作成してResourcesに追加
+	if world.Resources.SpriteSheets == nil {
+		sheets := make(map[string]gc.SpriteSheet)
+		world.Resources.SpriteSheets = &sheets
+	}
+	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
+		Name: "test",
 		Sprites: []gc.Sprite{
 			{Width: 32, Height: 32}, // 標準サイズ
 		},
@@ -84,7 +95,7 @@ func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
 		AIMoveFSM: &gc.AIMoveFSM{}, // AI制御された敵として識別
 		SpriteRender: &gc.SpriteRender{
 			SpriteNumber: 0,
-			SpriteSheet:  spriteSheet,
+			Name:         "test",
 		},
 	})
 	entities.AddEntities(world, cl)
@@ -94,14 +105,30 @@ func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
 func createEntityWithSprite(t *testing.T, world w.World, x, y float64, width, height int, isPlayer bool) {
 	t.Helper()
 
+	// 一意なスプライトシート名を生成
+	var sheetName string
+	if isPlayer {
+		sheetName = fmt.Sprintf("player_%dx%d", width, height)
+	} else {
+		sheetName = fmt.Sprintf("enemy_%dx%d", width, height)
+	}
+
+	// テスト用のスプライトシートを作成してResourcesに追加
+	if world.Resources.SpriteSheets == nil {
+		sheets := make(map[string]gc.SpriteSheet)
+		world.Resources.SpriteSheets = &sheets
+	}
+	(*world.Resources.SpriteSheets)[sheetName] = gc.SpriteSheet{
+		Name: sheetName,
+		Sprites: []gc.Sprite{
+			{Width: width, Height: height}, // インデックス0のスプライト
+		},
+	}
+
 	// テスト用のスプライト情報を作成
 	spriteRender := &gc.SpriteRender{
 		SpriteNumber: 0,
-		SpriteSheet: &gc.SpriteSheet{
-			Sprites: []gc.Sprite{
-				{Width: width, Height: height}, // インデックス0のスプライト
-			},
-		},
+		Name:         sheetName,
 	}
 
 	cl := entities.ComponentList{}
