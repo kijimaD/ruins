@@ -9,17 +9,20 @@ import (
 	"time"
 )
 
+// initImpl はデスクトップ環境での初期化処理
+func (sm *SerializationManager) initImpl() {
+	// セーブディレクトリを作成（存在しない場合）
+	if err := os.MkdirAll(sm.saveDirectory, 0755); err != nil {
+		// エラーが発生してもマネージャーは作成する（ログ出力のみ）
+		fmt.Printf("Failed to create save directory: %v\n", err)
+	}
+}
+
 // saveDataImpl はデスクトップ環境でファイルシステムにデータを保存する
 func (sm *SerializationManager) saveDataImpl(slotName string, data []byte) error {
-	// 保存ディレクトリを作成
-	err := os.MkdirAll(sm.saveDirectory, 0755)
-	if err != nil {
-		return fmt.Errorf("failed to create save directory: %w", err)
-	}
-
 	// ファイルに書き込み
 	fileName := filepath.Join(sm.saveDirectory, slotName+".json")
-	err = os.WriteFile(fileName, data, 0644)
+	err := os.WriteFile(fileName, data, 0644)
 	if err != nil {
 		return fmt.Errorf("failed to write save file: %w", err)
 	}

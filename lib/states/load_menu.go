@@ -47,12 +47,6 @@ func (st *LoadMenuState) OnStart(world w.World) {
 
 	// セーブマネージャーを初期化
 	saveDir := "./saves"
-	// セーブディレクトリを作成（存在しない場合）
-	if runtime.GOOS != "js" {
-		if err := os.MkdirAll(saveDir, 0755); err != nil {
-			fmt.Printf("Failed to create save directory: %v\n", err)
-		}
-	}
 	st.saveManager = save.NewSerializationManager(saveDir)
 
 	st.initMenu(world)

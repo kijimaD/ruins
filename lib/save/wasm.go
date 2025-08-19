@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+// initializePlatform はWASM環境での初期化処理（特に何もしない）
+func (sm *SerializationManager) initializePlatform() {
+	// WASM環境ではディレクトリ作成は不要
+}
+
 // saveDataImpl はWASM環境でローカルストレージにデータを保存する
 func (sm *SerializationManager) saveDataImpl(slotName string, data []byte) error {
 	if runtime.GOOS != "js" {

@@ -70,11 +70,16 @@ type SerializationManager struct {
 
 // NewSerializationManager は新しいSerializationManagerを作成
 func NewSerializationManager(saveDir string) *SerializationManager {
-	return &SerializationManager{
+	sm := &SerializationManager{
 		saveDirectory:     saveDir,
 		stableIDManager:   NewStableIDManager(),
 		componentRegistry: NewComponentRegistry(),
 	}
+
+	// プラットフォーム固有の初期化処理
+	sm.initImpl()
+
+	return sm
 }
 
 // SaveWorld はワールド全体をファイルに保存
