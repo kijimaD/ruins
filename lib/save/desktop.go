@@ -33,6 +33,6 @@ func (sm *SerializationManager) getSaveFileTimestampImpl(slotName string) (time.
 	if err != nil {
 		return time.Time{}, fmt.Errorf("failed to get file info: %w", err)
 	}
-	
+
 	return fileInfo.ModTime(), nil
 }
