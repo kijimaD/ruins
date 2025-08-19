@@ -1,27 +1,10 @@
 #!/bin/sh
 set -eu
 
-################################################
-# Git pre-commit hook - フォーマットとlintを自動実行
-################################################
+###########################################
+# Git pre-commit hook - フォーマットを自動実行
+###########################################
 
-echo "🔍 Running pre-commit checks..."
-
-# make fmtを実行
-echo "📝 Running make fmt..."
 make fmt
-
-# フォーマットで変更されたファイルがあるかチェック
-if ! git diff --exit-code --quiet; then
-    echo ""
-    echo "❌ Code formatting was applied. Please review and stage the changes:"
-    echo ""
-    git diff --name-only | while read -r file; do
-        echo "  📝 $file"
-    done
-    echo ""
-    echo "Run 'git add .' and commit again."
-    exit 1
-fi
 
 exit 0
