@@ -9,6 +9,8 @@ env:
 jobs:
   # 共通処理
   setup:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: set up
@@ -26,6 +28,8 @@ jobs:
 
   build:
     needs: setup
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -34,6 +38,8 @@ jobs:
 
   crosscomple:
     needs: setup
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -44,6 +50,8 @@ jobs:
 
   test:
     needs: setup
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
