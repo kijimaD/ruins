@@ -190,7 +190,15 @@
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
-				<p>AppVersion はビルド時に挿入されるアプリケーションバージョン
+				<p>AppCommit はコミットハッシュ。ビルド時に注入する
+
+				<pre>var <span id="AppCommit">AppCommit</span> = &#34;0000000&#34;</pre>
+			
+				<p>AppDate はビルド日時。ビルド時に注入する
+
+				<pre>var <span id="AppDate">AppDate</span> = &#34;0000-00-00&#34;</pre>
+			
+				<p>AppVersion はアプリケーションのバージョン情報。ビルド時に注入する
 
 				<pre>var <span id="AppVersion">AppVersion</span> = &#34;v0.0.0&#34;</pre>
 			
