@@ -337,8 +337,8 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	return cl, nil
 }
 
-// GenerateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する
-func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
+// generateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する(敵・味方共通)
+func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		return gc.GameComponentList{}, fmt.Errorf("キーが存在しない: %s", name)
@@ -377,7 +377,7 @@ func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
 
 // GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
 func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentList, error) {
-	cl, err := rw.GenerateFighter(name)
+	cl, err := rw.generateFighter(name)
 	if err != nil {
 		return gc.GameComponentList{}, err
 	}
@@ -391,7 +391,7 @@ func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentLis
 
 // GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
 func (rw *Master) GenerateEnemy(name string) (gc.GameComponentList, error) {
-	cl, err := rw.GenerateFighter(name)
+	cl, err := rw.generateFighter(name)
 	if err != nil {
 		return gc.GameComponentList{}, err
 	}
