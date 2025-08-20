@@ -46,6 +46,9 @@ func InitDebugData(world w.World) {
 	ishihara := SpawnMember(world, "イシハラ", true)
 	shirase := SpawnMember(world, "シラセ", true)
 	SpawnMember(world, "タチバナ", true)
+	SpawnMember(world, "ハンス", false)
+	SpawnMember(world, "カイン", false)
+	SpawnMember(world, "メイ", false)
 
 	// デバッグ用マテリアルとレシピ
 	SpawnAllMaterials(world)

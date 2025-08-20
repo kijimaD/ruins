@@ -413,6 +413,36 @@ Agility = 5
 Defense = 0
 
 [[member]]
+Name = "ハンス"
+[member.attributes]
+Vitality = 5
+Strength = 5
+Sensation = 5
+Dexterity = 5
+Agility = 5
+Defense = 0
+
+[[member]]
+Name = "カイン"
+[member.attributes]
+Vitality = 5
+Strength = 5
+Sensation = 5
+Dexterity = 5
+Agility = 5
+Defense = 0
+
+[[member]]
+Name = "メイ"
+[member.attributes]
+Vitality = 5
+Strength = 5
+Sensation = 5
+Dexterity = 5
+Agility = 5
+Defense = 0
+
+[[member]]
 Name = "軽戦車"
 [member.attributes]
 Vitality = 12
