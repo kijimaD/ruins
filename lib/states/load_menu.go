@@ -2,9 +2,6 @@ package states
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
-	"runtime"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
@@ -77,7 +74,7 @@ func (st *LoadMenuState) Draw(world w.World, screen *ebiten.Image) {
 // initMenu はメニューコンポーネントを初期化する
 func (st *LoadMenuState) initMenu(world w.World) {
 	// セーブスロットの情報を取得
-	saveSlots := st.getSaveSlotInfoFromDir("./saves")
+	saveSlots := st.getSaveSlotInfo()
 
 	// メニュー項目の定義
 	items := make([]menu.Item, 0, len(saveSlots)+1)
@@ -153,57 +150,33 @@ func (st *LoadMenuState) initMenu(world w.World) {
 	st.uiBuilder = menu.NewUIBuilder(world)
 }
 
-// getSaveSlotInfoFromDir は指定ディレクトリからセーブスロット情報を取得する
-func (st *LoadMenuState) getSaveSlotInfoFromDir(saveDir string) []SaveSlotInfo {
+// getSaveSlotInfo はセーブスロット情報を取得する
+func (st *LoadMenuState) getSaveSlotInfo() []SaveSlotInfo {
 	slots := make([]SaveSlotInfo, 3) // 3つのセーブスロット
 	for i := 0; i < 3; i++ {
 		slotName := fmt.Sprintf("slot%d", i+1)
 
-		// WASM環境の場合はsaveManagerを使用
-		if runtime.GOOS == "js" {
-			if st.saveManager.SaveFileExists(slotName) {
-				// セーブデータが存在する場合
-				if timestamp, err := st.saveManager.GetSaveFileTimestamp(slotName); err == nil {
-					slots[i] = SaveSlotInfo{
-						Label:       fmt.Sprintf("%d [%s]", i+1, timestamp.Format("01/02 15:04")),
-						Description: fmt.Sprintf("保存日時: %s", timestamp.Format("2006-01-02 15:04:05")),
-						Exists:      true,
-					}
-				} else {
-					slots[i] = SaveSlotInfo{
-						Label:       fmt.Sprintf("%d [データあり]", i+1),
-						Description: "セーブデータ",
-						Exists:      true,
-					}
+		if st.saveManager.SaveFileExists(slotName) {
+			// セーブデータが存在する場合
+			if timestamp, err := st.saveManager.GetSaveFileTimestamp(slotName); err == nil {
+				slots[i] = SaveSlotInfo{
+					Label:       fmt.Sprintf("%d [%s]", i+1, timestamp.Format("01/02 15:04")),
+					Description: fmt.Sprintf("保存日時: %s", timestamp.Format("2006-01-02 15:04:05")),
+					Exists:      true,
 				}
 			} else {
-				// セーブデータが存在しない場合
 				slots[i] = SaveSlotInfo{
-					Label:       fmt.Sprintf("%d [空]", i+1),
-					Description: "空のスロット",
-					Exists:      false,
+					Label:       fmt.Sprintf("%d [データあり]", i+1),
+					Description: "セーブデータ",
+					Exists:      true,
 				}
 			}
 		} else {
-			// デスクトップ環境の場合は従来のファイルチェック
-			fileName := filepath.Join(saveDir, slotName+".json")
-			if _, err := os.Stat(fileName); err == nil {
-				// ファイルが存在する場合、作成日時を取得
-				if fileInfo, err := os.Stat(fileName); err == nil {
-					modTime := fileInfo.ModTime()
-					slots[i] = SaveSlotInfo{
-						Label:       fmt.Sprintf("%d [%s]", i+1, modTime.Format("01/02 15:04")),
-						Description: fmt.Sprintf("保存日時: %s", modTime.Format("2006-01-02 15:04:05")),
-						Exists:      true,
-					}
-				}
-			} else {
-				// ファイルが存在しない場合
-				slots[i] = SaveSlotInfo{
-					Label:       fmt.Sprintf("%d [空]", i+1),
-					Description: "空のスロット",
-					Exists:      false,
-				}
+			// セーブデータが存在しない場合
+			slots[i] = SaveSlotInfo{
+				Label:       fmt.Sprintf("%d [空]", i+1),
+				Description: "空のスロット",
+				Exists:      false,
 			}
 		}
 	}
