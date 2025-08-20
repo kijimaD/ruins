@@ -19,6 +19,12 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+const (
+	// itemTypeMember はメンバーアイテムのタイプを表す定数
+	itemTypeMember = "member"
+	itemTypeAction = "action"
+)
+
 // PartySetupState はパーティ編成画面のゲームステート
 type PartySetupState struct {
 	es.BaseState
@@ -194,7 +200,7 @@ func (st *PartySetupState) initUIWithFocus(world w.World, focusIndex int) *ebite
 		firstMemberIndex := -1
 		for i, item := range items {
 			if userData, ok := item.UserData.(map[string]interface{}); ok {
-				if userData["type"] == "member" {
+				if userData["type"] == itemTypeMember {
 					firstMemberIndex = i
 					break
 				}
@@ -258,7 +264,7 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 			Label:    label,
 			Disabled: false, // 全メンバー選択可能（主人公は操作のみ不可）
 			UserData: map[string]interface{}{
-				"type":           "member",
+				"type":           itemTypeMember,
 				"entity":         member,
 				"in_party":       inParty,
 				"slot_index":     slotIndex,
@@ -291,7 +297,7 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 			Label:    label,
 			Disabled: false,
 			UserData: map[string]interface{}{
-				"type":           "member",
+				"type":           itemTypeMember,
 				"entity":         member,
 				"in_party":       inParty,
 				"slot_index":     slotIndex,
@@ -319,7 +325,7 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 		ID:    "apply",
 		Label: "編成を確定",
 		UserData: map[string]interface{}{
-			"type":   "action",
+			"type":   itemTypeAction,
 			"action": "apply",
 		},
 	})
@@ -327,7 +333,7 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 		ID:    "cancel",
 		Label: "キャンセル",
 		UserData: map[string]interface{}{
-			"type":   "action",
+			"type":   itemTypeAction,
 			"action": "cancel",
 		},
 	})
@@ -388,7 +394,7 @@ func (st *PartySetupState) handleItemSelection(world w.World, item menu.Item) {
 	}
 
 	switch userData["type"].(string) {
-	case "member":
+	case itemTypeMember:
 		st.handleMemberSelection(world, userData)
 	case "action":
 		st.handleActionSelection(world, userData)
@@ -407,7 +413,7 @@ func (st *PartySetupState) handleItemChange(world w.World, item menu.Item) {
 	var targetEntity *ecs.Entity
 
 	switch userData["type"].(string) {
-	case "member":
+	case itemTypeMember:
 		entity := userData["entity"].(ecs.Entity)
 		targetEntity = &entity
 	}
