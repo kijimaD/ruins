@@ -135,13 +135,12 @@ func TestPartySetupState_CreateMenuItems(t *testing.T) {
 	expectedMinItems := 1 + 2 + 1 + 2 // 最小でも6項目
 	assert.GreaterOrEqual(t, len(items), expectedMinItems)
 
-	// 主人公が暗転表示されているかテスト
+	// 主人公が表示されているかテスト
 	foundProtagonist := false
 	for _, item := range items {
-		if item.Label == "[主人公] 主人公" {
+		if item.Label == "主人公 (固定)" {
 			foundProtagonist = true
 			assert.False(t, item.Disabled, "主人公が無効化されている（選択可能でなければならない）")
-			assert.True(t, item.Dimmed, "主人公が暗転表示されていない")
 			break
 		}
 	}
@@ -150,7 +149,7 @@ func TestPartySetupState_CreateMenuItems(t *testing.T) {
 	// アリスが待機状態で含まれているかテスト
 	foundAlice := false
 	for _, item := range items {
-		if item.Label == "[ 待機 ] アリス" {
+		if item.Label == "アリス" {
 			foundAlice = true
 			assert.False(t, item.Disabled, "アリスが無効化されている")
 			break

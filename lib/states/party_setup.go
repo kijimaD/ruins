@@ -129,13 +129,24 @@ func (st *PartySetupState) initializePartyData(world w.World) {
 
 // initUI はUIを初期化する
 func (st *PartySetupState) initUI(world w.World) *ebitenui.UI {
+	return st.initUIWithFocus(world, -1)
+}
+
+// initUIWithFocus はUIを初期化し、指定されたインデックスにフォーカスを設定する
+func (st *PartySetupState) initUIWithFocus(world w.World, focusIndex int) *ebitenui.UI {
 	// メニュー項目を作成
 	items := st.createMenuItems(world)
+
+	// 初期インデックスを決定
+	initialIndex := 0
+	if focusIndex >= 0 && focusIndex < len(items) {
+		initialIndex = focusIndex
+	}
 
 	// メニューの設定
 	config := menu.Config{
 		Items:          items,
-		InitialIndex:   0,
+		InitialIndex:   initialIndex,
 		WrapNavigation: true,
 		Orientation:    menu.Vertical,
 	}
@@ -158,19 +169,15 @@ func (st *PartySetupState) initUI(world w.World) *ebitenui.UI {
 				st.uiBuilder.UpdateFocus(st.menu)
 			}
 		},
-		OnHover: func(index int, _ menu.Item) {
-			// ホバー時に詳細表示を更新
-			if index >= 0 && index < len(items) {
-				st.handleItemChange(world, items[index])
-			}
-		},
 	}
 
 	// メニューを作成
 	st.menu = menu.NewMenu(config, callbacks)
 
 	// UIビルダーを作成してメニューをbuild
-	st.uiBuilder = menu.NewUIBuilder(world)
+	if st.uiBuilder == nil {
+		st.uiBuilder = menu.NewUIBuilder(world)
+	}
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
 
 	// 中央と右カラムのコンテナを作成
@@ -207,29 +214,29 @@ func (st *PartySetupState) initUI(world w.World) *ebitenui.UI {
 func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 	items := []menu.Item{}
 
-	// パーティ状態を示すヘッダー
+	allMembers := st.getAllMembers(world)
+
+	// パーティメンバーセクション
 	items = append(items, menu.Item{
 		ID:       "party_header",
-		Label:    "=== パーティメンバー ===",
+		Label:    "パーティ",
 		Disabled: true,
 	})
 
-	// 全ての味方キャラクターを表示（パーティ状態に応じてラベルを変更）
-	allMembers := st.getAllMembers(world)
-
+	// パーティメンバーを追加
 	for _, member := range allMembers {
+		inParty, slotIndex := st.getMemberPartyStatus(member)
+		if !inParty && member != st.protagonistEntity {
+			continue // パーティにいないメンバーはスキップ
+		}
+
 		memberName := world.Components.Name.Get(member).(*gc.Name).Name
 		var label string
 
-		// パーティに参加しているかチェック
-		inParty, slotIndex := st.getMemberPartyStatus(member)
-
 		if member == st.protagonistEntity {
-			label = fmt.Sprintf("[主人公] %s", memberName)
-		} else if inParty {
-			label = fmt.Sprintf("[パーティ] %s", memberName)
+			label = fmt.Sprintf("%s (固定)", memberName)
 		} else {
-			label = fmt.Sprintf("[ 待機 ] %s", memberName)
+			label = memberName
 		}
 
 		items = append(items, menu.Item{
@@ -246,10 +253,51 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 		})
 	}
 
+	// 待機メンバーセクション
+	items = append(items, menu.Item{
+		ID:       "waiting_header",
+		Label:    "待機",
+		Disabled: true,
+	})
+
+	// 待機メンバーを追加
+	hasWaitingMembers := false
+	for _, member := range allMembers {
+		inParty, slotIndex := st.getMemberPartyStatus(member)
+		if inParty || member == st.protagonistEntity {
+			continue // パーティにいるメンバーや主人公はスキップ
+		}
+
+		hasWaitingMembers = true
+		memberName := world.Components.Name.Get(member).(*gc.Name).Name
+
+		items = append(items, menu.Item{
+			ID:       fmt.Sprintf("member_%d", member),
+			Label:    memberName,
+			Disabled: false,
+			UserData: map[string]interface{}{
+				"type":           "member",
+				"entity":         member,
+				"in_party":       inParty,
+				"slot_index":     slotIndex,
+				"is_protagonist": false,
+			},
+		})
+	}
+
+	// 待機メンバーがいない場合は表示
+	if !hasWaitingMembers {
+		items = append(items, menu.Item{
+			ID:       "no_waiting",
+			Label:    "  (なし)",
+			Disabled: true,
+		})
+	}
+
 	// 操作説明
 	items = append(items, menu.Item{
 		ID:       "separator",
-		Label:    "--- 操作 ---",
+		Label:    "操作",
 		Disabled: true,
 	})
 	items = append(items, menu.Item{
@@ -417,39 +465,6 @@ func (st *PartySetupState) applyPartyChanges(world w.World) {
 
 // rebuildMenu はメニューを再構築する
 func (st *PartySetupState) rebuildMenu(world w.World) {
-	items := st.createMenuItems(world)
-	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
-	}
-
-	callbacks := menu.Callbacks{
-		OnSelect: func(_ int, item menu.Item) {
-			st.handleItemSelection(world, item)
-		},
-		OnCancel: func() {
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}})
-		},
-		OnFocusChange: func(_, newIndex int) {
-			if newIndex >= 0 && newIndex < len(items) {
-				st.handleItemChange(world, items[newIndex])
-			}
-			// フォーカス変更時にUIを更新
-			if st.uiBuilder != nil {
-				st.uiBuilder.UpdateFocus(st.menu)
-			}
-		},
-		OnHover: func(index int, _ menu.Item) {
-			// ホバー時に詳細表示を更新
-			if index >= 0 && index < len(items) {
-
-				st.handleItemChange(world, items[index])
-			}
-		},
-	}
-
 	// 現在フォーカスされているアイテムのIDを保存
 	var currentFocusedID string
 	if st.menu != nil {
@@ -460,54 +475,37 @@ func (st *PartySetupState) rebuildMenu(world w.World) {
 		}
 	}
 
-	st.menu = menu.NewMenu(config, callbacks)
+	// 新しいメニュー項目を取得
+	items := st.createMenuItems(world)
 
-	// IDベースでフォーカス位置を復元
-	focusRestored := false
+	// IDベースでフォーカス位置を見つける
+	targetFocusIndex := -1
 	if currentFocusedID != "" {
 		for i, item := range items {
 			if item.ID == currentFocusedID {
-				st.menu.SetFocusedIndex(i)
-				focusRestored = true
+				targetFocusIndex = i
 				break
 			}
 		}
 	}
 
-	// フォーカスが復元できなかった場合、適切な位置にフォーカスを設定
-	if !focusRestored && len(items) > 0 {
-		// パーティスロットの最初の有効なアイテムにフォーカス
+	// IDが見つからない場合は、最初の有効なアイテムにフォーカス
+	if targetFocusIndex == -1 && len(items) > 0 {
 		for i, item := range items {
 			if !item.Disabled {
-				st.menu.SetFocusedIndex(i)
+				targetFocusIndex = i
 				break
 			}
 		}
 	}
 
-	// UIビルダーが存在する場合は、UI全体を再構築
+	// UIを再構築(フォーカス位置を指定)
 	if st.uiBuilder != nil {
-		st.ui = st.initUI(world)
-
-		// フォーカス位置を再設定
-		if focusRestored {
-			// IDベースで復元済みの場合は、そのフォーカスを維持
-			st.uiBuilder.UpdateFocus(st.menu)
-		} else if len(items) > 0 {
-			// フォーカス復元できなかった場合は、最初の有効アイテムにフォーカス
-			for i, item := range items {
-				if !item.Disabled {
-					st.menu.SetFocusedIndex(i)
-					st.uiBuilder.UpdateFocus(st.menu)
-					break
-				}
-			}
-		}
+		st.ui = st.initUIWithFocus(world, targetFocusIndex)
 
 		// 現在フォーカスされているアイテムの詳細表示を更新
-		focusedIndex := st.menu.GetFocusedIndex()
-		if focusedIndex >= 0 && focusedIndex < len(items) {
-			st.handleItemChange(world, items[focusedIndex])
+		if targetFocusIndex >= 0 && targetFocusIndex < len(items) {
+			st.handleItemChange(world, items[targetFocusIndex])
 		}
 	}
 }
