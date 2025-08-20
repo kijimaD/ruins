@@ -188,9 +188,23 @@ func (st *PartySetupState) initUIWithFocus(world w.World, focusIndex int) *ebite
 		widget.ContainerOpts.BackgroundImage(world.Resources.UIResources.Panel.ImageTrans),
 	)
 
-	// 初期表示を更新
+	// 初期表示を更新（最初のメンバーを選択）
 	if len(items) > 0 {
-		st.handleItemChange(world, items[0])
+		// 最初のメンバーアイテムを見つける
+		firstMemberIndex := -1
+		for i, item := range items {
+			if userData, ok := item.UserData.(map[string]interface{}); ok {
+				if userData["type"] == "member" {
+					firstMemberIndex = i
+					break
+				}
+			}
+		}
+
+		// メンバーが見つかった場合、そのメンバーを選択
+		if firstMemberIndex >= 0 {
+			st.handleItemChange(world, items[firstMemberIndex])
+		}
 	}
 
 	// 3カラムレイアウトのルートコンテナ
