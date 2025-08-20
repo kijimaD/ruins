@@ -61,6 +61,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.Operator{}), components.Operator)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
+	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
 	r.registerNullComponent(reflect.TypeOf(&gc.InParty{}), components.InParty)
@@ -136,6 +137,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.BlockView)
 			case "BlockPass":
 				return struct{}{}, entity.HasComponent(world.Components.BlockPass)
+			case "Player":
+				return struct{}{}, entity.HasComponent(world.Components.Player)
 			case "FactionAllyData":
 				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
 			case "FactionEnemyData":
@@ -164,6 +167,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
 			case "BlockPass":
 				entity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
+			case "Player":
+				entity.AddComponent(world.Components.Player, &gc.Player{})
 			case "FactionAllyData":
 				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
 			case "FactionEnemyData":

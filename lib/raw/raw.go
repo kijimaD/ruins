@@ -112,6 +112,7 @@ type RecipeInput struct {
 type Member struct {
 	Name       string
 	Attributes Attributes `toml:"attributes"`
+	Player     *bool
 }
 
 // Attributes はキャラクターの能力値
@@ -315,7 +316,7 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 		cl.Recipe.Inputs = append(cl.Recipe.Inputs, gc.RecipeInput{Name: input.Name, Amount: input.Amount})
 	}
 
-	// 説明文などのため、マッチしたitemの定義から持ってくる
+	// 説明文や分類のため、マッチしたitemの定義から持ってくる
 	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	if err != nil {
 		return gc.GameComponentList{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
@@ -359,6 +360,9 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 		Level: 1,
 	}
 	cl.EquipmentChanged = &gc.EquipmentChanged{}
+	if member.Player != nil && *member.Player {
+		cl.Player = &gc.Player{}
+	}
 
 	commandTableIdx, ok := rw.CommandTableIndex[name]
 	if ok {
@@ -375,7 +379,7 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 	return cl, nil
 }
 
-// GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
+// GenerateMember は指定された名前の仲間メンバーのゲームコンポーネントを生成する
 func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentList, error) {
 	cl, err := rw.generateFighter(name)
 	if err != nil {

@@ -43,6 +43,7 @@ type GameComponentList struct {
 	BlockPass    *BlockPass
 
 	// member ================
+	Player      *Player
 	InParty     *InParty
 	FactionType *FactionType
 
@@ -96,6 +97,7 @@ type Components struct {
 	BlockPass    *ecs.NullComponent
 
 	// member ================
+	Player       *ecs.NullComponent
 	InParty      *ecs.NullComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
@@ -149,6 +151,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.BlockPass = manager.NewNullComponent()
 
 	// member
+	c.Player = manager.NewNullComponent()
 	c.InParty = manager.NewNullComponent()
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
@@ -207,6 +210,9 @@ type Wearable struct {
 	EquipmentCategory EquipmentType // 装備部位
 	EquipBonus        EquipBonus    // ステータスへのボーナス
 }
+
+// Player は主人公キャラクター
+type Player struct{}
 
 // InParty は冒険パーティに参加している状態
 type InParty struct{}

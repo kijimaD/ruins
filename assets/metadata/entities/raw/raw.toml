@@ -383,6 +383,7 @@ Amount = 1
 
 [[member]]
 Name = "イシハラ"
+Player = true
 [member.attributes]
 Vitality = 7
 Strength = 50
