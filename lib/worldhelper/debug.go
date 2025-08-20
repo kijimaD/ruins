@@ -7,12 +7,13 @@ import (
 )
 
 // InitDebugData はデバッグ用の初期データを設定する
-// 味方メンバーが存在しない場合のみ実行される
+// パーティメンバーが存在しない場合のみ実行される
 func InitDebugData(world w.World) {
-	// 既に味方メンバーが存在するかチェック
+	// 既にパーティメンバーが存在するかチェック
 	memberCount := 0
 	world.Manager.Join(
 		world.Components.FactionAlly,
+		world.Components.InParty,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
