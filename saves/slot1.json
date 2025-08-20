@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "timestamp": "2025-08-20T10:04:41.541407765+09:00",
+  "timestamp": "2025-08-20T23:24:01.612359919+09:00",
   "world": {
     "entities": [
       {
@@ -9,26 +9,44 @@
           "generation": 0
         },
         "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 100,
+              "Damage": 8,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "SWORD"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "鉄を多く含む金属の塊"
+              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
             }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
           },
           "LocationInBackpack": {
             "type": "LocationInBackpack",
             "data": {}
           },
-          "Material": {
-            "type": "Material",
-            "data": {
-              "Amount": 4
-            }
-          },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "鉄くず"
+              "Name": "木刀"
             }
           }
         }
@@ -39,56 +57,54 @@
           "generation": 0
         },
         "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 100,
+              "Damage": 8,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "SWORD"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "よい香りに鎮静・興奮などの作用がある植物"
+              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
             }
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
             "data": {}
           },
-          "Material": {
-            "type": "Material",
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationEquipped": {
+            "type": "LocationEquipped",
             "data": {
-              "Amount": 2
+              "owner_ref": {
+                "index": 3,
+                "generation": 0
+              },
+              "equipment_slot": 0
             }
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "緑ハーブ"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 3,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "体力を増強させる作用がある植物"
-            }
-          },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
-            "data": {}
-          },
-          "Material": {
-            "type": "Material",
-            "data": {
-              "Amount": 0
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "黄ハーブ"
+              "Name": "木刀"
             }
           }
         }
@@ -99,26 +115,54 @@
           "generation": 0
         },
         "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 95,
+              "Damage": 14,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "HANDGUN"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "滑らかな表面を持ち、軽くて持ちやすい棒"
+              "Description": "樹脂素材を多用した自動拳銃"
             }
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
             "data": {}
           },
-          "Material": {
-            "type": "Material",
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationEquipped": {
+            "type": "LocationEquipped",
             "data": {
-              "Amount": 0
+              "owner_ref": {
+                "index": 3,
+                "generation": 0
+              },
+              "equipment_slot": 0
             }
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "木の棒"
+              "Name": "ハンドガン"
             }
           }
         }
@@ -129,56 +173,54 @@
           "generation": 0
         },
         "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 85,
+              "Damage": 34,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "CANON"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 14
+            }
+          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "フェライト製の磁性体"
+              "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
             }
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
             "data": {}
           },
-          "Material": {
-            "type": "Material",
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationEquipped": {
+            "type": "LocationEquipped",
             "data": {
-              "Amount": 30
+              "owner_ref": {
+                "index": 6,
+                "generation": 0
+              },
+              "equipment_slot": 0
             }
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "フェライトコア"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 6,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "加工しやすく産業の中核をなす金属"
-            }
-          },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
-            "data": {}
-          },
-          "Material": {
-            "type": "Material",
-            "data": {
-              "Amount": 40
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "鉄"
+              "Name": "M72 LAW"
             }
           }
         }
@@ -189,20 +231,30 @@
           "generation": 0
         },
         "components": {
-          "Consumable": {
-            "type": "Consumable",
+          "Attack": {
+            "type": "Attack",
             "data": {
-              "UsableScene": "ANY",
+              "Accuracy": 95,
+              "Damage": 14,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "HANDGUN"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
               "TargetType": {
-                "TargetGroup": "ALLY",
+                "TargetGroup": "ENEMY",
                 "TargetNum": "SINGLE"
-              }
+              },
+              "Cost": 2
             }
           },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "体力を半分程度回復する"
+              "Description": "樹脂素材を多用した自動拳銃"
             }
           },
           "Item": {
@@ -216,16 +268,7 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "回復薬"
-            }
-          },
-          "ProvidesHealing": {
-            "type": "ProvidesHealing",
-            "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
-              }
+              "Name": "ハンドガン"
             }
           }
         }
@@ -236,20 +279,30 @@
           "generation": 0
         },
         "components": {
-          "Consumable": {
-            "type": "Consumable",
+          "Attack": {
+            "type": "Attack",
             "data": {
-              "UsableScene": "ANY",
+              "Accuracy": 90,
+              "Damage": 20,
+              "AttackCount": 1,
+              "Element": "PHOTON",
+              "AttackCategory": "HANDGUN"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
               "TargetType": {
-                "TargetGroup": "ALLY",
+                "TargetGroup": "ENEMY",
                 "TargetNum": "SINGLE"
-              }
+              },
+              "Cost": 2
             }
           },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "体力を半分程度回復する"
+              "Description": "光線を発射する拳銃"
             }
           },
           "Item": {
@@ -263,16 +316,7 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "回復薬"
-            }
-          },
-          "ProvidesHealing": {
-            "type": "ProvidesHealing",
-            "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
-              }
+              "Name": "レイガン"
             }
           }
         }
@@ -283,42 +327,47 @@
           "generation": 0
         },
         "components": {
-          "Consumable": {
-            "type": "Consumable",
-            "data": {
-              "UsableScene": "ANY",
-              "TargetType": {
-                "TargetGroup": "ALLY",
-                "TargetNum": "ALL"
-              }
-            }
-          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "全員の体力を半分程度回復する"
+              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
             }
+          },
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
+            "data": {}
           },
           "Item": {
             "type": "Item",
             "data": {}
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
-            "data": {}
+          "LocationEquipped": {
+            "type": "LocationEquipped",
+            "data": {
+              "owner_ref": {
+                "index": 3,
+                "generation": 0
+              },
+              "equipment_slot": 0
+            }
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "回復スプレー"
+              "Name": "西洋鎧"
             }
           },
-          "ProvidesHealing": {
-            "type": "ProvidesHealing",
+          "Wearable": {
+            "type": "Wearable",
             "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
+              "Defense": 8,
+              "EquipmentCategory": "TORSO",
+              "EquipBonus": {
+                "Vitality": 0,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -4
               }
             }
           }
@@ -330,20 +379,10 @@
           "generation": 0
         },
         "components": {
-          "Consumable": {
-            "type": "Consumable",
-            "data": {
-              "UsableScene": "ANY",
-              "TargetType": {
-                "TargetGroup": "ALLY",
-                "TargetNum": "ALL"
-              }
-            }
-          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "全員の体力を半分程度回復する"
+              "Description": "衝撃吸収性に優れた産業用の帽子"
             }
           },
           "Item": {
@@ -357,15 +396,20 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "回復スプレー"
+              "Name": "作業用ヘルメット"
             }
           },
-          "ProvidesHealing": {
-            "type": "ProvidesHealing",
+          "Wearable": {
+            "type": "Wearable",
             "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
+              "Defense": 4,
+              "EquipmentCategory": "HEAD",
+              "EquipBonus": {
+                "Vitality": 4,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -2
               }
             }
           }
@@ -377,26 +421,10 @@
           "generation": 0
         },
         "components": {
-          "Consumable": {
-            "type": "Consumable",
-            "data": {
-              "UsableScene": "BATTLE",
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "ALL"
-              }
-            }
-          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "敵全体にダメージを与える"
-            }
-          },
-          "InflictsDamage": {
-            "type": "InflictsDamage",
-            "data": {
-              "Amount": 20
+              "Description": "よくなめされた革で成形された長靴"
             }
           },
           "Item": {
@@ -410,7 +438,21 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "手榴弾"
+              "Name": "革のブーツ"
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 3,
+              "EquipmentCategory": "LEGS",
+              "EquipBonus": {
+                "Vitality": 0,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -2
+              }
             }
           }
         }
@@ -421,26 +463,10 @@
           "generation": 0
         },
         "components": {
-          "Consumable": {
-            "type": "Consumable",
-            "data": {
-              "UsableScene": "BATTLE",
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "ALL"
-              }
-            }
-          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "敵全体にダメージを与える"
-            }
-          },
-          "InflictsDamage": {
-            "type": "InflictsDamage",
-            "data": {
-              "Amount": 20
+              "Description": "赤く光る鉱物。高く売れる"
             }
           },
           "Item": {
@@ -454,7 +480,7 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "手榴弾"
+              "Name": "ルビー原石"
             }
           }
         }
@@ -468,23 +494,17 @@
           "Consumable": {
             "type": "Consumable",
             "data": {
-              "UsableScene": "BATTLE",
+              "UsableScene": "ANY",
               "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "ALL"
+                "TargetGroup": "ALLY",
+                "TargetNum": "SINGLE"
               }
             }
           },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "敵全体にダメージを与える"
-            }
-          },
-          "InflictsDamage": {
-            "type": "InflictsDamage",
-            "data": {
-              "Amount": 20
+              "Description": "体力を半分程度回復する"
             }
           },
           "Item": {
@@ -498,7 +518,16 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "手榴弾"
+              "Name": "回復薬"
+            }
+          },
+          "ProvidesHealing": {
+            "type": "ProvidesHealing",
+            "data": {
+              "amount": {
+                "ratio": 0.5,
+                "type": "ratio"
+              }
             }
           }
         }
@@ -512,23 +541,17 @@
           "Consumable": {
             "type": "Consumable",
             "data": {
-              "UsableScene": "BATTLE",
+              "UsableScene": "ANY",
               "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "ALL"
+                "TargetGroup": "ALLY",
+                "TargetNum": "SINGLE"
               }
             }
           },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "敵全体にダメージを与える"
-            }
-          },
-          "InflictsDamage": {
-            "type": "InflictsDamage",
-            "data": {
-              "Amount": 20
+              "Description": "体力を半分程度回復する"
             }
           },
           "Item": {
@@ -542,7 +565,16 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "手榴弾"
+              "Name": "回復薬"
+            }
+          },
+          "ProvidesHealing": {
+            "type": "ProvidesHealing",
+            "data": {
+              "amount": {
+                "ratio": 0.5,
+                "type": "ratio"
+              }
             }
           }
         }
@@ -559,35 +591,37 @@
               "UsableScene": "ANY",
               "TargetType": {
                 "TargetGroup": "ALLY",
-                "TargetNum": "SINGLE"
+                "TargetNum": "ALL"
               }
             }
           },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "体力を半分程度回復する"
+              "Description": "全員の体力を半分程度回復する"
             }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "回復薬"
+              "Name": "回復スプレー"
             }
           },
-          "Recipe": {
-            "type": "Recipe",
+          "ProvidesHealing": {
+            "type": "ProvidesHealing",
             "data": {
-              "Inputs": [
-                {
-                  "Name": "緑ハーブ",
-                  "Amount": 1
-                },
-                {
-                  "Name": "黄ハーブ",
-                  "Amount": 1
-                }
-              ]
+              "amount": {
+                "ratio": 0.5,
+                "type": "ratio"
+              }
             }
           }
         }
@@ -618,8 +652,8 @@
             "type": "Item",
             "data": {}
           },
-          "LocationNone": {
-            "type": "LocationNone",
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
             "data": {}
           },
           "Name": {
@@ -671,8 +705,8 @@
             "type": "Item",
             "data": {}
           },
-          "LocationNone": {
-            "type": "LocationNone",
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
             "data": {}
           },
           "Name": {
@@ -692,6 +726,459 @@
           "Consumable": {
             "type": "Consumable",
             "data": {
+              "UsableScene": "BATTLE",
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "ALL"
+              }
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "敵全体にダメージを与える"
+            }
+          },
+          "InflictsDamage": {
+            "type": "InflictsDamage",
+            "data": {
+              "Amount": 20
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "手榴弾"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 19,
+          "generation": 0
+        },
+        "components": {
+          "Consumable": {
+            "type": "Consumable",
+            "data": {
+              "UsableScene": "BATTLE",
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "ALL"
+              }
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "敵全体にダメージを与える"
+            }
+          },
+          "InflictsDamage": {
+            "type": "InflictsDamage",
+            "data": {
+              "Amount": 20
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "手榴弾"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 20,
+          "generation": 0
+        },
+        "components": {
+          "Consumable": {
+            "type": "Consumable",
+            "data": {
+              "UsableScene": "BATTLE",
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "ALL"
+              }
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "敵全体にダメージを与える"
+            }
+          },
+          "InflictsDamage": {
+            "type": "InflictsDamage",
+            "data": {
+              "Amount": 20
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "手榴弾"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 21,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "フェライト製の磁性体"
+            }
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Material": {
+            "type": "Material",
+            "data": {
+              "Amount": 30
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "フェライトコア"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 22,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "加工しやすく産業の中核をなす金属"
+            }
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Material": {
+            "type": "Material",
+            "data": {
+              "Amount": 40
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "鉄"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 23,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "鉄を多く含む金属の塊"
+            }
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Material": {
+            "type": "Material",
+            "data": {
+              "Amount": 4
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "鉄くず"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 24,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "よい香りに鎮静・興奮などの作用がある植物"
+            }
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Material": {
+            "type": "Material",
+            "data": {
+              "Amount": 2
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "緑ハーブ"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 25,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "体力を増強させる作用がある植物"
+            }
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Material": {
+            "type": "Material",
+            "data": {
+              "Amount": 0
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "黄ハーブ"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 26,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "滑らかな表面を持ち、軽くて持ちやすい棒"
+            }
+          },
+          "LocationInBackpack": {
+            "type": "LocationInBackpack",
+            "data": {}
+          },
+          "Material": {
+            "type": "Material",
+            "data": {
+              "Amount": 0
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "木の棒"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 27,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 80,
+              "Damage": 26,
+              "AttackCount": 1,
+              "Element": "THUNDER",
+              "AttackCategory": "RIFLE"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 3
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "放電物質を投射する擲弾銃"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "電撃グレネード"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 3
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 28,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "衝撃吸収性に優れた産業用の帽子"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "作業用ヘルメット"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 3
+                }
+              ]
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 4,
+              "EquipmentCategory": "HEAD",
+              "EquipBonus": {
+                "Vitality": 4,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -2
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 29,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "指輪型の小さな機械"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "機械の指輪"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 1
+                }
+              ]
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 1,
+              "EquipmentCategory": "JEWELRY",
+              "EquipBonus": {
+                "Vitality": 1,
+                "Strength": 1,
+                "Sensation": 1,
+                "Dexterity": 1,
+                "Agility": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 30,
+          "generation": 0
+        },
+        "components": {
+          "Consumable": {
+            "type": "Consumable",
+            "data": {
               "UsableScene": "ANY",
               "TargetType": {
                 "TargetGroup": "ALLY",
@@ -705,26 +1192,171 @@
               "Description": "体力を半分程度回復する"
             }
           },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
           "Name": {
             "type": "Name",
             "data": {
               "Name": "回復薬"
             }
           },
-          "ProvidesHealing": {
-            "type": "ProvidesHealing",
+          "Recipe": {
+            "type": "Recipe",
             "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
+              "Inputs": [
+                {
+                  "Name": "緑ハーブ",
+                  "Amount": 1
+                },
+                {
+                  "Name": "黄ハーブ",
+                  "Amount": 1
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 31,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 100,
+              "Damage": 8,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "SWORD"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "木刀"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "木の棒",
+                  "Amount": 2
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 32,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 80,
+              "Damage": 25,
+              "AttackCount": 1,
+              "Element": "CHILL",
+              "AttackCategory": "RIFLE"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 3
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "極低温物質を投射する擲弾銃"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "冷凍グレネード"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 3
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 33,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "西洋鎧"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 4
+                }
+              ]
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 8,
+              "EquipmentCategory": "TORSO",
+              "EquipBonus": {
+                "Vitality": 0,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -4
               }
             }
           }
@@ -732,7 +1364,107 @@
       },
       {
         "stable_id": {
-          "index": 19,
+          "index": 34,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "よくなめされた革で成形された長靴"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "革のブーツ"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 2
+                }
+              ]
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 3,
+              "EquipmentCategory": "LEGS",
+              "EquipBonus": {
+                "Vitality": 0,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -2
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 35,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 100,
+              "Damage": 9,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "SWORD"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "鉄で作られた軽いナイフ"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "鉄のナイフ"
+            }
+          },
+          "Recipe": {
+            "type": "Recipe",
+            "data": {
+              "Inputs": [
+                {
+                  "Name": "鉄",
+                  "Amount": 2
+                },
+                {
+                  "Name": "木の棒",
+                  "Amount": 2
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 36,
           "generation": 0
         },
         "components": {
@@ -787,764 +1519,6 @@
       },
       {
         "stable_id": {
-          "index": 20,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 80,
-              "Damage": 26,
-              "AttackCount": 1,
-              "Element": "THUNDER",
-              "AttackCategory": "RIFLE"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 3
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "放電物質を投射する擲弾銃"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "電撃グレネード"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 3
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 21,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "西洋鎧"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 4
-                }
-              ]
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 8,
-              "EquipmentCategory": "TORSO",
-              "EquipBonus": {
-                "Vitality": 0,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -4
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 22,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 80,
-              "Damage": 25,
-              "AttackCount": 1,
-              "Element": "CHILL",
-              "AttackCategory": "RIFLE"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 3
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "極低温物質を投射する擲弾銃"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "冷凍グレネード"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 3
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 23,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "作業用ヘルメット"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 3
-                }
-              ]
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 4,
-              "EquipmentCategory": "HEAD",
-              "EquipBonus": {
-                "Vitality": 4,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -2
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 24,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "革のブーツ"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 2
-                }
-              ]
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 3,
-              "EquipmentCategory": "LEGS",
-              "EquipBonus": {
-                "Vitality": 0,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -2
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 25,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "指輪型の小さな機械"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "機械の指輪"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 1
-                }
-              ]
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 1,
-              "EquipmentCategory": "JEWELRY",
-              "EquipBonus": {
-                "Vitality": 1,
-                "Strength": 1,
-                "Sensation": 1,
-                "Dexterity": 1,
-                "Agility": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 26,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 100,
-              "Damage": 8,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "SWORD"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "木刀"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "木の棒",
-                  "Amount": 2
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 27,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 100,
-              "Damage": 9,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "SWORD"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "鉄で作られた軽いナイフ"
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "鉄のナイフ"
-            }
-          },
-          "Recipe": {
-            "type": "Recipe",
-            "data": {
-              "Inputs": [
-                {
-                  "Name": "鉄",
-                  "Amount": 2
-                },
-                {
-                  "Name": "木の棒",
-                  "Amount": 2
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 28,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 100,
-              "Damage": 8,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "SWORD"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "木刀"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 29,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 100,
-              "Damage": 8,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "SWORD"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            }
-          },
-          "EquipmentChanged": {
-            "type": "EquipmentChanged",
-            "data": {}
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationEquipped": {
-            "type": "LocationEquipped",
-            "data": {
-              "owner_ref": {
-                "index": 30,
-                "generation": 0
-              },
-              "equipment_slot": 0
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "木刀"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 31,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 95,
-              "Damage": 14,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "HANDGUN"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            }
-          },
-          "EquipmentChanged": {
-            "type": "EquipmentChanged",
-            "data": {}
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationEquipped": {
-            "type": "LocationEquipped",
-            "data": {
-              "owner_ref": {
-                "index": 30,
-                "generation": 0
-              },
-              "equipment_slot": 0
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "ハンドガン"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 32,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 85,
-              "Damage": 34,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "CANON"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 14
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
-            }
-          },
-          "EquipmentChanged": {
-            "type": "EquipmentChanged",
-            "data": {}
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationEquipped": {
-            "type": "LocationEquipped",
-            "data": {
-              "owner_ref": {
-                "index": 33,
-                "generation": 0
-              },
-              "equipment_slot": 0
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "M72 LAW"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 34,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 95,
-              "Damage": 14,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "HANDGUN"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "ハンドガン"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 35,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 90,
-              "Damage": 20,
-              "AttackCount": 1,
-              "Element": "PHOTON",
-              "AttackCategory": "HANDGUN"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "光線を発射する拳銃"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "レイガン"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 36,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            }
-          },
-          "EquipmentChanged": {
-            "type": "EquipmentChanged",
-            "data": {}
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationEquipped": {
-            "type": "LocationEquipped",
-            "data": {
-              "owner_ref": {
-                "index": 30,
-                "generation": 0
-              },
-              "equipment_slot": 0
-            }
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "西洋鎧"
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 8,
-              "EquipmentCategory": "TORSO",
-              "EquipBonus": {
-                "Vitality": 0,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -4
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
           "index": 37,
           "generation": 0
         },
@@ -1552,35 +1526,21 @@
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
+              "Description": "赤く光る鉱物。高く売れる"
             }
           },
           "Item": {
             "type": "Item",
             "data": {}
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
+          "LocationNone": {
+            "type": "LocationNone",
             "data": {}
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "作業用ヘルメット"
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 4,
-              "EquipmentCategory": "HEAD",
-              "EquipBonus": {
-                "Vitality": 4,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -2
-              }
+              "Name": "ルビー原石"
             }
           }
         }
@@ -1591,37 +1551,42 @@
           "generation": 0
         },
         "components": {
+          "Consumable": {
+            "type": "Consumable",
+            "data": {
+              "UsableScene": "ANY",
+              "TargetType": {
+                "TargetGroup": "ALLY",
+                "TargetNum": "SINGLE"
+              }
+            }
+          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "よくなめされた革で成形された長靴"
+              "Description": "体力を半分程度回復する"
             }
           },
           "Item": {
             "type": "Item",
             "data": {}
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
+          "LocationNone": {
+            "type": "LocationNone",
             "data": {}
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "革のブーツ"
+              "Name": "回復薬"
             }
           },
-          "Wearable": {
-            "type": "Wearable",
+          "ProvidesHealing": {
+            "type": "ProvidesHealing",
             "data": {
-              "Defense": 3,
-              "EquipmentCategory": "LEGS",
-              "EquipBonus": {
-                "Vitality": 0,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -2
+              "amount": {
+                "ratio": 0.5,
+                "type": "ratio"
               }
             }
           }
@@ -1633,24 +1598,44 @@
           "generation": 0
         },
         "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 95,
+              "Damage": 14,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "HANDGUN"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "赤く光る鉱物。高く売れる"
+              "Description": "樹脂素材を多用した自動拳銃"
             }
           },
           "Item": {
             "type": "Item",
             "data": {}
           },
-          "LocationInBackpack": {
-            "type": "LocationInBackpack",
+          "LocationNone": {
+            "type": "LocationNone",
             "data": {}
           },
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "ルビー原石"
+              "Name": "ハンドガン"
             }
           }
         }
@@ -1658,102 +1643,6 @@
       {
         "stable_id": {
           "index": 40,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 80,
-              "Damage": 26,
-              "AttackCount": 1,
-              "Element": "THUNDER",
-              "AttackCategory": "RIFLE"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 3
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "放電物質を投射する擲弾銃"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "電撃グレネード"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 41,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 80,
-              "Damage": 14,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "CANON"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 8
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "濃度の高い強酸性の液体"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "溶解液"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 42,
           "generation": 0
         },
         "components": {
@@ -1795,76 +1684,30 @@
       },
       {
         "stable_id": {
-          "index": 43,
+          "index": 41,
           "generation": 0
         },
         "components": {
-          "Description": {
-            "type": "Description",
+          "Consumable": {
+            "type": "Consumable",
             "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "西洋鎧"
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 8,
-              "EquipmentCategory": "TORSO",
-              "EquipBonus": {
-                "Vitality": 0,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -4
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 44,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 90,
-              "Damage": 8,
-              "AttackCount": 4,
-              "Element": "NONE",
-              "AttackCategory": "CANON"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
+              "UsableScene": "BATTLE",
               "TargetType": {
                 "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 10
+                "TargetNum": "ALL"
+              }
             }
           },
           "Description": {
             "type": "Description",
             "data": {
-              "Description": "車載型の空冷式機関銃"
+              "Description": "敵全体にダメージを与える"
+            }
+          },
+          "InflictsDamage": {
+            "type": "InflictsDamage",
+            "data": {
+              "Amount": 20
             }
           },
           "Item": {
@@ -1878,42 +1721,14 @@
           "Name": {
             "type": "Name",
             "data": {
-              "Name": "M1919重機関銃"
+              "Name": "手榴弾"
             }
           }
         }
       },
       {
         "stable_id": {
-          "index": 45,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "赤く光る鉱物。高く売れる"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "ルビー原石"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 46,
+          "index": 42,
           "generation": 0
         },
         "components": {
@@ -1961,97 +1776,7 @@
       },
       {
         "stable_id": {
-          "index": 47,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 95,
-              "Damage": 14,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "HANDGUN"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "ハンドガン"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 48,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "革のブーツ"
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 3,
-              "EquipmentCategory": "LEGS",
-              "EquipBonus": {
-                "Vitality": 0,
-                "Strength": 0,
-                "Sensation": 0,
-                "Dexterity": 0,
-                "Agility": -2
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 49,
+          "index": 43,
           "generation": 0
         },
         "components": {
@@ -2099,241 +1824,7 @@
       },
       {
         "stable_id": {
-          "index": 50,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 100,
-              "Damage": 9,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "SWORD"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 2
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "鉄で作られた軽いナイフ"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "鉄のナイフ"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 51,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 80,
-              "Damage": 25,
-              "AttackCount": 1,
-              "Element": "CHILL",
-              "AttackCategory": "RIFLE"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 3
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "極低温物質を投射する擲弾銃"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "冷凍グレネード"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 52,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 85,
-              "Damage": 34,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "CANON"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 14
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "M72 LAW"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 53,
-          "generation": 0
-        },
-        "components": {
-          "Attack": {
-            "type": "Attack",
-            "data": {
-              "Accuracy": 90,
-              "Damage": 34,
-              "AttackCount": 1,
-              "Element": "NONE",
-              "AttackCategory": "CANON"
-            }
-          },
-          "Card": {
-            "type": "Card",
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              },
-              "Cost": 14
-            }
-          },
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "取り回しがよい車両用の大砲"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "50ミリ砲"
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 54,
-          "generation": 0
-        },
-        "components": {
-          "Description": {
-            "type": "Description",
-            "data": {
-              "Description": "指輪型の小さな機械"
-            }
-          },
-          "Item": {
-            "type": "Item",
-            "data": {}
-          },
-          "LocationNone": {
-            "type": "LocationNone",
-            "data": {}
-          },
-          "Name": {
-            "type": "Name",
-            "data": {
-              "Name": "機械の指輪"
-            }
-          },
-          "Wearable": {
-            "type": "Wearable",
-            "data": {
-              "Defense": 1,
-              "EquipmentCategory": "JEWELRY",
-              "EquipBonus": {
-                "Vitality": 1,
-                "Strength": 1,
-                "Sensation": 1,
-                "Dexterity": 1,
-                "Agility": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "stable_id": {
-          "index": 55,
+          "index": 44,
           "generation": 0
         },
         "components": {
@@ -2381,7 +1872,516 @@
       },
       {
         "stable_id": {
-          "index": 30,
+          "index": 45,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 80,
+              "Damage": 26,
+              "AttackCount": 1,
+              "Element": "THUNDER",
+              "AttackCategory": "RIFLE"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 3
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "放電物質を投射する擲弾銃"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "電撃グレネード"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 46,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 85,
+              "Damage": 34,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "CANON"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 14
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "M72 LAW"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 47,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 80,
+              "Damage": 14,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "CANON"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 8
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "濃度の高い強酸性の液体"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "溶解液"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 48,
+          "generation": 0
+        },
+        "components": {
+          "Consumable": {
+            "type": "Consumable",
+            "data": {
+              "UsableScene": "ANY",
+              "TargetType": {
+                "TargetGroup": "ALLY",
+                "TargetNum": "ALL"
+              }
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "全員の体力を半分程度回復する"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "回復スプレー"
+            }
+          },
+          "ProvidesHealing": {
+            "type": "ProvidesHealing",
+            "data": {
+              "amount": {
+                "ratio": 0.5,
+                "type": "ratio"
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 49,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 100,
+              "Damage": 9,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "SWORD"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 2
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "鉄で作られた軽いナイフ"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "鉄のナイフ"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 50,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 90,
+              "Damage": 34,
+              "AttackCount": 1,
+              "Element": "NONE",
+              "AttackCategory": "CANON"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 14
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "取り回しがよい車両用の大砲"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "50ミリ砲"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 51,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "よくなめされた革で成形された長靴"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "革のブーツ"
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 3,
+              "EquipmentCategory": "LEGS",
+              "EquipBonus": {
+                "Vitality": 0,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -2
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 52,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "指輪型の小さな機械"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "機械の指輪"
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 1,
+              "EquipmentCategory": "JEWELRY",
+              "EquipBonus": {
+                "Vitality": 1,
+                "Strength": 1,
+                "Sensation": 1,
+                "Dexterity": 1,
+                "Agility": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 53,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 80,
+              "Damage": 25,
+              "AttackCount": 1,
+              "Element": "CHILL",
+              "AttackCategory": "RIFLE"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 3
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "極低温物質を投射する擲弾銃"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "冷凍グレネード"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 54,
+          "generation": 0
+        },
+        "components": {
+          "Attack": {
+            "type": "Attack",
+            "data": {
+              "Accuracy": 90,
+              "Damage": 8,
+              "AttackCount": 4,
+              "Element": "NONE",
+              "AttackCategory": "CANON"
+            }
+          },
+          "Card": {
+            "type": "Card",
+            "data": {
+              "TargetType": {
+                "TargetGroup": "ENEMY",
+                "TargetNum": "SINGLE"
+              },
+              "Cost": 10
+            }
+          },
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "車載型の空冷式機関銃"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "M1919重機関銃"
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 55,
+          "generation": 0
+        },
+        "components": {
+          "Description": {
+            "type": "Description",
+            "data": {
+              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            }
+          },
+          "Item": {
+            "type": "Item",
+            "data": {}
+          },
+          "LocationNone": {
+            "type": "LocationNone",
+            "data": {}
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "西洋鎧"
+            }
+          },
+          "Wearable": {
+            "type": "Wearable",
+            "data": {
+              "Defense": 8,
+              "EquipmentCategory": "TORSO",
+              "EquipBonus": {
+                "Vitality": 0,
+                "Strength": 0,
+                "Sensation": 0,
+                "Dexterity": 0,
+                "Agility": -4
+              }
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 3,
           "generation": 0
         },
         "components": {
@@ -2432,6 +2432,12 @@
             "type": "InParty",
             "data": {}
           },
+          "Job": {
+            "type": "Job",
+            "data": {
+              "Job": "探索者"
+            }
+          },
           "Name": {
             "type": "Name",
             "data": {
@@ -2461,7 +2467,7 @@
       },
       {
         "stable_id": {
-          "index": 33,
+          "index": 6,
           "generation": 0
         },
         "components": {
@@ -2511,6 +2517,12 @@
           "InParty": {
             "type": "InParty",
             "data": {}
+          },
+          "Job": {
+            "type": "Job",
+            "data": {
+              "Job": "狩医者"
+            }
           },
           "Name": {
             "type": "Name",
@@ -2588,6 +2600,12 @@
             "type": "InParty",
             "data": {}
           },
+          "Job": {
+            "type": "Job",
+            "data": {
+              "Job": "失踪兵"
+            }
+          },
           "Name": {
             "type": "Name",
             "data": {
@@ -2610,8 +2628,242 @@
             }
           }
         }
+      },
+      {
+        "stable_id": {
+          "index": 57,
+          "generation": 0
+        },
+        "components": {
+          "Attributes": {
+            "type": "Attributes",
+            "data": {
+              "Vitality": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Strength": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Sensation": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Dexterity": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Agility": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Defense": {
+                "Base": 0,
+                "Modifier": 0,
+                "Total": 0
+              }
+            }
+          },
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
+            "data": {}
+          },
+          "FactionAllyData": {
+            "type": "FactionAllyData",
+            "data": {}
+          },
+          "Job": {
+            "type": "Job",
+            "data": {
+              "Job": "断罪者"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "ハンス"
+            }
+          },
+          "Pools": {
+            "type": "Pools",
+            "data": {
+              "HP": {
+                "Max": 80,
+                "Current": 80
+              },
+              "SP": {
+                "Max": 20,
+                "Current": 20
+              },
+              "XP": 0,
+              "Level": 1
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 58,
+          "generation": 0
+        },
+        "components": {
+          "Attributes": {
+            "type": "Attributes",
+            "data": {
+              "Vitality": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Strength": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Sensation": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Dexterity": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Agility": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Defense": {
+                "Base": 0,
+                "Modifier": 0,
+                "Total": 0
+              }
+            }
+          },
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
+            "data": {}
+          },
+          "FactionAllyData": {
+            "type": "FactionAllyData",
+            "data": {}
+          },
+          "Job": {
+            "type": "Job",
+            "data": {
+              "Job": "石棺戦士"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "カイン"
+            }
+          },
+          "Pools": {
+            "type": "Pools",
+            "data": {
+              "HP": {
+                "Max": 80,
+                "Current": 80
+              },
+              "SP": {
+                "Max": 20,
+                "Current": 20
+              },
+              "XP": 0,
+              "Level": 1
+            }
+          }
+        }
+      },
+      {
+        "stable_id": {
+          "index": 59,
+          "generation": 0
+        },
+        "components": {
+          "Attributes": {
+            "type": "Attributes",
+            "data": {
+              "Vitality": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Strength": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Sensation": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Dexterity": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Agility": {
+                "Base": 5,
+                "Modifier": 0,
+                "Total": 5
+              },
+              "Defense": {
+                "Base": 0,
+                "Modifier": 0,
+                "Total": 0
+              }
+            }
+          },
+          "EquipmentChanged": {
+            "type": "EquipmentChanged",
+            "data": {}
+          },
+          "FactionAllyData": {
+            "type": "FactionAllyData",
+            "data": {}
+          },
+          "Job": {
+            "type": "Job",
+            "data": {
+              "Job": "灰壺の守人"
+            }
+          },
+          "Name": {
+            "type": "Name",
+            "data": {
+              "Name": "メイ"
+            }
+          },
+          "Pools": {
+            "type": "Pools",
+            "data": {
+              "HP": {
+                "Max": 80,
+                "Current": 80
+              },
+              "SP": {
+                "Max": 20,
+                "Current": 20
+              },
+              "XP": 0,
+              "Level": 1
+            }
+          }
+        }
       }
     ]
   },
-  "checksum": "04cac5347d42314b5a14692e6f60bace098ac73d00576c3d7a5deb54a37201c1"
+  "checksum": "64fbfbc80ee16d4b1fe1460d39fe77232b8d886411c4d257a7f9947941ca6a26"
 }
