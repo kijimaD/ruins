@@ -383,6 +383,7 @@ Amount = 1
 
 [[member]]
 Name = "イシハラ"
+Job = "探索者"
 Player = true
 [member.attributes]
 Vitality = 7
@@ -394,6 +395,7 @@ Defense = 0
 
 [[member]]
 Name = "シラセ"
+Job = "狩医者"
 [member.attributes]
 Vitality = 5
 Strength = 40
@@ -404,6 +406,7 @@ Defense = 0
 
 [[member]]
 Name = "タチバナ"
+Job = "失踪兵"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -414,6 +417,7 @@ Defense = 0
 
 [[member]]
 Name = "ハンス"
+Job = "断罪者"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -424,6 +428,7 @@ Defense = 0
 
 [[member]]
 Name = "カイン"
+Job = "石棺戦士"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -434,6 +439,7 @@ Defense = 0
 
 [[member]]
 Name = "メイ"
+Job = "灰壺の守人"
 [member.attributes]
 Vitality = 5
 Strength = 5

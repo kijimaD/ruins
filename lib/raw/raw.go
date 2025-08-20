@@ -111,6 +111,7 @@ type RecipeInput struct {
 // Member はメンバーの情報
 type Member struct {
 	Name       string
+	Job        string     `toml:"job"`
 	Attributes Attributes `toml:"attributes"`
 	Player     *bool
 }
@@ -348,6 +349,9 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 
 	cl := gc.GameComponentList{}
 	cl.Name = &gc.Name{Name: member.Name}
+	if member.Job != "" {
+		cl.Job = &gc.Job{Job: member.Job}
+	}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
 		Strength:  gc.Attribute{Base: member.Attributes.Strength},

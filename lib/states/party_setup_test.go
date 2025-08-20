@@ -109,10 +109,12 @@ func TestPartySetupState_CreateMenuItems(t *testing.T) {
 		Vitality: gc.Attribute{Base: 10},
 	})
 	protagonist.AddComponent(world.Components.Player, &gc.Player{})
+	protagonist.AddComponent(world.Components.Job, &gc.Job{Job: "探索者"})
 
 	ally := world.Manager.NewEntity()
 	ally.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
 	ally.AddComponent(world.Components.Name, &gc.Name{Name: "アリス"})
+	ally.AddComponent(world.Components.Job, &gc.Job{Job: "剣士"})
 	ally.AddComponent(world.Components.Pools, &gc.Pools{
 		Level: 5,
 		XP:    150,
@@ -138,7 +140,7 @@ func TestPartySetupState_CreateMenuItems(t *testing.T) {
 	// 主人公が表示されているかテスト
 	foundProtagonist := false
 	for _, item := range items {
-		if item.Label == "主人公 (固定)" {
+		if item.Label == "主人公(固定)" {
 			foundProtagonist = true
 			assert.False(t, item.Disabled, "主人公が無効化されている（選択可能でなければならない）")
 			break

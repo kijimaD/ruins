@@ -13,6 +13,7 @@ type GameComponentList struct {
 	// general ================
 	Name        *Name
 	Description *Description
+	Job         *Job
 	Render      *Render
 
 	// item ================
@@ -64,6 +65,7 @@ type Components struct {
 	// general ================
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
+	Job         *ecs.SliceComponent
 	Render      *ecs.SliceComponent
 
 	// item ================
@@ -118,6 +120,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	// general
 	c.Name = manager.NewSliceComponent()
 	c.Description = manager.NewSliceComponent()
+	c.Job = manager.NewSliceComponent()
 	c.Render = manager.NewSliceComponent()
 
 	// item
@@ -202,6 +205,11 @@ type Name struct {
 // Description は説明
 type Description struct {
 	Description string
+}
+
+// Job は職業表示
+type Job struct {
+	Job string
 }
 
 // Wearable は装備品。キャラクタが装備することでパラメータを変更できる

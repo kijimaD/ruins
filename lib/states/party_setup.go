@@ -230,11 +230,11 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 			continue // パーティにいないメンバーはスキップ
 		}
 
-		memberName := world.Components.Name.Get(member).(*gc.Name).Name
+		memberName := getDisplayName(world, member)
 		var label string
 
 		if member == st.protagonistEntity {
-			label = fmt.Sprintf("%s (固定)", memberName)
+			label = fmt.Sprintf("%s(固定)", memberName)
 		} else {
 			label = memberName
 		}
@@ -269,11 +269,12 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 		}
 
 		hasWaitingMembers = true
-		memberName := world.Components.Name.Get(member).(*gc.Name).Name
+		memberName := getDisplayName(world, member)
+		label := memberName
 
 		items = append(items, menu.Item{
 			ID:       fmt.Sprintf("member_%d", member),
-			Label:    memberName,
+			Label:    label,
 			Disabled: false,
 			UserData: map[string]interface{}{
 				"type":           "member",
@@ -350,6 +351,19 @@ func (st *PartySetupState) getMemberPartyStatus(entity ecs.Entity) (bool, int) {
 		}
 	}
 	return false, -1
+}
+
+// getDisplayName は表示名を取得する
+func getDisplayName(world w.World, entity ecs.Entity) string {
+	return world.Components.Name.Get(entity).(*gc.Name).Name
+}
+
+// getJobName は職業名を取得する
+func getJobName(world w.World, entity ecs.Entity) string {
+	if entity.HasComponent(world.Components.Job) {
+		return world.Components.Job.Get(entity).(*gc.Job).Job
+	}
+	return ""
 }
 
 // handleItemSelection はアイテム選択時の処理
@@ -532,8 +546,11 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 	entity := *st.selectedMemberEntity
 
 	// 中央カラム：基本情報
-	name := world.Components.Name.Get(entity).(*gc.Name).Name
-	st.memberDescContainer.AddChild(eui.NewSubtitleText(fmt.Sprintf("名前: %s", name), world))
+	// 職業を表示
+	jobName := getJobName(world, entity)
+	if jobName != "" {
+		st.memberDescContainer.AddChild(eui.NewSubtitleText(fmt.Sprintf("職業: %s", jobName), world))
+	}
 
 	if entity.HasComponent(world.Components.Pools) {
 		pools := world.Components.Pools.Get(entity).(*gc.Pools)
