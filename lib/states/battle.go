@@ -11,6 +11,7 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
@@ -360,7 +361,15 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		{
 			name := world.Components.Name.Get(entity).(*gc.Name)
 			pools := world.Components.Pools.Get(entity).(*gc.Pools)
-			text := fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+			
+			var text string
+			// デバッグフラグがオンの場合のみHP数値を表示
+			cfg := config.Get()
+			if cfg != nil && cfg.Debug {
+				text = fmt.Sprintf("%s\n%3d/%3d", name.Name, pools.HP.Current, pools.HP.Max)
+			} else {
+				text = name.Name
+			}
 			container.AddChild(eui.NewMenuText(text, world))
 		}
 
