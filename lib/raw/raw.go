@@ -111,9 +111,9 @@ type RecipeInput struct {
 // Member はメンバーの情報
 type Member struct {
 	Name       string
-	Job        string     `toml:"job"`
-	Attributes Attributes `toml:"attributes"`
+	Job        string
 	Player     *bool
+	Attributes Attributes `toml:"attributes"`
 }
 
 // Attributes はキャラクターの能力値

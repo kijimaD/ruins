@@ -184,14 +184,37 @@ func (st *PartySetupState) initUIWithFocus(world w.World, focusIndex int) *ebite
 	if st.uiBuilder == nil {
 		st.uiBuilder = menu.NewUIBuilder(world)
 	}
-	menuContainer := st.uiBuilder.BuildUI(st.menu)
+	menuContent := st.uiBuilder.BuildUI(st.menu)
 
-	// 中央と右カラムのコンテナを作成
+	// メニューコンテナを固定幅でラップ
+	menuContainer := eui.NewVerticalContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(200, 0), // 左カラムの最小幅を200pxに固定
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				MaxWidth: 200, // 最大幅も200pxに制限
+			}),
+		),
+	)
+	menuContainer.AddChild(menuContent)
+
+	// 中央と右カラムのコンテナを作成（固定幅設定）
 	st.memberDescContainer = eui.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(world.Resources.UIResources.Panel.ImageTrans),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(300, 0), // 中央カラムの最小幅を300pxに固定
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				MaxWidth: 300, // 最大幅も300pxに制限
+			}),
+		),
 	)
 	st.memberStatusContainer = eui.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(world.Resources.UIResources.Panel.ImageTrans),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(200, 0), // 右カラムの最小幅を200pxに固定
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				MaxWidth: 200, // 最大幅も200pxに制限
+			}),
+		),
 	)
 
 	// 初期表示を更新（最初のメンバーを選択）
@@ -310,7 +333,7 @@ func (st *PartySetupState) createMenuItems(world w.World) []menu.Item {
 	if !hasWaitingMembers {
 		items = append(items, menu.Item{
 			ID:       "no_waiting",
-			Label:    "  (なし)",
+			Label:    "(なし)",
 			Disabled: true,
 		})
 	}
@@ -396,7 +419,7 @@ func (st *PartySetupState) handleItemSelection(world w.World, item menu.Item) {
 	switch userData["type"].(string) {
 	case itemTypeMember:
 		st.handleMemberSelection(world, userData)
-	case "action":
+	case itemTypeAction:
 		st.handleActionSelection(world, userData)
 	}
 }
@@ -468,7 +491,7 @@ func (st *PartySetupState) removeMemberFromParty(entity ecs.Entity) {
 
 // handleActionSelection はアクション選択時の処理
 func (st *PartySetupState) handleActionSelection(world w.World, userData map[string]interface{}) {
-	action := userData["action"].(string)
+	action := userData[itemTypeAction].(string)
 
 	switch action {
 	case "apply":
@@ -566,23 +589,27 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 	entity := *st.selectedMemberEntity
 
 	// 中央カラム：基本情報
-	// 職業を表示
 	jobName := getJobName(world, entity)
 	if jobName != "" {
-		st.memberDescContainer.AddChild(eui.NewSubtitleText(fmt.Sprintf("職業: %s", jobName), world))
+		// 職業名を固定幅で表示（最大8文字で余裕を持たせる）
+		st.memberDescContainer.AddChild(eui.NewSubtitleText(fmt.Sprintf("%-8s %-8s", "職業:", jobName), world))
+	} else {
+		st.memberDescContainer.AddChild(eui.NewSubtitleText(fmt.Sprintf("%-8s %-8s", "職業:", "(なし)"), world))
 	}
 
 	if entity.HasComponent(world.Components.Pools) {
 		pools := world.Components.Pools.Get(entity).(*gc.Pools)
-		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("レベル: %d", pools.Level), styles.TextColor, world))
-		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("経験値: %d", pools.XP), styles.TextColor, world))
+		// 固定幅フォーマット: ラベル部分を8文字固定
+		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-8s %d", "レベル:", pools.Level), styles.TextColor, world))
+		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-8s %d", "経験値:", pools.XP), styles.TextColor, world))
 	}
 
 	// 計算値（攻撃力、防御力など）を表示
 	if entity.HasComponent(world.Components.Attributes) {
 		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
-		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("攻撃力: %d", attrs.Strength.Total), styles.TextColor, world))
-		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("防御力: %d", attrs.Defense.Total), styles.TextColor, world))
+		// 固定幅フォーマット: ラベル部分を8文字固定
+		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-8s %d", "攻撃力:", attrs.Strength.Total), styles.TextColor, world))
+		st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-8s %d", "防御力:", attrs.Defense.Total), styles.TextColor, world))
 	}
 
 	// 装備情報
@@ -594,9 +621,10 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 	for i, slot := range wearSlots {
 		if slot != nil {
 			itemName := world.Components.Name.Get(*slot).(*gc.Name).Name
-			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("防具%d: %s", i+1, itemName), styles.TextColor, world))
+			// 固定幅フォーマット: "防具1:" まで5文字固定
+			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("防具%d:", i+1), itemName), styles.TextColor, world))
 		} else {
-			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("防具%d: (なし)", i+1), styles.TextColor, world))
+			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("防具%d:", i+1), "(なし)"), styles.TextColor, world))
 		}
 	}
 
@@ -605,9 +633,10 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 	for i, slot := range cardSlots {
 		if slot != nil {
 			itemName := world.Components.Name.Get(*slot).(*gc.Name).Name
-			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("手札%d: %s", i+1, itemName), styles.TextColor, world))
+			// 固定幅フォーマット: "手札1:" まで5文字固定
+			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("手札%d:", i+1), itemName), styles.TextColor, world))
 		} else {
-			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("手札%d: (なし)", i+1), styles.TextColor, world))
+			st.memberDescContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("手札%d:", i+1), "(なし)"), styles.TextColor, world))
 		}
 	}
 
@@ -616,11 +645,12 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 
 	if entity.HasComponent(world.Components.Attributes) {
 		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
-		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
+		// 固定幅フォーマット: ラベル3文字分、数値3桁、修正値符号付き3桁
+		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), styles.TextColor, world))
+		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), styles.TextColor, world))
+		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), styles.TextColor, world))
+		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), styles.TextColor, world))
+		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
+		st.memberStatusContainer.AddChild(eui.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
 	}
 }
