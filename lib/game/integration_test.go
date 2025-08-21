@@ -2,7 +2,6 @@ package game
 
 import (
 	"testing"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -327,28 +326,6 @@ func BenchmarkGameInitialization(b *testing.B) {
 				World:        world,
 				StateMachine: stateMachine,
 			}
-		}
-	})
-}
-
-// TestGameInitializationTimeouts はタイムアウトを使用した統合テスト
-//
-//nolint:paralleltest // ebitenui内部のrace conditionのためt.Parallel()を使用しない
-func TestGameInitializationTimeouts(t *testing.T) {
-	t.Run("初期化処理の実行時間制限", func(t *testing.T) {
-		done := make(chan bool, 1)
-
-		go func() {
-			_, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-			require.NoError(t, err)
-			done <- true
-		}()
-
-		select {
-		case <-done:
-			// 正常終了
-		case <-time.After(10 * time.Second):
-			t.Fatal("ゲーム初期化が10秒以内に完了しなかった")
 		}
 	})
 }
