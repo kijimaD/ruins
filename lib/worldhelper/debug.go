@@ -62,7 +62,7 @@ func InitDebugData(world w.World) {
 
 	// デバッグ用装備
 	Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
-	Equip(world, card2, ishihara, gc.EquipmentSlotNumber(0))
+	Equip(world, card2, ishihara, gc.EquipmentSlotNumber(1))
 	Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
 	Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 }
