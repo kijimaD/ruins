@@ -32,10 +32,14 @@ func (game *MainGame) Layout(_, _ int) (int, int) {
 
 // Update はゲームの更新処理を行う
 func (game *MainGame) Update() error {
-	// モニター表示をトグルする
+	// デバッグ表示をトグルする
+	cfg := config.Get()
 	if inpututil.IsKeyJustPressed(ebiten.KeyF12) {
-		cfg := config.Get()
-		cfg.ToggleShowMonitor()
+		// パフォーマンスモニターは攻略に関係ないのでトグルできてよい
+		cfg.ShowMonitor = !cfg.ShowMonitor
+	}
+	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeyF12) {
+		cfg.ShowAIDebug = !cfg.ShowAIDebug
 	}
 
 	game.StateMachine.Update(game.World)

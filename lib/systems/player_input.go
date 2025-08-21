@@ -4,21 +4,13 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/config"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // PlayerInputSystem はプレイヤーからの入力を処理する
 func PlayerInputSystem(world w.World) {
-	// config.Debugがオンの時のみF12キーでAIデバッグ表示を切り替え
-	cfg := config.Get()
-	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeyF12) {
-		cfg.ShowAIDebug = !cfg.ShowAIDebug
-	}
-
 	var playerVelocity *gc.Velocity
 	var playerPos *gc.Position
 	world.Manager.Join(

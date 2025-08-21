@@ -361,7 +361,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		{
 			name := world.Components.Name.Get(entity).(*gc.Name)
 			pools := world.Components.Pools.Get(entity).(*gc.Pools)
-			
+
 			var text string
 			// デバッグフラグがオンの場合のみHP数値を表示
 			cfg := config.Get()

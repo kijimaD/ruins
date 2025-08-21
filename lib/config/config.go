@@ -221,8 +221,3 @@ func (c *Config) Validate() error {
 
 	return nil
 }
-
-// ToggleShowMonitor はShowMonitorフラグを切り替える
-func (c *Config) ToggleShowMonitor() {
-	c.ShowMonitor = !c.ShowMonitor
-}
