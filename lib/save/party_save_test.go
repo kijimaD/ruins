@@ -1,7 +1,6 @@
 package save
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -26,35 +25,12 @@ func TestPartySaveAndLoad(t *testing.T) {
 	worldhelper.InitDebugData(world)
 
 	// セーブ前のパーティ状態を確認
-	fmt.Println("=== セーブ前のパーティ状態 ===")
-
 	originalPartyMembers := []ecs.Entity{}
-
-	// プレイヤーを探す
-	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
-		fmt.Printf("Player: %d", entity)
-		if entity.HasComponent(world.Components.Name) {
-			name := world.Components.Name.Get(entity)
-			fmt.Printf(" (%+v)", name)
-		}
-		fmt.Println()
-	}))
 
 	// パーティメンバーを確認
 	world.Manager.Join(world.Components.InParty, world.Components.FactionAlly).Visit(ecs.Visit(func(entity ecs.Entity) {
 		originalPartyMembers = append(originalPartyMembers, entity)
-		fmt.Printf("Party member: %d", entity)
-		if entity.HasComponent(world.Components.Name) {
-			name := world.Components.Name.Get(entity)
-			fmt.Printf(" (%+v)", name)
-		}
-		if entity.HasComponent(world.Components.Player) {
-			fmt.Printf(" [PLAYER]")
-		}
-		fmt.Println()
 	}))
-
-	fmt.Printf("Original party size: %d\n", len(originalPartyMembers))
 	require.Greater(t, len(originalPartyMembers), 0, "Should have party members")
 
 	// パーティからメンバーを一人外す（プレイヤー以外）
@@ -63,27 +39,15 @@ func TestPartySaveAndLoad(t *testing.T) {
 		if !member.HasComponent(world.Components.Player) {
 			member.RemoveComponent(world.Components.InParty)
 			removedMember = member
-			fmt.Printf("Removed from party: %d\n", member)
 			break
 		}
 	}
 
 	// 変更後のパーティ状態を確認
-	fmt.Println("\n=== パーティ変更後の状態 ===")
 	modifiedPartyMembers := []ecs.Entity{}
 	world.Manager.Join(world.Components.InParty, world.Components.FactionAlly).Visit(ecs.Visit(func(entity ecs.Entity) {
 		modifiedPartyMembers = append(modifiedPartyMembers, entity)
-		fmt.Printf("Party member: %d", entity)
-		if entity.HasComponent(world.Components.Name) {
-			name := world.Components.Name.Get(entity)
-			fmt.Printf(" (%+v)", name)
-		}
-		if entity.HasComponent(world.Components.Player) {
-			fmt.Printf(" [PLAYER]")
-		}
-		fmt.Println()
 	}))
-	fmt.Printf("Modified party size: %d\n", len(modifiedPartyMembers))
 
 	// セーブ実行
 	saveManager := NewSerializationManager(testDir)
@@ -91,7 +55,6 @@ func TestPartySaveAndLoad(t *testing.T) {
 	require.NoError(t, err)
 
 	// 新しいワールドでロード
-	fmt.Println("\n=== ロード後の状態 ===")
 	newWorld, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
@@ -102,29 +65,13 @@ func TestPartySaveAndLoad(t *testing.T) {
 	loadedPlayerEntity := ecs.Entity(0)
 	newWorld.Manager.Join(newWorld.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
 		loadedPlayerEntity = entity
-		fmt.Printf("Loaded Player: %d", entity)
-		if entity.HasComponent(newWorld.Components.Name) {
-			name := newWorld.Components.Name.Get(entity)
-			fmt.Printf(" (%+v)", name)
-		}
-		fmt.Println()
 	}))
 
 	// ロード後のパーティメンバー確認
 	loadedPartyMembers := []ecs.Entity{}
 	newWorld.Manager.Join(newWorld.Components.InParty, newWorld.Components.FactionAlly).Visit(ecs.Visit(func(entity ecs.Entity) {
 		loadedPartyMembers = append(loadedPartyMembers, entity)
-		fmt.Printf("Loaded party member: %d", entity)
-		if entity.HasComponent(newWorld.Components.Name) {
-			name := newWorld.Components.Name.Get(entity)
-			fmt.Printf(" (%+v)", name)
-		}
-		if entity.HasComponent(newWorld.Components.Player) {
-			fmt.Printf(" [PLAYER]")
-		}
-		fmt.Println()
 	}))
-	fmt.Printf("Loaded party size: %d\n", len(loadedPartyMembers))
 
 	// 検証
 	// loadedPlayerEntityが有効かチェック（プレイヤーコンポーネントがあるかで判定）
@@ -158,6 +105,4 @@ func TestPartySaveAndLoad(t *testing.T) {
 		}
 		assert.False(t, removedMemberInLoadedParty, "Removed member should not be in party after load")
 	}
-
-	fmt.Println("\n✓ パーティ編成の保存・復元が正常に完了")
 }
