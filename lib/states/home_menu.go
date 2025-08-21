@@ -117,8 +117,8 @@ func (st *HomeMenuState) initMenu(world w.World) {
 		{
 			ID:          "replace",
 			Label:       "入替",
-			Description: "仲間を入れ替える(未実装)",
-			UserData:    es.Transition{Type: es.TransNone},
+			Description: "仲間を入れ替える",
+			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewPartySetupState}},
 		},
 		{
 			ID:          "inventory",

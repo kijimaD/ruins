@@ -32,4 +32,5 @@ cmd InventoryMenu
 cmd LoadMenu
 cmd MainMenu
 cmd Message
+cmd PartySetup
 cmd SaveMenu

@@ -7,12 +7,13 @@ import (
 )
 
 // InitDebugData はデバッグ用の初期データを設定する
-// 味方メンバーが存在しない場合のみ実行される
+// パーティメンバーが存在しない場合のみ実行される
 func InitDebugData(world w.World) {
-	// 既に味方メンバーが存在するかチェック
+	// 既にパーティメンバーが存在するかチェック
 	memberCount := 0
 	world.Manager.Join(
 		world.Components.FactionAlly,
+		world.Components.InParty,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
@@ -46,6 +47,9 @@ func InitDebugData(world w.World) {
 	ishihara := SpawnMember(world, "イシハラ", true)
 	shirase := SpawnMember(world, "シラセ", true)
 	SpawnMember(world, "タチバナ", true)
+	SpawnMember(world, "ハンス", false)
+	SpawnMember(world, "カイン", false)
+	SpawnMember(world, "メイ", false)
 
 	// デバッグ用マテリアルとレシピ
 	SpawnAllMaterials(world)
@@ -58,7 +62,7 @@ func InitDebugData(world w.World) {
 
 	// デバッグ用装備
 	Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
-	Equip(world, card2, ishihara, gc.EquipmentSlotNumber(0))
+	Equip(world, card2, ishihara, gc.EquipmentSlotNumber(1))
 	Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
 	Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
 }

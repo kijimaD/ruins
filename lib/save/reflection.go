@@ -61,6 +61,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.Operator{}), components.Operator)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
+	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
 	r.registerNullComponent(reflect.TypeOf(&gc.InParty{}), components.InParty)
@@ -80,6 +81,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Description{}), components.Description, r.extractDescription, r.restoreDescription, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Job{}), components.Job, r.extractJob, r.restoreJob, nil)
 
 	// アイテム関連コンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
@@ -136,6 +138,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.BlockView)
 			case "BlockPass":
 				return struct{}{}, entity.HasComponent(world.Components.BlockPass)
+			case "Player":
+				return struct{}{}, entity.HasComponent(world.Components.Player)
 			case "FactionAllyData":
 				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
 			case "FactionEnemyData":
@@ -164,6 +168,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
 			case "BlockPass":
 				entity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
+			case "Player":
+				entity.AddComponent(world.Components.Player, &gc.Player{})
 			case "FactionAllyData":
 				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
 			case "FactionEnemyData":
@@ -464,6 +470,24 @@ func (r *ComponentRegistry) restoreDescription(world w.World, entity ecs.Entity,
 		return fmt.Errorf("invalid Description data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Description, &desc)
+	return nil
+}
+
+// Job コンポーネントの処理
+func (r *ComponentRegistry) extractJob(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Job) {
+		return nil, false
+	}
+	job := world.Components.Job.Get(entity).(*gc.Job)
+	return *job, true
+}
+
+func (r *ComponentRegistry) restoreJob(world w.World, entity ecs.Entity, data interface{}) error {
+	job, ok := data.(gc.Job)
+	if !ok {
+		return fmt.Errorf("invalid Job data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Job, &job)
 	return nil
 }
 

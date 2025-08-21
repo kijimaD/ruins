@@ -13,6 +13,7 @@ type GameComponentList struct {
 	// general ================
 	Name        *Name
 	Description *Description
+	Job         *Job
 	Render      *Render
 
 	// item ================
@@ -43,6 +44,7 @@ type GameComponentList struct {
 	BlockPass    *BlockPass
 
 	// member ================
+	Player      *Player
 	InParty     *InParty
 	FactionType *FactionType
 
@@ -63,6 +65,7 @@ type Components struct {
 	// general ================
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
+	Job         *ecs.SliceComponent
 	Render      *ecs.SliceComponent
 
 	// item ================
@@ -96,6 +99,7 @@ type Components struct {
 	BlockPass    *ecs.NullComponent
 
 	// member ================
+	Player       *ecs.NullComponent
 	InParty      *ecs.NullComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
@@ -116,6 +120,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	// general
 	c.Name = manager.NewSliceComponent()
 	c.Description = manager.NewSliceComponent()
+	c.Job = manager.NewSliceComponent()
 	c.Render = manager.NewSliceComponent()
 
 	// item
@@ -149,6 +154,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.BlockPass = manager.NewNullComponent()
 
 	// member
+	c.Player = manager.NewNullComponent()
 	c.InParty = manager.NewNullComponent()
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
@@ -201,12 +207,20 @@ type Description struct {
 	Description string
 }
 
+// Job は職業表示
+type Job struct {
+	Job string
+}
+
 // Wearable は装備品。キャラクタが装備することでパラメータを変更できる
 type Wearable struct {
 	Defense           int           // 防御力
 	EquipmentCategory EquipmentType // 装備部位
 	EquipBonus        EquipBonus    // ステータスへのボーナス
 }
+
+// Player は主人公キャラクター
+type Player struct{}
 
 // InParty は冒険パーティに参加している状態
 type InParty struct{}

@@ -100,6 +100,7 @@ func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
 // createMenuButton はメニューボタンを作成する
 func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
 	res := b.world.Resources.UIResources
+
 	btn := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{

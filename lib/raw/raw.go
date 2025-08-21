@@ -111,6 +111,8 @@ type RecipeInput struct {
 // Member はメンバーの情報
 type Member struct {
 	Name       string
+	Job        string
+	Player     *bool
 	Attributes Attributes `toml:"attributes"`
 }
 
@@ -315,7 +317,7 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 		cl.Recipe.Inputs = append(cl.Recipe.Inputs, gc.RecipeInput{Name: input.Name, Amount: input.Amount})
 	}
 
-	// 説明文などのため、マッチしたitemの定義から持ってくる
+	// 説明文や分類のため、マッチしたitemの定義から持ってくる
 	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	if err != nil {
 		return gc.GameComponentList{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
@@ -337,8 +339,8 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	return cl, nil
 }
 
-// GenerateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する
-func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
+// generateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する(敵・味方共通)
+func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		return gc.GameComponentList{}, fmt.Errorf("キーが存在しない: %s", name)
@@ -347,6 +349,9 @@ func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
 
 	cl := gc.GameComponentList{}
 	cl.Name = &gc.Name{Name: member.Name}
+	if member.Job != "" {
+		cl.Job = &gc.Job{Job: member.Job}
+	}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
 		Strength:  gc.Attribute{Base: member.Attributes.Strength},
@@ -359,6 +364,9 @@ func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
 		Level: 1,
 	}
 	cl.EquipmentChanged = &gc.EquipmentChanged{}
+	if member.Player != nil && *member.Player {
+		cl.Player = &gc.Player{}
+	}
 
 	commandTableIdx, ok := rw.CommandTableIndex[name]
 	if ok {
@@ -375,9 +383,9 @@ func (rw *Master) GenerateFighter(name string) (gc.GameComponentList, error) {
 	return cl, nil
 }
 
-// GenerateMember は指定された名前のメンバーのゲームコンポーネントを生成する
+// GenerateMember は指定された名前の仲間メンバーのゲームコンポーネントを生成する
 func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentList, error) {
-	cl, err := rw.GenerateFighter(name)
+	cl, err := rw.generateFighter(name)
 	if err != nil {
 		return gc.GameComponentList{}, err
 	}
@@ -391,7 +399,7 @@ func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentLis
 
 // GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
 func (rw *Master) GenerateEnemy(name string) (gc.GameComponentList, error) {
-	cl, err := rw.GenerateFighter(name)
+	cl, err := rw.generateFighter(name)
 	if err != nil {
 		return gc.GameComponentList{}, err
 	}
