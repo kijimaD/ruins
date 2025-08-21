@@ -52,6 +52,8 @@ func NewPartySetupState() es.State {
 	return &PartySetupState{}
 }
 
+// State interface ================
+
 var _ es.State = &PartySetupState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
@@ -72,7 +74,7 @@ func (st *PartySetupState) OnStart(world w.World) {
 	}
 
 	st.initializePartyData(world)
-	st.ui = st.initUI(world)
+	st.ui = st.initUIWithFocus(world, -1)
 
 	// 初期フォーカス状態を設定
 	if st.uiBuilder != nil && st.menu != nil {
@@ -131,11 +133,6 @@ func (st *PartySetupState) initializePartyData(world w.World) {
 			slotIndex++
 		}
 	})
-}
-
-// initUI はUIを初期化する
-func (st *PartySetupState) initUI(world w.World) *ebitenui.UI {
-	return st.initUIWithFocus(world, -1)
 }
 
 // initUIWithFocus はUIを初期化し、指定されたインデックスにフォーカスを設定する
