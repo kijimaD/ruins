@@ -15,9 +15,9 @@ import (
 
 // CollisionSystem はプレイヤーと敵の衝突を検出し、戦闘遷移を発火する
 func CollisionSystem(world w.World) {
-	// デバッグモードが有効な場合はエンカウントを発生させない
+	// エンカウント無効フラグが有効な場合はエンカウントを発生させない
 	cfg := config.Get()
-	if cfg.Debug {
+	if cfg.NoEncounter {
 		return
 	}
 

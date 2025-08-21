@@ -40,6 +40,7 @@ func (game *MainGame) Update() error {
 	}
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeyF12) {
 		cfg.ShowAIDebug = !cfg.ShowAIDebug
+		cfg.NoEncounter = !cfg.NoEncounter
 	}
 
 	game.StateMachine.Update(game.World)
