@@ -101,9 +101,6 @@ func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
 func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
 	res := b.world.Resources.UIResources
 
-	// Dimmed状態の場合は文字色を暗くする
-	textColor := res.Button.Text
-
 	btn := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
@@ -115,7 +112,7 @@ func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.B
 		widget.ButtonOpts.Text(
 			item.Label,
 			res.Button.Face,
-			textColor,
+			res.Button.Text,
 		),
 		widget.ButtonOpts.TextPadding(res.Button.Padding),
 		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter), // 左寄せ
