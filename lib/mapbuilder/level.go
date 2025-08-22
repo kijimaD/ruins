@@ -81,7 +81,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	// フィールドにNPCを生成する
 	{
 		failCount := 0
-		total := rand.IntN(10 + 10)
+		total := 5 + rand.IntN(5)
 		successCount := 0
 		for {
 			if failCount > 200 {

@@ -16,7 +16,36 @@ import (
 var (
 	// 段階的な暗闇用の画像キャッシュ（透明度レベルを増加）
 	darknessCacheImages []*ebiten.Image
+
+	// プレイヤー位置キャッシュ（4px移動ごとに更新）
+	playerPositionCache struct {
+		lastPlayerX    gc.Pixel
+		lastPlayerY    gc.Pixel
+		visibilityData map[string]TileVisibility
+		isInitialized  bool
+	}
+
+	// レイキャスト結果のキャッシュ
+	raycastCache = make(map[string]bool) // "x1,y1,x2,y2" -> visible
 )
+
+// abs は絶対値を返す
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+// ClearVisionCaches は全ての視界関連キャッシュをクリアする（階移動時などに使用）
+func ClearVisionCaches() {
+	// プレイヤー位置キャッシュをクリア
+	playerPositionCache.isInitialized = false
+	playerPositionCache.visibilityData = nil
+
+	// レイキャストキャッシュをクリア
+	raycastCache = make(map[string]bool)
+}
 
 // VisionSystem はタイルごとの視界を管理し、暗闇を描画する
 func VisionSystem(world w.World, screen *ebiten.Image) {
@@ -33,58 +62,42 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		return
 	}
 
-	// Dungeonリソースから探索済みマップを取得
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	// 移動ごとの視界更新判定
+	const updateThreshold = 4
+	needsUpdate := !playerPositionCache.isInitialized ||
+		abs(int(playerPos.X-playerPositionCache.lastPlayerX)) >= updateThreshold ||
+		abs(int(playerPos.Y-playerPositionCache.lastPlayerY)) >= updateThreshold
 
-	// タイルの可視性マップを更新
-	visionRadius := gc.Pixel(320)
-	visibilityData := calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
+	var visibilityData map[string]TileVisibility
 
-	// 視界内のタイルを探索済みとしてマーク
-	visibleCount := 0
-	for _, tileData := range visibilityData {
-		if tileData.Visible {
-			tileKey := fmt.Sprintf("%d,%d", tileData.Row, tileData.Col)
-			gameResources.ExploredTiles[tileKey] = true
-			visibleCount++
+	if needsUpdate {
+		// Dungeonリソースから探索済みマップを取得
+		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+
+		// タイルの可視性マップを更新
+		visionRadius := gc.Pixel(320)
+		visibilityData = calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
+
+		// 視界内のタイルを探索済みとしてマーク
+		for _, tileData := range visibilityData {
+			if tileData.Visible {
+				tileKey := fmt.Sprintf("%d,%d", tileData.Row, tileData.Col)
+				gameResources.ExploredTiles[tileKey] = true
+			}
 		}
+
+		// キャッシュ更新
+		playerPositionCache.lastPlayerX = playerPos.X
+		playerPositionCache.lastPlayerY = playerPos.Y
+		playerPositionCache.visibilityData = visibilityData
+		playerPositionCache.isInitialized = true
+	} else {
+		// キャッシュされたデータを使用
+		visibilityData = playerPositionCache.visibilityData
 	}
 
 	// 距離に応じた段階的暗闇を描画
-	drawGradualDarknessOverlay(world, screen, visibilityData)
-}
-
-func visionVertices(num int, x gc.Pixel, y gc.Pixel, r gc.Pixel) []ebiten.Vertex {
-	vs := []ebiten.Vertex{}
-	for i := 0; i < num; i++ {
-		rate := float64(i) / float64(num)
-		cr := 0.0
-		cg := 0.0
-		cb := 0.0
-		vs = append(vs, ebiten.Vertex{
-			DstX:   float32(float64(r)*math.Cos(2*math.Pi*rate)) + float32(x),
-			DstY:   float32(float64(r)*math.Sin(2*math.Pi*rate)) + float32(y),
-			SrcX:   0,
-			SrcY:   0,
-			ColorR: float32(cr),
-			ColorG: float32(cg),
-			ColorB: float32(cb),
-			ColorA: 1,
-		})
-	}
-
-	vs = append(vs, ebiten.Vertex{
-		DstX:   float32(x),
-		DstY:   float32(y),
-		SrcX:   0,
-		SrcY:   0,
-		ColorR: 0,
-		ColorG: 0,
-		ColorB: 0,
-		ColorA: 0,
-	})
-
-	return vs
+	drawDistanceBasedDarkness(world, screen, visibilityData)
 }
 
 // TileVisibility はタイルの可視性を表す
@@ -106,27 +119,38 @@ func calculateTileVisibilityWithDistance(world w.World, playerX, playerY, radius
 	playerTileX := int(playerX) / tileSize
 	playerTileY := int(playerY) / tileSize
 
-	// 視界範囲内のタイルをチェック
+	// 視界範囲を分割して段階的処理（視界範囲最適化）
 	maxTileDistance := int(radius)/tileSize + 2
+
+	// タイルベース視界判定（Dark Days Ahead風）
 
 	for dx := -maxTileDistance; dx <= maxTileDistance; dx++ {
 		for dy := -maxTileDistance; dy <= maxTileDistance; dy++ {
 			tileX := playerTileX + dx
 			tileY := playerTileY + dy
 
+			// 早期距離チェック（枝払い）
+			if abs(dx) > maxTileDistance || abs(dy) > maxTileDistance {
+				continue
+			}
+
 			// タイルの中心座標を計算
 			tileCenterX := float64(tileX*tileSize + tileSize/2)
 			tileCenterY := float64(tileY*tileSize + tileSize/2)
 
-			// プレイヤーからタイル中心への距離をチェック
-			distanceToTile := math.Sqrt(
-				math.Pow(tileCenterX-float64(playerX), 2) +
-					math.Pow(tileCenterY-float64(playerY), 2))
+			// プレイヤーからタイル中心への距離をチェック（平方根計算の最適化）
+			dxF := tileCenterX - float64(playerX)
+			dyF := tileCenterY - float64(playerY)
+			distanceSquared := dxF*dxF + dyF*dyF
+			radiusSquared := float64(radius) * float64(radius)
 
 			tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
 
-			if distanceToTile <= float64(radius) {
-				// レイキャストでタイルが見えるかチェック
+			// 視界範囲内のタイルのみ処理
+			if distanceSquared <= radiusSquared {
+				distanceToTile := math.Sqrt(distanceSquared)
+
+				// Dark Days Ahead風の統一されたタイルベース視界判定
 				visible := isTileVisibleByRaycast(world, float64(playerX), float64(playerY), tileCenterX, tileCenterY)
 
 				// 距離に応じた暗闇の計算
@@ -139,93 +163,97 @@ func calculateTileVisibilityWithDistance(world w.World, playerX, playerY, radius
 					Distance: distanceToTile,
 					Darkness: darkness,
 				}
-			} else {
-				visibilityMap[tileKey] = TileVisibility{
-					Row:      tileX,
-					Col:      tileY,
-					Visible:  false,
-					Distance: distanceToTile,
-					Darkness: 1.0, // 視界外は完全に暗い
-				}
 			}
+			// 視界外のタイルは処理しない（最適化）
 		}
 	}
 
 	return visibilityMap
 }
 
-// isTileVisibleByRaycast はレイキャストでタイルが見えるかチェック
+// isTileVisibleByRaycast はタイルベース視界判定
 func isTileVisibleByRaycast(world w.World, playerX, playerY, targetX, targetY float64) bool {
-	// プレイヤーからターゲットへのベクトル
-	dx := targetX - playerX
-	dy := targetY - playerY
-	distance := math.Sqrt(dx*dx + dy*dy)
+	// キャッシュキーを生成
+	px := int(playerX/4) * 4
+	py := int(playerY/4) * 4
+	tx := int(targetX/4) * 4
+	ty := int(targetY/4) * 4
+	cacheKey := fmt.Sprintf("%d,%d,%d,%d", px, py, tx, ty)
 
-	if distance == 0 {
-		return true // プレイヤーの位置は常に見える
+	// キャッシュから結果をチェック
+	if result, exists := raycastCache[cacheKey]; exists {
+		return result
 	}
 
-	// ターゲットタイル自体がBlockViewを持つかチェック
-	targetIsWall := isBlockedByWall(world, gc.Pixel(targetX), gc.Pixel(targetY))
+	// タイル座標に変換
+	const tileSize = 32.0
+	playerTileX := int(playerX / tileSize)
+	playerTileY := int(playerY / tileSize)
+	targetTileX := int(targetX / tileSize)
+	targetTileY := int(targetY / tileSize)
 
-	// プレイヤーからターゲットまでの間にあるBlockViewタイルの数を計算
-	blockViewCount := countBlockViewTilesBetween(world, playerX, playerY, targetX, targetY)
-
-	if targetIsWall {
-		// ターゲット自体が壁の場合、途中のBlockViewタイルが1つ以下なら見える
-		return blockViewCount <= 1
+	// 同じタイルまたは隣接タイルは常に見える
+	if abs(targetTileX-playerTileX) <= 1 && abs(targetTileY-playerTileY) <= 1 {
+		raycastCache[cacheKey] = true
+		return true
 	}
 
-	// 通常のタイル（床など）の場合は、途中にBlockViewタイルがないときのみ見える
-	return blockViewCount == 0
+	// ブレゼンハムのライン描画アルゴリズムでタイルベースの視線判定
+	result := bresenhamLineOfSight(world, playerTileX, playerTileY, targetTileX, targetTileY)
+
+	// 結果をキャッシュ
+	if len(raycastCache) < 15000 {
+		raycastCache[cacheKey] = result
+	}
+
+	return result
 }
 
-// countBlockViewTilesBetween はプレイヤーとターゲット間のBlockViewタイル数を数える
-func countBlockViewTilesBetween(world w.World, playerX, playerY, targetX, targetY float64) int {
-	dx := targetX - playerX
-	dy := targetY - playerY
-	distance := math.Sqrt(dx*dx + dy*dy)
+// bresenhamLineOfSight はブレゼンハムアルゴリズムを使用したタイルベース視線判定
+func bresenhamLineOfSight(world w.World, x0, y0, x1, y1 int) bool {
+	dx := abs(x1 - x0)
+	dy := abs(y1 - y0)
 
-	if distance == 0 {
-		return 0
+	var sx, sy int
+	if x0 < x1 {
+		sx = 1
+	} else {
+		sx = -1
+	}
+	if y0 < y1 {
+		sy = 1
+	} else {
+		sy = -1
 	}
 
-	// 正規化
-	stepX := dx / distance
-	stepY := dy / distance
+	err := dx - dy
+	x, y := x0, y0
 
-	blockViewCount := 0
-	visitedTiles := make(map[string]bool) // 同じタイルを重複カウントしないため
-
-	// レイキャストでBlockViewタイルを数える
-	const stepSize = 2.0
-	for step := stepSize; step < distance-stepSize; step += stepSize {
-		rayX := playerX + stepX*step
-		rayY := playerY + stepY*step
-
-		// タイル座標に変換
-		tileSize := 32.0
-		tileX := int(rayX / tileSize)
-		tileY := int(rayY / tileSize)
-		tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
-
-		// 既にチェック済みのタイルはスキップ
-		if visitedTiles[tileKey] {
-			continue
+	for {
+		// ターゲットに到達したら見える
+		if x == x1 && y == y1 {
+			return true
 		}
-		visitedTiles[tileKey] = true
 
-		// タイルの中心座標
-		tileCenterX := float64(tileX)*tileSize + tileSize/2
-		tileCenterY := float64(tileY)*tileSize + tileSize/2
+		// 現在のタイルが壁かチェック（ターゲット以外）
+		if x != x1 || y != y1 {
+			tileCenterX := float64(x*32 + 16)
+			tileCenterY := float64(y*32 + 16)
+			if isBlockedByWall(world, gc.Pixel(tileCenterX), gc.Pixel(tileCenterY)) {
+				return false // 壁に遮られている
+			}
+		}
 
-		// このタイルがBlockViewを持つかチェック
-		if isBlockedByWall(world, gc.Pixel(tileCenterX), gc.Pixel(tileCenterY)) {
-			blockViewCount++
+		e2 := 2 * err
+		if e2 > -dy {
+			err -= dy
+			x += sx
+		}
+		if e2 < dx {
+			err += dx
+			y += sy
 		}
 	}
-
-	return blockViewCount
 }
 
 // calculateDarknessByDistance は距離に応じた暗闇レベルを計算する
@@ -260,9 +288,10 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 	return 0.9 // 90%暗い（完全に真っ暗にはしない）
 }
 
-// drawGradualDarknessOverlay は距離に応じた段階的暗闇を描画する
-func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+// drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
+func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	tileSize := int(consts.TileSize)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
@@ -301,18 +330,30 @@ func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityD
 	startTileY := topEdge/tileSize - 1
 	endTileY := bottomEdge/tileSize + 1
 
-	// 各タイルをチェックして暗闇を描画
+	// 距離に応じた段階的暗闇を描画
 	for tileX := startTileX; tileX <= endTileX; tileX++ {
 		for tileY := startTileY; tileY <= endTileY; tileY++ {
 			tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
 
-			// タイルの暗闇レベルを取得
-			darkness := 1.0 // デフォルトは完全に暗い
+			var darkness float64
+
+			// 視界データをチェック
 			if tileData, exists := visibilityData[tileKey]; exists {
 				if tileData.Visible {
+					// 視界内: 距離に応じた暗闇レベル
 					darkness = tileData.Darkness
 				} else {
-					darkness = 1.0 // 見えないタイルは完全に暗い
+					// 視界範囲内だが見えないタイル: 完全に暗い
+					darkness = 1.0
+				}
+			} else {
+				// 視界範囲外: 探索済みかチェック
+				if explored := gameResources.ExploredTiles[tileKey]; explored {
+					// 探索済み視界外タイル: 真っ黒
+					darkness = 1.0
+				} else {
+					// 未探索タイル: 描画しない（完全に隠れる）
+					continue
 				}
 			}
 
@@ -324,7 +365,7 @@ func drawGradualDarknessOverlay(world w.World, screen *ebiten.Image, visibilityD
 				screenX := (worldX-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
 				screenY := (worldY-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
-				// 暗闇レベルに応じた画像を選択して描画（スケールも適用）
+				// 暗闇レベルに応じた画像を描画
 				drawDarknessAtLevelWithScale(screen, screenX, screenY, darkness, cameraScale)
 			}
 		}
@@ -373,24 +414,47 @@ func drawDarknessAtLevelWithScale(screen *ebiten.Image, x, y, darkness, scale fl
 	}
 }
 
-// isBlockedByWall は指定した位置に視界を遮る壁があるかチェックする
-func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
-	var blocked bool
+// GetCurrentVisibilityData は現在の視界データを返す（レンダリング用）
+func GetCurrentVisibilityData() map[string]TileVisibility {
+	if playerPositionCache.isInitialized {
+		return playerPositionCache.visibilityData
+	}
+	return nil
+}
 
-	// Position を持つエンティティをチェック
+// isBlockedByWall は直接的な壁チェック
+func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
+	fx, fy := float64(x), float64(y)
+
+	// GridElement + BlockView のチェック（32x32タイル）
+	tileX := int(fx / 32)
+	tileY := int(fy / 32)
+
+	// より正確なチェック: GridElementから直接確認
+	blocked := false
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.BlockView,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if int(grid.Row) == tileX && int(grid.Col) == tileY {
+			blocked = true
+		}
+	}))
+
+	if blocked {
+		return true
+	}
+
+	// Position + BlockView のチェック
 	world.Manager.Join(
 		world.Components.Position,
 		world.Components.BlockView,
 		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if blocked {
-			return
-		}
-
 		pos := world.Components.Position.Get(entity).(*gc.Position)
 		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		// Resourcesからスプライトシートを取得
-		// TODO: この処理はよくあるので共通化したい
+
 		if world.Resources.SpriteSheets == nil {
 			return
 		}
@@ -400,52 +464,13 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 		}
 		spriteInfo := spriteSheet.Sprites[sprite.SpriteNumber]
 
-		// スプライトの境界ボックス
+		// 境界ボックスをチェック
 		left := float64(pos.X) - float64(spriteInfo.Width)/2
 		right := float64(pos.X) + float64(spriteInfo.Width)/2
 		top := float64(pos.Y) - float64(spriteInfo.Height)/2
 		bottom := float64(pos.Y) + float64(spriteInfo.Height)/2
 
-		if float64(x) >= left && float64(x) <= right &&
-			float64(y) >= top && float64(y) <= bottom {
-			blocked = true
-		}
-	}))
-
-	// GridElement を持つエンティティもチェック
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.BlockView,
-		world.Components.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if blocked {
-			return
-		}
-
-		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		// Resourcesからスプライトシートを取得
-		if world.Resources.SpriteSheets == nil {
-			return
-		}
-		spriteSheet, exists := (*world.Resources.SpriteSheets)[sprite.Name]
-		if !exists || sprite.SpriteNumber >= len(spriteSheet.Sprites) {
-			return
-		}
-		spriteInfo := spriteSheet.Sprites[sprite.SpriteNumber]
-
-		// グリッド位置をピクセル座標に変換
-		gridX := int(grid.Row) * spriteInfo.Width
-		gridY := int(grid.Col) * spriteInfo.Height
-
-		// グリッドの境界ボックス
-		left := float64(gridX)
-		right := float64(gridX + spriteInfo.Width)
-		top := float64(gridY)
-		bottom := float64(gridY + spriteInfo.Height)
-
-		if float64(x) >= left && float64(x) <= right &&
-			float64(y) >= top && float64(y) <= bottom {
+		if fx >= left && fx <= right && fy >= top && fy <= bottom {
 			blocked = true
 		}
 	}))

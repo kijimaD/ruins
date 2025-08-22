@@ -111,7 +111,8 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		assert.Equal(t, gc.EquipmentSlotNumber(0), equipped.EquipmentSlot)
 
 		// Owner参照が復元されていることを確認
-		assert.NotEqual(t, ecs.Entity(0), equipped.Owner, "Owner参照が復元されていない")
+		assert.True(t, equipped.Owner.HasComponent(newWorld.Components.Name),
+			"Owner参照が無効なエンティティを指している: equipped.Owner = %d", equipped.Owner)
 		loadedOwner = equipped.Owner
 
 		// EquipmentChangedコンポーネントも正しくロードされることを確認
