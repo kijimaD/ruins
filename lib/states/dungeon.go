@@ -51,6 +51,9 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
+
+	// 視界キャッシュをクリア（新しい階のために）
+	gs.ClearVisionCaches()
 }
 
 // OnStop はステートが停止される際に呼ばれる
@@ -74,6 +77,9 @@ func (st *DungeonState) OnStop(world w.World) {
 	// reset
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.SetStateEvent(resources.StateEventNone)
+
+	// 視界キャッシュをクリア
+	gs.ClearVisionCaches()
 }
 
 // Update はゲームステートの更新処理を行う
