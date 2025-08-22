@@ -630,7 +630,8 @@ func (sm *SerializationManager) resolveEntityReferences(world w.World, entity ec
 			if ownerEntity, exists := sm.stableIDManager.GetEntity(equippedRef.OwnerRef); exists {
 				equipped.Owner = ownerEntity
 			} else {
-				fmt.Printf("Warning: owner entity not found for stable ID: %v\n", equippedRef.OwnerRef)
+				// Owner参照が解決できない場合はエラーを返す
+				return fmt.Errorf("required owner entity not found for stable ID: %v", equippedRef.OwnerRef)
 			}
 		}
 	}
