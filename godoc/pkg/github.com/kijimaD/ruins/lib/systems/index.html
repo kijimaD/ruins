@@ -121,10 +121,16 @@
 				<dd><a href="index.html#BattleCommandSystem">func BattleCommandSystem(world w.World)</a></dd>
 			
 				
+				<dd><a href="index.html#ClearVisionCaches">func ClearVisionCaches()</a></dd>
+			
+				
 				<dd><a href="index.html#CollisionSystem">func CollisionSystem(world w.World)</a></dd>
 			
 				
 				<dd><a href="index.html#EquipmentChangedSystem">func EquipmentChangedSystem(world w.World) bool</a></dd>
+			
+				
+				<dd><a href="index.html#GetCurrentVisibilityData">func GetCurrentVisibilityData() map[string]TileVisibility</a></dd>
 			
 				
 				<dd><a href="index.html#HUDSystem">func HUDSystem(world w.World, screen *ebiten.Image)</a></dd>
@@ -254,6 +260,20 @@
 		
 			
 			
+			<h2 id="ClearVisionCaches">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=966:990#L31">ClearVisionCaches</a>
+				<a class="permalink" href="index.html#ClearVisionCaches">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ClearVisionCaches()</pre>
+			<p>ClearVisionCaches は全ての視界関連キャッシュをクリアする（階移動時などに使用）
+
+			
+			
+
+		
+			
+			
 			<h2 id="CollisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/collision.go?s=359:394#L7">CollisionSystem</a>
 				<a class="permalink" href="index.html#CollisionSystem">&#xb6;</a>
 				
@@ -277,6 +297,20 @@
 			<p>EquipmentChangedSystem は装備変更のダーティフラグが立ったら、ステータス補正まわりを再計算する
 TODO: 最大HP/SPの更新はここでやったほうがよさそう
 TODO: マイナスにならないようにする
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=12931:12988#L408">GetCurrentVisibilityData</a>
+				<a class="permalink" href="index.html#GetCurrentVisibilityData">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetCurrentVisibilityData() map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#TileVisibility">TileVisibility</a></pre>
+			<p>GetCurrentVisibilityData は現在の視界データを返す（レンダリング用）
 
 			
 			
@@ -312,7 +346,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=350:387#L5">PlayerInputSystem</a>
+			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=265:302#L3">PlayerInputSystem</a>
 				<a class="permalink" href="index.html#PlayerInputSystem">&#xb6;</a>
 				
 				
@@ -340,7 +374,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=507:561#L12">VisionSystem</a>
+			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=1303:1357#L41">VisionSystem</a>
 				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
 				
 				
@@ -446,7 +480,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2281:2437#L81">TileVisibility</a>
+			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=3047:3203#L94">TileVisibility</a>
 				<a class="permalink" href="index.html#TileVisibility">&#xb6;</a>
 				
 				
