@@ -24,7 +24,7 @@ var (
 // RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	
+
 	// 現在の視界データを取得（全描画で使用）
 	visibilityData := GetCurrentVisibilityData()
 
@@ -56,7 +56,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		for _, entity := range entities {
 			// タイル描画
 			gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-			
+
 			// 視界チェック - 視界内または探索済みのタイルのみ描画
 			if visibilityData != nil {
 				tileKey := fmt.Sprintf("%d,%d", gridElement.Row, gridElement.Col)
@@ -67,7 +67,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 					}
 				}
 			}
-			
+
 			spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 			tileSize := gameResources.Level.TileSize
 			pos := &gc.Position{
@@ -84,19 +84,19 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			world.Components.Position,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			pos := world.Components.Position.Get(entity).(*gc.Position)
-			
+
 			// 移動体の影も視界チェック
 			if visibilityData != nil {
 				tileX := int(pos.X) / 32
 				tileY := int(pos.Y) / 32
 				tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
-				
+
 				// 視界内でない場合は影も描画しない
 				if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
 					return
 				}
 			}
-			
+
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(int(pos.X)-12), float64(pos.Y))
 			camera.SetTranslate(world, op)
@@ -115,7 +115,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 			world.Components.BlockPass,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
-			
+
 			// 壁の影も視界チェック - 視界内または探索済みのタイルのみ描画
 			if visibilityData != nil {
 				tileKey := fmt.Sprintf("%d,%d", grid.Row, grid.Col)
@@ -126,7 +126,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 					}
 				}
 			}
-			
+
 			gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 			belowTileIdx := gameResources.Level.XYTileIndex(grid.Row, grid.Col+1)
 			if (belowTileIdx < 0) || (int(belowTileIdx) > len(gameResources.Level.Entities)-1) {
@@ -166,20 +166,20 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 		})
 		for _, entity := range entities {
 			pos := world.Components.Position.Get(entity).(*gc.Position)
-			
+
 			// 移動体の視界チェック - 視界内のもののみ描画
 			if visibilityData != nil {
 				// エンティティの位置からタイル座標を計算
 				tileX := int(pos.X) / 32
 				tileY := int(pos.Y) / 32
 				tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
-				
+
 				// 視界内でない場合は描画しない
 				if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
 					continue
 				}
 			}
-			
+
 			// 座標描画
 			velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
 			spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
