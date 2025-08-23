@@ -161,7 +161,7 @@
 				<dd><a href="index.html#SpawnEnemy">func SpawnEnemy(world w.World, name string) ecs.Entity</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnFieldWall">func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity</a></dd>
+				<dd><a href="index.html#SpawnFieldWallWithSprite">func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber int) ecs.Entity</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnFieldWarpEscape">func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity</a></dd>
@@ -430,7 +430,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=9402:9435#L277">SpawnAllCards</a>
+			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=9490:9523#L277">SpawnAllCards</a>
 				<a class="permalink" href="index.html#SpawnAllCards">&#xb6;</a>
 				
 				
@@ -444,7 +444,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8419:8456#L249">SpawnAllMaterials</a>
+			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8507:8544#L249">SpawnAllMaterials</a>
 				<a class="permalink" href="index.html#SpawnAllMaterials">&#xb6;</a>
 				
 				
@@ -458,7 +458,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8907:8942#L263">SpawnAllRecipes</a>
+			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8995:9030#L263">SpawnAllRecipes</a>
 				<a class="permalink" href="index.html#SpawnAllRecipes">&#xb6;</a>
 				
 				
@@ -472,7 +472,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5926:5980#L172">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=6014:6068#L172">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -486,13 +486,13 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnFieldWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=954:1019#L27">SpawnFieldWall</a>
-				<a class="permalink" href="index.html#SpawnFieldWall">&#xb6;</a>
+			<h2 id="SpawnFieldWallWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1003:1096#L27">SpawnFieldWallWithSprite</a>
+				<a class="permalink" href="index.html#SpawnFieldWallWithSprite">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func SpawnFieldWall(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>SpawnFieldWall はフィールド上に表示される壁を生成する
+			<pre>func SpawnFieldWallWithSprite(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, spriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>SpawnFieldWallWithSprite は指定されたスプライト番号でフィールド上に表示される壁を生成する
 
 			
 			
@@ -500,7 +500,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2131:2202#L62">SpawnFieldWarpEscape</a>
+			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2219:2290#L62">SpawnFieldWarpEscape</a>
 				<a class="permalink" href="index.html#SpawnFieldWarpEscape">&#xb6;</a>
 				
 				
@@ -514,7 +514,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1528:1597#L44">SpawnFieldWarpNext</a>
+			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1616:1685#L44">SpawnFieldWarpNext</a>
 				<a class="permalink" href="index.html#SpawnFieldWarpNext">&#xb6;</a>
 				
 				
@@ -542,7 +542,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4806:4893#L143">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4894:4981#L143">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
@@ -556,7 +556,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnMember">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5354:5423#L157">SpawnMember</a>
+			<h2 id="SpawnMember">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5442:5511#L157">SpawnMember</a>
 				<a class="permalink" href="index.html#SpawnMember">&#xb6;</a>
 				
 				
@@ -570,7 +570,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4074:4126#L114">SpawnNPC</a>
+			<h2 id="SpawnNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4162:4214#L114">SpawnNPC</a>
 				<a class="permalink" href="index.html#SpawnNPC">&#xb6;</a>
 				
 				
@@ -585,7 +585,7 @@ Join対象の組み合わせが重要であるから、そこだけ関数にす�
 		
 			
 			
-			<h2 id="SpawnOperator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3121:3178#L83">SpawnOperator</a>
+			<h2 id="SpawnOperator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3209:3266#L83">SpawnOperator</a>
 				<a class="permalink" href="index.html#SpawnOperator">&#xb6;</a>
 				
 				

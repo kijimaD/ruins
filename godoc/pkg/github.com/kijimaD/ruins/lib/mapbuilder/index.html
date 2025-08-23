@@ -119,6 +119,17 @@
 			
 			
 				
+				<dd><a href="index.html#BoundaryWall">type BoundaryWall</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewBoundaryWall">func NewBoundaryWall(wallTileType Tile) BoundaryWall</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BoundaryWall.BuildMeta">func (b BoundaryWall) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
 				<dd><a href="index.html#BuilderChain">type BuilderChain</a></dd>
 				
 					
@@ -143,10 +154,16 @@
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.AdjacentAnyFloor">func (bm BuilderMap) AdjacentAnyFloor(idx resources.TileIdx) bool</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.AdjacentOrthoAnyFloor">func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.DownTile">func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.GetWallType">func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.IsSpawnableTile">func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool</a></dd>
@@ -159,6 +176,17 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderMap.UpTile">func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile</a></dd>
+				
+			
+				
+				<dd><a href="index.html#FillAll">type FillAll</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewFillAll">func NewFillAll(tileType Tile) FillAll</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#FillAll.BuildMeta">func (b FillAll) BuildMeta(buildData *BuilderMap)</a></dd>
 				
 			
 				
@@ -214,6 +242,14 @@
 				
 				
 			
+				
+				<dd><a href="index.html#WallType">type WallType</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#WallType.String">func (wt WallType) String() string</a></dd>
+				
+			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -225,7 +261,11 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/boundary_wall.go">boundary_wall.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/doc.go">doc.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/fill_all.go">fill_all.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/level.go">level.go</a>
 			
@@ -240,6 +280,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/room_draw.go">room_draw.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/tile.go">tile.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/wall_type.go">wall_type.go</a>
 			
 			</span>
 			</p>
@@ -270,7 +312,60 @@
 		
 			
 			
-			<h2 id="BuilderChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3564:3672#L109">BuilderChain</a>
+			<h2 id="BoundaryWall">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/boundary_wall.go?s=234:338#L1">BoundaryWall</a>
+				<a class="permalink" href="index.html#BoundaryWall">&#xb6;</a>
+				
+				
+			</h2>
+			<p>BoundaryWall は外枠をすべて指定タイルで覆うビルダー
+マップの最外枠のタイルを無条件で指定タイルタイプに変更する
+
+			<pre>type BoundaryWall struct {
+<span id="BoundaryWall.WallTileType"></span>    <span class="comment">// WallTileType 外枠に使用するタイルタイプ</span>
+    WallTileType <a href="index.html#Tile">Tile</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewBoundaryWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/boundary_wall.go?s=411:463#L3">NewBoundaryWall</a>
+					<a class="permalink" href="index.html#NewBoundaryWall">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewBoundaryWall(wallTileType <a href="index.html#Tile">Tile</a>) <a href="index.html#BoundaryWall">BoundaryWall</a></pre>
+				<p>NewBoundaryWall は新しいBoundaryWallビルダーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="BoundaryWall.BuildMeta">func (BoundaryWall) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/boundary_wall.go?s=574:628#L10">BuildMeta</a>
+					<a class="permalink" href="index.html#BoundaryWall.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b <a href="index.html#BoundaryWall">BoundaryWall</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta はメタデータをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="BuilderChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=6873:6981#L202">BuilderChain</a>
 				<a class="permalink" href="index.html#BuilderChain">&#xb6;</a>
 				
 				
@@ -294,7 +389,7 @@
 
 			
 				
-				<h3 id="NewBuilderChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3745:3808#L116">NewBuilderChain</a>
+				<h3 id="NewBuilderChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=7054:7117#L209">NewBuilderChain</a>
 					<a class="permalink" href="index.html#NewBuilderChain">&#xb6;</a>
 					
 					
@@ -306,7 +401,7 @@
 				
 			
 				
-				<h3 id="SimpleRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=5243:5308#L173">SimpleRoomBuilder</a>
+				<h3 id="SimpleRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=8597:8662#L264">SimpleRoomBuilder</a>
 					<a class="permalink" href="index.html#SimpleRoomBuilder">&#xb6;</a>
 					
 					
@@ -320,7 +415,7 @@
 
 			
 				
-				<h3 id="BuilderChain.Build">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4677:4707#L151">Build</a>
+				<h3 id="BuilderChain.Build">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=7937:7967#L241">Build</a>
 					<a class="permalink" href="index.html#BuilderChain.Build">&#xb6;</a>
 					
 					
@@ -333,7 +428,7 @@
 				
 			
 				
-				<h3 id="BuilderChain.StartWith">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4336:4405#L141">StartWith</a>
+				<h3 id="BuilderChain.StartWith">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=7596:7665#L231">StartWith</a>
 					<a class="permalink" href="index.html#BuilderChain.StartWith">&#xb6;</a>
 					
 					
@@ -346,7 +441,7 @@
 				
 			
 				
-				<h3 id="BuilderChain.With">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4488:4546#L146">With</a>
+				<h3 id="BuilderChain.With">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=7748:7806#L236">With</a>
 					<a class="permalink" href="index.html#BuilderChain.With">&#xb6;</a>
 					
 					
@@ -394,7 +489,20 @@
 
 			
 				
-				<h3 id="BuilderMap.AdjacentOrthoAnyFloor">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3084:3154#L97">AdjacentOrthoAnyFloor</a>
+				<h3 id="BuilderMap.AdjacentAnyFloor">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3546:3611#L109">AdjacentAnyFloor</a>
+					<a class="permalink" href="index.html#BuilderMap.AdjacentAnyFloor">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#BuilderMap">BuilderMap</a>) AdjacentAnyFloor(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
+
+				
+				
+				
+			
+				
+				<h3 id="BuilderMap.AdjacentOrthoAnyFloor">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=3083:3153#L97">AdjacentOrthoAnyFloor</a>
 					<a class="permalink" href="index.html#BuilderMap.AdjacentOrthoAnyFloor">&#xb6;</a>
 					
 					
@@ -420,6 +528,19 @@
 				
 			
 				
+				<h3 id="BuilderMap.GetWallType">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4388:4452#L141">GetWallType</a>
+					<a class="permalink" href="index.html#BuilderMap.GetWallType">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#BuilderMap">BuilderMap</a>) GetWallType(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#WallType">WallType</a></pre>
+				<p>GetWallType は近傍パターンから適切な壁タイプを判定する
+
+				
+				
+				
+			
+				
 				<h3 id="BuilderMap.IsSpawnableTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=1062:1140#L21">IsSpawnableTile</a>
 					<a class="permalink" href="index.html#BuilderMap.IsSpawnableTile">&#xb6;</a>
 					
@@ -434,7 +555,7 @@
 				
 			
 				
-				<h3 id="BuilderMap.LeftTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2615:2672#L77">LeftTile</a>
+				<h3 id="BuilderMap.LeftTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2614:2671#L77">LeftTile</a>
 					<a class="permalink" href="index.html#BuilderMap.LeftTile">&#xb6;</a>
 					
 					
@@ -447,7 +568,7 @@
 				
 			
 				
-				<h3 id="BuilderMap.RightTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2821:2879#L87">RightTile</a>
+				<h3 id="BuilderMap.RightTile">func (BuilderMap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=2820:2878#L87">RightTile</a>
 					<a class="permalink" href="index.html#BuilderMap.RightTile">&#xb6;</a>
 					
 					
@@ -475,12 +596,64 @@
 		
 			
 			
-			<h2 id="InitialMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=4970:5033#L163">InitialMapBuilder</a>
+			<h2 id="FillAll">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/fill_all.go?s=89:127#L1">FillAll</a>
+				<a class="permalink" href="index.html#FillAll">&#xb6;</a>
+				
+				
+			</h2>
+			<p>FillAll は全体を指定したタイルで埋めるビルダー
+
+			<pre>type FillAll struct {
+<span id="FillAll.TileType"></span>    TileType <a href="index.html#Tile">Tile</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewFillAll">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/fill_all.go?s=190:228#L1">NewFillAll</a>
+					<a class="permalink" href="index.html#NewFillAll">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewFillAll(tileType <a href="index.html#Tile">Tile</a>) <a href="index.html#FillAll">FillAll</a></pre>
+				<p>NewFillAll は新しいFillAllビルダーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="FillAll.BuildMeta">func (FillAll) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/fill_all.go?s=326:375#L6">BuildMeta</a>
+					<a class="permalink" href="index.html#FillAll.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b <a href="index.html#FillAll">FillAll</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta はメタデータをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="InitialMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=8324:8387#L254">InitialMapBuilder</a>
 				<a class="permalink" href="index.html#InitialMapBuilder">&#xb6;</a>
 				
 				
 			</h2>
 			<p>InitialMapBuilder は初期マップをビルドするインターフェース
+タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 
 			<pre>type InitialMapBuilder interface {
     BuildInitial(*<a href="index.html#BuilderMap">BuilderMap</a>)
@@ -550,7 +723,7 @@
 		
 			
 			
-			<h2 id="MetaMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=5111:5168#L168">MetaMapBuilder</a>
+			<h2 id="MetaMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=8465:8522#L259">MetaMapBuilder</a>
 				<a class="permalink" href="index.html#MetaMapBuilder">&#xb6;</a>
 				
 				
@@ -737,6 +910,64 @@
 
 			
 
+			
+		
+			
+			
+			<h2 id="WallType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/wall_type.go?s=57:74#L1">WallType</a>
+				<a class="permalink" href="index.html#WallType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>WallType は壁の種類を表す
+
+			<pre>type WallType <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				
+				<pre>const (
+    <span class="comment">// WallTypeTop は上側の壁（下に床がある壁）</span>
+    <span id="WallTypeTop">WallTypeTop</span> <a href="index.html#WallType">WallType</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span class="comment">// WallTypeBottom は下側の壁（上に床がある壁）</span>
+    <span id="WallTypeBottom">WallTypeBottom</span>
+    <span class="comment">// WallTypeLeft は左側の壁（右に床がある壁）</span>
+    <span id="WallTypeLeft">WallTypeLeft</span>
+    <span class="comment">// WallTypeRight は右側の壁（左に床がある壁）</span>
+    <span id="WallTypeRight">WallTypeRight</span>
+    <span class="comment">// WallTypeTopLeft は左上角の壁（右下に床がある壁）</span>
+    <span id="WallTypeTopLeft">WallTypeTopLeft</span>
+    <span class="comment">// WallTypeTopRight は右上角の壁（左下に床がある壁）</span>
+    <span id="WallTypeTopRight">WallTypeTopRight</span>
+    <span class="comment">// WallTypeBottomLeft は左下角の壁（右上に床がある壁）</span>
+    <span id="WallTypeBottomLeft">WallTypeBottomLeft</span>
+    <span class="comment">// WallTypeBottomRight は右下角の壁（左上に床がある壁）</span>
+    <span id="WallTypeBottomRight">WallTypeBottomRight</span>
+    <span class="comment">// WallTypeGeneric は汎用の壁（複雑なパターンまたは判定不可）</span>
+    <span id="WallTypeGeneric">WallTypeGeneric</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="WallType.String">func (WallType) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/wall_type.go?s=911:945#L18">String</a>
+					<a class="permalink" href="index.html#WallType.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (wt <a href="index.html#WallType">WallType</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String は壁タイプを文字列で返す
+
+				
+				
+				
 			
 		
 	
