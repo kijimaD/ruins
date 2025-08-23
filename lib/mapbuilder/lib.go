@@ -4,6 +4,7 @@ package mapbuilder
 
 import (
 	"log"
+	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
@@ -24,6 +25,8 @@ type BuilderMap struct {
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
 	Corridors [][]resources.TileIdx
+	// RandomSource はシード値による再現可能なランダム生成を提供する
+	RandomSource *RandomSource
 }
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
@@ -215,10 +218,16 @@ type BuilderChain struct {
 	BuildData BuilderMap
 }
 
-// NewBuilderChain は新しいビルダーチェーンを作成する
-func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
+// NewBuilderChain はシード値を指定してビルダーチェーンを作成する
+// シードが0の場合はランダムなシードを生成する
+func NewBuilderChain(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
+
+	// シードが0の場合はランダムなシードを生成
+	if seed == 0 {
+		seed = uint64(time.Now().UnixNano())
+	}
 
 	return &BuilderChain{
 		Starter:  nil,
@@ -230,9 +239,10 @@ func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 				TileSize:   consts.TileSize,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
-			Tiles:     tiles,
-			Rooms:     []Rect{},
-			Corridors: [][]resources.TileIdx{},
+			Tiles:        tiles,
+			Rooms:        []Rect{},
+			Corridors:    [][]resources.TileIdx{},
+			RandomSource: NewRandomSource(seed),
 		},
 	}
 }
@@ -270,9 +280,9 @@ type MetaMapBuilder interface {
 	BuildMeta(*BuilderMap)
 }
 
-// SimpleRoomBuilder はシンプルな部屋ビルダーを作成する
-func SimpleRoomBuilder(width gc.Row, height gc.Col) *BuilderChain {
-	chain := NewBuilderChain(width, height)
+// SimpleRoomBuilder はシード値を指定してシンプルな部屋ビルダーを作成する
+func SimpleRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(RectRoomBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
 	chain.With(RoomDraw{})                // 部屋を描画

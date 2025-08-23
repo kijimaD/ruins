@@ -37,7 +37,8 @@ type Config struct {
 	NoEncounter   bool   `env:"RUINS_NO_ENCOUNTER"`
 
 	// ゲーム設定
-	StartingState string `env:"RUINS_STARTING_STATE"`
+	StartingState    string `env:"RUINS_STARTING_STATE"`
+	DisableAnimation bool   `env:"RUINS_DISABLE_ANIMATION"`
 
 	// パフォーマンス設定
 	TargetFPS     int    `env:"RUINS_TARGET_FPS"`
@@ -124,6 +125,9 @@ func (c *Config) applyProductionDefaults() {
 	if os.Getenv("RUINS_STARTING_STATE") == "" {
 		c.StartingState = "main_menu"
 	}
+	if os.Getenv("RUINS_DISABLE_ANIMATION") == "" {
+		c.DisableAnimation = false
+	}
 
 	// パフォーマンス設定
 	if os.Getenv("RUINS_TARGET_FPS") == "" {
@@ -186,6 +190,9 @@ func (c *Config) applyDevelopmentDefaults() {
 	// ゲーム設定
 	if os.Getenv("RUINS_STARTING_STATE") == "" {
 		c.StartingState = "home_menu"
+	}
+	if os.Getenv("RUINS_DISABLE_ANIMATION") == "" {
+		c.DisableAnimation = false
 	}
 
 	// パフォーマンス設定

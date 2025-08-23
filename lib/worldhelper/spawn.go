@@ -3,6 +3,7 @@ package worldhelper
 import (
 	"fmt"
 
+	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/raw"
@@ -111,9 +112,22 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 	// カメラ
 	{
 		componentList := entities.ComponentList{}
+		// config設定を確認
+		cfg := config.Get()
+		var scale, scaleTo float64
+		if cfg.DisableAnimation {
+			// アニメーション無効時は初期スケールを1に設定
+			scale = 1
+			scaleTo = 1
+		} else {
+			// アニメーション有効時はズームアウトアニメーション
+			scale = 0.1
+			scaleTo = 1
+		}
+
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
-			Camera:   &gc.Camera{Scale: 0.1, ScaleTo: 1},
+			Camera:   &gc.Camera{Scale: scale, ScaleTo: scaleTo},
 		})
 		entities.AddEntities(world, componentList)
 	}

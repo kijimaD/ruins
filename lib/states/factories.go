@@ -68,6 +68,13 @@ func NewDungeonStateWithDepth(depth int) es.StateFactory {
 	}
 }
 
+// NewDungeonStateWithSeed は指定されたDepthとSeedでDungeonStateインスタンスを作成するファクトリー関数
+func NewDungeonStateWithSeed(depth int, seed uint64) es.StateFactory {
+	return func() es.State {
+		return &DungeonState{Depth: depth, Seed: seed}
+	}
+}
+
 // NewMessageStateWithText は指定されたテキストでMessageStateインスタンスを作成するファクトリー関数
 func NewMessageStateWithText(text string) es.StateFactory {
 	return func() es.State {

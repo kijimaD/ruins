@@ -79,8 +79,6 @@ jobs:
       # 差分があればコミット
       - name: commit for changes
         run: |
-          # この画像は毎回差分が出てしまうのでスルー...
-          git checkout vrtimages/Dungeon.png
           if ! git diff --exit-code --quiet
           then
             git config --global user.name "github-actions[bot]"
