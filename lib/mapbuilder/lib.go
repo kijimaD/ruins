@@ -280,8 +280,8 @@ type MetaMapBuilder interface {
 	BuildMeta(*BuilderMap)
 }
 
-// SimpleRoomBuilder はシード値を指定してシンプルな部屋ビルダーを作成する
-func SimpleRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+// NewSmallRoomBuilder はシンプルな小部屋ビルダーを作成する
+func NewSmallRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(RectRoomBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
