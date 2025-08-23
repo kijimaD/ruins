@@ -156,6 +156,21 @@ func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType {
 	rightFloor := bm.isFloorOrWarp(bm.RightTile(idx))
 
 	// 単純なケース：一方向のみに床がある場合
+	if singleWallType := bm.checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor); singleWallType != WallTypeGeneric {
+		return singleWallType
+	}
+
+	// 角のケース：2方向に床がある場合
+	if cornerWallType := bm.checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor); cornerWallType != WallTypeGeneric {
+		return cornerWallType
+	}
+
+	// 複雑なパターンまたは判定不可の場合
+	return WallTypeGeneric
+}
+
+// checkSingleDirectionWalls は単一方向に床がある場合の壁タイプを返す
+func (bm BuilderMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
 	if downFloor && !upFloor && !leftFloor && !rightFloor {
 		return WallTypeTop // 下に床がある → 上壁
 	}
@@ -168,8 +183,11 @@ func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType {
 	if leftFloor && !upFloor && !downFloor && !rightFloor {
 		return WallTypeRight // 左に床がある → 右壁
 	}
+	return WallTypeGeneric
+}
 
-	// 角のケース：2方向に床がある場合
+// checkCornerWalls は2方向に床がある場合の壁タイプを返す
+func (bm BuilderMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
 	if downFloor && rightFloor && !upFloor && !leftFloor {
 		return WallTypeTopLeft // 下右に床 → 左上角
 	}
@@ -182,8 +200,6 @@ func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType {
 	if upFloor && leftFloor && !downFloor && !rightFloor {
 		return WallTypeBottomRight // 上左に床 → 右下角
 	}
-
-	// 複雑なパターンまたは判定不可の場合
 	return WallTypeGeneric
 }
 

@@ -10,6 +10,7 @@ import (
 )
 
 func TestBuildData_GetWallType(t *testing.T) {
+	t.Parallel()
 	// テスト用のマップを作成（7x7）
 	width, height := gc.Row(7), gc.Col(7)
 	buildData := &BuilderMap{
@@ -92,6 +93,7 @@ func TestBuildData_GetWallType(t *testing.T) {
 }
 
 func TestBuildData_GetWallType_WithWarpTiles(t *testing.T) {
+	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Row(5), gc.Col(5)
 	buildData := &BuilderMap{
@@ -126,6 +128,7 @@ func TestBuildData_GetWallType_WithWarpTiles(t *testing.T) {
 }
 
 func TestWallType_String(t *testing.T) {
+	t.Parallel()
 	testCases := []struct {
 		wallType WallType
 		expected string

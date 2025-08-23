@@ -10,6 +10,7 @@ import (
 )
 
 func TestBuildData_AdjacentAnyFloor(t *testing.T) {
+	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Row(5), gc.Col(5)
 	buildData := &BuilderMap{
@@ -79,6 +80,7 @@ func TestBuildData_AdjacentAnyFloor(t *testing.T) {
 }
 
 func TestBuildData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
+	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Row(5), gc.Col(5)
 	buildData := &BuilderMap{

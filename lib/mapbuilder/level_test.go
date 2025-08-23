@@ -3,6 +3,7 @@ package mapbuilder
 import "testing"
 
 func TestGetSpriteNumberForWallType(t *testing.T) {
+	t.Parallel()
 	testCases := []struct {
 		wallType WallType
 		expected int
