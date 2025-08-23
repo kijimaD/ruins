@@ -115,6 +115,38 @@ func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 		bm.LeftTile(idx) == TileWarpNext
 }
 
+// AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
+func (bm BuilderMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
+	x, y := bm.Level.XYTileCoord(idx)
+	width := int(bm.Level.TileWidth)
+	height := int(bm.Level.TileHeight)
+
+	// 8方向の隣接タイル座標をチェック
+	directions := [][2]int{
+		{-1, -1}, {-1, 0}, {-1, 1}, // 上段
+		{0, -1}, {0, 1}, // 中段（中心を除く）
+		{1, -1}, {1, 0}, {1, 1}, // 下段
+	}
+
+	for _, dir := range directions {
+		nx, ny := int(x)+dir[0], int(y)+dir[1]
+
+		// 境界チェック
+		if nx < 0 || nx >= width || ny < 0 || ny >= height {
+			continue
+		}
+
+		neighborIdx := bm.Level.XYTileIndex(gc.Row(nx), gc.Col(ny))
+		tile := bm.Tiles[neighborIdx]
+
+		if tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape {
+			return true
+		}
+	}
+
+	return false
+}
+
 // BuilderChain は階層データBuilderMapに対して適用する生成ロジックを保持する構造体
 type BuilderChain struct {
 	Starter   *InitialMapBuilder

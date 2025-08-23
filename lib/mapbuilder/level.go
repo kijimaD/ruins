@@ -114,8 +114,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 		case TileFloor:
 			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFloor(world, gc.Row(x), gc.Col(y))
 		case TileWall:
-			// 近傍4タイルにフロアがあるときだけ壁にする
-			if chain.BuildData.AdjacentOrthoAnyFloor(i) {
+			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
+			if chain.BuildData.AdjacentAnyFloor(i) {
 				chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWall(world, gc.Row(x), gc.Col(y))
 			}
 		case TileWarpNext:
