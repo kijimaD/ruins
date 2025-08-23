@@ -319,6 +319,9 @@ const (
 	BuilderTypeSmallRoom = iota
 	BuilderTypeBigRoom
 	BuilderTypeBigRoomWithPillars
+	BuilderTypeCave
+	BuilderTypeRuins
+	BuilderTypeForest
 )
 
 // NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
@@ -330,7 +333,7 @@ func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 
 	// シード値からランダムソースを作成（ビルダー選択用）
 	rs := NewRandomSource(seed)
-	builderType := rs.Intn(3)
+	builderType := rs.Intn(6)
 
 	switch builderType {
 	case BuilderTypeSmallRoom:
@@ -341,6 +344,12 @@ func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 		// 柱間隔もランダムに選択（3-6の範囲）
 		pillarSpacing := 3 + rs.Intn(4)
 		return NewBigRoomWithPillarsBuilder(width, height, seed, pillarSpacing)
+	case BuilderTypeCave:
+		return NewCaveBuilder(width, height, seed)
+	case BuilderTypeRuins:
+		return NewRuinsBuilder(width, height, seed)
+	case BuilderTypeForest:
+		return NewForestBuilder(width, height, seed)
 	default:
 		// フォールバック（通常は発生しない）
 		return NewSmallRoomBuilder(width, height, seed)
