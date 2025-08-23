@@ -16,7 +16,7 @@ import (
 func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64) resources.Level {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
-	chain := NewSmallRoomBuilder(width, height, seed)
+	chain := NewRandomBuilder(width, height, seed)
 	chain.Build()
 
 	// 進行ワープホールを生成する
