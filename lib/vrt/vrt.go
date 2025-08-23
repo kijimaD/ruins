@@ -10,6 +10,7 @@ import (
 	"path"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/effects"
 	gs "github.com/kijimaD/ruins/lib/systems"
 
@@ -76,6 +77,13 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 
 // RunTestGame はテストゲームを実行してスクリーンショットを保存する
 func RunTestGame(state es.State, outputPath string) {
+	cfg, err := config.Load()
+	if err != nil {
+		panic(fmt.Sprintf("Failed to load config: %v", err))
+	}
+	// VRT用にアニメーションを無効化
+	cfg.DisableAnimation = true
+
 	world, err := game.InitWorld(960, 720)
 	if err != nil {
 		panic(fmt.Sprintf("InitWorld failed: %v", err))
