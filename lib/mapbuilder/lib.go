@@ -258,9 +258,10 @@ type MetaMapBuilder interface {
 func SimpleRoomBuilder(width gc.Row, height gc.Col) *BuilderChain {
 	chain := NewBuilderChain(width, height)
 	chain.StartWith(RectRoomBuilder{})
-	chain.With(NewFillAll(TileWall)) // 全体を壁で埋める
-	chain.With(RoomDraw{})           // 部屋を描画
-	chain.With(LineCorridorBuilder{})
+	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
+	chain.With(RoomDraw{})                // 部屋を描画
+	chain.With(LineCorridorBuilder{})     // 廊下を作成
+	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
 
 	return chain
 }
