@@ -33,14 +33,14 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 	return entities.AddEntities(world, componentList)[0]
 }
 
-// SpawnFieldWall はフィールド上に表示される壁を生成する
-func SpawnFieldWall(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+// SpawnFieldWallWithSprite は指定されたスプライト番号でフィールド上に表示される壁を生成する
+func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber int) ecs.Entity {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
-			SpriteNumber: 1,
+			SpriteNumber: spriteNumber,
 			Depth:        gc.DepthNumTaller,
 		},
 		BlockView: &gc.BlockView{},

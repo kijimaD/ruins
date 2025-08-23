@@ -116,7 +116,10 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 		case TileWall:
 			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
 			if chain.BuildData.AdjacentAnyFloor(i) {
-				chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWall(world, gc.Row(x), gc.Col(y))
+				// 壁タイプを判定してスプライト番号を決定
+				wallType := chain.BuildData.GetWallType(i)
+				spriteNumber := getSpriteNumberForWallType(wallType)
+				chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWallWithSprite(world, gc.Row(x), gc.Col(y), spriteNumber)
 			}
 		case TileWarpNext:
 			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
@@ -126,4 +129,30 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	}
 
 	return chain.BuildData.Level
+}
+
+// getSpriteNumberForWallType は壁タイプに対応するスプライト番号を返す
+func getSpriteNumberForWallType(wallType WallType) int {
+	switch wallType {
+	case WallTypeTop:
+		return 10 // 上壁（下に床がある）
+	case WallTypeBottom:
+		return 11 // 下壁（上に床がある）
+	case WallTypeLeft:
+		return 12 // 左壁（右に床がある）
+	case WallTypeRight:
+		return 13 // 右壁（左に床がある）
+	case WallTypeTopLeft:
+		return 14 // 左上角（右下に床がある）
+	case WallTypeTopRight:
+		return 15 // 右上角（左下に床がある）
+	case WallTypeBottomLeft:
+		return 16 // 左下角（右上に床がある）
+	case WallTypeBottomRight:
+		return 17 // 右下角（左上に床がある）
+	case WallTypeGeneric:
+		return 1 // 汎用壁（従来の壁）
+	default:
+		return 1 // デフォルトは従来の壁
+	}
 }
