@@ -126,9 +126,6 @@ type BuilderChain struct {
 func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
-	for i := range tiles {
-		tiles[i] = TileWall
-	}
 
 	return &BuilderChain{
 		Starter:  nil,
@@ -170,6 +167,7 @@ func (b *BuilderChain) Build() {
 }
 
 // InitialMapBuilder は初期マップをビルドするインターフェース
+// タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapBuilder interface {
 	BuildInitial(*BuilderMap)
 }
@@ -183,7 +181,8 @@ type MetaMapBuilder interface {
 func SimpleRoomBuilder(width gc.Row, height gc.Col) *BuilderChain {
 	chain := NewBuilderChain(width, height)
 	chain.StartWith(RectRoomBuilder{})
-	chain.With(RoomDraw{}) // TODO: 暫定的にここで壁を埋めてるので、先に実行する必要がある
+	chain.With(NewFillAll(TileWall)) // 全体を壁で埋める
+	chain.With(RoomDraw{})           // 部屋を描画
 	chain.With(LineCorridorBuilder{})
 
 	return chain
