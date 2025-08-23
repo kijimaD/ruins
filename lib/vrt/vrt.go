@@ -20,6 +20,7 @@ import (
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
+// エラーを返さないと実行終了しないため
 var errRegularTermination = errors.New("テスト環境における、想定どおりの終了")
 
 // TestGame はビジュアルリグレッションテスト用のゲーム構造体
