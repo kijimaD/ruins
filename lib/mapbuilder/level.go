@@ -2,7 +2,6 @@ package mapbuilder
 
 import (
 	"log"
-	"math/rand/v2"
 
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -14,10 +13,10 @@ import (
 
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
-func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
+func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64) resources.Level {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
-	chain := SimpleRoomBuilder(width, height)
+	chain := SimpleRoomBuilder(width, height, seed)
 	chain.Build()
 
 	// 進行ワープホールを生成する
@@ -28,8 +27,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("進行ワープホールの生成に失敗した")
 			}
-			x := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
+			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				chain.BuildData.Tiles[tileIdx] = TileWarpNext
@@ -46,8 +45,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("帰還ワープホールの生成に失敗した")
 			}
-			x := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
+			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
@@ -64,8 +63,8 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 			if failCount > 200 {
 				log.Fatal("操作対象キャラの生成に失敗した")
 			}
-			tx := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
-			ty := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
+			tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			ty := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
 				failCount++
 				continue
@@ -81,14 +80,14 @@ func NewLevel(world w.World, width gc.Row, height gc.Col) resources.Level {
 	// フィールドにNPCを生成する
 	{
 		failCount := 0
-		total := 5 + rand.IntN(5)
+		total := 5 + chain.BuildData.RandomSource.Intn(5)
 		successCount := 0
 		for {
 			if failCount > 200 {
 				log.Fatal("NPCの生成に失敗した")
 			}
-			tx := gc.Row(rand.IntN(int(chain.BuildData.Level.TileWidth)))
-			ty := gc.Col(rand.IntN(int(chain.BuildData.Level.TileHeight)))
+			tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			ty := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
 				failCount++
 				continue

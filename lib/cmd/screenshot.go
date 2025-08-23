@@ -55,7 +55,8 @@ func runScreenshot(ctx *cli.Context) error {
 	case gs.PartySetupState{}.String():
 		vrt.RunTestGame(&gs.PartySetupState{}, mode)
 	case gs.DungeonState{}.String():
-		vrt.RunTestGame(&gs.DungeonState{}, mode)
+		// いい感じのseed値
+		vrt.RunTestGame(&gs.DungeonState{Depth: 1, Seed: 4009}, mode)
 	case gs.GameOverState{}.String():
 		vrt.RunTestGame(&gs.GameOverState{}, mode)
 	default:
