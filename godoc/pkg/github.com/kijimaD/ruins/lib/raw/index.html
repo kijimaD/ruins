@@ -114,6 +114,9 @@
 				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
+				
+				<dd><a href="index.html#NewKeyNotFoundError">func NewKeyNotFoundError(key, collection string) error</a></dd>
+			
 			
 				
 				<dd><a href="index.html#Attack">type Attack</a></dd>
@@ -174,6 +177,14 @@
 				
 				<dd><a href="index.html#Item">type Item</a></dd>
 				
+				
+			
+				
+				<dd><a href="index.html#KeyNotFoundError">type KeyNotFoundError</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#KeyNotFoundError.Error">func (e KeyNotFoundError) Error() string</a></dd>
 				
 			
 				
@@ -275,6 +286,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go">enum.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/errors.go">errors.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go">raw.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/sprite_sheet.go">sprite_sheet.go</a>
@@ -297,10 +310,24 @@
 			
 		
 		
+			
+			
+			<h2 id="NewKeyNotFoundError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/errors.go?s=347:401#L6">NewKeyNotFoundError</a>
+				<a class="permalink" href="index.html#NewKeyNotFoundError">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewKeyNotFoundError(key, collection <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+			<p>NewKeyNotFoundError creates a new KeyNotFoundError
+
+			
+			
+
+		
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1894:2105#L60">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1855:2066#L59">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -330,7 +357,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2905:3021#L110">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2866:2982#L109">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -361,7 +388,7 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1780:1857#L53">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1741:1818#L52">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
@@ -456,7 +483,7 @@
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1650:1736#L46">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1611:1697#L45">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -552,7 +579,7 @@
 		
 			
 			
-			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2276:2377#L75">EquipBonus</a>
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2237:2338#L74">EquipBonus</a>
 				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
 				
 				
@@ -609,7 +636,7 @@
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1039:1447#L26">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1000:1408#L25">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -643,7 +670,46 @@
 		
 			
 			
-			<h2 id="Master">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=290:574#L3">Master</a>
+			<h2 id="KeyNotFoundError">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/errors.go?s=107:177#L1">KeyNotFoundError</a>
+				<a class="permalink" href="index.html#KeyNotFoundError">&#xb6;</a>
+				
+				
+			</h2>
+			<p>KeyNotFoundError represents an error when a key is not found in a collection
+
+			<pre>type KeyNotFoundError struct {
+<span id="KeyNotFoundError.Key"></span>    Key        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="KeyNotFoundError.Collection"></span>    Collection <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="KeyNotFoundError.Error">func (KeyNotFoundError) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/errors.go?s=179:219#L1">Error</a>
+					<a class="permalink" href="index.html#KeyNotFoundError.Error">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e <a href="index.html#KeyNotFoundError">KeyNotFoundError</a>) Error() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Master">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=251:535#L2">Master</a>
 				<a class="permalink" href="index.html#Master">&#xb6;</a>
 				
 				
@@ -672,7 +738,7 @@
 
 			
 				
-				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3368:3423#L133">Load</a>
+				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3329:3384#L132">Load</a>
 					<a class="permalink" href="index.html#Load">&#xb6;</a>
 					
 					
@@ -684,7 +750,7 @@
 				
 			
 				
-				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3091:3137#L120">LoadFromFile</a>
+				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3052:3098#L119">LoadFromFile</a>
 					<a class="permalink" href="index.html#LoadFromFile">&#xb6;</a>
 					
 					
@@ -698,7 +764,7 @@
 
 			
 				
-				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11947:12021#L391">GenerateEnemy</a>
+				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11887:11961#L390">GenerateEnemy</a>
 					<a class="permalink" href="index.html#Master.GenerateEnemy">&#xb6;</a>
 					
 					
@@ -711,7 +777,7 @@
 				
 			
 				
-				<h3 id="Master.GenerateItem">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=4534:4641#L173">GenerateItem</a>
+				<h3 id="Master.GenerateItem">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=4495:4602#L172">GenerateItem</a>
 					<a class="permalink" href="index.html#Master.GenerateItem">&#xb6;</a>
 					
 					
@@ -724,7 +790,7 @@
 				
 			
 				
-				<h3 id="Master.GenerateMaterial">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8285:8408#L281">GenerateMaterial</a>
+				<h3 id="Master.GenerateMaterial">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8239:8362#L280">GenerateMaterial</a>
 					<a class="permalink" href="index.html#Master.GenerateMaterial">&#xb6;</a>
 					
 					
@@ -737,7 +803,7 @@
 				
 			
 				
-				<h3 id="Master.GenerateMember">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11565:11654#L377">GenerateMember</a>
+				<h3 id="Master.GenerateMember">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11505:11594#L376">GenerateMember</a>
 					<a class="permalink" href="index.html#Master.GenerateMember">&#xb6;</a>
 					
 					
@@ -750,7 +816,7 @@
 				
 			
 				
-				<h3 id="Master.GenerateRecipe">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8938:9013#L297">GenerateRecipe</a>
+				<h3 id="Master.GenerateRecipe">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8885:8960#L296">GenerateRecipe</a>
 					<a class="permalink" href="index.html#Master.GenerateRecipe">&#xb6;</a>
 					
 					
@@ -763,7 +829,7 @@
 				
 			
 				
-				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12667:12735#L416">GetCommandTable</a>
+				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12607:12675#L415">GetCommandTable</a>
 					<a class="permalink" href="index.html#Master.GetCommandTable">&#xb6;</a>
 					
 					
@@ -776,7 +842,7 @@
 				
 			
 				
-				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=13025:13087#L427">GetDropTable</a>
+				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12965:13027#L426">GetDropTable</a>
 					<a class="permalink" href="index.html#Master.GetDropTable">&#xb6;</a>
 					
 					
@@ -791,7 +857,7 @@
 		
 			
 			
-			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2422:2486#L84">Material</a>
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2383:2447#L83">Material</a>
 				<a class="permalink" href="index.html#Material">&#xb6;</a>
 				
 				
@@ -818,7 +884,7 @@
 		
 			
 			
-			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2734:2855#L102">Member</a>
+			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2695:2816#L101">Member</a>
 				<a class="permalink" href="index.html#Member">&#xb6;</a>
 				
 				
@@ -847,7 +913,7 @@
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1508:1594#L39">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1469:1555#L38">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -875,7 +941,7 @@
 		
 			
 			
-			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=636:995#L15">Raws</a>
+			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=597:956#L14">Raws</a>
 				<a class="permalink" href="index.html#Raws">&#xb6;</a>
 				
 				
@@ -907,7 +973,7 @@
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2520:2595#L90">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2481:2556#L89">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -934,7 +1000,7 @@
 		
 			
 			
-			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2643:2697#L96">RecipeInput</a>
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2604:2658#L95">RecipeInput</a>
 				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
 				
 				
@@ -1033,7 +1099,7 @@
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2156:2229#L69">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2117:2190#L68">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
