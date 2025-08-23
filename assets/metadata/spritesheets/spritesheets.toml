@@ -3,7 +3,7 @@ texture_image = "file/textures/game.png"
 sprites = [
     # Exterior
     { x = 0,   y = 0, width = 32, height = 32 }, # Sprite 0
-    # Wall
+    # Wall (Generic)
     { x = 32,  y = 0, width = 32, height = 32 }, # Sprite 1
     # Floor
     { x = 64,  y = 0, width = 32, height = 32 }, # Sprite 2
@@ -15,6 +15,28 @@ sprites = [
     { x = 128, y = 0, width = 32, height = 32 }, # Sprite 5
     # Red Ball
     { x = 192, y = 0, width = 32, height = 32 }, # Sprite 6
+    # Sprite 7 (Reserved)
+    { x = 224, y = 0, width = 32, height = 32 }, # Sprite 7
+    # Sprite 8 (Reserved)
+    { x = 0,   y = 32, width = 32, height = 32 }, # Sprite 8
+    # Sprite 9 (Reserved)
+    { x = 32,  y = 32, width = 32, height = 32 }, # Sprite 9
+    # Wall Top (下に床がある上壁)
+    { x = 64,  y = 32, width = 32, height = 32 }, # Sprite 10
+    # Wall Bottom (上に床がある下壁)
+    { x = 96,  y = 32, width = 32, height = 32 }, # Sprite 11
+    # Wall Left (右に床がある左壁)
+    { x = 128, y = 32, width = 32, height = 32 }, # Sprite 12
+    # Wall Right (左に床がある右壁)
+    { x = 160, y = 32, width = 32, height = 32 }, # Sprite 13
+    # Wall Top-Left Corner (右下に床がある左上角)
+    { x = 192, y = 32, width = 32, height = 32 }, # Sprite 14
+    # Wall Top-Right Corner (左下に床がある右上角)
+    { x = 224, y = 32, width = 32, height = 32 }, # Sprite 15
+    # Wall Bottom-Left Corner (右上に床がある左下角)
+    { x = 0,   y = 64, width = 32, height = 32 }, # Sprite 16
+    # Wall Bottom-Right Corner (左上に床がある右下角)
+    { x = 32,  y = 64, width = 32, height = 32 }, # Sprite 17
 ]
 
 [sprite_sheet.bg_title1]

@@ -75,7 +75,7 @@ func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile {
 
 // DownTile は下にあるタイルを調べる
 func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile {
-	targetIdx := int(idx) + int(bm.Level.TileHeight)
+	targetIdx := int(idx) + int(bm.Level.TileWidth)
 	if targetIdx > len(bm.Tiles)-1 {
 		return TileEmpty
 	}
@@ -115,6 +115,99 @@ func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 		bm.LeftTile(idx) == TileWarpNext
 }
 
+// AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
+func (bm BuilderMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
+	x, y := bm.Level.XYTileCoord(idx)
+	width := int(bm.Level.TileWidth)
+	height := int(bm.Level.TileHeight)
+
+	// 8方向の隣接タイル座標をチェック
+	directions := [][2]int{
+		{-1, -1}, {-1, 0}, {-1, 1}, // 上段
+		{0, -1}, {0, 1}, // 中段（中心を除く）
+		{1, -1}, {1, 0}, {1, 1}, // 下段
+	}
+
+	for _, dir := range directions {
+		nx, ny := int(x)+dir[0], int(y)+dir[1]
+
+		// 境界チェック
+		if nx < 0 || nx >= width || ny < 0 || ny >= height {
+			continue
+		}
+
+		neighborIdx := bm.Level.XYTileIndex(gc.Row(nx), gc.Col(ny))
+		tile := bm.Tiles[neighborIdx]
+
+		if tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape {
+			return true
+		}
+	}
+
+	return false
+}
+
+// GetWallType は近傍パターンから適切な壁タイプを判定する
+func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType {
+	// 4方向の隣接タイルの床状況をチェック
+	upFloor := bm.isFloorOrWarp(bm.UpTile(idx))
+	downFloor := bm.isFloorOrWarp(bm.DownTile(idx))
+	leftFloor := bm.isFloorOrWarp(bm.LeftTile(idx))
+	rightFloor := bm.isFloorOrWarp(bm.RightTile(idx))
+
+	// 単純なケース：一方向のみに床がある場合
+	if singleWallType := bm.checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor); singleWallType != WallTypeGeneric {
+		return singleWallType
+	}
+
+	// 角のケース：2方向に床がある場合
+	if cornerWallType := bm.checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor); cornerWallType != WallTypeGeneric {
+		return cornerWallType
+	}
+
+	// 複雑なパターンまたは判定不可の場合
+	return WallTypeGeneric
+}
+
+// checkSingleDirectionWalls は単一方向に床がある場合の壁タイプを返す
+func (bm BuilderMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
+	if downFloor && !upFloor && !leftFloor && !rightFloor {
+		return WallTypeTop // 下に床がある → 上壁
+	}
+	if upFloor && !downFloor && !leftFloor && !rightFloor {
+		return WallTypeBottom // 上に床がある → 下壁
+	}
+	if rightFloor && !upFloor && !downFloor && !leftFloor {
+		return WallTypeLeft // 右に床がある → 左壁
+	}
+	if leftFloor && !upFloor && !downFloor && !rightFloor {
+		return WallTypeRight // 左に床がある → 右壁
+	}
+	return WallTypeGeneric
+}
+
+// checkCornerWalls は2方向に床がある場合の壁タイプを返す
+func (bm BuilderMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
+	if downFloor && rightFloor && !upFloor && !leftFloor {
+		return WallTypeTopLeft // 下右に床 → 左上角
+	}
+	if downFloor && leftFloor && !upFloor && !rightFloor {
+		return WallTypeTopRight // 下左に床 → 右上角
+	}
+	if upFloor && rightFloor && !downFloor && !leftFloor {
+		return WallTypeBottomLeft // 上右に床 → 左下角
+	}
+	if upFloor && leftFloor && !downFloor && !rightFloor {
+		return WallTypeBottomRight // 上左に床 → 右下角
+	}
+	return WallTypeGeneric
+}
+
+// isFloorOrWarp は床またはワープタイルかを判定する
+func (bm BuilderMap) isFloorOrWarp(tile Tile) bool {
+	return tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape
+}
+
 // BuilderChain は階層データBuilderMapに対して適用する生成ロジックを保持する構造体
 type BuilderChain struct {
 	Starter   *InitialMapBuilder
@@ -126,9 +219,6 @@ type BuilderChain struct {
 func NewBuilderChain(width gc.Row, height gc.Col) *BuilderChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
-	for i := range tiles {
-		tiles[i] = TileWall
-	}
 
 	return &BuilderChain{
 		Starter:  nil,
@@ -170,6 +260,7 @@ func (b *BuilderChain) Build() {
 }
 
 // InitialMapBuilder は初期マップをビルドするインターフェース
+// タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapBuilder interface {
 	BuildInitial(*BuilderMap)
 }
@@ -183,8 +274,10 @@ type MetaMapBuilder interface {
 func SimpleRoomBuilder(width gc.Row, height gc.Col) *BuilderChain {
 	chain := NewBuilderChain(width, height)
 	chain.StartWith(RectRoomBuilder{})
-	chain.With(RoomDraw{}) // TODO: 暫定的にここで壁を埋めてるので、先に実行する必要がある
-	chain.With(LineCorridorBuilder{})
+	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
+	chain.With(RoomDraw{})                // 部屋を描画
+	chain.With(LineCorridorBuilder{})     // 廊下を作成
+	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
 
 	return chain
 }

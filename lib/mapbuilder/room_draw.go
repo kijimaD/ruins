@@ -9,12 +9,6 @@ func (b RoomDraw) BuildMeta(buildData *BuilderMap) {
 }
 
 func (b RoomDraw) build(buildData *BuilderMap) {
-	// 全体を埋める
-	// TODO: 移動する
-	for i := range buildData.Tiles {
-		buildData.Tiles[i] = TileWall
-	}
-
 	for _, room := range buildData.Rooms {
 		b.rectangle(buildData, room)
 	}
