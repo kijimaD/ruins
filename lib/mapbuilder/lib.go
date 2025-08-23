@@ -269,6 +269,13 @@ func (b *BuilderChain) Build() {
 	}
 }
 
+// ValidateConnectivity はマップの接続性を検証する
+// プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
+func (b *BuilderChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
+	pf := NewPathFinder(&b.BuildData)
+	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
+}
+
 // InitialMapBuilder は初期マップをビルドするインターフェース
 // タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapBuilder interface {

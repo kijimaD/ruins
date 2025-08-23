@@ -160,9 +160,9 @@ func (r RuinsDebris) calculateDebrisChance(buildData *BuilderMap, x, y int) floa
 		return 0.15
 	} else if minDistance < 100 { // 中距離
 		return 0.08
-	} else { // 遠距離
-		return 0.03
 	}
+	// 遠距離
+	return 0.03
 }
 
 // RuinsCorridors は廃墟間を繋ぐ通路を作成する

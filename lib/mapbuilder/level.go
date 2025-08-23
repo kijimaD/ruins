@@ -16,67 +16,42 @@ import (
 func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64) resources.Level {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
-	chain := NewRandomBuilder(width, height, seed)
-	chain.Build()
+	var chain *BuilderChain
+	var playerX, playerY int
 
-	// 進行ワープホールを生成する
-	// FIXME: たまに届かない位置に生成される
-	{
-		failCount := 0
-		for {
-			if failCount > 200 {
-				log.Fatal("進行ワープホールの生成に失敗した")
-			}
-			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
-			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.IsSpawnableTile(world, x, y) {
-				chain.BuildData.Tiles[tileIdx] = TileWarpNext
+	// 接続性検証付きマップ生成（最大10回まで再試行）
+	validMap := false
+	for attempt := 0; attempt < 10 && !validMap; attempt++ {
+		// シードを少しずつ変えて再生成
+		currentSeed := seed + uint64(attempt)
+		chain = NewRandomBuilder(width, height, currentSeed)
+		chain.Build()
 
-				break
-			}
-			failCount++
+		// プレイヤーのスタート位置を見つける（最初にスポーン可能な位置）
+		playerX, playerY = findPlayerStartPosition(&chain.BuildData, world)
+		if playerX == -1 || playerY == -1 {
+			continue // スタート位置が見つからない場合は再生成
+		}
+
+		// 接続性を検証（ポータル配置後）
+		validMap = validateMapWithPortals(chain, world, gameResources, playerX, playerY)
+
+		if !validMap && attempt < 9 {
+			log.Printf("マップ生成試行 %d: 接続性検証失敗、再生成します", attempt+1)
 		}
 	}
-	// 帰還ワープホールを生成する
-	if gameResources.Depth%5 == 0 {
-		failCount := 0
-		for {
-			if failCount > 200 {
-				log.Fatal("帰還ワープホールの生成に失敗した")
-			}
-			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
-			if chain.BuildData.IsSpawnableTile(world, x, y) {
-				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
 
-				break
-			}
-			failCount++
-		}
+	if !validMap {
+		log.Printf("警告: %d回の試行後も完全接続マップを生成できませんでした。部分的接続マップを使用します", 10)
 	}
-	// フィールドに操作対象キャラを配置する
-	{
-		failCount := 0
-		for {
-			if failCount > 200 {
-				log.Fatal("操作対象キャラの生成に失敗した")
-			}
-			tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-			ty := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
-			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
-				failCount++
-				continue
-			}
-			worldhelper.SpawnOperator(
-				world,
-				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize)/2),
-				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize)/2),
-			)
-			break
-		}
-	}
+
+	// ポータルは既にvalidateMapWithPortals内で配置済み
+	// フィールドに操作対象キャラを配置する（事前に見つけた位置を使用）
+	worldhelper.SpawnOperator(
+		world,
+		gc.Pixel(playerX*int(consts.TileSize)+int(consts.TileSize)/2),
+		gc.Pixel(playerY*int(consts.TileSize)+int(consts.TileSize)/2),
+	)
 	// フィールドにNPCを生成する
 	{
 		failCount := 0
@@ -154,4 +129,98 @@ func getSpriteNumberForWallType(wallType WallType) int {
 	default:
 		return 1 // デフォルトは従来の壁
 	}
+}
+
+// findPlayerStartPosition はプレイヤーのスタート位置を見つける
+func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int) {
+	width := int(buildData.Level.TileWidth)
+	height := int(buildData.Level.TileHeight)
+
+	// 複数の候補位置を試す
+	attempts := []struct{ x, y int }{
+		{width / 2, height / 2},         // 中央
+		{width / 4, height / 4},         // 左上寄り
+		{3 * width / 4, height / 4},     // 右上寄り
+		{width / 4, 3 * height / 4},     // 左下寄り
+		{3 * width / 4, 3 * height / 4}, // 右下寄り
+	}
+
+	// 最適な位置を探す
+	for _, pos := range attempts {
+		if buildData.IsSpawnableTile(world, gc.Row(pos.x), gc.Col(pos.y)) {
+			return pos.x, pos.y
+		}
+	}
+
+	// 全体をランダムに探索
+	for attempt := 0; attempt < 200; attempt++ {
+		x := buildData.RandomSource.Intn(width)
+		y := buildData.RandomSource.Intn(height)
+		if buildData.IsSpawnableTile(world, gc.Row(x), gc.Col(y)) {
+			return x, y
+		}
+	}
+
+	return -1, -1 // 見つからない場合
+}
+
+// validateMapWithPortals はポータルを配置してマップの接続性を検証する
+func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *resources.Dungeon, playerX, playerY int) bool {
+	// 進行ワープホールを配置
+	warpNextPlaced := false
+	for attempt := 0; attempt < 200; attempt++ {
+		x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+		y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+
+		if chain.BuildData.IsSpawnableTile(world, x, y) {
+			chain.BuildData.Tiles[tileIdx] = TileWarpNext
+			warpNextPlaced = true
+			break
+		}
+	}
+
+	if !warpNextPlaced {
+		return false // ワープホール配置失敗
+	}
+
+	// 帰還ワープホールを配置（5階層ごと）
+	escapePortalRequired := gameResources.Depth%5 == 0
+	escapePortalPlaced := !escapePortalRequired
+
+	if escapePortalRequired {
+		for attempt := 0; attempt < 200; attempt++ {
+			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+
+			if chain.BuildData.IsSpawnableTile(world, x, y) {
+				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
+				escapePortalPlaced = true
+				break
+			}
+		}
+	}
+
+	if !escapePortalPlaced {
+		return false // 脱出ポータル配置失敗
+	}
+
+	// 接続性を検証
+	result := chain.ValidateConnectivity(playerX, playerY)
+
+	// プレイヤーのスタート位置が歩行可能で、必要なポータルに到達可能かチェック
+	if !result.PlayerStartReachable {
+		return false
+	}
+
+	if !result.HasReachableWarpPortal() {
+		return false // ワープポータルに到達できない
+	}
+
+	if escapePortalRequired && !result.HasReachableEscapePortal() {
+		return false // 脱出ポータルに到達できない
+	}
+
+	return true
 }

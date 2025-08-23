@@ -132,9 +132,8 @@ func (f ForestTrees) calculateTreeDensity(buildData *BuilderMap, x, y int) float
 		return baseDensity * 0.3 // 空き地の近くは30%
 	} else if minDistanceToClearing < 10 {
 		return baseDensity * 0.7 // 中距離は70%
-	} else {
-		return baseDensity // 遠くは基本密度
 	}
+	return baseDensity // 遠くは基本密度
 }
 
 // placeLargeTree は大きな木を配置する
@@ -197,9 +196,8 @@ func (f ForestPaths) shouldCreatePath(buildData *BuilderMap, room1, room2 Rect) 
 		return buildData.RandomSource.Float64() < 0.8
 	} else if distance < 25 {
 		return buildData.RandomSource.Float64() < 0.4
-	} else {
-		return buildData.RandomSource.Float64() < 0.1
 	}
+	return buildData.RandomSource.Float64() < 0.1
 }
 
 // createNaturalPath は自然な曲線状の通路を作成する
