@@ -33,6 +33,9 @@ type Config struct {
 	WrapNavigation bool        // 端で循環するか
 	Orientation    Orientation // Vertical or Horizontal
 	Columns        int         // グリッド表示時の列数（0=リスト表示）
+	// ペジネーション設定
+	ItemsPerPage      int  // 1ページに表示する項目数（0=制限なし）
+	ShowPageIndicator bool // ページインジケーターを表示するか
 }
 
 // Callbacks はメニューのコールバック
@@ -48,13 +51,18 @@ type Menu struct {
 	config    Config
 	callbacks Callbacks
 
-	// 状態
+	// 基本状態
 	focusedIndex int
 	hoveredIndex int
+
+	// ペジネーション状態
+	currentPage    int  // 現在のページ（0ベース）
+	needsUIRebuild bool // UI再構築が必要かどうか
 
 	// UI要素
 	container   *widget.Container
 	itemWidgets []widget.PreferredSizeLocateableWidget
+	uiBuilder   *UIBuilder // UIビルダーの参照を保持
 
 	// 入力
 	keyboardInput input.KeyboardInput
@@ -69,11 +77,17 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 		hoveredIndex: -1,
 	}
 
+	// ページ設定の初期化
+	m.initializePagination()
+
 	// 初期インデックスの検証
 	if m.focusedIndex < 0 || m.focusedIndex >= len(config.Items) ||
 		(len(config.Items) > 0 && config.Items[m.focusedIndex].Disabled) {
 		m.focusedIndex = m.findFirstEnabled()
 	}
+
+	// フォーカスされた項目に基づいて現在のページを設定
+	m.updatePageFromFocus()
 
 	return m
 }
@@ -82,6 +96,7 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 func (m *Menu) Update(keyboardInput input.KeyboardInput) {
 	m.keyboardInput = keyboardInput
 	m.handleKeyboard()
+	m.updateFocus()
 }
 
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
@@ -94,7 +109,7 @@ func (m *Menu) SetFocusedIndex(index int) {
 	if index >= 0 && index < len(m.config.Items) && !m.config.Items[index].Disabled {
 		oldIndex := m.focusedIndex
 		m.focusedIndex = index
-		m.updateFocus()
+		m.updatePageFromFocus() // ページを更新
 		if m.callbacks.OnFocusChange != nil {
 			m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
 		}
@@ -116,6 +131,11 @@ func (m *Menu) SetContainer(container *widget.Container) {
 	m.container = container
 }
 
+// SetUIBuilder はUIビルダーを設定する
+func (m *Menu) SetUIBuilder(builder *UIBuilder) {
+	m.uiBuilder = builder
+}
+
 // handleKeyboard はキーボード入力を処理する
 func (m *Menu) handleKeyboard() {
 	if len(m.config.Items) == 0 {
@@ -125,12 +145,23 @@ func (m *Menu) handleKeyboard() {
 	oldIndex := m.focusedIndex
 	handled := false
 
-	// 基本的なナビゲーション
+	// 基本的なナビゲーション（スクロール対応）
 	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
 		m.navigateNext()
 		handled = true
 	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
 		m.navigatePrevious()
+		handled = true
+	}
+
+	// ページ移動（PageUp/PageDownまたはCtrl+Up/Down）
+	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp) ||
+		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)) {
+		m.navigatePageUp()
+		handled = true
+	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown) ||
+		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)) {
+		m.navigatePageDown()
 		handled = true
 	}
 
@@ -184,18 +215,29 @@ func (m *Menu) navigateNext() {
 		return
 	}
 
-	startIndex := m.focusedIndex
-	for i := 0; i < itemCount; i++ {
-		nextIndex := (startIndex + i + 1) % itemCount
+	// 次の有効な項目を探す
+	currentIndex := m.focusedIndex
+	for i := 1; i < itemCount; i++ {
+		nextIndex := currentIndex + i
 
-		// 循環しない場合は端で止まる
-		if !m.config.WrapNavigation && nextIndex <= startIndex {
-			break
+		// 範囲外の場合
+		if nextIndex >= itemCount {
+			if m.config.WrapNavigation {
+				nextIndex = nextIndex % itemCount
+			} else {
+				break // 循環しない場合は停止
+			}
 		}
 
 		if !m.config.Items[nextIndex].Disabled {
+			oldIndex := m.focusedIndex
 			m.focusedIndex = nextIndex
-			m.updateFocus()
+			m.updatePageFromFocus() // ページを更新
+
+			// フォーカス変更を通知
+			if m.callbacks.OnFocusChange != nil {
+				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
+			}
 			break
 		}
 	}
@@ -208,18 +250,29 @@ func (m *Menu) navigatePrevious() {
 		return
 	}
 
-	startIndex := m.focusedIndex
-	for i := 0; i < itemCount; i++ {
-		prevIndex := (startIndex - i - 1 + itemCount) % itemCount
+	// 前の有効な項目を探す
+	currentIndex := m.focusedIndex
+	for i := 1; i < itemCount; i++ {
+		prevIndex := currentIndex - i
 
-		// 循環しない場合は端で止まる
-		if !m.config.WrapNavigation && prevIndex >= startIndex {
-			break
+		// 範囲外の場合
+		if prevIndex < 0 {
+			if m.config.WrapNavigation {
+				prevIndex = (prevIndex + itemCount) % itemCount
+			} else {
+				break // 循環しない場合は停止
+			}
 		}
 
 		if !m.config.Items[prevIndex].Disabled {
+			oldIndex := m.focusedIndex
 			m.focusedIndex = prevIndex
-			m.updateFocus()
+			m.updatePageFromFocus() // ページを更新
+
+			// フォーカス変更を通知
+			if m.callbacks.OnFocusChange != nil {
+				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
+			}
 			break
 		}
 	}
@@ -240,7 +293,6 @@ func (m *Menu) navigateRight() {
 		nextIndex := currentRow*m.config.Columns + currentCol + 1
 		if nextIndex < itemCount && !m.config.Items[nextIndex].Disabled {
 			m.focusedIndex = nextIndex
-			m.updateFocus()
 		}
 	}
 }
@@ -259,7 +311,6 @@ func (m *Menu) navigateLeft() {
 		nextIndex := currentRow*m.config.Columns + currentCol - 1
 		if !m.config.Items[nextIndex].Disabled {
 			m.focusedIndex = nextIndex
-			m.updateFocus()
 		}
 	}
 }
@@ -288,6 +339,173 @@ func (m *Menu) findFirstEnabled() int {
 
 // updateFocus はフォーカス状態を更新する（UIがある場合に使用）
 func (m *Menu) updateFocus() {
-	// UIコンテナが設定されている場合のフォーカス更新処理
-	// この部分は後でUIビルダーと連携して実装
+	// UI再構築が必要かチェック
+	if m.needsUIRebuild && m.uiBuilder != nil {
+		m.rebuildUI()
+		m.needsUIRebuild = false
+	}
+
+	// フォーカス更新
+	if m.uiBuilder != nil {
+		m.uiBuilder.UpdateFocus(m)
+	}
+}
+
+// rebuildUI はUI全体を再構築する
+func (m *Menu) rebuildUI() {
+	if m.container == nil || m.uiBuilder == nil {
+		return
+	}
+
+	// コンテナをクリアして再構築
+	m.container.RemoveChildren()
+
+	// ページインジケーターを追加
+	if m.config.ShowPageIndicator && m.config.ItemsPerPage > 0 && m.GetTotalPages() > 1 {
+		pageIndicator := m.uiBuilder.CreatePageIndicator(m)
+		m.container.AddChild(pageIndicator)
+	}
+
+	// 現在のページの項目を追加
+	m.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
+	visibleItems, indices := m.GetVisibleItemsWithIndices()
+
+	for i, item := range visibleItems {
+		originalIndex := indices[i]
+		btn := m.uiBuilder.CreateMenuButton(m, originalIndex, item)
+		m.container.AddChild(btn)
+		m.itemWidgets = append(m.itemWidgets, btn)
+	}
+}
+
+// ================ スクロール関連メソッド ================
+
+// initializePagination はページネーション設定を初期化する
+func (m *Menu) initializePagination() {
+	m.currentPage = 0
+	m.needsUIRebuild = false
+}
+
+// updatePageFromFocus はフォーカスに基づいてページを更新する
+func (m *Menu) updatePageFromFocus() {
+	if m.config.ItemsPerPage <= 0 {
+		return // スクロール無効
+	}
+
+	newPage := m.focusedIndex / m.config.ItemsPerPage
+	if newPage != m.currentPage {
+		m.currentPage = newPage
+		m.needsUIRebuild = true // UI再構築をマーク
+	}
+}
+
+// navigatePageDown は次のページに移動
+func (m *Menu) navigatePageDown() {
+	if m.config.ItemsPerPage <= 0 {
+		return
+	}
+
+	itemCount := len(m.config.Items)
+	nextPageStart := (m.currentPage + 1) * m.config.ItemsPerPage
+
+	if nextPageStart >= itemCount {
+		return // 最後のページ
+	}
+
+	// 次のページの最初の有効な項目にフォーカス
+	for i := nextPageStart; i < itemCount && i < nextPageStart+m.config.ItemsPerPage; i++ {
+		if !m.config.Items[i].Disabled {
+			oldIndex := m.focusedIndex
+			m.focusedIndex = i
+			m.currentPage = i / m.config.ItemsPerPage
+			m.needsUIRebuild = true
+
+			if m.callbacks.OnFocusChange != nil {
+				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
+			}
+			return
+		}
+	}
+}
+
+// navigatePageUp は前のページに移動
+func (m *Menu) navigatePageUp() {
+	if m.config.ItemsPerPage <= 0 {
+		return
+	}
+
+	if m.currentPage <= 0 {
+		return // 既に最初のページ
+	}
+
+	prevPageStart := (m.currentPage - 1) * m.config.ItemsPerPage
+	prevPageEnd := prevPageStart + m.config.ItemsPerPage
+
+	// 前のページの最初の有効な項目にフォーカス
+	for i := prevPageStart; i < prevPageEnd && i < len(m.config.Items); i++ {
+		if !m.config.Items[i].Disabled {
+			oldIndex := m.focusedIndex
+			m.focusedIndex = i
+			m.currentPage = i / m.config.ItemsPerPage
+			m.needsUIRebuild = true
+
+			if m.callbacks.OnFocusChange != nil {
+				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
+			}
+			return
+		}
+	}
+}
+
+// GetCurrentPage は現在のページ番号を返す（1ベース）
+func (m *Menu) GetCurrentPage() int {
+	return m.currentPage + 1
+}
+
+// GetTotalPages は総ページ数を返す
+func (m *Menu) GetTotalPages() int {
+	if m.config.ItemsPerPage <= 0 {
+		return 1
+	}
+	return (len(m.config.Items) + m.config.ItemsPerPage - 1) / m.config.ItemsPerPage
+}
+
+// GetVisibleItems は現在のページで表示される項目を返す
+func (m *Menu) GetVisibleItems() []Item {
+	if m.config.ItemsPerPage <= 0 {
+		return m.config.Items
+	}
+
+	start := m.currentPage * m.config.ItemsPerPage
+	end := start + m.config.ItemsPerPage
+	if end > len(m.config.Items) {
+		end = len(m.config.Items)
+	}
+
+	return m.config.Items[start:end]
+}
+
+// GetVisibleItemsWithIndices は現在のページで表示される項目とその元のインデックスを返す
+func (m *Menu) GetVisibleItemsWithIndices() ([]Item, []int) {
+	if m.config.ItemsPerPage <= 0 {
+		indices := make([]int, len(m.config.Items))
+		for i := range indices {
+			indices[i] = i
+		}
+		return m.config.Items, indices
+	}
+
+	start := m.currentPage * m.config.ItemsPerPage
+	end := start + m.config.ItemsPerPage
+	if end > len(m.config.Items) {
+		end = len(m.config.Items)
+	}
+
+	visibleItems := m.config.Items[start:end]
+	indices := make([]int, len(visibleItems))
+	for i := range indices {
+		indices[i] = start + i
+	}
+
+	return visibleItems, indices
 }
