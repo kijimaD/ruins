@@ -40,9 +40,10 @@ func TestBigRoomBuilder(t *testing.T) {
 	floorCount := 0
 	wallCount := 0
 	for _, tile := range chain.BuildData.Tiles {
-		if tile == TileFloor {
+		switch tile {
+		case TileFloor:
 			floorCount++
-		} else if tile == TileWall {
+		case TileWall:
 			wallCount++
 		}
 	}

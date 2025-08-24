@@ -5,9 +5,9 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
-// TODO: 全然わかってないので理解する
 // CaveBuilder は洞窟風レイアウトを生成するビルダー
 // セルラーオートマトンを使用して有機的な洞窟形状を作成
+// TODO: 全然わかってないので理解する
 type CaveBuilder struct{}
 
 // BuildInitial は初期洞窟マップをビルドする
