@@ -13,7 +13,7 @@ func TestSeedReproducibility(t *testing.T) {
 	width, height := gc.Row(20), gc.Col(20)
 
 	// 1回目の生成
-	chain1 := SimpleRoomBuilder(width, height, testSeed)
+	chain1 := NewSmallRoomBuilder(width, height, testSeed)
 	chain1.Build()
 	tiles1 := make([]Tile, len(chain1.BuildData.Tiles))
 	copy(tiles1, chain1.BuildData.Tiles)
@@ -21,7 +21,7 @@ func TestSeedReproducibility(t *testing.T) {
 	copy(rooms1, chain1.BuildData.Rooms)
 
 	// 2回目の生成（同じシード）
-	chain2 := SimpleRoomBuilder(width, height, testSeed)
+	chain2 := NewSmallRoomBuilder(width, height, testSeed)
 	chain2.Build()
 	tiles2 := make([]Tile, len(chain2.BuildData.Tiles))
 	copy(tiles2, chain2.BuildData.Tiles)
@@ -55,11 +55,11 @@ func TestDifferentSeeds(t *testing.T) {
 	width, height := gc.Row(20), gc.Col(20)
 
 	// シード1で生成
-	chain1 := SimpleRoomBuilder(width, height, 11111)
+	chain1 := NewSmallRoomBuilder(width, height, 11111)
 	chain1.Build()
 
 	// シード2で生成
-	chain2 := SimpleRoomBuilder(width, height, 22222)
+	chain2 := NewSmallRoomBuilder(width, height, 22222)
 	chain2.Build()
 
 	// 部屋数が異なる可能性が高い（必ずしも異なるとは限らないが）
@@ -110,11 +110,11 @@ func TestZeroSeedHandling(t *testing.T) {
 	width, height := gc.Row(10), gc.Col(10)
 
 	// シード0で2回生成
-	chain1 := SimpleRoomBuilder(width, height, 0)
+	chain1 := NewSmallRoomBuilder(width, height, 0)
 	chain1.Build()
 
 	// 少し時間をずらして再度生成
-	chain2 := SimpleRoomBuilder(width, height, 0)
+	chain2 := NewSmallRoomBuilder(width, height, 0)
 	chain2.Build()
 
 	// 高確率で異なるマップになるはず（厳密には同じになる可能性もあるが極めて低い）

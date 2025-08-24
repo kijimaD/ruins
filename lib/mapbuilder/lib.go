@@ -269,6 +269,13 @@ func (b *BuilderChain) Build() {
 	}
 }
 
+// ValidateConnectivity はマップの接続性を検証する
+// プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
+func (b *BuilderChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
+	pf := NewPathFinder(&b.BuildData)
+	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
+}
+
 // InitialMapBuilder は初期マップをビルドするインターフェース
 // タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapBuilder interface {
@@ -280,8 +287,8 @@ type MetaMapBuilder interface {
 	BuildMeta(*BuilderMap)
 }
 
-// SimpleRoomBuilder はシード値を指定してシンプルな部屋ビルダーを作成する
-func SimpleRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+// NewSmallRoomBuilder はシンプルな小部屋ビルダーを作成する
+func NewSmallRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(RectRoomBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
@@ -290,4 +297,53 @@ func SimpleRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
 
 	return chain
+}
+
+// NewBigRoomBuilder は大部屋ビルダーを作成する
+// ランダムにバリエーションを適用する統合版
+func NewBigRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+	chain := NewBuilderChain(width, height, seed)
+	chain.StartWith(BigRoomBuilder{})
+	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
+	chain.With(BigRoomDraw{})             // 大部屋を描画（バリエーション込み）
+	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
+
+	return chain
+}
+
+// ビルダータイプ定数
+const (
+	BuilderTypeSmallRoom = iota
+	BuilderTypeBigRoom
+	BuilderTypeCave
+	BuilderTypeRuins
+	BuilderTypeForest
+)
+
+// NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
+func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+	// シードが0の場合はランダムなシードを生成する。後続のビルダーに渡される
+	if seed == 0 {
+		seed = uint64(time.Now().UnixNano())
+	}
+
+	// シード値からランダムソースを作成（ビルダー選択用）
+	rs := NewRandomSource(seed)
+	builderType := rs.Intn(5)
+
+	switch builderType {
+	case BuilderTypeSmallRoom:
+		return NewSmallRoomBuilder(width, height, seed)
+	case BuilderTypeBigRoom:
+		return NewBigRoomBuilder(width, height, seed) // 統合版BigRoomを使用
+	case BuilderTypeCave:
+		return NewCaveBuilder(width, height, seed)
+	case BuilderTypeRuins:
+		return NewRuinsBuilder(width, height, seed)
+	case BuilderTypeForest:
+		return NewForestBuilder(width, height, seed)
+	default:
+		// フォールバック（通常は発生しない）
+		return NewSmallRoomBuilder(width, height, seed)
+	}
 }
