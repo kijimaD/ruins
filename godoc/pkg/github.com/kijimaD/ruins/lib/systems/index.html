@@ -145,6 +145,9 @@
 				<dd><a href="index.html#RenderSpriteSystem">func RenderSpriteSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
 				
+				<dd><a href="index.html#SetTranslate">func SetTranslate(world w.World, op *ebiten.DrawImageOptions)</a></dd>
+			
+				
 				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
 			
@@ -360,13 +363,28 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=569:629#L15">RenderSpriteSystem</a>
+			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=1316:1376#L36">RenderSpriteSystem</a>
 				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func RenderSpriteSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
 			<p>RenderSpriteSystem は (下) タイル -&gt; 影 -&gt; スプライト (上) の順に表示する
+
+			
+			
+
+		
+			
+			
+			<h2 id="SetTranslate">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=560:621#L15">SetTranslate</a>
+				<a class="permalink" href="index.html#SetTranslate">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SetTranslate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, op *ebiten.<a href="index.html#DrawImageOptions">DrawImageOptions</a>)</pre>
+			<p>SetTranslate はカメラを考慮した画像配置オプションをセットする
+TODO: ズーム率を追加する
 
 			
 			
