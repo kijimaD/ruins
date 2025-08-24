@@ -112,11 +112,29 @@
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
 			
 			
 				
 				<dd><a href="index.html#NewLevel">func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64) resources.Level</a></dd>
 			
+			
+				
+				<dd><a href="index.html#BigRoomBuilder">type BigRoomBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BigRoomBuilder.BuildInitial">func (b BigRoomBuilder) BuildInitial(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#BigRoomDraw">type BigRoomDraw</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BigRoomDraw.BuildMeta">func (b BigRoomDraw) BuildMeta(buildData *BuilderMap)</a></dd>
+				
 			
 				
 				<dd><a href="index.html#BoundaryWall">type BoundaryWall</a></dd>
@@ -133,10 +151,25 @@
 				<dd><a href="index.html#BuilderChain">type BuilderChain</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewBigRoomBuilder">func NewBigRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#NewBuilderChain">func NewBuilderChain(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#SimpleRoomBuilder">func SimpleRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewCaveBuilder">func NewCaveBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewForestBuilder">func NewForestBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewRandomBuilder">func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewRuinsBuilder">func NewRuinsBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewSmallRoomBuilder">func NewSmallRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain</a></dd>
 				
 				
 					
@@ -144,6 +177,9 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderChain.StartWith">func (b *BuilderChain) StartWith(initialMapBuilder InitialMapBuilder)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BuilderChain.ValidateConnectivity">func (b *BuilderChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#BuilderChain.With">func (b *BuilderChain) With(metaMapBuilder MetaMapBuilder)</a></dd>
@@ -179,6 +215,46 @@
 				
 			
 				
+				<dd><a href="index.html#CaveBuilder">type CaveBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveBuilder.BuildInitial">func (c CaveBuilder) BuildInitial(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#CaveCellularAutomata">type CaveCellularAutomata</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveCellularAutomata.BuildMeta">func (c CaveCellularAutomata) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#CaveConnector">type CaveConnector</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveConnector.BuildMeta">func (c CaveConnector) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#CavePathWidener">type CavePathWidener</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CavePathWidener.BuildMeta">func (c CavePathWidener) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#CaveStalactites">type CaveStalactites</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveStalactites.BuildMeta">func (c CaveStalactites) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
 				<dd><a href="index.html#FillAll">type FillAll</a></dd>
 				
 					
@@ -187,6 +263,46 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#FillAll.BuildMeta">func (b FillAll) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ForestBuilder">type ForestBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestBuilder.BuildInitial">func (f ForestBuilder) BuildInitial(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ForestPaths">type ForestPaths</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestPaths.BuildMeta">func (f ForestPaths) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ForestTerrain">type ForestTerrain</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestTerrain.BuildMeta">func (f ForestTerrain) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ForestTrees">type ForestTrees</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestTrees.BuildMeta">func (f ForestTrees) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ForestWildlife">type ForestWildlife</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestWildlife.BuildMeta">func (f ForestWildlife) BuildMeta(buildData *BuilderMap)</a></dd>
 				
 			
 				
@@ -206,7 +322,51 @@
 				
 			
 				
+				<dd><a href="index.html#MapConnectivityResult">type MapConnectivityResult</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MapConnectivityResult.HasReachableEscapePortal">func (result *MapConnectivityResult) HasReachableEscapePortal() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MapConnectivityResult.HasReachableWarpPortal">func (result *MapConnectivityResult) HasReachableWarpPortal() bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MapConnectivityResult.IsFullyConnected">func (result *MapConnectivityResult) IsFullyConnected() bool</a></dd>
+				
+			
+				
 				<dd><a href="index.html#MetaMapBuilder">type MetaMapBuilder</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#PathFinder">type PathFinder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewPathFinder">func NewPathFinder(buildData *BuilderMap) *PathFinder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.FindPath">func (pf *PathFinder) FindPath(startX, startY, goalX, goalY int) []Position</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.IsReachable">func (pf *PathFinder) IsReachable(startX, startY, goalX, goalY int) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.IsWalkable">func (pf *PathFinder) IsWalkable(x, y int) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.ValidateMapConnectivity">func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) MapConnectivityResult</a></dd>
+				
+			
+				
+				<dd><a href="index.html#PortalReachability">type PortalReachability</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Position">type Position</a></dd>
 				
 				
 			
@@ -255,6 +415,38 @@
 				
 			
 				
+				<dd><a href="index.html#RuinsBuilder">type RuinsBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsBuilder.BuildInitial">func (r RuinsBuilder) BuildInitial(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#RuinsCorridors">type RuinsCorridors</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsCorridors.BuildMeta">func (r RuinsCorridors) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#RuinsDebris">type RuinsDebris</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsDebris.BuildMeta">func (r RuinsDebris) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#RuinsDraw">type RuinsDraw</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsDraw.BuildMeta">func (r RuinsDraw) BuildMeta(buildData *BuilderMap)</a></dd>
+				
+			
+				
 				<dd><a href="index.html#Tile">type Tile</a></dd>
 				
 				
@@ -278,17 +470,25 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/big_room.go">big_room.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/boundary_wall.go">boundary_wall.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go">cave_builder.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/fill_all.go">fill_all.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go">forest_builder.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/level.go">level.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go">lib.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/line_corridor.go">line_corridor.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go">pathfinder.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/random.go">random.go</a>
 			
@@ -297,6 +497,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/rect_room.go">rect_room.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/room_draw.go">room_draw.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go">ruins_builder.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/tile.go">tile.go</a>
 			
@@ -310,6 +512,19 @@
 
 		
 
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				<p>ビルダータイプ定数
+
+				<pre>const (
+    <span id="BuilderTypeSmallRoom">BuilderTypeSmallRoom</span> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span id="BuilderTypeBigRoom">BuilderTypeBigRoom</span>
+    <span id="BuilderTypeCave">BuilderTypeCave</span>
+    <span id="BuilderTypeRuins">BuilderTypeRuins</span>
+    <span id="BuilderTypeForest">BuilderTypeForest</span>
+)</pre>
+			
 		
 		
 		
@@ -328,6 +543,81 @@
 			
 
 		
+		
+			
+			
+			<h2 id="BigRoomBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/big_room.go?s=192:220#L1">BigRoomBuilder</a>
+				<a class="permalink" href="index.html#BigRoomBuilder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>BigRoomBuilder は大部屋を生成するビルダー
+マップ全体の大部分を1つの部屋にする
+
+			<pre>type BigRoomBuilder struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="BigRoomBuilder.BuildInitial">func (BigRoomBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/big_room.go?s=275:334#L2">BuildInitial</a>
+					<a class="permalink" href="index.html#BigRoomBuilder.BuildInitial">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b <a href="index.html#BigRoomBuilder">BigRoomBuilder</a>) BuildInitial(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildInitial は初期マップをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="BigRoomDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/big_room.go?s=830:855#L18">BigRoomDraw</a>
+				<a class="permalink" href="index.html#BigRoomDraw">&#xb6;</a>
+				
+				
+			</h2>
+			<p>BigRoomDraw は大部屋を描画し、ランダムにバリエーションを適用するビルダー
+
+			<pre>type BigRoomDraw struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="BigRoomDraw.BuildMeta">func (BigRoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/big_room.go?s=961:1014#L21">BuildMeta</a>
+					<a class="permalink" href="index.html#BigRoomDraw.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b <a href="index.html#BigRoomDraw">BigRoomDraw</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は大部屋をタイルに描画し、ランダムにバリエーションを適用する
+
+				
+				
+				
+			
 		
 			
 			
@@ -408,6 +698,19 @@
 
 			
 				
+				<h3 id="NewBigRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=9932:10010#L294">NewBigRoomBuilder</a>
+					<a class="permalink" href="index.html#NewBigRoomBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewBigRoomBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
+				<p>NewBigRoomBuilder は大部屋ビルダーを作成する
+ランダムにバリエーションを適用する統合版
+
+				
+				
+			
+				
 				<h3 id="NewBuilderChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=7266:7342#L213">NewBuilderChain</a>
 					<a class="permalink" href="index.html#NewBuilderChain">&#xb6;</a>
 					
@@ -421,13 +724,61 @@
 				
 			
 				
-				<h3 id="SimpleRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=9020:9098#L274">SimpleRoomBuilder</a>
-					<a class="permalink" href="index.html#SimpleRoomBuilder">&#xb6;</a>
+				<h3 id="NewCaveBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=9470:9545#L326">NewCaveBuilder</a>
+					<a class="permalink" href="index.html#NewCaveBuilder">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func SimpleRoomBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
-				<p>SimpleRoomBuilder はシード値を指定してシンプルな部屋ビルダーを作成する
+				<pre>func NewCaveBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
+				<p>NewCaveBuilder は洞窟ビルダーを作成する
+
+				
+				
+			
+				
+				<h3 id="NewForestBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=8990:9067#L271">NewForestBuilder</a>
+					<a class="permalink" href="index.html#NewForestBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewForestBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
+				<p>NewForestBuilder は森ビルダーを作成する
+
+				
+				
+			
+				
+				<h3 id="NewRandomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=10588:10665#L314">NewRandomBuilder</a>
+					<a class="permalink" href="index.html#NewRandomBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewRandomBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
+				<p>NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
+
+				
+				
+			
+				
+				<h3 id="NewRuinsBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=6939:7015#L228">NewRuinsBuilder</a>
+					<a class="permalink" href="index.html#NewRuinsBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewRuinsBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
+				<p>NewRuinsBuilder は廃墟ビルダーを作成する
+
+				
+				
+			
+				
+				<h3 id="NewSmallRoomBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=9373:9453#L281">NewSmallRoomBuilder</a>
+					<a class="permalink" href="index.html#NewSmallRoomBuilder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewSmallRoomBuilder(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#BuilderChain">BuilderChain</a></pre>
+				<p>NewSmallRoomBuilder はシンプルな小部屋ビルダーを作成する
 
 				
 				
@@ -455,6 +806,20 @@
 				</h3>
 				<pre>func (b *<a href="index.html#BuilderChain">BuilderChain</a>) StartWith(initialMapBuilder <a href="index.html#InitialMapBuilder">InitialMapBuilder</a>)</pre>
 				<p>StartWith は初期ビルダーを設定する
+
+				
+				
+				
+			
+				
+				<h3 id="BuilderChain.ValidateConnectivity">func (*BuilderChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=8718:8815#L264">ValidateConnectivity</a>
+					<a class="permalink" href="index.html#BuilderChain.ValidateConnectivity">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (b *<a href="index.html#BuilderChain">BuilderChain</a>) ValidateConnectivity(playerStartX, playerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#MapConnectivityResult">MapConnectivityResult</a></pre>
+				<p>ValidateConnectivity はマップの接続性を検証する
+プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
 
 				
 				
@@ -618,6 +983,196 @@
 		
 			
 			
+			<h2 id="CaveBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=324:349#L1">CaveBuilder</a>
+				<a class="permalink" href="index.html#CaveBuilder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CaveBuilder は洞窟風レイアウトを生成するビルダー
+セルラーオートマトンを使用して有機的な洞窟形状を作成
+TODO: 全然わかってないので理解する
+
+			<pre>type CaveBuilder struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CaveBuilder.BuildInitial">func (CaveBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=410:466#L4">BuildInitial</a>
+					<a class="permalink" href="index.html#CaveBuilder.BuildInitial">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CaveBuilder">CaveBuilder</a>) BuildInitial(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildInitial は初期洞窟マップをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="CaveCellularAutomata">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=812:881#L16">CaveCellularAutomata</a>
+				<a class="permalink" href="index.html#CaveCellularAutomata">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CaveCellularAutomata はセルラーオートマトンによる洞窟生成
+
+			<pre>type CaveCellularAutomata struct {
+    <span class="comment">// 反復回数</span>
+<span id="CaveCellularAutomata.Iterations"></span>    Iterations <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CaveCellularAutomata.BuildMeta">func (CaveCellularAutomata) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=954:1016#L22">BuildMeta</a>
+					<a class="permalink" href="index.html#CaveCellularAutomata.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CaveCellularAutomata">CaveCellularAutomata</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta はセルラーオートマトンで洞窟を生成する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="CaveConnector">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=7609:7636#L257">CaveConnector</a>
+				<a class="permalink" href="index.html#CaveConnector">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CaveConnector は隔離された洞窟領域を接続する
+
+			<pre>type CaveConnector struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CaveConnector.BuildMeta">func (CaveConnector) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=7697:7752#L260">BuildMeta</a>
+					<a class="permalink" href="index.html#CaveConnector.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CaveConnector">CaveConnector</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は隔離された洞窟領域を接続する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="CavePathWidener">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=5313:5342#L180">CavePathWidener</a>
+				<a class="permalink" href="index.html#CavePathWidener">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CavePathWidener は通路を広げる
+
+			<pre>type CavePathWidener struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CavePathWidener.BuildMeta">func (CavePathWidener) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=5385:5442#L183">BuildMeta</a>
+					<a class="permalink" href="index.html#CavePathWidener.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CavePathWidener">CavePathWidener</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は狭い通路を広げる
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="CaveStalactites">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=6900:6929#L234">CaveStalactites</a>
+				<a class="permalink" href="index.html#CaveStalactites">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CaveStalactites は鍾乳石や岩の障害物を配置する
+
+			<pre>type CaveStalactites struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CaveStalactites.BuildMeta">func (CaveStalactites) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/cave_builder.go?s=6984:7041#L237">BuildMeta</a>
+					<a class="permalink" href="index.html#CaveStalactites.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c <a href="index.html#CaveStalactites">CaveStalactites</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は洞窟内に鍾乳石を配置する
+
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="FillAll">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/fill_all.go?s=89:127#L1">FillAll</a>
 				<a class="permalink" href="index.html#FillAll">&#xb6;</a>
 				
@@ -669,7 +1224,193 @@
 		
 			
 			
-			<h2 id="InitialMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=8720:8783#L264">InitialMapBuilder</a>
+			<h2 id="ForestBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=217:244#L1">ForestBuilder</a>
+				<a class="permalink" href="index.html#ForestBuilder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ForestBuilder は森風レイアウトを生成するビルダー
+木々が点在し、自然な通路を持つ森を作成
+
+			<pre>type ForestBuilder struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ForestBuilder.BuildInitial">func (ForestBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=302:360#L4">BuildInitial</a>
+					<a class="permalink" href="index.html#ForestBuilder.BuildInitial">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#ForestBuilder">ForestBuilder</a>) BuildInitial(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildInitial は初期森マップをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ForestPaths">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=5054:5079#L153">ForestPaths</a>
+				<a class="permalink" href="index.html#ForestPaths">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ForestPaths は森の中に自然な通路を作成する
+
+			<pre>type ForestPaths struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ForestPaths.BuildMeta">func (ForestPaths) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=5143:5196#L156">BuildMeta</a>
+					<a class="permalink" href="index.html#ForestPaths.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#ForestPaths">ForestPaths</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は空き地間に自然な通路を作成する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ForestTerrain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=1369:1396#L35">ForestTerrain</a>
+				<a class="permalink" href="index.html#ForestTerrain">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ForestTerrain は森の基本地形を生成する
+
+			<pre>type ForestTerrain struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ForestTerrain.BuildMeta">func (ForestTerrain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=1460:1515#L38">BuildMeta</a>
+					<a class="permalink" href="index.html#ForestTerrain.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#ForestTerrain">ForestTerrain</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は森の基本地形をタイルに描画する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ForestTrees">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=2499:2524#L71">ForestTrees</a>
+				<a class="permalink" href="index.html#ForestTrees">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ForestTrees は森に木々を配置する
+
+			<pre>type ForestTrees struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ForestTrees.BuildMeta">func (ForestTrees) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=2567:2620#L74">BuildMeta</a>
+					<a class="permalink" href="index.html#ForestTrees.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#ForestTrees">ForestTrees</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は森に木を配置する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ForestWildlife">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=7974:8002#L238">ForestWildlife</a>
+				<a class="permalink" href="index.html#ForestWildlife">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ForestWildlife は森に野生動物の痕跡（小さな空き地）を追加する
+
+			<pre>type ForestWildlife struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ForestWildlife.BuildMeta">func (ForestWildlife) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/forest_builder.go?s=8066:8122#L241">BuildMeta</a>
+					<a class="permalink" href="index.html#ForestWildlife.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (f <a href="index.html#ForestWildlife">ForestWildlife</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は森に小さな動物の痕跡を追加する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="InitialMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=9095:9158#L271">InitialMapBuilder</a>
 				<a class="permalink" href="index.html#InitialMapBuilder">&#xb6;</a>
 				
 				
@@ -745,7 +1486,77 @@
 		
 			
 			
-			<h2 id="MetaMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=8861:8918#L269">MetaMapBuilder</a>
+			<h2 id="MapConnectivityResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=5175:5527#L162">MapConnectivityResult</a>
+				<a class="permalink" href="index.html#MapConnectivityResult">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MapConnectivityResult はマップ接続性検証の結果
+
+			<pre>type MapConnectivityResult struct {
+<span id="MapConnectivityResult.PlayerStartReachable"></span>    <span class="comment">// PlayerStartReachable はプレイヤーのスタート位置が歩行可能か</span>
+    PlayerStartReachable <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+<span id="MapConnectivityResult.WarpPortals"></span>    <span class="comment">// WarpPortals はワープポータルの到達可能性リスト</span>
+    WarpPortals []<a href="index.html#PortalReachability">PortalReachability</a>
+<span id="MapConnectivityResult.EscapePortals"></span>    <span class="comment">// EscapePortals は脱出ポータルの到達可能性リスト</span>
+    EscapePortals []<a href="index.html#PortalReachability">PortalReachability</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MapConnectivityResult.HasReachableEscapePortal">func (*MapConnectivityResult) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=6138:6206#L189">HasReachableEscapePortal</a>
+					<a class="permalink" href="index.html#MapConnectivityResult.HasReachableEscapePortal">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (result *<a href="index.html#MapConnectivityResult">MapConnectivityResult</a>) HasReachableEscapePortal() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>HasReachableEscapePortal は到達可能な脱出ポータルがあるかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MapConnectivityResult.HasReachableWarpPortal">func (*MapConnectivityResult) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=5875:5941#L179">HasReachableWarpPortal</a>
+					<a class="permalink" href="index.html#MapConnectivityResult.HasReachableWarpPortal">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (result *<a href="index.html#MapConnectivityResult">MapConnectivityResult</a>) HasReachableWarpPortal() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>HasReachableWarpPortal は到達可能なワープポータルがあるかを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MapConnectivityResult.IsFullyConnected">func (*MapConnectivityResult) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=6421:6481#L199">IsFullyConnected</a>
+					<a class="permalink" href="index.html#MapConnectivityResult.IsFullyConnected">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (result *<a href="index.html#MapConnectivityResult">MapConnectivityResult</a>) IsFullyConnected() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsFullyConnected はプレイヤーがすべての重要なポータルに到達可能かを返す
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MetaMapBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/lib.go?s=9236:9293#L276">MetaMapBuilder</a>
 				<a class="permalink" href="index.html#MetaMapBuilder">&#xb6;</a>
 				
 				
@@ -755,6 +1566,153 @@
 			<pre>type MetaMapBuilder interface {
     BuildMeta(*<a href="index.html#BuilderMap">BuilderMap</a>)
 }</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="PathFinder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=142:191#L1">PathFinder</a>
+				<a class="permalink" href="index.html#PathFinder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>PathFinder はパスファインディング機能を提供する
+
+			<pre>type PathFinder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewPathFinder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=239:292#L1">NewPathFinder</a>
+					<a class="permalink" href="index.html#NewPathFinder">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewPathFinder(buildData *<a href="index.html#BuilderMap">BuilderMap</a>) *<a href="index.html#PathFinder">PathFinder</a></pre>
+				<p>NewPathFinder はPathFinderを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="PathFinder.FindPath">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=998:1073#L24">FindPath</a>
+					<a class="permalink" href="index.html#PathFinder.FindPath">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (pf *<a href="index.html#PathFinder">PathFinder</a>) FindPath(startX, startY, goalX, goalY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) []<a href="index.html#Position">Position</a></pre>
+				<p>FindPath はBFSを使ってスタート地点からゴールまでのパスを探索する
+上下左右の4方向移動のみサポート
+
+				
+				
+				
+			
+				
+				<h3 id="PathFinder.IsReachable">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=3596:3668#L115">IsReachable</a>
+					<a class="permalink" href="index.html#PathFinder.IsReachable">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (pf *<a href="index.html#PathFinder">PathFinder</a>) IsReachable(startX, startY, goalX, goalY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsReachable はスタート地点からゴール地点まで到達可能かを判定する
+
+				
+				
+				
+			
+				
+				<h3 id="PathFinder.IsWalkable">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=403:450#L6">IsWalkable</a>
+					<a class="permalink" href="index.html#PathFinder.IsWalkable">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (pf *<a href="index.html#PathFinder">PathFinder</a>) IsWalkable(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsWalkable は指定座標が歩行可能かを判定する
+
+				
+				
+				
+			
+				
+				<h3 id="PathFinder.ValidateMapConnectivity">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=3944:4043#L122">ValidateMapConnectivity</a>
+					<a class="permalink" href="index.html#PathFinder.ValidateMapConnectivity">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (pf *<a href="index.html#PathFinder">PathFinder</a>) ValidateMapConnectivity(playerStartX, playerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#MapConnectivityResult">MapConnectivityResult</a></pre>
+				<p>ValidateMapConnectivity はマップの接続性を検証する
+プレイヤーのスタート位置からワープポータル、脱出ポータルへの到達可能性をチェックする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="PortalReachability">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=5591:5786#L172">PortalReachability</a>
+				<a class="permalink" href="index.html#PortalReachability">&#xb6;</a>
+				
+				
+			</h2>
+			<p>PortalReachability はポータルの到達可能性情報
+
+			<pre>type PortalReachability struct {
+<span id="PortalReachability.X"></span>    X         <a href="http://localhost:8888/pkg/builtin/#int">int</a>  <span class="comment">// ポータルのX座標</span>
+<span id="PortalReachability.Y"></span>    Y         <a href="http://localhost:8888/pkg/builtin/#int">int</a>  <span class="comment">// ポータルのY座標</span>
+<span id="PortalReachability.Reachable"></span>    Reachable <a href="http://localhost:8888/pkg/builtin/#bool">bool</a> <span class="comment">// プレイヤーのスタート地点から到達可能か</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Position">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/pathfinder.go?s=2799:2837#L87">Position</a>
+				<a class="permalink" href="index.html#Position">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Position は座標を表す構造体
+
+			<pre>type Position struct {
+<span id="Position.X"></span>    X <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Position.Y"></span>    Y <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
 
 			
 
@@ -970,6 +1928,155 @@
 				</h3>
 				<pre>func (b <a href="index.html#RoomDraw">RoomDraw</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
 				<p>BuildMeta はメタデータをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="RuinsBuilder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=207:233#L1">RuinsBuilder</a>
+				<a class="permalink" href="index.html#RuinsBuilder">&#xb6;</a>
+				
+				
+			</h2>
+			<p>RuinsBuilder は廃墟風レイアウトを生成するビルダー
+建物の残骸や瓦礫が散在する廃墟を作成
+
+			<pre>type RuinsBuilder struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RuinsBuilder.BuildInitial">func (RuinsBuilder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=294:351#L2">BuildInitial</a>
+					<a class="permalink" href="index.html#RuinsBuilder.BuildInitial">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RuinsBuilder">RuinsBuilder</a>) BuildInitial(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildInitial は初期廃墟マップをビルドする
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="RuinsCorridors">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=5149:5177#L159">RuinsCorridors</a>
+				<a class="permalink" href="index.html#RuinsCorridors">&#xb6;</a>
+				
+				
+			</h2>
+			<p>RuinsCorridors は廃墟間を繋ぐ通路を作成する
+
+			<pre>type RuinsCorridors struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RuinsCorridors.BuildMeta">func (RuinsCorridors) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=5229:5285#L162">BuildMeta</a>
+					<a class="permalink" href="index.html#RuinsCorridors.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RuinsCorridors">RuinsCorridors</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は廃墟間に通路を作成する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="RuinsDebris">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=3600:3625#L105">RuinsDebris</a>
+				<a class="permalink" href="index.html#RuinsDebris">&#xb6;</a>
+				
+				
+			</h2>
+			<p>RuinsDebris は瓦礫や破片を配置する
+
+			<pre>type RuinsDebris struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RuinsDebris.BuildMeta">func (RuinsDebris) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=3674:3727#L108">BuildMeta</a>
+					<a class="permalink" href="index.html#RuinsDebris.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RuinsDebris">RuinsDebris</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は廃墟に瓦礫を配置する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="RuinsDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=1170:1193#L29">RuinsDraw</a>
+				<a class="permalink" href="index.html#RuinsDraw">&#xb6;</a>
+				
+				
+			</h2>
+			<p>RuinsDraw は廃墟構造を描画する
+
+			<pre>type RuinsDraw struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RuinsDraw.BuildMeta">func (RuinsDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/ruins_builder.go?s=1251:1302#L32">BuildMeta</a>
+					<a class="permalink" href="index.html#RuinsDraw.BuildMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (r <a href="index.html#RuinsDraw">RuinsDraw</a>) BuildMeta(buildData *<a href="index.html#BuilderMap">BuilderMap</a>)</pre>
+				<p>BuildMeta は廃墟構造をタイルに描画する
 
 				
 				
