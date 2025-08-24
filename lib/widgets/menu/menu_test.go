@@ -227,43 +227,6 @@ func TestMenuTabNavigation(t *testing.T) {
 	}
 }
 
-func TestMenuGridNavigation(t *testing.T) {
-	t.Parallel()
-	items := []Item{
-		{ID: "1", Label: "Item 1"}, {ID: "2", Label: "Item 2"},
-		{ID: "3", Label: "Item 3"}, {ID: "4", Label: "Item 4"},
-		{ID: "5", Label: "Item 5"}, {ID: "6", Label: "Item 6"},
-	}
-
-	config := Config{
-		Items:        items,
-		Columns:      2, // 2列のグリッド
-		InitialIndex: 0,
-	}
-
-	menu := NewMenu(config, Callbacks{})
-
-	// 右矢印キーのテスト（0→1）
-	mockInput := input.NewMockKeyboardInput()
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
-
-	menu.Update(mockInput)
-
-	if menu.GetFocusedIndex() != 1 {
-		t.Errorf("右矢印キーでの移動が失敗: 期待 1, 実際 %d", menu.GetFocusedIndex())
-	}
-
-	// 左矢印キーのテスト（1→0）
-	mockInput.Reset()
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
-
-	menu.Update(mockInput)
-
-	if menu.GetFocusedIndex() != 0 {
-		t.Errorf("左矢印キーでの移動が失敗: 期待 0, 実際 %d", menu.GetFocusedIndex())
-	}
-}
-
 func TestMenuDisabledItems(t *testing.T) {
 	t.Parallel()
 	items := []Item{

@@ -99,7 +99,6 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 		InitialIndex:      0,
 		WrapNavigation:    false, // スクロール時は循環しない方が自然
 		Orientation:       menu.Vertical,
-		Columns:           0,
 		ItemsPerPage:      5,
 		ShowPageIndicator: true,
 	}

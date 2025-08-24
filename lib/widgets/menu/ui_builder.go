@@ -26,10 +26,7 @@ func NewUIBuilder(world w.World) *UIBuilder {
 func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container {
 	var container *widget.Container
 
-	if menu.config.Columns > 0 {
-		// グリッド表示
-		container = b.buildGridUI(menu)
-	} else if menu.config.Orientation == Horizontal {
+	if menu.config.Orientation == Horizontal {
 		// 水平リスト表示
 		container = b.buildHorizontalUI(menu)
 	} else {
@@ -95,44 +92,6 @@ func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 	}
 
 	mainContainer.AddChild(menuContainer)
-	b.UpdateFocus(menu)
-
-	return mainContainer
-}
-
-// buildGridUI はグリッド表示のUIを構築する
-func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
-	mainContainer := eui.NewVerticalContainer()
-
-	// ページインジケーターを追加
-	if menu.config.ShowPageIndicator && menu.config.ItemsPerPage > 0 && menu.GetTotalPages() > 1 {
-		pageIndicator := b.CreatePageIndicator(menu)
-		mainContainer.AddChild(pageIndicator)
-	}
-
-	// グリッドメニューコンテナ
-	gridContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(menu.config.Columns),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true}),
-				widget.GridLayoutOpts.Spacing(2, 2),
-			),
-		),
-	)
-
-	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
-
-	// 表示する項目のみを追加（スクロール対応）
-	visibleItems, indices := menu.GetVisibleItemsWithIndices()
-	for i, item := range visibleItems {
-		originalIndex := indices[i]
-		btn := b.CreateMenuButton(menu, originalIndex, item)
-		gridContainer.AddChild(btn)
-		menu.itemWidgets = append(menu.itemWidgets, btn)
-	}
-
-	mainContainer.AddChild(gridContainer)
 	b.UpdateFocus(menu)
 
 	return mainContainer

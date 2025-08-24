@@ -32,7 +32,6 @@ type Config struct {
 	InitialIndex   int
 	WrapNavigation bool        // 端で循環するか
 	Orientation    Orientation // Vertical or Horizontal
-	Columns        int         // グリッド表示時の列数（0=リスト表示）
 	// ペジネーション設定
 	ItemsPerPage      int  // 1ページに表示する項目数（0=制限なし）
 	ShowPageIndicator bool // ページインジケーターを表示するか
@@ -165,17 +164,6 @@ func (m *Menu) handleKeyboard() {
 		handled = true
 	}
 
-	// グリッド表示時の左右移動
-	if m.config.Columns > 0 {
-		if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowRight) {
-			m.navigateRight()
-			handled = true
-		} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowLeft) {
-			m.navigateLeft()
-			handled = true
-		}
-	}
-
 	// Tab/Shift+Tab
 	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyTab) {
 		if m.keyboardInput.IsKeyPressed(ebiten.KeyShift) {
@@ -274,43 +262,6 @@ func (m *Menu) navigatePrevious() {
 				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
 			}
 			break
-		}
-	}
-}
-
-// navigateRight はグリッド表示時の右移動
-func (m *Menu) navigateRight() {
-	if m.config.Columns <= 0 {
-		return
-	}
-
-	itemCount := len(m.config.Items)
-	currentRow := m.focusedIndex / m.config.Columns
-	currentCol := m.focusedIndex % m.config.Columns
-
-	// 右の列に移動
-	if currentCol < m.config.Columns-1 {
-		nextIndex := currentRow*m.config.Columns + currentCol + 1
-		if nextIndex < itemCount && !m.config.Items[nextIndex].Disabled {
-			m.focusedIndex = nextIndex
-		}
-	}
-}
-
-// navigateLeft はグリッド表示時の左移動
-func (m *Menu) navigateLeft() {
-	if m.config.Columns <= 0 {
-		return
-	}
-
-	currentRow := m.focusedIndex / m.config.Columns
-	currentCol := m.focusedIndex % m.config.Columns
-
-	// 左の列に移動
-	if currentCol > 0 {
-		nextIndex := currentRow*m.config.Columns + currentCol - 1
-		if !m.config.Items[nextIndex].Disabled {
-			m.focusedIndex = nextIndex
 		}
 	}
 }
