@@ -36,61 +36,81 @@ func TestBigRoomBuilder(t *testing.T) {
 		t.Errorf("部屋の高さが小さすぎます。期待最小値: %d, 実際: %d", expectedMinHeight, actualHeight)
 	}
 
-	// 部屋の内部が床になっていることを確認
+	// 床と壁の両方が存在することを確認
 	floorCount := 0
-	for x := room.X1; x <= room.X2; x++ {
-		for y := room.Y1; y <= room.Y2; y++ {
-			idx := chain.BuildData.Level.XYTileIndex(x, y)
-			if chain.BuildData.Tiles[idx] == TileFloor {
+	wallCount := 0
+	for _, tile := range chain.BuildData.Tiles {
+		if tile == TileFloor {
+			floorCount++
+		} else if tile == TileWall {
+			wallCount++
+		}
+	}
+
+	if floorCount == 0 {
+		t.Error("床タイルが存在しません")
+	}
+	if wallCount == 0 {
+		t.Error("壁タイルが存在しません")
+	}
+
+	t.Logf("床タイル: %d, 壁タイル: %d", floorCount, wallCount)
+}
+
+func TestBigRoomVariations(t *testing.T) {
+	t.Parallel()
+
+	// 異なるシードで複数回テストして、各バリエーションが出ることを確認
+	seeds := []uint64{1, 42, 123, 456, 789, 1024, 2048, 3333, 5000, 9999}
+
+	variantCounts := make(map[string]int)
+
+	for _, seed := range seeds {
+		chain := NewBigRoomBuilder(20, 20, seed)
+		chain.Build()
+
+		// 部屋が1つ生成されることを確認
+		if len(chain.BuildData.Rooms) != 1 {
+			t.Errorf("Seed %d: Expected 1 room, got %d", seed, len(chain.BuildData.Rooms))
+		}
+
+		// タイル構成を分析してバリエーションを推測
+		wallCount := 0
+		floorCount := 0
+
+		for _, tile := range chain.BuildData.Tiles {
+			switch tile {
+			case TileWall:
+				wallCount++
+			case TileFloor:
 				floorCount++
 			}
 		}
-	}
 
-	expectedFloorCount := actualWidth * actualHeight
-	if floorCount != expectedFloorCount {
-		t.Errorf("床タイル数が不正です。期待: %d, 実際: %d", expectedFloorCount, floorCount)
-	}
-}
+		// 壁と床の比率から大まかなバリエーションを判定
+		ratio := float64(wallCount) / float64(wallCount+floorCount)
+		variantType := ""
 
-func TestBigRoomWithPillarsBuilder(t *testing.T) {
-	t.Parallel()
-
-	width, height := gc.Row(20), gc.Col(20)
-	seed := uint64(54321)
-	pillarSpacing := 3
-
-	chain := NewBigRoomWithPillarsBuilder(width, height, seed, pillarSpacing)
-	chain.Build()
-
-	// 部屋が1つだけ生成されることを確認
-	if len(chain.BuildData.Rooms) != 1 {
-		t.Errorf("期待される部屋数: 1, 実際: %d", len(chain.BuildData.Rooms))
-	}
-
-	// 柱が配置されていることを確認
-	room := chain.BuildData.Rooms[0]
-	pillarCount := 0
-
-	// 柱の予想配置位置をチェック
-	startX := int(room.X1) + pillarSpacing
-	startY := int(room.Y1) + pillarSpacing
-
-	for x := startX; x < int(room.X2); x += pillarSpacing + 1 {
-		for y := startY; y < int(room.Y2); y += pillarSpacing + 1 {
-			idx := chain.BuildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
-			if chain.BuildData.Tiles[idx] == TileWall {
-				pillarCount++
-			}
+		if ratio <= 0.36 {
+			variantType = "basic"
+		} else if ratio <= 0.45 {
+			variantType = "pillars_obstacles_platform"
+		} else {
+			variantType = "maze"
 		}
+
+		variantCounts[variantType]++
+
+		t.Logf("Seed %d: walls=%d, floors=%d, ratio=%.3f, type=%s",
+			seed, wallCount, floorCount, ratio, variantType)
 	}
 
-	// 少なくとも1つの柱があることを確認
-	if pillarCount == 0 {
-		t.Error("柱が配置されていません")
+	// 複数のバリエーションが生成されていることを確認
+	if len(variantCounts) < 2 {
+		t.Errorf("Expected multiple variants to be generated, got: %v", variantCounts)
 	}
 
-	t.Logf("配置された柱の数: %d", pillarCount)
+	t.Logf("Variant distribution: %v", variantCounts)
 }
 
 func TestBigRoomBuilderReproducibility(t *testing.T) {

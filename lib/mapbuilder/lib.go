@@ -300,23 +300,13 @@ func NewSmallRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain
 }
 
 // NewBigRoomBuilder は大部屋ビルダーを作成する
+// ランダムにバリエーションを適用する統合版
 func NewBigRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(BigRoomBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
-	chain.With(BigRoomDraw{})             // 大部屋を描画
+	chain.With(BigRoomDraw{})             // 大部屋を描画（バリエーション込み）
 	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
-
-	return chain
-}
-
-// NewBigRoomWithPillarsBuilder は柱付き大部屋ビルダーを作成する
-func NewBigRoomWithPillarsBuilder(width gc.Row, height gc.Col, seed uint64, pillarSpacing int) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(BigRoomWithPillarsBuilder{PillarSpacing: pillarSpacing})
-	chain.With(NewFillAll(TileWall))                                 // 全体を壁で埋める
-	chain.With(BigRoomWithPillarsDraw{PillarSpacing: pillarSpacing}) // 柱付き大部屋を描画
-	chain.With(NewBoundaryWall(TileWall))                            // 最外周を壁で囲む
 
 	return chain
 }
@@ -325,7 +315,6 @@ func NewBigRoomWithPillarsBuilder(width gc.Row, height gc.Col, seed uint64, pill
 const (
 	BuilderTypeSmallRoom = iota
 	BuilderTypeBigRoom
-	BuilderTypeBigRoomWithPillars
 	BuilderTypeCave
 	BuilderTypeRuins
 	BuilderTypeForest
@@ -340,17 +329,13 @@ func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 
 	// シード値からランダムソースを作成（ビルダー選択用）
 	rs := NewRandomSource(seed)
-	builderType := rs.Intn(6)
+	builderType := rs.Intn(5)
 
 	switch builderType {
 	case BuilderTypeSmallRoom:
 		return NewSmallRoomBuilder(width, height, seed)
 	case BuilderTypeBigRoom:
-		return NewBigRoomBuilder(width, height, seed)
-	case BuilderTypeBigRoomWithPillars:
-		// 柱間隔もランダムに選択（3-6の範囲）
-		pillarSpacing := 3 + rs.Intn(4)
-		return NewBigRoomWithPillarsBuilder(width, height, seed, pillarSpacing)
+		return NewBigRoomBuilder(width, height, seed) // 統合版BigRoomを使用
 	case BuilderTypeCave:
 		return NewCaveBuilder(width, height, seed)
 	case BuilderTypeRuins:
