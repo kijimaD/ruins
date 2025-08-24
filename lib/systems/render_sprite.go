@@ -11,7 +11,6 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 
-	"github.com/kijimaD/ruins/lib/camera"
 	"github.com/kijimaD/ruins/lib/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -20,6 +19,28 @@ var (
 	wallShadowImage  *ebiten.Image // 壁が落とす影
 	moverShadowImage *ebiten.Image // 動く物体が落とす影
 )
+
+// SetTranslate はカメラを考慮した画像配置オプションをセットする
+// TODO: ズーム率を追加する
+func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
+	var camera *gc.Camera
+	var cPos *gc.Position
+	world.Manager.Join(
+		world.Components.Camera,
+		world.Components.Position,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		camera = world.Components.Camera.Get(entity).(*gc.Camera)
+		cPos = world.Components.Position.Get(entity).(*gc.Position)
+	}))
+
+	cx, cy := float64(world.Resources.ScreenDimensions.Width/2), float64(world.Resources.ScreenDimensions.Height/2)
+
+	// カメラ位置
+	op.GeoM.Translate(float64(-cPos.X), float64(-cPos.Y))
+	op.GeoM.Scale(camera.Scale, camera.Scale)
+	// 画面の中央
+	op.GeoM.Translate(float64(cx), float64(cy))
+}
 
 // RenderSpriteSystem は (下) タイル -> 影 -> スプライト (上) の順に表示する
 func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
@@ -99,7 +120,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(int(pos.X)-12), float64(pos.Y))
-			camera.SetTranslate(world, op)
+			SetTranslate(world, op)
 			if moverShadowImage != nil {
 				screen.DrawImage(moverShadowImage, op)
 			}
@@ -138,7 +159,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 				if belowSpriteRender.Depth == gc.DepthNumFloor {
 					op := &ebiten.DrawImageOptions{}
 					op.GeoM.Translate(float64(int(grid.Row)*int(consts.TileSize)), float64(int(grid.Col)*int(consts.TileSize)+int(consts.TileSize)))
-					camera.SetTranslate(world, op)
+					SetTranslate(world, op)
 					if wallShadowImage != nil {
 						screen.DrawImage(wallShadowImage, op)
 					}
@@ -244,6 +265,6 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	op.GeoM.Translate(float64(-sprite.Width/2), float64(-sprite.Width/2)) // 回転軸を画像の中心にする
 	op.GeoM.Rotate(angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
-	camera.SetTranslate(world, op)
+	SetTranslate(world, op)
 	screen.DrawImage(getImage(world, spriteRender), op)
 }
