@@ -1,6 +1,8 @@
 package tabmenu
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -558,4 +560,17 @@ func (tm *TabMenu) GetTotalPages() int {
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	return (len(currentTab.Items) + tm.config.ItemsPerPage - 1) / tm.config.ItemsPerPage
+}
+
+// GetPageIndicatorText はページインジケーターのテキストを返す
+func (tm *TabMenu) GetPageIndicatorText() string {
+	if !tm.config.ShowPageIndicator || tm.config.ItemsPerPage <= 0 {
+		return ""
+	}
+
+	if tm.GetTotalPages() <= 1 {
+		return ""
+	}
+
+	return fmt.Sprintf("ページ %d/%d", tm.GetCurrentPage(), tm.GetTotalPages())
 }

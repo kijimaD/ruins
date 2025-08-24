@@ -417,8 +417,9 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 	st.tabDisplayContainer.AddChild(tabNameText)
 
 	// ページインジケーターを表示
-	if st.tabMenu.GetTotalPages() > 1 {
-		pageIndicator := eui.NewDescriptionText(fmt.Sprintf("ページ %d/%d", st.tabMenu.GetCurrentPage(), st.tabMenu.GetTotalPages()), world)
+	pageText := st.tabMenu.GetPageIndicatorText()
+	if pageText != "" {
+		pageIndicator := eui.NewDescriptionText(pageText, world)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 

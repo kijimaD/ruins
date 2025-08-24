@@ -1,6 +1,8 @@
 package menu
 
 import (
+	"fmt"
+
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
@@ -459,4 +461,17 @@ func (m *Menu) GetVisibleItemsWithIndices() ([]Item, []int) {
 	}
 
 	return visibleItems, indices
+}
+
+// GetPageIndicatorText はページインジケーターのテキストを返す
+func (m *Menu) GetPageIndicatorText() string {
+	if !m.config.ShowPageIndicator || m.config.ItemsPerPage <= 0 {
+		return ""
+	}
+
+	if m.GetTotalPages() <= 1 {
+		return ""
+	}
+
+	return fmt.Sprintf("ページ %d/%d", m.GetCurrentPage(), m.GetTotalPages())
 }

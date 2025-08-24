@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/ebitenui/ebitenui/image"
@@ -44,7 +43,8 @@ func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 	mainContainer := eui.NewVerticalContainer()
 
 	// ページインジケーターを追加
-	if menu.config.ShowPageIndicator && menu.config.ItemsPerPage > 0 && menu.GetTotalPages() > 1 {
+	pageText := menu.GetPageIndicatorText()
+	if pageText != "" {
 		pageIndicator := b.CreatePageIndicator(menu)
 		mainContainer.AddChild(pageIndicator)
 	}
@@ -73,7 +73,8 @@ func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 	mainContainer := eui.NewVerticalContainer()
 
 	// ページインジケーターを追加
-	if menu.config.ShowPageIndicator && menu.config.ItemsPerPage > 0 && menu.GetTotalPages() > 1 {
+	pageText := menu.GetPageIndicatorText()
+	if pageText != "" {
 		pageIndicator := b.CreatePageIndicator(menu)
 		mainContainer.AddChild(pageIndicator)
 	}
@@ -204,8 +205,7 @@ func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
 func (b *UIBuilder) CreatePageIndicator(menu *Menu) *widget.Text {
 	res := b.world.Resources.UIResources
 
-	pageText := fmt.Sprintf("%d/%d",
-		menu.GetCurrentPage(), menu.GetTotalPages())
+	pageText := menu.GetPageIndicatorText()
 
 	return widget.NewText(
 		widget.TextOpts.Text(pageText, res.Text.SmallFace, color.White),
