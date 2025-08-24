@@ -1,8 +1,6 @@
 package mapbuilder
 
 import (
-	"math/rand"
-
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/mathutil"
 )
@@ -17,13 +15,13 @@ func (b RectRoomBuilder) BuildInitial(buildData *BuilderMap) {
 
 // BuildRooms は部屋をビルドする
 func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
-	maxRooms := 4 + rand.Intn(10)
+	maxRooms := 4 + buildData.RandomSource.Intn(10)
 	rooms := []Rect{}
 	for i := 0; i < maxRooms; i++ {
-		x := rand.Intn(int(buildData.Level.TileWidth))
-		y := rand.Intn(int(buildData.Level.TileHeight))
-		w := 2 + rand.Intn(8)
-		h := 2 + rand.Intn(8)
+		x := buildData.RandomSource.Intn(int(buildData.Level.TileWidth))
+		y := buildData.RandomSource.Intn(int(buildData.Level.TileHeight))
+		w := 2 + buildData.RandomSource.Intn(8)
+		h := 2 + buildData.RandomSource.Intn(8)
 		newRoom := Rect{
 			X1: gc.Row(x),
 			X2: gc.Row(mathutil.Min(x+w, int(buildData.Level.TileWidth))),

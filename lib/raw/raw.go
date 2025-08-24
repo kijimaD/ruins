@@ -6,7 +6,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/errors"
 )
 
 // Master はローデータを管理し、効率的な検索のためのインデックスを提供する
@@ -183,7 +182,7 @@ func Load(entityMetadataContent string) (Master, error) {
 func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "ItemIndex")
+		return gc.GameComponentList{}, NewKeyNotFoundError(name, "ItemIndex")
 	}
 	item := rw.Raws.Items[itemIdx]
 	cl := gc.GameComponentList{}
@@ -291,7 +290,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "MaterialIndex")
+		return gc.GameComponentList{}, NewKeyNotFoundError(name, "MaterialIndex")
 	}
 	cl := gc.GameComponentList{}
 	cl.Material = &gc.Material{Amount: amount}
@@ -307,7 +306,7 @@ func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.Item
 func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, errors.NewKeyNotFoundError(name, "RecipeIndex")
+		return gc.GameComponentList{}, NewKeyNotFoundError(name, "RecipeIndex")
 	}
 	recipe := rw.Raws.Recipes[recipeIdx]
 	cl := gc.GameComponentList{}

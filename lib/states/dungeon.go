@@ -22,6 +22,8 @@ var (
 type DungeonState struct {
 	es.BaseState
 	Depth int
+	// Seed はマップ生成用のシード値（0の場合はDungeonリソースのシード値を使用）
+	Seed uint64
 }
 
 func (st DungeonState) String() string {
@@ -47,7 +49,9 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Depth = st.Depth
-	gameResources.Level = mapbuilder.NewLevel(world, 50, 50)
+
+	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
+	gameResources.Level = mapbuilder.NewLevel(world, 50, 50, st.Seed)
 
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
