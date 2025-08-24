@@ -7,6 +7,7 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/ruins/lib/config"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
@@ -76,7 +77,8 @@ func (st *HomeMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
 func (st *HomeMenuState) Update(_ w.World) es.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+	cfg := config.MustGet()
+	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
 	}
 
