@@ -34,6 +34,7 @@ type Callbacks struct {
 }
 
 // TabMenu はタブ付きメニューコンポーネント
+// TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態管理だけを行っている。なのでインジケーターUIを各自で実装する必要がある。いっぽうでMenuはUIを持ち、インジケーターが含まれている
 type TabMenu struct {
 	config    Config
 	callbacks Callbacks
