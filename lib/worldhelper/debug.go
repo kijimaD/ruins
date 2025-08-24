@@ -24,24 +24,28 @@ func InitDebugData(world w.World) {
 	}
 
 	// デバッグ用アイテム生成
-	SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 	card1 := SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 	card2 := SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
 	card3 := SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
-	SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-	SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+		SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+		SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
+	}
 	armor := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
-	SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
-	SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
-	SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
-	SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-	SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-	SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-	SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
+		SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
+		SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
+	}
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
+	}
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+		SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+		SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	}
 
 	// デバッグ用メンバー生成
 	ishihara := SpawnMember(world, "イシハラ", true)

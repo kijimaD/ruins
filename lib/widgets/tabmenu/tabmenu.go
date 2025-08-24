@@ -15,10 +15,12 @@ type TabItem struct {
 
 // Config はタブメニューの設定
 type Config struct {
-	Tabs             []TabItem
-	InitialTabIndex  int
-	InitialItemIndex int
-	WrapNavigation   bool // タブ/アイテム両方で端循環するか
+	Tabs              []TabItem
+	InitialTabIndex   int
+	InitialItemIndex  int
+	WrapNavigation    bool // タブ/アイテム両方で端循環するか
+	ItemsPerPage      int  // 1ページに表示する項目数（0=制限なし）
+	ShowPageIndicator bool // ページインジケーターを表示するか
 }
 
 // Callbacks はタブメニューのコールバック
@@ -38,6 +40,9 @@ type TabMenu struct {
 	currentTabIndex  int
 	currentItemIndex int
 	keyboardInput    input.KeyboardInput
+
+	// ページネーション状態
+	currentPage int // 現在のページ（0ベース）
 }
 
 // NewTabMenu は新しいTabMenuを作成する
@@ -119,12 +124,20 @@ func (tm *TabMenu) handleTabNavigation() bool {
 func (tm *TabMenu) handleItemNavigation() bool {
 	upPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)
 	downPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)
+	pageUpPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp)
+	pageDownPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown)
 
 	if upPressed {
 		tm.navigateToPreviousItem()
 		return true
 	} else if downPressed {
 		tm.navigateToNextItem()
+		return true
+	} else if pageUpPressed {
+		tm.navigatePageUp()
+		return true
+	} else if pageDownPressed {
+		tm.navigatePageDown()
 		return true
 	}
 
@@ -169,10 +182,11 @@ func (tm *TabMenu) navigateToPreviousTab() {
 	}
 
 	if oldIndex != tm.currentTabIndex {
-		// タブ変更時はアイテムインデックスをリセット
+		// タブ変更時はアイテムインデックスとページをリセット
 		newTab := tm.config.Tabs[tm.currentTabIndex]
 		if len(newTab.Items) > 0 {
 			tm.currentItemIndex = 0
+			tm.currentPage = 0
 		} else {
 			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
 		}
@@ -199,10 +213,11 @@ func (tm *TabMenu) navigateToNextTab() {
 	}
 
 	if oldIndex != tm.currentTabIndex {
-		// タブ変更時はアイテムインデックスをリセット
+		// タブ変更時はアイテムインデックスとページをリセット
 		newTab := tm.config.Tabs[tm.currentTabIndex]
 		if len(newTab.Items) > 0 {
 			tm.currentItemIndex = 0
+			tm.currentPage = 0
 		} else {
 			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
 		}
@@ -231,13 +246,33 @@ func (tm *TabMenu) navigateToPreviousItem() {
 
 	oldIndex := tm.currentItemIndex
 
-	// 負のインデックスの場合は最初のアイテムに移動
-	if tm.currentItemIndex < 0 {
-		tm.currentItemIndex = 0
-	} else if tm.currentItemIndex > 0 {
-		tm.currentItemIndex--
-	} else if tm.config.WrapNavigation {
-		tm.currentItemIndex = len(currentTab.Items) - 1
+	// ページネーション対応
+	if tm.config.ItemsPerPage > 0 {
+		pageStart := tm.currentPage * tm.config.ItemsPerPage
+
+		// ページ内での移動
+		if tm.currentItemIndex < 0 {
+			tm.currentItemIndex = pageStart
+		} else if tm.currentItemIndex > pageStart {
+			tm.currentItemIndex--
+		} else if tm.currentPage > 0 {
+			// 前のページへ
+			tm.currentPage--
+			tm.currentItemIndex = (tm.currentPage+1)*tm.config.ItemsPerPage - 1
+		} else if tm.config.WrapNavigation {
+			// 最後のページへ
+			tm.currentPage = (len(currentTab.Items) - 1) / tm.config.ItemsPerPage
+			tm.currentItemIndex = len(currentTab.Items) - 1
+		}
+	} else {
+		// ページネーションなし
+		if tm.currentItemIndex < 0 {
+			tm.currentItemIndex = 0
+		} else if tm.currentItemIndex > 0 {
+			tm.currentItemIndex--
+		} else if tm.config.WrapNavigation {
+			tm.currentItemIndex = len(currentTab.Items) - 1
+		}
 	}
 
 	if oldIndex != tm.currentItemIndex {
@@ -258,17 +293,86 @@ func (tm *TabMenu) navigateToNextItem() {
 
 	oldIndex := tm.currentItemIndex
 
-	// 負のインデックスの場合は最初のアイテムに移動
-	if tm.currentItemIndex < 0 {
-		tm.currentItemIndex = 0
-	} else if tm.currentItemIndex < len(currentTab.Items)-1 {
-		tm.currentItemIndex++
-	} else if tm.config.WrapNavigation {
-		tm.currentItemIndex = 0
+	// ページネーション対応
+	if tm.config.ItemsPerPage > 0 {
+		pageStart := tm.currentPage * tm.config.ItemsPerPage
+		pageEnd := pageStart + tm.config.ItemsPerPage
+		if pageEnd > len(currentTab.Items) {
+			pageEnd = len(currentTab.Items)
+		}
+
+		// ページ内での移動
+		if tm.currentItemIndex < 0 {
+			tm.currentItemIndex = pageStart
+		} else if tm.currentItemIndex < pageEnd-1 {
+			tm.currentItemIndex++
+		} else if pageEnd < len(currentTab.Items) {
+			// 次のページへ
+			tm.currentPage++
+			tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
+		} else if tm.config.WrapNavigation {
+			// 最初のページへ
+			tm.currentPage = 0
+			tm.currentItemIndex = 0
+		}
+	} else {
+		// ページネーションなし
+		if tm.currentItemIndex < 0 {
+			tm.currentItemIndex = 0
+		} else if tm.currentItemIndex < len(currentTab.Items)-1 {
+			tm.currentItemIndex++
+		} else if tm.config.WrapNavigation {
+			tm.currentItemIndex = 0
+		}
 	}
 
 	if oldIndex != tm.currentItemIndex {
 		tm.notifyItemChange(oldIndex, tm.currentItemIndex)
+	}
+}
+
+// navigatePageUp は前のページに移動する
+func (tm *TabMenu) navigatePageUp() {
+	if tm.config.ItemsPerPage <= 0 {
+		return
+	}
+
+	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
+		return
+	}
+
+	currentTab := tm.config.Tabs[tm.currentTabIndex]
+	if len(currentTab.Items) == 0 {
+		return
+	}
+
+	if tm.currentPage > 0 {
+		tm.currentPage--
+		tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
+		tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex)
+	}
+}
+
+// navigatePageDown は次のページに移動する
+func (tm *TabMenu) navigatePageDown() {
+	if tm.config.ItemsPerPage <= 0 {
+		return
+	}
+
+	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
+		return
+	}
+
+	currentTab := tm.config.Tabs[tm.currentTabIndex]
+	if len(currentTab.Items) == 0 {
+		return
+	}
+
+	totalPages := (len(currentTab.Items) + tm.config.ItemsPerPage - 1) / tm.config.ItemsPerPage
+	if tm.currentPage < totalPages-1 {
+		tm.currentPage++
+		tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
+		tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex)
 	}
 }
 
@@ -339,10 +443,11 @@ func (tm *TabMenu) SetTabIndex(index int) {
 		oldIndex := tm.currentTabIndex
 		tm.currentTabIndex = index
 
-		// タブ変更時はアイテムインデックスをリセット
+		// タブ変更時はアイテムインデックスとページをリセット
 		newTab := tm.config.Tabs[tm.currentTabIndex]
 		if len(newTab.Items) > 0 {
 			tm.currentItemIndex = 0
+			tm.currentPage = 0
 		} else {
 			tm.currentItemIndex = -1 // 空のタブでは無効なインデックス
 		}
@@ -399,4 +504,58 @@ func (tm *TabMenu) UpdateTabs(tabs []TabItem) {
 		// UpdateTabsは内部状態の更新のみを行い、コールバックは呼ばない
 		// コールバックは呼び出し元で必要に応じて実行される
 	}
+}
+
+// GetVisibleItems は現在のページで表示される項目とその元のインデックスを返す
+func (tm *TabMenu) GetVisibleItems() ([]menu.Item, []int) {
+	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
+		return []menu.Item{}, []int{}
+	}
+
+	currentTab := tm.config.Tabs[tm.currentTabIndex]
+
+	if tm.config.ItemsPerPage <= 0 {
+		indices := make([]int, len(currentTab.Items))
+		for i := range indices {
+			indices[i] = i
+		}
+		return currentTab.Items, indices
+	}
+
+	start := tm.currentPage * tm.config.ItemsPerPage
+	end := start + tm.config.ItemsPerPage
+	if end > len(currentTab.Items) {
+		end = len(currentTab.Items)
+	}
+
+	if start >= len(currentTab.Items) {
+		return []menu.Item{}, []int{}
+	}
+
+	visibleItems := currentTab.Items[start:end]
+	indices := make([]int, len(visibleItems))
+	for i := range indices {
+		indices[i] = start + i
+	}
+
+	return visibleItems, indices
+}
+
+// GetCurrentPage は現在のページ番号を返す(表示用なので1ベース)
+func (tm *TabMenu) GetCurrentPage() int {
+	return tm.currentPage + 1
+}
+
+// GetTotalPages は総ページ数を返す
+func (tm *TabMenu) GetTotalPages() int {
+	if tm.config.ItemsPerPage <= 0 {
+		return 1
+	}
+
+	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
+		return 1
+	}
+
+	currentTab := tm.config.Tabs[tm.currentTabIndex]
+	return (len(currentTab.Items) + tm.config.ItemsPerPage - 1) / tm.config.ItemsPerPage
 }

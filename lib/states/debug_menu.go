@@ -97,9 +97,9 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 	config := menu.Config{
 		Items:             items,
 		InitialIndex:      0,
-		WrapNavigation:    false, // スクロール時は循環しない方が自然
+		WrapNavigation:    true,
 		Orientation:       menu.Vertical,
-		ItemsPerPage:      5,
+		ItemsPerPage:      10,
 		ShowPageIndicator: true,
 	}
 
