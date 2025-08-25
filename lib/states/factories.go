@@ -2,6 +2,7 @@ package states
 
 import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
+	"github.com/kijimaD/ruins/lib/mapbuilder"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -64,14 +65,21 @@ func NewDungeonMenuState() es.State {
 // NewDungeonStateWithDepth は指定されたDepthでDungeonStateインスタンスを作成するファクトリー関数
 func NewDungeonStateWithDepth(depth int) es.StateFactory {
 	return func() es.State {
-		return &DungeonState{Depth: depth}
+		return &DungeonState{Depth: depth, BuilderType: mapbuilder.BuilderTypeRandom}
 	}
 }
 
 // NewDungeonStateWithSeed は指定されたDepthとSeedでDungeonStateインスタンスを作成するファクトリー関数
 func NewDungeonStateWithSeed(depth int, seed uint64) es.StateFactory {
 	return func() es.State {
-		return &DungeonState{Depth: depth, Seed: seed}
+		return &DungeonState{Depth: depth, Seed: seed, BuilderType: mapbuilder.BuilderTypeRandom}
+	}
+}
+
+// NewDungeonStateWithBuilder は指定されたBuilderTypeでDungeonStateインスタンスを作成するファクトリー関数
+func NewDungeonStateWithBuilder(depth int, builderType mapbuilder.BuilderType) es.StateFactory {
+	return func() es.State {
+		return &DungeonState{Depth: depth, BuilderType: builderType}
 	}
 }
 
