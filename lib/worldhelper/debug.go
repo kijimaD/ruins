@@ -8,6 +8,7 @@ import (
 
 // InitDebugData はデバッグ用の初期データを設定する
 // パーティメンバーが存在しない場合のみ実行される
+// テスト、VRT、デバッグで使用される共通のエンティティセットを生成する
 func InitDebugData(world w.World) {
 	// 既にパーティメンバーが存在するかチェック
 	memberCount := 0
@@ -23,16 +24,30 @@ func InitDebugData(world w.World) {
 		return
 	}
 
-	// デバッグ用アイテム生成
+	// 基本アイテムの生成
 	card1 := SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 	card2 := SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
 	card3 := SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
+	armor := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
+	SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
+	SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
+	SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
+	SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
+	SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+	SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+	SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+	SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+
+	// 大量アイテム生成（デバッグ用）
 	for i := 0; i < 10; i++ {
 		SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 		SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
 		SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
 	}
-	armor := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
 	for i := 0; i < 10; i++ {
 		SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
 		SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
@@ -47,7 +62,7 @@ func InitDebugData(world w.World) {
 		SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 	}
 
-	// デバッグ用メンバー生成
+	// メンバー生成
 	ishihara := SpawnMember(world, "イシハラ", true)
 	shirase := SpawnMember(world, "シラセ", true)
 	SpawnMember(world, "タチバナ", true)
@@ -55,7 +70,7 @@ func InitDebugData(world w.World) {
 	SpawnMember(world, "カイン", false)
 	SpawnMember(world, "メイ", false)
 
-	// デバッグ用マテリアルとレシピ
+	// マテリアルとレシピ
 	SpawnAllMaterials(world)
 	PlusAmount("鉄", 40, world)
 	PlusAmount("鉄くず", 4, world)
@@ -64,7 +79,7 @@ func InitDebugData(world w.World) {
 	SpawnAllRecipes(world)
 	SpawnAllCards(world)
 
-	// デバッグ用装備
+	// 装備
 	Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
 	Equip(world, card2, ishihara, gc.EquipmentSlotNumber(1))
 	Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
