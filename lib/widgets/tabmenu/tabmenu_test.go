@@ -8,28 +8,8 @@ import (
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
-func TestTabMenuNavigation(t *testing.T) {
+func TestTabSwitching(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name string
-		test func(t *testing.T)
-	}{
-		{"タブ切り替え（Tab/Shift+Tab）", testTabSwitching},
-		{"アイテム選択（上下矢印キー）", testItemNavigation},
-		{"循環ナビゲーション", testWrapNavigation},
-		{"選択機能", testSelection},
-		{"キャンセル機能", testCancel},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.test(t)
-		})
-	}
-}
-
-func testTabSwitching(t *testing.T) {
 	// テスト用のタブとアイテムを作成
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
@@ -82,7 +62,8 @@ func testTabSwitching(t *testing.T) {
 	}
 }
 
-func testTabSwitchingWithTabKey(t *testing.T) {
+func TestTabSwitchingWithTabKey(t *testing.T) {
+	t.Parallel()
 	// テスト用のタブとアイテムを作成
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
@@ -158,7 +139,8 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 }
 
-func testItemNavigation(t *testing.T) {
+func TestItemNavigation(t *testing.T) {
+	t.Parallel()
 	// 複数アイテムを持つタブを作成
 	tabs := []TabItem{
 		{
@@ -216,7 +198,8 @@ func testItemNavigation(t *testing.T) {
 	}
 }
 
-func testWrapNavigation(t *testing.T) {
+func TestWrapNavigation(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
 		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
@@ -253,7 +236,8 @@ func testWrapNavigation(t *testing.T) {
 	}
 }
 
-func testSelection(t *testing.T) {
+func TestSelection(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{
 			ID:    "tab1",
@@ -289,7 +273,8 @@ func testSelection(t *testing.T) {
 	}
 }
 
-func testCancel(t *testing.T) {
+func TestCancel(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
 	}
