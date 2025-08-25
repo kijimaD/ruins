@@ -617,7 +617,7 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 	// ページインジケーターを表示
 	pageText := st.tabMenu.GetPageIndicatorText()
 	if pageText != "" {
-		pageIndicator := eui.NewDescriptionText(pageText, world)
+		pageIndicator := eui.NewPageIndicator(pageText, world)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 

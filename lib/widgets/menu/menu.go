@@ -478,14 +478,18 @@ func (m *Menu) GetPageIndicatorText() string {
 	// 前のページがある場合は上矢印を追加
 	if m.HasPreviousPage() {
 		arrows += " ↑"
+	} else {
+		arrows += " 　"
 	}
 
 	// 次のページがある場合は下矢印を追加
 	if m.HasNextPage() {
 		arrows += " ↓"
+	} else {
+		arrows += " 　"
 	}
 
-	return fmt.Sprintf("page %d/%d%s", m.GetCurrentPage(), m.GetTotalPages(), arrows)
+	return fmt.Sprintf("%d/%d%s", m.GetCurrentPage(), m.GetTotalPages(), arrows)
 }
 
 // HasPreviousPage は前のページがあるかを返す
