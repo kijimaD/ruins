@@ -152,7 +152,7 @@ func (st *PartySetupState) initUIWithFocus(world w.World, focusIndex int) *ebite
 		InitialIndex:      initialIndex,
 		WrapNavigation:    true,
 		Orientation:       menu.Vertical,
-		ItemsPerPage:      20,
+		ItemsPerPage:      18,
 		ShowPageIndicator: true,
 	}
 
