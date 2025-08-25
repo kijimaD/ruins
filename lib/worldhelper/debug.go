@@ -8,6 +8,7 @@ import (
 
 // InitDebugData はデバッグ用の初期データを設定する
 // パーティメンバーが存在しない場合のみ実行される
+// テスト、VRT、デバッグで使用される共通のエンティティセットを生成する
 func InitDebugData(world w.World) {
 	// 既にパーティメンバーが存在するかチェック
 	memberCount := 0
@@ -23,17 +24,15 @@ func InitDebugData(world w.World) {
 		return
 	}
 
-	// デバッグ用アイテム生成
-	SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+	// 基本アイテムの生成
 	card1 := SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 	card2 := SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
 	card3 := SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
-	SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-	SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
 	armor := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
 	SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
 	SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
 	SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
+	SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
 	SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
 	SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
 	SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
@@ -43,26 +42,78 @@ func InitDebugData(world w.World) {
 	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 	SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 
-	// デバッグ用メンバー生成
-	ishihara := SpawnMember(world, "イシハラ", true)
-	shirase := SpawnMember(world, "シラセ", true)
-	SpawnMember(world, "タチバナ", true)
+	// 大量アイテム生成（デバッグ用）
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+		SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+		SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
+	}
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
+		SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
+		SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
+	}
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
+	}
+	for i := 0; i < 10; i++ {
+		SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+		SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
+		SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+	}
+
+	// メンバー生成
+	celestine := SpawnMember(world, "セレスティン", true)
+	cordelia := SpawnMember(world, "コルデリア", true)
+	SpawnMember(world, "バルサザール", true)
 	SpawnMember(world, "ハンス", false)
 	SpawnMember(world, "カイン", false)
 	SpawnMember(world, "メイ", false)
+	SpawnMember(world, "アーサス", false)
+	SpawnMember(world, "エヴァンジェリン", false)
+	SpawnMember(world, "サイラス", false)
+	SpawnMember(world, "ベアトリス", false)
+	SpawnMember(world, "ガーディアン", false)
+	SpawnMember(world, "セラフィナ", false)
+	SpawnMember(world, "モルガン", false)
+	SpawnMember(world, "メリディア", false)
+	SpawnMember(world, "カスパー", false)
+	SpawnMember(world, "レティシア", false)
 
-	// デバッグ用マテリアルとレシピ
+	// マテリアルとレシピ
 	SpawnAllMaterials(world)
 	PlusAmount("鉄", 40, world)
 	PlusAmount("鉄くず", 4, world)
 	PlusAmount("緑ハーブ", 2, world)
+	PlusAmount("黄ハーブ", 1, world)
+	PlusAmount("木の棒", 1, world)
 	PlusAmount("フェライトコア", 30, world)
+	PlusAmount("銀の欠片", 1, world)
+	PlusAmount("古い歯車", 1, world)
+	PlusAmount("水晶の粉", 1, world)
+	PlusAmount("黒曜石", 1, world)
+	PlusAmount("血赤石", 1, world)
+	PlusAmount("月光草", 1, world)
+	PlusAmount("古代の骨", 1, world)
+	PlusAmount("星鉄", 1, world)
+	PlusAmount("霧の結晶", 1, world)
+	PlusAmount("古布の切れ端", 1, world)
+	PlusAmount("琥珀", 1, world)
+	PlusAmount("深海の塩", 1, world)
+	PlusAmount("雷光石", 1, world)
+	PlusAmount("灰", 1, world)
+	PlusAmount("蒼鉛", 1, world)
+	PlusAmount("獣の毛皮", 1, world)
+	PlusAmount("朽ちた羊皮紙", 1, world)
+	PlusAmount("紫水晶", 1, world)
+	PlusAmount("錆びた鎖", 1, world)
+	PlusAmount("聖油", 1, world)
 	SpawnAllRecipes(world)
 	SpawnAllCards(world)
 
-	// デバッグ用装備
-	Equip(world, card1, ishihara, gc.EquipmentSlotNumber(0))
-	Equip(world, card2, ishihara, gc.EquipmentSlotNumber(1))
-	Equip(world, card3, shirase, gc.EquipmentSlotNumber(0))
-	Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
+	// 装備
+	Equip(world, card1, celestine, gc.EquipmentSlotNumber(0))
+	Equip(world, card2, celestine, gc.EquipmentSlotNumber(1))
+	Equip(world, card3, cordelia, gc.EquipmentSlotNumber(0))
+	Equip(world, armor, celestine, gc.EquipmentSlotNumber(0))
 }

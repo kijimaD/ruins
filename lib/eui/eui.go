@@ -198,6 +198,45 @@ func NewDescriptionText(text string, world w.World) *widget.Text {
 	)
 }
 
+// NewPageIndicator は右寄せのページインジケーターを作成する
+func NewPageIndicator(text string, world w.World) *widget.Container {
+	res := world.Resources.UIResources
+
+	// 透明な背景のコンテナを作成（NewListItemTextと同じパターン）
+	backgroundColor := image.NewNineSliceColor(styles.TransparentColor)
+
+	container := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(backgroundColor),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true, // 横幅を親コンテナに合わせる
+			}),
+			widget.WidgetOpts.MinSize(120, 0), // NewListItemTextと同じ最小横幅
+		),
+	)
+
+	// 右寄せのテキスト
+	textWidget := widget.NewText(
+		widget.TextOpts.Text(text, res.Text.SmallFace, styles.ForegroundColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionEnd, // 右寄せ
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				Padding: widget.Insets{
+					Top:    2,
+					Bottom: 2,
+					Left:   8,
+					Right:  8,
+				},
+			}),
+		),
+	)
+
+	container.AddChild(textWidget)
+	return container
+}
+
 // NewBodyText は本文用テキストを作成する
 func NewBodyText(title string, _ color.RGBA, world w.World) *widget.Text {
 	res := world.Resources.UIResources

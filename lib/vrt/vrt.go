@@ -90,45 +90,18 @@ func RunTestGame(state es.State, outputPath string) {
 		panic(fmt.Sprintf("InitWorld failed: %v", err))
 	}
 
-	worldhelper.SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "レイガン", gc.ItemLocationInBackpack)
-	armor := worldhelper.SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "ルビー原石", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "回復スプレー", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-	ishihara := worldhelper.SpawnMember(world, "イシハラ", true)
-	worldhelper.SpawnMember(world, "シラセ", true)
-	worldhelper.SpawnMember(world, "タチバナ", true)
-	worldhelper.SpawnMember(world, "ハンス", false)
-	worldhelper.SpawnMember(world, "カイン", false)
-	worldhelper.SpawnMember(world, "メイ", false)
-	worldhelper.SpawnAllMaterials(world)
-	worldhelper.PlusAmount("鉄", 40, world)
-	worldhelper.PlusAmount("鉄くず", 4, world)
-	worldhelper.PlusAmount("緑ハーブ", 2, world)
-	worldhelper.PlusAmount("フェライトコア", 30, world)
-	worldhelper.SpawnAllRecipes(world)
-	worldhelper.Equip(world, armor, ishihara, gc.EquipmentSlotNumber(0))
+	// デバッグデータを初期化
+	worldhelper.InitDebugData(world)
 
 	// 装備変更後にステータスを更新
 	if changed := gs.EquipmentChangedSystem(world); !changed {
-		// 装備変更が期待されていた場合はログ出力
 		log.Println("Equipment change was not detected")
 	}
 
 	// 完全回復
 	processor := effects.NewProcessor()
-	healingEffect := effects.Healing{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
-	staminaEffect := effects.RestoreStamina{Amount: gc.RatioAmount{Ratio: float64(1.0)}}
+	healingEffect := effects.Healing{Amount: gc.RatioAmount{Ratio: 1.0}}
+	staminaEffect := effects.RestoreStamina{Amount: gc.RatioAmount{Ratio: 1.0}}
 
 	partySelector := effects.TargetParty{}
 	if err := processor.AddTargetedEffect(healingEffect, nil, partySelector, world); err != nil {

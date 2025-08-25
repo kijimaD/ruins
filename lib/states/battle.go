@@ -682,10 +682,12 @@ func (st *BattleState) createAndShowMenu(items []menu.Item, callbacks menu.Callb
 	st.selectContainer.RemoveChildren()
 
 	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
+		Items:             items,
+		InitialIndex:      0,
+		WrapNavigation:    true,
+		Orientation:       menu.Vertical,
+		ItemsPerPage:      4,
+		ShowPageIndicator: true,
 	}
 
 	st.currentMenu = menu.NewMenu(config, callbacks)

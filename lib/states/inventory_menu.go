@@ -114,10 +114,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	// TabMenuの設定
 	tabs := st.createTabs(world)
 	config := tabmenu.Config{
-		Tabs:             tabs,
-		InitialTabIndex:  0,
-		InitialItemIndex: 0,
-		WrapNavigation:   true,
+		Tabs:              tabs,
+		InitialTabIndex:   0,
+		InitialItemIndex:  0,
+		WrapNavigation:    true,
+		ItemsPerPage:      20,
+		ShowPageIndicator: true,
 	}
 
 	callbacks := tabmenu.Callbacks{
@@ -612,9 +614,20 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 	tabNameText := eui.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
 	st.tabDisplayContainer.AddChild(tabNameText)
 
-	// アイテム一覧を表示
-	for i, item := range currentTab.Items {
-		isSelected := i == currentItemIndex && currentItemIndex >= 0
+	// ページインジケーターを表示
+	pageText := st.tabMenu.GetPageIndicatorText()
+	if pageText != "" {
+		pageIndicator := eui.NewPageIndicator(pageText, world)
+		st.tabDisplayContainer.AddChild(pageIndicator)
+	}
+
+	// 現在のページで表示されるアイテムとインデックスを取得
+	visibleItems, indices := st.tabMenu.GetVisibleItems()
+
+	// アイテム一覧を表示（ページ内のアイテムのみ）
+	for i, item := range visibleItems {
+		actualIndex := indices[i]
+		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
 			itemWidget := eui.NewListItemText(item.Label, styles.TextColor, true, world)

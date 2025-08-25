@@ -55,8 +55,9 @@ func runScreenshot(ctx *cli.Context) error {
 	case gs.PartySetupState{}.String():
 		vrt.RunTestGame(&gs.PartySetupState{}, mode)
 	case gs.DungeonState{}.String():
-		// いい感じのseed値
-		vrt.RunTestGame(&gs.DungeonState{Depth: 1, Seed: 4009}, mode)
+		// いい感じのseed値。画面内に敵がいると動いて差分が出てしまうので、いないものを選んだ
+		const seedVal = 4012
+		vrt.RunTestGame(&gs.DungeonState{Depth: 1, Seed: seedVal}, mode)
 	case gs.GameOverState{}.String():
 		vrt.RunTestGame(&gs.GameOverState{}, mode)
 	default:

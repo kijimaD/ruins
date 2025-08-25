@@ -311,13 +311,17 @@ func NewBigRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 	return chain
 }
 
+// BuilderType はマップ生成に使用するビルダーのタイプを表す
+type BuilderType int
+
 // ビルダータイプ定数
 const (
-	BuilderTypeSmallRoom = iota
-	BuilderTypeBigRoom
-	BuilderTypeCave
-	BuilderTypeRuins
-	BuilderTypeForest
+	BuilderTypeRandom    BuilderType = -1   // ランダム選択。ランダム選択で再度ランダムが出るのを防ぐために-1にしている
+	BuilderTypeSmallRoom BuilderType = iota // 小部屋
+	BuilderTypeBigRoom                      // 大部屋
+	BuilderTypeCave                         // 洞窟
+	BuilderTypeRuins                        // 遺跡
+	BuilderTypeForest                       // 森
 )
 
 // NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
@@ -329,7 +333,7 @@ func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
 
 	// シード値からランダムソースを作成（ビルダー選択用）
 	rs := NewRandomSource(seed)
-	builderType := rs.Intn(5)
+	builderType := BuilderType(rs.Intn(5))
 
 	switch builderType {
 	case BuilderTypeSmallRoom:

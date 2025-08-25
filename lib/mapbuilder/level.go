@@ -13,7 +13,7 @@ import (
 
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
-func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64) resources.Level {
+func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) resources.Level {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	var chain *BuilderChain
@@ -24,7 +24,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64) resources
 	for attempt := 0; attempt < 10 && !validMap; attempt++ {
 		// シードを少しずつ変えて再生成
 		currentSeed := seed + uint64(attempt)
-		chain = NewRandomBuilder(width, height, currentSeed)
+		chain = createBuilderChain(builderType, width, height, currentSeed)
 		chain.Build()
 
 		// プレイヤーのスタート位置を見つける（最初にスポーン可能な位置）
@@ -223,4 +223,25 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *r
 	}
 
 	return true
+}
+
+// createBuilderChain は指定されたビルダータイプに応じてビルダーチェーンを作成する
+func createBuilderChain(builderType BuilderType, width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+	switch builderType {
+	case BuilderTypeSmallRoom:
+		return NewSmallRoomBuilder(width, height, seed)
+	case BuilderTypeBigRoom:
+		return NewBigRoomBuilder(width, height, seed)
+	case BuilderTypeCave:
+		return NewCaveBuilder(width, height, seed)
+	case BuilderTypeForest:
+		return NewForestBuilder(width, height, seed)
+	case BuilderTypeRuins:
+		return NewRuinsBuilder(width, height, seed)
+	case BuilderTypeRandom:
+		fallthrough
+	default:
+		// デフォルト（BuilderTypeRandomを含む）はランダムビルダー
+		return NewRandomBuilder(width, height, seed)
+	}
 }

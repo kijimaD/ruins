@@ -106,10 +106,12 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 
 	// メニュー設定
 	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
+		Items:             items,
+		InitialIndex:      0,
+		WrapNavigation:    true,
+		Orientation:       menu.Vertical,
+		ItemsPerPage:      20,
+		ShowPageIndicator: true,
 	}
 
 	// コールバック設定
