@@ -98,8 +98,6 @@ func (tm *TabMenu) Update() bool {
 
 // handleTabNavigation はタブ切り替えを処理する
 func (tm *TabMenu) handleTabNavigation() bool {
-	leftPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowLeft)
-	rightPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowRight)
 	tabPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyTab)
 
 	// Shift+Tabの判定
@@ -112,10 +110,10 @@ func (tm *TabMenu) handleTabNavigation() bool {
 		}
 	}
 
-	if leftPressed || shiftTabPressed {
+	if shiftTabPressed {
 		tm.navigateToPreviousTab()
 		return true
-	} else if rightPressed || tabPressed {
+	} else if tabPressed {
 		tm.navigateToNextTab()
 		return true
 	}
@@ -573,5 +571,37 @@ func (tm *TabMenu) GetPageIndicatorText() string {
 		return ""
 	}
 
-	return fmt.Sprintf("ページ %d/%d", tm.GetCurrentPage(), tm.GetTotalPages())
+	arrows := ""
+
+	// 前のページがある場合は上矢印を追加
+	if tm.HasPreviousPage() {
+		arrows += " ↑"
+	}
+
+	// 次のページがある場合は下矢印を追加
+	if tm.HasNextPage() {
+		arrows += " ↓"
+	}
+
+	return fmt.Sprintf("page %d/%d%s", tm.GetCurrentPage(), tm.GetTotalPages(), arrows)
+}
+
+// HasPreviousPage は前のページがあるかを返す
+func (tm *TabMenu) HasPreviousPage() bool {
+	return tm.currentPage > 0
+}
+
+// HasNextPage は次のページがあるかを返す
+func (tm *TabMenu) HasNextPage() bool {
+	if tm.config.ItemsPerPage <= 0 {
+		return false
+	}
+
+	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
+		return false
+	}
+
+	currentTab := tm.config.Tabs[tm.currentTabIndex]
+	nextPageStart := (tm.currentPage + 1) * tm.config.ItemsPerPage
+	return nextPageStart < len(currentTab.Items)
 }

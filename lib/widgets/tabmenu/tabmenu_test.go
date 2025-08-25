@@ -14,8 +14,7 @@ func TestTabMenuNavigation(t *testing.T) {
 		name string
 		test func(t *testing.T)
 	}{
-		{"タブ切り替え（左右矢印キー）", testTabSwitching},
-		{"タブ切り替え（Tab/Shift+Tab）", testTabSwitchingWithTabKey},
+		{"タブ切り替え（Tab/Shift+Tab）", testTabSwitching},
 		{"アイテム選択（上下矢印キー）", testItemNavigation},
 		{"循環ナビゲーション", testWrapNavigation},
 		{"選択機能", testSelection},
@@ -60,25 +59,26 @@ func testTabSwitching(t *testing.T) {
 		t.Errorf("初期タブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 
-	// 右矢印でタブ2に移動
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
+	// Tabキーでタブ2に移動
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
-		t.Errorf("右矢印後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Tab後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 	if tabChangeCount != 1 {
 		t.Errorf("タブ変更コールバック回数が不正: 期待 1, 実際 %d", tabChangeCount)
 	}
 
-	// 左矢印でタブ1に戻る
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
+	// Shift+Tabでタブ1に戻る
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
+	mockInput.SetKeyPressed(ebiten.KeyShift, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
-		t.Errorf("左矢印後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Shift+Tab後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 }
 
@@ -232,22 +232,24 @@ func testWrapNavigation(t *testing.T) {
 	mockInput := input.NewMockKeyboardInput()
 	tabMenu := NewTabMenu(config, Callbacks{}, mockInput)
 
-	// 最初のタブで左矢印 → 最後のタブに循環
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
+	// 最初のタブでShift+Tab → 最後のタブに循環
+	mockInput.SetKeyPressed(ebiten.KeyShift, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
-		t.Errorf("循環後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Shift+Tab循環後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 
-	// 最後のタブで右矢印 → 最初のタブに循環
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
+	// 最後のタブでTab → 最初のタブに循環
+	mockInput.SetKeyPressed(ebiten.KeyShift, false) // Shiftキーを離す
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
-		t.Errorf("循環後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Tab循環後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 }
 

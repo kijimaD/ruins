@@ -473,5 +473,31 @@ func (m *Menu) GetPageIndicatorText() string {
 		return ""
 	}
 
-	return fmt.Sprintf("ページ %d/%d", m.GetCurrentPage(), m.GetTotalPages())
+	arrows := ""
+
+	// 前のページがある場合は上矢印を追加
+	if m.HasPreviousPage() {
+		arrows += " ↑"
+	}
+
+	// 次のページがある場合は下矢印を追加
+	if m.HasNextPage() {
+		arrows += " ↓"
+	}
+
+	return fmt.Sprintf("page %d/%d%s", m.GetCurrentPage(), m.GetTotalPages(), arrows)
+}
+
+// HasPreviousPage は前のページがあるかを返す
+func (m *Menu) HasPreviousPage() bool {
+	return m.currentPage > 0
+}
+
+// HasNextPage は次のページがあるかを返す
+func (m *Menu) HasNextPage() bool {
+	if m.config.ItemsPerPage <= 0 {
+		return false
+	}
+	nextPageStart := (m.currentPage + 1) * m.config.ItemsPerPage
+	return nextPageStart < len(m.config.Items)
 }
