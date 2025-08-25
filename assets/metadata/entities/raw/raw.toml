@@ -40,6 +40,144 @@ UsableScene = "BATTLE"
 TargetGroup = "ENEMY"
 TargetNum = "ALL"
 
+[[item]]
+Name = "上級回復薬"
+Description = "体力を完全回復する高級な薬"
+
+[item.consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum = "SINGLE"
+
+[item.provides_healing]
+ValueType = "PERCENTAGE"
+Ratio = 1.0
+
+[[item]]
+Name = "古代の秘薬"
+Description = "失われた錬金術で作られた万能薬。全員を完全回復する"
+
+[item.consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum = "ALL"
+
+[item.provides_healing]
+ValueType = "PERCENTAGE"
+Ratio = 1.0
+
+[[item]]
+Name = "毒消し"
+Description = "毒や状態異常を治す薬草の煎じ薬"
+
+[item.consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum = "SINGLE"
+
+[[item]]
+Name = "爆裂弾"
+Description = "強力な爆発で敵全体に大ダメージを与える"
+InflictsDamage = 50
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetGroup = "ENEMY"
+TargetNum = "ALL"
+
+[[item]]
+Name = "閃光弾"
+Description = "強烈な光で敵の動きを封じる"
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetGroup = "ENEMY"
+TargetNum = "ALL"
+
+[[item]]
+Name = "煙幕弾"
+Description = "煙で味方の回避率を上げる"
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetGroup = "ALLY"
+TargetNum = "ALL"
+
+[[item]]
+Name = "霊薬"
+Description = "精神力を回復する神秘的な薬"
+
+[item.consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum = "SINGLE"
+
+[[item]]
+Name = "狂戦士の薬"
+Description = "攻撃力を一時的に大幅に上昇させる"
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetGroup = "ALLY"
+TargetNum = "SINGLE"
+
+[[item]]
+Name = "守護の香"
+Description = "防御力を一時的に上昇させる神聖な香"
+
+[item.consumable]
+UsableScene = "BATTLE"
+TargetGroup = "ALLY"
+TargetNum = "ALL"
+
+[[item]]
+Name = "星の欠片"
+Description = "夜空から落ちた神秘的な鉱石。非常に高価"
+
+[[item]]
+Name = "古代金貨"
+Description = "失われた文明の通貨。コレクター垂涎の品"
+
+[[item]]
+Name = "血染めのルビー"
+Description = "暗い歴史を持つ美しい宝石。高額で取引される"
+
+[[item]]
+Name = "教会の聖杯"
+Description = "聖別された銀製の杯。古美術品として価値が高い"
+
+[[item]]
+Name = "竜の鱗"
+Description = "伝説の竜から剥がれたとされる鱗。幻の素材"
+
+[[item]]
+Name = "王家の印章"
+Description = "滅んだ王朝の公式印章。歴史的価値は計り知れない"
+
+[[item]]
+Name = "黒真珠"
+Description = "深海から取れる漆黒の真珠。極めて稀少"
+
+[[item]]
+Name = "魔導書の断片"
+Description = "禁断の魔術書の一部。研究者が高値で買い取る"
+
+[[item]]
+Name = "天使の羽根"
+Description = "純白に輝く美しい羽根。神聖な力を宿すとされる"
+
+[[item]]
+Name = "古代の壺"
+Description = "精巧な装飾が施された陶製の壺。骨董品として価値が高い"
+
+[[item]]
+Name = "狩人の記章"
+Description = "名高い狩人が身に着けていた誇りの証。記念品として珍重される"
+
+[[item]]
+Name = "月の石"
+Description = "満月の夜にのみ光る不思議な石。占い師に重宝される"
+
 # card ================
 
 [[item]]
@@ -218,6 +356,307 @@ AttackCount = 1
 Element = "NONE"
 AttackCategory = "CANON"
 
+[[item]]
+Name = "聖なる刃"
+Description = "聖別された銀の短剣"
+
+[item.card]
+Cost = 3
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 95
+Damage = 12
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "SWORD"
+
+[[item]]
+Name = "鉄槌の一撃"
+Description = "重い鉄槌による強打"
+
+[item.card]
+Cost = 4
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 85
+Damage = 18
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "FIST"
+
+[[item]]
+Name = "血の呪文"
+Description = "古い血の魔術を込めた攻撃"
+
+[item.card]
+Cost = 5
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 75
+Damage = 22
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "月光の矢"
+Description = "月光に祝福された矢"
+
+[item.card]
+Cost = 2
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 90
+Damage = 10
+AttackCount = 2
+Element = "NONE"
+AttackCategory = "HANDGUN"
+
+[[item]]
+Name = "狩人の銃弾"
+Description = "獣を狩るための特製弾丸"
+
+[item.card]
+Cost = 3
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 88
+Damage = 16
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "HANDGUN"
+
+[[item]]
+Name = "古代の雷撃"
+Description = "古代文明の雷の力を宿す"
+
+[item.card]
+Cost = 6
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 70
+Damage = 28
+AttackCount = 1
+Element = "THUNDER"
+AttackCategory = "RIFLE"
+
+[[item]]
+Name = "氷の槍"
+Description = "氷の結晶で作られた槍"
+
+[item.card]
+Cost = 4
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 80
+Damage = 15
+AttackCount = 2
+Element = "CHILL"
+AttackCategory = "SPEAR"
+
+[[item]]
+Name = "炎の拳"
+Description = "炎を纏った拳による連続攻撃"
+
+[item.card]
+Cost = 5
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 85
+Damage = 8
+AttackCount = 3
+Element = "FIRE"
+AttackCategory = "FIST"
+
+[[item]]
+Name = "星の破片"
+Description = "流れ星の欠片を投射する"
+
+[item.card]
+Cost = 7
+TargetGroup = "ENEMY"
+TargetNum = "ALL"
+
+[item.attack]
+Accuracy = 65
+Damage = 12
+AttackCount = 1
+Element = "PHOTON"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "影の短剣"
+Description = "影に隠れながら放つ暗殺技"
+
+[item.card]
+Cost = 4
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 95
+Damage = 20
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "SWORD"
+
+[[item]]
+Name = "聖水の祝福"
+Description = "聖なる水による浄化攻撃"
+
+[item.card]
+Cost = 3
+TargetGroup = "ENEMY"
+TargetNum = "ALL"
+
+[item.attack]
+Accuracy = 75
+Damage = 8
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "獣の爪"
+Description = "野生の獣の爪による引き裂き攻撃"
+
+[item.card]
+Cost = 2
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 90
+Damage = 6
+AttackCount = 4
+Element = "NONE"
+AttackCategory = "FIST"
+
+[[item]]
+Name = "鋼鉄の盾撃"
+Description = "重い盾による渾身の一撃"
+
+[item.card]
+Cost = 5
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 80
+Damage = 24
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "FIST"
+
+[[item]]
+Name = "毒の霧"
+Description = "毒性の霧を散布する"
+
+[item.card]
+Cost = 6
+TargetGroup = "ENEMY"
+TargetNum = "ALL"
+
+[item.attack]
+Accuracy = 70
+Damage = 10
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "光の剣"
+Description = "光を纏った剣による神聖な攻撃"
+
+[item.card]
+Cost = 8
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 85
+Damage = 30
+AttackCount = 1
+Element = "PHOTON"
+AttackCategory = "SWORD"
+
+[[item]]
+Name = "連射砲"
+Description = "小型砲弾の連続射撃"
+
+[item.card]
+Cost = 9
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 75
+Damage = 12
+AttackCount = 3
+Element = "NONE"
+AttackCategory = "CANON"
+
+[[item]]
+Name = "暗黒の矢"
+Description = "闇の力を込めた矢"
+
+[item.card]
+Cost = 4
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 85
+Damage = 18
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "HANDGUN"
+
+[[item]]
+Name = "狂戦士の斧"
+Description = "狂気に駆られた戦士の斧撃"
+
+[item.card]
+Cost = 6
+TargetGroup = "ENEMY"
+TargetNum = "SINGLE"
+
+[item.attack]
+Accuracy = 70
+Damage = 32
+AttackCount = 1
+Element = "NONE"
+AttackCategory = "SWORD"
+
+[[item]]
+Name = "治癒の光"
+Description = "回復の光を放つ"
+
+[item.card]
+Cost = 4
+TargetGroup = "ALLY"
+TargetNum = "SINGLE"
+
+[item.provides_healing]
+ValueType = "PERCENTAGE"
+Ratio = 0.7
+
 # wearable ================
 
 [[item]]
@@ -268,6 +707,236 @@ Strength = 1
 Sensation = 1
 Dexterity = 1
 Agility = 1
+
+[[item]]
+Name = "狩人の帽子"
+Description = "獣狩りの伝統的な帽子"
+
+[item.wearable]
+Defense = 3
+EquipmentCategory = "HEAD"
+
+[item.equip_bonus]
+Sensation = 3
+Agility = 1
+
+[[item]]
+Name = "古い騎士兜"
+Description = "錆びついた騎士の兜"
+
+[item.wearable]
+Defense = 6
+EquipmentCategory = "HEAD"
+
+[item.equip_bonus]
+Vitality = 2
+Agility = -3
+
+[[item]]
+Name = "聖職者の冠"
+Description = "聖なる力を宿す冠"
+
+[item.wearable]
+Defense = 2
+EquipmentCategory = "HEAD"
+
+[item.equip_bonus]
+Sensation = 5
+Vitality = 1
+
+[[item]]
+Name = "影の頭巾"
+Description = "暗殺者が愛用する頭巾"
+
+[item.wearable]
+Defense = 1
+EquipmentCategory = "HEAD"
+
+[item.equip_bonus]
+Agility = 4
+Dexterity = 2
+
+[[item]]
+Name = "鉄の胸当て"
+Description = "簡素な鉄製の胸当て"
+
+[item.wearable]
+Defense = 5
+EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Vitality = 2
+Agility = -1
+
+[[item]]
+Name = "狩人の外套"
+Description = "獣の血で染まった外套"
+
+[item.wearable]
+Defense = 4
+EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Agility = 2
+Sensation = 1
+
+[[item]]
+Name = "聖騎士の鎧"
+Description = "聖なる力で祝福された鎧"
+
+[item.wearable]
+Defense = 12
+EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Vitality = 6
+Strength = 2
+Agility = -5
+
+[[item]]
+Name = "古代の法衣"
+Description = "古代の魔術師が着ていた法衣"
+
+[item.wearable]
+Defense = 3
+EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Sensation = 4
+Dexterity = 2
+
+[[item]]
+Name = "影の外套"
+Description = "闇に溶け込む特殊な外套"
+
+[item.wearable]
+Defense = 2
+EquipmentCategory = "TORSO"
+
+[item.equip_bonus]
+Agility = 6
+Sensation = 2
+
+[[item]]
+Name = "鉄の脛当て"
+Description = "頑丈な鉄製の脛当て"
+
+[item.wearable]
+Defense = 4
+EquipmentCategory = "LEGS"
+
+[item.equip_bonus]
+Vitality = 1
+Agility = -2
+
+[[item]]
+Name = "狩人の脚絆"
+Description = "動きやすさを重視した脚絆"
+
+[item.wearable]
+Defense = 2
+EquipmentCategory = "LEGS"
+
+[item.equip_bonus]
+Agility = 3
+Dexterity = 1
+
+[[item]]
+Name = "騎士の脚鎧"
+Description = "重装騎士の脚部防具"
+
+[item.wearable]
+Defense = 7
+EquipmentCategory = "LEGS"
+
+[item.equip_bonus]
+Vitality = 3
+Agility = -4
+
+[[item]]
+Name = "魔術師の靴"
+Description = "魔力を高める特殊な靴"
+
+[item.wearable]
+Defense = 1
+EquipmentCategory = "LEGS"
+
+[item.equip_bonus]
+Sensation = 3
+Dexterity = 2
+
+[[item]]
+Name = "影の足袋"
+Description = "音を立てずに歩ける足袋"
+
+[item.wearable]
+Defense = 1
+EquipmentCategory = "LEGS"
+
+[item.equip_bonus]
+Agility = 4
+Dexterity = 1
+
+[[item]]
+Name = "血の指輪"
+Description = "血赤石で作られた指輪"
+
+[item.wearable]
+Defense = 0
+EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Strength = 3
+Vitality = 2
+
+[[item]]
+Name = "月光の首飾り"
+Description = "月光草の力を宿した首飾り"
+
+[item.wearable]
+Defense = 0
+EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Sensation = 4
+Agility = 1
+
+[[item]]
+Name = "古代の腕輪"
+Description = "古代文明の遺物である腕輪"
+
+[item.wearable]
+Defense = 2
+EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Dexterity = 3
+Sensation = 2
+
+[[item]]
+Name = "星鉄の指輪"
+Description = "隕石の金属で作られた指輪"
+
+[item.wearable]
+Defense = 1
+EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Strength = 2
+Vitality = 2
+Agility = 1
+
+[[item]]
+Name = "聖者の護符"
+Description = "聖なる力で守護する護符"
+
+[item.wearable]
+Defense = 0
+EquipmentCategory = "JEWELRY"
+
+[item.equip_bonus]
+Vitality = 4
+Sensation = 3
 
 # material ================
 
@@ -375,18 +1044,11 @@ Description = "古い鎖の一部。何かを繋ぎ止めていた痕跡があ�
 Name = "聖油"
 Description = "聖別された油。武器や防具の祝福に使用される"
 
-# recipe ================
+###################
+# recipe          #
+###################
 
-[[recipe]]
-Name = "回復薬"
-
-[[recipe.inputs]]
-Name = "緑ハーブ"
-Amount = 1
-
-[[recipe.inputs]]
-Name = "黄ハーブ"
-Amount = 1
+# 手札のレシピ ================
 
 [[recipe]]
 Name = "木刀"
@@ -432,6 +1094,221 @@ Name = "鉄"
 Amount = 3
 
 [[recipe]]
+Name = "聖なる刃"
+
+[[recipe.inputs]]
+Name = "銀の欠片"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe]]
+Name = "鉄槌の一撃"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "古代の骨"
+Amount = 1
+
+[[recipe]]
+Name = "血の呪文"
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "朽ちた羊皮紙"
+Amount = 1
+
+[[recipe]]
+Name = "月光の矢"
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "木の棒"
+Amount = 2
+
+[[recipe]]
+Name = "狩人の銃弾"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe]]
+Name = "古代の雷撃"
+
+[[recipe.inputs]]
+Name = "雷光石"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "古い歯車"
+Amount = 1
+
+[[recipe]]
+Name = "氷の槍"
+
+[[recipe.inputs]]
+Name = "霧の結晶"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 1
+
+[[recipe]]
+Name = "炎の拳"
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "灰"
+Amount = 2
+
+[[recipe]]
+Name = "星の破片"
+
+[[recipe.inputs]]
+Name = "星鉄"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "水晶の粉"
+Amount = 3
+
+[[recipe]]
+Name = "影の短剣"
+
+[[recipe.inputs]]
+Name = "黒曜石"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe]]
+Name = "聖水の祝福"
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "深海の塩"
+Amount = 2
+
+[[recipe]]
+Name = "獣の爪"
+
+[[recipe.inputs]]
+Name = "古代の骨"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe]]
+Name = "鋼鉄の盾撃"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "蒼鉛"
+Amount = 1
+
+[[recipe]]
+Name = "毒の霧"
+
+[[recipe.inputs]]
+Name = "緑ハーブ"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "深海の塩"
+Amount = 1
+
+[[recipe]]
+Name = "光の剣"
+
+[[recipe.inputs]]
+Name = "星鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "琥珀"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe]]
+Name = "連射砲"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 4
+
+[[recipe.inputs]]
+Name = "フェライトコア"
+Amount = 1
+
+[[recipe]]
+Name = "暗黒の矢"
+
+[[recipe.inputs]]
+Name = "黒曜石"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "錆びた鎖"
+Amount = 1
+
+[[recipe]]
+Name = "狂戦士の斧"
+
+[[recipe.inputs]]
+Name = "星鉄"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 2
+
+[[recipe]]
+Name = "治癒の光"
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 1
+
+# 防具のレシピ ================
+
+[[recipe]]
 Name = "西洋鎧"
 
 [[recipe.inputs]]
@@ -457,6 +1334,523 @@ Name = "機械の指輪"
 
 [[recipe.inputs]]
 Name = "鉄"
+Amount = 1
+
+[[recipe]]
+Name = "狩人の帽子"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+[[recipe]]
+Name = "古い騎士兜"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 4
+
+[[recipe.inputs]]
+Name = "錆びた鎖"
+Amount = 1
+
+[[recipe]]
+Name = "聖職者の冠"
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 2
+
+[[recipe]]
+Name = "影の頭巾"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "灰"
+Amount = 1
+
+[[recipe]]
+Name = "鉄の胸当て"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+[[recipe]]
+Name = "狩人の外套"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 1
+
+[[recipe]]
+Name = "聖騎士の鎧"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 6
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "銀の欠片"
+Amount = 1
+
+[[recipe]]
+Name = "古代の法衣"
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 1
+
+[[recipe]]
+Name = "影の外套"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "霧の結晶"
+Amount = 2
+
+[[recipe]]
+Name = "鉄の脛当て"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+[[recipe]]
+Name = "狩人の脚絆"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "錆びた鎖"
+Amount = 1
+
+[[recipe]]
+Name = "騎士の脚鎧"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 4
+
+[[recipe.inputs]]
+Name = "蒼鉛"
+Amount = 1
+
+[[recipe]]
+Name = "魔術師の靴"
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "水晶の粉"
+Amount = 2
+
+[[recipe]]
+Name = "影の足袋"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "霧の結晶"
+Amount = 1
+
+[[recipe]]
+Name = "血の指輪"
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "銀の欠片"
+Amount = 1
+
+[[recipe]]
+Name = "月光の首飾り"
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "琥珀"
+Amount = 1
+
+[[recipe]]
+Name = "古代の腕輪"
+
+[[recipe.inputs]]
+Name = "古い歯車"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "蒼鉛"
+Amount = 2
+
+[[recipe]]
+Name = "星鉄の指輪"
+
+[[recipe.inputs]]
+Name = "星鉄"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "水晶の粉"
+Amount = 1
+
+[[recipe]]
+Name = "聖者の護符"
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+# 道具のレシピ ================
+
+[[recipe]]
+Name = "回復薬"
+
+[[recipe.inputs]]
+Name = "緑ハーブ"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "黄ハーブ"
+Amount = 1
+
+[[recipe]]
+Name = "上級回復薬"
+
+[[recipe.inputs]]
+Name = "緑ハーブ"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "黄ハーブ"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 1
+
+[[recipe]]
+Name = "古代の秘薬"
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "水晶の粉"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "深海の塩"
+Amount = 1
+
+[[recipe]]
+Name = "毒消し"
+
+[[recipe.inputs]]
+Name = "緑ハーブ"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "深海の塩"
+Amount = 1
+
+[[recipe]]
+Name = "爆裂弾"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "雷光石"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 1
+
+[[recipe]]
+Name = "閃光弾"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "水晶の粉"
+Amount = 2
+
+[[recipe]]
+Name = "煙幕弾"
+
+[[recipe.inputs]]
+Name = "鉄"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "灰"
+Amount = 2
+
+[[recipe]]
+Name = "霊薬"
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 1
+
+[[recipe]]
+Name = "狂戦士の薬"
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe]]
+Name = "守護の香"
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+[[recipe]]
+Name = "星の欠片"
+
+[[recipe.inputs]]
+Name = "星鉄"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "水晶の粉"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 1
+
+[[recipe]]
+Name = "古代金貨"
+
+[[recipe.inputs]]
+Name = "蒼鉛"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "古い歯車"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "朽ちた羊皮紙"
+Amount = 1
+
+[[recipe]]
+Name = "血染めのルビー"
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "琥珀"
+Amount = 1
+
+[[recipe]]
+Name = "教会の聖杯"
+
+[[recipe.inputs]]
+Name = "銀の欠片"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 1
+
+[[recipe]]
+Name = "竜の鱗"
+
+[[recipe.inputs]]
+Name = "古代の骨"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "血赤石"
+Amount = 1
+
+[[recipe]]
+Name = "王家の印章"
+
+[[recipe.inputs]]
+Name = "蒼鉛"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "琥珀"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "朽ちた羊皮紙"
+Amount = 2
+
+[[recipe]]
+Name = "黒真珠"
+
+[[recipe.inputs]]
+Name = "深海の塩"
+Amount = 3
+
+[[recipe.inputs]]
+Name = "霧の結晶"
+Amount = 2
+
+[[recipe]]
+Name = "魔導書の断片"
+
+[[recipe.inputs]]
+Name = "朽ちた羊皮紙"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "灰"
+Amount = 1
+
+[[recipe]]
+Name = "天使の羽根"
+
+[[recipe.inputs]]
+Name = "聖油"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "古布の切れ端"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 2
+
+[[recipe]]
+Name = "古代の壺"
+
+[[recipe.inputs]]
+Name = "古い歯車"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "深海の塩"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "灰"
+Amount = 2
+
+[[recipe]]
+Name = "狩人の記章"
+
+[[recipe.inputs]]
+Name = "獣の毛皮"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "銀の欠片"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "錆びた鎖"
+Amount = 1
+
+[[recipe]]
+Name = "月の石"
+
+[[recipe.inputs]]
+Name = "月光草"
+Amount = 2
+
+[[recipe.inputs]]
+Name = "紫水晶"
+Amount = 1
+
+[[recipe.inputs]]
+Name = "水晶の粉"
 Amount = 1
 
 # member ================

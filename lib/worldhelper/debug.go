@@ -62,7 +62,7 @@ func InitDebugData(world w.World) {
 		SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 	}
 
-	// メンバー生成（全16人）
+	// メンバー生成
 	celestine := SpawnMember(world, "セレスティン", true)
 	cordelia := SpawnMember(world, "コルデリア", true)
 	SpawnMember(world, "バルサザール", true)
