@@ -17,6 +17,7 @@ func TestNewParty(t *testing.T) {
 	// 味方キャラクターを作成
 	ally1 := world.Manager.NewEntity()
 	ally1.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	ally1.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally1.AddComponent(world.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 100, Max: 100},
 		Level: 1,
@@ -27,6 +28,7 @@ func TestNewParty(t *testing.T) {
 
 	ally2 := world.Manager.NewEntity()
 	ally2.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	ally2.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally2.AddComponent(world.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 0, Max: 50}, // 死亡状態
 		Level: 1,
@@ -63,6 +65,7 @@ func TestNewByEntity(t *testing.T) {
 	// 味方エンティティを作成
 	ally := world.Manager.NewEntity()
 	ally.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	ally.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally.AddComponent(world.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 100, Max: 100},
 		Level: 1,
@@ -94,6 +97,7 @@ func TestPartyNavigation(t *testing.T) {
 	// 3人の味方キャラクターを作成（1人は死亡状態）
 	ally1 := world.Manager.NewEntity()
 	ally1.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	ally1.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally1.AddComponent(world.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 100, Max: 100},
 		Level: 1,
@@ -104,6 +108,7 @@ func TestPartyNavigation(t *testing.T) {
 
 	ally2 := world.Manager.NewEntity()
 	ally2.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	ally2.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally2.AddComponent(world.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 0, Max: 50}, // 死亡状態
 		Level: 1,
@@ -114,6 +119,7 @@ func TestPartyNavigation(t *testing.T) {
 
 	ally3 := world.Manager.NewEntity()
 	ally3.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	ally3.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally3.AddComponent(world.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Current: 75, Max: 75},
 		Level: 1,
