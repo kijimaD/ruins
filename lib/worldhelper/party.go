@@ -37,6 +37,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 	case gc.FactionAlly:
 		q = world.Manager.Join(
 			world.Components.FactionAlly,
+			world.Components.InParty,
 			world.Components.Pools,
 			world.Components.Attributes,
 		)
