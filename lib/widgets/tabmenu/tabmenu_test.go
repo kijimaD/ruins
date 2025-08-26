@@ -8,29 +8,8 @@ import (
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
-func TestTabMenuNavigation(t *testing.T) {
+func TestTabSwitching(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name string
-		test func(t *testing.T)
-	}{
-		{"タブ切り替え（左右矢印キー）", testTabSwitching},
-		{"タブ切り替え（Tab/Shift+Tab）", testTabSwitchingWithTabKey},
-		{"アイテム選択（上下矢印キー）", testItemNavigation},
-		{"循環ナビゲーション", testWrapNavigation},
-		{"選択機能", testSelection},
-		{"キャンセル機能", testCancel},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.test(t)
-		})
-	}
-}
-
-func testTabSwitching(t *testing.T) {
 	// テスト用のタブとアイテムを作成
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
@@ -60,29 +39,31 @@ func testTabSwitching(t *testing.T) {
 		t.Errorf("初期タブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 
-	// 右矢印でタブ2に移動
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
+	// Tabキーでタブ2に移動
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
-		t.Errorf("右矢印後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Tab後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 	if tabChangeCount != 1 {
 		t.Errorf("タブ変更コールバック回数が不正: 期待 1, 実際 %d", tabChangeCount)
 	}
 
-	// 左矢印でタブ1に戻る
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
+	// Shift+Tabでタブ1に戻る
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
+	mockInput.SetKeyPressed(ebiten.KeyShift, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
-		t.Errorf("左矢印後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Shift+Tab後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 }
 
-func testTabSwitchingWithTabKey(t *testing.T) {
+func TestTabSwitchingWithTabKey(t *testing.T) {
+	t.Parallel()
 	// テスト用のタブとアイテムを作成
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
@@ -158,7 +139,8 @@ func testTabSwitchingWithTabKey(t *testing.T) {
 	}
 }
 
-func testItemNavigation(t *testing.T) {
+func TestItemNavigation(t *testing.T) {
+	t.Parallel()
 	// 複数アイテムを持つタブを作成
 	tabs := []TabItem{
 		{
@@ -216,7 +198,8 @@ func testItemNavigation(t *testing.T) {
 	}
 }
 
-func testWrapNavigation(t *testing.T) {
+func TestWrapNavigation(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
 		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
@@ -232,26 +215,29 @@ func testWrapNavigation(t *testing.T) {
 	mockInput := input.NewMockKeyboardInput()
 	tabMenu := NewTabMenu(config, Callbacks{}, mockInput)
 
-	// 最初のタブで左矢印 → 最後のタブに循環
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowLeft, true)
+	// 最初のタブでShift+Tab → 最後のタブに循環
+	mockInput.SetKeyPressed(ebiten.KeyShift, true)
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
-		t.Errorf("循環後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Shift+Tab循環後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 
-	// 最後のタブで右矢印 → 最初のタブに循環
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowRight, true)
+	// 最後のタブでTab → 最初のタブに循環
+	mockInput.SetKeyPressed(ebiten.KeyShift, false) // Shiftキーを離す
+	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	tabMenu.Update()
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
-		t.Errorf("循環後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
+		t.Errorf("Tab循環後のタブインデックスが不正: 期待 0, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 }
 
-func testSelection(t *testing.T) {
+func TestSelection(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{
 			ID:    "tab1",
@@ -287,7 +273,8 @@ func testSelection(t *testing.T) {
 	}
 }
 
-func testCancel(t *testing.T) {
+func TestCancel(t *testing.T) {
+	t.Parallel()
 	tabs := []TabItem{
 		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
 	}

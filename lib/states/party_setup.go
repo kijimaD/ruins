@@ -148,10 +148,12 @@ func (st *PartySetupState) initUIWithFocus(world w.World, focusIndex int) *ebite
 
 	// メニューの設定
 	config := menu.Config{
-		Items:          items,
-		InitialIndex:   initialIndex,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
+		Items:             items,
+		InitialIndex:      initialIndex,
+		WrapNavigation:    true,
+		Orientation:       menu.Vertical,
+		ItemsPerPage:      18,
+		ShowPageIndicator: true,
 	}
 
 	// コールバックの設定

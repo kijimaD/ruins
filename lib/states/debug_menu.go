@@ -9,6 +9,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -95,11 +96,12 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 	}
 
 	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
-		Columns:        0,
+		Items:             items,
+		InitialIndex:      0,
+		WrapNavigation:    true,
+		Orientation:       menu.Vertical,
+		ItemsPerPage:      20,
+		ShowPageIndicator: true,
 	}
 
 	callbacks := menu.Callbacks{
@@ -190,6 +192,51 @@ var debugMenuTrans = []struct {
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition {
 			return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
+		},
+	},
+	{
+		label: "ダンジョン開始(大部屋)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeBigRoom),
+			}}
+		},
+	},
+	{
+		label: "ダンジョン開始(小部屋)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeSmallRoom),
+			}}
+		},
+	},
+	{
+		label: "ダンジョン開始(洞窟)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeCave),
+			}}
+		},
+	},
+	{
+		label: "ダンジョン開始(廃墟)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeRuins),
+			}}
+		},
+	},
+	{
+		label: "ダンジョン開始(森)",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition {
+			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeForest),
+			}}
 		},
 	},
 	{
