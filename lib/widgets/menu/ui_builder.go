@@ -54,7 +54,7 @@ func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
 	// 表示する項目のみを追加（スクロール対応）
-	visibleItems, indices := menu.GetVisibleItemsWithIndices()
+	visibleItems, indices := menu.GetVisibleItems()
 	for i, item := range visibleItems {
 		originalIndex := indices[i]
 		btn := b.CreateMenuButton(menu, originalIndex, item)
@@ -84,7 +84,7 @@ func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
 	// 表示する項目のみを追加（ペジネーション）
-	visibleItems, indices := menu.GetVisibleItemsWithIndices()
+	visibleItems, indices := menu.GetVisibleItems()
 	for i, item := range visibleItems {
 		originalIndex := indices[i]
 		btn := b.CreateMenuButton(menu, originalIndex, item)
@@ -140,7 +140,7 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 	}
 
 	// 表示中の項目とそのインデックスを取得
-	_, indices := menu.GetVisibleItemsWithIndices()
+	_, indices := menu.GetVisibleItems()
 
 	// 全てのボタンのフォーカスを更新
 	for i, w := range menu.itemWidgets {

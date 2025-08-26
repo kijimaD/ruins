@@ -321,7 +321,7 @@ func (m *Menu) rebuildUI() {
 
 	// 現在のページの項目を追加
 	m.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
-	visibleItems, indices := m.GetVisibleItemsWithIndices()
+	visibleItems, indices := m.GetVisibleItems()
 
 	for i, item := range visibleItems {
 		originalIndex := indices[i]
@@ -423,23 +423,8 @@ func (m *Menu) GetTotalPages() int {
 	return (len(m.config.Items) + m.config.ItemsPerPage - 1) / m.config.ItemsPerPage
 }
 
-// GetVisibleItems は現在のページで表示される項目を返す
-func (m *Menu) GetVisibleItems() []Item {
-	if m.config.ItemsPerPage <= 0 {
-		return m.config.Items
-	}
-
-	start := m.currentPage * m.config.ItemsPerPage
-	end := start + m.config.ItemsPerPage
-	if end > len(m.config.Items) {
-		end = len(m.config.Items)
-	}
-
-	return m.config.Items[start:end]
-}
-
-// GetVisibleItemsWithIndices は現在のページで表示される項目とその元のインデックスを返す
-func (m *Menu) GetVisibleItemsWithIndices() ([]Item, []int) {
+// GetVisibleItems は現在のページで表示される項目とその元のインデックスを返す
+func (m *Menu) GetVisibleItems() ([]Item, []int) {
 	if m.config.ItemsPerPage <= 0 {
 		indices := make([]int, len(m.config.Items))
 		for i := range indices {

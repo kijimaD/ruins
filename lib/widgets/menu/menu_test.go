@@ -337,8 +337,8 @@ func TestMenuScrolling(t *testing.T) {
 		t.Errorf("総ページ数が間違っています: 期待 4, 実際 %d", menu.GetTotalPages())
 	}
 
-	// 表示項目の確認
-	visibleItems := menu.GetVisibleItems()
+	// 表示項目の確認（GetVisibleItemsWithIndicesを使用）
+	visibleItems, _ := menu.GetVisibleItems()
 	if len(visibleItems) != 3 {
 		t.Errorf("表示項目数が間違っています: 期待 3, 実際 %d", len(visibleItems))
 	}
@@ -441,7 +441,7 @@ func TestMenuVisibleItemsWithIndices(t *testing.T) {
 	menu := NewMenu(config, Callbacks{})
 
 	// 1ページ目の確認
-	visibleItems, indices := menu.GetVisibleItemsWithIndices()
+	visibleItems, indices := menu.GetVisibleItems()
 	if len(visibleItems) != 3 {
 		t.Errorf("1ページ目の表示項目数が間違っています: 期待 3, 実際 %d", len(visibleItems))
 	}
@@ -457,7 +457,7 @@ func TestMenuVisibleItemsWithIndices(t *testing.T) {
 	mockInput.SetKeyJustPressed(ebiten.KeyPageDown, true)
 	menu.Update(mockInput)
 
-	visibleItems, indices = menu.GetVisibleItemsWithIndices()
+	visibleItems, indices = menu.GetVisibleItems()
 	if len(visibleItems) != 3 {
 		t.Errorf("2ページ目の表示項目数が間違っています: 期待 3, 実際 %d", len(visibleItems))
 	}
@@ -470,7 +470,7 @@ func TestMenuVisibleItemsWithIndices(t *testing.T) {
 	mockInput.SetKeyJustPressed(ebiten.KeyPageDown, true)
 	menu.Update(mockInput)
 
-	visibleItems, indices = menu.GetVisibleItemsWithIndices()
+	visibleItems, indices = menu.GetVisibleItems()
 	if len(visibleItems) != 1 {
 		t.Errorf("3ページ目の表示項目数が間違っています: 期待 1, 実際 %d", len(visibleItems))
 	}
@@ -498,8 +498,8 @@ func TestMenuScrollingDisabled(t *testing.T) {
 
 	menu := NewMenu(config, Callbacks{})
 
-	// 全項目が表示されることを確認
-	visibleItems := menu.GetVisibleItems()
+	// 全項目が表示されることを確認（GetVisibleItemsWithIndicesを使用）
+	visibleItems, _ := menu.GetVisibleItems()
 	if len(visibleItems) != 10 {
 		t.Errorf("スクロール無効時の表示項目数が間違っています: 期待 10, 実際 %d", len(visibleItems))
 	}
