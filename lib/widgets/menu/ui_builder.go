@@ -25,10 +25,7 @@ func NewUIBuilder(world w.World) *UIBuilder {
 func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container {
 	var container *widget.Container
 
-	if menu.config.Columns > 0 {
-		// グリッド表示
-		container = b.buildGridUI(menu)
-	} else if menu.config.Orientation == Horizontal {
+	if menu.config.Orientation == Horizontal {
 		// 水平リスト表示
 		container = b.buildHorizontalUI(menu)
 	} else {
@@ -37,68 +34,72 @@ func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container {
 	}
 
 	menu.SetContainer(container)
+	menu.SetUIBuilder(b) // UIビルダーを設定
 	return container
 }
 
 // buildVerticalUI は垂直リスト表示のUIを構築する
 func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
-	container := eui.NewVerticalContainer()
+	mainContainer := eui.NewVerticalContainer()
+
+	// ページインジケーターを追加
+	pageText := menu.GetPageIndicatorText()
+	if pageText != "" {
+		pageIndicator := b.CreatePageIndicator(menu)
+		mainContainer.AddChild(pageIndicator)
+	}
+
+	// メニューアイテムのコンテナ
+	menuContainer := eui.NewVerticalContainer()
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
-	for i, item := range menu.config.Items {
-		btn := b.createMenuButton(menu, i, item)
-		container.AddChild(btn)
+	// 表示する項目のみを追加（スクロール対応）
+	visibleItems, indices := menu.GetVisibleItems()
+	for i, item := range visibleItems {
+		originalIndex := indices[i]
+		btn := b.CreateMenuButton(menu, originalIndex, item)
+		menuContainer.AddChild(btn)
 		menu.itemWidgets = append(menu.itemWidgets, btn)
 	}
 
+	mainContainer.AddChild(menuContainer)
 	b.UpdateFocus(menu)
 
-	return container
+	return mainContainer
 }
 
 // buildHorizontalUI は水平リスト表示のUIを構築する
 func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
-	container := eui.NewRowContainer()
+	mainContainer := eui.NewVerticalContainer()
+
+	// ページインジケーターを追加
+	pageText := menu.GetPageIndicatorText()
+	if pageText != "" {
+		pageIndicator := b.CreatePageIndicator(menu)
+		mainContainer.AddChild(pageIndicator)
+	}
+
+	// メニューアイテムのコンテナ
+	menuContainer := eui.NewRowContainer()
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
-	for i, item := range menu.config.Items {
-		btn := b.createMenuButton(menu, i, item)
-		container.AddChild(btn)
+	// 表示する項目のみを追加（ペジネーション）
+	visibleItems, indices := menu.GetVisibleItems()
+	for i, item := range visibleItems {
+		originalIndex := indices[i]
+		btn := b.CreateMenuButton(menu, originalIndex, item)
+		menuContainer.AddChild(btn)
 		menu.itemWidgets = append(menu.itemWidgets, btn)
 	}
 
+	mainContainer.AddChild(menuContainer)
 	b.UpdateFocus(menu)
 
-	return container
+	return mainContainer
 }
 
-// buildGridUI はグリッド表示のUIを構築する
-func (b *UIBuilder) buildGridUI(menu *Menu) *widget.Container {
-	container := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewGridLayout(
-				widget.GridLayoutOpts.Columns(menu.config.Columns),
-				widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true}),
-				widget.GridLayoutOpts.Spacing(2, 2),
-			),
-		),
-	)
-
-	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
-
-	for i, item := range menu.config.Items {
-		btn := b.createMenuButton(menu, i, item)
-		container.AddChild(btn)
-		menu.itemWidgets = append(menu.itemWidgets, btn)
-	}
-
-	b.UpdateFocus(menu)
-
-	return container
-}
-
-// createMenuButton はメニューボタンを作成する
-func (b *UIBuilder) createMenuButton(menu *Menu, index int, item Item) *widget.Button {
+// CreateMenuButton はメニューボタンを作成する
+func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) *widget.Button {
 	res := b.world.Resources.UIResources
 
 	btn := widget.NewButton(
@@ -138,10 +139,14 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 		return
 	}
 
+	// 表示中の項目とそのインデックスを取得
+	_, indices := menu.GetVisibleItems()
+
 	// 全てのボタンのフォーカスを更新
 	for i, w := range menu.itemWidgets {
-		if btn, ok := w.(*widget.Button); ok {
-			isFocused := i == menu.GetFocusedIndex()
+		if btn, ok := w.(*widget.Button); ok && i < len(indices) {
+			originalIndex := indices[i]
+			isFocused := originalIndex == menu.GetFocusedIndex()
 
 			// フォーカス状態に応じてボタンの画像を更新
 			if isFocused {
@@ -194,4 +199,22 @@ func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
 		Pressed:  pressed,
 		Disabled: disabled,
 	}
+}
+
+// CreatePageIndicator はページインジケーターを作成する
+func (b *UIBuilder) CreatePageIndicator(menu *Menu) *widget.Text {
+	res := b.world.Resources.UIResources
+
+	pageText := menu.GetPageIndicatorText()
+
+	return widget.NewText(
+		widget.TextOpts.Text(pageText, res.Text.SmallFace, color.White),
+		widget.TextOpts.Position(widget.TextPositionCenter, widget.TextPositionCenter),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter,
+			}),
+			widget.WidgetOpts.MinSize(300, 20),
+		),
+	)
 }
