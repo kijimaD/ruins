@@ -283,7 +283,7 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {
@@ -297,7 +297,7 @@ func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
@@ -311,7 +311,7 @@ func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 // showResultWindow は合成結果ウィンドウを表示する

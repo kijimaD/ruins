@@ -510,7 +510,7 @@ func (st *EquipMenuState) queryMenuWear(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 // 装備可能な手札を取得する
@@ -525,7 +525,7 @@ func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 // showActionWindow はアクションウィンドウを表示する

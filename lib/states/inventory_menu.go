@@ -524,7 +524,7 @@ func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
@@ -538,7 +538,7 @@ func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
@@ -552,7 +552,7 @@ func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 		items = append(items, entity)
 	}))
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
@@ -566,7 +566,7 @@ func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
 		}
 	}, world)
 
-	return items
+	return worldhelper.SortEntities(world, items)
 }
 
 // createTabDisplayUI はタブ表示UIを作成する
@@ -657,22 +657,25 @@ func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
 	}
 }
 
-// メンバー選択画面を初期化する（キーボード操作版）
+// メンバー選択画面を初期化する
 func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 	partyContainer := eui.NewWindowContainer(world)
 	titleContainer := eui.NewWindowHeaderContainer("ターゲット選択", world)
 	st.partyWindow = eui.NewSmallWindow(titleContainer, partyContainer)
 
-	// パーティメンバーリストを作成
-	st.partyMembers = []ecs.Entity{}
-	world.Manager.Join(
-		world.Components.FactionAlly,
-		world.Components.InParty,
-		world.Components.Name,
-		world.Components.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		st.partyMembers = append(st.partyMembers, entity)
-	}))
+	{
+		// パーティメンバーリストを作成
+		members := []ecs.Entity{}
+		world.Manager.Join(
+			world.Components.FactionAlly,
+			world.Components.InParty,
+			world.Components.Name,
+			world.Components.Pools,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			members = append(members, entity)
+		}))
+		st.partyMembers = members
+	}
 
 	st.partyFocusIndex = 0
 	st.isPartyMode = true
