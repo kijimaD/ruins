@@ -94,6 +94,33 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package worldhelper はワールド操作のためのヘルパー関数を提供する。
+<p>## 主要機能
+<p>### パーティ管理 (party.go)
+- Party構造体によるパーティメンバー管理
+- 生存状況の追跡とナビゲーション
+- 味方・敵派閥の管理
+<p>### ソート機能 (sort.go)
+- 汎用的なエンティティソート機能
+- SortableEntityインターフェースによる統一的なソート処理
+- 各種リスト（レシピ、素材、アイテム）のソート対応
+- 現在は名前順ソート、将来的にランク→名前順ソートに拡張予定
+<p>### クエリ機能 (query.go)
+- 所有素材の検索
+- パーティメンバーの検索
+<p>### 合成機能 (craft.go)
+- レシピによる素材合成
+- 素材量の管理
+<p>### 装備管理 (equipment.go)
+- 装備・装備解除の処理
+- 装備によるステータス変更
+<p>### スポーン機能 (spawn.go)
+- エンティティの生成と初期化
+- HPやSPの最大値設定
+<p>## 設計方針
+<p>- 各機能は単一責任の原則に従い、適切に分離
+- インターフェースを活用した拡張性の確保
+- テストしやすい設計の採用
+- パフォーマンスを考慮した実装
 
 				
 			</div>
@@ -147,6 +174,9 @@
 			
 				
 				<dd><a href="index.html#QueryOwnedMaterial">func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#SortEntities">func SortEntities(world w.World, entities []ecs.Entity) []ecs.Entity</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnAllCards">func SpawnAllCards(world w.World)</a></dd>
@@ -241,6 +271,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go">party.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go">query.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/sort.go">sort.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go">spawn.go</a>
 			
@@ -424,6 +456,22 @@
 			<p>QueryOwnedMaterial は所持中の素材
 TODO: worldを先に置く
 Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
+
+			
+			
+
+		
+			
+			
+			<h2 id="SortEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/sort.go?s=418:486#L4">SortEntities</a>
+				<a class="permalink" href="index.html#SortEntities">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SortEntities(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, entities []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>SortEntities はエンティティリストをソートする汎用関数
+Nameコンポーネントを持つエンティティを名前順でソートする
+Nameコンポーネントを持っていないエンティティはスキップされる
 
 			
 			
