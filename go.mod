@@ -5,7 +5,7 @@ go 1.24.6
 require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/caarlos0/env/v11 v11.3.1
-	github.com/ebitenui/ebitenui v0.6.2
+	github.com/ebitenui/ebitenui v0.7.1
 	github.com/hajimehoshi/ebiten/v2 v2.8.8
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
@@ -24,6 +24,7 @@ require (
 	github.com/ebitengine/oto/v3 v3.3.3 // indirect
 	github.com/ebitengine/purego v0.8.2 // indirect
 	github.com/felixge/fgprof v0.9.3 // indirect
+	github.com/frustra/bbcode v0.0.0-20201127003707-6ef347fbe1c8 // indirect
 	github.com/go-text/typesetting v0.3.0 // indirect
 	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
