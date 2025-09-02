@@ -45,6 +45,8 @@ func (d Damage) Apply(world w.World, scope *Scope) error {
 
 		// 死亡チェック
 		if pools.HP.Current == 0 {
+			// 死亡状態コンポーネントを付与
+			world.Components.Dead.Set(target, &gc.Dead{})
 			d.logDeath(world, target, scope.Logger)
 		}
 	}

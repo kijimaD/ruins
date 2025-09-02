@@ -10,7 +10,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// AIInputSystem は AI制御されたエンティティの入力処理を行う
+// AIInputSystem は AI制御されたフィールドエンティティの入力処理を行う
 func AIInputSystem(world w.World) {
 	// まずプレイヤーのエンティティと位置を取得
 	var playerPos *gc.Position

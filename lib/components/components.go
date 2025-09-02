@@ -47,6 +47,7 @@ type GameComponentList struct {
 	Player      *Player
 	InParty     *InParty
 	FactionType *FactionType
+	Dead        *Dead
 
 	// event ================
 	BattleCommand    *BattleCommand
@@ -103,6 +104,7 @@ type Components struct {
 	InParty      *ecs.NullComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
+	Dead         *ecs.NullComponent
 
 	// event ================
 	BattleCommand    *ecs.SliceComponent
@@ -158,6 +160,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.InParty = manager.NewNullComponent()
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
+	c.Dead = manager.NewNullComponent()
 
 	// event
 	c.BattleCommand = manager.NewSliceComponent()
@@ -224,6 +227,11 @@ type Player struct{}
 
 // InParty は冒険パーティに参加している状態
 type InParty struct{}
+
+// Dead はキャラクターが死亡している状態を示すマーカーコンポーネント
+// HP が 0 になったとき付与され、復活時に除去される
+// 状態異常の一種として考える
+type Dead struct{}
 
 // Pools はキャラクターのプール情報
 type Pools struct {
