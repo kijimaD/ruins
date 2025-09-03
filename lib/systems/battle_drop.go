@@ -80,6 +80,7 @@ func BattleDropSystem(world w.World) DropResult {
 		world.Manager.Join(
 			world.Components.Name,
 			world.Components.FactionAlly,
+			world.Components.InParty,
 			world.Components.Pools,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
 			allyPools := world.Components.Pools.Get(entity).(*gc.Pools)
@@ -94,6 +95,7 @@ func BattleDropSystem(world w.World) DropResult {
 	world.Manager.Join(
 		world.Components.Name,
 		world.Components.FactionAlly,
+		world.Components.InParty,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pools := world.Components.Pools.Get(entity).(*gc.Pools)
@@ -131,6 +133,7 @@ func getMemberXP(world w.World) map[ecs.Entity]int {
 	world.Manager.Join(
 		world.Components.Name,
 		world.Components.FactionAlly,
+		world.Components.InParty,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		pools := world.Components.Pools.Get(entity).(*gc.Pools)

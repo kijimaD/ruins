@@ -245,6 +245,7 @@ func (st *BattleState) getAllyEntities(world w.World) []ecs.Entity {
 	world.Manager.Join(
 		world.Components.Name,
 		world.Components.FactionAlly,
+		world.Components.InParty,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		allys = append(allys, entity)
