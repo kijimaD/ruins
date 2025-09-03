@@ -58,8 +58,7 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 
 	lives := []*ecs.Entity{}
 	for _, member := range members {
-		pools := world.Components.Pools.Get(member).(*gc.Pools)
-		if pools.HP.Current == 0 {
+		if member.HasComponent(world.Components.Dead) {
 			lives = append(lives, nil)
 		} else {
 			lives = append(lives, &member)

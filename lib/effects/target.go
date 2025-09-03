@@ -3,7 +3,6 @@ package effects
 import (
 	"fmt"
 
-	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -72,21 +71,16 @@ func (a TargetAllEnemies) String() string {
 type TargetAliveParty struct{}
 
 // SelectTargets は生存しているパーティメンバーをターゲットとして選択する
+// Deadコンポーネントが付与されていないメンバーを選択する
 func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
 		world.Components.FactionAlly,
 		world.Components.InParty,
 		world.Components.Pools,
+		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		poolsComponent := world.Components.Pools.Get(entity)
-		if poolsComponent == nil {
-			return // Poolsコンポーネントがない場合はスキップ
-		}
-		pools := poolsComponent.(*gc.Pools)
-		if pools.HP.Current > 0 {
-			targets = append(targets, entity)
-		}
+		targets = append(targets, entity)
 	}))
 	return targets, nil
 }
@@ -99,21 +93,16 @@ func (a TargetAliveParty) String() string {
 type TargetDeadParty struct{}
 
 // SelectTargets は死亡しているパーティメンバーをターゲットとして選択する
+// Deadコンポーネントが付与されているメンバーを選択する
 func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
 		world.Components.FactionAlly,
 		world.Components.InParty,
 		world.Components.Pools,
+		world.Components.Dead,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		poolsComponent := world.Components.Pools.Get(entity)
-		if poolsComponent == nil {
-			return // Poolsコンポーネントがない場合はスキップ
-		}
-		pools := poolsComponent.(*gc.Pools)
-		if pools.HP.Current == 0 {
-			targets = append(targets, entity)
-		}
+		targets = append(targets, entity)
 	}))
 	return targets, nil
 }

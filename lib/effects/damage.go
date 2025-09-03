@@ -45,6 +45,8 @@ func (d Damage) Apply(world w.World, scope *Scope) error {
 
 		// 死亡チェック
 		if pools.HP.Current == 0 {
+			// 死亡状態コンポーネントを付与
+			target.AddComponent(world.Components.Dead, &gc.Dead{})
 			d.logDeath(world, target, scope.Logger)
 		}
 	}
@@ -62,7 +64,7 @@ func (d Damage) Validate(world w.World, scope *Scope) error {
 
 	// ターゲットのPoolsコンポーネント存在確認
 	for _, target := range scope.Targets {
-		if world.Components.Pools.Get(target) == nil {
+		if !target.HasComponent(world.Components.Pools) {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
 	}

@@ -1,7 +1,6 @@
 package systems
 
 import (
-	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -20,19 +19,17 @@ const (
 
 // BattleExtinctionSystem は敵や味方の全滅をチェックする
 func BattleExtinctionSystem(world w.World) BattleExtinctionType {
-
 	// 味方が全員死んでいたらゲームオーバーにする
+	// Deadコンポーネントが付与されていない味方の数をカウント
 	liveAllyCount := 0
 	world.Manager.Join(
 		world.Components.Name,
 		world.Components.FactionAlly,
 		world.Components.Attributes,
 		world.Components.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := world.Components.Pools.Get(entity).(*gc.Pools)
-		if pools.HP.Current == 0 {
-			return
-		}
+		world.Components.InParty,
+		world.Components.Dead.Not(),
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		liveAllyCount++
 	}))
 	if liveAllyCount == 0 {
@@ -46,11 +43,8 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		world.Components.FactionEnemy,
 		world.Components.Attributes,
 		world.Components.Pools,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := world.Components.Pools.Get(entity).(*gc.Pools)
-		if pools.HP.Current == 0 {
-			return
-		}
+		world.Components.Dead.Not(),
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		liveEnemyCount++
 	}))
 	if liveEnemyCount == 0 {

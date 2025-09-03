@@ -53,10 +53,14 @@ func (h Healing) Validate(world w.World, scope *Scope) error {
 		return errors.New("回復対象が指定されていません")
 	}
 
-	// ターゲットのPoolsコンポーネント存在確認
+	// ターゲットのPoolsコンポーネント存在確認と死亡状態チェック
 	for _, target := range scope.Targets {
-		if world.Components.Pools.Get(target) == nil {
+		if !target.HasComponent(world.Components.Pools) {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
+		}
+		// 死亡状態のキャラクターには通常の回復エフェクトは使用不可
+		if target.HasComponent(world.Components.Dead) {
+			return fmt.Errorf("死亡しているキャラクターには回復エフェクトは使用できません")
 		}
 	}
 	return nil

@@ -99,11 +99,10 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 		newWorld.Components.Name,
 		newWorld.Components.FactionAlly,
 		newWorld.Components.InParty,
+		newWorld.Components.Player.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if !entity.HasComponent(newWorld.Components.Player) {
-			npcCount++
-			npcEntity = entity
-		}
+		npcCount++
+		npcEntity = entity
 	}))
 
 	// 検証

@@ -245,6 +245,7 @@ func (st *BattleState) getAllyEntities(world w.World) []ecs.Entity {
 	world.Manager.Join(
 		world.Components.Name,
 		world.Components.FactionAlly,
+		world.Components.InParty,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		allys = append(allys, entity)
@@ -337,13 +338,9 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		world.Components.Attributes,
 		world.Components.Pools,
 		world.Components.Render,
+		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		{
-			pools := world.Components.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
-		}
+
 		container := widget.NewContainer(
 			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
 		)
@@ -624,11 +621,9 @@ func (st *BattleState) collectLiveEnemies(world w.World) []ecs.Entity {
 		world.Components.Name,
 		world.Components.FactionEnemy,
 		world.Components.Pools,
+		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := world.Components.Pools.Get(entity).(*gc.Pools)
-		if pools.HP.Current > 0 {
-			enemies = append(enemies, entity)
-		}
+		enemies = append(enemies, entity)
 	}))
 	return enemies
 }
