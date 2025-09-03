@@ -67,8 +67,8 @@ func (u UseItem) Validate(world w.World, scope *Scope) error {
 	}
 
 	// 何らかの効果があるかチェック
-	hasEffect := world.Components.ProvidesHealing.Get(u.Item) != nil ||
-		world.Components.InflictsDamage.Get(u.Item) != nil
+	hasEffect := u.Item.HasComponent(world.Components.ProvidesHealing) ||
+		u.Item.HasComponent(world.Components.InflictsDamage)
 
 	if !hasEffect {
 		return errors.New("このアイテムには効果がありません")
@@ -76,9 +76,9 @@ func (u UseItem) Validate(world w.World, scope *Scope) error {
 
 	// アイテム効果のターゲットのPoolsコンポーネント存在確認
 	// 回復またはダメージ効果がある場合、ターゲットにPoolsコンポーネントが必要
-	if world.Components.ProvidesHealing.Get(u.Item) != nil || world.Components.InflictsDamage.Get(u.Item) != nil {
+	if u.Item.HasComponent(world.Components.ProvidesHealing) || u.Item.HasComponent(world.Components.InflictsDamage) {
 		for _, target := range scope.Targets {
-			if world.Components.Pools.Get(target) == nil {
+			if !target.HasComponent(world.Components.Pools) {
 				return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 			}
 		}

@@ -130,7 +130,7 @@ type spriteSize struct {
 // getSpriteSize はエンティティのスプライトサイズを取得する
 // SpriteRenderコンポーネントが存在しない、またはスプライトが見つからない場合はエラーを返す
 func getSpriteSize(world w.World, entity ecs.Entity) (spriteSize, error) {
-	if world.Components.SpriteRender.Get(entity) == nil {
+	if !entity.HasComponent(world.Components.SpriteRender) {
 		return spriteSize{}, fmt.Errorf("entity %v does not have SpriteRender component", entity)
 	}
 

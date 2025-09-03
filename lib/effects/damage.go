@@ -64,7 +64,7 @@ func (d Damage) Validate(world w.World, scope *Scope) error {
 
 	// ターゲットのPoolsコンポーネント存在確認
 	for _, target := range scope.Targets {
-		if world.Components.Pools.Get(target) == nil {
+		if !target.HasComponent(world.Components.Pools) {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
 	}
