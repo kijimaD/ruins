@@ -19,7 +19,6 @@ const (
 
 // BattleExtinctionSystem は敵や味方の全滅をチェックする
 func BattleExtinctionSystem(world w.World) BattleExtinctionType {
-
 	// 味方が全員死んでいたらゲームオーバーにする
 	// Deadコンポーネントが付与されていない味方の数をカウント
 	liveAllyCount := 0

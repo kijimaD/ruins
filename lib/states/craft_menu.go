@@ -275,11 +275,8 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
 		world.Components.Name,
 		world.Components.Recipe,
 		world.Components.Consumable,
+		world.Components.Card.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity.HasComponent(world.Components.Card) {
-			return
-		}
-
 		items = append(items, entity)
 	}))
 
