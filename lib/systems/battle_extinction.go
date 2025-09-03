@@ -29,7 +29,7 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		world.Components.Pools,
 		world.Components.InParty,
 		world.Components.Dead.Not(),
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		liveAllyCount++
 	}))
 	if liveAllyCount == 0 {
@@ -44,7 +44,7 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		world.Components.Attributes,
 		world.Components.Pools,
 		world.Components.Dead.Not(),
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		liveEnemyCount++
 	}))
 	if liveEnemyCount == 0 {

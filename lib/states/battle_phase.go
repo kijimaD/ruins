@@ -198,7 +198,7 @@ func (p *phaseGameOver) OnUpdate(st *BattleState, world w.World) es.Transition {
 	if st.keyboardInput.IsEnterJustPressedOnce() {
 		st.isWaitClick = false
 		gamelog.BattleLog.Flush() // メッセージをクリア
-		st.phase = &phaseChoosePolicy{}
+		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
 	}
 	return es.Transition{Type: es.TransNone}
 }
