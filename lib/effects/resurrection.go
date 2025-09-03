@@ -65,7 +65,7 @@ func (r Resurrection) Validate(world w.World, scope *Scope) error {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
 		// 生存しているキャラクターには蘇生エフェクトは使用不可
-		if world.Components.Dead.Get(target) == nil {
+		if !target.HasComponent(world.Components.Dead) {
 			return fmt.Errorf("生存しているキャラクターには蘇生エフェクトは使用できません")
 		}
 	}

@@ -30,9 +30,10 @@ func TestNewParty(t *testing.T) {
 	ally2.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
 	ally2.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally2.AddComponent(world.Components.Pools, &gc.Pools{
-		HP:    gc.Pool{Current: 0, Max: 50}, // 死亡状態
+		HP:    gc.Pool{Current: 0, Max: 50},
 		Level: 1,
 	})
+	ally2.AddComponent(world.Components.Dead, &gc.Dead{}) // 死亡状態
 	ally2.AddComponent(world.Components.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 8, Total: 8},
 	})
@@ -49,8 +50,7 @@ func TestNewParty(t *testing.T) {
 	// 現在選択されているメンバーが生存していることを確認
 	currentMember := party.Value()
 	assert.NotNil(t, currentMember, "現在のメンバーがnilであってはいけない")
-	currentPools := world.Components.Pools.Get(*currentMember).(*gc.Pools)
-	assert.Greater(t, currentPools.HP.Current, 0, "現在のメンバーは生存していなければならない")
+	assert.False(t, (*currentMember).HasComponent(world.Components.Dead), "現在のメンバーは生存していなければならない")
 
 	// クリーンアップ
 	world.Manager.DeleteEntity(ally1)
@@ -110,9 +110,10 @@ func TestPartyNavigation(t *testing.T) {
 	ally2.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
 	ally2.AddComponent(world.Components.InParty, &gc.InParty{})
 	ally2.AddComponent(world.Components.Pools, &gc.Pools{
-		HP:    gc.Pool{Current: 0, Max: 50}, // 死亡状態
+		HP:    gc.Pool{Current: 0, Max: 50},
 		Level: 1,
 	})
+	ally2.AddComponent(world.Components.Dead, &gc.Dead{}) // 死亡状態
 	ally2.AddComponent(world.Components.Attributes, &gc.Attributes{
 		Vitality: gc.Attribute{Base: 8, Total: 8},
 	})
@@ -143,8 +144,7 @@ func TestPartyNavigation(t *testing.T) {
 	assert.NotEqual(t, currentMember, nextMember, "次のメンバーは現在のメンバーと異なるべき")
 
 	// 生存しているメンバーのみがナビゲーションの対象であることを確認
-	nextPools := world.Components.Pools.Get(*nextMember).(*gc.Pools)
-	assert.Greater(t, nextPools.HP.Current, 0, "ナビゲーション対象は生存メンバーでなければならない")
+	assert.False(t, (*nextMember).HasComponent(world.Components.Dead), "ナビゲーション対象は生存メンバーでなければならない")
 
 	// 前のメンバーに戻る
 	err = party.Prev()

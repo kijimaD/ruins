@@ -24,8 +24,7 @@ func BattleCommandSystem(world w.World) {
 		world.Components.BattleCommand,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		cmd := world.Components.BattleCommand.Get(entity).(*gc.BattleCommand)
-		// Deadコンポーネントが付与されているオーナーのコマンドを削除
-		if world.Components.Dead.Get(cmd.Owner) != nil {
+		if cmd.Owner.HasComponent(world.Components.Dead) {
 			world.Manager.DeleteEntity(entity)
 		}
 	}))
@@ -59,7 +58,7 @@ func BattleCommandSystem(world w.World) {
 	cmd := world.Components.BattleCommand.Get(entity).(*gc.BattleCommand)
 	{
 		// ターゲットが死んでいる場合は同じ派閥の別の生存エンティティに変更する
-		if world.Components.Dead.Get(cmd.Target) != nil {
+		if cmd.Target.HasComponent(world.Components.Dead) {
 			p, err := worldhelper.NewByEntity(world, cmd.Target)
 			if err != nil {
 				log.Fatal(err)

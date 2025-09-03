@@ -78,11 +78,9 @@ func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 		world.Components.FactionAlly,
 		world.Components.InParty,
 		world.Components.Pools,
+		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// Deadコンポーネントが付与されていない場合のみ追加
-		if world.Components.Dead.Get(entity) == nil {
-			targets = append(targets, entity)
-		}
+		targets = append(targets, entity)
 	}))
 	return targets, nil
 }

@@ -338,12 +338,10 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 		world.Components.Pools,
 		world.Components.Render,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		{
-			pools := world.Components.Pools.Get(entity).(*gc.Pools)
-			if pools.HP.Current == 0 {
-				return
-			}
+		if entity.HasComponent(world.Components.Dead) {
+			return
 		}
+
 		container := widget.NewContainer(
 			widget.ContainerOpts.Layout(widget.NewStackedLayout()),
 		)
@@ -625,10 +623,10 @@ func (st *BattleState) collectLiveEnemies(world w.World) []ecs.Entity {
 		world.Components.FactionEnemy,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pools := world.Components.Pools.Get(entity).(*gc.Pools)
-		if pools.HP.Current > 0 {
-			enemies = append(enemies, entity)
+		if entity.HasComponent(world.Components.Dead) {
+			return
 		}
+		enemies = append(enemies, entity)
 	}))
 	return enemies
 }

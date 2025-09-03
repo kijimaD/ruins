@@ -145,11 +145,18 @@ func TestEffectSystem(t *testing.T) {
 		alivePlayer1 := createTestAllyEntity(world, "生存者1", 50)
 		alivePlayer2 := createTestAllyEntity(world, "生存者2", 30)
 
-		// 死亡パーティメンバーを作成
-		deadPlayer1 := createTestAllyEntity(world, "死亡者1", 0)
-		world.Components.Dead.Set(deadPlayer1, &gc.Dead{})
-		deadPlayer2 := createTestAllyEntity(world, "死亡者2", 0)
-		world.Components.Dead.Set(deadPlayer2, &gc.Dead{})
+		// 死亡パーティメンバーを作成（ダメージで死亡させる）
+		deadPlayer1 := createTestAllyEntity(world, "死亡者1", 50)
+		damage1 := Damage{Amount: 100, Source: DamageSourceWeapon}
+		scope1 := &Scope{Targets: []ecs.Entity{deadPlayer1}}
+		err = damage1.Apply(world, scope1)
+		assert.NoError(t, err)
+
+		deadPlayer2 := createTestAllyEntity(world, "死亡者2", 50)
+		damage2 := Damage{Amount: 100, Source: DamageSourceWeapon}
+		scope2 := &Scope{Targets: []ecs.Entity{deadPlayer2}}
+		err = damage2.Apply(world, scope2)
+		assert.NoError(t, err)
 
 		// 生存者選択のテスト
 		aliveSelector := TargetAliveParty{}
@@ -250,7 +257,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		player := createTestPlayerEntity(world, 1, 50)
 
 		// 死亡状態ではない初期状態を確認
-		assert.Nil(t, world.Components.Dead.Get(player))
+		assert.False(t, player.HasComponent(world.Components.Dead))
 
 		// 致命的ダメージを与える
 		damage := Damage{Amount: 10, Source: DamageSourceWeapon}
@@ -262,8 +269,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		// HP が 0 になり、Deadコンポーネントが付与されることを確認
 		pools := world.Components.Pools.Get(player).(*gc.Pools)
 		assert.Equal(t, 0, pools.HP.Current)
-		deadComponent := world.Components.Dead.Get(player)
-		assert.NotNil(t, deadComponent, "ダメージ後にDeadコンポーネントが付与されていない")
+		assert.True(t, player.HasComponent(world.Components.Dead), "ダメージ後にDeadコンポーネントが付与されていない")
 	})
 
 	t.Run("すでに死亡している場合の重複付与防止", func(t *testing.T) {
@@ -281,7 +287,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		// 死亡状態を確認
 		pools := world.Components.Pools.Get(player).(*gc.Pools)
 		assert.Equal(t, 0, pools.HP.Current)
-		assert.NotNil(t, world.Components.Dead.Get(player))
+		assert.True(t, player.HasComponent(world.Components.Dead))
 
 		// さらにダメージを与える（死体にダメージ）
 		damage2 := Damage{Amount: 5, Source: DamageSourceWeapon}
@@ -292,7 +298,7 @@ func TestDeadComponentManagement(t *testing.T) {
 
 		// 死亡状態が維持されることを確認（HP は既に 0 なので変わらない）
 		assert.Equal(t, 0, pools.HP.Current)
-		assert.NotNil(t, world.Components.Dead.Get(player))
+		assert.True(t, player.HasComponent(world.Components.Dead))
 	})
 
 	t.Run("蘇生による死亡状態の解除", func(t *testing.T) {
@@ -300,12 +306,15 @@ func TestDeadComponentManagement(t *testing.T) {
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
-		// HP 0で死亡状態のプレイヤーを作成
-		player := createTestPlayerEntity(world, 0, 50)
-		world.Components.Dead.Set(player, &gc.Dead{})
+		// 生きているプレイヤーを作成してダメージで死亡させる
+		player := createTestPlayerEntity(world, 50, 50)
+		damage := Damage{Amount: 100, Source: DamageSourceWeapon}
+		damageScope := &Scope{Targets: []ecs.Entity{player}}
+		err = damage.Apply(world, damageScope)
+		assert.NoError(t, err)
 
 		// 死亡状態を確認
-		assert.NotNil(t, world.Components.Dead.Get(player))
+		assert.True(t, player.HasComponent(world.Components.Dead))
 
 		// 蘇生エフェクトを実行
 		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 30}}
@@ -317,7 +326,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		// HP > 0 になり、Deadコンポーネントが除去されることを確認
 		pools := world.Components.Pools.Get(player).(*gc.Pools)
 		assert.Equal(t, 30, pools.HP.Current)
-		assert.Nil(t, world.Components.Dead.Get(player))
+		assert.False(t, player.HasComponent(world.Components.Dead))
 	})
 
 	t.Run("生存者への回復はDeadコンポーネントに影響しない", func(t *testing.T) {
@@ -329,7 +338,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		player := createTestPlayerEntity(world, 50, 50)
 
 		// 初期状態で生存していることを確認
-		assert.Nil(t, world.Components.Dead.Get(player))
+		assert.False(t, player.HasComponent(world.Components.Dead))
 
 		// 回復を実行
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 20}}
@@ -339,7 +348,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		assert.NoError(t, err)
 
 		// 生存状態が維持されることを確認
-		assert.Nil(t, world.Components.Dead.Get(player))
+		assert.False(t, player.HasComponent(world.Components.Dead))
 	})
 
 	t.Run("死亡者への通常回復エフェクトは拒否される", func(t *testing.T) {
@@ -355,8 +364,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		assert.NoError(t, err)
 
 		// 死亡状態を確認
-		deadComponent := world.Components.Dead.Get(player)
-		assert.NotNil(t, deadComponent, "ダメージ後にDeadコンポーネントが設定されていない")
+		assert.True(t, player.HasComponent(world.Components.Dead), "ダメージ後にDeadコンポーネントが設定されていない")
 
 		// 通常の回復エフェクトを適用しようとする
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
@@ -389,8 +397,7 @@ func TestResurrectionEffect(t *testing.T) {
 		// 死亡状態を確認
 		pools := world.Components.Pools.Get(player).(*gc.Pools)
 		assert.Equal(t, 0, pools.HP.Current)
-		deadComponent := world.Components.Dead.Get(player)
-		assert.NotNil(t, deadComponent, "ダメージ後にDeadコンポーネントが設定されていない")
+		assert.True(t, player.HasComponent(world.Components.Dead), "ダメージ後にDeadコンポーネントが設定されていない")
 
 		// 蘇生エフェクトを適用
 		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 30}}
@@ -403,8 +410,8 @@ func TestResurrectionEffect(t *testing.T) {
 		assert.NoError(t, err)
 
 		// 蘇生後の状態確認
-		assert.Nil(t, world.Components.Dead.Get(player)) // Deadコンポーネントが除去されている
-		assert.Equal(t, 30, pools.HP.Current)            // HPが回復している
+		assert.False(t, player.HasComponent(world.Components.Dead)) // Deadコンポーネントが除去されている
+		assert.Equal(t, 30, pools.HP.Current)                       // HPが回復している
 	})
 
 	t.Run("蘇生エフェクトは最低HP1を保証", func(t *testing.T) {
@@ -429,7 +436,7 @@ func TestResurrectionEffect(t *testing.T) {
 		// 最低HP1が保証される
 		pools := world.Components.Pools.Get(player).(*gc.Pools)
 		assert.Equal(t, 1, pools.HP.Current)
-		assert.Nil(t, world.Components.Dead.Get(player))
+		assert.False(t, player.HasComponent(world.Components.Dead))
 	})
 
 	t.Run("蘇生エフェクトの割合回復", func(t *testing.T) {
@@ -454,7 +461,7 @@ func TestResurrectionEffect(t *testing.T) {
 		// 50% (50HP)で蘇生することを確認
 		pools := world.Components.Pools.Get(player).(*gc.Pools)
 		assert.Equal(t, 50, pools.HP.Current)
-		assert.Nil(t, world.Components.Dead.Get(player))
+		assert.False(t, player.HasComponent(world.Components.Dead))
 	})
 
 	t.Run("生存者への蘇生エフェクトは拒否される", func(t *testing.T) {

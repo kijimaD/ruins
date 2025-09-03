@@ -28,11 +28,10 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		world.Components.FactionAlly,
 		world.Components.Attributes,
 		world.Components.Pools,
+		world.Components.InParty,
+		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// Deadコンポーネントが付与されていない場合のみカウント
-		if world.Components.Dead.Get(entity) == nil {
-			liveAllyCount++
-		}
+		liveAllyCount++
 	}))
 	if liveAllyCount == 0 {
 		return BattleExtinctionAlly
@@ -45,11 +44,9 @@ func BattleExtinctionSystem(world w.World) BattleExtinctionType {
 		world.Components.FactionEnemy,
 		world.Components.Attributes,
 		world.Components.Pools,
+		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// Deadコンポーネントが付与されていない場合のみカウント
-		if world.Components.Dead.Get(entity) == nil {
-			liveEnemyCount++
-		}
+		liveEnemyCount++
 	}))
 	if liveEnemyCount == 0 {
 		return BattleExtinctionMonster

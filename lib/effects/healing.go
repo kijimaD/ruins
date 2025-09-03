@@ -59,7 +59,7 @@ func (h Healing) Validate(world w.World, scope *Scope) error {
 			return fmt.Errorf("ターゲット %d にPoolsコンポーネントがありません", target)
 		}
 		// 死亡状態のキャラクターには通常の回復エフェクトは使用不可
-		if world.Components.Dead.Get(target) != nil {
+		if target.HasComponent(world.Components.Dead) {
 			return fmt.Errorf("死亡しているキャラクターには回復エフェクトは使用できません")
 		}
 	}
