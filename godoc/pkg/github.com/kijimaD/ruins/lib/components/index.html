@@ -94,6 +94,19 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package components はゲームコンポーネントの定義と実装を提供する。
+<p>責務:
+- ECS（Entity Component System）のコンポーネント定義
+- キャラクター、アイテム、フィールドオブジェクトの属性管理
+- 戦闘、移動、AI、描画などの機能別コンポーネント提供
+<p>使い分け:
+- GameComponentList: エンティティ作成時のコンポーネント情報格納
+- Components: ECSクエリで使用するコンポーネント実体
+- 各構造体: 個別のコンポーネントデータ
+<p>仕様:
+- NullComponent: 状態マーカー（Player, Dead, InParty等）
+- SliceComponent: データ保持（Pools, Attributes, Attack等）
+- 死亡状態はDeadコンポーネントで明示的に管理
+- HP.Current == 0 での死亡判定とDeadコンポーネント付与を併用
 
 				
 			</div>
@@ -218,6 +231,11 @@
 			
 				
 				<dd><a href="index.html#Consumable">type Consumable</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Dead">type Dead</a></dd>
 				
 				
 			
@@ -831,7 +849,7 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8475:8711#L276">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8799:9035#L284">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -937,7 +955,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6777:7278#L231">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7101:7602#L239">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -1047,7 +1065,7 @@
 		
 			
 			
-			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5383:5439#L169">Camera</a>
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5472:5528#L172">Camera</a>
 				<a class="permalink" href="index.html#Camera">&#xb6;</a>
 				
 				
@@ -1074,7 +1092,7 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8265:8324#L270">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8589:8648#L278">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
@@ -1125,7 +1143,7 @@
 		
 			
 			
-			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8777:8818#L285">CommandTable</a>
+			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9101:9142#L293">CommandTable</a>
 				<a class="permalink" href="index.html#CommandTable">&#xb6;</a>
 				
 				
@@ -1151,7 +1169,7 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1621:3307#L54">Components</a>
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1640:3359#L55">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
@@ -1201,6 +1219,7 @@ Join時はこのフィールドでクエリする
 <span id="Components.InParty"></span>    InParty      *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.FactionAlly"></span>    FactionAlly  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.FactionEnemy"></span>    FactionEnemy *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Dead"></span>    Dead         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 
     <span class="comment">// event ================</span>
 <span id="Components.BattleCommand"></span>    BattleCommand    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
@@ -1226,7 +1245,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3396:3465#L109">InitializeComponents</a>
+				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3448:3517#L111">InitializeComponents</a>
 					<a class="permalink" href="index.html#Components.InitializeComponents">&#xb6;</a>
 					
 					
@@ -1241,7 +1260,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5815:5894#L185">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5904:5983#L188">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -1252,6 +1271,32 @@ Join時はこのフィールドでクエリする
 <span id="Consumable.UsableScene"></span>    UsableScene <a href="index.html#UsableSceneType">UsableSceneType</a>
 <span id="Consumable.TargetType"></span>    TargetType  <a href="index.html#TargetType">TargetType</a>
 }
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6823:6841#L224">Dead</a>
+				<a class="permalink" href="index.html#Dead">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Dead はキャラクターが死亡している状態を示すマーカーコンポーネント
+HP が 0 になったとき付与され、復活時に除去される
+状態異常の一種として考える
+
+			<pre>type Dead struct{}
 </pre>
 
 			
@@ -1303,7 +1348,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5977:6024#L196">Description</a>
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6066:6113#L199">Description</a>
 				<a class="permalink" href="index.html#Description">&#xb6;</a>
 				
 				
@@ -1329,7 +1374,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8864:8902#L290">DropTable</a>
+			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9188:9226#L298">DropTable</a>
 				<a class="permalink" href="index.html#DropTable">&#xb6;</a>
 				
 				
@@ -1448,7 +1493,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8070:8100#L266">EquipmentChanged</a>
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8394:8424#L274">EquipmentChanged</a>
 				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
 				
 				
@@ -1543,7 +1588,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9877:9906#L324">FactionAllyData</a>
+			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10201:10230#L332">FactionAllyData</a>
 				<a class="permalink" href="index.html#FactionAllyData">&#xb6;</a>
 				
 				
@@ -1565,7 +1610,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9908:9948#L326">String</a>
+				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10232:10272#L334">String</a>
 					<a class="permalink" href="index.html#FactionAllyData.String">&#xb6;</a>
 					
 					
@@ -1579,7 +1624,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10021:10051#L331">FactionEnemyData</a>
+			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10345:10375#L339">FactionEnemyData</a>
 				<a class="permalink" href="index.html#FactionEnemyData">&#xb6;</a>
 				
 				
@@ -1601,7 +1646,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10053:10094#L333">String</a>
+				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10377:10418#L341">String</a>
 					<a class="permalink" href="index.html#FactionEnemyData.String">&#xb6;</a>
 					
 					
@@ -1615,7 +1660,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9602:9631#L314">FactionType</a>
+			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9926:9955#L322">FactionType</a>
 				<a class="permalink" href="index.html#FactionType">&#xb6;</a>
 				
 				
@@ -1646,7 +1691,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=369:1511#L2">GameComponentList</a>
+			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=369:1530#L2">GameComponentList</a>
 				<a class="permalink" href="index.html#GameComponentList">&#xb6;</a>
 				
 				
@@ -1693,6 +1738,7 @@ Join時はこのフィールドでクエリする
 <span id="GameComponentList.Player"></span>    Player      *<a href="index.html#Player">Player</a>
 <span id="GameComponentList.InParty"></span>    InParty     *<a href="index.html#InParty">InParty</a>
 <span id="GameComponentList.FactionType"></span>    FactionType *<a href="index.html#FactionType">FactionType</a>
+<span id="GameComponentList.Dead"></span>    Dead        *<a href="index.html#Dead">Dead</a>
 
     <span class="comment">// event ================</span>
 <span id="GameComponentList.BattleCommand"></span>    BattleCommand    *<a href="index.html#BattleCommand">BattleCommand</a>
@@ -1754,7 +1800,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6496:6517#L216">InParty</a>
+			<h2 id="InParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6585:6606#L219">InParty</a>
 				<a class="permalink" href="index.html#InParty">&#xb6;</a>
 				
 				
@@ -1778,7 +1824,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7581:7623#L248">InflictsDamage</a>
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7905:7947#L256">InflictsDamage</a>
 				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
 				
 				
@@ -1805,7 +1851,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5738:5756#L182">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5827:5845#L185">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -1830,7 +1876,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10168:10202#L338">ItemLocationType</a>
+			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10492:10526#L346">ItemLocationType</a>
 				<a class="permalink" href="index.html#ItemLocationType">&#xb6;</a>
 				
 				
@@ -1865,7 +1911,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Job">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6049:6080#L201">Job</a>
+			<h2 id="Job">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6138:6169#L204">Job</a>
 				<a class="permalink" href="index.html#Job">&#xb6;</a>
 				
 				
@@ -1891,7 +1937,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10873:10966#L359">LocationEquipped</a>
+			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11197:11290#L367">LocationEquipped</a>
 				<a class="permalink" href="index.html#LocationEquipped">&#xb6;</a>
 				
 				
@@ -1916,7 +1962,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 
 			
 				
-				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10968:11009#L364">String</a>
+				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11292:11333#L372">String</a>
 					<a class="permalink" href="index.html#LocationEquipped.String">&#xb6;</a>
 					
 					
@@ -1930,7 +1976,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10718:10750#L352">LocationInBackpack</a>
+			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11042:11074#L360">LocationInBackpack</a>
 				<a class="permalink" href="index.html#LocationInBackpack">&#xb6;</a>
 				
 				
@@ -1952,7 +1998,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 
 			
 				
-				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10752:10795#L354">String</a>
+				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11076:11119#L362">String</a>
 					<a class="permalink" href="index.html#LocationInBackpack.String">&#xb6;</a>
 					
 					
@@ -1966,7 +2012,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="LocationNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11232:11258#L376">LocationNone</a>
+			<h2 id="LocationNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11556:11582#L384">LocationNone</a>
 				<a class="permalink" href="index.html#LocationNone">&#xb6;</a>
 				
 				
@@ -1988,7 +2034,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 
 			
 				
-				<h3 id="LocationNone.String">func (LocationNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11260:11297#L378">String</a>
+				<h3 id="LocationNone.String">func (LocationNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11584:11621#L386">String</a>
 					<a class="permalink" href="index.html#LocationNone.String">&#xb6;</a>
 					
 					
@@ -2002,7 +2048,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11093:11122#L369">LocationOnField</a>
+			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11417:11446#L377">LocationOnField</a>
 				<a class="permalink" href="index.html#LocationOnField">&#xb6;</a>
 				
 				
@@ -2024,7 +2070,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 
 			
 				
-				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11124:11164#L371">String</a>
+				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11448:11488#L379">String</a>
 					<a class="permalink" href="index.html#LocationOnField.String">&#xb6;</a>
 					
 					
@@ -2038,7 +2084,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7858:7894#L256">Material</a>
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8182:8218#L264">Material</a>
 				<a class="permalink" href="index.html#Material">&#xb6;</a>
 				
 				
@@ -2067,7 +2113,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5917:5950#L191">Name</a>
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6006:6039#L194">Name</a>
 				<a class="permalink" href="index.html#Name">&#xb6;</a>
 				
 				
@@ -2145,7 +2191,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Operator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5336:5358#L166">Operator</a>
+			<h2 id="Operator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5425:5447#L169">Operator</a>
 				<a class="permalink" href="index.html#Operator">&#xb6;</a>
 				
 				
@@ -2192,7 +2238,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6414:6434#L213">Player</a>
+			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6503:6523#L216">Player</a>
 				<a class="permalink" href="index.html#Player">&#xb6;</a>
 				
 				
@@ -2243,7 +2289,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6568:6685#L219">Pools</a>
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6892:7009#L227">Pools</a>
 				<a class="permalink" href="index.html#Pools">&#xb6;</a>
 				
 				
@@ -2309,7 +2355,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7400:7448#L242">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7724:7772#L250">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -2388,7 +2434,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7934:7978#L261">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8258:8302#L269">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -2441,7 +2487,7 @@ TODO: 縦横の型を共通にする。タイル単位だということがわ�
 		
 			
 			
-			<h2 id="Render">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9371:9443#L302">Render</a>
+			<h2 id="Render">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9695:9767#L310">Render</a>
 				<a class="permalink" href="index.html#Render">&#xb6;</a>
 				
 				
@@ -2521,7 +2567,7 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9484:9548#L308">SheetImage</a>
+			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9808:9872#L316">SheetImage</a>
 				<a class="permalink" href="index.html#SheetImage">&#xb6;</a>
 				
 				
@@ -2878,7 +2924,7 @@ Renderはスプライトシートの情報はresourceに持たせ、特定に必
 		
 			
 			
-			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5580:5615#L176">Warp</a>
+			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5669:5704#L179">Warp</a>
 				<a class="permalink" href="index.html#Warp">&#xb6;</a>
 				
 				
@@ -2905,7 +2951,7 @@ TODO: 接触をトリガーに何かさせたいことはよくあるので、�
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6182:6371#L206">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6271:6460#L209">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
