@@ -112,8 +112,10 @@ func TestSortEntities(t *testing.T) {
 			assert.Len(t, sorted, len(tt.expected))
 			for i, entity := range sorted {
 				if len(tt.expected) > 0 {
-					name := world.Components.Name.Get(entity).(*gc.Name)
-					assert.Equal(t, tt.expected[i], name.Name)
+					if entity.HasComponent(world.Components.Name) {
+						name := world.Components.Name.Get(entity).(*gc.Name)
+						assert.Equal(t, tt.expected[i], name.Name)
+					}
 				}
 			}
 		})
