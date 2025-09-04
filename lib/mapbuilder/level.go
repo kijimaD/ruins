@@ -80,6 +80,9 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		}
 	}
 
+	// フィールドアイテムを生成する
+	spawnFieldItems(world, chain)
+
 	// tilesを元にタイルエンティティを生成する
 	for _i, t := range chain.BuildData.Tiles {
 		i := resources.TileIdx(_i)
@@ -103,6 +106,82 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 	}
 
 	return chain.BuildData.Level
+}
+
+// spawnFieldItems はフィールドにアイテムを配置する
+func spawnFieldItems(world w.World, chain *BuilderChain) {
+	// 利用可能なアイテムリスト
+	// TODO: テーブル化・レアリティ考慮する
+	availableItems := []string{
+		"回復薬",
+		"回復スプレー",
+		"手榴弾",
+		"上級回復薬",
+		"ルビー原石",
+	}
+
+	// レアアイテム
+	rareItems := []string{
+		"上級回復薬",
+		"ルビー原石",
+	}
+
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+
+	// 通常アイテムの配置数（階層の深度に応じて調整）
+	normalItemCount := 2 + chain.BuildData.RandomSource.Intn(3) // 2-4個
+	if gameResources.Depth > 5 {
+		normalItemCount++ // 深い階層ではアイテム数を増加
+	}
+
+	// レアアイテムの配置数（低確率）
+	rareItemCount := 0
+	if chain.BuildData.RandomSource.Intn(100) < 30 { // 30%の確率でレアアイテムを配置
+		rareItemCount = 1
+		if gameResources.Depth > 10 && chain.BuildData.RandomSource.Intn(100) < 20 { // 深い階層では複数レアアイテムの可能性
+			rareItemCount = 2
+		}
+	}
+
+	// 通常アイテムを配置
+	spawnItems(world, chain, availableItems, normalItemCount)
+
+	// レアアイテムを配置
+	if rareItemCount > 0 {
+		spawnItems(world, chain, rareItems, rareItemCount)
+	}
+}
+
+// spawnItems は指定された数のアイテムを配置する
+func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int) {
+	failCount := 0
+	successCount := 0
+
+	for successCount < count {
+		if failCount > 200 {
+			log.Printf("アイテム配置の試行回数が上限に達しました。配置数: %d/%d", successCount, count)
+			break
+		}
+
+		// ランダムな位置を選択
+		x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+		y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+
+		// スポーン可能な位置かチェック
+		if !chain.BuildData.IsSpawnableTile(world, x, y) {
+			failCount++
+			continue
+		}
+
+		// アイテム名をランダム選択
+		itemName := itemList[chain.BuildData.RandomSource.Intn(len(itemList))]
+
+		// アイテムを配置
+		worldhelper.SpawnFieldItem(world, itemName, x, y)
+
+		successCount++
+		failCount = 0
+	}
 }
 
 // getSpriteNumberForWallType は壁タイプに対応するスプライト番号を返す

@@ -211,6 +211,20 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 	return entities[len(entities)-1]
 }
 
+// SpawnMaterial はmaterialを生成する
+func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) ecs.Entity {
+	componentList := entities.ComponentList{}
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	gameComponent, err := rawMaster.GenerateMaterial(name, amount, locationType)
+	if err != nil {
+		panic(err) // TODO: Handle error properly
+	}
+	componentList.Game = append(componentList.Game, gameComponent)
+	entities := entities.AddEntities(world, componentList)
+
+	return entities[len(entities)-1]
+}
+
 // 完全回復させる
 func fullRecover(world w.World, entity ecs.Entity) {
 	// 新しく生成されたエンティティの最大HP/SPを設定
@@ -309,4 +323,22 @@ func SpawnAllCards(world w.World) {
 		componentList.Game = append(componentList.Game, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
+}
+
+// SpawnFieldItem はフィールド上にアイテムを生成する
+func SpawnFieldItem(world w.World, itemName string, x gc.Row, y gc.Col) ecs.Entity {
+	SpawnFloor(world, x, y) // 下敷きの床を描画
+
+	// アイテムエンティティを生成
+	item := SpawnItem(world, itemName, gc.ItemLocationOnField)
+
+	// フィールド表示用のコンポーネントを追加
+	item.AddComponent(world.Components.GridElement, &gc.GridElement{Row: x, Col: y})
+	item.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
+		Name:         "field", // フィールドスプライトシートを使用
+		SpriteNumber: 18,      // Sprite 18 がフィールドアイテム
+		Depth:        gc.DepthNumRug,
+	})
+
+	return item
 }

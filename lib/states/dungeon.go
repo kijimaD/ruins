@@ -95,6 +95,7 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
 	gs.CollisionSystem(world)
+	gs.ItemCollectionSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}

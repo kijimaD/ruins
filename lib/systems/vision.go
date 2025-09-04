@@ -237,8 +237,8 @@ func bresenhamLineOfSight(world w.World, x0, y0, x1, y1 int) bool {
 
 		// 現在のタイルが壁かチェック（ターゲット以外）
 		if x != x1 || y != y1 {
-			tileCenterX := float64(x*32 + 16)
-			tileCenterY := float64(y*32 + 16)
+			tileCenterX := float64(x*int(consts.TileSize) + int(consts.TileSize)/2)
+			tileCenterY := float64(y*int(consts.TileSize) + int(consts.TileSize)/2)
 			if isBlockedByWall(world, gc.Pixel(tileCenterX), gc.Pixel(tileCenterY)) {
 				return false // 壁に遮られている
 			}
