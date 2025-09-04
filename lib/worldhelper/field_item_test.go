@@ -78,7 +78,7 @@ func TestSpawnMultipleFieldItems(t *testing.T) {
 		world.Components.Item,
 		world.Components.ItemLocationOnField,
 		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		fieldItemCount++
 	}))
 

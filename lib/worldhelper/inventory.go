@@ -8,9 +8,9 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// AddToInventory は既存のバックパック内アイテムと統合するか新規追加する
-// materialの場合は数量管理、それ以外は単純にlocation切り替え
-func AddToInventory(world w.World, newItemEntity ecs.Entity, itemName string) {
+// MergeIntoInventory は既存のバックパック内アイテムと統合するか新規追加する
+// materialの場合は既存と数量統合、それ以外は個別アイテムとして追加
+func MergeIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) {
 	// ItemコンポーネントまたはMaterialコンポーネントを持っているかチェック
 	hasItem := newItemEntity.HasComponent(world.Components.Item)
 	hasMaterial := newItemEntity.HasComponent(world.Components.Material)
@@ -46,12 +46,8 @@ func AddToInventory(world w.World, newItemEntity ecs.Entity, itemName string) {
 		if found {
 			// 既存のmaterialに数量を追加
 			mergeMaterials(world, existingMaterial, newItemEntity)
-		} else {
-			// 見つからなかった場合は新規materialとして追加（既にLocationInBackpackが設定済み）
 		}
-	} else {
-		// material以外の場合は単純にlocation切り替えのみ（統合しない）
-		// 既にLocationInBackpackが設定されているのでそのまま
+		// 見つからなかった場合は新規materialとして追加（既にLocationInBackpackが設定済み）
 	}
 }
 

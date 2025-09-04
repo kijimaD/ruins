@@ -101,7 +101,7 @@ func TestCollectFieldItem(t *testing.T) {
 }
 
 // countBackpackItems はバックパック内のアイテム数をカウントする
-func countBackpackItems(world interface{}) int {
+func countBackpackItems(_ interface{}) int {
 	// 簡単のためダミー値を返す（実際の実装では適切にカウント）
 	return 0
 }

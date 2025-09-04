@@ -11,7 +11,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func TestAddToInventoryWithMaterial(t *testing.T) {
+func TestMergeIntoInventoryWithMaterial(t *testing.T) {
 	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -22,8 +22,8 @@ func TestAddToInventoryWithMaterial(t *testing.T) {
 	// 新しいmaterialを作成（数量3）
 	newMaterial := SpawnMaterial(world, "鉄くず", 3, gc.ItemLocationInBackpack)
 
-	// AddToInventoryを実行
-	AddToInventory(world, newMaterial, "鉄くず")
+	// MergeIntoInventoryを実行
+	MergeIntoInventory(world, newMaterial, "鉄くず")
 
 	// 既存のmaterialの数量が統合されていることを確認
 	updatedMat := world.Components.Material.Get(existingMaterial).(*gc.Material)
@@ -33,7 +33,7 @@ func TestAddToInventoryWithMaterial(t *testing.T) {
 	assert.False(t, newMaterial.HasComponent(world.Components.Material), "新しいmaterialエンティティが削除されていない")
 }
 
-func TestAddToInventoryWithNewMaterial(t *testing.T) {
+func TestMergeIntoInventoryWithNewMaterial(t *testing.T) {
 	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -46,19 +46,19 @@ func TestAddToInventoryWithNewMaterial(t *testing.T) {
 	world.Manager.Join(
 		world.Components.Material,
 		world.Components.ItemLocationInBackpack,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		materialCountBefore++
 	}))
 
-	// AddToInventoryを実行
-	AddToInventory(world, newMaterial, "緑ハーブ")
+	// MergeIntoInventoryを実行
+	MergeIntoInventory(world, newMaterial, "緑ハーブ")
 
 	// バックパック内のmaterial数をカウント（統合後）
 	materialCountAfter := 0
 	world.Manager.Join(
 		world.Components.Material,
 		world.Components.ItemLocationInBackpack,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		materialCountAfter++
 	}))
 
@@ -71,7 +71,7 @@ func TestAddToInventoryWithNewMaterial(t *testing.T) {
 	assert.Equal(t, 2, updatedMat.Amount, "数量が維持されていない")
 }
 
-func TestAddToInventoryWithNonMaterial(t *testing.T) {
+func TestMergeIntoInventoryWithNonMaterial(t *testing.T) {
 	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -87,19 +87,19 @@ func TestAddToInventoryWithNonMaterial(t *testing.T) {
 	world.Manager.Join(
 		world.Components.Item,
 		world.Components.ItemLocationInBackpack,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		itemCountBefore++
 	}))
 
-	// AddToInventoryを実行
-	AddToInventory(world, newItem, "回復薬")
+	// MergeIntoInventoryを実行
+	MergeIntoInventory(world, newItem, "回復薬")
 
 	// バックパック内のアイテム数をカウント（統合後）
 	itemCountAfter := 0
 	world.Manager.Join(
 		world.Components.Item,
 		world.Components.ItemLocationInBackpack,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		itemCountAfter++
 	}))
 
@@ -109,7 +109,7 @@ func TestAddToInventoryWithNonMaterial(t *testing.T) {
 	assert.True(t, newItem.HasComponent(world.Components.Item), "新しいアイテムエンティティが生きているべき")
 }
 
-func TestAddToInventoryWithoutItemOrMaterialComponent(t *testing.T) {
+func TestMergeIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) {
 	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
@@ -122,8 +122,8 @@ func TestAddToInventoryWithoutItemOrMaterialComponent(t *testing.T) {
 	entities := entities.AddEntities(world, componentList)
 	nonItemEntity := entities[0]
 
-	// AddToInventoryを実行してパニックが発生することを確認
+	// MergeIntoInventoryを実行してパニックが発生することを確認
 	require.Panics(t, func() {
-		AddToInventory(world, nonItemEntity, "テスト")
+		MergeIntoInventory(world, nonItemEntity, "テスト")
 	}, "ItemもMaterialコンポーネントも持たないエンティティに対してパニックするべき")
 }
