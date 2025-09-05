@@ -1,6 +1,7 @@
 package worldhelper
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/kijimaD/ruins/lib/config"
@@ -11,6 +12,43 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
+)
+
+// 定数定義
+const (
+	// スプライト番号
+	spriteNumberFloor      = 2  // 床
+	spriteNumberPlayer     = 3  // プレイヤー
+	spriteNumberWarpNext   = 4  // 進行ワープホール
+	spriteNumberWarpEscape = 5  // 脱出ワープホール
+	spriteNumberNPC        = 6  // NPC
+	spriteNumberFieldItem  = 18 // フィールドアイテム
+
+	// 移動速度
+	playerMaxSpeed = 2.0 // プレイヤーの最高速度
+	npcMaxSpeed    = 1.0 // NPCの最高速度
+
+	// カメラスケール
+	cameraInitialScale = 0.1 // カメラの初期スケール（ズームアウト）
+	cameraNormalScale  = 1.0 // カメラの通常スケール
+
+	// AI設定
+	aiVisionDistance = 160.0 // AIの視界距離（ピクセル）
+
+	// ステータス計算係数
+	hpBaseValue        = 30   // HP計算の基本値
+	hpVitalityMultiply = 8    // HP計算の体力係数
+	spVitalityMultiply = 2    // SP計算の体力係数
+	hpLevelGrowthRate  = 0.03 // HPのレベル成長率
+	spLevelGrowthRate  = 0.02 // SPのレベル成長率
+)
+
+// エラー定義
+var (
+	ErrItemGeneration   = errors.New("アイテムの生成に失敗しました")
+	ErrMemberGeneration = errors.New("メンバーの生成に失敗しました")
+	ErrEnemyGeneration  = errors.New("敵の生成に失敗しました")
+	ErrEffectGeneration = errors.New("エフェクトの生成に失敗しました")
 )
 
 // ========== 生成システム（旧spawner） ==========
@@ -26,7 +64,7 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
-			SpriteNumber: 2,
+			SpriteNumber: spriteNumberFloor,
 			Depth:        gc.DepthNumFloor,
 		},
 	})
@@ -60,7 +98,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
-			SpriteNumber: 4,
+			SpriteNumber: spriteNumberWarpNext,
 			Depth:        gc.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeNext},
@@ -78,7 +116,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 		GridElement: &gc.GridElement{Row: x, Col: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
-			SpriteNumber: 5,
+			SpriteNumber: spriteNumberWarpEscape,
 			Depth:        gc.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
@@ -97,12 +135,12 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{
-				MaxSpeed: 2.0, // プレイヤーの最高速度
+				MaxSpeed: playerMaxSpeed,
 			},
 			Operator: &gc.Operator{},
 			SpriteRender: &gc.SpriteRender{
 				Name:         "field",
-				SpriteNumber: 3,
+				SpriteNumber: spriteNumberPlayer,
 				Depth:        gc.DepthNumOperator,
 			},
 			BlockPass: &gc.BlockPass{},
@@ -116,13 +154,13 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 		cfg := config.Get()
 		var scale, scaleTo float64
 		if cfg.DisableAnimation {
-			// アニメーション無効時は初期スケールを1に設定
-			scale = 1
-			scaleTo = 1
+			// アニメーション無効時は初期スケールを通常値に設定
+			scale = cameraNormalScale
+			scaleTo = cameraNormalScale
 		} else {
 			// アニメーション有効時はズームアウトアニメーション
-			scale = 0.1
-			scaleTo = 1
+			scale = cameraInitialScale
+			scaleTo = cameraNormalScale
 		}
 
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -141,18 +179,18 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
 			Velocity: &gc.Velocity{
-				MaxSpeed: 1.0, // プレイヤーより遅い
+				MaxSpeed: npcMaxSpeed,
 			},
 			SpriteRender: &gc.SpriteRender{
 				Name:         "field",
-				SpriteNumber: 6,
+				SpriteNumber: spriteNumberNPC,
 				Depth:        gc.DepthNumTaller,
 			},
 			BlockPass: &gc.BlockPass{},
 			AIMoveFSM: &gc.AIMoveFSM{},
 			AIRoaming: &gc.AIRoaming{},
 			AIVision: &gc.AIVision{
-				ViewDistance: gc.Pixel(160.0),
+				ViewDistance: gc.Pixel(aiVisionDistance),
 			},
 		})
 		entities.AddEntities(world, componentList)
@@ -164,42 +202,42 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 // ================
 
 // SpawnItem はアイテムを生成する
-func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) ecs.Entity {
+func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	gameComponent, err := rawMaster.GenerateItem(name, locationType)
 	if err != nil {
-		panic(err) // TODO: Handle error properly
+		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
 	componentList.Game = append(componentList.Game, gameComponent)
 	entities := entities.AddEntities(world, componentList)
 
-	return entities[len(entities)-1]
+	return entities[len(entities)-1], nil
 }
 
 // SpawnMember はパーティに追加可能なキャラを生成する
-func SpawnMember(world w.World, name string, inParty bool) ecs.Entity {
+func SpawnMember(world w.World, name string, inParty bool) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	memberComp, err := rawMaster.GenerateMember(name, inParty)
 	if err != nil {
-		panic(fmt.Sprintf("GenerateMember failed: %v", err))
+		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}
 	componentList.Game = append(componentList.Game, memberComp)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
 
-	return entities[len(entities)-1]
+	return entities[len(entities)-1], nil
 }
 
 // SpawnEnemy は戦闘に参加する敵キャラを生成する
-func SpawnEnemy(world w.World, name string) ecs.Entity {
+func SpawnEnemy(world w.World, name string) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
 	cl, err := rawMaster.GenerateEnemy(name)
 	if err != nil {
-		panic(fmt.Sprintf("GenerateEnemy failed: %v", err))
+		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrEnemyGeneration, err)
 	}
 	componentList.Game = append(
 		componentList.Game,
@@ -208,21 +246,21 @@ func SpawnEnemy(world w.World, name string) ecs.Entity {
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
 
-	return entities[len(entities)-1]
+	return entities[len(entities)-1], nil
 }
 
 // SpawnMaterial はmaterialを生成する
-func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) ecs.Entity {
+func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	gameComponent, err := rawMaster.GenerateMaterial(name, amount, locationType)
 	if err != nil {
-		panic(err) // TODO: Handle error properly
+		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
 	componentList.Game = append(componentList.Game, gameComponent)
 	entities := entities.AddEntities(world, componentList)
 
-	return entities[len(entities)-1]
+	return entities[len(entities)-1], nil
 }
 
 // 完全回復させる
@@ -274,71 +312,77 @@ func setMaxHPSP(world w.World, entity ecs.Entity) {
 		attrs.Defense.Total = attrs.Defense.Base
 	}
 
-	// 最大HP計算: 30+(体力*8+力+感覚)*{1+(Lv-1)*0.03}
-	pools.HP.Max = int(30 + float64(attrs.Vitality.Total*8+attrs.Strength.Total+attrs.Sensation.Total)*(1+float64(pools.Level-1)*0.03))
+	// 最大HP計算: base+(体力*multiplyV+力+感覚)*{1+(Lv-1)*growthRate}
+	pools.HP.Max = int(hpBaseValue + float64(attrs.Vitality.Total*hpVitalityMultiply+attrs.Strength.Total+attrs.Sensation.Total)*(1+float64(pools.Level-1)*hpLevelGrowthRate))
 	pools.HP.Current = pools.HP.Max
 
-	// 最大SP計算: (体力*2+器用さ+素早さ)*{1+(Lv-1)*0.02}
-	pools.SP.Max = int(float64(attrs.Vitality.Total*2+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*0.02))
+	// 最大SP計算: (体力*multiplyV+器用さ+素早さ)*{1+(Lv-1)*growthRate}
+	pools.SP.Max = int(float64(attrs.Vitality.Total*spVitalityMultiply+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*spLevelGrowthRate))
 	pools.SP.Current = pools.SP.Max
 }
 
 // SpawnAllMaterials は所持素材の個数を0で初期化する
-func SpawnAllMaterials(world w.World) {
+func SpawnAllMaterials(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.MaterialIndex {
 		componentList := entities.ComponentList{}
 		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
 		if err != nil {
-			panic(err) // TODO: Handle error properly
+			return fmt.Errorf("%w (material: %s): %v", ErrItemGeneration, k, err)
 		}
 		componentList.Game = append(componentList.Game, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
+	return nil
 }
 
 // SpawnAllRecipes はレシピ初期化
-func SpawnAllRecipes(world w.World) {
+func SpawnAllRecipes(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.RecipeIndex {
 		componentList := entities.ComponentList{}
 		gameComponent, err := rawMaster.GenerateRecipe(k)
 		if err != nil {
-			panic(err) // TODO: Handle error properly
+			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
 		}
 		componentList.Game = append(componentList.Game, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
+	return nil
 }
 
 // SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
-func SpawnAllCards(world w.World) {
+func SpawnAllCards(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.ItemIndex {
 		componentList := entities.ComponentList{}
 		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
 		if err != nil {
-			panic(err) // TODO: Handle error properly
+			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}
 		componentList.Game = append(componentList.Game, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
+	return nil
 }
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
-func SpawnFieldItem(world w.World, itemName string, x gc.Row, y gc.Col) ecs.Entity {
+func SpawnFieldItem(world w.World, itemName string, x gc.Row, y gc.Col) (ecs.Entity, error) {
 	SpawnFloor(world, x, y) // 下敷きの床を描画
 
 	// アイテムエンティティを生成
-	item := SpawnItem(world, itemName, gc.ItemLocationOnField)
+	item, err := SpawnItem(world, itemName, gc.ItemLocationOnField)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
 
 	// フィールド表示用のコンポーネントを追加
 	item.AddComponent(world.Components.GridElement, &gc.GridElement{Row: x, Col: y})
 	item.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
 		Name:         "field", // フィールドスプライトシートを使用
-		SpriteNumber: 18,      // Sprite 18 がフィールドアイテム
+		SpriteNumber: spriteNumberFieldItem,
 		Depth:        gc.DepthNumRug,
 	})
 
-	return item
+	return item, nil
 }

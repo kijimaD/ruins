@@ -6,6 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/game"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +22,8 @@ func TestItemCollectionSystem(t *testing.T) {
 	worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100))
 
 	// フィールドアイテムをプレイヤーの近くに配置
-	item := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
+	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
+	require.NoError(t, err)
 
 	// 収集前の状態確認
 	assert.True(t, item.HasComponent(world.Components.ItemLocationOnField), "アイテムはフィールドにあるべき")
@@ -59,7 +61,8 @@ func TestCheckItemCollision(t *testing.T) {
 	}))
 
 	// アイテムを配置
-	item := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
+	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
+	require.NoError(t, err)
 
 	// プレイヤー位置
 	playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
@@ -82,7 +85,8 @@ func TestCollectFieldItem(t *testing.T) {
 	require.NoError(t, err)
 
 	// フィールドアイテムを配置
-	item := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(5), gc.Col(5))
+	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(5), gc.Col(5))
+	require.NoError(t, err)
 
 	// 収集前の状態確認
 	assert.True(t, item.HasComponent(world.Components.ItemLocationOnField), "アイテムはフィールドにあるべき")
@@ -101,7 +105,10 @@ func TestCollectFieldItem(t *testing.T) {
 }
 
 // countBackpackItems はバックパック内のアイテム数をカウントする
-func countBackpackItems(_ interface{}) int {
-	// 簡単のためダミー値を返す（実際の実装では適切にカウント）
-	return 0
+func countBackpackItems(world w.World) int {
+	count := 0
+	world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(entity ecs.Entity) {
+		count++
+	}))
+	return count
 }

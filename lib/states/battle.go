@@ -96,13 +96,22 @@ func (st *BattleState) OnStart(world w.World) {
 	if len(st.FixedEnemies) > 0 {
 		// 固定敵が指定されている場合はそれを使用
 		for _, enemyName := range st.FixedEnemies {
-			_ = worldhelper.SpawnEnemy(world, enemyName)
+			_, err := worldhelper.SpawnEnemy(world, enemyName)
+			if err != nil {
+				panic(fmt.Errorf("戦闘で敵の生成に失敗: %w", err))
+			}
 		}
 	} else {
 		// 指定がない場合は従来のハードコーディングされた敵を使用
 		// 将来的にはFieldEnemyEntityの情報を基に適切な敵を判別する
-		_ = worldhelper.SpawnEnemy(world, "軽戦車")
-		_ = worldhelper.SpawnEnemy(world, "火の玉")
+		_, err := worldhelper.SpawnEnemy(world, "軽戦車")
+		if err != nil {
+			panic(fmt.Errorf("戦闘で敵の生成に失敗: %w", err))
+		}
+		_, err = worldhelper.SpawnEnemy(world, "火の玉")
+		if err != nil {
+			panic(fmt.Errorf("戦闘で敵の生成に失敗: %w", err))
+		}
 	}
 
 	bg := (*world.Resources.SpriteSheets)["bg_jungle1"]

@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/game"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -18,7 +19,5 @@ func TestSpawnFieldItemsIntegration(t *testing.T) {
 	chain.Build()
 
 	// フィールドアイテムを配置（エラーが発生しないことを確認）
-	require.NotPanics(t, func() {
-		spawnFieldItems(world, chain)
-	}, "spawnFieldItems関数はパニックしてはいけない")
+	assert.NoError(t, spawnFieldItems(world, chain))
 }

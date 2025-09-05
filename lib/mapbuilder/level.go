@@ -1,6 +1,8 @@
 package mapbuilder
 
 import (
+	"errors"
+	"fmt"
 	"log"
 
 	"github.com/kijimaD/ruins/lib/consts"
@@ -44,9 +46,18 @@ const (
 	spriteWallGeneric     = 1  // 汎用壁
 )
 
+// エラーメッセージ
+var (
+	ErrNPCGenerationFailed     = errors.New("NPCの生成に失敗しました")
+	ErrPlayerStartNotFound     = errors.New("プレイヤーのスタート位置が見つかりません")
+	ErrMapGenerationFailed     = errors.New("マップ生成に失敗しました")
+	ErrWarpPortalPlaceFailed   = errors.New("ワープポータルの配置に失敗しました")
+	ErrEscapePortalPlaceFailed = errors.New("脱出ポータルの配置に失敗しました")
+)
+
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
-func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) resources.Level {
+func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) (resources.Level, error) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	var chain *BuilderChain
@@ -61,8 +72,9 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		chain.Build()
 
 		// プレイヤーのスタート位置を見つける（最初にスポーン可能な位置）
-		playerX, playerY = findPlayerStartPosition(&chain.BuildData, world)
-		if playerX == -1 || playerY == -1 {
+		var err error
+		playerX, playerY, err = findPlayerStartPosition(&chain.BuildData, world)
+		if err != nil {
 			continue // スタート位置が見つからない場合は再生成
 		}
 
@@ -85,36 +97,16 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		gc.Pixel(playerX*int(consts.TileSize)+int(consts.TileSize)/2),
 		gc.Pixel(playerY*int(consts.TileSize)+int(consts.TileSize)/2),
 	)
+
 	// フィールドにNPCを生成する
-	{
-		failCount := 0
-		total := baseNPCCount + chain.BuildData.RandomSource.Intn(randomNPCCount)
-		successCount := 0
-		for {
-			if failCount > maxNPCFailCount {
-				log.Fatal("NPCの生成に失敗した")
-			}
-			tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-			ty := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
-			if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
-				failCount++
-				continue
-			}
-			worldhelper.SpawnNPC(
-				world,
-				gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
-				gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
-			)
-			successCount++
-			failCount = 0
-			if successCount > total {
-				break
-			}
-		}
+	if err := spawnNPCs(world, chain); err != nil {
+		return resources.Level{}, err
 	}
 
 	// フィールドアイテムを生成する
-	spawnFieldItems(world, chain)
+	if err := spawnFieldItems(world, chain); err != nil {
+		return resources.Level{}, err
+	}
 
 	// tilesを元にタイルエンティティを生成する
 	for _i, t := range chain.BuildData.Tiles {
@@ -138,11 +130,42 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		}
 	}
 
-	return chain.BuildData.Level
+	return chain.BuildData.Level, nil
+}
+
+// spawnNPCs はフィールドにNPCを生成する
+func spawnNPCs(world w.World, chain *BuilderChain) error {
+	failCount := 0
+	total := baseNPCCount + chain.BuildData.RandomSource.Intn(randomNPCCount)
+	successCount := 0
+
+	for {
+		if failCount > maxNPCFailCount {
+			return ErrNPCGenerationFailed
+		}
+		tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+		ty := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+		if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
+			failCount++
+			continue
+		}
+		worldhelper.SpawnNPC(
+			world,
+			gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
+			gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
+		)
+		successCount++
+		failCount = 0
+		if successCount > total {
+			break
+		}
+	}
+
+	return nil
 }
 
 // spawnFieldItems はフィールドにアイテムを配置する
-func spawnFieldItems(world w.World, chain *BuilderChain) {
+func spawnFieldItems(world w.World, chain *BuilderChain) error {
 	// 利用可能なアイテムリスト
 	// TODO: テーブル化・レアリティ考慮する
 	availableItems := []string{
@@ -177,16 +200,22 @@ func spawnFieldItems(world w.World, chain *BuilderChain) {
 	}
 
 	// 通常アイテムを配置
-	spawnItems(world, chain, availableItems, normalItemCount)
+	if err := spawnItems(world, chain, availableItems, normalItemCount); err != nil {
+		return err
+	}
 
 	// レアアイテムを配置
 	if rareItemCount > 0 {
-		spawnItems(world, chain, rareItems, rareItemCount)
+		if err := spawnItems(world, chain, rareItems, rareItemCount); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 // spawnItems は指定された数のアイテムを配置する
-func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int) {
+func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int) error {
 	failCount := 0
 	successCount := 0
 
@@ -210,11 +239,15 @@ func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int
 		itemName := itemList[chain.BuildData.RandomSource.Intn(len(itemList))]
 
 		// アイテムを配置
-		worldhelper.SpawnFieldItem(world, itemName, x, y)
+		_, err := worldhelper.SpawnFieldItem(world, itemName, x, y)
+		if err != nil {
+			return fmt.Errorf("フィールドアイテム配置エラー: %w", err)
+		}
 
 		successCount++
 		failCount = 0
 	}
+	return nil
 }
 
 // getSpriteNumberForWallType は壁タイプに対応するスプライト番号を返す
@@ -244,7 +277,7 @@ func getSpriteNumberForWallType(wallType WallType) int {
 }
 
 // findPlayerStartPosition はプレイヤーのスタート位置を見つける
-func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int) {
+func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int, error) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -260,7 +293,7 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int) {
 	// 最適な位置を探す
 	for _, pos := range attempts {
 		if buildData.IsSpawnableTile(world, gc.Row(pos.x), gc.Col(pos.y)) {
-			return pos.x, pos.y
+			return pos.x, pos.y, nil
 		}
 	}
 
@@ -269,11 +302,11 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int) {
 		x := buildData.RandomSource.Intn(width)
 		y := buildData.RandomSource.Intn(height)
 		if buildData.IsSpawnableTile(world, gc.Row(x), gc.Col(y)) {
-			return x, y
+			return x, y, nil
 		}
 	}
 
-	return -1, -1 // 見つからない場合
+	return -1, -1, ErrPlayerStartNotFound // 見つからない場合
 }
 
 // validateMapWithPortals はポータルを配置してマップの接続性を検証する
