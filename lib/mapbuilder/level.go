@@ -11,6 +11,39 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
+const (
+	// マップ生成関連
+	maxMapGenerationAttempts = 10  // マップ生成の最大試行回数
+	maxPlacementAttempts     = 200 // 配置処理の最大試行回数
+
+	// NPC生成関連
+	baseNPCCount    = 5   // NPC生成の基本数
+	randomNPCCount  = 5   // NPC生成のランダム追加数（0-4の範囲）
+	maxNPCFailCount = 200 // NPC生成の最大失敗回数
+
+	// アイテム配置関連
+	baseItemCount           = 2  // 通常アイテム配置の基本数
+	randomItemCount         = 3  // 通常アイテム配置のランダム追加数（0-2の範囲）
+	itemIncreaseDepth       = 5  // アイテム数増加の深度しきい値
+	rareItemProbability     = 30 // レアアイテム配置確率（%）
+	deepRareItemDepth       = 10 // 深い階層の判定深度
+	deepRareItemProbability = 20 // 深い階層でのレアアイテム複数配置確率（%）
+
+	// ワープホール関連
+	escapePortalInterval = 5 // 帰還ワープホール配置間隔（n階層ごと）
+
+	// 壁スプライト番号
+	spriteWallTop         = 10 // 上壁
+	spriteWallBottom      = 11 // 下壁
+	spriteWallLeft        = 12 // 左壁
+	spriteWallRight       = 13 // 右壁
+	spriteWallTopLeft     = 14 // 左上角
+	spriteWallTopRight    = 15 // 右上角
+	spriteWallBottomLeft  = 16 // 左下角
+	spriteWallBottomRight = 17 // 右下角
+	spriteWallGeneric     = 1  // 汎用壁
+)
+
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
 func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) resources.Level {
@@ -19,9 +52,9 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 	var chain *BuilderChain
 	var playerX, playerY int
 
-	// 接続性検証付きマップ生成（最大10回まで再試行）
+	// 接続性検証付きマップ生成（最大試行回数まで再試行）
 	validMap := false
-	for attempt := 0; attempt < 10 && !validMap; attempt++ {
+	for attempt := 0; attempt < maxMapGenerationAttempts && !validMap; attempt++ {
 		// シードを少しずつ変えて再生成
 		currentSeed := seed + uint64(attempt)
 		chain = createBuilderChain(builderType, width, height, currentSeed)
@@ -36,13 +69,13 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		// 接続性を検証（ポータル配置後）
 		validMap = validateMapWithPortals(chain, world, gameResources, playerX, playerY)
 
-		if !validMap && attempt < 9 {
+		if !validMap && attempt < maxMapGenerationAttempts-1 {
 			log.Printf("マップ生成試行 %d: 接続性検証失敗、再生成します", attempt+1)
 		}
 	}
 
 	if !validMap {
-		log.Printf("警告: %d回の試行後も完全接続マップを生成できませんでした。部分的接続マップを使用します", 10)
+		log.Printf("警告: %d回の試行後も完全接続マップを生成できませんでした。部分的接続マップを使用します", maxMapGenerationAttempts)
 	}
 
 	// ポータルは既にvalidateMapWithPortals内で配置済み
@@ -55,10 +88,10 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 	// フィールドにNPCを生成する
 	{
 		failCount := 0
-		total := 5 + chain.BuildData.RandomSource.Intn(5)
+		total := baseNPCCount + chain.BuildData.RandomSource.Intn(randomNPCCount)
 		successCount := 0
 		for {
-			if failCount > 200 {
+			if failCount > maxNPCFailCount {
 				log.Fatal("NPCの生成に失敗した")
 			}
 			tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
@@ -129,16 +162,16 @@ func spawnFieldItems(world w.World, chain *BuilderChain) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	// 通常アイテムの配置数（階層の深度に応じて調整）
-	normalItemCount := 2 + chain.BuildData.RandomSource.Intn(3) // 2-4個
-	if gameResources.Depth > 5 {
+	normalItemCount := baseItemCount + chain.BuildData.RandomSource.Intn(randomItemCount)
+	if gameResources.Depth > itemIncreaseDepth {
 		normalItemCount++ // 深い階層ではアイテム数を増加
 	}
 
 	// レアアイテムの配置数（低確率）
 	rareItemCount := 0
-	if chain.BuildData.RandomSource.Intn(100) < 30 { // 30%の確率でレアアイテムを配置
+	if chain.BuildData.RandomSource.Intn(100) < rareItemProbability {
 		rareItemCount = 1
-		if gameResources.Depth > 10 && chain.BuildData.RandomSource.Intn(100) < 20 { // 深い階層では複数レアアイテムの可能性
+		if gameResources.Depth > deepRareItemDepth && chain.BuildData.RandomSource.Intn(100) < deepRareItemProbability {
 			rareItemCount = 2
 		}
 	}
@@ -158,7 +191,7 @@ func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int
 	successCount := 0
 
 	for successCount < count {
-		if failCount > 200 {
+		if failCount > maxPlacementAttempts {
 			log.Printf("アイテム配置の試行回数が上限に達しました。配置数: %d/%d", successCount, count)
 			break
 		}
@@ -188,23 +221,23 @@ func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int
 func getSpriteNumberForWallType(wallType WallType) int {
 	switch wallType {
 	case WallTypeTop:
-		return 10 // 上壁（下に床がある）
+		return spriteWallTop // 上壁（下に床がある）
 	case WallTypeBottom:
-		return 11 // 下壁（上に床がある）
+		return spriteWallBottom // 下壁（上に床がある）
 	case WallTypeLeft:
-		return 12 // 左壁（右に床がある）
+		return spriteWallLeft // 左壁（右に床がある）
 	case WallTypeRight:
-		return 13 // 右壁（左に床がある）
+		return spriteWallRight // 右壁（左に床がある）
 	case WallTypeTopLeft:
-		return 14 // 左上角（右下に床がある）
+		return spriteWallTopLeft // 左上角（右下に床がある）
 	case WallTypeTopRight:
-		return 15 // 右上角（左下に床がある）
+		return spriteWallTopRight // 右上角（左下に床がある）
 	case WallTypeBottomLeft:
-		return 16 // 左下角（右上に床がある）
+		return spriteWallBottomLeft // 左下角（右上に床がある）
 	case WallTypeBottomRight:
-		return 17 // 右下角（左上に床がある）
+		return spriteWallBottomRight // 右下角（左上に床がある）
 	case WallTypeGeneric:
-		return 1 // 汎用壁（従来の壁）
+		return spriteWallGeneric // 汎用壁（従来の壁）
 	default:
 		return 1 // デフォルトは従来の壁
 	}
@@ -232,7 +265,7 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int) {
 	}
 
 	// 全体をランダムに探索
-	for attempt := 0; attempt < 200; attempt++ {
+	for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
 		x := buildData.RandomSource.Intn(width)
 		y := buildData.RandomSource.Intn(height)
 		if buildData.IsSpawnableTile(world, gc.Row(x), gc.Col(y)) {
@@ -247,7 +280,7 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int) {
 func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *resources.Dungeon, playerX, playerY int) bool {
 	// 進行ワープホールを配置
 	warpNextPlaced := false
-	for attempt := 0; attempt < 200; attempt++ {
+	for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
 		x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
 		y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
@@ -264,11 +297,11 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *r
 	}
 
 	// 帰還ワープホールを配置（5階層ごと）
-	escapePortalRequired := gameResources.Depth%5 == 0
+	escapePortalRequired := gameResources.Depth%escapePortalInterval == 0
 	escapePortalPlaced := !escapePortalRequired
 
 	if escapePortalRequired {
-		for attempt := 0; attempt < 200; attempt++ {
+		for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
 			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
 			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 
