@@ -107,7 +107,7 @@ func TestCollectFieldItem(t *testing.T) {
 // countBackpackItems はバックパック内のアイテム数をカウントする
 func countBackpackItems(world w.World) int {
 	count := 0
-	world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(_ ecs.Entity) {
 		count++
 	}))
 	return count
