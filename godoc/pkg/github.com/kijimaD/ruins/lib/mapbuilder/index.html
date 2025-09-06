@@ -113,9 +113,11 @@
 			<dl>
 			
 			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
+			
 			
 				
-				<dd><a href="index.html#NewLevel">func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) resources.Level</a></dd>
+				<dd><a href="index.html#NewLevel">func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) (resources.Level, error)</a></dd>
 			
 			
 				
@@ -517,15 +519,28 @@
 
 		
 		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>エラーメッセージ
+
+				<pre>var (
+    <span id="ErrNPCGenerationFailed">ErrNPCGenerationFailed</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;NPCの生成に失敗しました&#34;)
+    <span id="ErrPlayerStartNotFound">ErrPlayerStartNotFound</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;プレイヤーのスタート位置が見つかりません&#34;)
+    <span id="ErrMapGenerationFailed">ErrMapGenerationFailed</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;マップ生成に失敗しました&#34;)
+    <span id="ErrWarpPortalPlaceFailed">ErrWarpPortalPlaceFailed</span>   = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;ワープポータルの配置に失敗しました&#34;)
+    <span id="ErrEscapePortalPlaceFailed">ErrEscapePortalPlaceFailed</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;脱出ポータルの配置に失敗しました&#34;)
+)</pre>
+			
+		
 		
 			
 			
-			<h2 id="NewLevel">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/level.go?s=515:626#L6">NewLevel</a>
+			<h2 id="NewLevel">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/level.go?s=2409:2529#L50">NewLevel</a>
 				<a class="permalink" href="index.html#NewLevel">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewLevel(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>, builderType <a href="index.html#BuilderType">BuilderType</a>) <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Level">Level</a></pre>
+			<pre>func NewLevel(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>, builderType <a href="index.html#BuilderType">BuilderType</a>) (<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Level">Level</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>NewLevel は新規に階層を生成する。
 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
 
