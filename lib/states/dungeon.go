@@ -54,7 +54,11 @@ func (st *DungeonState) OnStart(world w.World) {
 	gameResources.Depth = st.Depth
 
 	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
-	gameResources.Level = mapbuilder.NewLevel(world, 50, 50, st.Seed, st.BuilderType)
+	level, err := mapbuilder.NewLevel(world, 50, 50, st.Seed, st.BuilderType)
+	if err != nil {
+		panic(err)
+	}
+	gameResources.Level = level
 
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
@@ -95,6 +99,7 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.AIInputSystem(world)
 	gs.MoveSystem(world)
 	gs.CollisionSystem(world)
+	gs.ItemCollectionSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}

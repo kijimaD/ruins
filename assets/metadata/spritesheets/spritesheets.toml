@@ -37,6 +37,8 @@ sprites = [
     { x = 0,   y = 64, width = 32, height = 32 }, # Sprite 16
     # Wall Bottom-Right Corner (左上に床がある右下角)
     { x = 32,  y = 64, width = 32, height = 32 }, # Sprite 17
+    # Field Item (フィールドアイテム)
+    { x = 64,  y = 64, width = 32, height = 32 }, # Sprite 18
 ]
 
 [sprite_sheet.bg_title1]

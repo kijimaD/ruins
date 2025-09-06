@@ -141,13 +141,23 @@ var debugMenuTrans = []struct {
 	getTransFunc func() es.Transition // 遅延評価で毎回新しいTransitionを取得
 }{
 	{
-		label:        "回復薬スポーン(インベントリ)",
-		f:            func(world w.World) { worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack) },
+		label: "回復薬スポーン(インベントリ)",
+		f: func(world w.World) {
+			_, err := worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+			if err != nil {
+				panic(err)
+			}
+		},
 		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
 	},
 	{
-		label:        "手榴弾スポーン(インベントリ)",
-		f:            func(world w.World) { worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack) },
+		label: "手榴弾スポーン(インベントリ)",
+		f: func(world w.World) {
+			_, err := worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+			if err != nil {
+				panic(err)
+			}
+		},
 		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
 	},
 	{

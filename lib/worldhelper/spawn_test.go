@@ -90,7 +90,8 @@ func TestSetMaxHPSP(t *testing.T) {
 			})
 
 			// 関数を実行
-			setMaxHPSP(world, entity)
+			err = setMaxHPSP(world, entity)
+			require.NoError(t, err)
 
 			// 結果を検証
 			pools := world.Components.Pools.Get(entity).(*gc.Pools)
@@ -123,10 +124,10 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 	// 必要なコンポーネントがないエンティティ
 	entity := world.Manager.NewEntity()
 
-	// 関数を実行（エラーなく終了することを確認）
-	assert.NotPanics(t, func() {
-		setMaxHPSP(world, entity)
-	}, "必要なコンポーネントがない場合でもパニックしてはいけない")
+	// 関数を実行してエラーが発生することを確認
+	err = setMaxHPSP(world, entity)
+	require.Error(t, err, "必要なコンポーネントがない場合はエラーを返すべき")
+	assert.Contains(t, err.Error(), "does not have required components", "エラーメッセージが適切であるべき")
 
 	// クリーンアップ
 	world.Manager.DeleteEntity(entity)
@@ -198,7 +199,7 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// NPCを生成
-	SpawnNPC(world, 100, 100)
+	require.NoError(t, SpawnNPC(world, 100, 100))
 
 	// AIMoveFSMコンポーネントを持つエンティティが存在することを確認
 	enemyFound := false
