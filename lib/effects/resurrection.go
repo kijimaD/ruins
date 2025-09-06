@@ -83,6 +83,6 @@ func (r Resurrection) logResurrection(world w.World, target ecs.Entity, finalHP 
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
 		entry := fmt.Sprintf("%sが蘇生した。HP %d で復活。", name.Name, finalHP)
-		logger.Append(entry)
+		logger.Push(entry)
 	}
 }

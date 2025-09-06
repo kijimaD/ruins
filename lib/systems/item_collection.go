@@ -3,6 +3,7 @@ package systems
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -76,4 +77,6 @@ func collectFieldItem(world w.World, itemEntity ecs.Entity) {
 	if err := worldhelper.MergeMaterialIntoInventory(world, itemEntity, itemName); err != nil {
 		panic(err)
 	}
+
+	gamelog.FieldLog.Push(itemName + "を入手した。")
 }

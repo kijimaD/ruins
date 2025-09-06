@@ -89,7 +89,7 @@ func BattleCommandSystem(world w.World) {
 			ownerName := world.Components.Name.Get(cmd.Owner).(*gc.Name)
 			wayName := world.Components.Name.Get(cmd.Way).(*gc.Name)
 			entry := fmt.Sprintf("%sは、%sで攻撃。", ownerName.Name, wayName.Name)
-			gamelog.BattleLog.Append(entry)
+			gamelog.BattleLog.Push(entry)
 		}
 
 		ownerEntity := cmd.Owner
@@ -100,7 +100,7 @@ func BattleCommandSystem(world w.World) {
 		damageEffect := effects.Damage{Amount: damage, Source: effects.DamageSourceWeapon}
 		staminaEffect := effects.ConsumeStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}
 
-		processor.AddEffectWithLogger(damageEffect, &ownerEntity, &gamelog.BattleLog, cmd.Target)
+		processor.AddEffectWithLogger(damageEffect, &ownerEntity, gamelog.BattleLog, cmd.Target)
 		processor.AddEffect(staminaEffect, &ownerEntity, cmd.Owner)
 		if err := processor.Execute(world); err != nil {
 			log.Printf("エフェクト実行エラー: %v", err)

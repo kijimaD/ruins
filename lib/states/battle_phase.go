@@ -22,7 +22,7 @@ type phaseEnemyEncounter struct{}
 
 func (p *phaseEnemyEncounter) OnInit(st *BattleState, _ w.World) {
 	// 「敵が現れた」メッセージをログに追加
-	gamelog.BattleLog.Append("敵が現れた。")
+	gamelog.BattleLog.Push("敵が現れた。")
 	// クリック待ち状態にする
 	st.isWaitClick = true
 }
@@ -33,7 +33,7 @@ func (p *phaseEnemyEncounter) OnUpdate(st *BattleState, world w.World) es.Transi
 	// エンターキーが押されたら次のフェーズに進む
 	if st.keyboardInput.IsEnterJustPressedOnce() {
 		st.isWaitClick = false
-		gamelog.BattleLog.Flush() // メッセージをクリア
+		gamelog.BattleLog.Clear() // メッセージをクリア
 		st.phase = &phaseChoosePolicy{}
 	}
 	return es.Transition{Type: es.TransNone}
@@ -129,27 +129,27 @@ func (p *phaseExecute) OnUpdate(st *BattleState, world w.World) es.Transition {
 			return es.Transition{Type: es.TransNone}
 		}
 		// 処理完了 - メッセージがある場合のみenter待ち
-		messages := gamelog.BattleLog.Get()
+		messages := gamelog.BattleLog.GetHistory()
 		if len(messages) > 0 {
 			st.isWaitClick = true
 			if st.keyboardInput.IsEnterJustPressedOnce() {
 				st.phase = &phaseChoosePolicy{}
 				st.isWaitClick = false
-				gamelog.BattleLog.Flush()
+				gamelog.BattleLog.Clear()
 			}
 		} else {
 			// メッセージがない場合は即座に次のフェーズへ
 			st.phase = &phaseChoosePolicy{}
 			st.isWaitClick = false
-			gamelog.BattleLog.Flush()
+			gamelog.BattleLog.Clear()
 		}
 		return es.Transition{Type: es.TransNone}
 	case gs.BattleExtinctionAlly:
-		gamelog.BattleLog.Append("全滅した。")
+		gamelog.BattleLog.Push("全滅した。")
 		st.phase = &phaseGameOver{}
 		return es.Transition{Type: es.TransNone}
 	case gs.BattleExtinctionMonster:
-		gamelog.BattleLog.Append("敵を全滅させた。")
+		gamelog.BattleLog.Push("敵を全滅させた。")
 		st.phase = &phaseResult{}
 		return es.Transition{Type: es.TransNone}
 	default:
@@ -179,7 +179,7 @@ func (p *phaseResult) OnUpdate(st *BattleState, world w.World) es.Transition {
 			p.actionCount++
 		case 1:
 			st.isWaitClick = false
-			gamelog.BattleLog.Flush() // メッセージをクリア
+			gamelog.BattleLog.Clear() // メッセージをクリア
 			return es.Transition{Type: es.TransPop}
 		}
 	}
@@ -197,7 +197,7 @@ func (p *phaseGameOver) OnUpdate(st *BattleState, world w.World) es.Transition {
 	st.isWaitClick = true
 	if st.keyboardInput.IsEnterJustPressedOnce() {
 		st.isWaitClick = false
-		gamelog.BattleLog.Flush() // メッセージをクリア
+		gamelog.BattleLog.Clear() // メッセージをクリア
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
 	}
 	return es.Transition{Type: es.TransNone}

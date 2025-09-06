@@ -7,7 +7,7 @@ import (
 
 // GameLogAppender はゲームログ出力のインターフェース
 type GameLogAppender interface {
-	Append(entry string)
+	Push(entry string)
 }
 
 // Scope はエフェクトの影響範囲を保持する

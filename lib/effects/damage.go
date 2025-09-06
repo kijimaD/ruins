@@ -82,7 +82,7 @@ func (d Damage) logDamage(world w.World, target ecs.Entity, amount int, logger G
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
 		entry := fmt.Sprintf("%sに%dのダメージ。", name.Name, amount)
-		logger.Append(entry)
+		logger.Push(entry)
 	}
 }
 
@@ -92,7 +92,7 @@ func (d Damage) logDeath(world w.World, target ecs.Entity, logger GameLogAppende
 	}
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
-		logger.Append(fmt.Sprintf("%sは倒れた。", name.Name))
+		logger.Push(fmt.Sprintf("%sは倒れた。", name.Name))
 	}
 }
 
