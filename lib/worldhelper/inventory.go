@@ -8,9 +8,9 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// MergeIntoInventory は既存のバックパック内アイテムと統合するか新規追加する
+// MergeMaterialIntoInventory は既存のバックパック内マテリアルと統合するか新規追加する
 // materialの場合は既存と数量統合、それ以外は個別アイテムとして追加
-func MergeIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) {
+func MergeMaterialIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) {
 	// ItemコンポーネントまたはMaterialコンポーネントを持っているかチェック
 	hasItem := newItemEntity.HasComponent(world.Components.Item)
 	hasMaterial := newItemEntity.HasComponent(world.Components.Material)

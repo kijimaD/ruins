@@ -73,5 +73,5 @@ func collectFieldItem(world w.World, itemEntity ecs.Entity) {
 	}
 
 	// 既存のバックパック内の同じアイテムと統合する処理
-	worldhelper.MergeIntoInventory(world, itemEntity, itemName)
+	worldhelper.MergeMaterialIntoInventory(world, itemEntity, itemName)
 }

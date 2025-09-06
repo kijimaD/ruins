@@ -58,7 +58,7 @@ var (
 // ================
 
 // SpawnFloor はフィールド上に表示される床を生成する
-func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
+func SpawnFloor(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
@@ -69,11 +69,11 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 		},
 	})
 
-	return entities.AddEntities(world, componentList)[0]
+	return entities.AddEntities(world, componentList)[0], nil
 }
 
 // SpawnFieldWallWithSprite は指定されたスプライト番号でフィールド上に表示される壁を生成する
-func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber int) ecs.Entity {
+func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber int) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{Row: x, Col: y},
@@ -86,12 +86,15 @@ func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber in
 		BlockPass: &gc.BlockPass{},
 	})
 
-	return entities.AddEntities(world, componentList)[0]
+	return entities.AddEntities(world, componentList)[0], nil
 }
 
 // SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
-func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
-	SpawnFloor(world, x, y) // 下敷き描画
+func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
+	_, err := SpawnFloor(world, x, y) // 下敷き描画
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
+	}
 
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -104,12 +107,15 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 		Warp: &gc.Warp{Mode: gc.WarpModeNext},
 	})
 
-	return entities.AddEntities(world, componentList)[0]
+	return entities.AddEntities(world, componentList)[0], nil
 }
 
 // SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
-func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
-	SpawnFloor(world, x, y) // 下敷き描画
+func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
+	_, err := SpawnFloor(world, x, y) // 下敷き描画
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
+	}
 
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -122,14 +128,14 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) ecs.Entity {
 		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
 	})
 
-	return entities.AddEntities(world, componentList)[0]
+	return entities.AddEntities(world, componentList)[0], nil
 }
 
 // SpawnOperator はフィールド上に表示される操作対象キャラを生成する
 // TODO: エンティティが重複しているときにエラーを返す。
 // TODO: 置けるタイル以外が指定されるとエラーを返す。
 // デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
-func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
+func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) error {
 	{
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -169,11 +175,12 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) {
 		})
 		entities.AddEntities(world, componentList)
 	}
+	return nil
 }
 
 // SpawnNPC はフィールド上に表示されるNPCを生成する
 // 接触すると戦闘開始する敵として動作する
-func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
+func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) error {
 	{
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -195,6 +202,7 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) {
 		})
 		entities.AddEntities(world, componentList)
 	}
+	return nil
 }
 
 // ================
@@ -368,7 +376,10 @@ func SpawnAllCards(world w.World) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Row, y gc.Col) (ecs.Entity, error) {
-	SpawnFloor(world, x, y) // 下敷きの床を描画
+	_, err := SpawnFloor(world, x, y) // 下敷きの床を描画
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
+	}
 
 	// アイテムエンティティを生成
 	item, err := SpawnItem(world, itemName, gc.ItemLocationOnField)

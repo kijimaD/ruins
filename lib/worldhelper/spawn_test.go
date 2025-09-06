@@ -198,7 +198,7 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// NPCを生成
-	SpawnNPC(world, 100, 100)
+	require.NoError(t, SpawnNPC(world, 100, 100))
 
 	// AIMoveFSMコンポーネントを持つエンティティが存在することを確認
 	enemyFound := false

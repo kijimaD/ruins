@@ -92,11 +92,13 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 
 	// ポータルは既にvalidateMapWithPortals内で配置済み
 	// フィールドに操作対象キャラを配置する（事前に見つけた位置を使用）
-	worldhelper.SpawnOperator(
+	if err := worldhelper.SpawnOperator(
 		world,
 		gc.Pixel(playerX*int(consts.TileSize)+int(consts.TileSize)/2),
 		gc.Pixel(playerY*int(consts.TileSize)+int(consts.TileSize)/2),
-	)
+	); err != nil {
+		return resources.Level{}, fmt.Errorf("プレイヤー生成エラー: %w", err)
+	}
 
 	// フィールドにNPCを生成する
 	if err := spawnNPCs(world, chain); err != nil {
@@ -114,19 +116,35 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		x, y := chain.BuildData.Level.XYTileCoord(i)
 		switch t {
 		case TileFloor:
-			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFloor(world, gc.Row(x), gc.Col(y))
+			entity, err := worldhelper.SpawnFloor(world, gc.Row(x), gc.Col(y))
+			if err != nil {
+				return resources.Level{}, fmt.Errorf("床の生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
+			}
+			chain.BuildData.Level.Entities[i] = entity
 		case TileWall:
 			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
 			if chain.BuildData.AdjacentAnyFloor(i) {
 				// 壁タイプを判定してスプライト番号を決定
 				wallType := chain.BuildData.GetWallType(i)
 				spriteNumber := getSpriteNumberForWallType(wallType)
-				chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWallWithSprite(world, gc.Row(x), gc.Col(y), spriteNumber)
+				entity, err := worldhelper.SpawnFieldWallWithSprite(world, gc.Row(x), gc.Col(y), spriteNumber)
+				if err != nil {
+					return resources.Level{}, fmt.Errorf("壁の生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
+				}
+				chain.BuildData.Level.Entities[i] = entity
 			}
 		case TileWarpNext:
-			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+			entity, err := worldhelper.SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+			if err != nil {
+				return resources.Level{}, fmt.Errorf("進行ワープホールの生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
+			}
+			chain.BuildData.Level.Entities[i] = entity
 		case TileWarpEscape:
-			chain.BuildData.Level.Entities[i] = worldhelper.SpawnFieldWarpEscape(world, gc.Row(x), gc.Col(y))
+			entity, err := worldhelper.SpawnFieldWarpEscape(world, gc.Row(x), gc.Col(y))
+			if err != nil {
+				return resources.Level{}, fmt.Errorf("脱出ワープホールの生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
+			}
+			chain.BuildData.Level.Entities[i] = entity
 		}
 	}
 
@@ -149,11 +167,15 @@ func spawnNPCs(world w.World, chain *BuilderChain) error {
 			failCount++
 			continue
 		}
-		worldhelper.SpawnNPC(
+		if err := worldhelper.SpawnNPC(
 			world,
 			gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
 			gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
-		)
+		); err != nil {
+			log.Printf("NPC生成に失敗: %v", err)
+			failCount++
+			continue
+		}
 		successCount++
 		failCount = 0
 		if successCount > total {

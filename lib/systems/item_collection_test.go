@@ -19,7 +19,7 @@ func TestItemCollectionSystem(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーを配置
-	worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100))
+	require.NoError(t, worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100)))
 
 	// フィールドアイテムをプレイヤーの近くに配置
 	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
@@ -50,7 +50,7 @@ func TestCheckItemCollision(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーを配置
-	worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100))
+	require.NoError(t, worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100)))
 
 	var playerEntity ecs.Entity
 	world.Manager.Join(

@@ -41,7 +41,7 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 	createPlayerEntity(t, world, 100.0, 100.0)
 
 	// NPCを近い位置に生成（敵として動作）
-	worldhelper.SpawnNPC(world, 110, 110)
+	require.NoError(t, worldhelper.SpawnNPC(world, 110, 110))
 
 	// 初期状態: イベントなし
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
