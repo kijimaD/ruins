@@ -8,8 +8,8 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/widgets/common"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -17,11 +17,11 @@ import (
 // AddMemberBar は一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	res := world.Resources.UIResources
-	memberContainer := eui.NewVerticalContainer()
+	memberContainer := common.NewVerticalContainer()
 
 	name := world.Components.Name.Get(entity).(*gc.Name)
 	pools := world.Components.Pools.Get(entity).(*gc.Pools)
-	memberContainer.AddChild(eui.NewMenuText(name.Name, world))
+	memberContainer.AddChild(common.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
 		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),
 	)

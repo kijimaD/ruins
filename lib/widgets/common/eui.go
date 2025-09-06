@@ -1,4 +1,4 @@
-package eui
+package common
 
 import (
 	"image/color"

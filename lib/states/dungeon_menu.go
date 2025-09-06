@@ -8,10 +8,10 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -139,7 +139,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 }
 
 func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer(
+	rootContainer := common.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.BlackColor)),
 	)
 

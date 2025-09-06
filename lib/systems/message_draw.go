@@ -7,9 +7,9 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/widgets/common"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -94,13 +94,13 @@ func initMessageUI(world w.World) {
 		if message == "" {
 			continue
 		}
-		messageWidget := eui.NewListItemText(message, styles.TextColor, false, world)
+		messageWidget := common.NewListItemText(message, styles.TextColor, false, world)
 		logContainer.AddChild(messageWidget)
 	}
 
 	// メッセージがない場合
 	if len(messages) == 0 {
-		placeholderWidget := eui.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
+		placeholderWidget := common.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
 		logContainer.AddChild(placeholderWidget)
 	}
 
@@ -146,13 +146,13 @@ func updateMessageUI(world w.World) {
 		if message == "" {
 			continue
 		}
-		messageWidget := eui.NewListItemText(message, styles.TextColor, false, world)
+		messageWidget := common.NewListItemText(message, styles.TextColor, false, world)
 		logContainer.AddChild(messageWidget)
 	}
 
 	// メッセージがない場合のプレースホルダー
 	if len(messages) == 0 {
-		placeholderWidget := eui.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
+		placeholderWidget := common.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
 		logContainer.AddChild(placeholderWidget)
 	}
 

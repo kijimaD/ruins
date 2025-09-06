@@ -1,4 +1,4 @@
-package eui
+package common
 
 import (
 	e_image "github.com/ebitenui/ebitenui/image"
