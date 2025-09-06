@@ -197,7 +197,7 @@ func (st *LoadMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionStart,
-				Padding: widget.Insets{
+				Padding: &widget.Insets{
 					Top: 100,
 				},
 			}),

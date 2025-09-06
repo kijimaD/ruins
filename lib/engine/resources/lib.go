@@ -11,7 +11,7 @@ type Resources struct {
 	ScreenDimensions *ScreenDimensions
 	SpriteSheets     *map[string]components.SpriteSheet
 	Fonts            *map[string]Font
-	DefaultFaces     *map[string]text.Face
+	DefaultFaces     *map[string]*text.Face
 	AudioContext     *audio.Context
 	AudioPlayers     *map[string]*audio.Player
 	Prefabs          interface{}

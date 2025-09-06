@@ -44,7 +44,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 				Hover: image.NewNineSliceColor(color.NRGBA{0, 0, 255, 255}),
 			},
 		),
-		widget.ProgressBarOpts.TrackPadding(widget.Insets{
+		widget.ProgressBarOpts.TrackPadding(&widget.Insets{
 			Top:    2,
 			Bottom: 2,
 		}),
@@ -74,7 +74,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 				Hover: image.NewNineSliceColor(color.NRGBA{0, 0, 255, 255}),
 			},
 		),
-		widget.ProgressBarOpts.TrackPadding(widget.Insets{
+		widget.ProgressBarOpts.TrackPadding(&widget.Insets{
 			Top:    2,
 			Bottom: 2,
 		}),

@@ -97,7 +97,7 @@ func (st *MessageState) createUI() *ebitenui.UI {
 			),
 			widget.ContainerOpts.Layout(widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
-				widget.RowLayoutOpts.Padding(widget.Insets{Left: 20}),
+				widget.RowLayoutOpts.Padding(&widget.Insets{Left: 20}),
 			)),
 		)
 

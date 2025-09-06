@@ -8,7 +8,7 @@ import (
 
 // Font structure
 type Font struct {
-	Font       text.Face
+	Font       *text.Face
 	FaceSource *text.GoTextFaceSource // コピーが禁止されていて参照渡ししかできない
 }
 
@@ -29,7 +29,8 @@ func (f *Font) UnmarshalTOML(i interface{}) error {
 		Source: s,
 		Size:   24,
 	}
-	f.Font = font
+	var face text.Face = font
+	f.Font = &face
 
 	return nil
 }

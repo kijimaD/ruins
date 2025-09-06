@@ -131,8 +131,8 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	world.Resources.Fonts = &fonts
 
 	defaultFont := (*world.Resources.Fonts)["kappa"]
-	world.Resources.DefaultFaces = &map[string]text.Face{
-		"kappa": defaultFont.Font,
+	world.Resources.DefaultFaces = &map[string]*text.Face{
+		"kappa": &defaultFont.Font,
 	}
 
 	// load UI resources

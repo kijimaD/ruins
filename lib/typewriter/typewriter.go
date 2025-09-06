@@ -366,7 +366,7 @@ func (h *MessageHandler) CreatePromptContainer(arrowImage *widget.GraphicImage) 
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 			Position: widget.RowLayoutPositionStart,
 		})),
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(&widget.Insets{
 			Top: yOffset, // アニメーション分の上下移動
 		}))),
 	)

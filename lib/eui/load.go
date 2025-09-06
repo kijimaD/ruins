@@ -31,5 +31,5 @@ func LoadButtonImage() *widget.ButtonImage {
 func LoadFont(world w.World) *text.Face {
 	face := (*world.Resources.DefaultFaces)["kappa"]
 
-	return &face
+	return face
 }

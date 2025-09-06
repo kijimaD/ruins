@@ -49,7 +49,7 @@ func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 					widget.GridLayoutOpts.Columns(3),
 					widget.GridLayoutOpts.Spacing(4, 4),
 					widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
+					widget.GridLayoutOpts.Padding(&widget.Insets{
 						Top:    4,
 						Bottom: 4,
 						Left:   4,
@@ -69,7 +69,7 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ..
 					widget.GridLayoutOpts.Columns(1),
 					widget.GridLayoutOpts.Spacing(4, 4),
 					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
+					widget.GridLayoutOpts.Padding(&widget.Insets{
 						Top:    4,
 						Bottom: 4,
 						Left:   4,
@@ -93,7 +93,7 @@ func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ..
 					widget.GridLayoutOpts.Columns(2),
 					widget.GridLayoutOpts.Spacing(4, 4),
 					widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
+					widget.GridLayoutOpts.Padding(&widget.Insets{
 						Top:    4,
 						Bottom: 4,
 						Left:   4,
@@ -116,7 +116,7 @@ func NewWindowContainer(world w.World) *widget.Container {
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.Insets{
+			widget.RowLayoutOpts.Padding(&widget.Insets{
 				Top:    20,
 				Bottom: 20,
 				Left:   10,
@@ -241,7 +241,7 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionStart, // 左寄せ
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				Padding: widget.Insets{ // 縦パディングを小さく、横パディングは適度に
+				Padding: &widget.Insets{ // 縦パディングを小さく、横パディングは適度に
 					Top:    2,
 					Bottom: 2,
 					Left:   8,
@@ -287,7 +287,7 @@ func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widge
 				MaxHeight:          280,
 			}),
 		)),
-		widget.ListOpts.SliderOpts(
+		widget.ListOpts.SliderParams(
 			widget.SliderOpts.MinHandleSize(5),
 			widget.SliderOpts.Images(res.List.Track, res.List.Handle),
 			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4)),
@@ -308,7 +308,7 @@ func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widge
 		}),
 		widget.ListOpts.EntryFontFace(res.Text.Face),
 		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
-		widget.ListOpts.EntryTextPadding(widget.Insets{
+		widget.ListOpts.EntryTextPadding(&widget.Insets{
 			Top:    4,
 			Bottom: 4,
 			Left:   16,
@@ -353,7 +353,7 @@ func NewButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.But
 func BaseRowLayoutOpts() []widget.RowLayoutOpt {
 	return []widget.RowLayoutOpt{
 		widget.RowLayoutOpts.Spacing(4),
-		widget.RowLayoutOpts.Padding(widget.Insets{
+		widget.RowLayoutOpts.Padding(&widget.Insets{
 			Top:    10,
 			Bottom: 10,
 			Left:   4,

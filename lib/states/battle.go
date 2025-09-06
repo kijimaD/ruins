@@ -763,7 +763,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 				widget.WidgetOpts.MinSize(200, 0),
 			),
 			widget.ContainerOpts.Layout(widget.NewRowLayout(
-				widget.RowLayoutOpts.Padding(widget.Insets{
+				widget.RowLayoutOpts.Padding(&widget.Insets{
 					Top:    0,
 					Bottom: 0,
 					Left:   20,

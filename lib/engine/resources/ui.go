@@ -66,19 +66,19 @@ type UIResources struct {
 type TextResources struct {
 	IdleColor     color.Color
 	DisabledColor color.Color
-	Face          text.Face
-	TitleFace     text.Face
-	BigTitleFace  text.Face
-	HugeTitleFace text.Face
-	SmallFace     text.Face
+	Face          *text.Face
+	TitleFace     *text.Face
+	BigTitleFace  *text.Face
+	HugeTitleFace *text.Face
+	SmallFace     *text.Face
 }
 
 // ButtonResources はボタンリソースを管理する
 type ButtonResources struct {
 	Image   *widget.ButtonImage
 	Text    *widget.ButtonTextColor
-	Face    text.Face
-	Padding widget.Insets
+	Face    *text.Face
+	Padding *widget.Insets
 }
 
 // CheckboxResources はチェックボックスリソースを管理する
@@ -91,16 +91,16 @@ type CheckboxResources struct {
 // LabelResources はラベルリソースを管理する
 type LabelResources struct {
 	Text *widget.LabelColor
-	Face text.Face
+	Face *text.Face
 }
 
 // ComboButtonResources はコンボボタンリソースを管理する
 type ComboButtonResources struct {
 	Image   *widget.ButtonImage
 	Text    *widget.ButtonTextColor
-	Face    text.Face
+	Face    *text.Face
 	Graphic *widget.GraphicImage
-	Padding widget.Insets
+	Padding *widget.Insets
 }
 
 // ListResources はリストリソースを管理する
@@ -108,12 +108,12 @@ type ListResources struct {
 	Image        *widget.ScrollContainerImage
 	ImageTrans   *widget.ScrollContainerImage
 	Track        *widget.SliderTrackImage
-	TrackPadding widget.Insets
+	TrackPadding *widget.Insets
 	Handle       *widget.ButtonImage
 	HandleSize   int
-	Face         text.Face
+	Face         *text.Face
 	Entry        *widget.ListEntryColor
-	EntryPadding widget.Insets
+	EntryPadding *widget.Insets
 }
 
 // SliderResources はスライダーリソースを管理する
@@ -134,29 +134,29 @@ type PanelResources struct {
 	Image      *image.NineSlice
 	ImageTrans *image.NineSlice
 	TitleBar   *image.NineSlice
-	Padding    widget.Insets
+	Padding    *widget.Insets
 }
 
 // TabBookResources はタブブックリソースを管理する
 type TabBookResources struct {
-	ButtonFace    text.Face
+	ButtonFace    *text.Face
 	ButtonText    *widget.ButtonTextColor
-	ButtonPadding widget.Insets
+	ButtonPadding *widget.Insets
 }
 
 // HeaderResources はヘッダーリソースを管理する
 type HeaderResources struct {
 	Background *image.NineSlice
-	Padding    widget.Insets
-	Face       text.Face
+	Padding    *widget.Insets
+	Face       *text.Face
 	Color      color.Color
 }
 
 // TextInputResources はテキスト入力リソースを管理する
 type TextInputResources struct {
 	Image   *widget.TextInputImage
-	Padding widget.Insets
-	Face    text.Face
+	Padding *widget.Insets
+	Face    *text.Face
 	Color   *widget.TextInputColor
 }
 
@@ -164,18 +164,18 @@ type TextInputResources struct {
 type TextAreaResources struct {
 	Image        *widget.ScrollContainerImage
 	Track        *widget.SliderTrackImage
-	TrackPadding widget.Insets
+	TrackPadding *widget.Insets
 	Handle       *widget.ButtonImage
 	HandleSize   int
-	Face         text.Face
-	EntryPadding widget.Insets
+	Face         *text.Face
+	EntryPadding *widget.Insets
 }
 
 // ToolTipResources はツールチップリソースを管理する
 type ToolTipResources struct {
 	Background *image.NineSlice
-	Padding    widget.Insets
-	Face       text.Face
+	Padding    *widget.Insets
+	Face       *text.Face
 	Color      color.Color
 }
 
@@ -250,11 +250,11 @@ func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error) {
 		Text: &TextResources{
 			IdleColor:     hexToColor(textIdleColor),
 			DisabledColor: hexToColor(textDisabledColor),
-			Face:          fonts.face,
-			TitleFace:     fonts.titleFace,
-			BigTitleFace:  fonts.bigTitleFace,
-			HugeTitleFace: fonts.hugeTitleFace,
-			SmallFace:     fonts.toolTipFace,
+			Face:          &fonts.face,
+			TitleFace:     &fonts.titleFace,
+			BigTitleFace:  &fonts.bigTitleFace,
+			HugeTitleFace: &fonts.hugeTitleFace,
+			SmallFace:     &fonts.toolTipFace,
 		},
 
 		Button:      button,
@@ -313,9 +313,9 @@ func newButtonResources(fonts *fonts) (*ButtonResources, error) {
 			Disabled: hexToColor(buttonDisabledColor),
 		},
 
-		Face: fonts.face,
+		Face: &fonts.face,
 
-		Padding: widget.Insets{
+		Padding: &widget.Insets{
 			Left:  30,
 			Right: 30,
 		},
@@ -378,7 +378,7 @@ func newLabelResources(fonts *fonts) *LabelResources {
 			Disabled: hexToColor(labelDisabledColor),
 		},
 
-		Face: fonts.face,
+		Face: &fonts.face,
 	}
 }
 
@@ -423,10 +423,10 @@ func newComboButtonResources(fonts *fonts) (*ComboButtonResources, error) {
 			Disabled: hexToColor(buttonDisabledColor),
 		},
 
-		Face:    fonts.face,
+		Face:    &fonts.face,
 		Graphic: arrowDown,
 
-		Padding: widget.Insets{
+		Padding: &widget.Insets{
 			Left:  30,
 			Right: 30,
 		},
@@ -493,7 +493,7 @@ func newListResources(fonts *fonts) (*ListResources, error) {
 			Disabled: image.NewNineSlice(trackDisabled, [3]int{0, 5, 0}, [3]int{25, 12, 25}),
 		},
 
-		TrackPadding: widget.Insets{
+		TrackPadding: &widget.Insets{
 			Top:    5,
 			Bottom: 24,
 		},
@@ -506,7 +506,7 @@ func newListResources(fonts *fonts) (*ListResources, error) {
 		},
 
 		HandleSize: 5,
-		Face:       fonts.face,
+		Face:       &fonts.face,
 
 		Entry: &widget.ListEntryColor{
 			Unselected:         hexToColor(textIdleColor),
@@ -522,7 +522,7 @@ func newListResources(fonts *fonts) (*ListResources, error) {
 			SelectedFocusedBackground: hexToColor(listSelectedBackground),
 		},
 
-		EntryPadding: widget.Insets{
+		EntryPadding: &widget.Insets{
 			Left:   30,
 			Right:  30,
 			Top:    2,
@@ -620,7 +620,7 @@ func newPanelResources() (*PanelResources, error) {
 		Image:      i,
 		ImageTrans: it,
 		TitleBar:   t,
-		Padding: widget.Insets{
+		Padding: &widget.Insets{
 			Left:   30,
 			Right:  30,
 			Top:    20,
@@ -631,14 +631,14 @@ func newPanelResources() (*PanelResources, error) {
 
 func newTabBookResources(fonts *fonts) *TabBookResources {
 	return &TabBookResources{
-		ButtonFace: fonts.face,
+		ButtonFace: &fonts.face,
 
 		ButtonText: &widget.ButtonTextColor{
 			Idle:     hexToColor(buttonIdleColor),
 			Disabled: hexToColor(buttonDisabledColor),
 		},
 
-		ButtonPadding: widget.Insets{
+		ButtonPadding: &widget.Insets{
 			Left:  30,
 			Right: 30,
 		},
@@ -654,14 +654,14 @@ func newHeaderResources(fonts *fonts) (*HeaderResources, error) {
 	return &HeaderResources{
 		Background: bg,
 
-		Padding: widget.Insets{
+		Padding: &widget.Insets{
 			Left:   25,
 			Right:  25,
 			Top:    4,
 			Bottom: 4,
 		},
 
-		Face:  fonts.bigTitleFace,
+		Face:  &fonts.bigTitleFace,
 		Color: hexToColor(headerColor),
 	}, nil
 }
@@ -683,14 +683,14 @@ func newTextInputResources(fonts *fonts) (*TextInputResources, error) {
 			Disabled: image.NewNineSlice(disabled, [3]int{9, 14, 6}, [3]int{9, 14, 6}),
 		},
 
-		Padding: widget.Insets{
+		Padding: &widget.Insets{
 			Left:   8,
 			Right:  8,
 			Top:    4,
 			Bottom: 4,
 		},
 
-		Face: fonts.face,
+		Face: &fonts.face,
 
 		Color: &widget.TextInputColor{
 			Idle:          hexToColor(textIdleColor),
@@ -750,7 +750,7 @@ func newTextAreaResources(fonts *fonts) (*TextAreaResources, error) {
 			Disabled: image.NewNineSlice(trackDisabled, [3]int{0, 5, 0}, [3]int{25, 12, 25}),
 		},
 
-		TrackPadding: widget.Insets{
+		TrackPadding: &widget.Insets{
 			Top:    5,
 			Bottom: 24,
 		},
@@ -763,9 +763,9 @@ func newTextAreaResources(fonts *fonts) (*TextAreaResources, error) {
 		},
 
 		HandleSize: 5,
-		Face:       fonts.face,
+		Face:       &fonts.face,
 
-		EntryPadding: widget.Insets{
+		EntryPadding: &widget.Insets{
 			Left:   30,
 			Right:  30,
 			Top:    2,
@@ -783,14 +783,14 @@ func newToolTipResources(fonts *fonts) (*ToolTipResources, error) {
 	return &ToolTipResources{
 		Background: image.NewNineSlice(bg, [3]int{19, 6, 13}, [3]int{19, 5, 13}),
 
-		Padding: widget.Insets{
+		Padding: &widget.Insets{
 			Left:   15,
 			Right:  15,
 			Top:    10,
 			Bottom: 10,
 		},
 
-		Face:  fonts.toolTipFace,
+		Face:  &fonts.toolTipFace,
 		Color: hexToColor(toolTipColor),
 	}, nil
 }

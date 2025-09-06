@@ -16,7 +16,7 @@ type UIConfig struct {
 	MaxVisibleLines int                  // 最大表示行数（デフォルト: 4）
 	FixedWidth      int                  // 固定幅（デフォルト: 720）
 	LineHeight      int                  // 行の高さ（デフォルト: 25）
-	TextFace        text.Face            // テキストのフォントフェイス
+	TextFace        *text.Face           // テキストのフォントフェイス
 	TextColor       color.Color          // テキスト色
 	PanelImage      *image.NineSlice     // 背景パネル画像
 	ArrowImage      *widget.GraphicImage // 矢印画像
@@ -174,7 +174,7 @@ func (b *MessageUIBuilder) createContainer() *widget.Container {
 				widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 					HorizontalPosition: widget.AnchorLayoutPositionCenter,
 					VerticalPosition:   widget.AnchorLayoutPositionStart,
-					Padding: widget.Insets{
+					Padding: &widget.Insets{
 						Top: fixedHeight - 25, // メッセージコンテナの高さ - プロンプト高さ
 					},
 				})),
