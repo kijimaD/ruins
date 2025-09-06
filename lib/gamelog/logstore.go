@@ -24,7 +24,7 @@ var (
 	SceneLog = NewSafeSlice(SceneLogMaxSize)
 )
 
-// SafeSlice はスレッドセーフなスライス
+// SafeSlice はスレッドセーフなログストレージ
 type SafeSlice struct {
 	content []string
 	maxSize int
@@ -42,13 +42,13 @@ func NewSafeSlice(maxSize int) *SafeSlice {
 	}
 }
 
-// Append はログを追加する。最大サイズを超えた場合は古いものから削除する
-func (s *SafeSlice) Append(value string) {
+// Push は新しいログを追加
+func (s *SafeSlice) Push(message string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	// 新しい値を追加
-	s.content = append(s.content, value)
+	s.content = append(s.content, message)
 
 	// 最大サイズを超えた場合、古いものから削除（FIFO）
 	if len(s.content) > s.maxSize {
@@ -65,29 +65,59 @@ func (s *SafeSlice) Append(value string) {
 	}
 }
 
-// Get は古い順に取り出す。副作用はない
-func (s *SafeSlice) Get() []string {
+// GetRecent は最新N行を表示順で取得
+// 結果: [..., 3番目に新しい, 2番目に新しい, 最新]
+func (s *SafeSlice) GetRecent(lines int) []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	copiedSlice := make([]string, len(s.content))
-	copy(copiedSlice, s.content)
+	if len(s.content) == 0 {
+		return []string{}
+	}
 
-	return copiedSlice
-}
+	// 要求された行数とコンテンツの長さの小さい方を使用
+	actualLines := lines
+	if actualLines > len(s.content) {
+		actualLines = len(s.content)
+	}
 
-// Pop は古い順に取り出す。取得した分は消える
-func (s *SafeSlice) Pop() []string {
-	result := s.Get()
-	s.Flush()
+	// 最新のactualLines行を取得（表示順）
+	startIndex := len(s.content) - actualLines
+	result := make([]string, actualLines)
+	copy(result, s.content[startIndex:])
 
 	return result
 }
 
-// Flush はログの内容を消す
-func (s *SafeSlice) Flush() {
+// GetHistory は全履歴を表示順で取得
+// 結果: [最古, ..., 2番目に新しい, 最新]
+func (s *SafeSlice) GetHistory() []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	result := make([]string, len(s.content))
+	copy(result, s.content)
+
+	return result
+}
+
+// Clear は全ログを削除
+func (s *SafeSlice) Clear() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	s.content = []string{}
+}
+
+// Count は現在のログ行数
+func (s *SafeSlice) Count() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return len(s.content)
+}
+
+// MaxHistory は履歴の最大保持行数
+func (s *SafeSlice) MaxHistory() int {
+	return s.maxSize
 }

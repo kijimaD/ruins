@@ -18,7 +18,7 @@ type MockLogger struct {
 	Entries []string
 }
 
-func (m *MockLogger) Append(entry string) {
+func (m *MockLogger) Push(entry string) {
 	m.Entries = append(m.Entries, entry)
 }
 
@@ -1039,7 +1039,7 @@ func TestLoggerIntegration(t *testing.T) {
 		assert.NoError(t, err)
 
 		// テスト専用ログから確認
-		logs := testBattleLog.Get()
+		logs := testBattleLog.GetHistory()
 		assert.Len(t, logs, 1)
 		assert.Contains(t, logs[0], "に25のダメージ。")
 	})

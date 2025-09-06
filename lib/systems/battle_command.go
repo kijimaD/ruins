@@ -89,7 +89,7 @@ func BattleCommandSystem(world w.World) {
 			ownerName := world.Components.Name.Get(cmd.Owner).(*gc.Name)
 			wayName := world.Components.Name.Get(cmd.Way).(*gc.Name)
 			entry := fmt.Sprintf("%sは、%sで攻撃。", ownerName.Name, wayName.Name)
-			gamelog.BattleLog.Append(entry)
+			gamelog.BattleLog.Push(entry)
 		}
 
 		ownerEntity := cmd.Owner

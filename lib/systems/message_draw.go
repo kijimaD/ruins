@@ -70,8 +70,8 @@ func DrawMessages(world w.World, screen *ebiten.Image) {
 
 // initMessageUI はメッセージUI用の初期化を行う
 func initMessageUI(world w.World) {
-	// 初期状態でメッセージを取得
-	messages := gamelog.FieldLog.Get()
+	// 最新5行のメッセージを取得（表示順で）
+	messages := gamelog.FieldLog.GetRecent(maxLogLines)
 
 	// ログ用コンテナを作成（シンプルな縦並び）
 	logContainer := widget.NewContainer(
@@ -89,13 +89,8 @@ func initMessageUI(world w.World) {
 		),
 	)
 
-	// 実際のメッセージを追加
-	startIndex := 0
-	if len(messages) > maxLogLines {
-		startIndex = len(messages) - maxLogLines
-	}
-
-	for _, message := range messages[startIndex:] {
+	// メッセージを追加（既に表示順になっている）
+	for _, message := range messages {
 		if message == "" {
 			continue
 		}
@@ -115,18 +110,20 @@ func initMessageUI(world w.World) {
 	}
 
 	// 初期メッセージ数を設定
-	lastMessageCount = len(messages)
+	lastMessageCount = gamelog.FieldLog.Count()
 }
 
 // updateMessageUI はログメッセージが更新された場合にUIを再構築する
 func updateMessageUI(world w.World) {
-	messages := gamelog.FieldLog.Get()
-	currentMessageCount := len(messages)
+	currentMessageCount := gamelog.FieldLog.Count()
 
 	// メッセージ数が変わっていない場合は更新不要
 	if currentMessageCount == lastMessageCount {
 		return
 	}
+
+	// 最新5行のメッセージを取得（表示順で）
+	messages := gamelog.FieldLog.GetRecent(maxLogLines)
 
 	// ログ用コンテナを作成（シンプルな縦並び）
 	logContainer := widget.NewContainer(
@@ -144,14 +141,8 @@ func updateMessageUI(world w.World) {
 		),
 	)
 
-	// 最新のメッセージのみを表示（最大maxLogLines行）
-	startIndex := 0
-	if len(messages) > maxLogLines {
-		startIndex = len(messages) - maxLogLines
-	}
-
-	// メッセージを追加
-	for _, message := range messages[startIndex:] {
+	// メッセージを追加（既に表示順になっている）
+	for _, message := range messages {
 		if message == "" {
 			continue
 		}

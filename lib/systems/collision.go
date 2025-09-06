@@ -69,7 +69,7 @@ func CollisionSystem(world w.World) {
 			if checkCollisionSimple(world, playerEntity, enemyEntity, playerPos, enemyPos) {
 				gameResources.SetStateEvent(resources.StateEventBattleStart)
 
-				gamelog.FieldLog.Append("敵と遭遇した。")
+				gamelog.FieldLog.Push("敵と遭遇した。")
 
 				// 衝突した両エンティティの移動を停止
 				if playerVelocity := world.Components.Velocity.Get(playerEntity); playerVelocity != nil {

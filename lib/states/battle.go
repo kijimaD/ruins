@@ -137,7 +137,7 @@ func (st *BattleState) OnStop(world w.World) {
 	}))
 
 	// バトルログをクリア
-	gamelog.BattleLog.Flush()
+	gamelog.BattleLog.Clear()
 
 	// 戦闘に参加したフィールド敵エンティティを削除
 	if st.FieldEnemyEntity.HasComponent(world.Components.AIMoveFSM) &&
@@ -711,7 +711,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 	st.cardSpecContainer.RemoveChildren()
 
 	entries := []any{}
-	for _, e := range gamelog.BattleLog.Get() {
+	for _, e := range gamelog.BattleLog.GetHistory() {
 		entries = append(entries, e)
 	}
 	if st.isWaitClick {

@@ -78,5 +78,5 @@ func collectFieldItem(world w.World, itemEntity ecs.Entity) {
 		panic(err)
 	}
 
-	gamelog.FieldLog.Append(itemName + "を入手した。")
+	gamelog.FieldLog.Push(itemName + "を入手した。")
 }

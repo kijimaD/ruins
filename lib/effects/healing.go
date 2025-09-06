@@ -77,6 +77,6 @@ func (h Healing) logHealing(world w.World, target ecs.Entity, amount int, logger
 	if nameComponent := world.Components.Name.Get(target); nameComponent != nil {
 		name := nameComponent.(*gc.Name)
 		entry := fmt.Sprintf("%sが%d回復。", name.Name, amount)
-		logger.Append(entry)
+		logger.Push(entry)
 	}
 }
