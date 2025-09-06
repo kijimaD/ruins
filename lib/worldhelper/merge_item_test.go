@@ -25,7 +25,8 @@ func TestMergeMaterialIntoInventoryWithMaterial(t *testing.T) {
 	require.NoError(t, err)
 
 	// MergeMaterialIntoInventoryを実行
-	MergeMaterialIntoInventory(world, newMaterial, "鉄くず")
+	err = MergeMaterialIntoInventory(world, newMaterial, "鉄くず")
+	require.NoError(t, err)
 
 	// 既存のmaterialの数量が統合されていることを確認
 	updatedMat := world.Components.Material.Get(existingMaterial).(*gc.Material)
@@ -54,7 +55,8 @@ func TestMergeMaterialIntoInventoryWithNewMaterial(t *testing.T) {
 	}))
 
 	// MergeMaterialIntoInventoryを実行
-	MergeMaterialIntoInventory(world, newMaterial, "緑ハーブ")
+	err = MergeMaterialIntoInventory(world, newMaterial, "緑ハーブ")
+	require.NoError(t, err)
 
 	// バックパック内のmaterial数をカウント（統合後）
 	materialCountAfter := 0
@@ -97,7 +99,8 @@ func TestMergeMaterialIntoInventoryWithNonMaterial(t *testing.T) {
 	}))
 
 	// MergeMaterialIntoInventoryを実行
-	MergeMaterialIntoInventory(world, newItem, "回復薬")
+	err = MergeMaterialIntoInventory(world, newItem, "回復薬")
+	require.NoError(t, err)
 
 	// バックパック内のアイテム数をカウント（統合後）
 	itemCountAfter := 0
@@ -127,8 +130,8 @@ func TestMergeMaterialIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) 
 	entities := entities.AddEntities(world, componentList)
 	nonItemEntity := entities[0]
 
-	// MergeMaterialIntoInventoryを実行してパニックが発生することを確認
-	require.Panics(t, func() {
-		MergeMaterialIntoInventory(world, nonItemEntity, "テスト")
-	}, "ItemもMaterialコンポーネントも持たないエンティティに対してパニックするべき")
+	// MergeMaterialIntoInventoryを実行してエラーが発生することを確認
+	err = MergeMaterialIntoInventory(world, nonItemEntity, "テスト")
+	require.Error(t, err, "ItemもMaterialコンポーネントも持たないエンティティに対してエラーを返すべき")
+	assert.Contains(t, err.Error(), "does not have Item or Material component", "エラーメッセージが適切であるべき")
 }

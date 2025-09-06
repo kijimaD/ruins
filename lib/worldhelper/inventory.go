@@ -10,13 +10,13 @@ import (
 
 // MergeMaterialIntoInventory は既存のバックパック内マテリアルと統合するか新規追加する
 // materialの場合は既存と数量統合、それ以外は個別アイテムとして追加
-func MergeMaterialIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) {
+func MergeMaterialIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) error {
 	// ItemコンポーネントまたはMaterialコンポーネントを持っているかチェック
 	hasItem := newItemEntity.HasComponent(world.Components.Item)
 	hasMaterial := newItemEntity.HasComponent(world.Components.Material)
 
 	if !hasItem && !hasMaterial {
-		panic(fmt.Sprintf("Entity %v does not have Item or Material component", newItemEntity))
+		return fmt.Errorf("entity %v does not have Item or Material component", newItemEntity)
 	}
 
 	// materialかどうかを確認
@@ -49,6 +49,7 @@ func MergeMaterialIntoInventory(world w.World, newItemEntity ecs.Entity, itemNam
 		}
 		// 見つからなかった場合は新規materialとして追加（既にLocationInBackpackが設定済み）
 	}
+	return nil
 }
 
 // mergeMaterials はmaterial入手を処理する。materialの場合は数量管理なので、入手数量を足してアイテムエンティティは消す

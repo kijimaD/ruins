@@ -24,7 +24,7 @@ func Craft(world w.World, name string) (*ecs.Entity, error) {
 
 	resultEntity, err := SpawnItem(world, name, gc.ItemLocationInBackpack)
 	if err != nil {
-		panic(err) // クラフト失敗時はパニック（ゲーム設計上重要）
+		return nil, fmt.Errorf("アイテム生成に失敗: %w", err)
 	}
 	randomize(world, resultEntity)
 	consumeMaterials(world, name)

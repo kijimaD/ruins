@@ -274,7 +274,7 @@ func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemL
 // 完全回復させる
 func fullRecover(world w.World, entity ecs.Entity) {
 	// 新しく生成されたエンティティの最大HP/SPを設定
-	setMaxHPSP(world, entity)
+	_ = setMaxHPSP(world, entity) // エラーが発生した場合もリカバリーは続行する
 
 	processor := effects.NewProcessor()
 
@@ -291,10 +291,10 @@ func fullRecover(world w.World, entity ecs.Entity) {
 }
 
 // 指定したエンティティの最大HP/SPを設定する
-func setMaxHPSP(world w.World, entity ecs.Entity) {
+func setMaxHPSP(world w.World, entity ecs.Entity) error {
 
 	if !entity.HasComponent(world.Components.Pools) || !entity.HasComponent(world.Components.Attributes) {
-		return
+		return fmt.Errorf("entity %v does not have required components (Pools or Attributes)", entity)
 	}
 
 	pools := world.Components.Pools.Get(entity).(*gc.Pools)
@@ -327,6 +327,8 @@ func setMaxHPSP(world w.World, entity ecs.Entity) {
 	// 最大SP計算: (体力*multiplyV+器用さ+素早さ)*{1+(Lv-1)*growthRate}
 	pools.SP.Max = int(float64(attrs.Vitality.Total*spVitalityMultiply+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*spLevelGrowthRate))
 	pools.SP.Current = pools.SP.Max
+
+	return nil
 }
 
 // SpawnAllMaterials は所持素材の個数を0で初期化する
