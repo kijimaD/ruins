@@ -108,7 +108,7 @@ processor.AddEffect(damage, &amp;attacker, target)
 
 // ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）
 healing := effects.Healing{Amount: gc.NumeralAmount{Numeral: 30}}
-processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetParty{}, &amp;gamelog.BattleLog, world)
+processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetParty{}, gamelog.BattleLog, world)
 
 // 非戦闘時の回復（ゲームログ出力なし）
 processor.AddTargetedEffect(healing, &amp;healer, effects.TargetParty{}, world)
@@ -749,7 +749,7 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="Effect">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=616:931#L11">Effect</a>
+			<h2 id="Effect">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=614:929#L11">Effect</a>
 				<a class="permalink" href="index.html#Effect">&#xb6;</a>
 				
 				
@@ -932,7 +932,7 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="GameLogAppender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=175:231#L1">GameLogAppender</a>
+			<h2 id="GameLogAppender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=175:229#L1">GameLogAppender</a>
 				<a class="permalink" href="index.html#GameLogAppender">&#xb6;</a>
 				
 				
@@ -940,7 +940,7 @@ target.go    - ターゲット選択システム
 			<p>GameLogAppender はゲームログ出力のインターフェース
 
 			<pre>type GameLogAppender interface {
-    Append(entry <a href="http://localhost:8888/pkg/builtin/#string">string</a>)
+    Push(entry <a href="http://localhost:8888/pkg/builtin/#string">string</a>)
 }</pre>
 
 			
@@ -1304,7 +1304,7 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="Scope">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=291:546#L4">Scope</a>
+			<h2 id="Scope">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/combat.go?s=289:544#L4">Scope</a>
 				<a class="permalink" href="index.html#Scope">&#xb6;</a>
 				
 				

@@ -110,24 +110,37 @@
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
 			
 				
 				<dd><a href="index.html#SafeSlice">type SafeSlice</a></dd>
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewSafeSlice">func NewSafeSlice(maxSize int) *SafeSlice</a></dd>
+				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Append">func (s *SafeSlice) Append(value string)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Clear">func (s *SafeSlice) Clear()</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Flush">func (s *SafeSlice) Flush()</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Count">func (s *SafeSlice) Count() int</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Get">func (s *SafeSlice) Get() []string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.GetHistory">func (s *SafeSlice) GetHistory() []string</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Pop">func (s *SafeSlice) Pop() []string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.GetRecent">func (s *SafeSlice) GetRecent(lines int) []string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.MaxHistory">func (s *SafeSlice) MaxHistory() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#SafeSlice.Push">func (s *SafeSlice) Push(message string)</a></dd>
 				
 			
 			
@@ -154,18 +167,45 @@
 		
 
 		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span class="comment">// DefaultMaxLogSize はデフォルトの最大ログサイズ</span>
+    <span id="DefaultMaxLogSize">DefaultMaxLogSize</span> = 1000
+    <span class="comment">// FieldLogMaxSize はフィールドログの最大サイズ</span>
+    <span id="FieldLogMaxSize">FieldLogMaxSize</span> = 100
+    <span class="comment">// BattleLogMaxSize は戦闘ログの最大サイズ</span>
+    <span id="BattleLogMaxSize">BattleLogMaxSize</span> = 500
+    <span class="comment">// SceneLogMaxSize はシーンログの最大サイズ</span>
+    <span id="SceneLogMaxSize">SceneLogMaxSize</span> = 200
+)</pre>
+			
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				
+				<pre>var (
+    <span class="comment">// BattleLog は戦闘用ログ</span>
+    <span id="BattleLog">BattleLog</span> = <a href="index.html#NewSafeSlice">NewSafeSlice</a>(<a href="index.html#BattleLogMaxSize">BattleLogMaxSize</a>)
+    <span class="comment">// FieldLog はフィールド用ログ</span>
+    <span id="FieldLog">FieldLog</span> = <a href="index.html#NewSafeSlice">NewSafeSlice</a>(<a href="index.html#FieldLogMaxSize">FieldLogMaxSize</a>)
+    <span class="comment">// SceneLog は会話シーンでステータス変化を通知する用ログ</span>
+    <span id="SceneLog">SceneLog</span> = <a href="index.html#NewSafeSlice">NewSafeSlice</a>(<a href="index.html#SceneLogMaxSize">SceneLogMaxSize</a>)
+)</pre>
+			
 		
 		
 		
 			
 			
-			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=405:468#L8">SafeSlice</a>
+			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=737:813#L18">SafeSlice</a>
 				<a class="permalink" href="index.html#SafeSlice">&#xb6;</a>
 				
 				
 			</h2>
-			<p>SafeSlice はスレッドセーフなスライス
-TODO: 無限に追加される可能性があるので、最大の長さを設定する
+			<p>SafeSlice はスレッドセーフなログストレージ
 
 			<pre>type SafeSlice struct {
     <span class="comment">// contains filtered or unexported fields</span>
@@ -175,71 +215,101 @@ TODO: 無限に追加される可能性があるので、最大の長さを設�
 			
 
 			
-				
-				<pre>var (
-    <span class="comment">// BattleLog は戦闘用ログ</span>
-    <span id="BattleLog">BattleLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
-    <span class="comment">// FieldLog はフィールド用ログ</span>
-    <span id="FieldLog">FieldLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
-    <span class="comment">// SceneLog は会話シーンでステータス変化を通知する用ログ</span>
-    <span id="SceneLog">SceneLog</span> <a href="index.html#SafeSlice">SafeSlice</a>
-)</pre>
-			
 
 			
 			
-			
-
 			
 
 			
 				
-				<h3 id="SafeSlice.Append">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=505:545#L14">Append</a>
-					<a class="permalink" href="index.html#SafeSlice.Append">&#xb6;</a>
+				<h3 id="NewSafeSlice">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=895:936#L25">NewSafeSlice</a>
+					<a class="permalink" href="index.html#NewSafeSlice">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Append(value <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-				<p>Append はログを追加する
+				<pre>func NewSafeSlice(maxSize <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#SafeSlice">SafeSlice</a></pre>
+				<p>NewSafeSlice は指定されたサイズの新しいSafeSliceを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="SafeSlice.Clear">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2618:2645#L95">Clear</a>
+					<a class="permalink" href="index.html#SafeSlice.Clear">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Clear()</pre>
+				<p>Clear は全ログを削除
 
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Flush">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1041:1068#L41">Flush</a>
-					<a class="permalink" href="index.html#SafeSlice.Flush">&#xb6;</a>
+				<h3 id="SafeSlice.Count">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2744:2775#L103">Count</a>
+					<a class="permalink" href="index.html#SafeSlice.Count">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Flush()</pre>
-				<p>Flush はログの内容を消す
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Count() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>Count は現在のログ行数
 
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Get">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=680:714#L22">Get</a>
-					<a class="permalink" href="index.html#SafeSlice.Get">&#xb6;</a>
+				<h3 id="SafeSlice.GetHistory">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2422:2463#L84">GetHistory</a>
+					<a class="permalink" href="index.html#SafeSlice.GetHistory">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Get() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>Get は古い順に取り出す。副作用はない
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) GetHistory() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>GetHistory は全履歴を表示順で取得
+結果: [最古, ..., 2番目に新しい, 最新]
 
 				
 				
 				
 			
 				
-				<h3 id="SafeSlice.Pop">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=918:952#L33">Pop</a>
-					<a class="permalink" href="index.html#SafeSlice.Pop">&#xb6;</a>
+				<h3 id="SafeSlice.GetRecent">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1822:1871#L60">GetRecent</a>
+					<a class="permalink" href="index.html#SafeSlice.GetRecent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Pop() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>Pop は古い順に取り出す。取得した分は消える
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) GetRecent(lines <a href="http://localhost:8888/pkg/builtin/#int">int</a>) []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>GetRecent は最新N行を表示順で取得
+結果: [..., 3番目に新しい, 2番目に新しい, 最新]
+
+				
+				
+				
+			
+				
+				<h3 id="SafeSlice.MaxHistory">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2884:2920#L111">MaxHistory</a>
+					<a class="permalink" href="index.html#SafeSlice.MaxHistory">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) MaxHistory() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>MaxHistory は履歴の最大保持行数
+
+				
+				
+				
+			
+				
+				<h3 id="SafeSlice.Push">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1112:1152#L36">Push</a>
+					<a class="permalink" href="index.html#SafeSlice.Push">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (s *<a href="index.html#SafeSlice">SafeSlice</a>) Push(message <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+				<p>Push は新しいログを追加
 
 				
 				
