@@ -100,7 +100,7 @@ func BattleCommandSystem(world w.World) {
 		damageEffect := effects.Damage{Amount: damage, Source: effects.DamageSourceWeapon}
 		staminaEffect := effects.ConsumeStamina{Amount: gc.NumeralAmount{Numeral: card.Cost}}
 
-		processor.AddEffectWithLogger(damageEffect, &ownerEntity, &gamelog.BattleLog, cmd.Target)
+		processor.AddEffectWithLogger(damageEffect, &ownerEntity, gamelog.BattleLog, cmd.Target)
 		processor.AddEffect(staminaEffect, &ownerEntity, cmd.Owner)
 		if err := processor.Execute(world); err != nil {
 			log.Printf("エフェクト実行エラー: %v", err)

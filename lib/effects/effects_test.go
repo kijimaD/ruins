@@ -1026,7 +1026,7 @@ func TestLoggerIntegration(t *testing.T) {
 		assert.NoError(t, err)
 
 		// テスト専用のBattleLogインスタンスを作成
-		testBattleLog := &gamelog.SafeSlice{}
+		testBattleLog := gamelog.NewSafeSlice(100)
 
 		player := createTestPlayerEntity(world, 100, 50)
 		processor := NewProcessor()

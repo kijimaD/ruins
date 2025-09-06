@@ -17,7 +17,7 @@
 //
 //	// ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）
 //	healing := effects.Healing{Amount: gc.NumeralAmount{Numeral: 30}}
-//	processor.AddTargetedEffectWithLogger(healing, &healer, effects.TargetParty{}, &gamelog.BattleLog, world)
+//	processor.AddTargetedEffectWithLogger(healing, &healer, effects.TargetParty{}, gamelog.BattleLog, world)
 //
 //	// 非戦闘時の回復（ゲームログ出力なし）
 //	processor.AddTargetedEffect(healing, &healer, effects.TargetParty{}, world)

@@ -8,6 +8,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -67,6 +68,8 @@ func CollisionSystem(world w.World) {
 			// 衝突判定（スプライトサイズを考慮した距離ベース）
 			if checkCollisionSimple(world, playerEntity, enemyEntity, playerPos, enemyPos) {
 				gameResources.SetStateEvent(resources.StateEventBattleStart)
+
+				gamelog.FieldLog.Append("敵と遭遇した。")
 
 				// 衝突した両エンティティの移動を停止
 				if playerVelocity := world.Components.Velocity.Get(playerEntity); playerVelocity != nil {
