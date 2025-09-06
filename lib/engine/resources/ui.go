@@ -84,7 +84,7 @@ type ButtonResources struct {
 // CheckboxResources はチェックボックスリソースを管理する
 type CheckboxResources struct {
 	Image   *widget.ButtonImage
-	Graphic *widget.CheckboxGraphicImage
+	Graphic *widget.GraphicImage
 	Spacing int
 }
 
@@ -361,11 +361,7 @@ func newCheckboxResources() (*CheckboxResources, error) {
 			Disabled: disabled,
 		},
 
-		Graphic: &widget.CheckboxGraphicImage{
-			Checked:   checked,
-			Unchecked: unchecked,
-			Greyed:    greyed,
-		},
+		Graphic: checked,
 
 		Spacing: 10,
 	}, nil
