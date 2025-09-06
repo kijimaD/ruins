@@ -40,6 +40,9 @@ func HUDSystem(world w.World, screen *ebiten.Image) {
 
 	// ミニマップを描画
 	drawMinimap(world, screen)
+
+	// ログメッセージを描画
+	DrawMessages(world, screen)
 }
 
 // drawAIStates はAIエンティティのステートをスプライトの近くに表示する

@@ -183,6 +183,5 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
 
 	gs.RenderSpriteSystem(world, screen)
 	gs.VisionSystem(world, screen)
-	gs.LogMessageSystem(world, screen) // 視界システムの後に描画
-	gs.HUDSystem(world, screen)
+	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
 }

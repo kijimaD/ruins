@@ -22,12 +22,12 @@ const (
 )
 
 var (
-	logUI *ebitenui.UI // ログメッセージ用のUI
+	messageUI        *ebitenui.UI // ログメッセージ用のUI
+	lastMessageCount int          // 前回のメッセージ数を記録
 )
 
-// LogMessageSystem はログメッセージを描画する
-// TODO: system 自体はHUDで実行したほうがよさそう
-func LogMessageSystem(world w.World, screen *ebiten.Image) {
+// DrawMessages はログメッセージを画面下部に描画する
+func DrawMessages(world w.World, screen *ebiten.Image) {
 	// 画面サイズを取得
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
@@ -41,25 +41,25 @@ func LogMessageSystem(world w.World, screen *ebiten.Image) {
 	logAreaY := screenHeight - fixedHeight
 
 	// 背景を描画（固定サイズ）
-	drawLogBackground(screen, logAreaX, logAreaY, logAreaWidth, fixedHeight)
+	drawMessageBackground(screen, logAreaX, logAreaY, logAreaWidth, fixedHeight)
 
 	// UIが初期化されていない場合は初期化
-	if logUI == nil {
-		initLogUI(world)
+	if messageUI == nil {
+		initMessageUI(world)
 	}
 
 	// ログメッセージが更新されている場合はUIを再構築
-	updateLogUI(world)
+	updateMessageUI(world)
 
 	// UIを更新
-	logUI.Update()
+	messageUI.Update()
 
 	// オフスクリーンサイズ（固定）
 	offscreenWidth := logAreaWidth - logAreaMargin*2
 	offscreenHeight := fixedHeight - logAreaMargin*2
 
 	offscreen := ebiten.NewImage(offscreenWidth, offscreenHeight)
-	logUI.Draw(offscreen)
+	messageUI.Draw(offscreen)
 
 	// 描画位置を調整（枠内に正確に配置）
 	op := &ebiten.DrawImageOptions{}
@@ -68,12 +68,8 @@ func LogMessageSystem(world w.World, screen *ebiten.Image) {
 	screen.DrawImage(offscreen, op)
 }
 
-var (
-	lastMessageCount int // 前回のメッセージ数を記録
-)
-
-// initLogUI はログUI用の初期化を行う
-func initLogUI(world w.World) {
+// initMessageUI はメッセージUI用の初期化を行う
+func initMessageUI(world w.World) {
 	// 初期状態でメッセージを取得
 	messages := gamelog.FieldLog.Get()
 
@@ -114,7 +110,7 @@ func initLogUI(world w.World) {
 	}
 
 	// UIを初期化（シンプルに）
-	logUI = &ebitenui.UI{
+	messageUI = &ebitenui.UI{
 		Container: logContainer,
 	}
 
@@ -122,8 +118,8 @@ func initLogUI(world w.World) {
 	lastMessageCount = len(messages)
 }
 
-// updateLogUI はログメッセージが更新された場合にUIを再構築する
-func updateLogUI(world w.World) {
+// updateMessageUI はログメッセージが更新された場合にUIを再構築する
+func updateMessageUI(world w.World) {
 	messages := gamelog.FieldLog.Get()
 	currentMessageCount := len(messages)
 
@@ -170,14 +166,14 @@ func updateLogUI(world w.World) {
 	}
 
 	// UIを更新（シンプルに）
-	logUI.Container = logContainer
+	messageUI.Container = logContainer
 
 	// メッセージ数を更新
 	lastMessageCount = currentMessageCount
 }
 
-// drawLogBackground はログエリアの背景を描画する
-func drawLogBackground(screen *ebiten.Image, x, y, width, height int) {
+// drawMessageBackground はログエリアの背景を描画する
+func drawMessageBackground(screen *ebiten.Image, x, y, width, height int) {
 	// 枠線を描画（白色）
 	vector.StrokeRect(screen,
 		float32(x),
