@@ -6,10 +6,10 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/save"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -200,7 +200,7 @@ func (st *SaveMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// タイトル
 	titleText := widget.NewText(
-		widget.TextOpts.Text("書込", world.Resources.UIResources.Text.TitleFace, styles.TextColor),
+		widget.TextOpts.Text("書込", world.Resources.UIResources.Text.TitleFace, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,

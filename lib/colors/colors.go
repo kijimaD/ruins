@@ -1,4 +1,4 @@
-package styles
+package colors
 
 import "image/color"
 
@@ -59,4 +59,25 @@ var (
 	ChillColor = RGB(0x00ffff)
 	// PhotonColor は光子色（黄）を表す
 	PhotonColor = RGB(0xffff00)
+
+	// ColorWhite は白色を表す
+	ColorWhite = RGB(0xFFFFFF)
+	// ColorBlack は黒色を表す
+	ColorBlack = RGB(0x000000)
+	// ColorRed は赤色を表す
+	ColorRed = RGB(0xFF0000)
+	// ColorGreen は緑色を表す
+	ColorGreen = RGB(0x00FF00)
+	// ColorBlue は青色を表す
+	ColorBlue = RGB(0x0000FF)
+	// ColorYellow は黄色を表す
+	ColorYellow = RGB(0xFFFF00)
+	// ColorCyan はシアン色を表す
+	ColorCyan = RGB(0x00FFFF)
+	// ColorMagenta はマゼンタ色を表す
+	ColorMagenta = RGB(0xFF00FF)
+	// ColorOrange はオレンジ色を表す
+	ColorOrange = RGB(0xFFA500)
+	// ColorPurple は紫色を表す
+	ColorPurple = RGB(0x800080)
 )

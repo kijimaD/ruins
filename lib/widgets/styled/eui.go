@@ -1,11 +1,11 @@
-package eui
+package styled
 
 import (
 	"image/color"
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/colors"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -140,7 +140,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
-		widget.TextOpts.Text(title, res.Text.TitleFace, styles.TextColor),
+		widget.TextOpts.Text(title, res.Text.TitleFace, colors.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 			VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -156,7 +156,7 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 func NewMenuText(title string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	text := widget.NewText(
-		widget.TextOpts.Text(title, res.Text.Face, styles.TextColor),
+		widget.TextOpts.Text(title, res.Text.Face, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -169,7 +169,7 @@ func NewMenuText(title string, world w.World) *widget.Text {
 func NewTitleText(text string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.TitleFace, styles.TextColor),
+		widget.TextOpts.Text(text, res.Text.TitleFace, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -180,7 +180,7 @@ func NewTitleText(text string, world w.World) *widget.Text {
 func NewSubtitleText(text string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.Face, styles.TextColor),
+		widget.TextOpts.Text(text, res.Text.Face, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -191,7 +191,7 @@ func NewSubtitleText(text string, world w.World) *widget.Text {
 func NewDescriptionText(text string, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.SmallFace, styles.ForegroundColor),
+		widget.TextOpts.Text(text, res.Text.SmallFace, colors.ForegroundColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -203,7 +203,7 @@ func NewPageIndicator(text string, world w.World) *widget.Container {
 	res := world.Resources.UIResources
 
 	// 透明な背景のコンテナを作成（NewListItemTextと同じパターン）
-	backgroundColor := image.NewNineSliceColor(styles.TransparentColor)
+	backgroundColor := image.NewNineSliceColor(colors.TransparentColor)
 
 	container := widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(backgroundColor),
@@ -218,7 +218,7 @@ func NewPageIndicator(text string, world w.World) *widget.Container {
 
 	// 右寄せのテキスト
 	textWidget := widget.NewText(
-		widget.TextOpts.Text(text, res.Text.SmallFace, styles.ForegroundColor),
+		widget.TextOpts.Text(text, res.Text.SmallFace, colors.ForegroundColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionEnd, // 右寄せ
@@ -241,7 +241,7 @@ func NewPageIndicator(text string, world w.World) *widget.Container {
 func NewBodyText(title string, _ color.RGBA, world w.World) *widget.Text {
 	res := world.Resources.UIResources
 	text := widget.NewText(
-		widget.TextOpts.Text(title, res.Text.Face, styles.TextColor),
+		widget.TextOpts.Text(title, res.Text.Face, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -257,10 +257,10 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w
 	var backgroundColor *image.NineSlice
 	if isSelected {
 		// 選択中は背景色を付ける
-		backgroundColor = image.NewNineSliceColor(styles.ButtonHoverColor)
+		backgroundColor = image.NewNineSliceColor(colors.ButtonHoverColor)
 	} else {
 		// 非選択は背景なし（透明）
-		backgroundColor = image.NewNineSliceColor(styles.TransparentColor)
+		backgroundColor = image.NewNineSliceColor(colors.TransparentColor)
 	}
 
 	container := widget.NewContainer(
@@ -292,6 +292,21 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w
 
 	container.AddChild(textWidget)
 	return container
+}
+
+// NewFragmentText は色付きログフラグメント専用のテキストを作成する（文字数分だけの幅）
+func NewFragmentText(text string, textColor color.RGBA, world w.World) *widget.Text {
+	res := world.Resources.UIResources
+
+	return widget.NewText(
+		widget.TextOpts.Text(text, res.Text.Face, textColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: false, // 横幅を伸ばさない
+			}),
+			// MinSizeは指定しない（テキストの自然な幅を使用）
+		),
+	)
 }
 
 // window ================
@@ -340,10 +355,10 @@ func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widge
 		}),
 		widget.ListOpts.EntrySelectedHandler(func(_ *widget.ListEntrySelectedEventArgs) {}),
 		widget.ListOpts.EntryColor(&widget.ListEntryColor{
-			Selected:                  styles.TextColor,
-			Unselected:                styles.TextColor,
-			SelectedBackground:        styles.ButtonHoverColor,
-			SelectedFocusedBackground: styles.ButtonHoverColor,
+			Selected:                  colors.TextColor,
+			Unselected:                colors.TextColor,
+			SelectedBackground:        colors.ButtonHoverColor,
+			SelectedFocusedBackground: colors.ButtonHoverColor,
 		}),
 		widget.ListOpts.EntryFontFace(res.Text.Face),
 		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),

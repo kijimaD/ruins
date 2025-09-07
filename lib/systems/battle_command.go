@@ -1,7 +1,6 @@
 package systems
 
 import (
-	"fmt"
 	"log"
 	"math/rand/v2"
 	"sort"
@@ -88,8 +87,13 @@ func BattleCommandSystem(world w.World) {
 		{
 			ownerName := world.Components.Name.Get(cmd.Owner).(*gc.Name)
 			wayName := world.Components.Name.Get(cmd.Way).(*gc.Name)
-			entry := fmt.Sprintf("%sは、%sで攻撃。", ownerName.Name, wayName.Name)
-			gamelog.BattleLog.Push(entry)
+			// 色付きログ
+			gamelog.New(gamelog.BattleLog).
+				NPCName(ownerName.Name).
+				Append("は、").
+				ItemName(wayName.Name).
+				Append("で攻撃。").
+				Log()
 		}
 
 		ownerEntity := cmd.Owner

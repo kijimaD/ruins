@@ -4,10 +4,10 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/styles"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -74,10 +74,10 @@ func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
+	rootContainer := styled.NewVerticalContainer()
 
 	res := world.Resources.UIResources
-	rootContainer.AddChild(widget.NewText(widget.TextOpts.Text("GAME OVER...", res.Text.BigTitleFace, styles.TextColor)))
+	rootContainer.AddChild(widget.NewText(widget.TextOpts.Text("GAME OVER...", res.Text.BigTitleFace, colors.TextColor)))
 
 	return &ebitenui.UI{Container: rootContainer}
 }

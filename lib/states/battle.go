@@ -10,18 +10,18 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -296,8 +296,8 @@ func (st *BattleState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
-	st.enemyListContainer = eui.NewRowContainer(
+	rootContainer := styled.NewVerticalContainer()
+	st.enemyListContainer = styled.NewRowContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position:  widget.RowLayoutPositionCenter,
@@ -310,24 +310,24 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	)
 	st.updateEnemyListContainer(world)
 
-	st.selectContainer = eui.NewVerticalContainer(
+	st.selectContainer = styled.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 120)),
 	)
 	st.reloadPolicy(world)
 
 	// 非表示にできるように背景が設定されていない
-	st.cardSpecContainer = eui.NewVerticalContainer(
+	st.cardSpecContainer = styled.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(600, 120),
 		),
 	)
 
-	st.memberContainer = eui.NewRowContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	st.memberContainer = styled.NewRowContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.TransBlackColor)),
 	)
 	st.updateMemberContainer(world)
 
-	actionContainer := eui.NewRowContainer()
+	actionContainer := styled.NewRowContainer()
 	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
 	rootContainer.AddChild(
 		st.memberContainer,
@@ -376,7 +376,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 			} else {
 				text = name.Name
 			}
-			container.AddChild(eui.NewMenuText(text, world))
+			container.AddChild(styled.NewMenuText(text, world))
 		}
 
 		st.enemyListContainer.AddChild(container)
@@ -580,14 +580,14 @@ func (st *BattleState) handleActionFocusChange(world w.World, items []menu.Item,
 // addPlayerNameToMenu はプレイヤー名をメニューに追加
 func (st *BattleState) addPlayerNameToMenu(world w.World) {
 	name := world.Components.Name.Get(*st.party.Value()).(*gc.Name)
-	st.selectContainer.AddChild(eui.NewMenuText(name.Name, world))
+	st.selectContainer.AddChild(styled.NewMenuText(name.Name, world))
 }
 
 // updateCardSpec はカードの詳細情報を更新する
 func (st *BattleState) updateCardSpec(world w.World, entity ecs.Entity) {
 	st.cardSpecContainer.RemoveChildren()
 	res := world.Resources.UIResources
-	transContainer := eui.NewVerticalContainer(
+	transContainer := styled.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(700, 120),
 		),
@@ -719,7 +719,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 	}
 
 	// カスタムのラベル関数を定義
-	list := eui.NewMessageList(entries, world,
+	list := styled.NewMessageList(entries, world,
 		widget.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(string)
 			if !ok {
@@ -753,18 +753,18 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 
-	content := eui.NewWindowContainer(world)
+	content := styled.NewWindowContainer(world)
 	// TODO: 経験値をプラスする
 	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
 	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
-	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
+	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, colors.TextColor)))
 	world.Manager.Join(
 		world.Components.FactionAlly,
 		world.Components.InParty,
 		world.Components.Attributes,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		entryContainer := eui.NewRowContainer(
+		entryContainer := styled.NewRowContainer(
 			widget.ContainerOpts.WidgetOpts(
 				widget.WidgetOpts.MinSize(200, 0),
 			),
@@ -781,7 +781,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		name := world.Components.Name.Get(entity).(*gc.Name)
 		entryContainer.AddChild(
 			widget.NewText(
-				widget.TextOpts.Text(name.Name, res.Text.Face, styles.TextColor),
+				widget.TextOpts.Text(name.Name, res.Text.Face, colors.TextColor),
 				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
 				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 			),
@@ -790,7 +790,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		xpAfter := dropResult.XPAfter[entity]
 		entryContainer.AddChild(
 			widget.NewText(
-				widget.TextOpts.Text(fmt.Sprintf("%d → %d", xpBefore, xpAfter), res.Text.Face, styles.TextColor),
+				widget.TextOpts.Text(fmt.Sprintf("%d → %d", xpBefore, xpAfter), res.Text.Face, colors.TextColor),
 				widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
 				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 			),
@@ -798,7 +798,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		if dropResult.IsLevelUp[entity] {
 			entryContainer.AddChild(
 				widget.NewText(
-					widget.TextOpts.Text("Lv ↑", res.Text.Face, styles.TextColor),
+					widget.TextOpts.Text("Lv ↑", res.Text.Face, colors.TextColor),
 					widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
 					widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 				),
@@ -806,10 +806,10 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		}
 	}))
 
-	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
+	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, colors.TextColor)))
 	for _, mn := range dropResult.MaterialNames {
 		text := fmt.Sprintf("  %s", mn)
-		content.AddChild(widget.NewText(widget.TextOpts.Text(text, res.Text.Face, styles.TextColor)))
+		content.AddChild(widget.NewText(widget.TextOpts.Text(text, res.Text.Face, colors.TextColor)))
 	}
 	resultWindow := widget.NewWindow(
 		widget.WindowOpts.Contents(content),

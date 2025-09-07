@@ -199,3 +199,100 @@ func TestLogAPI(t *testing.T) {
 		assert.Equal(t, []string{}, history)
 	})
 }
+
+func TestSafeSliceColoredEntries(t *testing.T) {
+	t.Parallel()
+
+	t.Run("色付きエントリの基本動作", func(t *testing.T) {
+		t.Parallel()
+		log := NewSafeSlice(5)
+
+		// 色付きエントリを直接追加
+		entry := LogEntry{
+			Fragments: []LogFragment{
+				{Text: "Test message"},
+			},
+		}
+		log.pushColoredEntry(entry)
+
+		// 取得してテスト
+		entries := log.GetRecentEntries(1)
+		assert.Equal(t, 1, len(entries))
+		assert.Equal(t, "Test message", entries[0].Text())
+	})
+
+	t.Run("空のLogEntry", func(t *testing.T) {
+		t.Parallel()
+		log := NewSafeSlice(3)
+
+		// 空のエントリを追加
+		emptyEntry := LogEntry{Fragments: []LogFragment{}}
+		log.pushColoredEntry(emptyEntry)
+
+		entries := log.GetRecentEntries(1)
+		assert.Equal(t, 1, len(entries))
+		assert.True(t, entries[0].IsEmpty())
+		assert.Equal(t, "", entries[0].Text())
+	})
+
+	t.Run("色付きエントリの最大サイズ超過時の動作", func(t *testing.T) {
+		t.Parallel()
+		log := NewSafeSlice(2)
+
+		// 3つのエントリを追加（最大サイズは2）
+		for i := 1; i <= 3; i++ {
+			entry := LogEntry{
+				Fragments: []LogFragment{
+					{Text: fmt.Sprintf("Message %d", i)},
+				},
+			}
+			log.pushColoredEntry(entry)
+		}
+
+		entries := log.GetRecentEntries(5) // 全て取得を試行
+		assert.Equal(t, 2, len(entries))   // 最大サイズ分のみ
+
+		// 最新の2つが残っているかチェック
+		assert.Equal(t, "Message 2", entries[0].Text())
+		assert.Equal(t, "Message 3", entries[1].Text())
+	})
+
+	t.Run("GetHistoryEntriesの基本動作", func(t *testing.T) {
+		t.Parallel()
+		log := NewSafeSlice(5)
+
+		// 複数エントリを追加
+		for i := 1; i <= 3; i++ {
+			entry := LogEntry{
+				Fragments: []LogFragment{
+					{Text: fmt.Sprintf("Entry %d", i)},
+				},
+			}
+			log.pushColoredEntry(entry)
+		}
+
+		allEntries := log.GetHistoryEntries()
+		assert.Equal(t, 3, len(allEntries))
+
+		// 順序確認（古い順）
+		assert.Equal(t, "Entry 1", allEntries[0].Text())
+		assert.Equal(t, "Entry 2", allEntries[1].Text())
+		assert.Equal(t, "Entry 3", allEntries[2].Text())
+	})
+
+	t.Run("GetRecentEntriesの負の値や0での呼び出し", func(t *testing.T) {
+		t.Parallel()
+		log := NewSafeSlice(5)
+
+		entry := LogEntry{Fragments: []LogFragment{{Text: "Test"}}}
+		log.pushColoredEntry(entry)
+
+		// 負の値
+		entries := log.GetRecentEntries(-1)
+		assert.Equal(t, 0, len(entries))
+
+		// 0
+		entries = log.GetRecentEntries(0)
+		assert.Equal(t, 0, len(entries))
+	})
+}

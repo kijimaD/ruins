@@ -7,13 +7,13 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/ruins/lib/colors"
 	"github.com/kijimaD/ruins/lib/config"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/eui"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -203,20 +203,20 @@ func (st *HomeMenuState) updateActionDescription(world w.World, index int) {
 	}
 
 	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(eui.NewMenuText(items[index].Description, world))
+	st.actionDescContainer.AddChild(styled.NewMenuText(items[index].Description, world))
 	st.updateMemberContainer(world)
 }
 
 // ================
 
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := eui.NewVerticalContainer()
-	st.memberContainer = eui.NewRowContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+	rootContainer := styled.NewVerticalContainer()
+	st.memberContainer = styled.NewRowContainer(
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.TransBlackColor)),
 	)
 
-	st.actionDescContainer = eui.NewRowContainer()
-	st.actionDescContainer.AddChild(eui.NewMenuText(" ", world))
+	st.actionDescContainer = styled.NewRowContainer()
+	st.actionDescContainer.AddChild(styled.NewMenuText(" ", world))
 
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)

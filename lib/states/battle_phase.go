@@ -22,7 +22,9 @@ type phaseEnemyEncounter struct{}
 
 func (p *phaseEnemyEncounter) OnInit(st *BattleState, _ w.World) {
 	// 「敵が現れた」メッセージをログに追加
-	gamelog.BattleLog.Push("敵が現れた。")
+	gamelog.New(gamelog.BattleLog).
+		Encounter("敵が現れた。").
+		Log()
 	// クリック待ち状態にする
 	st.isWaitClick = true
 }
@@ -145,11 +147,15 @@ func (p *phaseExecute) OnUpdate(st *BattleState, world w.World) es.Transition {
 		}
 		return es.Transition{Type: es.TransNone}
 	case gs.BattleExtinctionAlly:
-		gamelog.BattleLog.Push("全滅した。")
+		gamelog.New(gamelog.BattleLog).
+			Defeat("全滅した。").
+			Log()
 		st.phase = &phaseGameOver{}
 		return es.Transition{Type: es.TransNone}
 	case gs.BattleExtinctionMonster:
-		gamelog.BattleLog.Push("敵を全滅させた。")
+		gamelog.New(gamelog.BattleLog).
+			Victory("敵を全滅させた。").
+			Log()
 		st.phase = &phaseResult{}
 		return es.Transition{Type: es.TransNone}
 	default:

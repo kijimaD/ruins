@@ -5,9 +5,9 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/ruins/lib/colors"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/typewriter"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -57,7 +57,7 @@ func (st *MessageState) OnStart(world w.World) {
 		res := world.Resources.UIResources
 		uiConfig := typewriter.DefaultUIConfig()
 		uiConfig.TextFace = res.Text.Face
-		uiConfig.TextColor = styles.TextColor
+		uiConfig.TextColor = colors.TextColor
 		uiConfig.PanelImage = res.Panel.Image
 		uiConfig.ArrowImage = res.ComboButton.Graphic
 		st.uiBuilder = typewriter.NewMessageUIBuilder(st.messageHandler, uiConfig)
