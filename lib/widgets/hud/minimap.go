@@ -22,11 +22,6 @@ func NewMinimap() *Minimap {
 	}
 }
 
-// SetEnabled は有効/無効を設定する
-func (minimap *Minimap) SetEnabled(enabled bool) {
-	minimap.enabled = enabled
-}
-
 // Update はミニマップを更新する
 func (minimap *Minimap) Update(_ w.World) {
 	// 現在は更新処理なし

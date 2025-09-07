@@ -22,11 +22,6 @@ func NewDebugOverlay() *DebugOverlay {
 	}
 }
 
-// SetEnabled は有効/無効を設定する
-func (overlay *DebugOverlay) SetEnabled(enabled bool) {
-	overlay.enabled = enabled
-}
-
 // Update はデバッグオーバーレイを更新する
 func (overlay *DebugOverlay) Update(_ w.World) {
 	// 現在は更新処理なし

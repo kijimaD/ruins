@@ -76,11 +76,6 @@ func (area *MessageArea) SetStore(store *gamelog.SafeSlice) {
 	area.widget.SetStore(store)
 }
 
-// SetEnabled は有効/無効を設定する
-func (area *MessageArea) SetEnabled(enabled bool) {
-	area.enabled = enabled
-}
-
 // SetConfig は設定を変更する
 func (area *MessageArea) SetConfig(config MessageAreaConfig) {
 	area.config = config

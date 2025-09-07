@@ -20,11 +20,6 @@ func NewGameInfo() *GameInfo {
 	}
 }
 
-// SetEnabled は有効/無効を設定する
-func (info *GameInfo) SetEnabled(enabled bool) {
-	info.enabled = enabled
-}
-
 // Update はゲーム情報エリアを更新する
 func (info *GameInfo) Update(_ w.World) {
 	// 現在は更新処理なし
