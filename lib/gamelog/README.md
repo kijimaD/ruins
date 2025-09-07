@@ -13,17 +13,17 @@
 
 ```go
 // シンプルなログ
-gamelog.New().
+gamelog.New(gamelog.FieldLog).
     Append("プレイヤーがアイテムを入手した").
-    Log(gamelog.LogKindField)
+    Log()
 
 // 色付きログ
-gamelog.New().
+gamelog.New(gamelog.FieldLog).
     PlayerName("Hero").
     Append("が").
     ItemName("Iron Sword").
     Append("を入手した。").
-    Log(gamelog.LogKindField)
+    Log()
 ```
 
 ## プリセット関数
@@ -55,14 +55,6 @@ gamelog.New().
 | `Defeat(text)` | 赤色 | 敗北メッセージ |
 | `Magic(text)` | 紫色 | 魔法関連 |
 
-## ログ種別
-
-| 種別 | 用途 |
-|------|------|
-| `LogKindField` | フィールド探索ログ |
-| `LogKindBattle` | 戦闘ログ |
-| `LogKindScene` | シーンログ |
-
 ## ログストレージ
 
 ```go
@@ -89,14 +81,14 @@ for _, entry := range entries {
 import "github.com/kijimaD/ruins/lib/colors"
 
 // 定義済み色を使用
-gamelog.New().
+gamelog.New(gamelog.FieldLog).
     ColorRGBA(colors.ColorBlue).
     Append("青色のテキスト").
-    Log(gamelog.LogKindField)
+    Log()
 
 // カスタム色を作成
-gamelog.New().
+gamelog.New(gamelog.FieldLog).
     ColorRGBA(colors.NamedColor(255, 0, 0)). // 赤色
     Append("カスタム色のテキスト").
-    Log(gamelog.LogKindField)
+    Log()
 ```
