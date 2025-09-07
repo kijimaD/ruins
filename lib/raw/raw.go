@@ -404,20 +404,6 @@ func (rw *Master) GenerateEnemy(name string) (gc.GameComponentList, error) {
 	}
 	cl.FactionType = &gc.FactionEnemy
 
-	spriteSheetIdx, ok := rw.SpriteSheetIndex[name]
-	if !ok {
-		return gc.GameComponentList{}, fmt.Errorf("キーが存在しない: %s", name)
-	}
-	spriteSheet := rw.Raws.SpriteSheets[spriteSheetIdx]
-	if spriteSheet.BattleBody != nil {
-		cl.Render = &gc.Render{
-			BattleBody: &gc.SheetImage{
-				SheetName:   spriteSheet.BattleBody.SheetName,
-				SheetNumber: spriteSheet.BattleBody.SheetNumber,
-			},
-		}
-	}
-
 	return cl, nil
 }
 

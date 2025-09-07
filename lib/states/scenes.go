@@ -54,39 +54,3 @@ func GetItemGetEvent1Factories() []es.StateFactory {
 
 	return factories
 }
-
-// GetRaidEvent1Factories は汎用戦闘イベントのファクトリー関数配列を返す
-func GetRaidEvent1Factories() []es.StateFactory {
-	factories := []es.StateFactory{}
-
-	factories = then(factories, NewMessageStateWithText("「何か動いた。」\n「...敵だ!」"))
-	factories = then(factories, NewBattleState)
-	factories = then(factories, NewMessageStateWithText("「びっくりしたな。」\n「おや、何か落ちてるぞ。」"))
-	factories = then(factories, NewExecStateWithFunc(func(world w.World) {
-		worldhelper.PlusAmount("鉄", 1, world)
-		gamelog.New(gamelog.FieldLog).
-			ItemName("鉄").
-			Append("を1個手に入れた。").
-			Log()
-	}))
-	factories = then(factories, func() es.State {
-		return &MessageState{
-			textFunc: helpers.GetPtr(func() string {
-				history := gamelog.SceneLog.GetHistory()
-				gamelog.SceneLog.Clear()
-				return strings.Join(history, "\n")
-			}),
-		}
-	})
-
-	return factories
-}
-
-// GetBossEvent1Factories はボス戦のファクトリー関数配列を返す
-func GetBossEvent1Factories() []es.StateFactory {
-	factories := []es.StateFactory{}
-
-	factories = then(factories, NewBattleStateWithEnemies([]string{"灰の偶像"}))
-
-	return factories
-}

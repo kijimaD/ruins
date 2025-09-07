@@ -10,6 +10,4 @@ const (
 	StateEventWarpNext = StateEvent("WARP_NEXT")
 	// StateEventWarpEscape は脱出を表す
 	StateEventWarpEscape = StateEvent("WARP_ESCAPE")
-	// StateEventBattleStart は戦闘開始を表す
-	StateEventBattleStart = StateEvent("BATTLE_START")
 )

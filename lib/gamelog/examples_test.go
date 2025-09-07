@@ -41,30 +41,6 @@ func ExampleLogger_methodChaining() {
 	// Output: Logs created successfully!
 }
 
-// 戦闘ログの例
-func ExampleLogger_battleLog() {
-	// ローカル戦闘ログストアを作成
-	testBattleLog := NewSafeSlice(BattleLogMaxSize)
-	testBattleLog.Clear()
-
-	// 複雑な戦闘ログ
-	New(testBattleLog).
-		NPCName("Skeleton Warrior").
-		Append(" swings ").
-		ItemName("Rusty Sword").
-		Append(" at ").
-		PlayerName("Hero").
-		Append(" for ").
-		Damage(12).
-		Append(" damage!").
-		Log()
-
-	// ログの取得と表示
-	messages := testBattleLog.GetRecent(1)
-	fmt.Println(messages[0])
-	// Output: Skeleton Warrior swings Rusty Sword at Hero for 12 damage!
-}
-
 // カスタム色の例
 func ExampleLogger_customColors() {
 	// ローカルフィールドログストアを作成

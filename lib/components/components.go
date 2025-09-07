@@ -50,7 +50,6 @@ type GameComponentList struct {
 	Dead        *Dead
 
 	// event ================
-	BattleCommand    *BattleCommand
 	EquipmentChanged *EquipmentChanged
 	ProvidesHealing  *ProvidesHealing
 	InflictsDamage   *InflictsDamage
@@ -107,7 +106,6 @@ type Components struct {
 	Dead         *ecs.NullComponent
 
 	// event ================
-	BattleCommand    *ecs.SliceComponent
 	EquipmentChanged *ecs.NullComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
@@ -163,7 +161,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.Dead = manager.NewNullComponent()
 
 	// event
-	c.BattleCommand = manager.NewSliceComponent()
 	c.EquipmentChanged = manager.NewNullComponent()
 	c.ProvidesHealing = manager.NewSliceComponent()
 	c.InflictsDamage = manager.NewSliceComponent()
@@ -318,8 +315,6 @@ type DropTable struct {
 //
 // SpriteRenderはSpriteを内部に持っていて初期化が面倒な面がある。
 type Render struct {
-	// 戦闘中の立ち絵
-	BattleBody *SheetImage
 }
 
 // SheetImage はシート画像情報

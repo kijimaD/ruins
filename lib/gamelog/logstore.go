@@ -11,8 +11,6 @@ const (
 	DefaultMaxLogSize = 1000
 	// FieldLogMaxSize はフィールドログの最大サイズ
 	FieldLogMaxSize = 100
-	// BattleLogMaxSize は戦闘ログの最大サイズ
-	BattleLogMaxSize = 500
 	// SceneLogMaxSize はシーンログの最大サイズ
 	SceneLogMaxSize = 200
 )

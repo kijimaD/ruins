@@ -45,7 +45,7 @@ func TestTypewriterBasicFlow(t *testing.T) {
 func TestTypewriterSkip(t *testing.T) {
 	t.Parallel()
 
-	tw := New(BattleConfig())
+	tw := New(DialogConfig())
 
 	skipped := false
 	completed := false
@@ -155,7 +155,7 @@ func TestTypewriterPauseResume(t *testing.T) {
 func TestTypewriterReset(t *testing.T) {
 	t.Parallel()
 
-	tw := New(BattleConfig())
+	tw := New(DialogConfig())
 	tw.Start("Test message")
 
 	// 少し待ってからUpdate（文字が表示されるまで）
@@ -220,7 +220,7 @@ func TestConfigPresets(t *testing.T) {
 	configs := map[string]Config{
 		"Fast":   FastConfig(),
 		"Slow":   SlowConfig(),
-		"Battle": BattleConfig(),
+		"Battle": DialogConfig(),
 		"Dialog": DialogConfig(),
 	}
 
@@ -302,7 +302,7 @@ func TestMessageHandlerBasicFlow(t *testing.T) {
 	t.Parallel()
 
 	mockInput := &MockKeyboardInput{}
-	handler := NewMessageHandler(BattleConfig(), mockInput)
+	handler := NewMessageHandler(DialogConfig(), mockInput)
 
 	uiUpdated := false
 	completed := false
@@ -372,7 +372,7 @@ func TestMessageHandlerSkipFlow(t *testing.T) {
 	t.Parallel()
 
 	mockInput := &MockKeyboardInput{}
-	handler := NewMessageHandler(BattleConfig(), mockInput)
+	handler := NewMessageHandler(DialogConfig(), mockInput)
 
 	skipCalled := false
 	handler.SetOnSkip(func() {
@@ -528,7 +528,7 @@ func TestMessageHandlerPrompt(t *testing.T) {
 	t.Parallel()
 
 	mockInput := &MockKeyboardInput{}
-	handler := NewMessageHandler(BattleConfig(), mockInput)
+	handler := NewMessageHandler(DialogConfig(), mockInput)
 
 	handler.Start("Hello")
 

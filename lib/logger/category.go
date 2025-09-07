@@ -7,8 +7,6 @@ const (
 	// CategoryTransition はステート遷移のログカテゴリ
 	CategoryTransition Category = "transition" // ステート遷移
 
-	// CategoryBattle は戦闘処理のログカテゴリ
-	CategoryBattle Category = "battle" // 戦闘処理
 	// CategoryMove は移動処理のログカテゴリ
 	CategoryMove Category = "move" // 移動処理
 	// CategoryInput は入力処理のログカテゴリ
