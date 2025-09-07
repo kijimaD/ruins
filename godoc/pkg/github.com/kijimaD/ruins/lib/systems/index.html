@@ -127,10 +127,28 @@
 				<dd><a href="index.html#CollisionSystem">func CollisionSystem(world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#DrawMessages">func DrawMessages(world w.World, screen *ebiten.Image)</a></dd>
+				<dd><a href="index.html#CreateEnemyEntity">func CreateEnemyEntity(t *testing.T, world w.World, x, y float64)</a></dd>
+			
+				
+				<dd><a href="index.html#CreateEntityWithSprite">func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, height int, isPlayer bool)</a></dd>
+			
+				
+				<dd><a href="index.html#CreateEntityWithSpriteSize">func CreateEntityWithSpriteSize(t *testing.T, world w.World, x, y float64, size spriteSize, isPlayer bool)</a></dd>
+			
+				
+				<dd><a href="index.html#CreatePlayerEntity">func CreatePlayerEntity(t *testing.T, world w.World, x, y float64)</a></dd>
+			
+				
+				<dd><a href="index.html#CreateTestWorldForCollision">func CreateTestWorldForCollision(t *testing.T) w.World</a></dd>
+			
+				
+				<dd><a href="index.html#CreateTestWorldWithResources">func CreateTestWorldWithResources(t *testing.T) w.World</a></dd>
 			
 				
 				<dd><a href="index.html#EquipmentChangedSystem">func EquipmentChangedSystem(world w.World) bool</a></dd>
+			
+				
+				<dd><a href="index.html#ExtractHUDData">func ExtractHUDData(world w.World) hud.Data</a></dd>
 			
 				
 				<dd><a href="index.html#GetCurrentVisibilityData">func GetCurrentVisibilityData() map[string]TileVisibility</a></dd>
@@ -174,6 +192,25 @@
 				
 			
 				
+				<dd><a href="index.html#HUDRenderingSystem">type HUDRenderingSystem</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHUDRenderingSystem">func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Run">func (sys *HUDRenderingSystem) Run(world w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Update">func (sys *HUDRenderingSystem) Update(world w.World)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TileColorInfo">type TileColorInfo</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#TileVisibility">type TileVisibility</a></dd>
 				
 				
@@ -207,9 +244,11 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go">hud.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/item_collection.go">item_collection.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go">hud_extractor.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/message_draw.go">message_draw.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go">hud_rendering.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/item_collection.go">item_collection.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go">move_system.go</a>
 			
@@ -301,14 +340,83 @@
 		
 			
 			
-			<h2 id="DrawMessages">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/message_draw.go?s=916:970#L21">DrawMessages</a>
-				<a class="permalink" href="index.html#DrawMessages">&#xb6;</a>
+			<h2 id="CreateEnemyEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=2144:2209#L67">CreateEnemyEntity</a>
+				<a class="permalink" href="index.html#CreateEnemyEntity">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func DrawMessages(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>DrawMessages はログメッセージを画面下部に描画する
-TODO: UIに移動する。storeを注入できるようにする
+			<pre>func CreateEnemyEntity(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x, y <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
+			<p>CreateEnemyEntity は指定された位置に敵エンティティを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="CreateEntityWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=3025:3129#L95">CreateEntityWithSprite</a>
+				<a class="permalink" href="index.html#CreateEntityWithSprite">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CreateEntityWithSprite(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x, y <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>, width, height <a href="http://localhost:8888/pkg/builtin/#int">int</a>, isPlayer <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+			<p>CreateEntityWithSprite は指定されたスプライトサイズでエンティティを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="CreateEntityWithSpriteSize">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=4486:4592#L144">CreateEntityWithSpriteSize</a>
+				<a class="permalink" href="index.html#CreateEntityWithSpriteSize">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CreateEntityWithSpriteSize(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x, y <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>, size spriteSize, isPlayer <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+			<p>CreateEntityWithSpriteSize はspriteSize構造体を使ってエンティティを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="CreatePlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=1286:1352#L38">CreatePlayerEntity</a>
+				<a class="permalink" href="index.html#CreatePlayerEntity">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CreatePlayerEntity(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x, y <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>)</pre>
+			<p>CreatePlayerEntity は指定された位置にプレイヤーエンティティを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="CreateTestWorldForCollision">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=821:875#L22">CreateTestWorldForCollision</a>
+				<a class="permalink" href="index.html#CreateTestWorldForCollision">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CreateTestWorldForCollision(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a></pre>
+			<p>CreateTestWorldForCollision は衝突判定テスト用のワールドを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="CreateTestWorldWithResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=381:436#L6">CreateTestWorldWithResources</a>
+				<a class="permalink" href="index.html#CreateTestWorldWithResources">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CreateTestWorldWithResources(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>) <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a></pre>
+			<p>CreateTestWorldWithResources はテスト用のワールドを作成し、必要なリソースを初期化する
 
 			
 			
@@ -332,6 +440,20 @@ TODO: マイナスにならないようにする
 		
 			
 			
+			<h2 id="ExtractHUDData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=407:450#L7">ExtractHUDData</a>
+				<a class="permalink" href="index.html#ExtractHUDData">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ExtractHUDData(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../widgets/hud/index.html">hud</a>.<a href="../widgets/hud/index.html#Data">Data</a></pre>
+			<p>ExtractHUDData はworldから全てのHUDデータを抽出する
+
+			
+			
+
+		
+			
+			
 			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=13007:13064#L408">GetCurrentVisibilityData</a>
 				<a class="permalink" href="index.html#GetCurrentVisibilityData">&#xb6;</a>
 				
@@ -346,7 +468,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=443:494#L9">HUDSystem</a>
+			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=219:270#L3">HUDSystem</a>
 				<a class="permalink" href="index.html#HUDSystem">&#xb6;</a>
 				
 				
@@ -531,6 +653,94 @@ TODO: ズーム率を追加する
 
 				
 				
+			
+
+			
+		
+			
+			
+			<h2 id="HUDRenderingSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=228:399#L1">HUDRenderingSystem</a>
+				<a class="permalink" href="index.html#HUDRenderingSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>HUDRenderingSystem はクエリを実行し、UIを描画するシステム
+
+			<pre>type HUDRenderingSystem struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHUDRenderingSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=475:536#L9">NewHUDRenderingSystem</a>
+					<a class="permalink" href="index.html#NewHUDRenderingSystem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewHUDRenderingSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) *<a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a></pre>
+				<p>NewHUDRenderingSystem は新しいHUD描画システムを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="HUDRenderingSystem.Run">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=1362:1433#L42">Run</a>
+					<a class="permalink" href="index.html#HUDRenderingSystem.Run">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a>) Run(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				<p>Run はHUD描画システムのメイン処理を実行する
+worldからデータを抽出し、HUDを描画する
+
+				
+				
+				
+			
+				
+				<h3 id="HUDRenderingSystem.Update">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=851:903#L20">Update</a>
+					<a class="permalink" href="index.html#HUDRenderingSystem.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<p>Update はHUDシステム全体を更新する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=3020:3058#L97">TileColorInfo</a>
+				<a class="permalink" href="index.html#TileColorInfo">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TileColorInfo はタイル色情報の内部型
+
+			<pre>type TileColorInfo = <a href="../widgets/hud/index.html">hud</a>.<a href="../widgets/hud/index.html#TileColorInfo">TileColorInfo</a></pre>
+
+			
+
+			
+
+			
+			
+			
+
 			
 
 			
