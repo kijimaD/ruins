@@ -3,5 +3,6 @@ node_modules
 mem.pprof
 cpu.pprof
 
+ruins
 bin/
 wasm/game.wasm

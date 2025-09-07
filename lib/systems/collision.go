@@ -69,7 +69,10 @@ func CollisionSystem(world w.World) {
 			if checkCollisionSimple(world, playerEntity, enemyEntity, playerPos, enemyPos) {
 				gameResources.SetStateEvent(resources.StateEventBattleStart)
 
-				gamelog.FieldLog.Push("敵と遭遇した。")
+				// プリセット使用の統一的なログ
+				gamelog.New().
+					Encounter("敵と遭遇した。").
+					Log(gamelog.LogKindField)
 
 				// 衝突した両エンティティの移動を停止
 				if playerVelocity := world.Components.Velocity.Get(playerEntity); playerVelocity != nil {

@@ -70,10 +70,22 @@ func DrawMessages(world w.World, screen *ebiten.Image) {
 
 // initMessageUI はメッセージUI用の初期化を行う
 func initMessageUI(world w.World) {
-	// 最新5行のメッセージを取得（表示順で）
-	messages := gamelog.FieldLog.GetRecent(maxLogLines)
+	// 色付きログエントリを取得
+	entries := gamelog.FieldLog.GetRecentEntries(maxLogLines)
 
-	// ログ用コンテナを作成（シンプルな縦並び）
+	// 色付きログエントリ用のコンテナを作成
+	logContainer := createColoredLogContainer(entries, world)
+
+	// UIを初期化
+	messageUI = &ebitenui.UI{Container: logContainer}
+
+	// 初期メッセージ数を設定
+	lastMessageCount = gamelog.FieldLog.Count()
+}
+
+// createColoredLogContainer は色付きログエントリ用のコンテナを作成
+func createColoredLogContainer(entries []gamelog.LogEntry, world w.World) *widget.Container {
+	// ログ用コンテナを作成（縦並び）
 	logContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
@@ -81,7 +93,7 @@ func initMessageUI(world w.World) {
 				widget.RowLayoutOpts.Spacing(3),
 				widget.RowLayoutOpts.Padding(widget.Insets{
 					Top:    2,
-					Bottom: 2, // パディングを最小限に
+					Bottom: 2,
 					Left:   2,
 					Right:  2,
 				}),
@@ -89,28 +101,53 @@ func initMessageUI(world w.World) {
 		),
 	)
 
-	// メッセージを追加（既に表示順になっている）
-	for _, message := range messages {
-		if message == "" {
+	// 各エントリを処理
+	for _, entry := range entries {
+		if entry.IsEmpty() {
 			continue
 		}
-		messageWidget := common.NewListItemText(message, styles.TextColor, false, world)
-		logContainer.AddChild(messageWidget)
+
+		// エントリ内の複数フラグメントを水平に並べるコンテナ
+		entryContainer := widget.NewContainer(
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+					widget.RowLayoutOpts.Spacing(0),               // フラグメント間のスペースなし
+					widget.RowLayoutOpts.Padding(widget.Insets{}), // パディングなし
+				),
+			),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: false, // コンテナ自体も伸ばさない
+				}),
+			),
+		)
+
+		// 各フラグメントを色付きテキストとして追加
+		for _, fragment := range entry.Fragments {
+			if fragment.Text == "" {
+				continue
+			}
+
+			// 文字数分だけのサイズのフラグメント専用テキストを使用
+			fragmentWidget := common.NewFragmentText(
+				fragment.Text,
+				fragment.Color, // フラグメント固有の色を使用
+				world,
+			)
+			entryContainer.AddChild(fragmentWidget)
+		}
+
+		logContainer.AddChild(entryContainer)
 	}
 
-	// メッセージがない場合
-	if len(messages) == 0 {
+	// エントリがない場合
+	if len(entries) == 0 {
 		placeholderWidget := common.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
 		logContainer.AddChild(placeholderWidget)
 	}
 
-	// UIを初期化（シンプルに）
-	messageUI = &ebitenui.UI{
-		Container: logContainer,
-	}
-
-	// 初期メッセージ数を設定
-	lastMessageCount = gamelog.FieldLog.Count()
+	return logContainer
 }
 
 // updateMessageUI はログメッセージが更新された場合にUIを再構築する
@@ -122,41 +159,13 @@ func updateMessageUI(world w.World) {
 		return
 	}
 
-	// 最新5行のメッセージを取得（表示順で）
-	messages := gamelog.FieldLog.GetRecent(maxLogLines)
+	// 色付きログエントリを取得
+	entries := gamelog.FieldLog.GetRecentEntries(maxLogLines)
 
-	// ログ用コンテナを作成（シンプルな縦並び）
-	logContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(3),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    2,
-					Bottom: 2, // パディングを最小限に
-					Left:   2,
-					Right:  2,
-				}),
-			),
-		),
-	)
+	// 色付きログエントリ用のコンテナを作成
+	logContainer := createColoredLogContainer(entries, world)
 
-	// メッセージを追加（既に表示順になっている）
-	for _, message := range messages {
-		if message == "" {
-			continue
-		}
-		messageWidget := common.NewListItemText(message, styles.TextColor, false, world)
-		logContainer.AddChild(messageWidget)
-	}
-
-	// メッセージがない場合のプレースホルダー
-	if len(messages) == 0 {
-		placeholderWidget := common.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
-		logContainer.AddChild(placeholderWidget)
-	}
-
-	// UIを更新（シンプルに）
+	// UIを更新
 	messageUI.Container = logContainer
 
 	// メッセージ数を更新

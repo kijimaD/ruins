@@ -294,6 +294,21 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w
 	return container
 }
 
+// NewFragmentText は色付きログフラグメント専用のテキストを作成する（文字数分だけの幅）
+func NewFragmentText(text string, textColor color.RGBA, world w.World) *widget.Text {
+	res := world.Resources.UIResources
+
+	return widget.NewText(
+		widget.TextOpts.Text(text, res.Text.Face, textColor),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: false, // 横幅を伸ばさない
+			}),
+			// MinSizeは指定しない（テキストの自然な幅を使用）
+		),
+	)
+}
+
 // window ================
 
 // NewSmallWindow は小さなウィンドウを作成する

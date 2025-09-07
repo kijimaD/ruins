@@ -69,7 +69,9 @@ func (st *DungeonState) OnStart(world w.World) {
 	gs.ClearVisionCaches()
 
 	// フロア移動メッセージを追加
-	gamelog.FieldLog.Push(fmt.Sprintf("空間移動した。(B%d)", st.Depth))
+	gamelog.New().
+		Magic(fmt.Sprintf("空間移動した。(B%d)", st.Depth)).
+		Log(gamelog.LogKindField)
 }
 
 // OnStop はステートが停止される際に呼ばれる
