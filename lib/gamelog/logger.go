@@ -11,13 +11,17 @@ import (
 type Logger struct {
 	currentColor color.RGBA
 	fragments    []LogFragment
+	store        *SafeSlice
 }
 
-// New は新しいLoggerインスタンスを作成
-func New() *Logger {
+// New は指定されたストアでLoggerを作成
+// 本番: New(FieldLog) など、グローバルストアを渡す
+// テスト: New(testStore) など、ローカルストアを渡す
+func New(store *SafeSlice) *Logger {
 	return &Logger{
 		currentColor: colors.ColorWhite,
 		fragments:    make([]LogFragment, 0),
+		store:        store,
 	}
 }
 
@@ -37,16 +41,9 @@ func (l *Logger) Append(text interface{}) *Logger {
 	return l
 }
 
-// Log は指定したログ種別に出力
-func (l *Logger) Log(logKind LogKind) {
-	switch logKind {
-	case LogKindField:
-		l.appendToLog(FieldLog)
-	case LogKindBattle:
-		l.appendToLog(BattleLog)
-	case LogKindScene:
-		l.appendToLog(SceneLog)
-	}
+// Log はログを出力（ストアは初期化時に指定済み）
+func (l *Logger) Log() {
+	l.appendToLog(l.store)
 }
 
 // NPCName はNPC名を黄色で追加
@@ -78,7 +75,7 @@ func (l *Logger) Damage(damage int) *Logger {
 	return l
 }
 
-// PlayerName はプレイヤー名を緑色で追加（追加機能）
+// PlayerName はプレイヤー名を緑色で追加
 func (l *Logger) PlayerName(name interface{}) *Logger {
 	nameStr := fmt.Sprintf("%v", name)
 	l.fragments = append(l.fragments, LogFragment{
@@ -207,6 +204,11 @@ func (l *Logger) appendToLog(log *SafeSlice) {
 		return
 	}
 
-	// 色付きログエントリとして直接追加
-	log.pushColoredEntry(LogEntry{Fragments: l.fragments})
+	// フラグメントのコピーを作成してLogEntryに追加
+	fragmentsCopy := make([]LogFragment, len(l.fragments))
+	copy(fragmentsCopy, l.fragments)
+	log.pushColoredEntry(LogEntry{Fragments: fragmentsCopy})
+
+	// ログ出力後にフラグメントをクリア
+	l.fragments = l.fragments[:0]
 }

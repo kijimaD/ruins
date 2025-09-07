@@ -88,12 +88,12 @@ func BattleCommandSystem(world w.World) {
 			ownerName := world.Components.Name.Get(cmd.Owner).(*gc.Name)
 			wayName := world.Components.Name.Get(cmd.Way).(*gc.Name)
 			// 色付きログ
-			gamelog.New().
+			gamelog.New(gamelog.BattleLog).
 				NPCName(ownerName.Name).
 				Append("は、").
 				ItemName(wayName.Name).
 				Append("で攻撃。").
-				Log(gamelog.LogKindBattle)
+				Log()
 		}
 
 		ownerEntity := cmd.Owner

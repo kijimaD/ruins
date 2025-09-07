@@ -79,9 +79,9 @@ func collectFieldItem(world w.World, itemEntity ecs.Entity) {
 	}
 
 	// 色付きログ
-	gamelog.New().
+	gamelog.New(gamelog.FieldLog).
 		Append("プレイヤーが ").
 		ItemName(itemName).
 		Append(" を入手した。").
-		Log(gamelog.LogKindField)
+		Log()
 }

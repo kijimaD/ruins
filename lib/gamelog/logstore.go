@@ -17,15 +17,6 @@ const (
 	SceneLogMaxSize = 200
 )
 
-var (
-	// BattleLog は戦闘用ログ
-	BattleLog = NewSafeSlice(BattleLogMaxSize)
-	// FieldLog はフィールド用ログ
-	FieldLog = NewSafeSlice(FieldLogMaxSize)
-	// SceneLog は会話シーンでステータス変化を通知する用ログ
-	SceneLog = NewSafeSlice(SceneLogMaxSize)
-)
-
 // SafeSlice はスレッドセーフなログストレージ
 type SafeSlice struct {
 	coloredEntries []LogEntry
@@ -126,7 +117,8 @@ func (s *SafeSlice) GetRecentEntries(lines int) []LogEntry {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if len(s.coloredEntries) == 0 {
+	// 負の値や0の場合は空のスライスを返す
+	if lines <= 0 || len(s.coloredEntries) == 0 {
 		return []LogEntry{}
 	}
 

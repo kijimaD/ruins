@@ -6,35 +6,41 @@ import (
 	"github.com/kijimaD/ruins/lib/colors"
 )
 
+// NewLoggerWithTestStore はテスト用ストアを使用するLoggerを作成
+func NewLoggerWithTestStore() (*Logger, *SafeSlice) {
+	store := NewSafeSlice(FieldLogMaxSize)
+	logger := New(store)
+	return logger, store
+}
+
 func TestLoggerBasicUsage(t *testing.T) {
 	t.Parallel()
-	// ログをクリア
-	FieldLog.Clear()
+	logger, store := NewLoggerWithTestStore()
 
 	// メソッドチェーンでのログ作成をテスト
-	New().
+	logger.
 		Append("Player").
 		Append(" attacks ").
 		NPCName("Goblin").
 		Append(" for ").
 		Damage(15).
 		Append(" damage!").
-		Log(LogKindField)
+		Log()
 
 	// ログが追加されたかチェック
-	if FieldLog.Count() != 1 {
-		t.Errorf("Expected 1 log entry, got %d", FieldLog.Count())
+	if store.Count() != 1 {
+		t.Errorf("Expected 1 log entry, got %d", store.Count())
 	}
 
 	// テキストの内容をチェック
-	messages := FieldLog.GetRecent(1)
+	messages := store.GetRecent(1)
 	expected := "Player attacks Goblin for 15 damage!"
 	if messages[0] != expected {
 		t.Errorf("Expected '%s', got '%s'", expected, messages[0])
 	}
 
 	// 色付きエントリもチェック
-	entries := FieldLog.GetRecentEntries(1)
+	entries := store.GetRecentEntries(1)
 	if len(entries) != 1 {
 		t.Errorf("Expected 1 colored entry, got %d", len(entries))
 	}
@@ -74,19 +80,19 @@ func TestLoggerBasicUsage(t *testing.T) {
 
 func TestLoggerColorMethod(t *testing.T) {
 	t.Parallel()
-	FieldLog.Clear()
+	logger, store := NewLoggerWithTestStore()
 
 	// カスタム色での使用例
-	New().
+	logger.
 		ColorRGBA(colors.ColorCyan). // Cyan
 		Append("John").
 		ColorRGBA(colors.ColorWhite).
 		Append(" considers attacking ").
 		ColorRGBA(colors.ColorCyan).
 		Append("Orc").
-		Log(LogKindField)
+		Log()
 
-	entries := FieldLog.GetRecentEntries(1)
+	entries := store.GetRecentEntries(1)
 	if len(entries) != 1 {
 		t.Errorf("Expected 1 entry, got %d", len(entries))
 	}
@@ -110,15 +116,15 @@ func TestLoggerColorMethod(t *testing.T) {
 
 func TestLoggerItemName(t *testing.T) {
 	t.Parallel()
-	FieldLog.Clear()
+	logger, store := NewLoggerWithTestStore()
 
-	New().
+	logger.
 		Append("You pick up ").
 		ItemName("Iron Sword").
 		Append(".").
-		Log(LogKindField)
+		Log()
 
-	entries := FieldLog.GetRecentEntries(1)
+	entries := store.GetRecentEntries(1)
 	fragments := entries[0].Fragments
 
 	if fragments[1].Color != colors.ColorCyan {
@@ -131,14 +137,14 @@ func TestLoggerItemName(t *testing.T) {
 
 func TestLoggerPlayerName(t *testing.T) {
 	t.Parallel()
-	FieldLog.Clear()
+	logger, store := NewLoggerWithTestStore()
 
-	New().
+	logger.
 		PlayerName("Hero").
 		Append(" enters the dungeon").
-		Log(LogKindField)
+		Log()
 
-	entries := FieldLog.GetRecentEntries(1)
+	entries := store.GetRecentEntries(1)
 	fragments := entries[0].Fragments
 
 	if fragments[0].Color != colors.ColorGreen {
@@ -151,18 +157,18 @@ func TestLoggerPlayerName(t *testing.T) {
 
 func TestLoggerMultipleLogs(t *testing.T) {
 	t.Parallel()
-	FieldLog.Clear()
+	logger, store := NewLoggerWithTestStore()
 
 	// 複数のログを追加
-	New().Append("First message").Log(LogKindField)
-	New().Append("Second message").Log(LogKindField)
-	New().NPCName("Enemy").Append(" appears!").Log(LogKindField)
+	logger.Append("First message").Log()
+	logger.Append("Second message").Log()
+	logger.NPCName("Enemy").Append(" appears!").Log()
 
-	if FieldLog.Count() != 3 {
-		t.Errorf("Expected 3 log entries, got %d", FieldLog.Count())
+	if store.Count() != 3 {
+		t.Errorf("Expected 3 log entries, got %d", store.Count())
 	}
 
-	entries := FieldLog.GetRecentEntries(3)
+	entries := store.GetRecentEntries(3)
 	if len(entries) != 3 {
 		t.Errorf("Expected 3 colored entries, got %d", len(entries))
 	}
@@ -179,21 +185,86 @@ func TestLoggerMultipleLogs(t *testing.T) {
 
 func TestLoggerBattleLog(t *testing.T) {
 	t.Parallel()
-	BattleLog.Clear()
+	logger, store := NewLoggerWithTestStore()
 
-	New().
+	logger.
 		NPCName("Skeleton").
 		Append(" attacks you for ").
 		Damage(8).
 		Append(" damage!").
-		Log(LogKindBattle)
+		Log()
 
-	if BattleLog.Count() != 1 {
-		t.Errorf("Expected 1 battle log entry, got %d", BattleLog.Count())
+	if store.Count() != 1 {
+		t.Errorf("Expected 1 battle log entry, got %d", store.Count())
 	}
 
-	entries := BattleLog.GetRecentEntries(1)
+	entries := store.GetRecentEntries(1)
 	if len(entries) != 1 {
 		t.Errorf("Expected 1 colored battle entry, got %d", len(entries))
 	}
+}
+
+func TestLoggerEmptyFragments(t *testing.T) {
+	t.Parallel()
+
+	t.Run("空のフラグメントでLogを呼んでも何も追加されない", func(t *testing.T) {
+		t.Parallel()
+		logger, store := NewLoggerWithTestStore()
+
+		// フラグメントを追加せずにLogを呼ぶ
+		logger.Log()
+
+		if store.Count() != 0 {
+			t.Errorf("Expected 0 log entries when logging empty fragments, got %d", store.Count())
+		}
+	})
+
+	t.Run("フラグメント追加後にLogし、再度空の状態でLogを呼ぶ", func(t *testing.T) {
+		t.Parallel()
+		logger, store := NewLoggerWithTestStore()
+
+		// 最初にフラグメントを追加してLog
+		logger.Append("Test message").Log()
+
+		if store.Count() != 1 {
+			t.Errorf("Expected 1 log entry after first log, got %d", store.Count())
+		}
+
+		// 空の状態で再度Log
+		logger.Log()
+
+		// カウントは変わらない
+		if store.Count() != 1 {
+			t.Errorf("Expected 1 log entry after empty log, got %d", store.Count())
+		}
+	})
+
+	t.Run("同じLoggerインスタンスでの複数回ログ出力", func(t *testing.T) {
+		t.Parallel()
+		logger, store := NewLoggerWithTestStore()
+
+		// 1回目
+		logger.Append("First").Log()
+		// 2回目
+		logger.Append("Second").Log()
+		// 3回目 - 空
+		logger.Log()
+
+		if store.Count() != 2 {
+			t.Errorf("Expected 2 log entries, got %d", store.Count())
+		}
+
+		messages := store.GetRecent(2)
+		// GetRecentは時系列順で返す（古い順）
+		expected := []string{"First", "Second"}
+		for i, exp := range expected {
+			if i >= len(messages) {
+				t.Errorf("Message index %d out of range, got %d messages", i, len(messages))
+				continue
+			}
+			if messages[i] != exp {
+				t.Errorf("Message %d: expected '%s', got '%s'", i, exp, messages[i])
+			}
+		}
+	})
 }

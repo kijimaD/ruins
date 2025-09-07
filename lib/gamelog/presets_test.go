@@ -8,51 +8,53 @@ import (
 
 func TestPresetFunctions(t *testing.T) {
 	t.Parallel()
-	FieldLog.Clear()
+
+	// ローカルテストストアを作成
+	testFieldLog := NewSafeSlice(FieldLogMaxSize)
 
 	// プリセット関数のテスト
-	New().
+	New(testFieldLog).
 		Success("勝利しました！").
-		Log(LogKindField)
+		Log()
 
-	New().
+	New(testFieldLog).
 		Warning("注意が必要です").
-		Log(LogKindField)
+		Log()
 
-	New().
+	New(testFieldLog).
 		Error("エラーが発生しました").
-		Log(LogKindField)
+		Log()
 
-	New().
+	New(testFieldLog).
 		PlayerName("Hero").
 		Append("が").
 		Location("洞窟").
 		Append("で").
 		ItemName("宝箱").
 		Append("を発見した。").
-		Log(LogKindField)
+		Log()
 
-	New().
+	New(testFieldLog).
 		Action("攻撃").
 		Append("で").
 		NPCName("ゴブリン").
 		Append("に").
 		Damage(25).
 		Append("ダメージ！").
-		Log(LogKindField)
+		Log()
 
-	New().
+	New(testFieldLog).
 		Money("500").
 		Append("G獲得した。").
-		Log(LogKindField)
+		Log()
 
 	// ログ数の確認
-	if FieldLog.Count() != 6 {
-		t.Errorf("Expected 6 log entries, got %d", FieldLog.Count())
+	if testFieldLog.Count() != 6 {
+		t.Errorf("Expected 6 log entries, got %d", testFieldLog.Count())
 	}
 
 	// 色付きエントリの確認
-	entries := FieldLog.GetRecentEntries(6)
+	entries := testFieldLog.GetRecentEntries(6)
 	if len(entries) != 6 {
 		t.Errorf("Expected 6 colored entries, got %d", len(entries))
 	}
@@ -123,31 +125,33 @@ func TestPresetFunctions(t *testing.T) {
 
 func TestBattlePresets(t *testing.T) {
 	t.Parallel()
-	BattleLog.Clear()
+
+	// ローカルテストストアを作成
+	testBattleLog := NewSafeSlice(BattleLogMaxSize)
 
 	// 戦闘専用プリセット
-	New().
+	New(testBattleLog).
 		Encounter("強敵が現れた！").
-		Log(LogKindBattle)
+		Log()
 
-	New().
+	New(testBattleLog).
 		Victory("勝利した！").
-		Log(LogKindBattle)
+		Log()
 
-	New().
+	New(testBattleLog).
 		Defeat("敗北した...").
-		Log(LogKindBattle)
+		Log()
 
-	New().
+	New(testBattleLog).
 		Magic("ファイアボール").
 		Append("を唱えた！").
-		Log(LogKindBattle)
+		Log()
 
-	if BattleLog.Count() != 4 {
-		t.Errorf("Expected 4 battle log entries, got %d", BattleLog.Count())
+	if testBattleLog.Count() != 4 {
+		t.Errorf("Expected 4 battle log entries, got %d", testBattleLog.Count())
 	}
 
-	entries := BattleLog.GetRecentEntries(4)
+	entries := testBattleLog.GetRecentEntries(4)
 
 	// Encounter は赤色
 	if entries[0].Fragments[0].Color != colors.ColorRed {
@@ -172,14 +176,16 @@ func TestBattlePresets(t *testing.T) {
 
 func TestSystemPresets(t *testing.T) {
 	t.Parallel()
-	FieldLog.Clear()
+
+	// ローカルテストストアを作成
+	testFieldLog := NewSafeSlice(FieldLogMaxSize)
 
 	// システム関連のプリセット
-	New().
+	New(testFieldLog).
 		System("システムが初期化されました").
-		Log(LogKindField)
+		Log()
 
-	entries := FieldLog.GetRecentEntries(1)
+	entries := testFieldLog.GetRecentEntries(1)
 	if len(entries) != 1 {
 		t.Errorf("Expected 1 entry, got %d", len(entries))
 	}

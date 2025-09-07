@@ -27,20 +27,20 @@ func GetItemGetEvent1Factories() []es.StateFactory {
 	factories = then(factories, NewExecStateWithFunc(func(world w.World) {
 		// TODO: アイテム入手テーブルから獲得するようにする
 		worldhelper.PlusAmount("鉄", 1, world)
-		gamelog.New().
+		gamelog.New(gamelog.FieldLog).
 			ItemName("鉄").
 			Append("を1個手に入れた。").
-			Log(gamelog.LogKindScene)
+			Log()
 		worldhelper.PlusAmount("木の棒", 1, world)
-		gamelog.New().
+		gamelog.New(gamelog.FieldLog).
 			ItemName("木の棒").
 			Append("を1個手に入れた。").
-			Log(gamelog.LogKindScene)
+			Log()
 		worldhelper.PlusAmount("フェライトコア", 1, world)
-		gamelog.New().
+		gamelog.New(gamelog.FieldLog).
 			ItemName("フェライトコア").
 			Append("を2個手に入れた。").
-			Log(gamelog.LogKindScene)
+			Log()
 	}))
 	factories = then(factories, func() es.State {
 		return &MessageState{
@@ -64,10 +64,10 @@ func GetRaidEvent1Factories() []es.StateFactory {
 	factories = then(factories, NewMessageStateWithText("「びっくりしたな。」\n「おや、何か落ちてるぞ。」"))
 	factories = then(factories, NewExecStateWithFunc(func(world w.World) {
 		worldhelper.PlusAmount("鉄", 1, world)
-		gamelog.New().
+		gamelog.New(gamelog.FieldLog).
 			ItemName("鉄").
 			Append("を1個手に入れた。").
-			Log(gamelog.LogKindScene)
+			Log()
 	}))
 	factories = then(factories, func() es.State {
 		return &MessageState{
