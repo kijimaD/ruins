@@ -72,10 +72,10 @@ func TestCheckCollisionSimple(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			// 各テストで独立したワールドを作成
-			world := createTestWorldForCollision(t)
+			world := CreateTestWorldForCollision(t)
 			// テスト用のエンティティを作成
-			createEntityWithSpriteSize(t, world, float64(tt.pos1.X), float64(tt.pos1.Y), tt.size1, true)
-			createEntityWithSpriteSize(t, world, float64(tt.pos2.X), float64(tt.pos2.Y), tt.size2, false)
+			CreateEntityWithSpriteSize(t, world, float64(tt.pos1.X), float64(tt.pos1.Y), tt.size1, true)
+			CreateEntityWithSpriteSize(t, world, float64(tt.pos2.X), float64(tt.pos2.Y), tt.size2, false)
 
 			// エンティティを取得
 			var entity1, entity2 ecs.Entity
@@ -142,9 +142,9 @@ func TestGetSpriteSize(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			// 各テストで独立したワールドを作成
-			world := createTestWorldForCollision(t)
+			world := CreateTestWorldForCollision(t)
 			// スプライト付きエンティティを作成
-			createEntityWithSprite(t, world, 100, 100, tt.width, tt.height, true)
+			CreateEntityWithSprite(t, world, 100, 100, tt.width, tt.height, true)
 
 			// エンティティを取得
 			var testEntity ecs.Entity
@@ -165,7 +165,7 @@ func TestGetSpriteSize(t *testing.T) {
 	// スプライトがない場合はエラーになることを確認
 	t.Run("スプライトがない場合はエラー", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorldForCollision(t)
+		world := CreateTestWorldForCollision(t)
 
 		// SpriteRenderコンポーネントを持たないエンティティを作成
 		cl := entities.ComponentList{}
@@ -188,13 +188,13 @@ func TestGetSpriteSize(t *testing.T) {
 
 func TestCollisionSystemWithMultipleEntities(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldForCollision(t)
+	world := CreateTestWorldForCollision(t)
 
 	// 複数のプレイヤーと敵を作成
-	createPlayerEntity(t, world, 101, 101)
-	createEnemyEntity(t, world, 110, 110) // 接触
-	createEnemyEntity(t, world, 200, 200) // 非接触
-	createEnemyEntity(t, world, 105, 105) // 接触
+	CreatePlayerEntity(t, world, 101, 101)
+	CreateEnemyEntity(t, world, 110, 110) // 接触
+	CreateEnemyEntity(t, world, 200, 200) // 非接触
+	CreateEnemyEntity(t, world, 105, 105) // 接触
 
 	// システムが正常に動作することを確認
 	assert.NotPanics(t, func() {
@@ -204,7 +204,7 @@ func TestCollisionSystemWithMultipleEntities(t *testing.T) {
 
 func TestCollisionSystemWithNoEntities(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldForCollision(t)
+	world := CreateTestWorldForCollision(t)
 
 	// エンティティが存在しない状態でシステムを実行
 	assert.NotPanics(t, func() {

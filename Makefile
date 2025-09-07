@@ -25,6 +25,7 @@ lint: ## Linterを実行する
 	@go build -o /dev/null . # buildが通らない状態でlinter実行するとミスリードなエラーが出るので先に試す
 	@echo "Running golangci-lint..."
 	@golangci-lint run -v ./...
+	@golangci-lint run -v --tests=false ./... # テストを除外して未使用コードを検査する
 
 .PHONY: tools-install
 tools-install: ## 開発ツールをインストールする

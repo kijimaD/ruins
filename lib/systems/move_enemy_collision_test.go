@@ -13,7 +13,7 @@ import (
 func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 	t.Parallel()
 	// 移動システムで敵との衝突が阻害されないことを確認するテスト
-	world := createTestWorldForCollision(t)
+	world := CreateTestWorldForCollision(t)
 
 	// テスト用のスプライトシートをResourcesに追加
 	if world.Resources.SpriteSheets == nil {
@@ -91,7 +91,7 @@ func TestMoveSystemEnemyCollisionFix(t *testing.T) {
 func TestMoveSystemWallCollisionStillWorks(t *testing.T) {
 	t.Parallel()
 	// 壁との衝突阻害が正常に動作することを確認するテスト
-	world := createTestWorldForCollision(t)
+	world := CreateTestWorldForCollision(t)
 
 	// テスト用のスプライトシートをResourcesに追加
 	if world.Resources.SpriteSheets == nil {

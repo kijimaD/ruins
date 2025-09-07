@@ -11,11 +11,11 @@ import (
 
 func TestCollisionSystemBattleTransition(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldWithResources(t)
+	world := CreateTestWorldWithResources(t)
 
 	// プレイヤーと敵を近い位置に作成
-	createPlayerEntity(t, world, 100.0, 100.0)
-	createEnemyEntity(t, world, 110.0, 110.0) // 接触する距離
+	CreatePlayerEntity(t, world, 100.0, 100.0)
+	CreateEnemyEntity(t, world, 110.0, 110.0) // 接触する距離
 
 	// 初期状態: イベントなし
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
@@ -30,11 +30,11 @@ func TestCollisionSystemBattleTransition(t *testing.T) {
 
 func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldWithResources(t)
+	world := CreateTestWorldWithResources(t)
 
 	// プレイヤーと敵を近い位置に作成
-	createPlayerEntity(t, world, 100.0, 100.0)
-	createEnemyEntity(t, world, 110.0, 110.0)
+	CreatePlayerEntity(t, world, 100.0, 100.0)
+	CreateEnemyEntity(t, world, 110.0, 110.0)
 
 	// 既に別のイベントが設定されている場合
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
@@ -49,11 +49,11 @@ func TestCollisionSystemNoEventWhenAlreadySet(t *testing.T) {
 
 func TestCollisionSystemNoCollision(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldWithResources(t)
+	world := CreateTestWorldWithResources(t)
 
 	// プレイヤーと敵を離れた位置に作成
-	createPlayerEntity(t, world, 100.0, 100.0)
-	createEnemyEntity(t, world, 200.0, 200.0) // 接触しない距離
+	CreatePlayerEntity(t, world, 100.0, 100.0)
+	CreateEnemyEntity(t, world, 200.0, 200.0) // 接触しない距離
 
 	// CollisionSystemを実行
 	CollisionSystem(world)
@@ -65,12 +65,12 @@ func TestCollisionSystemNoCollision(t *testing.T) {
 
 func TestCollisionSystemMultipleEnemies(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldWithResources(t)
+	world := CreateTestWorldWithResources(t)
 
 	// プレイヤーと複数の敵を作成（1つは接触、1つは非接触）
-	createPlayerEntity(t, world, 100.0, 100.0)
-	createEnemyEntity(t, world, 110.0, 110.0) // 接触する敵
-	createEnemyEntity(t, world, 200.0, 200.0) // 接触しない敵
+	CreatePlayerEntity(t, world, 100.0, 100.0)
+	CreateEnemyEntity(t, world, 110.0, 110.0) // 接触する敵
+	CreateEnemyEntity(t, world, 200.0, 200.0) // 接触しない敵
 
 	// CollisionSystemを実行
 	CollisionSystem(world)
@@ -82,7 +82,7 @@ func TestCollisionSystemMultipleEnemies(t *testing.T) {
 
 func TestCollisionSystemWithVelocityStop(t *testing.T) {
 	t.Parallel()
-	world := createTestWorldWithResources(t)
+	world := CreateTestWorldWithResources(t)
 
 	// テスト用のスプライトシートをResourcesに追加
 	if world.Resources.SpriteSheets == nil {
