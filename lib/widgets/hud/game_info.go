@@ -5,10 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // GameInfo はHUDの基本ゲーム情報エリア
@@ -34,23 +31,14 @@ func (info *GameInfo) Update(_ w.World) {
 }
 
 // Draw はゲーム情報エリアを描画する
-func (info *GameInfo) Draw(world w.World, screen *ebiten.Image) {
+func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 	if !info.enabled {
 		return
 	}
 
 	// フロア情報を描画
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", gameResources.Depth), 0, 200)
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), 0, 200)
 
 	// プレイヤーの速度情報を描画
-	world.Manager.Join(
-		world.Components.Velocity,
-		world.Components.Position,
-		world.Components.Operator,
-		world.Components.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("speed: %.2f", velocity.Speed), 0, 220)
-	}))
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("speed: %.2f", data.PlayerSpeed), 0, 220)
 }

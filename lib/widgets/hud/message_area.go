@@ -104,14 +104,14 @@ func (area *MessageArea) Update(_ w.World) {
 }
 
 // Draw はメッセージエリアを描画する
-func (area *MessageArea) Draw(world w.World, screen *ebiten.Image) {
+func (area *MessageArea) Draw(screen *ebiten.Image, data MessageData) {
 	if !area.enabled || area.widget == nil {
 		return
 	}
 
 	// 画面サイズを取得
-	screenWidth := world.Resources.ScreenDimensions.Width
-	screenHeight := world.Resources.ScreenDimensions.Height
+	screenWidth := data.ScreenDimensions.Width
+	screenHeight := data.ScreenDimensions.Height
 
 	// ログエリアの位置とサイズを計算（画面下部、横幅いっぱい）
 	logAreaX := 0
@@ -128,7 +128,7 @@ func (area *MessageArea) Draw(world w.World, screen *ebiten.Image) {
 	offscreenWidth := logAreaWidth - area.config.LogAreaMargin*2
 	offscreenHeight := fixedHeight - area.config.LogAreaMargin*2
 
-	// メッセージウィジェットを描画
+	// メッセージウィジェットを描画（既存の方式を使用）
 	drawX := logAreaX + area.config.LogAreaMargin
 	drawY := logAreaY + area.config.LogAreaMargin
 
