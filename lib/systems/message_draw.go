@@ -27,6 +27,7 @@ var (
 )
 
 // DrawMessages はログメッセージを画面下部に描画する
+// TODO: UIに移動する。storeを注入できるようにする
 func DrawMessages(world w.World, screen *ebiten.Image) {
 	// 画面サイズを取得
 	screenWidth := world.Resources.ScreenDimensions.Width
