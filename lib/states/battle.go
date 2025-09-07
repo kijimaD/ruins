@@ -20,8 +20,8 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -296,8 +296,8 @@ func (st *BattleState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 func (st *BattleState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := common.NewVerticalContainer()
-	st.enemyListContainer = common.NewRowContainer(
+	rootContainer := styled.NewVerticalContainer()
+	st.enemyListContainer = styled.NewRowContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Position:  widget.RowLayoutPositionCenter,
@@ -310,24 +310,24 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	)
 	st.updateEnemyListContainer(world)
 
-	st.selectContainer = common.NewVerticalContainer(
+	st.selectContainer = styled.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.MinSize(200, 120)),
 	)
 	st.reloadPolicy(world)
 
 	// 非表示にできるように背景が設定されていない
-	st.cardSpecContainer = common.NewVerticalContainer(
+	st.cardSpecContainer = styled.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(600, 120),
 		),
 	)
 
-	st.memberContainer = common.NewRowContainer(
+	st.memberContainer = styled.NewRowContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.TransBlackColor)),
 	)
 	st.updateMemberContainer(world)
 
-	actionContainer := common.NewRowContainer()
+	actionContainer := styled.NewRowContainer()
 	actionContainer.AddChild(st.selectContainer, st.cardSpecContainer)
 	rootContainer.AddChild(
 		st.memberContainer,
@@ -376,7 +376,7 @@ func (st *BattleState) updateEnemyListContainer(world w.World) {
 			} else {
 				text = name.Name
 			}
-			container.AddChild(common.NewMenuText(text, world))
+			container.AddChild(styled.NewMenuText(text, world))
 		}
 
 		st.enemyListContainer.AddChild(container)
@@ -580,14 +580,14 @@ func (st *BattleState) handleActionFocusChange(world w.World, items []menu.Item,
 // addPlayerNameToMenu はプレイヤー名をメニューに追加
 func (st *BattleState) addPlayerNameToMenu(world w.World) {
 	name := world.Components.Name.Get(*st.party.Value()).(*gc.Name)
-	st.selectContainer.AddChild(common.NewMenuText(name.Name, world))
+	st.selectContainer.AddChild(styled.NewMenuText(name.Name, world))
 }
 
 // updateCardSpec はカードの詳細情報を更新する
 func (st *BattleState) updateCardSpec(world w.World, entity ecs.Entity) {
 	st.cardSpecContainer.RemoveChildren()
 	res := world.Resources.UIResources
-	transContainer := common.NewVerticalContainer(
+	transContainer := styled.NewVerticalContainer(
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.MinSize(700, 120),
 		),
@@ -719,7 +719,7 @@ func (st *BattleState) reloadMsg(world w.World) {
 	}
 
 	// カスタムのラベル関数を定義
-	list := common.NewMessageList(entries, world,
+	list := styled.NewMessageList(entries, world,
 		widget.ListOpts.EntryLabelFunc(func(e any) string {
 			v, ok := e.(string)
 			if !ok {
@@ -753,7 +753,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 
-	content := common.NewWindowContainer(world)
+	content := styled.NewWindowContainer(world)
 	// TODO: 経験値をプラスする
 	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
 	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
@@ -764,7 +764,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		world.Components.Attributes,
 		world.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		entryContainer := common.NewRowContainer(
+		entryContainer := styled.NewRowContainer(
 			widget.ContainerOpts.WidgetOpts(
 				widget.WidgetOpts.MinSize(200, 0),
 			),

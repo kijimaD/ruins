@@ -12,8 +12,11 @@ type LogFragment struct {
 type LogKind int
 
 const (
+	// LogKindField はフィールド探索ログ
 	LogKindField LogKind = iota
+	// LogKindBattle は戦闘ログ
 	LogKindBattle
+	// LogKindScene はシーンログ
 	LogKindScene
 )
 

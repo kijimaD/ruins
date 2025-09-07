@@ -1,8 +1,8 @@
-// Package common はEbitenUIコンポーネントに対するスタイル付きのゲーム固有ラッパー関数を提供する。
+// Package styled はEbitenUIコンポーネントに対するスタイル付きのゲーム固有ラッパー関数を提供する。
 //
 // # Overview
 //
-// commonパッケージは、EbitenUIライブラリの基本コンポーネントに対して
+// styledパッケージは、EbitenUIライブラリの基本コンポーネントに対して
 // プロジェクト固有のスタイルとデザインを適用したヘルパー関数群を提供します。
 // エンティティと関わらない、UI表示に特化した基本的なパーツを提供します。
 //
@@ -12,13 +12,13 @@
 //
 //	widgets/     ← 業務ロジック付きの高レベルコンポーネント
 //	   ↓ 使用
-//	common/      ← プロジェクト固有スタイルの中レベルコンポーネント（このパッケージ）
+//	styled/      ← プロジェクト固有スタイルの中レベルコンポーネント（このパッケージ）
 //	   ↓ 使用
 //	ebitenui/    ← 外部ライブラリの低レベルコンポーネント
 //
 // # Responsibilities
 //
-// commonパッケージの責務：
+// styledパッケージの責務：
 //   - EbitenUIコンポーネントのプロジェクト固有スタイル適用
 //   - ゲームリソース（フォント、色、画像）との統合
 //   - 基本的なレイアウトコンテナの提供
@@ -27,7 +27,7 @@
 //
 // # Usage vs Other Packages
 //
-// ## commonパッケージを使う場合
+// ## styledパッケージを使う場合
 //   - 基本的なレイアウトコンテナが欲しい（NewRowContainer, NewVerticalContainer）
 //   - プロジェクト統一スタイルのボタンやテキストが欲しい（NewButton, NewMenuText）
 //   - 静的な表示のみで状態管理は不要
@@ -43,23 +43,23 @@
 //
 // # Example
 //
-// commonパッケージの典型的な使用例：
+// styledパッケージの典型的な使用例：
 //
 //	// 基本的なレイアウト構築
-//	container := common.NewVerticalContainer()
+//	container := styled.NewVerticalContainer()
 //
 //	// プロジェクトスタイルのボタン作成
-//	button := common.NewButton("クリック", world)
+//	button := styled.NewButton("クリック", world)
 //	container.AddChild(button)
 //
 //	// ゲーム固有スタイルのテキスト
-//	title := common.NewMenuText("タイトル", world)
+//	title := styled.NewMenuText("タイトル", world)
 //	container.AddChild(title)
 //
 //	// 分割レイアウト
-//	leftPanel := common.NewVerticalContainer()
-//	rightPanel := common.NewVerticalContainer()
-//	splitContainer := common.NewWSplitContainer(leftPanel, rightPanel)
+//	leftPanel := styled.NewVerticalContainer()
+//	rightPanel := styled.NewVerticalContainer()
+//	splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 //
 // # Design Principles
 //
@@ -68,4 +68,4 @@
 //   - Simplicity: シンプルなファクトリ関数
 //   - Stateless: 状態を持たない純粋な関数群
 //   - EbitenUI Compatibility: EbitenUIとの高い互換性
-package common
+package styled

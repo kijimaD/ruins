@@ -7,6 +7,7 @@ import (
 )
 
 func TestPresetFunctions(t *testing.T) {
+	t.Parallel()
 	FieldLog.Clear()
 
 	// プリセット関数のテスト
@@ -121,6 +122,7 @@ func TestPresetFunctions(t *testing.T) {
 }
 
 func TestBattlePresets(t *testing.T) {
+	t.Parallel()
 	BattleLog.Clear()
 
 	// 戦闘専用プリセット
@@ -169,6 +171,7 @@ func TestBattlePresets(t *testing.T) {
 }
 
 func TestSystemPresets(t *testing.T) {
+	t.Parallel()
 	FieldLog.Clear()
 
 	// システム関連のプリセット

@@ -14,8 +14,8 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
@@ -152,14 +152,14 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
 
 	// アイテムの説明文
-	itemDescContainer := common.NewRowContainer()
-	st.itemDesc = common.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
+	itemDescContainer := styled.NewRowContainer()
+	st.itemDesc = styled.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
-	st.specContainer = common.NewVerticalContainer(
+	st.specContainer = styled.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
-	st.abilityContainer = common.NewVerticalContainer(
+	st.abilityContainer = styled.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 
@@ -167,24 +167,24 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.updateInitialItemDisplay(world)
 
 	// タブ表示のコンテナを作成
-	st.tabDisplayContainer = common.NewVerticalContainer()
+	st.tabDisplayContainer = styled.NewVerticalContainer()
 	st.createTabDisplayUI(world)
 
 	// カテゴリ一覧のコンテナを作成（横並び）
-	st.categoryContainer = common.NewRowContainer()
+	st.categoryContainer = styled.NewRowContainer()
 	st.createCategoryDisplayUI(world)
 
-	st.rootContainer = common.NewItemGridContainer(
+	st.rootContainer = styled.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
-		st.rootContainer.AddChild(common.NewTitleText("装備", world))
+		st.rootContainer.AddChild(styled.NewTitleText("装備", world))
 		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
 
 		st.rootContainer.AddChild(st.tabDisplayContainer) // タブとアイテム一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
-		st.rootContainer.AddChild(common.NewWSplitContainer(st.specContainer, st.abilityContainer))
+		st.rootContainer.AddChild(styled.NewWSplitContainer(st.specContainer, st.abilityContainer))
 
 		st.rootContainer.AddChild(itemDescContainer)
 	}
@@ -374,11 +374,11 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 
 			if isTargetMember {
 				// 装備対象のメンバーは背景色付きで明るい文字色
-				categoryWidget := common.NewListItemText(memberName, colors.TextColor, true, world)
+				categoryWidget := styled.NewListItemText(memberName, colors.TextColor, true, world)
 				st.categoryContainer.AddChild(categoryWidget)
 			} else {
 				// その他のメンバーは背景なしでグレー文字色
-				categoryWidget := common.NewListItemText(memberName, colors.ForegroundColor, false, world)
+				categoryWidget := styled.NewListItemText(memberName, colors.ForegroundColor, false, world)
 				st.categoryContainer.AddChild(categoryWidget)
 			}
 		}
@@ -394,11 +394,11 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 		isSelected := i == currentTabIndex
 		if isSelected {
 			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := common.NewListItemText(tab.Label, colors.TextColor, true, world)
+			categoryWidget := styled.NewListItemText(tab.Label, colors.TextColor, true, world)
 			st.categoryContainer.AddChild(categoryWidget)
 		} else {
 			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := common.NewListItemText(tab.Label, colors.ForegroundColor, false, world)
+			categoryWidget := styled.NewListItemText(tab.Label, colors.ForegroundColor, false, world)
 			st.categoryContainer.AddChild(categoryWidget)
 		}
 	}
@@ -413,13 +413,13 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
 
 	// タブ名を表示（サブタイトルとして）
-	tabNameText := common.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
+	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
 	st.tabDisplayContainer.AddChild(tabNameText)
 
 	// ページインジケーターを表示
 	pageText := st.tabMenu.GetPageIndicatorText()
 	if pageText != "" {
-		pageIndicator := common.NewPageIndicator(pageText, world)
+		pageIndicator := styled.NewPageIndicator(pageText, world)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 
@@ -432,18 +432,18 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := common.NewListItemText(item.Label, colors.TextColor, true, world)
+			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := common.NewListItemText(item.Label, colors.ForegroundColor, false, world)
+			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}
 
 	// アイテムがない場合の表示
 	if len(currentTab.Items) == 0 {
-		emptyText := common.NewDescriptionText("(アイテムなし)", world)
+		emptyText := styled.NewDescriptionText("(アイテムなし)", world)
 		st.tabDisplayContainer.AddChild(emptyText)
 	}
 }
@@ -490,12 +490,12 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	views.AddMemberBar(world, st.abilityContainer, targetMember)
 
 	attrs := world.Components.Attributes.Get(targetMember).(*gc.Attributes)
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world))
 }
 
 // 装備可能な防具を取得する
@@ -530,9 +530,9 @@ func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
 
 // showActionWindow はアクションウィンドウを表示する
 func (st *EquipMenuState) showActionWindow(world w.World, userData map[string]interface{}) {
-	windowContainer := common.NewWindowContainer(world)
-	titleContainer := common.NewWindowHeaderContainer("アクション選択", world)
-	st.actionWindow = common.NewSmallWindow(titleContainer, windowContainer)
+	windowContainer := styled.NewWindowContainer(world)
+	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world)
+	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// アクション項目を準備
 	st.actionItems = []string{}
@@ -569,14 +569,14 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 	// 既存のウィンドウを閉じて新しく作成
 	st.actionWindow.Close()
 
-	windowContainer := common.NewWindowContainer(world)
-	titleContainer := common.NewWindowHeaderContainer("アクション選択", world)
-	st.actionWindow = common.NewSmallWindow(titleContainer, windowContainer)
+	windowContainer := styled.NewWindowContainer(world)
+	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world)
+	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := common.NewListItemText(action, colors.TextColor, isSelected, world)
+		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world)
 		windowContainer.AddChild(actionWidget)
 	}
 

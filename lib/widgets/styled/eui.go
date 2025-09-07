@@ -1,4 +1,4 @@
-package common
+package styled
 
 import (
 	"image/color"

@@ -7,7 +7,7 @@ import (
 	"github.com/kijimaD/ruins/lib/colors"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/widgets/common"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -74,7 +74,7 @@ func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := common.NewVerticalContainer()
+	rootContainer := styled.NewVerticalContainer()
 
 	res := world.Resources.UIResources
 	rootContainer.AddChild(widget.NewText(widget.TextOpts.Text("GAME OVER...", res.Text.BigTitleFace, colors.TextColor)))

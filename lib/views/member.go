@@ -9,7 +9,7 @@ import (
 	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/widgets/common"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -17,11 +17,11 @@ import (
 // AddMemberBar は一人分のHPバーを表示する
 func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	res := world.Resources.UIResources
-	memberContainer := common.NewVerticalContainer()
+	memberContainer := styled.NewVerticalContainer()
 
 	name := world.Components.Name.Get(entity).(*gc.Name)
 	pools := world.Components.Pools.Get(entity).(*gc.Pools)
-	memberContainer.AddChild(common.NewMenuText(name.Name, world))
+	memberContainer.AddChild(styled.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
 		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, colors.TextColor),
 	)

@@ -1,4 +1,4 @@
-package common
+package styled
 
 import (
 	e_image "github.com/ebitenui/ebitenui/image"

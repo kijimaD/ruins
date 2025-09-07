@@ -11,8 +11,8 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -139,7 +139,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 }
 
 func (st *DungeonMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := common.NewVerticalContainer(
+	rootContainer := styled.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.BlackColor)),
 	)
 

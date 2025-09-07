@@ -1,4 +1,4 @@
-package common
+package styled
 
 import (
 	"testing"
@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewFragmentText(t *testing.T) {
+	t.Parallel()
 	// モックのworldを作成（テスト用）
 	world := w.World{}
 	// 実際のUIリソースが必要になるため、このテストは統合テスト環境でのみ実行可能
@@ -34,6 +35,7 @@ func TestNewFragmentText(t *testing.T) {
 
 // TestFragmentTextConcept は概念的なテスト
 func TestFragmentTextConcept(t *testing.T) {
+	t.Parallel()
 	// NewFragmentTextとNewListItemTextの設計思想の違いを文書化
 	t.Log("NewFragmentText design goals:")
 	t.Log("- No stretching (Stretch: false)")

@@ -7,6 +7,7 @@ import (
 )
 
 func TestLoggerBasicUsage(t *testing.T) {
+	t.Parallel()
 	// ログをクリア
 	FieldLog.Clear()
 
@@ -72,6 +73,7 @@ func TestLoggerBasicUsage(t *testing.T) {
 }
 
 func TestLoggerColorMethod(t *testing.T) {
+	t.Parallel()
 	FieldLog.Clear()
 
 	// カスタム色での使用例
@@ -107,6 +109,7 @@ func TestLoggerColorMethod(t *testing.T) {
 }
 
 func TestLoggerItemName(t *testing.T) {
+	t.Parallel()
 	FieldLog.Clear()
 
 	New().
@@ -127,6 +130,7 @@ func TestLoggerItemName(t *testing.T) {
 }
 
 func TestLoggerPlayerName(t *testing.T) {
+	t.Parallel()
 	FieldLog.Clear()
 
 	New().
@@ -146,6 +150,7 @@ func TestLoggerPlayerName(t *testing.T) {
 }
 
 func TestLoggerMultipleLogs(t *testing.T) {
+	t.Parallel()
 	FieldLog.Clear()
 
 	// 複数のログを追加
@@ -173,6 +178,7 @@ func TestLoggerMultipleLogs(t *testing.T) {
 }
 
 func TestLoggerBattleLog(t *testing.T) {
+	t.Parallel()
 	BattleLog.Clear()
 
 	New().

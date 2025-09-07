@@ -5,7 +5,7 @@ import (
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/kijimaD/ruins/lib/widgets/common"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -40,7 +40,7 @@ func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container {
 
 // buildVerticalUI は垂直リスト表示のUIを構築する
 func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
-	mainContainer := common.NewVerticalContainer()
+	mainContainer := styled.NewVerticalContainer()
 
 	// ページインジケーターを追加
 	pageText := menu.GetPageIndicatorText()
@@ -50,7 +50,7 @@ func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 	}
 
 	// メニューアイテムのコンテナ
-	menuContainer := common.NewVerticalContainer()
+	menuContainer := styled.NewVerticalContainer()
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
 	// 表示する項目のみを追加（スクロール対応）
@@ -70,7 +70,7 @@ func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
 
 // buildHorizontalUI は水平リスト表示のUIを構築する
 func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
-	mainContainer := common.NewVerticalContainer()
+	mainContainer := styled.NewVerticalContainer()
 
 	// ページインジケーターを追加
 	pageText := menu.GetPageIndicatorText()
@@ -80,7 +80,7 @@ func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 	}
 
 	// メニューアイテムのコンテナ
-	menuContainer := common.NewRowContainer()
+	menuContainer := styled.NewRowContainer()
 	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
 	// 表示する項目のみを追加（ペジネーション）

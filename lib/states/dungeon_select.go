@@ -8,8 +8,8 @@ import (
 	"github.com/kijimaD/ruins/lib/colors"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -144,23 +144,23 @@ func (st *DungeonSelectState) updateActionDescription(world w.World, index int) 
 	}
 
 	st.dungeonDescContainer.RemoveChildren()
-	st.dungeonDescContainer.AddChild(common.NewMenuText(items[index].Description, world))
+	st.dungeonDescContainer.AddChild(styled.NewMenuText(items[index].Description, world))
 }
 
 func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := common.NewVerticalContainer(
+	rootContainer := styled.NewVerticalContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.BlackColor)),
 	)
 
 	// メニューと説明文を横並びにするためのコンテナ
-	horizontalContainer := common.NewRowContainer()
+	horizontalContainer := styled.NewRowContainer()
 
 	// メニューのUIを構築
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
 
 	// 説明文用のコンテナ
-	st.dungeonDescContainer = common.NewVerticalContainer()
-	st.dungeonDescContainer.AddChild(common.NewMenuText(" ", world))
+	st.dungeonDescContainer = styled.NewVerticalContainer()
+	st.dungeonDescContainer.AddChild(styled.NewMenuText(" ", world))
 
 	// 左側にメニュー、右側に説明文を配置
 	horizontalContainer.AddChild(

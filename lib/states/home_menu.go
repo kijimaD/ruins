@@ -12,8 +12,8 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/views"
-	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -203,20 +203,20 @@ func (st *HomeMenuState) updateActionDescription(world w.World, index int) {
 	}
 
 	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(common.NewMenuText(items[index].Description, world))
+	st.actionDescContainer.AddChild(styled.NewMenuText(items[index].Description, world))
 	st.updateMemberContainer(world)
 }
 
 // ================
 
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := common.NewVerticalContainer()
-	st.memberContainer = common.NewRowContainer(
+	rootContainer := styled.NewVerticalContainer()
+	st.memberContainer = styled.NewRowContainer(
 		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.TransBlackColor)),
 	)
 
-	st.actionDescContainer = common.NewRowContainer()
-	st.actionDescContainer.AddChild(common.NewMenuText(" ", world))
+	st.actionDescContainer = styled.NewRowContainer()
+	st.actionDescContainer.AddChild(styled.NewMenuText(" ", world))
 
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)
