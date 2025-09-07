@@ -38,7 +38,7 @@ func TestCollisionWithSpawnedNPC(t *testing.T) {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// プレイヤーを生成
-	createPlayerEntity(t, world, 100.0, 100.0)
+	CreatePlayerEntity(t, world, 100.0, 100.0)
 
 	// NPCを近い位置に生成（敵として動作）
 	require.NoError(t, worldhelper.SpawnNPC(world, 110, 110))

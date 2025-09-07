@@ -12,8 +12,8 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// createTestWorldWithResources はテスト用のワールドを作成し、必要なリソースを初期化する
-func createTestWorldWithResources(t *testing.T) w.World {
+// CreateTestWorldWithResources はテスト用のワールドを作成し、必要なリソースを初期化する
+func CreateTestWorldWithResources(t *testing.T) w.World {
 	t.Helper()
 
 	components := &gc.Components{}
@@ -28,8 +28,8 @@ func createTestWorldWithResources(t *testing.T) w.World {
 	return world
 }
 
-// createTestWorldForCollision は衝突判定テスト用のワールドを作成する
-func createTestWorldForCollision(t *testing.T) w.World {
+// CreateTestWorldForCollision は衝突判定テスト用のワールドを作成する
+func CreateTestWorldForCollision(t *testing.T) w.World {
 	t.Helper()
 
 	components := &gc.Components{}
@@ -44,8 +44,8 @@ func createTestWorldForCollision(t *testing.T) w.World {
 	return world
 }
 
-// createPlayerEntity は指定された位置にプレイヤーエンティティを作成する
-func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
+// CreatePlayerEntity は指定された位置にプレイヤーエンティティを作成する
+func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 	t.Helper()
 
 	// テスト用のスプライトシートを作成してResourcesに追加
@@ -73,8 +73,8 @@ func createPlayerEntity(t *testing.T, world w.World, x, y float64) {
 	entities.AddEntities(world, cl)
 }
 
-// createEnemyEntity は指定された位置に敵エンティティを作成する
-func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
+// CreateEnemyEntity は指定された位置に敵エンティティを作成する
+func CreateEnemyEntity(t *testing.T, world w.World, x, y float64) {
 	t.Helper()
 
 	// テスト用のスプライトシートを作成してResourcesに追加
@@ -101,8 +101,8 @@ func createEnemyEntity(t *testing.T, world w.World, x, y float64) {
 	entities.AddEntities(world, cl)
 }
 
-// createEntityWithSprite は指定されたスプライトサイズでエンティティを作成する
-func createEntityWithSprite(t *testing.T, world w.World, x, y float64, width, height int, isPlayer bool) {
+// CreateEntityWithSprite は指定されたスプライトサイズでエンティティを作成する
+func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, height int, isPlayer bool) {
 	t.Helper()
 
 	// 一意なスプライトシート名を生成
@@ -150,8 +150,8 @@ func createEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 	entities.AddEntities(world, cl)
 }
 
-// createEntityWithSpriteSize はspriteSize構造体を使ってエンティティを作成する
-func createEntityWithSpriteSize(t *testing.T, world w.World, x, y float64, size spriteSize, isPlayer bool) {
+// CreateEntityWithSpriteSize はspriteSize構造体を使ってエンティティを作成する
+func CreateEntityWithSpriteSize(t *testing.T, world w.World, x, y float64, size spriteSize, isPlayer bool) {
 	t.Helper()
-	createEntityWithSprite(t, world, x, y, size.width, size.height, isPlayer)
+	CreateEntityWithSprite(t, world, x, y, size.width, size.height, isPlayer)
 }
