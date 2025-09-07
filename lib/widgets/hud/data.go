@@ -1,7 +1,7 @@
 package hud
 
-// HUDData はすべてのHUDウィジェットが必要とするデータを統合する
-type HUDData struct {
+// Data はすべてのHUDウィジェットが必要とするデータを統合する
+type Data struct {
 	GameInfo     GameInfoData
 	MinimapData  MinimapData
 	DebugOverlay DebugOverlayData

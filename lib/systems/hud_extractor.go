@@ -14,12 +14,12 @@ import (
 )
 
 // ExtractHUDData はworldから全てのHUDデータを抽出する
-func ExtractHUDData(world w.World) hud.HUDData {
-	return hud.HUDData{
+func ExtractHUDData(world w.World) hud.Data {
+	return hud.Data{
 		GameInfo:     extractGameInfo(world),
 		MinimapData:  extractMinimapData(world),
 		DebugOverlay: extractDebugOverlay(world),
-		MessageData:  extractMessageData(world),
+		MessageData:  extractMessageData(world, gamelog.FieldLog),
 	}
 }
 
@@ -222,9 +222,7 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 }
 
 // extractMessageData はメッセージデータを抽出する
-func extractMessageData(world w.World) hud.MessageData {
-	messages := extractMessagesFromGameLog()
-
+func extractMessageData(world w.World, store *gamelog.SafeSlice) hud.MessageData {
 	screenDimensions := hud.ScreenDimensions{
 		Width:  world.Resources.ScreenDimensions.Width,
 		Height: world.Resources.ScreenDimensions.Height,
@@ -234,21 +232,10 @@ func extractMessageData(world w.World) hud.MessageData {
 	config := hud.DefaultMessageAreaConfig()
 
 	return hud.MessageData{
-		Messages:         messages,
+		Messages:         store.GetHistory(),
 		ScreenDimensions: screenDimensions,
 		Config:           config,
 	}
-}
-
-// extractMessagesFromGameLog はゲームログからメッセージを抽出する
-func extractMessagesFromGameLog() []string {
-	// gamelog.FieldLogから実際のメッセージを取得
-	if gamelog.FieldLog == nil {
-		return []string{}
-	}
-
-	// SafeSliceから全履歴のメッセージを取得
-	return gamelog.FieldLog.GetHistory()
 }
 
 // getTileColorForMinimap はタイルの種類に応じてミニマップ上の色を返す

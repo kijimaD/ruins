@@ -9,6 +9,7 @@ import (
 
 // TestGameInfoDraw はGameInfoが描画できることを確認
 func TestGameInfoDraw(t *testing.T) {
+	t.Parallel()
 	gameInfo := NewGameInfo()
 	screen := ebiten.NewImage(800, 600)
 
@@ -25,6 +26,7 @@ func TestGameInfoDraw(t *testing.T) {
 
 // TestMinimapDraw はMinimapが描画できることを確認
 func TestMinimapDraw(t *testing.T) {
+	t.Parallel()
 	minimap := NewMinimap()
 	screen := ebiten.NewImage(800, 600)
 
@@ -66,6 +68,7 @@ func TestMinimapDraw(t *testing.T) {
 
 // TestDebugOverlayDraw はDebugOverlayが描画できることを確認
 func TestDebugOverlayDraw(t *testing.T) {
+	t.Parallel()
 	overlay := NewDebugOverlay()
 	screen := ebiten.NewImage(800, 600)
 
@@ -99,6 +102,7 @@ func TestDebugOverlayDraw(t *testing.T) {
 
 // TestMessageAreaDraw はMessageAreaが描画できることを確認
 func TestMessageAreaDraw(t *testing.T) {
+	t.Parallel()
 	// MessageAreaは内部でwidgetを使用するため、world必須でのコンストラクタを持つ
 	// そのため、世界構築なしでのテストは困難
 	// ここでは構造体の作成とDrawメソッドの存在確認のみ行う
@@ -132,7 +136,8 @@ func TestMessageAreaDraw(t *testing.T) {
 
 // TestHUDData はHUDDataの統合データ構造をテスト
 func TestHUDData(t *testing.T) {
-	hudData := HUDData{
+	t.Parallel()
+	hudData := Data{
 		GameInfo: GameInfoData{
 			FloorNumber: 3,
 			PlayerSpeed: 1.8,
@@ -163,6 +168,7 @@ func TestHUDData(t *testing.T) {
 
 // TestTileColorInfo はタイル色情報の構造をテスト
 func TestTileColorInfo(t *testing.T) {
+	t.Parallel()
 	colorInfo := TileColorInfo{
 		R: 128,
 		G: 64,
@@ -176,6 +182,7 @@ func TestTileColorInfo(t *testing.T) {
 
 // TestScreenDimensions は画面サイズ情報をテスト
 func TestScreenDimensions(t *testing.T) {
+	t.Parallel()
 	dimensions := ScreenDimensions{
 		Width:  1920,
 		Height: 1080,
@@ -187,6 +194,7 @@ func TestScreenDimensions(t *testing.T) {
 
 // TestWorldIndependentRendering はworld依存なしで複数のHUDコンポーネントが描画できることを確認
 func TestWorldIndependentRendering(t *testing.T) {
+	t.Parallel()
 	screen := ebiten.NewImage(1024, 768)
 
 	// 各HUDコンポーネントを作成
@@ -195,7 +203,7 @@ func TestWorldIndependentRendering(t *testing.T) {
 	debugOverlay := NewDebugOverlay()
 
 	// 統合HUDデータを作成
-	hudData := HUDData{
+	hudData := Data{
 		GameInfo: GameInfoData{
 			FloorNumber: 10,
 			PlayerSpeed: 3.2,

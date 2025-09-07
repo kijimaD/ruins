@@ -144,13 +144,3 @@ func (overlay *DebugOverlay) drawDirectionArrow(screen *ebiten.Image, x, y, angl
 	vector.StrokeLine(screen, float32(endX), float32(endY), float32(leftX), float32(leftY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
 	vector.StrokeLine(screen, float32(endX), float32(endY), float32(rightX), float32(rightY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
 }
-
-// drawVisionCircleWithData は指定した位置と半径で視界円を描画する（データ版）
-func (overlay *DebugOverlay) drawVisionCircleWithData(screen *ebiten.Image, centerX, centerY, radius float32) {
-	overlay.drawVisionCircle(screen, centerX, centerY, radius)
-}
-
-// drawDirectionArrowWithData は指定した位置に進行方向の矢印を描画する（データ版）
-func (overlay *DebugOverlay) drawDirectionArrowWithData(screen *ebiten.Image, x, y, angle, speed, cameraScale float64) {
-	overlay.drawDirectionArrow(screen, x, y, angle, speed, cameraScale)
-}
