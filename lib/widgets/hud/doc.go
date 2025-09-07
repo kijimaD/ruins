@@ -19,8 +19,18 @@
 //
 // 基本的な使用方法：
 //
-//	// HUDメッセージエリア作成
-//	messageArea := hud.NewMessageArea(world)
+//	// HUDメッセージエリア作成（デフォルト設定）
+//	messageArea := hud.NewMessageAreaDefault(world)
+//
+//	// または設定をカスタマイズして作成
+//	config := hud.MessageAreaConfig{
+//		LogAreaHeight: 150,
+//		MaxLogLines:   8,
+//		LogAreaMargin: 10,
+//		LineHeight:    22,
+//		YPadding:      6,
+//	}
+//	messageAreaCustom := hud.NewMessageArea(world, config)
 //
 //	// ゲームループ内で更新・描画
 //	func Update(world w.World) {

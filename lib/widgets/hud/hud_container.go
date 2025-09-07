@@ -21,7 +21,7 @@ func NewContainer(world w.World) *Container {
 		gameInfo:     NewGameInfo(),
 		debugOverlay: NewDebugOverlay(),
 		minimap:      NewMinimap(),
-		messageArea:  NewMessageArea(world),
+		messageArea:  NewMessageAreaDefault(world),
 		enabled:      true,
 	}
 }
