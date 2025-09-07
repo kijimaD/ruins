@@ -86,15 +86,17 @@ for _, entry := range entries {
 ## カスタム色
 
 ```go
-// RGB指定
+import "github.com/kijimaD/ruins/lib/colors"
+
+// 定義済み色を使用
 gamelog.New().
-    Color(255, 0, 0).  // 赤色
-    Append("カスタム色のテキスト").
+    ColorRGBA(colors.ColorBlue).
+    Append("青色のテキスト").
     Log(gamelog.LogKindField)
 
-// color.RGBA指定
+// カスタム色を作成
 gamelog.New().
-    ColorRGBA(gamelog.ColorBlue).
-    Append("青色のテキスト").
+    ColorRGBA(colors.NamedColor(255, 0, 0)). // 赤色
+    Append("カスタム色のテキスト").
     Log(gamelog.LogKindField)
 ```

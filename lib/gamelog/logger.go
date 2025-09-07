@@ -3,6 +3,8 @@ package gamelog
 import (
 	"fmt"
 	"image/color"
+
+	"github.com/kijimaD/ruins/lib/colors"
 )
 
 // Logger はメソッドチェーンで色付きログを作成
@@ -14,15 +16,9 @@ type Logger struct {
 // New は新しいLoggerインスタンスを作成
 func New() *Logger {
 	return &Logger{
-		currentColor: ColorWhite,
+		currentColor: colors.ColorWhite,
 		fragments:    make([]LogFragment, 0),
 	}
-}
-
-// Color はRGBで色を指定
-func (l *Logger) Color(r, g, b uint8) *Logger {
-	l.currentColor = NamedColor(r, g, b)
-	return l
 }
 
 // ColorRGBA は直接color.RGBAを設定
@@ -57,7 +53,7 @@ func (l *Logger) Log(logKind LogKind) {
 func (l *Logger) NPCName(name interface{}) *Logger {
 	nameStr := fmt.Sprintf("%v", name)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorYellow,
+		Color: colors.ColorYellow,
 		Text:  nameStr,
 	})
 	return l
@@ -67,7 +63,7 @@ func (l *Logger) NPCName(name interface{}) *Logger {
 func (l *Logger) ItemName(item interface{}) *Logger {
 	itemStr := fmt.Sprintf("%v", item)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorCyan,
+		Color: colors.ColorCyan,
 		Text:  itemStr,
 	})
 	return l
@@ -76,7 +72,7 @@ func (l *Logger) ItemName(item interface{}) *Logger {
 // Damage はダメージ数値を赤色で追加
 func (l *Logger) Damage(damage int) *Logger {
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorRed,
+		Color: colors.ColorRed,
 		Text:  fmt.Sprintf("%d", damage),
 	})
 	return l
@@ -86,7 +82,7 @@ func (l *Logger) Damage(damage int) *Logger {
 func (l *Logger) PlayerName(name interface{}) *Logger {
 	nameStr := fmt.Sprintf("%v", name)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorGreen,
+		Color: colors.ColorGreen,
 		Text:  nameStr,
 	})
 	return l
@@ -98,7 +94,7 @@ func (l *Logger) PlayerName(name interface{}) *Logger {
 func (l *Logger) Success(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorGreen,
+		Color: colors.ColorGreen,
 		Text:  textStr,
 	})
 	return l
@@ -108,7 +104,7 @@ func (l *Logger) Success(text interface{}) *Logger {
 func (l *Logger) Warning(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorYellow,
+		Color: colors.ColorYellow,
 		Text:  textStr,
 	})
 	return l
@@ -118,7 +114,7 @@ func (l *Logger) Warning(text interface{}) *Logger {
 func (l *Logger) Error(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorRed,
+		Color: colors.ColorRed,
 		Text:  textStr,
 	})
 	return l
@@ -128,7 +124,7 @@ func (l *Logger) Error(text interface{}) *Logger {
 func (l *Logger) Location(location interface{}) *Logger {
 	locationStr := fmt.Sprintf("%v", location)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorOrange,
+		Color: colors.ColorOrange,
 		Text:  locationStr,
 	})
 	return l
@@ -138,7 +134,7 @@ func (l *Logger) Location(location interface{}) *Logger {
 func (l *Logger) Action(action interface{}) *Logger {
 	actionStr := fmt.Sprintf("%v", action)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorPurple,
+		Color: colors.ColorPurple,
 		Text:  actionStr,
 	})
 	return l
@@ -148,7 +144,7 @@ func (l *Logger) Action(action interface{}) *Logger {
 func (l *Logger) Money(amount interface{}) *Logger {
 	amountStr := fmt.Sprintf("%v", amount)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorYellow,
+		Color: colors.ColorYellow,
 		Text:  amountStr,
 	})
 	return l
@@ -158,7 +154,7 @@ func (l *Logger) Money(amount interface{}) *Logger {
 func (l *Logger) Encounter(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorRed,
+		Color: colors.ColorRed,
 		Text:  textStr,
 	})
 	return l
@@ -168,7 +164,7 @@ func (l *Logger) Encounter(text interface{}) *Logger {
 func (l *Logger) Victory(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorGreen,
+		Color: colors.ColorGreen,
 		Text:  textStr,
 	})
 	return l
@@ -178,7 +174,7 @@ func (l *Logger) Victory(text interface{}) *Logger {
 func (l *Logger) Defeat(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorRed,
+		Color: colors.ColorRed,
 		Text:  textStr,
 	})
 	return l
@@ -188,7 +184,7 @@ func (l *Logger) Defeat(text interface{}) *Logger {
 func (l *Logger) Magic(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorMagenta,
+		Color: colors.ColorMagenta,
 		Text:  textStr,
 	})
 	return l
@@ -198,7 +194,7 @@ func (l *Logger) Magic(text interface{}) *Logger {
 func (l *Logger) System(text interface{}) *Logger {
 	textStr := fmt.Sprintf("%v", text)
 	l.fragments = append(l.fragments, LogFragment{
-		Color: ColorCyan,
+		Color: colors.ColorCyan,
 		Text:  textStr,
 	})
 	return l

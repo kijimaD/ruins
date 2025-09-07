@@ -5,11 +5,11 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -70,7 +70,7 @@ func (st *DebugMenuState) Draw(_ w.World, screen *ebiten.Image) {
 
 func (st *DebugMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := common.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.BlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.BlackColor)),
 	)
 
 	// Menuコンポーネントを作成

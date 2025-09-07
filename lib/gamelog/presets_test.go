@@ -2,6 +2,8 @@ package gamelog
 
 import (
 	"testing"
+
+	"github.com/kijimaD/ruins/lib/colors"
 )
 
 func TestPresetFunctions(t *testing.T) {
@@ -91,27 +93,27 @@ func TestPresetFunctions(t *testing.T) {
 		// 色の確認（簡単なチェック）
 		switch tc.expectedColor {
 		case "green":
-			if fragment.Color != ColorGreen {
+			if fragment.Color != colors.ColorGreen {
 				t.Errorf("Expected green color for '%s'", tc.expectedText)
 			}
 		case "yellow":
-			if fragment.Color != ColorYellow {
+			if fragment.Color != colors.ColorYellow {
 				t.Errorf("Expected yellow color for '%s'", tc.expectedText)
 			}
 		case "red":
-			if fragment.Color != ColorRed {
+			if fragment.Color != colors.ColorRed {
 				t.Errorf("Expected red color for '%s'", tc.expectedText)
 			}
 		case "orange":
-			if fragment.Color != ColorOrange {
+			if fragment.Color != colors.ColorOrange {
 				t.Errorf("Expected orange color for '%s'", tc.expectedText)
 			}
 		case "cyan":
-			if fragment.Color != ColorCyan {
+			if fragment.Color != colors.ColorCyan {
 				t.Errorf("Expected cyan color for '%s'", tc.expectedText)
 			}
 		case "purple":
-			if fragment.Color != ColorPurple {
+			if fragment.Color != colors.ColorPurple {
 				t.Errorf("Expected purple color for '%s'", tc.expectedText)
 			}
 		}
@@ -146,22 +148,22 @@ func TestBattlePresets(t *testing.T) {
 	entries := BattleLog.GetRecentEntries(4)
 
 	// Encounter は赤色
-	if entries[0].Fragments[0].Color != ColorRed {
+	if entries[0].Fragments[0].Color != colors.ColorRed {
 		t.Errorf("Expected red color for Encounter")
 	}
 
 	// Victory は緑色
-	if entries[1].Fragments[0].Color != ColorGreen {
+	if entries[1].Fragments[0].Color != colors.ColorGreen {
 		t.Errorf("Expected green color for Victory")
 	}
 
 	// Defeat は赤色
-	if entries[2].Fragments[0].Color != ColorRed {
+	if entries[2].Fragments[0].Color != colors.ColorRed {
 		t.Errorf("Expected red color for Defeat")
 	}
 
 	// Magic は紫色
-	if entries[3].Fragments[0].Color != ColorMagenta {
+	if entries[3].Fragments[0].Color != colors.ColorMagenta {
 		t.Errorf("Expected magenta color for Magic")
 	}
 }
@@ -180,7 +182,7 @@ func TestSystemPresets(t *testing.T) {
 	}
 
 	// System は水色（シアン）
-	if entries[0].Fragments[0].Color != ColorCyan {
+	if entries[0].Fragments[0].Color != colors.ColorCyan {
 		t.Errorf("Expected cyan color for System")
 	}
 }

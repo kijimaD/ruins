@@ -3,7 +3,7 @@ package common
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/colors"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -23,7 +23,7 @@ func TestNewFragmentText(t *testing.T) {
 
 	// 基本的な呼び出しテスト
 	text := "テストテキスト"
-	color := gamelog.ColorRed
+	color := colors.ColorRed
 
 	// この関数呼び出しは、UIリソースがない場合はパニックするが、
 	// 関数自体が正しく定義されていることを確認

@@ -6,11 +6,11 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -581,7 +581,7 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 
 	if st.selectedMemberEntity == nil {
 		// 選択なしの場合
-		st.memberDescContainer.AddChild(common.NewBodyText("メンバーを選択してください", styles.TextColor, world))
+		st.memberDescContainer.AddChild(common.NewBodyText("メンバーを選択してください", colors.TextColor, world))
 		return
 	}
 
@@ -599,21 +599,21 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 	if entity.HasComponent(world.Components.Pools) {
 		pools := world.Components.Pools.Get(entity).(*gc.Pools)
 		// 固定幅フォーマット: ラベル部分を8文字固定
-		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "レベル:", pools.Level), styles.TextColor, world))
-		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "経験値:", pools.XP), styles.TextColor, world))
+		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "レベル:", pools.Level), colors.TextColor, world))
+		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "経験値:", pools.XP), colors.TextColor, world))
 	}
 
 	// 計算値（攻撃力、防御力など）を表示
 	if entity.HasComponent(world.Components.Attributes) {
 		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 		// 固定幅フォーマット: ラベル部分を8文字固定
-		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "攻撃力:", attrs.Strength.Total), styles.TextColor, world))
-		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "防御力:", attrs.Defense.Total), styles.TextColor, world))
+		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "攻撃力:", attrs.Strength.Total), colors.TextColor, world))
+		st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-8s %d", "防御力:", attrs.Defense.Total), colors.TextColor, world))
 	}
 
 	// 装備情報
-	st.memberDescContainer.AddChild(common.NewBodyText("", styles.TextColor, world)) // 空行
-	st.memberDescContainer.AddChild(common.NewBodyText("装備:", styles.TextColor, world))
+	st.memberDescContainer.AddChild(common.NewBodyText("", colors.TextColor, world)) // 空行
+	st.memberDescContainer.AddChild(common.NewBodyText("装備:", colors.TextColor, world))
 
 	// 防具装備
 	wearSlots := worldhelper.GetWearEquipments(world, entity)
@@ -621,9 +621,9 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 		if slot != nil {
 			itemName := world.Components.Name.Get(*slot).(*gc.Name).Name
 			// 固定幅フォーマット: "防具1:" まで5文字固定
-			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("防具%d:", i+1), itemName), styles.TextColor, world))
+			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("防具%d:", i+1), itemName), colors.TextColor, world))
 		} else {
-			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("防具%d:", i+1), "(なし)"), styles.TextColor, world))
+			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("防具%d:", i+1), "(なし)"), colors.TextColor, world))
 		}
 	}
 
@@ -633,9 +633,9 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 		if slot != nil {
 			itemName := world.Components.Name.Get(*slot).(*gc.Name).Name
 			// 固定幅フォーマット: "手札1:" まで5文字固定
-			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("手札%d:", i+1), itemName), styles.TextColor, world))
+			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("手札%d:", i+1), itemName), colors.TextColor, world))
 		} else {
-			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("手札%d:", i+1), "(なし)"), styles.TextColor, world))
+			st.memberDescContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-5s %s", fmt.Sprintf("手札%d:", i+1), "(なし)"), colors.TextColor, world))
 		}
 	}
 
@@ -645,11 +645,11 @@ func (st *PartySetupState) updateMemberDisplay(world w.World) {
 	if entity.HasComponent(world.Components.Attributes) {
 		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 		// 固定幅フォーマット: ラベル3文字分、数値3桁、修正値符号付き3桁
-		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
-		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
+		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))
+		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world))
+		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world))
+		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world))
+		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world))
+		st.memberStatusContainer.AddChild(common.NewBodyText(fmt.Sprintf("%-3s %3d(%+3d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world))
 	}
 }

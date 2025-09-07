@@ -8,11 +8,11 @@ import (
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/common"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -455,7 +455,7 @@ func (st *InventoryMenuState) updateActionWindowDisplay(world w.World) {
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := common.NewListItemText(action, styles.TextColor, isSelected, world)
+		actionWidget := common.NewListItemText(action, colors.TextColor, isSelected, world)
 		windowContainer.AddChild(actionWidget)
 	}
 
@@ -592,11 +592,11 @@ func (st *InventoryMenuState) updateCategoryDisplay(world w.World) {
 		isSelected := i == currentTabIndex
 		if isSelected {
 			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := common.NewListItemText(tab.Label, styles.TextColor, true, world)
+			categoryWidget := common.NewListItemText(tab.Label, colors.TextColor, true, world)
 			st.categoryContainer.AddChild(categoryWidget)
 		} else {
 			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := common.NewListItemText(tab.Label, styles.ForegroundColor, false, world)
+			categoryWidget := common.NewListItemText(tab.Label, colors.ForegroundColor, false, world)
 			st.categoryContainer.AddChild(categoryWidget)
 		}
 	}
@@ -630,11 +630,11 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := common.NewListItemText(item.Label, styles.TextColor, true, world)
+			itemWidget := common.NewListItemText(item.Label, colors.TextColor, true, world)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := common.NewListItemText(item.Label, styles.ForegroundColor, false, world)
+			itemWidget := common.NewListItemText(item.Label, colors.ForegroundColor, false, world)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}
@@ -717,7 +717,7 @@ func (st *InventoryMenuState) updatePartyWindowDisplay(world w.World) {
 		var memberContainer *widget.Container
 		if isSelected {
 			memberContainer = common.NewVerticalContainer(
-				widget.ContainerOpts.BackgroundImage(image.NewNineSliceColor(styles.ButtonHoverColor)),
+				widget.ContainerOpts.BackgroundImage(image.NewNineSliceColor(colors.ButtonHoverColor)),
 			)
 		} else {
 			memberContainer = common.NewVerticalContainer()
@@ -735,7 +735,7 @@ func (st *InventoryMenuState) updatePartyWindowDisplay(world w.World) {
 	// キャンセル項目を別途追加（グリッドの下）
 	cancelIndex := len(st.partyMembers)
 	isSelected := st.partyFocusIndex == cancelIndex
-	cancelWidget := common.NewListItemText("キャンセル", styles.TextColor, isSelected, world)
+	cancelWidget := common.NewListItemText("キャンセル", colors.TextColor, isSelected, world)
 	partyContainer.AddChild(cancelWidget)
 
 	st.partyWindow.SetLocation(getCenterWinRect(world))

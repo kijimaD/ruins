@@ -7,8 +7,8 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"github.com/kijimaD/ruins/lib/colors"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/common"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -143,7 +143,7 @@ func createColoredLogContainer(entries []gamelog.LogEntry, world w.World) *widge
 
 	// エントリがない場合
 	if len(entries) == 0 {
-		placeholderWidget := common.NewListItemText("ログメッセージなし", styles.ForegroundColor, false, world)
+		placeholderWidget := common.NewListItemText("ログメッセージなし", colors.ForegroundColor, false, world)
 		logContainer.AddChild(placeholderWidget)
 	}
 

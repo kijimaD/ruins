@@ -6,9 +6,9 @@ import (
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/styles"
 	"github.com/kijimaD/ruins/lib/widgets/common"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -23,7 +23,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 	pools := world.Components.Pools.Get(entity).(*gc.Pools)
 	memberContainer.AddChild(common.NewMenuText(name.Name, world))
 	hpLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, styles.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, colors.TextColor),
 	)
 	memberContainer.AddChild(hpLabel)
 
@@ -53,7 +53,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 	memberContainer.AddChild(hpProgressbar)
 
 	spLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, styles.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, colors.TextColor),
 	)
 	memberContainer.AddChild(spLabel)
 
@@ -82,7 +82,7 @@ func AddMemberBar(world w.World, targetContainer *widget.Container, entity ecs.E
 	)
 	memberContainer.AddChild(spProgressbar)
 	levelLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("Lv %d", pools.Level), res.Text.SmallFace, styles.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("Lv %d", pools.Level), res.Text.SmallFace, colors.TextColor),
 	)
 	memberContainer.AddChild(levelLabel)
 

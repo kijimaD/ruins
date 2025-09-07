@@ -10,6 +10,7 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/engine/entities"
@@ -17,7 +18,6 @@ import (
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/common"
@@ -323,7 +323,7 @@ func (st *BattleState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	st.memberContainer = common.NewRowContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(styles.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.TransBlackColor)),
 	)
 	st.updateMemberContainer(world)
 
@@ -757,7 +757,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 	// TODO: 経験値をプラスする
 	// EXPが0~100まであり、100に到達するとレベルを1上げ、EXPを0に戻す
 	// 獲得経験値は、相手の種別ランクとレベル差によって決まる
-	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, styles.TextColor)))
+	content.AddChild(widget.NewText(widget.TextOpts.Text("経験", res.Text.TitleFace, colors.TextColor)))
 	world.Manager.Join(
 		world.Components.FactionAlly,
 		world.Components.InParty,
@@ -781,7 +781,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		name := world.Components.Name.Get(entity).(*gc.Name)
 		entryContainer.AddChild(
 			widget.NewText(
-				widget.TextOpts.Text(name.Name, res.Text.Face, styles.TextColor),
+				widget.TextOpts.Text(name.Name, res.Text.Face, colors.TextColor),
 				widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
 				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 			),
@@ -790,7 +790,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		xpAfter := dropResult.XPAfter[entity]
 		entryContainer.AddChild(
 			widget.NewText(
-				widget.TextOpts.Text(fmt.Sprintf("%d → %d", xpBefore, xpAfter), res.Text.Face, styles.TextColor),
+				widget.TextOpts.Text(fmt.Sprintf("%d → %d", xpBefore, xpAfter), res.Text.Face, colors.TextColor),
 				widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
 				widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 			),
@@ -798,7 +798,7 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		if dropResult.IsLevelUp[entity] {
 			entryContainer.AddChild(
 				widget.NewText(
-					widget.TextOpts.Text("Lv ↑", res.Text.Face, styles.TextColor),
+					widget.TextOpts.Text("Lv ↑", res.Text.Face, colors.TextColor),
 					widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
 					widget.TextOpts.WidgetOpts(widget.WidgetOpts.MinSize(100, 0)),
 				),
@@ -806,10 +806,10 @@ func (st *BattleState) initResultWindow(world w.World, dropResult gs.DropResult)
 		}
 	}))
 
-	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, styles.TextColor)))
+	content.AddChild(widget.NewText(widget.TextOpts.Text("物品", res.Text.TitleFace, colors.TextColor)))
 	for _, mn := range dropResult.MaterialNames {
 		text := fmt.Sprintf("  %s", mn)
-		content.AddChild(widget.NewText(widget.TextOpts.Text(text, res.Text.Face, styles.TextColor)))
+		content.AddChild(widget.NewText(widget.TextOpts.Text(text, res.Text.Face, colors.TextColor)))
 	}
 	resultWindow := widget.NewWindow(
 		widget.WindowOpts.Contents(content),

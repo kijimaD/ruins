@@ -1,4 +1,4 @@
-package styles
+package colors
 
 import "image/color"
 
@@ -59,4 +59,16 @@ var (
 	ChillColor = RGB(0x00ffff)
 	// PhotonColor は光子色（黄）を表す
 	PhotonColor = RGB(0xffff00)
+
+	// ゲームログ用の基本色
+	ColorWhite   = RGB(0xFFFFFF)
+	ColorBlack   = RGB(0x000000)
+	ColorRed     = RGB(0xFF0000)
+	ColorGreen   = RGB(0x00FF00)
+	ColorBlue    = RGB(0x0000FF)
+	ColorYellow  = RGB(0xFFFF00)
+	ColorCyan    = RGB(0x00FFFF)
+	ColorMagenta = RGB(0xFF00FF)
+	ColorOrange  = RGB(0xFFA500)
+	ColorPurple  = RGB(0x800080)
 )

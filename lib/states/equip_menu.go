@@ -7,11 +7,11 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/styles"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/common"
@@ -374,11 +374,11 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 
 			if isTargetMember {
 				// 装備対象のメンバーは背景色付きで明るい文字色
-				categoryWidget := common.NewListItemText(memberName, styles.TextColor, true, world)
+				categoryWidget := common.NewListItemText(memberName, colors.TextColor, true, world)
 				st.categoryContainer.AddChild(categoryWidget)
 			} else {
 				// その他のメンバーは背景なしでグレー文字色
-				categoryWidget := common.NewListItemText(memberName, styles.ForegroundColor, false, world)
+				categoryWidget := common.NewListItemText(memberName, colors.ForegroundColor, false, world)
 				st.categoryContainer.AddChild(categoryWidget)
 			}
 		}
@@ -394,11 +394,11 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 		isSelected := i == currentTabIndex
 		if isSelected {
 			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := common.NewListItemText(tab.Label, styles.TextColor, true, world)
+			categoryWidget := common.NewListItemText(tab.Label, colors.TextColor, true, world)
 			st.categoryContainer.AddChild(categoryWidget)
 		} else {
 			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := common.NewListItemText(tab.Label, styles.ForegroundColor, false, world)
+			categoryWidget := common.NewListItemText(tab.Label, colors.ForegroundColor, false, world)
 			st.categoryContainer.AddChild(categoryWidget)
 		}
 	}
@@ -432,11 +432,11 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := common.NewListItemText(item.Label, styles.TextColor, true, world)
+			itemWidget := common.NewListItemText(item.Label, colors.TextColor, true, world)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := common.NewListItemText(item.Label, styles.ForegroundColor, false, world)
+			itemWidget := common.NewListItemText(item.Label, colors.ForegroundColor, false, world)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}
@@ -490,12 +490,12 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	views.AddMemberBar(world, st.abilityContainer, targetMember)
 
 	attrs := world.Components.Attributes.Get(targetMember).(*gc.Attributes)
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), styles.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), styles.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), styles.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), styles.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), styles.TextColor, world))
-	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), styles.TextColor, world))
+	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(common.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world))
 }
 
 // 装備可能な防具を取得する
@@ -576,7 +576,7 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := common.NewListItemText(action, styles.TextColor, isSelected, world)
+		actionWidget := common.NewListItemText(action, colors.TextColor, isSelected, world)
 		windowContainer.AddChild(actionWidget)
 	}
 
