@@ -180,9 +180,6 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 				<dd><a href="index.html#BaseRowLayoutOpts">func BaseRowLayoutOpts() []widget.RowLayoutOpt</a></dd>
 			
 				
-				<dd><a href="index.html#DrawFramedBackground">func DrawFramedBackground(screen *ebiten.Image, x, y, width, height int, style BackgroundStyle)</a></dd>
-			
-				
 				<dd><a href="index.html#LoadButtonImage">func LoadButtonImage() *widget.ButtonImage</a></dd>
 			
 				
@@ -243,14 +240,6 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 				<dd><a href="index.html#NewWindowHeaderContainer">func NewWindowHeaderContainer(title string, world w.World) *widget.Container</a></dd>
 			
 			
-				
-				<dd><a href="index.html#BackgroundStyle">type BackgroundStyle</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultMessageBackgroundStyle">func DefaultMessageBackgroundStyle() BackgroundStyle</a></dd>
-				
-				
-			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -261,8 +250,6 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 			<h3>Package files</h3>
 			<p>
 			<span style="font-size:90%">
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/background.go">background.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/doc.go">doc.go</a>
 			
@@ -290,20 +277,6 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 			</h2>
 			<pre>func BaseRowLayoutOpts() []<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#RowLayoutOpt">RowLayoutOpt</a></pre>
 			<p>BaseRowLayoutOpts は基本的な行レイアウトオプションを返す
-
-			
-			
-
-		
-			
-			
-			<h2 id="DrawFramedBackground">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/background.go?s=816:911#L17">DrawFramedBackground</a>
-				<a class="permalink" href="index.html#DrawFramedBackground">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func DrawFramedBackground(screen *ebiten.<a href="index.html#Image">Image</a>, x, y, width, height <a href="http://localhost:8888/pkg/builtin/#int">int</a>, style <a href="index.html#BackgroundStyle">BackgroundStyle</a>)</pre>
-			<p>DrawFramedBackground は枠線付きの背景を描画する
 
 			
 			
@@ -591,46 +564,6 @@ TODO: いい感じにしたい
 			
 
 		
-		
-			
-			
-			<h2 id="BackgroundStyle">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/background.go?s=188:354#L1">BackgroundStyle</a>
-				<a class="permalink" href="index.html#BackgroundStyle">&#xb6;</a>
-				
-				
-			</h2>
-			<p>BackgroundStyle は背景描画のスタイル設定を表す
-
-			<pre>type BackgroundStyle struct {
-<span id="BackgroundStyle.BorderColor"></span>    BorderColor     <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a> <span class="comment">// 枠線の色</span>
-<span id="BackgroundStyle.BackgroundColor"></span>    BackgroundColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a> <span class="comment">// 背景の色</span>
-<span id="BackgroundStyle.BorderWidth"></span>    BorderWidth     <a href="http://localhost:8888/pkg/builtin/#float32">float32</a>    <span class="comment">// 枠線の太さ</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="DefaultMessageBackgroundStyle">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/background.go?s=453:505#L8">DefaultMessageBackgroundStyle</a>
-					<a class="permalink" href="index.html#DefaultMessageBackgroundStyle">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func DefaultMessageBackgroundStyle() <a href="index.html#BackgroundStyle">BackgroundStyle</a></pre>
-				<p>DefaultMessageBackgroundStyle はデフォルトのメッセージ背景スタイルを返す
-
-				
-				
-			
-
-			
 		
 	
 
