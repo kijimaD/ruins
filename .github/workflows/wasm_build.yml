@@ -18,7 +18,7 @@ jobs:
           docker run --rm -v ${PWD}:/app -w /app testimage bash -c "env GOOS=js GOARCH=wasm go build -o ./wasm/game.wasm -buildvcs=false"
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
 
       - name: Generate godoc
         run: |
