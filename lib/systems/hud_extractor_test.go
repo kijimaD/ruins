@@ -33,6 +33,7 @@ func TestTileColorInfo(t *testing.T) {
 }
 
 func TestGetTileColorForMinimap(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name          string
 		setupEntities func(w.World)
@@ -66,7 +67,7 @@ func TestGetTileColorForMinimap(t *testing.T) {
 		},
 		{
 			name: "エンティティなしの場合は透明",
-			setupEntities: func(world w.World) {
+			setupEntities: func(_ w.World) {
 				// 何もしない
 			},
 			tileX:         999,
@@ -95,6 +96,7 @@ func TestGetTileColorForMinimap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			world := CreateTestWorldWithResources(t)
 
 			// セットアップ処理を実行
@@ -112,6 +114,7 @@ func TestGetTileColorForMinimap(t *testing.T) {
 }
 
 func TestExtractMinimapData(t *testing.T) {
+	t.Parallel()
 	world := CreateTestWorldWithResources(t)
 
 	// ゲームリソースを設定
@@ -180,6 +183,7 @@ func TestExtractMinimapData(t *testing.T) {
 }
 
 func TestMinimapCoordinateTransformation(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name           string
 		playerTileX    int
@@ -275,6 +279,7 @@ func TestMinimapCoordinateTransformation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			// 相対座標を計算
 			relativeX := tt.targetTileX - tt.playerTileX
 			relativeY := tt.targetTileY - tt.playerTileY
@@ -290,6 +295,7 @@ func TestMinimapCoordinateTransformation(t *testing.T) {
 }
 
 func TestTileKeyFormat(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name        string
 		tileX       int
@@ -324,7 +330,8 @@ func TestTileKeyFormat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// TileVisibilityから取得したCol,Rowを使った形式（修正後）
+			t.Parallel()
+			// TileVisibilityから取得したCol,Rowを使った形式
 			tileData := struct {
 				Col int // X座標
 				Row int // Y座標
@@ -341,16 +348,17 @@ func TestTileKeyFormat(t *testing.T) {
 }
 
 func TestExploredTilesKeyConsistency(t *testing.T) {
+	t.Parallel()
 	// 他のシステムで使われているキー形式とvision.goでの形式が一致するかテスト
 
 	// 同じタイル座標に対して、異なるシステムが生成するキーを比較
 	testTileX := 15
 	testTileY := 20
 
-	// render_sprite.goのようなキー生成（GridElement使用）
+	// render_sprite.goのようなキー生成
 	renderKey := fmt.Sprintf("%d,%d", testTileX, testTileY)
 
-	// TileVisibilityから生成されるキー（修正後）
+	// TileVisibilityから生成されるキー
 	tileData := struct {
 		Col int // X座標
 		Row int // Y座標

@@ -302,7 +302,7 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
-	var cameraScale float64 = 1.0 // デフォルトスケール
+	cameraScale := 1.0 // デフォルトスケール
 
 	// カメラのGridElementから位置を取得
 	world.Manager.Join(
