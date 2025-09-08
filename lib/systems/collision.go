@@ -67,9 +67,6 @@ func CollisionSystem(world w.World) {
 
 			// 衝突判定（スプライトサイズを考慮した距離ベース）
 			if checkCollisionSimple(world, playerEntity, enemyEntity, playerPos, enemyPos) {
-				// 戦闘開始イベントは削除（ローグライク戦闘システムに移行）
-				// TODO: ローグライク戦闘システムの実装
-
 				// プリセット使用の統一的なログ
 				gamelog.New(gamelog.FieldLog).
 					Encounter("敵と遭遇した。").

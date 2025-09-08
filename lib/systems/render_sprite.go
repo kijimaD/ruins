@@ -134,10 +134,9 @@ func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[str
 		}
 
 		spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		tileSize := gameResources.Level.TileSize
 		pos := &gc.Position{
-			X: gc.Pixel(int(gridElement.X)*int(tileSize) + int(tileSize/2)),
-			Y: gc.Pixel(int(gridElement.Y)*int(tileSize) + int(tileSize/2)),
+			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize/2)),
+			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize/2)),
 		}
 		drawImage(world, screen, spriteRender, pos, 0)
 	}
