@@ -55,5 +55,5 @@ ENTRYPOINT ["ruins"]
 # node #
 ########
 
-FROM node:24.6.0 AS releaser
+FROM node:24.7.0 AS releaser
 RUN yarn install
