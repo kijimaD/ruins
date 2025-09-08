@@ -24,10 +24,6 @@ const (
 	spriteNumberNPC        = 6  // NPC
 	spriteNumberFieldItem  = 18 // フィールドアイテム
 
-	// 移動速度
-	playerMaxSpeed = 2.0 // プレイヤーの最高速度
-	npcMaxSpeed    = 1.0 // NPCの最高速度
-
 	// カメラスケール
 	cameraInitialScale = 0.1 // カメラの初期スケール（ズームアウト）
 	cameraNormalScale  = 1.0 // カメラの通常スケール
@@ -185,9 +181,6 @@ func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) error {
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			Position: &gc.Position{X: x, Y: y},
-			Velocity: &gc.Velocity{
-				MaxSpeed: npcMaxSpeed,
-			},
 			SpriteRender: &gc.SpriteRender{
 				Name:         "field",
 				SpriteNumber: spriteNumberNPC,

@@ -1,29 +1,5 @@
 package components
 
-// Velocity は移動属性
-type Velocity struct {
-	// 角度(度数法)。この角度分スプライトを回転させる
-	Angle float64
-	// 現在の速度
-	Speed float64
-	// スロットルモード
-	ThrottleMode ThrottleMode
-	// 最高速度
-	MaxSpeed float64
-}
-
-// ThrottleMode はスロットルモード
-type ThrottleMode string
-
-const (
-	// ThrottleModeFront は前進スロットルモード
-	ThrottleModeFront = ThrottleMode("FRONT")
-	// ThrottleModeBack は後退スロットルモード
-	ThrottleModeBack = ThrottleMode("BACK")
-	// ThrottleModeNope はスロットルなし
-	ThrottleModeNope = ThrottleMode("NOPE")
-)
-
 // Position はフィールド上に座標をもって存在する
 // スプライトはこの位置に中心を合わせて配置する
 // -----

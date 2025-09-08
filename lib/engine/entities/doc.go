@@ -12,7 +12,6 @@
 //	componentList := entities.ComponentList{}
 //	componentList.Game = append(componentList.Game, gc.GameComponentList{
 //	    Position: &gc.Position{X: 100, Y: 200},
-//	    Velocity: &gc.Velocity{},
 //	})
 //
 //	// ワールドへの追加

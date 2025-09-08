@@ -184,36 +184,11 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 		})
 	}))
 
-	// 移動方向情報を抽出
-	var movementDirs []hud.MovementDirectionInfo
-	world.Manager.Join(
-		world.Components.Position,
-		world.Components.Velocity,
-		world.Components.AIMoveFSM,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		position := world.Components.Position.Get(entity).(*gc.Position)
-		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
-
-		if velocity.Speed > 0 && velocity.ThrottleMode == gc.ThrottleModeFront {
-			screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
-			screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
-
-			movementDirs = append(movementDirs, hud.MovementDirectionInfo{
-				ScreenX:     screenX,
-				ScreenY:     screenY,
-				Angle:       velocity.Angle,
-				Speed:       velocity.Speed,
-				CameraScale: cameraScale,
-			})
-		}
-	}))
-
 	return hud.DebugOverlayData{
-		Enabled:            true,
-		AIStates:           aiStates,
-		VisionRanges:       visionRanges,
-		MovementDirections: movementDirs,
-		ScreenDimensions:   screenDimensions,
+		Enabled:          true,
+		AIStates:         aiStates,
+		VisionRanges:     visionRanges,
+		ScreenDimensions: screenDimensions,
 	}
 }
 

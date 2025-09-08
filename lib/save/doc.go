@@ -115,7 +115,7 @@ InitializeFromWorld関数に登録を追加してください：
 
 ### サポートされるコンポーネント型
 現在サポートされているコンポーネント：
-- Position, Velocity, Camera
+- Position, Camera
 - AIVision, AIRoaming, AIChasing
 - SpriteRender, GridElement
 - NullComponent (Operator, BlockView, BlockPass)

@@ -49,7 +49,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 
 	// リフレクションを使って全コンポーネント型を自動登録
 	r.registerComponent(reflect.TypeOf(&gc.Position{}), components.Position, r.extractPosition, r.restorePosition, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Velocity{}), components.Velocity, r.extractVelocity, r.restoreVelocity, nil)
 	r.registerComponent(reflect.TypeOf(&gc.AIVision{}), components.AIVision, r.extractAIVision, r.restoreAIVision, r.resolveAIVisionRefs)
 	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, nil)
 	r.registerComponent(reflect.TypeOf(&gc.AIChasing{}), components.AIChasing, r.extractAIChasing, r.restoreAIChasing, nil)
@@ -247,23 +246,6 @@ func (r *ComponentRegistry) restorePosition(world w.World, entity ecs.Entity, da
 		return fmt.Errorf("invalid Position data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Position, &pos)
-	return nil
-}
-
-func (r *ComponentRegistry) extractVelocity(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Velocity) {
-		return nil, false
-	}
-	vel := world.Components.Velocity.Get(entity).(*gc.Velocity)
-	return *vel, true
-}
-
-func (r *ComponentRegistry) restoreVelocity(world w.World, entity ecs.Entity, data interface{}) error {
-	vel, ok := data.(gc.Velocity)
-	if !ok {
-		return fmt.Errorf("invalid Velocity data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Velocity, &vel)
 	return nil
 }
 

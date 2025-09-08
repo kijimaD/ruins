@@ -43,12 +43,6 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	for _, visionRange := range data.VisionRanges {
 		overlay.drawVisionCircle(screen, float32(visionRange.ScreenX), float32(visionRange.ScreenY), visionRange.ScaledRadius)
 	}
-
-	// 移動方向を描画
-	for _, movementDir := range data.MovementDirections {
-		overlay.drawDirectionArrow(screen, movementDir.ScreenX, movementDir.ScreenY,
-			movementDir.Angle, movementDir.Speed, movementDir.CameraScale)
-	}
 }
 
 // drawVisionCircle は指定した位置と半径で視界円を描画する

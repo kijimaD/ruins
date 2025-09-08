@@ -93,10 +93,6 @@ func TestComponentRegistry(t *testing.T) {
 	assert.True(t, exists)
 	assert.Equal(t, "Position", positionInfo.Name)
 
-	velocityInfo, exists := registry.GetTypeInfoByName("Velocity")
-	assert.True(t, exists)
-	assert.Equal(t, "Velocity", velocityInfo.Name)
-
 	// 存在しない型
 	_, exists = registry.GetTypeInfoByName("NonExistent")
 	assert.False(t, exists)
@@ -119,12 +115,6 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()
 	player.AddComponent(world.Components.Position, &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(200)})
-	player.AddComponent(world.Components.Velocity, &gc.Velocity{
-		Angle:        45.0,
-		Speed:        2.5,
-		MaxSpeed:     5.0,
-		ThrottleMode: gc.ThrottleModeFront,
-	})
 	player.AddComponent(world.Components.Operator, &gc.Operator{})
 
 	// NPCエンティティを作成
@@ -165,14 +155,6 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 		assert.Equal(t, gc.Pixel(100), pos.X)
 		assert.Equal(t, gc.Pixel(200), pos.Y)
 
-		// Velocityをチェック
-		if entity.HasComponent(newWorld.Components.Velocity) {
-			vel := newWorld.Components.Velocity.Get(entity).(*gc.Velocity)
-			assert.Equal(t, 45.0, vel.Angle)
-			assert.Equal(t, 2.5, vel.Speed)
-			assert.Equal(t, 5.0, vel.MaxSpeed)
-			assert.Equal(t, gc.ThrottleModeFront, vel.ThrottleMode)
-		}
 	}))
 
 	// エンティティの検証

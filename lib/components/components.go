@@ -36,7 +36,6 @@ type GameComponentList struct {
 	AIChasing    *AIChasing
 	Camera       *Camera
 	Warp         *Warp
-	Velocity     *Velocity
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *SpriteRender
@@ -93,7 +92,6 @@ type Components struct {
 	AIChasing    *ecs.SliceComponent
 	Camera       *ecs.SliceComponent
 	Warp         *ecs.SliceComponent
-	Velocity     *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
@@ -150,7 +148,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.AIChasing = manager.NewSliceComponent()
 	c.Camera = manager.NewSliceComponent()
 	c.Warp = manager.NewSliceComponent()
-	c.Velocity = manager.NewSliceComponent()
 	c.Position = manager.NewSliceComponent()
 	c.GridElement = manager.NewSliceComponent()
 	c.SpriteRender = manager.NewSliceComponent()

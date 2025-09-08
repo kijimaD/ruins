@@ -75,18 +75,6 @@ func CollisionSystem(world w.World) {
 					Encounter("敵と遭遇した。").
 					Log()
 
-				// 衝突した両エンティティの移動を停止
-				if playerVelocity := world.Components.Velocity.Get(playerEntity); playerVelocity != nil {
-					velocity := playerVelocity.(*gc.Velocity)
-					velocity.ThrottleMode = gc.ThrottleModeNope
-					velocity.Speed = 0
-				}
-				if enemyVelocity := world.Components.Velocity.Get(enemyEntity); enemyVelocity != nil {
-					velocity := enemyVelocity.(*gc.Velocity)
-					velocity.ThrottleMode = gc.ThrottleModeNope
-					velocity.Speed = 0
-				}
-
 				return // 1回の衝突処理で終了
 			}
 		}))

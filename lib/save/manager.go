@@ -179,11 +179,6 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "Velocity":
-			world.Manager.Join(world.Components.Velocity).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
 		case ComponentAIVision:
 			world.Manager.Join(world.Components.AIVision).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
