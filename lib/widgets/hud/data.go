@@ -10,8 +10,7 @@ type Data struct {
 
 // GameInfoData はゲーム基本情報のデータ
 type GameInfoData struct {
-	FloorNumber int     // フロア番号
-	PlayerSpeed float64 // プレイヤー速度
+	FloorNumber int // フロア番号
 }
 
 // MinimapData はミニマップ描画に必要なデータ

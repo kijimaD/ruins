@@ -89,19 +89,19 @@ func (l *Level) Height() gc.Pixel {
 }
 
 // GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
-func (g *Dungeon) GetStateEvent() StateEvent {
-	return g.stateEvent
+func (d *Dungeon) GetStateEvent() StateEvent {
+	return d.stateEvent
 }
 
 // SetStateEvent はStateEventを設定する
-func (g *Dungeon) SetStateEvent(event StateEvent) {
-	g.stateEvent = event
+func (d *Dungeon) SetStateEvent(event StateEvent) {
+	d.stateEvent = event
 }
 
 // ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
-func (g *Dungeon) ConsumeStateEvent() StateEvent {
-	event := g.stateEvent
-	g.stateEvent = StateEventNone
+func (d *Dungeon) ConsumeStateEvent() StateEvent {
+	event := d.stateEvent
+	d.stateEvent = StateEventNone
 	return event
 }
 

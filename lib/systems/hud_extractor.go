@@ -29,12 +29,8 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	floorNumber := gameResources.Depth
 
-	// プレイヤーの速度情報を取得（ターンベースプレイヤーは速度0固定）
-	var playerSpeed float64 = 0.0
-
 	return hud.GameInfoData{
 		FloorNumber: floorNumber,
-		PlayerSpeed: playerSpeed,
 	}
 }
 

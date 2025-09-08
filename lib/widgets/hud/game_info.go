@@ -33,7 +33,4 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 
 	// フロア情報を描画
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), 0, 200)
-
-	// プレイヤーの速度情報を描画
-	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("speed: %.2f", data.PlayerSpeed), 0, 220)
 }
