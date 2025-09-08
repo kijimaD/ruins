@@ -14,7 +14,6 @@ type GameComponentList struct {
 	Name        *Name
 	Description *Description
 	Job         *Job
-	Render      *Render
 
 	// item ================
 	Item             *Item
@@ -307,17 +306,6 @@ type CommandTable struct {
 // DropTable はドロップテーブル名
 type DropTable struct {
 	Name string
-}
-
-// Render は描画対象物。
-// FIXME: 表示する方法を統一する...
-// resource のスプライトシートから画像を特定するために必要な情報。
-// Renderはスプライトシートの情報はresourceに持たせ、特定に必要な
-// 情報だけ保持している。
-// また、場面ごとにフィールドを分けて保持している。
-//
-// SpriteRenderはSpriteを内部に持っていて初期化が面倒な面がある。
-type Render struct {
 }
 
 // SheetImage はシート画像情報
