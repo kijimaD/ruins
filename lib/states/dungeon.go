@@ -66,6 +66,9 @@ func (st *DungeonState) OnStart(world w.World) {
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
 
+	// プレイヤーのタイル状態をリセット（新しい階のために）
+	gameResources.ResetPlayerTileState()
+
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()
 
@@ -112,6 +115,11 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
+	}
+
+	// Enterキーでワープ実行
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		gs.HandleWarpInput(world)
 	}
 
 	cfg := config.MustGet()

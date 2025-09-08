@@ -4,6 +4,7 @@ import (
 	"math"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/mathutil"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -44,16 +45,26 @@ func MoveSystem(world w.World) {
 		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 		tileEntity := gameResources.Level.AtEntity(pos.X, pos.Y)
 
+		// ワープホールの処理
 		if tileEntity.HasComponent(world.Components.Warp) {
 			warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
 
 			switch warp.Mode {
 			case gc.WarpModeNext:
+				gamelog.New(gamelog.FieldLog).
+					Append("進行ゲートを発見した。").
+					Log()
 				gameResources.SetStateEvent(resources.StateEventWarpNext)
 			case gc.WarpModeEscape:
+				gamelog.New(gamelog.FieldLog).
+					Append("脱出ゲートを発見した。").
+					Log()
 				gameResources.SetStateEvent(resources.StateEventWarpEscape)
 			}
 		}
+
+		// 同じタイルにあるアイテムをチェック
+		checkTileItems(world, pos)
 	}))
 }
 
@@ -166,4 +177,33 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 	if pos.Y <= padding {
 		pos.Y = padding + 1
 	}
+}
+
+// checkTileItems は指定された位置にあるアイテムをチェックしてメッセージを表示する
+func checkTileItems(world w.World, playerPos *gc.Position) {
+	playerTileX := int(playerPos.X) / 32 // TileSizeは32固定
+	playerTileY := int(playerPos.Y) / 32
+
+	// プレイヤーと同じタイルにあるアイテムを探す
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Item,
+		world.Components.Name,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		nameComp := world.Components.Name.Get(entity).(*gc.Name)
+
+		// タイル座標をピクセル座標に変換してチェック
+		itemTileX := int(gridElement.X)
+		itemTileY := int(gridElement.Y)
+
+		if itemTileX == playerTileX && itemTileY == playerTileY {
+			// アイテムを発見したメッセージを表示
+			gamelog.New(gamelog.FieldLog).
+				ItemName(nameComp.Name).
+				Append("を発見した。").
+				Log()
+		}
+	}))
+
 }
