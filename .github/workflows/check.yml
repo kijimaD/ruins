@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set up
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         id: go
       - name: check out
         uses: actions/checkout@v5
@@ -68,7 +68,7 @@ jobs:
           make test
           make vrt
       - name: set up
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
       - name: lint
         run: make tools-install lint # buildできる環境でないと、エラーになる。jobを分けるのが望ましいが、面倒なのでここに書く
       - name: upload result
