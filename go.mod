@@ -9,7 +9,7 @@ require (
 	github.com/hajimehoshi/ebiten/v2 v2.8.8
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	github.com/urfave/cli/v2 v2.27.7
 	github.com/x-hgg-x/goecs/v2 v2.0.5
 	github.com/yourbasic/bit v0.0.0-20180313074424-45a4409f4082
