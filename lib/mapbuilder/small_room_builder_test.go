@@ -12,8 +12,8 @@ func TestSmallRoomBuilder(t *testing.T) {
 
 	t.Run("SmallRoomBuilderが正しいビルダーチェーンを作成", func(t *testing.T) {
 		t.Parallel()
-		width := gc.Row(20)
-		height := gc.Col(20)
+		width := gc.Tile(20)
+		height := gc.Tile(20)
 
 		chain := NewSmallRoomBuilder(width, height, 12345)
 
@@ -40,8 +40,8 @@ func TestSmallRoomBuilder(t *testing.T) {
 
 	t.Run("SmallRoomBuilderでマップを生成", func(t *testing.T) {
 		t.Parallel()
-		width := gc.Row(30)
-		height := gc.Col(30)
+		width := gc.Tile(30)
+		height := gc.Tile(30)
 
 		chain := NewSmallRoomBuilder(width, height, 12345)
 
@@ -76,8 +76,8 @@ func TestSmallRoomBuilder(t *testing.T) {
 
 	t.Run("生成された部屋が有効な範囲内にある", func(t *testing.T) {
 		t.Parallel()
-		width := gc.Row(25)
-		height := gc.Col(25)
+		width := gc.Tile(25)
+		height := gc.Tile(25)
 
 		chain := NewSmallRoomBuilder(width, height, 12345)
 		chain.Build()
@@ -97,8 +97,8 @@ func TestSmallRoomBuilder(t *testing.T) {
 
 	t.Run("生成された部屋の内部が床タイルになっている", func(t *testing.T) {
 		t.Parallel()
-		width := gc.Row(20)
-		height := gc.Col(20)
+		width := gc.Tile(20)
+		height := gc.Tile(20)
 
 		chain := NewSmallRoomBuilder(width, height, 12345)
 		chain.Build()
@@ -125,8 +125,8 @@ func TestSmallRoomBuilder(t *testing.T) {
 		t.Parallel()
 		testCases := []struct {
 			name   string
-			width  gc.Row
-			height gc.Col
+			width  gc.Tile
+			height gc.Tile
 		}{
 			{"小さいマップ", 10, 10},
 			{"中サイズマップ", 30, 30},
@@ -155,8 +155,8 @@ func TestSmallRoomBuilder(t *testing.T) {
 
 	t.Run("廊下が生成されている", func(t *testing.T) {
 		t.Parallel()
-		width := gc.Row(30)
-		height := gc.Col(30)
+		width := gc.Tile(30)
+		height := gc.Tile(30)
 
 		chain := NewSmallRoomBuilder(width, height, 12345)
 		chain.Build()

@@ -9,7 +9,7 @@ import (
 func TestNewRandomBuilder(t *testing.T) {
 	t.Parallel()
 
-	width, height := gc.Row(20), gc.Col(20)
+	width, height := gc.Tile(20), gc.Tile(20)
 
 	// 同じシードで複数回実行して同じビルダータイプが選択されることを確認
 	seed := uint64(12345)
@@ -43,7 +43,7 @@ func TestNewRandomBuilder(t *testing.T) {
 func TestNewRandomBuilderVariety(t *testing.T) {
 	t.Parallel()
 
-	width, height := gc.Row(20), gc.Col(20)
+	width, height := gc.Tile(20), gc.Tile(20)
 
 	// 異なるシードで実行して、少なくとも異なる結果が出ることを確認
 	results := make(map[int]int) // 部屋数 -> 出現回数
@@ -86,8 +86,8 @@ func TestNewRandomBuilderBuildsSuccessfully(t *testing.T) {
 	// 様々なマップサイズでテスト
 	testCases := []struct {
 		name   string
-		width  gc.Row
-		height gc.Col
+		width  gc.Tile
+		height gc.Tile
 		seed   uint64
 	}{
 		{"小さいマップ", 10, 10, 111},
@@ -151,7 +151,7 @@ func TestRandomBuilderTypes(t *testing.T) {
 	// 特定のシードで特定のビルダータイプが選ばれることを確認
 	// これによりランダム性が正しく機能していることを検証
 
-	width, height := gc.Row(20), gc.Col(20)
+	width, height := gc.Tile(20), gc.Tile(20)
 
 	// 複数のシードでテストして、異なるタイプのビルダーが選ばれることを確認
 	seedResults := make(map[uint64]int) // seed -> 部屋数

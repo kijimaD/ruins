@@ -24,9 +24,9 @@ type Dungeon struct {
 // Level は現在の階層
 type Level struct {
 	// 横のタイル数
-	TileWidth gc.Row
+	TileWidth gc.Tile
 	// 縦のタイル数
-	TileHeight gc.Col
+	TileHeight gc.Tile
 	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
 	TileSize gc.Pixel
 	// タイルエンティティ群
@@ -37,7 +37,7 @@ type Level struct {
 }
 
 // XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
-func (l *Level) XYTileIndex(tx gc.Row, ty gc.Col) TileIdx {
+func (l *Level) XYTileIndex(tx gc.Tile, ty gc.Tile) TileIdx {
 	return TileIdx(int(ty)*int(l.TileWidth) + int(tx))
 }
 
@@ -51,8 +51,8 @@ func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
 
 // AtEntity はxy座標から、該当するエンティティを求める
 func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
-	tx := gc.Row(int(x) / int(l.TileSize))
-	ty := gc.Col(int(y) / int(l.TileSize))
+	tx := gc.Tile(int(x) / int(l.TileSize))
+	ty := gc.Tile(int(y) / int(l.TileSize))
 	idx := l.XYTileIndex(tx, ty)
 
 	return l.Entities[idx]

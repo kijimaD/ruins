@@ -14,10 +14,10 @@ func (b BigRoomBuilder) BuildInitial(buildData *BuilderMap) {
 	// 外周に1タイル分の壁を残す
 	margin := 2
 	room := Rect{
-		X1: gc.Row(margin),
-		Y1: gc.Col(margin),
-		X2: gc.Row(int(buildData.Level.TileWidth) - margin - 1),
-		Y2: gc.Col(int(buildData.Level.TileHeight) - margin - 1),
+		X1: gc.Tile(margin),
+		Y1: gc.Tile(margin),
+		X2: gc.Tile(int(buildData.Level.TileWidth) - margin - 1),
+		Y2: gc.Tile(int(buildData.Level.TileHeight) - margin - 1),
 	}
 
 	// 部屋をリストに追加
@@ -116,7 +116,7 @@ func (b BigRoomDraw) applyPillars(buildData *BuilderMap) {
 		// 規則的に柱を配置
 		for x := startX; x < int(room.X2); x += spacing + 1 {
 			for y := startY; y < int(room.Y2); y += spacing + 1 {
-				idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+				idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 				buildData.Tiles[idx] = TileWall
 			}
 		}
@@ -136,7 +136,7 @@ func (b BigRoomDraw) applyObstacles(buildData *BuilderMap) {
 			x := int(room.X1) + 1 + buildData.RandomSource.Intn(roomWidth-2)
 			y := int(room.Y1) + 1 + buildData.RandomSource.Intn(roomHeight-2)
 
-			idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 			buildData.Tiles[idx] = TileWall
 		}
 	}
@@ -150,7 +150,7 @@ func (b BigRoomDraw) applyMazePattern(buildData *BuilderMap) {
 			for y := int(room.Y1) + 1; y < int(room.Y2); y++ {
 				// 縦の壁を配置（ランダムに開口部を作る）
 				if buildData.RandomSource.Float64() > 0.3 {
-					idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+					idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 					buildData.Tiles[idx] = TileWall
 				}
 			}
@@ -160,7 +160,7 @@ func (b BigRoomDraw) applyMazePattern(buildData *BuilderMap) {
 			for x := int(room.X1) + 1; x < int(room.X2); x++ {
 				// 横の壁を配置（ランダムに開口部を作る）
 				if buildData.RandomSource.Float64() > 0.3 {
-					idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+					idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 					buildData.Tiles[idx] = TileWall
 				}
 			}
@@ -186,7 +186,7 @@ func (b BigRoomDraw) applyCenterPlatform(buildData *BuilderMap) {
 					y := centerY + dy
 					if x >= int(room.X1) && x <= int(room.X2) &&
 						y >= int(room.Y1) && y <= int(room.Y2) {
-						idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+						idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 						// 外周は壁、内部は床のまま
 						if distance >= (platformSize-1)*(platformSize-1) {
 							buildData.Tiles[idx] = TileWall

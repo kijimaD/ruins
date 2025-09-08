@@ -131,8 +131,8 @@ func tryMove(world w.World, entity ecs.Entity, angle float64, distance float64) 
 					return
 				}
 				objectSprite := objectSpriteSheet.Sprites[objectSpriteRender.SpriteNumber]
-				x := int(objectGrid.Row) * sprite.Width
-				y := int(objectGrid.Col) * sprite.Height
+				x := int(objectGrid.X) * sprite.Width
+				y := int(objectGrid.Y) * sprite.Height
 				objectx1 := float64(x)
 				objectx2 := float64(x + objectSprite.Width)
 				objecty1 := float64(y)

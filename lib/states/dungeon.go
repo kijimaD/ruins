@@ -48,8 +48,10 @@ func (st *DungeonState) OnResume(_ w.World) {}
 func (st *DungeonState) OnStart(world w.World) {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
-	baseImage = ebiten.NewImage(screenWidth, screenHeight)
-	baseImage.Fill(color.Black)
+	if screenWidth > 0 && screenHeight > 0 {
+		baseImage = ebiten.NewImage(screenWidth, screenHeight)
+		baseImage.Fill(color.Black)
+	}
 
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Depth = st.Depth
@@ -101,9 +103,10 @@ func (st *DungeonState) OnStop(world w.World) {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) es.Transition {
-	gs.PlayerInputSystem(world)
-	gs.AIInputSystem(world)
-	gs.MoveSystem(world)
+	// タイルベース移動システム
+	gs.TileInputSystem(world)
+	gs.TileMoveSystem(world)
+	gs.CameraSystem(world) // 移動処理の後にカメラ更新
 	gs.CollisionSystem(world)
 	gs.ItemCollectionSystem(world)
 

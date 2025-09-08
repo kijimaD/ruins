@@ -58,10 +58,10 @@ var (
 // ================
 
 // SpawnFloor はフィールド上に表示される床を生成する
-func SpawnFloor(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
+func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
-		GridElement: &gc.GridElement{Row: x, Col: y},
+		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
 			SpriteNumber: spriteNumberFloor,
@@ -73,10 +73,10 @@ func SpawnFloor(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
 }
 
 // SpawnFieldWallWithSprite は指定されたスプライト番号でフィールド上に表示される壁を生成する
-func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber int) (ecs.Entity, error) {
+func SpawnFieldWallWithSprite(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
-		GridElement: &gc.GridElement{Row: x, Col: y},
+		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
 			SpriteNumber: spriteNumber,
@@ -90,7 +90,7 @@ func SpawnFieldWallWithSprite(world w.World, x gc.Row, y gc.Col, spriteNumber in
 }
 
 // SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
-func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
+func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	_, err := SpawnFloor(world, x, y) // 下敷き描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
@@ -98,7 +98,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
 
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
-		GridElement: &gc.GridElement{Row: x, Col: y},
+		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
 			SpriteNumber: spriteNumberWarpNext,
@@ -111,7 +111,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
 }
 
 // SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
-func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error) {
+func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	_, err := SpawnFloor(world, x, y) // 下敷き描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
@@ -119,7 +119,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error)
 
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
-		GridElement: &gc.GridElement{Row: x, Col: y},
+		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
 			SpriteNumber: spriteNumberWarpEscape,
@@ -135,15 +135,15 @@ func SpawnFieldWarpEscape(world w.World, x gc.Row, y gc.Col) (ecs.Entity, error)
 // TODO: エンティティが重複しているときにエラーを返す。
 // TODO: 置けるタイル以外が指定されるとエラーを返す。
 // デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
-func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) error {
+func SpawnOperator(world w.World, tileX int, tileY int) error {
 	{
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
-			Position: &gc.Position{X: x, Y: y},
-			Velocity: &gc.Velocity{
-				MaxSpeed: playerMaxSpeed,
-			},
-			Operator: &gc.Operator{},
+			GridElement: &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)},
+			TurnBased:   &gc.TurnBased{},
+			WantsToMove: &gc.WantsToMove{Direction: gc.DirectionNone},
+			Player:      &gc.Player{},
+			Operator:    &gc.Operator{},
 			SpriteRender: &gc.SpriteRender{
 				Name:         "field",
 				SpriteNumber: spriteNumberPlayer,
@@ -170,8 +170,8 @@ func SpawnOperator(world w.World, x gc.Pixel, y gc.Pixel) error {
 		}
 
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
-			Position: &gc.Position{X: x, Y: y},
-			Camera:   &gc.Camera{Scale: scale, ScaleTo: scaleTo},
+			GridElement: &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)},
+			Camera:      &gc.Camera{Scale: scale, ScaleTo: scaleTo},
 		})
 		entities.AddEntities(world, componentList)
 	}
@@ -377,7 +377,7 @@ func SpawnAllCards(world w.World) error {
 }
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
-func SpawnFieldItem(world w.World, itemName string, x gc.Row, y gc.Col) (ecs.Entity, error) {
+func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	_, err := SpawnFloor(world, x, y) // 下敷きの床を描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
@@ -390,7 +390,7 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Row, y gc.Col) (ecs.Ent
 	}
 
 	// フィールド表示用のコンポーネントを追加
-	item.AddComponent(world.Components.GridElement, &gc.GridElement{Row: x, Col: y})
+	item.AddComponent(world.Components.GridElement, &gc.GridElement{X: x, Y: y})
 	item.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
 		Name:         "field", // フィールドスプライトシートを使用
 		SpriteNumber: spriteNumberFieldItem,

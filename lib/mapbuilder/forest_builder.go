@@ -32,10 +32,10 @@ func (f ForestBuilder) BuildInitial(buildData *BuilderMap) {
 		radius := math.Min(float64(clearingWidth), float64(clearingHeight)) / 2.0
 
 		clearing := Rect{
-			X1: gc.Row(centerX - int(radius)),
-			Y1: gc.Col(centerY - int(radius)),
-			X2: gc.Row(centerX + int(radius)),
-			Y2: gc.Col(centerY + int(radius)),
+			X1: gc.Tile(centerX - int(radius)),
+			Y1: gc.Tile(centerY - int(radius)),
+			X2: gc.Tile(centerX + int(radius)),
+			Y2: gc.Tile(centerY + int(radius)),
 		}
 		buildData.Rooms = append(buildData.Rooms, clearing)
 	}
@@ -88,7 +88,7 @@ func (f ForestTrees) BuildMeta(buildData *BuilderMap) {
 	// 森全体に木を配置（60%の密度）
 	for x := 1; x < width-1; x++ {
 		for y := 1; y < height-1; y++ {
-			idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
 			if buildData.Tiles[idx] == TileFloor {
 				// 空き地の近くでは木の密度を下げる
@@ -149,7 +149,7 @@ func (f ForestTrees) placeLargeTree(buildData *BuilderMap, centerX, centerY int)
 			x, y := centerX+dx, centerY+dy
 
 			if x >= 0 && x < width && y >= 0 && y < height {
-				idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+				idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
 				if buildData.Tiles[idx] == TileFloor && buildData.RandomSource.Float64() < 0.7 {
 					buildData.Tiles[idx] = TileWall
@@ -232,7 +232,7 @@ func (f ForestPaths) createNaturalPath(buildData *BuilderMap, room1, room2 Rect)
 			for dy := -1; dy <= 1; dy++ {
 				nx, ny := x+dx, y+dy
 				if nx >= 0 && nx < width && ny >= 0 && ny < height {
-					idx := buildData.Level.XYTileIndex(gc.Row(nx), gc.Col(ny))
+					idx := buildData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 
 					// 70%の確率で通路を作成（自然な感じに）
 					if buildData.RandomSource.Float64() < 0.7 {
@@ -268,7 +268,7 @@ func (f ForestWildlife) BuildMeta(buildData *BuilderMap) {
 				if nx >= 0 && nx < width && ny >= 0 && ny < height {
 					distance := math.Sqrt(float64(dx*dx + dy*dy))
 					if distance <= float64(radius) {
-						idx := buildData.Level.XYTileIndex(gc.Row(nx), gc.Col(ny))
+						idx := buildData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 						buildData.Tiles[idx] = TileFloor
 					}
 				}
@@ -278,7 +278,7 @@ func (f ForestWildlife) BuildMeta(buildData *BuilderMap) {
 }
 
 // NewForestBuilder は森ビルダーを作成する
-func NewForestBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func NewForestBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(ForestBuilder{})
 	chain.With(ForestTerrain{})           // 基本地形を生成

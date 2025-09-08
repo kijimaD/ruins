@@ -1,0 +1,61 @@
+package systems
+
+import (
+	gc "github.com/kijimaD/ruins/lib/components"
+	w "github.com/kijimaD/ruins/lib/world"
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
+
+// TileMoveSystem はタイルベース移動処理を行う
+func TileMoveSystem(world w.World) {
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.TurnBased,
+		world.Components.WantsToMove,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		wants := world.Components.WantsToMove.Get(entity).(*gc.WantsToMove)
+
+		// 移動意図がない場合はスキップ
+		if wants.Direction == gc.DirectionNone {
+			return
+		}
+
+		// 移動先を計算
+		deltaX, deltaY := wants.Direction.GetDelta()
+		newX := int(gridElement.X) + deltaX
+		newY := int(gridElement.Y) + deltaY
+
+		// 移動可能かチェック
+		if canMoveTo(world, newX, newY, entity) {
+			gridElement.X = gc.Tile(newX)
+			gridElement.Y = gc.Tile(newY)
+		}
+
+		// 移動意図をクリア
+		wants.Direction = gc.DirectionNone
+	}))
+}
+
+// canMoveTo は指定位置に移動可能かチェックする
+func canMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
+	// 他のエンティティとの衝突チェック
+	canMove := true
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.BlockPass,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		// 自分自身は除外
+		if entity == movingEntity {
+			return
+		}
+
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
+			canMove = false
+		}
+	}))
+
+	// TODO: マップの境界チェックやタイルの通行可否チェックを追加
+	return canMove
+}

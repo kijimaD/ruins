@@ -46,8 +46,8 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 			// 中心から上下左右にoffsetして複数のL字型廊下を生成
 			for offsetX := -(corridorWidth / 2); offsetX <= corridorWidth/2; offsetX++ {
 				for offsetY := -(corridorWidth / 2); offsetY <= corridorWidth/2; offsetY++ {
-					startPoint := point{x: centerX + gc.Row(offsetX), y: centerY + gc.Col(offsetY)}
-					endPoint := point{x: destCenterX + gc.Row(offsetX), y: destCenterY + gc.Col(offsetY)}
+					startPoint := point{x: centerX + gc.Tile(offsetX), y: centerY + gc.Tile(offsetY)}
+					endPoint := point{x: destCenterX + gc.Tile(offsetX), y: destCenterY + gc.Tile(offsetY)}
 					corridorPoints := createLShapedCorridor(startPoint, endPoint)
 					points = append(points, corridorPoints...)
 				}
@@ -67,8 +67,8 @@ func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
 }
 
 type point struct {
-	x gc.Row
-	y gc.Col
+	x gc.Tile
+	y gc.Tile
 }
 
 // createLShapedCorridor は横と縦のみのL字型廊下を生成する

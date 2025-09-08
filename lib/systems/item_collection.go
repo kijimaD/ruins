@@ -30,8 +30,8 @@ func ItemCollectionSystem(world w.World) {
 			// グリッド位置からピクセル位置を計算
 			gridElement := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
 			itemPixelPos := &gc.Position{
-				X: gc.Pixel(int(gridElement.Row)*int(consts.TileSize) + int(consts.TileSize)/2), // タイル中央
-				Y: gc.Pixel(int(gridElement.Col)*int(consts.TileSize) + int(consts.TileSize)/2), // タイル中央
+				X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2), // タイル中央
+				Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2), // タイル中央
 			}
 
 			// 衝突判定（共通関数を使用）

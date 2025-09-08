@@ -42,6 +42,8 @@ type GameComponentList struct {
 	SpriteRender *SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
+	TurnBased    *TurnBased
+	WantsToMove  *WantsToMove
 
 	// member ================
 	Player      *Player
@@ -97,6 +99,8 @@ type Components struct {
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
+	TurnBased    *ecs.NullComponent
+	WantsToMove  *ecs.SliceComponent
 
 	// member ================
 	Player       *ecs.NullComponent
@@ -152,6 +156,8 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.SpriteRender = manager.NewSliceComponent()
 	c.BlockView = manager.NewNullComponent()
 	c.BlockPass = manager.NewNullComponent()
+	c.TurnBased = manager.NewNullComponent()
+	c.WantsToMove = manager.NewSliceComponent()
 
 	// member
 	c.Player = manager.NewNullComponent()

@@ -23,10 +23,10 @@ func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
 		w := 2 + buildData.RandomSource.Intn(8)
 		h := 2 + buildData.RandomSource.Intn(8)
 		newRoom := Rect{
-			X1: gc.Row(x),
-			X2: gc.Row(mathutil.Min(x+w, int(buildData.Level.TileWidth))),
-			Y1: gc.Col(y),
-			Y2: gc.Col(mathutil.Min(y+h, int(buildData.Level.TileHeight))),
+			X1: gc.Tile(x),
+			X2: gc.Tile(mathutil.Min(x+w, int(buildData.Level.TileWidth))),
+			Y1: gc.Tile(y),
+			Y2: gc.Tile(mathutil.Min(y+h, int(buildData.Level.TileHeight))),
 		}
 		rooms = append(rooms, newRoom)
 	}

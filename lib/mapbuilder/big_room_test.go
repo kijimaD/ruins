@@ -9,7 +9,7 @@ import (
 func TestBigRoomBuilder(t *testing.T) {
 	t.Parallel()
 
-	width, height := gc.Row(20), gc.Col(20)
+	width, height := gc.Tile(20), gc.Tile(20)
 	seed := uint64(12345)
 
 	chain := NewBigRoomBuilder(width, height, seed)
@@ -118,7 +118,7 @@ func TestBigRoomBuilderReproducibility(t *testing.T) {
 	t.Parallel()
 
 	// 同じシードで複数回生成して同じ結果になることを確認
-	width, height := gc.Row(15), gc.Col(15)
+	width, height := gc.Tile(15), gc.Tile(15)
 	seed := uint64(99999)
 
 	// 1回目の生成
@@ -158,7 +158,7 @@ func TestBigRoomBuilderBoundaries(t *testing.T) {
 	t.Parallel()
 
 	// 境界の処理が正しいかを確認
-	width, height := gc.Row(10), gc.Col(10)
+	width, height := gc.Tile(10), gc.Tile(10)
 	seed := uint64(11111)
 
 	chain := NewBigRoomBuilder(width, height, seed)
@@ -167,13 +167,13 @@ func TestBigRoomBuilderBoundaries(t *testing.T) {
 	// マップの境界が壁になっていることを確認
 	for x := 0; x < int(width); x++ {
 		// 上端
-		idx := chain.BuildData.Level.XYTileIndex(gc.Row(x), gc.Col(0))
+		idx := chain.BuildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(0))
 		if chain.BuildData.Tiles[idx] != TileWall {
 			t.Errorf("上端の境界[%d,0]が壁になっていません: %v", x, chain.BuildData.Tiles[idx])
 		}
 
 		// 下端
-		idx = chain.BuildData.Level.XYTileIndex(gc.Row(x), height-1)
+		idx = chain.BuildData.Level.XYTileIndex(gc.Tile(x), height-1)
 		if chain.BuildData.Tiles[idx] != TileWall {
 			t.Errorf("下端の境界[%d,%d]が壁になっていません: %v", x, height-1, chain.BuildData.Tiles[idx])
 		}
@@ -181,13 +181,13 @@ func TestBigRoomBuilderBoundaries(t *testing.T) {
 
 	for y := 0; y < int(height); y++ {
 		// 左端
-		idx := chain.BuildData.Level.XYTileIndex(gc.Row(0), gc.Col(y))
+		idx := chain.BuildData.Level.XYTileIndex(gc.Tile(0), gc.Tile(y))
 		if chain.BuildData.Tiles[idx] != TileWall {
 			t.Errorf("左端の境界[0,%d]が壁になっていません: %v", y, chain.BuildData.Tiles[idx])
 		}
 
 		// 右端
-		idx = chain.BuildData.Level.XYTileIndex(width-1, gc.Col(y))
+		idx = chain.BuildData.Level.XYTileIndex(width-1, gc.Tile(y))
 		if chain.BuildData.Tiles[idx] != TileWall {
 			t.Errorf("右端の境界[%d,%d]が壁になっていません: %v", width-1, y, chain.BuildData.Tiles[idx])
 		}

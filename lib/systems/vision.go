@@ -50,16 +50,22 @@ func ClearVisionCaches() {
 // VisionSystem はタイルごとの視界を管理し、暗闇を描画する
 func VisionSystem(world w.World, screen *ebiten.Image) {
 	// プレイヤー位置を取得
-	var playerPos *gc.Position
+	var playerGridElement *gc.GridElement
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerPos = world.Components.Position.Get(entity).(*gc.Position)
+		playerGridElement = world.Components.GridElement.Get(entity).(*gc.GridElement)
 	}))
 
-	if playerPos == nil {
+	if playerGridElement == nil {
 		return
+	}
+
+	// タイル座標をピクセル座標に変換
+	playerPos := &gc.Position{
+		X: gc.Pixel(int(playerGridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
+		Y: gc.Pixel(int(playerGridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
 	}
 
 	// 移動ごとの視界更新判定
@@ -81,7 +87,8 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		// 視界内のタイルを探索済みとしてマーク
 		for _, tileData := range visibilityData {
 			if tileData.Visible {
-				tileKey := fmt.Sprintf("%d,%d", tileData.Row, tileData.Col)
+				// X,Y形式で統一（他の箇所と形式を合わせる）
+				tileKey := fmt.Sprintf("%d,%d", tileData.Col, tileData.Row)
 				gameResources.ExploredTiles[tileKey] = true
 			}
 		}
@@ -157,8 +164,8 @@ func calculateTileVisibilityWithDistance(world w.World, playerX, playerY, radius
 				darkness := calculateDarknessByDistance(distanceToTile, float64(radius))
 
 				visibilityMap[tileKey] = TileVisibility{
-					Row:      tileX,
-					Col:      tileY,
+					Row:      tileY,
+					Col:      tileX,
 					Visible:  visible,
 					Distance: distanceToTile,
 					Darkness: darkness,
@@ -295,12 +302,18 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
-	var cameraScale float64
+	var cameraScale float64 = 1.0 // デフォルトスケール
+
+	// カメラのGridElementから位置を取得
 	world.Manager.Join(
 		world.Components.Camera,
-		world.Components.Position,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		cameraPos = *world.Components.Position.Get(entity).(*gc.Position)
+		cameraGridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		cameraPos = gc.Position{
+			X: gc.Pixel(int(cameraGridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
+			Y: gc.Pixel(int(cameraGridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
+		}
 		camera := world.Components.Camera.Get(entity).(*gc.Camera)
 		cameraScale = camera.Scale
 	}))
@@ -374,6 +387,11 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 
 // initializeDarknessCache は段階的暗闃用の画像キャッシュを初期化する
 func initializeDarknessCache(tileSize int) {
+	// tileSizeが0以下の場合は初期化しない
+	if tileSize <= 0 {
+		return
+	}
+
 	// より多くの暗闇レベルの画像を作成（10段階）
 	darknessCacheImages = make([]*ebiten.Image, 11)
 
@@ -437,7 +455,7 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 		world.Components.BlockView,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		if int(grid.Row) == tileX && int(grid.Col) == tileY {
+		if int(grid.X) == tileX && int(grid.Y) == tileY {
 			blocked = true
 		}
 	}))

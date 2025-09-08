@@ -22,7 +22,7 @@ func (pf *PathFinder) IsWalkable(x, y int) bool {
 		return false
 	}
 
-	idx := pf.buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+	idx := pf.buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 	tile := pf.buildData.Tiles[idx]
 
 	// 床、ワープタイルは歩行可能
@@ -142,7 +142,7 @@ func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) Ma
 	// 全タイルをスキャンしてワープポータルと脱出ポータルを見つける
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			idx := pf.buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+			idx := pf.buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 			tile := pf.buildData.Tiles[idx]
 
 			switch tile {

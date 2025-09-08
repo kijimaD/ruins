@@ -19,10 +19,10 @@ func TestItemCollectionSystem(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーを配置
-	require.NoError(t, worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100)))
+	require.NoError(t, worldhelper.SpawnOperator(world, 3, 3))
 
 	// フィールドアイテムをプレイヤーの近くに配置
-	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
+	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Tile(3), gc.Tile(3))
 	require.NoError(t, err)
 
 	// 収集前の状態確認
@@ -50,7 +50,7 @@ func TestCheckItemCollision(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーを配置
-	require.NoError(t, worldhelper.SpawnOperator(world, gc.Pixel(100), gc.Pixel(100)))
+	require.NoError(t, worldhelper.SpawnOperator(world, 3, 3))
 
 	var playerEntity ecs.Entity
 	world.Manager.Join(
@@ -61,11 +61,15 @@ func TestCheckItemCollision(t *testing.T) {
 	}))
 
 	// アイテムを配置
-	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(3), gc.Col(3))
+	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Tile(3), gc.Tile(3))
 	require.NoError(t, err)
 
-	// プレイヤー位置
-	playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
+	// プレイヤーのグリッド位置を取得してピクセル位置に変換
+	playerGridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
+	playerPos := &gc.Position{
+		X: gc.Pixel(int(playerGridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
+		Y: gc.Pixel(int(playerGridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
+	}
 
 	// アイテムのピクセル位置を計算
 	itemPos := &gc.Position{
@@ -85,7 +89,7 @@ func TestCollectFieldItem(t *testing.T) {
 	require.NoError(t, err)
 
 	// フィールドアイテムを配置
-	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Row(5), gc.Col(5))
+	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Tile(5), gc.Tile(5))
 	require.NoError(t, err)
 
 	// 収集前の状態確認

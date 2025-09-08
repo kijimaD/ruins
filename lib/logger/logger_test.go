@@ -148,7 +148,7 @@ func TestJSONOutput(t *testing.T) {
 	if entry["level"] != expectedLevel {
 		t.Errorf("levelが正しくない: %v", entry["level"])
 	}
-	if entry["category"] != "battle" {
+	if entry["category"] != "debug" {
 		t.Errorf("categoryが正しくない: %v", entry["category"])
 	}
 	if entry["message"] != "テストメッセージ" {
@@ -286,25 +286,25 @@ func TestLoggerOutput(t *testing.T) {
 			name:     "Debug",
 			logFunc:  logger.Debug,
 			level:    "DEBUG",
-			contains: []string{"デバッグメッセージ", "DEBUG", "battle", "session", "test123"},
+			contains: []string{"デバッグメッセージ", "DEBUG", "debug", "session", "test123"},
 		},
 		{
 			name:     "Info",
 			logFunc:  logger.Info,
 			level:    "INFO",
-			contains: []string{"情報メッセージ", "INFO", "battle"},
+			contains: []string{"情報メッセージ", "INFO", "debug"},
 		},
 		{
 			name:     "Warn",
 			logFunc:  logger.Warn,
 			level:    "WARN",
-			contains: []string{"警告メッセージ", "WARN", "battle"},
+			contains: []string{"警告メッセージ", "WARN", "debug"},
 		},
 		{
 			name:     "Error",
 			logFunc:  logger.Error,
 			level:    "ERROR",
-			contains: []string{"エラーメッセージ", "ERROR", "battle"},
+			contains: []string{"エラーメッセージ", "ERROR", "debug"},
 		},
 	}
 

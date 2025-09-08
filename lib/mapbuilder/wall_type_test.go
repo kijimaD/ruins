@@ -12,7 +12,7 @@ import (
 func TestBuildData_GetWallType(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成（7x7）
-	width, height := gc.Row(7), gc.Col(7)
+	width, height := gc.Tile(7), gc.Tile(7)
 	buildData := &BuilderMap{
 		Level: resources.Level{
 			TileWidth:  width,
@@ -33,7 +33,7 @@ func TestBuildData_GetWallType(t *testing.T) {
 	// テストケース1: WallTypeTop（下に床がある壁）
 	// 座標系注意: XYTileIndex(tx Row, ty Col) → tx は X座標（横方向）、ty は Y座標（縦方向）
 	// インデックス計算: ty * width + tx
-	centerWallX, centerWallY := gc.Row(3), gc.Col(3)
+	centerWallX, centerWallY := gc.Tile(3), gc.Tile(3)
 	bottomFloorX, bottomFloorY := centerWallX, centerWallY+1 // 下の床（Y座標が大きくなる）
 
 	centerWallIdx := buildData.Level.XYTileIndex(centerWallX, centerWallY)
@@ -95,7 +95,7 @@ func TestBuildData_GetWallType(t *testing.T) {
 func TestBuildData_GetWallType_WithWarpTiles(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成
-	width, height := gc.Row(5), gc.Col(5)
+	width, height := gc.Tile(5), gc.Tile(5)
 	buildData := &BuilderMap{
 		Level: resources.Level{
 			TileWidth:  width,
@@ -114,7 +114,7 @@ func TestBuildData_GetWallType_WithWarpTiles(t *testing.T) {
 	}
 
 	// ワープタイルを配置
-	wallX, wallY := gc.Row(2), gc.Col(2)
+	wallX, wallY := gc.Tile(2), gc.Tile(2)
 	warpX, warpY := wallX, wallY+1 // 下にワープネクスト（Y座標が大きくなる）
 
 	warpNextIdx := buildData.Level.XYTileIndex(warpX, warpY)

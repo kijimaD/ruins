@@ -57,7 +57,7 @@ var (
 
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
-func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderType BuilderType) (resources.Level, error) {
+func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builderType BuilderType) (resources.Level, error) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	var chain *BuilderChain
@@ -92,11 +92,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 
 	// ポータルは既にvalidateMapWithPortals内で配置済み
 	// フィールドに操作対象キャラを配置する（事前に見つけた位置を使用）
-	if err := worldhelper.SpawnOperator(
-		world,
-		gc.Pixel(playerX*int(consts.TileSize)+int(consts.TileSize)/2),
-		gc.Pixel(playerY*int(consts.TileSize)+int(consts.TileSize)/2),
-	); err != nil {
+	if err := worldhelper.SpawnOperator(world, playerX, playerY); err != nil {
 		return resources.Level{}, fmt.Errorf("プレイヤー生成エラー: %w", err)
 	}
 
@@ -116,7 +112,7 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 		x, y := chain.BuildData.Level.XYTileCoord(i)
 		switch t {
 		case TileFloor:
-			entity, err := worldhelper.SpawnFloor(world, gc.Row(x), gc.Col(y))
+			entity, err := worldhelper.SpawnFloor(world, gc.Tile(x), gc.Tile(y))
 			if err != nil {
 				return resources.Level{}, fmt.Errorf("床の生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
 			}
@@ -127,20 +123,20 @@ func NewLevel(world w.World, width gc.Row, height gc.Col, seed uint64, builderTy
 				// 壁タイプを判定してスプライト番号を決定
 				wallType := chain.BuildData.GetWallType(i)
 				spriteNumber := getSpriteNumberForWallType(wallType)
-				entity, err := worldhelper.SpawnFieldWallWithSprite(world, gc.Row(x), gc.Col(y), spriteNumber)
+				entity, err := worldhelper.SpawnFieldWallWithSprite(world, gc.Tile(x), gc.Tile(y), spriteNumber)
 				if err != nil {
 					return resources.Level{}, fmt.Errorf("壁の生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
 				}
 				chain.BuildData.Level.Entities[i] = entity
 			}
 		case TileWarpNext:
-			entity, err := worldhelper.SpawnFieldWarpNext(world, gc.Row(x), gc.Col(y))
+			entity, err := worldhelper.SpawnFieldWarpNext(world, gc.Tile(x), gc.Tile(y))
 			if err != nil {
 				return resources.Level{}, fmt.Errorf("進行ワープホールの生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
 			}
 			chain.BuildData.Level.Entities[i] = entity
 		case TileWarpEscape:
-			entity, err := worldhelper.SpawnFieldWarpEscape(world, gc.Row(x), gc.Col(y))
+			entity, err := worldhelper.SpawnFieldWarpEscape(world, gc.Tile(x), gc.Tile(y))
 			if err != nil {
 				return resources.Level{}, fmt.Errorf("脱出ワープホールの生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
 			}
@@ -161,8 +157,8 @@ func spawnNPCs(world w.World, chain *BuilderChain) error {
 		if failCount > maxNPCFailCount {
 			return ErrNPCGenerationFailed
 		}
-		tx := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-		ty := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+		tx := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+		ty := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 		if !chain.BuildData.IsSpawnableTile(world, tx, ty) {
 			failCount++
 			continue
@@ -248,8 +244,8 @@ func spawnItems(world w.World, chain *BuilderChain, itemList []string, count int
 		}
 
 		// ランダムな位置を選択
-		x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-		y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+		x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+		y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 
 		// スポーン可能な位置かチェック
 		if !chain.BuildData.IsSpawnableTile(world, x, y) {
@@ -314,7 +310,7 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int, er
 
 	// 最適な位置を探す
 	for _, pos := range attempts {
-		if buildData.IsSpawnableTile(world, gc.Row(pos.x), gc.Col(pos.y)) {
+		if buildData.IsSpawnableTile(world, gc.Tile(pos.x), gc.Tile(pos.y)) {
 			return pos.x, pos.y, nil
 		}
 	}
@@ -323,7 +319,7 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int, er
 	for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
 		x := buildData.RandomSource.Intn(width)
 		y := buildData.RandomSource.Intn(height)
-		if buildData.IsSpawnableTile(world, gc.Row(x), gc.Col(y)) {
+		if buildData.IsSpawnableTile(world, gc.Tile(x), gc.Tile(y)) {
 			return x, y, nil
 		}
 	}
@@ -336,8 +332,8 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *r
 	// 進行ワープホールを配置
 	warpNextPlaced := false
 	for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
-		x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-		y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+		x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+		y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 
 		if chain.BuildData.IsSpawnableTile(world, x, y) {
@@ -357,8 +353,8 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *r
 
 	if escapePortalRequired {
 		for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
-			x := gc.Row(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Col(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+			x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
 
 			if chain.BuildData.IsSpawnableTile(world, x, y) {
 				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
@@ -393,7 +389,7 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, gameResources *r
 }
 
 // createBuilderChain は指定されたビルダータイプに応じてビルダーチェーンを作成する
-func createBuilderChain(builderType BuilderType, width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func createBuilderChain(builderType BuilderType, width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	switch builderType {
 	case BuilderTypeSmallRoom:
 		return NewSmallRoomBuilder(width, height, seed)

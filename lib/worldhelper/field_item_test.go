@@ -16,7 +16,7 @@ func TestSpawnFieldItem(t *testing.T) {
 	require.NoError(t, err)
 
 	// フィールドアイテムを生成
-	item, err := SpawnFieldItem(world, "回復薬", gc.Row(5), gc.Col(10))
+	item, err := SpawnFieldItem(world, "回復薬", gc.Tile(5), gc.Tile(10))
 	require.NoError(t, err, "SpawnFieldItem should not return error")
 	require.NotNil(t, item, "アイテムエンティティが生成されるべき")
 
@@ -28,8 +28,8 @@ func TestSpawnFieldItem(t *testing.T) {
 	// GridElementコンポーネントの確認
 	require.True(t, item.HasComponent(world.Components.GridElement), "GridElementコンポーネントが必要")
 	gridElement := world.Components.GridElement.Get(item).(*gc.GridElement)
-	assert.Equal(t, gc.Row(5), gridElement.Row, "行位置が正しくない")
-	assert.Equal(t, gc.Col(10), gridElement.Col, "列位置が正しくない")
+	assert.Equal(t, gc.Tile(5), gridElement.X, "行位置が正しくない")
+	assert.Equal(t, gc.Tile(10), gridElement.Y, "列位置が正しくない")
 
 	// SpriteRenderコンポーネントの確認
 	require.True(t, item.HasComponent(world.Components.SpriteRender), "SpriteRenderコンポーネントが必要")
@@ -53,12 +53,12 @@ func TestSpawnMultipleFieldItems(t *testing.T) {
 	// 複数のフィールドアイテムを生成
 	items := []struct {
 		itemName string
-		row      gc.Row
-		col      gc.Col
+		row      gc.Tile
+		col      gc.Tile
 	}{
-		{"回復薬", gc.Row(1), gc.Col(1)},
-		{"手榴弾", gc.Row(2), gc.Col(2)},
-		{"ルビー原石", gc.Row(3), gc.Col(3)},
+		{"回復薬", gc.Tile(1), gc.Tile(1)},
+		{"手榴弾", gc.Tile(2), gc.Tile(2)},
+		{"ルビー原石", gc.Tile(3), gc.Tile(3)},
 	}
 
 	createdItems := make([]ecs.Entity, 0, len(items))
@@ -70,8 +70,8 @@ func TestSpawnMultipleFieldItems(t *testing.T) {
 
 		// 位置の確認
 		gridElement := world.Components.GridElement.Get(item).(*gc.GridElement)
-		assert.Equal(t, itemData.row, gridElement.Row, "行位置が正しくない")
-		assert.Equal(t, itemData.col, gridElement.Col, "列位置が正しくない")
+		assert.Equal(t, itemData.row, gridElement.X, "行位置が正しくない")
+		assert.Equal(t, itemData.col, gridElement.Y, "列位置が正しくない")
 	}
 
 	// フィールド上のアイテム数を確認
