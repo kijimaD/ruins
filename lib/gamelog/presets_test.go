@@ -123,57 +123,6 @@ func TestPresetFunctions(t *testing.T) {
 	}
 }
 
-func TestBattlePresets(t *testing.T) {
-	t.Parallel()
-
-	// ローカルテストストアを作成
-	testBattleLog := NewSafeSlice(BattleLogMaxSize)
-
-	// 戦闘専用プリセット
-	New(testBattleLog).
-		Encounter("強敵が現れた！").
-		Log()
-
-	New(testBattleLog).
-		Victory("勝利した！").
-		Log()
-
-	New(testBattleLog).
-		Defeat("敗北した...").
-		Log()
-
-	New(testBattleLog).
-		Magic("ファイアボール").
-		Append("を唱えた！").
-		Log()
-
-	if testBattleLog.Count() != 4 {
-		t.Errorf("Expected 4 battle log entries, got %d", testBattleLog.Count())
-	}
-
-	entries := testBattleLog.GetRecentEntries(4)
-
-	// Encounter は赤色
-	if entries[0].Fragments[0].Color != colors.ColorRed {
-		t.Errorf("Expected red color for Encounter")
-	}
-
-	// Victory は緑色
-	if entries[1].Fragments[0].Color != colors.ColorGreen {
-		t.Errorf("Expected green color for Victory")
-	}
-
-	// Defeat は赤色
-	if entries[2].Fragments[0].Color != colors.ColorRed {
-		t.Errorf("Expected red color for Defeat")
-	}
-
-	// Magic は紫色
-	if entries[3].Fragments[0].Color != colors.ColorMagenta {
-		t.Errorf("Expected magenta color for Magic")
-	}
-}
-
 func TestSystemPresets(t *testing.T) {
 	t.Parallel()
 

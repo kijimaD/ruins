@@ -10,7 +10,7 @@ func TestSeedReproducibility(t *testing.T) {
 	t.Parallel()
 	// 同じシードで複数回マップを生成して同じ結果になることを確認
 	const testSeed uint64 = 12345
-	width, height := gc.Row(20), gc.Col(20)
+	width, height := gc.Tile(20), gc.Tile(20)
 
 	// 1回目の生成
 	chain1 := NewSmallRoomBuilder(width, height, testSeed)
@@ -52,7 +52,7 @@ func TestSeedReproducibility(t *testing.T) {
 func TestDifferentSeeds(t *testing.T) {
 	t.Parallel()
 	// 異なるシードで異なる結果になることを確認
-	width, height := gc.Row(20), gc.Col(20)
+	width, height := gc.Tile(20), gc.Tile(20)
 
 	// シード1で生成
 	chain1 := NewSmallRoomBuilder(width, height, 11111)
@@ -107,7 +107,7 @@ func TestRandomSourceDeterministic(t *testing.T) {
 func TestZeroSeedHandling(t *testing.T) {
 	t.Parallel()
 	// シード0の場合はランダムなシードが使用されることを確認
-	width, height := gc.Row(10), gc.Col(10)
+	width, height := gc.Tile(10), gc.Tile(10)
 
 	// シード0で2回生成
 	chain1 := NewSmallRoomBuilder(width, height, 0)

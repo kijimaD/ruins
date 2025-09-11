@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
@@ -49,8 +48,10 @@ func (st *DungeonState) OnResume(_ w.World) {}
 func (st *DungeonState) OnStart(world w.World) {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
-	baseImage = ebiten.NewImage(screenWidth, screenHeight)
-	baseImage.Fill(color.Black)
+	if screenWidth > 0 && screenHeight > 0 {
+		baseImage = ebiten.NewImage(screenWidth, screenHeight)
+		baseImage.Fill(color.Black)
+	}
 
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Depth = st.Depth
@@ -65,6 +66,9 @@ func (st *DungeonState) OnStart(world w.World) {
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
 
+	// プレイヤーのタイル状態をリセット（新しい階のために）
+	gameResources.ResetPlayerTileState()
+
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()
 
@@ -78,11 +82,6 @@ func (st *DungeonState) OnStart(world w.World) {
 func (st *DungeonState) OnStop(world w.World) {
 	world.Manager.Join(
 		world.Components.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		world.Manager.DeleteEntity(entity)
-	}))
-	world.Manager.Join(
-		world.Components.Position,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
 	}))
@@ -102,14 +101,19 @@ func (st *DungeonState) OnStop(world w.World) {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) es.Transition {
-	gs.PlayerInputSystem(world)
-	gs.AIInputSystem(world)
-	gs.MoveSystem(world)
-	gs.CollisionSystem(world)
-	gs.ItemCollectionSystem(world)
+	// タイルベース移動システム
+	gs.TileInputSystem(world)
+	gs.TileMoveSystem(world)
+	gs.CameraSystem(world) // 移動処理の後にカメラ更新
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
+	}
+
+	// Enterキーでワープ実行またはアイテム収集
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+		gs.HandleWarpInput(world)
+		gs.HandleItemCollectionInput(world)
 	}
 
 	cfg := config.MustGet()
@@ -135,44 +139,6 @@ func (st *DungeonState) handleStateEvent(world w.World) es.Transition {
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
 	case resources.StateEventWarpEscape:
 		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
-	case resources.StateEventBattleStart:
-		// 戦闘開始
-		battleStateFactory := func() es.State {
-			// プレイヤーエンティティを検索
-			var playerEntity ecs.Entity
-			world.Manager.Join(
-				world.Components.Position,
-				world.Components.Operator,
-			).Visit(ecs.Visit(func(entity ecs.Entity) {
-				playerEntity = entity
-			}))
-
-			// 最も近い敵エンティティを検索
-			var fieldEnemyEntity ecs.Entity
-			var minDistance float64 = -1
-			if playerEntity != ecs.Entity(0) {
-				playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
-				world.Manager.Join(
-					world.Components.Position,
-					world.Components.AIMoveFSM,
-				).Visit(ecs.Visit(func(entity ecs.Entity) {
-					enemyPos := world.Components.Position.Get(entity).(*gc.Position)
-					dx := float64(playerPos.X - enemyPos.X)
-					dy := float64(playerPos.Y - enemyPos.Y)
-					distance := dx*dx + dy*dy // 距離の2乗で比較（平方根計算を省略）
-
-					if minDistance < 0 || distance < minDistance {
-						minDistance = distance
-						fieldEnemyEntity = entity
-					}
-				}))
-			}
-
-			return &BattleState{
-				FieldEnemyEntity: fieldEnemyEntity,
-			}
-		}
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{battleStateFactory}}
 	default:
 		// StateEventNoneまたは未知のイベントの場合は何もしない
 		return es.Transition{Type: es.TransNone}

@@ -115,9 +115,10 @@ InitializeFromWorld関数に登録を追加してください：
 
 ### サポートされるコンポーネント型
 現在サポートされているコンポーネント：
-- Position, Velocity, Camera
+- Camera (カメラのみPositionコンポーネントを使用)
+- GridElement (タイルベースの位置情報)
 - AIVision, AIRoaming, AIChasing
-- SpriteRender, GridElement
+- SpriteRender
 - NullComponent (Operator, BlockView, BlockPass)
 
 ### エンティティ参照
@@ -139,9 +140,9 @@ InitializeFromWorld関数に登録を追加してください：
 	      {
 	        "stable_id": {"index": 1, "generation": 0},
 	        "components": {
-	          "Position": {
-	            "type": "Position",
-	            "data": {"x": 100, "y": 200}
+	          "GridElement": {
+	            "type": "GridElement",
+	            "data": {"x": 5, "y": 10}
 	          }
 	        }
 	      }

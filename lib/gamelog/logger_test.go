@@ -183,27 +183,6 @@ func TestLoggerMultipleLogs(t *testing.T) {
 	}
 }
 
-func TestLoggerBattleLog(t *testing.T) {
-	t.Parallel()
-	logger, store := NewLoggerWithTestStore()
-
-	logger.
-		NPCName("Skeleton").
-		Append(" attacks you for ").
-		Damage(8).
-		Append(" damage!").
-		Log()
-
-	if store.Count() != 1 {
-		t.Errorf("Expected 1 battle log entry, got %d", store.Count())
-	}
-
-	entries := store.GetRecentEntries(1)
-	if len(entries) != 1 {
-		t.Errorf("Expected 1 colored battle entry, got %d", len(entries))
-	}
-}
-
 func TestLoggerEmptyFragments(t *testing.T) {
 	t.Parallel()
 

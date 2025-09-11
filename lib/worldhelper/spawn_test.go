@@ -198,13 +198,13 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	}
 	world.Resources.SpriteSheets = &spriteSheets
 
-	// NPCを生成
-	require.NoError(t, SpawnNPC(world, 100, 100))
+	// NPCを生成（タイル座標で指定）
+	require.NoError(t, SpawnNPC(world, 5, 5))
 
 	// AIMoveFSMコンポーネントを持つエンティティが存在することを確認
 	enemyFound := false
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.AIMoveFSM,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		enemyFound = true

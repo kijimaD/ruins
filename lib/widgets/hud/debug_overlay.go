@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -42,12 +41,6 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	// 視界範囲を描画
 	for _, visionRange := range data.VisionRanges {
 		overlay.drawVisionCircle(screen, float32(visionRange.ScreenX), float32(visionRange.ScreenY), visionRange.ScaledRadius)
-	}
-
-	// 移動方向を描画
-	for _, movementDir := range data.MovementDirections {
-		overlay.drawDirectionArrow(screen, movementDir.ScreenX, movementDir.ScreenY,
-			movementDir.Angle, movementDir.Speed, movementDir.CameraScale)
 	}
 }
 
@@ -99,43 +92,4 @@ func (overlay *DebugOverlay) drawVisionCircle(screen *ebiten.Image, centerX, cen
 	whiteImg := ebiten.NewImage(1, 1)
 	whiteImg.Fill(color.White)
 	screen.DrawTriangles(vertices, indices, whiteImg, opt)
-}
-
-// drawDirectionArrow は指定した位置に進行方向の矢印を描画する
-func (overlay *DebugOverlay) drawDirectionArrow(screen *ebiten.Image, x, y, angle, speed, cameraScale float64) {
-	// 矢印の長さを速度に応じて調整（最小20、最大60ピクセル）、カメラスケールも考慮
-	baseLength := 20.0 + speed*20.0
-	if baseLength > 60 {
-		baseLength = 60
-	}
-	length := baseLength * cameraScale
-
-	// 角度をラジアンに変換
-	radians := angle * math.Pi / 180
-
-	// 矢印の先端位置
-	endX := x + length*math.Cos(radians)
-	endY := y + length*math.Sin(radians)
-
-	// 線の太さもカメラスケールに応じて調整
-	strokeWidth := float32(2.0 * cameraScale)
-	if strokeWidth < 1.0 {
-		strokeWidth = 1.0
-	}
-
-	// メインラインを描画（緑色）
-	vector.StrokeLine(screen, float32(x), float32(y), float32(endX), float32(endY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
-
-	// 矢印の頭部を描画
-	arrowHeadLength := 10.0 * cameraScale
-	leftAngle := radians + 2.5  // 約145度
-	rightAngle := radians - 2.5 // 約-145度
-
-	leftX := endX + arrowHeadLength*math.Cos(leftAngle)
-	leftY := endY + arrowHeadLength*math.Sin(leftAngle)
-	rightX := endX + arrowHeadLength*math.Cos(rightAngle)
-	rightY := endY + arrowHeadLength*math.Sin(rightAngle)
-
-	vector.StrokeLine(screen, float32(endX), float32(endY), float32(leftX), float32(leftY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
-	vector.StrokeLine(screen, float32(endX), float32(endY), float32(rightX), float32(rightY), strokeWidth, color.RGBA{0, 255, 0, 255}, false)
 }

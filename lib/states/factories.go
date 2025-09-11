@@ -13,20 +13,6 @@ func NewIntroState() es.State {
 	return &IntroState{}
 }
 
-// NewBattleState は新しいBattleStateインスタンスを作成するファクトリー関数
-func NewBattleState() es.State {
-	return &BattleState{}
-}
-
-// NewBattleStateWithEnemies は指定された敵でBattleStateを作成するファクトリー関数
-func NewBattleStateWithEnemies(enemies []string) es.StateFactory {
-	return func() es.State {
-		return &BattleState{
-			FixedEnemies: enemies,
-		}
-	}
-}
-
 // NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
 func NewHomeMenuState() es.State {
 	return &HomeMenuState{}

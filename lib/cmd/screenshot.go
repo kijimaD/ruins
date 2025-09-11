@@ -24,8 +24,6 @@ func runScreenshot(ctx *cli.Context) error {
 	}
 
 	switch mode {
-	case gs.BattleState{}.String():
-		vrt.RunTestGame(&gs.BattleState{}, mode)
 	case gs.CraftMenuState{}.String():
 		vrt.RunTestGame(&gs.CraftMenuState{}, mode)
 	case gs.DebugMenuState{}.String():

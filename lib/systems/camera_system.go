@@ -1,0 +1,68 @@
+package systems
+
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+	gc "github.com/kijimaD/ruins/lib/components"
+	w "github.com/kijimaD/ruins/lib/world"
+	ecs "github.com/x-hgg-x/goecs/v2"
+)
+
+// CameraSystem はカメラの追従とズーム処理を行う
+func CameraSystem(world w.World) {
+	var playerGridElement *gc.GridElement
+
+	// プレイヤー位置を取得
+	world.Manager.Join(
+		world.Components.Player,
+		world.Components.GridElement,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		playerGridElement = world.Components.GridElement.Get(entity).(*gc.GridElement)
+	}))
+
+	// カメラのズーム処理と追従処理
+	world.Manager.Join(
+		world.Components.Camera,
+		world.Components.GridElement,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		camera := world.Components.Camera.Get(entity).(*gc.Camera)
+		cameraGridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+
+		// カメラの追従（プレイヤー位置に更新）
+		if playerGridElement != nil {
+			cameraGridElement.X = playerGridElement.X
+			cameraGridElement.Y = playerGridElement.Y
+		}
+
+		// ズーム率変更
+		// 参考: https://ebitengine.org/ja/examples/isometric.html
+		var scrollY float64
+		if ebiten.IsKeyPressed(ebiten.KeyC) || ebiten.IsKeyPressed(ebiten.KeyPageDown) {
+			scrollY = -0.25
+		} else if ebiten.IsKeyPressed(ebiten.KeyE) || ebiten.IsKeyPressed(ebiten.KeyPageUp) {
+			scrollY = 0.25
+		} else {
+			_, scrollY = ebiten.Wheel()
+			if scrollY < -1 {
+				scrollY = -1
+			} else if scrollY > 1 {
+				scrollY = 1
+			}
+		}
+		camera.ScaleTo += scrollY * (camera.ScaleTo / 7)
+
+		// Clamp target zoom level.
+		if camera.ScaleTo < 0.8 {
+			camera.ScaleTo = 0.8
+		} else if camera.ScaleTo > 10 {
+			camera.ScaleTo = 10
+		}
+
+		// Smooth zoom transition.
+		div := 10.0
+		if camera.ScaleTo > camera.Scale {
+			camera.Scale += (camera.ScaleTo - camera.Scale) / div
+		} else if camera.ScaleTo < camera.Scale {
+			camera.Scale -= (camera.Scale - camera.ScaleTo) / div
+		}
+	}))
+}

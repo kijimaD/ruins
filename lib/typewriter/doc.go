@@ -8,7 +8,7 @@
 //
 // 使用例（基本的な使い方）:
 //
-//	config := typewriter.BattleConfig()
+//	config := typewriter.DialogConfig()
 //	tw := typewriter.New(config)
 //
 //	tw.OnComplete(func() {
@@ -18,7 +18,7 @@
 // 使用例（UI付きの使い方）:
 //
 //	// MessageHandlerとUIBuilderを使用
-//	handler := typewriter.NewMessageHandler(typewriter.BattleConfig(), keyboardInput)
+//	handler := typewriter.NewMessageHandler(typewriter.DialogConfig(), keyboardInput)
 //	uiConfig := typewriter.DefaultUIConfig()
 //	uiConfig.TextFace = yourTextFace
 //	uiConfig.TextColor = yourTextColor

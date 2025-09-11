@@ -15,7 +15,7 @@ func TestSpawnFieldItemsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// テスト用のマップを生成（小さなマップで簡単にテストできるように）
-	chain := NewSmallRoomBuilder(gc.Row(20), gc.Col(20), 12345)
+	chain := NewSmallRoomBuilder(gc.Tile(20), gc.Tile(20), 12345)
 	chain.Build()
 
 	// フィールドアイテムを配置（エラーが発生しないことを確認）

@@ -10,8 +10,7 @@ type Data struct {
 
 // GameInfoData はゲーム基本情報のデータ
 type GameInfoData struct {
-	FloorNumber int     // フロア番号
-	PlayerSpeed float64 // プレイヤー速度
+	FloorNumber int // フロア番号
 }
 
 // MinimapData はミニマップ描画に必要なデータ
@@ -44,11 +43,10 @@ type ScreenDimensions struct {
 
 // DebugOverlayData はAIデバッグ情報のデータ
 type DebugOverlayData struct {
-	Enabled            bool                    // デバッグ表示有効フラグ
-	AIStates           []AIStateInfo           // AI状態情報
-	VisionRanges       []VisionRangeInfo       // 視界範囲情報
-	MovementDirections []MovementDirectionInfo // 移動方向情報
-	ScreenDimensions   ScreenDimensions        // 画面サイズ
+	Enabled          bool              // デバッグ表示有効フラグ
+	AIStates         []AIStateInfo     // AI状態情報
+	VisionRanges     []VisionRangeInfo // 視界範囲情報
+	ScreenDimensions ScreenDimensions  // 画面サイズ
 }
 
 // AIStateInfo はAI状態の情報
@@ -63,15 +61,6 @@ type VisionRangeInfo struct {
 	ScreenX      float64 // 中心の画面X座標
 	ScreenY      float64 // 中心の画面Y座標
 	ScaledRadius float32 // スケール済み半径
-}
-
-// MovementDirectionInfo は移動方向の情報
-type MovementDirectionInfo struct {
-	ScreenX     float64 // 画面上のX座標
-	ScreenY     float64 // 画面上のY座標
-	Angle       float64 // 角度（度）
-	Speed       float64 // 速度
-	CameraScale float64 // カメラスケール
 }
 
 // MessageData はメッセージ表示に必要なデータ

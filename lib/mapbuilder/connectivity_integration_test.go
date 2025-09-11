@@ -25,7 +25,7 @@ func TestBuilderChain_ValidateConnectivity(t *testing.T) {
 		playerStartY = 10
 
 		// プレイヤーのスタート位置を確実に床にする
-		idx := chain.BuildData.Level.XYTileIndex(gc.Row(playerStartX), gc.Col(playerStartY))
+		idx := chain.BuildData.Level.XYTileIndex(gc.Tile(playerStartX), gc.Tile(playerStartY))
 		chain.BuildData.Tiles[idx] = TileFloor
 	}
 
@@ -66,7 +66,7 @@ func TestCaveBuilder_ValidateConnectivity(t *testing.T) {
 	for x := width/2 - 5; x < width/2+5 && !foundFloor; x++ {
 		for y := height/2 - 5; y < height/2+5 && !foundFloor; y++ {
 			if x >= 0 && x < width && y >= 0 && y < height {
-				idx := chain.BuildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+				idx := chain.BuildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 				if chain.BuildData.Tiles[idx] == TileFloor {
 					playerStartX = x
 					playerStartY = y
@@ -158,13 +158,13 @@ func (t *TestRoomBuilder) BuildInitial(buildData *BuilderMap) {
 
 	// 垂直方向の通路
 	for y := 1; y < height-1; y++ {
-		idx := buildData.Level.XYTileIndex(gc.Row(width/2), gc.Col(y))
+		idx := buildData.Level.XYTileIndex(gc.Tile(width/2), gc.Tile(y))
 		buildData.Tiles[idx] = TileFloor
 	}
 
 	// 水平方向の通路
 	for x := 1; x < width-1; x++ {
-		idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(height/2))
+		idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(height/2))
 		buildData.Tiles[idx] = TileFloor
 	}
 }

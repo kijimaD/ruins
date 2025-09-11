@@ -123,9 +123,8 @@ func (area *MessageArea) Draw(screen *ebiten.Image, data MessageData) {
 	offscreenWidth := logAreaWidth - area.config.LogAreaMargin*2
 	offscreenHeight := fixedHeight - area.config.LogAreaMargin*2
 
-	// メッセージウィジェットを描画（既存の方式を使用）
+	// メッセージウィジェットを描画
 	drawX := logAreaX + area.config.LogAreaMargin
 	drawY := logAreaY + area.config.LogAreaMargin
-
 	area.widget.Draw(screen, drawX, drawY, offscreenWidth, offscreenHeight)
 }

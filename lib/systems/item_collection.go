@@ -2,40 +2,34 @@ package systems
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// ItemCollectionSystem はプレイヤーとフィールドアイテムの衝突を検出し、アイテムを収集する
-func ItemCollectionSystem(world w.World) {
+// HandleItemCollectionInput はEnterキー入力時にプレイヤーの位置にあるアイテムを収集する
+func HandleItemCollectionInput(world w.World) {
 	// 収集されたアイテムを記録するリスト
 	var itemsToCollect []ecs.Entity
 
-	// プレイヤー（Operatorコンポーネントを持つエンティティ）とフィールドアイテムの衝突をチェック
+	// プレイヤー（Operatorコンポーネントを持つエンティティ）と同じタイルのフィールドアイテムを検索
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.Operator,
 	).Visit(ecs.Visit(func(playerEntity ecs.Entity) {
-		playerPos := world.Components.Position.Get(playerEntity).(*gc.Position)
+		playerGrid := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
 
-		// フィールドアイテムとの衝突をチェック
+		// フィールドアイテムとの位置チェック
 		world.Manager.Join(
 			world.Components.Item,
 			world.Components.ItemLocationOnField,
 			world.Components.GridElement,
 		).Visit(ecs.Visit(func(itemEntity ecs.Entity) {
-			// グリッド位置からピクセル位置を計算
-			gridElement := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
-			itemPixelPos := &gc.Position{
-				X: gc.Pixel(int(gridElement.Row)*int(consts.TileSize) + int(consts.TileSize)/2), // タイル中央
-				Y: gc.Pixel(int(gridElement.Col)*int(consts.TileSize) + int(consts.TileSize)/2), // タイル中央
-			}
+			itemGrid := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
 
-			// 衝突判定（共通関数を使用）
-			if checkCollisionSimple(world, playerEntity, itemEntity, playerPos, itemPixelPos) {
+			// タイル単位の位置判定（同じタイルにいるアイテムを収集）
+			if playerGrid.X == itemGrid.X && playerGrid.Y == itemGrid.Y {
 				itemsToCollect = append(itemsToCollect, itemEntity)
 			}
 		}))

@@ -7,7 +7,6 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/game"
-	"github.com/kijimaD/ruins/lib/gamelog"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -1020,27 +1019,4 @@ func TestLoggerIntegration(t *testing.T) {
 		assert.Equal(t, "Healing({25})", healingForCombat.String())
 	})
 
-	t.Run("gamelog.BattleLogを使った戦闘ダメージログ", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// テスト専用のBattleLogインスタンスを作成
-		testBattleLog := gamelog.NewSafeSlice(100)
-
-		player := createTestPlayerEntity(world, 100, 50)
-		processor := NewProcessor()
-
-		// テスト専用のBattleLogを使用してダメージエフェクトを実行
-		damageEffect := Damage{Amount: 25, Source: DamageSourceWeapon}
-		processor.AddEffectWithLogger(damageEffect, nil, testBattleLog, player)
-
-		err = processor.Execute(world)
-		assert.NoError(t, err)
-
-		// テスト専用ログから確認
-		logs := testBattleLog.GetHistory()
-		assert.Len(t, logs, 1)
-		assert.Contains(t, logs[0], "に25のダメージ。")
-	})
 }

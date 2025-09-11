@@ -46,7 +46,6 @@ func NewParty(world w.World, factionType gc.FactionType) (Party, error) {
 			world.Components.FactionEnemy,
 			world.Components.Pools,
 			world.Components.Attributes,
-			world.Components.CommandTable,
 		)
 	default:
 		log.Fatalf("invalid case: %v", factionType)

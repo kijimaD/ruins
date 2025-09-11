@@ -6,6 +6,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/widgets/hud"
@@ -28,36 +29,23 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	floorNumber := gameResources.Depth
 
-	// プレイヤーの速度情報を取得
-	var playerSpeed float64
-	world.Manager.Join(
-		world.Components.Velocity,
-		world.Components.Position,
-		world.Components.Operator,
-		world.Components.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
-		playerSpeed = velocity.Speed
-	}))
-
 	return hud.GameInfoData{
 		FloorNumber: floorNumber,
-		PlayerSpeed: playerSpeed,
 	}
 }
 
 // extractMinimapData はミニマップデータを抽出する
 func extractMinimapData(world w.World) hud.MinimapData {
 	// プレイヤー位置を取得
-	var playerPos *gc.Position
+	var playerGridElement *gc.GridElement
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.Operator,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerPos = world.Components.Position.Get(entity).(*gc.Position)
+		playerGridElement = world.Components.GridElement.Get(entity).(*gc.GridElement)
 	}))
 
-	if playerPos == nil {
+	if playerGridElement == nil {
 		return hud.MinimapData{} // プレイヤーが見つからない場合は空データ
 	}
 
@@ -68,9 +56,8 @@ func extractMinimapData(world w.World) hud.MinimapData {
 	}
 
 	// プレイヤーのタイル座標
-	tileSize := 32
-	playerTileX := int(playerPos.X) / tileSize
-	playerTileY := int(playerPos.Y) / tileSize
+	playerTileX := int(playerGridElement.X)
+	playerTileY := int(playerGridElement.Y)
 
 	// タイル色情報を抽出
 	tileColors := make(map[string]TileColorInfo)
@@ -118,9 +105,14 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 	var cameraScale float64
 	world.Manager.Join(
 		world.Components.Camera,
-		world.Components.Position,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(camEntity ecs.Entity) {
-		cameraPos = *world.Components.Position.Get(camEntity).(*gc.Position)
+		gridElement := world.Components.GridElement.Get(camEntity).(*gc.GridElement)
+		// GridElementからピクセル座標に変換
+		cameraPos = gc.Position{
+			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
+			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
+		}
 		camera := world.Components.Camera.Get(camEntity).(*gc.Camera)
 		cameraScale = camera.Scale
 	}))
@@ -133,11 +125,11 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 	// AI状態情報を抽出
 	var aiStates []hud.AIStateInfo
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.AIMoveFSM,
 		world.Components.AIRoaming,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		position := world.Components.Position.Get(entity).(*gc.Position)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		roaming := world.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
 
 		// AIの現在の状態を判定
@@ -157,9 +149,13 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 			}
 		}
 
+		// グリッド座標をピクセル座標に変換
+		pixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
+		pixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
+
 		// 画面座標に変換
-		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
-		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
+		screenX := (pixelX-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
+		screenY := (pixelY-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
 
 		aiStates = append(aiStates, hud.AIStateInfo{
 			ScreenX:   screenX,
@@ -171,14 +167,18 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 	// 視界範囲情報を抽出
 	var visionRanges []hud.VisionRangeInfo
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.AIVision,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		position := world.Components.Position.Get(entity).(*gc.Position)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
 
-		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
-		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
+		// グリッド座標をピクセル座標に変換
+		pixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
+		pixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
+
+		screenX := (pixelX-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
+		screenY := (pixelY-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
 		scaledRadius := float32(float64(vision.ViewDistance) * cameraScale)
 
 		visionRanges = append(visionRanges, hud.VisionRangeInfo{
@@ -188,36 +188,11 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 		})
 	}))
 
-	// 移動方向情報を抽出
-	var movementDirs []hud.MovementDirectionInfo
-	world.Manager.Join(
-		world.Components.Position,
-		world.Components.Velocity,
-		world.Components.AIMoveFSM,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		position := world.Components.Position.Get(entity).(*gc.Position)
-		velocity := world.Components.Velocity.Get(entity).(*gc.Velocity)
-
-		if velocity.Speed > 0 && velocity.ThrottleMode == gc.ThrottleModeFront {
-			screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
-			screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
-
-			movementDirs = append(movementDirs, hud.MovementDirectionInfo{
-				ScreenX:     screenX,
-				ScreenY:     screenY,
-				Angle:       velocity.Angle,
-				Speed:       velocity.Speed,
-				CameraScale: cameraScale,
-			})
-		}
-	}))
-
 	return hud.DebugOverlayData{
-		Enabled:            true,
-		AIStates:           aiStates,
-		VisionRanges:       visionRanges,
-		MovementDirections: movementDirs,
-		ScreenDimensions:   screenDimensions,
+		Enabled:          true,
+		AIStates:         aiStates,
+		VisionRanges:     visionRanges,
+		ScreenDimensions: screenDimensions,
 	}
 }
 
@@ -249,7 +224,7 @@ func getTileColorForMinimap(world w.World, tileX, tileY int) color.RGBA {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		if int(grid.Row) == tileX && int(grid.Col) == tileY {
+		if int(grid.X) == tileX && int(grid.Y) == tileY {
 			if entity.HasComponent(world.Components.BlockView) {
 				hasWall = true
 			} else {

@@ -26,10 +26,10 @@ func (r RuinsBuilder) BuildInitial(buildData *BuilderMap) {
 
 		// 建物の外壁を作成
 		room := Rect{
-			X1: gc.Row(x),
-			Y1: gc.Col(y),
-			X2: gc.Row(x + buildingWidth - 1),
-			Y2: gc.Col(y + buildingHeight - 1),
+			X1: gc.Tile(x),
+			Y1: gc.Tile(y),
+			X2: gc.Tile(x + buildingWidth - 1),
+			Y2: gc.Tile(y + buildingHeight - 1),
 		}
 		buildData.Rooms = append(buildData.Rooms, room)
 	}
@@ -92,7 +92,7 @@ func (r RuinsDraw) addInteriorWalls(buildData *BuilderMap, building Rect) {
 	// 建物が十分大きい場合のみ内部の仕切りを作成
 	if buildingWidth >= 10 && buildingHeight >= 8 {
 		// 縦の仕切り
-		midX := building.X1 + gc.Row(buildingWidth/2)
+		midX := building.X1 + gc.Tile(buildingWidth/2)
 		for y := building.Y1 + 2; y <= building.Y2-2; y++ {
 			if buildData.RandomSource.Float64() > 0.4 { // 60%の確率で壁
 				idx := buildData.Level.XYTileIndex(midX, y)
@@ -101,7 +101,7 @@ func (r RuinsDraw) addInteriorWalls(buildData *BuilderMap, building Rect) {
 		}
 
 		// 横の仕切り
-		midY := building.Y1 + gc.Col(buildingHeight/2)
+		midY := building.Y1 + gc.Tile(buildingHeight/2)
 		for x := building.X1 + 2; x <= building.X2-2; x++ {
 			if buildData.RandomSource.Float64() > 0.4 { // 60%の確率で壁
 				idx := buildData.Level.XYTileIndex(x, midY)
@@ -122,7 +122,7 @@ func (r RuinsDebris) BuildMeta(buildData *BuilderMap) {
 	// 屋外エリアに瓦礫を散乱させる
 	for x := 1; x < width-1; x++ {
 		for y := 1; y < height-1; y++ {
-			idx := buildData.Level.XYTileIndex(gc.Row(x), gc.Col(y))
+			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
 			if buildData.Tiles[idx] == TileFloor {
 				// 建物から離れた場所ほど瓦礫が少ない
@@ -235,7 +235,7 @@ func (r RuinsCorridors) createRuinedPath(buildData *BuilderMap, room1, room2 Rec
 }
 
 // NewRuinsBuilder は廃墟ビルダーを作成する
-func NewRuinsBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func NewRuinsBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(RuinsBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める

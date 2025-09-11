@@ -20,8 +20,8 @@ func createTestBuildData(width, height int) *BuilderMap {
 
 	return &BuilderMap{
 		Level: resources.Level{
-			TileWidth:  gc.Row(width),
-			TileHeight: gc.Col(height),
+			TileWidth:  gc.Tile(width),
+			TileHeight: gc.Tile(height),
 			TileSize:   consts.TileSize,
 		},
 		Tiles: tiles,
@@ -82,7 +82,7 @@ func TestPathFinder_FindPath_SimplePath(t *testing.T) {
 	// 簡単な一直線のパスを作成
 	// (1,1) -> (1,2) -> (1,3)
 	for y := 1; y <= 3; y++ {
-		idx := buildData.Level.XYTileIndex(1, gc.Col(y))
+		idx := buildData.Level.XYTileIndex(1, gc.Tile(y))
 		buildData.Tiles[idx] = TileFloor
 	}
 
@@ -128,7 +128,7 @@ func TestPathFinder_FindPath_LShapedPath(t *testing.T) {
 	// (1,1) -> (1,2) -> (2,2) -> (3,2)
 	positions := []Position{{1, 1}, {1, 2}, {2, 2}, {3, 2}}
 	for _, pos := range positions {
-		idx := buildData.Level.XYTileIndex(gc.Row(pos.X), gc.Col(pos.Y))
+		idx := buildData.Level.XYTileIndex(gc.Tile(pos.X), gc.Tile(pos.Y))
 		buildData.Tiles[idx] = TileFloor
 	}
 
@@ -156,7 +156,7 @@ func TestPathFinder_IsReachable(t *testing.T) {
 	// パスを作成
 	positions := []Position{{1, 1}, {1, 2}, {2, 2}}
 	for _, pos := range positions {
-		idx := buildData.Level.XYTileIndex(gc.Row(pos.X), gc.Col(pos.Y))
+		idx := buildData.Level.XYTileIndex(gc.Tile(pos.X), gc.Tile(pos.Y))
 		buildData.Tiles[idx] = TileFloor
 	}
 
@@ -178,7 +178,7 @@ func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 
 	// プレイヤースタート地点
 	playerX, playerY := 1, 1
-	idx := buildData.Level.XYTileIndex(gc.Row(playerX), gc.Col(playerY))
+	idx := buildData.Level.XYTileIndex(gc.Tile(playerX), gc.Tile(playerY))
 	buildData.Tiles[idx] = TileFloor
 
 	// 到達可能なワープポータル
@@ -240,7 +240,7 @@ func TestPathFinder_ValidateMapConnectivity_FullyConnected(t *testing.T) {
 
 	// 床を配置
 	for y := 1; y <= 4; y++ {
-		idx := buildData.Level.XYTileIndex(2, gc.Col(y))
+		idx := buildData.Level.XYTileIndex(2, gc.Tile(y))
 		buildData.Tiles[idx] = TileFloor
 	}
 

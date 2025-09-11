@@ -17,7 +17,6 @@ cmd() {
     $RUN screenshot $state
 }
 
-cmd Battle
 cmd CraftMenu
 cmd DebugMenu
 cmd Dungeon

@@ -48,8 +48,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	components := world.Components
 
 	// リフレクションを使って全コンポーネント型を自動登録
-	r.registerComponent(reflect.TypeOf(&gc.Position{}), components.Position, r.extractPosition, r.restorePosition, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Velocity{}), components.Velocity, r.extractVelocity, r.restoreVelocity, nil)
 	r.registerComponent(reflect.TypeOf(&gc.AIVision{}), components.AIVision, r.extractAIVision, r.restoreAIVision, r.resolveAIVisionRefs)
 	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, nil)
 	r.registerComponent(reflect.TypeOf(&gc.AIChasing{}), components.AIChasing, r.extractAIChasing, r.restoreAIChasing, nil)
@@ -233,40 +231,6 @@ func (r *ComponentRegistry) GetAllTypes() []*ComponentTypeInfo {
 }
 
 // 各コンポーネント型の抽出・復元関数
-func (r *ComponentRegistry) extractPosition(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Position) {
-		return nil, false
-	}
-	pos := world.Components.Position.Get(entity).(*gc.Position)
-	return *pos, true
-}
-
-func (r *ComponentRegistry) restorePosition(world w.World, entity ecs.Entity, data interface{}) error {
-	pos, ok := data.(gc.Position)
-	if !ok {
-		return fmt.Errorf("invalid Position data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Position, &pos)
-	return nil
-}
-
-func (r *ComponentRegistry) extractVelocity(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Velocity) {
-		return nil, false
-	}
-	vel := world.Components.Velocity.Get(entity).(*gc.Velocity)
-	return *vel, true
-}
-
-func (r *ComponentRegistry) restoreVelocity(world w.World, entity ecs.Entity, data interface{}) error {
-	vel, ok := data.(gc.Velocity)
-	if !ok {
-		return fmt.Errorf("invalid Velocity data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Velocity, &vel)
-	return nil
-}
-
 func (r *ComponentRegistry) extractAIVision(world w.World, entity ecs.Entity) (interface{}, bool) {
 	if !entity.HasComponent(world.Components.AIVision) {
 		return nil, false

@@ -51,7 +51,7 @@ func (st *MessageState) OnStart(world w.World) {
 	// タイプライター初期化
 	if st.messageHandler == nil {
 		// MessageHandlerを初期化
-		st.messageHandler = typewriter.NewMessageHandler(typewriter.BattleConfig(), st.keyboardInput)
+		st.messageHandler = typewriter.NewMessageHandler(typewriter.DialogConfig(), st.keyboardInput)
 
 		// UIBuilderを初期化
 		res := world.Resources.UIResources

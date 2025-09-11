@@ -43,19 +43,6 @@ func SlowConfig() Config {
 	}
 }
 
-// BattleConfig は戦闘用設定
-func BattleConfig() Config {
-	return Config{
-		CharDelay:        50 * time.Millisecond,
-		PunctuationDelay: 200 * time.Millisecond,
-		CommaDelay:       100 * time.Millisecond,
-		NewlineDelay:     400 * time.Millisecond,
-		SkipEnabled:      true,
-		PauseEnabled:     false,
-		AutoComplete:     false,
-	}
-}
-
 // DialogConfig は会話用設定
 func DialogConfig() Config {
 	return Config{

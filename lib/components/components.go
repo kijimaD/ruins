@@ -14,7 +14,6 @@ type GameComponentList struct {
 	Name        *Name
 	Description *Description
 	Job         *Job
-	Render      *Render
 
 	// item ================
 	Item             *Item
@@ -36,12 +35,13 @@ type GameComponentList struct {
 	AIChasing    *AIChasing
 	Camera       *Camera
 	Warp         *Warp
-	Velocity     *Velocity
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
+	TurnBased    *TurnBased
+	WantsToMove  *WantsToMove
 
 	// member ================
 	Player      *Player
@@ -50,7 +50,6 @@ type GameComponentList struct {
 	Dead        *Dead
 
 	// event ================
-	BattleCommand    *BattleCommand
 	EquipmentChanged *EquipmentChanged
 	ProvidesHealing  *ProvidesHealing
 	InflictsDamage   *InflictsDamage
@@ -92,12 +91,13 @@ type Components struct {
 	AIChasing    *ecs.SliceComponent
 	Camera       *ecs.SliceComponent
 	Warp         *ecs.SliceComponent
-	Velocity     *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
+	TurnBased    *ecs.NullComponent
+	WantsToMove  *ecs.SliceComponent
 
 	// member ================
 	Player       *ecs.NullComponent
@@ -107,7 +107,6 @@ type Components struct {
 	Dead         *ecs.NullComponent
 
 	// event ================
-	BattleCommand    *ecs.SliceComponent
 	EquipmentChanged *ecs.NullComponent
 	ProvidesHealing  *ecs.SliceComponent
 	InflictsDamage   *ecs.SliceComponent
@@ -148,12 +147,13 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.AIChasing = manager.NewSliceComponent()
 	c.Camera = manager.NewSliceComponent()
 	c.Warp = manager.NewSliceComponent()
-	c.Velocity = manager.NewSliceComponent()
 	c.Position = manager.NewSliceComponent()
 	c.GridElement = manager.NewSliceComponent()
 	c.SpriteRender = manager.NewSliceComponent()
 	c.BlockView = manager.NewNullComponent()
 	c.BlockPass = manager.NewNullComponent()
+	c.TurnBased = manager.NewNullComponent()
+	c.WantsToMove = manager.NewSliceComponent()
 
 	// member
 	c.Player = manager.NewNullComponent()
@@ -163,7 +163,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.Dead = manager.NewNullComponent()
 
 	// event
-	c.BattleCommand = manager.NewSliceComponent()
 	c.EquipmentChanged = manager.NewNullComponent()
 	c.ProvidesHealing = manager.NewSliceComponent()
 	c.InflictsDamage = manager.NewSliceComponent()
@@ -307,19 +306,6 @@ type CommandTable struct {
 // DropTable はドロップテーブル名
 type DropTable struct {
 	Name string
-}
-
-// Render は描画対象物。
-// FIXME: 表示する方法を統一する...
-// resource のスプライトシートから画像を特定するために必要な情報。
-// Renderはスプライトシートの情報はresourceに持たせ、特定に必要な
-// 情報だけ保持している。
-// また、場面ごとにフィールドを分けて保持している。
-//
-// SpriteRenderはSpriteを内部に持っていて初期化が面倒な面がある。
-type Render struct {
-	// 戦闘中の立ち絵
-	BattleBody *SheetImage
 }
 
 // SheetImage はシート画像情報

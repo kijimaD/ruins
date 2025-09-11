@@ -48,11 +48,13 @@ func (minimap *Minimap) Draw(screen *ebiten.Image, data MinimapData) {
 	minimapY := 10
 
 	// ミニマップの背景を描画
-	minimapBg := ebiten.NewImage(minimapWidth, minimapHeight)
-	minimapBg.Fill(color.RGBA{0, 0, 0, 128})
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(minimapX), float64(minimapY))
-	screen.DrawImage(minimapBg, op)
+	if minimapWidth > 0 && minimapHeight > 0 {
+		minimapBg := ebiten.NewImage(minimapWidth, minimapHeight)
+		minimapBg.Fill(color.RGBA{0, 0, 0, 128})
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(minimapX), float64(minimapY))
+		screen.DrawImage(minimapBg, op)
+	}
 
 	// ミニマップの中心をプレイヤー位置に合わせる
 	centerX := minimapX + minimapWidth/2
@@ -69,7 +71,8 @@ func (minimap *Minimap) Draw(screen *ebiten.Image, data MinimapData) {
 		relativeX := tileX - data.PlayerTileX
 		relativeY := tileY - data.PlayerTileY
 
-		// ミニマップ上の座標を計算
+		// ミニマップ上の座標を計算（回転なし、素直な座標変換）
+		// X軸: 右方向が正、Y軸: 下方向が正
 		mapX := float32(centerX + relativeX*minimapScale)
 		mapY := float32(centerY + relativeY*minimapScale)
 
@@ -103,11 +106,13 @@ func (minimap *Minimap) drawEmpty(screen *ebiten.Image, data MinimapData) {
 	minimapY := 10
 
 	// ミニマップの背景を描画（半透明の黒い四角）
-	minimapBg := ebiten.NewImage(minimapWidth, minimapHeight)
-	minimapBg.Fill(color.RGBA{0, 0, 0, 128})
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(minimapX), float64(minimapY))
-	screen.DrawImage(minimapBg, op)
+	if minimapWidth > 0 && minimapHeight > 0 {
+		minimapBg := ebiten.NewImage(minimapWidth, minimapHeight)
+		minimapBg.Fill(color.RGBA{0, 0, 0, 128})
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(minimapX), float64(minimapY))
+		screen.DrawImage(minimapBg, op)
+	}
 
 	// ミニマップの枠を描画
 	minimap.drawFrame(screen, minimapX, minimapY, minimapWidth, minimapHeight)

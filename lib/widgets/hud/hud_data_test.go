@@ -12,7 +12,6 @@ func TestHUDData(t *testing.T) {
 	hudData := Data{
 		GameInfo: GameInfoData{
 			FloorNumber: 3,
-			PlayerSpeed: 1.8,
 		},
 		MinimapData: MinimapData{
 			PlayerTileX:      5,

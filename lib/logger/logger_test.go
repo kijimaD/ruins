@@ -27,9 +27,9 @@ func captureOutput(f func()) string {
 
 func TestLoggerNew(t *testing.T) {
 	t.Parallel()
-	logger := New(CategoryBattle)
-	if logger.category != CategoryBattle {
-		t.Errorf("期待値: %s, 実際: %s", CategoryBattle, logger.category)
+	logger := New(CategoryDebug)
+	if logger.category != CategoryDebug {
+		t.Errorf("期待値: %s, 実際: %s", CategoryDebug, logger.category)
 	}
 	if len(logger.fields) != 0 {
 		t.Errorf("fieldsは空であるべき")
@@ -38,7 +38,7 @@ func TestLoggerNew(t *testing.T) {
 
 func TestLoggerWithField(t *testing.T) {
 	t.Parallel()
-	logger := New(CategoryBattle)
+	logger := New(CategoryDebug)
 	newLogger := logger.WithField("key", "value")
 
 	if len(logger.fields) != 0 {
@@ -51,7 +51,7 @@ func TestLoggerWithField(t *testing.T) {
 
 func TestLoggerWithFields(t *testing.T) {
 	t.Parallel()
-	logger := New(CategoryBattle)
+	logger := New(CategoryDebug)
 	fields := map[string]interface{}{
 		"key1": "value1",
 		"key2": 42,
@@ -75,7 +75,7 @@ func TestLogLevelFiltering(t *testing.T) {
 	})
 	defer ResetConfig()
 
-	logger := New(CategoryBattle)
+	logger := New(CategoryDebug)
 
 	// Debugログは出力されない
 	output := captureOutput(func() {
@@ -100,13 +100,13 @@ func TestContextLevelFiltering(t *testing.T) {
 	SetConfig(Config{
 		DefaultLevel: LevelWarn,
 		CategoryLevels: map[Category]Level{
-			CategoryBattle: LevelDebug,
+			CategoryDebug: LevelDebug,
 		},
 	})
 	defer ResetConfig()
 
 	// Battleカテゴリはデバッグレベルが有効
-	battleLogger := New(CategoryBattle)
+	battleLogger := New(CategoryDebug)
 	output := captureOutput(func() {
 		battleLogger.Debug("戦闘デバッグ")
 	})
@@ -132,7 +132,7 @@ func TestJSONOutput(t *testing.T) {
 	})
 	defer ResetConfig()
 
-	logger := New(CategoryBattle)
+	logger := New(CategoryDebug)
 	output := captureOutput(func() {
 		logger.Info("テストメッセージ", "key1", "value1", "key2", 42)
 	})
@@ -148,7 +148,7 @@ func TestJSONOutput(t *testing.T) {
 	if entry["level"] != expectedLevel {
 		t.Errorf("levelが正しくない: %v", entry["level"])
 	}
-	if entry["category"] != "battle" {
+	if entry["category"] != "debug" {
 		t.Errorf("categoryが正しくない: %v", entry["category"])
 	}
 	if entry["message"] != "テストメッセージ" {
@@ -177,7 +177,7 @@ func TestIsDebugEnabled(t *testing.T) {
 				DefaultLevel:   LevelDebug,
 				CategoryLevels: make(map[Category]Level),
 			},
-			category:      CategoryBattle,
+			category:      CategoryDebug,
 			expectEnabled: true,
 		},
 		{
@@ -186,7 +186,7 @@ func TestIsDebugEnabled(t *testing.T) {
 				DefaultLevel:   LevelInfo,
 				CategoryLevels: make(map[Category]Level),
 			},
-			category:      CategoryBattle,
+			category:      CategoryDebug,
 			expectEnabled: false,
 		},
 		{
@@ -194,10 +194,10 @@ func TestIsDebugEnabled(t *testing.T) {
 			config: Config{
 				DefaultLevel: LevelInfo,
 				CategoryLevels: map[Category]Level{
-					CategoryBattle: LevelDebug,
+					CategoryDebug: LevelDebug,
 				},
 			},
-			category:      CategoryBattle,
+			category:      CategoryDebug,
 			expectEnabled: true,
 		},
 	}
@@ -253,7 +253,7 @@ func TestParseCategoryLevels(t *testing.T) {
 	input := "battle=debug,render=warn,invalid"
 	result := parseCategoryLevels(input)
 
-	if result[CategoryBattle] != LevelDebug {
+	if result[CategoryDebug] != LevelDebug {
 		t.Errorf("battleカテゴリのレベルが正しくない")
 	}
 	if result[CategoryRender] != LevelWarn {
@@ -273,7 +273,7 @@ func TestLoggerOutput(t *testing.T) {
 	})
 	t.Cleanup(ResetConfig)
 
-	logger := New(CategoryBattle).WithField("session", "test123")
+	logger := New(CategoryDebug).WithField("session", "test123")
 
 	// 各レベルのテスト
 	tests := []struct {
@@ -286,25 +286,25 @@ func TestLoggerOutput(t *testing.T) {
 			name:     "Debug",
 			logFunc:  logger.Debug,
 			level:    "DEBUG",
-			contains: []string{"デバッグメッセージ", "DEBUG", "battle", "session", "test123"},
+			contains: []string{"デバッグメッセージ", "DEBUG", "debug", "session", "test123"},
 		},
 		{
 			name:     "Info",
 			logFunc:  logger.Info,
 			level:    "INFO",
-			contains: []string{"情報メッセージ", "INFO", "battle"},
+			contains: []string{"情報メッセージ", "INFO", "debug"},
 		},
 		{
 			name:     "Warn",
 			logFunc:  logger.Warn,
 			level:    "WARN",
-			contains: []string{"警告メッセージ", "WARN", "battle"},
+			contains: []string{"警告メッセージ", "WARN", "debug"},
 		},
 		{
 			name:     "Error",
 			logFunc:  logger.Error,
 			level:    "ERROR",
-			contains: []string{"エラーメッセージ", "ERROR", "battle"},
+			contains: []string{"エラーメッセージ", "ERROR", "debug"},
 		},
 	}
 
@@ -333,7 +333,7 @@ func TestIgnoreLevel(t *testing.T) {
 	})
 	defer ResetConfig()
 
-	logger := New(CategoryBattle)
+	logger := New(CategoryDebug)
 
 	// すべてのレベルのログが出力されない
 	levels := []struct {

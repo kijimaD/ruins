@@ -75,7 +75,7 @@ func TestStateNoReuse(t *testing.T) {
 		factory := func() State {
 			idCounter++
 			state := &TestStateWithID{
-				TestState: TestState{name: "BattleState"},
+				TestState: TestState{name: "TestState"},
 				ID:        idCounter,
 			}
 			createdStates = append(createdStates, state)

@@ -31,7 +31,7 @@ type BuilderMap struct {
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
-func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool {
+func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
 	if tile != TileFloor {
@@ -46,17 +46,14 @@ func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Row, ty gc.Col) bool {
 }
 
 // 指定タイル座標にエンティティがすでにあるかを返す
-// MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせている。Positionを持つエンティティの数ぶんで検証できる
-func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Row, ty gc.Col) bool {
+func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	isExist := false
-	cx := gc.Pixel(int(tx)*int(consts.TileSize) + int(consts.TileSize)/2)
-	cy := gc.Pixel(int(ty)*int(consts.TileSize) + int(consts.TileSize)/2)
 
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := world.Components.Position.Get(entity).(*gc.Position)
-		if pos.X == cx && pos.Y == cy {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if gridElement.X == tx && gridElement.Y == ty {
 			isExist = true
 
 			return
@@ -139,7 +136,7 @@ func (bm BuilderMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
 			continue
 		}
 
-		neighborIdx := bm.Level.XYTileIndex(gc.Row(nx), gc.Col(ny))
+		neighborIdx := bm.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 		tile := bm.Tiles[neighborIdx]
 
 		if tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape {
@@ -220,7 +217,7 @@ type BuilderChain struct {
 
 // NewBuilderChain はシード値を指定してビルダーチェーンを作成する
 // シードが0の場合はランダムなシードを生成する
-func NewBuilderChain(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func NewBuilderChain(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
 
@@ -288,7 +285,7 @@ type MetaMapBuilder interface {
 }
 
 // NewSmallRoomBuilder はシンプルな小部屋ビルダーを作成する
-func NewSmallRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func NewSmallRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(RectRoomBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
@@ -301,7 +298,7 @@ func NewSmallRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain
 
 // NewBigRoomBuilder は大部屋ビルダーを作成する
 // ランダムにバリエーションを適用する統合版
-func NewBigRoomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func NewBigRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	chain := NewBuilderChain(width, height, seed)
 	chain.StartWith(BigRoomBuilder{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
@@ -325,7 +322,7 @@ const (
 )
 
 // NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
-func NewRandomBuilder(width gc.Row, height gc.Col, seed uint64) *BuilderChain {
+func NewRandomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	// シードが0の場合はランダムなシードを生成する。後続のビルダーに渡される
 	if seed == 0 {
 		seed = uint64(time.Now().UnixNano())

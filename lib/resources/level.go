@@ -19,14 +19,34 @@ type Dungeon struct {
 	ExploredTiles map[string]bool
 	// ミニマップの設定
 	Minimap MinimapSettings
+	// プレイヤーのタイル移動状態
+	PlayerTileState PlayerTileState
+}
+
+// PlayerTileState はプレイヤーのタイル移動に関する状態を管理する
+type PlayerTileState struct {
+	// プレイヤーの前回のタイル位置（重複メッセージ防止用）
+	LastTileX int
+	LastTileY int
+	// 現在プレイヤーがいるワープホールの情報
+	CurrentWarp *gc.Warp
+}
+
+// ResetPlayerTileState はプレイヤーのタイル状態をリセットする（階層移動時に使用）
+func (d *Dungeon) ResetPlayerTileState() {
+	d.PlayerTileState = PlayerTileState{
+		LastTileX:   -1,
+		LastTileY:   -1,
+		CurrentWarp: nil,
+	}
 }
 
 // Level は現在の階層
 type Level struct {
 	// 横のタイル数
-	TileWidth gc.Row
+	TileWidth gc.Tile
 	// 縦のタイル数
-	TileHeight gc.Col
+	TileHeight gc.Tile
 	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
 	TileSize gc.Pixel
 	// タイルエンティティ群
@@ -37,7 +57,7 @@ type Level struct {
 }
 
 // XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
-func (l *Level) XYTileIndex(tx gc.Row, ty gc.Col) TileIdx {
+func (l *Level) XYTileIndex(tx gc.Tile, ty gc.Tile) TileIdx {
 	return TileIdx(int(ty)*int(l.TileWidth) + int(tx))
 }
 
@@ -51,8 +71,8 @@ func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
 
 // AtEntity はxy座標から、該当するエンティティを求める
 func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
-	tx := gc.Row(int(x) / int(l.TileSize))
-	ty := gc.Col(int(y) / int(l.TileSize))
+	tx := gc.Tile(int(x) / int(l.TileSize))
+	ty := gc.Tile(int(y) / int(l.TileSize))
 	idx := l.XYTileIndex(tx, ty)
 
 	return l.Entities[idx]
@@ -69,19 +89,19 @@ func (l *Level) Height() gc.Pixel {
 }
 
 // GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
-func (g *Dungeon) GetStateEvent() StateEvent {
-	return g.stateEvent
+func (d *Dungeon) GetStateEvent() StateEvent {
+	return d.stateEvent
 }
 
 // SetStateEvent はStateEventを設定する
-func (g *Dungeon) SetStateEvent(event StateEvent) {
-	g.stateEvent = event
+func (d *Dungeon) SetStateEvent(event StateEvent) {
+	d.stateEvent = event
 }
 
 // ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
-func (g *Dungeon) ConsumeStateEvent() StateEvent {
-	event := g.stateEvent
-	g.stateEvent = StateEventNone
+func (d *Dungeon) ConsumeStateEvent() StateEvent {
+	event := d.stateEvent
+	d.stateEvent = StateEventNone
 	return event
 }
 

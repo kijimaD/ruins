@@ -84,13 +84,15 @@ func (widget *Widget) Draw(screen *ebiten.Image, x, y, width, height int) {
 	}
 
 	// オフスクリーン作成
-	offscreen := ebiten.NewImage(width, height)
-	widget.ui.Draw(offscreen)
+	if width > 0 && height > 0 {
+		offscreen := ebiten.NewImage(width, height)
+		widget.ui.Draw(offscreen)
 
-	// 描画位置を調整
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(x), float64(y))
-	screen.DrawImage(offscreen, op)
+		// 描画位置を調整
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(x), float64(y))
+		screen.DrawImage(offscreen, op)
+	}
 }
 
 // initUI は初期UIを作成する

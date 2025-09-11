@@ -34,6 +34,5 @@ func TestInitGeneric(t *testing.T) {
 		assert.NoError(t, err)
 		// 型アサーションが不要で、直接アクセスできる
 		assert.NotNil(t, world.Components.Game.Position)
-		assert.NotNil(t, world.Components.Game.Velocity)
 	})
 }

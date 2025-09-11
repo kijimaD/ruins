@@ -2116,20 +2116,3 @@ XpBase = 50
 [[drop_table.entries]]
 Material = "鉄くず"
 Weight = 1.0
-
-# sheets ================
-
-[[sprite_sheet]]
-Name = "軽戦車"
-[sprite_sheet.battle_body]
-SheetName = "front_tank1"
-
-[[sprite_sheet]]
-Name = "火の玉"
-[sprite_sheet.battle_body]
-SheetName = "front_flame1"
-
-[[sprite_sheet]]
-Name = "灰の偶像"
-[sprite_sheet.battle_body]
-SheetName = "front_idol1"
