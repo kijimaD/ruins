@@ -46,17 +46,14 @@ func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool
 }
 
 // 指定タイル座標にエンティティがすでにあるかを返す
-// MEMO: 階層生成時スポーンさせるときは、タイルの座標中心にスポーンさせている。Positionを持つエンティティの数ぶんで検証できる
 func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	isExist := false
-	cx := gc.Pixel(int(tx)*int(consts.TileSize) + int(consts.TileSize)/2)
-	cy := gc.Pixel(int(ty)*int(consts.TileSize) + int(consts.TileSize)/2)
 
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := world.Components.Position.Get(entity).(*gc.Position)
-		if pos.X == cx && pos.Y == cy {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if gridElement.X == tx && gridElement.Y == ty {
 			isExist = true
 
 			return

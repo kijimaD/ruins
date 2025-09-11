@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
@@ -165,8 +164,8 @@ func spawnNPCs(world w.World, chain *BuilderChain) error {
 		}
 		if err := worldhelper.SpawnNPC(
 			world,
-			gc.Pixel(int(tx)*int(consts.TileSize)+int(consts.TileSize/2)),
-			gc.Pixel(int(ty)*int(consts.TileSize)+int(consts.TileSize/2)),
+			tx,
+			ty,
 		); err != nil {
 			log.Printf("NPC生成に失敗: %v", err)
 			failCount++

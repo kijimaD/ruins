@@ -176,11 +176,11 @@ func SpawnOperator(world w.World, tileX int, tileY int) error {
 
 // SpawnNPC はフィールド上に表示されるNPCを生成する
 // 接触すると戦闘開始する敵として動作する
-func SpawnNPC(world w.World, x gc.Pixel, y gc.Pixel) error {
+func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error {
 	{
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
-			Position: &gc.Position{X: x, Y: y},
+			GridElement: &gc.GridElement{X: tileX, Y: tileY},
 			SpriteRender: &gc.SpriteRender{
 				Name:         "field",
 				SpriteNumber: spriteNumberNPC,

@@ -86,11 +86,6 @@ func (st *DungeonState) OnStop(world w.World) {
 		world.Manager.DeleteEntity(entity)
 	}))
 	world.Manager.Join(
-		world.Components.Position,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		world.Manager.DeleteEntity(entity)
-	}))
-	world.Manager.Join(
 		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		world.Manager.DeleteEntity(entity)
@@ -110,16 +105,15 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.TileInputSystem(world)
 	gs.TileMoveSystem(world)
 	gs.CameraSystem(world) // 移動処理の後にカメラ更新
-	gs.CollisionSystem(world)
-	gs.ItemCollectionSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
 	}
 
-	// Enterキーでワープ実行
+	// Enterキーでワープ実行またはアイテム収集
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 		gs.HandleWarpInput(world)
+		gs.HandleItemCollectionInput(world)
 	}
 
 	cfg := config.MustGet()

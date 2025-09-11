@@ -12,6 +12,12 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
+// spriteSize はテスト用のスプライトサイズ構造体
+type spriteSize struct {
+	width  int
+	height int
+}
+
 // CreateTestWorldWithResources はテスト用のワールドを作成し、必要なリソースを初期化する
 func CreateTestWorldWithResources(t *testing.T) w.World {
 	t.Helper()
@@ -154,4 +160,27 @@ func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 func CreateEntityWithSpriteSize(t *testing.T, world w.World, x, y float64, size spriteSize, isPlayer bool) {
 	t.Helper()
 	CreateEntityWithSprite(t, world, x, y, size.width, size.height, isPlayer)
+}
+
+// CreateEntityWithGridPosition はグリッド座標でエンティティを作成する
+func CreateEntityWithGridPosition(t *testing.T, world w.World, gridX, gridY int, isPlayer bool) {
+	t.Helper()
+
+	var cl entities.ComponentList
+
+	if isPlayer {
+		cl.Game = append(cl.Game, gc.GameComponentList{
+			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
+			Operator:    &gc.Operator{},
+			FactionType: &gc.FactionAlly,
+		})
+	} else {
+		cl.Game = append(cl.Game, gc.GameComponentList{
+			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
+			AIMoveFSM:   &gc.AIMoveFSM{},
+			FactionType: &gc.FactionEnemy,
+		})
+	}
+
+	entities.AddEntities(world, cl)
 }

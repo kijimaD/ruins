@@ -464,29 +464,22 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 		return true
 	}
 
-	// Position + BlockView のチェック
+	// GridElement + BlockView のチェック
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.BlockView,
-		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		pos := world.Components.Position.Get(entity).(*gc.Position)
-		sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		if world.Resources.SpriteSheets == nil {
-			return
-		}
-		spriteSheet, exists := (*world.Resources.SpriteSheets)[sprite.Name]
-		if !exists || sprite.SpriteNumber >= len(spriteSheet.Sprites) {
-			return
-		}
-		spriteInfo := spriteSheet.Sprites[sprite.SpriteNumber]
+		// タイル単位での視界ブロックチェック
+		tilePixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
+		tilePixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
 
-		// 境界ボックスをチェック
-		left := float64(pos.X) - float64(spriteInfo.Width)/2
-		right := float64(pos.X) + float64(spriteInfo.Width)/2
-		top := float64(pos.Y) - float64(spriteInfo.Height)/2
-		bottom := float64(pos.Y) + float64(spriteInfo.Height)/2
+		// タイル境界での判定
+		left := tilePixelX - float64(consts.TileSize)/2
+		right := tilePixelX + float64(consts.TileSize)/2
+		top := tilePixelY - float64(consts.TileSize)/2
+		bottom := tilePixelY + float64(consts.TileSize)/2
 
 		if fx >= left && fx <= right && fy >= top && fy <= bottom {
 			blocked = true

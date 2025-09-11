@@ -50,16 +50,11 @@ func TileMoveSystem(world w.World) {
 
 		// プレイヤーが新しいタイルに移動した場合のみチェック
 		if currentTileX != gameResources.PlayerTileState.LastTileX || currentTileY != gameResources.PlayerTileState.LastTileY {
-			// GridElementからピクセル座標に変換
-			pixelX := currentTileX * 32 // TileSize = 32
-			pixelY := currentTileY * 32
-			playerPos := &gc.Position{X: gc.Pixel(pixelX), Y: gc.Pixel(pixelY)}
-
 			// ワープホールのチェック
 			checkTileWarp(world, gridElement)
 
 			// アイテムのチェック
-			checkTileItemsForGridPlayer(world, playerPos, gridElement)
+			checkTileItemsForGridPlayer(world, gridElement)
 
 			// 現在の位置を記録
 			gameResources.PlayerTileState.LastTileX = currentTileX
@@ -135,7 +130,7 @@ func HandleWarpInput(world w.World) {
 }
 
 // checkTileItemsForGridPlayer はグリッドベースプレイヤーのタイルアイテムをチェックする
-func checkTileItemsForGridPlayer(world w.World, _ *gc.Position, playerGrid *gc.GridElement) {
+func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 	playerTileX := int(playerGrid.X)
 	playerTileY := int(playerGrid.Y)
 

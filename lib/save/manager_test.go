@@ -89,9 +89,9 @@ func TestComponentRegistry(t *testing.T) {
 	require.NoError(t, err)
 
 	// 型情報が正しく登録されていることを確認
-	positionInfo, exists := registry.GetTypeInfoByName("Position")
+	visionInfo, exists := registry.GetTypeInfoByName("AIVision")
 	assert.True(t, exists)
-	assert.Equal(t, "Position", positionInfo.Name)
+	assert.Equal(t, "AIVision", visionInfo.Name)
 
 	// 存在しない型
 	_, exists = registry.GetTypeInfoByName("NonExistent")
@@ -114,12 +114,12 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()
-	player.AddComponent(world.Components.Position, &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(200)})
+	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(5), Y: gc.Tile(10)})
 	player.AddComponent(world.Components.Operator, &gc.Operator{})
 
 	// NPCエンティティを作成
 	npc := world.Manager.NewEntity()
-	npc.AddComponent(world.Components.Position, &gc.Position{X: gc.Pixel(300), Y: gc.Pixel(400)})
+	npc.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(15), Y: gc.Tile(20)})
 	npc.AddComponent(world.Components.AIVision, &gc.AIVision{
 		ViewDistance: gc.Pixel(160),
 		TargetEntity: &player, // プレイヤーを参照
@@ -150,26 +150,26 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 		restoredPlayer = entity
 		playerFound = true
 
-		// Positionをチェック
-		pos := newWorld.Components.Position.Get(entity).(*gc.Position)
-		assert.Equal(t, gc.Pixel(100), pos.X)
-		assert.Equal(t, gc.Pixel(200), pos.Y)
+		// GridElementをチェック
+		grid := newWorld.Components.GridElement.Get(entity).(*gc.GridElement)
+		assert.Equal(t, gc.Tile(5), grid.X)
+		assert.Equal(t, gc.Tile(10), grid.Y)
 
 	}))
 
 	// エンティティの検証
 	entityCount := 0
-	newWorld.Manager.Join(newWorld.Components.Position).Visit(ecs.Visit(func(entity ecs.Entity) {
+	newWorld.Manager.Join(newWorld.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		entityCount++
 
 		// NPCを特定
 		if entity.HasComponent(newWorld.Components.AIVision) {
 			npcFound = true
 
-			// Positionをチェック
-			pos := newWorld.Components.Position.Get(entity).(*gc.Position)
-			assert.Equal(t, gc.Pixel(300), pos.X)
-			assert.Equal(t, gc.Pixel(400), pos.Y)
+			// GridElementをチェック
+			grid := newWorld.Components.GridElement.Get(entity).(*gc.GridElement)
+			assert.Equal(t, gc.Tile(15), grid.X)
+			assert.Equal(t, gc.Tile(20), grid.Y)
 
 			// AIVisionをチェック
 			vision := newWorld.Components.AIVision.Get(entity).(*gc.AIVision)
@@ -429,7 +429,7 @@ func TestHashConsistencyAcrossRuns(t *testing.T) {
 	// テストエンティティを作成（複数のコンポーネント付き）
 	entity := world.Manager.NewEntity()
 	world.Components.Name.Set(entity, &gc.Name{Name: "ConsistencyTest"})
-	world.Components.Position.Set(entity, &gc.Position{X: gc.Pixel(100), Y: gc.Pixel(200)})
+	world.Components.GridElement.Set(entity, &gc.GridElement{X: gc.Tile(5), Y: gc.Tile(10)})
 
 	// ワールドデータを抽出
 	worldData := manager.extractWorldData(world)

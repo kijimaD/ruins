@@ -125,11 +125,11 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 	// AI状態情報を抽出
 	var aiStates []hud.AIStateInfo
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.AIMoveFSM,
 		world.Components.AIRoaming,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		position := world.Components.Position.Get(entity).(*gc.Position)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		roaming := world.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
 
 		// AIの現在の状態を判定
@@ -149,9 +149,13 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 			}
 		}
 
+		// グリッド座標をピクセル座標に変換
+		pixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
+		pixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
+
 		// 画面座標に変換
-		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
-		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
+		screenX := (pixelX-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
+		screenY := (pixelY-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
 
 		aiStates = append(aiStates, hud.AIStateInfo{
 			ScreenX:   screenX,
@@ -163,14 +167,18 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 	// 視界範囲情報を抽出
 	var visionRanges []hud.VisionRangeInfo
 	world.Manager.Join(
-		world.Components.Position,
+		world.Components.GridElement,
 		world.Components.AIVision,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		position := world.Components.Position.Get(entity).(*gc.Position)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
 
-		screenX := (float64(position.X)-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
-		screenY := (float64(position.Y)-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
+		// グリッド座標をピクセル座標に変換
+		pixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
+		pixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
+
+		screenX := (pixelX-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
+		screenY := (pixelY-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
 		scaledRadius := float32(float64(vision.ViewDistance) * cameraScale)
 
 		visionRanges = append(visionRanges, hud.VisionRangeInfo{

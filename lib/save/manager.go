@@ -174,11 +174,6 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 
 		// この型のコンポーネントを持つ全エンティティを取得
 		switch typeInfo.Name {
-		case "Position":
-			world.Manager.Join(world.Components.Position).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
 		case ComponentAIVision:
 			world.Manager.Join(world.Components.AIVision).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
