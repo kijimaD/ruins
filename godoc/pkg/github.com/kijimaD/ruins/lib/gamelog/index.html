@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -146,10 +146,9 @@ gamelog.New(gamelog.FieldLog).
 <li>Magic(text): 紫色 - 魔法関連
 </ul>
 <h3 id="hdr-_______">ログストレージ</h3>
-<p>パッケージは3つのグローバルログストレージを提供します：
+<p>パッケージは2つのグローバルログストレージを提供します：
 <ul>
 <li>FieldLog: フィールド探索ログ用
-<li>BattleLog: 戦闘ログ用
 <li>SceneLog: シーンログ用（会話やイベント時の一時的なメッセージ）
 </ul>
 <p>色付きエントリの取得例：
@@ -178,7 +177,6 @@ gamelog.New(gamelog.FieldLog).
 <h3 id="hdr-____">使い分け</h3>
 <ul>
 <li>FieldLog: フィールドでの探索、アイテム入手、フロア移動などの継続的に表示されるログ
-<li>BattleLog: 戦闘中の攻撃、ダメージ、勝敗などの戦闘専用ログ
 <li>SceneLog: 会話シーンやイベント中の一時的なメッセージ（表示後にクリアされる）
 </ul>
 <h3 id="hdr-__">責務</h3>
@@ -338,8 +336,6 @@ gamelog.New(gamelog.FieldLog).
 			<div class="js-expandAll expandAll collapsed">(Expand All)</div>
 			<dl>
 			
-			<dd><a class="exampleLink" href="index.html#example_Logger_battleLog">Logger (BattleLog)</a></dd>
-			
 			<dd><a class="exampleLink" href="index.html#example_Logger_chainedAttack">Logger (ChainedAttack)</a></dd>
 			
 			<dd><a class="exampleLink" href="index.html#example_Logger_customColors">Logger (CustomColors)</a></dd>
@@ -384,8 +380,6 @@ gamelog.New(gamelog.FieldLog).
     <span id="DefaultMaxLogSize">DefaultMaxLogSize</span> = 1000
     <span class="comment">// FieldLogMaxSize はフィールドログの最大サイズ</span>
     <span id="FieldLogMaxSize">FieldLogMaxSize</span> = 100
-    <span class="comment">// BattleLogMaxSize は戦闘ログの最大サイズ</span>
-    <span id="BattleLogMaxSize">BattleLogMaxSize</span> = 500
     <span class="comment">// SceneLogMaxSize はシーンログの最大サイズ</span>
     <span id="SceneLogMaxSize">SceneLogMaxSize</span> = 200
 )</pre>
@@ -396,8 +390,6 @@ gamelog.New(gamelog.FieldLog).
 			
 				
 				<pre>var (
-    <span class="comment">// BattleLog は戦闘用ログ</span>
-    <span id="BattleLog">BattleLog</span> = <a href="index.html#NewSafeSlice">NewSafeSlice</a>(<a href="index.html#BattleLogMaxSize">BattleLogMaxSize</a>)
     <span class="comment">// FieldLog はフィールド用ログ</span>
     <span id="FieldLog">FieldLog</span> = <a href="index.html#NewSafeSlice">NewSafeSlice</a>(<a href="index.html#FieldLogMaxSize">FieldLogMaxSize</a>)
     <span class="comment">// SceneLog は会話シーンでステータス変化を通知する用ログ</span>
@@ -504,46 +496,7 @@ gamelog.New(gamelog.FieldLog).
 
 			
 
-			<div id="example_Logger_battleLog" class="toggle">
-	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example (BattleLog)</span></p>
-	</div>
-	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example (BattleLog)</span></p>
-		<p>戦闘ログの例
-</p>
-		
-		
-			<p>Code:</p>
-			<pre class="code"><span class="comment">// ローカル戦闘ログストアを作成</span>
-testBattleLog := NewSafeSlice(BattleLogMaxSize)
-testBattleLog.Clear()
-
-<span class="comment">// 複雑な戦闘ログ</span>
-New(testBattleLog).
-    NPCName(&#34;Skeleton Warrior&#34;).
-    Append(&#34; swings &#34;).
-    ItemName(&#34;Rusty Sword&#34;).
-    Append(&#34; at &#34;).
-    PlayerName(&#34;Hero&#34;).
-    Append(&#34; for &#34;).
-    Damage(12).
-    Append(&#34; damage!&#34;).
-    Log()
-
-<span class="comment">// ログの取得と表示</span>
-messages := testBattleLog.GetRecent(1)
-fmt.Println(messages[0])
-<span class="comment"></pre>
-			
-			<p>Output:</p>
-			<pre class="output">Skeleton Warrior swings Rusty Sword at Hero for 12 damage!
-</pre>
-			
-		
-	</div>
-</div>
-<div id="example_Logger_chainedAttack" class="toggle">
+			<div id="example_Logger_chainedAttack" class="toggle">
 	<div class="collapsed">
 		<p class="exampleHeading toggleButton">▹ <span class="text">Example (ChainedAttack)</span></p>
 	</div>
@@ -922,7 +875,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 		
 			
 			
-			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=486:585#L11">SafeSlice</a>
+			<h2 id="SafeSlice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=407:506#L9">SafeSlice</a>
 				<a class="permalink" href="index.html#SafeSlice">&#xb6;</a>
 				
 				
@@ -944,7 +897,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 
 			
 				
-				<h3 id="NewSafeSlice">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=667:708#L18">NewSafeSlice</a>
+				<h3 id="NewSafeSlice">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=588:629#L16">NewSafeSlice</a>
 					<a class="permalink" href="index.html#NewSafeSlice">&#xb6;</a>
 					
 					
@@ -958,7 +911,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 
 			
 				
-				<h3 id="SafeSlice.Clear">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1928:1955#L63">Clear</a>
+				<h3 id="SafeSlice.Clear">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1849:1876#L61">Clear</a>
 					<a class="permalink" href="index.html#SafeSlice.Clear">&#xb6;</a>
 					
 					
@@ -971,7 +924,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.Count">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2063:2094#L71">Count</a>
+				<h3 id="SafeSlice.Count">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1984:2015#L69">Count</a>
 					<a class="permalink" href="index.html#SafeSlice.Count">&#xb6;</a>
 					
 					
@@ -984,7 +937,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.GetHistory">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1698:1739#L53">GetHistory</a>
+				<h3 id="SafeSlice.GetHistory">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1619:1660#L51">GetHistory</a>
 					<a class="permalink" href="index.html#SafeSlice.GetHistory">&#xb6;</a>
 					
 					
@@ -998,7 +951,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.GetHistoryEntries">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=3728:3778#L130">GetHistoryEntries</a>
+				<h3 id="SafeSlice.GetHistoryEntries">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=3649:3699#L128">GetHistoryEntries</a>
 					<a class="permalink" href="index.html#SafeSlice.GetHistoryEntries">&#xb6;</a>
 					
 					
@@ -1011,7 +964,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.GetRecent">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1296:1345#L42">GetRecent</a>
+				<h3 id="SafeSlice.GetRecent">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=1217:1266#L40">GetRecent</a>
 					<a class="permalink" href="index.html#SafeSlice.GetRecent">&#xb6;</a>
 					
 					
@@ -1025,7 +978,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.GetRecentEntries">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=3035:3093#L106">GetRecentEntries</a>
+				<h3 id="SafeSlice.GetRecentEntries">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2956:3014#L104">GetRecentEntries</a>
 					<a class="permalink" href="index.html#SafeSlice.GetRecentEntries">&#xb6;</a>
 					
 					
@@ -1038,7 +991,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.MaxHistory">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2210:2246#L79">MaxHistory</a>
+				<h3 id="SafeSlice.MaxHistory">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=2131:2167#L77">MaxHistory</a>
 					<a class="permalink" href="index.html#SafeSlice.MaxHistory">&#xb6;</a>
 					
 					
@@ -1051,7 +1004,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				
 			
 				
-				<h3 id="SafeSlice.Push">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=900:940#L29">Push</a>
+				<h3 id="SafeSlice.Push">func (*SafeSlice) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logstore.go?s=821:861#L27">Push</a>
 					<a class="permalink" href="index.html#SafeSlice.Push">&#xb6;</a>
 					
 					
@@ -1075,7 +1028,7 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

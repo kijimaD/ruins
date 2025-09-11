@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -108,7 +108,7 @@ processor.AddEffect(damage, &amp;attacker, target)
 
 // ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）
 healing := effects.Healing{Amount: gc.NumeralAmount{Numeral: 30}}
-processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetParty{}, gamelog.BattleLog, world)
+processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetParty{}, gamelog.FieldLog, world)
 
 // 非戦闘時の回復（ゲームログ出力なし）
 processor.AddTargetedEffect(healing, &amp;healer, effects.TargetParty{}, world)
@@ -1733,7 +1733,7 @@ Deadコンポーネントが付与されているメンバーを選択する
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

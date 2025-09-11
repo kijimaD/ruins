@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -117,19 +117,7 @@
 			
 			
 				
-				<dd><a href="index.html#GetBossEvent1Factories">func GetBossEvent1Factories() []es.StateFactory</a></dd>
-			
-				
 				<dd><a href="index.html#GetItemGetEvent1Factories">func GetItemGetEvent1Factories() []es.StateFactory</a></dd>
-			
-				
-				<dd><a href="index.html#GetRaidEvent1Factories">func GetRaidEvent1Factories() []es.StateFactory</a></dd>
-			
-				
-				<dd><a href="index.html#NewBattleState">func NewBattleState() es.State</a></dd>
-			
-				
-				<dd><a href="index.html#NewBattleStateWithEnemies">func NewBattleStateWithEnemies(enemies []string) es.StateFactory</a></dd>
 			
 				
 				<dd><a href="index.html#NewCraftMenuState">func NewCraftMenuState() es.State</a></dd>
@@ -185,32 +173,6 @@
 				
 				<dd><a href="index.html#NewSaveMenuState">func NewSaveMenuState() es.State</a></dd>
 			
-			
-				
-				<dd><a href="index.html#BattleState">type BattleState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.Draw">func (st *BattleState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.OnPause">func (st *BattleState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.OnResume">func (st *BattleState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.OnStart">func (st *BattleState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.OnStop">func (st *BattleState) OnStop(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.String">func (st BattleState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleState.Update">func (st *BattleState) Update(world w.World) es.Transition</a></dd>
-				
 			
 				
 				<dd><a href="index.html#CraftMenuState">type CraftMenuState</a></dd>
@@ -647,10 +609,6 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go">battle.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle_phase.go">battle_phase.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go">craft_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go">debug_menu.go</a>
@@ -715,20 +673,6 @@
 		
 			
 			
-			<h2 id="GetBossEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=2925:2972#L76">GetBossEvent1Factories</a>
-				<a class="permalink" href="index.html#GetBossEvent1Factories">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func GetBossEvent1Factories() []<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateFactory">StateFactory</a></pre>
-			<p>GetBossEvent1Factories はボス戦のファクトリー関数配列を返す
-
-			
-			
-
-		
-			
-			
 			<h2 id="GetItemGetEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=788:838#L13">GetItemGetEvent1Factories</a>
 				<a class="permalink" href="index.html#GetItemGetEvent1Factories">&#xb6;</a>
 				
@@ -743,49 +687,7 @@
 		
 			
 			
-			<h2 id="GetRaidEvent1Factories">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go?s=1999:2046#L49">GetRaidEvent1Factories</a>
-				<a class="permalink" href="index.html#GetRaidEvent1Factories">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func GetRaidEvent1Factories() []<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateFactory">StateFactory</a></pre>
-			<p>GetRaidEvent1Factories は汎用戦闘イベントのファクトリー関数配列を返す
-
-			
-			
-
-		
-			
-			
-			<h2 id="NewBattleState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=487:517#L7">NewBattleState</a>
-				<a class="permalink" href="index.html#NewBattleState">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewBattleState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a></pre>
-			<p>NewBattleState は新しいBattleStateインスタンスを作成するファクトリー関数
-
-			
-			
-
-		
-			
-			
-			<h2 id="NewBattleStateWithEnemies">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=650:714#L12">NewBattleStateWithEnemies</a>
-				<a class="permalink" href="index.html#NewBattleStateWithEnemies">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewBattleStateWithEnemies(enemies []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateFactory">StateFactory</a></pre>
-			<p>NewBattleStateWithEnemies は指定された敵でBattleStateを作成するファクトリー関数
-
-			
-			
-
-		
-			
-			
-			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1259:1292#L31">NewCraftMenuState</a>
+			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=845:878#L17">NewCraftMenuState</a>
 				<a class="permalink" href="index.html#NewCraftMenuState">&#xb6;</a>
 				
 				
@@ -799,7 +701,7 @@
 		
 			
 			
-			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1785:1818#L46">NewDebugMenuState</a>
+			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1371:1404#L32">NewDebugMenuState</a>
 				<a class="permalink" href="index.html#NewDebugMenuState">&#xb6;</a>
 				
 				
@@ -813,7 +715,7 @@
 		
 			
 			
-			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1959:1994#L51">NewDungeonMenuState</a>
+			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1545:1580#L37">NewDungeonMenuState</a>
 				<a class="permalink" href="index.html#NewDungeonMenuState">&#xb6;</a>
 				
 				
@@ -827,7 +729,7 @@
 		
 			
 			
-			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1081:1118#L26">NewDungeonSelectState</a>
+			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=667:704#L12">NewDungeonSelectState</a>
 				<a class="permalink" href="index.html#NewDungeonSelectState">&#xb6;</a>
 				
 				
@@ -841,7 +743,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2780:2874#L70">NewDungeonStateWithBuilder</a>
+			<h2 id="NewDungeonStateWithBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2366:2460#L56">NewDungeonStateWithBuilder</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithBuilder">&#xb6;</a>
 				
 				
@@ -855,7 +757,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2152:2208#L56">NewDungeonStateWithDepth</a>
+			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1738:1794#L42">NewDungeonStateWithDepth</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithDepth">&#xb6;</a>
 				
 				
@@ -869,7 +771,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2453:2521#L63">NewDungeonStateWithSeed</a>
+			<h2 id="NewDungeonStateWithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2039:2107#L49">NewDungeonStateWithSeed</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithSeed">&#xb6;</a>
 				
 				
@@ -883,7 +785,7 @@
 		
 			
 			
-			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1615:1648#L41">NewEquipMenuState</a>
+			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1201:1234#L27">NewEquipMenuState</a>
 				<a class="permalink" href="index.html#NewEquipMenuState">&#xb6;</a>
 				
 				
@@ -897,7 +799,7 @@
 		
 			
 			
-			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3355:3413#L86">NewExecStateWithFunc</a>
+			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2941:2999#L72">NewExecStateWithFunc</a>
 				<a class="permalink" href="index.html#NewExecStateWithFunc">&#xb6;</a>
 				
 				
@@ -911,7 +813,7 @@
 		
 			
 			
-			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3742:3774#L98">NewGameOverState</a>
+			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3328:3360#L84">NewGameOverState</a>
 				<a class="permalink" href="index.html#NewGameOverState">&#xb6;</a>
 				
 				
@@ -925,7 +827,7 @@
 		
 			
 			
-			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=905:937#L21">NewHomeMenuState</a>
+			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=491:523#L7">NewHomeMenuState</a>
 				<a class="permalink" href="index.html#NewHomeMenuState">&#xb6;</a>
 				
 				
@@ -953,7 +855,7 @@
 		
 			
 			
-			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1437:1474#L36">NewInventoryMenuState</a>
+			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1023:1060#L22">NewInventoryMenuState</a>
 				<a class="permalink" href="index.html#NewInventoryMenuState">&#xb6;</a>
 				
 				
@@ -967,7 +869,7 @@
 		
 			
 			
-			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=4074:4106#L108">NewLoadMenuState</a>
+			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3660:3692#L94">NewLoadMenuState</a>
 				<a class="permalink" href="index.html#NewLoadMenuState">&#xb6;</a>
 				
 				
@@ -981,7 +883,7 @@
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3576:3608#L93">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3162:3194#L79">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -995,7 +897,7 @@
 		
 			
 			
-			<h2 id="NewMessageStateWithText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3102:3159#L77">NewMessageStateWithText</a>
+			<h2 id="NewMessageStateWithText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2688:2745#L63">NewMessageStateWithText</a>
 				<a class="permalink" href="index.html#NewMessageStateWithText">&#xb6;</a>
 				
 				
@@ -1023,7 +925,7 @@
 		
 			
 			
-			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3908:3940#L103">NewSaveMenuState</a>
+			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3494:3526#L89">NewSaveMenuState</a>
 				<a class="permalink" href="index.html#NewSaveMenuState">&#xb6;</a>
 				
 				
@@ -1035,129 +937,6 @@
 			
 
 		
-		
-			
-			
-			<h2 id="BattleState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=906:1990#L21">BattleState</a>
-				<a class="permalink" href="index.html#BattleState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>BattleState は戦闘シーンのゲームステート
-
-			<pre>type BattleState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>
-
-    <span class="comment">// 固定敵の名前リスト（指定された場合のみ使用）</span>
-<span id="BattleState.FixedEnemies"></span>    FixedEnemies []<a href="http://localhost:8888/pkg/builtin/#string">string</a>
-
-    <span class="comment">// フィールド上の敵シンボル（削除用）</span>
-<span id="BattleState.FieldEnemyEntity"></span>    FieldEnemyEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="BattleState.Draw">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=8766:8826#L278">Draw</a>
-					<a class="permalink" href="index.html#BattleState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#BattleState">BattleState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はゲームステートの描画処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="BattleState.OnPause">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2191:2232#L71">OnPause</a>
-					<a class="permalink" href="index.html#BattleState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#BattleState">BattleState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="BattleState.OnResume">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2301:2343#L74">OnResume</a>
-					<a class="permalink" href="index.html#BattleState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#BattleState">BattleState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="BattleState.OnStart">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=2411:2456#L77">OnStart</a>
-					<a class="permalink" href="index.html#BattleState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#BattleState">BattleState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステートが開始される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="BattleState.OnStop">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=3556:3600#L114">OnStop</a>
-					<a class="permalink" href="index.html#BattleState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#BattleState">BattleState</a>) OnStop(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="BattleState.String">func (BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=1992:2029#L62">String</a>
-					<a class="permalink" href="index.html#BattleState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#BattleState">BattleState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="BattleState.Update">func (*BattleState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/battle.go?s=4407:4465#L141">Update</a>
-					<a class="permalink" href="index.html#BattleState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#BattleState">BattleState</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a></pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
 		
 			
 			
@@ -1629,7 +1408,7 @@
 		
 			
 			
-			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=643:971#L15">DungeonState</a>
+			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=597:925#L14">DungeonState</a>
 				<a class="permalink" href="index.html#DungeonState">&#xb6;</a>
 				
 				
@@ -1658,7 +1437,7 @@
 
 			
 				
-				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5869:5934#L173">Draw</a>
+				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=4795:4860#L139">Draw</a>
 					<a class="permalink" href="index.html#DungeonState.Draw">&#xb6;</a>
 					
 					
@@ -1671,7 +1450,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1175:1217#L33">OnPause</a>
+				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1129:1171#L32">OnPause</a>
 					<a class="permalink" href="index.html#DungeonState.OnPause">&#xb6;</a>
 					
 					
@@ -1684,7 +1463,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1286:1329#L36">OnResume</a>
+				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1240:1283#L35">OnResume</a>
 					<a class="permalink" href="index.html#DungeonState.OnResume">&#xb6;</a>
 					
 					
@@ -1697,7 +1476,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1397:1443#L39">OnStart</a>
+				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1351:1397#L38">OnStart</a>
 					<a class="permalink" href="index.html#DungeonState.OnStart">&#xb6;</a>
 					
 					
@@ -1710,7 +1489,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=2384:2429#L68">OnStop</a>
+				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=2507:2552#L72">OnStop</a>
 					<a class="permalink" href="index.html#DungeonState.OnStop">&#xb6;</a>
 					
 					
@@ -1723,7 +1502,7 @@
 				
 			
 				
-				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=973:1011#L24">String</a>
+				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=927:965#L23">String</a>
 					<a class="permalink" href="index.html#DungeonState.String">&#xb6;</a>
 					
 					
@@ -1735,7 +1514,7 @@
 				
 			
 				
-				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=3104:3163#L94">Update</a>
+				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=3090:3149#L93">Update</a>
 					<a class="permalink" href="index.html#DungeonState.Update">&#xb6;</a>
 					
 					
@@ -3088,7 +2867,7 @@
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

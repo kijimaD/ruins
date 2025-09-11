@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -183,9 +183,10 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 <p>## 制限事項
 <p>### サポートされるコンポーネント型
 現在サポートされているコンポーネント：
-- Position, Velocity, Camera
+- Camera (カメラのみPositionコンポーネントを使用)
+- GridElement (タイルベースの位置情報)
 - AIVision, AIRoaming, AIChasing
-- SpriteRender, GridElement
+- SpriteRender
 - NullComponent (Operator, BlockView, BlockPass)
 <p>### エンティティ参照
 現在、AIVision.TargetEntityのみ自動処理されます。
@@ -202,9 +203,9 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
       {
         &quot;stable_id&quot;: {&quot;index&quot;: 1, &quot;generation&quot;: 0},
         &quot;components&quot;: {
-          &quot;Position&quot;: {
-            &quot;type&quot;: &quot;Position&quot;,
-            &quot;data&quot;: {&quot;x&quot;: 100, &quot;y&quot;: 200}
+          &quot;GridElement&quot;: {
+            &quot;type&quot;: &quot;GridElement&quot;,
+            &quot;data&quot;: {&quot;x&quot;: 5, &quot;y&quot;: 10}
           }
         }
       }
@@ -493,7 +494,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 
 			
 				
-				<h3 id="ComponentRegistry.GetAllTypes">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=10189:10251#L213">GetAllTypes</a>
+				<h3 id="ComponentRegistry.GetAllTypes">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9955:10017#L211">GetAllTypes</a>
 					<a class="permalink" href="index.html#ComponentRegistry.GetAllTypes">&#xb6;</a>
 					
 					
@@ -506,7 +507,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="ComponentRegistry.GetTypeInfo">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9631:9715#L190">GetTypeInfo</a>
+				<h3 id="ComponentRegistry.GetTypeInfo">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9397:9481#L188">GetTypeInfo</a>
 					<a class="permalink" href="index.html#ComponentRegistry.GetTypeInfo">&#xb6;</a>
 					
 					
@@ -519,7 +520,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="ComponentRegistry.GetTypeInfoByName">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9870:9955#L199">GetTypeInfoByName</a>
+				<h3 id="ComponentRegistry.GetTypeInfoByName">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9636:9721#L197">GetTypeInfoByName</a>
 					<a class="permalink" href="index.html#ComponentRegistry.GetTypeInfoByName">&#xb6;</a>
 					
 					
@@ -696,7 +697,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 
 			
 				
-				<h3 id="SerializationManager.GetComponentRegistry">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=23244:23317#L674">GetComponentRegistry</a>
+				<h3 id="SerializationManager.GetComponentRegistry">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=22828:22901#L664">GetComponentRegistry</a>
 					<a class="permalink" href="index.html#SerializationManager.GetComponentRegistry">&#xb6;</a>
 					
 					
@@ -709,7 +710,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="SerializationManager.GetSaveFileTimestamp">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=22645:22733#L653">GetSaveFileTimestamp</a>
+				<h3 id="SerializationManager.GetSaveFileTimestamp">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=22229:22317#L643">GetSaveFileTimestamp</a>
 					<a class="permalink" href="index.html#SerializationManager.GetSaveFileTimestamp">&#xb6;</a>
 					
 					
@@ -723,7 +724,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.GetStableIDManager">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=23069:23138#L669">GetStableIDManager</a>
+				<h3 id="SerializationManager.GetStableIDManager">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=22653:22722#L659">GetStableIDManager</a>
 					<a class="permalink" href="index.html#SerializationManager.GetStableIDManager">&#xb6;</a>
 					
 					
@@ -749,7 +750,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.SaveFileExists">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=22372:22440#L647">SaveFileExists</a>
+				<h3 id="SerializationManager.SaveFileExists">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=21956:22024#L637">SaveFileExists</a>
 					<a class="permalink" href="index.html#SerializationManager.SaveFileExists">&#xb6;</a>
 					
 					
@@ -994,7 +995,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

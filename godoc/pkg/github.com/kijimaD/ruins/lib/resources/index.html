@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -151,13 +151,16 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.ConsumeStateEvent">func (g *Dungeon) ConsumeStateEvent() StateEvent</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.ConsumeStateEvent">func (d *Dungeon) ConsumeStateEvent() StateEvent</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.GetStateEvent">func (g *Dungeon) GetStateEvent() StateEvent</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.GetStateEvent">func (d *Dungeon) GetStateEvent() StateEvent</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.SetStateEvent">func (g *Dungeon) SetStateEvent(event StateEvent)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.ResetPlayerTileState">func (d *Dungeon) ResetPlayerTileState()</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.SetStateEvent">func (d *Dungeon) SetStateEvent(event StateEvent)</a></dd>
 				
 			
 				
@@ -177,11 +180,16 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#Level.XYTileCoord">func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Level.XYTileIndex">func (l *Level) XYTileIndex(tx gc.Row, ty gc.Col) TileIdx</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Level.XYTileIndex">func (l *Level) XYTileIndex(tx gc.Tile, ty gc.Tile) TileIdx</a></dd>
 				
 			
 				
 				<dd><a href="index.html#MinimapSettings">type MinimapSettings</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#PlayerTileState">type PlayerTileState</a></dd>
 				
 				
 			
@@ -258,8 +266,6 @@
     <span id="StateEventWarpNext">StateEventWarpNext</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_NEXT&#34;)
     <span class="comment">// StateEventWarpEscape は脱出を表す</span>
     <span id="StateEventWarpEscape">StateEventWarpEscape</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_ESCAPE&#34;)
-    <span class="comment">// StateEventBattleStart は戦闘開始を表す</span>
-    <span id="StateEventBattleStart">StateEventBattleStart</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;BATTLE_START&#34;)
 )</pre>
 			
 		
@@ -400,7 +406,7 @@
 		
 			
 			
-			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=369:711#L1">Dungeon</a>
+			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=369:788#L1">Dungeon</a>
 				<a class="permalink" href="index.html#Dungeon">&#xb6;</a>
 				
 				
@@ -418,6 +424,8 @@
 <span id="Dungeon.ExploredTiles"></span>    ExploredTiles map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// ミニマップの設定</span>
 <span id="Dungeon.Minimap"></span>    Minimap <a href="index.html#MinimapSettings">MinimapSettings</a>
+    <span class="comment">// プレイヤーのタイル移動状態</span>
+<span id="Dungeon.PlayerTileState"></span>    PlayerTileState <a href="index.html#PlayerTileState">PlayerTileState</a>
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -434,12 +442,12 @@
 
 			
 				
-				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2601:2649#L72">ConsumeStateEvent</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=3260:3308#L92">ConsumeStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (g *<a href="index.html#Dungeon">Dungeon</a>) ConsumeStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
+				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) ConsumeStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
 				<p>ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
 
 				
@@ -447,12 +455,12 @@
 				
 			
 				
-				<h3 id="Dungeon.GetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2286:2330#L62">GetStateEvent</a>
+				<h3 id="Dungeon.GetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2945:2989#L82">GetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.GetStateEvent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (g *<a href="index.html#Dungeon">Dungeon</a>) GetStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
+				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) GetStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
 				<p>GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
 
 				
@@ -460,12 +468,25 @@
 				
 			
 				
-				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2403:2452#L67">SetStateEvent</a>
+				<h3 id="Dungeon.ResetPlayerTileState">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1221:1261#L26">ResetPlayerTileState</a>
+					<a class="permalink" href="index.html#Dungeon.ResetPlayerTileState">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) ResetPlayerTileState()</pre>
+				<p>ResetPlayerTileState はプレイヤーのタイル状態をリセットする（階層移動時に使用）
+
+				
+				
+				
+			
+				
+				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=3062:3111#L87">SetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.SetStateEvent">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (g *<a href="index.html#Dungeon">Dungeon</a>) SetStateEvent(event <a href="index.html#StateEvent">StateEvent</a>)</pre>
+				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) SetStateEvent(event <a href="index.html#StateEvent">StateEvent</a>)</pre>
 				<p>SetStateEvent はStateEventを設定する
 
 				
@@ -475,7 +496,7 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=741:1142#L15">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1394:1797#L35">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
@@ -484,9 +505,9 @@
 
 			<pre>type Level struct {
     <span class="comment">// 横のタイル数</span>
-<span id="Level.TileWidth"></span>    TileWidth <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>
+<span id="Level.TileWidth"></span>    TileWidth <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>
     <span class="comment">// 縦のタイル数</span>
-<span id="Level.TileHeight"></span>    TileHeight <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>
+<span id="Level.TileHeight"></span>    TileHeight <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>
     <span class="comment">// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる</span>
 <span id="Level.TileSize"></span>    TileSize <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>
     <span class="comment">// タイルエンティティ群</span>
@@ -509,7 +530,7 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1694:1753#L43">AtEntity</a>
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2351:2410#L63">AtEntity</a>
 					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
 					
 					
@@ -522,7 +543,7 @@
 				
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2102:2135#L57">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2761:2794#L77">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -535,7 +556,7 @@
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1952:1984#L52">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2611:2643#L72">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -548,7 +569,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1450:1511#L35">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2107:2168#L55">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -561,12 +582,12 @@
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1241:1298#L30">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1896:1955#L50">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (l *<a href="index.html#Level">Level</a>) XYTileIndex(tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Row">Row</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Col">Col</a>) <a href="index.html#TileIdx">TileIdx</a></pre>
+				<pre>func (l *<a href="index.html#Level">Level</a>) XYTileIndex(tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) <a href="index.html#TileIdx">TileIdx</a></pre>
 				<p>XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
 
 				
@@ -576,7 +597,7 @@
 		
 			
 			
-			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2785:3076#L79">MinimapSettings</a>
+			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=3444:3735#L99">MinimapSettings</a>
 				<a class="permalink" href="index.html#MinimapSettings">&#xb6;</a>
 				
 				
@@ -592,6 +613,36 @@
 <span id="MinimapSettings.OffsetY"></span>    OffsetY <a href="http://localhost:8888/pkg/builtin/#int">int</a>
     <span class="comment">// ミニマップのスケール（何ピクセルで1タイルを表すか）</span>
 <span id="MinimapSettings.Scale"></span>    Scale <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="PlayerTileState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=879:1107#L17">PlayerTileState</a>
+				<a class="permalink" href="index.html#PlayerTileState">&#xb6;</a>
+				
+				
+			</h2>
+			<p>PlayerTileState はプレイヤーのタイル移動に関する状態を管理する
+
+			<pre>type PlayerTileState struct {
+    <span class="comment">// プレイヤーの前回のタイル位置（重複メッセージ防止用）</span>
+<span id="PlayerTileState.LastTileX"></span>    LastTileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="PlayerTileState.LastTileY"></span>    LastTileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    <span class="comment">// 現在プレイヤーがいるワープホールの情報</span>
+<span id="PlayerTileState.CurrentWarp"></span>    CurrentWarp *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Warp">Warp</a>
 }
 </pre>
 
@@ -776,7 +827,7 @@
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -100,7 +100,7 @@
 - カスタマイズ可能な表示速度
 - UI作成機能（MessageUIBuilder）
 <p>使用例（基本的な使い方）:
-<pre>config := typewriter.BattleConfig()
+<pre>config := typewriter.DialogConfig()
 tw := typewriter.New(config)
 
 tw.OnComplete(func() {
@@ -109,7 +109,7 @@ tw.OnComplete(func() {
 </pre>
 <p>使用例（UI付きの使い方）:
 <pre>// MessageHandlerとUIBuilderを使用
-handler := typewriter.NewMessageHandler(typewriter.BattleConfig(), keyboardInput)
+handler := typewriter.NewMessageHandler(typewriter.DialogConfig(), keyboardInput)
 uiConfig := typewriter.DefaultUIConfig()
 uiConfig.TextFace = yourTextFace
 uiConfig.TextColor = yourTextColor
@@ -150,9 +150,6 @@ for tw.IsTyping() {
 			
 				
 				<dd><a href="index.html#Config">type Config</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleConfig">func BattleConfig() Config</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#DialogConfig">func DialogConfig() Config</a></dd>
@@ -361,19 +358,7 @@ for tw.IsTyping() {
 
 			
 				
-				<h3 id="BattleConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=1463:1489#L37">BattleConfig</a>
-					<a class="permalink" href="index.html#BattleConfig">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func BattleConfig() <a href="index.html#Config">Config</a></pre>
-				<p>BattleConfig は戦闘用設定
-
-				
-				
-			
-				
-				<h3 id="DialogConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=1804:1830#L50">DialogConfig</a>
+				<h3 id="DialogConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/typewriter/config.go?s=1463:1489#L37">DialogConfig</a>
 					<a class="permalink" href="index.html#DialogConfig">&#xb6;</a>
 					
 					
@@ -1031,7 +1016,7 @@ typewriterをラップしてコントロールできるようにする
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

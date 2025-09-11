@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -110,24 +110,19 @@
 			<div id="manual-nav">
 			<dl>
 			
-				<dd><a href="index.html#pkg-constants">Constants</a></dd>
-			
 			
 			
 				
-				<dd><a href="index.html#AIInputSystem">func AIInputSystem(world w.World)</a></dd>
-			
-				
-				<dd><a href="index.html#BattleCommandSystem">func BattleCommandSystem(world w.World)</a></dd>
+				<dd><a href="index.html#CameraSystem">func CameraSystem(world w.World)</a></dd>
 			
 				
 				<dd><a href="index.html#ClearVisionCaches">func ClearVisionCaches()</a></dd>
 			
 				
-				<dd><a href="index.html#CollisionSystem">func CollisionSystem(world w.World)</a></dd>
+				<dd><a href="index.html#CreateEnemyEntity">func CreateEnemyEntity(t *testing.T, world w.World, x, y float64)</a></dd>
 			
 				
-				<dd><a href="index.html#CreateEnemyEntity">func CreateEnemyEntity(t *testing.T, world w.World, x, y float64)</a></dd>
+				<dd><a href="index.html#CreateEntityWithGridPosition">func CreateEntityWithGridPosition(t *testing.T, world w.World, gridX, gridY int, isPlayer bool)</a></dd>
 			
 				
 				<dd><a href="index.html#CreateEntityWithSprite">func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, height int, isPlayer bool)</a></dd>
@@ -157,13 +152,10 @@
 				<dd><a href="index.html#HUDSystem">func HUDSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
 				
-				<dd><a href="index.html#ItemCollectionSystem">func ItemCollectionSystem(world w.World)</a></dd>
+				<dd><a href="index.html#HandleItemCollectionInput">func HandleItemCollectionInput(world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#MoveSystem">func MoveSystem(world w.World)</a></dd>
-			
-				
-				<dd><a href="index.html#PlayerInputSystem">func PlayerInputSystem(world w.World)</a></dd>
+				<dd><a href="index.html#HandleWarpInput">func HandleWarpInput(world w.World)</a></dd>
 			
 				
 				<dd><a href="index.html#RenderSpriteSystem">func RenderSpriteSystem(world w.World, screen *ebiten.Image)</a></dd>
@@ -172,24 +164,14 @@
 				<dd><a href="index.html#SetTranslate">func SetTranslate(world w.World, op *ebiten.DrawImageOptions)</a></dd>
 			
 				
+				<dd><a href="index.html#TileInputSystem">func TileInputSystem(world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#TileMoveSystem">func TileMoveSystem(world w.World)</a></dd>
+			
+				
 				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, screen *ebiten.Image)</a></dd>
 			
-			
-				
-				<dd><a href="index.html#BattleExtinctionType">type BattleExtinctionType</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleExtinctionSystem">func BattleExtinctionSystem(world w.World) BattleExtinctionType</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#DropResult">type DropResult</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BattleDropSystem">func BattleDropSystem(world w.World) DropResult</a></dd>
-				
-				
 			
 				
 				<dd><a href="index.html#HUDRenderingSystem">type HUDRenderingSystem</a></dd>
@@ -226,17 +208,9 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go">ai_input.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go">battle_command.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go">battle_drop.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go">battle_extinction.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/cache.go">cache.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/collision.go">collision.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/camera_system.go">camera_system.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/doc.go">doc.go</a>
 			
@@ -250,13 +224,13 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/item_collection.go">item_collection.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go">move_system.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go">player_input.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go">render_sprite.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go">test_helpers.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go">tile_input_system.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_move_system.go">tile_move_system.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go">vision.go</a>
 			
@@ -269,42 +243,17 @@
 		
 
 		
-			<h2 id="pkg-constants">Constants</h2>
-			
-				
-				<pre>const (
-    <span class="comment">// LevelUpThreshold はレベルアップに必要な経験値の闾値</span>
-    <span id="LevelUpThreshold">LevelUpThreshold</span> = 100
-)</pre>
-			
-		
 		
 		
 			
 			
-			<h2 id="AIInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/ai_input.go?s=279:312#L4">AIInputSystem</a>
-				<a class="permalink" href="index.html#AIInputSystem">&#xb6;</a>
+			<h2 id="CameraSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/camera_system.go?s=251:283#L1">CameraSystem</a>
+				<a class="permalink" href="index.html#CameraSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AIInputSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>AIInputSystem は AI制御されたフィールドエンティティの入力処理を行う
-
-			
-			
-
-		
-			
-			
-			<h2 id="BattleCommandSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_command.go?s=556:595#L9">BattleCommandSystem</a>
-				<a class="permalink" href="index.html#BattleCommandSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func BattleCommandSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>BattleCommandSystem は戦闘中のコマンド処理を行う
-1回1回実行ごとにコマンドを取り出して結果を得られるようになっている
-クリックごとにコマンドの結果を見られるようにするため
+			<pre>func CameraSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>CameraSystem はカメラの追従とズーム処理を行う
 
 			
 			
@@ -326,21 +275,7 @@
 		
 			
 			
-			<h2 id="CollisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/collision.go?s=399:434#L8">CollisionSystem</a>
-				<a class="permalink" href="index.html#CollisionSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func CollisionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>CollisionSystem はプレイヤーと敵の衝突を検出し、戦闘遷移を発火する
-
-			
-			
-
-		
-			
-			
-			<h2 id="CreateEnemyEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=2144:2209#L67">CreateEnemyEntity</a>
+			<h2 id="CreateEnemyEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=2262:2327#L73">CreateEnemyEntity</a>
 				<a class="permalink" href="index.html#CreateEnemyEntity">&#xb6;</a>
 				
 				
@@ -354,7 +289,21 @@
 		
 			
 			
-			<h2 id="CreateEntityWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=3025:3129#L95">CreateEntityWithSprite</a>
+			<h2 id="CreateEntityWithGridPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=4893:4988#L156">CreateEntityWithGridPosition</a>
+				<a class="permalink" href="index.html#CreateEntityWithGridPosition">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func CreateEntityWithGridPosition(t *<a href="http://localhost:8888/pkg/testing/">testing</a>.<a href="http://localhost:8888/pkg/testing/#T">T</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, gridX, gridY <a href="http://localhost:8888/pkg/builtin/#int">int</a>, isPlayer <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+			<p>CreateEntityWithGridPosition はグリッド座標でエンティティを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="CreateEntityWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=3143:3247#L101">CreateEntityWithSprite</a>
 				<a class="permalink" href="index.html#CreateEntityWithSprite">&#xb6;</a>
 				
 				
@@ -368,7 +317,7 @@
 		
 			
 			
-			<h2 id="CreateEntityWithSpriteSize">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=4486:4592#L144">CreateEntityWithSpriteSize</a>
+			<h2 id="CreateEntityWithSpriteSize">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=4604:4710#L150">CreateEntityWithSpriteSize</a>
 				<a class="permalink" href="index.html#CreateEntityWithSpriteSize">&#xb6;</a>
 				
 				
@@ -382,7 +331,7 @@
 		
 			
 			
-			<h2 id="CreatePlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=1286:1352#L38">CreatePlayerEntity</a>
+			<h2 id="CreatePlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=1404:1470#L44">CreatePlayerEntity</a>
 				<a class="permalink" href="index.html#CreatePlayerEntity">&#xb6;</a>
 				
 				
@@ -396,7 +345,7 @@
 		
 			
 			
-			<h2 id="CreateTestWorldForCollision">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=821:875#L22">CreateTestWorldForCollision</a>
+			<h2 id="CreateTestWorldForCollision">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=939:993#L28">CreateTestWorldForCollision</a>
 				<a class="permalink" href="index.html#CreateTestWorldForCollision">&#xb6;</a>
 				
 				
@@ -410,7 +359,7 @@
 		
 			
 			
-			<h2 id="CreateTestWorldWithResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=381:436#L6">CreateTestWorldWithResources</a>
+			<h2 id="CreateTestWorldWithResources">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=499:554#L12">CreateTestWorldWithResources</a>
 				<a class="permalink" href="index.html#CreateTestWorldWithResources">&#xb6;</a>
 				
 				
@@ -440,7 +389,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="ExtractHUDData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=407:450#L7">ExtractHUDData</a>
+			<h2 id="ExtractHUDData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=446:489#L8">ExtractHUDData</a>
 				<a class="permalink" href="index.html#ExtractHUDData">&#xb6;</a>
 				
 				
@@ -454,7 +403,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=13007:13064#L408">GetCurrentVisibilityData</a>
+			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=13753:13810#L426">GetCurrentVisibilityData</a>
 				<a class="permalink" href="index.html#GetCurrentVisibilityData">&#xb6;</a>
 				
 				
@@ -482,13 +431,13 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="ItemCollectionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/item_collection.go?s=397:437#L3">ItemCollectionSystem</a>
-				<a class="permalink" href="index.html#ItemCollectionSystem">&#xb6;</a>
+			<h2 id="HandleItemCollectionInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/item_collection.go?s=350:395#L2">HandleItemCollectionInput</a>
+				<a class="permalink" href="index.html#HandleItemCollectionInput">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func ItemCollectionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>ItemCollectionSystem はプレイヤーとフィールドアイテムの衝突を検出し、アイテムを収集する
+			<pre>func HandleItemCollectionInput(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>HandleItemCollectionInput はEnterキー入力時にプレイヤーの位置にあるアイテムを収集する
 
 			
 			
@@ -496,13 +445,13 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="MoveSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/move_system.go?s=302:332#L4">MoveSystem</a>
-				<a class="permalink" href="index.html#MoveSystem">&#xb6;</a>
+			<h2 id="HandleWarpInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_move_system.go?s=3854:3889#L107">HandleWarpInput</a>
+				<a class="permalink" href="index.html#HandleWarpInput">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func MoveSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>MoveSystem はエンティティの移動処理を行う
+			<pre>func HandleWarpInput(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>HandleWarpInput はワープホール上でのEnterキー入力を処理する
 
 			
 			
@@ -510,21 +459,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="PlayerInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/player_input.go?s=265:302#L3">PlayerInputSystem</a>
-				<a class="permalink" href="index.html#PlayerInputSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func PlayerInputSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>PlayerInputSystem はプレイヤーからの入力を処理する
-
-			
-			
-
-		
-			
-			
-			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=1316:1376#L36">RenderSpriteSystem</a>
+			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=2083:2143#L58">RenderSpriteSystem</a>
 				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
 				
 				
@@ -553,6 +488,34 @@ TODO: ズーム率を追加する
 		
 			
 			
+			<h2 id="TileInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=318:353#L2">TileInputSystem</a>
+				<a class="permalink" href="index.html#TileInputSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func TileInputSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>TileInputSystem はプレイヤーからのタイルベース入力を処理する
+
+			
+			
+
+		
+			
+			
+			<h2 id="TileMoveSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_move_system.go?s=293:327#L2">TileMoveSystem</a>
+				<a class="permalink" href="index.html#TileMoveSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func TileMoveSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>TileMoveSystem はタイルベース移動処理を行う
+
+			
+			
+
+		
+			
+			
 			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=1303:1357#L41">VisionSystem</a>
 				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
 				
@@ -565,97 +528,6 @@ TODO: ズーム率を追加する
 			
 
 		
-		
-			
-			
-			<h2 id="BattleExtinctionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=162:191#L1">BattleExtinctionType</a>
-				<a class="permalink" href="index.html#BattleExtinctionType">&#xb6;</a>
-				
-				
-			</h2>
-			<p>BattleExtinctionType は戦闘終了の種類を表す
-
-			<pre>type BattleExtinctionType <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-
-			
-				
-				<pre>const (
-    <span class="comment">// BattleExtinctionNone は戦闘継続状態を表す</span>
-    <span id="BattleExtinctionNone">BattleExtinctionNone</span> <a href="index.html#BattleExtinctionType">BattleExtinctionType</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
-    <span class="comment">// BattleExtinctionAlly は味方が全滅した状態を表す</span>
-    <span id="BattleExtinctionAlly">BattleExtinctionAlly</span>
-    <span class="comment">// BattleExtinctionMonster は敵が全滅した状態を表す</span>
-    <span id="BattleExtinctionMonster">BattleExtinctionMonster</span>
-)</pre>
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="BattleExtinctionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_extinction.go?s=559:622#L11">BattleExtinctionSystem</a>
-					<a class="permalink" href="index.html#BattleExtinctionSystem">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func BattleExtinctionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="index.html#BattleExtinctionType">BattleExtinctionType</a></pre>
-				<p>BattleExtinctionSystem は敵や味方の全滅をチェックする
-
-				
-				
-			
-
-			
-		
-			
-			
-			<h2 id="DropResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=415:672#L11">DropResult</a>
-				<a class="permalink" href="index.html#DropResult">&#xb6;</a>
-				
-				
-			</h2>
-			<p>DropResult は UI用に渡す実行結果
-
-			<pre>type DropResult struct {
-    <span class="comment">// 獲得した素材名</span>
-<span id="DropResult.MaterialNames"></span>    MaterialNames []<a href="http://localhost:8888/pkg/builtin/#string">string</a>
-    <span class="comment">// 獲得前の経験値</span>
-<span id="DropResult.XPBefore"></span>    XPBefore map[<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-    <span class="comment">// 獲得後の経験値</span>
-<span id="DropResult.XPAfter"></span>    XPAfter map[<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
-    <span class="comment">// レベルアップしたかどうか</span>
-<span id="DropResult.IsLevelUp"></span>    IsLevelUp map[<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="BattleDropSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/battle_drop.go?s=783:830#L24">BattleDropSystem</a>
-					<a class="permalink" href="index.html#BattleDropSystem">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func BattleDropSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="index.html#DropResult">DropResult</a></pre>
-				<p>BattleDropSystem は戦闘終了後に経験値や素材を獲得する
-獲得した素材名を返す
-
-				
-				
-			
-
-			
 		
 			
 			
@@ -724,7 +596,7 @@ worldからデータを抽出し、HUDを描画する
 		
 			
 			
-			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=3020:3058#L97">TileColorInfo</a>
+			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=2686:2724#L84">TileColorInfo</a>
 				<a class="permalink" href="index.html#TileColorInfo">&#xb6;</a>
 				
 				
@@ -747,7 +619,7 @@ worldからデータを抽出し、HUDを描画する
 		
 			
 			
-			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=3047:3203#L94">TileVisibility</a>
+			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=3407:3563#L101">TileVisibility</a>
 				<a class="permalink" href="index.html#TileVisibility">&#xb6;</a>
 				
 				
@@ -786,7 +658,7 @@ worldからデータを抽出し、HUDを描画する
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

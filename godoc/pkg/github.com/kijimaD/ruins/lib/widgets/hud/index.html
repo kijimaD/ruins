@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.6";</script>
+<script>var goVersion = "go1.24.7";</script>
 <script src="../../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -276,11 +276,6 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<dd><a href="index.html#MovementDirectionInfo">type MovementDirectionInfo</a></dd>
-				
-				
-			
-				
 				<dd><a href="index.html#ScreenDimensions">type ScreenDimensions</a></dd>
 				
 				
@@ -332,7 +327,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="AIStateInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1777:1929#L45">AIStateInfo</a>
+			<h2 id="AIStateInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1629:1781#L43">AIStateInfo</a>
 				<a class="permalink" href="index.html#AIStateInfo">&#xb6;</a>
 				
 				
@@ -389,7 +384,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="DebugOverlay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=273:315#L4">DebugOverlay</a>
+			<h2 id="DebugOverlay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=230:272#L3">DebugOverlay</a>
 				<a class="permalink" href="index.html#DebugOverlay">&#xb6;</a>
 				
 				
@@ -411,7 +406,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="NewDebugOverlay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=379:415#L9">NewDebugOverlay</a>
+				<h3 id="NewDebugOverlay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=336:372#L8">NewDebugOverlay</a>
 					<a class="permalink" href="index.html#NewDebugOverlay">&#xb6;</a>
 					
 					
@@ -425,7 +420,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="DebugOverlay.Draw">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=664:742#L21">Draw</a>
+				<h3 id="DebugOverlay.Draw">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=621:699#L20">Draw</a>
 					<a class="permalink" href="index.html#DebugOverlay.Draw">&#xb6;</a>
 					
 					
@@ -438,7 +433,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="DebugOverlay.Update">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=523:569#L16">Update</a>
+				<h3 id="DebugOverlay.Update">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=480:526#L15">Update</a>
 					<a class="permalink" href="index.html#DebugOverlay.Update">&#xb6;</a>
 					
 					
@@ -453,7 +448,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="DebugOverlayData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1369:1739#L36">DebugOverlayData</a>
+			<h2 id="DebugOverlayData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1319:1591#L35">DebugOverlayData</a>
 				<a class="permalink" href="index.html#DebugOverlayData">&#xb6;</a>
 				
 				
@@ -461,11 +456,10 @@ func Draw(world w.World, screen *ebiten.Image) {
 			<p>DebugOverlayData はAIデバッグ情報のデータ
 
 			<pre>type DebugOverlayData struct {
-<span id="DebugOverlayData.Enabled"></span>    Enabled            <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>                    <span class="comment">// デバッグ表示有効フラグ</span>
-<span id="DebugOverlayData.AIStates"></span>    AIStates           []<a href="index.html#AIStateInfo">AIStateInfo</a>           <span class="comment">// AI状態情報</span>
-<span id="DebugOverlayData.VisionRanges"></span>    VisionRanges       []<a href="index.html#VisionRangeInfo">VisionRangeInfo</a>       <span class="comment">// 視界範囲情報</span>
-<span id="DebugOverlayData.MovementDirections"></span>    MovementDirections []<a href="index.html#MovementDirectionInfo">MovementDirectionInfo</a> <span class="comment">// 移動方向情報</span>
-<span id="DebugOverlayData.ScreenDimensions"></span>    ScreenDimensions   <a href="index.html#ScreenDimensions">ScreenDimensions</a>        <span class="comment">// 画面サイズ</span>
+<span id="DebugOverlayData.Enabled"></span>    Enabled          <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>              <span class="comment">// デバッグ表示有効フラグ</span>
+<span id="DebugOverlayData.AIStates"></span>    AIStates         []<a href="index.html#AIStateInfo">AIStateInfo</a>     <span class="comment">// AI状態情報</span>
+<span id="DebugOverlayData.VisionRanges"></span>    VisionRanges     []<a href="index.html#VisionRangeInfo">VisionRangeInfo</a> <span class="comment">// 視界範囲情報</span>
+<span id="DebugOverlayData.ScreenDimensions"></span>    ScreenDimensions <a href="index.html#ScreenDimensions">ScreenDimensions</a>  <span class="comment">// 画面サイズ</span>
 }
 </pre>
 
@@ -547,7 +541,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="GameInfoData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=285:399#L2">GameInfoData</a>
+			<h2 id="GameInfoData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=285:349#L2">GameInfoData</a>
 				<a class="permalink" href="index.html#GameInfoData">&#xb6;</a>
 				
 				
@@ -555,8 +549,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 			<p>GameInfoData はゲーム基本情報のデータ
 
 			<pre>type GameInfoData struct {
-<span id="GameInfoData.FloorNumber"></span>    FloorNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>     <span class="comment">// フロア番号</span>
-<span id="GameInfoData.PlayerSpeed"></span>    PlayerSpeed <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// プレイヤー速度</span>
+<span id="GameInfoData.FloorNumber"></span>    FloorNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// フロア番号</span>
 }
 </pre>
 
@@ -731,7 +724,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MessageData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2509:2734#L68">MessageData</a>
+			<h2 id="MessageData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2067:2292#L57">MessageData</a>
 				<a class="permalink" href="index.html#MessageData">&#xb6;</a>
 				
 				
@@ -823,7 +816,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MinimapConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1052:1214#L23">MinimapConfig</a>
+			<h2 id="MinimapConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1002:1164#L22">MinimapConfig</a>
 				<a class="permalink" href="index.html#MinimapConfig">&#xb6;</a>
 				
 				
@@ -851,7 +844,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MinimapData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=462:914#L8">MinimapData</a>
+			<h2 id="MinimapData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=412:864#L7">MinimapData</a>
 				<a class="permalink" href="index.html#MinimapData">&#xb6;</a>
 				
 				
@@ -882,37 +875,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MovementDirectionInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2204:2446#L59">MovementDirectionInfo</a>
-				<a class="permalink" href="index.html#MovementDirectionInfo">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MovementDirectionInfo は移動方向の情報
-
-			<pre>type MovementDirectionInfo struct {
-<span id="MovementDirectionInfo.ScreenX"></span>    ScreenX     <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 画面上のX座標</span>
-<span id="MovementDirectionInfo.ScreenY"></span>    ScreenY     <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 画面上のY座標</span>
-<span id="MovementDirectionInfo.Angle"></span>    Angle       <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 角度（度）</span>
-<span id="MovementDirectionInfo.Speed"></span>    Speed       <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// 速度</span>
-<span id="MovementDirectionInfo.CameraScale"></span>    CameraScale <a href="http://localhost:8888/pkg/builtin/#float64">float64</a> <span class="comment">// カメラスケール</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ScreenDimensions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1255:1311#L30">ScreenDimensions</a>
+			<h2 id="ScreenDimensions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1205:1261#L29">ScreenDimensions</a>
 				<a class="permalink" href="index.html#ScreenDimensions">&#xb6;</a>
 				
 				
@@ -939,7 +902,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=958:1005#L18">TileColorInfo</a>
+			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=908:955#L17">TileColorInfo</a>
 				<a class="permalink" href="index.html#TileColorInfo">&#xb6;</a>
 				
 				
@@ -965,7 +928,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="VisionRangeInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1975:2152#L52">VisionRangeInfo</a>
+			<h2 id="VisionRangeInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1827:2004#L50">VisionRangeInfo</a>
 				<a class="permalink" href="index.html#VisionRangeInfo">&#xb6;</a>
 				
 				
@@ -1002,7 +965,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 
 <div id="footer">
-Build version go1.24.6.<br>
+Build version go1.24.7.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,
