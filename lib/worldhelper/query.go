@@ -15,10 +15,10 @@ func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World) {
 	).Visit(ecs.Visit(f))
 }
 
-// QueryInPartyMember はパーティメンバー
-func QueryInPartyMember(world w.World, f func(entity ecs.Entity)) {
+// QueryPlayer はプレイヤー
+func QueryPlayer(world w.World, f func(entity ecs.Entity)) {
 	world.Manager.Join(
+		world.Components.Player,
 		world.Components.FactionAlly,
-		world.Components.InParty,
 	).Visit(ecs.Visit(f))
 }

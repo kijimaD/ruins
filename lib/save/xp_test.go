@@ -29,7 +29,7 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 	character := w.Manager.NewEntity()
 	character.AddComponent(w.Components.Name, &gc.Name{Name: "テストキャラ"})
 	character.AddComponent(w.Components.FactionAlly, &gc.FactionAllyData{})
-	character.AddComponent(w.Components.InParty, &gc.InParty{})
+	character.AddComponent(w.Components.Player, &gc.Player{})
 	character.AddComponent(w.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Max: 120, Current: 100},
 		SP:    gc.Pool{Max: 50, Current: 50},
@@ -41,7 +41,7 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 	character2 := w.Manager.NewEntity()
 	character2.AddComponent(w.Components.Name, &gc.Name{Name: "テストキャラ2"})
 	character2.AddComponent(w.Components.FactionAlly, &gc.FactionAllyData{})
-	character2.AddComponent(w.Components.InParty, &gc.InParty{})
+	character2.AddComponent(w.Components.Player, &gc.Player{})
 	character2.AddComponent(w.Components.Pools, &gc.Pools{
 		HP:    gc.Pool{Max: 100, Current: 80},
 		SP:    gc.Pool{Max: 40, Current: 40},
@@ -72,7 +72,7 @@ func TestSaveLoadXPandLevel(t *testing.T) {
 	characterCount := 0
 	newWorld.Manager.Join(
 		newWorld.Components.FactionAlly,
-		newWorld.Components.InParty,
+		newWorld.Components.Player,
 		newWorld.Components.Pools,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)

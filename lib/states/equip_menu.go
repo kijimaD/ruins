@@ -195,7 +195,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 // createTabs はTabMenuで使用するタブを作成する
 func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 	members := []ecs.Entity{}
-	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+	worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
 		members = append(members, entity)
 	})
 
@@ -328,7 +328,7 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
 		// 現在の選択に基づいてメンバー情報を更新
 		if member, ok := userData["member"].(ecs.Entity); ok {
 			members := []ecs.Entity{}
-			worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+			worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
 				members = append(members, entity)
 			})
 
@@ -364,7 +364,7 @@ func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
 	// 選択中かをエンティティIDで比較している
 	if st.isEquipMode {
 		members := []ecs.Entity{}
-		worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+		worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
 			members = append(members, entity)
 		})
 
@@ -477,7 +477,7 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	}
 
 	members := []ecs.Entity{}
-	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
+	worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
 		members = append(members, entity)
 	})
 
@@ -487,7 +487,8 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 
 	targetMember := members[memberIdx]
 
-	views.AddMemberBar(world, st.abilityContainer, targetMember)
+	// プレイヤーの基本情報を表示
+	views.AddMemberStatusText(st.abilityContainer, targetMember, world)
 
 	attrs := world.Components.Attributes.Get(targetMember).(*gc.Attributes)
 	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))

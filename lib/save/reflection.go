@@ -62,7 +62,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
-	r.registerNullComponent(reflect.TypeOf(&gc.InParty{}), components.InParty)
 	r.registerNullComponent(reflect.TypeOf(&gc.Item{}), components.Item)
 
 	// アイテム位置情報コンポーネント
@@ -142,8 +141,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
 			case "FactionEnemyData":
 				return struct{}{}, entity.HasComponent(world.Components.FactionEnemy)
-			case "InParty":
-				return struct{}{}, entity.HasComponent(world.Components.InParty)
 			case "Item":
 				return struct{}{}, entity.HasComponent(world.Components.Item)
 			case "LocationInBackpack":
@@ -172,8 +169,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
 			case "FactionEnemyData":
 				entity.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemyData{})
-			case "InParty":
-				entity.AddComponent(world.Components.InParty, &gc.InParty{})
 			case "Item":
 				entity.AddComponent(world.Components.Item, &gc.Item{})
 			case "LocationInBackpack":

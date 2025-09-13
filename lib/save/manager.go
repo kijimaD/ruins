@@ -24,7 +24,6 @@ const (
 	ComponentJob                = "Job"
 	ComponentFactionAllyData    = "FactionAllyData"
 	ComponentFactionEnemyData   = "FactionEnemyData"
-	ComponentInParty            = "InParty"
 	ComponentItem               = "Item"
 	ComponentLocationInBackpack = "LocationInBackpack"
 	ComponentLocationEquipped   = "LocationEquipped"
@@ -236,11 +235,6 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		case ComponentFactionEnemyData:
 			world.Manager.Join(world.Components.FactionEnemy).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentInParty:
-			world.Manager.Join(world.Components.InParty).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))

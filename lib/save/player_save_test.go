@@ -41,25 +41,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 		XP:    1200,
 	})
 	player.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
-	player.AddComponent(world.Components.InParty, &gc.InParty{})
-
-	// 通常のNPCエンティティも作成（比較用）
-	npc := world.Manager.NewEntity()
-	npc.AddComponent(world.Components.Name, &gc.Name{Name: "仲間A"})
-	npc.AddComponent(world.Components.Attributes, &gc.Attributes{
-		Vitality:  gc.Attribute{Base: 8},
-		Strength:  gc.Attribute{Base: 12},
-		Sensation: gc.Attribute{Base: 10},
-		Dexterity: gc.Attribute{Base: 11},
-		Agility:   gc.Attribute{Base: 9},
-		Defense:   gc.Attribute{Base: 6},
-	})
-	npc.AddComponent(world.Components.Pools, &gc.Pools{
-		Level: 3,
-		XP:    800,
-	})
-	npc.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
-	npc.AddComponent(world.Components.InParty, &gc.InParty{})
+	player.AddComponent(world.Components.Player, &gc.Player{})
 
 	// セーブマネージャーを作成してセーブ
 	saveManager := NewSerializationManager(testDir)
@@ -78,11 +60,8 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	err = saveManager.LoadWorld(newWorld, "player_test")
 	require.NoError(t, err)
 
-	// データの検証
 	playerCount := 0
-	npcCount := 0
 	playerEntity := ecs.Entity(0)
-	npcEntity := ecs.Entity(0)
 
 	// プレイヤーエンティティを探す
 	newWorld.Manager.Join(
@@ -94,20 +73,8 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 		playerEntity = entity
 	}))
 
-	// NPCエンティティを探す
-	newWorld.Manager.Join(
-		newWorld.Components.Name,
-		newWorld.Components.FactionAlly,
-		newWorld.Components.InParty,
-		newWorld.Components.Player.Not(),
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		npcCount++
-		npcEntity = entity
-	}))
-
 	// 検証
 	assert.Equal(t, 1, playerCount, "Should have 1 player")
-	assert.Equal(t, 1, npcCount, "Should have 1 NPC")
 
 	// プレイヤーの詳細検証
 	assert.True(t, playerEntity.HasComponent(newWorld.Components.Player), "Player should have Player component")
@@ -115,7 +82,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	assert.True(t, playerEntity.HasComponent(newWorld.Components.Attributes), "Player should have Attributes component")
 	assert.True(t, playerEntity.HasComponent(newWorld.Components.Pools), "Player should have Pools component")
 	assert.True(t, playerEntity.HasComponent(newWorld.Components.FactionAlly), "Player should have FactionAlly component")
-	assert.True(t, playerEntity.HasComponent(newWorld.Components.InParty), "Player should have InParty component")
+	assert.True(t, playerEntity.HasComponent(newWorld.Components.Player), "Player should have Player component")
 
 	// プレイヤーのデータ検証
 	playerName := newWorld.Components.Name.Get(playerEntity).(*gc.Name)
@@ -129,13 +96,5 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	assert.Equal(t, 10, playerAttrs.Vitality.Base)
 	assert.Equal(t, 15, playerAttrs.Strength.Base)
 
-	// NPCの検証（プレイヤーコンポーネントを持たないことを確認）
-	assert.False(t, npcEntity.HasComponent(newWorld.Components.Player), "NPC should not have Player component")
-	assert.True(t, npcEntity.HasComponent(newWorld.Components.Name), "NPC should have Name component")
-
-	npcName := newWorld.Components.Name.Get(npcEntity).(*gc.Name)
-	assert.Equal(t, "仲間A", npcName.Name)
-
 	t.Logf("Player entity: %v", playerEntity)
-	t.Logf("NPC entity: %v", npcEntity)
 }

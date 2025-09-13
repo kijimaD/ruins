@@ -41,7 +41,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 	character := w.Manager.NewEntity()
 	character.AddComponent(w.Components.Name, &gc.Name{Name: "テストキャラ"})
 	character.AddComponent(w.Components.FactionAlly, &gc.FactionAllyData{})
-	character.AddComponent(w.Components.InParty, &gc.InParty{})
+	character.AddComponent(w.Components.Player, &gc.Player{})
 
 	// アイテムエンティティを作成して装備
 	item3 := w.Manager.NewEntity()
@@ -126,7 +126,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 	characterCount := 0
 	newWorld.Manager.Join(
 		newWorld.Components.FactionAlly,
-		newWorld.Components.InParty,
+		newWorld.Components.Player,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
 		assert.Equal(t, "テストキャラ", name.Name)

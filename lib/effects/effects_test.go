@@ -36,7 +36,7 @@ func createTestPlayerEntity(world w.World, hp, sp int) ecs.Entity {
 	return entityList[0]
 }
 
-// テスト用のヘルパー関数：味方パーティメンバーを作成
+// テスト用のヘルパー関数：味方プレイヤーを作成
 func createTestAllyEntity(world w.World, name string, hp int) ecs.Entity {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -45,7 +45,7 @@ func createTestAllyEntity(world w.World, name string, hp int) ecs.Entity {
 			SP: gc.Pool{Current: 50, Max: 50},
 		},
 		Name:        &gc.Name{Name: name},
-		InParty:     &gc.InParty{},
+		Player:      &gc.Player{},
 		FactionType: &gc.FactionAlly,
 	})
 
@@ -119,17 +119,17 @@ func TestEffectSystem(t *testing.T) {
 		singleTarget := TargetSingle{Entity: entity}
 		assert.Equal(t, "TargetSingle", singleTarget.String())
 
-		partyTargets := TargetParty{}
-		assert.Equal(t, "TargetParty", partyTargets.String())
+		partyTargets := TargetPlayer{}
+		assert.Equal(t, "TargetPlayer", partyTargets.String())
 
 		allEnemies := TargetAllEnemies{}
 		assert.Equal(t, "TargetAllEnemies", allEnemies.String())
 
-		aliveParty := TargetAliveParty{}
-		assert.Equal(t, "TargetAliveParty", aliveParty.String())
+		aliveParty := TargetPlayer{}
+		assert.Equal(t, "TargetPlayer", aliveParty.String())
 
-		deadParty := TargetDeadParty{}
-		assert.Equal(t, "TargetDeadParty", deadParty.String())
+		deadParty := TargetDeadPlayer{}
+		assert.Equal(t, "TargetDeadPlayer", deadParty.String())
 
 		noTarget := TargetNone{}
 		assert.Equal(t, "TargetNone", noTarget.String())
@@ -158,7 +158,7 @@ func TestEffectSystem(t *testing.T) {
 		assert.NoError(t, err)
 
 		// 生存者選択のテスト
-		aliveSelector := TargetAliveParty{}
+		aliveSelector := TargetPlayer{}
 		aliveTargets, err := aliveSelector.SelectTargets(world)
 		assert.NoError(t, err)
 		assert.Len(t, aliveTargets, 2)
@@ -168,7 +168,7 @@ func TestEffectSystem(t *testing.T) {
 		assert.NotContains(t, aliveTargets, deadPlayer2)
 
 		// 死亡者選択のテスト
-		deadSelector := TargetDeadParty{}
+		deadSelector := TargetDeadPlayer{}
 		deadTargets, err := deadSelector.SelectTargets(world)
 		assert.NoError(t, err)
 		assert.Len(t, deadTargets, 2)

@@ -382,16 +382,14 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 	return cl, nil
 }
 
-// GenerateMember は指定された名前の仲間メンバーのゲームコンポーネントを生成する
-func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentList, error) {
+// GeneratePlayer は指定された名前のプレイヤーのゲームコンポーネントを生成する
+func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error) {
 	cl, err := rw.generateFighter(name)
 	if err != nil {
 		return gc.GameComponentList{}, err
 	}
 	cl.FactionType = &gc.FactionAlly
-	if inParty {
-		cl.InParty = &gc.InParty{}
-	}
+	cl.Player = &gc.Player{}
 
 	return cl, nil
 }

@@ -481,7 +481,7 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 		case gc.TargetAll:
 			processor := effects.NewProcessor()
 			useItemEffect := effects.UseItem{Item: st.selectedItem}
-			partySelector := effects.TargetParty{}
+			partySelector := effects.TargetPlayer{}
 			if err := processor.AddTargetedEffect(useItemEffect, nil, partySelector, world); err != nil {
 				log.Printf("アイテムエフェクト追加エラー: %v", err)
 			}
@@ -667,8 +667,8 @@ func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
 		// パーティメンバーリストを作成
 		members := []ecs.Entity{}
 		world.Manager.Join(
+			world.Components.Player,
 			world.Components.FactionAlly,
-			world.Components.InParty,
 			world.Components.Name,
 			world.Components.Pools,
 		).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -723,8 +723,8 @@ func (st *InventoryMenuState) updatePartyWindowDisplay(world w.World) {
 			memberContainer = styled.NewVerticalContainer()
 		}
 
-		// メンバーバーを追加（キャラ名も含む）
-		views.AddMemberBar(world, memberContainer, memberEntity)
+		// プレイヤー情報を追加
+		views.AddMemberStatusText(memberContainer, memberEntity, world)
 
 		gridContainer.AddChild(memberContainer)
 	}
