@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/ebitenui/ebitenui"
-	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/colors"
@@ -32,7 +31,6 @@ type InventoryMenuState struct {
 	selectedItem        ecs.Entity        // 選択中のアイテム
 	itemDesc            *widget.Text      // アイテムの概要
 	specContainer       *widget.Container // 性能表示のコンテナ
-	partyWindow         *widget.Window    // 仲間を選択するウィンドウ
 	rootContainer       *widget.Container
 	tabDisplayContainer *widget.Container // タブ表示のコンテナ
 	categoryContainer   *widget.Container // カテゴリ一覧のコンテナ
@@ -42,11 +40,6 @@ type InventoryMenuState struct {
 	actionFocusIndex int            // アクションウィンドウ内のフォーカス
 	actionItems      []string       // アクション項目リスト
 	isWindowMode     bool           // ウィンドウ操作モードかどうか
-
-	// パーティ選択ウィンドウ用
-	partyFocusIndex int          // パーティウィンドウ内のフォーカス
-	partyMembers    []ecs.Entity // パーティメンバーのエンティティリスト
-	isPartyMode     bool         // パーティ選択モードかどうか
 }
 
 func (st InventoryMenuState) String() string {
@@ -84,13 +77,6 @@ func (st *InventoryMenuState) Update(world w.World) es.Transition {
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return es.Transition{Type: es.TransNone}
-		}
-	}
-
-	// パーティ選択モードの場合はパーティ操作を優先
-	if st.isPartyMode {
-		if st.updatePartyMode(world) {
 			return es.Transition{Type: es.TransNone}
 		}
 	}
@@ -313,98 +299,6 @@ func (st *InventoryMenuState) closeActionWindow() {
 	st.actionItems = nil
 }
 
-// closePartyWindow はパーティウィンドウを閉じる
-func (st *InventoryMenuState) closePartyWindow() {
-	if st.partyWindow != nil {
-		st.partyWindow.Close()
-		st.partyWindow = nil
-	}
-	st.isPartyMode = false
-	st.partyFocusIndex = 0
-	st.partyMembers = nil
-}
-
-// updatePartyMode はパーティ選択モード時の操作を処理する
-func (st *InventoryMenuState) updatePartyMode(world w.World) bool {
-	// Escapeでパーティモードを終了
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		st.closePartyWindow()
-		return false
-	}
-
-	memberCount := len(st.partyMembers)
-
-	// 2x2グリッドでの移動
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
-		if st.partyFocusIndex == memberCount { // キャンセル項目から上移動
-			// キャンセルから上に移動する場合、最下段のメンバーに移動
-			if memberCount >= 3 {
-				st.partyFocusIndex = 2 // 下段左
-			} else if memberCount >= 1 {
-				st.partyFocusIndex = 0 // 上段左
-			}
-		} else if st.partyFocusIndex >= 2 { // 下段から上段へ
-			st.partyFocusIndex -= 2
-		} else { // 上段からキャンセルへ
-			st.partyFocusIndex = memberCount
-		}
-		st.updatePartyWindowDisplay(world)
-		return true
-	}
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
-		if st.partyFocusIndex == memberCount { // キャンセル項目から下移動
-			// キャンセルから下に移動する場合、最上段のメンバーに移動
-			st.partyFocusIndex = 0
-		} else if st.partyFocusIndex < 2 { // 上段から下段へ
-			if st.partyFocusIndex+2 < memberCount {
-				st.partyFocusIndex += 2
-			} else {
-				st.partyFocusIndex = memberCount // キャンセルへ
-			}
-		} else { // 下段からキャンセルへ
-			st.partyFocusIndex = memberCount
-		}
-		st.updatePartyWindowDisplay(world)
-		return true
-	}
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowLeft) {
-		if st.partyFocusIndex == memberCount { // キャンセル項目は左右移動なし
-			return true
-		}
-		if st.partyFocusIndex%2 == 0 { // 左列から右列へ（循環）
-			if st.partyFocusIndex+1 < memberCount {
-				st.partyFocusIndex++
-			}
-		} else { // 右列から左列へ
-			st.partyFocusIndex--
-		}
-		st.updatePartyWindowDisplay(world)
-		return true
-	}
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowRight) {
-		if st.partyFocusIndex == memberCount { // キャンセル項目は左右移動なし
-			return true
-		}
-		if st.partyFocusIndex%2 == 0 { // 左列から右列へ
-			if st.partyFocusIndex+1 < memberCount {
-				st.partyFocusIndex++
-			}
-		} else { // 右列から左列へ（循環）
-			st.partyFocusIndex--
-		}
-		st.updatePartyWindowDisplay(world)
-		return true
-	}
-
-	// Enterでメンバー選択実行（押下-押上ワンセット）
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.executePartySelection(world)
-		return true
-	}
-
-	return true
-}
-
 // showActionWindow はアクションウィンドウを表示する
 func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	windowContainer := styled.NewWindowContainer(world)
@@ -473,26 +367,20 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 
 	switch selectedAction {
 	case "使う":
-		consumable := world.Components.Consumable.Get(st.selectedItem).(*gc.Consumable)
-		switch consumable.TargetType.TargetNum {
-		case gc.TargetSingle:
-			st.closeActionWindow()
-			st.initPartyWindowWithKeyboard(world)
-		case gc.TargetAll:
-			processor := effects.NewProcessor()
-			useItemEffect := effects.UseItem{Item: st.selectedItem}
-			partySelector := effects.TargetPlayer{}
-			if err := processor.AddTargetedEffect(useItemEffect, nil, partySelector, world); err != nil {
-				log.Printf("アイテムエフェクト追加エラー: %v", err)
-			}
-			if err := processor.Execute(world); err != nil {
-				log.Printf("アイテムエフェクト実行エラー: %v", err)
-			}
-			st.closeActionWindow()
-			st.reloadTabs(world)
-			st.updateTabDisplay(world)
-			st.updateCategoryDisplay(world)
+		// 直接プレイヤーに使用
+		processor := effects.NewProcessor()
+		useItemEffect := effects.UseItem{Item: st.selectedItem}
+		playerSelector := effects.TargetPlayer{}
+		if err := processor.AddTargetedEffect(useItemEffect, nil, playerSelector, world); err != nil {
+			log.Printf("アイテムエフェクト追加エラー: %v", err)
 		}
+		if err := processor.Execute(world); err != nil {
+			log.Printf("アイテムエフェクト実行エラー: %v", err)
+		}
+		st.closeActionWindow()
+		st.reloadTabs(world)
+		st.updateTabDisplay(world)
+		st.updateCategoryDisplay(world)
 	case "捨てる":
 		world.Manager.DeleteEntity(st.selectedItem)
 		st.closeActionWindow()
@@ -655,112 +543,4 @@ func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
 		currentItem := currentTab.Items[currentItemIndex]
 		st.handleItemChange(world, currentItem)
 	}
-}
-
-// メンバー選択画面を初期化する
-func (st *InventoryMenuState) initPartyWindowWithKeyboard(world w.World) {
-	partyContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("ターゲット選択", world)
-	st.partyWindow = styled.NewSmallWindow(titleContainer, partyContainer)
-
-	{
-		// パーティメンバーリストを作成
-		members := []ecs.Entity{}
-		world.Manager.Join(
-			world.Components.Player,
-			world.Components.FactionAlly,
-			world.Components.Name,
-			world.Components.Pools,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			members = append(members, entity)
-		}))
-		st.partyMembers = members
-	}
-
-	st.partyFocusIndex = 0
-	st.isPartyMode = true
-
-	// UI要素を作成
-	st.updatePartyWindowDisplay(world)
-
-	st.partyWindow.SetLocation(getCenterWinRect(world))
-	st.ui.AddWindow(st.partyWindow)
-}
-
-// updatePartyWindowDisplay はパーティウィンドウの表示を更新する
-func (st *InventoryMenuState) updatePartyWindowDisplay(world w.World) {
-	if st.partyWindow == nil {
-		return
-	}
-
-	// 既存のウィンドウを閉じて新しく作成
-	st.partyWindow.Close()
-
-	partyContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("対象選択", world)
-	st.partyWindow = styled.NewSmallWindow(titleContainer, partyContainer)
-
-	// 2x2グリッドコンテナを作成
-	gridContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewGridLayout(
-			widget.GridLayoutOpts.Columns(2),
-			widget.GridLayoutOpts.Spacing(8, 8),
-			widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true, true}),
-		)),
-	)
-
-	// パーティメンバーを2x2グリッドで表示
-	for i, memberEntity := range st.partyMembers {
-		isSelected := i == st.partyFocusIndex
-
-		// 選択状態に応じた背景色のコンテナを作成
-		var memberContainer *widget.Container
-		if isSelected {
-			memberContainer = styled.NewVerticalContainer(
-				widget.ContainerOpts.BackgroundImage(image.NewNineSliceColor(colors.ButtonHoverColor)),
-			)
-		} else {
-			memberContainer = styled.NewVerticalContainer()
-		}
-
-		// プレイヤー情報を追加
-		views.AddMemberStatusText(memberContainer, memberEntity, world)
-
-		gridContainer.AddChild(memberContainer)
-	}
-
-	// グリッドをメインコンテナに追加
-	partyContainer.AddChild(gridContainer)
-
-	// キャンセル項目を別途追加（グリッドの下）
-	cancelIndex := len(st.partyMembers)
-	isSelected := st.partyFocusIndex == cancelIndex
-	cancelWidget := styled.NewListItemText("キャンセル", colors.TextColor, isSelected, world)
-	partyContainer.AddChild(cancelWidget)
-
-	st.partyWindow.SetLocation(getCenterWinRect(world))
-	st.ui.AddWindow(st.partyWindow)
-}
-
-// executePartySelection は選択されたパーティメンバーでアイテムを使用する
-func (st *InventoryMenuState) executePartySelection(world w.World) {
-	// キャンセル項目の場合
-	if st.partyFocusIndex >= len(st.partyMembers) {
-		st.closePartyWindow()
-		return
-	}
-
-	// 選択されたメンバーでアイテムを使用
-	selectedMember := st.partyMembers[st.partyFocusIndex]
-	processor := effects.NewProcessor()
-	useItemEffect := effects.UseItem{Item: st.selectedItem}
-	processor.AddEffect(useItemEffect, nil, selectedMember)
-	if err := processor.Execute(world); err != nil {
-		log.Printf("アイテムエフェクト実行エラー: %v", err)
-	}
-
-	st.closePartyWindow()
-	st.reloadTabs(world)
-	st.updateTabDisplay(world)
-	st.updateCategoryDisplay(world)
 }
