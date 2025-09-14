@@ -119,17 +119,17 @@ func TestEffectSystem(t *testing.T) {
 		singleTarget := TargetSingle{Entity: entity}
 		assert.Equal(t, "TargetSingle", singleTarget.String())
 
-		partyTargets := TargetPlayer{}
-		assert.Equal(t, "TargetPlayer", partyTargets.String())
+		playerTarget := TargetPlayer{}
+		assert.Equal(t, "TargetPlayer", playerTarget.String())
 
 		allEnemies := TargetAllEnemies{}
 		assert.Equal(t, "TargetAllEnemies", allEnemies.String())
 
-		aliveParty := TargetPlayer{}
-		assert.Equal(t, "TargetPlayer", aliveParty.String())
+		alivePlayer := TargetPlayer{}
+		assert.Equal(t, "TargetPlayer", alivePlayer.String())
 
-		deadParty := TargetDeadPlayer{}
-		assert.Equal(t, "TargetDeadPlayer", deadParty.String())
+		deadPlayer := TargetDeadPlayer{}
+		assert.Equal(t, "TargetDeadPlayer", deadPlayer.String())
 
 		noTarget := TargetNone{}
 		assert.Equal(t, "TargetNone", noTarget.String())
@@ -140,11 +140,11 @@ func TestEffectSystem(t *testing.T) {
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
-		// 生存パーティメンバーを作成
+		// 生存プレイヤーを作成
 		alivePlayer1 := createTestAllyEntity(world, "生存者1", 50)
 		alivePlayer2 := createTestAllyEntity(world, "生存者2", 30)
 
-		// 死亡パーティメンバーを作成（ダメージで死亡させる）
+		// 死亡プレイヤーを作成（ダメージで死亡させる）
 		deadPlayer1 := createTestAllyEntity(world, "死亡者1", 50)
 		damage1 := Damage{Amount: 100, Source: DamageSourceWeapon}
 		scope1 := &Scope{Targets: []ecs.Entity{deadPlayer1}}

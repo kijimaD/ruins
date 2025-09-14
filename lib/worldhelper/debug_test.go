@@ -14,7 +14,7 @@ func TestInitDebugData(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
-	// 初期状態ではパーティメンバーは0人
+	// 初期状態ではプレイヤーは0人
 	memberCount := 0
 	world.Manager.Join(
 		world.Components.FactionAlly,
@@ -22,7 +22,7 @@ func TestInitDebugData(t *testing.T) {
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
-	assert.Equal(t, 0, memberCount, "初期状態ではパーティメンバーは0人であるべき")
+	assert.Equal(t, 0, memberCount, "初期状態ではプレイヤーは0人であるべき")
 
 	// デバッグデータ初期化実行
 	InitDebugData(world)

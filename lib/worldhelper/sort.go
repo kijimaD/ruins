@@ -26,11 +26,14 @@ func SortEntities(world w.World, entities []ecs.Entity) []ecs.Entity {
 	withNames := make([]entityWithName, 0, len(entities))
 	for _, entity := range entities {
 		if entity.HasComponent(world.Components.Name) {
-			name := world.Components.Name.Get(entity).(*gc.Name)
-			withNames = append(withNames, entityWithName{
-				entity: entity,
-				name:   name.Name,
-			})
+			nameComp := world.Components.Name.Get(entity)
+			if nameComp != nil {
+				name := nameComp.(*gc.Name)
+				withNames = append(withNames, entityWithName{
+					entity: entity,
+					name:   name.Name,
+				})
+			}
 		}
 	}
 

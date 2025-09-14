@@ -7,10 +7,10 @@ import (
 )
 
 // InitDebugData はデバッグ用の初期データを設定する
-// パーティメンバーが存在しない場合のみ実行される
+// プレイヤーが存在しない場合のみ実行される
 // テスト、VRT、デバッグで使用される共通のエンティティセットを生成する
 func InitDebugData(world w.World) {
-	// 既にパーティメンバーが存在するかチェック
+	// 既にプレイヤーが存在するかチェック
 	memberCount := 0
 	world.Manager.Join(
 		world.Components.Player,
