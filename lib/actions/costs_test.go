@@ -36,17 +36,3 @@ func TestGetActionCostUnknown(t *testing.T) {
 	cost := GetActionInfo(unknownActionID).MoveCost
 	assert.Equal(t, 0, cost, "未知のアクションはActionNull（コスト0）")
 }
-
-func TestSetActionCost(t *testing.T) {
-	t.Parallel()
-	// テスト用にコストを変更
-	originalCost := GetActionInfo(ActionMove).MoveCost
-	newCost := 75
-
-	SetActionCost(ActionMove, newCost)
-	assert.Equal(t, newCost, GetActionInfo(ActionMove).MoveCost, "アクションコストが正しく設定される")
-
-	// 元に戻す
-	SetActionCost(ActionMove, originalCost)
-	assert.Equal(t, originalCost, GetActionInfo(ActionMove).MoveCost, "アクションコストが元に戻る")
-}

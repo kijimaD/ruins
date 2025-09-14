@@ -98,11 +98,3 @@ func (id ActionID) IsInterruptable() bool {
 func GetAllActions() []ActionID {
 	return []ActionID{ActionMove, ActionWait, ActionAttack}
 }
-
-// SetActionCost はアクションコストを設定する（テスト用）
-func SetActionCost(actionID ActionID, cost int) {
-	if info, exists := actionInfos[actionID]; exists {
-		info.MoveCost = cost
-		actionInfos[actionID] = info
-	}
-}
