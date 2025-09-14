@@ -37,6 +37,5 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 		}
 	}))
 
-	// TODO: タイルの通行可否チェックを追加
 	return canMove
 }
