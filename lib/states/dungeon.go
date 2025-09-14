@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
@@ -63,7 +64,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	}
 
 	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
-	level, err := mapbuilder.NewLevel(world, 50, 50, st.Seed, st.BuilderType)
+	level, err := mapbuilder.NewLevel(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
 	if err != nil {
 		panic(err)
 	}

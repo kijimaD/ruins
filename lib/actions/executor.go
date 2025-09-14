@@ -7,6 +7,7 @@ import (
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/logger"
+	"github.com/kijimaD/ruins/lib/movement"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -82,7 +83,6 @@ func (e *Executor) Execute(actionID ActionID, ctx Context, world w.World) (*Resu
 
 // validateAction はアクション実行前の検証を行う
 func (e *Executor) validateAction(actionID ActionID, ctx Context, world w.World) error {
-	// 基本検証は削除（Entity(0)も有効な場合がある）
 	// 必要に応じて後でより適切な検証を実装
 	// アクション固有の検証
 	switch actionID {
@@ -155,7 +155,7 @@ func (e *Executor) validateMove(ctx Context, world w.World) error {
 	if gridElement == nil {
 		return fmt.Errorf("移動可能なエンティティではありません")
 	}
-	if !e.canMoveTo(int(ctx.Dest.X), int(ctx.Dest.Y)) {
+	if !movement.CanMoveTo(world, int(ctx.Dest.X), int(ctx.Dest.Y), ctx.Actor) {
 		return fmt.Errorf("そこには移動できません")
 	}
 	return nil
@@ -172,16 +172,6 @@ func (e *Executor) validateAttack(ctx Context, _ w.World) error {
 		return fmt.Errorf("攻撃対象が無効です")
 	}
 	return nil
-}
-
-// canMoveTo は移動可能かどうかを判定する
-func (e *Executor) canMoveTo(x, y int) bool {
-	// 基本的な境界チェック
-	if x < 0 || y < 0 || x >= 100 || y >= 100 { // 適当な境界値
-		return false
-	}
-	// 他のエンティティとの重複チェックは後で実装
-	return true
 }
 
 // executePickupItem はアイテム拾得アクションを実行する

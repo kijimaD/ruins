@@ -4,18 +4,22 @@
 //   - エンティティ衝突チェック
 //   - マップ境界チェック
 //   - 通行可否判定
-//
-// 循環importを避けるため、systemsパッケージとai_inputパッケージの両方から使用される
 package movement
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // CanMoveTo は指定位置に移動可能かチェックする
 func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
+	// 基本的な境界チェック
+	if tileX < 0 || tileY < 0 || tileX >= consts.MapTileWidth || tileY >= consts.MapTileHeight {
+		return false
+	}
+
 	// 他のエンティティとの衝突チェック
 	canMove := true
 	world.Manager.Join(
@@ -33,6 +37,6 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 		}
 	}))
 
-	// TODO: マップの境界チェックやタイルの通行可否チェックを追加
+	// TODO: タイルの通行可否チェックを追加
 	return canMove
 }

@@ -18,6 +18,10 @@ const (
 const (
 	// TileSize はタイルの寸法
 	TileSize gc.Pixel = 32
+	// MapTileWidth はマップの横タイル数
+	MapTileWidth = 50
+	// MapTileHeight はマップの縦タイル数
+	MapTileHeight = 50
 )
 
 // ========== UI表示ラベル ==========
