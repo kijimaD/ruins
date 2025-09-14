@@ -3,6 +3,7 @@ package systems
 import (
 	"testing"
 
+	"github.com/kijimaD/ruins/lib/ai_input"
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
@@ -36,7 +37,8 @@ func TestAISystem(t *testing.T) {
 	initialX, initialY := int(initialGrid.X), int(initialGrid.Y)
 
 	// AIシステムを実行（ai_inputパッケージを使用）
-	AISystem(world)
+	processor := ai_input.NewProcessor()
+	processor.ProcessAllEntities(world)
 
 	// システム実行後の位置を記録
 	finalGrid := world.Components.GridElement.Get(aiEntity).(*gc.GridElement)

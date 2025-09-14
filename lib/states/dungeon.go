@@ -108,8 +108,6 @@ func (st *DungeonState) OnStop(world w.World) {
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) es.Transition {
 	gs.TurnSystem(world)
-	// プレイヤー入力処理
-	gs.TileInputSystem(world)
 	// 移動処理の後にカメラ更新
 	gs.CameraSystem(world)
 

@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"github.com/kijimaD/ruins/lib/ai_input"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -16,6 +17,7 @@ func TurnSystem(world w.World) {
 		// プレイヤーターンでは入力システムが処理
 		// 移動ポイントが尽きるまでプレイヤーが連続行動
 		// TileInputSystemがアクション実行時にConsumePlayerMovesを呼ぶ
+		TileInputSystem(world)
 	case turns.AITurn:
 		// AIターン: 全AI・NPCを一括処理
 		processAITurn(world)
@@ -33,7 +35,8 @@ func processAITurn(world w.World) {
 	logger.Debug("AIターン処理開始")
 
 	// AI・NPCエンティティを処理
-	AISystem(world)
+	processor := ai_input.NewProcessor()
+	processor.ProcessAllEntities(world)
 
 	logger.Debug("AIターン処理完了")
 }
@@ -50,16 +53,4 @@ func processTurnEnd(world w.World) {
 	// - 状態異常の更新
 	// - 環境変化の処理
 	// など
-}
-
-// GetTurnPhase は現在のターンフェーズを取得する（デバッグ用）
-func GetTurnPhase(world w.World) turns.TurnPhase {
-	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
-	return turnManager.TurnPhase
-}
-
-// GetPlayerMoves は現在のプレイヤー移動ポイントを取得する（デバッグ用）
-func GetPlayerMoves(world w.World) int {
-	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
-	return turnManager.PlayerMoves
 }
