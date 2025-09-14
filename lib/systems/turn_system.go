@@ -1,7 +1,7 @@
 package systems
 
 import (
-	"github.com/kijimaD/ruins/lib/ai_input"
+	"github.com/kijimaD/ruins/lib/aiinput"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -35,7 +35,7 @@ func processAITurn(world w.World) {
 	logger.Debug("AIターン処理開始")
 
 	// AI・NPCエンティティを処理
-	processor := ai_input.NewProcessor()
+	processor := aiinput.NewProcessor()
 	processor.ProcessAllEntities(world)
 
 	logger.Debug("AIターン処理完了")
@@ -47,6 +47,9 @@ func processTurnEnd(world w.World) {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 
 	logger.Debug("ターン終了処理", "turn", turnManager.TurnNumber)
+
+	// 全エンティティのアクションポイントを回復
+	turnManager.RestoreAllActionPoints(world)
 
 	// TODO: ターン終了時の共通処理をここに追加
 	// - エフェクトの持続時間減少

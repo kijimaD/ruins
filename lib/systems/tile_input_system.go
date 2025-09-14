@@ -88,13 +88,6 @@ func executeAction(world w.World, actionID actions.ActionID, position *gc.Positi
 			_ = result // 現時点では結果を使用しない
 		}
 
-		// アクション成功時、ターンマネージャーで移動ポイントを消費
-		if result != nil && result.Success && world.Resources.TurnManager != nil {
-			if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
-				turnManager.ConsumePlayerMoves(actionID)
-			}
-		}
-
 		// 移動の場合は追加でタイルイベントをチェック
 		if actionID == actions.ActionMove && result != nil && result.Success && position != nil {
 			checkTileEvents(world, entity, int(position.X), int(position.Y))

@@ -42,9 +42,10 @@ type GameComponentList struct {
 	BlockPass    *BlockPass
 
 	// member ================
-	Player      *Player
-	FactionType *FactionType
-	Dead        *Dead
+	Player       *Player
+	FactionType  *FactionType
+	Dead         *Dead
+	ActionPoints *ActionPoints
 
 	// event ================
 	EquipmentChanged *EquipmentChanged
@@ -99,6 +100,7 @@ type Components struct {
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
 	Dead         *ecs.NullComponent
+	ActionPoints *ecs.SliceComponent
 
 	// event ================
 	EquipmentChanged *ecs.NullComponent
@@ -152,6 +154,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
 	c.Dead = manager.NewNullComponent()
+	c.ActionPoints = manager.NewSliceComponent()
 
 	// event
 	c.EquipmentChanged = manager.NewNullComponent()

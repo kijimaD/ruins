@@ -1,4 +1,4 @@
-package ai_input
+package aiinput
 
 import (
 	"github.com/kijimaD/ruins/lib/actions"
@@ -86,22 +86,45 @@ func (p *Processor) ProcessEntity(world w.World, executor *actions.Executor, ent
 	}
 	p.logger.Debug("AIRoaming状態", "entity", entity, "subState", context.Roaming.SubState, "remainingTurns", remainingTurns)
 
-	// アクション決定
-	actionCtx, actionID := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
+	// APが残っている限り連続してアクションを実行
+	actionsExecuted := 0
+	maxActions := 10 // 無限ループを防ぐためのリミット
 
-	// アクション実行
-	p.logger.Debug("アクション決定", "entity", entity, "action", actionID.String(), "state", context.Roaming.SubState)
-	if actionID != actions.ActionNull {
+	for actionsExecuted < maxActions {
+		// アクション決定
+		actionCtx, actionID := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
+
+		// アクション実行
+		p.logger.Debug("アクション決定", "entity", entity, "action", actionID.String(), "state", context.Roaming.SubState, "actions", actionsExecuted)
+		if actionID == actions.ActionNull {
+			p.logger.Debug("アクション無し", "entity", entity)
+			break
+		}
+
+		// AP制限をチェック
+		actionInfo := actions.GetActionInfo(actionID)
+		if !turnManager.CanEntityAct(world, entity, actionInfo.MoveCost) {
+			p.logger.Debug("AP不足でアクション実行不可", "entity", entity, "action", actionID.String(), "cost", actionInfo.MoveCost)
+			break
+		}
+
 		result, err := executor.Execute(actionID, actionCtx, world)
 		if err != nil {
 			p.logger.Warn("AIアクション実行失敗", "entity", entity, "action", actionID.String(), "error", err.Error())
-		} else {
-			p.logger.Debug("AIアクション実行成功", "entity", entity, "action", actionID.String(), "success", result.Success, "state", context.Roaming.SubState, "message", result.Message)
+			break
 		}
-	} else {
-		p.logger.Debug("アクション無し", "entity", entity)
+
+		p.logger.Debug("AIアクション実行成功", "entity", entity, "action", actionID.String(), "success", result.Success, "state", context.Roaming.SubState, "message", result.Message)
+		actionsExecuted++
+
+		// アクション失敗時は停止
+		if !result.Success {
+			p.logger.Debug("アクション失敗により停止", "entity", entity, "action", actionID.String())
+			break
+		}
 	}
-	p.logger.Debug("AIエンティティ処理完了", "entity", entity)
+
+	p.logger.Debug("AIエンティティ処理完了", "entity", entity, "実行されたアクション数", actionsExecuted)
 }
 
 // EntityContext はAIエンティティの必要な情報をまとめる

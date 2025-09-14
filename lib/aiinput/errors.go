@@ -1,4 +1,4 @@
-package ai_input
+package aiinput
 
 import (
 	"fmt"

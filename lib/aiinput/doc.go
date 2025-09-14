@@ -1,4 +1,4 @@
-// Package ai_input provides AI entity behavior processing and state transition logic.
+// Package aiinput provides AI entity behavior processing and state transition logic.
 //
 // このパッケージは以下の責務を持つ：
 //
@@ -26,4 +26,4 @@
 //   - 依存性逆転：インターフェースを通じた疎結合
 //   - テスト容易性：モック可能な設計
 //   - 拡張性：新しい状態やアクションの追加が容易
-package ai_input
+package aiinput

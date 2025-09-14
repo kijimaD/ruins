@@ -3,7 +3,6 @@ package turns
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/actions"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,7 +31,7 @@ func TestConsumePlayerMoves(t *testing.T) {
 	tm := NewTurnManager()
 
 	// 移動アクション（コスト100）
-	tm.ConsumePlayerMoves(actions.ActionMove)
+	tm.ConsumePlayerMoves("Move", 100)
 
 	assert.Equal(t, 0, tm.PlayerMoves, "移動後の移動ポイントが0")
 	assert.Equal(t, AITurn, tm.TurnPhase, "移動ポイント消費後にAIターンに移行")
@@ -44,7 +43,7 @@ func TestConsumePlayerMovesPartial(t *testing.T) {
 	tm := NewTurnManager()
 
 	// アイテム拾得（コスト50）
-	tm.ConsumePlayerMoves(actions.ActionPickupItem)
+	tm.ConsumePlayerMoves("PickupItem", 50)
 
 	assert.Equal(t, 50, tm.PlayerMoves, "部分消費後の移動ポイントが50")
 	assert.Equal(t, PlayerTurn, tm.TurnPhase, "移動ポイントが残っているのでPlayerTurnを継続")
@@ -76,9 +75,9 @@ func TestStartNewTurn(t *testing.T) {
 	tm := NewTurnManager()
 
 	// ターンを進める
-	tm.ConsumePlayerMoves(actions.ActionMove) // PlayerTurn -> AITurn
-	tm.AdvanceToTurnEnd()                     // AITurn -> TurnEnd
-	tm.StartNewTurn()                         // TurnEnd -> PlayerTurn（新ターン）
+	tm.ConsumePlayerMoves("Move", 100) // PlayerTurn -> AITurn
+	tm.AdvanceToTurnEnd()              // AITurn -> TurnEnd
+	tm.StartNewTurn()                  // TurnEnd -> PlayerTurn（新ターン）
 
 	assert.Equal(t, 2, tm.TurnNumber, "ターン番号が2に増加")
 	assert.Equal(t, 100, tm.PlayerMoves, "新ターンで移動ポイントがリセット")
@@ -95,7 +94,7 @@ func TestTurnCycle(t *testing.T) {
 
 	// 1. プレイヤーアクション
 	assert.True(t, tm.IsPlayerTurn())
-	tm.ConsumePlayerMoves(actions.ActionMove)
+	tm.ConsumePlayerMoves("Move", 100)
 
 	// 2. AIターン
 	assert.True(t, tm.IsAITurn())
@@ -115,11 +114,11 @@ func TestMultipleActionsInTurn(t *testing.T) {
 	tm := NewTurnManager()
 
 	// 複数の軽いアクション
-	tm.ConsumePlayerMoves(actions.ActionPickupItem) // 50ポイント消費
+	tm.ConsumePlayerMoves("PickupItem", 50) // 50ポイント消費
 	assert.True(t, tm.CanPlayerAct(), "まだ行動可能")
 	assert.Equal(t, 50, tm.PlayerMoves)
 
-	tm.ConsumePlayerMoves(actions.ActionPickupItem) // さらに50ポイント消費
+	tm.ConsumePlayerMoves("PickupItem", 50) // さらに50ポイント消費
 	assert.False(t, tm.CanPlayerAct(), "移動ポイント尽きて行動不可")
 	assert.Equal(t, 0, tm.PlayerMoves)
 	assert.True(t, tm.IsAITurn(), "AIターンに移行")
@@ -130,7 +129,7 @@ func TestWarpAction(t *testing.T) {
 	tm := NewTurnManager()
 
 	// ワープアクション（コスト0）
-	tm.ConsumePlayerMoves(actions.ActionWarp)
+	tm.ConsumePlayerMoves("Warp", 0)
 
 	assert.Equal(t, 100, tm.PlayerMoves, "ワープは移動ポイント消費なし")
 	assert.True(t, tm.CanPlayerAct(), "ワープ後も行動可能")

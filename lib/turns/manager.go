@@ -1,8 +1,10 @@
 package turns
 
 import (
-	"github.com/kijimaD/ruins/lib/actions"
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/logger"
+	w "github.com/kijimaD/ruins/lib/world"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // TurnPhase はターンの段階を表す
@@ -54,12 +56,11 @@ func (tm *TurnManager) CanPlayerAct() bool {
 }
 
 // ConsumePlayerMoves はプレイヤーの移動ポイントを消費する
-func (tm *TurnManager) ConsumePlayerMoves(actionID actions.ActionID) {
-	cost := actions.GetActionInfo(actionID).MoveCost
+func (tm *TurnManager) ConsumePlayerMoves(actionName string, cost int) {
 	tm.PlayerMoves -= cost
 
 	tm.logger.Debug("プレイヤー移動ポイント消費",
-		"action", actionID.String(),
+		"action", actionName,
 		"cost", cost,
 		"remaining", tm.PlayerMoves)
 
@@ -101,4 +102,109 @@ func (tm *TurnManager) IsPlayerTurn() bool {
 // IsAITurn はAIのターンかチェックする
 func (tm *TurnManager) IsAITurn() bool {
 	return tm.TurnPhase == AITurn
+}
+
+// CalculateMaxActionPoints はエンティティの最大アクションポイントを計算する
+// CDDAスタイルで敏捷性を重視したAP計算式
+func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity) int {
+	// デフォルト値（コンポーネントがない場合）
+	defaultAP := 100
+
+	// Attributesコンポーネントがない場合はデフォルト値
+	attributesComponent := world.Components.Attributes.Get(entity)
+	if attributesComponent == nil {
+		return defaultAP
+	}
+
+	attrs := attributesComponent.(*gc.Attributes)
+
+	// レベル情報を取得（オプション）
+	level := 1
+	poolsComponent := world.Components.Pools.Get(entity)
+	if poolsComponent != nil {
+		pools := poolsComponent.(*gc.Pools)
+		level = pools.Level
+	}
+
+	// AP計算式: 基本値 + 敏捷性の重要度を高くした式
+	// 敏捷性 * 3 + 器用性 * 1 + レベルボーナス
+	baseAP := 80
+	agilityMultiplier := 3
+	dexterityMultiplier := 1
+	levelBonus := (level - 1) * 2 // レベル毎に+2AP
+
+	calculatedAP := baseAP + attrs.Agility.Total*agilityMultiplier + attrs.Dexterity.Total*dexterityMultiplier + levelBonus
+
+	// 最小値制限（20以上）
+	if calculatedAP < 20 {
+		calculatedAP = 20
+	}
+
+	return calculatedAP
+}
+
+// ConsumeActionPoints はエンティティのアクションポイントを消費する
+// CDDAスタイルの共通AP管理システム
+func (tm *TurnManager) ConsumeActionPoints(world w.World, entity ecs.Entity, actionName string, cost int) bool {
+	// ActionPointsコンポーネントを取得
+	apComponent := world.Components.ActionPoints.Get(entity)
+	if apComponent == nil {
+		// TODO: 直す
+		// ActionPointsコンポーネントがない場合は従来のプレイヤー専用処理
+		if entity.HasComponent(world.Components.Player) {
+			tm.ConsumePlayerMoves(actionName, cost)
+			return true
+		}
+		return false
+	}
+
+	actionPoints := apComponent.(*gc.ActionPoints)
+
+	// AP不足チェック
+	if actionPoints.Current < cost {
+		return false
+	}
+
+	// AP消費
+	actionPoints.Current -= cost
+
+	tm.logger.Debug("アクションポイント消費",
+		"entity", entity,
+		"action", actionName,
+		"cost", cost,
+		"remaining", actionPoints.Current)
+
+	return true
+}
+
+// CanEntityAct はエンティティがアクション可能かチェックする
+func (tm *TurnManager) CanEntityAct(world w.World, entity ecs.Entity, cost int) bool {
+	// ActionPointsコンポーネントを取得
+	apComponent := world.Components.ActionPoints.Get(entity)
+	if apComponent == nil {
+		// ActionPointsコンポーネントがない場合は従来のプレイヤー専用処理
+		if entity.HasComponent(world.Components.Player) {
+			return tm.CanPlayerAct()
+		}
+		// 敵もAP制限を受ける
+		return false
+	}
+
+	actionPoints := apComponent.(*gc.ActionPoints)
+
+	return actionPoints.Current >= cost
+}
+
+// RestoreAllActionPoints は全エンティティのAPを回復する（ターン終了時）
+func (tm *TurnManager) RestoreAllActionPoints(world w.World) {
+	// ActionPointsコンポーネントを持つ全エンティティのAP回復
+	world.Manager.Join(world.Components.ActionPoints).Visit(ecs.Visit(func(entity ecs.Entity) {
+		actionPoints := world.Components.ActionPoints.Get(entity).(*gc.ActionPoints)
+		maxAP := tm.CalculateMaxActionPoints(world, entity)
+		actionPoints.Current = maxAP
+
+		tm.logger.Debug("アクションポイント回復",
+			"entity", entity,
+			"restored", maxAP)
+	}))
 }
