@@ -207,7 +207,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateMaterial">func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateMember">func (rw *Master) GenerateMember(name string, inParty bool) (gc.GameComponentList, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GeneratePlayer">func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateRecipe">func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error)</a></dd>
@@ -764,7 +764,7 @@
 
 			
 				
-				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11887:11961#L390">GenerateEnemy</a>
+				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11850:11924#L388">GenerateEnemy</a>
 					<a class="permalink" href="index.html#Master.GenerateEnemy">&#xb6;</a>
 					
 					
@@ -803,13 +803,13 @@
 				
 			
 				
-				<h3 id="Master.GenerateMember">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11505:11594#L376">GenerateMember</a>
-					<a class="permalink" href="index.html#Master.GenerateMember">&#xb6;</a>
+				<h3 id="Master.GeneratePlayer">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11502:11577#L376">GeneratePlayer</a>
+					<a class="permalink" href="index.html#Master.GeneratePlayer">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateMember(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, inParty <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>GenerateMember は指定された名前の仲間メンバーのゲームコンポーネントを生成する
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GeneratePlayer(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>GeneratePlayer は指定された名前のプレイヤーのゲームコンポーネントを生成する
 
 				
 				
@@ -829,7 +829,7 @@
 				
 			
 				
-				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12199:12267#L401">GetCommandTable</a>
+				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12162:12230#L399">GetCommandTable</a>
 					<a class="permalink" href="index.html#Master.GetCommandTable">&#xb6;</a>
 					
 					
@@ -842,7 +842,7 @@
 				
 			
 				
-				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12557:12619#L412">GetDropTable</a>
+				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12520:12582#L410">GetDropTable</a>
 					<a class="permalink" href="index.html#Master.GetDropTable">&#xb6;</a>
 					
 					

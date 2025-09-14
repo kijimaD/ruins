@@ -95,10 +95,6 @@
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package worldhelper はワールド操作のためのヘルパー関数を提供する。
 <p>## 主要機能
-<p>### パーティ管理 (party.go)
-- Party構造体によるパーティメンバー管理
-- 生存状況の追跡とナビゲーション
-- 味方・敵派閥の管理
 <p>### ソート機能 (sort.go)
 - 汎用的なエンティティソート機能
 - SortableEntityインターフェースによる統一的なソート処理
@@ -106,7 +102,7 @@
 - 現在は名前順ソート、将来的にランク→名前順ソートに拡張予定
 <p>### クエリ機能 (query.go)
 - 所有素材の検索
-- パーティメンバーの検索
+- プレイヤーの検索
 <p>### 合成機能 (craft.go)
 - レシピによる素材合成
 - 素材量の管理
@@ -187,10 +183,10 @@
 				<dd><a href="index.html#PlusAmount">func PlusAmount(name string, amount int, world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#QueryInPartyMember">func QueryInPartyMember(world w.World, f func(entity ecs.Entity))</a></dd>
+				<dd><a href="index.html#QueryOwnedMaterial">func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#QueryOwnedMaterial">func QueryOwnedMaterial(f func(entity ecs.Entity), world w.World)</a></dd>
+				<dd><a href="index.html#QueryPlayer">func QueryPlayer(world w.World, f func(entity ecs.Entity))</a></dd>
 			
 				
 				<dd><a href="index.html#RemoveFromInventory">func RemoveFromInventory(world w.World, itemEntity ecs.Entity)</a></dd>
@@ -232,49 +228,17 @@
 				<dd><a href="index.html#SpawnMaterial">func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) (ecs.Entity, error)</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnMember">func SpawnMember(world w.World, name string, inParty bool) (ecs.Entity, error)</a></dd>
-			
-				
 				<dd><a href="index.html#SpawnNPC">func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnOperator">func SpawnOperator(world w.World, tileX int, tileY int) error</a></dd>
 			
 				
+				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, name string) (ecs.Entity, error)</a></dd>
+			
+				
 				<dd><a href="index.html#TransferItem">func TransferItem(world w.World, itemEntity ecs.Entity, fromLocation, toLocation gc.ItemLocationType)</a></dd>
 			
-			
-				
-				<dd><a href="index.html#Party">type Party</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewByEntity">func NewByEntity(world w.World, entity ecs.Entity) (Party, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewParty">func NewParty(world w.World, factionType gc.FactionType) (Party, error)</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.GetNext">func (p *Party) GetNext() (ecs.Entity, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.GetPrev">func (p *Party) GetPrev() (ecs.Entity, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.GetRandom">func (p *Party) GetRandom() (ecs.Entity, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.LivesLen">func (p *Party) LivesLen() int</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.Next">func (p *Party) Next() error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.Prev">func (p *Party) Prev() error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Party.Value">func (p *Party) Value() *ecs.Entity</a></dd>
-				
 			
 			
 			</dl>
@@ -298,8 +262,6 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/inventory.go">inventory.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/material.go">material.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go">party.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go">query.go</a>
 			
@@ -488,14 +450,14 @@
 		
 			
 			
-			<h2 id="InitDebugData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/debug.go?s=399:432#L2">InitDebugData</a>
+			<h2 id="InitDebugData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/debug.go?s=390:423#L2">InitDebugData</a>
 				<a class="permalink" href="index.html#InitDebugData">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func InitDebugData(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
 			<p>InitDebugData はデバッグ用の初期データを設定する
-パーティメンバーが存在しない場合のみ実行される
+プレイヤーが存在しない場合のみ実行される
 テスト、VRT、デバッグで使用される共通のエンティティセットを生成する
 
 			
@@ -547,20 +509,6 @@ materialの場合は既存と数量統合、それ以外は個別アイテムと
 		
 			
 			
-			<h2 id="QueryInPartyMember">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=532:597#L9">QueryInPartyMember</a>
-				<a class="permalink" href="index.html#QueryInPartyMember">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func QueryInPartyMember(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, f func(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>))</pre>
-			<p>QueryInPartyMember はパーティメンバー
-
-			
-			
-
-		
-			
-			
 			<h2 id="QueryOwnedMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=295:360#L1">QueryOwnedMaterial</a>
 				<a class="permalink" href="index.html#QueryOwnedMaterial">&#xb6;</a>
 				
@@ -570,6 +518,20 @@ materialの場合は既存と数量統合、それ以外は個別アイテムと
 			<p>QueryOwnedMaterial は所持中の素材
 TODO: worldを先に置く
 Join対象の組み合わせが重要であるから、そこだけ関数にすればよいのではないか
+
+			
+			
+
+		
+			
+			
+			<h2 id="QueryPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=516:574#L9">QueryPlayer</a>
+				<a class="permalink" href="index.html#QueryPlayer">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func QueryPlayer(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, f func(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>))</pre>
+			<p>QueryPlayer はプレイヤー
 
 			
 			
@@ -607,7 +569,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12663:12702#L348">SpawnAllCards</a>
+			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12634:12673#L348">SpawnAllCards</a>
 				<a class="permalink" href="index.html#SpawnAllCards">&#xb6;</a>
 				
 				
@@ -621,7 +583,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11590:11633#L318">SpawnAllMaterials</a>
+			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11561:11604#L318">SpawnAllMaterials</a>
 				<a class="permalink" href="index.html#SpawnAllMaterials">&#xb6;</a>
 				
 				
@@ -635,7 +597,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12124:12165#L333">SpawnAllRecipes</a>
+			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12095:12136#L333">SpawnAllRecipes</a>
 				<a class="permalink" href="index.html#SpawnAllRecipes">&#xb6;</a>
 				
 				
@@ -649,7 +611,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8204:8267#L225">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8175:8238#L225">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -663,7 +625,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13201:13294#L363">SpawnFieldItem</a>
+			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13172:13265#L363">SpawnFieldItem</a>
 				<a class="permalink" href="index.html#SpawnFieldItem">&#xb6;</a>
 				
 				
@@ -747,27 +709,13 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8751:8863#L244">SpawnMaterial</a>
+			<h2 id="SpawnMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8722:8834#L244">SpawnMaterial</a>
 				<a class="permalink" href="index.html#SpawnMaterial">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func SpawnMaterial(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>SpawnMaterial はmaterialを生成する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnMember">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7602:7680#L210">SpawnMember</a>
-				<a class="permalink" href="index.html#SpawnMember">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnMember(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, inParty <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-			<p>SpawnMember はパーティに追加可能なキャラを生成する
 
 			
 			
@@ -807,6 +755,20 @@ TODO: 置けるタイル以外が指定されるとエラーを返す。
 		
 			
 			
+			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7596:7660#L210">SpawnPlayer</a>
+				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SpawnPlayer(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>SpawnPlayer はプレイヤーキャラクターを生成する
+
+			
+			
+
+		
+			
+			
 			<h2 id="TransferItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/inventory.go?s=2695:2796#L68">TransferItem</a>
 				<a class="permalink" href="index.html#TransferItem">&#xb6;</a>
 				
@@ -819,150 +781,6 @@ TODO: 置けるタイル以外が指定されるとエラーを返す。
 			
 
 		
-		
-			
-			
-			<h2 id="Party">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=385:764#L9">Party</a>
-				<a class="permalink" href="index.html#Party">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Party はグルーピングする単位。味方あるいは敵がある
-
-			<pre>type Party struct {
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewByEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=2184:2249#L73">NewByEntity</a>
-					<a class="permalink" href="index.html#NewByEntity">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewByEntity(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (<a href="index.html#Party">Party</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>NewByEntity はentityから派閥を判定して、partyを初期化する
-
-				
-				
-			
-				
-				<h3 id="NewParty">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=1067:1138#L24">NewParty</a>
-					<a class="permalink" href="index.html#NewParty">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewParty(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, factionType <a href="../components/index.html">gc</a>.<a href="../components/index.html#FactionType">FactionType</a>) (<a href="index.html#Party">Party</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>NewParty はmemberは仲間入れ替えなどをしないと減ったりしない
-派閥を指定して取得する
-最初にセットされるインデックスは生存しているエンティティである
-みんな生きていない場合は想定していない。エラーを返す
-
-				
-				
-			
-
-			
-				
-				<h3 id="Party.GetNext">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=3478:3523#L145">GetNext</a>
-					<a class="permalink" href="index.html#Party.GetNext">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) GetNext() (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>GetNext はcurを進めずに取得だけする
-
-				
-				
-				
-			
-				
-				<h3 id="Party.GetPrev">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=3848:3893#L165">GetPrev</a>
-					<a class="permalink" href="index.html#Party.GetPrev">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) GetPrev() (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>GetPrev はcurを戻さずに取得だけする
-
-				
-				
-				
-			
-				
-				<h3 id="Party.GetRandom">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=4226:4273#L185">GetRandom</a>
-					<a class="permalink" href="index.html#Party.GetRandom">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) GetRandom() (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>GetRandom は生存エンティティからランダムに選択する
-
-				
-				
-				
-			
-				
-				<h3 id="Party.LivesLen">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=2880:2910#L101">LivesLen</a>
-					<a class="permalink" href="index.html#Party.LivesLen">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) LivesLen() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				<p>LivesLen は生存エンティティの数を返す
-
-				
-				
-				
-			
-				
-				<h3 id="Party.Next">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=3033:3061#L113">Next</a>
-					<a class="permalink" href="index.html#Party.Next">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) Next() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Next はcurを進める
-
-				
-				
-				
-			
-				
-				<h3 id="Party.Prev">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=3242:3270#L129">Prev</a>
-					<a class="permalink" href="index.html#Party.Prev">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) Prev() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Prev はcurを戻す
-
-				
-				
-				
-			
-				
-				<h3 id="Party.Value">func (*Party) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/party.go?s=2761:2796#L96">Value</a>
-					<a class="permalink" href="index.html#Party.Value">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (p *<a href="index.html#Party">Party</a>) Value() *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-				<p>Value は選択中のentityを返す
-
-				
-				
-				
-			
 		
 	
 

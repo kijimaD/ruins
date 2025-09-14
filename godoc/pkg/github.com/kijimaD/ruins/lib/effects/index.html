@@ -108,10 +108,10 @@ processor.AddEffect(damage, &amp;attacker, target)
 
 // ターゲットセレクタを使用（戦闘時：ゲームログ出力あり）
 healing := effects.Healing{Amount: gc.NumeralAmount{Numeral: 30}}
-processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetParty{}, gamelog.FieldLog, world)
+processor.AddTargetedEffectWithLogger(healing, &amp;healer, effects.TargetPlayer{}, gamelog.FieldLog, world)
 
 // 非戦闘時の回復（ゲームログ出力なし）
-processor.AddTargetedEffect(healing, &amp;healer, effects.TargetParty{}, world)
+processor.AddTargetedEffect(healing, &amp;healer, effects.TargetPlayer{}, world)
 
 // エフェクト実行
 if err := processor.Execute(world); err != nil {
@@ -331,17 +331,6 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<dd><a href="index.html#TargetAliveParty">type TargetAliveParty</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#TargetAliveParty.SelectTargets">func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#TargetAliveParty.String">func (a TargetAliveParty) String() string</a></dd>
-				
-			
-				
 				<dd><a href="index.html#TargetAllEnemies">type TargetAllEnemies</a></dd>
 				
 				
@@ -353,14 +342,14 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<dd><a href="index.html#TargetDeadParty">type TargetDeadParty</a></dd>
+				<dd><a href="index.html#TargetDeadPlayer">type TargetDeadPlayer</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TargetDeadParty.SelectTargets">func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetDeadPlayer.SelectTargets">func (d TargetDeadPlayer) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TargetDeadParty.String">func (d TargetDeadParty) String() string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetDeadPlayer.String">func (d TargetDeadPlayer) String() string</a></dd>
 				
 			
 				
@@ -375,14 +364,14 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<dd><a href="index.html#TargetParty">type TargetParty</a></dd>
+				<dd><a href="index.html#TargetPlayer">type TargetPlayer</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TargetParty.SelectTargets">func (p TargetParty) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetPlayer.SelectTargets">func (t TargetPlayer) SelectTargets(world w.World) ([]ecs.Entity, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TargetParty.String">func (p TargetParty) String() string</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TargetPlayer.String">func (t TargetPlayer) String() string</a></dd>
 				
 			
 				
@@ -1083,7 +1072,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="Processor.AddTargetedEffect">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3756:3875#L117">AddTargetedEffect</a>
+				<h3 id="Processor.AddTargetedEffect">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3176:3295#L98">AddTargetedEffect</a>
 					<a class="permalink" href="index.html#Processor.AddTargetedEffect">&#xb6;</a>
 					
 					
@@ -1096,7 +1085,7 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<h3 id="Processor.AddTargetedEffectWithLogger">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=4098:4251#L122">AddTargetedEffectWithLogger</a>
+				<h3 id="Processor.AddTargetedEffectWithLogger">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3518:3671#L103">AddTargetedEffectWithLogger</a>
 					<a class="permalink" href="index.html#Processor.AddTargetedEffectWithLogger">&#xb6;</a>
 					
 					
@@ -1332,57 +1321,7 @@ target.go    - ターゲット選択システム
 		
 			
 			
-			<h2 id="TargetAliveParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1897:1927#L61">TargetAliveParty</a>
-				<a class="permalink" href="index.html#TargetAliveParty">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TargetAliveParty は生きているパーティメンバーのみをターゲットとする
-
-			<pre>type TargetAliveParty struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="TargetAliveParty.SelectTargets">func (TargetAliveParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2114:2190#L65">SelectTargets</a>
-					<a class="permalink" href="index.html#TargetAliveParty.SelectTargets">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (a <a href="index.html#TargetAliveParty">TargetAliveParty</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>SelectTargets は生存しているパーティメンバーをターゲットとして選択する
-Deadコンポーネントが付与されていないメンバーを選択する
-
-				
-				
-				
-			
-				
-				<h3 id="TargetAliveParty.String">func (TargetAliveParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2467:2508#L78">String</a>
-					<a class="permalink" href="index.html#TargetAliveParty.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (a <a href="index.html#TargetAliveParty">TargetAliveParty</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="TargetAllEnemies">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1351:1381#L43">TargetAllEnemies</a>
+			<h2 id="TargetAllEnemies">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=827:857#L24">TargetAllEnemies</a>
 				<a class="permalink" href="index.html#TargetAllEnemies">&#xb6;</a>
 				
 				
@@ -1404,7 +1343,7 @@ Deadコンポーネントが付与されていないメンバーを選択する
 
 			
 				
-				<h3 id="TargetAllEnemies.SelectTargets">func (TargetAllEnemies) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1458:1534#L46">SelectTargets</a>
+				<h3 id="TargetAllEnemies.SelectTargets">func (TargetAllEnemies) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=934:1010#L27">SelectTargets</a>
 					<a class="permalink" href="index.html#TargetAllEnemies.SelectTargets">&#xb6;</a>
 					
 					
@@ -1417,7 +1356,7 @@ Deadコンポーネントが付与されていないメンバーを選択する
 				
 			
 				
-				<h3 id="TargetAllEnemies.String">func (TargetAllEnemies) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1727:1768#L56">String</a>
+				<h3 id="TargetAllEnemies.String">func (TargetAllEnemies) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1203:1244#L37">String</a>
 					<a class="permalink" href="index.html#TargetAllEnemies.String">&#xb6;</a>
 					
 					
@@ -1431,14 +1370,14 @@ Deadコンポーネントが付与されていないメンバーを選択する
 		
 			
 			
-			<h2 id="TargetDeadParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2639:2668#L83">TargetDeadParty</a>
-				<a class="permalink" href="index.html#TargetDeadParty">&#xb6;</a>
+			<h2 id="TargetDeadPlayer">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2062:2092#L64">TargetDeadPlayer</a>
+				<a class="permalink" href="index.html#TargetDeadPlayer">&#xb6;</a>
 				
 				
 			</h2>
-			<p>TargetDeadParty は死亡しているパーティメンバーのみをターゲットとする
+			<p>TargetDeadPlayer は死亡しているプレイヤーをターゲットとする
 
-			<pre>type TargetDeadParty struct{}
+			<pre>type TargetDeadPlayer struct{}
 </pre>
 
 			
@@ -1453,26 +1392,26 @@ Deadコンポーネントが付与されていないメンバーを選択する
 
 			
 				
-				<h3 id="TargetDeadParty.SelectTargets">func (TargetDeadParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2852:2927#L87">SelectTargets</a>
-					<a class="permalink" href="index.html#TargetDeadParty.SelectTargets">&#xb6;</a>
+				<h3 id="TargetDeadPlayer.SelectTargets">func (TargetDeadPlayer) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2270:2346#L68">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetDeadPlayer.SelectTargets">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (d <a href="index.html#TargetDeadParty">TargetDeadParty</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>SelectTargets は死亡しているパーティメンバーをターゲットとして選択する
-Deadコンポーネントが付与されているメンバーを選択する
+				<pre>func (d <a href="index.html#TargetDeadPlayer">TargetDeadPlayer</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets は死亡しているプレイヤーをターゲットとして選択する
+Deadコンポーネントが付与されているプレイヤーを選択する
 
 				
 				
 				
 			
 				
-				<h3 id="TargetDeadParty.String">func (TargetDeadParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3198:3238#L100">String</a>
-					<a class="permalink" href="index.html#TargetDeadParty.String">&#xb6;</a>
+				<h3 id="TargetDeadPlayer.String">func (TargetDeadPlayer) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2616:2657#L81">String</a>
+					<a class="permalink" href="index.html#TargetDeadPlayer.String">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (d <a href="index.html#TargetDeadParty">TargetDeadParty</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<pre>func (d <a href="index.html#TargetDeadPlayer">TargetDeadPlayer</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 				
 				
 				
@@ -1481,7 +1420,7 @@ Deadコンポーネントが付与されているメンバーを選択する
 		
 			
 			
-			<h2 id="TargetNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3342:3366#L105">TargetNone</a>
+			<h2 id="TargetNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2762:2786#L86">TargetNone</a>
 				<a class="permalink" href="index.html#TargetNone">&#xb6;</a>
 				
 				
@@ -1503,7 +1442,7 @@ Deadコンポーネントが付与されているメンバーを選択する
 
 			
 				
-				<h3 id="TargetNone.SelectTargets">func (TargetNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3473:3539#L108">SelectTargets</a>
+				<h3 id="TargetNone.SelectTargets">func (TargetNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2893:2959#L89">SelectTargets</a>
 					<a class="permalink" href="index.html#TargetNone.SelectTargets">&#xb6;</a>
 					
 					
@@ -1516,7 +1455,7 @@ Deadコンポーネントが付与されているメンバーを選択する
 				
 			
 				
-				<h3 id="TargetNone.String">func (TargetNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=3573:3608#L112">String</a>
+				<h3 id="TargetNone.String">func (TargetNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=2993:3028#L93">String</a>
 					<a class="permalink" href="index.html#TargetNone.String">&#xb6;</a>
 					
 					
@@ -1530,14 +1469,14 @@ Deadコンポーネントが付与されているメンバーを選択する
 		
 			
 			
-			<h2 id="TargetParty">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=825:850#L24">TargetParty</a>
-				<a class="permalink" href="index.html#TargetParty">&#xb6;</a>
+			<h2 id="TargetPlayer">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1357:1383#L42">TargetPlayer</a>
+				<a class="permalink" href="index.html#TargetPlayer">&#xb6;</a>
 				
 				
 			</h2>
-			<p>TargetParty はパーティ全体ターゲットセレクタ
+			<p>TargetPlayer は生存しているプレイヤーをターゲットとする
 
-			<pre>type TargetParty struct{}
+			<pre>type TargetPlayer struct{}
 </pre>
 
 			
@@ -1552,25 +1491,26 @@ Deadコンポーネントが付与されているメンバーを選択する
 
 			
 				
-				<h3 id="TargetParty.SelectTargets">func (TargetParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=930:1001#L27">SelectTargets</a>
-					<a class="permalink" href="index.html#TargetParty.SelectTargets">&#xb6;</a>
+				<h3 id="TargetPlayer.SelectTargets">func (TargetPlayer) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1564:1636#L46">SelectTargets</a>
+					<a class="permalink" href="index.html#TargetPlayer.SelectTargets">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (p <a href="index.html#TargetParty">TargetParty</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>SelectTargets はパーティ全体をターゲットとして選択する
+				<pre>func (t <a href="index.html#TargetPlayer">TargetPlayer</a>) SelectTargets(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>SelectTargets は生存しているプレイヤーをターゲットとして選択する
+Deadコンポーネントが付与されていないプレイヤーを選択する
 
 				
 				
 				
 			
 				
-				<h3 id="TargetParty.String">func (TargetParty) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1221:1257#L38">String</a>
-					<a class="permalink" href="index.html#TargetParty.String">&#xb6;</a>
+				<h3 id="TargetPlayer.String">func (TargetPlayer) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/target.go?s=1912:1949#L59">String</a>
+					<a class="permalink" href="index.html#TargetPlayer.String">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (p <a href="index.html#TargetParty">TargetParty</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<pre>func (t <a href="index.html#TargetPlayer">TargetPlayer</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 				
 				
 				
