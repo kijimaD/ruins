@@ -34,7 +34,7 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 	var playerMoves int
 	if world.Resources.TurnManager != nil {
 		if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
-			turnNumber = turnManager.GetTurnNumber()
+			turnNumber = turnManager.TurnNumber
 			playerMoves = turnManager.PlayerMoves
 		}
 	}

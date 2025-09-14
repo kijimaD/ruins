@@ -41,16 +41,11 @@ type TurnManager struct {
 // NewTurnManager は新しいTurnManagerを作成する
 func NewTurnManager() *TurnManager {
 	return &TurnManager{
-		PlayerMoves: GetInitialPlayerMoves(),
+		PlayerMoves: 100,
 		TurnPhase:   PlayerTurn,
 		TurnNumber:  1,
 		logger:      logger.New(logger.CategoryTurn),
 	}
-}
-
-// GetInitialPlayerMoves は初期プレイヤー移動ポイントを返す
-func GetInitialPlayerMoves() int {
-	return 100
 }
 
 // CanPlayerAct はプレイヤーがアクションを実行可能かチェックする
@@ -90,17 +85,12 @@ func (tm *TurnManager) AdvanceToTurnEnd() {
 // StartNewTurn は新しいターンを開始する
 func (tm *TurnManager) StartNewTurn() {
 	tm.TurnNumber++
-	tm.PlayerMoves = GetInitialPlayerMoves()
+	tm.PlayerMoves = 100
 	tm.TurnPhase = PlayerTurn
 
 	tm.logger.Debug("新ターン開始",
 		"turn", tm.TurnNumber,
 		"player_moves", tm.PlayerMoves)
-}
-
-// GetTurnNumber は現在のターン番号を返す
-func (tm *TurnManager) GetTurnNumber() int {
-	return tm.TurnNumber
 }
 
 // IsPlayerTurn はプレイヤーのターンかチェックする

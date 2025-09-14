@@ -47,7 +47,7 @@ func processTurnEnd(world w.World) {
 	logger := logger.New(logger.CategoryTurn)
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 
-	logger.Debug("ターン終了処理", "turn", turnManager.GetTurnNumber())
+	logger.Debug("ターン終了処理", "turn", turnManager.TurnNumber)
 
 	// ターン終了時の共通処理をここに追加
 	// - エフェクトの持続時間減少

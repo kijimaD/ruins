@@ -23,7 +23,7 @@ func TestNewTurnManager(t *testing.T) {
 
 	assert.Equal(t, 100, tm.PlayerMoves, "初期移動ポイントが正しく設定されている")
 	assert.Equal(t, PlayerTurn, tm.TurnPhase, "初期ターンフェーズがPlayerTurn")
-	assert.Equal(t, 1, tm.GetTurnNumber(), "初期ターン番号が1")
+	assert.Equal(t, 1, tm.TurnNumber, "初期ターン番号が1")
 	assert.True(t, tm.CanPlayerAct(), "初期状態でプレイヤーが行動可能")
 }
 
@@ -80,7 +80,7 @@ func TestStartNewTurn(t *testing.T) {
 	tm.AdvanceToTurnEnd()                     // AITurn -> TurnEnd
 	tm.StartNewTurn()                         // TurnEnd -> PlayerTurn（新ターン）
 
-	assert.Equal(t, 2, tm.GetTurnNumber(), "ターン番号が2に増加")
+	assert.Equal(t, 2, tm.TurnNumber, "ターン番号が2に増加")
 	assert.Equal(t, 100, tm.PlayerMoves, "新ターンで移動ポイントがリセット")
 	assert.Equal(t, PlayerTurn, tm.TurnPhase, "新ターンでPlayerTurnに戻る")
 	assert.True(t, tm.CanPlayerAct(), "新ターンでプレイヤーが行動可能")
@@ -91,7 +91,7 @@ func TestTurnCycle(t *testing.T) {
 	tm := NewTurnManager()
 
 	// 完全なターンサイクルをテスト
-	initialTurn := tm.GetTurnNumber()
+	initialTurn := tm.TurnNumber
 
 	// 1. プレイヤーアクション
 	assert.True(t, tm.IsPlayerTurn())
@@ -107,7 +107,7 @@ func TestTurnCycle(t *testing.T) {
 
 	// 4. 新ターン開始
 	assert.True(t, tm.IsPlayerTurn())
-	assert.Equal(t, initialTurn+1, tm.GetTurnNumber())
+	assert.Equal(t, initialTurn+1, tm.TurnNumber)
 }
 
 func TestMultipleActionsInTurn(t *testing.T) {
