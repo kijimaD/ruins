@@ -6,6 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/movement"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -119,7 +120,7 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 		newY := currentY + deltaY
 
 		// 移動可能かチェックして移動
-		if canMoveTo(world, newX, newY, entity) {
+		if CanMoveTo(world, newX, newY, entity) {
 			// 統一されたアクション実行関数を使用
 			position := &gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
 			executeAction(world, actions.ActionMove, position)
@@ -151,28 +152,9 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	}
 }
 
-// canMoveTo は指定位置に移動可能かチェックする
-// TileMoveSystemから移植
-func canMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
-	// 他のエンティティとの衝突チェック
-	canMove := true
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.BlockPass,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// 自分自身は除外
-		if entity == movingEntity {
-			return
-		}
-
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
-			canMove = false
-		}
-	}))
-
-	// TODO: マップの境界チェックやタイルの通行可否チェックを追加
-	return canMove
+// CanMoveTo は指定位置に移動可能かチェックする
+func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
+	return movement.CanMoveTo(world, tileX, tileY, movingEntity)
 }
 
 // checkTileWarp はプレイヤーがいるタイルのワープホールをチェックする
