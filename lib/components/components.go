@@ -40,12 +40,12 @@ type GameComponentList struct {
 	SpriteRender *SpriteRender
 	BlockView    *BlockView
 	BlockPass    *BlockPass
+	TurnBased    *TurnBased
 
 	// member ================
-	Player       *Player
-	FactionType  *FactionType
-	Dead         *Dead
-	ActionPoints *ActionPoints
+	Player      *Player
+	FactionType *FactionType
+	Dead        *Dead
 
 	// event ================
 	EquipmentChanged *EquipmentChanged
@@ -100,7 +100,7 @@ type Components struct {
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
 	Dead         *ecs.NullComponent
-	ActionPoints *ecs.SliceComponent
+	TurnBased    *ecs.SliceComponent
 
 	// event ================
 	EquipmentChanged *ecs.NullComponent
@@ -154,7 +154,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
 	c.Dead = manager.NewNullComponent()
-	c.ActionPoints = manager.NewSliceComponent()
+	c.TurnBased = manager.NewSliceComponent()
 
 	// event
 	c.EquipmentChanged = manager.NewNullComponent()

@@ -6,11 +6,11 @@ type Pool struct {
 	Current int // 現在値
 }
 
-// ActionPoints はエンティティのアクションポイント管理コンポーネント
+// TurnBased はエンティティのアクションポイント管理コンポーネント
 // ターン制戦闘で、プレイヤー・敵共通で使用される
-type ActionPoints struct {
-	Current int // 現在のアクションポイント
-	MaxAP   int // 最大アクションポイント（メモ用）
+type TurnBased struct {
+	// Action Point
+	AP Pool
 }
 
 // Attribute は変動するパラメータ値

@@ -147,7 +147,7 @@ func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity
 // CDDAスタイルの共通AP管理システム
 func (tm *TurnManager) ConsumeActionPoints(world w.World, entity ecs.Entity, actionName string, cost int) bool {
 	// ActionPointsコンポーネントを取得
-	apComponent := world.Components.ActionPoints.Get(entity)
+	apComponent := world.Components.TurnBased.Get(entity)
 	if apComponent == nil {
 		// TODO: 直す
 		// ActionPointsコンポーネントがない場合は従来のプレイヤー専用処理
@@ -158,21 +158,21 @@ func (tm *TurnManager) ConsumeActionPoints(world w.World, entity ecs.Entity, act
 		return false
 	}
 
-	actionPoints := apComponent.(*gc.ActionPoints)
+	actionPoints := apComponent.(*gc.TurnBased)
 
 	// AP不足チェック
-	if actionPoints.Current < cost {
+	if actionPoints.AP.Current < cost {
 		return false
 	}
 
 	// AP消費
-	actionPoints.Current -= cost
+	actionPoints.AP.Current -= cost
 
 	tm.logger.Debug("アクションポイント消費",
 		"entity", entity,
 		"action", actionName,
 		"cost", cost,
-		"remaining", actionPoints.Current)
+		"remaining", actionPoints.AP.Current)
 
 	return true
 }
@@ -180,7 +180,7 @@ func (tm *TurnManager) ConsumeActionPoints(world w.World, entity ecs.Entity, act
 // CanEntityAct はエンティティがアクション可能かチェックする
 func (tm *TurnManager) CanEntityAct(world w.World, entity ecs.Entity, cost int) bool {
 	// ActionPointsコンポーネントを取得
-	apComponent := world.Components.ActionPoints.Get(entity)
+	apComponent := world.Components.TurnBased.Get(entity)
 	if apComponent == nil {
 		// ActionPointsコンポーネントがない場合は従来のプレイヤー専用処理
 		if entity.HasComponent(world.Components.Player) {
@@ -190,18 +190,19 @@ func (tm *TurnManager) CanEntityAct(world w.World, entity ecs.Entity, cost int) 
 		return false
 	}
 
-	actionPoints := apComponent.(*gc.ActionPoints)
+	actionPoints := apComponent.(*gc.TurnBased)
 
-	return actionPoints.Current >= cost
+	return actionPoints.AP.Current >= cost
 }
 
 // RestoreAllActionPoints は全エンティティのAPを回復する（ターン終了時）
 func (tm *TurnManager) RestoreAllActionPoints(world w.World) {
 	// ActionPointsコンポーネントを持つ全エンティティのAP回復
-	world.Manager.Join(world.Components.ActionPoints).Visit(ecs.Visit(func(entity ecs.Entity) {
-		actionPoints := world.Components.ActionPoints.Get(entity).(*gc.ActionPoints)
+	world.Manager.Join(world.Components.TurnBased).Visit(ecs.Visit(func(entity ecs.Entity) {
+		actionPoints := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
 		maxAP := tm.CalculateMaxActionPoints(world, entity)
-		actionPoints.Current = maxAP
+		actionPoints.AP.Current = maxAP
+		actionPoints.AP.Max = maxAP
 
 		tm.logger.Debug("アクションポイント回復",
 			"entity", entity,

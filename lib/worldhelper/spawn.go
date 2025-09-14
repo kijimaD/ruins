@@ -203,8 +203,11 @@ func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error {
 				Dexterity: gc.Attribute{Base: 10, Modifier: 0, Total: 10},
 				Agility:   gc.Attribute{Base: 10, Modifier: 0, Total: 10},
 			},
-			ActionPoints: &gc.ActionPoints{
-				Current: 100, // あとで再計算される
+			TurnBased: &gc.TurnBased{
+				AP: gc.Pool{
+					Current: 100, // あとで再計算される
+					Max:     100, // あとで再計算される
+				},
 			},
 		})
 		npcEntities := entities.AddEntities(world, componentList)
@@ -214,10 +217,11 @@ func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error {
 			npcEntity := npcEntities[0]
 			if world.Resources.TurnManager != nil {
 				if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
-					if npcEntity.HasComponent(world.Components.ActionPoints) {
-						actionPoints := world.Components.ActionPoints.Get(npcEntity).(*gc.ActionPoints)
+					if npcEntity.HasComponent(world.Components.TurnBased) {
+						actionPoints := world.Components.TurnBased.Get(npcEntity).(*gc.TurnBased)
 						maxAP := turnManager.CalculateMaxActionPoints(world, npcEntity)
-						actionPoints.Current = maxAP
+						actionPoints.AP.Current = maxAP
+						actionPoints.AP.Max = maxAP
 					}
 				}
 			}
@@ -311,12 +315,13 @@ func fullRecover(world w.World, entity ecs.Entity) {
 	_ = processor.Execute(world) // エラーが発生した場合もリカバリーは続行する（ログ出力はProcessor内で行われる）
 
 	// ActionPointsコンポーネントがある場合は最大APに設定
-	if entity.HasComponent(world.Components.ActionPoints) {
+	if entity.HasComponent(world.Components.TurnBased) {
 		if world.Resources.TurnManager != nil {
 			if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
-				actionPoints := world.Components.ActionPoints.Get(entity).(*gc.ActionPoints)
+				actionPoints := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
 				maxAP := turnManager.CalculateMaxActionPoints(world, entity)
-				actionPoints.Current = maxAP
+				actionPoints.AP.Current = maxAP
+				actionPoints.AP.Max = maxAP
 			}
 		}
 	}
