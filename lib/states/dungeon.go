@@ -101,19 +101,12 @@ func (st *DungeonState) OnStop(world w.World) {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) es.Transition {
-	// タイルベース移動システム
 	gs.TileInputSystem(world)
-	gs.TileMoveSystem(world)
-	gs.CameraSystem(world) // 移動処理の後にカメラ更新
+	// 移動処理の後にカメラ更新
+	gs.CameraSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
-	}
-
-	// Enterキーでワープ実行またはアイテム収集
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		gs.HandleWarpInput(world)
-		gs.HandleItemCollectionInput(world)
 	}
 
 	cfg := config.MustGet()

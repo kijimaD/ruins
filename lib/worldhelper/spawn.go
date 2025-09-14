@@ -136,8 +136,6 @@ func SpawnOperator(world w.World, tileX int, tileY int) error {
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			GridElement: &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)},
-			TurnBased:   &gc.TurnBased{},
-			WantsToMove: &gc.WantsToMove{Direction: gc.DirectionNone},
 			Player:      &gc.Player{},
 			Operator:    &gc.Operator{},
 			SpriteRender: &gc.SpriteRender{

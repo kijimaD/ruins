@@ -1,5 +1,7 @@
 package actions
 
+import "fmt"
+
 // ActionID はゲーム内のアクション種別を表す
 // CDDAのaction_id enumを参考にした設計
 type ActionID int
@@ -13,6 +15,10 @@ const (
 	ActionWait
 	// ActionAttack は敵を攻撃するアクションを表す
 	ActionAttack
+	// ActionPickupItem はアイテムを拾得するアクションを表す
+	ActionPickupItem
+	// ActionWarp はワープホールを使用するアクションを表す
+	ActionWarp
 )
 
 // ActionInfo はアクションのメタデータを保持する
@@ -27,10 +33,12 @@ type ActionInfo struct {
 
 // actionInfos はすべてのアクション情報を保持するテーブル
 var actionInfos = map[ActionID]ActionInfo{
-	ActionNull:   {ActionNull, "", "無効なアクション", false, 0, false},
-	ActionMove:   {ActionMove, "移動", "隣接するタイルに移動する", true, 100, false},
-	ActionWait:   {ActionWait, "待機", "何もせずに時間を過ごす", true, 100, false},
-	ActionAttack: {ActionAttack, "攻撃", "敵を攻撃する", true, 100, false},
+	ActionNull:       {ActionNull, "", "無効なアクション", false, 0, false},
+	ActionMove:       {ActionMove, "移動", "隣接するタイルに移動する", true, 100, false},
+	ActionWait:       {ActionWait, "待機", "何もせずに時間を過ごす", true, 100, false},
+	ActionAttack:     {ActionAttack, "攻撃", "敵を攻撃する", true, 100, false},
+	ActionPickupItem: {ActionPickupItem, "拾得", "アイテムを拾得する", true, 100, false},
+	ActionWarp:       {ActionWarp, "ワープ", "ワープホールを使用する", true, 100, false},
 }
 
 // GetActionInfo は指定されたアクションの情報を取得する
@@ -43,7 +51,22 @@ func GetActionInfo(id ActionID) ActionInfo {
 
 // String はActionIDの文字列表現を返す
 func (id ActionID) String() string {
-	return GetActionInfo(id).Name
+	switch id {
+	case ActionMove:
+		return "Move"
+	case ActionWait:
+		return "Wait"
+	case ActionAttack:
+		return "Attack"
+	case ActionPickupItem:
+		return "PickupItem"
+	case ActionWarp:
+		return "Warp"
+	case ActionNull:
+		return "Null"
+	default:
+		return fmt.Sprintf("ActionID(%d)", int(id))
+	}
 }
 
 // RequiresTurn はアクションがターン消費を必要とするかを返す
