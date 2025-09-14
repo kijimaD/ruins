@@ -18,6 +18,9 @@ const (
 	// CategoryHUD はHUD表示のログカテゴリ
 	CategoryHUD Category = "hud" // HUD表示
 
+	// CategoryAction はアクション処理のログカテゴリ
+	CategoryAction Category = "action" // アクション処理
+
 	// CategoryEffect はエフェクト全般のログカテゴリ
 	CategoryEffect Category = "effect" // エフェクト全般
 	// CategoryDamage はダメージ処理のログカテゴリ
