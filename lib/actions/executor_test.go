@@ -33,9 +33,8 @@ func TestExecutor_ExecuteMove(t *testing.T) {
 		{
 			name: "正常な移動",
 			ctx: Context{
-				Actor:    actor,
-				Position: &gc.Position{X: gc.Pixel(6), Y: gc.Pixel(6)},
-				World:    world,
+				Actor: actor,
+				Dest:  &gc.Position{X: gc.Pixel(6), Y: gc.Pixel(6)},
 			},
 			expectSuccess: true,
 			expectError:   false,
@@ -43,9 +42,8 @@ func TestExecutor_ExecuteMove(t *testing.T) {
 		{
 			name: "移動先未指定",
 			ctx: Context{
-				Actor:    actor,
-				Position: nil,
-				World:    world,
+				Actor: actor,
+				Dest:  nil,
 			},
 			expectSuccess: false,
 			expectError:   true,
@@ -53,9 +51,8 @@ func TestExecutor_ExecuteMove(t *testing.T) {
 		{
 			name: "範囲外移動",
 			ctx: Context{
-				Actor:    actor,
-				Position: &gc.Position{X: gc.Pixel(-1), Y: gc.Pixel(0)},
-				World:    world,
+				Actor: actor,
+				Dest:  &gc.Position{X: gc.Pixel(-1), Y: gc.Pixel(0)},
 			},
 			expectSuccess: false,
 			expectError:   true,
@@ -66,7 +63,7 @@ func TestExecutor_ExecuteMove(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			result, err := executor.Execute(ActionMove, tt.ctx)
+			result, err := executor.Execute(ActionMove, tt.ctx, world)
 
 			// エラーのチェック
 			if (err != nil) != tt.expectError {
@@ -88,11 +85,11 @@ func TestExecutor_ExecuteMove(t *testing.T) {
 			}
 
 			// 正常な移動の場合、実際に位置が変更されたかチェック
-			if tt.expectSuccess && tt.ctx.Position != nil {
+			if tt.expectSuccess && tt.ctx.Dest != nil {
 				gridElement := world.Components.GridElement.Get(actor).(*gc.GridElement)
-				if int(gridElement.X) != int(tt.ctx.Position.X) || int(gridElement.Y) != int(tt.ctx.Position.Y) {
+				if int(gridElement.X) != int(tt.ctx.Dest.X) || int(gridElement.Y) != int(tt.ctx.Dest.Y) {
 					t.Errorf("Position not updated correctly. Got (%d,%d), expect (%d,%d)",
-						gridElement.X, gridElement.Y, int(tt.ctx.Position.X), int(tt.ctx.Position.Y))
+						gridElement.X, gridElement.Y, int(tt.ctx.Dest.X), int(tt.ctx.Dest.Y))
 				}
 			}
 		})
@@ -112,10 +109,9 @@ func TestExecutor_ExecuteWait(t *testing.T) {
 
 	ctx := Context{
 		Actor: actor,
-		World: world,
 	}
 
-	result, err := executor.Execute(ActionWait, ctx)
+	result, err := executor.Execute(ActionWait, ctx, world)
 
 	if err != nil {
 		t.Errorf("Execute(ActionWait) unexpected error: %v", err)
@@ -157,7 +153,6 @@ func TestExecutor_ExecuteAttack(t *testing.T) {
 			ctx: Context{
 				Actor:  actor,
 				Target: &target,
-				World:  world,
 			},
 			expectSuccess: true,
 			expectError:   false,
@@ -167,7 +162,6 @@ func TestExecutor_ExecuteAttack(t *testing.T) {
 			ctx: Context{
 				Actor:  actor,
 				Target: nil,
-				World:  world,
 			},
 			expectSuccess: false,
 			expectError:   true,
@@ -178,7 +172,7 @@ func TestExecutor_ExecuteAttack(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			result, err := executor.Execute(ActionAttack, tt.ctx)
+			result, err := executor.Execute(ActionAttack, tt.ctx, world)
 
 			if (err != nil) != tt.expectError {
 				t.Errorf("Execute() error = %v, expectError %v", err, tt.expectError)
@@ -221,7 +215,6 @@ func TestExecutor_ValidateAction(t *testing.T) {
 			actionID: ActionMove,
 			ctx: Context{
 				Actor: ecs.Entity(0),
-				World: world,
 			},
 			expectErr: true,
 		},
@@ -230,7 +223,6 @@ func TestExecutor_ValidateAction(t *testing.T) {
 			actionID: ActionID(999),
 			ctx: Context{
 				Actor: ecs.Entity(1),
-				World: world,
 			},
 			expectErr: true,
 		},
@@ -239,7 +231,6 @@ func TestExecutor_ValidateAction(t *testing.T) {
 			actionID: ActionWait,
 			ctx: Context{
 				Actor: ecs.Entity(1),
-				World: world,
 			},
 			expectErr: false,
 		},
@@ -249,7 +240,7 @@ func TestExecutor_ValidateAction(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := executor.validateAction(tt.actionID, tt.ctx)
+			err := executor.validateAction(tt.actionID, tt.ctx, world)
 			if (err != nil) != tt.expectErr {
 				t.Errorf("validateAction() error = %v, expectErr %v", err, tt.expectErr)
 			}

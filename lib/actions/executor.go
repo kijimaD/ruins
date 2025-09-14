@@ -28,11 +28,11 @@ func NewExecutor() *Executor {
 }
 
 // Execute は指定されたアクションを実行する
-func (e *Executor) Execute(actionID ActionID, ctx Context) (*Result, error) {
+func (e *Executor) Execute(actionID ActionID, ctx Context, world w.World) (*Result, error) {
 	e.logger.Debug("アクション実行開始", "action", actionID.String(), "actor", ctx.Actor)
 
 	// 検証フェーズ
-	if err := e.validateAction(actionID, ctx); err != nil {
+	if err := e.validateAction(actionID, ctx, world); err != nil {
 		e.logger.Warn("アクション検証失敗", "action", actionID.String(), "error", err.Error())
 		return &Result{
 			Success:  false,
@@ -47,15 +47,15 @@ func (e *Executor) Execute(actionID ActionID, ctx Context) (*Result, error) {
 
 	switch actionID {
 	case ActionMove:
-		result, err = e.executeMove(ctx)
+		result, err = e.executeMove(ctx, world)
 	case ActionWait:
-		result, err = e.executeWait(ctx)
+		result, err = e.executeWait()
 	case ActionAttack:
 		result, err = e.executeAttack(ctx)
 	case ActionPickupItem:
-		result, err = e.executePickupItem(ctx)
+		result, err = e.executePickupItem(ctx, world)
 	case ActionWarp:
-		result, err = e.executeWarp(ctx)
+		result, err = e.executeWarp(world)
 	default:
 		err = fmt.Errorf("未実装のアクション: %v", actionID)
 		result = &Result{
@@ -77,20 +77,20 @@ func (e *Executor) Execute(actionID ActionID, ctx Context) (*Result, error) {
 }
 
 // validateAction はアクション実行前の検証を行う
-func (e *Executor) validateAction(actionID ActionID, ctx Context) error {
+func (e *Executor) validateAction(actionID ActionID, ctx Context, world w.World) error {
 	// 基本検証は削除（Entity(0)も有効な場合がある）
 	// 必要に応じて後でより適切な検証を実装
 
 	// アクション固有の検証
 	switch actionID {
 	case ActionMove:
-		return e.validateMove(ctx)
+		return e.validateMove(ctx, world)
 	case ActionAttack:
 		return e.validateAttack(ctx)
 	case ActionPickupItem:
-		return e.validatePickupItem(ctx)
+		return e.validatePickupItem(ctx, world)
 	case ActionWarp:
-		return e.validateWarp(ctx)
+		return e.validateWarp(world)
 	case ActionWait:
 		return nil // 待機は常に有効
 	default:
@@ -99,22 +99,22 @@ func (e *Executor) validateAction(actionID ActionID, ctx Context) error {
 }
 
 // executeMove は移動アクションを実行する
-func (e *Executor) executeMove(ctx Context) (*Result, error) {
-	if ctx.Position == nil {
+func (e *Executor) executeMove(ctx Context, world w.World) (*Result, error) {
+	if ctx.Dest == nil {
 		return &Result{Success: false, ActionID: ActionMove, Message: "移動先が指定されていません"},
 			fmt.Errorf("移動先が指定されていません")
 	}
 
 	// GridElementを直接更新
-	gridElement := ctx.World.Components.GridElement.Get(ctx.Actor).(*gc.GridElement)
+	gridElement := world.Components.GridElement.Get(ctx.Actor).(*gc.GridElement)
 	oldX, oldY := int(gridElement.X), int(gridElement.Y)
 
-	gridElement.X = gc.Tile(int(ctx.Position.X))
-	gridElement.Y = gc.Tile(int(ctx.Position.Y))
+	gridElement.X = gc.Tile(int(ctx.Dest.X))
+	gridElement.Y = gc.Tile(int(ctx.Dest.Y))
 
-	message := fmt.Sprintf("(%d,%d)から(%d,%d)に移動した", oldX, oldY, int(ctx.Position.X), int(ctx.Position.Y))
+	message := fmt.Sprintf("(%d,%d)から(%d,%d)に移動した", oldX, oldY, int(ctx.Dest.X), int(ctx.Dest.Y))
 	e.logger.Debug("移動完了", "from", fmt.Sprintf("(%d,%d)", oldX, oldY),
-		"to", fmt.Sprintf("(%d,%d)", int(ctx.Position.X), int(ctx.Position.Y)))
+		"to", fmt.Sprintf("(%d,%d)", int(ctx.Dest.X), int(ctx.Dest.Y)))
 
 	return &Result{
 		Success:  true,
@@ -124,7 +124,7 @@ func (e *Executor) executeMove(ctx Context) (*Result, error) {
 }
 
 // executeWait は待機アクションを実行する
-func (e *Executor) executeWait(ctx Context) (*Result, error) {
+func (e *Executor) executeWait() (*Result, error) { //nolint:unparam
 	return &Result{
 		Success:  true,
 		ActionID: ActionWait,
@@ -150,17 +150,17 @@ func (e *Executor) executeAttack(ctx Context) (*Result, error) {
 }
 
 // validateMove は移動アクションの検証を行う
-func (e *Executor) validateMove(ctx Context) error {
-	if ctx.Position == nil {
+func (e *Executor) validateMove(ctx Context, world w.World) error {
+	if ctx.Dest == nil {
 		return fmt.Errorf("移動先が指定されていません")
 	}
 
-	gridElement := ctx.World.Components.GridElement.Get(ctx.Actor)
+	gridElement := world.Components.GridElement.Get(ctx.Actor)
 	if gridElement == nil {
 		return fmt.Errorf("移動可能なエンティティではありません")
 	}
 
-	if !e.canMoveTo(ctx.World, int(ctx.Position.X), int(ctx.Position.Y), ctx.Actor) {
+	if !e.canMoveTo(int(ctx.Dest.X), int(ctx.Dest.Y)) {
 		return fmt.Errorf("そこには移動できません")
 	}
 
@@ -183,7 +183,7 @@ func (e *Executor) validateAttack(ctx Context) error {
 }
 
 // canMoveTo は移動可能かどうかを判定する
-func (e *Executor) canMoveTo(_ w.World, x, y int, _ ecs.Entity) bool {
+func (e *Executor) canMoveTo(x, y int) bool {
 	// 基本的な境界チェック
 	if x < 0 || y < 0 || x >= 100 || y >= 100 { // 適当な境界値
 		return false
@@ -194,9 +194,9 @@ func (e *Executor) canMoveTo(_ w.World, x, y int, _ ecs.Entity) bool {
 }
 
 // executePickupItem はアイテム拾得アクションを実行する
-func (e *Executor) executePickupItem(ctx Context) (*Result, error) {
+func (e *Executor) executePickupItem(ctx Context, world w.World) (*Result, error) { //nolint:unparam
 	// プレイヤー位置を取得
-	gridElement := ctx.World.Components.GridElement.Get(ctx.Actor).(*gc.GridElement)
+	gridElement := world.Components.GridElement.Get(ctx.Actor).(*gc.GridElement)
 	playerTileX := int(gridElement.X)
 	playerTileY := int(gridElement.Y)
 
@@ -204,12 +204,12 @@ func (e *Executor) executePickupItem(ctx Context) (*Result, error) {
 	var itemsToCollect []ecs.Entity
 
 	// 同じタイルのフィールドアイテムを検索
-	ctx.World.Manager.Join(
-		ctx.World.Components.Item,
-		ctx.World.Components.ItemLocationOnField,
-		ctx.World.Components.GridElement,
+	world.Manager.Join(
+		world.Components.Item,
+		world.Components.ItemLocationOnField,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(itemEntity ecs.Entity) {
-		itemGrid := ctx.World.Components.GridElement.Get(itemEntity).(*gc.GridElement)
+		itemGrid := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
 
 		// タイル単位の位置判定
 		if int(itemGrid.X) == playerTileX && int(itemGrid.Y) == playerTileY {
@@ -228,7 +228,7 @@ func (e *Executor) executePickupItem(ctx Context) (*Result, error) {
 	// 収集されたアイテムを処理
 	collectedCount := 0
 	for _, itemEntity := range itemsToCollect {
-		if err := e.collectFieldItem(ctx.World, itemEntity); err != nil {
+		if err := e.collectFieldItem(world, itemEntity); err != nil {
 			e.logger.Warn("アイテム拾得エラー", "item", itemEntity, "error", err.Error())
 			continue
 		}
@@ -246,8 +246,8 @@ func (e *Executor) executePickupItem(ctx Context) (*Result, error) {
 }
 
 // executeWarp はワープアクションを実行する
-func (e *Executor) executeWarp(ctx Context) (*Result, error) {
-	gameResources := ctx.World.Resources.Dungeon.(*resources.Dungeon)
+func (e *Executor) executeWarp(world w.World) (*Result, error) {
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	if gameResources.PlayerTileState.CurrentWarp == nil {
 		return &Result{
@@ -324,9 +324,9 @@ func (e *Executor) collectFieldItem(world w.World, itemEntity ecs.Entity) error 
 }
 
 // validatePickupItem はアイテム拾得アクションの検証を行う
-func (e *Executor) validatePickupItem(ctx Context) error {
+func (e *Executor) validatePickupItem(ctx Context, world w.World) error {
 	// プレイヤー位置にアイテムがあるかチェック
-	gridElementRaw := ctx.World.Components.GridElement.Get(ctx.Actor)
+	gridElementRaw := world.Components.GridElement.Get(ctx.Actor)
 	if gridElementRaw == nil {
 		return fmt.Errorf("位置情報がありません")
 	}
@@ -337,12 +337,12 @@ func (e *Executor) validatePickupItem(ctx Context) error {
 
 	// 同じタイルにアイテムがあるかチェック
 	hasItem := false
-	ctx.World.Manager.Join(
-		ctx.World.Components.Item,
-		ctx.World.Components.ItemLocationOnField,
-		ctx.World.Components.GridElement,
+	world.Manager.Join(
+		world.Components.Item,
+		world.Components.ItemLocationOnField,
+		world.Components.GridElement,
 	).Visit(ecs.Visit(func(itemEntity ecs.Entity) {
-		itemGrid := ctx.World.Components.GridElement.Get(itemEntity).(*gc.GridElement)
+		itemGrid := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
 		if int(itemGrid.X) == playerTileX && int(itemGrid.Y) == playerTileY {
 			hasItem = true
 		}
@@ -356,8 +356,8 @@ func (e *Executor) validatePickupItem(ctx Context) error {
 }
 
 // validateWarp はワープアクションの検証を行う
-func (e *Executor) validateWarp(ctx Context) error {
-	gameResources := ctx.World.Resources.Dungeon.(*resources.Dungeon)
+func (e *Executor) validateWarp(world w.World) error {
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	if gameResources.PlayerTileState.CurrentWarp == nil {
 		return fmt.Errorf("ワープホールがありません")

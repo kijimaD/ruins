@@ -43,10 +43,9 @@ func TestContext(t *testing.T) {
 	position := gc.Position{X: 5, Y: 10}
 
 	ctx := Context{
-		Actor:    actor,
-		Target:   &target,
-		Position: &position,
-		World:    world,
+		Actor:  actor,
+		Target: &target,
+		Dest:   &position,
 	}
 
 	// コンテキストの基本的な検証
@@ -56,8 +55,8 @@ func TestContext(t *testing.T) {
 	if ctx.Target == nil || *ctx.Target != target {
 		t.Errorf("Context.Target = %v, want %v", ctx.Target, &target)
 	}
-	if ctx.Position == nil || ctx.Position.X != 5 || ctx.Position.Y != 10 {
-		t.Errorf("Context.Position = %v, want Position{X:5, Y:10}", ctx.Position)
+	if ctx.Dest == nil || ctx.Dest.X != 5 || ctx.Dest.Y != 10 {
+		t.Errorf("Context.Position = %v, want Position{X:5, Y:10}", ctx.Dest)
 	}
 }
 

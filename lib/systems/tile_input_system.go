@@ -77,12 +77,11 @@ func executeAction(world w.World, actionID actions.ActionID, position *gc.Positi
 		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		ctx := actions.Context{
-			Actor:    entity,
-			Position: position,
-			World:    world,
+			Actor: entity,
+			Dest:  position,
 		}
 
-		result, err := executor.Execute(actionID, ctx)
+		result, err := executor.Execute(actionID, ctx, world)
 		if err != nil {
 			// エラーログ（必要に応じて）
 			_ = result // 現時点では結果を使用しない

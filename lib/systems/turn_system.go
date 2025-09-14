@@ -19,7 +19,7 @@ func TurnSystem(world w.World) {
 
 	case turns.AITurn:
 		// AIターン: 全AI・NPCを一括処理
-		processAITurn(world)
+		processAITurn()
 		turnManager.AdvanceToTurnEnd()
 
 	case turns.TurnEnd:
@@ -30,7 +30,7 @@ func TurnSystem(world w.World) {
 }
 
 // processAITurn はAIターンの処理を行う
-func processAITurn(world w.World) {
+func processAITurn() {
 	logger := logger.New(logger.CategoryTurn)
 	logger.Debug("AIターン処理開始")
 
