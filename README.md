@@ -5,7 +5,7 @@
 
 ## Play Images
 
-<img src="./vrtimages/Dungeon.png" width="50%" /><img src="./vrtimages/PartySetup.png" width="50%" />
+<img src="./vrtimages/Dungeon.png" width="50%" />
 
 <img src="./vrtimages/HomeMenu.png" width="50%" /><img src="./vrtimages/MainMenu.png" width="50%" />
 
