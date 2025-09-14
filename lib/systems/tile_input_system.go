@@ -7,6 +7,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -15,6 +16,13 @@ import (
 // AIの移動・攻撃も将来的に同じActionシステムを使用予定
 // TODO: 文脈に応じて発行アクションを判定する
 func TileInputSystem(world w.World) {
+	// ターン管理チェック - プレイヤーターンでない場合は入力を受け付けない
+	if world.Resources.TurnManager != nil {
+		turnManager := world.Resources.TurnManager.(*turns.TurnManager)
+		if !turnManager.CanPlayerAct() {
+			return
+		}
+	}
 	// キー入力を方向に変換
 	var direction gc.Direction
 
@@ -80,8 +88,15 @@ func executeAction(world w.World, actionID actions.ActionID, position *gc.Positi
 			_ = result // 現時点では結果を使用しない
 		}
 
+		// アクション成功時、ターンマネージャーで移動ポイントを消費
+		if result != nil && result.Success && world.Resources.TurnManager != nil {
+			if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
+				turnManager.ConsumePlayerMoves(actionID)
+			}
+		}
+
 		// 移動の場合は追加でタイルイベントをチェック
-		if actionID == actions.ActionMove && result.Success && position != nil {
+		if actionID == actions.ActionMove && result != nil && result.Success && position != nil {
 			checkTileEvents(world, entity, int(position.X), int(position.Y))
 		}
 	}))

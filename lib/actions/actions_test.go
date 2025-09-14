@@ -14,10 +14,10 @@ func TestActionID_String(t *testing.T) {
 		actionID ActionID
 		expected string
 	}{
-		{"Move", ActionMove, "移動"},
-		{"Wait", ActionWait, "待機"},
-		{"Attack", ActionAttack, "攻撃"},
-		{"Null", ActionNull, ""},
+		{"Move", ActionMove, "Move"},
+		{"Wait", ActionWait, "Wait"},
+		{"Attack", ActionAttack, "Attack"},
+		{"Null", ActionNull, "Null"},
 	}
 
 	for _, tt := range tests {

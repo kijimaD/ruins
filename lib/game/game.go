@@ -34,11 +34,11 @@ func (game *MainGame) Layout(_, _ int) (int, int) {
 func (game *MainGame) Update() error {
 	// デバッグ表示をトグルする
 	cfg := config.Get()
-	if inpututil.IsKeyJustPressed(ebiten.KeyF12) {
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		// パフォーマンスモニターは攻略に関係ないのでトグルできてよい
 		cfg.ShowMonitor = !cfg.ShowMonitor
 	}
-	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeyF12) {
+	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		cfg.ShowAIDebug = !cfg.ShowAIDebug
 		cfg.NoEncounter = !cfg.NoEncounter
 	}

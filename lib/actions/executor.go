@@ -69,6 +69,8 @@ func (e *Executor) Execute(actionID ActionID, ctx Context) (*Result, error) {
 		e.logger.Error("アクション実行エラー", "action", actionID.String(), "error", err.Error())
 	} else {
 		e.logger.Debug("アクション実行完了", "action", actionID.String(), "success", result.Success)
+		// 移動ポイント消費は呼び出し元（TileInputSystem）で行う
+		// TODO: ここでやるのが自然
 	}
 
 	return result, err

@@ -21,6 +21,9 @@ const (
 	// CategoryAction はアクション処理のログカテゴリ
 	CategoryAction Category = "action" // アクション処理
 
+	// CategoryTurn はターン管理のログカテゴリ
+	CategoryTurn Category = "turn" // ターン管理
+
 	// CategoryEffect はエフェクト全般のログカテゴリ
 	CategoryEffect Category = "effect" // エフェクト全般
 	// CategoryDamage はダメージ処理のログカテゴリ
