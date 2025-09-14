@@ -222,14 +222,15 @@ func (e *Executor) executePickupItem(ctx Context, world w.World) *Result {
 // executeWarp はワープアクションを実行する
 func (e *Executor) executeWarp(_ Context, world w.World) (*Result, error) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	if gameResources.PlayerTileState.CurrentWarp == nil {
+	warp := e.getPlayerWarp(world)
+	if warp == nil {
 		return &Result{
 			Success:  false,
 			ActionID: ActionWarp,
 			Message:  "ワープホールが見つかりません",
 		}, fmt.Errorf("ワープホールが見つかりません")
 	}
-	switch gameResources.PlayerTileState.CurrentWarp.Mode {
+	switch warp.Mode {
 	case gc.WarpModeNext:
 		gameResources.SetStateEvent(resources.StateEventWarpNext)
 		e.logger.Debug("次の階へワープ")
@@ -251,7 +252,7 @@ func (e *Executor) executeWarp(_ Context, world w.World) (*Result, error) {
 			Success:  false,
 			ActionID: ActionWarp,
 			Message:  "不明なワープタイプです",
-		}, fmt.Errorf("不明なワープタイプ: %v", gameResources.PlayerTileState.CurrentWarp.Mode)
+		}, fmt.Errorf("不明なワープタイプ: %v", warp.Mode)
 	}
 }
 
@@ -316,10 +317,33 @@ func (e *Executor) validatePickupItem(ctx Context, world w.World) error {
 	return nil
 }
 
+// getPlayerWarp はプレイヤーの現在位置のワープホールを取得する
+func (e *Executor) getPlayerWarp(world w.World) *gc.Warp {
+	// プレイヤーエンティティを探す
+	var playerEntity ecs.Entity
+	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
+		playerEntity = entity
+	}))
+
+	if playerEntity == 0 {
+		return nil
+	}
+
+	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
+	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	pixelX := int(gridElement.X) * 32
+	pixelY := int(gridElement.Y) * 32
+	tileEntity := gameResources.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
+
+	if tileEntity.HasComponent(world.Components.Warp) {
+		return world.Components.Warp.Get(tileEntity).(*gc.Warp)
+	}
+	return nil
+}
+
 // validateWarp はワープアクションの検証を行う
 func (e *Executor) validateWarp(_ Context, world w.World) error {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	if gameResources.PlayerTileState.CurrentWarp == nil {
+	if e.getPlayerWarp(world) == nil {
 		return fmt.Errorf("ワープホールがありません")
 	}
 	return nil

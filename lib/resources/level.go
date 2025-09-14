@@ -28,16 +28,13 @@ type PlayerTileState struct {
 	// プレイヤーの前回のタイル位置（重複メッセージ防止用）
 	LastTileX int
 	LastTileY int
-	// 現在プレイヤーがいるワープホールの情報
-	CurrentWarp *gc.Warp
 }
 
 // ResetPlayerTileState はプレイヤーのタイル状態をリセットする（階層移動時に使用）
 func (d *Dungeon) ResetPlayerTileState() {
 	d.PlayerTileState = PlayerTileState{
-		LastTileX:   -1,
-		LastTileY:   -1,
-		CurrentWarp: nil,
+		LastTileX: -1,
+		LastTileY: -1,
 	}
 }
 

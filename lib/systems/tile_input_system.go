@@ -150,18 +150,25 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 	return movement.CanMoveTo(world, tileX, tileY, movingEntity)
 }
 
-// checkTileWarp はプレイヤーがいるタイルのワープホールをチェックする
-// TileMoveSystemから移植
-func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
+// getWarpAtPlayerPosition はプレイヤーの現在位置のワープホールを取得する
+func getWarpAtPlayerPosition(world w.World, playerGrid *gc.GridElement) *gc.Warp {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	pixelX := int(playerGrid.X) * 32
 	pixelY := int(playerGrid.Y) * 32
 	tileEntity := gameResources.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
 
 	if tileEntity.HasComponent(world.Components.Warp) {
-		warp := world.Components.Warp.Get(tileEntity).(*gc.Warp)
-		gameResources.PlayerTileState.CurrentWarp = warp // 現在のワープホールを記録
+		return world.Components.Warp.Get(tileEntity).(*gc.Warp)
+	}
+	return nil
+}
 
+// checkTileWarp はプレイヤーがいるタイルのワープホールをチェックする
+// TileMoveSystemから移植
+func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
+	warp := getWarpAtPlayerPosition(world, playerGrid)
+
+	if warp != nil {
 		switch warp.Mode {
 		case gc.WarpModeNext:
 			gamelog.New(gamelog.FieldLog).
@@ -172,9 +179,6 @@ func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
 				Append("出口を発見した。Enterキーで移動").
 				Log()
 		}
-	} else {
-		// ワープホールから離れた場合はリセット
-		gameResources.PlayerTileState.CurrentWarp = nil
 	}
 }
 
@@ -230,8 +234,7 @@ func determineEnterAction(world w.World) actions.ActionID {
 	playerTileY := int(gridElement.Y)
 
 	// 優先順位1: ワープホールのチェック
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	if gameResources.PlayerTileState.CurrentWarp != nil {
+	if getWarpAtPlayerPosition(world, gridElement) != nil {
 		return actions.ActionWarp
 	}
 
