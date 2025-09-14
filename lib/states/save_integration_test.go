@@ -4,7 +4,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/game"
@@ -38,9 +37,9 @@ func TestSaveLoadIntegration(t *testing.T) {
 		TargetEntity: &player,
 	})
 	npc.AddComponent(world.Components.AIRoaming, &gc.AIRoaming{
-		SubState:         gc.AIRoamingWaiting,
-		StartSubState:    time.Now(),
-		DurationSubState: time.Second * 3,
+		SubState:              gc.AIRoamingWaiting,
+		StartSubStateTurn:     1,
+		DurationSubStateTurns: 3,
 	})
 
 	// セーブマネージャーを作成

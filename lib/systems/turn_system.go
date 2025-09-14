@@ -16,12 +16,10 @@ func TurnSystem(world w.World) {
 		// プレイヤーターンでは入力システムが処理
 		// 移動ポイントが尽きるまでプレイヤーが連続行動
 		// TileInputSystemがアクション実行時にConsumePlayerMovesを呼ぶ
-
 	case turns.AITurn:
 		// AIターン: 全AI・NPCを一括処理
-		processAITurn()
+		processAITurn(world)
 		turnManager.AdvanceToTurnEnd()
-
 	case turns.TurnEnd:
 		// ターン終了処理
 		processTurnEnd(world)
@@ -30,14 +28,12 @@ func TurnSystem(world w.World) {
 }
 
 // processAITurn はAIターンの処理を行う
-func processAITurn() {
+func processAITurn(world w.World) {
 	logger := logger.New(logger.CategoryTurn)
 	logger.Debug("AIターン処理開始")
 
-	// TODO: AI・NPCエンティティを処理
-	// 現時点ではAIが存在しないため、処理をスキップ
-	// 将来的にここでAISystemを呼び出す:
-	// AISystem(world)
+	// AI・NPCエンティティを処理
+	AISystem(world)
 
 	logger.Debug("AIターン処理完了")
 }
@@ -49,7 +45,7 @@ func processTurnEnd(world w.World) {
 
 	logger.Debug("ターン終了処理", "turn", turnManager.TurnNumber)
 
-	// ターン終了時の共通処理をここに追加
+	// TODO: ターン終了時の共通処理をここに追加
 	// - エフェクトの持続時間減少
 	// - 状態異常の更新
 	// - 環境変化の処理

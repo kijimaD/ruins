@@ -3,6 +3,7 @@ package worldhelper
 import (
 	"errors"
 	"fmt"
+	"math/rand/v2"
 
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/effects"
@@ -186,7 +187,11 @@ func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error {
 			},
 			BlockPass: &gc.BlockPass{},
 			AIMoveFSM: &gc.AIMoveFSM{},
-			AIRoaming: &gc.AIRoaming{},
+			AIRoaming: &gc.AIRoaming{
+				SubState:              gc.AIRoamingWaiting,
+				StartSubStateTurn:     1,                // 初期ターン
+				DurationSubStateTurns: 2 + rand.IntN(3), // 2-4ターン待機
+			},
 			AIVision: &gc.AIVision{
 				ViewDistance: gc.Pixel(aiVisionDistance),
 			},

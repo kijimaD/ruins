@@ -6,6 +6,7 @@ import (
 
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/require"
 
@@ -31,6 +32,10 @@ func CreateTestWorldWithResources(t *testing.T) w.World {
 	gameResource.SetStateEvent(resources.StateEventNone)
 	world.Resources.Dungeon = gameResource
 
+	// TurnManagerを初期化
+	turnManager := turns.NewTurnManager()
+	world.Resources.TurnManager = turnManager
+
 	return world
 }
 
@@ -46,6 +51,10 @@ func CreateTestWorldForCollision(t *testing.T) w.World {
 	gameResource := &resources.Dungeon{}
 	gameResource.SetStateEvent(resources.StateEventNone)
 	world.Resources.Dungeon = gameResource
+
+	// TurnManagerを初期化
+	turnManager := turns.NewTurnManager()
+	world.Resources.TurnManager = turnManager
 
 	return world
 }
