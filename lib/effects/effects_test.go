@@ -36,7 +36,7 @@ func createTestPlayerEntity(world w.World, hp, sp int) ecs.Entity {
 	return entityList[0]
 }
 
-// テスト用のヘルパー関数：味方パーティメンバーを作成
+// テスト用のヘルパー関数：味方プレイヤーを作成
 func createTestAllyEntity(world w.World, name string, hp int) ecs.Entity {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
@@ -45,7 +45,7 @@ func createTestAllyEntity(world w.World, name string, hp int) ecs.Entity {
 			SP: gc.Pool{Current: 50, Max: 50},
 		},
 		Name:        &gc.Name{Name: name},
-		InParty:     &gc.InParty{},
+		Player:      &gc.Player{},
 		FactionType: &gc.FactionAlly,
 	})
 
@@ -119,17 +119,17 @@ func TestEffectSystem(t *testing.T) {
 		singleTarget := TargetSingle{Entity: entity}
 		assert.Equal(t, "TargetSingle", singleTarget.String())
 
-		partyTargets := TargetParty{}
-		assert.Equal(t, "TargetParty", partyTargets.String())
+		playerTarget := TargetPlayer{}
+		assert.Equal(t, "TargetPlayer", playerTarget.String())
 
 		allEnemies := TargetAllEnemies{}
 		assert.Equal(t, "TargetAllEnemies", allEnemies.String())
 
-		aliveParty := TargetAliveParty{}
-		assert.Equal(t, "TargetAliveParty", aliveParty.String())
+		alivePlayer := TargetPlayer{}
+		assert.Equal(t, "TargetPlayer", alivePlayer.String())
 
-		deadParty := TargetDeadParty{}
-		assert.Equal(t, "TargetDeadParty", deadParty.String())
+		deadPlayer := TargetDeadPlayer{}
+		assert.Equal(t, "TargetDeadPlayer", deadPlayer.String())
 
 		noTarget := TargetNone{}
 		assert.Equal(t, "TargetNone", noTarget.String())
@@ -140,11 +140,11 @@ func TestEffectSystem(t *testing.T) {
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
-		// 生存パーティメンバーを作成
+		// 生存プレイヤーを作成
 		alivePlayer1 := createTestAllyEntity(world, "生存者1", 50)
 		alivePlayer2 := createTestAllyEntity(world, "生存者2", 30)
 
-		// 死亡パーティメンバーを作成（ダメージで死亡させる）
+		// 死亡プレイヤーを作成（ダメージで死亡させる）
 		deadPlayer1 := createTestAllyEntity(world, "死亡者1", 50)
 		damage1 := Damage{Amount: 100, Source: DamageSourceWeapon}
 		scope1 := &Scope{Targets: []ecs.Entity{deadPlayer1}}
@@ -158,7 +158,7 @@ func TestEffectSystem(t *testing.T) {
 		assert.NoError(t, err)
 
 		// 生存者選択のテスト
-		aliveSelector := TargetAliveParty{}
+		aliveSelector := TargetPlayer{}
 		aliveTargets, err := aliveSelector.SelectTargets(world)
 		assert.NoError(t, err)
 		assert.Len(t, aliveTargets, 2)
@@ -168,7 +168,7 @@ func TestEffectSystem(t *testing.T) {
 		assert.NotContains(t, aliveTargets, deadPlayer2)
 
 		// 死亡者選択のテスト
-		deadSelector := TargetDeadParty{}
+		deadSelector := TargetDeadPlayer{}
 		deadTargets, err := deadSelector.SelectTargets(world)
 		assert.NoError(t, err)
 		assert.Len(t, deadTargets, 2)

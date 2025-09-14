@@ -168,15 +168,21 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
+		// 3x3グリッドレイアウト: 9個の要素が必要
+		// 1行目
 		st.rootContainer.AddChild(styled.NewTitleText("合成", world))
 		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
 
+		// 2行目
 		st.rootContainer.AddChild(st.tabDisplayContainer) // タブとアイテム一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
 		st.rootContainer.AddChild(styled.NewVSplitContainer(st.specContainer, st.recipeList))
 
+		// 3行目
 		st.rootContainer.AddChild(itemDescContainer)
+		st.rootContainer.AddChild(widget.NewContainer()) // 空
+		st.rootContainer.AddChild(widget.NewContainer()) // 空
 	}
 
 	return &ebitenui.UI{Container: st.rootContainer}

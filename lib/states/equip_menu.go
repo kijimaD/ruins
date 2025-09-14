@@ -31,13 +31,10 @@ type EquipMenuState struct {
 	keyboardInput       input.KeyboardInput
 	itemDesc            *widget.Text      // アイテムの説明
 	specContainer       *widget.Container // 性能コンテナ
-	abilityContainer    *widget.Container // メンバーの能力表示コンテナ
+	abilityContainer    *widget.Container // プレイヤーの能力表示コンテナ
 	rootContainer       *widget.Container
 	tabDisplayContainer *widget.Container // タブ表示のコンテナ
-	categoryContainer   *widget.Container // カテゴリ一覧のコンテナ
 
-	// 選択中の味方
-	curMemberIdx int
 	// 現在のタブインデックス（装備選択時の復元用）
 	previousTabIndex int
 
@@ -140,7 +137,6 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)
-			st.updateCategoryDisplay(world)
 			st.updateAbilityDisplay(world)
 		},
 		OnItemChange: func(_ int, _, _ int, item menu.Item) {
@@ -170,23 +166,25 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	st.tabDisplayContainer = styled.NewVerticalContainer()
 	st.createTabDisplayUI(world)
 
-	// カテゴリ一覧のコンテナを作成（横並び）
-	st.categoryContainer = styled.NewRowContainer()
-	st.createCategoryDisplayUI(world)
-
 	st.rootContainer = styled.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 	{
+		// 3x3グリッドレイアウト: 9個の要素が必要
+		// 1行目
 		st.rootContainer.AddChild(styled.NewTitleText("装備", world))
-		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
-		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(widget.NewContainer()) // 空
+		st.rootContainer.AddChild(widget.NewContainer()) // 空
 
+		// 2行目
 		st.rootContainer.AddChild(st.tabDisplayContainer) // タブとアイテム一覧の表示
-		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(widget.NewContainer())  // 空
 		st.rootContainer.AddChild(styled.NewWSplitContainer(st.specContainer, st.abilityContainer))
 
+		// 3行目
 		st.rootContainer.AddChild(itemDescContainer)
+		st.rootContainer.AddChild(widget.NewContainer()) // 空
+		st.rootContainer.AddChild(widget.NewContainer()) // 空
 	}
 
 	return &ebitenui.UI{Container: st.rootContainer}
@@ -194,25 +192,26 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 
 // createTabs はTabMenuで使用するタブを作成する
 func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
-	members := []ecs.Entity{}
-	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
-		members = append(members, entity)
+	var player ecs.Entity
+	var found bool
+	worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
+		if !found {
+			player = entity
+			found = true
+		}
 	})
 
-	tabs := []tabmenu.TabItem{}
+	if !found {
+		return []tabmenu.TabItem{}
+	}
 
-	// 各メンバーごとにタブを作成（防具と手札のスロットを統合）
-	for memberIdx, member := range members {
-		memberName := world.Components.Name.Get(member).(*gc.Name).Name
-
-		// 防具と手札の両方のスロットを統合して作成
-		allItems := st.createAllSlotItems(world, member, memberIdx)
-
-		tabs = append(tabs, tabmenu.TabItem{
-			ID:    fmt.Sprintf("member_%d", memberIdx),
-			Label: memberName,
+	allItems := st.createAllSlotItems(world, player, 0)
+	tabs := []tabmenu.TabItem{
+		{
+			ID:    "player_equipment",
+			Label: "装備",
 			Items: allItems,
-		})
+		},
 	}
 
 	return tabs
@@ -325,21 +324,8 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
 			st.specContainer.RemoveChildren()
 		}
 
-		// 現在の選択に基づいてメンバー情報を更新
-		if member, ok := userData["member"].(ecs.Entity); ok {
-			members := []ecs.Entity{}
-			worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
-				members = append(members, entity)
-			})
-
-			// メンバーインデックスを更新
-			for i, m := range members {
-				if m == member {
-					st.curMemberIdx = i
-					break
-				}
-			}
-
+		// プレイヤー情報を更新
+		if _, ok := userData["member"].(ecs.Entity); ok {
 			st.updateAbilityDisplay(world)
 		}
 	}
@@ -348,60 +334,6 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
 // createTabDisplayUI はタブ表示UIを作成する
 func (st *EquipMenuState) createTabDisplayUI(world w.World) {
 	st.updateTabDisplay(world)
-}
-
-// createCategoryDisplayUI はカテゴリ表示UIを作成する
-func (st *EquipMenuState) createCategoryDisplayUI(world w.World) {
-	st.updateCategoryDisplay(world)
-}
-
-// updateCategoryDisplay はカテゴリ表示を更新する
-func (st *EquipMenuState) updateCategoryDisplay(world w.World) {
-	// 既存の子要素をクリア
-	st.categoryContainer.RemoveChildren()
-
-	// 装備選択モードの場合は、全メンバーを表示して装備対象をハイライト
-	// 選択中かをエンティティIDで比較している
-	if st.isEquipMode {
-		members := []ecs.Entity{}
-		worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
-			members = append(members, entity)
-		})
-
-		for _, member := range members {
-			memberName := world.Components.Name.Get(member).(*gc.Name).Name
-			isTargetMember := member == st.equipTargetMember
-
-			if isTargetMember {
-				// 装備対象のメンバーは背景色付きで明るい文字色
-				categoryWidget := styled.NewListItemText(memberName, colors.TextColor, true, world)
-				st.categoryContainer.AddChild(categoryWidget)
-			} else {
-				// その他のメンバーは背景なしでグレー文字色
-				categoryWidget := styled.NewListItemText(memberName, colors.ForegroundColor, false, world)
-				st.categoryContainer.AddChild(categoryWidget)
-			}
-		}
-		return
-	}
-
-	// 通常モード: 全カテゴリを横並びで表示
-	// 選択中かをタブ番号で比較している
-	currentTabIndex := st.tabMenu.GetCurrentTabIndex()
-	tabs := st.createTabs(world) // 最新のタブ情報を取得
-
-	for i, tab := range tabs {
-		isSelected := i == currentTabIndex
-		if isSelected {
-			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.TextColor, true, world)
-			st.categoryContainer.AddChild(categoryWidget)
-		} else {
-			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.ForegroundColor, false, world)
-			st.categoryContainer.AddChild(categoryWidget)
-		}
-	}
 }
 
 // updateTabDisplay はタブ表示を更新する
@@ -468,28 +400,23 @@ func (st *EquipMenuState) updateAbilityDisplay(world w.World) {
 func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	st.abilityContainer.RemoveChildren()
 
-	currentTab := st.tabMenu.GetCurrentTab()
-	// タブIDからメンバーIDを取得（新しいパターン: "member_0"）
-	var memberIdx int
-	if _, err := fmt.Sscanf(currentTab.ID, "member_%d", &memberIdx); err != nil {
-		log.Printf("Failed to parse tab ID %s: %v", currentTab.ID, err)
-		return
-	}
-
-	members := []ecs.Entity{}
-	worldhelper.QueryInPartyMember(world, func(entity ecs.Entity) {
-		members = append(members, entity)
+	var player ecs.Entity
+	var found bool
+	worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
+		if !found {
+			player = entity
+			found = true
+		}
 	})
 
-	if memberIdx >= len(members) {
+	if !found {
 		return
 	}
 
-	targetMember := members[memberIdx]
+	// プレイヤーの基本情報を表示
+	views.AddMemberStatusText(st.abilityContainer, player, world)
 
-	views.AddMemberBar(world, st.abilityContainer, targetMember)
-
-	attrs := world.Components.Attributes.Get(targetMember).(*gc.Attributes)
+	attrs := world.Components.Attributes.Get(player).(*gc.Attributes)
 	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))
 	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world))
 	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world))
@@ -697,7 +624,6 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 
 	st.tabMenu.UpdateTabs(newTabs)
 	st.updateTabDisplay(world)
-	st.updateCategoryDisplay(world)
 	st.closeActionWindow()
 }
 
@@ -765,7 +691,6 @@ func (st *EquipMenuState) exitEquipMode(world w.World) {
 	}
 
 	st.updateTabDisplay(world)
-	st.updateCategoryDisplay(world)
 	st.updateAbilityDisplay(world)
 }
 

@@ -41,33 +41,33 @@ func TestQueryOwnedMaterial(t *testing.T) {
 	world.Manager.DeleteEntity(nonMaterialEntity)
 }
 
-func TestQueryInPartyMember(t *testing.T) {
+func TestQueryPlayer(t *testing.T) {
 	t.Parallel()
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
-	// パーティメンバーを作成
-	partyMember := world.Manager.NewEntity()
-	partyMember.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
-	partyMember.AddComponent(world.Components.InParty, &gc.InParty{})
-	partyMember.AddComponent(world.Components.Name, &gc.Name{Name: "パーティメンバー"})
+	// プレイヤーを作成
+	player := world.Manager.NewEntity()
+	player.AddComponent(world.Components.Player, &gc.Player{})
+	player.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
+	player.AddComponent(world.Components.Name, &gc.Name{Name: "プレイヤー"})
 
-	// 味方だがパーティにいないメンバーを作成
-	allyMember := world.Manager.NewEntity()
-	allyMember.AddComponent(world.Components.FactionAlly, &gc.FactionAlly)
-	allyMember.AddComponent(world.Components.Name, &gc.Name{Name: "味方メンバー"})
+	// 敵を作成（除外されることを確認）
+	enemy := world.Manager.NewEntity()
+	enemy.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemy)
+	enemy.AddComponent(world.Components.Name, &gc.Name{Name: "敵"})
 
 	// クエリを実行
 	var foundEntities []ecs.Entity
-	QueryInPartyMember(world, func(entity ecs.Entity) {
+	QueryPlayer(world, func(entity ecs.Entity) {
 		foundEntities = append(foundEntities, entity)
 	})
 
 	// 結果を検証
-	assert.Len(t, foundEntities, 1, "パーティメンバーが1つだけ見つかるべき")
-	assert.Equal(t, partyMember, foundEntities[0], "正しいパーティメンバーが見つかるべき")
+	assert.Len(t, foundEntities, 1, "プレイヤーが1つだけ見つかるべき")
+	assert.Equal(t, player, foundEntities[0], "正しいプレイヤーが見つかるべき")
 
 	// クリーンアップ
-	world.Manager.DeleteEntity(partyMember)
-	world.Manager.DeleteEntity(allyMember)
+	world.Manager.DeleteEntity(player)
+	world.Manager.DeleteEntity(enemy)
 }

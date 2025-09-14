@@ -30,25 +30,6 @@ func (s TargetSingle) String() string {
 	return "TargetSingle"
 }
 
-// TargetParty はパーティ全体ターゲットセレクタ
-type TargetParty struct{}
-
-// SelectTargets はパーティ全体をターゲットとして選択する
-func (p TargetParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
-	var targets []ecs.Entity
-	world.Manager.Join(
-		world.Components.FactionAlly,
-		world.Components.InParty,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		targets = append(targets, entity)
-	}))
-	return targets, nil
-}
-
-func (p TargetParty) String() string {
-	return "TargetParty"
-}
-
 // TargetAllEnemies はすべての敵ターゲットセレクタ
 type TargetAllEnemies struct{}
 
@@ -67,16 +48,16 @@ func (a TargetAllEnemies) String() string {
 	return "TargetAllEnemies"
 }
 
-// TargetAliveParty は生きているパーティメンバーのみをターゲットとする
-type TargetAliveParty struct{}
+// TargetPlayer は生存しているプレイヤーをターゲットとする
+type TargetPlayer struct{}
 
-// SelectTargets は生存しているパーティメンバーをターゲットとして選択する
-// Deadコンポーネントが付与されていないメンバーを選択する
-func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
+// SelectTargets は生存しているプレイヤーをターゲットとして選択する
+// Deadコンポーネントが付与されていないプレイヤーを選択する
+func (t TargetPlayer) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
+		world.Components.Player,
 		world.Components.FactionAlly,
-		world.Components.InParty,
 		world.Components.Pools,
 		world.Components.Dead.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -85,20 +66,20 @@ func (a TargetAliveParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return targets, nil
 }
 
-func (a TargetAliveParty) String() string {
-	return "TargetAliveParty"
+func (t TargetPlayer) String() string {
+	return "TargetPlayer"
 }
 
-// TargetDeadParty は死亡しているパーティメンバーのみをターゲットとする
-type TargetDeadParty struct{}
+// TargetDeadPlayer は死亡しているプレイヤーをターゲットとする
+type TargetDeadPlayer struct{}
 
-// SelectTargets は死亡しているパーティメンバーをターゲットとして選択する
-// Deadコンポーネントが付与されているメンバーを選択する
-func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
+// SelectTargets は死亡しているプレイヤーをターゲットとして選択する
+// Deadコンポーネントが付与されているプレイヤーを選択する
+func (d TargetDeadPlayer) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	var targets []ecs.Entity
 	world.Manager.Join(
+		world.Components.Player,
 		world.Components.FactionAlly,
-		world.Components.InParty,
 		world.Components.Pools,
 		world.Components.Dead,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -107,8 +88,8 @@ func (d TargetDeadParty) SelectTargets(world w.World) ([]ecs.Entity, error) {
 	return targets, nil
 }
 
-func (d TargetDeadParty) String() string {
-	return "TargetDeadParty"
+func (d TargetDeadPlayer) String() string {
+	return "TargetDeadPlayer"
 }
 
 // TargetNone はターゲット不要のエフェクト用セレクタ

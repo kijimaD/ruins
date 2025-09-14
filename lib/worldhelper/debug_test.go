@@ -14,39 +14,39 @@ func TestInitDebugData(t *testing.T) {
 	world, err := game.InitWorld(960, 720)
 	require.NoError(t, err)
 
-	// 初期状態ではパーティメンバーは0人
+	// 初期状態ではプレイヤーは0人
 	memberCount := 0
 	world.Manager.Join(
 		world.Components.FactionAlly,
-		world.Components.InParty,
+		world.Components.Player,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
-	assert.Equal(t, 0, memberCount, "初期状態ではパーティメンバーは0人であるべき")
+	assert.Equal(t, 0, memberCount, "初期状態ではプレイヤーは0人であるべき")
 
 	// デバッグデータ初期化実行
 	InitDebugData(world)
 
-	// 初期化後はパーティメンバーが3人いるはず
+	// 初期化後はプレイヤーが1人いるはず
 	memberCount = 0
 	world.Manager.Join(
 		world.Components.FactionAlly,
-		world.Components.InParty,
+		world.Components.Player,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
-	assert.Equal(t, 3, memberCount, "デバッグ初期化後はパーティメンバーが3人いるべき")
+	assert.Equal(t, 1, memberCount, "デバッグ初期化後はプレイヤーが1人いるべき")
 
 	// 2回目の実行では何も追加されないことを確認
 	InitDebugData(world)
 	memberCount = 0
 	world.Manager.Join(
 		world.Components.FactionAlly,
-		world.Components.InParty,
+		world.Components.Player,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
-	assert.Equal(t, 3, memberCount, "2回目の実行ではパーティメンバー数は変わらないべき")
+	assert.Equal(t, 1, memberCount, "2回目の実行ではプレイヤー数は変わらないべき")
 
 	// アイテムが生成されていることを確認
 	ironAmount := GetAmount("鉄", world)

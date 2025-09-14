@@ -2,8 +2,10 @@ package views
 
 import (
 	"fmt"
+	"image/color"
 	"strconv"
 
+	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -103,4 +105,105 @@ func addEquipBonus(targetContainer *widget.Container, equipBonus gc.EquipBonus, 
 		agility := fmt.Sprintf("%s %+d", consts.AgilityLabel, equipBonus.Agility)
 		targetContainer.AddChild(styled.NewBodyText(agility, colors.TextColor, world))
 	}
+}
+
+// AddMemberStatusText はメンバーの名前とHPを簡易テキスト表示で追加する
+func AddMemberStatusText(targetContainer *widget.Container, entity ecs.Entity, world w.World) {
+	if !entity.HasComponent(world.Components.Name) || !entity.HasComponent(world.Components.Pools) {
+		return
+	}
+
+	name := world.Components.Name.Get(entity).(*gc.Name)
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
+
+	targetContainer.AddChild(styled.NewMenuText(name.Name, world))
+	targetContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), colors.TextColor, world))
+}
+
+// AddMemberBars はメンバーの名前、HP/SPバー、レベルを詳細表示で追加する
+func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w.World) {
+	if !entity.HasComponent(world.Components.Name) || !entity.HasComponent(world.Components.Pools) {
+		return
+	}
+
+	name := world.Components.Name.Get(entity).(*gc.Name)
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
+	res := world.Resources.UIResources
+
+	memberContainer := styled.NewVerticalContainer()
+
+	// 名前
+	memberContainer.AddChild(styled.NewMenuText(name.Name, world))
+
+	// HPラベル
+	hpLabel := widget.NewText(
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, colors.TextColor),
+	)
+	memberContainer.AddChild(hpLabel)
+
+	// HPプログレスバー
+	hpProgressbar := widget.NewProgressBar(
+		widget.ProgressBarOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(140, 16),
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter},
+			),
+		),
+		widget.ProgressBarOpts.Images(
+			&widget.ProgressBarImage{
+				Idle:  image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+				Hover: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+			},
+			&widget.ProgressBarImage{
+				Idle:  image.NewNineSliceColor(color.NRGBA{0, 200, 0, 255}),
+				Hover: image.NewNineSliceColor(color.NRGBA{0, 0, 255, 255}),
+			},
+		),
+		widget.ProgressBarOpts.TrackPadding(widget.Insets{
+			Top:    2,
+			Bottom: 2,
+		}),
+		widget.ProgressBarOpts.Values(0, pools.HP.Max, pools.HP.Current),
+	)
+	memberContainer.AddChild(hpProgressbar)
+
+	// SPラベル
+	spLabel := widget.NewText(
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, colors.TextColor),
+	)
+	memberContainer.AddChild(spLabel)
+
+	// SPプログレスバー
+	spProgressbar := widget.NewProgressBar(
+		widget.ProgressBarOpts.WidgetOpts(
+			widget.WidgetOpts.MinSize(140, 16),
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter},
+			),
+		),
+		widget.ProgressBarOpts.Images(
+			&widget.ProgressBarImage{
+				Idle:  image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+				Hover: image.NewNineSliceColor(color.NRGBA{100, 100, 100, 255}),
+			},
+			&widget.ProgressBarImage{
+				Idle:  image.NewNineSliceColor(color.NRGBA{255, 200, 0, 255}),
+				Hover: image.NewNineSliceColor(color.NRGBA{0, 0, 255, 255}),
+			},
+		),
+		widget.ProgressBarOpts.TrackPadding(widget.Insets{
+			Top:    2,
+			Bottom: 2,
+		}),
+		widget.ProgressBarOpts.Values(0, pools.SP.Max, pools.SP.Current),
+	)
+	memberContainer.AddChild(spProgressbar)
+
+	// レベル
+	levelLabel := widget.NewText(
+		widget.TextOpts.Text(fmt.Sprintf("Lv. %d", pools.Level), res.Text.SmallFace, colors.TextColor),
+	)
+	memberContainer.AddChild(levelLabel)
+
+	targetContainer.AddChild(memberContainer)
 }

@@ -7,14 +7,14 @@ import (
 )
 
 // InitDebugData はデバッグ用の初期データを設定する
-// パーティメンバーが存在しない場合のみ実行される
+// プレイヤーが存在しない場合のみ実行される
 // テスト、VRT、デバッグで使用される共通のエンティティセットを生成する
 func InitDebugData(world w.World) {
-	// 既にパーティメンバーが存在するかチェック
+	// 既にプレイヤーが存在するかチェック
 	memberCount := 0
 	world.Manager.Join(
+		world.Components.Player,
 		world.Components.FactionAlly,
-		world.Components.InParty,
 	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		memberCount++
 	}))
@@ -62,23 +62,8 @@ func InitDebugData(world w.World) {
 		_, _ = SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 	}
 
-	// メンバー生成
-	celestine, _ := SpawnMember(world, "セレスティン", true)
-	cordelia, _ := SpawnMember(world, "コルデリア", true)
-	_, _ = SpawnMember(world, "バルサザール", true)
-	_, _ = SpawnMember(world, "ハンス", false)
-	_, _ = SpawnMember(world, "カイン", false)
-	_, _ = SpawnMember(world, "メイ", false)
-	_, _ = SpawnMember(world, "アーサス", false)
-	_, _ = SpawnMember(world, "エヴァンジェリン", false)
-	_, _ = SpawnMember(world, "サイラス", false)
-	_, _ = SpawnMember(world, "ベアトリス", false)
-	_, _ = SpawnMember(world, "ガーディアン", false)
-	_, _ = SpawnMember(world, "セラフィナ", false)
-	_, _ = SpawnMember(world, "モルガン", false)
-	_, _ = SpawnMember(world, "メリディア", false)
-	_, _ = SpawnMember(world, "カスパー", false)
-	_, _ = SpawnMember(world, "レティシア", false)
+	// プレイヤー生成（一人のみ）
+	celestine, _ := SpawnPlayer(world, "セレスティン")
 
 	// マテリアルとレシピ
 	_ = SpawnAllMaterials(world)
@@ -114,6 +99,6 @@ func InitDebugData(world w.World) {
 	// 装備
 	Equip(world, card1, celestine, gc.EquipmentSlotNumber(0))
 	Equip(world, card2, celestine, gc.EquipmentSlotNumber(1))
-	Equip(world, card3, cordelia, gc.EquipmentSlotNumber(0))
+	Equip(world, card3, celestine, gc.EquipmentSlotNumber(2))
 	Equip(world, armor, celestine, gc.EquipmentSlotNumber(0))
 }

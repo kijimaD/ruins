@@ -9,7 +9,7 @@ import (
 // getCenterWinRect はゲームワールドから画面サイズを取得してウィンドウ位置を計算する
 // TODO: package移動する
 func getCenterWinRect(world w.World) image.Rectangle {
-	windowWidth, windowHeight := 400, 400 // パーティ選択ウィンドウに合わせてサイズを拡大
+	windowWidth, windowHeight := 400, 400 // ウィンドウサイズの設定
 
 	// worldから実際の画面サイズを取得
 	screenWidth := world.Resources.ScreenDimensions.Width

@@ -216,11 +216,11 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ec
 	return entities[len(entities)-1], nil
 }
 
-// SpawnMember はパーティに追加可能なキャラを生成する
-func SpawnMember(world w.World, name string, inParty bool) (ecs.Entity, error) {
+// SpawnPlayer はプレイヤーキャラクターを生成する
+func SpawnPlayer(world w.World, name string) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	memberComp, err := rawMaster.GenerateMember(name, inParty)
+	memberComp, err := rawMaster.GeneratePlayer(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}

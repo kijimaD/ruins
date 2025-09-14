@@ -3,7 +3,7 @@ package states
 
 import (
 	"github.com/ebitenui/ebitenui"
-	e_image "github.com/ebitenui/ebitenui/image"
+	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -117,12 +117,6 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewCraftMenuState}},
 		},
 		{
-			ID:          "replace",
-			Label:       "入替",
-			Description: "仲間を入れ替える",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewPartySetupState}},
-		},
-		{
 			ID:          "inventory",
 			Label:       "所持",
 			Description: "所持品を確認する",
@@ -212,7 +206,7 @@ func (st *HomeMenuState) updateActionDescription(world w.World, index int) {
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := styled.NewVerticalContainer()
 	st.memberContainer = styled.NewRowContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(image.NewNineSliceColor(colors.TransBlackColor)),
 	)
 
 	st.actionDescContainer = styled.NewRowContainer()
@@ -238,9 +232,10 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 func (st *HomeMenuState) updateMemberContainer(world w.World) {
 	st.memberContainer.RemoveChildren()
 	world.Manager.Join(
+		world.Components.Player,
 		world.Components.FactionAlly,
-		world.Components.InParty,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		views.AddMemberBar(world, st.memberContainer, entity)
+		// プレイヤーのステータスバーを表示
+		views.AddMemberBars(st.memberContainer, entity, world)
 	}))
 }

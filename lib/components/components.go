@@ -45,7 +45,6 @@ type GameComponentList struct {
 
 	// member ================
 	Player      *Player
-	InParty     *InParty
 	FactionType *FactionType
 	Dead        *Dead
 
@@ -101,7 +100,6 @@ type Components struct {
 
 	// member ================
 	Player       *ecs.NullComponent
-	InParty      *ecs.NullComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
 	Dead         *ecs.NullComponent
@@ -157,7 +155,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 
 	// member
 	c.Player = manager.NewNullComponent()
-	c.InParty = manager.NewNullComponent()
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
 	c.Dead = manager.NewNullComponent()
@@ -223,9 +220,6 @@ type Wearable struct {
 
 // Player は主人公キャラクター
 type Player struct{}
-
-// InParty は冒険パーティに参加している状態
-type InParty struct{}
 
 // Dead はキャラクターが死亡している状態を示すマーカーコンポーネント
 // HP が 0 になったとき付与され、復活時に除去される
