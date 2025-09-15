@@ -8,7 +8,6 @@ import (
 )
 
 // TurnSystem はターン管理を行うシステム
-// CDDAスタイルのプレイヤー優先ターンシステムを実装
 func TurnSystem(world w.World) {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 

@@ -122,7 +122,6 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 }
 
 // checkTileEvents はタイル上のイベントをチェックする
-// 既存のTileMoveSystemから移植
 func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	// プレイヤーの場合のみタイルイベントをチェック
 	if entity.HasComponent(world.Components.Operator) {
@@ -164,7 +163,6 @@ func getWarpAtPlayerPosition(world w.World, playerGrid *gc.GridElement) *gc.Warp
 }
 
 // checkTileWarp はプレイヤーがいるタイルのワープホールをチェックする
-// TileMoveSystemから移植
 func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
 	warp := getWarpAtPlayerPosition(world, playerGrid)
 
@@ -183,7 +181,6 @@ func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
 }
 
 // checkTileItemsForGridPlayer はグリッドベースプレイヤーのタイルアイテムをチェックする
-// TileMoveSystemから移植
 func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 	playerTileX := int(playerGrid.X)
 	playerTileY := int(playerGrid.Y)
@@ -212,7 +209,6 @@ func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 }
 
 // determineEnterAction はEnterキー押下時のアクションを状況に応じて決定する
-// CDDAのコンテキスト判断ロジックを参考にした実装
 func determineEnterAction(world w.World) actions.ActionID {
 	// プレイヤーエンティティを取得
 	var playerEntity ecs.Entity
