@@ -94,6 +94,34 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package mapbuilder provides map generation functionality.
+<p>このパッケージは階層マップの生成機能を提供します：
+<ul>
+<li>タイルベースのマップ生成
+<li>各種マップアルゴリズム（部屋、洞窟、森林、遺跡など）
+<li>エンティティ配置（NPC、アイテム、ワープホール）
+</ul>
+<p>## タイル定義
+<p>マップ生成で使用されるタイルタイプ：
+<ul>
+<li>TileEmpty: 空のタイル
+<li>TileFloor: 床タイル（通行可能）
+<li>TileWall: 壁タイル（通行不可）
+<li>TileWarpNext: 次階層へのワープタイル（通行可能）
+<li>TileWarpEscape: 脱出用ワープタイル（通行可能）
+</ul>
+<p>## 通行可否判定
+<p>マップ生成時には PathFinder.IsWalkable() で通行可否を判定します：
+<ul>
+<li>通行可能: TileFloor, TileWarpNext, TileWarpEscape
+<li>通行不可: TileWall
+</ul>
+<p>生成されたタイルはlevel.goでエンティティに変換され、実行時はエンティティベースの
+通行可否判定（movement.CanMoveTo）が使用されます。
+<p>## マップ生成の流れ
+<p>1. BuilderChainによる段階的生成
+2. タイル配列の構築
+3. エンティティへの変換
+4. NPC・アイテム配置
 <p>Package mapbuilder はマップ生成機能を提供する
 参考: <a href="https://bfnightly.bracketproductions.com">https://bfnightly.bracketproductions.com</a>
 
@@ -2124,12 +2152,19 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="Tile">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/tile.go?s=59:74#L1">Tile</a>
+			<h2 id="Tile">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapbuilder/tile.go?s=392:407#L1">Tile</a>
 				<a class="permalink" href="index.html#Tile">&#xb6;</a>
 				
 				
 			</h2>
 			<p>Tile はフィールドのタイル
+<p>マップ生成時に使用されるタイルタイプです。
+生成後はlevel.goでエンティティに変換されます。
+<p>通行可否の対応表：
+<ul>
+<li>TileFloor, TileWarpNext, TileWarpEscape: 通行可能
+<li>TileWall: 通行不可（BlockPassコンポーネント付きエンティティに変換）
+</ul>
 
 			<pre>type Tile <a href="http://localhost:8888/pkg/builtin/#uint8">uint8</a></pre>
 
@@ -2138,13 +2173,13 @@ TODO: 全然わかってないので理解する
 				<pre>const (
     <span class="comment">// TileEmpty は空のタイル</span>
     <span id="TileEmpty">TileEmpty</span> <a href="index.html#Tile">Tile</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
-    <span class="comment">// TileFloor は床タイル</span>
+    <span class="comment">// TileFloor は床タイル（通行可能）</span>
     <span id="TileFloor">TileFloor</span>
-    <span class="comment">// TileWall は壁タイル</span>
+    <span class="comment">// TileWall は壁タイル（通行不可）</span>
     <span id="TileWall">TileWall</span>
-    <span class="comment">// TileWarpNext は次の階に向かうワープタイル</span>
+    <span class="comment">// TileWarpNext は次の階に向かうワープタイル（通行可能）</span>
     <span id="TileWarpNext">TileWarpNext</span>
-    <span class="comment">// TileWarpEscape は脱出用ワープタイル</span>
+    <span class="comment">// TileWarpEscape は脱出用ワープタイル（通行可能）</span>
     <span id="TileWarpEscape">TileWarpEscape</span>
 )</pre>
 			
