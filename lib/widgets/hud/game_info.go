@@ -33,4 +33,10 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 
 	// フロア情報を描画
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), 0, 200)
+
+	// ターン情報を描画（フロア表示の下）
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("turn: %d", data.TurnNumber), 0, 220)
+
+	// 残りアクションポイント（移動ポイント）を描画
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("AP: %d", data.PlayerMoves), 0, 240)
 }

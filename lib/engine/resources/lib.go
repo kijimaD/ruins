@@ -18,6 +18,7 @@ type Resources struct {
 	Dungeon          interface{}
 	RawMaster        interface{}
 	UIResources      *UIResources
+	TurnManager      interface{}
 }
 
 // ScreenDimensions contains current screen dimensions

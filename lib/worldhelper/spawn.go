@@ -3,11 +3,13 @@ package worldhelper
 import (
 	"errors"
 	"fmt"
+	"math/rand/v2"
 
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/raw"
+	"github.com/kijimaD/ruins/lib/turns"
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -136,8 +138,6 @@ func SpawnOperator(world w.World, tileX int, tileY int) error {
 		componentList := entities.ComponentList{}
 		componentList.Game = append(componentList.Game, gc.GameComponentList{
 			GridElement: &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)},
-			TurnBased:   &gc.TurnBased{},
-			WantsToMove: &gc.WantsToMove{Direction: gc.DirectionNone},
 			Player:      &gc.Player{},
 			Operator:    &gc.Operator{},
 			SpriteRender: &gc.SpriteRender{
@@ -188,12 +188,44 @@ func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error {
 			},
 			BlockPass: &gc.BlockPass{},
 			AIMoveFSM: &gc.AIMoveFSM{},
-			AIRoaming: &gc.AIRoaming{},
+			AIRoaming: &gc.AIRoaming{
+				SubState:              gc.AIRoamingWaiting,
+				StartSubStateTurn:     1,                // 初期ターン
+				DurationSubStateTurns: 2 + rand.IntN(3), // 2-4ターン待機
+			},
 			AIVision: &gc.AIVision{
 				ViewDistance: gc.Pixel(aiVisionDistance),
 			},
+			Attributes: &gc.Attributes{
+				Vitality:  gc.Attribute{Base: 10, Modifier: 0, Total: 10},
+				Strength:  gc.Attribute{Base: 10, Modifier: 0, Total: 10},
+				Sensation: gc.Attribute{Base: 10, Modifier: 0, Total: 10},
+				Dexterity: gc.Attribute{Base: 10, Modifier: 0, Total: 10},
+				Agility:   gc.Attribute{Base: 10, Modifier: 0, Total: 10},
+			},
+			TurnBased: &gc.TurnBased{
+				AP: gc.Pool{
+					Current: 100, // あとで再計算される
+					Max:     100, // あとで再計算される
+				},
+			},
 		})
-		entities.AddEntities(world, componentList)
+		npcEntities := entities.AddEntities(world, componentList)
+
+		// NPCのActionPointsを適切に初期化
+		if len(npcEntities) > 0 {
+			npcEntity := npcEntities[0]
+			if world.Resources.TurnManager != nil {
+				if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
+					if npcEntity.HasComponent(world.Components.TurnBased) {
+						actionPoints := world.Components.TurnBased.Get(npcEntity).(*gc.TurnBased)
+						maxAP := turnManager.CalculateMaxActionPoints(world, npcEntity)
+						actionPoints.AP.Current = maxAP
+						actionPoints.AP.Max = maxAP
+					}
+				}
+			}
+		}
 	}
 	return nil
 }
@@ -281,6 +313,18 @@ func fullRecover(world w.World, entity ecs.Entity) {
 
 	// エフェクト実行
 	_ = processor.Execute(world) // エラーが発生した場合もリカバリーは続行する（ログ出力はProcessor内で行われる）
+
+	// ActionPointsコンポーネントがある場合は最大APに設定
+	if entity.HasComponent(world.Components.TurnBased) {
+		if world.Resources.TurnManager != nil {
+			if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
+				actionPoints := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
+				maxAP := turnManager.CalculateMaxActionPoints(world, entity)
+				actionPoints.AP.Current = maxAP
+				actionPoints.AP.Max = maxAP
+			}
+		}
+	}
 }
 
 // 指定したエンティティの最大HP/SPを設定する

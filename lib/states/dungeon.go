@@ -7,11 +7,13 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
+	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -56,8 +58,13 @@ func (st *DungeonState) OnStart(world w.World) {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	gameResources.Depth = st.Depth
 
+	// ターンマネージャーを初期化
+	if world.Resources.TurnManager == nil {
+		world.Resources.TurnManager = turns.NewTurnManager()
+	}
+
 	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
-	level, err := mapbuilder.NewLevel(world, 50, 50, st.Seed, st.BuilderType)
+	level, err := mapbuilder.NewLevel(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
 	if err != nil {
 		panic(err)
 	}
@@ -101,19 +108,12 @@ func (st *DungeonState) OnStop(world w.World) {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) es.Transition {
-	// タイルベース移動システム
-	gs.TileInputSystem(world)
-	gs.TileMoveSystem(world)
-	gs.CameraSystem(world) // 移動処理の後にカメラ更新
+	gs.TurnSystem(world)
+	// 移動処理の後にカメラ更新
+	gs.CameraSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
-	}
-
-	// Enterキーでワープ実行またはアイテム収集
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		gs.HandleWarpInput(world)
-		gs.HandleItemCollectionInput(world)
 	}
 
 	cfg := config.MustGet()

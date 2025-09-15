@@ -125,9 +125,9 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 		TargetEntity: &player, // プレイヤーを参照
 	})
 	npc.AddComponent(world.Components.AIRoaming, &gc.AIRoaming{
-		SubState:         gc.AIRoamingWaiting,
-		StartSubState:    time.Now(),
-		DurationSubState: time.Second * 3,
+		SubState:              gc.AIRoamingWaiting,
+		StartSubStateTurn:     1,
+		DurationSubStateTurns: 3,
 	})
 
 	// 保存
@@ -184,7 +184,7 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 			if entity.HasComponent(newWorld.Components.AIRoaming) {
 				roaming := newWorld.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
 				assert.Equal(t, gc.AIRoamingWaiting, roaming.SubState)
-				assert.Equal(t, time.Second*3, roaming.DurationSubState)
+				assert.Equal(t, 3, roaming.DurationSubStateTurns)
 			}
 		}
 	}))

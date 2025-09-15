@@ -86,11 +86,3 @@ func (d Direction) GetDelta() (int, int) {
 		return 0, 0
 	}
 }
-
-// TurnBased はターンベース移動システムで制御されるエンティティ
-type TurnBased struct{}
-
-// WantsToMove は移動意図を示すコンポーネント
-type WantsToMove struct {
-	Direction Direction
-}

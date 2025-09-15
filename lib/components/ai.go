@@ -1,14 +1,12 @@
 package components
 
 import (
-	"time"
-
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // AIMoveFSM はAI移動の有限状態マシン
 type AIMoveFSM struct {
-	LastStateChange time.Time
+	// AIシステムによる制御を示すマーカーコンポーネント
 }
 
 // AIRoamingSubState はAI徘徊行動のサブ状態を表す
@@ -34,10 +32,10 @@ type AIVision struct {
 // AIRoaming はAI移動で歩き回り状態
 type AIRoaming struct {
 	SubState AIRoamingSubState
-	// サブステートの開始時間
-	StartSubState time.Time
-	// サブステートの持続時間
-	DurationSubState time.Duration
+	// サブステートの開始ターン
+	StartSubStateTurn int
+	// サブステートの持続ターン数
+	DurationSubStateTurns int
 }
 
 // AIChasing は追跡状態のコンポーネント
@@ -46,6 +44,6 @@ type AIChasing struct {
 	TargetX float64
 	// TargetY は追跡対象のY座標
 	TargetY float64
-	// LastSeen は最後に視認した時刻
-	LastSeen time.Time
+	// LastSeenTurn は最後に視認したターン
+	LastSeenTurn int
 }

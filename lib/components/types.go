@@ -6,6 +6,13 @@ type Pool struct {
 	Current int // 現在値
 }
 
+// TurnBased はエンティティのアクションポイント管理コンポーネント
+// ターン制戦闘で、プレイヤー・敵共通で使用される
+type TurnBased struct {
+	// Action Point
+	AP Pool
+}
+
 // Attribute は変動するパラメータ値
 type Attribute struct {
 	Base     int // 固有の値

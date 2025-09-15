@@ -9,6 +9,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/turns"
 	"github.com/kijimaD/ruins/lib/widgets/hud"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -29,8 +30,19 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	floorNumber := gameResources.Depth
 
+	var turnNumber int
+	var playerMoves int
+	if world.Resources.TurnManager != nil {
+		if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
+			turnNumber = turnManager.TurnNumber
+			playerMoves = turnManager.PlayerMoves
+		}
+	}
+
 	return hud.GameInfoData{
 		FloorNumber: floorNumber,
+		TurnNumber:  turnNumber,
+		PlayerMoves: playerMoves,
 	}
 }
 
