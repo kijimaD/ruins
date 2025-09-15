@@ -78,23 +78,3 @@ func (id ActionID) String() string {
 		return fmt.Sprintf("ActionID(%d)", int(id))
 	}
 }
-
-// RequiresTurn はアクションがターン消費を必要とするかを返す
-func (id ActionID) RequiresTurn() bool {
-	return GetActionInfo(id).RequiresTurn
-}
-
-// MoveCost はアクションの移動コストを返す
-func (id ActionID) MoveCost() int {
-	return GetActionInfo(id).MoveCost
-}
-
-// IsInterruptable はアクションが中断可能かを返す
-func (id ActionID) IsInterruptable() bool {
-	return GetActionInfo(id).Interruptable
-}
-
-// GetAllActions は定義されたすべてのアクションIDを返す
-func GetAllActions() []ActionID {
-	return []ActionID{ActionMove, ActionWait, ActionAttack}
-}
