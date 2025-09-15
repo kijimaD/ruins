@@ -236,16 +236,13 @@ func (am *ActivityManager) GetActivitySummary() map[string]interface{} {
 // validateBasicRequirements はアクティビティの基本要件を検証する
 // 詳細な検証は各アクティビティのValidateメソッドで行う
 func (am *ActivityManager) validateBasicRequirements(activity *Activity) error {
-	info := GetActivityInfo(activity.Type)
-
-	// ターゲットが必要な場合のチェック
-	if info.RequiresTarget && activity.Target == nil {
-		return fmt.Errorf("アクティビティ '%s' にはターゲットが必要です", info.Name)
+	// 基本的なnilチェックのみ実行
+	if activity == nil {
+		return fmt.Errorf("アクティビティがnilです")
 	}
 
-	// 位置が必要な場合のチェック
-	if info.RequiresPosition && activity.Position == nil {
-		return fmt.Errorf("アクティビティ '%s' には位置が必要です", info.Name)
+	if activity.Actor == 0 {
+		return fmt.Errorf("アクターが設定されていません")
 	}
 
 	return nil

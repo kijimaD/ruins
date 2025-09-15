@@ -58,7 +58,7 @@ func (wa *WarpActivity) DoTurn(act *Activity, world w.World) error {
 		return err
 	}
 
-	// 1ターンで完了
+	// ワープ処理完了
 	act.Complete()
 	return nil
 }

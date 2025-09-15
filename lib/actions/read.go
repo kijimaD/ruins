@@ -152,6 +152,11 @@ func (ra *ReadActivity) Canceled(act *Activity, world w.World) error {
 
 // performReading は読書効果処理を実行する
 func (ra *ReadActivity) performReading(act *Activity, world w.World) error {
+	// 読書対象の有効性チェック
+	if act.Target == nil {
+		return fmt.Errorf("読書対象が指定されていません")
+	}
+
 	// TODO: 読書による効果実装
 	// - スキル経験値の獲得
 	// - 知識ポイントの蓄積

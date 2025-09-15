@@ -171,6 +171,11 @@ func (ca *CraftActivity) Canceled(act *Activity, world w.World) error {
 
 // performCrafting はクラフト処理を実行する
 func (ca *CraftActivity) performCrafting(act *Activity, world w.World) error {
+	// アクターの存在チェック
+	if act.Actor == 0 {
+		return fmt.Errorf("クラフトするエンティティが指定されていません")
+	}
+
 	// TODO: クラフト進行による効果実装
 	// - スキル経験値の獲得
 	// - 中間処理の実行

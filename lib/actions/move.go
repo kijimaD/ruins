@@ -18,9 +18,9 @@ func init() {
 
 // Validate は移動アクティビティの検証を行う
 func (ma *MoveActivity) Validate(act *Activity, world w.World) error {
-	// 移動先の位置情報が必要
+	// 移動先の確認
 	if act.Position == nil {
-		return fmt.Errorf("移動には目的地が必要です")
+		return fmt.Errorf("移動先が設定されていません")
 	}
 
 	// 目的地が有効な座標範囲内かチェック
@@ -45,13 +45,13 @@ func (ma *MoveActivity) Validate(act *Activity, world w.World) error {
 
 // Start は移動開始時の処理を実行する
 func (ma *MoveActivity) Start(act *Activity, _ w.World) error {
-	act.Logger.Debug("移動開始", "actor", act.Actor, "destination", act.Position)
+	act.Logger.Debug("移動開始", "actor", act.Actor, "destination", *act.Position)
 	return nil
 }
 
 // DoTurn は移動アクティビティの1ターン分の処理を実行する
 func (ma *MoveActivity) DoTurn(act *Activity, world w.World) error {
-	// 移動先チェック
+	// 移動先の確認
 	if act.Position == nil {
 		act.Cancel("移動先が設定されていません")
 		return fmt.Errorf("移動先が設定されていません")
@@ -69,7 +69,7 @@ func (ma *MoveActivity) DoTurn(act *Activity, world w.World) error {
 		return err
 	}
 
-	// 1ターンで完了
+	// 移動処理完了
 	act.Complete()
 	return nil
 }
@@ -115,6 +115,11 @@ func (ma *MoveActivity) canMove(act *Activity, world w.World) bool {
 	// GridElementコンポーネントの存在チェック
 	gridElement := world.Components.GridElement.Get(act.Actor)
 	if gridElement == nil {
+		return false
+	}
+
+	// 移動先の確認
+	if act.Position == nil {
 		return false
 	}
 

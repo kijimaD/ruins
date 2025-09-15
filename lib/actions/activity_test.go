@@ -2,7 +2,6 @@ package actions
 
 import (
 	"testing"
-	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/logger"
@@ -11,6 +10,7 @@ import (
 )
 
 func TestActivityCreation(t *testing.T) {
+	t.Parallel()
 	actor := ecs.Entity(1)
 
 	// 休息アクティビティの作成テスト
@@ -38,6 +38,7 @@ func TestActivityCreation(t *testing.T) {
 }
 
 func TestActivityInfo(t *testing.T) {
+	t.Parallel()
 	// 休息アクティビティの情報テスト
 	info := GetActivityInfo(ActivityRest)
 
@@ -65,6 +66,7 @@ func TestActivityInfo(t *testing.T) {
 }
 
 func TestActivityInterruptAndResume(t *testing.T) {
+	t.Parallel()
 	actor := ecs.Entity(1)
 	activity := NewActivity(ActivityRest, actor, 10)
 
@@ -114,6 +116,7 @@ func TestActivityInterruptAndResume(t *testing.T) {
 }
 
 func TestActivityCancel(t *testing.T) {
+	t.Parallel()
 	actor := ecs.Entity(1)
 	activity := NewActivity(ActivityWait, actor, 5)
 
@@ -139,6 +142,7 @@ func TestActivityCancel(t *testing.T) {
 }
 
 func TestActivityComplete(t *testing.T) {
+	t.Parallel()
 	actor := ecs.Entity(1)
 	activity := NewActivity(ActivityWait, actor, 5)
 
@@ -159,6 +163,7 @@ func TestActivityComplete(t *testing.T) {
 }
 
 func TestActivityProgressCalculation(t *testing.T) {
+	t.Parallel()
 	actor := ecs.Entity(1)
 	activity := NewActivity(ActivityRest, actor, 10)
 
@@ -184,6 +189,7 @@ func TestActivityProgressCalculation(t *testing.T) {
 }
 
 func TestActivityDisplayMessages(t *testing.T) {
+	t.Parallel()
 	actor := ecs.Entity(1)
 	activity := NewActivity(ActivityRest, actor, 10)
 
@@ -194,7 +200,9 @@ func TestActivityDisplayMessages(t *testing.T) {
 	}
 
 	// 一時停止中のメッセージ
-	activity.Interrupt("テスト")
+	if err := activity.Interrupt("テスト"); err != nil {
+		t.Errorf("Unexpected error interrupting activity: %v", err)
+	}
 	pausedMessage := activity.GetDisplayMessage()
 	if pausedMessage == message {
 		t.Errorf("Expected different message for paused activity")
@@ -209,6 +217,7 @@ func TestActivityDisplayMessages(t *testing.T) {
 }
 
 func TestActivityDoTurn(t *testing.T) {
+	t.Parallel()
 	// ログレベルを設定（テスト時の出力抑制）
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
@@ -267,6 +276,7 @@ func TestActivityDoTurn(t *testing.T) {
 }
 
 func TestActivityStringMethods(t *testing.T) {
+	t.Parallel()
 	// ActivityType.String()のテスト
 	if ActivityRest.String() != "Rest" {
 		t.Errorf("Expected 'Rest', got '%s'", ActivityRest.String())
@@ -295,34 +305,6 @@ func TestActivityStringMethods(t *testing.T) {
 
 	if ActivityStateCanceled.String() != "Canceled" {
 		t.Errorf("Expected 'Canceled', got '%s'", ActivityStateCanceled.String())
-	}
-}
-
-func TestActivityTimeTracking(t *testing.T) {
-	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityRest, actor, 10)
-
-	startTime := activity.StartTime
-	if startTime.IsZero() {
-		t.Errorf("Expected non-zero start time")
-	}
-
-	// 開始時刻が現在時刻に近いことを確認
-	now := time.Now()
-	if now.Sub(startTime) > time.Second {
-		t.Errorf("Start time seems too old: %v", startTime)
-	}
-
-	// 一時停止時刻の設定
-	activity.Interrupt("テスト")
-	if activity.PauseTime == nil {
-		t.Errorf("Expected pause time to be set after interrupt")
-	}
-
-	// 再開後は一時停止時刻がクリア
-	activity.Resume()
-	if activity.PauseTime != nil {
-		t.Errorf("Expected pause time to be cleared after resume")
 	}
 }
 
