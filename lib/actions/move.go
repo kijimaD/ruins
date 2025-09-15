@@ -44,7 +44,7 @@ func (ma *MoveActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は移動開始時の処理を実行する
-func (ma *MoveActivity) Start(act *Activity, world w.World) error {
+func (ma *MoveActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("移動開始", "actor", act.Actor, "destination", act.Position)
 	return nil
 }
@@ -75,14 +75,14 @@ func (ma *MoveActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish は移動完了時の処理を実行する
-func (ma *MoveActivity) Finish(act *Activity, world w.World) error {
+func (ma *MoveActivity) Finish(act *Activity, _ w.World) error {
 	act.Logger.Debug("移動アクティビティ完了", "actor", act.Actor)
 	// 移動完了のログは通常は出力しない（頻繁すぎるため）
 	return nil
 }
 
 // Canceled は移動キャンセル時の処理を実行する
-func (ma *MoveActivity) Canceled(act *Activity, world w.World) error {
+func (ma *MoveActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("移動キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil
 }

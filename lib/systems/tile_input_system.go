@@ -140,7 +140,7 @@ func executeEnterAction(world w.World) {
 		tileY := int(gridElement.Y)
 
 		// ワープホールチェック
-		if checkForWarp(world, entity, tileX, tileY) {
+		if checkForWarp(world, entity) {
 			params := actions.ActionParams{Actor: entity}
 			executeActivity(world, actions.ActivityWarp, params)
 			return
@@ -243,7 +243,7 @@ func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 }
 
 // checkForWarp はプレイヤー位置にワープホールがあるかチェック
-func checkForWarp(world w.World, entity ecs.Entity, tileX, tileY int) bool {
+func checkForWarp(world w.World, entity ecs.Entity) bool {
 	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 	return getWarpAtPlayerPosition(world, gridElement) != nil
 }

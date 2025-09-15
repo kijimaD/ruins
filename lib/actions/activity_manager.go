@@ -234,6 +234,7 @@ func (am *ActivityManager) GetActivitySummary() map[string]interface{} {
 }
 
 // validateBasicRequirements はアクティビティの基本要件を検証する
+// 詳細な検証は各アクティビティのValidateメソッドで行う
 func (am *ActivityManager) validateBasicRequirements(activity *Activity) error {
 	info := GetActivityInfo(activity.Type)
 

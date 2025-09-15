@@ -16,7 +16,7 @@ func init() {
 }
 
 // Validate は待機アクティビティの検証を行う
-func (wa *WaitActivity) Validate(act *Activity, world w.World) error {
+func (wa *WaitActivity) Validate(act *Activity, _ w.World) error {
 	// 待機は基本的に常に実行可能
 	// ただし、最低限のチェックは行う
 
@@ -34,7 +34,7 @@ func (wa *WaitActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は待機開始時の処理を実行する
-func (wa *WaitActivity) Start(act *Activity, world w.World) error {
+func (wa *WaitActivity) Start(act *Activity, _ w.World) error {
 	reason := "時間を過ごすため"
 	act.Logger.Debug("待機開始", "actor", act.Actor, "reason", reason, "duration", act.TurnsLeft)
 	return nil
@@ -83,7 +83,7 @@ func (wa *WaitActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled は待機キャンセル時の処理を実行する
-func (wa *WaitActivity) Canceled(act *Activity, world w.World) error {
+func (wa *WaitActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("待機キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil
 }
@@ -107,7 +107,7 @@ func (wa *WaitActivity) updateMessage(act *Activity) {
 }
 
 // observeEnvironment は環境観察処理を実行する
-func (wa *WaitActivity) observeEnvironment(act *Activity, world w.World) {
+func (wa *WaitActivity) observeEnvironment(act *Activity, _ w.World) {
 	// 待機中の環境観察（5ターン毎）
 	if (act.TurnsTotal-act.TurnsLeft)%5 == 0 {
 		// TODO: 環境観察の実装

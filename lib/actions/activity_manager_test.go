@@ -8,14 +8,17 @@ import (
 )
 
 func TestActivityManagerCreation(t *testing.T) {
+	t.Parallel()
 	manager := NewActivityManager()
 
 	if manager == nil {
 		t.Errorf("Expected non-nil activity manager")
+		return
 	}
 
 	if manager.currentActivities == nil {
 		t.Errorf("Expected non-nil current activities map")
+		return
 	}
 
 	if len(manager.currentActivities) != 0 {
@@ -24,6 +27,7 @@ func TestActivityManagerCreation(t *testing.T) {
 }
 
 func TestActivityManagerStartActivity(t *testing.T) {
+	t.Parallel()
 	// ログレベルを設定（テスト時の出力抑制）
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
@@ -66,6 +70,7 @@ func TestActivityManagerStartActivity(t *testing.T) {
 }
 
 func TestActivityManagerMultipleActivities(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -113,6 +118,7 @@ func TestActivityManagerMultipleActivities(t *testing.T) {
 }
 
 func TestActivityManagerReplaceActivity(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -158,6 +164,7 @@ func TestActivityManagerReplaceActivity(t *testing.T) {
 }
 
 func TestActivityManagerInterruptAndResume(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -218,6 +225,7 @@ func TestActivityManagerInterruptAndResume(t *testing.T) {
 }
 
 func TestActivityManagerCancel(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -253,6 +261,7 @@ func TestActivityManagerCancel(t *testing.T) {
 }
 
 func TestActivityManagerProcessTurn(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -268,8 +277,14 @@ func TestActivityManagerProcessTurn(t *testing.T) {
 	shortActivity := NewActivity(ActivityWait, actor1, 2) // 2ターンで完了
 	longActivity := NewActivity(ActivityWait, actor2, 5)  // 5ターンで完了
 
-	manager.StartActivity(shortActivity, world)
-	manager.StartActivity(longActivity, world)
+	err := manager.StartActivity(shortActivity, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting short activity: %v", err)
+	}
+	err = manager.StartActivity(longActivity, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting long activity: %v", err)
+	}
 
 	// 初期状態の確認
 	summary := manager.GetActivitySummary()
@@ -318,6 +333,7 @@ func TestActivityManagerProcessTurn(t *testing.T) {
 }
 
 func TestActivityManagerGetAllActiveActivities(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -335,12 +351,24 @@ func TestActivityManagerGetAllActiveActivities(t *testing.T) {
 	activity2 := NewActivity(ActivityWait, actor2, 5)
 	activity3 := NewActivity(ActivityWait, actor3, 8)
 
-	manager.StartActivity(activity1, world)
-	manager.StartActivity(activity2, world)
-	manager.StartActivity(activity3, world)
+	err := manager.StartActivity(activity1, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity1: %v", err)
+	}
+	err = manager.StartActivity(activity2, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity2: %v", err)
+	}
+	err = manager.StartActivity(activity3, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity3: %v", err)
+	}
 
 	// 1つを中断
-	manager.InterruptActivity(actor2, "テスト中断")
+	err = manager.InterruptActivity(actor2, "テスト中断")
+	if err != nil {
+		t.Errorf("Unexpected error interrupting activity: %v", err)
+	}
 
 	// アクティブなアクティビティの取得
 	activeActivities := manager.GetAllActiveActivities()
@@ -363,6 +391,7 @@ func TestActivityManagerGetAllActiveActivities(t *testing.T) {
 }
 
 func TestActivityManagerSummary(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -390,11 +419,20 @@ func TestActivityManagerSummary(t *testing.T) {
 	activity1 := NewActivity(ActivityWait, actor1, 10)
 	activity2 := NewActivity(ActivityWait, actor2, 5)
 
-	manager.StartActivity(activity1, world)
-	manager.StartActivity(activity2, world)
+	err := manager.StartActivity(activity1, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity1: %v", err)
+	}
+	err = manager.StartActivity(activity2, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity2: %v", err)
+	}
 
 	// 1つを中断
-	manager.InterruptActivity(actor1, "テスト")
+	err = manager.InterruptActivity(actor1, "テスト")
+	if err != nil {
+		t.Errorf("Unexpected error interrupting activity: %v", err)
+	}
 
 	// サマリーの確認
 	summary = manager.GetActivitySummary()
@@ -410,6 +448,7 @@ func TestActivityManagerSummary(t *testing.T) {
 }
 
 func TestActivityManagerCleanup(t *testing.T) {
+	t.Parallel()
 	logger.SetConfig(logger.Config{
 		DefaultLevel:   logger.LevelError,
 		CategoryLevels: make(map[logger.Category]logger.Level),
@@ -427,9 +466,18 @@ func TestActivityManagerCleanup(t *testing.T) {
 	activity2 := NewActivity(ActivityWait, actor2, 10)
 	activity3 := NewActivity(ActivityWait, actor3, 5)
 
-	manager.StartActivity(activity1, world)
-	manager.StartActivity(activity2, world)
-	manager.StartActivity(activity3, world)
+	err := manager.StartActivity(activity1, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity1: %v", err)
+	}
+	err = manager.StartActivity(activity2, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity2: %v", err)
+	}
+	err = manager.StartActivity(activity3, world)
+	if err != nil {
+		t.Errorf("Unexpected error starting activity3: %v", err)
+	}
 
 	// 1つを完了させる
 	manager.ProcessTurn(world) // activity1が完了
@@ -455,6 +503,7 @@ func TestActivityManagerCleanup(t *testing.T) {
 	remainingActivity := manager.GetCurrentActivity(actor2)
 	if remainingActivity == nil {
 		t.Errorf("Expected actor2's activity to remain")
+		return
 	}
 	if remainingActivity.Type != ActivityWait {
 		t.Errorf("Expected remaining activity to be wait activity")

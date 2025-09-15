@@ -33,7 +33,7 @@ func (ra *RestActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は休息開始時の処理を実行する
-func (ra *RestActivity) Start(act *Activity, world w.World) error {
+func (ra *RestActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("休息開始", "actor", act.Actor, "duration", act.TurnsLeft)
 	return nil
 }

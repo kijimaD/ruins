@@ -17,7 +17,7 @@ func init() {
 }
 
 // Validate は攻撃アクティビティの検証を行う
-func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
+func (aa *AttackActivity) Validate(act *Activity, _ w.World) error {
 	// 攻撃対象が必要
 	if act.Target == nil {
 		return fmt.Errorf("攻撃には対象が必要です")
@@ -39,7 +39,7 @@ func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は攻撃開始時の処理を実行する
-func (aa *AttackActivity) Start(act *Activity, world w.World) error {
+func (aa *AttackActivity) Start(act *Activity, _ w.World) error {
 	if act.Target == nil {
 		return fmt.Errorf("攻撃対象が設定されていません")
 	}
@@ -73,7 +73,7 @@ func (aa *AttackActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish は攻撃完了時の処理を実行する
-func (aa *AttackActivity) Finish(act *Activity, world w.World) error {
+func (aa *AttackActivity) Finish(act *Activity, _ w.World) error {
 	act.Logger.Debug("攻撃アクティビティ完了",
 		"actor", act.Actor,
 		"target", act.Target)
@@ -82,7 +82,7 @@ func (aa *AttackActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled は攻撃キャンセル時の処理を実行する
-func (aa *AttackActivity) Canceled(act *Activity, world w.World) error {
+func (aa *AttackActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("攻撃キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil
 }
@@ -111,7 +111,7 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 }
 
 // canAttack は攻撃可能かをチェックする
-func (aa *AttackActivity) canAttack(act *Activity, world w.World) bool {
+func (aa *AttackActivity) canAttack(act *Activity, _ w.World) bool {
 	// ターゲットの存在チェック
 	if *act.Target == ecs.Entity(0) {
 		return false

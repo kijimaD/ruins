@@ -2,7 +2,6 @@ package actions
 
 import (
 	"fmt"
-	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/logger"
@@ -96,8 +95,6 @@ type Activity struct {
 	Target       *ecs.Entity   // 対象エンティティ（nilの場合もある）
 	Position     *gc.Position  // 対象位置（nilの場合もある）
 	Message      string        // 進行状況メッセージ
-	StartTime    time.Time     // 開始時刻
-	PauseTime    *time.Time    // 一時停止時刻（nilは実行中）
 	CancelReason string        // キャンセル理由
 
 	Logger *logger.Logger
@@ -252,7 +249,6 @@ func NewActivity(activityType ActivityType, actor ecs.Entity, duration int) *Act
 		TurnsTotal: duration,
 		TurnsLeft:  duration,
 		Actor:      actor,
-		StartTime:  time.Now(),
 		Logger:     logger.New(logger.CategoryAction),
 	}
 }
@@ -290,8 +286,6 @@ func (a *Activity) Interrupt(reason string) error {
 	}
 
 	a.State = ActivityStatePaused
-	now := time.Now()
-	a.PauseTime = &now
 	a.CancelReason = reason
 
 	a.Logger.Debug("アクティビティ中断",
@@ -310,7 +304,6 @@ func (a *Activity) Resume() error {
 	}
 
 	a.State = ActivityStateRunning
-	a.PauseTime = nil
 	a.CancelReason = ""
 
 	a.Logger.Debug("アクティビティ再開",

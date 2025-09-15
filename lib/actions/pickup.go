@@ -51,7 +51,7 @@ func (pa *PickupActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start はアイテム拾得開始時の処理を実行する
-func (pa *PickupActivity) Start(act *Activity, world w.World) error {
+func (pa *PickupActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("アイテム拾得開始", "actor", act.Actor)
 	return nil
 }
@@ -70,13 +70,13 @@ func (pa *PickupActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish はアイテム拾得完了時の処理を実行する
-func (pa *PickupActivity) Finish(act *Activity, world w.World) error {
+func (pa *PickupActivity) Finish(act *Activity, _ w.World) error {
 	act.Logger.Debug("アイテム拾得アクティビティ完了", "actor", act.Actor)
 	return nil
 }
 
 // Canceled はアイテム拾得キャンセル時の処理を実行する
-func (pa *PickupActivity) Canceled(act *Activity, world w.World) error {
+func (pa *PickupActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("アイテム拾得キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil
 }

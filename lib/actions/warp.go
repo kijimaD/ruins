@@ -38,7 +38,7 @@ func (wa *WarpActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start はワープ開始時の処理を実行する
-func (wa *WarpActivity) Start(act *Activity, world w.World) error {
+func (wa *WarpActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("ワープ開始", "actor", act.Actor)
 	return nil
 }
@@ -78,7 +78,7 @@ func (wa *WarpActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled はワープキャンセル時の処理を実行する
-func (wa *WarpActivity) Canceled(act *Activity, world w.World) error {
+func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("ワープキャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil
 }
@@ -104,7 +104,7 @@ func (wa *WarpActivity) performWarp(act *Activity, world w.World, warp *gc.Warp)
 }
 
 // getPlayerWarp はプレイヤーの現在位置のワープホールを取得する
-func (wa *WarpActivity) getPlayerWarp(act *Activity, world w.World) *gc.Warp {
+func (wa *WarpActivity) getPlayerWarp(_ *Activity, world w.World) *gc.Warp {
 	// プレイヤーエンティティを探す
 	var playerEntity ecs.Entity
 	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {

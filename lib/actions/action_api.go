@@ -11,7 +11,6 @@ import (
 )
 
 // ActionAPI は全てのアクションを統一的に管理するAPI
-// 既存のExecutorクラスに代わる新しいインターフェース
 type ActionAPI struct {
 	manager *ActivityManager
 	logger  *logger.Logger
@@ -134,9 +133,14 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 		return activity, nil
 
 	case ActivityAttack:
-
-		// TODO: AttackActivityが実装されたら追加
-		return nil, fmt.Errorf("攻撃アクティビティはまだ実装されていません")
+		if params.Target == nil {
+			return nil, fmt.Errorf("攻撃対象が指定されていません")
+		}
+		characterAP := api.getEntityMaxAP(params.Actor, world)
+		duration := CalculateRequiredTurns(ActivityAttack, characterAP)
+		activity := NewActivity(ActivityAttack, params.Actor, duration)
+		activity.Target = params.Target
+		return activity, nil
 
 	case ActivityPickup:
 		return &Activity{
@@ -201,16 +205,9 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 			characterAP := api.getEntityMaxAP(params.Actor, world)
 			duration = CalculateRequiredTurns(ActivityRead, characterAP)
 		}
-		return &Activity{
-			Actor:      params.Actor,
-			Type:       ActivityRead,
-			State:      ActivityStateRunning,
-			Target:     params.Target,
-			TurnsLeft:  duration,
-			TurnsTotal: duration,
-			Message:    "読書中...",
-			Logger:     logger.New(logger.CategoryAction),
-		}, nil
+		activity := NewActivity(ActivityRead, params.Actor, duration)
+		activity.Target = params.Target
+		return activity, nil
 
 	case ActivityCraft:
 		duration := params.Duration
@@ -219,16 +216,9 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 			characterAP := api.getEntityMaxAP(params.Actor, world)
 			duration = CalculateRequiredTurns(ActivityCraft, characterAP)
 		}
-		return &Activity{
-			Actor:      params.Actor,
-			Type:       ActivityCraft,
-			State:      ActivityStateRunning,
-			Target:     params.Target,
-			TurnsLeft:  duration,
-			TurnsTotal: duration,
-			Message:    "クラフト中...",
-			Logger:     logger.New(logger.CategoryAction),
-		}, nil
+		activity := NewActivity(ActivityCraft, params.Actor, duration)
+		activity.Target = params.Target
+		return activity, nil
 
 	default:
 		return nil, fmt.Errorf("未対応のアクティビティタイプ: %v", activityType)

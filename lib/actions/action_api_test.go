@@ -5,10 +5,12 @@ import (
 )
 
 func TestActionAPICreation(t *testing.T) {
+	t.Parallel()
 	api := NewActionAPI()
 
 	if api == nil {
 		t.Errorf("Expected non-nil ActionAPI")
+		return
 	}
 
 	if api.manager == nil {
