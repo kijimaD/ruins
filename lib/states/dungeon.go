@@ -1,7 +1,6 @@
 package states
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,7 +8,6 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
@@ -78,11 +76,6 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()
-
-	// フロア移動メッセージを追加
-	gamelog.New(gamelog.FieldLog).
-		Magic(fmt.Sprintf("空間移動した。(B%d)", st.Depth)).
-		Log()
 }
 
 // OnStop はステートが停止される際に呼ばれる

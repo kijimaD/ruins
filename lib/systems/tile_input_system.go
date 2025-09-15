@@ -50,7 +50,7 @@ func TileInputSystem(world w.World) {
 		direction = gc.DirectionRight
 	} else if inpututil.IsKeyJustPressed(ebiten.KeySpace) || inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
 		// スペースキーまたはピリオドで待機
-		executeAction(world, actions.ActionWait, nil)
+		executeWaitAction(world)
 		return
 	}
 
@@ -61,38 +61,25 @@ func TileInputSystem(world w.World) {
 
 	// Enterキー: 状況に応じたアクションを実行
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		actionID := determineEnterAction(world)
-		if actionID != actions.ActionNull {
-			executeAction(world, actionID, nil)
-		}
+		executeEnterAction(world)
 	}
 }
 
-// executeAction は統一されたアクション実行関数
-func executeAction(world w.World, actionID actions.ActionID, position *gc.Position) {
-	executor := actions.NewExecutor()
+// executeActivity はアクティビティ実行関数
+func executeActivity(world w.World, activityType actions.ActivityType, params actions.ActionParams) {
+	actionAPI := actions.NewActionAPI()
 
-	// プレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		ctx := actions.Context{
-			Actor: entity,
-			Dest:  position,
-		}
+	result, err := actionAPI.Execute(activityType, params, world)
+	if err != nil {
+		_ = result // エラーの場合は結果を使用しない
+		return
+	}
 
-		result, err := executor.Execute(actionID, ctx, world)
-		if err != nil {
-			// エラーログ（必要に応じて）
-			_ = result // 現時点では結果を使用しない
-		}
-
-		// 移動の場合は追加でタイルイベントをチェック
-		if actionID == actions.ActionMove && result != nil && result.Success && position != nil {
-			checkTileEvents(world, entity, int(position.X), int(position.Y))
-		}
-	}))
+	// 移動の場合は追加でタイルイベントをチェック
+	if activityType == actions.ActivityMove && result != nil && result.Success && params.Destination != nil {
+		// TODO: AI用と共通化したほうがよさそう? プレイヤーの場合だけログを出す、とかはありそうなものの
+		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
+	}
 }
 
 // executeMoveAction は移動アクションを実行する
@@ -113,10 +100,58 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 		newY := currentY + deltaY
 
 		// 移動可能かチェックして移動
-		if CanMoveTo(world, newX, newY, entity) {
-			// 統一されたアクション実行関数を使用
-			position := &gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
-			executeAction(world, actions.ActionMove, position)
+		canMove := CanMoveTo(world, newX, newY, entity)
+
+		if canMove {
+			// 統一されたアクティビティ実行関数を使用
+			destination := gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
+			params := actions.ActionParams{
+				Actor:       entity,
+				Destination: &destination,
+			}
+			executeActivity(world, actions.ActivityMove, params)
+		}
+	}))
+}
+
+// executeWaitAction は待機アクションを実行する
+func executeWaitAction(world w.World) {
+	// プレイヤーエンティティを取得
+	world.Manager.Join(
+		world.Components.Player,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		params := actions.ActionParams{
+			Actor:    entity,
+			Duration: 1,
+			Reason:   "プレイヤー待機",
+		}
+		executeActivity(world, actions.ActivityWait, params)
+	}))
+}
+
+// executeEnterAction はEnterキーによる状況に応じたアクションを実行する
+func executeEnterAction(world w.World) {
+	// プレイヤーエンティティを取得
+	world.Manager.Join(
+		world.Components.Player,
+		world.Components.GridElement,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		tileX := int(gridElement.X)
+		tileY := int(gridElement.Y)
+
+		// ワープホールチェック
+		if checkForWarp(world, entity, tileX, tileY) {
+			params := actions.ActionParams{Actor: entity}
+			executeActivity(world, actions.ActivityWarp, params)
+			return
+		}
+
+		// アイテム拾得チェック
+		if checkForItems(world, tileX, tileY) {
+			params := actions.ActionParams{Actor: entity}
+			executeActivity(world, actions.ActivityPickup, params)
+			return
 		}
 	}))
 }
@@ -208,33 +243,14 @@ func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 	}))
 }
 
-// determineEnterAction はEnterキー押下時のアクションを状況に応じて決定する
-func determineEnterAction(world w.World) actions.ActionID {
-	// プレイヤーエンティティを取得
-	var playerEntity ecs.Entity
-	var playerFound bool
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerEntity = entity
-		playerFound = true
-	}))
+// checkForWarp はプレイヤー位置にワープホールがあるかチェック
+func checkForWarp(world w.World, entity ecs.Entity, tileX, tileY int) bool {
+	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+	return getWarpAtPlayerPosition(world, gridElement) != nil
+}
 
-	if !playerFound {
-		return actions.ActionNull
-	}
-
-	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
-	playerTileX := int(gridElement.X)
-	playerTileY := int(gridElement.Y)
-
-	// 優先順位1: ワープホールのチェック
-	if getWarpAtPlayerPosition(world, gridElement) != nil {
-		return actions.ActionWarp
-	}
-
-	// 優先順位2: アイテムのチェック
+// checkForItems はプレイヤー位置にアイテムがあるかチェック
+func checkForItems(world w.World, tileX, tileY int) bool {
 	hasItem := false
 	world.Manager.Join(
 		world.Components.Item,
@@ -242,15 +258,9 @@ func determineEnterAction(world w.World) actions.ActionID {
 		world.Components.GridElement,
 	).Visit(ecs.Visit(func(itemEntity ecs.Entity) {
 		itemGrid := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
-		if int(itemGrid.X) == playerTileX && int(itemGrid.Y) == playerTileY {
+		if int(itemGrid.X) == tileX && int(itemGrid.Y) == tileY {
 			hasItem = true
 		}
 	}))
-
-	if hasItem {
-		return actions.ActionPickupItem
-	}
-
-	// 何もアクションがない場合
-	return actions.ActionNull
+	return hasItem
 }
