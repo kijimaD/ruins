@@ -71,7 +71,7 @@ func (ma *MoveActivity) DoTurn(act *Activity, world w.World) error {
 
 	// 1ターンで完了
 	act.Complete()
-	return ma.Finish(act, world)
+	return nil
 }
 
 // Finish は移動完了時の処理を実行する

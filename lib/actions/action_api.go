@@ -184,12 +184,6 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 			characterAP := api.getEntityMaxAP(params.Actor, world)
 			duration = CalculateRequiredTurns(ActivityWait, characterAP)
 		}
-		reason := params.Reason
-		if reason == "" {
-			reason = "時間を過ごすため"
-		}
-		data := make(map[string]interface{})
-		data["reason"] = reason
 		return &Activity{
 			Actor:      params.Actor,
 			Type:       ActivityWait,
@@ -197,7 +191,6 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 			TurnsLeft:  duration,
 			TurnsTotal: duration,
 			Message:    "待機中...",
-			Data:       data,
 			Logger:     logger.New(logger.CategoryAction),
 		}, nil
 

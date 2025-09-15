@@ -60,17 +60,19 @@ func (wa *WarpActivity) DoTurn(act *Activity, world w.World) error {
 
 	// 1ターンで完了
 	act.Complete()
-	return wa.Finish(act, world)
+	return nil
 }
 
 // Finish はワープ完了時の処理を実行する
 func (wa *WarpActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("ワープアクティビティ完了", "actor", act.Actor)
 
-	// ワープ完了メッセージ
-	gamelog.New(gamelog.FieldLog).
-		Magic("空間移動した。").
-		Log()
+	// プレイヤーの場合のみワープ完了メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Magic("空間移動した。").
+			Log()
+	}
 
 	return nil
 }

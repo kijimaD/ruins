@@ -49,7 +49,7 @@ func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 	// 基本のターン処理
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return ra.Finish(act, world)
+		return nil
 	}
 
 	// 1ターン進行
@@ -66,7 +66,7 @@ func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 	// 完了チェック
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return ra.Finish(act, world)
+		return nil
 	}
 
 	// メッセージ更新
@@ -78,10 +78,12 @@ func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 func (ra *RestActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("休息完了", "actor", act.Actor)
 
-	// 完了メッセージ
-	gamelog.New(gamelog.FieldLog).
-		Append("十分な休息を取って体力を回復した").
-		Log()
+	// プレイヤーの場合のみ完了メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("十分な休息を取って体力を回復した").
+			Log()
+	}
 
 	// 最終的なHP回復（ボーナス）
 	poolsComponent := world.Components.Pools.Get(act.Actor)
@@ -118,11 +120,13 @@ func (ra *RestActivity) Finish(act *Activity, world w.World) error {
 
 // Canceled は休息キャンセル時の処理を実行する
 func (ra *RestActivity) Canceled(act *Activity, world w.World) error {
-	// 中断時のメッセージ
-	gamelog.New(gamelog.FieldLog).
-		Append("休息が中断された: ").
-		Append(act.CancelReason).
-		Log()
+	// プレイヤーの場合のみ中断時のメッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("休息が中断された: ").
+			Append(act.CancelReason).
+			Log()
+	}
 
 	act.Logger.Debug("休息中断", "reason", act.CancelReason, "progress", act.GetProgressPercent())
 	return nil

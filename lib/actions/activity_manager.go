@@ -10,7 +10,8 @@ import (
 
 // ActivityManager はアクティビティの管理を行う
 type ActivityManager struct {
-	// 現在実行中のアクティビティ（エンティティごと）
+	// 現在実行中の全アクティビティ(全エンティティごと)
+	// 1エンティティで最大1アクティビティ
 	currentActivities map[ecs.Entity]*Activity
 	logger            *logger.Logger
 }

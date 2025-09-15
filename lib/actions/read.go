@@ -61,10 +61,13 @@ func (ra *ReadActivity) Start(act *Activity, world w.World) error {
 		itemName = name.Name
 	}
 
-	gamelog.New(gamelog.FieldLog).
-		Append("読書を開始した: ").
-		ItemName(itemName).
-		Log()
+	// プレイヤーの場合のみ読書開始メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("読書を開始した: ").
+			ItemName(itemName).
+			Log()
+	}
 
 	return nil
 }
@@ -80,7 +83,7 @@ func (ra *ReadActivity) DoTurn(act *Activity, world w.World) error {
 	// 基本のターン処理
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return ra.Finish(act, world)
+		return nil
 	}
 
 	// 1ターン進行
@@ -97,7 +100,7 @@ func (ra *ReadActivity) DoTurn(act *Activity, world w.World) error {
 	// 完了チェック
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return ra.Finish(act, world)
+		return nil
 	}
 
 	// メッセージ更新
@@ -117,10 +120,13 @@ func (ra *ReadActivity) Finish(act *Activity, world w.World) error {
 		itemName = name.Name
 	}
 
-	gamelog.New(gamelog.FieldLog).
-		Append("読書を完了した: ").
-		ItemName(itemName).
-		Log()
+	// プレイヤーの場合のみ読書完了メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("読書を完了した: ").
+			ItemName(itemName).
+			Log()
+	}
 
 	// TODO: 読書完了による効果
 	// - スキル向上
@@ -132,11 +138,13 @@ func (ra *ReadActivity) Finish(act *Activity, world w.World) error {
 
 // Canceled は読書キャンセル時の処理を実行する
 func (ra *ReadActivity) Canceled(act *Activity, world w.World) error {
-	// 中断時のメッセージ
-	gamelog.New(gamelog.FieldLog).
-		Append("読書が中断された: ").
-		Append(act.CancelReason).
-		Log()
+	// プレイヤーの場合のみ中断時のメッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("読書が中断された: ").
+			Append(act.CancelReason).
+			Log()
+	}
 
 	act.Logger.Debug("読書中断", "reason", act.CancelReason, "progress", act.GetProgressPercent())
 	return nil
@@ -149,8 +157,8 @@ func (ra *ReadActivity) performReading(act *Activity, world w.World) error {
 	// - 知識ポイントの蓄積
 	// - 特殊効果の発動
 
-	// 進行ログを出力（10ターン毎）
-	if act.TurnsTotal-act.TurnsLeft > 0 && (act.TurnsTotal-act.TurnsLeft)%10 == 0 {
+	// プレイヤーの場合のみ10ターン毎に集中メッセージを表示
+	if isPlayerActivity(act, world) && act.TurnsTotal-act.TurnsLeft > 0 && (act.TurnsTotal-act.TurnsLeft)%10 == 0 {
 		gamelog.New(gamelog.FieldLog).
 			Append("読書に集中している...").
 			Log()

@@ -48,8 +48,7 @@ func TileInputSystem(world w.World) {
 		direction = gc.DirectionLeft
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 		direction = gc.DirectionRight
-	} else if inpututil.IsKeyJustPressed(ebiten.KeySpace) || inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
-		// スペースキーまたはピリオドで待機
+	} else if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
 		executeWaitAction(world)
 		return
 	}

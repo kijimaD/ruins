@@ -100,9 +100,6 @@ type Activity struct {
 	PauseTime    *time.Time    // 一時停止時刻（nilは実行中）
 	CancelReason string        // キャンセル理由
 
-	// アクティビティ固有データ（将来の拡張用）
-	Data map[string]interface{}
-
 	Logger *logger.Logger
 }
 
@@ -256,7 +253,6 @@ func NewActivity(activityType ActivityType, actor ecs.Entity, duration int) *Act
 		TurnsLeft:  duration,
 		Actor:      actor,
 		StartTime:  time.Now(),
-		Data:       make(map[string]interface{}),
 		Logger:     logger.New(logger.CategoryAction),
 	}
 }
@@ -438,4 +434,9 @@ func (s ActivityState) String() string {
 	default:
 		return fmt.Sprintf("ActivityState(%d)", int(s))
 	}
+}
+
+// isPlayerActivity はアクティビティの実行者がプレイヤーかを判定する
+func isPlayerActivity(act *Activity, world w.World) bool {
+	return act.Actor.HasComponent(world.Components.Player)
 }

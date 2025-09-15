@@ -66,7 +66,7 @@ func (pa *PickupActivity) DoTurn(act *Activity, world w.World) error {
 
 	// 1ターンで完了
 	act.Complete()
-	return pa.Finish(act, world)
+	return nil
 }
 
 // Finish はアイテム拾得完了時の処理を実行する
@@ -127,8 +127,8 @@ func (pa *PickupActivity) performPickupActivity(act *Activity, world w.World) er
 
 	act.Logger.Debug("アイテム拾得完了", "count", collectedCount)
 
-	// 複数アイテム収集時の総括メッセージ
-	if collectedCount > 1 {
+	// プレイヤーの場合のみ複数アイテム収集時の総括メッセージを表示
+	if collectedCount > 1 && isPlayerActivity(act, world) {
 		gamelog.New(gamelog.FieldLog).
 			Append(fmt.Sprintf("%d個のアイテムを入手した", collectedCount)).
 			Log()
@@ -166,12 +166,14 @@ func (pa *PickupActivity) collectFieldItem(act *Activity, world w.World, itemEnt
 		return fmt.Errorf("インベントリ統合エラー: %w", err)
 	}
 
-	// 色付きログ
-	gamelog.New(gamelog.FieldLog).
-		Append("プレイヤーが ").
-		ItemName(itemName).
-		Append(" を入手した。").
-		Log()
+	// プレイヤーの場合のみ色付きログを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("プレイヤーが ").
+			ItemName(itemName).
+			Append(" を入手した。").
+			Log()
+	}
 
 	return nil
 }

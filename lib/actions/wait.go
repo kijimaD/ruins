@@ -36,11 +36,6 @@ func (wa *WaitActivity) Validate(act *Activity, world w.World) error {
 // Start は待機開始時の処理を実行する
 func (wa *WaitActivity) Start(act *Activity, world w.World) error {
 	reason := "時間を過ごすため"
-	if act.Data != nil {
-		if r, ok := act.Data["reason"].(string); ok && r != "" {
-			reason = r
-		}
-	}
 	act.Logger.Debug("待機開始", "actor", act.Actor, "reason", reason, "duration", act.TurnsLeft)
 	return nil
 }
@@ -53,7 +48,7 @@ func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 	// 基本のターン処理
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return wa.Finish(act, world)
+		return nil
 	}
 
 	// 1ターン進行
@@ -65,7 +60,7 @@ func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 	// 完了チェック
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return wa.Finish(act, world)
+		return nil
 	}
 
 	// メッセージ更新
@@ -77,10 +72,12 @@ func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 func (wa *WaitActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("待機完了", "actor", act.Actor)
 
-	// 待機完了メッセージ
-	gamelog.New(gamelog.FieldLog).
-		Append("待機を終了した").
-		Log()
+	// プレイヤーの場合のみ待機完了メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("待機を終了した").
+			Log()
+	}
 
 	return nil
 }

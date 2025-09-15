@@ -75,10 +75,13 @@ func (ca *CraftActivity) Start(act *Activity, world w.World) error {
 		recipeName = name.Name
 	}
 
-	gamelog.New(gamelog.FieldLog).
-		Append("クラフトを開始した: ").
-		ItemName(recipeName).
-		Log()
+	// プレイヤーの場合のみクラフト開始メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("クラフトを開始した: ").
+			ItemName(recipeName).
+			Log()
+	}
 
 	return nil
 }
@@ -94,7 +97,7 @@ func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 	// 基本のターン処理
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return ca.Finish(act, world)
+		return nil
 	}
 
 	// 1ターン進行
@@ -111,7 +114,7 @@ func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 	// 完了チェック
 	if act.TurnsLeft <= 0 {
 		act.Complete()
-		return ca.Finish(act, world)
+		return nil
 	}
 
 	// メッセージ更新
@@ -141,21 +144,26 @@ func (ca *CraftActivity) Finish(act *Activity, world w.World) error {
 
 	// 完了メッセージ
 
-	gamelog.New(gamelog.FieldLog).
-		Append("クラフトを完了した: ").
-		ItemName(recipeName).
-		Log()
+	// プレイヤーの場合のみクラフト完了メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("クラフトを完了した: ").
+			ItemName(recipeName).
+			Log()
+	}
 
 	return nil
 }
 
 // Canceled はクラフトキャンセル時の処理を実行する
 func (ca *CraftActivity) Canceled(act *Activity, world w.World) error {
-	// 中断時のメッセージ
-	gamelog.New(gamelog.FieldLog).
-		Append("クラフトが中断された: ").
-		Append(act.CancelReason).
-		Log()
+	// プレイヤーの場合のみ中断時のメッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("クラフトが中断された: ").
+			Append(act.CancelReason).
+			Log()
+	}
 
 	act.Logger.Debug("クラフト中断", "reason", act.CancelReason, "progress", act.GetProgressPercent())
 	return nil
@@ -167,20 +175,22 @@ func (ca *CraftActivity) performCrafting(act *Activity, world w.World) error {
 	// - スキル経験値の獲得
 	// - 中間処理の実行
 
-	// 進行ログを出力（25%毎）
-	progress := act.GetProgressPercent()
-	if progress >= 25.0 && progress < 26.0 {
-		gamelog.New(gamelog.FieldLog).
-			Append("材料を準備している...").
-			Log()
-	} else if progress >= 50.0 && progress < 51.0 {
-		gamelog.New(gamelog.FieldLog).
-			Append("作業を進めている...").
-			Log()
-	} else if progress >= 75.0 && progress < 76.0 {
-		gamelog.New(gamelog.FieldLog).
-			Append("仕上げに入っている...").
-			Log()
+	// プレイヤーの場合のみ進行ログを出力（25%毎）
+	if isPlayerActivity(act, world) {
+		progress := act.GetProgressPercent()
+		if progress >= 25.0 && progress < 26.0 {
+			gamelog.New(gamelog.FieldLog).
+				Append("材料を準備している...").
+				Log()
+		} else if progress >= 50.0 && progress < 51.0 {
+			gamelog.New(gamelog.FieldLog).
+				Append("作業を進めている...").
+				Log()
+		} else if progress >= 75.0 && progress < 76.0 {
+			gamelog.New(gamelog.FieldLog).
+				Append("仕上げに入っている...").
+				Log()
+		}
 	}
 
 	return nil

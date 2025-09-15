@@ -69,7 +69,7 @@ func (aa *AttackActivity) DoTurn(act *Activity, world w.World) error {
 
 	// 1ターンで完了
 	act.Complete()
-	return aa.Finish(act, world)
+	return nil
 }
 
 // Finish は攻撃完了時の処理を実行する
@@ -100,10 +100,12 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 	// - ターゲットのHP減少
 	// - 攻撃エフェクトの表示
 
-	// 仮の攻撃メッセージ
-	gamelog.New(gamelog.FieldLog).
-		Append("攻撃した").
-		Log()
+	// プレイヤーの場合のみ攻撃メッセージを表示
+	if isPlayerActivity(act, world) {
+		gamelog.New(gamelog.FieldLog).
+			Append("攻撃した").
+			Log()
+	}
 
 	return nil
 }
