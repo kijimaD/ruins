@@ -11,11 +11,34 @@
 // - ターンフェーズ管理（プレイヤーターン → AIターン → ターン終了）
 // - 移動ポイント管理とアクションコスト制御
 // - プレイヤーとAIの処理順序制御
+// - アクション実行可否の判定
 //
 // # 使い分け
 //
-// - TurnManager: ターンフェーズとプレイヤー移動ポイントの管理
-// - ActionCosts: アクション別のコスト定義
+// ## TurnManager
+// - ターンフェーズとプレイヤー移動ポイントの管理
+// - アクション実行可否の判定（CanPlayerAct）
+// - ターン進行制御（StartNewTurn）
+//
+// ## ActionCosts（将来実装予定）
+// - アクション別のコスト定義
+// - 動的コスト計算
+//
+// # 他パッケージとの関係
+//
+// ```
+// systems → turns.CanPlayerAct() → 実行可否判定
+//
+//	↓           ↑
+//
+// actions → turns.ConsumePlayerMoves() → コスト消費
+// ```
+//
+// ## 責務の境界
+//
+// - **turns**: いつ誰が行動できるか（When & Who）
+// - **systems**: 何の入力を受け取るか（What Input）
+// - **actions**: どのような行動をするか（What Action）
 //
 // # 仕様
 //
@@ -29,7 +52,33 @@
 // - 各アクション実行時にコストを消費
 // - 移動ポイントが0以下になるとAIターンに移行
 //
+// ## プレイヤーとAIの違い
+// - **プレイヤー**: PlayerMovesによる移動ポイント管理
+// - **AI**: TurnBasedコンポーネントによるActionPoints管理
+// - 両者は異なるシステムで管理されるが、最終的にはターン制御で統合
+//
 // ## CDDAとの違い
 // - CDDAはより複雑な時間管理システムを持つ
 // - Ruinsは簡略化したターンベースシステム
+// - CDDAのmove_costに対応するコスト概念を簡略化
+//
+// # 実装例
+//
+//	// ターン管理の基本的な使用
+//	turnManager := turns.NewTurnManager()
+//
+//	// アクション実行前のチェック
+//	if turnManager.CanPlayerAct() {
+//		// アクション実行
+//		// ...
+//		// コスト消費
+//		turnManager.ConsumePlayerMoves("移動", 100)
+//	}
+//
+//	// ターン進行
+//	if turnManager.IsAITurn() {
+//		// AI処理
+//		// ...
+//		turnManager.StartNewTurn()
+//	}
 package turns
