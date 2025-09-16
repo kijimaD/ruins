@@ -200,17 +200,6 @@ func (am *ActivityManager) ProcessTurn(world w.World) {
 	am.logger.Debug("アクティビティターン処理完了", "removed", len(toRemove))
 }
 
-// GetAllActiveActivities は全てのアクティブなアクティビティを取得する
-func (am *ActivityManager) GetAllActiveActivities() map[ecs.Entity]*Activity {
-	result := make(map[ecs.Entity]*Activity)
-	for entity, activity := range am.currentActivities {
-		if activity.IsActive() {
-			result[entity] = activity
-		}
-	}
-	return result
-}
-
 // GetActivitySummary はアクティビティの要約情報を取得する
 func (am *ActivityManager) GetActivitySummary() map[string]interface{} {
 	summary := make(map[string]interface{})
@@ -264,13 +253,4 @@ func (am *ActivityManager) validateResume(activity *Activity, world w.World) err
 
 	// 基本要件を再チェック
 	return am.validateBasicRequirements(activity)
-}
-
-// CleanupCompletedActivities は完了したアクティビティをクリーンアップする
-func (am *ActivityManager) CleanupCompletedActivities() {
-	for entity, activity := range am.currentActivities {
-		if activity.IsCompleted() || activity.IsCanceled() {
-			delete(am.currentActivities, entity)
-		}
-	}
 }

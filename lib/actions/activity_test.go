@@ -188,34 +188,6 @@ func TestActivityProgressCalculation(t *testing.T) {
 	}
 }
 
-func TestActivityDisplayMessages(t *testing.T) {
-	t.Parallel()
-	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityRest, actor, 10)
-
-	// 実行中のメッセージ
-	message := activity.GetDisplayMessage()
-	if message == "" {
-		t.Errorf("Expected non-empty display message for running activity")
-	}
-
-	// 一時停止中のメッセージ
-	if err := activity.Interrupt("テスト"); err != nil {
-		t.Errorf("Unexpected error interrupting activity: %v", err)
-	}
-	pausedMessage := activity.GetDisplayMessage()
-	if pausedMessage == message {
-		t.Errorf("Expected different message for paused activity")
-	}
-
-	// 完了時のメッセージ
-	activity.Complete()
-	completedMessage := activity.GetDisplayMessage()
-	if completedMessage == pausedMessage {
-		t.Errorf("Expected different message for completed activity")
-	}
-}
-
 func TestActivityDoTurn(t *testing.T) {
 	t.Parallel()
 	// ログレベルを設定（テスト時の出力抑制）

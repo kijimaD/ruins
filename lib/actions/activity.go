@@ -366,27 +366,6 @@ func (a *Activity) GetDisplayName() string {
 	return info.Name
 }
 
-// GetDisplayMessage は現在の状況を表示するメッセージを返す
-func (a *Activity) GetDisplayMessage() string {
-	if a.Message != "" {
-		return a.Message
-	}
-
-	switch a.State {
-	case ActivityStateRunning:
-		percent := a.GetProgressPercent()
-		return fmt.Sprintf("%s中... (%0.1f%%)", a.GetDisplayName(), percent)
-	case ActivityStatePaused:
-		return fmt.Sprintf("%s (一時停止中)", a.GetDisplayName())
-	case ActivityStateCompleted:
-		return fmt.Sprintf("%s完了", a.GetDisplayName())
-	case ActivityStateCanceled:
-		return fmt.Sprintf("%sキャンセル: %s", a.GetDisplayName(), a.CancelReason)
-	default:
-		return a.GetDisplayName()
-	}
-}
-
 // String はActivityTypeの文字列表現を返す
 func (t ActivityType) String() string {
 	switch t {
