@@ -94,6 +94,53 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package systems はゲームシステムの実装を提供する。
+<h3 id="hdr-__">概要</h3>
+<p>このパッケージは入力処理、UI更新、レンダリングなどのゲームシステムを実装している。
+特にTileInputSystemは、プレイヤー入力を受け取りactionsパッケージと連携してアクションを実行する。
+<h3 id="hdr-__">責務</h3>
+<p>- 入力処理とアクション変換
+- UI要素の更新処理
+- ゲーム状態の同期
+- 外部システムとの橋渡し
+<h3 id="hdr-____">使い分け</h3>
+<p>## TileInputSystem
+- プレイヤーのキーボード・マウス入力を処理
+- 入力を適切なアクション（移動、攻撃等）に変換
+- ターン管理システムによる実行可否チェック
+- actionsパッケージへのアクション実行依頼
+<p>## HUD関連システム
+- ゲーム情報の表示更新
+- プレイヤー状態の反映
+- メニュー操作の処理
+<h3 id="hdr-__________">他パッケージとの関係</h3>
+<p>```
+systems (入力層)
+<pre>↓ 入力受信・変換
+</pre>
+<p>turns (制御層) - 実行可否判定
+<pre>↓ 実行許可
+</pre>
+<p>actions (実行層) - アクション実行
+```
+<p>## 設計原則
+<p>1. **入力の抽象化**: 入力デバイスの詳細を隠蔽し、ゲームアクションに変換
+2. **責務の分離**: 入力処理のみに集中し、ゲームロジックは他パッケージに委譲
+3. **非依存性**: 具体的なゲームルールには依存せず、インターフェースを通じて連携
+<h3 id="hdr-___">実装例</h3>
+<pre>// プレイヤー入力の処理フロー
+func TileInputSystem(world w.World) {
+	// 1. ターン管理による実行可否チェック
+	if !turnManager.CanPlayerAct() {
+		return
+	}
+
+	// 2. キー入力を方向に変換
+	direction := convertKeyToDirection()
+
+	// 3. アクション実行（actionsパッケージに委譲）
+	executeActivity(world, actions.ActivityMove, params)
+}
+</pre>
 
 				
 			</div>
@@ -261,7 +308,7 @@
 		
 			
 			
-			<h2 id="CanMoveTo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=5438:5515#L138">CanMoveTo</a>
+			<h2 id="CanMoveTo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=6523:6600#L172">CanMoveTo</a>
 				<a class="permalink" href="index.html#CanMoveTo">&#xb6;</a>
 				
 				
