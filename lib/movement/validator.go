@@ -31,6 +31,11 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 			return
 		}
 
+		// 死亡しているエンティティは除外
+		if entity.HasComponent(world.Components.Dead) {
+			return
+		}
+
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
 			canMove = false

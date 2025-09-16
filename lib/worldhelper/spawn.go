@@ -49,8 +49,6 @@ var (
 	ErrEffectGeneration = errors.New("エフェクトの生成に失敗しました")
 )
 
-// ========== 生成システム（旧spawner） ==========
-
 // ================
 // Field
 // ================
@@ -70,8 +68,8 @@ func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	return entities.AddEntities(world, componentList)[0], nil
 }
 
-// SpawnFieldWallWithSprite は指定されたスプライト番号でフィールド上に表示される壁を生成する
-func SpawnFieldWallWithSprite(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
+// SpawnWall は指定されたスプライト番号で壁を生成する
+func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
 	componentList := entities.ComponentList{}
 	componentList.Game = append(componentList.Game, gc.GameComponentList{
 		GridElement: &gc.GridElement{X: x, Y: y},
@@ -129,29 +127,27 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 	return entities.AddEntities(world, componentList)[0], nil
 }
 
-// SpawnOperator はフィールド上に表示される操作対象キャラを生成する
-// TODO: エンティティが重複しているときにエラーを返す。
-// TODO: 置けるタイル以外が指定されるとエラーを返す。
-// デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
-func SpawnOperator(world w.World, tileX int, tileY int) error {
-	{
-		componentList := entities.ComponentList{}
-		componentList.Game = append(componentList.Game, gc.GameComponentList{
-			GridElement: &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)},
-			Player:      &gc.Player{},
-			Operator:    &gc.Operator{},
-			SpriteRender: &gc.SpriteRender{
-				Name:         "field",
-				SpriteNumber: spriteNumberPlayer,
-				Depth:        gc.DepthNumOperator,
-			},
-			BlockPass: &gc.BlockPass{},
-		})
-		entities.AddEntities(world, componentList)
+// ================
+// Characters
+// ================
+
+// SpawnPlayer はプレイヤーキャラクターを生成する
+func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
+	componentList := entities.ComponentList{}
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	gcl, err := rawMaster.GeneratePlayer(name)
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
+	}
+	gcl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	gcl.Operator = &gc.Operator{}
+	gcl.SpriteRender = &gc.SpriteRender{
+		Name:         "field",
+		SpriteNumber: spriteNumberPlayer,
+		Depth:        gc.DepthNumOperator,
 	}
 	// カメラ
 	{
-		componentList := entities.ComponentList{}
 		// config設定を確認
 		cfg := config.Get()
 		var scale, scaleTo float64
@@ -164,74 +160,68 @@ func SpawnOperator(world w.World, tileX int, tileY int) error {
 			scale = cameraInitialScale
 			scaleTo = cameraNormalScale
 		}
-
-		componentList.Game = append(componentList.Game, gc.GameComponentList{
-			GridElement: &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)},
-			Camera:      &gc.Camera{Scale: scale, ScaleTo: scaleTo},
-		})
-		entities.AddEntities(world, componentList)
+		gcl.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
 	}
-	return nil
+	componentList.Game = append(componentList.Game, gcl)
+	entities := entities.AddEntities(world, componentList)
+	fullRecover(world, entities[len(entities)-1])
+
+	return entities[len(entities)-1], nil
 }
 
-// SpawnNPC はフィールド上に表示されるNPCを生成する
-// 接触すると戦闘開始する敵として動作する
-func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error {
-	{
-		componentList := entities.ComponentList{}
-		componentList.Game = append(componentList.Game, gc.GameComponentList{
-			GridElement: &gc.GridElement{X: tileX, Y: tileY},
-			SpriteRender: &gc.SpriteRender{
-				Name:         "field",
-				SpriteNumber: spriteNumberNPC,
-				Depth:        gc.DepthNumTaller,
-			},
-			BlockPass: &gc.BlockPass{},
-			AIMoveFSM: &gc.AIMoveFSM{},
-			AIRoaming: &gc.AIRoaming{
-				SubState:              gc.AIRoamingWaiting,
-				StartSubStateTurn:     1,                // 初期ターン
-				DurationSubStateTurns: 2 + rand.IntN(3), // 2-4ターン待機
-			},
-			AIVision: &gc.AIVision{
-				ViewDistance: gc.Pixel(aiVisionDistance),
-			},
-			Attributes: &gc.Attributes{
-				Vitality:  gc.Attribute{Base: 10, Modifier: 0, Total: 10},
-				Strength:  gc.Attribute{Base: 10, Modifier: 0, Total: 10},
-				Sensation: gc.Attribute{Base: 10, Modifier: 0, Total: 10},
-				Dexterity: gc.Attribute{Base: 10, Modifier: 0, Total: 10},
-				Agility:   gc.Attribute{Base: 10, Modifier: 0, Total: 10},
-			},
-			TurnBased: &gc.TurnBased{
-				AP: gc.Pool{
-					Current: 100, // あとで再計算される
-					Max:     100, // あとで再計算される
-				},
-			},
-		})
-		npcEntities := entities.AddEntities(world, componentList)
+// SpawnEnemy はフィールド上に敵キャラクターを生成する
+func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
+	componentList := entities.ComponentList{}
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
-		// NPCのActionPointsを適切に初期化
-		if len(npcEntities) > 0 {
-			npcEntity := npcEntities[0]
-			if world.Resources.TurnManager != nil {
-				if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
-					if npcEntity.HasComponent(world.Components.TurnBased) {
-						actionPoints := world.Components.TurnBased.Get(npcEntity).(*gc.TurnBased)
-						maxAP := turnManager.CalculateMaxActionPoints(world, npcEntity)
-						actionPoints.AP.Current = maxAP
-						actionPoints.AP.Max = maxAP
-					}
-				}
+	// raw.Masterから敵データを取得
+	cl, err := rawMaster.GenerateEnemy(name)
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrEnemyGeneration, err)
+	}
+
+	// フィールド用のコンポーネントを設定
+	cl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	cl.SpriteRender = &gc.SpriteRender{
+		Name:         "field",
+		SpriteNumber: spriteNumberNPC, // 名前でスプライトを選択する
+		Depth:        gc.DepthNumTaller,
+	}
+	cl.BlockPass = &gc.BlockPass{}
+	cl.AIMoveFSM = &gc.AIMoveFSM{}
+	cl.AIRoaming = &gc.AIRoaming{
+		SubState:              gc.AIRoamingWaiting,
+		StartSubStateTurn:     1,                // 初期ターン
+		DurationSubStateTurns: 2 + rand.IntN(3), // 2-4ターン待機
+	}
+	cl.AIVision = &gc.AIVision{
+		ViewDistance: gc.Pixel(aiVisionDistance),
+	}
+
+	componentList.Game = append(componentList.Game, cl)
+	entities := entities.AddEntities(world, componentList)
+
+	// 全回復
+	npcEntity := entities[len(entities)-1]
+	fullRecover(world, npcEntity)
+
+	// ActionPointsを初期化
+	if world.Resources.TurnManager != nil {
+		if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
+			if npcEntity.HasComponent(world.Components.TurnBased) {
+				actionPoints := world.Components.TurnBased.Get(npcEntity).(*gc.TurnBased)
+				maxAP := turnManager.CalculateMaxActionPoints(world, npcEntity)
+				actionPoints.AP.Current = maxAP
+				actionPoints.AP.Max = maxAP
 			}
 		}
 	}
-	return nil
+
+	return npcEntity, nil
 }
 
 // ================
-// Item
+// Items
 // ================
 
 // SpawnItem はアイテムを生成する
@@ -244,40 +234,6 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ec
 	}
 	componentList.Game = append(componentList.Game, gameComponent)
 	entities := entities.AddEntities(world, componentList)
-
-	return entities[len(entities)-1], nil
-}
-
-// SpawnPlayer はプレイヤーキャラクターを生成する
-func SpawnPlayer(world w.World, name string) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	memberComp, err := rawMaster.GeneratePlayer(name)
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
-	}
-	componentList.Game = append(componentList.Game, memberComp)
-	entities := entities.AddEntities(world, componentList)
-	fullRecover(world, entities[len(entities)-1])
-
-	return entities[len(entities)-1], nil
-}
-
-// SpawnEnemy は戦闘に参加する敵キャラを生成する
-func SpawnEnemy(world w.World, name string) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-
-	cl, err := rawMaster.GenerateEnemy(name)
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrEnemyGeneration, err)
-	}
-	componentList.Game = append(
-		componentList.Game,
-		cl,
-	)
-	entities := entities.AddEntities(world, componentList)
-	fullRecover(world, entities[len(entities)-1])
 
 	return entities[len(entities)-1], nil
 }

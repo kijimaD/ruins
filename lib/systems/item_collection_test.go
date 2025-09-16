@@ -17,7 +17,8 @@ func TestItemCollisionDetection(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーを配置
-	require.NoError(t, worldhelper.SpawnOperator(world, 3, 3))
+	_, err = worldhelper.SpawnPlayer(world, 3, 3, "セレスティン")
+	require.NoError(t, err)
 
 	var playerEntity ecs.Entity
 	world.Manager.Join(
@@ -71,7 +72,8 @@ func TestHandleItemCollectionInput(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーとアイテムを同じ位置に配置
-	require.NoError(t, worldhelper.SpawnOperator(world, 5, 5))
+	_, err = worldhelper.SpawnPlayer(world, 5, 5, "セレスティン")
+	require.NoError(t, err)
 	item, err := worldhelper.SpawnFieldItem(world, "回復薬", gc.Tile(5), gc.Tile(5))
 	require.NoError(t, err)
 

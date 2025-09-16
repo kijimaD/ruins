@@ -11,17 +11,18 @@ import (
 // テスト、VRT、デバッグで使用される共通のエンティティセットを生成する
 func InitDebugData(world w.World) {
 	// 既にプレイヤーが存在するかチェック
-	memberCount := 0
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.FactionAlly,
-	).Visit(ecs.Visit(func(_ ecs.Entity) {
-		memberCount++
-	}))
-
-	// 既にメンバーがいる場合は何もしない
-	if memberCount > 0 {
-		return
+	{
+		count := 0
+		world.Manager.Join(
+			world.Components.Player,
+			world.Components.FactionAlly,
+		).Visit(ecs.Visit(func(_ ecs.Entity) {
+			count++
+		}))
+		// 既にプレイヤーがいる場合は何もしない
+		if count > 0 {
+			return
+		}
 	}
 
 	// 基本アイテムの生成
@@ -62,8 +63,8 @@ func InitDebugData(world w.World) {
 		_, _ = SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 	}
 
-	// プレイヤー生成（一人のみ）
-	celestine, _ := SpawnPlayer(world, "セレスティン")
+	// プレイヤー生成
+	celestine, _ := SpawnPlayer(world, 5, 5, "セレスティン")
 
 	// マテリアルとレシピ
 	_ = SpawnAllMaterials(world)

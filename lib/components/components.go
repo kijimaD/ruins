@@ -28,6 +28,7 @@ type GameComponentList struct {
 	ItemLocationType *ItemLocationType
 
 	// field ================
+	// TODO: Operator と Player を統合する
 	Operator     *Operator
 	AIMoveFSM    *AIMoveFSM
 	AIRoaming    *AIRoaming

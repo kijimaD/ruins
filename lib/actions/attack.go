@@ -2,7 +2,10 @@ package actions
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
 
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -17,7 +20,7 @@ func init() {
 }
 
 // Validate は攻撃アクティビティの検証を行う
-func (aa *AttackActivity) Validate(act *Activity, _ w.World) error {
+func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 	// 攻撃対象の確認
 	if act.Target == nil {
 		return fmt.Errorf("攻撃対象が設定されていません")
@@ -28,12 +31,30 @@ func (aa *AttackActivity) Validate(act *Activity, _ w.World) error {
 		return fmt.Errorf("攻撃対象が無効です")
 	}
 
-	// TODO: より詳細な攻撃可能チェック
-	// - ターゲットが存在するか
-	// - 射程内にいるか
-	// - 視界内にいるか
-	// - 武器を装備しているか
-	// - 攻撃可能な状態か（スタンなどでないか）
+	// 攻撃者の生存確認
+	if world.Components.Dead.Get(act.Actor) != nil {
+		return fmt.Errorf("攻撃者が死亡しています")
+	}
+
+	// ターゲットの存在確認（GridElementの存在で判定）
+	if world.Components.GridElement.Get(*act.Target) == nil {
+		return fmt.Errorf("攻撃対象が存在しません")
+	}
+
+	// ターゲットの生存確認
+	if world.Components.Dead.Get(*act.Target) != nil {
+		return fmt.Errorf("攻撃対象が既に死亡しています")
+	}
+
+	// 射程チェック
+	if !aa.isInRange(act.Actor, *act.Target, world) {
+		return fmt.Errorf("攻撃対象が射程外です")
+	}
+
+	// 攻撃者の装備チェック（武器または素手攻撃可能か）
+	if !aa.canPerformAttack(act.Actor, world) {
+		return fmt.Errorf("攻撃手段がありません")
+	}
 
 	return nil
 }
@@ -86,29 +107,41 @@ func (aa *AttackActivity) Canceled(act *Activity, _ w.World) error {
 
 // performAttack は実際の攻撃処理を実行する
 func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
-	act.Logger.Debug("攻撃実行",
-		"actor", act.Actor,
-		"target", *act.Target)
+	attacker := act.Actor
+	target := *act.Target
 
-	// TODO: 実際の攻撃ロジック実装
-	// - ダメージ計算
-	// - 命中判定
-	// - 武器による攻撃力修正
-	// - ターゲットのHP減少
-	// - 攻撃エフェクトの表示
+	act.Logger.Debug("攻撃実行", "attacker", attacker, "target", target)
 
-	// プレイヤーの場合のみ攻撃メッセージを表示
-	if isPlayerActivity(act, world) {
-		gamelog.New(gamelog.FieldLog).
-			Append("攻撃した").
-			Log()
+	// 命中判定
+	hit, criticalHit := aa.rollHitCheck(attacker, target, world)
+	if !hit {
+		// 攻撃外れ
+		aa.logAttackResult(attacker, target, world, false, false, 0)
+		return nil
 	}
+
+	// ダメージ計算
+	damage := aa.calculateDamage(attacker, target, world, criticalHit)
+	if damage < 0 {
+		damage = 0
+	}
+
+	// ダメージ適用
+	if err := aa.applyDamage(target, damage, world); err != nil {
+		return fmt.Errorf("ダメージ適用エラー: %w", err)
+	}
+
+	// 結果ログ
+	aa.logAttackResult(attacker, target, world, true, criticalHit, damage)
+
+	// 死亡判定
+	aa.checkDeath(target, world)
 
 	return nil
 }
 
 // canAttack は攻撃可能かをチェックする
-func (aa *AttackActivity) canAttack(act *Activity, _ w.World) bool {
+func (aa *AttackActivity) canAttack(act *Activity, world w.World) bool {
 	// 攻撃対象の確認
 	if act.Target == nil {
 		return false
@@ -119,11 +152,201 @@ func (aa *AttackActivity) canAttack(act *Activity, _ w.World) bool {
 		return false
 	}
 
-	// TODO: より詳細な攻撃可能チェック
-	// - ターゲットが存在するか
-	// - 射程内にいるか
-	// - 視界内にいるか
-	// - 武器を装備しているか
+	// より詳細なチェック（Validateと同様）
+	if err := aa.Validate(act, world); err != nil {
+		return false
+	}
 
 	return true
+}
+
+// isInRange は攻撃対象が射程内にいるかチェックする
+func (aa *AttackActivity) isInRange(attacker, target ecs.Entity, world w.World) bool {
+	// 攻撃者の位置を取得
+	attackerGrid := world.Components.GridElement.Get(attacker)
+	if attackerGrid == nil {
+		return false
+	}
+
+	// ターゲットの位置を取得
+	targetGrid := world.Components.GridElement.Get(target)
+	if targetGrid == nil {
+		return false
+	}
+
+	attackerPos := attackerGrid.(*gc.GridElement)
+	targetPos := targetGrid.(*gc.GridElement)
+
+	// タイル間の距離を計算
+	dx := float64(attackerPos.X - targetPos.X)
+	dy := float64(attackerPos.Y - targetPos.Y)
+	distance := math.Sqrt(dx*dx + dy*dy)
+
+	// 近接攻撃の場合は隣接チェック（距離1.5以内：斜めも考慮）
+	// TODO: 遠距離武器の場合は射程を武器から取得
+	return distance <= 1.5
+}
+
+// canPerformAttack は攻撃手段があるかチェックする
+func (aa *AttackActivity) canPerformAttack(attacker ecs.Entity, world w.World) bool {
+	// TODO: 装備武器のチェック
+	// 現在は素手攻撃を常に許可
+
+	// 属性による攻撃可能チェック
+	attrs := world.Components.Attributes.Get(attacker)
+	if attrs == nil {
+		return false // 属性がないエンティティは攻撃不可
+	}
+
+	return true
+}
+
+// rollHitCheck は命中判定を行う
+func (aa *AttackActivity) rollHitCheck(attacker, target ecs.Entity, world w.World) (hit bool, critical bool) {
+	// 攻撃者の器用度を取得
+	attackerAttrs := world.Components.Attributes.Get(attacker).(*gc.Attributes)
+	attackerDexterity := attackerAttrs.Dexterity.Total
+
+	// ターゲットの敏捷度を取得
+	targetAttrs := world.Components.Attributes.Get(target).(*gc.Attributes)
+	targetAgility := targetAttrs.Agility.Total
+
+	// 基本命中率計算：80% + (攻撃者器用 - 相手敏捷) * 2%
+	baseHitRate := 80 + (attackerDexterity-targetAgility)*2
+
+	// 0-100%の範囲に制限
+	if baseHitRate > 95 {
+		baseHitRate = 95
+	}
+	if baseHitRate < 5 {
+		baseHitRate = 5
+	}
+
+	// ダイス振り
+	roll := rand.Intn(100) + 1
+	hit = roll <= baseHitRate
+
+	// クリティカルヒット判定（5%以下）
+	critical = roll <= 5
+
+	return hit, critical
+}
+
+// calculateDamage はダメージを計算する
+func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.World, critical bool) int {
+	// 攻撃者の筋力を取得
+	attackerAttrs := world.Components.Attributes.Get(attacker).(*gc.Attributes)
+	attackerStrength := attackerAttrs.Strength.Total
+
+	// ターゲットの防御力を取得
+	targetAttrs := world.Components.Attributes.Get(target).(*gc.Attributes)
+	targetDefense := targetAttrs.Defense.Total
+
+	// 基本ダメージ = 筋力 + ランダム要素(1-6)
+	baseDamage := attackerStrength + rand.Intn(6) + 1
+
+	// TODO: 武器攻撃力の追加
+
+	// クリティカルヒットの場合は1.5倍
+	if critical {
+		baseDamage = baseDamage * 3 / 2
+	}
+
+	// 防御力分を減算
+	finalDamage := baseDamage - targetDefense
+	if finalDamage < 1 {
+		finalDamage = 1 // 最低1ダメージ
+	}
+
+	return finalDamage
+}
+
+// applyDamage はダメージをターゲットに適用する
+func (aa *AttackActivity) applyDamage(target ecs.Entity, damage int, world w.World) error {
+	// ターゲットのPoolsコンポーネントを取得
+	pools := world.Components.Pools.Get(target)
+	if pools == nil {
+		return fmt.Errorf("ターゲットにPoolsコンポーネントがありません")
+	}
+
+	targetPools := pools.(*gc.Pools)
+
+	// HPからダメージを減算
+	targetPools.HP.Current -= damage
+	if targetPools.HP.Current < 0 {
+		targetPools.HP.Current = 0
+	}
+
+	return nil
+}
+
+// checkDeath は死亡判定を行う
+func (aa *AttackActivity) checkDeath(target ecs.Entity, world w.World) {
+	// ターゲットのHPをチェック
+	pools := world.Components.Pools.Get(target)
+	if pools == nil {
+		return // Poolsがない場合は死亡判定しない
+	}
+
+	targetPools := pools.(*gc.Pools)
+	if targetPools.HP.Current <= 0 {
+		// エンティティを完全に削除
+		world.Manager.DeleteEntity(target)
+	}
+}
+
+// logAttackResult は攻撃結果をログに出力する
+func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, damage int) {
+	// プレイヤーが関わる攻撃のみログ出力
+	if !isPlayerActivity(&Activity{Actor: attacker}, world) && !isPlayerActivity(&Activity{Actor: target}, world) {
+		return
+	}
+
+	// 攻撃者名とターゲット名を取得
+	attackerName := aa.getEntityName(attacker, world)
+	targetName := aa.getEntityName(target, world)
+
+	if !hit {
+		// 攻撃外れ
+		gamelog.New(gamelog.FieldLog).
+			Append(attackerName).
+			Append("の攻撃は").
+			Append(targetName).
+			Append("に外れた").
+			Log()
+	} else if critical {
+		// クリティカルヒット
+		gamelog.New(gamelog.FieldLog).
+			Append(attackerName).
+			Append("が").
+			Append(targetName).
+			Append("にクリティカルヒット！ ").
+			Append(fmt.Sprintf("%dダメージ", damage)).
+			Log()
+	} else {
+		// 通常ヒット
+		gamelog.New(gamelog.FieldLog).
+			Append(attackerName).
+			Append("が").
+			Append(targetName).
+			Append("を攻撃した。").
+			Append(fmt.Sprintf("%dダメージ", damage)).
+			Log()
+	}
+}
+
+// getEntityName はエンティティの名前を取得する
+func (aa *AttackActivity) getEntityName(entity ecs.Entity, world w.World) string {
+	// Nameコンポーネントから名前を取得
+	name := world.Components.Name.Get(entity)
+	if name != nil {
+		return name.(*gc.Name).Name
+	}
+
+	// Nameコンポーネントがない場合のフォールバック
+	if entity.HasComponent(world.Components.Player) {
+		return "プレイヤー"
+	}
+
+	return "Unknown"
 }

@@ -199,7 +199,8 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// NPCを生成（タイル座標で指定）
-	require.NoError(t, SpawnNPC(world, 5, 5))
+	_, err = SpawnEnemy(world, 5, 5, "火の玉")
+	require.NoError(t, err)
 
 	// AIMoveFSMコンポーネントを持つエンティティが存在することを確認
 	enemyFound := false
@@ -210,5 +211,5 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 		enemyFound = true
 	}))
 
-	assert.True(t, enemyFound, "SpawnNPCで生成されたエンティティはAIMoveFSMコンポーネントを持つべき")
+	assert.True(t, enemyFound, "SpawnEnemyで生成されたエンティティはAIMoveFSMコンポーネントを持つべき")
 }

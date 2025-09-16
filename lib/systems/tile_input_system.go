@@ -98,6 +98,18 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 		newX := currentX + deltaX
 		newY := currentY + deltaY
 
+		// 移動先に敵がいるかチェック
+		enemy := findEnemyAtPosition(world, entity, newX, newY)
+		if enemy != ecs.Entity(0) {
+			// 敵がいる場合は攻撃アクション
+			params := actions.ActionParams{
+				Actor:  entity,
+				Target: &enemy,
+			}
+			executeActivity(world, actions.ActivityAttack, params)
+			return
+		}
+
 		// 移動可能かチェックして移動
 		canMove := CanMoveTo(world, newX, newY, entity)
 
@@ -262,4 +274,52 @@ func checkForItems(world w.World, tileX, tileY int) bool {
 		}
 	}))
 	return hasItem
+}
+
+// findEnemyAtPosition は指定位置にいる敵エンティティを検索する
+func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY int) ecs.Entity {
+	var foundEnemy ecs.Entity
+
+	// 指定位置にいる全エンティティをチェック
+	world.Manager.Join(
+		world.Components.GridElement,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		// 自分自身は除外
+		if entity == movingEntity {
+			return
+		}
+
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
+			// 死亡しているエンティティは除外
+			if entity.HasComponent(world.Components.Dead) {
+				return
+			}
+
+			// 敵対関係かチェック
+			if isHostileFaction(world, movingEntity, entity) {
+				foundEnemy = entity
+				return // 最初に見つかった敵を返す
+			}
+		}
+	}))
+
+	return foundEnemy
+}
+
+// isHostileFaction は2つのエンティティが敵対関係にあるかを判定する
+func isHostileFaction(world w.World, entity1, entity2 ecs.Entity) bool {
+	// プレイヤー側(Ally)と敵(Enemy)は敵対関係
+	entity1IsAlly := entity1.HasComponent(world.Components.FactionAlly)
+	entity1IsEnemy := entity1.HasComponent(world.Components.FactionEnemy)
+	entity2IsAlly := entity2.HasComponent(world.Components.FactionAlly)
+	entity2IsEnemy := entity2.HasComponent(world.Components.FactionEnemy)
+
+	// プレイヤー側 vs 敵側
+	if (entity1IsAlly && entity2IsEnemy) || (entity1IsEnemy && entity2IsAlly) {
+		return true
+	}
+
+	// その他の組み合わせは敵対関係ではない
+	return false
 }
