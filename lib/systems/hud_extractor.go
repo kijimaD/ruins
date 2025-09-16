@@ -200,10 +200,50 @@ func extractDebugOverlay(world w.World) hud.DebugOverlayData {
 		})
 	}))
 
+	// HP表示情報を抽出（プレイヤー以外のPoolsを持つエンティティ）
+	var hpDisplays []hud.HPDisplayInfo
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		// プレイヤーは除外
+		if entity.HasComponent(world.Components.Player) {
+			return
+		}
+
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		pools := world.Components.Pools.Get(entity).(*gc.Pools)
+
+		// エンティティ名を取得（デバッグ用）
+		var entityName string
+		if nameComp := world.Components.Name.Get(entity); nameComp != nil {
+			entityName = nameComp.(*gc.Name).Name
+		} else {
+			entityName = "Unknown"
+		}
+
+		// グリッド座標をピクセル座標に変換
+		pixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
+		pixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
+
+		// 画面座標に変換
+		screenX := (pixelX-float64(cameraPos.X))*cameraScale + float64(screenDimensions.Width)/2
+		screenY := (pixelY-float64(cameraPos.Y))*cameraScale + float64(screenDimensions.Height)/2
+
+		hpDisplays = append(hpDisplays, hud.HPDisplayInfo{
+			ScreenX:    screenX,
+			ScreenY:    screenY,
+			CurrentHP:  pools.HP.Current,
+			MaxHP:      pools.HP.Max,
+			EntityName: entityName,
+		})
+	}))
+
 	return hud.DebugOverlayData{
 		Enabled:          true,
 		AIStates:         aiStates,
 		VisionRanges:     visionRanges,
+		HPDisplays:       hpDisplays,
 		ScreenDimensions: screenDimensions,
 	}
 }

@@ -48,6 +48,7 @@ type DebugOverlayData struct {
 	Enabled          bool              // デバッグ表示有効フラグ
 	AIStates         []AIStateInfo     // AI状態情報
 	VisionRanges     []VisionRangeInfo // 視界範囲情報
+	HPDisplays       []HPDisplayInfo   // HP表示情報
 	ScreenDimensions ScreenDimensions  // 画面サイズ
 }
 
@@ -63,6 +64,15 @@ type VisionRangeInfo struct {
 	ScreenX      float64 // 中心の画面X座標
 	ScreenY      float64 // 中心の画面Y座標
 	ScaledRadius float32 // スケール済み半径
+}
+
+// HPDisplayInfo はHP表示の情報
+type HPDisplayInfo struct {
+	ScreenX    float64 // 画面上のX座標
+	ScreenY    float64 // 画面上のY座標
+	CurrentHP  int     // 現在のHP
+	MaxHP      int     // 最大HP
+	EntityName string  // エンティティ名（デバッグ用）
 }
 
 // MessageData はメッセージ表示に必要なデータ
