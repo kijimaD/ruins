@@ -293,10 +293,12 @@ func (aa *AttackActivity) checkDeath(target ecs.Entity, world w.World) {
 		// 死亡メッセージをログ出力（プレイヤーまたは敵の場合）
 		if target.HasComponent(world.Components.Player) || target.HasComponent(world.Components.AIMoveFSM) {
 			targetName := aa.getEntityName(target, world)
-			logger := gamelog.New(gamelog.FieldLog)
-			aa.appendNameWithColor(logger, target, targetName, world)
-			logger.Append(" は倒れた。")
-			logger.Log()
+			gamelog.New(gamelog.FieldLog).
+				Build(func(l *gamelog.Logger) {
+					aa.appendNameWithColor(l, target, targetName, world)
+				}).
+				Append(" は倒れた。").
+				Log()
 		}
 
 		// エンティティを完全に削除
@@ -315,33 +317,24 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 	attackerName := aa.getEntityName(attacker, world)
 	targetName := aa.getEntityName(target, world)
 
-	if !hit {
-		// 攻撃外れ
-		logger := gamelog.New(gamelog.FieldLog)
-		aa.appendNameWithColor(logger, attacker, attackerName, world)
-		logger.Append(" が ")
-		aa.appendNameWithColor(logger, target, targetName, world)
-		logger.Append(" を攻撃したが外れた。")
-		logger.Log()
-	} else if critical {
-		// クリティカルヒット
-		logger := gamelog.New(gamelog.FieldLog)
-		aa.appendNameWithColor(logger, attacker, attackerName, world)
-		logger.Append(" が ")
-		aa.appendNameWithColor(logger, target, targetName, world)
-		logger.Append(" にクリティカルヒット。")
-		logger.Damage(damage).Append("ダメージ")
-		logger.Log()
-	} else {
-		// 通常ヒット
-		logger := gamelog.New(gamelog.FieldLog)
-		aa.appendNameWithColor(logger, attacker, attackerName, world)
-		logger.Append(" が ")
-		aa.appendNameWithColor(logger, target, targetName, world)
-		logger.Append(" を攻撃した。")
-		logger.Damage(damage).Append("ダメージ")
-		logger.Log()
-	}
+	gamelog.New(gamelog.FieldLog).
+		Build(func(l *gamelog.Logger) {
+			aa.appendNameWithColor(l, attacker, attackerName, world)
+		}).
+		Append(" が ").
+		Build(func(l *gamelog.Logger) {
+			aa.appendNameWithColor(l, target, targetName, world)
+		}).
+		Build(func(l *gamelog.Logger) {
+			if !hit {
+				l.Append(" を攻撃したが外れた。")
+			} else if critical {
+				l.Append(" にクリティカルヒット。").Damage(damage).Append("ダメージ")
+			} else {
+				l.Append(" を攻撃した。").Damage(damage).Append("ダメージ")
+			}
+		}).
+		Log()
 }
 
 // getEntityName はエンティティの名前を取得する

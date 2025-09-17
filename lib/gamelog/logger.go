@@ -197,6 +197,28 @@ func (l *Logger) System(text interface{}) *Logger {
 	return l
 }
 
+// Build は無名関数を受け取り、メソッドチェーン内でloggerを操作できる
+// 複雑なログ構築ロジックをメソッドチェーンに組み込む際に使用
+//
+// 使用例:
+//
+//	logger.PlayerName("プレイヤー").
+//	       Append(" が ").
+//	       Build(func(l *Logger) {
+//	           // 複雑な条件分岐やループを含むログ構築
+//	           if target.IsPlayer() {
+//	               l.PlayerName(targetName)
+//	           } else {
+//	               l.NPCName(targetName)
+//	           }
+//	       }).
+//	       Append(" を攻撃した。").
+//	       Log()
+func (l *Logger) Build(builder func(*Logger)) *Logger {
+	builder(l)
+	return l
+}
+
 // 内部ヘルパーメソッド
 func (l *Logger) appendToLog(log *SafeSlice) {
 	// 複数のフラグメントをログに追加
