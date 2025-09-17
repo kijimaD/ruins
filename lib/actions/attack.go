@@ -290,6 +290,15 @@ func (aa *AttackActivity) checkDeath(target ecs.Entity, world w.World) {
 
 	targetPools := pools.(*gc.Pools)
 	if targetPools.HP.Current <= 0 {
+		// 死亡メッセージをログ出力（プレイヤーまたは敵の場合）
+		if target.HasComponent(world.Components.Player) || target.HasComponent(world.Components.AIMoveFSM) {
+			targetName := aa.getEntityName(target, world)
+			logger := gamelog.New(gamelog.FieldLog)
+			aa.appendNameWithColor(logger, target, targetName, world)
+			logger.Append(" は倒れた。")
+			logger.Log()
+		}
+
 		// エンティティを完全に削除
 		world.Manager.DeleteEntity(target)
 	}
@@ -308,30 +317,30 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 
 	if !hit {
 		// 攻撃外れ
-		gamelog.New(gamelog.FieldLog).
-			Append(attackerName).
-			Append(" が ").
-			Append(targetName).
-			Append(" を攻撃したが外れた。").
-			Log()
+		logger := gamelog.New(gamelog.FieldLog)
+		aa.appendNameWithColor(logger, attacker, attackerName, world)
+		logger.Append(" が ")
+		aa.appendNameWithColor(logger, target, targetName, world)
+		logger.Append(" を攻撃したが外れた。")
+		logger.Log()
 	} else if critical {
 		// クリティカルヒット
-		gamelog.New(gamelog.FieldLog).
-			Append(attackerName).
-			Append(" が ").
-			Append(targetName).
-			Append(" にクリティカルヒット。").
-			Append(fmt.Sprintf("%dダメージ", damage)).
-			Log()
+		logger := gamelog.New(gamelog.FieldLog)
+		aa.appendNameWithColor(logger, attacker, attackerName, world)
+		logger.Append(" が ")
+		aa.appendNameWithColor(logger, target, targetName, world)
+		logger.Append(" にクリティカルヒット。")
+		logger.Damage(damage).Append("ダメージ")
+		logger.Log()
 	} else {
 		// 通常ヒット
-		gamelog.New(gamelog.FieldLog).
-			Append(attackerName).
-			Append(" が ").
-			Append(targetName).
-			Append(" を攻撃した。").
-			Append(fmt.Sprintf("%dダメージ", damage)).
-			Log()
+		logger := gamelog.New(gamelog.FieldLog)
+		aa.appendNameWithColor(logger, attacker, attackerName, world)
+		logger.Append(" が ")
+		aa.appendNameWithColor(logger, target, targetName, world)
+		logger.Append(" を攻撃した。")
+		logger.Damage(damage).Append("ダメージ")
+		logger.Log()
 	}
 }
 
@@ -349,4 +358,15 @@ func (aa *AttackActivity) getEntityName(entity ecs.Entity, world w.World) string
 	}
 
 	return "Unknown"
+}
+
+// appendNameWithColor はエンティティの種類に応じて色付きで名前を追加する
+func (aa *AttackActivity) appendNameWithColor(logger *gamelog.Logger, entity ecs.Entity, name string, world w.World) {
+	if entity.HasComponent(world.Components.Player) {
+		logger.PlayerName(name)
+	} else if entity.HasComponent(world.Components.AIMoveFSM) {
+		logger.NPCName(name)
+	} else {
+		logger.Append(name)
+	}
 }
