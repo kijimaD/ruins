@@ -91,8 +91,8 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builder
 
 	// ポータルは既にvalidateMapWithPortals内で配置済み
 	// フィールドに操作対象キャラを配置する（事前に見つけた位置を使用）
-	if _, err := worldhelper.SpawnPlayer(world, playerX, playerY, "セレスティン"); err != nil {
-		return resources.Level{}, fmt.Errorf("プレイヤー生成エラー: %w", err)
+	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {
+		return resources.Level{}, fmt.Errorf("プレイヤー移動エラー: %w", err)
 	}
 
 	// フィールドにNPCを生成する

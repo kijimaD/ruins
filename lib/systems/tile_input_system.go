@@ -82,12 +82,25 @@ func executeActivity(world w.World, activityType actions.ActivityType, params ac
 }
 
 // executeMoveAction は移動アクションを実行する
+// 複数プレイヤーエンティティが存在する場合は最初のエンティティのみを処理する
 func executeMoveAction(world w.World, direction gc.Direction) {
-	// プレイヤーエンティティを取得
+	var firstPlayerEntity ecs.Entity
+	var hasFirstPlayer bool
+
+	// 最初のプレイヤーエンティティを取得
 	world.Manager.Join(
 		world.Components.Player,
 		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if !hasFirstPlayer {
+			firstPlayerEntity = entity
+			hasFirstPlayer = true
+		}
+	}))
+
+	// 最初のプレイヤーエンティティのみを処理
+	if hasFirstPlayer {
+		entity := firstPlayerEntity
 		// 現在位置を取得
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		currentX := int(gridElement.X)
@@ -122,7 +135,7 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 			}
 			executeActivity(world, actions.ActivityMove, params)
 		}
-	}))
+	}
 }
 
 // executeWaitAction は待機アクションを実行する

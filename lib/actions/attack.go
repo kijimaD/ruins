@@ -310,26 +310,26 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 		// 攻撃外れ
 		gamelog.New(gamelog.FieldLog).
 			Append(attackerName).
-			Append("の攻撃は").
+			Append(" が ").
 			Append(targetName).
-			Append("に外れた").
+			Append(" を攻撃したが外れた。").
 			Log()
 	} else if critical {
 		// クリティカルヒット
 		gamelog.New(gamelog.FieldLog).
 			Append(attackerName).
-			Append("が").
+			Append(" が ").
 			Append(targetName).
-			Append("にクリティカルヒット！ ").
+			Append(" にクリティカルヒット。").
 			Append(fmt.Sprintf("%dダメージ", damage)).
 			Log()
 	} else {
 		// 通常ヒット
 		gamelog.New(gamelog.FieldLog).
 			Append(attackerName).
-			Append("が").
+			Append(" が ").
 			Append(targetName).
-			Append("を攻撃した。").
+			Append(" を攻撃した。").
 			Append(fmt.Sprintf("%dダメージ", damage)).
 			Log()
 	}

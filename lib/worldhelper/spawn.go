@@ -392,3 +392,31 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 
 	return item, nil
 }
+
+// MovePlayerToPosition は既存のプレイヤーエンティティを指定位置に移動させる
+func MovePlayerToPosition(world w.World, tileX int, tileY int) error {
+	// 既存のプレイヤーエンティティを検索
+	var playerEntity ecs.Entity
+	var found bool
+
+	world.Manager.Join(
+		world.Components.Player,
+		world.Components.GridElement,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if !found {
+			playerEntity = entity
+			found = true
+		}
+	}))
+
+	if !found {
+		return errors.New("プレイヤーエンティティが見つかりません")
+	}
+
+	// プレイヤーの位置を更新
+	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
+	gridElement.X = gc.Tile(tileX)
+	gridElement.Y = gc.Tile(tileY)
+
+	return nil
+}

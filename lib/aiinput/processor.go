@@ -67,6 +67,12 @@ func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, e
 		return
 	}
 
+	// プレイヤーエンティティの有効性チェック
+	if !playerEntity.HasComponent(world.Components.GridElement) {
+		p.logger.Warn("プレイヤーエンティティが無効（GridElementなし）", "entity", entity, "player", *playerEntity)
+		return
+	}
+
 	// 視界チェック
 	canSeePlayer := p.visionSystem.CanSeeTarget(world, entity, *playerEntity, context.Vision)
 	p.logger.Debug("プレイヤー視界チェック", "entity", entity, "canSee", canSeePlayer)
@@ -166,7 +172,11 @@ func (p *Processor) gatherEntityContext(world w.World, entity ecs.Entity) (*Enti
 func (p *Processor) findPlayer(world w.World) *ecs.Entity {
 	var playerEntity *ecs.Entity
 
-	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(world.Components.Player, world.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+		// 死亡しているエンティティは除外
+		if entity.HasComponent(world.Components.Dead) {
+			return
+		}
 		playerEntity = &entity
 	}))
 

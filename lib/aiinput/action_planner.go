@@ -48,6 +48,14 @@ func (ap *DefaultActionPlanner) PlanAction(world w.World, aiEntity, playerEntity
 func (ap *DefaultActionPlanner) planChaseAction(world w.World, aiEntity, playerEntity ecs.Entity, aiGrid *gc.GridElement) (actions.ActivityType, actions.ActionParams) {
 	playerGrid := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
 
+	// プレイヤーと隣接タイルにいる場合は攻撃
+	if ap.isAdjacent(aiGrid, playerGrid) {
+		return actions.ActivityAttack, actions.ActionParams{
+			Actor:  aiEntity,
+			Target: &playerEntity,
+		}
+	}
+
 	// プレイヤーに向かう方向を計算
 	dx := int(playerGrid.X) - int(aiGrid.X)
 	dy := int(playerGrid.Y) - int(aiGrid.Y)
@@ -176,4 +184,27 @@ func (ap *DefaultActionPlanner) calculateMoveCandidates(dx, dy int) []MoveCandid
 	}
 
 	return candidates
+}
+
+// isAdjacent は2つのタイルが隣接しているかを判定する（同じタイルは除く）
+func (ap *DefaultActionPlanner) isAdjacent(aiGrid, playerGrid *gc.GridElement) bool {
+	dx := int(playerGrid.X) - int(aiGrid.X)
+	dy := int(playerGrid.Y) - int(aiGrid.Y)
+
+	// 絶対値で距離を計算（チェビシェフ距離）
+	absDx := dx
+	if absDx < 0 {
+		absDx = -absDx
+	}
+	absDy := dy
+	if absDy < 0 {
+		absDy = -absDy
+	}
+
+	// 隣接タイル（距離1だが同じタイルは除く）
+	maxDistance := absDx
+	if absDy > maxDistance {
+		maxDistance = absDy
+	}
+	return maxDistance == 1
 }
