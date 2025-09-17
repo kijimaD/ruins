@@ -11,6 +11,28 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// 攻撃システムの定数
+const (
+	// 射程・距離関連
+	MeleeAttackRange = 1.5 // 近接攻撃の最大射程（斜めも考慮）
+
+	// 命中率関連
+	BaseHitRate          = 80 // 基本命中率（%）
+	HitRatePerStatPoint  = 2  // 器用度と敏捷度の差1点あたりの命中率変化（%）
+	MaxHitRate           = 95 // 最大命中率（%）
+	MinHitRate           = 5  // 最小命中率（%）
+	CriticalHitThreshold = 5  // クリティカルヒット判定しきい値（%以下）
+
+	// ダメージ関連
+	DamageRandomRange        = 6 // ダメージのランダム要素（1-6）
+	CriticalDamageMultiplier = 3 // クリティカルダメージ倍率の分子
+	CriticalDamageBase       = 2 // クリティカルダメージ倍率の分母（3/2 = 1.5倍）
+	MinDamage                = 1 // 最低保証ダメージ
+
+	// 確率計算関連
+	DiceMax = 100 // ダイス最大値（1-100）
+)
+
 // AttackActivity は攻撃アクティビティの実装
 type AttackActivity struct{}
 
@@ -182,9 +204,9 @@ func (aa *AttackActivity) isInRange(attacker, target ecs.Entity, world w.World) 
 	dy := float64(attackerPos.Y - targetPos.Y)
 	distance := math.Sqrt(dx*dx + dy*dy)
 
-	// 近接攻撃の場合は隣接チェック（距離1.5以内：斜めも考慮）
+	// 近接攻撃の場合は隣接チェック（斜めも考慮）
 	// TODO: 遠距離武器の場合は射程を武器から取得
-	return distance <= 1.5
+	return distance <= MeleeAttackRange
 }
 
 // canPerformAttack は攻撃手段があるかチェックする
@@ -211,23 +233,23 @@ func (aa *AttackActivity) rollHitCheck(attacker, target ecs.Entity, world w.Worl
 	targetAttrs := world.Components.Attributes.Get(target).(*gc.Attributes)
 	targetAgility := targetAttrs.Agility.Total
 
-	// 基本命中率計算：80% + (攻撃者器用 - 相手敏捷) * 2%
-	baseHitRate := 80 + (attackerDexterity-targetAgility)*2
+	// 基本命中率計算
+	baseHitRate := BaseHitRate + (attackerDexterity-targetAgility)*HitRatePerStatPoint
 
-	// 0-100%の範囲に制限
-	if baseHitRate > 95 {
-		baseHitRate = 95
+	// 命中率の範囲制限
+	if baseHitRate > MaxHitRate {
+		baseHitRate = MaxHitRate
 	}
-	if baseHitRate < 5 {
-		baseHitRate = 5
+	if baseHitRate < MinHitRate {
+		baseHitRate = MinHitRate
 	}
 
 	// ダイス振り
-	roll := rand.Intn(100) + 1
+	roll := rand.IntN(DiceMax) + 1
 	hit = roll <= baseHitRate
 
-	// クリティカルヒット判定（5%以下）
-	critical = roll <= 5
+	// クリティカルヒット判定
+	critical = roll <= CriticalHitThreshold
 
 	return hit, critical
 }
@@ -242,20 +264,20 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 	targetAttrs := world.Components.Attributes.Get(target).(*gc.Attributes)
 	targetDefense := targetAttrs.Defense.Total
 
-	// 基本ダメージ = 筋力 + ランダム要素(1-6)
-	baseDamage := attackerStrength + rand.Intn(6) + 1
+	// 基本ダメージ = 筋力 + ランダム要素
+	baseDamage := attackerStrength + rand.IntN(DamageRandomRange) + 1
 
 	// TODO: 武器攻撃力の追加
 
-	// クリティカルヒットの場合は1.5倍
+	// クリティカルヒット時のダメージ倍率適用
 	if critical {
-		baseDamage = baseDamage * 3 / 2
+		baseDamage = baseDamage * CriticalDamageMultiplier / CriticalDamageBase
 	}
 
 	// 防御力分を減算
 	finalDamage := baseDamage - targetDefense
-	if finalDamage < 1 {
-		finalDamage = 1 // 最低1ダメージ
+	if finalDamage < MinDamage {
+		finalDamage = MinDamage
 	}
 
 	return finalDamage
