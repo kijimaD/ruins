@@ -17,10 +17,10 @@ type ActivityManager struct {
 }
 
 // NewActivityManager は新しいActivityManagerを作成する
-func NewActivityManager() *ActivityManager {
+func NewActivityManager(logger *logger.Logger) *ActivityManager {
 	return &ActivityManager{
 		currentActivities: make(map[ecs.Entity]*Activity),
-		logger:            logger.New(logger.CategoryAction),
+		logger:            logger,
 	}
 }
 

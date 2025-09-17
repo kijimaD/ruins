@@ -18,9 +18,10 @@ type ActionAPI struct {
 
 // NewActionAPI は新しいActionAPIを作成する
 func NewActionAPI() *ActionAPI {
+	actionLogger := logger.New(logger.CategoryAction)
 	return &ActionAPI{
-		manager: NewActivityManager(),
-		logger:  logger.New(logger.CategoryAction),
+		manager: NewActivityManager(actionLogger),
+		logger:  actionLogger,
 	}
 }
 

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/logger"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -190,11 +189,6 @@ func TestActivityProgressCalculation(t *testing.T) {
 
 func TestActivityDoTurn(t *testing.T) {
 	t.Parallel()
-	// ログレベルを設定（テスト時の出力抑制）
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
 
 	actor := ecs.Entity(1)
 	activity := NewActivity(ActivityWait, actor, 3)

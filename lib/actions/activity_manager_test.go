@@ -9,7 +9,7 @@ import (
 
 func TestActivityManagerCreation(t *testing.T) {
 	t.Parallel()
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 
 	if manager == nil {
 		t.Errorf("Expected non-nil activity manager")
@@ -28,13 +28,7 @@ func TestActivityManagerCreation(t *testing.T) {
 
 func TestActivityManagerStartActivity(t *testing.T) {
 	t.Parallel()
-	// ログレベルを設定（テスト時の出力抑制）
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 	actor := ecs.Entity(1)
 
@@ -71,12 +65,7 @@ func TestActivityManagerStartActivity(t *testing.T) {
 
 func TestActivityManagerMultipleActivities(t *testing.T) {
 	t.Parallel()
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 
 	actor1 := ecs.Entity(1)
@@ -119,12 +108,7 @@ func TestActivityManagerMultipleActivities(t *testing.T) {
 
 func TestActivityManagerReplaceActivity(t *testing.T) {
 	t.Parallel()
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 	actor := ecs.Entity(1)
 
@@ -165,12 +149,7 @@ func TestActivityManagerReplaceActivity(t *testing.T) {
 
 func TestActivityManagerInterruptAndResume(t *testing.T) {
 	t.Parallel()
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 	actor := ecs.Entity(1)
 
@@ -226,12 +205,7 @@ func TestActivityManagerInterruptAndResume(t *testing.T) {
 
 func TestActivityManagerCancel(t *testing.T) {
 	t.Parallel()
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 	actor := ecs.Entity(1)
 
@@ -262,12 +236,7 @@ func TestActivityManagerCancel(t *testing.T) {
 
 func TestActivityManagerProcessTurn(t *testing.T) {
 	t.Parallel()
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 
 	actor1 := ecs.Entity(1)
@@ -334,12 +303,7 @@ func TestActivityManagerProcessTurn(t *testing.T) {
 
 func TestActivityManagerSummary(t *testing.T) {
 	t.Parallel()
-	logger.SetConfig(logger.Config{
-		DefaultLevel:   logger.LevelError,
-		CategoryLevels: make(map[logger.Category]logger.Level),
-	})
-
-	manager := NewActivityManager()
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	world := createMockWorld()
 
 	// 初期状態のサマリー
