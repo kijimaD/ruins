@@ -246,6 +246,9 @@ gamelog.New(gamelog.FieldLog).
 					<dd>&nbsp; &nbsp; <a href="index.html#Logger.Append">func (l *Logger) Append(text interface{}) *Logger</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#Logger.Build">func (l *Logger) Build(builder func(*Logger)) *Logger</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#Logger.ColorRGBA">func (l *Logger) ColorRGBA(c color.RGBA) *Logger</a></dd>
 				
 					
@@ -659,6 +662,34 @@ fmt.Println(&#34;Logs created successfully!&#34;)
 				</h3>
 				<pre>func (l *<a href="index.html#Logger">Logger</a>) Append(text interface{}) *<a href="index.html#Logger">Logger</a></pre>
 				<p>Append は現在の色でテキストを追加
+
+				
+				
+				
+			
+				
+				<h3 id="Logger.Build">func (*Logger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/gamelog/logger.go?s=5526:5579#L207">Build</a>
+					<a class="permalink" href="index.html#Logger.Build">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (l *<a href="index.html#Logger">Logger</a>) Build(builder func(*<a href="index.html#Logger">Logger</a>)) *<a href="index.html#Logger">Logger</a></pre>
+				<p>Build は無名関数を受け取り、メソッドチェーン内でloggerを操作できる
+複雑なログ構築ロジックをメソッドチェーンに組み込む際に使用
+<p>使用例:
+<pre>logger.PlayerName(&quot;プレイヤー&quot;).
+       Append(&quot; が &quot;).
+       Build(func(l *Logger) {
+           // 複雑な条件分岐やループを含むログ構築
+           if target.IsPlayer() {
+               l.PlayerName(targetName)
+           } else {
+               l.NPCName(targetName)
+           }
+       }).
+       Append(&quot; を攻撃した。&quot;).
+       Log()
+</pre>
 
 				
 				

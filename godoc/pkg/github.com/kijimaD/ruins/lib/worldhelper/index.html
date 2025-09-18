@@ -180,6 +180,9 @@
 				<dd><a href="index.html#MinusAmount">func MinusAmount(name string, amount int, world w.World)</a></dd>
 			
 				
+				<dd><a href="index.html#MovePlayerToPosition">func MovePlayerToPosition(world w.World, tileX int, tileY int) error</a></dd>
+			
+				
 				<dd><a href="index.html#PlusAmount">func PlusAmount(name string, amount int, world w.World)</a></dd>
 			
 				
@@ -204,13 +207,10 @@
 				<dd><a href="index.html#SpawnAllRecipes">func SpawnAllRecipes(world w.World) error</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnEnemy">func SpawnEnemy(world w.World, name string) (ecs.Entity, error)</a></dd>
+				<dd><a href="index.html#SpawnEnemy">func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, error)</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnFieldItem">func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error)</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnFieldWallWithSprite">func SpawnFieldWallWithSprite(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error)</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnFieldWarpEscape">func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error)</a></dd>
@@ -228,13 +228,10 @@
 				<dd><a href="index.html#SpawnMaterial">func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) (ecs.Entity, error)</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnNPC">func SpawnNPC(world w.World, tileX gc.Tile, tileY gc.Tile) error</a></dd>
+				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error)</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnOperator">func SpawnOperator(world w.World, tileX int, tileY int) error</a></dd>
-			
-				
-				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, name string) (ecs.Entity, error)</a></dd>
+				<dd><a href="index.html#SpawnWall">func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error)</a></dd>
 			
 				
 				<dd><a href="index.html#TransferItem">func TransferItem(world w.World, itemEntity ecs.Entity, fromLocation, toLocation gc.ItemLocationType)</a></dd>
@@ -495,6 +492,20 @@ materialの場合は既存と数量統合、それ以外は個別アイテムと
 		
 			
 			
+			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13813:13881#L387">MovePlayerToPosition</a>
+				<a class="permalink" href="index.html#MovePlayerToPosition">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func MovePlayerToPosition(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+			<p>MovePlayerToPosition は既存のプレイヤーエンティティを指定位置に移動させる
+
+			
+			
+
+		
+			
+			
 			<h2 id="PlusAmount">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/material.go?s=611:666#L15">PlusAmount</a>
 				<a class="permalink" href="index.html#PlusAmount">&#xb6;</a>
 				
@@ -569,7 +580,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=14306:14345#L392">SpawnAllCards</a>
+			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12383:12422#L348">SpawnAllCards</a>
 				<a class="permalink" href="index.html#SpawnAllCards">&#xb6;</a>
 				
 				
@@ -583,7 +594,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13233:13276#L362">SpawnAllMaterials</a>
+			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11310:11353#L318">SpawnAllMaterials</a>
 				<a class="permalink" href="index.html#SpawnAllMaterials">&#xb6;</a>
 				
 				
@@ -597,7 +608,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13767:13808#L377">SpawnAllRecipes</a>
+			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11844:11885#L333">SpawnAllRecipes</a>
 				<a class="permalink" href="index.html#SpawnAllRecipes">&#xb6;</a>
 				
 				
@@ -611,13 +622,13 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=9377:9440#L257">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5679:5764#L163">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func SpawnEnemy(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-			<p>SpawnEnemy は戦闘に参加する敵キャラを生成する
+			<pre>func SpawnEnemy(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>SpawnEnemy はフィールド上に敵キャラクターを生成する
 
 			
 			
@@ -625,7 +636,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=14844:14937#L407">SpawnFieldItem</a>
+			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12921:13014#L363">SpawnFieldItem</a>
 				<a class="permalink" href="index.html#SpawnFieldItem">&#xb6;</a>
 				
 				
@@ -639,21 +650,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldWallWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2373:2477#L64">SpawnFieldWallWithSprite</a>
-				<a class="permalink" href="index.html#SpawnFieldWallWithSprite">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnFieldWallWithSprite(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, spriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-			<p>SpawnFieldWallWithSprite は指定されたスプライト番号でフィールド上に表示される壁を生成する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3731:3813#L102">SpawnFieldWarpEscape</a>
+			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3604:3686#L100">SpawnFieldWarpEscape</a>
 				<a class="permalink" href="index.html#SpawnFieldWarpEscape">&#xb6;</a>
 				
 				
@@ -667,7 +664,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2998:3078#L81">SpawnFieldWarpNext</a>
+			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2871:2951#L79">SpawnFieldWarpNext</a>
 				<a class="permalink" href="index.html#SpawnFieldWarpNext">&#xb6;</a>
 				
 				
@@ -681,7 +678,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFloor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1812:1884#L49">SpawnFloor</a>
+			<h2 id="SpawnFloor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1751:1823#L47">SpawnFloor</a>
 				<a class="permalink" href="index.html#SpawnFloor">&#xb6;</a>
 				
 				
@@ -695,7 +692,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8217:8313#L228">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7443:7539#L218">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
@@ -709,7 +706,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=9924:10036#L276">SpawnMaterial</a>
+			<h2 id="SpawnMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8001:8113#L232">SpawnMaterial</a>
 				<a class="permalink" href="index.html#SpawnMaterial">&#xb6;</a>
 				
 				
@@ -723,45 +720,27 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=6262:6326#L169">SpawnNPC</a>
-				<a class="permalink" href="index.html#SpawnNPC">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnNPC(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, tileY <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>SpawnNPC はフィールド上に表示されるNPCを生成する
-接触すると戦闘開始する敵として動作する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnOperator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4853:4914#L126">SpawnOperator</a>
-				<a class="permalink" href="index.html#SpawnOperator">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnOperator(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>SpawnOperator はフィールド上に表示される操作対象キャラを生成する
-TODO: エンティティが重複しているときにエラーを返す。
-TODO: 置けるタイル以外が指定されるとエラーを返す。
-デバッグ用に任意の位置でスポーンさせたいことがあるためこの位置にある。スポーン可能なタイルかエンティティが重複してないかなどの判定はこの関数ではしていない。
-
-			
-			
-
-		
-			
-			
-			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8798:8862#L242">SpawnPlayer</a>
+			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4362:4448#L125">SpawnPlayer</a>
 				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func SpawnPlayer(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<pre>func SpawnPlayer(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>SpawnPlayer はプレイヤーキャラクターを生成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="SpawnWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2261:2350#L62">SpawnWall</a>
+				<a class="permalink" href="index.html#SpawnWall">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SpawnWall(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, spriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>SpawnWall は指定されたスプライト番号で壁を生成する
 
 			
 			

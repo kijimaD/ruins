@@ -239,6 +239,10 @@ actionAPI.ProcessTurn(world)
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
 				
@@ -372,7 +376,7 @@ actionAPI.ProcessTurn(world)
 				<dd><a href="index.html#ActivityManager">type ActivityManager</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewActivityManager">func NewActivityManager() *ActivityManager</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewActivityManager">func NewActivityManager(logger *logger.Logger) *ActivityManager</a></dd>
 				
 				
 					
@@ -433,7 +437,7 @@ actionAPI.ProcessTurn(world)
 					<dd>&nbsp; &nbsp; <a href="index.html#AttackActivity.Start">func (aa *AttackActivity) Start(act *Activity, _ w.World) error</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#AttackActivity.Validate">func (aa *AttackActivity) Validate(act *Activity, _ w.World) error</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#AttackActivity.Validate">func (aa *AttackActivity) Validate(act *Activity, world w.World) error</a></dd>
 				
 			
 				
@@ -604,6 +608,8 @@ actionAPI.ProcessTurn(world)
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/doc.go">doc.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/errors.go">errors.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go">move.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/pickup.go">pickup.go</a>
@@ -625,6 +631,99 @@ actionAPI.ProcessTurn(world)
 		
 
 		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				<p>攻撃システムの定数
+
+				<pre>const (
+    <span class="comment">// 射程・距離関連</span>
+    <span id="MeleeAttackRange">MeleeAttackRange</span> = 1.5 <span class="comment">// 近接攻撃の最大射程（斜めも考慮）</span>
+
+    <span class="comment">// 命中率関連</span>
+    <span id="BaseHitRate">BaseHitRate</span>          = 80 <span class="comment">// 基本命中率（%）</span>
+    <span id="HitRatePerStatPoint">HitRatePerStatPoint</span>  = 2  <span class="comment">// 器用度と敏捷度の差1点あたりの命中率変化（%）</span>
+    <span id="MaxHitRate">MaxHitRate</span>           = 95 <span class="comment">// 最大命中率（%）</span>
+    <span id="MinHitRate">MinHitRate</span>           = 5  <span class="comment">// 最小命中率（%）</span>
+    <span id="CriticalHitThreshold">CriticalHitThreshold</span> = 5  <span class="comment">// クリティカルヒット判定しきい値（%以下）</span>
+
+    <span class="comment">// ダメージ関連</span>
+    <span id="DamageRandomRange">DamageRandomRange</span>        = 6 <span class="comment">// ダメージのランダム要素（1-6）</span>
+    <span id="CriticalDamageMultiplier">CriticalDamageMultiplier</span> = 3 <span class="comment">// クリティカルダメージ倍率の分子</span>
+    <span id="CriticalDamageBase">CriticalDamageBase</span>       = 2 <span class="comment">// クリティカルダメージ倍率の分母（3/2 = 1.5倍）</span>
+    <span id="MinDamage">MinDamage</span>                = 1 <span class="comment">// 最低保証ダメージ</span>
+
+    <span class="comment">// 確率計算関連</span>
+    <span id="DiceMax">DiceMax</span> = 100 <span class="comment">// ダイス最大値（1-100）</span>
+)</pre>
+			
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>アクティビティ関連のエラー定数
+
+				<pre>var (
+    <span class="comment">// アクティビティ一般エラー</span>
+    <span id="ErrActivityNil">ErrActivityNil</span>           = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アクティビティがnilです&#34;)
+    <span id="ErrActorNotSet">ErrActorNotSet</span>           = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アクターが設定されていません&#34;)
+    <span id="ErrActivityNotFound">ErrActivityNotFound</span>      = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アクティビティが見つかりません&#34;)
+    <span id="ErrActivityActorNotFound">ErrActivityActorNotFound</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アクティビティアクターが見つかりません&#34;)
+    <span id="ErrActivityCannotPause">ErrActivityCannotPause</span>   = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アクティビティは中断できません&#34;)
+    <span id="ErrActivityCannotResume">ErrActivityCannotResume</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アクティビティは再開できません&#34;)
+    <span id="ErrUnsupportedActivity">ErrUnsupportedActivity</span>   = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;未対応のアクティビティタイプです&#34;)
+
+    <span class="comment">// 攻撃関連エラー</span>
+    <span id="ErrAttackTargetNotSet">ErrAttackTargetNotSet</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃対象が設定されていません&#34;)
+    <span id="ErrAttackTargetInvalid">ErrAttackTargetInvalid</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃対象が無効です&#34;)
+    <span id="ErrAttackerDead">ErrAttackerDead</span>           = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃者が死亡しています&#34;)
+    <span id="ErrAttackTargetNotExists">ErrAttackTargetNotExists</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃対象が存在しません&#34;)
+    <span id="ErrAttackTargetDead">ErrAttackTargetDead</span>       = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃対象が既に死亡しています&#34;)
+    <span id="ErrAttackOutOfRange">ErrAttackOutOfRange</span>       = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃対象が射程外です&#34;)
+    <span id="ErrAttackNoWeapon">ErrAttackNoWeapon</span>         = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;攻撃手段がありません&#34;)
+    <span id="ErrTargetNoPoolsComponent">ErrTargetNoPoolsComponent</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;ターゲットにPoolsコンポーネントがありません&#34;)
+
+    <span class="comment">// 移動関連エラー</span>
+    <span id="ErrMoveTargetNotSet">ErrMoveTargetNotSet</span>       = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;移動先が設定されていません&#34;)
+    <span id="ErrMoveTargetInvalid">ErrMoveTargetInvalid</span>      = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;移動先が無効です&#34;)
+    <span id="ErrMoveTargetCoordInvalid">ErrMoveTargetCoordInvalid</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;移動先の座標が無効です&#34;)
+    <span id="ErrMoveNoGridElement">ErrMoveNoGridElement</span>      = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;移動するエンティティにGridElementが見つかりません&#34;)
+    <span id="ErrGridElementNotFound">ErrGridElementNotFound</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;GridElementコンポーネントが見つかりません&#34;)
+
+    <span class="comment">// アイテム関連エラー</span>
+    <span id="ErrPositionNotFound">ErrPositionNotFound</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;位置情報が見つかりません&#34;)
+    <span id="ErrNoItemsToPickup">ErrNoItemsToPickup</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;拾えるアイテムがありません&#34;)
+    <span id="ErrItemPickupFailed">ErrItemPickupFailed</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;アイテムの拾得に失敗しました&#34;)
+
+    <span class="comment">// 休息関連エラー</span>
+    <span id="ErrRestEnemiesNearby">ErrRestEnemiesNearby</span>   = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;周囲に敵がいるため休息できません&#34;)
+    <span id="ErrRestInvalidDuration">ErrRestInvalidDuration</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;休息時間が無効です&#34;)
+    <span id="ErrRestEntityNotSet">ErrRestEntityNotSet</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;休息するエンティティが指定されていません&#34;)
+
+    <span class="comment">// 待機関連エラー</span>
+    <span id="ErrWaitEntityNotSet">ErrWaitEntityNotSet</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;待機するエンティティが指定されていません&#34;)
+    <span id="ErrWaitInvalidDuration">ErrWaitInvalidDuration</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;待機時間が無効です&#34;)
+
+    <span class="comment">// 読書関連エラー</span>
+    <span id="ErrReadNeedsBook">ErrReadNeedsBook</span>         = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;読書には本が必要です&#34;)
+    <span id="ErrReadTargetInvalid">ErrReadTargetInvalid</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;読書対象が無効です&#34;)
+    <span id="ErrReadTargetNotItem">ErrReadTargetNotItem</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;読書対象がアイテムではありません&#34;)
+    <span id="ErrReadBookNotInBackpack">ErrReadBookNotInBackpack</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;本がバックパック内にありません&#34;)
+    <span id="ErrReadTargetNotSet">ErrReadTargetNotSet</span>      = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;読書対象が指定されていません&#34;)
+
+    <span class="comment">// クラフト関連エラー</span>
+    <span id="ErrCraftNeedsRecipe">ErrCraftNeedsRecipe</span>      = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;クラフトにはレシピが必要です&#34;)
+    <span id="ErrCraftTargetInvalid">ErrCraftTargetInvalid</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;クラフト対象が無効です&#34;)
+    <span id="ErrCraftTargetNotRecipe">ErrCraftTargetNotRecipe</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;クラフト対象がレシピではありません&#34;)
+    <span id="ErrCraftRecipeNameGet">ErrCraftRecipeNameGet</span>    = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;レシピ名が取得できません&#34;)
+    <span id="ErrCraftMaterialShortage">ErrCraftMaterialShortage</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;必要な材料やツールが不足しています&#34;)
+    <span id="ErrCraftEntityNotSet">ErrCraftEntityNotSet</span>     = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;クラフトするエンティティが指定されていません&#34;)
+
+    <span class="comment">// ワープ関連エラー</span>
+    <span id="ErrWarpHoleNotFound">ErrWarpHoleNotFound</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;ワープホールが見つかりません&#34;)
+    <span id="ErrWarpUnknownType">ErrWarpUnknownType</span>  = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;不明なワープタイプです&#34;)
+    <span id="ErrWarpNoHole">ErrWarpNoHole</span>       = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;ワープホールがありません&#34;)
+)</pre>
+			
 		
 		
 			
@@ -643,7 +742,7 @@ actionAPI.ProcessTurn(world)
 		
 			
 			
-			<h2 id="GetActivityCost">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=11596:11657#L327">GetActivityCost</a>
+			<h2 id="GetActivityCost">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=11622:11683#L328">GetActivityCost</a>
 				<a class="permalink" href="index.html#GetActivityCost">&#xb6;</a>
 				
 				
@@ -715,7 +814,7 @@ actionAPI.ProcessTurn(world)
 
 			
 				
-				<h3 id="ActionAPI.CancelActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3213:3298#L92">CancelActivity</a>
+				<h3 id="ActionAPI.CancelActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3255:3340#L93">CancelActivity</a>
 					<a class="permalink" href="index.html#ActionAPI.CancelActivity">&#xb6;</a>
 					
 					
@@ -728,7 +827,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.Execute">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=776:891#L19">Execute</a>
+				<h3 id="ActionAPI.Execute">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=818:933#L20">Execute</a>
 					<a class="permalink" href="index.html#ActionAPI.Execute">&#xb6;</a>
 					
 					
@@ -742,7 +841,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.GetActivitySummary">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3867:3932#L107">GetActivitySummary</a>
+				<h3 id="ActionAPI.GetActivitySummary">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3909:3974#L108">GetActivitySummary</a>
 					<a class="permalink" href="index.html#ActionAPI.GetActivitySummary">&#xb6;</a>
 					
 					
@@ -755,7 +854,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.GetCurrentActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3462:3531#L97">GetCurrentActivity</a>
+				<h3 id="ActionAPI.GetCurrentActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3504:3573#L98">GetCurrentActivity</a>
 					<a class="permalink" href="index.html#ActionAPI.GetCurrentActivity">&#xb6;</a>
 					
 					
@@ -768,7 +867,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.HasActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3684:3741#L102">HasActivity</a>
+				<h3 id="ActionAPI.HasActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3726:3783#L103">HasActivity</a>
 					<a class="permalink" href="index.html#ActionAPI.HasActivity">&#xb6;</a>
 					
 					
@@ -781,7 +880,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.InterruptActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=2745:2824#L82">InterruptActivity</a>
+				<h3 id="ActionAPI.InterruptActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=2787:2866#L83">InterruptActivity</a>
 					<a class="permalink" href="index.html#ActionAPI.InterruptActivity">&#xb6;</a>
 					
 					
@@ -794,7 +893,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.ProcessTurn">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=2562:2610#L77">ProcessTurn</a>
+				<h3 id="ActionAPI.ProcessTurn">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=2604:2652#L78">ProcessTurn</a>
 					<a class="permalink" href="index.html#ActionAPI.ProcessTurn">&#xb6;</a>
 					
 					
@@ -807,7 +906,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.QuickAttack">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=8528:8636#L244">QuickAttack</a>
+				<h3 id="ActionAPI.QuickAttack">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=8554:8662#L245">QuickAttack</a>
 					<a class="permalink" href="index.html#ActionAPI.QuickAttack">&#xb6;</a>
 					
 					
@@ -820,7 +919,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.QuickMove">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=8232:8337#L235">QuickMove</a>
+				<h3 id="ActionAPI.QuickMove">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=8258:8363#L236">QuickMove</a>
 					<a class="permalink" href="index.html#ActionAPI.QuickMove">&#xb6;</a>
 					
 					
@@ -833,7 +932,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.QuickPickup">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=8833:8922#L253">QuickPickup</a>
+				<h3 id="ActionAPI.QuickPickup">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=8859:8948#L254">QuickPickup</a>
 					<a class="permalink" href="index.html#ActionAPI.QuickPickup">&#xb6;</a>
 					
 					
@@ -846,7 +945,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.QuickWarp">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=9088:9175#L261">QuickWarp</a>
+				<h3 id="ActionAPI.QuickWarp">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=9114:9201#L262">QuickWarp</a>
 					<a class="permalink" href="index.html#ActionAPI.QuickWarp">&#xb6;</a>
 					
 					
@@ -859,7 +958,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.ResumeActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=2978:3054#L87">ResumeActivity</a>
+				<h3 id="ActionAPI.ResumeActivity">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=3020:3096#L88">ResumeActivity</a>
 					<a class="permalink" href="index.html#ActionAPI.ResumeActivity">&#xb6;</a>
 					
 					
@@ -872,7 +971,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.StartRest">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=9342:9443#L269">StartRest</a>
+				<h3 id="ActionAPI.StartRest">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=9368:9469#L270">StartRest</a>
 					<a class="permalink" href="index.html#ActionAPI.StartRest">&#xb6;</a>
 					
 					
@@ -885,7 +984,7 @@ actionAPI.ProcessTurn(world)
 				
 			
 				
-				<h3 id="ActionAPI.StartWait">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=9635:9751#L278">StartWait</a>
+				<h3 id="ActionAPI.StartWait">func (*ActionAPI) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=9661:9777#L279">StartWait</a>
 					<a class="permalink" href="index.html#ActionAPI.StartWait">&#xb6;</a>
 					
 					
@@ -900,7 +999,7 @@ actionAPI.ProcessTurn(world)
 		
 			
 			
-			<h2 id="ActionParams">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=7519:7904#L219">ActionParams</a>
+			<h2 id="ActionParams">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=7545:7930#L220">ActionParams</a>
 				<a class="permalink" href="index.html#ActionParams">&#xb6;</a>
 				
 				
@@ -930,7 +1029,7 @@ actionAPI.ProcessTurn(world)
 		
 			
 			
-			<h2 id="ActionResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=7962:8168#L228">ActionResult</a>
+			<h2 id="ActionResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/action_api.go?s=7988:8194#L229">ActionResult</a>
 				<a class="permalink" href="index.html#ActionResult">&#xb6;</a>
 				
 				
@@ -1260,12 +1359,12 @@ CDDAのactivity_actorを参考にした設計
 
 			
 				
-				<h3 id="NewActivityManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=520:562#L10">NewActivityManager</a>
+				<h3 id="NewActivityManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=520:583#L10">NewActivityManager</a>
 					<a class="permalink" href="index.html#NewActivityManager">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewActivityManager() *<a href="index.html#ActivityManager">ActivityManager</a></pre>
+				<pre>func NewActivityManager(logger *<a href="../logger/index.html">logger</a>.<a href="../logger/index.html#Logger">Logger</a>) *<a href="index.html#ActivityManager">ActivityManager</a></pre>
 				<p>NewActivityManager は新しいActivityManagerを作成する
 
 				
@@ -1274,7 +1373,7 @@ CDDAのactivity_actorを参考にした設計
 
 			
 				
-				<h3 id="ActivityManager.CancelActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=3954:4044#L102">CancelActivity</a>
+				<h3 id="ActivityManager.CancelActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=3794:3884#L102">CancelActivity</a>
 					<a class="permalink" href="index.html#ActivityManager.CancelActivity">&#xb6;</a>
 					
 					
@@ -1287,7 +1386,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.GetActivitySummary">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=7023:7093#L194">GetActivitySummary</a>
+				<h3 id="ActivityManager.GetActivitySummary">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=6863:6933#L194">GetActivitySummary</a>
 					<a class="permalink" href="index.html#ActivityManager.GetActivitySummary">&#xb6;</a>
 					
 					
@@ -1300,7 +1399,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.GetCurrentActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=2591:2665#L66">GetCurrentActivity</a>
+				<h3 id="ActivityManager.GetCurrentActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=2523:2597#L66">GetCurrentActivity</a>
 					<a class="permalink" href="index.html#ActivityManager.GetCurrentActivity">&#xb6;</a>
 					
 					
@@ -1313,7 +1412,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.HasActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=2808:2870#L71">HasActivity</a>
+				<h3 id="ActivityManager.HasActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=2740:2802#L71">HasActivity</a>
 					<a class="permalink" href="index.html#ActivityManager.HasActivity">&#xb6;</a>
 					
 					
@@ -1326,7 +1425,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.InterruptActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=3063:3147#L77">InterruptActivity</a>
+				<h3 id="ActivityManager.InterruptActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=2995:3079#L77">InterruptActivity</a>
 					<a class="permalink" href="index.html#ActivityManager.InterruptActivity">&#xb6;</a>
 					
 					
@@ -1339,7 +1438,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.ProcessTurn">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=4837:4890#L129">ProcessTurn</a>
+				<h3 id="ActivityManager.ProcessTurn">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=4677:4730#L129">ProcessTurn</a>
 					<a class="permalink" href="index.html#ActivityManager.ProcessTurn">&#xb6;</a>
 					
 					
@@ -1352,7 +1451,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.ResumeActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=3420:3501#L87">ResumeActivity</a>
+				<h3 id="ActivityManager.ResumeActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=3312:3393#L87">ResumeActivity</a>
 					<a class="permalink" href="index.html#ActivityManager.ResumeActivity">&#xb6;</a>
 					
 					
@@ -1365,7 +1464,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="ActivityManager.StartActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=772:853#L18">StartActivity</a>
+				<h3 id="ActivityManager.StartActivity">func (*ActivityManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/activity_manager.go?s=766:847#L18">StartActivity</a>
 					<a class="permalink" href="index.html#ActivityManager.StartActivity">&#xb6;</a>
 					
 					
@@ -1487,7 +1586,7 @@ CDDAのactivity_idを参考にした設計
 		
 			
 			
-			<h2 id="AttackActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=210:238#L2">AttackActivity</a>
+			<h2 id="AttackActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=1195:1223#L27">AttackActivity</a>
 				<a class="permalink" href="index.html#AttackActivity">&#xb6;</a>
 				
 				
@@ -1509,7 +1608,7 @@ CDDAのactivity_idを参考にした設計
 
 			
 				
-				<h3 id="AttackActivity.Canceled">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2228:2294#L72">Canceled</a>
+				<h3 id="AttackActivity.Canceled">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=3516:3582#L115">Canceled</a>
 					<a class="permalink" href="index.html#AttackActivity.Canceled">&#xb6;</a>
 					
 					
@@ -1522,7 +1621,7 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.DoTurn">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=1306:1374#L38">DoTurn</a>
+				<h3 id="AttackActivity.DoTurn">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2648:2716#L81">DoTurn</a>
 					<a class="permalink" href="index.html#AttackActivity.DoTurn">&#xb6;</a>
 					
 					
@@ -1535,7 +1634,7 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.Finish">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=1979:2043#L63">Finish</a>
+				<h3 id="AttackActivity.Finish">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=3267:3331#L106">Finish</a>
 					<a class="permalink" href="index.html#AttackActivity.Finish">&#xb6;</a>
 					
 					
@@ -1548,7 +1647,7 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.Start">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=1067:1130#L32">Start</a>
+				<h3 id="AttackActivity.Start">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2409:2472#L75">Start</a>
 					<a class="permalink" href="index.html#AttackActivity.Start">&#xb6;</a>
 					
 					
@@ -1561,12 +1660,12 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.Validate">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=435:501#L10">Validate</a>
+				<h3 id="AttackActivity.Validate">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=1420:1490#L35">Validate</a>
 					<a class="permalink" href="index.html#AttackActivity.Validate">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (aa *<a href="index.html#AttackActivity">AttackActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<pre>func (aa *<a href="index.html#AttackActivity">AttackActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Validate は攻撃アクティビティの検証を行う
 
 				
@@ -1687,7 +1786,7 @@ CDDAのactivity_idを参考にした設計
 
 			
 				
-				<h3 id="MoveActivity.Canceled">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=2503:2567#L75">Canceled</a>
+				<h3 id="MoveActivity.Canceled">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=2315:2379#L75">Canceled</a>
 					<a class="permalink" href="index.html#MoveActivity.Canceled">&#xb6;</a>
 					
 					
@@ -1700,7 +1799,7 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="MoveActivity.DoTurn">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=1553:1619#L43">DoTurn</a>
+				<h3 id="MoveActivity.DoTurn">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=1417:1483#L43">DoTurn</a>
 					<a class="permalink" href="index.html#MoveActivity.DoTurn">&#xb6;</a>
 					
 					
@@ -1713,7 +1812,7 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="MoveActivity.Finish">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=2204:2266#L68">Finish</a>
+				<h3 id="MoveActivity.Finish">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=2016:2078#L68">Finish</a>
 					<a class="permalink" href="index.html#MoveActivity.Finish">&#xb6;</a>
 					
 					
@@ -1726,7 +1825,7 @@ CDDAのactivity_idを参考にした設計
 				
 			
 				
-				<h3 id="MoveActivity.Start">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=1309:1370#L37">Start</a>
+				<h3 id="MoveActivity.Start">func (*MoveActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/move.go?s=1173:1234#L37">Start</a>
 					<a class="permalink" href="index.html#MoveActivity.Start">&#xb6;</a>
 					
 					
