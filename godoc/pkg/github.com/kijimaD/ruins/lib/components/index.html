@@ -321,6 +321,34 @@
 				
 			
 				
+				<dd><a href="index.html#Hunger">type Hunger</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHunger">func NewHunger() *Hunger</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Hunger.Decrease">func (h *Hunger) Decrease(amount int)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Hunger.GetLevel">func (h *Hunger) GetLevel() HungerLevel</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Hunger.GetStatusPenalty">func (h *Hunger) GetStatusPenalty() int</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Hunger.Increase">func (h *Hunger) Increase(amount int)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#HungerLevel">type HungerLevel</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HungerLevel.String">func (h HungerLevel) String() string</a></dd>
+				
+			
+				
 				<dd><a href="index.html#InflictsDamage">type InflictsDamage</a></dd>
 				
 				
@@ -551,6 +579,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/enum.go">enum.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/field.go">field.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go">hunger.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go">sprite.go</a>
 			
@@ -819,7 +849,7 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8645:8881#L275">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8740:8976#L278">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -925,7 +955,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6947:7448#L230">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7042:7543#L233">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -1004,7 +1034,7 @@
 		
 			
 			
-			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5286:5342#L166">Camera</a>
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5381:5437#L169">Camera</a>
 				<a class="permalink" href="index.html#Camera">&#xb6;</a>
 				
 				
@@ -1031,7 +1061,7 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8435:8494#L269">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8530:8589#L272">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
@@ -1059,7 +1089,7 @@
 		
 			
 			
-			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8947:8988#L284">CommandTable</a>
+			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9042:9083#L287">CommandTable</a>
 				<a class="permalink" href="index.html#CommandTable">&#xb6;</a>
 				
 				
@@ -1085,7 +1115,7 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1611:3259#L53">Components</a>
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1632:3314#L54">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
@@ -1131,6 +1161,7 @@ Join時はこのフィールドでクエリする
 
     <span class="comment">// member ================</span>
 <span id="Components.Player"></span>    Player       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Hunger"></span>    Hunger       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.FactionAlly"></span>    FactionAlly  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.FactionEnemy"></span>    FactionEnemy *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.Dead"></span>    Dead         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
@@ -1159,7 +1190,7 @@ Join時はこのフィールドでクエリする
 
 			
 				
-				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3348:3417#L107">InitializeComponents</a>
+				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3403:3472#L109">InitializeComponents</a>
 					<a class="permalink" href="index.html#Components.InitializeComponents">&#xb6;</a>
 					
 					
@@ -1174,7 +1205,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5833:5912#L182">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5928:6007#L185">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -1201,7 +1232,7 @@ Join時はこのフィールドでクエリする
 		
 			
 			
-			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6669:6687#L215">Dead</a>
+			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6764:6782#L218">Dead</a>
 				<a class="permalink" href="index.html#Dead">&#xb6;</a>
 				
 				
@@ -1262,7 +1293,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5995:6042#L193">Description</a>
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6090:6137#L196">Description</a>
 				<a class="permalink" href="index.html#Description">&#xb6;</a>
 				
 				
@@ -1346,7 +1377,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9034:9072#L289">DropTable</a>
+			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9129:9167#L292">DropTable</a>
 				<a class="permalink" href="index.html#DropTable">&#xb6;</a>
 				
 				
@@ -1465,7 +1496,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8240:8270#L265">EquipmentChanged</a>
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8335:8365#L268">EquipmentChanged</a>
 				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
 				
 				
@@ -1560,7 +1591,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9506:9535#L310">FactionAllyData</a>
+			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9601:9630#L313">FactionAllyData</a>
 				<a class="permalink" href="index.html#FactionAllyData">&#xb6;</a>
 				
 				
@@ -1582,7 +1613,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
 			
 				
-				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9537:9577#L312">String</a>
+				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9632:9672#L315">String</a>
 					<a class="permalink" href="index.html#FactionAllyData.String">&#xb6;</a>
 					
 					
@@ -1596,7 +1627,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9650:9680#L317">FactionEnemyData</a>
+			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9745:9775#L320">FactionEnemyData</a>
 				<a class="permalink" href="index.html#FactionEnemyData">&#xb6;</a>
 				
 				
@@ -1618,7 +1649,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
 			
 				
-				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9682:9723#L319">String</a>
+				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9777:9818#L322">String</a>
 					<a class="permalink" href="index.html#FactionEnemyData.String">&#xb6;</a>
 					
 					
@@ -1632,7 +1663,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9231:9260#L300">FactionType</a>
+			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9326:9355#L303">FactionType</a>
 				<a class="permalink" href="index.html#FactionType">&#xb6;</a>
 				
 				
@@ -1663,7 +1694,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=369:1501#L2">GameComponentList</a>
+			<h2 id="GameComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=369:1522#L2">GameComponentList</a>
 				<a class="permalink" href="index.html#GameComponentList">&#xb6;</a>
 				
 				
@@ -1708,6 +1739,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
     <span class="comment">// member ================</span>
 <span id="GameComponentList.Player"></span>    Player      *<a href="index.html#Player">Player</a>
+<span id="GameComponentList.Hunger"></span>    Hunger      *<a href="index.html#Hunger">Hunger</a>
 <span id="GameComponentList.FactionType"></span>    FactionType *<a href="index.html#FactionType">FactionType</a>
 <span id="GameComponentList.Dead"></span>    Dead        *<a href="index.html#Dead">Dead</a>
 
@@ -1769,7 +1801,145 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7751:7793#L247">InflictsDamage</a>
+			<h2 id="Hunger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=667:739#L24">Hunger</a>
+				<a class="permalink" href="index.html#Hunger">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Hunger はプレイヤー専用の空腹度システム
+
+			<pre>type Hunger struct {
+    <a href="index.html#Pool">Pool</a> <span class="comment">// 0が満腹、値が大きいほど空腹</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHunger">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=2005:2029#L80">NewHunger</a>
+					<a class="permalink" href="index.html#NewHunger">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewHunger() *<a href="index.html#Hunger">Hunger</a></pre>
+				<p>NewHunger は新しいHungerを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="Hunger.Decrease">func (*Hunger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=1475:1512#L59">Decrease</a>
+					<a class="permalink" href="index.html#Hunger.Decrease">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#Hunger">Hunger</a>) Decrease(amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>Decrease は空腹度を減少させる（食事によって満腹になる）
+
+				
+				
+				
+			
+				
+				<h3 id="Hunger.GetLevel">func (*Hunger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=799:838#L29">GetLevel</a>
+					<a class="permalink" href="index.html#Hunger.GetLevel">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#Hunger">Hunger</a>) GetLevel() <a href="index.html#HungerLevel">HungerLevel</a></pre>
+				<p>GetLevel は現在の空腹度レベルを取得する
+
+				
+				
+				
+			
+				
+				<h3 id="Hunger.GetStatusPenalty">func (*Hunger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=1650:1689#L67">GetStatusPenalty</a>
+					<a class="permalink" href="index.html#Hunger.GetStatusPenalty">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#Hunger">Hunger</a>) GetStatusPenalty() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>GetStatusPenalty は空腹度によるペナルティを取得する
+
+				
+				
+				
+			
+				
+				<h3 id="Hunger.Increase">func (*Hunger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=1243:1280#L48">Increase</a>
+					<a class="permalink" href="index.html#Hunger.Increase">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h *<a href="index.html#Hunger">Hunger</a>) Increase(amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>Increase は空腹度を増加させる（行動によって腹が減る）
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="HungerLevel">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=66:86#L1">HungerLevel</a>
+				<a class="permalink" href="index.html#HungerLevel">&#xb6;</a>
+				
+				
+			</h2>
+			<p>HungerLevel は空腹度の段階を表す
+
+			<pre>type HungerLevel <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				
+				<pre>const (
+    <span class="comment">// HungerSatiated は満腹状態</span>
+    <span id="HungerSatiated">HungerSatiated</span> <a href="index.html#HungerLevel">HungerLevel</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
+    <span class="comment">// HungerNormal は普通状態</span>
+    <span id="HungerNormal">HungerNormal</span>
+    <span class="comment">// HungerHungry は空腹状態</span>
+    <span id="HungerHungry">HungerHungry</span>
+    <span class="comment">// HungerStarving は飢餓状態</span>
+    <span id="HungerStarving">HungerStarving</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="HungerLevel.String">func (HungerLevel) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go?s=366:402#L8">String</a>
+					<a class="permalink" href="index.html#HungerLevel.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (h <a href="index.html#HungerLevel">HungerLevel</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はHungerLevelの文字列表現を返す
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7846:7888#L250">InflictsDamage</a>
 				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
 				
 				
@@ -1796,7 +1966,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5756:5774#L179">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5851:5869#L182">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -1821,7 +1991,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9797:9831#L324">ItemLocationType</a>
+			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9892:9926#L327">ItemLocationType</a>
 				<a class="permalink" href="index.html#ItemLocationType">&#xb6;</a>
 				
 				
@@ -1856,7 +2026,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Job">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6067:6098#L198">Job</a>
+			<h2 id="Job">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6162:6193#L201">Job</a>
 				<a class="permalink" href="index.html#Job">&#xb6;</a>
 				
 				
@@ -1882,7 +2052,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10502:10595#L345">LocationEquipped</a>
+			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10597:10690#L348">LocationEquipped</a>
 				<a class="permalink" href="index.html#LocationEquipped">&#xb6;</a>
 				
 				
@@ -1907,7 +2077,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
 			
 				
-				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10597:10638#L350">String</a>
+				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10692:10733#L353">String</a>
 					<a class="permalink" href="index.html#LocationEquipped.String">&#xb6;</a>
 					
 					
@@ -1921,7 +2091,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10347:10379#L338">LocationInBackpack</a>
+			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10442:10474#L341">LocationInBackpack</a>
 				<a class="permalink" href="index.html#LocationInBackpack">&#xb6;</a>
 				
 				
@@ -1943,7 +2113,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
 			
 				
-				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10381:10424#L340">String</a>
+				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10476:10519#L343">String</a>
 					<a class="permalink" href="index.html#LocationInBackpack.String">&#xb6;</a>
 					
 					
@@ -1957,7 +2127,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="LocationNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10861:10887#L362">LocationNone</a>
+			<h2 id="LocationNone">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10956:10982#L365">LocationNone</a>
 				<a class="permalink" href="index.html#LocationNone">&#xb6;</a>
 				
 				
@@ -1979,7 +2149,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
 			
 				
-				<h3 id="LocationNone.String">func (LocationNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10889:10926#L364">String</a>
+				<h3 id="LocationNone.String">func (LocationNone) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10984:11021#L367">String</a>
 					<a class="permalink" href="index.html#LocationNone.String">&#xb6;</a>
 					
 					
@@ -1993,7 +2163,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10722:10751#L355">LocationOnField</a>
+			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10817:10846#L358">LocationOnField</a>
 				<a class="permalink" href="index.html#LocationOnField">&#xb6;</a>
 				
 				
@@ -2015,7 +2185,7 @@ HP が 0 になったとき付与され、復活時に除去される
 
 			
 				
-				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10753:10793#L357">String</a>
+				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10848:10888#L360">String</a>
 					<a class="permalink" href="index.html#LocationOnField.String">&#xb6;</a>
 					
 					
@@ -2029,7 +2199,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8028:8064#L255">Material</a>
+			<h2 id="Material">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8123:8159#L258">Material</a>
 				<a class="permalink" href="index.html#Material">&#xb6;</a>
 				
 				
@@ -2058,7 +2228,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5935:5968#L188">Name</a>
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6030:6063#L191">Name</a>
 				<a class="permalink" href="index.html#Name">&#xb6;</a>
 				
 				
@@ -2136,7 +2306,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Operator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5239:5261#L163">Operator</a>
+			<h2 id="Operator">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5334:5356#L166">Operator</a>
 				<a class="permalink" href="index.html#Operator">&#xb6;</a>
 				
 				
@@ -2183,7 +2353,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6432:6452#L210">Player</a>
+			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6527:6547#L213">Player</a>
 				<a class="permalink" href="index.html#Player">&#xb6;</a>
 				
 				
@@ -2234,7 +2404,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6738:6855#L218">Pools</a>
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6833:6950#L221">Pools</a>
 				<a class="permalink" href="index.html#Pools">&#xb6;</a>
 				
 				
@@ -2300,7 +2470,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7570:7618#L241">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7665:7713#L244">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -2379,7 +2549,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8104:8148#L260">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8199:8243#L263">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -2456,7 +2626,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9113:9177#L294">SheetImage</a>
+			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9208:9272#L297">SheetImage</a>
 				<a class="permalink" href="index.html#SheetImage">&#xb6;</a>
 				
 				
@@ -2808,7 +2978,7 @@ HP が 0 になったとき付与され、復活時に除去される
 		
 			
 			
-			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5483:5518#L173">Warp</a>
+			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5578:5613#L176">Warp</a>
 				<a class="permalink" href="index.html#Warp">&#xb6;</a>
 				
 				
@@ -2835,7 +3005,7 @@ TODO: 接触をトリガーに何かさせたいことはよくあるので、�
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6200:6389#L203">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6295:6484#L206">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
