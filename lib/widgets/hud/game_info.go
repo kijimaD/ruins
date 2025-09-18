@@ -40,7 +40,7 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 	info.drawStaminaBar(screen, data.PlayerSP, data.PlayerMaxSP)
 
 	// 空腹度情報をSPの下に描画
-	info.drawHungerBar(screen, data.PlayerHunger, data.HungerLevel)
+	info.drawHungerBar(screen, data.HungerLevel)
 
 	// フロア情報を描画
 	info.drawWhiteText(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), 0, 200)
@@ -163,7 +163,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 }
 
 // drawHungerBar はプレイヤーの空腹度を描画する
-func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerValue int, hungerLevel string) {
+func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 	// 空腹度表示の設定
 	const (
 		baseX = 10.0 // 左マージン
