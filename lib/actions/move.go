@@ -103,6 +103,7 @@ func (ma *MoveActivity) performMove(act *Activity, world w.World) error {
 	grid.X = gc.Tile(act.Position.X)
 	grid.Y = gc.Tile(act.Position.Y)
 
+	// TODO: 移動だけでなく、ターンを消費するすべての操作で空腹度を上げる必要がする気もする
 	ma.increasePlayerHunger(act.Actor, world)
 
 	act.Logger.Debug("移動完了",
