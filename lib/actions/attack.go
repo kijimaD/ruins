@@ -3,7 +3,7 @@ package actions
 import (
 	"fmt"
 	"math"
-	"math/rand"
+	"math/rand/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
