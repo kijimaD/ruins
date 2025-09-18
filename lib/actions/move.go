@@ -20,24 +20,24 @@ func init() {
 func (ma *MoveActivity) Validate(act *Activity, world w.World) error {
 	// 移動先の確認
 	if act.Position == nil {
-		return fmt.Errorf("移動先が設定されていません")
+		return ErrMoveTargetNotSet
 	}
 
 	// 目的地が有効な座標範囲内かチェック
 	destX, destY := int(act.Position.X), int(act.Position.Y)
 	if destX < 0 || destY < 0 {
-		return fmt.Errorf("移動先の座標が無効です")
+		return ErrMoveTargetCoordInvalid
 	}
 
 	// GridElementコンポーネントの存在チェック
 	gridElement := world.Components.GridElement.Get(act.Actor)
 	if gridElement == nil {
-		return fmt.Errorf("移動するエンティティにGridElementが見つかりません")
+		return ErrMoveNoGridElement
 	}
 
 	// 移動可能性をチェック
 	if !movement.CanMoveTo(world, int(act.Position.X), int(act.Position.Y), act.Actor) {
-		return fmt.Errorf("移動先が無効です")
+		return ErrMoveTargetInvalid
 	}
 
 	return nil
@@ -54,13 +54,13 @@ func (ma *MoveActivity) DoTurn(act *Activity, world w.World) error {
 	// 移動先の確認
 	if act.Position == nil {
 		act.Cancel("移動先が設定されていません")
-		return fmt.Errorf("移動先が設定されていません")
+		return ErrMoveTargetNotSet
 	}
 
 	// 移動可能性をチェック
 	if !ma.canMove(act, world) {
 		act.Cancel("移動できません")
-		return fmt.Errorf("移動先が無効です")
+		return ErrMoveTargetInvalid
 	}
 
 	// 移動実行
@@ -92,7 +92,7 @@ func (ma *MoveActivity) performMove(act *Activity, world w.World) error {
 	// GridElementを取得
 	gridElement := world.Components.GridElement.Get(act.Actor)
 	if gridElement == nil {
-		return fmt.Errorf("GridElementコンポーネントが見つかりません")
+		return ErrGridElementNotFound
 	}
 
 	grid := gridElement.(*gc.GridElement)

@@ -45,37 +45,37 @@ func init() {
 func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 	// 攻撃対象の確認
 	if act.Target == nil {
-		return fmt.Errorf("攻撃対象が設定されていません")
+		return ErrAttackTargetNotSet
 	}
 
 	// 攻撃対象が有効なエンティティか
 	if *act.Target == 0 {
-		return fmt.Errorf("攻撃対象が無効です")
+		return ErrAttackTargetInvalid
 	}
 
 	// 攻撃者の生存確認
 	if world.Components.Dead.Get(act.Actor) != nil {
-		return fmt.Errorf("攻撃者が死亡しています")
+		return ErrAttackerDead
 	}
 
 	// ターゲットの存在確認（GridElementの存在で判定）
 	if world.Components.GridElement.Get(*act.Target) == nil {
-		return fmt.Errorf("攻撃対象が存在しません")
+		return ErrAttackTargetNotExists
 	}
 
 	// ターゲットの生存確認
 	if world.Components.Dead.Get(*act.Target) != nil {
-		return fmt.Errorf("攻撃対象が既に死亡しています")
+		return ErrAttackTargetDead
 	}
 
 	// 射程チェック
 	if !aa.isInRange(act.Actor, *act.Target, world) {
-		return fmt.Errorf("攻撃対象が射程外です")
+		return ErrAttackOutOfRange
 	}
 
 	// 攻撃者の装備チェック（武器または素手攻撃可能か）
 	if !aa.canPerformAttack(act.Actor, world) {
-		return fmt.Errorf("攻撃手段がありません")
+		return ErrAttackNoWeapon
 	}
 
 	return nil
@@ -92,13 +92,13 @@ func (aa *AttackActivity) DoTurn(act *Activity, world w.World) error {
 	// 攻撃対象チェック
 	if act.Target == nil {
 		act.Cancel("攻撃対象が設定されていません")
-		return fmt.Errorf("攻撃対象が設定されていません")
+		return ErrAttackTargetNotSet
 	}
 
 	// 攻撃可能性を再チェック
 	if !aa.canAttack(act, world) {
 		act.Cancel("攻撃できません")
-		return fmt.Errorf("攻撃対象が無効です")
+		return ErrAttackTargetInvalid
 	}
 
 	// 攻撃実行
@@ -288,7 +288,7 @@ func (aa *AttackActivity) applyDamage(target ecs.Entity, damage int, world w.Wor
 	// ターゲットのPoolsコンポーネントを取得
 	pools := world.Components.Pools.Get(target)
 	if pools == nil {
-		return fmt.Errorf("ターゲットにPoolsコンポーネントがありません")
+		return ErrTargetNoPoolsComponent
 	}
 
 	targetPools := pools.(*gc.Pools)

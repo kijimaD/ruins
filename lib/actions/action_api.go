@@ -222,7 +222,7 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 		return activity, nil
 
 	default:
-		return nil, fmt.Errorf("未対応のアクティビティタイプ: %v", activityType)
+		return nil, fmt.Errorf("%w: %v", ErrUnsupportedActivity, activityType)
 	}
 }
 
