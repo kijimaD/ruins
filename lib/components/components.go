@@ -45,6 +45,7 @@ type GameComponentList struct {
 
 	// member ================
 	Player      *Player
+	Hunger      *Hunger
 	FactionType *FactionType
 	Dead        *Dead
 
@@ -98,6 +99,7 @@ type Components struct {
 
 	// member ================
 	Player       *ecs.NullComponent
+	Hunger       *ecs.SliceComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
 	Dead         *ecs.NullComponent
@@ -152,6 +154,7 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 
 	// member
 	c.Player = manager.NewNullComponent()
+	c.Hunger = manager.NewSliceComponent()
 	c.FactionAlly = manager.NewNullComponent()
 	c.FactionEnemy = manager.NewNullComponent()
 	c.Dead = manager.NewNullComponent()

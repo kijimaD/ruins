@@ -6,6 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/movement"
 	w "github.com/kijimaD/ruins/lib/world"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // MoveActivity は移動アクティビティの実装
@@ -102,12 +103,27 @@ func (ma *MoveActivity) performMove(act *Activity, world w.World) error {
 	grid.X = gc.Tile(act.Position.X)
 	grid.Y = gc.Tile(act.Position.Y)
 
+	ma.increasePlayerHunger(act.Actor, world)
+
 	act.Logger.Debug("移動完了",
 		"actor", act.Actor,
 		"from", fmt.Sprintf("(%d,%d)", oldX, oldY),
 		"to", fmt.Sprintf("(%.1f,%.1f)", act.Position.X, act.Position.Y))
 
 	return nil
+}
+
+// increasePlayerHunger はプレイヤーの場合は空腹度を増加させる
+func (ma *MoveActivity) increasePlayerHunger(entity ecs.Entity, world w.World) {
+	// プレイヤーエンティティのみが対象
+	if !entity.HasComponent(world.Components.Player) {
+		return
+	}
+
+	if hungerComponent := world.Components.Hunger.Get(entity); hungerComponent != nil {
+		hunger := hungerComponent.(*gc.Hunger)
+		hunger.Increase(1) // 移動1回につき空腹度+1
+	}
 }
 
 // canMove は移動可能かをチェックする

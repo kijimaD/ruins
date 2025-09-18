@@ -54,14 +54,30 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 		}
 	}))
 
+	// プレイヤーの空腹度情報を抽出
+	var playerHunger int
+	hungerLevel := "Normal" // デフォルト値
+	world.Manager.Join(
+		world.Components.Player,
+		world.Components.Hunger,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if hungerComponent := world.Components.Hunger.Get(entity); hungerComponent != nil {
+			hunger := hungerComponent.(*gc.Hunger)
+			playerHunger = hunger.Value
+			hungerLevel = hunger.GetLevel().String()
+		}
+	}))
+
 	return hud.GameInfoData{
-		FloorNumber: floorNumber,
-		TurnNumber:  turnNumber,
-		PlayerMoves: playerMoves,
-		PlayerHP:    playerHP,
-		PlayerMaxHP: playerMaxHP,
-		PlayerSP:    playerSP,
-		PlayerMaxSP: playerMaxSP,
+		FloorNumber:  floorNumber,
+		TurnNumber:   turnNumber,
+		PlayerMoves:  playerMoves,
+		PlayerHP:     playerHP,
+		PlayerMaxHP:  playerMaxHP,
+		PlayerSP:     playerSP,
+		PlayerMaxSP:  playerMaxSP,
+		PlayerHunger: playerHunger,
+		HungerLevel:  hungerLevel,
 	}
 }
 
