@@ -17,17 +17,17 @@ type ActivityManager struct {
 }
 
 // NewActivityManager は新しいActivityManagerを作成する
-func NewActivityManager() *ActivityManager {
+func NewActivityManager(logger *logger.Logger) *ActivityManager {
 	return &ActivityManager{
 		currentActivities: make(map[ecs.Entity]*Activity),
-		logger:            logger.New(logger.CategoryAction),
+		logger:            logger,
 	}
 }
 
 // StartActivity は新しいアクティビティを開始する
 func (am *ActivityManager) StartActivity(activity *Activity, world w.World) error {
 	if activity == nil {
-		return fmt.Errorf("アクティビティがnilです")
+		return ErrActivityNil
 	}
 
 	// 既存のアクティビティがある場合は中断
@@ -40,7 +40,7 @@ func (am *ActivityManager) StartActivity(activity *Activity, world w.World) erro
 	// アクティビティアクターを取得
 	activityActor := GetActivityActor(activity.Type)
 	if activityActor == nil {
-		return fmt.Errorf("アクティビティアクターが見つかりません: %s", activity.Type.String())
+		return fmt.Errorf("%w: %s", ErrActivityActorNotFound, activity.Type.String())
 	}
 
 	// アクティビティアクターでの検証
@@ -87,7 +87,7 @@ func (am *ActivityManager) HasActivity(entity ecs.Entity) bool {
 func (am *ActivityManager) InterruptActivity(entity ecs.Entity, reason string) error {
 	activity := am.GetCurrentActivity(entity)
 	if activity == nil {
-		return fmt.Errorf("アクティビティが見つかりません")
+		return ErrActivityNotFound
 	}
 
 	return activity.Interrupt(reason)
@@ -97,7 +97,7 @@ func (am *ActivityManager) InterruptActivity(entity ecs.Entity, reason string) e
 func (am *ActivityManager) ResumeActivity(entity ecs.Entity, world w.World) error {
 	activity := am.GetCurrentActivity(entity)
 	if activity == nil {
-		return fmt.Errorf("再開するアクティビティが見つかりません")
+		return ErrActivityNotFound
 	}
 
 	// 再開条件をチェック
@@ -227,11 +227,11 @@ func (am *ActivityManager) GetActivitySummary() map[string]interface{} {
 func (am *ActivityManager) validateBasicRequirements(activity *Activity) error {
 	// 基本的なnilチェックのみ実行
 	if activity == nil {
-		return fmt.Errorf("アクティビティがnilです")
+		return ErrActivityNil
 	}
 
 	if activity.Actor == 0 {
-		return fmt.Errorf("アクターが設定されていません")
+		return ErrActorNotSet
 	}
 
 	return nil

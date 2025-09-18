@@ -91,8 +91,8 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builder
 
 	// ポータルは既にvalidateMapWithPortals内で配置済み
 	// フィールドに操作対象キャラを配置する（事前に見つけた位置を使用）
-	if err := worldhelper.SpawnOperator(world, playerX, playerY); err != nil {
-		return resources.Level{}, fmt.Errorf("プレイヤー生成エラー: %w", err)
+	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {
+		return resources.Level{}, fmt.Errorf("プレイヤー移動エラー: %w", err)
 	}
 
 	// フィールドにNPCを生成する
@@ -122,7 +122,7 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builder
 				// 壁タイプを判定してスプライト番号を決定
 				wallType := chain.BuildData.GetWallType(i)
 				spriteNumber := getSpriteNumberForWallType(wallType)
-				entity, err := worldhelper.SpawnFieldWallWithSprite(world, gc.Tile(x), gc.Tile(y), spriteNumber)
+				entity, err := worldhelper.SpawnWall(world, gc.Tile(x), gc.Tile(y), spriteNumber)
 				if err != nil {
 					return resources.Level{}, fmt.Errorf("壁の生成に失敗 (x=%d, y=%d): %w", int(x), int(y), err)
 				}
@@ -162,10 +162,11 @@ func spawnNPCs(world w.World, chain *BuilderChain) error {
 			failCount++
 			continue
 		}
-		if err := worldhelper.SpawnNPC(
+		if _, err := worldhelper.SpawnEnemy(
 			world,
-			tx,
-			ty,
+			int(tx),
+			int(ty),
+			"火の玉", // TODO: テーブルで選ぶ
 		); err != nil {
 			log.Printf("NPC生成に失敗: %v", err)
 			failCount++

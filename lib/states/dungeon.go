@@ -83,12 +83,18 @@ func (st *DungeonState) OnStop(world w.World) {
 	world.Manager.Join(
 		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		world.Manager.DeleteEntity(entity)
+		// プレイヤーエンティティは次のフロアでも必要なので削除しない
+		if !entity.HasComponent(world.Components.Player) {
+			world.Manager.DeleteEntity(entity)
+		}
 	}))
 	world.Manager.Join(
 		world.Components.GridElement,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		world.Manager.DeleteEntity(entity)
+		// プレイヤーエンティティは次のフロアでも必要なので削除しない
+		if !entity.HasComponent(world.Components.Player) {
+			world.Manager.DeleteEntity(entity)
+		}
 	}))
 
 	// reset

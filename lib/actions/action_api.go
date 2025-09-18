@@ -18,9 +18,10 @@ type ActionAPI struct {
 
 // NewActionAPI は新しいActionAPIを作成する
 func NewActionAPI() *ActionAPI {
+	actionLogger := logger.New(logger.CategoryAction)
 	return &ActionAPI{
-		manager: NewActivityManager(),
-		logger:  logger.New(logger.CategoryAction),
+		manager: NewActivityManager(actionLogger),
+		logger:  actionLogger,
 	}
 }
 
@@ -221,7 +222,7 @@ func (api *ActionAPI) createActivity(activityType ActivityType, params ActionPar
 		return activity, nil
 
 	default:
-		return nil, fmt.Errorf("未対応のアクティビティタイプ: %v", activityType)
+		return nil, fmt.Errorf("%w: %v", ErrUnsupportedActivity, activityType)
 	}
 }
 

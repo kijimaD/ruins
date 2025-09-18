@@ -351,6 +351,7 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 	if member.Job != "" {
 		cl.Job = &gc.Job{Job: member.Job}
 	}
+	cl.TurnBased = &gc.TurnBased{AP: gc.Pool{Current: 100, Max: 100}} // TODO: Attributesから計算する
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
 		Strength:  gc.Attribute{Base: member.Attributes.Strength},
@@ -390,6 +391,7 @@ func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error) {
 	}
 	cl.FactionType = &gc.FactionAlly
 	cl.Player = &gc.Player{}
+	cl.Operator = &gc.Operator{}
 	return cl, nil
 }
 

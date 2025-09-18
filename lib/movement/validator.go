@@ -22,6 +22,8 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 
 	// 他のエンティティとの衝突チェック
 	canMove := true
+
+	// 壁やブロックとの衝突チェック
 	world.Manager.Join(
 		world.Components.GridElement,
 		world.Components.BlockPass,
@@ -31,11 +33,52 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 			return
 		}
 
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		// 死亡しているエンティティは除外
+		if entity.HasComponent(world.Components.Dead) {
+			return
+		}
+
+		gridElementComponent := world.Components.GridElement.Get(entity)
+		if gridElementComponent == nil {
+			return
+		}
+		gridElement := gridElementComponent.(*gc.GridElement)
 		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
 			canMove = false
 		}
 	}))
+
+	// キャラクター同士の衝突チェック（プレイヤー、敵）
+	if canMove {
+		world.Manager.Join(
+			world.Components.GridElement,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			// 自分自身は除外
+			if entity == movingEntity {
+				return
+			}
+
+			// 死亡しているエンティティは除外
+			if entity.HasComponent(world.Components.Dead) {
+				return
+			}
+
+			// キャラクターエンティティのみチェック（プレイヤーまたは敵AI）
+			isCharacter := entity.HasComponent(world.Components.Player) || entity.HasComponent(world.Components.AIMoveFSM)
+			if !isCharacter {
+				return
+			}
+
+			gridElementComponent := world.Components.GridElement.Get(entity)
+			if gridElementComponent == nil {
+				return
+			}
+			gridElement := gridElementComponent.(*gc.GridElement)
+			if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
+				canMove = false
+			}
+		}))
+	}
 
 	return canMove
 }

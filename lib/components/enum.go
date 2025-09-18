@@ -1,9 +1,8 @@
 package components
 
 import (
+	"errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 // ErrInvalidEnumType はenumに無効な値が指定された場合のエラー

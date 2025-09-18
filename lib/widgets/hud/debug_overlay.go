@@ -1,6 +1,7 @@
 package hud
 
 import (
+	"fmt"
 	"image/color"
 	"math"
 
@@ -41,6 +42,13 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	// 視界範囲を描画
 	for _, visionRange := range data.VisionRanges {
 		overlay.drawVisionCircle(screen, float32(visionRange.ScreenX), float32(visionRange.ScreenY), visionRange.ScaledRadius)
+	}
+
+	// HP情報を描画
+	for _, hpDisplay := range data.HPDisplays {
+		hpText := fmt.Sprintf("%d/%d", hpDisplay.CurrentHP, hpDisplay.MaxHP)
+		textOffsetY := 15.0 // AI状態テキスト（30.0）より上に表示して重複を避ける
+		ebitenutil.DebugPrintAt(screen, hpText, int(hpDisplay.ScreenX)-15, int(hpDisplay.ScreenY-textOffsetY))
 	}
 }
 
