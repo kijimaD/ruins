@@ -343,7 +343,7 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 		Build(func(l *gamelog.Logger) {
 			aa.appendNameWithColor(l, attacker, attackerName, world)
 		}).
-		Append(" が ").
+		Append(" は ").
 		Build(func(l *gamelog.Logger) {
 			aa.appendNameWithColor(l, target, targetName, world)
 		}).
