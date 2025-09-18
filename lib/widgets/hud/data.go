@@ -13,6 +13,10 @@ type GameInfoData struct {
 	FloorNumber int // フロア番号
 	TurnNumber  int // ターン番号
 	PlayerMoves int // プレイヤーの残り移動ポイント
+	PlayerHP    int // プレイヤーの現在HP
+	PlayerMaxHP int // プレイヤーの最大HP
+	PlayerSP    int // プレイヤーの現在SP
+	PlayerMaxSP int // プレイヤーの最大SP
 }
 
 // MinimapData はミニマップ描画に必要なデータ

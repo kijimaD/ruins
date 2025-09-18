@@ -39,10 +39,29 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 		}
 	}
 
+	// プレイヤーのHP・SP情報を抽出
+	var playerHP, playerMaxHP, playerSP, playerMaxSP int
+	world.Manager.Join(
+		world.Components.Player,
+		world.Components.Pools,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if poolsComponent := world.Components.Pools.Get(entity); poolsComponent != nil {
+			pools := poolsComponent.(*gc.Pools)
+			playerHP = pools.HP.Current
+			playerMaxHP = pools.HP.Max
+			playerSP = pools.SP.Current
+			playerMaxSP = pools.SP.Max
+		}
+	}))
+
 	return hud.GameInfoData{
 		FloorNumber: floorNumber,
 		TurnNumber:  turnNumber,
 		PlayerMoves: playerMoves,
+		PlayerHP:    playerHP,
+		PlayerMaxHP: playerMaxHP,
+		PlayerSP:    playerSP,
+		PlayerMaxSP: playerMaxSP,
 	}
 }
 
