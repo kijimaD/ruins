@@ -367,11 +367,6 @@ func (aa *AttackActivity) getEntityName(entity ecs.Entity, world w.World) string
 		return name.(*gc.Name).Name
 	}
 
-	// Nameコンポーネントがない場合のフォールバック
-	if entity.HasComponent(world.Components.Player) {
-		return "プレイヤー"
-	}
-
 	return "Unknown"
 }
 
