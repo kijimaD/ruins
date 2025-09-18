@@ -63,7 +63,7 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if hungerComponent := world.Components.Hunger.Get(entity); hungerComponent != nil {
 			hunger := hungerComponent.(*gc.Hunger)
-			playerHunger = hunger.Value
+			playerHunger = hunger.Current
 			hungerLevel = hunger.GetLevel().String()
 		}
 	}))
