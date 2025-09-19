@@ -43,10 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # タグ情報を取得するために全履歴を取得
       - name: build
-        run: |
-          git fetch --prune --unshallow
-          make build
+        run: make build
 
   test:
     needs: setup

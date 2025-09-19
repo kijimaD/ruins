@@ -9,14 +9,12 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Check out
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0  # タグ情報を取得するために全履歴を取得
 
       - name: Build
-        run: |
-          ./scripts/build.sh
+        run: ./scripts/build.sh
 
       - name: Set up Go
         uses: actions/setup-go@v6

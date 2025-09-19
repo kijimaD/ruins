@@ -41,10 +41,12 @@ cmd() {
 
     docker run \
            --rm \
+           -u "$(id -u):$(id -g)" \
            -w /work \
            -v $PWD:/work \
            -v $HOME/go/pkg/mod:/go/pkg/mod \
-           -v $HOME/.cache/go-build:/root/.cache/go-build \
+           -v $HOME/.cache/go-build:/tmp/go-build \
+           --env GOCACHE=/tmp/go-build \
            --env GOOS=$goos \
            --env GOARCH=$goarch \
            --env CGO_ENABLED=$cgo \
@@ -53,6 +55,10 @@ cmd() {
 }
 
 start() {
+    # Docker内でコンパイルするのでホストマシンにGo処理系は必要ではないのだが、キャッシュディレクトリをマウントするので先に存在する必要がある
+    mkdir -p $HOME/go/pkg/mod
+    mkdir -p $HOME/.cache/go-build
+
     docker build . --target $BUILD_STAGE_TARGET -t $BUILDER_IMAGE_NAME
 
     cmd "bin/${APP_NAME}_linux_amd64" linux amd64 1
