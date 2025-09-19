@@ -166,14 +166,18 @@ func (pa *PickupActivity) collectFieldItem(act *Activity, world w.World, itemEnt
 		return fmt.Errorf("インベントリ統合エラー: %w", err)
 	}
 
-	// プレイヤーの場合のみ色付きログを表示
-	if isPlayerActivity(act, world) {
-		gamelog.New(gamelog.FieldLog).
-			Append("プレイヤーが ").
-			ItemName(itemName).
-			Append(" を入手した。").
-			Log()
+	// エンティティの名前を取得
+	entityName := "Unknown"
+	if nameComp := world.Components.Name.Get(act.Actor); nameComp != nil {
+		name := nameComp.(*gc.Name)
+		entityName = name.Name
 	}
+
+	gamelog.New(gamelog.FieldLog).
+		Append(entityName + "が ").
+		ItemName(itemName).
+		Append(" を入手した。").
+		Log()
 
 	return nil
 }

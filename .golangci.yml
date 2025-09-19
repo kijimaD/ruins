@@ -26,8 +26,6 @@ linters:
       rules:
         deprecated_packages:
           list-mode: lax
-          files:
-            - "!**/*_a _file.go"
           deny:
             - pkg: "math/rand$"
               desc: math/rand/v2 を使う
