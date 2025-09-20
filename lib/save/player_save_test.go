@@ -36,10 +36,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 		Agility:   gc.Attribute{Base: 13},
 		Defense:   gc.Attribute{Base: 8},
 	})
-	player.AddComponent(world.Components.Pools, &gc.Pools{
-		Level: 5,
-		XP:    1200,
-	})
+	player.AddComponent(world.Components.Pools, &gc.Pools{})
 	player.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
 	player.AddComponent(world.Components.Player, &gc.Player{})
 
@@ -89,8 +86,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	assert.Equal(t, "主人公", playerName.Name)
 
 	playerPools := newWorld.Components.Pools.Get(playerEntity).(*gc.Pools)
-	assert.Equal(t, 5, playerPools.Level)
-	assert.Equal(t, 1200, playerPools.XP)
+	assert.NotNil(t, playerPools)
 
 	playerAttrs := newWorld.Components.Attributes.Get(playerEntity).(*gc.Attributes)
 	assert.Equal(t, 10, playerAttrs.Vitality.Base)

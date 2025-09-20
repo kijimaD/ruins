@@ -118,22 +118,13 @@ func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity
 
 	attrs := attributesComponent.(*gc.Attributes)
 
-	// レベル情報を取得（オプション）
-	level := 1
-	poolsComponent := world.Components.Pools.Get(entity)
-	if poolsComponent != nil {
-		pools := poolsComponent.(*gc.Pools)
-		level = pools.Level
-	}
-
 	// AP計算式: 基本値 + 敏捷性の重要度を高くした式
-	// 敏捷性 * 3 + 器用性 * 1 + レベルボーナス
+	// 敏捷性 * 3 + 器用性 * 1
 	baseAP := 80
 	agilityMultiplier := 3
 	dexterityMultiplier := 1
-	levelBonus := (level - 1) * 2 // レベル毎に+2AP
 
-	calculatedAP := baseAP + attrs.Agility.Total*agilityMultiplier + attrs.Dexterity.Total*dexterityMultiplier + levelBonus
+	calculatedAP := baseAP + attrs.Agility.Total*agilityMultiplier + attrs.Dexterity.Total*dexterityMultiplier
 
 	// 最小値制限（20以上）
 	if calculatedAP < 20 {

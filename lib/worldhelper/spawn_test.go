@@ -19,34 +19,31 @@ func TestSetMaxHPSP(t *testing.T) {
 		sensation   int
 		dexterity   int
 		agility     int
-		level       int
 		expectedHP  int
 		expectedSP  int
 		description string
 	}{
 		{
-			name:        "レベル1基本ステータス",
+			name:        "基本ステータス",
 			vitality:    10,
 			strength:    8,
 			sensation:   7,
 			dexterity:   6,
 			agility:     9,
-			level:       1,
-			expectedHP:  int(30 + float64(10*8+8+7)*1.0), // 30 + 95 = 125
-			expectedSP:  int(float64(10*2+6+9) * 1.0),    // 35
-			description: "レベル1での基本的なHP/SP計算",
+			expectedHP:  30 + 10*8 + 8 + 7, // 30 + 95 = 125
+			expectedSP:  10*2 + 6 + 9,      // 35
+			description: "基本的なHP/SP計算",
 		},
 		{
-			name:        "レベル5でのステータス",
+			name:        "中ステータス",
 			vitality:    15,
 			strength:    12,
 			sensation:   10,
 			dexterity:   8,
 			agility:     11,
-			level:       5,
-			expectedHP:  189, // 30 + 142 * 1.12 = 189.04 → 189
-			expectedSP:  52,  // 49 * 1.08 = 52.92 → 52
-			description: "レベル5でのHP/SP計算",
+			expectedHP:  30 + 15*8 + 12 + 10, // 30 + 142 = 172
+			expectedSP:  15*2 + 8 + 11,       // 49
+			description: "中ステータスでのHP/SP計算",
 		},
 		{
 			name:        "高ステータス",
@@ -55,9 +52,8 @@ func TestSetMaxHPSP(t *testing.T) {
 			sensation:   15,
 			dexterity:   14,
 			agility:     16,
-			level:       1,
-			expectedHP:  int(30 + float64(20*8+18+15)*1.0), // 30 + 193 = 223
-			expectedSP:  int(float64(20*2+14+16) * 1.0),    // 70
+			expectedHP:  30 + 20*8 + 18 + 15, // 30 + 193 = 223
+			expectedSP:  20*2 + 14 + 16,      // 70
 			description: "高ステータスでのHP/SP計算",
 		},
 	}
@@ -84,9 +80,8 @@ func TestSetMaxHPSP(t *testing.T) {
 
 			// Poolsコンポーネントを追加
 			entity.AddComponent(world.Components.Pools, &gc.Pools{
-				Level: tt.level,
-				HP:    gc.Pool{Current: 0, Max: 0},
-				SP:    gc.Pool{Current: 0, Max: 0},
+				HP: gc.Pool{Current: 0, Max: 0},
+				SP: gc.Pool{Current: 0, Max: 0},
 			})
 
 			// 関数を実行
@@ -149,9 +144,8 @@ func TestFullRecover(t *testing.T) {
 		Defense:   gc.Attribute{Base: 5, Total: 0},
 	})
 	entity.AddComponent(world.Components.Pools, &gc.Pools{
-		Level: 1,
-		HP:    gc.Pool{Current: 0, Max: 0},
-		SP:    gc.Pool{Current: 0, Max: 0},
+		HP: gc.Pool{Current: 0, Max: 0},
+		SP: gc.Pool{Current: 0, Max: 0},
 	})
 
 	// fullRecoverを実行

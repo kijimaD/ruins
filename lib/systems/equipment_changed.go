@@ -84,12 +84,12 @@ func EquipmentChangedSystem(world w.World) bool {
 	return true
 }
 
-// 30+(体力*8+力+感覚)*{1+(Lv-1)*0.03}
+// 30+(体力*8+力+感覚)
 func maxHP(attrs *gc.Attributes, pools *gc.Pools) int {
-	return int(30 + float64(attrs.Vitality.Total*8+attrs.Strength.Total+attrs.Sensation.Total)*(1+float64(pools.Level-1)*0.03))
+	return 30 + attrs.Vitality.Total*8 + attrs.Strength.Total + attrs.Sensation.Total
 }
 
-// 体力*2+力+器用さ+素早さ+精神*3)*{1+(Lv-1)*0.02
+// 体力*2+器用さ+素早さ
 func maxSP(attrs *gc.Attributes, pools *gc.Pools) int {
-	return int(float64(attrs.Vitality.Total*2+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*0.02))
+	return attrs.Vitality.Total*2 + attrs.Dexterity.Total + attrs.Agility.Total
 }

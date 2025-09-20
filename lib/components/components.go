@@ -238,10 +238,6 @@ type Pools struct {
 	// 電力 Electricity point
 	// 機能のトグルで消費量が変わる
 	EP Pool
-	// 経験値 eXperience point
-	XP int
-	// レベル
-	Level int
 }
 
 // Attributes はエンティティが持つステータス値。各種計算式で使う
