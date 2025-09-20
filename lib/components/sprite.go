@@ -74,6 +74,6 @@ const (
 	DepthNumRug
 	// DepthNumTaller は高さのあるもの。例: 操作対象エンティティ、敵シンボル、壁
 	DepthNumTaller
-	// DepthNumOperator は操作キャラを最も手前に表示する
-	DepthNumOperator
+	// DepthNumPlayer は操作キャラを最も手前に表示する
+	DepthNumPlayer
 )

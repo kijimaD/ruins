@@ -143,7 +143,7 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 	gcl.SpriteRender = &gc.SpriteRender{
 		Name:         "field",
 		SpriteNumber: spriteNumberPlayer,
-		Depth:        gc.DepthNumOperator,
+		Depth:        gc.DepthNumPlayer,
 	}
 	// カメラ
 	{

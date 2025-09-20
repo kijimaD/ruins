@@ -119,7 +119,7 @@ InitializeFromWorld関数に登録を追加してください：
 - GridElement (タイルベースの位置情報)
 - AIVision, AIRoaming, AIChasing
 - SpriteRender
-- NullComponent (Operator, BlockView, BlockPass)
+- NullComponent (Player, BlockView, BlockPass)
 
 ### エンティティ参照
 現在、AIVision.TargetEntityのみ自動処理されます。
