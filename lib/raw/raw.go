@@ -360,9 +360,7 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 		Agility:   gc.Attribute{Base: member.Attributes.Agility},
 		Defense:   gc.Attribute{Base: member.Attributes.Defense},
 	}
-	cl.Pools = &gc.Pools{
-		Level: 1,
-	}
+	cl.Pools = &gc.Pools{}
 	cl.EquipmentChanged = &gc.EquipmentChanged{}
 	if member.Player != nil && *member.Player {
 		cl.Player = &gc.Player{}

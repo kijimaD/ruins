@@ -199,11 +199,5 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 	)
 	memberContainer.AddChild(spProgressbar)
 
-	// レベル
-	levelLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("Lv. %d", pools.Level), res.Text.SmallFace, colors.TextColor),
-	)
-	memberContainer.AddChild(levelLabel)
-
 	targetContainer.AddChild(memberContainer)
 }

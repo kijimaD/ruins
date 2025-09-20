@@ -28,10 +28,8 @@ func TestMaxHP(t *testing.T) {
 				Total:    3,
 			},
 		}
-		pools := &gc.Pools{Level: 1}
-
-		result := maxHP(attrs, pools)
-		// 30 + (10*8 + 5 + 3) * (1 + (1-1)*0.03) = 30 + 88 * 1 = 118
+		result := maxHP(attrs)
+		// 30 + (10*8 + 5 + 3) = 30 + 88 = 118
 		expected := 118
 		assert.Equal(t, expected, result, "maxHPの計算が正しくない")
 	})
@@ -55,11 +53,9 @@ func TestMaxHP(t *testing.T) {
 				Total:    3,
 			},
 		}
-		pools := &gc.Pools{Level: 5}
-
-		result := maxHP(attrs, pools)
-		// 30 + (10*8 + 5 + 3) * (1 + (5-1)*0.03) = 30 + 88 * 1.12 = 30 + 98.56 = 128.56 -> 128
-		expected := 128
+		result := maxHP(attrs)
+		// 30 + (10*8 + 5 + 3) = 30 + 88 = 118
+		expected := 118
 		assert.Equal(t, expected, result, "レベルボーナス込みのmaxHPの計算が正しくない")
 	})
 
@@ -82,11 +78,9 @@ func TestMaxHP(t *testing.T) {
 				Total:    12,
 			},
 		}
-		pools := &gc.Pools{Level: 10}
-
-		result := maxHP(attrs, pools)
-		// 30 + (25*8 + 18 + 12) * (1 + (10-1)*0.03) = 30 + 230 * 1.27 = 30 + 292.1 = 322.1 -> 322
-		expected := 322
+		result := maxHP(attrs)
+		// 30 + (25*8 + 18 + 12) = 30 + 230 = 260
+		expected := 260
 		assert.Equal(t, expected, result, "高ステータスでのmaxHPの計算が正しくない")
 	})
 }
@@ -112,10 +106,8 @@ func TestMaxSP(t *testing.T) {
 				Total:    6,
 			},
 		}
-		pools := &gc.Pools{Level: 1}
-
-		result := maxSP(attrs, pools)
-		// (10*2 + 8 + 6) * (1 + (1-1)*0.02) = 34 * 1 = 34
+		result := maxSP(attrs)
+		// 10*2 + 8 + 6 = 20 + 8 + 6 = 34
 		expected := 34
 		assert.Equal(t, expected, result, "maxSPの計算が正しくない")
 	})
@@ -139,12 +131,10 @@ func TestMaxSP(t *testing.T) {
 				Total:    6,
 			},
 		}
-		pools := &gc.Pools{Level: 5}
-
-		result := maxSP(attrs, pools)
-		// (10*2 + 8 + 6) * (1 + (5-1)*0.02) = 34 * 1.08 = 36.72 -> 36
-		expected := 36
-		assert.Equal(t, expected, result, "レベルボーナス込みのmaxSPの計算が正しくない")
+		result := maxSP(attrs)
+		// 10*2 + 8 + 6 = 20 + 8 + 6 = 34
+		expected := 34
+		assert.Equal(t, expected, result, "maxSPの計算が正しくない")
 	})
 
 	t.Run("calculate max SP with high stats", func(t *testing.T) {
@@ -166,11 +156,9 @@ func TestMaxSP(t *testing.T) {
 				Total:    14,
 			},
 		}
-		pools := &gc.Pools{Level: 10}
-
-		result := maxSP(attrs, pools)
-		// (25*2 + 18 + 14) * (1 + (10-1)*0.02) = 82 * 1.18 = 96.76 -> 96
-		expected := 96
+		result := maxSP(attrs)
+		// 25*2 + 18 + 14 = 50 + 18 + 14 = 82
+		expected := 82
 		assert.Equal(t, expected, result, "高ステータスでのmaxSPの計算が正しくない")
 	})
 }

@@ -313,12 +313,12 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 		attrs.Defense.Total = attrs.Defense.Base
 	}
 
-	// 最大HP計算: base+(体力*multiplyV+力+感覚)*{1+(Lv-1)*growthRate}
-	pools.HP.Max = int(hpBaseValue + float64(attrs.Vitality.Total*hpVitalityMultiply+attrs.Strength.Total+attrs.Sensation.Total)*(1+float64(pools.Level-1)*hpLevelGrowthRate))
+	// 最大HP計算: base+(体力*multiplyV+力+感覚)
+	pools.HP.Max = int(hpBaseValue) + attrs.Vitality.Total*hpVitalityMultiply + attrs.Strength.Total + attrs.Sensation.Total
 	pools.HP.Current = pools.HP.Max
 
-	// 最大SP計算: (体力*multiplyV+器用さ+素早さ)*{1+(Lv-1)*growthRate}
-	pools.SP.Max = int(float64(attrs.Vitality.Total*spVitalityMultiply+attrs.Dexterity.Total+attrs.Agility.Total) * (1 + float64(pools.Level-1)*spLevelGrowthRate))
+	// 最大SP計算: (体力*multiplyV+器用さ+素早さ)
+	pools.SP.Max = attrs.Vitality.Total*spVitalityMultiply + attrs.Dexterity.Total + attrs.Agility.Total
 	pools.SP.Current = pools.SP.Max
 
 	return nil

@@ -72,6 +72,7 @@ func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 func (wa *WaitActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("待機完了", "actor", act.Actor)
 
+	// TODO: 1ターン待機の場合も出るのは微妙な感じがする
 	// プレイヤーの場合のみ待機完了メッセージを表示
 	if isPlayerActivity(act, world) {
 		gamelog.New(gamelog.FieldLog).
