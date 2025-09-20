@@ -39,7 +39,10 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 	// SP情報をHPの下に描画
 	info.drawStaminaBar(screen, data.PlayerSP, data.PlayerMaxSP)
 
-	// 空腹度情報をSPの下に描画
+	// EP情報をSPの下に描画
+	info.drawElectricityBar(screen, data.PlayerEP, data.PlayerMaxEP)
+
+	// 空腹度情報をEPの下に描画
 	info.drawHungerBar(screen, data.HungerLevel)
 
 	// フロア情報を描画
@@ -127,8 +130,8 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	// 背景（黒い枠）を描画
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
 
-	// 背景（暗い青い領域）を描画
-	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{0, 0, 100, 255}, false)
+	// 背景（暗いグレー領域）を描画 - 拠点ステートと同じ色
+	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 100, 100, 255}, false)
 
 	// SP比率を計算
 	if maxSP > 0 {
@@ -140,16 +143,15 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 			spRatio = 0.0
 		}
 
-		// 現在のSP（青系のグラデーション）
+		// 現在のSP（黄色・オレンジ系のグラデーション - 拠点ステートと同じ）
 		var barColor color.RGBA
 		if spRatio > 0.5 {
-			// 水色から青へ（SP 50%以上）
-			intensity := uint8((1.0 - spRatio) * 2.0 * 128)
-			barColor = color.RGBA{intensity, 128 + intensity, 255, 255}
+			// 明るい黄色・オレンジ（SP 50%以上）
+			barColor = color.RGBA{255, 200, 0, 255}
 		} else {
-			// 青から暗い青へ（SP 50%以下）
-			intensity := uint8(spRatio * 2.0 * 128)
-			barColor = color.RGBA{0, intensity, 128 + intensity, 255}
+			// やや暗い黄色・オレンジ（SP 50%以下）
+			intensity := uint8(spRatio * 2.0 * 200)
+			barColor = color.RGBA{255, intensity, 0, 255}
 		}
 
 		// 現在のSPバーを描画
@@ -162,12 +164,67 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	info.drawWhiteText(screen, spText, int(float32(gageX)+float32(width)+float32(labelGap)), int(y-2))
 }
 
+// drawElectricityBar はプレイヤーの電力ポイントゲージを描画する
+func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP int) {
+	// EPゲージの設定
+	const (
+		baseX    = 10.0  // 左マージン
+		y        = 46.0  // 上マージン（SPバーの下）
+		width    = 120.0 // ゲージの幅
+		height   = 12.0  // ゲージの高さ
+		labelGap = 4.0   // ラベルとゲージの間隔
+	)
+
+	// 「EP」ラベルを左に描画
+	info.drawWhiteText(screen, "EP", int(baseX), int(y-2))
+
+	// ゲージの開始位置（「EP」ラベルの後）
+	gageX := float32(baseX + 20.0) // 「EP」の文字幅分オフセット
+
+	// 背景（黒い枠）を描画
+	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
+
+	// 背景（暗い青い領域）を描画
+	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{0, 0, 80, 255}, false)
+
+	// EP比率を計算
+	if maxEP > 0 {
+		epRatio := float32(currentEP) / float32(maxEP)
+		if epRatio > 1.0 {
+			epRatio = 1.0
+		}
+		if epRatio < 0.0 {
+			epRatio = 0.0
+		}
+
+		// 現在のEP（青系のグラデーション、電力らしい色）
+		var barColor color.RGBA
+		if epRatio > 0.5 {
+			// シアンから青へ（EP 50%以上）
+			intensity := uint8((1.0 - epRatio) * 2.0 * 100)
+			barColor = color.RGBA{intensity, 200, 255, 255}
+		} else {
+			// 青から暗い青へ（EP 50%以下）
+			intensity := uint8(epRatio * 2.0 * 200)
+			barColor = color.RGBA{0, intensity, 100 + uint8(epRatio*155), 255}
+		}
+
+		// 現在のEPバーを描画
+		currentWidth := float32(width) * epRatio
+		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+	}
+
+	// 数値をゲージの右に描画
+	epText := fmt.Sprintf("%d/%d", currentEP, maxEP)
+	info.drawWhiteText(screen, epText, int(float32(gageX)+float32(width)+float32(labelGap)), int(y-2))
+}
+
 // drawHungerBar はプレイヤーの空腹度を描画する
 func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 	// 空腹度表示の設定
 	const (
 		baseX = 10.0 // 左マージン
-		y     = 46.0 // 上マージン（SPバーの下）
+		y     = 64.0 // 上マージン（EPバーの下）
 	)
 
 	// 空腹度レベルのテキストを描画

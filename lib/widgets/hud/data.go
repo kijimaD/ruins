@@ -17,6 +17,8 @@ type GameInfoData struct {
 	PlayerMaxHP  int    // プレイヤーの最大HP
 	PlayerSP     int    // プレイヤーの現在SP
 	PlayerMaxSP  int    // プレイヤーの最大SP
+	PlayerEP     int    // プレイヤーの現在EP
+	PlayerMaxEP  int    // プレイヤーの最大EP
 	PlayerHunger int    // プレイヤーの空腹度
 	HungerLevel  string // 空腹度のレベル（満腹、普通、空腹、飢餓）
 }

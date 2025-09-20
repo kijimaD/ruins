@@ -229,11 +229,16 @@ type Dead struct{}
 
 // Pools はキャラクターのプール情報
 type Pools struct {
-	// 生命
+	// 生命力 Health point
+	// なくなるとゲームオーバー
 	HP Pool
-	// 特殊行動力
+	// スタミナ Stamina point
+	// 走ったり攻撃したら減る。自動回復する
 	SP Pool
-	// 経験値
+	// 電力 Electricity point
+	// 機能のトグルで消費量が変わる
+	EP Pool
+	// 経験値 eXperience point
 	XP int
 	// レベル
 	Level int
