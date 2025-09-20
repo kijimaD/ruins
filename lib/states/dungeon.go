@@ -111,6 +111,11 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 	// 移動処理の後にカメラ更新
 	gs.CameraSystem(world)
 
+	// プレイヤー死亡チェック
+	if st.checkPlayerDeath(world) {
+		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewGameOverState}}
+	}
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
 	}
@@ -127,6 +132,18 @@ func (st *DungeonState) Update(world w.World) es.Transition {
 
 	// BaseStateの共通処理を使用
 	return st.ConsumeTransition()
+}
+
+// checkPlayerDeath はプレイヤーの死亡状態をチェックする
+func (st *DungeonState) checkPlayerDeath(world w.World) bool {
+	playerDead := false
+	world.Manager.Join(
+		world.Components.Player,
+		world.Components.Dead,
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
+		playerDead = true
+	}))
+	return playerDead
 }
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す

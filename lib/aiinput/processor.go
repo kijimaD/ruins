@@ -63,7 +63,6 @@ func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, e
 	// プレイヤー検索
 	playerEntity := p.findPlayer(world)
 	if playerEntity == nil {
-		p.logger.Warn("プレイヤーが見つからない", "entity", entity)
 		return
 	}
 

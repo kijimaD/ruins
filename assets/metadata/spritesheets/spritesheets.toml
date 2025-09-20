@@ -76,9 +76,3 @@ texture_image = "file/bg/cup1.jpg"
 sprites = [
     { x = 0, y = 0, width = 960, height = 720 },
 ]
-
-[sprite_sheet.bg_explosion1]
-texture_image = "file/bg/explosion1.jpg"
-sprites = [
-    { x = 0, y = 0, width = 960, height = 720 },
-]

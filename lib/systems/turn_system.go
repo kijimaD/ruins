@@ -50,6 +50,9 @@ func processTurnEnd(world w.World) {
 	// 全エンティティのアクションポイントを回復
 	turnManager.RestoreAllActionPoints(world)
 
+	// Deadエンティティの削除処理
+	DeadCleanupSystem(world)
+
 	// TODO: ターン終了時の共通処理をここに追加
 	// - エフェクトの持続時間減少
 	// - 状態異常の更新

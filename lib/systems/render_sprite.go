@@ -20,6 +20,8 @@ var (
 	moverShadowImage *ebiten.Image // 動く物体が落とす影
 )
 
+var spriteImageCache map[string]*ebiten.Image = map[string]*ebiten.Image{}
+
 // SetTranslate はカメラを考慮した画像配置オプションをセットする
 // TODO: ズーム率を追加する
 func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
@@ -79,7 +81,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	renderMovers(world, screen, visibilityData)
 }
 
-// initializeShadowImages はシャドウ画像を初期化する
+// initializeShadowImages は影画像を初期化する
 func initializeShadowImages() {
 	if wallShadowImage == nil {
 		wallWidth := int(consts.TileSize)

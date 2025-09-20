@@ -131,8 +131,11 @@ func (sm *StateMachine) createStatesFromFunc() []State {
 }
 
 // Draw draws the screen after a state update
+// statesが複数ある場合は順番に描画する。スタックスライスの古(先頭) → 新(末尾)の順に描画される
 func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image) {
-	sm.states[len(sm.states)-1].Draw(world, screen)
+	for _, state := range sm.states {
+		state.Draw(world, screen)
+	}
 }
 
 // Remove the active state and resume the next state
@@ -153,6 +156,7 @@ func (sm *StateMachine) _Pop(world w.World) {
 }
 
 // Pause the active state and add new states to the stack
+// 新しいステートは末尾に追加される
 func (sm *StateMachine) _Push(world w.World, newStates []State) {
 	if len(newStates) > 0 {
 		currentState := sm.states[len(sm.states)-1]
