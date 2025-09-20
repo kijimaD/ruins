@@ -132,7 +132,10 @@ func (sm *StateMachine) createStatesFromFunc() []State {
 
 // Draw draws the screen after a state update
 func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image) {
-	sm.states[len(sm.states)-1].Draw(world, screen)
+	// スタック内のすべてのステートを下から順番に描画
+	for _, state := range sm.states {
+		state.Draw(world, screen)
+	}
 }
 
 // Remove the active state and resume the next state
