@@ -73,10 +73,13 @@ func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 
-	// ゲームオーバーウィンドウを作成
 	windowContainer := styled.NewWindowContainer(world)
 	titleContainer := styled.NewWindowHeaderContainer("GAME OVER", world)
-	gameOverWindow := styled.NewSmallWindow(titleContainer, windowContainer)
+	gameOverWindow := styled.NewSmallWindow(
+		titleContainer,
+		windowContainer,
+		widget.WindowOpts.CloseMode(widget.NONE),
+	)
 
 	// コンテンツを追加
 	gameOverText := styled.NewTitleText("死亡した。", world)

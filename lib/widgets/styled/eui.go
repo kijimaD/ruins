@@ -312,8 +312,9 @@ func NewFragmentText(text string, textColor color.RGBA, world w.World) *widget.T
 // window ================
 
 // NewSmallWindow は小さなウィンドウを作成する
-func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.Window {
-	return widget.NewWindow(
+func NewSmallWindow(title *widget.Container, content *widget.Container, opts ...widget.WindowOpt) *widget.Window {
+	// デフォルトのオプション
+	defaultOpts := []widget.WindowOpt{
 		widget.WindowOpts.Contents(content),
 		widget.WindowOpts.TitleBar(title, 25),
 		widget.WindowOpts.Modal(),
@@ -322,7 +323,10 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 		widget.WindowOpts.Resizeable(),
 		widget.WindowOpts.MinSize(200, 200),
 		widget.WindowOpts.MaxSize(650, 550),
-	)
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	return widget.NewWindow(allOpts...)
 }
 
 // list ================
