@@ -130,7 +130,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	// 背景（黒い枠）を描画
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
 
-	// 背景（暗いグレー領域）を描画 - 拠点ステートと同じ色
+	// 背景（暗いグレー領域）を描画
 	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 100, 100, 255}, false)
 
 	// SP比率を計算
@@ -143,7 +143,6 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 			spRatio = 0.0
 		}
 
-		// 現在のSP（黄色・オレンジ系のグラデーション - 拠点ステートと同じ）
 		var barColor color.RGBA
 		if spRatio > 0.5 {
 			// 明るい黄色・オレンジ（SP 50%以上）
