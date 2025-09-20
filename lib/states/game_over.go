@@ -16,9 +16,6 @@ type GameOverState struct {
 	es.BaseState
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
-
-	// 背景
-	bg *ebiten.Image
 }
 
 func (st GameOverState) String() string {
@@ -41,9 +38,6 @@ func (st *GameOverState) OnStart(world w.World) {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 
-	bg := (*world.Resources.SpriteSheets)["bg_explosion1"]
-	st.bg = bg.Texture.Image
-
 	st.ui = st.initUI(world)
 }
 
@@ -64,9 +58,10 @@ func (st *GameOverState) Update(_ w.World) es.Transition {
 
 // Draw はゲームステートの描画処理を行う
 func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image) {
-	if st.bg != nil {
-		screen.DrawImage(st.bg, &ebiten.DrawImageOptions{})
-	}
+	// 半透明の黒い背景を描画してダンジョン画面を暗くする
+	overlay := ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy())
+	overlay.Fill(colors.TransBlackColor)
+	screen.DrawImage(overlay, &ebiten.DrawImageOptions{})
 
 	st.ui.Draw(screen)
 }
@@ -74,10 +69,27 @@ func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image) {
 // ================
 
 func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
-	rootContainer := styled.NewVerticalContainer()
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
 
-	res := world.Resources.UIResources
-	rootContainer.AddChild(widget.NewText(widget.TextOpts.Text("GAME OVER...", res.Text.BigTitleFace, colors.TextColor)))
+	// ゲームオーバーウィンドウを作成
+	windowContainer := styled.NewWindowContainer(world)
+	titleContainer := styled.NewWindowHeaderContainer("GAME OVER", world)
+	gameOverWindow := styled.NewSmallWindow(titleContainer, windowContainer)
 
-	return &ebitenui.UI{Container: rootContainer}
+	// コンテンツを追加
+	gameOverText := styled.NewTitleText("死亡した。", world)
+	windowContainer.AddChild(gameOverText)
+
+	instructionText := styled.NewDescriptionText("Enterキーを押してメインメニューに戻る", world)
+	windowContainer.AddChild(instructionText)
+
+	// ウィンドウを中央に配置
+	gameOverWindow.SetLocation(getCenterWinRect(world))
+
+	ui := &ebitenui.UI{Container: rootContainer}
+	ui.AddWindow(gameOverWindow)
+
+	return ui
 }
