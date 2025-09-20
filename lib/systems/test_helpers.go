@@ -78,7 +78,6 @@ func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 	cl := entities.ComponentList{}
 	cl.Game = append(cl.Game, gc.GameComponentList{
 		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
-		Operator:    &gc.Operator{},
 		FactionType: &gc.FactionAlly,
 		SpriteRender: &gc.SpriteRender{
 			SpriteNumber: 0,
@@ -150,7 +149,6 @@ func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 	if isPlayer {
 		cl.Game = append(cl.Game, gc.GameComponentList{
 			Position:     &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
-			Operator:     &gc.Operator{},
 			FactionType:  &gc.FactionAlly,
 			SpriteRender: spriteRender,
 		})
@@ -180,7 +178,6 @@ func CreateEntityWithGridPosition(t *testing.T, world w.World, gridX, gridY int,
 	if isPlayer {
 		cl.Game = append(cl.Game, gc.GameComponentList{
 			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
-			Operator:    &gc.Operator{},
 			FactionType: &gc.FactionAlly,
 		})
 	} else {

@@ -389,7 +389,6 @@ func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error) {
 	}
 	cl.FactionType = &gc.FactionAlly
 	cl.Player = &gc.Player{}
-	cl.Operator = &gc.Operator{}
 	cl.Hunger = gc.NewHunger()
 	return cl, nil
 }

@@ -129,7 +129,7 @@ func TestExtractMinimapData(t *testing.T) {
 	// プレイヤーエンティティを作成
 	playerEntity := world.Manager.NewEntity()
 	playerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 15})
-	playerEntity.AddComponent(world.Components.Operator, &gc.Operator{})
+	playerEntity.AddComponent(world.Components.Player, &gc.Player{})
 
 	// 探索済みタイルを設定
 	dungeonResource.ExploredTiles["10,15"] = true // プレイヤー位置
