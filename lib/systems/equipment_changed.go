@@ -75,9 +75,9 @@ func EquipmentChangedSystem(world w.World) bool {
 		pools := world.Components.Pools.Get(entity).(*gc.Pools)
 		attrs := world.Components.Attributes.Get(entity).(*gc.Attributes)
 
-		pools.HP.Max = maxHP(attrs, pools)
+		pools.HP.Max = maxHP(attrs)
 		pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current)
-		pools.SP.Max = maxSP(attrs, pools)
+		pools.SP.Max = maxSP(attrs)
 		pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current)
 	}))
 
@@ -85,11 +85,11 @@ func EquipmentChangedSystem(world w.World) bool {
 }
 
 // 30+(体力*8+力+感覚)
-func maxHP(attrs *gc.Attributes, pools *gc.Pools) int {
+func maxHP(attrs *gc.Attributes) int {
 	return 30 + attrs.Vitality.Total*8 + attrs.Strength.Total + attrs.Sensation.Total
 }
 
 // 体力*2+器用さ+素早さ
-func maxSP(attrs *gc.Attributes, pools *gc.Pools) int {
+func maxSP(attrs *gc.Attributes) int {
 	return attrs.Vitality.Total*2 + attrs.Dexterity.Total + attrs.Agility.Total
 }
