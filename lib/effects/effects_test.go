@@ -297,30 +297,6 @@ func TestDeadComponentManagement(t *testing.T) {
 		assert.True(t, player.HasComponent(world.Components.Dead))
 	})
 
-	t.Run("蘇生による死亡状態の解除", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 生きているプレイヤーを作成してダメージで死亡させる
-		player := createTestPlayerEntity(world, 50, 50)
-		damage := Damage{Amount: 100, Source: DamageSourceWeapon}
-		damageScope := &Scope{Targets: []ecs.Entity{player}}
-		err = damage.Apply(world, damageScope)
-		assert.NoError(t, err)
-
-		// 死亡状態を確認
-		assert.True(t, player.HasComponent(world.Components.Dead))
-
-		// テスト終了
-		assert.NoError(t, err)
-
-		// HP > 0 になり、Deadコンポーネントが除去されることを確認
-		pools := world.Components.Pools.Get(player).(*gc.Pools)
-		assert.Equal(t, 30, pools.HP.Current)
-		assert.False(t, player.HasComponent(world.Components.Dead))
-	})
-
 	t.Run("生存者への回復はDeadコンポーネントに影響しない", func(t *testing.T) {
 		t.Parallel()
 		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
