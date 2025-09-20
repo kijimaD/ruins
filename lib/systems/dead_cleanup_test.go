@@ -102,7 +102,7 @@ func TestDeadCleanupSystem_EmptyWorld(t *testing.T) {
 
 	// エンティティ数が0であることを確認
 	count := 0
-	world.Manager.Join().Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join().Visit(ecs.Visit(func(_ ecs.Entity) {
 		count++
 	}))
 	assert.Equal(t, 0, count, "空のworldではエンティティ数は0であるべき")

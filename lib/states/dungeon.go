@@ -140,7 +140,7 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 	world.Manager.Join(
 		world.Components.Player,
 		world.Components.Dead,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	).Visit(ecs.Visit(func(_ ecs.Entity) {
 		playerDead = true
 	}))
 	return playerDead
