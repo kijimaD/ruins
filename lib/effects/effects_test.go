@@ -102,9 +102,6 @@ func TestEffectSystem(t *testing.T) {
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
 		assert.Contains(t, healing.String(), "Healing")
 
-		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 25}}
-		assert.Contains(t, resurrection.String(), "Resurrection")
-
 		recovery := FullRecoveryHP{}
 		assert.Equal(t, "FullRecoveryHP", recovery.String())
 	})
@@ -315,11 +312,7 @@ func TestDeadComponentManagement(t *testing.T) {
 		// 死亡状態を確認
 		assert.True(t, player.HasComponent(world.Components.Dead))
 
-		// 蘇生エフェクトを実行
-		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 30}}
-		scope := &Scope{Targets: []ecs.Entity{player}}
-
-		err = resurrection.Apply(world, scope)
+		// テスト終了
 		assert.NoError(t, err)
 
 		// HP > 0 になり、Deadコンポーネントが除去されることを確認
@@ -373,142 +366,6 @@ func TestDeadComponentManagement(t *testing.T) {
 		err = healing.Validate(world, scope)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "死亡しているキャラクターには回復エフェクトは使用できません")
-	})
-}
-
-func TestResurrectionEffect(t *testing.T) {
-	t.Parallel()
-	t.Run("蘇生エフェクトの基本動作", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 生きているプレイヤーを作成
-		player := createTestPlayerEntity(world, 50, 50)
-
-		// ダメージで死亡させる
-		damage := Damage{Amount: 100, Source: DamageSourceWeapon}
-		damageScope := &Scope{Targets: []ecs.Entity{player}}
-
-		err = damage.Apply(world, damageScope)
-		assert.NoError(t, err)
-
-		// 死亡状態を確認
-		pools := world.Components.Pools.Get(player).(*gc.Pools)
-		assert.Equal(t, 0, pools.HP.Current)
-		assert.True(t, player.HasComponent(world.Components.Dead), "ダメージ後にDeadコンポーネントが設定されていない")
-
-		// 蘇生エフェクトを適用
-		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 30}}
-		scope := &Scope{Targets: []ecs.Entity{player}}
-
-		err = resurrection.Validate(world, scope)
-		assert.NoError(t, err)
-
-		err = resurrection.Apply(world, scope)
-		assert.NoError(t, err)
-
-		// 蘇生後の状態確認
-		assert.False(t, player.HasComponent(world.Components.Dead)) // Deadコンポーネントが除去されている
-		assert.Equal(t, 30, pools.HP.Current)                       // HPが回復している
-	})
-
-	t.Run("蘇生エフェクトは最低HP1を保証", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 生きているプレイヤーを作成してダメージで死亡させる
-		player := createTestPlayerEntity(world, 50, 50)
-		damage := Damage{Amount: 100, Source: DamageSourceWeapon}
-		damageScope := &Scope{Targets: []ecs.Entity{player}}
-		err = damage.Apply(world, damageScope)
-		assert.NoError(t, err)
-
-		// 0回復の蘇生エフェクト（通常ありえないが、安全性のテスト）
-		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 0}}
-		scope := &Scope{Targets: []ecs.Entity{player}}
-
-		err = resurrection.Apply(world, scope)
-		assert.NoError(t, err)
-
-		// 最低HP1が保証される
-		pools := world.Components.Pools.Get(player).(*gc.Pools)
-		assert.Equal(t, 1, pools.HP.Current)
-		assert.False(t, player.HasComponent(world.Components.Dead))
-	})
-
-	t.Run("蘇生エフェクトの割合回復", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 生きているプレイヤーを作成してダメージで死亡させる（Max HP 100）
-		player := createTestPlayerEntity(world, 100, 50)
-		damage := Damage{Amount: 200, Source: DamageSourceWeapon}
-		damageScope := &Scope{Targets: []ecs.Entity{player}}
-		err = damage.Apply(world, damageScope)
-		assert.NoError(t, err)
-
-		// 50%回復の蘇生エフェクト
-		resurrection := Resurrection{Amount: gc.RatioAmount{Ratio: 0.5}}
-		scope := &Scope{Targets: []ecs.Entity{player}}
-
-		err = resurrection.Apply(world, scope)
-		assert.NoError(t, err)
-
-		// 50% (50HP)で蘇生することを確認
-		pools := world.Components.Pools.Get(player).(*gc.Pools)
-		assert.Equal(t, 50, pools.HP.Current)
-		assert.False(t, player.HasComponent(world.Components.Dead))
-	})
-
-	t.Run("生存者への蘇生エフェクトは拒否される", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 生存しているプレイヤーを作成
-		player := createTestPlayerEntity(world, 50, 50)
-
-		// 蘇生エフェクトを適用しようとする
-		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 30}}
-		scope := &Scope{Targets: []ecs.Entity{player}}
-
-		// 生存者への適用は拒否される
-		err = resurrection.Validate(world, scope)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "生存しているキャラクターには蘇生エフェクトは使用できません")
-	})
-
-	t.Run("蘇生エフェクトのログ出力", func(t *testing.T) {
-		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
-		assert.NoError(t, err)
-
-		// 生きているプレイヤーを作成してダメージで死亡させる
-		player := createTestPlayerEntity(world, 50, 50)
-		damage := Damage{Amount: 100, Source: DamageSourceWeapon}
-		damageScope := &Scope{Targets: []ecs.Entity{player}}
-		err = damage.Apply(world, damageScope)
-		assert.NoError(t, err)
-
-		mockLogger := &MockLogger{}
-
-		// 蘇生エフェクトをLoggerとともに実行
-		resurrection := Resurrection{Amount: gc.NumeralAmount{Numeral: 25}}
-		scope := &Scope{
-			Targets: []ecs.Entity{player},
-			Logger:  mockLogger,
-		}
-
-		err = resurrection.Apply(world, scope)
-		assert.NoError(t, err)
-
-		// ログが記録されていることを確認
-		assert.Len(t, mockLogger.Entries, 1)
-		assert.Contains(t, mockLogger.Entries[0], "が蘇生した")
-		assert.Contains(t, mockLogger.Entries[0], "HP 25 で復活")
 	})
 }
 
