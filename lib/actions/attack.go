@@ -284,6 +284,7 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 }
 
 // applyDamage はダメージをターゲットに適用する
+// TODO: ダメージeffectを発行するようにする
 func (aa *AttackActivity) applyDamage(target ecs.Entity, damage int, world w.World) error {
 	// ターゲットのPoolsコンポーネントを取得
 	pools := world.Components.Pools.Get(target)
@@ -323,8 +324,9 @@ func (aa *AttackActivity) checkDeath(target ecs.Entity, world w.World) {
 				Log()
 		}
 
-		// エンティティを完全に削除
-		world.Manager.DeleteEntity(target)
+		if !target.HasComponent(world.Components.Dead) {
+			target.AddComponent(world.Components.Dead, &gc.Dead{})
+		}
 	}
 }
 

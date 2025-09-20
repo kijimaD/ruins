@@ -212,12 +212,11 @@ type Wearable struct {
 	EquipBonus        EquipBonus    // ステータスへのボーナス
 }
 
-// Player は主人公キャラクター
+// Player は操作対象の主人公キャラクター
 type Player struct{}
 
 // Dead はキャラクターが死亡している状態を示すマーカーコンポーネント
-// HP が 0 になったとき付与され、復活時に除去される
-// 状態異常の一種として考える
+// 死亡時の処理(ドロップ/統計処理/ゲームログ...)を共通化するために使う
 type Dead struct{}
 
 // Pools はキャラクターのプール情報
