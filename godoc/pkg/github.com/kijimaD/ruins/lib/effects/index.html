@@ -312,20 +312,6 @@ target.go    - ターゲット選択システム
 				
 			
 				
-				<dd><a href="index.html#Resurrection">type Resurrection</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Resurrection.Apply">func (r Resurrection) Apply(world w.World, scope *Scope) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Resurrection.String">func (r Resurrection) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Resurrection.Validate">func (r Resurrection) Validate(world w.World, scope *Scope) error</a></dd>
-				
-			
-				
 				<dd><a href="index.html#Scope">type Scope</a></dd>
 				
 				
@@ -428,8 +414,6 @@ target.go    - ターゲット選択システム
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/processor.go">processor.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/recovery.go">recovery.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/resurrection.go">resurrection.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/stamina.go">stamina.go</a>
 			
@@ -1221,70 +1205,6 @@ target.go    - ターゲット選択システム
 				</h3>
 				<pre>func (r <a href="index.html#RestoreStamina">RestoreStamina</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Validate はスタミナ回復エフェクトの妥当性を検証する
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Resurrection">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/resurrection.go?s=289:394#L4">Resurrection</a>
-				<a class="permalink" href="index.html#Resurrection">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Resurrection は死亡したキャラクターを蘇生するエフェクト
-
-			<pre>type Resurrection struct {
-<span id="Resurrection.Amount"></span>    Amount <a href="../components/index.html">gc</a>.<a href="../components/index.html#Amounter">Amounter</a> <span class="comment">// 蘇生時のHP回復量（固定値または割合）</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="Resurrection.Apply">func (Resurrection) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/resurrection.go?s=463:525#L9">Apply</a>
-					<a class="permalink" href="index.html#Resurrection.Apply">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (r <a href="index.html#Resurrection">Resurrection</a>) Apply(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Apply は蘇生エフェクトをターゲットに適用する
-
-				
-				
-				
-			
-				
-				<h3 id="Resurrection.String">func (Resurrection) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/resurrection.go?s=2289:2326#L65">String</a>
-					<a class="permalink" href="index.html#Resurrection.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (r <a href="index.html#Resurrection">Resurrection</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="Resurrection.Validate">func (Resurrection) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/effects/resurrection.go?s=1475:1540#L44">Validate</a>
-					<a class="permalink" href="index.html#Resurrection.Validate">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (r <a href="index.html#Resurrection">Resurrection</a>) Validate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, scope *<a href="index.html#Scope">Scope</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Validate は蘇生エフェクトの妥当性を検証する
 
 				
 				

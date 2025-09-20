@@ -383,20 +383,21 @@ Only the top state is active.
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4236:4301#L124">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4372:4437#L125">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Draw(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
 				<p>Draw draws the screen after a state update
+statesが複数ある場合は順番に描画する。スタックスライスの古(先頭) → 新(末尾)の順に描画される
 
 				
 				
 				
 			
 				
-				<h3 id="StateMachine.GetCurrentState">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8214:8261#L231">GetCurrentState</a>
+				<h3 id="StateMachine.GetCurrentState">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8419:8466#L235">GetCurrentState</a>
 					<a class="permalink" href="index.html#StateMachine.GetCurrentState">&#xb6;</a>
 					
 					
@@ -410,7 +411,7 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.GetStateCount">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8423:8466#L239">GetStateCount</a>
+				<h3 id="StateMachine.GetStateCount">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8628:8671#L243">GetStateCount</a>
 					<a class="permalink" href="index.html#StateMachine.GetStateCount">&#xb6;</a>
 					
 					
@@ -423,7 +424,7 @@ Only the top state is active.
 				
 			
 				
-				<h3 id="StateMachine.GetStates">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=7881:7924#L222">GetStates</a>
+				<h3 id="StateMachine.GetStates">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8086:8129#L226">GetStates</a>
 					<a class="permalink" href="index.html#StateMachine.GetStates">&#xb6;</a>
 					
 					
