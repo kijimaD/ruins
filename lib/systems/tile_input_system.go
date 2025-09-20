@@ -183,7 +183,7 @@ func executeEnterAction(world w.World) {
 // checkTileEvents はタイル上のイベントをチェックする
 func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	// プレイヤーの場合のみタイルイベントをチェック
-	if entity.HasComponent(world.Components.Operator) {
+	if entity.HasComponent(world.Components.Player) {
 		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 		// プレイヤーが新しいタイルに移動した場合のみチェック

@@ -17,7 +17,6 @@ import (
 // コンポーネント名の定数
 const (
 	ComponentAIVision           = "AIVision"
-	ComponentOperator           = "Operator"
 	ComponentBlockView          = "BlockView"
 	ComponentBlockPass          = "BlockPass"
 	ComponentPlayer             = "Player"
@@ -200,11 +199,6 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		case "GridElement":
 			world.Manager.Join(world.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentOperator:
-			world.Manager.Join(world.Components.Operator).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))

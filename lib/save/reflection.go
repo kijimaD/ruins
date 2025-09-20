@@ -56,7 +56,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.GridElement{}), components.GridElement, r.extractGridElement, r.restoreGridElement, nil)
 
 	// NullComponentは特別扱い
-	r.registerNullComponent(reflect.TypeOf(&gc.Operator{}), components.Operator)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
 	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
@@ -129,8 +128,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 		ExtractFunc: func(world w.World, entity ecs.Entity) (interface{}, bool) {
 			// NullComponentの存在チェック
 			switch elemType.Name() {
-			case "Operator":
-				return struct{}{}, entity.HasComponent(world.Components.Operator)
 			case "BlockView":
 				return struct{}{}, entity.HasComponent(world.Components.BlockView)
 			case "BlockPass":
@@ -157,8 +154,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 		RestoreFunc: func(world w.World, entity ecs.Entity, _ interface{}) error {
 			// NullComponentを追加
 			switch elemType.Name() {
-			case "Operator":
-				entity.AddComponent(world.Components.Operator, &gc.Operator{})
 			case "BlockView":
 				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
 			case "BlockPass":

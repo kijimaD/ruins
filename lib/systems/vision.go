@@ -53,7 +53,7 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 	var playerGridElement *gc.GridElement
 	world.Manager.Join(
 		world.Components.GridElement,
-		world.Components.Operator,
+		world.Components.Player,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		playerGridElement = world.Components.GridElement.Get(entity).(*gc.GridElement)
 	}))

@@ -28,8 +28,6 @@ type GameComponentList struct {
 	ItemLocationType *ItemLocationType
 
 	// field ================
-	// TODO: Operator と Player を統合する
-	Operator     *Operator
 	AIMoveFSM    *AIMoveFSM
 	AIRoaming    *AIRoaming
 	AIVision     *AIVision
@@ -84,7 +82,6 @@ type Components struct {
 	ItemLocationNone       *ecs.NullComponent
 
 	// field ================
-	Operator     *ecs.NullComponent
 	AIMoveFSM    *ecs.SliceComponent
 	AIRoaming    *ecs.SliceComponent
 	AIVision     *ecs.SliceComponent
@@ -139,7 +136,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 	c.ItemLocationNone = manager.NewNullComponent()
 
 	// field
-	c.Operator = manager.NewNullComponent()
 	c.AIMoveFSM = manager.NewSliceComponent()
 	c.AIRoaming = manager.NewSliceComponent()
 	c.AIVision = manager.NewSliceComponent()
@@ -171,9 +167,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 
 	return nil
 }
-
-// Operator はフィールドでの操作対象
-type Operator struct{}
 
 // Camera はカメラ
 type Camera struct {

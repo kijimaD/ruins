@@ -115,7 +115,7 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(5), Y: gc.Tile(10)})
-	player.AddComponent(world.Components.Operator, &gc.Operator{})
+	player.AddComponent(world.Components.Player, &gc.Player{})
 
 	// NPCエンティティを作成
 	npc := world.Manager.NewEntity()
@@ -146,7 +146,7 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	var playerFound, npcFound bool
 
 	// まずプレイヤーを見つける
-	newWorld.Manager.Join(newWorld.Components.Operator).Visit(ecs.Visit(func(entity ecs.Entity) {
+	newWorld.Manager.Join(newWorld.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
 		restoredPlayer = entity
 		playerFound = true
 

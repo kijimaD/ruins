@@ -140,11 +140,10 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}
 	gcl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	gcl.Operator = &gc.Operator{}
 	gcl.SpriteRender = &gc.SpriteRender{
 		Name:         "field",
 		SpriteNumber: spriteNumberPlayer,
-		Depth:        gc.DepthNumOperator,
+		Depth:        gc.DepthNumPlayer,
 	}
 	// カメラ
 	{

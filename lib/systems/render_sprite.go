@@ -147,7 +147,7 @@ func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[
 	world.Manager.Join(
 		world.Components.SpriteRender,
 		world.Components.GridElement,
-		world.Components.Operator,
+		world.Components.TurnBased,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
@@ -229,11 +229,11 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 // renderMovers は移動体を描画する
 func renderMovers(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	iSprite := 0
-	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement, world.Components.Operator).Size())
+	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement, world.Components.TurnBased).Size())
 	world.Manager.Join(
 		world.Components.SpriteRender,
 		world.Components.GridElement,
-		world.Components.Operator,
+		world.Components.TurnBased,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		entities[iSprite] = entity
 		iSprite++
