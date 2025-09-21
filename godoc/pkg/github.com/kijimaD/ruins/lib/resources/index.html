@@ -93,9 +93,33 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				<p>Package resources はオブジェクトに紐付かないゲーム中の機能の役割を果たす要素を提供する。
-他の具体的なpackageから呼び出されるものであって、循環依存を防ぐため依存関係を極力含まないようにする。
-基本的なデータ構造、およびメソッドを提供する。
+				<p>Package resources はゲーム固有のリソース管理機能を提供する。
+<p>このパッケージはruinsゲーム特有のデータ構造とロジックに特化しており、
+純粋なリソース読み込み処理は lib/engine/loader パッケージで実装されている。
+<p>主な責務:
+<ul>
+<li>ダンジョン管理（階層、探索状態、ミニマップ設定）
+<li>ゲームステート遷移イベント管理
+<li>ゲーム固有の型定義（TileIdx など）
+<li>レベル計算とタイル座標変換
+</ul>
+<p>使い分け:
+<ul>
+<li>resources: ゲーム固有のリソース管理（Dungeon、StateEventなど）
+<li>engine/loader: 純粋なリソース読み込み処理（汎用的、再利用可能）
+</ul>
+<p>設計思想:
+<ul>
+<li>ゲームロジックに特化した機能を提供
+<li>循環依存を防ぐため、依存関係を最小限に抑制
+<li>engine/loaderに依存しない独立性を維持
+</ul>
+<p>使用例:
+<pre>dungeon := &amp;resources.Dungeon{
+    ExploredTiles: make(map[gc.GridElement]bool),
+    MinimapSettings: resources.MinimapSettings{...},
+}
+</pre>
 
 				
 			</div>
@@ -116,35 +140,6 @@
 			
 			
 			
-				
-				<dd><a href="index.html#GetResourcePath">func GetResourcePath(basePath, filename string) string</a></dd>
-			
-				
-				<dd><a href="index.html#UpdateGameLayout">func UpdateGameLayout(world w.World) (gc.Pixel, gc.Pixel)</a></dd>
-			
-			
-				
-				<dd><a href="index.html#DefaultResourceManager">type DefaultResourceManager</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.ClearCache">func (rm *DefaultResourceManager) ClearCache()</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.GetCache">func (rm *DefaultResourceManager) GetCache() *ResourceCache</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadAll">func (rm *DefaultResourceManager) LoadAll(_ []string, _ []string) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadFonts">func (rm *DefaultResourceManager) LoadFonts() (map[string]er.Font, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadRaws">func (rm *DefaultResourceManager) LoadRaws() (*raw.Master, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultResourceManager.LoadSpriteSheets">func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]components.SpriteSheet, error)</a></dd>
-				
 			
 				
 				<dd><a href="index.html#Dungeon">type Dungeon</a></dd>
@@ -152,12 +147,6 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.ConsumeStateEvent">func (d *Dungeon) ConsumeStateEvent() StateEvent</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.GetStateEvent">func (d *Dungeon) GetStateEvent() StateEvent</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.ResetPlayerTileState">func (d *Dungeon) ResetPlayerTileState()</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Dungeon.SetStateEvent">func (d *Dungeon) SetStateEvent(event StateEvent)</a></dd>
@@ -189,32 +178,6 @@
 				
 			
 				
-				<dd><a href="index.html#PlayerTileState">type PlayerTileState</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#ResourceCache">type ResourceCache</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#ResourceConfig">type ResourceConfig</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#ResourceManager">type ResourceManager</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewDefaultResourceManager">func NewDefaultResourceManager() ResourceManager</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewResourceManager">func NewResourceManager(config ResourceConfig) ResourceManager</a></dd>
-				
-				
-			
-				
 				<dd><a href="index.html#StateEvent">type StateEvent</a></dd>
 				
 				
@@ -239,11 +202,7 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go">event.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/layout.go">layout.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go">level.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go">manager.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/type.go">type.go</a>
 			
@@ -271,142 +230,10 @@
 		
 		
 		
-			
-			
-			<h2 id="GetResourcePath">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=5001:5055#L158">GetResourcePath</a>
-				<a class="permalink" href="index.html#GetResourcePath">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func GetResourcePath(basePath, filename <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-			<p>GetResourcePath はリソースのフルパスを取得する（ヘルパー関数）
-
-			
-			
-
 		
 			
 			
-			<h2 id="UpdateGameLayout">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/layout.go?s=228:285#L1">UpdateGameLayout</a>
-				<a class="permalink" href="index.html#UpdateGameLayout">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func UpdateGameLayout(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>)</pre>
-			<p>UpdateGameLayout はゲームウィンドウサイズを更新する
-
-			
-			
-
-		
-		
-			
-			
-			<h2 id="DefaultResourceManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=791:947#L17">DefaultResourceManager</a>
-				<a class="permalink" href="index.html#DefaultResourceManager">&#xb6;</a>
-				
-				
-			</h2>
-			<p>DefaultResourceManager はResourceManagerのデフォルト実装
-
-			<pre>type DefaultResourceManager struct {
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="DefaultResourceManager.ClearCache">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4831:4877#L153">ClearCache</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.ClearCache">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) ClearCache()</pre>
-				<p>ClearCache はキャッシュをクリアする（テスト用）
-
-				
-				
-				
-			
-				
-				<h3 id="DefaultResourceManager.GetCache">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4680:4739#L148">GetCache</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.GetCache">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) GetCache() *<a href="index.html#ResourceCache">ResourceCache</a></pre>
-				<p>GetCache は現在のキャッシュを取得する（テスト用）
-
-				
-				
-				
-			
-				
-				<h3 id="DefaultResourceManager.LoadAll">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=4044:4115#L128">LoadAll</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.LoadAll">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadAll(_ []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, _ []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>LoadAll はすべてのリソースを一括で読み込む
-
-				
-				
-				
-			
-				
-				<h3 id="DefaultResourceManager.LoadFonts">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1982:2055#L56">LoadFonts</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.LoadFonts">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadFonts() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Font">Font</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>LoadFonts はフォントリソースを読み込む
-
-				
-				
-				
-			
-				
-				<h3 id="DefaultResourceManager.LoadRaws">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=3651:3716#L112">LoadRaws</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.LoadRaws">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadRaws() (*<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>LoadRaws はRawデータを読み込む
-
-				
-				
-				
-			
-				
-				<h3 id="DefaultResourceManager.LoadSpriteSheets">func (*DefaultResourceManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=2711:2806#L81">LoadSpriteSheets</a>
-					<a class="permalink" href="index.html#DefaultResourceManager.LoadSpriteSheets">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (rm *<a href="index.html#DefaultResourceManager">DefaultResourceManager</a>) LoadSpriteSheets() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>LoadSpriteSheets はスプライトシートリソースを読み込む
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=369:788#L1">Dungeon</a>
+			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=372:733#L1">Dungeon</a>
 				<a class="permalink" href="index.html#Dungeon">&#xb6;</a>
 				
 				
@@ -420,12 +247,10 @@
 <span id="Dungeon.Level"></span>    Level <a href="index.html#Level">Level</a>
     <span class="comment">// 階層数</span>
 <span id="Dungeon.Depth"></span>    Depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-    <span class="comment">// 探索済みタイルのマップ（キー: &#34;x,y&#34;, 値: true）</span>
-<span id="Dungeon.ExploredTiles"></span>    ExploredTiles map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+    <span class="comment">// 探索済みタイルのマップ。座標をキーとして使用</span>
+<span id="Dungeon.ExploredTiles"></span>    ExploredTiles map[<a href="../components/index.html">gc</a>.<a href="../components/index.html#GridElement">GridElement</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// ミニマップの設定</span>
-<span id="Dungeon.Minimap"></span>    Minimap <a href="index.html#MinimapSettings">MinimapSettings</a>
-    <span class="comment">// プレイヤーのタイル移動状態</span>
-<span id="Dungeon.PlayerTileState"></span>    PlayerTileState <a href="index.html#PlayerTileState">PlayerTileState</a>
+<span id="Dungeon.MinimapSettings"></span>    MinimapSettings <a href="index.html#MinimapSettings">MinimapSettings</a>
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -442,7 +267,7 @@
 
 			
 				
-				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=3152:3200#L89">ConsumeStateEvent</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=979:1027#L20">ConsumeStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
@@ -455,33 +280,7 @@
 				
 			
 				
-				<h3 id="Dungeon.GetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2837:2881#L79">GetStateEvent</a>
-					<a class="permalink" href="index.html#Dungeon.GetStateEvent">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) GetStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
-				<p>GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
-
-				
-				
-				
-			
-				
-				<h3 id="Dungeon.ResetPlayerTileState">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1137:1177#L24">ResetPlayerTileState</a>
-					<a class="permalink" href="index.html#Dungeon.ResetPlayerTileState">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) ResetPlayerTileState()</pre>
-				<p>ResetPlayerTileState はプレイヤーのタイル状態をリセットする（階層移動時に使用）
-
-				
-				
-				
-			
-				
-				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2954:3003#L84">SetStateEvent</a>
+				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=781:830#L15">SetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.SetStateEvent">&#xb6;</a>
 					
 					
@@ -496,25 +295,21 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1286:1689#L32">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1175:1339#L28">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
 			</h2>
 			<p>Level は現在の階層
+タイル計算メソッドを提供する
 
 			<pre>type Level struct {
     <span class="comment">// 横のタイル数</span>
 <span id="Level.TileWidth"></span>    TileWidth <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>
     <span class="comment">// 縦のタイル数</span>
 <span id="Level.TileHeight"></span>    TileHeight <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>
-    <span class="comment">// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる</span>
-<span id="Level.TileSize"></span>    TileSize <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>
     <span class="comment">// タイルエンティティ群</span>
 <span id="Level.Entities"></span>    Entities []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
-    <span class="comment">// 視界を表現する黒背景</span>
-    <span class="comment">// 階層移動でリセットされる</span>
-<span id="Level.VisionImage"></span>    VisionImage *ebiten.<a href="index.html#Image">Image</a>
 }
 </pre>
 
@@ -530,7 +325,7 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2243:2302#L60">AtEntity</a>
+				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1893:1952#L51">AtEntity</a>
 					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
 					
 					
@@ -543,7 +338,7 @@
 				
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2653:2686#L74">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2318:2351#L65">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -556,7 +351,7 @@
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2503:2535#L69">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2163:2195#L60">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -569,7 +364,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1999:2060#L52">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1649:1710#L43">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -582,7 +377,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1788:1847#L47">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1438:1497#L38">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
@@ -597,7 +392,7 @@
 		
 			
 			
-			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=3336:3627#L96">MinimapSettings</a>
+			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2478:2769#L70">MinimapSettings</a>
 				<a class="permalink" href="index.html#MinimapSettings">&#xb6;</a>
 				
 				
@@ -624,146 +419,6 @@
 			
 			
 
-			
-
-			
-		
-			
-			
-			<h2 id="PlayerTileState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=879:1023#L17">PlayerTileState</a>
-				<a class="permalink" href="index.html#PlayerTileState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>PlayerTileState はプレイヤーのタイル移動に関する状態を管理する
-
-			<pre>type PlayerTileState struct {
-    <span class="comment">// プレイヤーの前回のタイル位置（重複メッセージ防止用）</span>
-<span id="PlayerTileState.LastTileX"></span>    LastTileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-<span id="PlayerTileState.LastTileY"></span>    LastTileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ResourceCache">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1210:1346#L32">ResourceCache</a>
-				<a class="permalink" href="index.html#ResourceCache">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ResourceCache は読み込み済みのリソースをキャッシュする
-
-			<pre>type ResourceCache struct {
-<span id="ResourceCache.Fonts"></span>    Fonts        map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Font">Font</a>
-<span id="ResourceCache.SpriteSheets"></span>    SpriteSheets map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>
-<span id="ResourceCache.RawMaster"></span>    RawMaster    *<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ResourceConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1025:1130#L25">ResourceConfig</a>
-				<a class="permalink" href="index.html#ResourceConfig">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ResourceConfig はリソースファイルのパスを管理する設定
-
-			<pre>type ResourceConfig struct {
-<span id="ResourceConfig.FontsPath"></span>    FontsPath        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="ResourceConfig.SpriteSheetsPath"></span>    SpriteSheetsPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="ResourceConfig.RawsPath"></span>    RawsPath         <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ResourceManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=353:720#L5">ResourceManager</a>
-				<a class="permalink" href="index.html#ResourceManager">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ResourceManager はすべてのリソースの読み込みを統括するインターフェース
-
-			<pre>type ResourceManager interface {
-    <span class="comment">// フォント関連</span>
-    LoadFonts() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../engine/resources/index.html">er</a>.<a href="../engine/resources/index.html#Font">Font</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
-    <span class="comment">// スプライトシート関連</span>
-    LoadSpriteSheets() (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
-    <span class="comment">// Raw(エンティティ定義)関連</span>
-    LoadRaws() (*<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
-    <span class="comment">// すべてのリソースを一括読み込み</span>
-    LoadAll(axes []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, actions []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
-}</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewDefaultResourceManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1659:1707#L47">NewDefaultResourceManager</a>
-					<a class="permalink" href="index.html#NewDefaultResourceManager">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewDefaultResourceManager() <a href="index.html#ResourceManager">ResourceManager</a></pre>
-				<p>NewDefaultResourceManager はデフォルトのパス設定でResourceManagerを作成する
-
-				
-				
-			
-				
-				<h3 id="NewResourceManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/manager.go?s=1413:1475#L39">NewResourceManager</a>
-					<a class="permalink" href="index.html#NewResourceManager">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewResourceManager(config <a href="index.html#ResourceConfig">ResourceConfig</a>) <a href="index.html#ResourceManager">ResourceManager</a></pre>
-				<p>NewResourceManager は新しいResourceManagerを作成する
-
-				
-				
 			
 
 			

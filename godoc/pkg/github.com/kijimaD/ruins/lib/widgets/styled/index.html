@@ -134,15 +134,18 @@ ebitenui/    ← 外部ライブラリの低レベルコンポーネント
 </ul>
 <h3 id="hdr-Example">Example</h3>
 <p>styledパッケージの典型的な使用例：
-<pre>// 基本的なレイアウト構築
+<pre>// UIResourcesを取得
+res := world.Resources.UIResources
+
+// 基本的なレイアウト構築
 container := styled.NewVerticalContainer()
 
 // プロジェクトスタイルのボタン作成
-button := styled.NewButton(&quot;クリック&quot;, world)
+button := styled.NewButton(&quot;クリック&quot;, res)
 container.AddChild(button)
 
 // ゲーム固有スタイルのテキスト
-title := styled.NewMenuText(&quot;タイトル&quot;, world)
+title := styled.NewMenuText(&quot;タイトル&quot;, res)
 container.AddChild(title)
 
 // 分割レイアウト
@@ -189,43 +192,43 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 				<dd><a href="index.html#LoadFont">func LoadFont(world w.World) *text.Face</a></dd>
 			
 				
-				<dd><a href="index.html#NewBodyText">func NewBodyText(title string, _ color.RGBA, world w.World) *widget.Text</a></dd>
+				<dd><a href="index.html#NewBodyText">func NewBodyText(title string, _ color.RGBA, res *resources.UIResources) *widget.Text</a></dd>
 			
 				
-				<dd><a href="index.html#NewButton">func NewButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.Button</a></dd>
+				<dd><a href="index.html#NewButton">func NewButton(text string, res *resources.UIResources, opts ...widget.ButtonOpt) *widget.Button</a></dd>
 			
 				
-				<dd><a href="index.html#NewDescriptionText">func NewDescriptionText(text string, world w.World) *widget.Text</a></dd>
+				<dd><a href="index.html#NewDescriptionText">func NewDescriptionText(text string, res *resources.UIResources) *widget.Text</a></dd>
 			
 				
-				<dd><a href="index.html#NewFragmentText">func NewFragmentText(text string, textColor color.RGBA, world w.World) *widget.Text</a></dd>
+				<dd><a href="index.html#NewFragmentText">func NewFragmentText(text string, textColor color.RGBA, res *resources.UIResources) *widget.Text</a></dd>
 			
 				
 				<dd><a href="index.html#NewItemGridContainer">func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewListItemText">func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w.World) *widget.Container</a></dd>
+				<dd><a href="index.html#NewListItemText">func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *resources.UIResources) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewMenuText">func NewMenuText(title string, world w.World) *widget.Text</a></dd>
+				<dd><a href="index.html#NewMenuText">func NewMenuText(title string, res *resources.UIResources) *widget.Text</a></dd>
 			
 				
-				<dd><a href="index.html#NewMessageList">func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widget.List</a></dd>
+				<dd><a href="index.html#NewMessageList">func NewMessageList(entries []any, res *resources.UIResources, screenWidth int, opts ...widget.ListOpt) *widget.List</a></dd>
 			
 				
-				<dd><a href="index.html#NewPageIndicator">func NewPageIndicator(text string, world w.World) *widget.Container</a></dd>
+				<dd><a href="index.html#NewPageIndicator">func NewPageIndicator(text string, res *resources.UIResources) *widget.Container</a></dd>
 			
 				
 				<dd><a href="index.html#NewRowContainer">func NewRowContainer(opts ...widget.ContainerOpt) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewSmallWindow">func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.Window</a></dd>
+				<dd><a href="index.html#NewSmallWindow">func NewSmallWindow(title *widget.Container, content *widget.Container, opts ...widget.WindowOpt) *widget.Window</a></dd>
 			
 				
-				<dd><a href="index.html#NewSubtitleText">func NewSubtitleText(text string, world w.World) *widget.Text</a></dd>
+				<dd><a href="index.html#NewSubtitleText">func NewSubtitleText(text string, res *resources.UIResources) *widget.Text</a></dd>
 			
 				
-				<dd><a href="index.html#NewTitleText">func NewTitleText(text string, world w.World) *widget.Text</a></dd>
+				<dd><a href="index.html#NewTitleText">func NewTitleText(text string, res *resources.UIResources) *widget.Text</a></dd>
 			
 				
 				<dd><a href="index.html#NewVSplitContainer">func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ...widget.ContainerOpt) *widget.Container</a></dd>
@@ -237,10 +240,10 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 				<dd><a href="index.html#NewWSplitContainer">func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ...widget.ContainerOpt) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewWindowContainer">func NewWindowContainer(world w.World) *widget.Container</a></dd>
+				<dd><a href="index.html#NewWindowContainer">func NewWindowContainer(res *resources.UIResources) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewWindowHeaderContainer">func NewWindowHeaderContainer(title string, world w.World) *widget.Container</a></dd>
+				<dd><a href="index.html#NewWindowHeaderContainer">func NewWindowHeaderContainer(title string, res *resources.UIResources) *widget.Container</a></dd>
 			
 			
 				
@@ -283,7 +286,7 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 		
 			
 			
-			<h2 id="BaseRowLayoutOpts">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=12742:12788#L397">BaseRowLayoutOpts</a>
+			<h2 id="BaseRowLayoutOpts">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=12571:12617#L384">BaseRowLayoutOpts</a>
 				<a class="permalink" href="index.html#BaseRowLayoutOpts">&#xb6;</a>
 				
 				
@@ -341,12 +344,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewBodyText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=7264:7336#L231">NewBodyText</a>
+			<h2 id="NewBodyText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=7068:7153#L222">NewBodyText</a>
 				<a class="permalink" href="index.html#NewBodyText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewBodyText(title <a href="http://localhost:8888/pkg/builtin/#string">string</a>, _ <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
+			<pre>func NewBodyText(title <a href="http://localhost:8888/pkg/builtin/#string">string</a>, _ <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
 			<p>NewBodyText は本文用テキストを作成する
 
 			
@@ -355,12 +358,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewButton">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=12141:12224#L376">NewButton</a>
+			<h2 id="NewButton">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=11993:12089#L364">NewButton</a>
 				<a class="permalink" href="index.html#NewButton">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewButton(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonOpt">ButtonOpt</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Button">Button</a></pre>
+			<pre>func NewButton(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>, opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ButtonOpt">ButtonOpt</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Button">Button</a></pre>
 			<p>NewButton はボタンウィジェットを作成する
 
 			
@@ -369,12 +372,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewDescriptionText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=5655:5719#L181">NewDescriptionText</a>
+			<h2 id="NewDescriptionText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=5506:5583#L175">NewDescriptionText</a>
 				<a class="permalink" href="index.html#NewDescriptionText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewDescriptionText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
+			<pre>func NewDescriptionText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
 			<p>NewDescriptionText は説明文用テキストを作成する（小さめ、補助的）
 
 			
@@ -383,12 +386,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewFragmentText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=9162:9245#L288">NewFragmentText</a>
+			<h2 id="NewFragmentText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=8919:9015#L276">NewFragmentText</a>
 				<a class="permalink" href="index.html#NewFragmentText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewFragmentText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, textColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
+			<pre>func NewFragmentText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, textColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
 			<p>NewFragmentText は色付きログフラグメント専用のテキストを作成する（文字数分だけの幅）
 
 			
@@ -397,7 +400,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewItemGridContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=1089:1161#L33">NewItemGridContainer</a>
+			<h2 id="NewItemGridContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=1098:1170#L33">NewItemGridContainer</a>
 				<a class="permalink" href="index.html#NewItemGridContainer">&#xb6;</a>
 				
 				
@@ -411,12 +414,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewListItemText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=7689:7794#L244">NewListItemText</a>
+			<h2 id="NewListItemText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=7470:7588#L234">NewListItemText</a>
 				<a class="permalink" href="index.html#NewListItemText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewListItemText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, textColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, isSelected <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<pre>func NewListItemText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, textColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, isSelected <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
 			<p>NewListItemText はリスト項目用テキストを作成する（背景色変更で選択状態を表現）
 
 			
@@ -425,13 +428,13 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewMenuText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=4515:4573#L146">NewMenuText</a>
+			<h2 id="NewMenuText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=4435:4506#L143">NewMenuText</a>
 				<a class="permalink" href="index.html#NewMenuText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewMenuText(title <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
-			<p>NewMenuText は汎用メニューテキストを作成する（既存との互換性のため維持）
+			<pre>func NewMenuText(title <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
+			<p>NewMenuText は汎用メニューテキストを作成する
 
 			
 			
@@ -439,12 +442,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewMessageList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=10246:10332#L321">NewMessageList</a>
+			<h2 id="NewMessageList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=10132:10248#L311">NewMessageList</a>
 				<a class="permalink" href="index.html#NewMessageList">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewMessageList(entries []<a href="http://localhost:8888/pkg/builtin/#any">any</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ListOpt">ListOpt</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#List">List</a></pre>
+			<pre>func NewMessageList(entries []<a href="http://localhost:8888/pkg/builtin/#any">any</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>, screenWidth <a href="http://localhost:8888/pkg/builtin/#int">int</a>, opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#ListOpt">ListOpt</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#List">List</a></pre>
 			<p>NewMessageList はメッセージ表示用のリストウィジェットを作成する（戦闘ログなど用）
 
 			
@@ -453,12 +456,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewPageIndicator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=6035:6102#L192">NewPageIndicator</a>
+			<h2 id="NewPageIndicator">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=5863:5943#L185">NewPageIndicator</a>
 				<a class="permalink" href="index.html#NewPageIndicator">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewPageIndicator(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<pre>func NewPageIndicator(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
 			<p>NewPageIndicator は右寄せのページインジケーターを作成する
 
 			
@@ -467,7 +470,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewRowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=265:332#L3">NewRowContainer</a>
+			<h2 id="NewRowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=274:341#L3">NewRowContainer</a>
 				<a class="permalink" href="index.html#NewRowContainer">&#xb6;</a>
 				
 				
@@ -481,12 +484,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewSmallWindow">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=9678:9764#L305">NewSmallWindow</a>
+			<h2 id="NewSmallWindow">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=9411:9523#L291">NewSmallWindow</a>
 				<a class="permalink" href="index.html#NewSmallWindow">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewSmallWindow(title *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, content *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Window">Window</a></pre>
+			<pre>func NewSmallWindow(title *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, content *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, opts ...<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#WindowOpt">WindowOpt</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Window">Window</a></pre>
 			<p>NewSmallWindow は小さなウィンドウを作成する
 
 			
@@ -495,12 +498,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewSubtitleText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=5278:5339#L170">NewSubtitleText</a>
+			<h2 id="NewSubtitleText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=5152:5226#L165">NewSubtitleText</a>
 				<a class="permalink" href="index.html#NewSubtitleText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewSubtitleText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
+			<pre>func NewSubtitleText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
 			<p>NewSubtitleText はサブタイトル用テキストを作成する（中サイズ）
 
 			
@@ -509,12 +512,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewTitleText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=4902:4960#L159">NewTitleText</a>
+			<h2 id="NewTitleText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=4799:4870#L155">NewTitleText</a>
 				<a class="permalink" href="index.html#NewTitleText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewTitleText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
+			<pre>func NewTitleText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Text">Text</a></pre>
 			<p>NewTitleText はタイトル用テキストを作成する（大きめ、目立つ）
 
 			
@@ -523,7 +526,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewVSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=1759:1878#L54">NewVSplitContainer</a>
+			<h2 id="NewVSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=1768:1887#L54">NewVSplitContainer</a>
 				<a class="permalink" href="index.html#NewVSplitContainer">&#xb6;</a>
 				
 				
@@ -537,7 +540,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewVerticalContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=595:667#L16">NewVerticalContainer</a>
+			<h2 id="NewVerticalContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=604:676#L16">NewVerticalContainer</a>
 				<a class="permalink" href="index.html#NewVerticalContainer">&#xb6;</a>
 				
 				
@@ -551,7 +554,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewWSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=2434:2553#L78">NewWSplitContainer</a>
+			<h2 id="NewWSplitContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=2443:2562#L78">NewWSplitContainer</a>
 				<a class="permalink" href="index.html#NewWSplitContainer">&#xb6;</a>
 				
 				
@@ -565,12 +568,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewWindowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=3112:3168#L102">NewWindowContainer</a>
+			<h2 id="NewWindowContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=3121:3190#L102">NewWindowContainer</a>
 				<a class="permalink" href="index.html#NewWindowContainer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewWindowContainer(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<pre>func NewWindowContainer(res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
 			<p>NewWindowContainer はウィンドウの本体を作成する
 
 			
@@ -579,12 +582,12 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewWindowHeaderContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=3776:3852#L126">NewWindowHeaderContainer</a>
+			<h2 id="NewWindowHeaderContainer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=3761:3850#L124">NewWindowHeaderContainer</a>
 				<a class="permalink" href="index.html#NewWindowHeaderContainer">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewWindowHeaderContainer(title <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<pre>func NewWindowHeaderContainer(title <a href="http://localhost:8888/pkg/builtin/#string">string</a>, res *<a href="../../engine/resources/index.html">resources</a>.<a href="../../engine/resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
 			<p>NewWindowHeaderContainer はウィンドウのヘッダーを作成する
 
 			
