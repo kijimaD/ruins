@@ -20,26 +20,10 @@ type Dungeon struct {
 	ExploredTiles map[string]bool
 	// ミニマップの設定
 	Minimap MinimapSettings
-	// プレイヤーのタイル移動状態
-	PlayerTileState PlayerTileState
-}
-
-// PlayerTileState はプレイヤーのタイル移動に関する状態を管理する
-type PlayerTileState struct {
-	// プレイヤーの前回のタイル位置（重複メッセージ防止用）
-	LastTileX int
-	LastTileY int
-}
-
-// ResetPlayerTileState はプレイヤーのタイル状態をリセットする（階層移動時に使用）
-func (d *Dungeon) ResetPlayerTileState() {
-	d.PlayerTileState = PlayerTileState{
-		LastTileX: -1,
-		LastTileY: -1,
-	}
 }
 
 // Level は現在の階層
+// タイル計算メソッドを提供する
 type Level struct {
 	// 横のタイル数
 	TileWidth gc.Tile

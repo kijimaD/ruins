@@ -71,9 +71,6 @@ func (st *DungeonState) OnStart(world w.World) {
 	// フロア移動時に探索済みマップをリセット
 	gameResources.ExploredTiles = make(map[string]bool)
 
-	// プレイヤーのタイル状態をリセット（新しい階のために）
-	gameResources.ResetPlayerTileState()
-
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()
 }

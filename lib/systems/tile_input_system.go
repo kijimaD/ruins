@@ -184,22 +184,13 @@ func executeEnterAction(world w.World) {
 func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	// プレイヤーの場合のみタイルイベントをチェック
 	if entity.HasComponent(world.Components.Player) {
-		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+		gridElement := &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 
-		// プレイヤーが新しいタイルに移動した場合のみチェック
-		if tileX != gameResources.PlayerTileState.LastTileX || tileY != gameResources.PlayerTileState.LastTileY {
-			gridElement := &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+		// ワープホールのチェック
+		checkTileWarp(world, gridElement)
 
-			// ワープホールのチェック
-			checkTileWarp(world, gridElement)
-
-			// アイテムのチェック
-			checkTileItemsForGridPlayer(world, gridElement)
-
-			// 現在の位置を記録
-			gameResources.PlayerTileState.LastTileX = tileX
-			gameResources.PlayerTileState.LastTileY = tileY
-		}
+		// アイテムのチェック
+		checkTileItemsForGridPlayer(world, gridElement)
 	}
 }
 
