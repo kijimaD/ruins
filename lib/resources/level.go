@@ -21,11 +21,6 @@ type Dungeon struct {
 	MinimapSettings MinimapSettings
 }
 
-// GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
-func (d *Dungeon) GetStateEvent() StateEvent {
-	return d.stateEvent
-}
-
 // SetStateEvent はStateEventを設定する
 func (d *Dungeon) SetStateEvent(event StateEvent) {
 	d.stateEvent = event

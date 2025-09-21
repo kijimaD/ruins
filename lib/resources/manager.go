@@ -2,7 +2,6 @@ package resources
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
@@ -152,19 +151,4 @@ func (rm *DefaultResourceManager) LoadAll(_ []string, _ []string) error {
 	}
 
 	return nil
-}
-
-// GetCache は現在のキャッシュを取得する（テスト用）
-func (rm *DefaultResourceManager) GetCache() *ResourceCache {
-	return rm.cache
-}
-
-// ClearCache はキャッシュをクリアする（テスト用）
-func (rm *DefaultResourceManager) ClearCache() {
-	rm.cache = &ResourceCache{}
-}
-
-// GetResourcePath はリソースのフルパスを取得する（ヘルパー関数）
-func GetResourcePath(basePath, filename string) string {
-	return filepath.Join(basePath, filename)
 }
