@@ -145,7 +145,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
-	st.itemDesc = styled.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
+	st.itemDesc = styled.NewMenuText(" ", world.Resources.UIResources) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
 	st.specContainer = styled.NewVerticalContainer(
@@ -170,7 +170,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		// 3x3グリッドレイアウト: 9個の要素が必要
 		// 1行目
-		st.rootContainer.AddChild(styled.NewTitleText("合成", world))
+		st.rootContainer.AddChild(styled.NewTitleText("合成", world.Resources.UIResources))
 		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
 		st.rootContainer.AddChild(widget.NewContainer())
 
@@ -319,8 +319,8 @@ func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 
 // showResultWindow は合成結果ウィンドウを表示する
 func (st *CraftMenuState) showResultWindow(world w.World, entity ecs.Entity) {
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("合成結果", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("合成結果", world.Resources.UIResources)
 	st.resultWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// 結果項目を準備
@@ -353,8 +353,8 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 	// 既存のウィンドウを閉じて新しく作成
 	st.resultWindow.Close()
 
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("合成結果", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("合成結果", world.Resources.UIResources)
 	st.resultWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// アイテム詳細を表示（生成されたアイテムの値を使用）
@@ -363,7 +363,7 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 	// ボタン項目を表示
 	for i, action := range st.resultItems {
 		isSelected := i == st.resultFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world)
+		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 
@@ -387,7 +387,7 @@ func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entit
 					color = colors.DangerColor
 				}
 
-				st.recipeList.AddChild(styled.NewBodyText(str, color, world))
+				st.recipeList.AddChild(styled.NewBodyText(str, color, world.Resources.UIResources))
 			}
 		}
 	}))
@@ -395,8 +395,8 @@ func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entit
 
 // showActionWindow はアクションウィンドウを表示する
 func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world.Resources.UIResources)
 	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	name := world.Components.Name.Get(entity).(*gc.Name)
@@ -435,14 +435,14 @@ func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
 	// 既存のウィンドウを閉じて新しく作成
 	st.actionWindow.Close()
 
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world.Resources.UIResources)
 	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world)
+		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 
@@ -615,11 +615,11 @@ func (st *CraftMenuState) updateCategoryDisplay(world w.World) {
 		isSelected := i == currentTabIndex
 		if isSelected {
 			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.TextColor, true, world)
+			categoryWidget := styled.NewListItemText(tab.Label, colors.TextColor, true, world.Resources.UIResources)
 			st.categoryContainer.AddChild(categoryWidget)
 		} else {
 			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.ForegroundColor, false, world)
+			categoryWidget := styled.NewListItemText(tab.Label, colors.ForegroundColor, false, world.Resources.UIResources)
 			st.categoryContainer.AddChild(categoryWidget)
 		}
 	}
@@ -634,13 +634,13 @@ func (st *CraftMenuState) updateTabDisplay(world w.World) {
 	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
 
 	// タブ名を表示（サブタイトルとして）
-	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
+	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world.Resources.UIResources)
 	st.tabDisplayContainer.AddChild(tabNameText)
 
 	// ページインジケーターを表示
 	pageText := st.tabMenu.GetPageIndicatorText()
 	if pageText != "" {
-		pageIndicator := styled.NewPageIndicator(pageText, world)
+		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 
@@ -653,18 +653,18 @@ func (st *CraftMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world)
+			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world)
+			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}
 
 	// アイテムがない場合の表示
 	if len(currentTab.Items) == 0 {
-		emptyText := styled.NewDescriptionText("(アイテムなし)", world)
+		emptyText := styled.NewDescriptionText("(アイテムなし)", world.Resources.UIResources)
 		st.tabDisplayContainer.AddChild(emptyText)
 	}
 }

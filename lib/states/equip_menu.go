@@ -149,7 +149,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
-	st.itemDesc = styled.NewMenuText(" ", world) // 空文字だと初期状態の縦サイズがなくなる
+	st.itemDesc = styled.NewMenuText(" ", world.Resources.UIResources) // 空文字だと初期状態の縦サイズがなくなる
 	itemDescContainer.AddChild(st.itemDesc)
 
 	st.specContainer = styled.NewVerticalContainer(
@@ -172,7 +172,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	{
 		// 3x3グリッドレイアウト: 9個の要素が必要
 		// 1行目
-		st.rootContainer.AddChild(styled.NewTitleText("装備", world))
+		st.rootContainer.AddChild(styled.NewTitleText("装備", world.Resources.UIResources))
 		st.rootContainer.AddChild(widget.NewContainer()) // 空
 		st.rootContainer.AddChild(widget.NewContainer()) // 空
 
@@ -345,13 +345,13 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
 
 	// タブ名を表示（サブタイトルとして）
-	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world)
+	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world.Resources.UIResources)
 	st.tabDisplayContainer.AddChild(tabNameText)
 
 	// ページインジケーターを表示
 	pageText := st.tabMenu.GetPageIndicatorText()
 	if pageText != "" {
-		pageIndicator := styled.NewPageIndicator(pageText, world)
+		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 
@@ -364,18 +364,18 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world)
+			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world)
+			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}
 
 	// アイテムがない場合の表示
 	if len(currentTab.Items) == 0 {
-		emptyText := styled.NewDescriptionText("(アイテムなし)", world)
+		emptyText := styled.NewDescriptionText("(アイテムなし)", world.Resources.UIResources)
 		st.tabDisplayContainer.AddChild(emptyText)
 	}
 }
@@ -417,12 +417,12 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	views.AddMemberStatusText(st.abilityContainer, player, world)
 
 	attrs := world.Components.Attributes.Get(player).(*gc.Attributes)
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world.Resources.UIResources))
 }
 
 // 装備可能な防具を取得する
@@ -457,8 +457,8 @@ func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
 
 // showActionWindow はアクションウィンドウを表示する
 func (st *EquipMenuState) showActionWindow(world w.World, userData map[string]interface{}) {
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world.Resources.UIResources)
 	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// アクション項目を準備
@@ -496,14 +496,14 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 	// 既存のウィンドウを閉じて新しく作成
 	st.actionWindow.Close()
 
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world.Resources.UIResources)
 	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world)
+		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 

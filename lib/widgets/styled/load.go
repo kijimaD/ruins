@@ -29,7 +29,7 @@ func LoadButtonImage() *widget.ButtonImage {
 // LoadFont はフォントを読み込む
 // TODO: いい感じにしたい
 func LoadFont(world w.World) *text.Face {
-	face := (*world.Resources.DefaultFaces)["kappa"]
+	face := (*world.Resources.Faces)["kappa"]
 
 	return &face
 }

@@ -1,7 +1,6 @@
 package hud
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -61,11 +60,9 @@ func (minimap *Minimap) Draw(screen *ebiten.Image, data MinimapData) {
 	centerY := minimapY + minimapHeight/2
 
 	// 探索済みタイルを描画
-	for tileKey := range data.ExploredTiles {
-		var tileX, tileY int
-		if _, err := fmt.Sscanf(tileKey, "%d,%d", &tileX, &tileY); err != nil {
-			continue
-		}
+	for gridElement := range data.ExploredTiles {
+		tileX := int(gridElement.X)
+		tileY := int(gridElement.Y)
 
 		// プレイヤー位置からの相対位置を計算
 		relativeX := tileX - data.PlayerTileX
@@ -81,7 +78,7 @@ func (minimap *Minimap) Draw(screen *ebiten.Image, data MinimapData) {
 			mapY >= float32(minimapY) && mapY <= float32(minimapY+minimapHeight-minimapScale) {
 
 			// タイル色情報を取得
-			if colorInfo, exists := data.TileColors[tileKey]; exists {
+			if colorInfo, exists := data.TileColors[gridElement]; exists {
 				tileColor := color.RGBA{colorInfo.R, colorInfo.G, colorInfo.B, colorInfo.A}
 				vector.DrawFilledRect(screen, mapX, mapY, float32(minimapScale), float32(minimapScale), tileColor, false)
 			}

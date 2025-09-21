@@ -11,6 +11,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/consts"
+	"github.com/kijimaD/ruins/lib/engine/loader"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gr "github.com/kijimaD/ruins/lib/resources"
@@ -25,9 +27,8 @@ type MainGame struct {
 
 // Layout はinterface methodのため、シグネチャは変更できない
 func (game *MainGame) Layout(_, _ int) (int, int) {
-	x, y := gr.UpdateGameLayout(game.World)
-
-	return int(x), int(y)
+	// TODO: 解像度変更は未実装
+	return consts.MinGameWidth, consts.MinGameHeight
 }
 
 // Update はゲームの更新処理を行う
@@ -113,45 +114,45 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
-	// ResourceManagerを使用してリソースを読み込む
-	resourceManager := gr.NewDefaultResourceManager()
+	// ResourceLoaderを使用してリソースを読み込む
+	resourceLoader := loader.NewDefaultResourceLoader()
 
 	// Load sprite sheets
-	spriteSheets, err := resourceManager.LoadSpriteSheets()
+	spriteSheets, err := resourceLoader.LoadSpriteSheets()
 	if err != nil {
 		return w.World{}, err
 	}
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts
-	fonts, err := resourceManager.LoadFonts()
+	fonts, err := resourceLoader.LoadFonts()
 	if err != nil {
 		return w.World{}, err
 	}
 	world.Resources.Fonts = &fonts
 
-	defaultFont := (*world.Resources.Fonts)["kappa"]
-	world.Resources.DefaultFaces = &map[string]text.Face{
-		"kappa": defaultFont.Font,
+	font := (*world.Resources.Fonts)["kappa"]
+	world.Resources.Faces = &map[string]text.Face{
+		"kappa": font.Font,
 	}
 
 	// load UI resources
-	uir, err := er.NewUIResources(defaultFont.FaceSource)
+	uir, err := er.NewUIResources(font.FaceSource)
 	if err != nil {
 		return w.World{}, err
 	}
 	world.Resources.UIResources = uir
 
 	// load raws
-	rw, err := resourceManager.LoadRaws()
+	rw, err := resourceLoader.LoadRaws()
 	if err != nil {
 		return w.World{}, err
 	}
 	world.Resources.RawMaster = rw
 
 	gameResource := &gr.Dungeon{
-		ExploredTiles: make(map[string]bool),
-		Minimap: gr.MinimapSettings{
+		ExploredTiles: make(map[gc.GridElement]bool),
+		MinimapSettings: gr.MinimapSettings{
 			Width:   150,
 			Height:  150,
 			OffsetX: 10,

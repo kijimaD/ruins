@@ -87,9 +87,9 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		// 視界内のタイルを探索済みとしてマーク
 		for _, tileData := range visibilityData {
 			if tileData.Visible {
-				// X,Y形式で統一（他の箇所と形式を合わせる）
-				tileKey := fmt.Sprintf("%d,%d", tileData.Col, tileData.Row)
-				gameResources.ExploredTiles[tileKey] = true
+				// GridElementを直接キーとして使用
+				gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
+				gameResources.ExploredTiles[gridElement] = true
 			}
 		}
 
@@ -347,6 +347,7 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 	for tileX := startTileX; tileX <= endTileX; tileX++ {
 		for tileY := startTileY; tileY <= endTileY; tileY++ {
 			tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
+			gridElement := gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 
 			var darkness float64
 
@@ -361,7 +362,7 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 				}
 			} else {
 				// 視界範囲外: 探索済みかチェック
-				if explored := gameResources.ExploredTiles[tileKey]; explored {
+				if explored := gameResources.ExploredTiles[gridElement]; explored {
 					// 探索済み視界外タイル: 真っ黒
 					darkness = 1.0
 				} else {

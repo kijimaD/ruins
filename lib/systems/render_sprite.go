@@ -129,7 +129,7 @@ func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[str
 			tileKey := fmt.Sprintf("%d,%d", gridElement.X, gridElement.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
 				// 探索済みかどうかもチェック
-				if !gameResources.ExploredTiles[tileKey] {
+				if !gameResources.ExploredTiles[*gridElement] {
 					continue // 未探索かつ視界外のタイルは描画しない
 				}
 			}
@@ -191,7 +191,7 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 			tileKey := fmt.Sprintf("%d,%d", grid.X, grid.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
 				// 探索済みかどうかもチェック
-				if !gameResources.ExploredTiles[tileKey] {
+				if !gameResources.ExploredTiles[*grid] {
 					return // 未探索かつ視界外の影は描画しない
 				}
 			}

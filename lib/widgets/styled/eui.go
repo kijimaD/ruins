@@ -6,7 +6,7 @@ import (
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/kijimaD/ruins/lib/colors"
-	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/engine/resources"
 )
 
 // NewRowContainer は汎用的なrowコンテナを作成する
@@ -109,9 +109,7 @@ func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ..
 }
 
 // NewWindowContainer はウィンドウの本体を作成する
-func NewWindowContainer(world w.World) *widget.Container {
-	res := world.Resources.UIResources
-
+func NewWindowContainer(res *resources.UIResources) *widget.Container {
 	return widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
@@ -133,8 +131,7 @@ func NewWindowContainer(world w.World) *widget.Container {
 }
 
 // NewWindowHeaderContainer はウィンドウのヘッダーを作成する
-func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
-	res := world.Resources.UIResources
+func NewWindowHeaderContainer(title string, res *resources.UIResources) *widget.Container {
 	container := widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.TitleBar),
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
@@ -152,9 +149,8 @@ func NewWindowHeaderContainer(title string, world w.World) *widget.Container {
 
 // text ================
 
-// NewMenuText は汎用メニューテキストを作成する（既存との互換性のため維持）
-func NewMenuText(title string, world w.World) *widget.Text {
-	res := world.Resources.UIResources
+// NewMenuText は汎用メニューテキストを作成する
+func NewMenuText(title string, res *resources.UIResources) *widget.Text {
 	text := widget.NewText(
 		widget.TextOpts.Text(title, res.Text.Face, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
@@ -166,8 +162,7 @@ func NewMenuText(title string, world w.World) *widget.Text {
 }
 
 // NewTitleText はタイトル用テキストを作成する（大きめ、目立つ）
-func NewTitleText(text string, world w.World) *widget.Text {
-	res := world.Resources.UIResources
+func NewTitleText(text string, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
 		widget.TextOpts.Text(text, res.Text.TitleFace, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
@@ -177,8 +172,7 @@ func NewTitleText(text string, world w.World) *widget.Text {
 }
 
 // NewSubtitleText はサブタイトル用テキストを作成する（中サイズ）
-func NewSubtitleText(text string, world w.World) *widget.Text {
-	res := world.Resources.UIResources
+func NewSubtitleText(text string, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
 		widget.TextOpts.Text(text, res.Text.Face, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
@@ -188,8 +182,7 @@ func NewSubtitleText(text string, world w.World) *widget.Text {
 }
 
 // NewDescriptionText は説明文用テキストを作成する（小さめ、補助的）
-func NewDescriptionText(text string, world w.World) *widget.Text {
-	res := world.Resources.UIResources
+func NewDescriptionText(text string, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
 		widget.TextOpts.Text(text, res.Text.SmallFace, colors.ForegroundColor),
 		widget.TextOpts.WidgetOpts(
@@ -199,9 +192,7 @@ func NewDescriptionText(text string, world w.World) *widget.Text {
 }
 
 // NewPageIndicator は右寄せのページインジケーターを作成する
-func NewPageIndicator(text string, world w.World) *widget.Container {
-	res := world.Resources.UIResources
-
+func NewPageIndicator(text string, res *resources.UIResources) *widget.Container {
 	// 透明な背景のコンテナを作成（NewListItemTextと同じパターン）
 	backgroundColor := image.NewNineSliceColor(colors.TransparentColor)
 
@@ -238,8 +229,7 @@ func NewPageIndicator(text string, world w.World) *widget.Container {
 }
 
 // NewBodyText は本文用テキストを作成する
-func NewBodyText(title string, _ color.RGBA, world w.World) *widget.Text {
-	res := world.Resources.UIResources
+func NewBodyText(title string, _ color.RGBA, res *resources.UIResources) *widget.Text {
 	text := widget.NewText(
 		widget.TextOpts.Text(title, res.Text.Face, colors.TextColor),
 		widget.TextOpts.WidgetOpts(
@@ -251,9 +241,7 @@ func NewBodyText(title string, _ color.RGBA, world w.World) *widget.Text {
 }
 
 // NewListItemText はリスト項目用テキストを作成する（背景色変更で選択状態を表現）
-func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w.World) *widget.Container {
-	res := world.Resources.UIResources
-
+func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *resources.UIResources) *widget.Container {
 	var backgroundColor *image.NineSlice
 	if isSelected {
 		// 選択中は背景色を付ける
@@ -295,9 +283,7 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, world w
 }
 
 // NewFragmentText は色付きログフラグメント専用のテキストを作成する（文字数分だけの幅）
-func NewFragmentText(text string, textColor color.RGBA, world w.World) *widget.Text {
-	res := world.Resources.UIResources
-
+func NewFragmentText(text string, textColor color.RGBA, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
 		widget.TextOpts.Text(text, res.Text.Face, textColor),
 		widget.TextOpts.WidgetOpts(
@@ -312,8 +298,9 @@ func NewFragmentText(text string, textColor color.RGBA, world w.World) *widget.T
 // window ================
 
 // NewSmallWindow は小さなウィンドウを作成する
-func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.Window {
-	return widget.NewWindow(
+func NewSmallWindow(title *widget.Container, content *widget.Container, opts ...widget.WindowOpt) *widget.Window {
+	// デフォルトのオプション
+	defaultOpts := []widget.WindowOpt{
 		widget.WindowOpts.Contents(content),
 		widget.WindowOpts.TitleBar(title, 25),
 		widget.WindowOpts.Modal(),
@@ -322,19 +309,20 @@ func NewSmallWindow(title *widget.Container, content *widget.Container) *widget.
 		widget.WindowOpts.Resizeable(),
 		widget.WindowOpts.MinSize(200, 200),
 		widget.WindowOpts.MaxSize(650, 550),
-	)
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	return widget.NewWindow(allOpts...)
 }
 
 // list ================
 
 // NewMessageList はメッセージ表示用のリストウィジェットを作成する（戦闘ログなど用）
-func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widget.List {
-	res := world.Resources.UIResources
-
+func NewMessageList(entries []any, res *resources.UIResources, screenWidth int, opts ...widget.ListOpt) *widget.List {
 	// メッセージ表示用のデフォルトオプション
 	defaultOpts := []widget.ListOpt{
 		widget.ListOpts.ContainerOpts(widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(world.Resources.ScreenDimensions.Width-100, 280),
+			widget.WidgetOpts.MinSize(screenWidth-100, 280),
 			widget.WidgetOpts.LayoutData(widget.GridLayoutData{
 				HorizontalPosition: widget.GridLayoutPositionCenter,
 				VerticalPosition:   widget.GridLayoutPositionEnd,
@@ -383,8 +371,7 @@ func NewMessageList(entries []any, world w.World, opts ...widget.ListOpt) *widge
 // button ================
 
 // NewButton はボタンウィジェットを作成する
-func NewButton(text string, world w.World, opts ...widget.ButtonOpt) *widget.Button {
-	res := world.Resources.UIResources
+func NewButton(text string, res *resources.UIResources, opts ...widget.ButtonOpt) *widget.Button {
 	return widget.NewButton(
 		append([]widget.ButtonOpt{
 			widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{

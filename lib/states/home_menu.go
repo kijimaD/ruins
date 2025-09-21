@@ -197,7 +197,7 @@ func (st *HomeMenuState) updateActionDescription(world w.World, index int) {
 	}
 
 	st.actionDescContainer.RemoveChildren()
-	st.actionDescContainer.AddChild(styled.NewMenuText(items[index].Description, world))
+	st.actionDescContainer.AddChild(styled.NewMenuText(items[index].Description, world.Resources.UIResources))
 	st.updateMemberContainer(world)
 }
 
@@ -210,7 +210,7 @@ func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	st.actionDescContainer = styled.NewRowContainer()
-	st.actionDescContainer.AddChild(styled.NewMenuText(" ", world))
+	st.actionDescContainer.AddChild(styled.NewMenuText(" ", world.Resources.UIResources))
 
 	// メニューのUIを構築してコンテナに追加
 	menuContainer := st.uiBuilder.BuildUI(st.menu)

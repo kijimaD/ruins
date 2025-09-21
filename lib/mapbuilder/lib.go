@@ -7,7 +7,6 @@ import (
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -233,7 +232,6 @@ func NewBuilderChain(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 			Level: resources.Level{
 				TileWidth:  width,
 				TileHeight: height,
-				TileSize:   consts.TileSize,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
 			Tiles:        tiles,

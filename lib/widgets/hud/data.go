@@ -1,5 +1,7 @@
 package hud
 
+import gc "github.com/kijimaD/ruins/lib/components"
+
 // Data はすべてのHUDウィジェットが必要とするデータを統合する
 type Data struct {
 	GameInfo     GameInfoData
@@ -25,12 +27,12 @@ type GameInfoData struct {
 
 // MinimapData はミニマップ描画に必要なデータ
 type MinimapData struct {
-	PlayerTileX      int                      // プレイヤーのタイル座標X
-	PlayerTileY      int                      // プレイヤーのタイル座標Y
-	ExploredTiles    map[string]bool          // 探索済みタイル
-	TileColors       map[string]TileColorInfo // タイル色情報
-	MinimapConfig    MinimapConfig            // ミニマップ設定
-	ScreenDimensions ScreenDimensions         // 画面サイズ
+	PlayerTileX      int                              // プレイヤーのタイル座標X
+	PlayerTileY      int                              // プレイヤーのタイル座標Y
+	ExploredTiles    map[gc.GridElement]bool          // 探索済みタイル
+	TileColors       map[gc.GridElement]TileColorInfo // タイル色情報
+	MinimapConfig    MinimapConfig                    // ミニマップ設定
+	ScreenDimensions ScreenDimensions                 // 画面サイズ
 }
 
 // TileColorInfo はタイルの色情報

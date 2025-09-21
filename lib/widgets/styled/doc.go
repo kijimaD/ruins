@@ -45,15 +45,18 @@
 //
 // styledパッケージの典型的な使用例：
 //
+//	// UIResourcesを取得
+//	res := world.Resources.UIResources
+//
 //	// 基本的なレイアウト構築
 //	container := styled.NewVerticalContainer()
 //
 //	// プロジェクトスタイルのボタン作成
-//	button := styled.NewButton("クリック", world)
+//	button := styled.NewButton("クリック", res)
 //	container.AddChild(button)
 //
 //	// ゲーム固有スタイルのテキスト
-//	title := styled.NewMenuText("タイトル", world)
+//	title := styled.NewMenuText("タイトル", res)
 //	container.AddChild(title)
 //
 //	// 分割レイアウト

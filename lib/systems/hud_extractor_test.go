@@ -119,8 +119,8 @@ func TestExtractMinimapData(t *testing.T) {
 
 	// ゲームリソースを設定
 	dungeonResource := world.Resources.Dungeon.(*resources.Dungeon)
-	dungeonResource.ExploredTiles = make(map[string]bool)
-	dungeonResource.Minimap = resources.MinimapSettings{
+	dungeonResource.ExploredTiles = make(map[gc.GridElement]bool)
+	dungeonResource.MinimapSettings = resources.MinimapSettings{
 		Width:  200,
 		Height: 200,
 		Scale:  2,
@@ -132,9 +132,9 @@ func TestExtractMinimapData(t *testing.T) {
 	playerEntity.AddComponent(world.Components.Player, &gc.Player{})
 
 	// 探索済みタイルを設定
-	dungeonResource.ExploredTiles["10,15"] = true // プレイヤー位置
-	dungeonResource.ExploredTiles["9,15"] = true  // 左のタイル
-	dungeonResource.ExploredTiles["11,15"] = true // 右のタイル
+	dungeonResource.ExploredTiles[gc.GridElement{X: 10, Y: 15}] = true // プレイヤー位置
+	dungeonResource.ExploredTiles[gc.GridElement{X: 9, Y: 15}] = true  // 左のタイル
+	dungeonResource.ExploredTiles[gc.GridElement{X: 11, Y: 15}] = true // 右のタイル
 
 	// 画面リソースを設定
 	screenDimensions := &engineResources.ScreenDimensions{
@@ -165,11 +165,13 @@ func TestExtractMinimapData(t *testing.T) {
 	assert.Equal(t, 2, minimapData.MinimapConfig.Scale, "ミニマップスケールが正しくない")
 
 	// タイル色が正しく設定されているか確認
-	require.Contains(t, minimapData.TileColors, "9,15", "壁タイルの色情報がない")
-	require.Contains(t, minimapData.TileColors, "11,15", "床タイルの色情報がない")
+	wallGrid := gc.GridElement{X: 9, Y: 15}
+	floorGrid := gc.GridElement{X: 11, Y: 15}
+	require.Contains(t, minimapData.TileColors, wallGrid, "壁タイルの色情報がない")
+	require.Contains(t, minimapData.TileColors, floorGrid, "床タイルの色情報がない")
 
-	wallColor := minimapData.TileColors["9,15"]
-	floorColor := minimapData.TileColors["11,15"]
+	wallColor := minimapData.TileColors[wallGrid]
+	floorColor := minimapData.TileColors[floorGrid]
 
 	assert.Equal(t, uint8(100), wallColor.R, "壁の赤色成分が正しくない")
 	assert.Equal(t, uint8(100), wallColor.G, "壁の緑色成分が正しくない")

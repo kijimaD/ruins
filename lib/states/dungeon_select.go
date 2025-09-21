@@ -144,7 +144,7 @@ func (st *DungeonSelectState) updateActionDescription(world w.World, index int) 
 	}
 
 	st.dungeonDescContainer.RemoveChildren()
-	st.dungeonDescContainer.AddChild(styled.NewMenuText(items[index].Description, world))
+	st.dungeonDescContainer.AddChild(styled.NewMenuText(items[index].Description, world.Resources.UIResources))
 }
 
 func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
@@ -160,7 +160,7 @@ func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
 
 	// 説明文用のコンテナ
 	st.dungeonDescContainer = styled.NewVerticalContainer()
-	st.dungeonDescContainer.AddChild(styled.NewMenuText(" ", world))
+	st.dungeonDescContainer.AddChild(styled.NewMenuText(" ", world.Resources.UIResources))
 
 	// 左側にメニュー、右側に説明文を配置
 	horizontalContainer.AddChild(
