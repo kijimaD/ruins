@@ -190,7 +190,7 @@ func (widget *Widget) createColoredLogContainer(entries []gamelog.LogEntry) *eui
 			fragmentWidget := styled.NewFragmentText(
 				fragment.Text,
 				fragment.Color, // フラグメント固有の色を使用
-				widget.world,
+				widget.world.Resources.UIResources,
 			)
 			entryContainer.AddChild(fragmentWidget)
 		}
@@ -200,7 +200,7 @@ func (widget *Widget) createColoredLogContainer(entries []gamelog.LogEntry) *eui
 
 	// エントリがない場合
 	if len(entries) == 0 {
-		placeholderWidget := styled.NewListItemText("ログメッセージなし", colors.ForegroundColor, false, widget.world)
+		placeholderWidget := styled.NewListItemText("ログメッセージなし", colors.ForegroundColor, false, widget.world.Resources.UIResources)
 		logContainer.AddChild(placeholderWidget)
 	}
 

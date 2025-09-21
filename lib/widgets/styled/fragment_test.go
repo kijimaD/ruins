@@ -26,9 +26,7 @@ func TestNewFragmentText(t *testing.T) {
 	text := "テストテキスト"
 	color := colors.ColorRed
 
-	// この関数呼び出しは、UIリソースがない場合はパニックするが、
-	// 関数自体が正しく定義されていることを確認
-	NewFragmentText(text, color, world)
+	NewFragmentText(text, color, world.Resources.UIResources)
 
 	t.Log("NewFragmentText function exists and can be called")
 }

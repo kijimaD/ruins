@@ -73,8 +73,8 @@ func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 
-	windowContainer := styled.NewWindowContainer(world)
-	titleContainer := styled.NewWindowHeaderContainer("GAME OVER", world)
+	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
+	titleContainer := styled.NewWindowHeaderContainer("GAME OVER", world.Resources.UIResources)
 	gameOverWindow := styled.NewSmallWindow(
 		titleContainer,
 		windowContainer,
@@ -82,10 +82,10 @@ func (st *GameOverState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	// コンテンツを追加
-	gameOverText := styled.NewTitleText("死亡した。", world)
+	gameOverText := styled.NewTitleText("死亡した。", world.Resources.UIResources)
 	windowContainer.AddChild(gameOverText)
 
-	instructionText := styled.NewDescriptionText("Enterキーを押してメインメニューに戻る", world)
+	instructionText := styled.NewDescriptionText("Enterキーを押してメインメニューに戻る", world.Resources.UIResources)
 	windowContainer.AddChild(instructionText)
 
 	// ウィンドウを中央に配置
