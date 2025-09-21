@@ -18,7 +18,7 @@ type Dungeon struct {
 	// 探索済みタイルのマップ（キー: "x,y", 値: true）
 	ExploredTiles map[string]bool
 	// ミニマップの設定
-	Minimap MinimapSettings
+	MinimapSettings MinimapSettings
 }
 
 // GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）

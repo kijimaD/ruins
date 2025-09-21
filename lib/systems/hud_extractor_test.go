@@ -120,7 +120,7 @@ func TestExtractMinimapData(t *testing.T) {
 	// ゲームリソースを設定
 	dungeonResource := world.Resources.Dungeon.(*resources.Dungeon)
 	dungeonResource.ExploredTiles = make(map[string]bool)
-	dungeonResource.Minimap = resources.MinimapSettings{
+	dungeonResource.MinimapSettings = resources.MinimapSettings{
 		Width:  200,
 		Height: 200,
 		Scale:  2,

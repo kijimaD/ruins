@@ -133,9 +133,9 @@ func extractMinimapData(world w.World) hud.MinimapData {
 		ExploredTiles: gameResources.ExploredTiles,
 		TileColors:    tileColors,
 		MinimapConfig: hud.MinimapConfig{
-			Width:  gameResources.Minimap.Width,
-			Height: gameResources.Minimap.Height,
-			Scale:  gameResources.Minimap.Scale,
+			Width:  gameResources.MinimapSettings.Width,
+			Height: gameResources.MinimapSettings.Height,
+			Scale:  gameResources.MinimapSettings.Scale,
 		},
 		ScreenDimensions: screenDimensions,
 	}

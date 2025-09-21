@@ -151,7 +151,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 
 	gameResource := &gr.Dungeon{
 		ExploredTiles: make(map[string]bool),
-		Minimap: gr.MinimapSettings{
+		MinimapSettings: gr.MinimapSettings{
 			Width:   150,
 			Height:  150,
 			OffsetX: 10,
