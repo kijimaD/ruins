@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -31,9 +30,6 @@ type Level struct {
 	TileHeight gc.Tile
 	// タイルエンティティ群
 	Entities []ecs.Entity
-	// 視界を表現する黒背景
-	// 階層移動でリセットされる
-	VisionImage *ebiten.Image
 }
 
 // XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
