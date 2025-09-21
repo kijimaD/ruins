@@ -151,8 +151,8 @@ func TestResourceIntegration(t *testing.T) {
 		assert.NotEmpty(t, fonts, "フォントが空")
 
 		// デフォルトフォントの確認
-		assert.NotNil(t, world.Resources.DefaultFaces, "デフォルトフェイスが設定されていない")
-		defaultFaces := *world.Resources.DefaultFaces
+		assert.NotNil(t, world.Resources.Faces, "デフォルトフェイスが設定されていない")
+		defaultFaces := *world.Resources.Faces
 		assert.Contains(t, defaultFaces, "kappa", "kappaフォントが設定されていない")
 
 		// UIリソースの確認
@@ -171,7 +171,7 @@ func TestResourceIntegration(t *testing.T) {
 
 		// フォントとフェイスの整合性
 		fonts := *world.Resources.Fonts
-		defaultFaces := *world.Resources.DefaultFaces
+		defaultFaces := *world.Resources.Faces
 
 		if kappaFont, exists := fonts["kappa"]; exists {
 			assert.NotNil(t, kappaFont.Font, "kappaフォントのFontフィールドがnil")
@@ -210,7 +210,7 @@ func validateResourceLoading(t *testing.T, world ew.World) {
 	}{
 		{"SpriteSheets", world.Resources.SpriteSheets},
 		{"Fonts", world.Resources.Fonts},
-		{"DefaultFaces", world.Resources.DefaultFaces},
+		{"DefaultFaces", world.Resources.Faces},
 		{"UIResources", world.Resources.UIResources},
 		{"RawMaster", world.Resources.RawMaster},
 		{"Game", world.Resources.Dungeon},

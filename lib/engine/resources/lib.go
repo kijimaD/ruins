@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/kijimaD/ruins/lib/components"
 )
@@ -11,10 +10,7 @@ type Resources struct {
 	ScreenDimensions *ScreenDimensions
 	SpriteSheets     *map[string]components.SpriteSheet
 	Fonts            *map[string]Font
-	DefaultFaces     *map[string]text.Face
-	AudioContext     *audio.Context
-	AudioPlayers     *map[string]*audio.Player
-	Prefabs          interface{}
+	Faces            *map[string]text.Face
 	Dungeon          interface{}
 	RawMaster        interface{}
 	UIResources      *UIResources

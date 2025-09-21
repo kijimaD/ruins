@@ -87,7 +87,7 @@ func (st *IntroState) OnStart(world w.World) {
 	// UIBuilderを初期化
 	res := world.Resources.UIResources
 	uiConfig := typewriter.DefaultUIConfig()
-	uiConfig.TextFace = (*world.Resources.DefaultFaces)["kappa"]
+	uiConfig.TextFace = (*world.Resources.Faces)["kappa"]
 	uiConfig.TextColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 	if res != nil {
 		uiConfig.ArrowImage = res.ComboButton.Graphic
@@ -230,7 +230,7 @@ func (st *IntroState) updateMessageContainer(world w.World) {
 
 	// フォールバック: 従来のテキスト表示
 	textWidget := widget.NewText(
-		widget.TextOpts.Text(st.currentText, (*world.Resources.DefaultFaces)["kappa"], color.RGBA{R: 255, G: 255, B: 255, A: 255}),
+		widget.TextOpts.Text(st.currentText, (*world.Resources.Faces)["kappa"], color.RGBA{R: 255, G: 255, B: 255, A: 255}),
 		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
 	)
 
