@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
@@ -22,7 +21,6 @@ func createTestBuildData(width, height int) *BuilderMap {
 		Level: resources.Level{
 			TileWidth:  gc.Tile(width),
 			TileHeight: gc.Tile(height),
-			TileSize:   consts.TileSize,
 		},
 		Tiles: tiles,
 	}

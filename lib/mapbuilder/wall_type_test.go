@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/resources"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -17,7 +16,6 @@ func TestBuildData_GetWallType(t *testing.T) {
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
-			TileSize:   consts.TileSize,
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]Tile, int(width)*int(height)),
@@ -100,7 +98,6 @@ func TestBuildData_GetWallType_WithWarpTiles(t *testing.T) {
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
-			TileSize:   consts.TileSize,
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]Tile, int(width)*int(height)),

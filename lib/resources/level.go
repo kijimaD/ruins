@@ -3,6 +3,7 @@ package resources
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -44,8 +45,6 @@ type Level struct {
 	TileWidth gc.Tile
 	// 縦のタイル数
 	TileHeight gc.Tile
-	// 1タイルあたりのピクセル数。タイルは正方形のため、縦横で同じピクセル数になる
-	TileSize gc.Pixel
 	// タイルエンティティ群
 	Entities []ecs.Entity
 	// 視界を表現する黒背景
@@ -68,8 +67,8 @@ func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
 
 // AtEntity はxy座標から、該当するエンティティを求める
 func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
-	tx := gc.Tile(int(x) / int(l.TileSize))
-	ty := gc.Tile(int(y) / int(l.TileSize))
+	tx := gc.Tile(int(x) / int(consts.TileSize))
+	ty := gc.Tile(int(y) / int(consts.TileSize))
 	idx := l.XYTileIndex(tx, ty)
 
 	return l.Entities[idx]
@@ -77,12 +76,12 @@ func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
 
 // Width はステージ幅。横の全体ピクセル数
 func (l *Level) Width() gc.Pixel {
-	return gc.Pixel(int(l.TileWidth) * int(l.TileSize))
+	return gc.Pixel(int(l.TileWidth) * int(consts.TileSize))
 }
 
 // Height はステージ縦。縦の全体ピクセル数
 func (l *Level) Height() gc.Pixel {
-	return gc.Pixel(int(l.TileHeight) * int(l.TileSize))
+	return gc.Pixel(int(l.TileHeight) * int(consts.TileSize))
 }
 
 // GetStateEvent はStateEventを読み取り専用で取得する（クリアしない）
