@@ -1,4 +1,4 @@
-package resources
+package loader
 
 import (
 	"fmt"
@@ -10,8 +10,8 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 )
 
-// ResourceManager はすべてのリソースの読み込みを統括するインターフェース
-type ResourceManager interface {
+// ResourceLoader はすべてのリソースの読み込みを統括するインターフェース
+type ResourceLoader interface {
 	// フォント関連
 	LoadFonts() (map[string]er.Font, error)
 	// スプライトシート関連
@@ -22,8 +22,8 @@ type ResourceManager interface {
 	LoadAll(axes []string, actions []string) error
 }
 
-// DefaultResourceManager はResourceManagerのデフォルト実装
-type DefaultResourceManager struct {
+// DefaultResourceLoader はResourceLoaderのデフォルト実装
+type DefaultResourceLoader struct {
 	// 設定ファイルのパス
 	config ResourceConfig
 	// キャッシュされたリソース
@@ -44,17 +44,17 @@ type ResourceCache struct {
 	RawMaster    *raw.Master
 }
 
-// NewResourceManager は新しいResourceManagerを作成する
-func NewResourceManager(config ResourceConfig) ResourceManager {
-	return &DefaultResourceManager{
+// NewResourceLoader は新しいResourceLoaderを作成する
+func NewResourceLoader(config ResourceConfig) ResourceLoader {
+	return &DefaultResourceLoader{
 		config: config,
 		cache:  &ResourceCache{},
 	}
 }
 
-// NewDefaultResourceManager はデフォルトのパス設定でResourceManagerを作成する
-func NewDefaultResourceManager() ResourceManager {
-	return NewResourceManager(ResourceConfig{
+// NewDefaultResourceLoader はデフォルトのパス設定でResourceLoaderを作成する
+func NewDefaultResourceLoader() ResourceLoader {
+	return NewResourceLoader(ResourceConfig{
 		FontsPath:        "metadata/fonts/fonts.toml",
 		SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
 		RawsPath:         "metadata/entities/raw/raw.toml",
@@ -62,10 +62,10 @@ func NewDefaultResourceManager() ResourceManager {
 }
 
 // LoadFonts はフォントリソースを読み込む
-func (rm *DefaultResourceManager) LoadFonts() (map[string]er.Font, error) {
+func (rl *DefaultResourceLoader) LoadFonts() (map[string]er.Font, error) {
 	// キャッシュがあれば返す
-	if rm.cache.Fonts != nil {
-		return rm.cache.Fonts, nil
+	if rl.cache.Fonts != nil {
+		return rl.cache.Fonts, nil
 	}
 
 	type fontMetadata struct {
@@ -73,7 +73,7 @@ func (rm *DefaultResourceManager) LoadFonts() (map[string]er.Font, error) {
 	}
 
 	var metadata fontMetadata
-	bs, err := assets.FS.ReadFile(rm.config.FontsPath)
+	bs, err := assets.FS.ReadFile(rl.config.FontsPath)
 	if err != nil {
 		return nil, fmt.Errorf("フォントファイルの読み込みに失敗: %w", err)
 	}
@@ -82,15 +82,15 @@ func (rm *DefaultResourceManager) LoadFonts() (map[string]er.Font, error) {
 		return nil, fmt.Errorf("フォントメタデータのデコードに失敗: %w", err)
 	}
 
-	rm.cache.Fonts = metadata.Fonts
+	rl.cache.Fonts = metadata.Fonts
 	return metadata.Fonts, nil
 }
 
 // LoadSpriteSheets はスプライトシートリソースを読み込む
-func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]components.SpriteSheet, error) {
+func (rl *DefaultResourceLoader) LoadSpriteSheets() (map[string]components.SpriteSheet, error) {
 	// キャッシュがあれば返す
-	if rm.cache.SpriteSheets != nil {
-		return rm.cache.SpriteSheets, nil
+	if rl.cache.SpriteSheets != nil {
+		return rl.cache.SpriteSheets, nil
 	}
 
 	type spriteSheetMetadata struct {
@@ -98,7 +98,7 @@ func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]components.Spri
 	}
 
 	var metadata spriteSheetMetadata
-	bs, err := assets.FS.ReadFile(rm.config.SpriteSheetsPath)
+	bs, err := assets.FS.ReadFile(rl.config.SpriteSheetsPath)
 	if err != nil {
 		return nil, fmt.Errorf("スプライトシートファイルの読み込みに失敗: %w", err)
 	}
@@ -113,40 +113,40 @@ func (rm *DefaultResourceManager) LoadSpriteSheets() (map[string]components.Spri
 		metadata.SpriteSheets[k] = v
 	}
 
-	rm.cache.SpriteSheets = metadata.SpriteSheets
+	rl.cache.SpriteSheets = metadata.SpriteSheets
 	return metadata.SpriteSheets, nil
 }
 
 // LoadRaws はRawデータを読み込む
-func (rm *DefaultResourceManager) LoadRaws() (*raw.Master, error) {
+func (rl *DefaultResourceLoader) LoadRaws() (*raw.Master, error) {
 	// キャッシュがあれば返す
-	if rm.cache.RawMaster != nil {
-		return rm.cache.RawMaster, nil
+	if rl.cache.RawMaster != nil {
+		return rl.cache.RawMaster, nil
 	}
 
-	rawMaster, err := raw.LoadFromFile(rm.config.RawsPath)
+	rawMaster, err := raw.LoadFromFile(rl.config.RawsPath)
 	if err != nil {
 		return nil, err
 	}
-	rm.cache.RawMaster = &rawMaster
+	rl.cache.RawMaster = &rawMaster
 
 	return &rawMaster, nil
 }
 
 // LoadAll はすべてのリソースを一括で読み込む
-func (rm *DefaultResourceManager) LoadAll(_ []string, _ []string) error {
+func (rl *DefaultResourceLoader) LoadAll(_ []string, _ []string) error {
 	// フォントの読み込み
-	if _, err := rm.LoadFonts(); err != nil {
+	if _, err := rl.LoadFonts(); err != nil {
 		return fmt.Errorf("フォントの読み込みに失敗: %w", err)
 	}
 
 	// スプライトシートの読み込み
-	if _, err := rm.LoadSpriteSheets(); err != nil {
+	if _, err := rl.LoadSpriteSheets(); err != nil {
 		return fmt.Errorf("スプライトシートの読み込みに失敗: %w", err)
 	}
 
 	// Rawデータの読み込み
-	if _, err := rm.LoadRaws(); err != nil {
+	if _, err := rl.LoadRaws(); err != nil {
 		return fmt.Errorf("rawデータの読み込みに失敗: %w", err)
 	}
 

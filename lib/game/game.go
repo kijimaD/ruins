@@ -12,6 +12,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
+	"github.com/kijimaD/ruins/lib/engine/loader"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gr "github.com/kijimaD/ruins/lib/resources"
@@ -113,18 +114,18 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
-	// ResourceManagerを使用してリソースを読み込む
-	resourceManager := gr.NewDefaultResourceManager()
+	// ResourceLoaderを使用してリソースを読み込む
+	resourceLoader := loader.NewDefaultResourceLoader()
 
 	// Load sprite sheets
-	spriteSheets, err := resourceManager.LoadSpriteSheets()
+	spriteSheets, err := resourceLoader.LoadSpriteSheets()
 	if err != nil {
 		return w.World{}, err
 	}
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// load fonts
-	fonts, err := resourceManager.LoadFonts()
+	fonts, err := resourceLoader.LoadFonts()
 	if err != nil {
 		return w.World{}, err
 	}
@@ -143,7 +144,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	world.Resources.UIResources = uir
 
 	// load raws
-	rw, err := resourceManager.LoadRaws()
+	rw, err := resourceLoader.LoadRaws()
 	if err != nil {
 		return w.World{}, err
 	}
