@@ -11,6 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/consts"
 	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gr "github.com/kijimaD/ruins/lib/resources"
@@ -25,9 +26,8 @@ type MainGame struct {
 
 // Layout はinterface methodのため、シグネチャは変更できない
 func (game *MainGame) Layout(_, _ int) (int, int) {
-	x, y := gr.UpdateGameLayout(game.World)
-
-	return int(x), int(y)
+	// TODO: 解像度変更は未実装
+	return consts.MinGameWidth, consts.MinGameHeight
 }
 
 // Update はゲームの更新処理を行う
