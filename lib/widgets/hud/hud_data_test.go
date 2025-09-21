@@ -3,6 +3,7 @@ package hud
 import (
 	"testing"
 
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,8 +19,8 @@ func TestHUDData(t *testing.T) {
 		MinimapData: MinimapData{
 			PlayerTileX:      5,
 			PlayerTileY:      7,
-			ExploredTiles:    map[string]bool{"5,7": true},
-			TileColors:       map[string]TileColorInfo{"5,7": {R: 255, G: 255, B: 255, A: 255}},
+			ExploredTiles:    map[gc.GridElement]bool{gc.GridElement{X: 5, Y: 7}: true},
+			TileColors:       map[gc.GridElement]TileColorInfo{gc.GridElement{X: 5, Y: 7}: {R: 255, G: 255, B: 255, A: 255}},
 			MinimapConfig:    MinimapConfig{Width: 150, Height: 150, Scale: 3},
 			ScreenDimensions: ScreenDimensions{Width: 1024, Height: 768},
 		},

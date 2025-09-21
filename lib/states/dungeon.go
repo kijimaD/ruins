@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
@@ -69,7 +70,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	gameResources.Level = level
 
 	// フロア移動時に探索済みマップをリセット
-	gameResources.ExploredTiles = make(map[string]bool)
+	gameResources.ExploredTiles = make(map[gc.GridElement]bool)
 
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()

@@ -150,7 +150,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	world.Resources.RawMaster = rw
 
 	gameResource := &gr.Dungeon{
-		ExploredTiles: make(map[string]bool),
+		ExploredTiles: make(map[gc.GridElement]bool),
 		MinimapSettings: gr.MinimapSettings{
 			Width:   150,
 			Height:  150,

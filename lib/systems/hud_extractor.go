@@ -1,7 +1,6 @@
 package systems
 
 import (
-	"fmt"
 	"image/color"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -111,15 +110,13 @@ func extractMinimapData(world w.World) hud.MinimapData {
 	playerTileY := int(playerGridElement.Y)
 
 	// タイル色情報を抽出
-	tileColors := make(map[string]TileColorInfo)
-	for tileKey := range gameResources.ExploredTiles {
-		var tileX, tileY int
-		if _, err := fmt.Sscanf(tileKey, "%d,%d", &tileX, &tileY); err != nil {
-			continue
-		}
+	tileColors := make(map[gc.GridElement]TileColorInfo)
+	for gridElement := range gameResources.ExploredTiles {
+		tileX := int(gridElement.X)
+		tileY := int(gridElement.Y)
 
 		tileColor := getTileColorForMinimap(world, tileX, tileY)
-		tileColors[tileKey] = TileColorInfo{
+		tileColors[gridElement] = TileColorInfo{
 			R: tileColor.R,
 			G: tileColor.G,
 			B: tileColor.B,

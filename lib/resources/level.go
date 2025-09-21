@@ -15,8 +15,8 @@ type Dungeon struct {
 	Level Level
 	// 階層数
 	Depth int
-	// 探索済みタイルのマップ（キー: "x,y", 値: true）
-	ExploredTiles map[string]bool
+	// 探索済みタイルのマップ。座標をキーとして使用
+	ExploredTiles map[gc.GridElement]bool
 	// ミニマップの設定
 	MinimapSettings MinimapSettings
 }
