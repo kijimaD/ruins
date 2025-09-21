@@ -125,36 +125,3 @@ func TestLoadRaws(t *testing.T) {
 		assert.Equal(t, rawMaster, drl.cache.RawMaster)
 	})
 }
-
-func TestLoadAll(t *testing.T) {
-	t.Parallel()
-	t.Run("すべてのリソースを一括で読み込める", func(t *testing.T) {
-		t.Parallel()
-		rl := NewDefaultResourceLoader()
-		axes := []string{}
-		actions := []string{}
-
-		err := rl.LoadAll(axes, actions)
-		assert.NoError(t, err)
-
-		// すべてのリソースがキャッシュされていることを確認
-		drl := rl.(*DefaultResourceLoader)
-		assert.NotNil(t, drl.cache.Fonts)
-		assert.NotNil(t, drl.cache.SpriteSheets)
-		assert.NotNil(t, drl.cache.RawMaster)
-	})
-
-	t.Run("一部のリソース読み込みに失敗した場合", func(t *testing.T) {
-		t.Parallel()
-		config := ResourceConfig{
-			FontsPath:        "invalid/fonts.toml",
-			SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
-			RawsPath:         "metadata/entities/raw/raw.toml",
-		}
-		rl := NewResourceLoader(config)
-
-		err := rl.LoadAll([]string{}, []string{})
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "フォントの読み込みに失敗")
-	})
-}

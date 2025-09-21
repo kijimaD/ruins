@@ -18,8 +18,6 @@ type ResourceLoader interface {
 	LoadSpriteSheets() (map[string]components.SpriteSheet, error)
 	// Raw(エンティティ定義)関連
 	LoadRaws() (*raw.Master, error)
-	// すべてのリソースを一括読み込み
-	LoadAll(axes []string, actions []string) error
 }
 
 // DefaultResourceLoader はResourceLoaderのデフォルト実装
@@ -131,24 +129,4 @@ func (rl *DefaultResourceLoader) LoadRaws() (*raw.Master, error) {
 	rl.cache.RawMaster = &rawMaster
 
 	return &rawMaster, nil
-}
-
-// LoadAll はすべてのリソースを一括で読み込む
-func (rl *DefaultResourceLoader) LoadAll(_ []string, _ []string) error {
-	// フォントの読み込み
-	if _, err := rl.LoadFonts(); err != nil {
-		return fmt.Errorf("フォントの読み込みに失敗: %w", err)
-	}
-
-	// スプライトシートの読み込み
-	if _, err := rl.LoadSpriteSheets(); err != nil {
-		return fmt.Errorf("スプライトシートの読み込みに失敗: %w", err)
-	}
-
-	// Rawデータの読み込み
-	if _, err := rl.LoadRaws(); err != nil {
-		return fmt.Errorf("rawデータの読み込みに失敗: %w", err)
-	}
-
-	return nil
 }
