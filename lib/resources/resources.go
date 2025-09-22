@@ -3,19 +3,19 @@ package resources
 import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/kijimaD/ruins/lib/components"
-	engineRes "github.com/kijimaD/ruins/lib/engine/resources"
 )
 
 // Resources は具体的なリソース実装
 // ゲーム固有のリソース管理を担当する
+// engine/resources.ResourceProviderインターフェースを実装する
 type Resources struct {
 	ScreenDimensions *ScreenDimensions
 	SpriteSheets     *map[string]components.SpriteSheet
-	Fonts            *map[string]engineRes.Font
+	Fonts            *map[string]Font
 	Faces            *map[string]text.Face
 	Dungeon          *Dungeon
 	RawMaster        interface{}
-	UIResources      *engineRes.UIResources
+	UIResources      *UIResources
 	TurnManager      interface{}
 }
 
@@ -42,13 +42,25 @@ func (r *Resources) SetScreenDimensions(width, height int) {
 	r.ScreenDimensions.Height = height
 }
 
+// InitializeResources は ResourceInitializer インターフェースを実装
+func (r *Resources) InitializeResources() error {
+	r.ScreenDimensions = &ScreenDimensions{}
+	r.SpriteSheets = &map[string]components.SpriteSheet{}
+	r.Fonts = &map[string]Font{}
+	r.Faces = &map[string]text.Face{}
+	r.UIResources = &UIResources{}
+	r.RawMaster = nil
+	r.TurnManager = nil
+	return nil
+}
+
 // InitGameResources はゲームリソースを初期化する
 func InitGameResources() *Resources {
 	return &Resources{
 		ScreenDimensions: &ScreenDimensions{},
 		SpriteSheets:     &map[string]components.SpriteSheet{},
-		Fonts:            &map[string]engineRes.Font{},
+		Fonts:            &map[string]Font{},
 		Faces:            &map[string]text.Face{},
-		UIResources:      &engineRes.UIResources{},
+		UIResources:      &UIResources{},
 	}
 }

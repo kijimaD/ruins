@@ -12,9 +12,8 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/engine/loader"
-	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
+	"github.com/kijimaD/ruins/lib/loader"
 	gr "github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -137,7 +136,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	}
 
 	// load UI resources
-	uir, err := er.NewUIResources(font.FaceSource)
+	uir, err := gr.NewUIResources(font.FaceSource)
 	if err != nil {
 		return w.World{}, err
 	}

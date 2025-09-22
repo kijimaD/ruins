@@ -93,7 +93,7 @@ func TestInitializeComponents(t *testing.T) {
 		val := reflect.ValueOf(testComponents).Elem()
 		typ := val.Type()
 
-		var err error
+		hasUnsupportedType := false
 		for i := 0; i < val.NumField(); i++ {
 			field := val.Field(i)
 			fieldType := typ.Field(i)
@@ -110,14 +110,13 @@ func TestInitializeComponents(t *testing.T) {
 			case reflect.TypeOf((*ecs.NullComponent)(nil)):
 				field.Set(reflect.ValueOf(manager.NewNullComponent()))
 			default:
-				// 未対応の型の場合エラー
-				err = assert.AnError
-				return // ループを抜ける
+				// 未対応の型が検出された
+				hasUnsupportedType = true
+				t.Logf("未対応の型を検出: %v", fieldType.Type)
 			}
 		}
 
-		// Assert
-		assert.Error(t, err, "未対応の型がある場合エラーが発生する")
+		assert.True(t, hasUnsupportedType, "未対応の型が検出されるべき")
 	})
 
 	t.Run("設定不可能フィールドエラーテスト", func(t *testing.T) {

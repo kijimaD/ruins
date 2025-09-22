@@ -6,14 +6,14 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
 	"github.com/kijimaD/ruins/lib/components"
-	er "github.com/kijimaD/ruins/lib/engine/resources"
 	"github.com/kijimaD/ruins/lib/raw"
+	"github.com/kijimaD/ruins/lib/resources"
 )
 
 // ResourceLoader はすべてのリソースの読み込みを統括するインターフェース
 type ResourceLoader interface {
 	// フォント関連
-	LoadFonts() (map[string]er.Font, error)
+	LoadFonts() (map[string]resources.Font, error)
 	// スプライトシート関連
 	LoadSpriteSheets() (map[string]components.SpriteSheet, error)
 	// Raw(エンティティ定義)関連
@@ -37,7 +37,7 @@ type ResourceConfig struct {
 
 // ResourceCache は読み込み済みのリソースをキャッシュする
 type ResourceCache struct {
-	Fonts        map[string]er.Font
+	Fonts        map[string]resources.Font
 	SpriteSheets map[string]components.SpriteSheet
 	RawMaster    *raw.Master
 }
@@ -60,14 +60,14 @@ func NewDefaultResourceLoader() ResourceLoader {
 }
 
 // LoadFonts はフォントリソースを読み込む
-func (rl *DefaultResourceLoader) LoadFonts() (map[string]er.Font, error) {
+func (rl *DefaultResourceLoader) LoadFonts() (map[string]resources.Font, error) {
 	// キャッシュがあれば返す
 	if rl.cache.Fonts != nil {
 		return rl.cache.Fonts, nil
 	}
 
 	type fontMetadata struct {
-		Fonts map[string]er.Font `toml:"font"`
+		Fonts map[string]resources.Font `toml:"font"`
 	}
 
 	var metadata fontMetadata
