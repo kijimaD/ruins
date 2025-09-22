@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"reflect"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -114,62 +115,41 @@ type Components struct {
 }
 
 // InitializeComponents はComponentInitializerインターフェースを実装する
+// リフレクションを使用して自動的に全コンポーネントを初期化する
+// コンポーネント追加時の手動更新が不要
 func (c *Components) InitializeComponents(manager *ecs.Manager) error {
-	// general
-	c.Name = manager.NewSliceComponent()
-	c.Description = manager.NewSliceComponent()
-	c.Job = manager.NewSliceComponent()
-	c.Render = manager.NewSliceComponent()
+	val := reflect.ValueOf(c).Elem() // *Components から Components へ
+	typ := val.Type()
 
-	// item
-	c.Item = manager.NewNullComponent()
-	c.Consumable = manager.NewSliceComponent()
-	c.Pools = manager.NewSliceComponent()
-	c.Attack = manager.NewSliceComponent()
-	c.Material = manager.NewSliceComponent()
-	c.Recipe = manager.NewSliceComponent()
-	c.Wearable = manager.NewSliceComponent()
-	c.Attributes = manager.NewSliceComponent()
-	c.Card = manager.NewSliceComponent()
-	c.ItemLocationInBackpack = manager.NewNullComponent()
-	c.ItemLocationEquipped = manager.NewSliceComponent()
-	c.ItemLocationOnField = manager.NewNullComponent()
-	c.ItemLocationNone = manager.NewNullComponent()
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		fieldType := typ.Field(i)
+		fieldName := fieldType.Name
 
-	// field
-	c.AIMoveFSM = manager.NewSliceComponent()
-	c.AIRoaming = manager.NewSliceComponent()
-	c.AIVision = manager.NewSliceComponent()
-	c.AIChasing = manager.NewSliceComponent()
-	c.Camera = manager.NewSliceComponent()
-	c.Warp = manager.NewSliceComponent()
-	c.Position = manager.NewSliceComponent()
-	c.GridElement = manager.NewSliceComponent()
-	c.SpriteRender = manager.NewSliceComponent()
-	c.BlockView = manager.NewNullComponent()
-	c.BlockPass = manager.NewNullComponent()
+		// フィールドが設定可能かチェック
+		if !field.CanSet() {
+			return fmt.Errorf("field %s is not settable", fieldName)
+		}
 
-	// member
-	c.Player = manager.NewNullComponent()
-	c.Hunger = manager.NewSliceComponent()
-	c.FactionAlly = manager.NewNullComponent()
-	c.FactionEnemy = manager.NewNullComponent()
-	c.Dead = manager.NewNullComponent()
-	c.TurnBased = manager.NewSliceComponent()
-
-	// event
-	c.EquipmentChanged = manager.NewNullComponent()
-	c.ProvidesHealing = manager.NewSliceComponent()
-	c.InflictsDamage = manager.NewSliceComponent()
-
-	// battle
-	c.CommandTable = manager.NewSliceComponent()
-	c.DropTable = manager.NewSliceComponent()
+		// フィールドの型に基づいて適切なコンポーネントを作成
+		switch field.Type() {
+		case reflect.TypeOf((*ecs.SliceComponent)(nil)):
+			// SliceComponent の初期化
+			field.Set(reflect.ValueOf(manager.NewSliceComponent()))
+		case reflect.TypeOf((*ecs.NullComponent)(nil)):
+			// NullComponent の初期化
+			field.Set(reflect.ValueOf(manager.NewNullComponent()))
+		default:
+			// 未対応の型はエラーとして扱う
+			return fmt.Errorf("unsupported component type %v for field %s", field.Type(), fieldName)
+		}
+	}
 
 	return nil
 }
 
 // Camera はカメラ
+// 滑らかなズームの変更のため実際のズーム率と対象ズーム率を持つ
 type Camera struct {
 	Scale   float64
 	ScaleTo float64
