@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/kijimaD/ruins/lib/save"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,7 +22,7 @@ func TestSaveLoadIntegration(t *testing.T) {
 	}()
 
 	// テスト用のワールドを作成
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// テスト用エンティティを作成
@@ -55,7 +55,7 @@ func TestSaveLoadIntegration(t *testing.T) {
 	assert.NoError(t, err, "Save file should exist")
 
 	// 新しいワールドを作成
-	newWorld, err := game.InitWorld(960, 720)
+	newWorld, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// ロードテスト
@@ -91,7 +91,7 @@ func TestSaveSlotInfo(t *testing.T) {
 	saveManager := save.NewSerializationManager(testDir)
 
 	// テスト用のワールドを作成
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// SaveMenuStateを作成してテスト

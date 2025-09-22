@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -21,7 +21,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	}()
 
 	// テスト用のワールドを作成
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// プレイヤーエンティティを作成
@@ -51,7 +51,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	assert.NoError(t, err, "Save file should exist")
 
 	// 新しいワールドを作成してロード
-	newWorld, err := game.InitWorld(960, 720)
+	newWorld, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	err = saveManager.LoadWorld(newWorld, "player_test")

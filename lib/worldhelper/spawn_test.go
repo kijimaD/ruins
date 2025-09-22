@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -62,7 +62,7 @@ func TestSetMaxHPSP(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			// 独立したworldを作成
-			world, err := game.InitWorld(960, 720)
+			world, err := maingame.InitWorld(960, 720)
 			require.NoError(t, err)
 
 			// エンティティを作成
@@ -113,7 +113,7 @@ func TestSetMaxHPSP(t *testing.T) {
 
 func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// 必要なコンポーネントがないエンティティ
@@ -130,7 +130,7 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 
 func TestFullRecover(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// テスト用エンティティを作成
@@ -174,7 +174,7 @@ func TestFullRecover(t *testing.T) {
 func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	t.Parallel()
 	// NPCが敵として認識されるAIMoveFSMコンポーネントを持つことを確認
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// SpriteSheetsを初期化

@@ -16,7 +16,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
@@ -26,7 +26,7 @@ var errRegularTermination = errors.New("テスト環境における、想定ど�
 
 // TestGame はビジュアルリグレッションテスト用のゲーム構造体
 type TestGame struct {
-	game.MainGame
+	maingame.MainGame
 	gameCount  int
 	outputPath string
 }
@@ -86,7 +86,7 @@ func RunTestGame(state es.State[w.World], outputPath string) {
 	// VRT用にアニメーションを無効化
 	cfg.DisableAnimation = true
 
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	if err != nil {
 		panic(fmt.Sprintf("InitWorld failed: %v", err))
 	}
@@ -116,7 +116,7 @@ func RunTestGame(state es.State[w.World], outputPath string) {
 	}
 
 	g := &TestGame{
-		MainGame: game.MainGame{
+		MainGame: maingame.MainGame{
 			World:        world,
 			StateMachine: es.Init(state, world),
 		},
