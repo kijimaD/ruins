@@ -23,8 +23,8 @@ func (m *MockLogger) Push(entry string) {
 
 // テスト用のヘルパー関数：エンティティをPoolsコンポーネント付きで作成
 func createTestPlayerEntity(world w.World, hp, sp int) ecs.Entity {
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		Pools: &gc.Pools{
 			HP: gc.Pool{Current: hp, Max: 100},
 			SP: gc.Pool{Current: sp, Max: 50},
@@ -38,8 +38,8 @@ func createTestPlayerEntity(world w.World, hp, sp int) ecs.Entity {
 
 // テスト用のヘルパー関数：味方プレイヤーを作成
 func createTestAllyEntity(world w.World, name string, hp int) ecs.Entity {
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		Pools: &gc.Pools{
 			HP: gc.Pool{Current: hp, Max: 100},
 			SP: gc.Pool{Current: 50, Max: 50},
@@ -61,8 +61,8 @@ func createTestEntity(world w.World) ecs.Entity {
 
 // テスト用のヘルパー関数：アイテムエンティティを作成
 func createTestHealingItem(world w.World, healAmount int) ecs.Entity {
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		Item:            &gc.Item{},
 		ProvidesHealing: &gc.ProvidesHealing{Amount: gc.NumeralAmount{Numeral: healAmount}},
 		Consumable:      &gc.Consumable{},
@@ -74,8 +74,8 @@ func createTestHealingItem(world w.World, healAmount int) ecs.Entity {
 
 // テスト用のヘルパー関数：基本アイテムエンティティを作成
 func createTestBasicItem(world w.World, name string) ecs.Entity {
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		Item: &gc.Item{},
 		Name: &gc.Name{Name: name},
 	})

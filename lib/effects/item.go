@@ -135,7 +135,7 @@ func (c CreateItem) Apply(world w.World, scope *Scope) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
 	for i := 0; i < c.Quantity; i++ {
-		componentList := entities.ComponentList{}
+		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateItem(c.ItemType, gc.ItemLocationInBackpack)
 		if err != nil {
 			return fmt.Errorf("アイテム生成失敗: %w", err)

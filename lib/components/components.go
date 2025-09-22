@@ -6,10 +6,10 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// GameComponentList はコンポーネントのリストが格納されたオブジェクト。
-// この構造体を元にエンティティに対してコンポーネントを作成する。
-// フィールドの型や値に応じて、対応するECSコンポーネントを取得する。
-type GameComponentList struct {
+// EntitySpec はエンティティ作成用の仕様定義
+// エンティティに付与するコンポーネントのセットを定義し、
+// AddEntities関数でECSエンティティに変換される
+type EntitySpec struct {
 	// general ================
 	Name        *Name
 	Description *Description
@@ -57,8 +57,9 @@ type GameComponentList struct {
 	DropTable    *DropTable
 }
 
-// Components はcomponentsを溜めるスライス群
-// Join時はこのフィールドでクエリする
+// Components はECSコンポーネントストレージ
+// 各コンポーネント型のSliceComponent/NullComponentを保持し、
+// Manager.Join()でのクエリに使用される
 type Components struct {
 	// general ================
 	Name        *ecs.SliceComponent

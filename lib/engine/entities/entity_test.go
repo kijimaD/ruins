@@ -12,12 +12,12 @@ func TestComponentList(t *testing.T) {
 	t.Run("create entity component list", func(t *testing.T) {
 		t.Parallel()
 		gameComponents := []interface{}{
-			gc.GameComponentList{
+			gc.EntitySpec{
 				Name: &gc.Name{Name: "テストエンティティ"},
 			},
 		}
 
-		list := ComponentList{
+		list := ComponentList[interface{}]{
 			Game: gameComponents,
 		}
 
@@ -26,7 +26,7 @@ func TestComponentList(t *testing.T) {
 
 	t.Run("empty entity component list", func(t *testing.T) {
 		t.Parallel()
-		list := ComponentList{}
+		list := ComponentList[interface{}]{}
 		assert.Nil(t, list.Game, "空のリストでGameがnilでない")
 	})
 }
@@ -36,9 +36,9 @@ func TestAddEntities(t *testing.T) {
 	t.Run("basic functionality test", func(t *testing.T) {
 		t.Parallel()
 		// 循環依存を避けるため、基本的な機能のみテスト
-		entityComponentList := ComponentList{
+		entityComponentList := ComponentList[interface{}]{
 			Game: []interface{}{
-				gc.GameComponentList{
+				gc.EntitySpec{
 					Name: &gc.Name{Name: "テストエンティティ"},
 				},
 			},
@@ -48,8 +48,8 @@ func TestAddEntities(t *testing.T) {
 		// 構造体の正常性のみテスト
 		assert.Len(t, entityComponentList.Game, 1, "Gameコンポーネントリストの長さが正しくない")
 
-		// GameComponentListの中身を確認
-		gameComponent := entityComponentList.Game[0].(gc.GameComponentList)
+		// EntitySpecの中身を確認
+		gameComponent := entityComponentList.Game[0].(gc.EntitySpec)
 		assert.NotNil(t, gameComponent.Name, "Nameコンポーネントが設定されていない")
 		assert.Equal(t, "テストエンティティ", gameComponent.Name.Name, "名前が正しく設定されていない")
 	})

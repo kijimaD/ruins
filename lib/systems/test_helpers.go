@@ -75,8 +75,8 @@ func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 		},
 	}
 
-	cl := entities.ComponentList{}
-	cl.Game = append(cl.Game, gc.GameComponentList{
+	cl := entities.ComponentList[gc.EntitySpec]{}
+	cl.Game = append(cl.Game, gc.EntitySpec{
 		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		FactionType: &gc.FactionAlly,
 		SpriteRender: &gc.SpriteRender{
@@ -103,8 +103,8 @@ func CreateEnemyEntity(t *testing.T, world w.World, x, y float64) {
 		},
 	}
 
-	cl := entities.ComponentList{}
-	cl.Game = append(cl.Game, gc.GameComponentList{
+	cl := entities.ComponentList[gc.EntitySpec]{}
+	cl.Game = append(cl.Game, gc.EntitySpec{
 		Position:  &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		AIMoveFSM: &gc.AIMoveFSM{}, // AI制御された敵として識別
 		SpriteRender: &gc.SpriteRender{
@@ -145,15 +145,15 @@ func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 		Name:         sheetName,
 	}
 
-	cl := entities.ComponentList{}
+	cl := entities.ComponentList[gc.EntitySpec]{}
 	if isPlayer {
-		cl.Game = append(cl.Game, gc.GameComponentList{
+		cl.Game = append(cl.Game, gc.EntitySpec{
 			Position:     &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 			FactionType:  &gc.FactionAlly,
 			SpriteRender: spriteRender,
 		})
 	} else {
-		cl.Game = append(cl.Game, gc.GameComponentList{
+		cl.Game = append(cl.Game, gc.EntitySpec{
 			Position:     &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 			FactionType:  &gc.FactionEnemy,
 			SpriteRender: spriteRender,
@@ -173,15 +173,15 @@ func CreateEntityWithSpriteSize(t *testing.T, world w.World, x, y float64, size 
 func CreateEntityWithGridPosition(t *testing.T, world w.World, gridX, gridY int, isPlayer bool) {
 	t.Helper()
 
-	var cl entities.ComponentList
+	var cl entities.ComponentList[gc.EntitySpec]
 
 	if isPlayer {
-		cl.Game = append(cl.Game, gc.GameComponentList{
+		cl.Game = append(cl.Game, gc.EntitySpec{
 			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
 			FactionType: &gc.FactionAlly,
 		})
 	} else {
-		cl.Game = append(cl.Game, gc.GameComponentList{
+		cl.Game = append(cl.Game, gc.EntitySpec{
 			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
 			AIMoveFSM:   &gc.AIMoveFSM{},
 			FactionType: &gc.FactionEnemy,

@@ -55,8 +55,8 @@ var (
 
 // SpawnFloor はフィールド上に表示される床を生成する
 func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -70,8 +70,8 @@ func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 
 // SpawnWall は指定されたスプライト番号で壁を生成する
 func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -92,8 +92,8 @@ func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error)
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
 
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -113,8 +113,8 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
 
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -133,7 +133,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 
 // SpawnPlayer はプレイヤーキャラクターを生成する
 func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
+	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	gcl, err := rawMaster.GeneratePlayer(name)
 	if err != nil {
@@ -170,7 +170,7 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 
 // SpawnEnemy はフィールド上に敵キャラクターを生成する
 func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
+	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
 	// raw.Masterから敵データを取得
@@ -225,7 +225,7 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 
 // SpawnItem はアイテムを生成する
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
+	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	gameComponent, err := rawMaster.GenerateItem(name, locationType)
 	if err != nil {
@@ -239,7 +239,7 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ec
 
 // SpawnMaterial はmaterialを生成する
 func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) (ecs.Entity, error) {
-	componentList := entities.ComponentList{}
+	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	gameComponent, err := rawMaster.GenerateMaterial(name, amount, locationType)
 	if err != nil {
@@ -327,7 +327,7 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 func SpawnAllMaterials(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.MaterialIndex {
-		componentList := entities.ComponentList{}
+		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
 		if err != nil {
 			return fmt.Errorf("%w (material: %s): %v", ErrItemGeneration, k, err)
@@ -342,7 +342,7 @@ func SpawnAllMaterials(world w.World) error {
 func SpawnAllRecipes(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.RecipeIndex {
-		componentList := entities.ComponentList{}
+		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateRecipe(k)
 		if err != nil {
 			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
@@ -357,7 +357,7 @@ func SpawnAllRecipes(world w.World) error {
 func SpawnAllCards(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for k := range rawMaster.ItemIndex {
-		componentList := entities.ComponentList{}
+		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)

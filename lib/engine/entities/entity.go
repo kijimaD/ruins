@@ -8,9 +8,10 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// ComponentList is a list of preloaded entities with components
-type ComponentList struct {
-	Game []interface{}
+// ComponentList はエンティティ作成用のコンポーネントリスト
+// Gameフィールドに EntitySpec のスライスを設定し、AddEntities でECSエンティティに変換する
+type ComponentList[T any] struct {
+	Game []T // エンティティ仕様のリスト
 }
 
 // World represents the required interface for entity creation
@@ -20,8 +21,9 @@ type World interface {
 	GetComponents() interface{}
 }
 
-// AddEntities adds entities with engine and game components
-func AddEntities[T World](world T, entityComponentList ComponentList) []ecs.Entity {
+// AddEntities はComponentListからECSエンティティを作成する
+// EntitySpecをECSエンティティに変換し、ワールドに追加する
+func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) []ecs.Entity {
 	// Create new entities and add engine components
 	entities := make([]ecs.Entity, len(entityComponentList.Game))
 	for iEntity := range entityComponentList.Game {
@@ -41,7 +43,8 @@ func AddEntities[T World](world T, entityComponentList ComponentList) []ecs.Enti
 	return entities
 }
 
-// AddEntityComponents adds loaded components to an entity
+// AddEntityComponents はエンティティにコンポーネントを追加する
+// EntitySpec の各フィールドを対応する ECS コンポーネントに変換して追加する
 func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity {
 	// 追加先のコンポーネントリスト。コンポーネントのスライス群
 	ecv := reflect.ValueOf(ecsComponentList).Elem()
@@ -77,7 +80,7 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 					entity.AddComponent(ecsComponent, value.Interface())
 				}
 			default:
-				log.Fatalf("GameComponentListフィールドに指定された型の処理は定義されていない: %s", component.Kind())
+				log.Fatalf("EntitySpecフィールドに指定された型の処理は定義されていない: %s", component.Kind())
 			}
 		}
 	}

@@ -123,8 +123,8 @@ func TestMergeMaterialIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) 
 	require.NoError(t, err)
 
 	// ItemもMaterialコンポーネントも持たないエンティティを作成
-	componentList := entities.ComponentList{}
-	componentList.Game = append(componentList.Game, gc.GameComponentList{
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Game = append(componentList.Game, gc.EntitySpec{
 		Name: &gc.Name{Name: "テスト"},
 	})
 	entities := entities.AddEntities(world, componentList)
