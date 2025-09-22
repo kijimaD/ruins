@@ -23,7 +23,7 @@ var (
 
 // DungeonState はダンジョン探索中のゲームステート
 type DungeonState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	Depth int
 	// Seed はマップ生成用のシード値（0の場合はDungeonリソースのシード値を使用）
 	Seed uint64
@@ -37,7 +37,7 @@ func (st DungeonState) String() string {
 
 // State interface ================
 
-var _ es.State = &DungeonState{}
+var _ es.State[w.World] = &DungeonState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *DungeonState) OnPause(_ w.World) {}
@@ -104,23 +104,23 @@ func (st *DungeonState) OnStop(world w.World) {
 }
 
 // Update はゲームステートの更新処理を行う
-func (st *DungeonState) Update(world w.World) es.Transition {
+func (st *DungeonState) Update(world w.World) es.Transition[w.World] {
 	gs.TurnSystem(world)
 	// 移動処理の後にカメラ更新
 	gs.CameraSystem(world)
 
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewGameOverState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverState}}
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}
 	}
 
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
 	}
 
 	// StateEvent処理をチェック
@@ -145,17 +145,17 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 }
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
-func (st *DungeonState) handleStateEvent(world w.World) es.Transition {
+func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
 	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	switch gameResources.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
 	case resources.StateEventWarpEscape:
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}}
 	default:
 		// StateEventNoneまたは未知のイベントの場合は何もしない
-		return es.Transition{Type: es.TransNone}
+		return es.Transition[w.World]{Type: es.TransNone}
 	}
 }
 

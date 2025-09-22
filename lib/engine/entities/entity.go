@@ -5,8 +5,6 @@ import (
 	"log"
 	"reflect"
 
-	w "github.com/kijimaD/ruins/lib/world"
-
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -15,13 +13,20 @@ type ComponentList struct {
 	Game []interface{}
 }
 
+// World represents the required interface for entity creation
+// 依存性逆転のためのメソッドを定義する
+type World interface {
+	GetManager() *ecs.Manager
+	GetComponents() interface{}
+}
+
 // AddEntities adds entities with engine and game components
-func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity {
+func AddEntities[T World](world T, entityComponentList ComponentList) []ecs.Entity {
 	// Create new entities and add engine components
 	entities := make([]ecs.Entity, len(entityComponentList.Game))
 	for iEntity := range entityComponentList.Game {
-		entities[iEntity] = world.Manager.NewEntity()
-		AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
+		entities[iEntity] = world.GetManager().NewEntity()
+		AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Game[iEntity])
 	}
 
 	// Add game components
@@ -30,7 +35,7 @@ func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity 
 			log.Fatal("incorrect size for game component list")
 		}
 		for iEntity := range entities {
-			AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
+			AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Game[iEntity])
 		}
 	}
 	return entities

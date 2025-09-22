@@ -17,7 +17,7 @@ import (
 
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.UIBuilder
@@ -30,7 +30,7 @@ func (st MainMenuState) String() string {
 
 // State interface ================
 
-var _ es.State = &MainMenuState{}
+var _ es.State[w.World] = &MainMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *MainMenuState) OnPause(_ w.World) {}
@@ -51,7 +51,7 @@ func (st *MainMenuState) OnStart(world w.World) {
 func (st *MainMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *MainMenuState) Update(_ w.World) es.Transition {
+func (st *MainMenuState) Update(_ w.World) es.Transition[w.World] {
 	// Escapeキーでの終了処理はメニューのOnCancelで処理するため、ここでは削除
 
 	// メニューの更新
@@ -78,22 +78,22 @@ func (st *MainMenuState) initMenu(world w.World) {
 		{
 			ID:       "home",
 			Label:    "拠点",
-			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}},
+			UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}},
 		},
 		{
 			ID:       "load",
 			Label:    "読込",
-			UserData: es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewLoadMenuState}},
+			UserData: es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewLoadMenuState}},
 		},
 		{
 			ID:       "intro",
 			Label:    "導入",
-			UserData: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewIntroState}},
+			UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewIntroState}},
 		},
 		{
 			ID:       "exit",
 			Label:    "終了",
-			UserData: es.Transition{Type: es.TransQuit},
+			UserData: es.Transition[w.World]{Type: es.TransQuit},
 		},
 	}
 
@@ -111,13 +111,13 @@ func (st *MainMenuState) initMenu(world w.World) {
 	callbacks := menu.Callbacks{
 		OnSelect: func(_ int, item menu.Item) {
 			// 選択されたアイテムのUserDataからTransitionを取得
-			if trans, ok := item.UserData.(es.Transition); ok {
+			if trans, ok := item.UserData.(es.Transition[w.World]); ok {
 				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理
-			st.SetTransition(es.Transition{Type: es.TransQuit})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransQuit})
 		},
 		OnFocusChange: func(_, _ int) {
 			// フォーカス変更時にUIを更新

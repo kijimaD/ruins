@@ -16,7 +16,7 @@ import (
 
 // SaveMenuState はセーブスロット選択メニュー
 type SaveMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.UIBuilder
@@ -28,7 +28,7 @@ func (st SaveMenuState) String() string {
 	return "SaveMenu"
 }
 
-var _ es.State = &SaveMenuState{}
+var _ es.State[w.World] = &SaveMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *SaveMenuState) OnPause(_ w.World) {}
@@ -54,7 +54,7 @@ func (st *SaveMenuState) OnStart(world w.World) {
 func (st *SaveMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *SaveMenuState) Update(_ w.World) es.Transition {
+func (st *SaveMenuState) Update(_ w.World) es.Transition[w.World] {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 	st.ui.Update()
@@ -117,7 +117,7 @@ func (st *SaveMenuState) initMenu(world w.World) {
 
 			if slotName == "back" {
 				// ホームメニューに戻る
-				st.SetTransition(es.Transition{Type: es.TransPop})
+				st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 				return
 			}
 
@@ -131,11 +131,11 @@ func (st *SaveMenuState) initMenu(world w.World) {
 
 			// 成功メッセージ表示後、ホームメニューに戻る
 			// TODO: 成功メッセージの表示
-			st.SetTransition(es.Transition{Type: es.TransPop})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnCancel: func() {
 			// ホームメニューに戻る
-			st.SetTransition(es.Transition{Type: es.TransPop})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnFocusChange: func(_, _ int) {
 			if st.uiBuilder != nil {

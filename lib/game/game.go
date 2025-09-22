@@ -22,7 +22,7 @@ import (
 // MainGame はebiten.Game interfaceを満たす
 type MainGame struct {
 	World        w.World
-	StateMachine es.StateMachine
+	StateMachine es.StateMachine[w.World]
 }
 
 // Layout はinterface methodのため、シグネチャは変更できない

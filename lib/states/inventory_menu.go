@@ -23,7 +23,7 @@ import (
 
 // InventoryMenuState はインベントリメニューのゲームステート
 type InventoryMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -48,7 +48,7 @@ func (st InventoryMenuState) String() string {
 
 // State interface ================
 
-var _ es.State = &InventoryMenuState{}
+var _ es.State[w.World] = &InventoryMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *InventoryMenuState) OnPause(_ w.World) {}
@@ -68,16 +68,16 @@ func (st *InventoryMenuState) OnStart(world w.World) {
 func (st *InventoryMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *InventoryMenuState) Update(world w.World) es.Transition {
+func (st *InventoryMenuState) Update(world w.World) es.Transition[w.World] {
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return es.Transition{Type: es.TransNone}
+			return es.Transition[w.World]{Type: es.TransNone}
 		}
 	}
 
@@ -114,7 +114,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)

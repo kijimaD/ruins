@@ -10,11 +10,11 @@ import (
 func TestStateNoReuse(t *testing.T) {
 	t.Parallel()
 
-	t.Run("StateFactoryから毎回異なるインスタンスが作成される", func(t *testing.T) {
+	t.Run("StateFactory[TestContext]から毎回異なるインスタンスが作成される", func(t *testing.T) {
 		t.Parallel()
 
 		// ファクトリー関数を定義
-		factory := func() State {
+		factory := func() State[TestContext] {
 			return &TestState{name: "TestState"}
 		}
 
@@ -31,11 +31,11 @@ func TestStateNoReuse(t *testing.T) {
 
 	t.Run("TransitionのStateFactoriesが実行時に新しいインスタンスを作成する", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		ctx := TestContext{Name: "TestContext"}
 
 		// カウンターを使用して各インスタンスを追跡
 		instanceCount := 0
-		factory := func() State {
+		factory := func() State[TestContext] {
 			instanceCount++
 			return &TestStateWithID{
 				TestState: TestState{name: "TestState"},
@@ -44,35 +44,35 @@ func TestStateNoReuse(t *testing.T) {
 		}
 
 		// Transitionを作成
-		transition := Transition{
+		transition := Transition[TestContext]{
 			Type:          TransPush,
-			NewStateFuncs: []StateFactory{factory, factory},
+			NewStateFuncs: []StateFactory[TestContext]{factory, factory},
 		}
 
 		// StateMachineを初期化
-		initialState := &TestState{name: "Initial"}
-		sm := Init(initialState, world)
+		initialState := &TestState{name: "Init"}
+		sm := Init(initialState, ctx)
 		sm.lastTransition = transition
 
 		// 最初の実行
-		sm.Update(world)
+		sm.Update(ctx)
 		assert.Equal(t, 2, instanceCount, "2つのステートが作成されるべき")
 
 		// 同じTransitionで再実行
 		sm.lastTransition = transition
-		sm.Update(world)
+		sm.Update(ctx)
 		assert.Equal(t, 4, instanceCount, "さらに2つの新しいステートが作成されるべき")
 	})
 
 	t.Run("複数のPush操作で毎回新しいインスタンスが作成される", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		ctx := TestContext{Name: "TestContext"}
 
 		// 作成されたインスタンスを追跡
 		createdStates := []*TestStateWithID{}
 		idCounter := 0
 
-		factory := func() State {
+		factory := func() State[TestContext] {
 			idCounter++
 			state := &TestStateWithID{
 				TestState: TestState{name: "TestState"},
@@ -83,15 +83,15 @@ func TestStateNoReuse(t *testing.T) {
 		}
 
 		// StateMachineを初期化
-		sm := Init(&TestState{name: "Initial"}, world)
+		sm := Init(&TestState{name: "Init"}, ctx)
 
-		// 複数回同じStateFactoryでPush
+		// 複数回同じStateFactory[TestContext]でPush
 		for i := 0; i < 3; i++ {
-			sm.lastTransition = Transition{
+			sm.lastTransition = Transition[TestContext]{
 				Type:          TransPush,
-				NewStateFuncs: []StateFactory{factory},
+				NewStateFuncs: []StateFactory[TestContext]{factory},
 			}
-			sm.Update(world)
+			sm.Update(ctx)
 		}
 
 		// 3つの異なるインスタンスが作成されたことを確認

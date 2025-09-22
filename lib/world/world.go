@@ -30,3 +30,15 @@ func InitWorld(c *gc.Components) (World, error) {
 		Resources:  resources,
 	}, nil
 }
+
+// GetManager は World interfaceを満たすためのメソッド
+// engine側で使うために必要
+func (w World) GetManager() *ecs.Manager {
+	return w.Manager
+}
+
+// GetComponents は World interfaceを満たすためのメソッド
+// engine側で使うために必要
+func (w World) GetComponents() interface{} {
+	return w.Components
+}

@@ -13,7 +13,7 @@ import (
 
 // GameOverState はゲームオーバーのゲームステート
 type GameOverState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	keyboardInput input.KeyboardInput
 }
@@ -24,7 +24,7 @@ func (st GameOverState) String() string {
 
 // State interface ================
 
-var _ es.State = &GameOverState{}
+var _ es.State[w.World] = &GameOverState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *GameOverState) OnPause(_ w.World) {}
@@ -45,9 +45,9 @@ func (st *GameOverState) OnStart(world w.World) {
 func (st *GameOverState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *GameOverState) Update(_ w.World) es.Transition {
+func (st *GameOverState) Update(_ w.World) es.Transition[w.World] {
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}}
 	}
 
 	st.ui.Update()

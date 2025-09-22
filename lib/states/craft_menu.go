@@ -23,7 +23,7 @@ import (
 
 // CraftMenuState はクラフトメニューのゲームステート
 type CraftMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
@@ -56,7 +56,7 @@ func (st CraftMenuState) String() string {
 
 // State interface ================
 
-var _ es.State = &CraftMenuState{}
+var _ es.State[w.World] = &CraftMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *CraftMenuState) OnPause(_ w.World) {}
@@ -76,23 +76,23 @@ func (st *CraftMenuState) OnStart(world w.World) {
 func (st *CraftMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *CraftMenuState) Update(world w.World) es.Transition {
+func (st *CraftMenuState) Update(world w.World) es.Transition[w.World] {
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return es.Transition{Type: es.TransNone}
+			return es.Transition[w.World]{Type: es.TransNone}
 		}
 	}
 
 	// 結果ウィンドウモードの場合は結果ウィンドウ操作を優先
 	if st.isResultMode {
 		if st.updateResultMode(world) {
-			return es.Transition{Type: es.TransNone}
+			return es.Transition[w.World]{Type: es.TransNone}
 		}
 	}
 
@@ -129,7 +129,7 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 		OnCancel: func() {
 			// Escapeでホームメニューに戻る
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)
