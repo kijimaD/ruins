@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestContext はテスト用のコンテキスト
-type TestContext struct {
+// TestWorld はテスト用のゲーム世界
+type TestWorld struct {
 	Name string
 }
 
@@ -27,28 +27,28 @@ func (ts *TestState) String() string {
 	return ts.name
 }
 
-func (ts *TestState) OnStart(_ TestContext) {
+func (ts *TestState) OnStart(_ TestWorld) {
 	ts.onStartCalled = true
 }
 
-func (ts *TestState) OnStop(_ TestContext) {
+func (ts *TestState) OnStop(_ TestWorld) {
 	ts.onStopCalled = true
 }
 
-func (ts *TestState) OnPause(_ TestContext) {
+func (ts *TestState) OnPause(_ TestWorld) {
 	ts.onPauseCalled = true
 }
 
-func (ts *TestState) OnResume(_ TestContext) {
+func (ts *TestState) OnResume(_ TestWorld) {
 	ts.onResumeCalled = true
 }
 
-func (ts *TestState) Update(_ TestContext) Transition[TestContext] {
+func (ts *TestState) Update(_ TestWorld) Transition[TestWorld] {
 	ts.updateCalled = true
-	return Transition[TestContext]{Type: TransNone}
+	return Transition[TestWorld]{Type: TransNone}
 }
 
-func (ts *TestState) Draw(_ TestContext, _ *ebiten.Image) {
+func (ts *TestState) Draw(_ TestWorld, _ *ebiten.Image) {
 	ts.drawCalled = true
 }
 
@@ -57,11 +57,11 @@ func TestGetStatesMethods(t *testing.T) {
 	t.Parallel()
 	t.Run("初期状態での動作確認", func(t *testing.T) {
 		t.Parallel()
-		ctx := TestContext{Name: "TestContext"}
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
 
 		// StateMachineの初期化
-		stateMachine := Init(initialState, ctx)
+		stateMachine := Init(initialState, world)
 
 		// GetStatesのテスト
 		states := stateMachine.GetStates()
@@ -83,9 +83,9 @@ func TestGetStatesMethods(t *testing.T) {
 
 	t.Run("状態の不変性確認", func(t *testing.T) {
 		t.Parallel()
-		ctx := TestContext{Name: "TestContext"}
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, ctx)
+		stateMachine := Init(initialState, world)
 
 		// GetStatesで取得したスライスを変更しても元のスタックに影響しないことを確認
 		states := stateMachine.GetStates()
@@ -103,7 +103,7 @@ func TestGetStatesMethods(t *testing.T) {
 	t.Run("空の状態スタックでの動作", func(t *testing.T) {
 		t.Parallel()
 		// 空のStateMachineを作成（実際のゲームでは発生しないが、テスト用）
-		stateMachine := StateMachine[TestContext]{}
+		stateMachine := StateMachine[TestWorld]{}
 
 		// GetStatesのテスト
 		states := stateMachine.GetStates()
@@ -124,17 +124,17 @@ func TestStateMachineTransitions(t *testing.T) {
 	t.Parallel()
 	t.Run("Push遷移のテスト", func(t *testing.T) {
 		t.Parallel()
-		ctx := TestContext{Name: "TestContext"}
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, ctx)
+		stateMachine := Init(initialState, world)
 
 		// Push遷移を実行
 		newState := &TestState{name: "PushedState"}
-		stateMachine.lastTransition = Transition[TestContext]{
+		stateMachine.lastTransition = Transition[TestWorld]{
 			Type:          TransPush,
-			NewStateFuncs: []StateFactory[TestContext]{func() State[TestContext] { return newState }},
+			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return newState }},
 		}
-		stateMachine.Update(ctx)
+		stateMachine.Update(world)
 
 		// 状態数の確認
 		assert.Equal(t, 2, stateMachine.GetStateCount(), "Push後の状態数が正しくない")
@@ -157,21 +157,21 @@ func TestStateMachineTransitions(t *testing.T) {
 
 	t.Run("Pop遷移のテスト", func(t *testing.T) {
 		t.Parallel()
-		ctx := TestContext{Name: "TestContext"}
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, ctx)
+		stateMachine := Init(initialState, world)
 
 		// まずPushして2つの状態にする
 		pushedState := &TestState{name: "PushedState"}
-		stateMachine.lastTransition = Transition[TestContext]{
+		stateMachine.lastTransition = Transition[TestWorld]{
 			Type:          TransPush,
-			NewStateFuncs: []StateFactory[TestContext]{func() State[TestContext] { return pushedState }},
+			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return pushedState }},
 		}
-		stateMachine.Update(ctx)
+		stateMachine.Update(world)
 
 		// Pop遷移を実行
-		stateMachine.lastTransition = Transition[TestContext]{Type: TransPop}
-		stateMachine.Update(ctx)
+		stateMachine.lastTransition = Transition[TestWorld]{Type: TransPop}
+		stateMachine.Update(world)
 
 		// 状態数の確認
 		assert.Equal(t, 1, stateMachine.GetStateCount(), "Pop後の状態数が正しくない")
@@ -188,17 +188,17 @@ func TestStateMachineTransitions(t *testing.T) {
 
 	t.Run("Switch遷移のテスト", func(t *testing.T) {
 		t.Parallel()
-		ctx := TestContext{Name: "TestContext"}
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, ctx)
+		stateMachine := Init(initialState, world)
 
 		// Switch遷移を実行
 		newState := &TestState{name: "SwitchedState"}
-		stateMachine.lastTransition = Transition[TestContext]{
+		stateMachine.lastTransition = Transition[TestWorld]{
 			Type:          TransSwitch,
-			NewStateFuncs: []StateFactory[TestContext]{func() State[TestContext] { return newState }},
+			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return newState }},
 		}
-		stateMachine.Update(ctx)
+		stateMachine.Update(world)
 
 		// 状態数の確認（変わらず1つ）
 		assert.Equal(t, 1, stateMachine.GetStateCount(), "Switch後の状態数が正しくない")

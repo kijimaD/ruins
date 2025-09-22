@@ -205,23 +205,23 @@ func TestEffectSystem(t *testing.T) {
 
 		// ダメージエフェクトでPoolsコンポーネントがないターゲットを検証
 		damage := Damage{Amount: 10, Source: DamageSourceWeapon}
-		ctxWithInvalidTarget := &Scope{
+		scopeWithInvalidTarget := &Scope{
 			Targets: []ecs.Entity{entityWithoutPools},
 		}
 
-		err = damage.Validate(world, ctxWithInvalidTarget)
+		err = damage.Validate(world, scopeWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 
 		// 回復エフェクトでも同様にチェック
 		healing := Healing{Amount: gc.NumeralAmount{Numeral: 30}}
-		err = healing.Validate(world, ctxWithInvalidTarget)
+		err = healing.Validate(world, scopeWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 
 		// 非戦闘時の回復エフェクトでもチェック
 		fullRecovery := FullRecoveryHP{}
-		err = fullRecovery.Validate(world, ctxWithInvalidTarget)
+		err = fullRecovery.Validate(world, scopeWithInvalidTarget)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "Poolsコンポーネントがありません")
 	})
