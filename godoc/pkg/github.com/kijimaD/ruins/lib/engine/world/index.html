@@ -117,7 +117,7 @@
 				<dd><a href="index.html#Generic">type Generic</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#InitGeneric">func InitGeneric[T c.ComponentInitializer](gameComponents T) (Generic[T], error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#InitGeneric">func InitGeneric[C c.ComponentInitializer, R r.ResourceInitializer](gameComponents C, gameResources R) (Generic[C, R], error)</a></dd>
 				
 				
 			
@@ -150,17 +150,17 @@
 		
 			
 			
-			<h2 id="Generic">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/world/lib.go?s=206:342#L1">Generic</a>
+			<h2 id="Generic">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/world/lib.go?s=208:364#L1">Generic</a>
 				<a class="permalink" href="index.html#Generic">&#xb6;</a>
 				
 				
 			</h2>
 			<p>Generic は型安全なワールド型
 
-			<pre>type Generic[T <a href="../components/index.html">c</a>.<a href="../components/index.html#ComponentInitializer">ComponentInitializer</a>] struct {
+			<pre>type Generic[C <a href="../components/index.html">c</a>.<a href="../components/index.html#ComponentInitializer">ComponentInitializer</a>, R <a href="../resources/index.html">r</a>.<a href="../resources/index.html#ResourceInitializer">ResourceInitializer</a>] struct {
 <span id="Generic.Manager"></span>    Manager    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a>
-<span id="Generic.Components"></span>    Components *<a href="../components/index.html">c</a>.<a href="../components/index.html#Components">Components</a>[T]
-<span id="Generic.Resources"></span>    Resources  *<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Resources">Resources</a>
+<span id="Generic.Components"></span>    Components *<a href="../components/index.html">c</a>.<a href="../components/index.html#Components">Components</a>[C]
+<span id="Generic.Resources"></span>    Resources  *<a href="../resources/index.html">r</a>.<a href="../resources/index.html#Resources">Resources</a>[R]
 }
 </pre>
 
@@ -174,12 +174,12 @@
 
 			
 				
-				<h3 id="InitGeneric">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/world/lib.go?s=396:476#L8">InitGeneric</a>
+				<h3 id="InitGeneric">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/world/lib.go?s=418:543#L8">InitGeneric</a>
 					<a class="permalink" href="index.html#InitGeneric">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func InitGeneric[T <a href="../components/index.html">c</a>.<a href="../components/index.html#ComponentInitializer">ComponentInitializer</a>](gameComponents T) (<a href="index.html#Generic">Generic</a>[T], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func InitGeneric[C <a href="../components/index.html">c</a>.<a href="../components/index.html#ComponentInitializer">ComponentInitializer</a>, R <a href="../resources/index.html">r</a>.<a href="../resources/index.html#ResourceInitializer">ResourceInitializer</a>](gameComponents C, gameResources R) (<a href="index.html#Generic">Generic</a>[C, R], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>InitGeneric は型安全なワールド初期化
 
 				

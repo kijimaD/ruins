@@ -101,8 +101,8 @@
 - ECSワールドへのエンティティ追加
 <p>使用例：
 <pre>// エンティティの作成
-componentList := entities.ComponentList{}
-componentList.Game = append(componentList.Game, gc.GameComponentList{
+componentList := entities.ComponentList[gc.EntitySpec]{}
+componentList.Entities = append(componentList.Entities, gc.EntitySpec{
     Position: &amp;gc.Position{X: 100, Y: 200},
 })
 
@@ -133,7 +133,7 @@ entitiesResult := entities.AddEntities(world, componentList)
 			
 			
 				
-				<dd><a href="index.html#AddEntities">func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity</a></dd>
+				<dd><a href="index.html#AddEntities">func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) []ecs.Entity</a></dd>
 			
 				
 				<dd><a href="index.html#AddEntityComponents">func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity</a></dd>
@@ -141,6 +141,11 @@ entitiesResult := entities.AddEntities(world, componentList)
 			
 				
 				<dd><a href="index.html#ComponentList">type ComponentList</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#World">type World</a></dd>
 				
 				
 			
@@ -172,13 +177,14 @@ entitiesResult := entities.AddEntities(world, componentList)
 		
 			
 			
-			<h2 id="AddEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=309:388#L9">AddEntities</a>
+			<h2 id="AddEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=746:838#L16">AddEntities</a>
 				<a class="permalink" href="index.html#AddEntities">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AddEntities(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, entityComponentList <a href="index.html#ComponentList">ComponentList</a>) []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>AddEntities adds entities with engine and game components
+			<pre>func AddEntities[W <a href="index.html#World">World</a>, C <a href="http://localhost:8888/pkg/builtin/#any">any</a>](world W, entityComponentList <a href="index.html#ComponentList">ComponentList</a>[C]) []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>AddEntities はComponentListからECSエンティティを作成する
+EntitySpecをECSエンティティに変換し、ワールドに追加する
 
 			
 			
@@ -186,13 +192,14 @@ entitiesResult := entities.AddEntities(world, componentList)
 		
 			
 			
-			<h2 id="AddEntityComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=1089:1197#L30">AddEntityComponents</a>
+			<h2 id="AddEntityComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=1707:1815#L38">AddEntityComponents</a>
 				<a class="permalink" href="index.html#AddEntityComponents">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func AddEntityComponents(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, ecsComponentList interface{}, components interface{}) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>AddEntityComponents adds loaded components to an entity
+			<p>AddEntityComponents はエンティティにコンポーネントを追加する
+EntitySpec の各フィールドを対応する ECS コンポーネントに変換して追加する
 
 			
 			
@@ -201,17 +208,45 @@ entitiesResult := entities.AddEntities(world, componentList)
 		
 			
 			
-			<h2 id="ComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=197:246#L4">ComponentList</a>
+			<h2 id="ComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=291:387#L3">ComponentList</a>
 				<a class="permalink" href="index.html#ComponentList">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ComponentList is a list of preloaded entities with components
+			<p>ComponentList はエンティティ作成用のコンポーネントリスト
+Gameフィールドに EntitySpec のスライスを設定し、AddEntities でECSエンティティに変換する
 
-			<pre>type ComponentList struct {
-<span id="ComponentList.Game"></span>    Game []interface{}
+			<pre>type ComponentList[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] struct {
+<span id="ComponentList.Entities"></span>    Entities []T <span class="comment">// 作成するエンティティのリスト</span>
 }
 </pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="World">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=510:590#L9">World</a>
+				<a class="permalink" href="index.html#World">&#xb6;</a>
+				
+				
+			</h2>
+			<p>World represents the required interface for entity creation
+依存性逆転のためのメソッドを定義する
+
+			<pre>type World interface {
+    GetManager() *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a>
+    GetComponents() interface{}
+}</pre>
 
 			
 

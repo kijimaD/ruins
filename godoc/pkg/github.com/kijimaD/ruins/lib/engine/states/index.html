@@ -118,16 +118,16 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.ClearTransition">func (bs *BaseState) ClearTransition()</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.ClearTransition">func (bs *BaseState[T]) ClearTransition()</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.ConsumeTransition">func (bs *BaseState) ConsumeTransition() Transition</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.ConsumeTransition">func (bs *BaseState[T]) ConsumeTransition() Transition[T]</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.GetTransition">func (bs *BaseState) GetTransition() *Transition</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.GetTransition">func (bs *BaseState[T]) GetTransition() *Transition[T]</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.SetTransition">func (bs *BaseState) SetTransition(trans Transition)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BaseState.SetTransition">func (bs *BaseState[T]) SetTransition(trans Transition[T])</a></dd>
 				
 			
 				
@@ -144,23 +144,23 @@
 				<dd><a href="index.html#StateMachine">type StateMachine</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Init">func Init(s State, world w.World) StateMachine</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Init">func Init[T any](s State[T], world T) StateMachine[T]</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Draw">func (sm *StateMachine) Draw(world w.World, screen *ebiten.Image)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Draw">func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetCurrentState">func (sm *StateMachine) GetCurrentState() State</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetCurrentState">func (sm *StateMachine[T]) GetCurrentState() State[T]</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStateCount">func (sm *StateMachine) GetStateCount() int</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStateCount">func (sm *StateMachine[T]) GetStateCount() int</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStates">func (sm *StateMachine) GetStates() []State</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStates">func (sm *StateMachine[T]) GetStates() []State[T]</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Update">func (sm *StateMachine) Update(world w.World)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Update">func (sm *StateMachine[T]) Update(world T)</a></dd>
 				
 			
 				
@@ -209,14 +209,14 @@
 		
 			
 			
-			<h2 id="BaseState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=85:129#L1">BaseState</a>
+			<h2 id="BaseState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=85:139#L1">BaseState</a>
 				<a class="permalink" href="index.html#BaseState">&#xb6;</a>
 				
 				
 			</h2>
 			<p>BaseState は共通のtransition管理を持つベース構造体
 
-			<pre>type BaseState struct {
+			<pre>type BaseState[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] struct {
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -233,12 +233,12 @@
 
 			
 				
-				<h3 id="BaseState.ClearTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=419:457#L9">ClearTransition</a>
+				<h3 id="BaseState.ClearTransition">func (*BaseState[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=441:482#L9">ClearTransition</a>
 					<a class="permalink" href="index.html#BaseState.ClearTransition">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) ClearTransition()</pre>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>[T]) ClearTransition()</pre>
 				<p>ClearTransition は遷移をクリアする
 
 				
@@ -246,12 +246,12 @@
 				
 			
 				
-				<h3 id="BaseState.ConsumeTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=531:582#L14">ConsumeTransition</a>
+				<h3 id="BaseState.ConsumeTransition">func (*BaseState[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=556:613#L14">ConsumeTransition</a>
 					<a class="permalink" href="index.html#BaseState.ConsumeTransition">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) ConsumeTransition() <a href="index.html#Transition">Transition</a></pre>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>[T]) ConsumeTransition() <a href="index.html#Transition">Transition</a>[T]</pre>
 				<p>ConsumeTransition は遷移を消費して返す
 
 				
@@ -259,12 +259,12 @@
 				
 			
 				
-				<h3 id="BaseState.GetTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=301:349#L4">GetTransition</a>
+				<h3 id="BaseState.GetTransition">func (*BaseState[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=317:371#L4">GetTransition</a>
 					<a class="permalink" href="index.html#BaseState.GetTransition">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) GetTransition() *<a href="index.html#Transition">Transition</a></pre>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>[T]) GetTransition() *<a href="index.html#Transition">Transition</a>[T]</pre>
 				<p>GetTransition は現在の遷移を取得する
 
 				
@@ -272,12 +272,12 @@
 				
 			
 				
-				<h3 id="BaseState.SetTransition">func (*BaseState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=173:225#L1">SetTransition</a>
+				<h3 id="BaseState.SetTransition">func (*BaseState[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=183:241#L1">SetTransition</a>
 					<a class="permalink" href="index.html#BaseState.SetTransition">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>) SetTransition(trans <a href="index.html#Transition">Transition</a>)</pre>
+				<pre>func (bs *<a href="index.html#BaseState">BaseState</a>[T]) SetTransition(trans <a href="index.html#Transition">Transition</a>[T])</pre>
 				<p>SetTransition は遷移を設定する
 
 				
@@ -287,26 +287,26 @@
 		
 			
 			
-			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=914:1393#L29">State</a>
+			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=758:1211#L22">State</a>
 				<a class="permalink" href="index.html#State">&#xb6;</a>
 				
 				
 			</h2>
-			<p>State is a game state
+			<p>State はゲームステートのジェネリックインターフェース
 
-			<pre>type State interface {
+			<pre>type State[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] interface {
     <span class="comment">// Executed when the state begins</span>
-    OnStart(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
+    OnStart(world T)
     <span class="comment">// Executed when the state exits</span>
-    OnStop(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
+    OnStop(world T)
     <span class="comment">// Executed when a new state is pushed over this one</span>
-    OnPause(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
+    OnPause(world T)
     <span class="comment">// Executed when the state become active again (states pushed over this one have been popped)</span>
-    OnResume(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)
+    OnResume(world T)
     <span class="comment">// Executed on every frame when the state is active</span>
-    Update(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) <a href="index.html#Transition">Transition</a>
+    Update(world T) <a href="index.html#Transition">Transition</a>[T]
     <span class="comment">// 描画</span>
-    Draw(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)
+    Draw(world T, screen *ebiten.<a href="index.html#Image">Image</a>)
 }</pre>
 
 			
@@ -323,14 +323,14 @@
 		
 			
 			
-			<h2 id="StateFactory">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1472:1502#L45">StateFactory</a>
+			<h2 id="StateFactory">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1290:1330#L38">StateFactory</a>
 				<a class="permalink" href="index.html#StateFactory">&#xb6;</a>
 				
 				
 			</h2>
 			<p>StateFactory はステートを作成するファクトリー関数の型
 
-			<pre>type StateFactory func() <a href="index.html#State">State</a></pre>
+			<pre>type StateFactory[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] func() <a href="index.html#State">State</a>[T]</pre>
 
 			
 
@@ -346,15 +346,14 @@
 		
 			
 			
-			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1581:1691#L49">StateMachine</a>
+			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1406:1498#L41">StateMachine</a>
 				<a class="permalink" href="index.html#StateMachine">&#xb6;</a>
 				
 				
 			</h2>
-			<p>StateMachine contains a stack of states.
-Only the top state is active.
+			<p>StateMachine はジェネリックな状態スタックを管理する
 
-			<pre>type StateMachine struct {
+			<pre>type StateMachine[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] struct {
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -369,13 +368,13 @@ Only the top state is active.
 
 			
 				
-				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2085:2131#L65">Init</a>
+				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1560:1613#L47">Init</a>
 					<a class="permalink" href="index.html#Init">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func Init(s <a href="index.html#State">State</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) <a href="index.html#StateMachine">StateMachine</a></pre>
-				<p>Init creates a new state machine with an initial state
+				<pre>func Init[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>](s <a href="index.html#State">State</a>[T], world T) <a href="index.html#StateMachine">StateMachine</a>[T]</pre>
+				<p>Init は新しいステートマシンを初期化する
 
 				
 				
@@ -383,67 +382,65 @@ Only the top state is active.
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=4372:4437#L125">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2362:2424#L82">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Draw(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw draws the screen after a state update
-statesが複数ある場合は順番に描画する。スタックスライスの古(先頭) → 新(末尾)の順に描画される
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) Draw(world T, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				<p>Draw は画面を描画する
 
 				
 				
 				
 			
 				
-				<h3 id="StateMachine.GetCurrentState">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8419:8466#L235">GetCurrentState</a>
+				<h3 id="StateMachine.GetCurrentState">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5327:5380#L191">GetCurrentState</a>
 					<a class="permalink" href="index.html#StateMachine.GetCurrentState">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) GetCurrentState() <a href="index.html#State">State</a></pre>
-				<p>GetCurrentState は現在アクティブな状態を返す（テスト用）
-状態が存在しない場合はnilを返す
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) GetCurrentState() <a href="index.html#State">State</a>[T]</pre>
+				<p>GetCurrentState は現在アクティブなステートを返す（テスト用）
 
 				
 				
 				
 			
 				
-				<h3 id="StateMachine.GetStateCount">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8628:8671#L243">GetStateCount</a>
+				<h3 id="StateMachine.GetStateCount">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5542:5588#L199">GetStateCount</a>
 					<a class="permalink" href="index.html#StateMachine.GetStateCount">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) GetStateCount() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				<p>GetStateCount は状態スタックの要素数を返す（テスト用）
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) GetStateCount() <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<p>GetStateCount はステートスタックの数を返す（テスト用）
 
 				
 				
 				
 			
 				
-				<h3 id="StateMachine.GetStates">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=8086:8129#L226">GetStates</a>
+				<h3 id="StateMachine.GetStates">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5102:5151#L184">GetStates</a>
 					<a class="permalink" href="index.html#StateMachine.GetStates">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) GetStates() []<a href="index.html#State">State</a></pre>
-				<p>GetStates は現在の状態スタックを返す（テスト用）
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) GetStates() []<a href="index.html#State">State</a>[T]</pre>
+				<p>GetStates はステートスタックのコピーを返す（テスト用）
 
 				
 				
 				
 			
 				
-				<h3 id="StateMachine.Update">func (*StateMachine) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2440:2485#L77">Update</a>
+				<h3 id="StateMachine.Update">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1798:1840#L56">Update</a>
 					<a class="permalink" href="index.html#StateMachine.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>) Update(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)</pre>
-				<p>Update updates the state machine
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) Update(world T)</pre>
+				<p>Update はステートマシンを更新する
 
 				
 				
@@ -452,16 +449,16 @@ statesが複数ある場合は順番に描画する。スタックスライス�
 		
 			
 			
-			<h2 id="StateWithTransition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=790:883#L24">StateWithTransition</a>
+			<h2 id="StateWithTransition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=824:930#L24">StateWithTransition</a>
 				<a class="permalink" href="index.html#StateWithTransition">&#xb6;</a>
 				
 				
 			</h2>
 			<p>StateWithTransition はtransition管理機能を持つstateのインターフェース
 
-			<pre>type StateWithTransition interface {
-    <a href="index.html#State">State</a>
-    GetTransition() *<a href="index.html#Transition">Transition</a>
+			<pre>type StateWithTransition[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] interface {
+    <a href="index.html#State">State</a>[T]
+    GetTransition() *<a href="index.html#Transition">Transition</a>[T]
     ClearTransition()
 }</pre>
 
@@ -479,7 +476,7 @@ statesが複数ある場合は順番に描画する。スタックスライス�
 		
 			
 			
-			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=203:221#L5">TransType</a>
+			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=98:116#L1">TransType</a>
 				<a class="permalink" href="index.html#TransType">&#xb6;</a>
 				
 				
@@ -518,16 +515,16 @@ statesが複数ある場合は順番に描画する。スタックスライス�
 		
 			
 			
-			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=688:887#L23">Transition</a>
+			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=586:677#L16">Transition</a>
 				<a class="permalink" href="index.html#Transition">&#xb6;</a>
 				
 				
 			</h2>
-			<p>Transition is a state transition
+			<p>Transition は状態遷移を表す
 
-			<pre>type Transition struct {
+			<pre>type Transition[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] struct {
 <span id="Transition.Type"></span>    Type          <a href="index.html#TransType">TransType</a>
-<span id="Transition.NewStateFuncs"></span>    NewStateFuncs []<a href="index.html#StateFactory">StateFactory</a> <span class="comment">// ファクトリー関数で動的にステートを作成する。新しいステートは毎回新規作成する</span>
+<span id="Transition.NewStateFuncs"></span>    NewStateFuncs []<a href="index.html#StateFactory">StateFactory</a>[T]
 }
 </pre>
 

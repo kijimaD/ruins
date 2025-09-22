@@ -198,19 +198,19 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateEnemy">func (rw *Master) GenerateEnemy(name string) (gc.GameComponentList, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateEnemy">func (rw *Master) GenerateEnemy(name string) (gc.EntitySpec, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateItem">func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateItem">func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.EntitySpec, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateMaterial">func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateMaterial">func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.EntitySpec, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Master.GeneratePlayer">func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GeneratePlayer">func (rw *Master) GeneratePlayer(name string) (gc.EntitySpec, error)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateRecipe">func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GenerateRecipe">func (rw *Master) GenerateRecipe(name string) (gc.EntitySpec, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Master.GetCommandTable">func (rw *Master) GetCommandTable(name string) (CommandTable, error)</a></dd>
@@ -764,12 +764,12 @@
 
 			
 				
-				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11968:12042#L387">GenerateEnemy</a>
+				<h3 id="Master.GenerateEnemy">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11800:11867#L387">GenerateEnemy</a>
 					<a class="permalink" href="index.html#Master.GenerateEnemy">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateEnemy(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateEnemy(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#EntitySpec">EntitySpec</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
 
 				
@@ -777,12 +777,12 @@
 				
 			
 				
-				<h3 id="Master.GenerateItem">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=4495:4602#L172">GenerateItem</a>
+				<h3 id="Master.GenerateItem">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=4495:4595#L172">GenerateItem</a>
 					<a class="permalink" href="index.html#Master.GenerateItem">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateItem(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#EntitySpec">EntitySpec</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
 
 				
@@ -790,12 +790,12 @@
 				
 			
 				
-				<h3 id="Master.GenerateMaterial">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8239:8362#L280">GenerateMaterial</a>
+				<h3 id="Master.GenerateMaterial">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8155:8271#L280">GenerateMaterial</a>
 					<a class="permalink" href="index.html#Master.GenerateMaterial">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateMaterial(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#EntitySpec">EntitySpec</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>GenerateMaterial は指定された名前の素材のゲームコンポーネントを生成する
 
 				
@@ -803,12 +803,12 @@
 				
 			
 				
-				<h3 id="Master.GeneratePlayer">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11593:11668#L375">GeneratePlayer</a>
+				<h3 id="Master.GeneratePlayer">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11439:11507#L375">GeneratePlayer</a>
 					<a class="permalink" href="index.html#Master.GeneratePlayer">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#Master">Master</a>) GeneratePlayer(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GeneratePlayer(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#EntitySpec">EntitySpec</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>GeneratePlayer は指定された名前のプレイヤーのゲームコンポーネントを生成する
 
 				
@@ -816,12 +816,12 @@
 				
 			
 				
-				<h3 id="Master.GenerateRecipe">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8885:8960#L296">GenerateRecipe</a>
+				<h3 id="Master.GenerateRecipe">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=8780:8848#L296">GenerateRecipe</a>
 					<a class="permalink" href="index.html#Master.GenerateRecipe">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateRecipe(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#GameComponentList">GameComponentList</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GenerateRecipe(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">gc</a>.<a href="../components/index.html#EntitySpec">EntitySpec</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>GenerateRecipe は指定された名前のレシピのゲームコンポーネントを生成する
 
 				
@@ -829,7 +829,7 @@
 				
 			
 				
-				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12280:12348#L398">GetCommandTable</a>
+				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12098:12166#L398">GetCommandTable</a>
 					<a class="permalink" href="index.html#Master.GetCommandTable">&#xb6;</a>
 					
 					
@@ -842,7 +842,7 @@
 				
 			
 				
-				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12638:12700#L409">GetDropTable</a>
+				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12456:12518#L409">GetDropTable</a>
 					<a class="permalink" href="index.html#Master.GetDropTable">&#xb6;</a>
 					
 					

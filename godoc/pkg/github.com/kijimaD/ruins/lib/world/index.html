@@ -120,6 +120,12 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#InitWorld">func InitWorld(c *gc.Components) (World, error)</a></dd>
 				
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#World.GetComponents">func (w World) GetComponents() interface{}</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#World.GetManager">func (w World) GetManager() *ecs.Manager</a></dd>
+				
 			
 			
 			</dl>
@@ -148,7 +154,7 @@
 		
 			
 			
-			<h2 id="World">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/world/world.go?s=288:394#L2">World</a>
+			<h2 id="World">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/world/world.go?s=281:387#L2">World</a>
 				<a class="permalink" href="index.html#World">&#xb6;</a>
 				
 				
@@ -158,7 +164,7 @@
 			<pre>type World struct {
 <span id="World.Manager"></span>    Manager    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a>
 <span id="World.Components"></span>    Components *<a href="../components/index.html">gc</a>.<a href="../components/index.html#Components">Components</a>
-<span id="World.Resources"></span>    Resources  *<a href="../engine/resources/index.html">resources</a>.<a href="../engine/resources/index.html#Resources">Resources</a>
+<span id="World.Resources"></span>    Resources  *<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Resources">Resources</a>
 }
 </pre>
 
@@ -172,7 +178,7 @@
 
 			
 				
-				<h3 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/world/world.go?s=428:475#L9">InitWorld</a>
+				<h3 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/world/world.go?s=421:468#L9">InitWorld</a>
 					<a class="permalink" href="index.html#InitWorld">&#xb6;</a>
 					
 					
@@ -184,6 +190,32 @@
 				
 			
 
+			
+				
+				<h3 id="World.GetComponents">func (World) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/world/world.go?s=894:936#L28">GetComponents</a>
+					<a class="permalink" href="index.html#World.GetComponents">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (w <a href="index.html#World">World</a>) GetComponents() interface{}</pre>
+				<p>GetComponents は World interfaceを満たすためのメソッド
+
+				
+				
+				
+			
+				
+				<h3 id="World.GetManager">func (World) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/world/world.go?s=760:800#L23">GetManager</a>
+					<a class="permalink" href="index.html#World.GetManager">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (w <a href="index.html#World">World</a>) GetManager() *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Manager">Manager</a></pre>
+				<p>GetManager は World interfaceを満たすためのメソッド
+
+				
+				
+				
 			
 		
 	
