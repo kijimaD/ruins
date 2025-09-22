@@ -94,7 +94,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			Description: "脱出する",
 			UserData: func() {
 				// DungeonリソースにStateEventを設定
-				gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+				gameResources := world.Resources.Dungeon
 				gameResources.SetStateEvent(resources.StateEventWarpEscape)
 
 				// DungeonStateに戻る

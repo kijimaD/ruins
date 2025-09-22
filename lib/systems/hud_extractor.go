@@ -7,7 +7,6 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/turns"
 	"github.com/kijimaD/ruins/lib/widgets/hud"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -26,7 +25,7 @@ func ExtractHUDData(world w.World) hud.Data {
 
 // extractGameInfo はゲーム基本情報を抽出する
 func extractGameInfo(world w.World) hud.GameInfoData {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 	floorNumber := gameResources.Depth
 
 	var turnNumber int
@@ -99,7 +98,7 @@ func extractMinimapData(world w.World) hud.MinimapData {
 		return hud.MinimapData{} // プレイヤーが見つからない場合は空データ
 	}
 
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 	screenDimensions := hud.ScreenDimensions{
 		Width:  world.Resources.ScreenDimensions.Width,
 		Height: world.Resources.ScreenDimensions.Height,

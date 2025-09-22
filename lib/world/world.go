@@ -3,7 +3,7 @@ package world
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/engine/resources"
+	"github.com/kijimaD/ruins/lib/resources"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -22,23 +22,21 @@ func InitWorld(c *gc.Components) (World, error) {
 	if err != nil {
 		return World{}, err
 	}
-	resources := resources.InitResources()
+	gameResources := resources.InitGameResources()
 
 	return World{
 		Manager:    manager,
 		Components: c,
-		Resources:  resources,
+		Resources:  gameResources,
 	}, nil
 }
 
 // GetManager は World interfaceを満たすためのメソッド
-// engine側で使うために必要
 func (w World) GetManager() *ecs.Manager {
 	return w.Manager
 }
 
 // GetComponents は World interfaceを満たすためのメソッド
-// engine側で使うために必要
 func (w World) GetComponents() interface{} {
 	return w.Components
 }

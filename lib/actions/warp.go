@@ -85,7 +85,7 @@ func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error {
 
 // performWarp は実際のワープ処理を実行する
 func (wa *WarpActivity) performWarp(act *Activity, world w.World, warp *gc.Warp) error {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	switch warp.Mode {
 	case gc.WarpModeNext:
@@ -116,7 +116,7 @@ func (wa *WarpActivity) getPlayerWarp(_ *Activity, world w.World) *gc.Warp {
 	}
 
 	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 	pixelX := int(gridElement.X) * 32
 	pixelY := int(gridElement.Y) * 32
 	tileEntity := gameResources.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))

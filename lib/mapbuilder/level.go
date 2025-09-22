@@ -57,7 +57,7 @@ var (
 // NewLevel は新規に階層を生成する。
 // 階層を初期化するので、具体的なコードであり、その分参照を多く含んでいる。循環参照を防ぐためにこの関数はLevel構造体とは同じpackageに属していない。
 func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builderType BuilderType) (resources.Level, error) {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	var chain *BuilderChain
 	var playerX, playerY int
@@ -200,7 +200,7 @@ func spawnFieldItems(world w.World, chain *BuilderChain) error {
 		"ルビー原石",
 	}
 
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	// 通常アイテムの配置数（階層の深度に応じて調整）
 	normalItemCount := baseItemCount + chain.BuildData.RandomSource.Intn(randomItemCount)

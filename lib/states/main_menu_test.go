@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -193,6 +193,6 @@ func TestMainMenuTabNavigation(t *testing.T) {
 // createTestWorld はテスト用の簡易Worldを作成する
 func createTestWorld() w.World {
 	return w.World{
-		Resources: &resources.Resources{},
+		Resources: resources.InitGameResources(),
 	}
 }

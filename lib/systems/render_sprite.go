@@ -8,7 +8,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 
 	"github.com/kijimaD/ruins/lib/consts"
@@ -103,7 +102,7 @@ func initializeShadowImages() {
 
 // renderGridTiles はグリッドタイルを描画する
 func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	iSprite := 0
 	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement).Size())
@@ -176,7 +175,7 @@ func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[
 
 // renderWallShadows は壁の影を描画する
 func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	world.Manager.Join(
 		world.Components.SpriteRender,

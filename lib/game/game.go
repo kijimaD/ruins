@@ -112,7 +112,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 		return w.World{}, err
 	}
 
-	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
+	world.Resources.SetScreenDimensions(minGameWidth, minGameHeight)
 
 	// ResourceLoaderを使用してリソースを読み込む
 	resourceLoader := loader.NewDefaultResourceLoader()

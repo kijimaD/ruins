@@ -8,7 +8,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -78,7 +77,7 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 
 	if needsUpdate {
 		// Dungeonリソースから探索済みマップを取得
-		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+		gameResources := world.Resources.Dungeon
 
 		// タイルの可視性マップを更新
 		visionRadius := gc.Pixel(320)
@@ -298,7 +297,7 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 // drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
 func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	tileSize := int(consts.TileSize)
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position

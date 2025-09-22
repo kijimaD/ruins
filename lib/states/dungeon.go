@@ -54,7 +54,7 @@ func (st *DungeonState) OnStart(world w.World) {
 		baseImage.Fill(color.Black)
 	}
 
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 	gameResources.Depth = st.Depth
 
 	// ターンマネージャーを初期化
@@ -96,7 +96,7 @@ func (st *DungeonState) OnStop(world w.World) {
 	}))
 
 	// reset
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 	gameResources.SetStateEvent(resources.StateEventNone)
 
 	// 視界キャッシュをクリア
@@ -146,7 +146,7 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
 func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
+	gameResources := world.Resources.Dungeon
 
 	switch gameResources.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:
