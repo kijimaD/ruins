@@ -8,7 +8,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -78,7 +77,6 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 
 	if needsUpdate {
 		// Dungeonリソースから探索済みマップを取得
-		gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 		// タイルの可視性マップを更新
 		visionRadius := gc.Pixel(320)
@@ -89,7 +87,7 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 			if tileData.Visible {
 				// GridElementを直接キーとして使用
 				gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
-				gameResources.ExploredTiles[gridElement] = true
+				world.Resources.Dungeon.ExploredTiles[gridElement] = true
 			}
 		}
 
@@ -298,7 +296,6 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 // drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
 func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	tileSize := int(consts.TileSize)
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
@@ -362,7 +359,7 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 				}
 			} else {
 				// 視界範囲外: 探索済みかチェック
-				if explored := gameResources.ExploredTiles[gridElement]; explored {
+				if explored := world.Resources.Dungeon.ExploredTiles[gridElement]; explored {
 					// 探索済み視界外タイル: 真っ黒
 					darkness = 1.0
 				} else {

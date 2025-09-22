@@ -33,3 +33,16 @@ linters:
               desc: 標準ライブラリを使う
             - pkg: "github.com/pkg/errors"
               desc: 標準ライブラリを使う
+        engine_guard:
+          list-mode: lax
+          files:
+            - "**/lib/engine/**"
+            - "!$test"
+          deny:
+            # 正確にmodule名である必要がある。ワイルドカードは使えない
+            - pkg: "github.com/kijimaD/ruins/lib/world"
+              desc: engineはworldに依存しない
+            - pkg: "github.com/kijimaD/ruins/lib/components"
+              desc: engineはcomponentsに依存しない
+            - pkg: "github.com/kijimaD/ruins/lib/resources"
+              desc: engineはresourcesに依存しない

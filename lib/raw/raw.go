@@ -179,13 +179,13 @@ func Load(entityMetadataContent string) (Master, error) {
 }
 
 // GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
-func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
+func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.EntitySpec, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, NewKeyNotFoundError(name, "ItemIndex")
+		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
 	}
 	item := rw.Raws.Items[itemIdx]
-	cl := gc.GameComponentList{}
+	cl := gc.EntitySpec{}
 	cl.ItemLocationType = &locationType
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
@@ -193,10 +193,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Consumable != nil {
 		if err := gc.TargetGroupType(item.Consumable.TargetGroup).Valid(); err != nil {
-			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid target group type", err)
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid target group type", err)
 		}
 		if err := gc.TargetNumType(item.Consumable.TargetNum).Valid(); err != nil {
-			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid target num type", err)
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid target num type", err)
 		}
 		targetType := gc.TargetType{
 			TargetGroup: gc.TargetGroupType(item.Consumable.TargetGroup),
@@ -204,7 +204,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 		}
 
 		if err := gc.UsableSceneType(item.Consumable.UsableScene).Valid(); err != nil {
-			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid usable scene type", err)
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid usable scene type", err)
 		}
 		cl.Consumable = &gc.Consumable{
 			UsableScene: gc.UsableSceneType(item.Consumable.UsableScene),
@@ -214,7 +214,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.ProvidesHealing != nil {
 		if err := item.ProvidesHealing.ValueType.Valid(); err != nil {
-			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid value type", err)
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid value type", err)
 		}
 		switch item.ProvidesHealing.ValueType {
 		case PercentageType:
@@ -229,10 +229,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Card != nil {
 		if err := gc.TargetGroupType(item.Card.TargetGroup).Valid(); err != nil {
-			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid card target group type", err)
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid card target group type", err)
 		}
 		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
-			return gc.GameComponentList{}, fmt.Errorf("%s: %w", "invalid card target num type", err)
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid card target num type", err)
 		}
 
 		cl.Card = &gc.Card{
@@ -246,10 +246,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Attack != nil {
 		if err := gc.ElementType(item.Attack.Element).Valid(); err != nil {
-			return gc.GameComponentList{}, err
+			return gc.EntitySpec{}, err
 		}
 		if err := gc.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
-			return gc.GameComponentList{}, err
+			return gc.EntitySpec{}, err
 		}
 
 		cl.Attack = &gc.Attack{
@@ -274,7 +274,7 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 
 	if item.Wearable != nil {
 		if err := gc.EquipmentType(item.Wearable.EquipmentCategory).Valid(); err != nil {
-			return gc.GameComponentList{}, err
+			return gc.EntitySpec{}, err
 		}
 		cl.Wearable = &gc.Wearable{
 			Defense:           item.Wearable.Defense,
@@ -287,12 +287,12 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 }
 
 // GenerateMaterial は指定された名前の素材のゲームコンポーネントを生成する
-func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.GameComponentList, error) {
+func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.EntitySpec, error) {
 	materialIdx, ok := rw.MaterialIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, NewKeyNotFoundError(name, "MaterialIndex")
+		return gc.EntitySpec{}, NewKeyNotFoundError(name, "MaterialIndex")
 	}
-	cl := gc.GameComponentList{}
+	cl := gc.EntitySpec{}
 	cl.Material = &gc.Material{Amount: amount}
 	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
@@ -303,13 +303,13 @@ func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.Item
 }
 
 // GenerateRecipe は指定された名前のレシピのゲームコンポーネントを生成する
-func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
+func (rw *Master) GenerateRecipe(name string) (gc.EntitySpec, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, NewKeyNotFoundError(name, "RecipeIndex")
+		return gc.EntitySpec{}, NewKeyNotFoundError(name, "RecipeIndex")
 	}
 	recipe := rw.Raws.Recipes[recipeIdx]
-	cl := gc.GameComponentList{}
+	cl := gc.EntitySpec{}
 	cl.Name = &gc.Name{Name: recipe.Name}
 	cl.Recipe = &gc.Recipe{}
 	for _, input := range recipe.Inputs {
@@ -319,7 +319,7 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 	// 説明文や分類のため、マッチしたitemの定義から持ってくる
 	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
 	if err != nil {
-		return gc.GameComponentList{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
+		return gc.EntitySpec{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
 	}
 	cl.Description = &gc.Description{Description: item.Description.Description}
 	if item.Card != nil {
@@ -339,14 +339,14 @@ func (rw *Master) GenerateRecipe(name string) (gc.GameComponentList, error) {
 }
 
 // generateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する(敵・味方共通)
-func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
+func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
-		return gc.GameComponentList{}, fmt.Errorf("キーが存在しない: %s", name)
+		return gc.EntitySpec{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
 	member := rw.Raws.Members[memberIdx]
 
-	cl := gc.GameComponentList{}
+	cl := gc.EntitySpec{}
 	cl.Name = &gc.Name{Name: member.Name}
 	if member.Job != "" {
 		cl.Job = &gc.Job{Job: member.Job}
@@ -382,10 +382,10 @@ func (rw *Master) generateFighter(name string) (gc.GameComponentList, error) {
 }
 
 // GeneratePlayer は指定された名前のプレイヤーのゲームコンポーネントを生成する
-func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error) {
+func (rw *Master) GeneratePlayer(name string) (gc.EntitySpec, error) {
 	cl, err := rw.generateFighter(name)
 	if err != nil {
-		return gc.GameComponentList{}, err
+		return gc.EntitySpec{}, err
 	}
 	cl.FactionType = &gc.FactionAlly
 	cl.Player = &gc.Player{}
@@ -394,10 +394,10 @@ func (rw *Master) GeneratePlayer(name string) (gc.GameComponentList, error) {
 }
 
 // GenerateEnemy は指定された名前の敵のゲームコンポーネントを生成する
-func (rw *Master) GenerateEnemy(name string) (gc.GameComponentList, error) {
+func (rw *Master) GenerateEnemy(name string) (gc.EntitySpec, error) {
 	cl, err := rw.generateFighter(name)
 	if err != nil {
-		return gc.GameComponentList{}, err
+		return gc.EntitySpec{}, err
 	}
 	cl.FactionType = &gc.FactionEnemy
 

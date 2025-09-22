@@ -12,22 +12,22 @@ func TestComponentList(t *testing.T) {
 	t.Run("create entity component list", func(t *testing.T) {
 		t.Parallel()
 		gameComponents := []interface{}{
-			gc.GameComponentList{
+			gc.EntitySpec{
 				Name: &gc.Name{Name: "テストエンティティ"},
 			},
 		}
 
-		list := ComponentList{
-			Game: gameComponents,
+		list := ComponentList[interface{}]{
+			Entities: gameComponents,
 		}
 
-		assert.Len(t, list.Game, 1, "Gameコンポーネントリストの長さが正しくない")
+		assert.Len(t, list.Entities, 1, "エンティティリストの長さが正しくない")
 	})
 
 	t.Run("empty entity component list", func(t *testing.T) {
 		t.Parallel()
-		list := ComponentList{}
-		assert.Nil(t, list.Game, "空のリストでGameがnilでない")
+		list := ComponentList[interface{}]{}
+		assert.Nil(t, list.Entities, "空のリストでEntitiesがnilでない")
 	})
 }
 
@@ -36,9 +36,9 @@ func TestAddEntities(t *testing.T) {
 	t.Run("basic functionality test", func(t *testing.T) {
 		t.Parallel()
 		// 循環依存を避けるため、基本的な機能のみテスト
-		entityComponentList := ComponentList{
-			Game: []interface{}{
-				gc.GameComponentList{
+		entityComponentList := ComponentList[interface{}]{
+			Entities: []interface{}{
+				gc.EntitySpec{
 					Name: &gc.Name{Name: "テストエンティティ"},
 				},
 			},
@@ -46,11 +46,11 @@ func TestAddEntities(t *testing.T) {
 
 		// AddEntitiesは実際のworldオブジェクトが必要なため、
 		// 構造体の正常性のみテスト
-		assert.Len(t, entityComponentList.Game, 1, "Gameコンポーネントリストの長さが正しくない")
+		assert.Len(t, entityComponentList.Entities, 1, "エンティティリストの長さが正しくない")
 
-		// GameComponentListの中身を確認
-		gameComponent := entityComponentList.Game[0].(gc.GameComponentList)
-		assert.NotNil(t, gameComponent.Name, "Nameコンポーネントが設定されていない")
-		assert.Equal(t, "テストエンティティ", gameComponent.Name.Name, "名前が正しく設定されていない")
+		// EntitySpecの中身を確認
+		entityComponent := entityComponentList.Entities[0].(gc.EntitySpec)
+		assert.NotNil(t, entityComponent.Name, "Nameコンポーネントが設定されていない")
+		assert.Equal(t, "テストエンティティ", entityComponent.Name.Name, "名前が正しく設定されていない")
 	})
 }

@@ -14,7 +14,7 @@ import (
 
 // MessageState はメッセージ表示用のステート
 type MessageState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	keyboardInput input.KeyboardInput
 
 	text     string
@@ -34,7 +34,7 @@ func (st MessageState) String() string {
 
 // State interface ================
 
-var _ es.State = &MessageState{}
+var _ es.State[w.World] = &MessageState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *MessageState) OnPause(_ w.World) {}
@@ -117,9 +117,9 @@ func (st *MessageState) createUI() *ebitenui.UI {
 func (st *MessageState) OnStop(_ w.World) {}
 
 // Update はメッセージステートの更新処理を行う
-func (st *MessageState) Update(_ w.World) es.Transition {
+func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition{Type: es.TransQuit}
+		return es.Transition[w.World]{Type: es.TransQuit}
 	}
 
 	// タイプライター処理
@@ -127,7 +127,7 @@ func (st *MessageState) Update(_ w.World) es.Transition {
 		// MessageHandlerに処理を委譲し、完了状態をチェック
 		shouldComplete := st.messageHandler.Update()
 		if shouldComplete {
-			return es.Transition{Type: es.TransPop}
+			return es.Transition[w.World]{Type: es.TransPop}
 		}
 	}
 

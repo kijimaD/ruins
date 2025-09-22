@@ -17,6 +17,7 @@ import (
 
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gs "github.com/kijimaD/ruins/lib/states"
+	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // CmdPlay はゲームをプレイするコマンド
@@ -94,7 +95,7 @@ func runPlay(_ *cli.Context) error {
 	}
 
 	// 開始ステートの決定
-	var initialState es.State
+	var initialState es.State[w.World]
 	switch cfg.StartingState {
 	case "home_menu":
 		initialState = &gs.HomeMenuState{}

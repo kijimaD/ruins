@@ -18,7 +18,7 @@ import (
 
 // DungeonMenuState はダンジョン内メニューのゲームステート
 type DungeonMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.UIBuilder
@@ -31,7 +31,7 @@ func (st DungeonMenuState) String() string {
 
 // State interface ================
 
-var _ es.State = &DungeonMenuState{}
+var _ es.State[w.World] = &DungeonMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *DungeonMenuState) OnPause(_ w.World) {}
@@ -58,7 +58,7 @@ func (st *DungeonMenuState) OnStart(world w.World) {
 func (st *DungeonMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *DungeonMenuState) Update(_ w.World) es.Transition {
+func (st *DungeonMenuState) Update(_ w.World) es.Transition[w.World] {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 
@@ -84,7 +84,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			Label:       TextClose,
 			Description: "メニューを閉じる",
 			UserData: func() {
-				st.SetTransition(es.Transition{Type: es.TransPop})
+				st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			},
 		},
 		{
@@ -94,12 +94,11 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			Description: "脱出する",
 			UserData: func() {
 				// DungeonリソースにStateEventを設定
-				gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-				gameResources.SetStateEvent(resources.StateEventWarpEscape)
+				world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpEscape)
 
 				// DungeonStateに戻る
 				// メニューから戻ってDungeonStateにいかないと、DungeonStateのOnStopが呼ばれず、エンティティの解放漏れが起こる
-				st.SetTransition(es.Transition{Type: es.TransPop})
+				st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			},
 		},
 	}
@@ -125,7 +124,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			}
 		},
 		OnCancel: func() {
-			st.SetTransition(es.Transition{Type: es.TransPop})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnFocusChange: func(_, _ int) {
 			// フォーカス変更時にUIを更新

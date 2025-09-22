@@ -17,6 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/game"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
@@ -77,7 +78,7 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 }
 
 // RunTestGame はテストゲームを実行してスクリーンショットを保存する
-func RunTestGame(state es.State, outputPath string) {
+func RunTestGame(state es.State[w.World], outputPath string) {
 	cfg, err := config.Load()
 	if err != nil {
 		panic(fmt.Sprintf("Failed to load config: %v", err))

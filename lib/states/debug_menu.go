@@ -18,7 +18,7 @@ import (
 
 // DebugMenuState はデバッグメニューのゲームステート
 type DebugMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	menuBuilder   *menu.UIBuilder
@@ -31,7 +31,7 @@ func (st DebugMenuState) String() string {
 
 // State interface ================
 
-var _ es.State = &DebugMenuState{}
+var _ es.State[w.World] = &DebugMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *DebugMenuState) OnPause(_ w.World) {}
@@ -51,7 +51,7 @@ func (st *DebugMenuState) OnStart(world w.World) {
 func (st *DebugMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *DebugMenuState) Update(_ w.World) es.Transition {
+func (st *DebugMenuState) Update(_ w.World) es.Transition[w.World] {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 
@@ -109,7 +109,7 @@ func (st *DebugMenuState) createDebugMenu(world w.World) {
 			st.executeDebugMenuItem(world, index)
 		},
 		OnCancel: func() {
-			st.SetTransition(es.Transition{Type: es.TransPop})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnFocusChange: func(_, _ int) {
 			// フォーカス変更時にUIを更新
@@ -138,7 +138,7 @@ func (st *DebugMenuState) executeDebugMenuItem(world w.World, index int) {
 var debugMenuTrans = []struct {
 	label        string
 	f            func(world w.World)
-	getTransFunc func() es.Transition // 遅延評価で毎回新しいTransitionを取得
+	getTransFunc func() es.Transition[w.World] // 遅延評価で毎回新しいTransitionを取得
 }{
 	{
 		label: "回復薬スポーン(インベントリ)",
@@ -148,7 +148,7 @@ var debugMenuTrans = []struct {
 				panic(err)
 			}
 		},
-		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
+		getTransFunc: func() es.Transition[w.World] { return es.Transition[w.World]{Type: es.TransNone} },
 	},
 	{
 		label: "手榴弾スポーン(インベントリ)",
@@ -158,27 +158,27 @@ var debugMenuTrans = []struct {
 				panic(err)
 			}
 		},
-		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransNone} },
+		getTransFunc: func() es.Transition[w.World] { return es.Transition[w.World]{Type: es.TransNone} },
 	},
 	{
 		label: "汎用アイテム入手イベント開始",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransPush, NewStateFuncs: GetItemGetEvent1Factories()}
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: GetItemGetEvent1Factories()}
 		},
 	},
 	{
 		label: "ゲームオーバー",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewGameOverState}}
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverState}}
 		},
 	},
 	{
 		label: "ダンジョン開始(大部屋)",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeBigRoom),
 			}}
 		},
@@ -186,8 +186,8 @@ var debugMenuTrans = []struct {
 	{
 		label: "ダンジョン開始(小部屋)",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeSmallRoom),
 			}}
 		},
@@ -195,8 +195,8 @@ var debugMenuTrans = []struct {
 	{
 		label: "ダンジョン開始(洞窟)",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeCave),
 			}}
 		},
@@ -204,8 +204,8 @@ var debugMenuTrans = []struct {
 	{
 		label: "ダンジョン開始(廃墟)",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeRuins),
 			}}
 		},
@@ -213,8 +213,8 @@ var debugMenuTrans = []struct {
 	{
 		label: "ダンジョン開始(森)",
 		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition {
-			return es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{
+		getTransFunc: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeForest),
 			}}
 		},
@@ -222,6 +222,6 @@ var debugMenuTrans = []struct {
 	{
 		label:        TextClose,
 		f:            func(_ w.World) {},
-		getTransFunc: func() es.Transition { return es.Transition{Type: es.TransPop} },
+		getTransFunc: func() es.Transition[w.World] { return es.Transition[w.World]{Type: es.TransPop} },
 	},
 }

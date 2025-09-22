@@ -7,7 +7,6 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/turns"
 	"github.com/kijimaD/ruins/lib/widgets/hud"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -26,8 +25,7 @@ func ExtractHUDData(world w.World) hud.Data {
 
 // extractGameInfo はゲーム基本情報を抽出する
 func extractGameInfo(world w.World) hud.GameInfoData {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
-	floorNumber := gameResources.Depth
+	floorNumber := world.Resources.Dungeon.Depth
 
 	var turnNumber int
 	var playerMoves int
@@ -99,7 +97,6 @@ func extractMinimapData(world w.World) hud.MinimapData {
 		return hud.MinimapData{} // プレイヤーが見つからない場合は空データ
 	}
 
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	screenDimensions := hud.ScreenDimensions{
 		Width:  world.Resources.ScreenDimensions.Width,
 		Height: world.Resources.ScreenDimensions.Height,
@@ -111,7 +108,7 @@ func extractMinimapData(world w.World) hud.MinimapData {
 
 	// タイル色情報を抽出
 	tileColors := make(map[gc.GridElement]TileColorInfo)
-	for gridElement := range gameResources.ExploredTiles {
+	for gridElement := range world.Resources.Dungeon.ExploredTiles {
 		tileX := int(gridElement.X)
 		tileY := int(gridElement.Y)
 
@@ -127,12 +124,12 @@ func extractMinimapData(world w.World) hud.MinimapData {
 	return hud.MinimapData{
 		PlayerTileX:   playerTileX,
 		PlayerTileY:   playerTileY,
-		ExploredTiles: gameResources.ExploredTiles,
+		ExploredTiles: world.Resources.Dungeon.ExploredTiles,
 		TileColors:    tileColors,
 		MinimapConfig: hud.MinimapConfig{
-			Width:  gameResources.MinimapSettings.Width,
-			Height: gameResources.MinimapSettings.Height,
-			Scale:  gameResources.MinimapSettings.Scale,
+			Width:  world.Resources.Dungeon.MinimapSettings.Width,
+			Height: world.Resources.Dungeon.MinimapSettings.Height,
+			Scale:  world.Resources.Dungeon.MinimapSettings.Scale,
 		},
 		ScreenDimensions: screenDimensions,
 	}

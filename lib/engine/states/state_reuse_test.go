@@ -10,11 +10,11 @@ import (
 func TestStateNoReuse(t *testing.T) {
 	t.Parallel()
 
-	t.Run("StateFactoryから毎回異なるインスタンスが作成される", func(t *testing.T) {
+	t.Run("StateFactory[TestWorld]から毎回異なるインスタンスが作成される", func(t *testing.T) {
 		t.Parallel()
 
 		// ファクトリー関数を定義
-		factory := func() State {
+		factory := func() State[TestWorld] {
 			return &TestState{name: "TestState"}
 		}
 
@@ -31,11 +31,11 @@ func TestStateNoReuse(t *testing.T) {
 
 	t.Run("TransitionのStateFactoriesが実行時に新しいインスタンスを作成する", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 
 		// カウンターを使用して各インスタンスを追跡
 		instanceCount := 0
-		factory := func() State {
+		factory := func() State[TestWorld] {
 			instanceCount++
 			return &TestStateWithID{
 				TestState: TestState{name: "TestState"},
@@ -44,13 +44,13 @@ func TestStateNoReuse(t *testing.T) {
 		}
 
 		// Transitionを作成
-		transition := Transition{
+		transition := Transition[TestWorld]{
 			Type:          TransPush,
-			NewStateFuncs: []StateFactory{factory, factory},
+			NewStateFuncs: []StateFactory[TestWorld]{factory, factory},
 		}
 
 		// StateMachineを初期化
-		initialState := &TestState{name: "Initial"}
+		initialState := &TestState{name: "Init"}
 		sm := Init(initialState, world)
 		sm.lastTransition = transition
 
@@ -66,13 +66,13 @@ func TestStateNoReuse(t *testing.T) {
 
 	t.Run("複数のPush操作で毎回新しいインスタンスが作成される", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 
 		// 作成されたインスタンスを追跡
 		createdStates := []*TestStateWithID{}
 		idCounter := 0
 
-		factory := func() State {
+		factory := func() State[TestWorld] {
 			idCounter++
 			state := &TestStateWithID{
 				TestState: TestState{name: "TestState"},
@@ -83,13 +83,13 @@ func TestStateNoReuse(t *testing.T) {
 		}
 
 		// StateMachineを初期化
-		sm := Init(&TestState{name: "Initial"}, world)
+		sm := Init(&TestState{name: "Init"}, world)
 
-		// 複数回同じStateFactoryでPush
+		// 複数回同じStateFactory[TestWorld]でPush
 		for i := 0; i < 3; i++ {
-			sm.lastTransition = Transition{
+			sm.lastTransition = Transition[TestWorld]{
 				Type:          TransPush,
-				NewStateFuncs: []StateFactory{factory},
+				NewStateFuncs: []StateFactory[TestWorld]{factory},
 			}
 			sm.Update(world)
 		}

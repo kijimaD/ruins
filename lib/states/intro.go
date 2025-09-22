@@ -15,7 +15,7 @@ import (
 
 // IntroState はイントロのゲームステート
 type IntroState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	currentText   string
 	currentIndex  int
@@ -56,7 +56,7 @@ var introBgImages = []string{
 
 // State interface ================
 
-var _ es.State = &IntroState{}
+var _ es.State[w.World] = &IntroState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *IntroState) OnPause(_ w.World) {}
@@ -124,17 +124,17 @@ func (st *IntroState) OnStart(world w.World) {
 func (st *IntroState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *IntroState) Update(world w.World) es.Transition {
+func (st *IntroState) Update(world w.World) es.Transition[w.World] {
 	// Escapeキーでスキップ
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}}
 	}
 
 	// typewriter更新（入力処理も含む）
 	shouldComplete := st.messageHandler.Update()
 	if shouldComplete {
 		// 全てのテキストが完了
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}}
 	}
 
 	// UIBuilderが存在する場合はUI更新

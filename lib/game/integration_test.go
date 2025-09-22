@@ -6,7 +6,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	er "github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gs "github.com/kijimaD/ruins/lib/states"
 	ew "github.com/kijimaD/ruins/lib/world"
@@ -52,16 +51,14 @@ func TestGameInitializationIntegration(t *testing.T) {
 		// 最小限のリソースでの初期化テスト
 		world, err := ew.InitWorld(&gc.Components{})
 		require.NoError(t, err)
-		world.Resources.ScreenDimensions = &er.ScreenDimensions{
-			Width:  consts.MinGameWidth,
-			Height: consts.MinGameHeight,
-		}
+		world.Resources.SetScreenDimensions(consts.MinGameWidth, consts.MinGameHeight)
 
 		// 基本構造の確認
 		assert.NotNil(t, world.Resources, "ワールドリソースが初期化されていない")
 		assert.NotNil(t, world.Resources.ScreenDimensions, "画面サイズが設定されていない")
-		assert.Equal(t, consts.MinGameWidth, world.Resources.ScreenDimensions.Width, "画面幅が正しくない")
-		assert.Equal(t, consts.MinGameHeight, world.Resources.ScreenDimensions.Height, "画面高さが正しくない")
+		width, height := world.Resources.GetScreenDimensions()
+		assert.Equal(t, consts.MinGameWidth, width, "画面幅が正しくない")
+		assert.Equal(t, consts.MinGameHeight, height, "画面高さが正しくない")
 	})
 }
 

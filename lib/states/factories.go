@@ -9,69 +9,69 @@ import (
 // 各ステートのファクトリー関数を集約したファイル
 
 // NewIntroState は新しいIntroStateインスタンスを作成するファクトリー関数
-func NewIntroState() es.State {
+func NewIntroState() es.State[w.World] {
 	return &IntroState{}
 }
 
 // NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
-func NewHomeMenuState() es.State {
+func NewHomeMenuState() es.State[w.World] {
 	return &HomeMenuState{}
 }
 
 // NewDungeonSelectState は新しいDungeonSelectStateインスタンスを作成するファクトリー関数
-func NewDungeonSelectState() es.State {
+func NewDungeonSelectState() es.State[w.World] {
 	return &DungeonSelectState{}
 }
 
 // NewCraftMenuState は新しいCraftMenuStateインスタンスを作成するファクトリー関数
-func NewCraftMenuState() es.State {
+func NewCraftMenuState() es.State[w.World] {
 	return &CraftMenuState{}
 }
 
 // NewInventoryMenuState は新しいInventoryMenuStateインスタンスを作成するファクトリー関数
-func NewInventoryMenuState() es.State {
+func NewInventoryMenuState() es.State[w.World] {
 	return &InventoryMenuState{}
 }
 
 // NewEquipMenuState は新しいEquipMenuStateインスタンスを作成するファクトリー関数
-func NewEquipMenuState() es.State {
+func NewEquipMenuState() es.State[w.World] {
 	return &EquipMenuState{}
 }
 
 // NewDebugMenuState は新しいDebugMenuStateインスタンスを作成するファクトリー関数
-func NewDebugMenuState() es.State {
+func NewDebugMenuState() es.State[w.World] {
 	return &DebugMenuState{}
 }
 
 // NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
-func NewDungeonMenuState() es.State {
+func NewDungeonMenuState() es.State[w.World] {
 	return &DungeonMenuState{}
 }
 
 // NewDungeonStateWithDepth は指定されたDepthでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithDepth(depth int) es.StateFactory {
-	return func() es.State {
+func NewDungeonStateWithDepth(depth int) es.StateFactory[w.World] {
+	return func() es.State[w.World] {
 		return &DungeonState{Depth: depth, BuilderType: mapbuilder.BuilderTypeRandom}
 	}
 }
 
 // NewDungeonStateWithSeed は指定されたDepthとSeedでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithSeed(depth int, seed uint64) es.StateFactory {
-	return func() es.State {
+func NewDungeonStateWithSeed(depth int, seed uint64) es.StateFactory[w.World] {
+	return func() es.State[w.World] {
 		return &DungeonState{Depth: depth, Seed: seed, BuilderType: mapbuilder.BuilderTypeRandom}
 	}
 }
 
 // NewDungeonStateWithBuilder は指定されたBuilderTypeでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithBuilder(depth int, builderType mapbuilder.BuilderType) es.StateFactory {
-	return func() es.State {
+func NewDungeonStateWithBuilder(depth int, builderType mapbuilder.BuilderType) es.StateFactory[w.World] {
+	return func() es.State[w.World] {
 		return &DungeonState{Depth: depth, BuilderType: builderType}
 	}
 }
 
 // NewMessageStateWithText は指定されたテキストでMessageStateインスタンスを作成するファクトリー関数
-func NewMessageStateWithText(text string) es.StateFactory {
-	return func() es.State {
+func NewMessageStateWithText(text string) es.StateFactory[w.World] {
+	return func() es.State[w.World] {
 		return &MessageState{
 			text: text,
 		}
@@ -79,28 +79,28 @@ func NewMessageStateWithText(text string) es.StateFactory {
 }
 
 // NewExecStateWithFunc は指定された関数でExecStateインスタンスを作成するファクトリー関数
-func NewExecStateWithFunc(f func(w.World)) es.StateFactory {
-	return func() es.State {
+func NewExecStateWithFunc(f func(w.World)) es.StateFactory[w.World] {
+	return func() es.State[w.World] {
 		return NewExecState(f)
 	}
 }
 
 // NewMainMenuState は新しいMainMenuStateインスタンスを作成するファクトリー関数
-func NewMainMenuState() es.State {
+func NewMainMenuState() es.State[w.World] {
 	return &MainMenuState{}
 }
 
 // NewGameOverState は新しいGameOverStateインスタンスを作成するファクトリー関数
-func NewGameOverState() es.State {
+func NewGameOverState() es.State[w.World] {
 	return &GameOverState{}
 }
 
 // NewSaveMenuState は新しいSaveMenuStateインスタンスを作成するファクトリー関数
-func NewSaveMenuState() es.State {
+func NewSaveMenuState() es.State[w.World] {
 	return &SaveMenuState{}
 }
 
 // NewLoadMenuState は新しいLoadMenuStateインスタンスを作成するファクトリー関数
-func NewLoadMenuState() es.State {
+func NewLoadMenuState() es.State[w.World] {
 	return &LoadMenuState{}
 }

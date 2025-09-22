@@ -15,7 +15,7 @@ import (
 
 // DungeonSelectState はダンジョン選択のゲームステート
 type DungeonSelectState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui                   *ebitenui.UI
 	menu                 *menu.Menu
 	uiBuilder            *menu.UIBuilder
@@ -29,7 +29,7 @@ func (st DungeonSelectState) String() string {
 
 // State interface ================
 
-var _ es.State = &DungeonSelectState{}
+var _ es.State[w.World] = &DungeonSelectState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *DungeonSelectState) OnPause(_ w.World) {}
@@ -56,9 +56,9 @@ func (st *DungeonSelectState) OnStart(world w.World) {
 func (st *DungeonSelectState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *DungeonSelectState) Update(_ w.World) es.Transition {
+func (st *DungeonSelectState) Update(_ w.World) es.Transition[w.World] {
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}}
 	}
 
 	// メニューの更新
@@ -103,8 +103,8 @@ func (st *DungeonSelectState) initMenu(world w.World) {
 	// コールバックの設定
 	callbacks := menu.Callbacks{
 		OnSelect: func(_ int, item menu.Item) {
-			// 選択されたアイテムのUserDataからTransitionを取得
-			if trans, ok := item.UserData.(es.Transition); ok {
+			// 選択されたメニューアイテムのUserDataからTransitionを取得
+			if trans, ok := item.UserData.(es.Transition[w.World]); ok {
 				st.SetTransition(trans)
 			}
 		},
@@ -180,26 +180,26 @@ func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
 var dungeonSelectTrans = []struct {
 	label string
 	desc  string
-	trans es.Transition
+	trans es.Transition[w.World]
 }{
 	{
 		label: "森の遺跡",
 		desc:  "鬱蒼とした森の奥地にある遺跡",
-		trans: es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
+		trans: es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}},
 	},
 	{
 		label: "山の遺跡",
 		desc:  "切り立った山の洞窟にある遺跡",
-		trans: es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
+		trans: es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}},
 	},
 	{
 		label: "塔の遺跡",
 		desc:  "雲にまで届く塔を持つ遺跡",
-		trans: es.Transition{Type: es.TransReplace, NewStateFuncs: []es.StateFactory{NewDungeonStateWithDepth(1)}},
+		trans: es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}},
 	},
 	{
 		label: "拠点メニューに戻る",
 		desc:  "",
-		trans: es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}},
+		trans: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}},
 	},
 }

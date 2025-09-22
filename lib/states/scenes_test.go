@@ -3,8 +3,8 @@ package states
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/engine/resources"
 	es "github.com/kijimaD/ruins/lib/engine/states"
+	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +20,7 @@ func TestExecStateAutoExecution(t *testing.T) {
 
 		// テスト用のワールドを作成
 		world := w.World{
-			Resources: &resources.Resources{},
+			Resources: resources.InitGameResources(),
 		}
 
 		// 初期状態では関数が実行されていない

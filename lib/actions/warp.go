@@ -85,16 +85,15 @@ func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error {
 
 // performWarp は実際のワープ処理を実行する
 func (wa *WarpActivity) performWarp(act *Activity, world w.World, warp *gc.Warp) error {
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 
 	switch warp.Mode {
 	case gc.WarpModeNext:
-		gameResources.SetStateEvent(resources.StateEventWarpNext)
+		world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpNext)
 		act.Logger.Debug("次の階へワープ", "actor", act.Actor)
 		return nil
 
 	case gc.WarpModeEscape:
-		gameResources.SetStateEvent(resources.StateEventWarpEscape)
+		world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpEscape)
 		act.Logger.Debug("脱出ワープ", "actor", act.Actor)
 		return nil
 
@@ -116,10 +115,9 @@ func (wa *WarpActivity) getPlayerWarp(_ *Activity, world w.World) *gc.Warp {
 	}
 
 	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
-	gameResources := world.Resources.Dungeon.(*resources.Dungeon)
 	pixelX := int(gridElement.X) * 32
 	pixelY := int(gridElement.Y) * 32
-	tileEntity := gameResources.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
+	tileEntity := world.Resources.Dungeon.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
 
 	if tileEntity.HasComponent(world.Components.Warp) {
 		return world.Components.Warp.Get(tileEntity).(*gc.Warp)

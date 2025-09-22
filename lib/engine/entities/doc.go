@@ -9,8 +9,8 @@
 // 使用例：
 //
 //	// エンティティの作成
-//	componentList := entities.ComponentList{}
-//	componentList.Game = append(componentList.Game, gc.GameComponentList{
+//	componentList := entities.ComponentList[gc.EntitySpec]{}
+//	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 //	    Position: &gc.Position{X: 100, Y: 200},
 //	})
 //

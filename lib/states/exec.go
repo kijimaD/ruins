@@ -9,7 +9,7 @@ import (
 // ExecState はステート管理に乗っかりつつ任意のコマンドを実行するためのダミーステート
 // 処理の中身は呼び出し側で注入する
 type ExecState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	f func(w.World)
 }
 
@@ -26,7 +26,7 @@ func NewExecState(f func(w.World)) *ExecState {
 
 // State interface ================
 
-var _ es.State = &ExecState{}
+var _ es.State[w.World] = &ExecState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *ExecState) OnPause(_ w.World) {}
@@ -44,12 +44,12 @@ func (st *ExecState) OnStart(_ w.World) {}
 func (st *ExecState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *ExecState) Update(_ w.World) es.Transition {
+func (st *ExecState) Update(_ w.World) es.Transition[w.World] {
 	// BaseStateの共通処理を使用
 	if transition := st.ConsumeTransition(); transition.Type != es.TransNone {
 		return transition
 	}
-	return es.Transition{Type: es.TransPop}
+	return es.Transition[w.World]{Type: es.TransPop}
 }
 
 // Draw はゲームステートの描画処理を行う

@@ -6,7 +6,7 @@ import (
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/kijimaD/ruins/lib/colors"
-	"github.com/kijimaD/ruins/lib/engine/resources"
+	"github.com/kijimaD/ruins/lib/resources"
 )
 
 // NewRowContainer は汎用的なrowコンテナを作成する

@@ -4,11 +4,13 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
+
+// TestWorld はテスト用のゲーム世界
+type TestWorld struct {
+	Name string
+}
 
 // TestState はテスト用の状態実装
 type TestState struct {
@@ -25,28 +27,28 @@ func (ts *TestState) String() string {
 	return ts.name
 }
 
-func (ts *TestState) OnStart(_ w.World) {
+func (ts *TestState) OnStart(_ TestWorld) {
 	ts.onStartCalled = true
 }
 
-func (ts *TestState) OnStop(_ w.World) {
+func (ts *TestState) OnStop(_ TestWorld) {
 	ts.onStopCalled = true
 }
 
-func (ts *TestState) OnPause(_ w.World) {
+func (ts *TestState) OnPause(_ TestWorld) {
 	ts.onPauseCalled = true
 }
 
-func (ts *TestState) OnResume(_ w.World) {
+func (ts *TestState) OnResume(_ TestWorld) {
 	ts.onResumeCalled = true
 }
 
-func (ts *TestState) Update(_ w.World) Transition {
+func (ts *TestState) Update(_ TestWorld) Transition[TestWorld] {
 	ts.updateCalled = true
-	return Transition{Type: TransNone}
+	return Transition[TestWorld]{Type: TransNone}
 }
 
-func (ts *TestState) Draw(_ w.World, _ *ebiten.Image) {
+func (ts *TestState) Draw(_ TestWorld, _ *ebiten.Image) {
 	ts.drawCalled = true
 }
 
@@ -55,7 +57,7 @@ func TestGetStatesMethods(t *testing.T) {
 	t.Parallel()
 	t.Run("初期状態での動作確認", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
 
 		// StateMachineの初期化
@@ -81,7 +83,7 @@ func TestGetStatesMethods(t *testing.T) {
 
 	t.Run("状態の不変性確認", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
@@ -101,7 +103,7 @@ func TestGetStatesMethods(t *testing.T) {
 	t.Run("空の状態スタックでの動作", func(t *testing.T) {
 		t.Parallel()
 		// 空のStateMachineを作成（実際のゲームでは発生しないが、テスト用）
-		stateMachine := StateMachine{}
+		stateMachine := StateMachine[TestWorld]{}
 
 		// GetStatesのテスト
 		states := stateMachine.GetStates()
@@ -122,15 +124,15 @@ func TestStateMachineTransitions(t *testing.T) {
 	t.Parallel()
 	t.Run("Push遷移のテスト", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
 		// Push遷移を実行
 		newState := &TestState{name: "PushedState"}
-		stateMachine.lastTransition = Transition{
+		stateMachine.lastTransition = Transition[TestWorld]{
 			Type:          TransPush,
-			NewStateFuncs: []StateFactory{func() State { return newState }},
+			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return newState }},
 		}
 		stateMachine.Update(world)
 
@@ -155,20 +157,20 @@ func TestStateMachineTransitions(t *testing.T) {
 
 	t.Run("Pop遷移のテスト", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
 		// まずPushして2つの状態にする
 		pushedState := &TestState{name: "PushedState"}
-		stateMachine.lastTransition = Transition{
+		stateMachine.lastTransition = Transition[TestWorld]{
 			Type:          TransPush,
-			NewStateFuncs: []StateFactory{func() State { return pushedState }},
+			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return pushedState }},
 		}
 		stateMachine.Update(world)
 
 		// Pop遷移を実行
-		stateMachine.lastTransition = Transition{Type: TransPop}
+		stateMachine.lastTransition = Transition[TestWorld]{Type: TransPop}
 		stateMachine.Update(world)
 
 		// 状態数の確認
@@ -186,15 +188,15 @@ func TestStateMachineTransitions(t *testing.T) {
 
 	t.Run("Switch遷移のテスト", func(t *testing.T) {
 		t.Parallel()
-		world := createTestWorld(t)
+		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
 		stateMachine := Init(initialState, world)
 
 		// Switch遷移を実行
 		newState := &TestState{name: "SwitchedState"}
-		stateMachine.lastTransition = Transition{
+		stateMachine.lastTransition = Transition[TestWorld]{
 			Type:          TransSwitch,
-			NewStateFuncs: []StateFactory{func() State { return newState }},
+			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return newState }},
 		}
 		stateMachine.Update(world)
 
@@ -210,12 +212,4 @@ func TestStateMachineTransitions(t *testing.T) {
 		// 新しい状態のOnStartが呼ばれていることを確認
 		assert.True(t, newState.onStartCalled, "新しい状態のOnStartが呼ばれていない")
 	})
-}
-
-// createTestWorld はテスト用のワールドを作成
-func createTestWorld(t *testing.T) w.World {
-	// 適切なワールドを作成してInputSystemエラーを回避
-	world, err := w.InitWorld(&gc.Components{})
-	require.NoError(t, err)
-	return world
 }

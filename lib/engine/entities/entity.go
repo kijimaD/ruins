@@ -5,38 +5,46 @@ import (
 	"log"
 	"reflect"
 
-	w "github.com/kijimaD/ruins/lib/world"
-
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// ComponentList is a list of preloaded entities with components
-type ComponentList struct {
-	Game []interface{}
+// ComponentList はエンティティ作成用のコンポーネントリスト
+// Gameフィールドに EntitySpec のスライスを設定し、AddEntities でECSエンティティに変換する
+type ComponentList[T any] struct {
+	Entities []T // 作成するエンティティのリスト
 }
 
-// AddEntities adds entities with engine and game components
-func AddEntities(world w.World, entityComponentList ComponentList) []ecs.Entity {
+// World represents the required interface for entity creation
+// 依存性逆転のためのメソッドを定義する
+type World interface {
+	GetManager() *ecs.Manager
+	GetComponents() interface{}
+}
+
+// AddEntities はComponentListからECSエンティティを作成する
+// EntitySpecをECSエンティティに変換し、ワールドに追加する
+func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) []ecs.Entity {
 	// Create new entities and add engine components
-	entities := make([]ecs.Entity, len(entityComponentList.Game))
-	for iEntity := range entityComponentList.Game {
-		entities[iEntity] = world.Manager.NewEntity()
-		AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
+	entities := make([]ecs.Entity, len(entityComponentList.Entities))
+	for iEntity := range entityComponentList.Entities {
+		entities[iEntity] = world.GetManager().NewEntity()
+		AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity])
 	}
 
 	// Add game components
-	if entityComponentList.Game != nil {
-		if len(entityComponentList.Game) != len(entities) {
+	if entityComponentList.Entities != nil {
+		if len(entityComponentList.Entities) != len(entities) {
 			log.Fatal("incorrect size for game component list")
 		}
 		for iEntity := range entities {
-			AddEntityComponents(entities[iEntity], world.Components, entityComponentList.Game[iEntity])
+			AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity])
 		}
 	}
 	return entities
 }
 
-// AddEntityComponents adds loaded components to an entity
+// AddEntityComponents はエンティティにコンポーネントを追加する
+// EntitySpec の各フィールドを対応する ECS コンポーネントに変換して追加する
 func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity {
 	// 追加先のコンポーネントリスト。コンポーネントのスライス群
 	ecv := reflect.ValueOf(ecsComponentList).Elem()
@@ -72,7 +80,7 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 					entity.AddComponent(ecsComponent, value.Interface())
 				}
 			default:
-				log.Fatalf("GameComponentListフィールドに指定された型の処理は定義されていない: %s", component.Kind())
+				log.Fatalf("EntitySpecフィールドに指定された型の処理は定義されていない: %s", component.Kind())
 			}
 		}
 	}

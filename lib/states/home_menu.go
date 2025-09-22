@@ -21,7 +21,7 @@ import (
 
 // HomeMenuState は拠点メニューのゲームステート
 type HomeMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.UIBuilder
@@ -42,7 +42,7 @@ func (st HomeMenuState) String() string {
 
 // State interface ================
 
-var _ es.State = &HomeMenuState{}
+var _ es.State[w.World] = &HomeMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *HomeMenuState) OnPause(_ w.World) {}
@@ -76,10 +76,10 @@ func (st *HomeMenuState) OnStart(world w.World) {
 func (st *HomeMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *HomeMenuState) Update(_ w.World) es.Transition {
+func (st *HomeMenuState) Update(_ w.World) es.Transition[w.World] {
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
 	}
 
 	// メニューの更新
@@ -108,37 +108,37 @@ func (st *HomeMenuState) initMenu(world w.World) {
 			ID:          "departure",
 			Label:       "出発",
 			Description: "遺跡に出発する",
-			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewDungeonSelectState}},
+			UserData:    es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonSelectState}},
 		},
 		{
 			ID:          "craft",
 			Label:       "合成",
 			Description: "アイテムを合成する",
-			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewCraftMenuState}},
+			UserData:    es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}},
 		},
 		{
 			ID:          "inventory",
 			Label:       "所持",
 			Description: "所持品を確認する",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewInventoryMenuState}},
+			UserData:    es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}},
 		},
 		{
 			ID:          "equipment",
 			Label:       "装備",
 			Description: "装備を変更する",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewEquipMenuState}},
+			UserData:    es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}},
 		},
 		{
 			ID:          "save",
 			Label:       "書込",
 			Description: "ゲームを保存する",
-			UserData:    es.Transition{Type: es.TransPush, NewStateFuncs: []es.StateFactory{NewSaveMenuState}},
+			UserData:    es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}},
 		},
 		{
 			ID:          "exit",
 			Label:       "終了",
 			Description: "タイトル画面に戻る",
-			UserData:    es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}},
+			UserData:    es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}},
 		},
 	}
 
@@ -156,13 +156,13 @@ func (st *HomeMenuState) initMenu(world w.World) {
 	callbacks := menu.Callbacks{
 		OnSelect: func(_ int, item menu.Item) {
 			// 選択されたアイテムのUserDataからTransitionを取得
-			if trans, ok := item.UserData.(es.Transition); ok {
+			if trans, ok := item.UserData.(es.Transition[w.World]); ok {
 				st.SetTransition(trans)
 			}
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理（タイトル画面に戻る）
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewMainMenuState}})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
 		},
 		OnFocusChange: func(_, newIndex int) {
 			// フォーカス変更時に説明文を更新

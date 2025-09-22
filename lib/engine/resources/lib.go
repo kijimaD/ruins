@@ -1,29 +1,29 @@
 package resources
 
-import (
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"github.com/kijimaD/ruins/lib/components"
-)
+import "fmt"
 
-// Resources contains references to data not related to any entity
-type Resources struct {
-	ScreenDimensions *ScreenDimensions
-	SpriteSheets     *map[string]components.SpriteSheet
-	Fonts            *map[string]Font
-	Faces            *map[string]text.Face
-	Dungeon          interface{}
-	RawMaster        interface{}
-	UIResources      *UIResources
-	TurnManager      interface{}
+// ResourceProvider は抽象的なリソースプロバイダインターフェース
+// 具体的な実装は lib/resources パッケージに移動
+type ResourceProvider interface {
+	GetScreenDimensions() (width, height int)
+	SetScreenDimensions(width, height int)
 }
 
-// ScreenDimensions contains current screen dimensions
-type ScreenDimensions struct {
-	Width  int
-	Height int
+// ResourceInitializer はリソースの初期化を行うインターフェース
+type ResourceInitializer interface {
+	InitializeResources() error
 }
 
-// InitResources initializes resources
-func InitResources() *Resources {
-	return &Resources{}
+// Resources はジェネリクス型を使用した型安全な実装
+type Resources[T ResourceInitializer] struct {
+	Game T
+}
+
+// InitResources はジェネリクス型を使用した型安全な実装
+func InitResources[T ResourceInitializer](gameResources T) (*Resources[T], error) {
+	if err := gameResources.InitializeResources(); err != nil {
+		return nil, fmt.Errorf("failed to initialize resources: %w", err)
+	}
+
+	return &Resources[T]{Game: gameResources}, nil
 }

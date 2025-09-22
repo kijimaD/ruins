@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/game"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -12,17 +13,15 @@ import (
 
 func TestSortEntities(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
-	require.NoError(t, err)
 
 	tests := []struct {
 		name     string
-		entities func() []ecs.Entity
+		entities func(w w.World) []ecs.Entity
 		expected []string
 	}{
 		{
 			name: "アイテムのソート",
-			entities: func() []ecs.Entity {
+			entities: func(world w.World) []ecs.Entity {
 				item1 := world.Manager.NewEntity()
 				item1.AddComponent(world.Components.Name, &gc.Name{Name: "Zebra Item"})
 
@@ -38,14 +37,14 @@ func TestSortEntities(t *testing.T) {
 		},
 		{
 			name: "空のリスト",
-			entities: func() []ecs.Entity {
+			entities: func(_ w.World) []ecs.Entity {
 				return []ecs.Entity{}
 			},
 			expected: []string{},
 		},
 		{
 			name: "日本語名のソート",
-			entities: func() []ecs.Entity {
+			entities: func(world w.World) []ecs.Entity {
 				item1 := world.Manager.NewEntity()
 				item1.AddComponent(world.Components.Name, &gc.Name{Name: "剣"})
 
@@ -64,7 +63,11 @@ func TestSortEntities(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			entities := tt.entities()
+			// 各テストケースで新しいworldを作成
+			world, err := game.InitWorld(960, 720)
+			require.NoError(t, err)
+
+			entities := tt.entities(world)
 			sorted := SortEntities(world, entities)
 
 			// ソート結果の検証

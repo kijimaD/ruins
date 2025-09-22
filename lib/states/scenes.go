@@ -15,13 +15,13 @@ import (
 // なのでstate factoryは、あとに表示するstateが先にくる
 // state factory 3, 2, 1
 // state stack 1, 2, 3
-func then(stack []es.StateFactory, value es.StateFactory) []es.StateFactory {
-	return append([]es.StateFactory{value}, stack...)
+func then(stack []es.StateFactory[w.World], value es.StateFactory[w.World]) []es.StateFactory[w.World] {
+	return append([]es.StateFactory[w.World]{value}, stack...)
 }
 
 // GetItemGetEvent1Factories は汎用アイテム入手イベントのファクトリー関数配列を返す
-func GetItemGetEvent1Factories() []es.StateFactory {
-	factories := []es.StateFactory{}
+func GetItemGetEvent1Factories() []es.StateFactory[w.World] {
+	factories := []es.StateFactory[w.World]{}
 
 	factories = then(factories, NewMessageStateWithText("「倉庫だな。役立ちそうなものはもらっていこう。」"))
 	factories = then(factories, NewExecStateWithFunc(func(world w.World) {
@@ -42,7 +42,7 @@ func GetItemGetEvent1Factories() []es.StateFactory {
 			Append("を2個手に入れた。").
 			Log()
 	}))
-	factories = then(factories, func() es.State {
+	factories = then(factories, func() es.State[w.World] {
 		return &MessageState{
 			textFunc: helpers.GetPtr(func() string {
 				history := gamelog.SceneLog.GetHistory()

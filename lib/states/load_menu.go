@@ -16,7 +16,7 @@ import (
 
 // LoadMenuState はロードスロット選択メニュー
 type LoadMenuState struct {
-	es.BaseState
+	es.BaseState[w.World]
 	ui            *ebitenui.UI
 	menu          *menu.Menu
 	uiBuilder     *menu.UIBuilder
@@ -28,7 +28,7 @@ func (st LoadMenuState) String() string {
 	return "LoadMenu"
 }
 
-var _ es.State = &LoadMenuState{}
+var _ es.State[w.World] = &LoadMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *LoadMenuState) OnPause(_ w.World) {}
@@ -54,7 +54,7 @@ func (st *LoadMenuState) OnStart(world w.World) {
 func (st *LoadMenuState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *LoadMenuState) Update(_ w.World) es.Transition {
+func (st *LoadMenuState) Update(_ w.World) es.Transition[w.World] {
 	// メニューの更新
 	st.menu.Update(st.keyboardInput)
 	st.ui.Update()
@@ -119,7 +119,7 @@ func (st *LoadMenuState) initMenu(world w.World) {
 
 			if slotName == "back" || slotName == "no_saves" {
 				// メインメニューに戻る
-				st.SetTransition(es.Transition{Type: es.TransPop})
+				st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 				return
 			}
 
@@ -132,11 +132,11 @@ func (st *LoadMenuState) initMenu(world w.World) {
 			}
 
 			// ロード成功後、ホームメニューに遷移
-			st.SetTransition(es.Transition{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory{NewHomeMenuState}})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
 		},
 		OnCancel: func() {
 			// メインメニューに戻る
-			st.SetTransition(es.Transition{Type: es.TransPop})
+			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnFocusChange: func(_, _ int) {
 			if st.uiBuilder != nil {
