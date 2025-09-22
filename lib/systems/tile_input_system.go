@@ -200,10 +200,9 @@ func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
 
 // getWarpAtPlayerPosition はプレイヤーの現在位置のワープホールを取得する
 func getWarpAtPlayerPosition(world w.World, playerGrid *gc.GridElement) *gc.Warp {
-	gameResources := world.Resources.Dungeon
 	pixelX := int(playerGrid.X) * 32
 	pixelY := int(playerGrid.Y) * 32
-	tileEntity := gameResources.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
+	tileEntity := world.Resources.Dungeon.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
 
 	if tileEntity.HasComponent(world.Components.Warp) {
 		return world.Components.Warp.Get(tileEntity).(*gc.Warp)

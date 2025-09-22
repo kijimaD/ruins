@@ -117,9 +117,8 @@ func TestExtractMinimapData(t *testing.T) {
 	world := CreateTestWorldWithResources(t)
 
 	// ゲームリソースを設定
-	dungeonResource := world.Resources.Dungeon
-	dungeonResource.ExploredTiles = make(map[gc.GridElement]bool)
-	dungeonResource.MinimapSettings = resources.MinimapSettings{
+	world.Resources.Dungeon.ExploredTiles = make(map[gc.GridElement]bool)
+	world.Resources.Dungeon.MinimapSettings = resources.MinimapSettings{
 		Width:  200,
 		Height: 200,
 		Scale:  2,
@@ -131,9 +130,9 @@ func TestExtractMinimapData(t *testing.T) {
 	playerEntity.AddComponent(world.Components.Player, &gc.Player{})
 
 	// 探索済みタイルを設定
-	dungeonResource.ExploredTiles[gc.GridElement{X: 10, Y: 15}] = true // プレイヤー位置
-	dungeonResource.ExploredTiles[gc.GridElement{X: 9, Y: 15}] = true  // 左のタイル
-	dungeonResource.ExploredTiles[gc.GridElement{X: 11, Y: 15}] = true // 右のタイル
+	world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 10, Y: 15}] = true // プレイヤー位置
+	world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 9, Y: 15}] = true  // 左のタイル
+	world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 11, Y: 15}] = true // 右のタイル
 
 	// 画面リソースを設定
 	world.Resources.SetScreenDimensions(800, 600)

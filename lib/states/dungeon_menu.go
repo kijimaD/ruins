@@ -94,8 +94,7 @@ func (st *DungeonMenuState) initMenu(world w.World) {
 			Description: "脱出する",
 			UserData: func() {
 				// DungeonリソースにStateEventを設定
-				gameResources := world.Resources.Dungeon
-				gameResources.SetStateEvent(resources.StateEventWarpEscape)
+				world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpEscape)
 
 				// DungeonStateに戻る
 				// メニューから戻ってDungeonStateにいかないと、DungeonStateのOnStopが呼ばれず、エンティティの解放漏れが起こる

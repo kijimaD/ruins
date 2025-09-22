@@ -102,7 +102,6 @@ func initializeShadowImages() {
 
 // renderGridTiles はグリッドタイルを描画する
 func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	gameResources := world.Resources.Dungeon
 
 	iSprite := 0
 	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement).Size())
@@ -128,7 +127,7 @@ func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[str
 			tileKey := fmt.Sprintf("%d,%d", gridElement.X, gridElement.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
 				// 探索済みかどうかもチェック
-				if !gameResources.ExploredTiles[*gridElement] {
+				if !world.Resources.Dungeon.ExploredTiles[*gridElement] {
 					continue // 未探索かつ視界外のタイルは描画しない
 				}
 			}
@@ -175,7 +174,6 @@ func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[
 
 // renderWallShadows は壁の影を描画する
 func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	gameResources := world.Resources.Dungeon
 
 	world.Manager.Join(
 		world.Components.SpriteRender,
@@ -190,7 +188,7 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 			tileKey := fmt.Sprintf("%d,%d", grid.X, grid.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
 				// 探索済みかどうかもチェック
-				if !gameResources.ExploredTiles[*grid] {
+				if !world.Resources.Dungeon.ExploredTiles[*grid] {
 					return // 未探索かつ視界外の影は描画しない
 				}
 			}
@@ -203,11 +201,11 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 			return
 		}
 
-		belowTileIdx := gameResources.Level.XYTileIndex(grid.X, grid.Y+1)
-		if (belowTileIdx < 0) || (int(belowTileIdx) > len(gameResources.Level.Entities)-1) {
+		belowTileIdx := world.Resources.Dungeon.Level.XYTileIndex(grid.X, grid.Y+1)
+		if (belowTileIdx < 0) || (int(belowTileIdx) > len(world.Resources.Dungeon.Level.Entities)-1) {
 			return
 		}
-		belowTileEntity := gameResources.Level.Entities[int(belowTileIdx)]
+		belowTileEntity := world.Resources.Dungeon.Level.Entities[int(belowTileIdx)]
 		belowSpriteRender, ok := world.Components.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
 		if !ok || belowSpriteRender.Depth != gc.DepthNumFloor {
 			return // 下が床でなければ影を描画しない

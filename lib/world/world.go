@@ -22,12 +22,10 @@ func InitWorld(c *gc.Components) (World, error) {
 	if err != nil {
 		return World{}, err
 	}
-	gameResources := resources.InitGameResources()
-
 	return World{
 		Manager:    manager,
 		Components: c,
-		Resources:  gameResources,
+		Resources:  resources.InitGameResources(),
 	}, nil
 }
 

@@ -54,8 +54,7 @@ func (st *DungeonState) OnStart(world w.World) {
 		baseImage.Fill(color.Black)
 	}
 
-	gameResources := world.Resources.Dungeon
-	gameResources.Depth = st.Depth
+	world.Resources.Dungeon.Depth = st.Depth
 
 	// ターンマネージャーを初期化
 	if world.Resources.TurnManager == nil {
@@ -67,10 +66,10 @@ func (st *DungeonState) OnStart(world w.World) {
 	if err != nil {
 		panic(err)
 	}
-	gameResources.Level = level
+	world.Resources.Dungeon.Level = level
 
 	// フロア移動時に探索済みマップをリセット
-	gameResources.ExploredTiles = make(map[gc.GridElement]bool)
+	world.Resources.Dungeon.ExploredTiles = make(map[gc.GridElement]bool)
 
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()
@@ -96,8 +95,7 @@ func (st *DungeonState) OnStop(world w.World) {
 	}))
 
 	// reset
-	gameResources := world.Resources.Dungeon
-	gameResources.SetStateEvent(resources.StateEventNone)
+	world.Resources.Dungeon.SetStateEvent(resources.StateEventNone)
 
 	// 視界キャッシュをクリア
 	gs.ClearVisionCaches()
@@ -146,11 +144,10 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
 func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
-	gameResources := world.Resources.Dungeon
 
-	switch gameResources.ConsumeStateEvent() {
+	switch world.Resources.Dungeon.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(gameResources.Depth + 1)}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(world.Resources.Dungeon.Depth + 1)}}
 	case resources.StateEventWarpEscape:
 		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}}
 	default:
