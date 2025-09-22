@@ -11,7 +11,7 @@ import (
 // ComponentList はエンティティ作成用のコンポーネントリスト
 // Gameフィールドに EntitySpec のスライスを設定し、AddEntities でECSエンティティに変換する
 type ComponentList[T any] struct {
-	Game []T // エンティティ仕様のリスト
+	Entities []T // 作成するエンティティのリスト
 }
 
 // World represents the required interface for entity creation
@@ -25,19 +25,19 @@ type World interface {
 // EntitySpecをECSエンティティに変換し、ワールドに追加する
 func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) []ecs.Entity {
 	// Create new entities and add engine components
-	entities := make([]ecs.Entity, len(entityComponentList.Game))
-	for iEntity := range entityComponentList.Game {
+	entities := make([]ecs.Entity, len(entityComponentList.Entities))
+	for iEntity := range entityComponentList.Entities {
 		entities[iEntity] = world.GetManager().NewEntity()
-		AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Game[iEntity])
+		AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity])
 	}
 
 	// Add game components
-	if entityComponentList.Game != nil {
-		if len(entityComponentList.Game) != len(entities) {
+	if entityComponentList.Entities != nil {
+		if len(entityComponentList.Entities) != len(entities) {
 			log.Fatal("incorrect size for game component list")
 		}
 		for iEntity := range entities {
-			AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Game[iEntity])
+			AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity])
 		}
 	}
 	return entities

@@ -56,7 +56,7 @@ var (
 // SpawnFloor はフィールド上に表示される床を生成する
 func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Game = append(componentList.Game, gc.EntitySpec{
+	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -71,7 +71,7 @@ func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 // SpawnWall は指定されたスプライト番号で壁を生成する
 func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Game = append(componentList.Game, gc.EntitySpec{
+	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -93,7 +93,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error)
 	}
 
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Game = append(componentList.Game, gc.EntitySpec{
+	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -114,7 +114,7 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 	}
 
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Game = append(componentList.Game, gc.EntitySpec{
+	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
@@ -161,7 +161,7 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 		}
 		gcl.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
 	}
-	componentList.Game = append(componentList.Game, gcl)
+	componentList.Entities = append(componentList.Entities, gcl)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
 
@@ -197,7 +197,7 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 		ViewDistance: gc.Pixel(aiVisionDistance),
 	}
 
-	componentList.Game = append(componentList.Game, cl)
+	componentList.Entities = append(componentList.Entities, cl)
 	entities := entities.AddEntities(world, componentList)
 
 	// 全回復
@@ -231,7 +231,7 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ec
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
-	componentList.Game = append(componentList.Game, gameComponent)
+	componentList.Entities = append(componentList.Entities, gameComponent)
 	entities := entities.AddEntities(world, componentList)
 
 	return entities[len(entities)-1], nil
@@ -245,7 +245,7 @@ func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemL
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
-	componentList.Game = append(componentList.Game, gameComponent)
+	componentList.Entities = append(componentList.Entities, gameComponent)
 	entities := entities.AddEntities(world, componentList)
 
 	return entities[len(entities)-1], nil
@@ -332,7 +332,7 @@ func SpawnAllMaterials(world w.World) error {
 		if err != nil {
 			return fmt.Errorf("%w (material: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Game = append(componentList.Game, gameComponent)
+		componentList.Entities = append(componentList.Entities, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
 	return nil
@@ -347,7 +347,7 @@ func SpawnAllRecipes(world w.World) error {
 		if err != nil {
 			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Game = append(componentList.Game, gameComponent)
+		componentList.Entities = append(componentList.Entities, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
 	return nil
@@ -362,7 +362,7 @@ func SpawnAllCards(world w.World) error {
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Game = append(componentList.Game, gameComponent)
+		componentList.Entities = append(componentList.Entities, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
 	return nil

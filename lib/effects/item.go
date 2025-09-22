@@ -140,7 +140,7 @@ func (c CreateItem) Apply(world w.World, scope *Scope) error {
 		if err != nil {
 			return fmt.Errorf("アイテム生成失敗: %w", err)
 		}
-		componentList.Game = append(componentList.Game, gameComponent)
+		componentList.Entities = append(componentList.Entities, gameComponent)
 		entities.AddEntities(world, componentList)
 	}
 	return nil

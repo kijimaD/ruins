@@ -76,7 +76,7 @@ func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 	}
 
 	cl := entities.ComponentList[gc.EntitySpec]{}
-	cl.Game = append(cl.Game, gc.EntitySpec{
+	cl.Entities = append(cl.Entities, gc.EntitySpec{
 		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		FactionType: &gc.FactionAlly,
 		SpriteRender: &gc.SpriteRender{
@@ -104,7 +104,7 @@ func CreateEnemyEntity(t *testing.T, world w.World, x, y float64) {
 	}
 
 	cl := entities.ComponentList[gc.EntitySpec]{}
-	cl.Game = append(cl.Game, gc.EntitySpec{
+	cl.Entities = append(cl.Entities, gc.EntitySpec{
 		Position:  &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		AIMoveFSM: &gc.AIMoveFSM{}, // AI制御された敵として識別
 		SpriteRender: &gc.SpriteRender{
@@ -147,13 +147,13 @@ func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 
 	cl := entities.ComponentList[gc.EntitySpec]{}
 	if isPlayer {
-		cl.Game = append(cl.Game, gc.EntitySpec{
+		cl.Entities = append(cl.Entities, gc.EntitySpec{
 			Position:     &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 			FactionType:  &gc.FactionAlly,
 			SpriteRender: spriteRender,
 		})
 	} else {
-		cl.Game = append(cl.Game, gc.EntitySpec{
+		cl.Entities = append(cl.Entities, gc.EntitySpec{
 			Position:     &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 			FactionType:  &gc.FactionEnemy,
 			SpriteRender: spriteRender,
@@ -176,12 +176,12 @@ func CreateEntityWithGridPosition(t *testing.T, world w.World, gridX, gridY int,
 	var cl entities.ComponentList[gc.EntitySpec]
 
 	if isPlayer {
-		cl.Game = append(cl.Game, gc.EntitySpec{
+		cl.Entities = append(cl.Entities, gc.EntitySpec{
 			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
 			FactionType: &gc.FactionAlly,
 		})
 	} else {
-		cl.Game = append(cl.Game, gc.EntitySpec{
+		cl.Entities = append(cl.Entities, gc.EntitySpec{
 			GridElement: &gc.GridElement{X: gc.Tile(gridX), Y: gc.Tile(gridY)},
 			AIMoveFSM:   &gc.AIMoveFSM{},
 			FactionType: &gc.FactionEnemy,

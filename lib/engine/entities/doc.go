@@ -10,7 +10,7 @@
 //
 //	// エンティティの作成
 //	componentList := entities.ComponentList[gc.EntitySpec]{}
-//	componentList.Game = append(componentList.Game, gc.EntitySpec{
+//	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 //	    Position: &gc.Position{X: 100, Y: 200},
 //	})
 //
