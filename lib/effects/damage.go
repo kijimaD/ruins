@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mathutil"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -37,7 +36,7 @@ func (d Damage) Apply(world w.World, scope *Scope) error {
 		pools := world.Components.Pools.Get(target).(*gc.Pools)
 
 		originalHP := pools.HP.Current
-		pools.HP.Current = mathutil.Max(0, pools.HP.Current-d.Amount)
+		pools.HP.Current = max(0, pools.HP.Current-d.Amount)
 		actualDamage := originalHP - pools.HP.Current
 
 		// ダメージログを記録

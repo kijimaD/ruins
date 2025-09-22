@@ -2,7 +2,6 @@ package mapbuilder
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mathutil"
 )
 
 // RectRoomBuilder は長方形の部屋を作成する
@@ -24,9 +23,9 @@ func (b RectRoomBuilder) BuildRooms(buildData *BuilderMap) {
 		h := 2 + buildData.RandomSource.Intn(8)
 		newRoom := Rect{
 			X1: gc.Tile(x),
-			X2: gc.Tile(mathutil.Min(x+w, int(buildData.Level.TileWidth))),
+			X2: gc.Tile(min(x+w, int(buildData.Level.TileWidth))),
 			Y1: gc.Tile(y),
-			Y2: gc.Tile(mathutil.Min(y+h, int(buildData.Level.TileHeight))),
+			Y2: gc.Tile(min(y+h, int(buildData.Level.TileHeight))),
 		}
 		rooms = append(rooms, newRoom)
 	}
