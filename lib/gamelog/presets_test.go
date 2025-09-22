@@ -3,7 +3,7 @@ package gamelog
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 )
 
 func TestPresetFunctions(t *testing.T) {
@@ -96,27 +96,27 @@ func TestPresetFunctions(t *testing.T) {
 		// 色の確認（簡単なチェック）
 		switch tc.expectedColor {
 		case "green":
-			if fragment.Color != colors.ColorGreen {
+			if fragment.Color != consts.ColorGreen {
 				t.Errorf("Expected green color for '%s'", tc.expectedText)
 			}
 		case "yellow":
-			if fragment.Color != colors.ColorYellow {
+			if fragment.Color != consts.ColorYellow {
 				t.Errorf("Expected yellow color for '%s'", tc.expectedText)
 			}
 		case "red":
-			if fragment.Color != colors.ColorRed {
+			if fragment.Color != consts.ColorRed {
 				t.Errorf("Expected red color for '%s'", tc.expectedText)
 			}
 		case "orange":
-			if fragment.Color != colors.ColorOrange {
+			if fragment.Color != consts.ColorOrange {
 				t.Errorf("Expected orange color for '%s'", tc.expectedText)
 			}
 		case "cyan":
-			if fragment.Color != colors.ColorCyan {
+			if fragment.Color != consts.ColorCyan {
 				t.Errorf("Expected cyan color for '%s'", tc.expectedText)
 			}
 		case "purple":
-			if fragment.Color != colors.ColorPurple {
+			if fragment.Color != consts.ColorPurple {
 				t.Errorf("Expected purple color for '%s'", tc.expectedText)
 			}
 		}
@@ -140,7 +140,7 @@ func TestSystemPresets(t *testing.T) {
 	}
 
 	// System は水色（シアン）
-	if entries[0].Fragments[0].Color != colors.ColorCyan {
+	if entries[0].Fragments[0].Color != consts.ColorCyan {
 		t.Errorf("Expected cyan color for System")
 	}
 }

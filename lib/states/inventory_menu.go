@@ -7,8 +7,8 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
@@ -355,7 +355,7 @@ func (st *InventoryMenuState) updateActionWindowDisplay(world w.World) {
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
+		actionWidget := styled.NewListItemText(action, consts.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 
@@ -486,11 +486,11 @@ func (st *InventoryMenuState) updateCategoryDisplay(world w.World) {
 		isSelected := i == currentTabIndex
 		if isSelected {
 			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.TextColor, true, world.Resources.UIResources)
+			categoryWidget := styled.NewListItemText(tab.Label, consts.TextColor, true, world.Resources.UIResources)
 			st.categoryContainer.AddChild(categoryWidget)
 		} else {
 			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.ForegroundColor, false, world.Resources.UIResources)
+			categoryWidget := styled.NewListItemText(tab.Label, consts.ForegroundColor, false, world.Resources.UIResources)
 			st.categoryContainer.AddChild(categoryWidget)
 		}
 	}
@@ -524,11 +524,11 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world.Resources.UIResources)
+			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world.Resources.UIResources)
+			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}

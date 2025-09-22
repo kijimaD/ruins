@@ -4,7 +4,7 @@ import (
 	"github.com/ebitenui/ebitenui"
 	euiwidget "github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -200,7 +200,7 @@ func (widget *Widget) createColoredLogContainer(entries []gamelog.LogEntry) *eui
 
 	// エントリがない場合
 	if len(entries) == 0 {
-		placeholderWidget := styled.NewListItemText("ログメッセージなし", colors.ForegroundColor, false, widget.world.Resources.UIResources)
+		placeholderWidget := styled.NewListItemText("ログメッセージなし", consts.ForegroundColor, false, widget.world.Resources.UIResources)
 		logContainer.AddChild(placeholderWidget)
 	}
 

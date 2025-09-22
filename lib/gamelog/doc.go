@@ -70,17 +70,17 @@
 //
 // # カスタム色
 //
-//	import "github.com/kijimaD/ruins/lib/colors"
+//	import "github.com/kijimaD/ruins/lib/consts"
 //
 //	// 定義済み色を使用
 //	gamelog.New(gamelog.FieldLog).
-//	    ColorRGBA(colors.ColorBlue).
+//	    ColorRGBA(consts.ColorBlue).
 //	    Append("青色のテキスト").
 //	    Log()
 //
 //	// カスタム色を作成
 //	gamelog.New(gamelog.FieldLog).
-//	    ColorRGBA(colors.NamedColor(255, 0, 0)). // 赤色
+//	    ColorRGBA(consts.NamedColor(255, 0, 0)). // 赤色
 //	    Append("カスタム色のテキスト").
 //	    Log()
 //

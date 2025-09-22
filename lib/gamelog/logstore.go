@@ -3,7 +3,7 @@ package gamelog
 import (
 	"sync"
 
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 )
 
 const (
@@ -39,7 +39,7 @@ func (s *SafeSlice) Push(message string) {
 	entry := LogEntry{
 		Fragments: []LogFragment{{
 			Text:  message,
-			Color: colors.ColorWhite, // デフォルト色は白
+			Color: consts.ColorWhite, // デフォルト色は白
 		}},
 	}
 	s.pushColoredEntry(entry)

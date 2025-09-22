@@ -7,7 +7,6 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
@@ -172,7 +171,7 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 		versionInfo = append(versionInfo, consts.AppDate)
 	}
 	versionText := widget.NewText(
-		widget.TextOpts.Text(strings.Join(versionInfo, "\n"), world.Resources.UIResources.Text.SmallFace, colors.SecondaryColor),
+		widget.TextOpts.Text(strings.Join(versionInfo, "\n"), world.Resources.UIResources.Text.SmallFace, consts.SecondaryColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionEnd,

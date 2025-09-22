@@ -7,8 +7,8 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/ruins/lib/colors"
 	"github.com/kijimaD/ruins/lib/config"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/views"
@@ -206,7 +206,7 @@ func (st *HomeMenuState) updateActionDescription(world w.World, index int) {
 func (st *HomeMenuState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := styled.NewVerticalContainer()
 	st.memberContainer = styled.NewRowContainer(
-		widget.ContainerOpts.BackgroundImage(image.NewNineSliceColor(colors.TransBlackColor)),
+		widget.ContainerOpts.BackgroundImage(image.NewNineSliceColor(consts.TransBlackColor)),
 	)
 
 	st.actionDescContainer = styled.NewRowContainer()

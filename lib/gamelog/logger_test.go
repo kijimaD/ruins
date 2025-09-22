@@ -3,7 +3,7 @@ package gamelog
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 )
 
 // NewLoggerWithTestStore はテスト用ストアを使用するLoggerを作成
@@ -70,10 +70,10 @@ func TestLoggerBasicUsage(t *testing.T) {
 	}
 
 	// NPCの名前が黄色、ダメージが赤色かチェック
-	if entry.Fragments[2].Color != colors.ColorYellow {
+	if entry.Fragments[2].Color != consts.ColorYellow {
 		t.Errorf("Expected NPC name to be yellow, got %v", entry.Fragments[2].Color)
 	}
-	if entry.Fragments[4].Color != colors.ColorRed {
+	if entry.Fragments[4].Color != consts.ColorRed {
 		t.Errorf("Expected damage to be red, got %v", entry.Fragments[4].Color)
 	}
 }
@@ -84,11 +84,11 @@ func TestLoggerColorMethod(t *testing.T) {
 
 	// カスタム色での使用例
 	logger.
-		ColorRGBA(colors.ColorCyan). // Cyan
+		ColorRGBA(consts.ColorCyan). // Cyan
 		Append("John").
-		ColorRGBA(colors.ColorWhite).
+		ColorRGBA(consts.ColorWhite).
 		Append(" considers attacking ").
-		ColorRGBA(colors.ColorCyan).
+		ColorRGBA(consts.ColorCyan).
 		Append("Orc").
 		Log()
 
@@ -103,13 +103,13 @@ func TestLoggerColorMethod(t *testing.T) {
 	}
 
 	// 色のチェック
-	if fragments[0].Color != colors.ColorCyan {
+	if fragments[0].Color != consts.ColorCyan {
 		t.Errorf("Expected first fragment to be cyan")
 	}
-	if fragments[1].Color != colors.ColorWhite {
+	if fragments[1].Color != consts.ColorWhite {
 		t.Errorf("Expected second fragment to be white")
 	}
-	if fragments[2].Color != colors.ColorCyan {
+	if fragments[2].Color != consts.ColorCyan {
 		t.Errorf("Expected third fragment to be cyan")
 	}
 }
@@ -127,7 +127,7 @@ func TestLoggerItemName(t *testing.T) {
 	entries := store.GetRecentEntries(1)
 	fragments := entries[0].Fragments
 
-	if fragments[1].Color != colors.ColorCyan {
+	if fragments[1].Color != consts.ColorCyan {
 		t.Errorf("Expected item name to be cyan")
 	}
 	if fragments[1].Text != "Iron Sword" {
@@ -147,7 +147,7 @@ func TestLoggerPlayerName(t *testing.T) {
 	entries := store.GetRecentEntries(1)
 	fragments := entries[0].Fragments
 
-	if fragments[0].Color != colors.ColorGreen {
+	if fragments[0].Color != consts.ColorGreen {
 		t.Errorf("Expected player name to be green")
 	}
 	if fragments[0].Text != "Hero" {
@@ -178,7 +178,7 @@ func TestLoggerMultipleLogs(t *testing.T) {
 	if len(lastEntry.Fragments) != 2 {
 		t.Errorf("Expected 2 fragments in last entry, got %d", len(lastEntry.Fragments))
 	}
-	if lastEntry.Fragments[0].Color != colors.ColorYellow {
+	if lastEntry.Fragments[0].Color != consts.ColorYellow {
 		t.Errorf("Expected enemy name to be yellow")
 	}
 }

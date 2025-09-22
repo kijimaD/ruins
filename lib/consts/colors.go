@@ -1,6 +1,8 @@
-package colors
+package consts
 
 import "image/color"
+
+// ========== 色定数とユーティリティ ==========
 
 // RGB はRGB値からcolor.RGBAを作成する
 func RGB(rgb uint64) color.RGBA {

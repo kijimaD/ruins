@@ -7,7 +7,6 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
@@ -364,11 +363,11 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world.Resources.UIResources)
+			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world.Resources.UIResources)
+			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}
@@ -417,12 +416,12 @@ func (st *EquipMenuState) reloadAbilityContainer(world w.World) {
 	views.AddMemberStatusText(st.abilityContainer, player, world)
 
 	attrs := world.Components.Attributes.Get(player).(*gc.Attributes)
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), colors.TextColor, world.Resources.UIResources))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), colors.TextColor, world.Resources.UIResources))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), colors.TextColor, world.Resources.UIResources))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), colors.TextColor, world.Resources.UIResources))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), colors.TextColor, world.Resources.UIResources))
-	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), colors.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.VitalityLabel, attrs.Vitality.Total, attrs.Vitality.Modifier), consts.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.StrengthLabel, attrs.Strength.Total, attrs.Strength.Modifier), consts.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.SensationLabel, attrs.Sensation.Total, attrs.Sensation.Modifier), consts.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DexterityLabel, attrs.Dexterity.Total, attrs.Dexterity.Modifier), consts.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.AgilityLabel, attrs.Agility.Total, attrs.Agility.Modifier), consts.TextColor, world.Resources.UIResources))
+	st.abilityContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %2d(%+d)", consts.DefenseLabel, attrs.Defense.Total, attrs.Defense.Modifier), consts.TextColor, world.Resources.UIResources))
 }
 
 // 装備可能な防具を取得する
@@ -503,7 +502,7 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
+		actionWidget := styled.NewListItemText(action, consts.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 

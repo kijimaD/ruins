@@ -7,7 +7,6 @@ import (
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
-	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
@@ -23,21 +22,21 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 		if entity.HasComponent(world.Components.Material) {
 			v := world.Components.Material.Get(entity).(*gc.Material)
 			amount := fmt.Sprintf("%d 個", v.Amount)
-			targetContainer.AddChild(styled.NewBodyText(amount, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(amount, consts.TextColor, world.Resources.UIResources))
 		}
 
 		if entity.HasComponent(world.Components.Attack) {
 			attack := world.Components.Attack.Get(entity).(*gc.Attack)
-			targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.String(), colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.String(), consts.TextColor, world.Resources.UIResources))
 
 			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(attack.Damage))
-			targetContainer.AddChild(styled.NewBodyText(damage, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(damage, consts.TextColor, world.Resources.UIResources))
 
 			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(attack.Accuracy))
-			targetContainer.AddChild(styled.NewBodyText(accuracy, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(accuracy, consts.TextColor, world.Resources.UIResources))
 
 			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(attack.AttackCount))
-			targetContainer.AddChild(styled.NewBodyText(attackCount, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(attackCount, consts.TextColor, world.Resources.UIResources))
 
 			if attack.Element != gc.ElementTypeNone {
 				targetContainer.AddChild(damageAttrText(world, attack.Element, attack.Element.String()))
@@ -46,16 +45,16 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 		if entity.HasComponent(world.Components.Wearable) {
 			wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
 			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, wearable.EquipmentCategory)
-			targetContainer.AddChild(styled.NewBodyText(equipmentCategory, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(equipmentCategory, consts.TextColor, world.Resources.UIResources))
 
 			defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, wearable.Defense)
-			targetContainer.AddChild(styled.NewBodyText(defense, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(defense, consts.TextColor, world.Resources.UIResources))
 			addEquipBonus(targetContainer, wearable.EquipBonus, world)
 		}
 		if entity.HasComponent(world.Components.Card) {
 			card := world.Components.Card.Get(entity).(*gc.Card)
 			cost := fmt.Sprintf("コスト %d", card.Cost)
-			targetContainer.AddChild(styled.NewBodyText(cost, colors.TextColor, world.Resources.UIResources))
+			targetContainer.AddChild(styled.NewBodyText(cost, consts.TextColor, world.Resources.UIResources))
 		}
 	}
 }
@@ -66,15 +65,15 @@ func damageAttrText(world w.World, dat gc.ElementType, str string) *widget.Text 
 	var text *widget.Text
 	switch dat {
 	case gc.ElementTypeFire:
-		text = styled.NewBodyText(str, colors.FireColor, res)
+		text = styled.NewBodyText(str, consts.FireColor, res)
 	case gc.ElementTypeThunder:
-		text = styled.NewBodyText(str, colors.ThunderColor, res)
+		text = styled.NewBodyText(str, consts.ThunderColor, res)
 	case gc.ElementTypeChill:
-		text = styled.NewBodyText(str, colors.ChillColor, res)
+		text = styled.NewBodyText(str, consts.ChillColor, res)
 	case gc.ElementTypePhoton:
-		text = styled.NewBodyText(str, colors.PhotonColor, res)
+		text = styled.NewBodyText(str, consts.PhotonColor, res)
 	default:
-		text = styled.NewBodyText(str, colors.TextColor, res)
+		text = styled.NewBodyText(str, consts.TextColor, res)
 	}
 
 	return text
@@ -84,27 +83,27 @@ func damageAttrText(world w.World, dat gc.ElementType, str string) *widget.Text 
 func addEquipBonus(targetContainer *widget.Container, equipBonus gc.EquipBonus, world w.World) {
 	if equipBonus.Vitality != 0 {
 		vitality := fmt.Sprintf("%s %+d", consts.VitalityLabel, equipBonus.Vitality)
-		targetContainer.AddChild(styled.NewBodyText(vitality, colors.TextColor, world.Resources.UIResources))
+		targetContainer.AddChild(styled.NewBodyText(vitality, consts.TextColor, world.Resources.UIResources))
 	}
 
 	if equipBonus.Strength != 0 {
 		strength := fmt.Sprintf("%s %+d", consts.StrengthLabel, equipBonus.Strength)
-		targetContainer.AddChild(styled.NewBodyText(strength, colors.TextColor, world.Resources.UIResources))
+		targetContainer.AddChild(styled.NewBodyText(strength, consts.TextColor, world.Resources.UIResources))
 	}
 
 	if equipBonus.Sensation != 0 {
 		sensation := fmt.Sprintf("%s %+d", consts.SensationLabel, equipBonus.Sensation)
-		targetContainer.AddChild(styled.NewBodyText(sensation, colors.TextColor, world.Resources.UIResources))
+		targetContainer.AddChild(styled.NewBodyText(sensation, consts.TextColor, world.Resources.UIResources))
 	}
 
 	if equipBonus.Dexterity != 0 {
 		dexterity := fmt.Sprintf("%s %+d", consts.DexterityLabel, equipBonus.Dexterity)
-		targetContainer.AddChild(styled.NewBodyText(dexterity, colors.TextColor, world.Resources.UIResources))
+		targetContainer.AddChild(styled.NewBodyText(dexterity, consts.TextColor, world.Resources.UIResources))
 	}
 
 	if equipBonus.Agility != 0 {
 		agility := fmt.Sprintf("%s %+d", consts.AgilityLabel, equipBonus.Agility)
-		targetContainer.AddChild(styled.NewBodyText(agility, colors.TextColor, world.Resources.UIResources))
+		targetContainer.AddChild(styled.NewBodyText(agility, consts.TextColor, world.Resources.UIResources))
 	}
 }
 
@@ -118,7 +117,7 @@ func AddMemberStatusText(targetContainer *widget.Container, entity ecs.Entity, w
 	pools := world.Components.Pools.Get(entity).(*gc.Pools)
 
 	targetContainer.AddChild(styled.NewMenuText(name.Name, world.Resources.UIResources))
-	targetContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), colors.TextColor, world.Resources.UIResources))
+	targetContainer.AddChild(styled.NewBodyText(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), consts.TextColor, world.Resources.UIResources))
 }
 
 // AddMemberBars はメンバーの名前、HP/SPバー、レベルを詳細表示で追加する
@@ -138,7 +137,7 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 
 	// HPラベル
 	hpLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, colors.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, consts.TextColor),
 	)
 	memberContainer.AddChild(hpLabel)
 
@@ -170,7 +169,7 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 
 	// SPラベル
 	spLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, colors.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, consts.TextColor),
 	)
 	memberContainer.AddChild(spLabel)
 

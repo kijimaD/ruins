@@ -5,7 +5,7 @@ import (
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -149,7 +149,7 @@ func (st *DungeonSelectState) updateActionDescription(world w.World, index int) 
 
 func (st *DungeonSelectState) initUI(world w.World) *ebitenui.UI {
 	rootContainer := styled.NewVerticalContainer(
-		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(colors.BlackColor)),
+		widget.ContainerOpts.BackgroundImage(e_image.NewNineSliceColor(consts.BlackColor)),
 	)
 
 	// メニューと説明文を横並びにするためのコンテナ
