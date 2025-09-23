@@ -1,10 +1,9 @@
 package messagewindow
 
 import (
-	"image/color"
+	"image"
 
 	"github.com/ebitenui/ebitenui"
-	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
@@ -25,6 +24,7 @@ type Window struct {
 	isOpen      bool
 	ui          *ebitenui.UI
 	initialized bool
+	window      *widget.Window
 
 	// 入力管理
 	keyboardInput input.KeyboardInput
@@ -75,12 +75,6 @@ func (w *Window) Draw(screen *ebiten.Image) {
 		return
 	}
 
-	// 背景オーバーレイを描画
-	if w.config.ShowBackground {
-		w.drawBackground(screen)
-	}
-
-	// ウィンドウを描画
 	w.ui.Draw(screen)
 }
 
@@ -110,89 +104,80 @@ func (w *Window) Close() {
 
 // initUI はUIを初期化する
 func (w *Window) initUI() {
-	// メインコンテナを作成
-	mainContainer := w.createMainContainer()
-
-	// UIを初期化
+	mainContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
 	w.ui = &ebitenui.UI{
 		Container: mainContainer,
 	}
+	w.createAndAddWindow()
 }
 
-// createMainContainer はメインコンテナを作成する
-func (w *Window) createMainContainer() *widget.Container {
-	// メインコンテナ（ウィンドウ全体）
-	mainContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionStart,
-				VerticalPosition:   widget.AnchorLayoutPositionStart,
-				StretchHorizontal:  false,
-				StretchVertical:    false,
-			}),
-		),
-	)
-
+// createAndAddWindow はウィンドウを作成してUIに追加する
+func (w *Window) createAndAddWindow() {
 	// ウィンドウコンテナ
 	windowContainer := w.createWindowContainer()
 
-	// 位置を設定したラッパーコンテナ
-	positionWrapper := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionStart,
-				VerticalPosition:   widget.AnchorLayoutPositionStart,
-			}),
-			widget.WidgetOpts.MinSize(w.config.Size.Width, w.config.Size.Height),
-		),
+	// ウィンドウサイズを選択肢に応じて調整
+	windowSize := w.calculateWindowSize()
+
+	// タイトルバー付きウィンドウを作成
+	titleContainer := w.createTitleContainer()
+	w.window = styled.NewSmallWindow(
+		titleContainer,
+		windowContainer,
+		widget.WindowOpts.CloseMode(widget.NONE), // クリックで閉じない
+		widget.WindowOpts.Draggable(),
+		// リサイズ無効（Resizeableオプションを削除）
+		widget.WindowOpts.MinSize(windowSize.Width, windowSize.Height),
+		widget.WindowOpts.MaxSize(windowSize.Width, windowSize.Height), // 固定サイズ
 	)
 
-	positionWrapper.AddChild(windowContainer)
-	mainContainer.AddChild(positionWrapper)
+	// 明示的に画面中央に配置
+	screenWidth, screenHeight := ebiten.WindowSize()
+	x := (screenWidth - windowSize.Width) / 2
+	y := (screenHeight - windowSize.Height) / 2
+	w.window.SetLocation(image.Rect(x, y, x+windowSize.Width, y+windowSize.Height))
 
-	return mainContainer
+	// UIにウィンドウを追加
+	w.ui.AddWindow(w.window)
+}
+
+// createTitleContainer はタイトルコンテナを作成する
+func (w *Window) createTitleContainer() *widget.Container {
+	title := "メッセージ"
+	if w.content.SpeakerName != "" {
+		title = w.content.SpeakerName
+	}
+	return styled.NewWindowHeaderContainer(title, w.world.Resources.UIResources)
+}
+
+// calculateWindowSize は選択肢に応じてウィンドウサイズを計算する
+func (w *Window) calculateWindowSize() WindowSize {
+	baseHeight := w.config.Size.Height
+
+	// 選択肢がある場合は高さを追加
+	if w.hasChoices && len(w.content.Choices) > 0 {
+		// 選択肢1つあたり約30px、最低400px確保
+		choiceHeight := len(w.content.Choices) * 30
+		minHeightWithChoices := 400
+		if baseHeight+choiceHeight > minHeightWithChoices {
+			baseHeight = baseHeight + choiceHeight
+		} else {
+			baseHeight = minHeightWithChoices
+		}
+	}
+
+	return WindowSize{
+		Width:  w.config.Size.Width,
+		Height: baseHeight,
+	}
 }
 
 // createWindowContainer はウィンドウコンテナを作成する
 func (w *Window) createWindowContainer() *widget.Container {
-	// ウィンドウの背景とボーダーを持つコンテナ
-	windowContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(0),
-				widget.RowLayoutOpts.Padding(widget.Insets{
-					Top:    w.config.WindowStyle.Padding.Top,
-					Bottom: w.config.WindowStyle.Padding.Bottom,
-					Left:   w.config.WindowStyle.Padding.Left,
-					Right:  w.config.WindowStyle.Padding.Right,
-				}),
-			),
-		),
-		widget.ContainerOpts.BackgroundImage(
-			image.NewNineSliceColor(w.config.WindowStyle.BackgroundColor),
-		),
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.MinSize(w.config.Size.Width, w.config.Size.Height),
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-			}),
-		),
-	)
-
-	// 話者名を表示（会話メッセージの場合）
-	if w.content.SpeakerName != "" {
-		speakerText := styled.NewListItemText(
-			w.content.SpeakerName,
-			w.config.TextStyle.Color,
-			false,
-			w.world.Resources.UIResources,
-		)
-		windowContainer.AddChild(speakerText)
-	}
+	// styled.NewWindowContainerを使用して合成画面と同じスタイルに
+	windowContainer := styled.NewWindowContainer(w.world.Resources.UIResources)
 
 	// メッセージテキストを追加
 	messageText := styled.NewListItemText(
@@ -207,12 +192,6 @@ func (w *Window) createWindowContainer() *widget.Container {
 	if w.hasChoices && w.choiceMenu != nil {
 		choicesContainer := w.createChoicesContainer()
 		windowContainer.AddChild(choicesContainer)
-	}
-
-	// アクションエリア（閉じるボタンなど）
-	if w.config.ActionStyle.ShowCloseButton {
-		actionContainer := w.createActionContainer()
-		windowContainer.AddChild(actionContainer)
 	}
 
 	return windowContainer
@@ -248,33 +227,6 @@ func (w *Window) createChoicesContainer() *widget.Container {
 	}
 
 	return container
-}
-
-// createActionContainer はアクションコンテナを作成する
-func (w *Window) createActionContainer() *widget.Container {
-	actionContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
-				widget.RowLayoutOpts.Spacing(10),
-				widget.RowLayoutOpts.Padding(widget.Insets{Top: 10}),
-			),
-		),
-		widget.ContainerOpts.BackgroundImage(
-			image.NewNineSliceColor(w.config.ActionStyle.ActionAreaColor),
-		),
-	)
-
-	// 閉じるボタン
-	closeText := styled.NewListItemText(
-		w.config.ActionStyle.CloseButtonText,
-		w.config.ActionStyle.ActionTextColor,
-		false,
-		w.world.Resources.UIResources,
-	)
-	actionContainer.AddChild(closeText)
-
-	return actionContainer
 }
 
 // handleKeyboardInput はキーボード入力を処理する（選択肢がない場合）
@@ -374,13 +326,4 @@ func (w *Window) selectChoice(index int) {
 
 	// ウィンドウを閉じる
 	w.Close()
-}
-
-// drawBackground は背景オーバーレイを描画する
-func (w *Window) drawBackground(screen *ebiten.Image) {
-	// 半透明の黒い背景を描画
-	bounds := screen.Bounds()
-	overlay := ebiten.NewImage(bounds.Dx(), bounds.Dy())
-	overlay.Fill(color.RGBA{0, 0, 0, 120})
-	screen.DrawImage(overlay, &ebiten.DrawImageOptions{})
 }
