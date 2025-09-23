@@ -23,12 +23,10 @@ func (st MessageWindowState) String() string {
 
 var _ es.State[w.World] = &MessageWindowState{}
 
-// NewMessageWindowState はメッセージデータを受け取って新しいMessageWindowStateを作成するファクトリー関数
-func NewMessageWindowState(messageData *messagedata.MessageData) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return &MessageWindowState{
-			messageData: messageData,
-		}
+// NewMessageWindowState はメッセージデータを受け取って新しいMessageWindowStateを作成する
+func NewMessageWindowState(messageData *messagedata.MessageData) *MessageWindowState {
+	return &MessageWindowState{
+		messageData: messageData,
 	}
 }
 
