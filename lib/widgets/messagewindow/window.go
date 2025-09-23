@@ -42,7 +42,7 @@ func (w *Window) Update() {
 		return
 	}
 
-	// 初回のみ初期化
+	// 初期化
 	if !w.initialized {
 		// キーボード入力インスタンスを初期化
 		w.keyboardInput = input.GetSharedKeyboardInput()
@@ -129,7 +129,6 @@ func (w *Window) createAndAddWindow() {
 		windowContainer,
 		widget.WindowOpts.CloseMode(widget.NONE), // クリックで閉じない
 		widget.WindowOpts.Draggable(),
-		// リサイズ無効（Resizeableオプションを削除）
 		widget.WindowOpts.MinSize(windowSize.Width, windowSize.Height),
 		widget.WindowOpts.MaxSize(windowSize.Width, windowSize.Height), // 固定サイズ
 	)
@@ -147,7 +146,7 @@ func (w *Window) createAndAddWindow() {
 
 // createTitleContainer はタイトルコンテナを作成する
 func (w *Window) createTitleContainer() *widget.Container {
-	title := "メッセージ"
+	title := ""
 	if w.content.SpeakerName != "" {
 		title = w.content.SpeakerName
 	}
@@ -178,10 +177,8 @@ func (w *Window) calculateWindowSize() WindowSize {
 
 // createWindowContainer はウィンドウコンテナを作成する
 func (w *Window) createWindowContainer() *widget.Container {
-	// styled.NewWindowContainerを使用して合成画面と同じスタイルに
 	windowContainer := styled.NewWindowContainer(w.world.Resources.UIResources)
 
-	// メッセージテキストを追加
 	messageText := styled.NewListItemText(
 		w.content.Text,
 		w.config.TextStyle.Color,

@@ -259,8 +259,8 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition[w.World] {
 			// 連鎖メッセージのデモ
 			messageData := messagedata.NewEventMessage("戦闘開始。").
-				Message("剣と剣がぶつかり合う。").
-				Message("勝利した。")
+				SystemMessage("剣と剣がぶつかり合う。").
+				SystemMessage("勝利した。")
 
 			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
 		},
@@ -307,11 +307,11 @@ var debugMenuTrans = []struct {
 
 			// 各選択肢の結果メッセージ
 			result1 := messagedata.NewSystemMessage("選択肢1を選びました。").
-				Message("何かの処理が実行されました。").
+				SystemMessage("何かの処理が実行されました。").
 				WithOnComplete(onCompleteAction)
 
 			result2 := messagedata.NewSystemMessage("選択肢2を選びました。").
-				Message("別の処理が実行されました。").
+				SystemMessage("別の処理が実行されました。").
 				WithOnComplete(onCompleteAction)
 
 			// 選択肢付きメッセージを作成

@@ -361,7 +361,6 @@ func TestBuilderMessageTypes(t *testing.T) {
 	}
 
 	for _, msgType := range messageTypes {
-		msgType := msgType // キャプチャ
 		t.Run("メッセージタイプ_"+msgType.String(), func(t *testing.T) {
 			t.Parallel()
 
