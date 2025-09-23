@@ -7,15 +7,15 @@
 
   <title>views - Go Documentation Server</title>
 
-<link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
+<link type="text/css" rel="stylesheet" href="../../../../../../../lib/godoc/style.css">
 
 <script>window.initFuncs = [];</script>
-<script src="../../../../../../lib/godoc/jquery.js" defer></script>
+<script src="../../../../../../../lib/godoc/jquery.js" defer></script>
 
 
 
 <script>var goVersion = "go1.24.7";</script>
-<script src="../../../../../../lib/godoc/godocs.js" defer></script>
+<script src="../../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
 
@@ -77,7 +77,7 @@
 		
 		<div id="short-nav">
 			<dl>
-			<dd><code>import "github.com/kijimaD/ruins/lib/views"</code></dd>
+			<dd><code>import "github.com/kijimaD/ruins/lib/widgets/views"</code></dd>
 			</dl>
 			<dl>
 			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
@@ -94,6 +94,8 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package views はエンティティを組み込んだ、具体的なUIの部品を提供する。
+このパッケージはwidgets内のサブパッケージとして、
+ゲームエンティティの表示に特化したウィジェット機能を提供する。
 
 				
 			</div>
@@ -133,9 +135,9 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/views/doc.go">doc.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/views/doc.go">doc.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/views/spec.go">spec.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/views/spec.go">spec.go</a>
 			
 			</span>
 			</p>
@@ -150,12 +152,12 @@
 		
 			
 			
-			<h2 id="AddMemberBars">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/views/spec.go?s=5317:5404#L115">AddMemberBars</a>
+			<h2 id="AddMemberBars">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/views/spec.go?s=5278:5365#L114">AddMemberBars</a>
 				<a class="permalink" href="index.html#AddMemberBars">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AddMemberBars(targetContainer *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<pre>func AddMemberBars(targetContainer *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)</pre>
 			<p>AddMemberBars はメンバーの名前、HP/SPバー、レベルを詳細表示で追加する
 
 			
@@ -164,12 +166,12 @@
 		
 			
 			
-			<h2 id="AddMemberStatusText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/views/spec.go?s=4643:4736#L102">AddMemberStatusText</a>
+			<h2 id="AddMemberStatusText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/views/spec.go?s=4604:4697#L101">AddMemberStatusText</a>
 				<a class="permalink" href="index.html#AddMemberStatusText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AddMemberStatusText(targetContainer *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<pre>func AddMemberStatusText(targetContainer *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)</pre>
 			<p>AddMemberStatusText はメンバーの名前とHPを簡易テキスト表示で追加する
 
 			
@@ -178,12 +180,12 @@
 		
 			
 			
-			<h2 id="UpdateSpec">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/views/spec.go?s=441:525#L9">UpdateSpec</a>
+			<h2 id="UpdateSpec">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/views/spec.go?s=402:486#L8">UpdateSpec</a>
 				<a class="permalink" href="index.html#UpdateSpec">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func UpdateSpec(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, targetContainer *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+			<pre>func UpdateSpec(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, targetContainer *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
 			<p>UpdateSpec は性能表示コンテナを更新する
 
 			

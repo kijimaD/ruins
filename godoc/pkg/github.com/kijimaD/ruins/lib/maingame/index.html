@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#375EAB">
 
-  <title>mathutil - Go Documentation Server</title>
+  <title>maingame - Go Documentation Server</title>
 
 <link type="text/css" rel="stylesheet" href="../../../../../../lib/godoc/style.css">
 
@@ -43,7 +43,7 @@
 
 
   <h1>
-    Package mathutil
+    Package maingame
     <span class="text-muted"></span>
   </h1>
 
@@ -77,7 +77,7 @@
 		
 		<div id="short-nav">
 			<dl>
-			<dd><code>import "github.com/kijimaD/ruins/lib/mathutil"</code></dd>
+			<dd><code>import "github.com/kijimaD/ruins/lib/maingame"</code></dd>
 			</dl>
 			<dl>
 			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
@@ -93,7 +93,7 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				<p>Package mathutil は数学計算のユーティリティ関数を提供する。
+				<p>Package maingame はメインゲームの実装を提供する。
 
 				
 			</div>
@@ -113,17 +113,22 @@
 			
 			
 				
-				<dd><a href="index.html#Abs">func Abs[T int | float64](x T) T</a></dd>
+				<dd><a href="index.html#InitWorld">func InitWorld(minGameWidth int, minGameHeight int) (w.World, error)</a></dd>
+			
 			
 				
-				<dd><a href="index.html#Clamp">func Clamp[T int | float64](value, minVal, maxVal T) T</a></dd>
-			
+				<dd><a href="index.html#MainGame">type MainGame</a></dd>
 				
-				<dd><a href="index.html#Max">func Max[T int | float64](x, y T) T</a></dd>
-			
 				
-				<dd><a href="index.html#Min">func Min[T int | float64](x, y T) T</a></dd>
-			
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Draw">func (game *MainGame) Draw(screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Layout">func (game *MainGame) Layout(_, _ int) (int, int)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Update">func (game *MainGame) Update() error</a></dd>
+				
 			
 			
 			</dl>
@@ -136,9 +141,9 @@
 			<p>
 			<span style="font-size:90%">
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mathutil/doc.go">doc.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/doc.go">doc.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mathutil/mathutil.go">mathutil.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go">game.go</a>
 			
 			</span>
 			</p>
@@ -153,60 +158,84 @@
 		
 			
 			
-			<h2 id="Abs">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mathutil/mathutil.go?s=494:526#L21">Abs</a>
-				<a class="permalink" href="index.html#Abs">&#xb6;</a>
+			<h2 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=3363:3431#L98">InitWorld</a>
+				<a class="permalink" href="index.html#InitWorld">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func Abs[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](x T) T</pre>
-			<p>Abs はxの絶対値を返す
+			<pre>func InitWorld(minGameWidth <a href="http://localhost:8888/pkg/builtin/#int">int</a>, minGameHeight <a href="http://localhost:8888/pkg/builtin/#int">int</a>) (<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>InitWorld はゲームワールドを初期化する
 
 			
 			
 
 		
-			
-			
-			<h2 id="Clamp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mathutil/mathutil.go?s=307:361#L10">Clamp</a>
-				<a class="permalink" href="index.html#Clamp">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func Clamp[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](value, minVal, maxVal T) T</pre>
-			<p>Clamp はvalueを[min, max]の範囲に制限する
-
-			
-			
-
 		
 			
 			
-			<h2 id="Max">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mathutil/mathutil.go?s=175:210#L2">Max</a>
-				<a class="permalink" href="index.html#Max">&#xb6;</a>
+			<h2 id="MainGame">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=576:661#L12">MainGame</a>
+				<a class="permalink" href="index.html#MainGame">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func Max[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](x, y T) T</pre>
-			<p>Max はxとyの大きい方を返す
+			<p>MainGame はebiten.Game interfaceを満たす
+
+			<pre>type MainGame struct {
+<span id="MainGame.World"></span>    World        <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>
+<span id="MainGame.StateMachine"></span>    StateMachine <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateMachine">StateMachine</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
+}
+</pre>
+
+			
+
+			
 
 			
 			
+			
 
-		
 			
+
 			
-			<h2 id="Min">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mathutil/mathutil.go?s=58:93#L1">Min</a>
-				<a class="permalink" href="index.html#Min">&#xb6;</a>
+				
+				<h3 id="MainGame.Draw">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=1455:1503#L42">Draw</a>
+					<a class="permalink" href="index.html#MainGame.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Draw(screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				<p>Draw はゲームの描画処理を行う
+
 				
 				
-			</h2>
-			<pre>func Min[T <a href="http://localhost:8888/pkg/builtin/#int">int</a> | <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>](x, y T) T</pre>
-			<p>Min はxとyの小さい方を返す
-
+				
 			
-			
+				
+				<h3 id="MainGame.Layout">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=741:790#L18">Layout</a>
+					<a class="permalink" href="index.html#MainGame.Layout">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Layout(_, _ <a href="http://localhost:8888/pkg/builtin/#int">int</a>) (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<p>Layout はinterface methodのため、シグネチャは変更できない
 
-		
+				
+				
+				
+			
+				
+				<h3 id="MainGame.Update">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=931:967#L24">Update</a>
+					<a class="permalink" href="index.html#MainGame.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (game *<a href="index.html#MainGame">MainGame</a>) Update() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Update はゲームの更新処理を行う
+
+				
+				
+				
+			
 		
 	
 

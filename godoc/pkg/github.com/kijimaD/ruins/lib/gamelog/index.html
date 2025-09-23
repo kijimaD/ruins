@@ -160,17 +160,17 @@ for _, entry := range entries {
 }
 </pre>
 <h3 id="hdr-_____">カスタム色</h3>
-<pre>import &quot;github.com/kijimaD/ruins/lib/colors&quot;
+<pre>import &quot;github.com/kijimaD/ruins/lib/consts&quot;
 
 // 定義済み色を使用
 gamelog.New(gamelog.FieldLog).
-    ColorRGBA(colors.ColorBlue).
+    ColorRGBA(consts.ColorBlue).
     Append(&quot;青色のテキスト&quot;).
     Log()
 
 // カスタム色を作成
 gamelog.New(gamelog.FieldLog).
-    ColorRGBA(colors.NamedColor(255, 0, 0)). // 赤色
+    ColorRGBA(consts.NamedColor(255, 0, 0)). // 赤色
     Append(&quot;カスタム色のテキスト&quot;).
     Log()
 </pre>
@@ -548,11 +548,11 @@ testFieldLog := NewSafeSlice(FieldLogMaxSize)
 testFieldLog.Clear()
 
 New(testFieldLog).
-    ColorRGBA(colors.ColorPurple).
+    ColorRGBA(consts.ColorPurple).
     Append(&#34;Magic spell &#34;).
-    ColorRGBA(colors.ColorOrange).
+    ColorRGBA(consts.ColorOrange).
     Append(&#34;Fire Bolt&#34;).
-    ColorRGBA(colors.ColorWhite).
+    ColorRGBA(consts.ColorWhite).
     Append(&#34; hits for &#34;).
     Damage(20).
     Append(&#34; damage!&#34;).
@@ -594,11 +594,11 @@ New(testLog).
 
 <span class="comment">// 色指定も同様</span>
 New(testLog).
-    ColorRGBA(colors.ColorCyan). <span class="comment">// Cyan</span>
+    ColorRGBA(consts.ColorCyan). <span class="comment">// Cyan</span>
     Append(&#34;John&#34;).
-    ColorRGBA(colors.ColorWhite).
+    ColorRGBA(consts.ColorWhite).
     Append(&#34; considers attacking &#34;).
-    ColorRGBA(colors.ColorCyan).
+    ColorRGBA(consts.ColorCyan).
     Append(&#34;Orc&#34;).
     Log()
 

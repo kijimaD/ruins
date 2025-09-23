@@ -93,7 +93,12 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				<p>Package consts はゲーム全体で使用される定数を提供する。
+				<p>Package consts はゲーム全体で使用される定数と色設定を提供する。
+<p>このパッケージには以下が含まれる：
+- ウィンドウサイズやタイル寸法などのゲーム定数
+- UI表示ラベル
+- アプリケーションバージョン情報
+- UI色定数とRGB変換ユーティリティ
 
 				
 			</div>
@@ -116,6 +121,9 @@
 				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
+				
+				<dd><a href="index.html#RGB">func RGB(rgb uint64) color.RGBA</a></dd>
+			
 			
 			
 			</dl>
@@ -128,9 +136,15 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/consts/colors.go">colors.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/consts/consts.go">consts.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/consts/doc.go">doc.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/consts/labels.go">labels.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/consts/versions.go">versions.go</a>
 			
 			</span>
 			</p>
@@ -194,6 +208,77 @@
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
+				
+				<pre>var (
+    <span class="comment">// TransparentColor は透明色を表す</span>
+    <span id="TransparentColor">TransparentColor</span> = <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>{}
+    <span class="comment">// PrimaryColor は主要色を表す</span>
+    <span id="PrimaryColor">PrimaryColor</span> = <a href="index.html#RGB">RGB</a>(0x9dd793)
+    <span class="comment">// SecondaryColor はサブ色を表す</span>
+    <span id="SecondaryColor">SecondaryColor</span> = <a href="index.html#RGB">RGB</a>(0x9dd793)
+    <span class="comment">// TextColor は地のテキスト色を表す</span>
+    <span id="TextColor">TextColor</span> = <a href="index.html#RGB">RGB</a>(0xf5f5f5)
+    <span class="comment">// ForegroundColor は前景色を表す</span>
+    <span id="ForegroundColor">ForegroundColor</span> = <a href="index.html#RGB">RGB</a>(0xa9a9a9)
+    <span class="comment">// BackgroundColor は背景色を表す</span>
+    <span id="BackgroundColor">BackgroundColor</span> = <a href="index.html#RGB">RGB</a>(0x000000)
+    <span class="comment">// DebugColor はデバッグ色を表す</span>
+    <span id="DebugColor">DebugColor</span> = <a href="index.html#RGB">RGB</a>(0x0000FF)
+    <span class="comment">// TransBlackColor は透過黒背景色を表す</span>
+    <span id="TransBlackColor">TransBlackColor</span> = <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>{0, 0, 0, 140}
+    <span class="comment">// BlackColor は非透過黒背景色を表す</span>
+    <span id="BlackColor">BlackColor</span> = <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>{30, 30, 30, 255}
+
+    <span class="comment">// WindowBodyColor はウィンドウ本体色を表す</span>
+    <span id="WindowBodyColor">WindowBodyColor</span> = <a href="index.html#RGB">RGB</a>(0x808080)
+    <span class="comment">// WindowHeaderColor はウィンドウヘッダー色を表す</span>
+    <span id="WindowHeaderColor">WindowHeaderColor</span> = <a href="index.html#RGB">RGB</a>(0x939393)
+
+    <span class="comment">// ButtonIdleColor はボタン通常色を表す</span>
+    <span id="ButtonIdleColor">ButtonIdleColor</span> = <a href="index.html#RGB">RGB</a>(0xaaaaaa)
+    <span class="comment">// ButtonHoverColor はボタンホバー色を表す</span>
+    <span id="ButtonHoverColor">ButtonHoverColor</span> = <a href="index.html#RGB">RGB</a>(0x828296)
+    <span class="comment">// ButtonPressedColor はボタン押下色を表す</span>
+    <span id="ButtonPressedColor">ButtonPressedColor</span> = <a href="index.html#RGB">RGB</a>(0x646478)
+    <span class="comment">// ButtonDisabledColor はボタン無効色を表す</span>
+    <span id="ButtonDisabledColor">ButtonDisabledColor</span> = <a href="index.html#RGB">RGB</a>(0x555555)
+
+    <span class="comment">// SuccessColor は成功色を表す</span>
+    <span id="SuccessColor">SuccessColor</span> = <a href="index.html#RGB">RGB</a>(0x198754)
+    <span class="comment">// DangerColor は危険色を表す</span>
+    <span id="DangerColor">DangerColor</span> = <a href="index.html#RGB">RGB</a>(0xdc3545)
+
+    <span class="comment">// FireColor は炎色（赤）を表す</span>
+    <span id="FireColor">FireColor</span> = <a href="index.html#RGB">RGB</a>(0xc44303)
+    <span class="comment">// ThunderColor は雷色（暗青）を表す</span>
+    <span id="ThunderColor">ThunderColor</span> = <a href="index.html#RGB">RGB</a>(0x4169e1)
+    <span class="comment">// ChillColor は冷気色（明青）を表す</span>
+    <span id="ChillColor">ChillColor</span> = <a href="index.html#RGB">RGB</a>(0x00ffff)
+    <span class="comment">// PhotonColor は光子色（黄）を表す</span>
+    <span id="PhotonColor">PhotonColor</span> = <a href="index.html#RGB">RGB</a>(0xffff00)
+
+    <span class="comment">// ColorWhite は白色を表す</span>
+    <span id="ColorWhite">ColorWhite</span> = <a href="index.html#RGB">RGB</a>(0xFFFFFF)
+    <span class="comment">// ColorBlack は黒色を表す</span>
+    <span id="ColorBlack">ColorBlack</span> = <a href="index.html#RGB">RGB</a>(0x000000)
+    <span class="comment">// ColorRed は赤色を表す</span>
+    <span id="ColorRed">ColorRed</span> = <a href="index.html#RGB">RGB</a>(0xFF0000)
+    <span class="comment">// ColorGreen は緑色を表す</span>
+    <span id="ColorGreen">ColorGreen</span> = <a href="index.html#RGB">RGB</a>(0x00FF00)
+    <span class="comment">// ColorBlue は青色を表す</span>
+    <span id="ColorBlue">ColorBlue</span> = <a href="index.html#RGB">RGB</a>(0x0000FF)
+    <span class="comment">// ColorYellow は黄色を表す</span>
+    <span id="ColorYellow">ColorYellow</span> = <a href="index.html#RGB">RGB</a>(0xFFFF00)
+    <span class="comment">// ColorCyan はシアン色を表す</span>
+    <span id="ColorCyan">ColorCyan</span> = <a href="index.html#RGB">RGB</a>(0x00FFFF)
+    <span class="comment">// ColorMagenta はマゼンタ色を表す</span>
+    <span id="ColorMagenta">ColorMagenta</span> = <a href="index.html#RGB">RGB</a>(0xFF00FF)
+    <span class="comment">// ColorOrange はオレンジ色を表す</span>
+    <span id="ColorOrange">ColorOrange</span> = <a href="index.html#RGB">RGB</a>(0xFFA500)
+    <span class="comment">// ColorPurple は紫色を表す</span>
+    <span id="ColorPurple">ColorPurple</span> = <a href="index.html#RGB">RGB</a>(0x800080)
+)</pre>
+			
 				<p>AppCommit はコミットハッシュ。ビルド時に注入する
 
 				<pre>var <span id="AppCommit">AppCommit</span> = &#34;0000000&#34;</pre>
@@ -207,6 +292,20 @@
 				<pre>var <span id="AppVersion">AppVersion</span> = &#34;v0.0.0&#34;</pre>
 			
 		
+		
+			
+			
+			<h2 id="RGB">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/consts/colors.go?s=146:177#L1">RGB</a>
+				<a class="permalink" href="index.html#RGB">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func RGB(rgb <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a></pre>
+			<p>RGB はRGB値からcolor.RGBAを作成する
+
+			
+			
+
 		
 		
 	
