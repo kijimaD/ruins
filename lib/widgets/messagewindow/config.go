@@ -110,33 +110,3 @@ func DefaultConfig() Config {
 		ShowBackground: true,
 	}
 }
-
-// MessageType はメッセージの種類
-type MessageType int
-
-const (
-	// TypeStory は通常のストーリーメッセージ
-	TypeStory MessageType = iota
-	// TypeEvent はイベントメッセージ
-	TypeEvent
-	// TypeDialog は会話メッセージ
-	TypeDialog
-	// TypeSystem はシステムメッセージ
-	TypeSystem
-)
-
-// String はMessageTypeの文字列表現を返す
-func (mt MessageType) String() string {
-	switch mt {
-	case TypeStory:
-		return "Story"
-	case TypeEvent:
-		return "Event"
-	case TypeDialog:
-		return "Dialog"
-	case TypeSystem:
-		return "System"
-	default:
-		return "Unknown"
-	}
-}

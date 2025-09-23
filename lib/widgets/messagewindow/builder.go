@@ -19,7 +19,6 @@ type Choice struct {
 // MessageContent はメッセージの内容
 type MessageContent struct {
 	Text        string
-	Type        MessageType
 	Choices     []Choice // 選択肢システム
 	SpeakerName string   // 話者名（会話時）
 }
@@ -44,12 +43,6 @@ func NewBuilder(world w.World) *Builder {
 // Message はメッセージテキストを設定する
 func (b *Builder) Message(text string) *Builder {
 	b.content.Text = text
-	return b
-}
-
-// Type はメッセージタイプを設定する
-func (b *Builder) Type(msgType MessageType) *Builder {
-	b.content.Type = msgType
 	return b
 }
 

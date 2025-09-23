@@ -1,15 +1,10 @@
 // Package messagedata はメッセージウィンドウに表示するデータ構造を提供する
 package messagedata
 
-import (
-	"github.com/kijimaD/ruins/lib/widgets/messagewindow"
-)
-
 // MessageData はメッセージウィンドウに表示するデータ
 type MessageData struct {
 	Text         string
 	Speaker      string
-	Type         messagewindow.MessageType
 	Choices      []Choice
 	Size         *Size
 	OnComplete   func()         // メッセージ完了時のコールバック
@@ -36,23 +31,14 @@ func NewDialogMessage(text, speaker string) *MessageData {
 	return &MessageData{
 		Text:    text,
 		Speaker: speaker,
-		Type:    messagewindow.TypeDialog,
 	}
 }
 
 // NewSystemMessage はシステムメッセージを作成する
 func NewSystemMessage(text string) *MessageData {
 	return &MessageData{
-		Text: text,
-		Type: messagewindow.TypeSystem,
-	}
-}
-
-// NewEventMessage はイベントメッセージを作成する
-func NewEventMessage(text string) *MessageData {
-	return &MessageData{
-		Text: text,
-		Type: messagewindow.TypeEvent,
+		Text:    text,
+		Speaker: "システム",
 	}
 }
 
@@ -112,41 +98,6 @@ func (m *MessageData) WithOnComplete(callback func()) *MessageData {
 	return m
 }
 
-// MessageSequence は連続するメッセージのシーケンス
-type MessageSequence struct {
-	messages []*MessageData
-}
-
-// NewMessageSequence は新しいメッセージシーケンスを作成
-func NewMessageSequence() *MessageSequence {
-	return &MessageSequence{
-		messages: make([]*MessageData, 0),
-	}
-}
-
-// DialogMessage は会話メッセージを追加
-func (ms *MessageSequence) DialogMessage(text, speaker string) *MessageSequence {
-	ms.messages = append(ms.messages, NewDialogMessage(text, speaker))
-	return ms
-}
-
-// SystemMessage はシステムメッセージを追加
-func (ms *MessageSequence) SystemMessage(text string) *MessageSequence {
-	ms.messages = append(ms.messages, NewSystemMessage(text))
-	return ms
-}
-
-// EventMessage はイベントメッセージを追加
-func (ms *MessageSequence) EventMessage(text string) *MessageSequence {
-	ms.messages = append(ms.messages, NewEventMessage(text))
-	return ms
-}
-
-// GetMessages は全メッセージを取得
-func (ms *MessageSequence) GetMessages() []*MessageData {
-	return ms.messages
-}
-
 // MessageDataのチェーンメソッド
 
 // DialogMessage は会話メッセージを連鎖
@@ -158,18 +109,6 @@ func (m *MessageData) DialogMessage(text, speaker string) *MessageData {
 // SystemMessage はシステムメッセージを連鎖
 func (m *MessageData) SystemMessage(text string) *MessageData {
 	m.NextMessages = append(m.NextMessages, NewSystemMessage(text))
-	return m
-}
-
-// EventMessage はイベントメッセージを連鎖
-func (m *MessageData) EventMessage(text string) *MessageData {
-	m.NextMessages = append(m.NextMessages, NewEventMessage(text))
-	return m
-}
-
-// Sequence はメッセージシーケンスを連鎖
-func (m *MessageData) Sequence(sequence *MessageSequence) *MessageData {
-	m.NextMessages = append(m.NextMessages, sequence.GetMessages()...)
 	return m
 }
 

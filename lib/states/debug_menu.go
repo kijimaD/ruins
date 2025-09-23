@@ -228,7 +228,7 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition[w.World] {
 			// システムメッセージのデモ
 			messageData := messagedata.NewSystemMessage("ゲームが自動保存されました。\n\n進行状況は安全に記録されています。")
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},
 	{
@@ -250,7 +250,7 @@ var debugMenuTrans = []struct {
 
 			messageData := messagedata.NewSystemMessage(longText).
 				WithSize(700, 400)
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},
 	{
@@ -258,11 +258,11 @@ var debugMenuTrans = []struct {
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
 			// 連鎖メッセージのデモ
-			messageData := messagedata.NewEventMessage("戦闘開始。").
+			messageData := messagedata.NewSystemMessage("戦闘開始。").
 				SystemMessage("剣と剣がぶつかり合う。").
 				SystemMessage("勝利した。")
 
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},
 	{
@@ -270,16 +270,16 @@ var debugMenuTrans = []struct {
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
 			// 各選択肢のメッセージシーケンスを定義
-			battleMessage := messagedata.NewEventMessage("戦闘した。")
-			negotiateMessage := messagedata.NewEventMessage("交渉した。")
-			escapeMessage := messagedata.NewEventMessage("逃走した。")
+			battleMessage := messagedata.NewSystemMessage("戦闘した。")
+			negotiateMessage := messagedata.NewSystemMessage("交渉した。")
+			escapeMessage := messagedata.NewSystemMessage("逃走した。")
 
 			messageData := messagedata.NewDialogMessage("敵に遭遇した。", "").
 				WithChoiceMessage("戦う", battleMessage).
 				WithChoiceMessage("交渉する", negotiateMessage).
 				WithChoiceMessage("逃走する", escapeMessage)
 
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},
 	{
@@ -316,7 +316,7 @@ var debugMenuTrans = []struct {
 			messageData.Choices[0].Action = choiceAction1
 			messageData.Choices[1].Action = choiceAction2
 
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},
 	{

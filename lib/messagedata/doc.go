@@ -3,109 +3,66 @@
 // # 概要
 //
 // このパッケージは、ゲーム内のメッセージウィンドウシステムで使用するデータ構造と
-// ユーティリティ関数を提供します。メッセージの種類、選択肢、サイズ、コールバック
-// などを統一的に管理し、UI層から独立したメッセージデータの操作を可能にします。
+// ユーティリティ関数を提供します。会話メッセージとシステムメッセージ、選択肢、
+// メッセージ連鎖などを統一的に管理し、UI層から独立したメッセージデータの操作を可能にします。
 //
 // # 主要な構造体
 //
-//   - MessageData: 単一のメッセージを表すデータ構造
-//   - Choice: 選択肢のデータ
+//   - MessageData: メッセージの内容と動作を表すデータ構造
+//   - Choice: 選択肢のデータ（テキスト、アクション、次のメッセージ）
 //   - Size: カスタムサイズ情報
-//   - MessageSequence: 連続するメッセージのシーケンス
-//   - MessageChain: 選択肢分岐を含む複雑なメッセージフロー
 //
-// # 基本的な使用方法
+// # メッセージの種類
 //
-//	// 会話メッセージ
-//	dialog := messagedata.NewDialogMessage("元気ですか？", "キャラクター名")
+//	// 会話メッセージ（キャラクター同士の対話）
+//	dialog := messagedata.NewDialogMessage("元気ですか？", "村人")
 //
-//	// 選択肢付きメッセージ
-//	choice := messagedata.NewDialogMessage("どうしますか？", "").
+//	// システムメッセージ（ゲームからの通知、話者は"システム"）
+//	system := messagedata.NewSystemMessage("アイテムを入手しました")
+//
+// # 選択肢機能
+//
+//	// 単純な選択肢（アクションのみ）
+//	msg := messagedata.NewDialogMessage("どうしますか？", "").
 //	    WithChoice("はい", func() { fmt.Println("はいが選ばれました") }).
 //	    WithChoice("いいえ", func() { fmt.Println("いいえが選ばれました") })
 //
 //	// 選択肢から別のメッセージへの分岐
-//	battleResult := messagedata.NewEventMessage("戦闘開始！").
-//	    Message("激しい戦いが繰り広げられる").
+//	battleResult := messagedata.NewSystemMessage("戦闘開始").
+//	    SystemMessage("激しい戦闘").
 //	    SystemMessage("勝利！")
 //
-//	escapeResult := messagedata.NewEventMessage("逃走成功").
-//	    Message("安全な場所へ到着").
-//	    SystemMessage("体力-10")
+//	escapeResult := messagedata.NewSystemMessage("逃走成功").
+//	    SystemMessage("安全な場所に到着")
 //
-//	choiceWithBranch := messagedata.NewDialogMessage("敵と遭遇した！", "ナレーター").
+//	encounter := messagedata.NewDialogMessage("敵に遭遇した！", "").
 //	    WithChoiceMessage("戦う", battleResult).
 //	    WithChoiceMessage("逃げる", escapeResult)
 //
-// # メッセージチェーン機能
+// # メッセージ連鎖
 //
-// 複数のメッセージを順次表示したり、選択肢の結果に応じて異なるメッセージ
-// シーケンスを表示することができます。
+// メッセージを連鎖させて、複数のメッセージを順次表示できます。
 //
-//	// 連鎖記法での複数メッセージ定義
-//	result := messagedata.NewEventMessage("戦闘開始").
-//	    Message("激しい攻防").
-//	    DialogMessage("勝利だ！", "主人公").
-//	    SystemMessage("経験値+100")
-//
-//	// 選択肢ごとの結果定義
-//	choiceResults := map[string]*messagedata.MessageData{
-//	    "戦う": messagedata.NewEventMessage("勇敢に戦った！").
-//	        Message("敵が倒れた").
-//	        SystemMessage("勝利"),
-//	    "逃げる": messagedata.NewEventMessage("逃走成功").
-//	        Message("安全な場所に到着").
-//	        SystemMessage("体力-10"),
-//	}
-//
-// # MessageSequence
-//
-// 複雑なメッセージシーケンスを事前に構築する場合:
-//
-//	battleSeq := messagedata.NewMessageSequence().
-//	    EventMessage("戦闘開始").
-//	    Message("剣がぶつかり合う").
-//	    DialogMessage("この程度か", "敵").
-//	    EventMessage("反撃成功").
-//	    SystemMessage("勝利")
-//
-//	msg := messagedata.NewDialogMessage("戦いますか？", "").
-//	    WithChoice("はい", func() {}).
-//	    Sequence(battleSeq)
-//
-// # MessageChain
-//
-// 選択肢分岐を含む複雑なフローの管理:
-//
-//	chain := messagedata.NewMessageChain()
-//
-//	question := messagedata.NewDialogMessage("どうしますか？", "NPC").
-//	    WithChoice("戦う", func() {}).
-//	    WithChoice("逃げる", func() {})
-//
-//	results := map[string]*messagedata.MessageData{
-//	    "戦う": CreateBattleSequence(),
-//	    "逃げる": CreateEscapeSequence(),
-//	}
-//
-//	chain.AddChoiceMessage(question, results)
-//
-// # 責務と使い分け
-//
-//   - MessageData: 単一メッセージの表現、選択肢分岐対応
-//   - MessageSequence: 線形な複数メッセージの連鎖
-//   - MessageChain: 複雑な選択肢分岐フローの管理
+//	// 複数メッセージの連鎖
+//	story := messagedata.NewSystemMessage("物語が始まる").
+//	    DialogMessage("こんにちは", "主人公").
+//	    DialogMessage("元気ですね", "村人").
+//	    SystemMessage("会話が終了しました")
 //
 // # 設計原則
 //
+//   - シンプルさ: 会話とシステムの2種類のメッセージに集約
 //   - UI層からの独立: メッセージデータはUI実装に依存しない
-//   - 不変性: 作成後のメッセージデータは変更されない
 //   - 連鎖性: ビルダーパターンによる直感的なAPI
-//   - 拡張性: 新しいメッセージタイプやパターンの追加が容易
+//   - 選択肢分岐: 複雑なメッセージフローに対応
 //
-// # 注意事項
+// # 使用例
 //
-//   - WithChoiceMessage により選択肢から新しいメッセージへの分岐が可能
-//   - MessageWindowStateが連鎖メッセージとステート遷移を自動処理
-//   - 選択肢の分岐とメッセージチェーンを組み合わせた複雑なフローに対応
+//	// 複雑な選択肢分岐の例
+//	questMessage := messagedata.NewDialogMessage("クエストを受けますか？", "依頼人").
+//	    WithChoiceMessage("受ける",
+//	        messagedata.NewSystemMessage("クエスト開始").
+//	            SystemMessage("目標: 魔物を倒す")).
+//	    WithChoiceMessage("断る",
+//	        messagedata.NewDialogMessage("またいつでもどうぞ", "依頼人"))
 package messagedata

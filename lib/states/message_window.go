@@ -80,8 +80,7 @@ func (st *MessageWindowState) Draw(_ w.World, screen *ebiten.Image) {
 // buildMessageWindow はメッセージデータからメッセージウィンドウを構築する
 func (st *MessageWindowState) buildMessageWindow(world w.World) {
 	builder := messagewindow.NewBuilder(world).
-		Message(st.messageData.Text).
-		Type(st.messageData.Type)
+		Message(st.messageData.Text)
 
 	// 話者が設定されている場合
 	if st.messageData.Speaker != "" {
@@ -108,8 +107,10 @@ func (st *MessageWindowState) buildMessageWindow(world w.World) {
 				}
 				// MessageWindowStateを新しくpush
 				transition := es.Transition[w.World]{
-					Type:          es.TransPush,
-					NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(choiceCopy.MessageData)},
+					Type: es.TransPush,
+					NewStateFuncs: []es.StateFactory[w.World]{
+						func() es.State[w.World] { return NewMessageWindowState(choiceCopy.MessageData) },
+					},
 				}
 				st.pendingTransition = &transition
 			}

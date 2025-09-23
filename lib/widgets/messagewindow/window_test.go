@@ -36,17 +36,6 @@ func TestMessageWindowBuilder(t *testing.T) {
 		assert.Equal(t, "テストメッセージです", window.content.Text)
 	})
 
-	t.Run("メッセージタイプの設定", func(t *testing.T) {
-		t.Parallel()
-
-		window := NewBuilder(world).
-			Message("ストーリーメッセージ").
-			Type(TypeStory).
-			Build()
-
-		assert.Equal(t, TypeStory, window.content.Type)
-	})
-
 	t.Run("話者名の設定", func(t *testing.T) {
 		t.Parallel()
 
@@ -211,19 +200,6 @@ func TestMessageWindowFutureFeatures(t *testing.T) {
 	})
 }
 
-func TestMessageType(t *testing.T) {
-	t.Parallel()
-
-	t.Run("メッセージタイプの文字列表現", func(t *testing.T) {
-		t.Parallel()
-
-		assert.Equal(t, "Story", TypeStory.String())
-		assert.Equal(t, "Event", TypeEvent.String())
-		assert.Equal(t, "Dialog", TypeDialog.String())
-		assert.Equal(t, "System", TypeSystem.String())
-	})
-}
-
 func TestConfig(t *testing.T) {
 	t.Parallel()
 
@@ -252,7 +228,6 @@ func TestBuilderChaining(t *testing.T) {
 		callbackExecuted := false
 		window := NewBuilder(world).
 			Message("複雑なメッセージテスト").
-			Type(TypeDialog).
 			Speaker("テストキャラクター").
 			Size(800, 400).
 			Position(100, 200).
@@ -264,7 +239,6 @@ func TestBuilderChaining(t *testing.T) {
 
 		assert.NotNil(t, window)
 		assert.Equal(t, "複雑なメッセージテスト", window.content.Text)
-		assert.Equal(t, TypeDialog, window.content.Type)
 		assert.Equal(t, "テストキャラクター", window.content.SpeakerName)
 		assert.Equal(t, 800, window.config.Size.Width)
 		assert.Equal(t, 400, window.config.Size.Height)
@@ -346,32 +320,6 @@ func TestBuilderValidation(t *testing.T) {
 		assert.True(t, action1Called)
 		assert.False(t, action2Called)
 	})
-}
-
-func TestBuilderMessageTypes(t *testing.T) {
-	t.Parallel()
-
-	world := createTestWorld(t)
-
-	messageTypes := []MessageType{
-		TypeStory,
-		TypeEvent,
-		TypeDialog,
-		TypeSystem,
-	}
-
-	for _, msgType := range messageTypes {
-		t.Run("メッセージタイプ_"+msgType.String(), func(t *testing.T) {
-			t.Parallel()
-
-			window := NewBuilder(world).
-				Message("タイプテスト: " + msgType.String()).
-				Type(msgType).
-				Build()
-
-			assert.Equal(t, msgType, window.content.Type)
-		})
-	}
 }
 
 func TestBuilderChoiceFeatures(t *testing.T) {
