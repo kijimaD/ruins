@@ -121,14 +121,6 @@ func (st *MessageWindowState) buildMessageWindow(world w.World) {
 				}
 				st.pendingTransition = &transition
 			}
-		} else if choiceCopy.Transition.Type != es.TransNone {
-			// Transitionが設定されている場合
-			actionFunc = func() {
-				if choiceCopy.Action != nil {
-					choiceCopy.Action()
-				}
-				st.pendingTransition = &choiceCopy.Transition
-			}
 		} else {
 			// 通常のActionのみの場合
 			actionFunc = choiceCopy.Action

@@ -2,9 +2,7 @@
 package messagedata
 
 import (
-	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/widgets/messagewindow"
-	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MessageData はメッセージウィンドウに表示するデータ
@@ -23,8 +21,7 @@ type Choice struct {
 	Text        string
 	Description string
 	Action      func()
-	MessageData *MessageData           // 選択肢を選んだ時に表示するメッセージ
-	Transition  es.Transition[w.World] // 選択肢を選んだ時のステート遷移
+	MessageData *MessageData // 選択肢を選んだ時に表示するメッセージ
 	Disabled    bool
 }
 
@@ -184,96 +181,4 @@ func (m *MessageData) HasNextMessages() bool {
 // GetNextMessages は次のメッセージ群を取得
 func (m *MessageData) GetNextMessages() []*MessageData {
 	return m.NextMessages
-}
-
-// MessageChain は連続して表示するメッセージのチェーン（選択肢分岐対応）
-type MessageChain struct {
-	messages     []*MessageData
-	currentIndex int
-	choiceMap    map[string][]*MessageData // 選択肢テキスト -> 次のメッセージ群
-}
-
-// NewMessageChain は新しいメッセージチェーンを作成する
-func NewMessageChain() *MessageChain {
-	return &MessageChain{
-		messages:  make([]*MessageData, 0),
-		choiceMap: make(map[string][]*MessageData),
-	}
-}
-
-// AddMessage はチェーンにメッセージを追加する
-func (mc *MessageChain) AddMessage(message *MessageData) *MessageChain {
-	mc.messages = append(mc.messages, message)
-	return mc
-}
-
-// AddChoiceMessage は選択肢付きメッセージと各選択肢の結果メッセージを追加する
-func (mc *MessageChain) AddChoiceMessage(questionMessage *MessageData, choiceResults map[string]*MessageData) *MessageChain {
-	// 質問メッセージを追加
-	mc.messages = append(mc.messages, questionMessage)
-
-	// 各選択肢の結果メッセージを追加
-	for choiceText, resultMessage := range choiceResults {
-		// 結果メッセージとその連鎖メッセージを収集
-		messageChain := mc.collectMessageChain(resultMessage)
-		mc.choiceMap[choiceText] = messageChain
-	}
-
-	return mc
-}
-
-// AddChoiceMessageExtended は選択肢付きメッセージと各選択肢の結果メッセージ群を追加
-func (mc *MessageChain) AddChoiceMessageExtended(questionMessage *MessageData, choiceSequences map[string][]*MessageData) *MessageChain {
-	// 質問メッセージを追加
-	mc.messages = append(mc.messages, questionMessage)
-
-	// 各選択肢のメッセージ群をマップに保存
-	for choiceText, messageSequence := range choiceSequences {
-		mc.choiceMap[choiceText] = messageSequence
-	}
-
-	return mc
-}
-
-// collectMessageChain はメッセージとその連鎖メッセージを全て収集する
-func (mc *MessageChain) collectMessageChain(message *MessageData) []*MessageData {
-	result := []*MessageData{message}
-	result = append(result, message.GetNextMessages()...)
-	return result
-}
-
-// GetFirstMessage は最初のメッセージを取得する
-func (mc *MessageChain) GetFirstMessage() *MessageData {
-	if len(mc.messages) == 0 {
-		return nil
-	}
-	mc.currentIndex = 0
-	return mc.messages[0]
-}
-
-// GetNextMessage は次のメッセージを取得する
-func (mc *MessageChain) GetNextMessage() *MessageData {
-	if mc.currentIndex+1 >= len(mc.messages) {
-		return nil
-	}
-	mc.currentIndex++
-	return mc.messages[mc.currentIndex]
-}
-
-// GetMessagesForChoice は選択肢に対応するメッセージ群を取得
-func (mc *MessageChain) GetMessagesForChoice(choiceText string) []*MessageData {
-	if messages, exists := mc.choiceMap[choiceText]; exists {
-		return messages
-	}
-	return []*MessageData{}
-}
-
-// HasMoreMessages はまだ表示すべきメッセージがあるかを確認する
-func (mc *MessageChain) HasMoreMessages() bool {
-	return mc.currentIndex+1 < len(mc.messages)
-}
-
-// GetCurrentIndex は現在のメッセージインデックスを取得する
-func (mc *MessageChain) GetCurrentIndex() int {
-	return mc.currentIndex
 }
