@@ -40,12 +40,6 @@ func (st *MessageWindowState) OnResume(_ w.World) {}
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *MessageWindowState) OnStart(world w.World) {
-	if st.messageData == nil {
-		// デフォルトメッセージ（VRTテスト用）
-		st.messageData = messagedata.NewSystemMessage("これはメッセージウィンドウのテストです。\n\n下部にEnterプロンプトが表示され、Enterキーで閉じることができます。").
-			WithSpeaker("テスト")
-	}
-
 	// 連鎖メッセージをキューに追加
 	if st.messageData.HasNextMessages() {
 		st.messageQueue = append(st.messageQueue, st.messageData.GetNextMessages()...)
