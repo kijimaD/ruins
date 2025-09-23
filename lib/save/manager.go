@@ -113,11 +113,6 @@ func (sm *SerializationManager) GenerateWorldJSON(world w.World) (string, error)
 	return string(data), nil
 }
 
-// SaveWorldJSON はJSON文字列をファイルに保存する
-func (sm *SerializationManager) SaveWorldJSON(jsonData string, slotName string) error {
-	return sm.saveDataImpl(slotName, []byte(jsonData))
-}
-
 // SaveWorld はワールド全体をファイルに保存（既存のインターフェース維持）
 func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error {
 	// JSON生成
@@ -127,7 +122,7 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	}
 
 	// ファイル保存
-	return sm.SaveWorldJSON(jsonData, slotName)
+	return sm.saveDataImpl(slotName, []byte(jsonData))
 }
 
 // LoadWorldJSON はJSON文字列をファイルから読み込む
@@ -465,8 +460,7 @@ func (sm *SerializationManager) restoreWorldData(world w.World, worldData WorldS
 		for componentName, componentData := range entityData.Components {
 			typeInfo, exists := sm.componentRegistry.GetTypeInfoByName(componentName)
 			if !exists {
-				fmt.Printf("Warning: unknown component type: %s\n", componentName)
-				continue
+				return fmt.Errorf("unknown component type: %s", componentName)
 			}
 
 			// JSONからコンポーネントデータを復元
