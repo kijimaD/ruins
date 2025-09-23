@@ -2,6 +2,7 @@ package messagewindow
 
 import (
 	"image"
+	"image/color"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
@@ -192,6 +193,10 @@ func (w *Window) createWindowContainer() *widget.Container {
 	if w.hasChoices && w.choiceMenu != nil {
 		choicesContainer := w.createChoicesContainer()
 		windowContainer.AddChild(choicesContainer)
+	} else {
+		// 選択肢がない場合は Enter プロンプトを表示する
+		enterPrompt := w.createEnterPrompt()
+		windowContainer.AddChild(enterPrompt)
 	}
 
 	return windowContainer
@@ -226,6 +231,37 @@ func (w *Window) createChoicesContainer() *widget.Container {
 		container.AddChild(choiceText)
 	}
 
+	return container
+}
+
+// createEnterPrompt はEnter待ちプロンプトを作成する
+func (w *Window) createEnterPrompt() *widget.Container {
+	container := widget.NewContainer(
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+				widget.RowLayoutOpts.Spacing(0),
+				widget.RowLayoutOpts.Padding(widget.Insets{Top: 15, Right: 10}),
+			),
+		),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Position: widget.RowLayoutPositionCenter, // 中央寄せ
+			}),
+		),
+	)
+
+	// プロンプトテキスト
+	promptText := "Enter"
+
+	prompt := styled.NewListItemText(
+		promptText,
+		color.RGBA{255, 255, 255, 255}, // 白色テキスト
+		true,                           // 選択状態（背景色付き）
+		w.world.Resources.UIResources,
+	)
+
+	container.AddChild(prompt)
 	return container
 }
 
