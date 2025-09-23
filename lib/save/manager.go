@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strings"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -81,12 +82,12 @@ func NewSerializationManager(saveDir string) *SerializationManager {
 	return sm
 }
 
-// SaveWorld はワールド全体をファイルに保存
-func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error {
+// GenerateWorldJSON はワールドからJSON文字列を生成する
+func (sm *SerializationManager) GenerateWorldJSON(world w.World) (string, error) {
 	// コンポーネントレジストリを初期化
 	err := sm.componentRegistry.InitializeFromWorld(world)
 	if err != nil {
-		return fmt.Errorf("failed to initialize component registry: %w", err)
+		return "", fmt.Errorf("failed to initialize component registry: %w", err)
 	}
 
 	// ワールドデータを抽出
@@ -103,33 +104,54 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	checksum := sm.calculateChecksum(&saveData)
 	saveData.Checksum = checksum
 
-	// JSONにシリアライズ
-	data, err := json.MarshalIndent(saveData, "", "  ")
+	// JSONにシリアライズ（キーをソート）
+	data, err := sm.marshalSortedJSON(saveData)
 	if err != nil {
-		return fmt.Errorf("failed to marshal save data: %w", err)
+		return "", fmt.Errorf("failed to marshal save data: %w", err)
 	}
 
-	// プラットフォーム固有の保存処理を実行
-	return sm.saveDataImpl(slotName, data)
+	return string(data), nil
 }
 
-// LoadWorld はファイルからワールドを復元
-func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error {
+// SaveWorldJSON はJSON文字列をファイルに保存する
+func (sm *SerializationManager) SaveWorldJSON(jsonData string, slotName string) error {
+	return sm.saveDataImpl(slotName, []byte(jsonData))
+}
+
+// SaveWorld はワールド全体をファイルに保存（既存のインターフェース維持）
+func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error {
+	// JSON生成
+	jsonData, err := sm.GenerateWorldJSON(world)
+	if err != nil {
+		return err
+	}
+
+	// ファイル保存
+	return sm.SaveWorldJSON(jsonData, slotName)
+}
+
+// LoadWorldJSON はJSON文字列をファイルから読み込む
+func (sm *SerializationManager) LoadWorldJSON(slotName string) (string, error) {
+	// プラットフォーム固有のデータ読み込み処理を実行
+	data, err := sm.loadDataImpl(slotName)
+	if err != nil {
+		return "", fmt.Errorf("failed to load save data: %w", err)
+	}
+
+	return string(data), nil
+}
+
+// RestoreWorldFromJSON はJSON文字列からワールドを復元する（ファイル読み込みなし）
+func (sm *SerializationManager) RestoreWorldFromJSON(world w.World, jsonData string) error {
 	// コンポーネントレジストリを初期化
 	err := sm.componentRegistry.InitializeFromWorld(world)
 	if err != nil {
 		return fmt.Errorf("failed to initialize component registry: %w", err)
 	}
 
-	// プラットフォーム固有のデータ読み込み処理を実行
-	data, err := sm.loadDataImpl(slotName)
-	if err != nil {
-		return fmt.Errorf("failed to load save data: %w", err)
-	}
-
 	// JSONをパース
 	var saveData Data
-	err = json.Unmarshal(data, &saveData)
+	err = json.Unmarshal([]byte(jsonData), &saveData)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal save data: %w", err)
 	}
@@ -156,6 +178,18 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 	}
 
 	return nil
+}
+
+// LoadWorld はファイルからワールドを復元（既存のインターフェース維持）
+func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error {
+	// JSONファイル読み込み
+	jsonData, err := sm.LoadWorldJSON(slotName)
+	if err != nil {
+		return err
+	}
+
+	// JSON文字列から復元
+	return sm.RestoreWorldFromJSON(world, jsonData)
 }
 
 // extractWorldData はワールドからセーブデータを抽出
@@ -318,6 +352,11 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		}
 	}
+
+	// エンティティをStableIDでソートして決定的な順序にする
+	sort.Slice(entities, func(i, j int) bool {
+		return entities[i].StableID.Index < entities[j].StableID.Index
+	})
 
 	return WorldSaveData{
 		Entities: entities,
@@ -750,4 +789,108 @@ func (sm *SerializationManager) validateChecksum(data *Data) error {
 	}
 
 	return nil
+}
+
+// marshalSortedJSON はキーをソートしてJSONマーシャリングを行う
+func (sm *SerializationManager) marshalSortedJSON(data interface{}) ([]byte, error) {
+	// 最初に標準のMarshalでJSONに変換
+	jsonBytes, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	// JSONを一度map[string]interface{}に変換
+	var jsonObj interface{}
+	if err := json.Unmarshal(jsonBytes, &jsonObj); err != nil {
+		return nil, err
+	}
+
+	// ソート済みJSONを生成
+	return sm.marshalSortedIndent(jsonObj, "", "  ")
+}
+
+// marshalSortedIndent は再帰的にキーをソートしてインデント付きJSONを生成
+func (sm *SerializationManager) marshalSortedIndent(v interface{}, prefix, indent string) ([]byte, error) {
+	switch value := v.(type) {
+	case map[string]interface{}:
+		return sm.marshalSortedObject(value, prefix, indent)
+	case []interface{}:
+		return sm.marshalSortedArray(value, prefix, indent)
+	default:
+		// プリミティブ値の場合は標準のMarshalを使用
+		return json.Marshal(value)
+	}
+}
+
+// marshalSortedObject はオブジェクトのキーをソートしてマーシャリング
+func (sm *SerializationManager) marshalSortedObject(obj map[string]interface{}, prefix, indent string) ([]byte, error) {
+	if len(obj) == 0 {
+		return []byte("{}"), nil
+	}
+
+	// キーを取得してソート
+	keys := make([]string, 0, len(obj))
+	for k := range obj {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var buf strings.Builder
+	buf.WriteString("{\n")
+
+	newPrefix := prefix + indent
+	for i, key := range keys {
+		// キーを書き込み
+		buf.WriteString(newPrefix)
+		keyBytes, _ := json.Marshal(key)
+		buf.Write(keyBytes)
+		buf.WriteString(": ")
+
+		// 値を再帰的に処理
+		valueBytes, err := sm.marshalSortedIndent(obj[key], newPrefix, indent)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(valueBytes)
+
+		// 最後の要素以外はカンマを追加
+		if i < len(keys)-1 {
+			buf.WriteString(",")
+		}
+		buf.WriteString("\n")
+	}
+
+	buf.WriteString(prefix + "}")
+	return []byte(buf.String()), nil
+}
+
+// marshalSortedArray は配列をマーシャリング
+func (sm *SerializationManager) marshalSortedArray(arr []interface{}, prefix, indent string) ([]byte, error) {
+	if len(arr) == 0 {
+		return []byte("[]"), nil
+	}
+
+	var buf strings.Builder
+	buf.WriteString("[\n")
+
+	newPrefix := prefix + indent
+	for i, item := range arr {
+		buf.WriteString(newPrefix)
+
+		// 要素を再帰的に処理
+		itemBytes, err := sm.marshalSortedIndent(item, newPrefix, indent)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(itemBytes)
+
+		// 最後の要素以外はカンマを追加
+		if i < len(arr)-1 {
+			buf.WriteString(",")
+		}
+		buf.WriteString("\n")
+	}
+
+	buf.WriteString(prefix + "]")
+	return []byte(buf.String()), nil
 }

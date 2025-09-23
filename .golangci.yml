@@ -33,6 +33,8 @@ linters:
               desc: 標準ライブラリを使う
             - pkg: "github.com/pkg/errors"
               desc: 標準ライブラリを使う
+            - pkg: "github.com/hajimehoshi/ebiten$"
+              desc: ebiten/v2を使う
         engine_guard:
           list-mode: lax
           files:
