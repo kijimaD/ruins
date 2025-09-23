@@ -465,8 +465,7 @@ func (sm *SerializationManager) restoreWorldData(world w.World, worldData WorldS
 		for componentName, componentData := range entityData.Components {
 			typeInfo, exists := sm.componentRegistry.GetTypeInfoByName(componentName)
 			if !exists {
-				fmt.Printf("Warning: unknown component type: %s\n", componentName)
-				continue
+				return fmt.Errorf("unknown component type: %s", componentName)
 			}
 
 			// JSONからコンポーネントデータを復元
