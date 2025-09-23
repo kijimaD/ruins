@@ -110,7 +110,6 @@ type RecipeInput struct {
 // Member はメンバーの情報
 type Member struct {
 	Name       string
-	Job        string
 	Player     *bool
 	Attributes Attributes `toml:"attributes"`
 }
@@ -348,9 +347,6 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 
 	cl := gc.EntitySpec{}
 	cl.Name = &gc.Name{Name: member.Name}
-	if member.Job != "" {
-		cl.Job = &gc.Job{Job: member.Job}
-	}
 	cl.TurnBased = &gc.TurnBased{AP: gc.Pool{Current: 100, Max: 100}} // TODO: Attributesから計算する
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
