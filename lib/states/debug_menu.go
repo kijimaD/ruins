@@ -223,7 +223,7 @@ var debugMenuTrans = []struct {
 		label: "メッセージウィンドウテスト",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowTestState}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState}}
 		},
 	},
 	{
