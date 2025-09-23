@@ -286,23 +286,16 @@ var debugMenuTrans = []struct {
 		label: "選択肢処理テスト",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
-			// カウンターを共有変数として使用
-			actionCount := 0
-
-			// 選択肢で実行される処理
 			choiceAction1 := func() {
-				actionCount++
-				fmt.Println(actionCount)
+				fmt.Println("実行: 1")
 			}
 			choiceAction2 := func() {
-				actionCount += 10
-				fmt.Println(actionCount)
+				fmt.Println("実行: 2")
 			}
 
 			// メッセージ完了時の処理
 			onCompleteAction := func() {
-				// TODO: 2回実行されている
-				fmt.Println("Complete")
+				fmt.Println("Complete Action")
 			}
 
 			// 各選択肢の結果メッセージ

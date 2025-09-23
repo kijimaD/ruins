@@ -265,7 +265,7 @@ func (mc *MessageChain) GetMessagesForChoice(choiceText string) []*MessageData {
 	if messages, exists := mc.choiceMap[choiceText]; exists {
 		return messages
 	}
-	return nil
+	return []*MessageData{}
 }
 
 // HasMoreMessages はまだ表示すべきメッセージがあるかを確認する
