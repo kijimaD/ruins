@@ -34,14 +34,6 @@ type Size struct {
 	Height int
 }
 
-// NewBasicMessage は基本的なメッセージを作成する
-func NewBasicMessage(text string) *MessageData {
-	return &MessageData{
-		Text: text,
-		Type: messagewindow.TypeStory,
-	}
-}
-
 // NewDialogMessage は会話メッセージを作成する
 func NewDialogMessage(text, speaker string) *MessageData {
 	return &MessageData{
@@ -135,12 +127,6 @@ func NewMessageSequence() *MessageSequence {
 	}
 }
 
-// Message はシーケンスに基本メッセージを追加
-func (ms *MessageSequence) Message(text string) *MessageSequence {
-	ms.messages = append(ms.messages, NewBasicMessage(text))
-	return ms
-}
-
 // DialogMessage は会話メッセージを追加
 func (ms *MessageSequence) DialogMessage(text, speaker string) *MessageSequence {
 	ms.messages = append(ms.messages, NewDialogMessage(text, speaker))
@@ -165,12 +151,6 @@ func (ms *MessageSequence) GetMessages() []*MessageData {
 }
 
 // MessageDataのチェーンメソッド
-
-// Message は追加のメッセージを連鎖
-func (m *MessageData) Message(text string) *MessageData {
-	m.NextMessages = append(m.NextMessages, NewBasicMessage(text))
-	return m
-}
 
 // DialogMessage は会話メッセージを連鎖
 func (m *MessageData) DialogMessage(text, speaker string) *MessageData {

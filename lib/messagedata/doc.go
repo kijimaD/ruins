@@ -16,14 +16,11 @@
 //
 // # 基本的な使用方法
 //
-//	// 基本メッセージ
-//	msg := messagedata.NewBasicMessage("こんにちは")
-//
 //	// 会話メッセージ
 //	dialog := messagedata.NewDialogMessage("元気ですか？", "キャラクター名")
 //
 //	// 選択肢付きメッセージ
-//	choice := messagedata.NewBasicMessage("どうしますか？").
+//	choice := messagedata.NewDialogMessage("どうしますか？", "").
 //	    WithChoice("はい", func() { fmt.Println("はいが選ばれました") }).
 //	    WithChoice("いいえ", func() { fmt.Println("いいえが選ばれました") })
 //
@@ -72,7 +69,7 @@
 //	    EventMessage("反撃成功").
 //	    SystemMessage("勝利")
 //
-//	msg := messagedata.NewBasicMessage("戦いますか？").
+//	msg := messagedata.NewDialogMessage("戦いますか？", "").
 //	    WithChoice("はい", func() {}).
 //	    Sequence(battleSeq)
 //

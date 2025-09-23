@@ -42,7 +42,7 @@ func (st *MessageWindowState) OnResume(_ w.World) {}
 func (st *MessageWindowState) OnStart(world w.World) {
 	if st.messageData == nil {
 		// デフォルトメッセージ（VRTテスト用）
-		st.messageData = messagedata.NewBasicMessage("これはメッセージウィンドウのテストです。\n\n下部にEnterプロンプトが表示され、Enterキーで閉じることができます。").
+		st.messageData = messagedata.NewSystemMessage("これはメッセージウィンドウのテストです。\n\n下部にEnterプロンプトが表示され、Enterキーで閉じることができます。").
 			WithSpeaker("テスト")
 	}
 

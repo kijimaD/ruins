@@ -248,7 +248,7 @@ var debugMenuTrans = []struct {
 日本語のテキストも問題なく表示されるはずです。
 句読点、記号、数字123なども含めて確認してみましょう。`
 
-			messageData := messagedata.NewBasicMessage(longText).
+			messageData := messagedata.NewSystemMessage(longText).
 				WithSize(700, 400)
 			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewMessageWindowState(messageData)}}
 		},
