@@ -4,14 +4,14 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestEquipMenuWearSortIntegration(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	state := &EquipMenuState{}
@@ -56,7 +56,7 @@ func TestEquipMenuWearSortIntegration(t *testing.T) {
 
 func TestEquipMenuCardSortIntegration(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	state := &EquipMenuState{}

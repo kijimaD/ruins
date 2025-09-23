@@ -3,7 +3,7 @@ package gamelog
 import (
 	"fmt"
 
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 )
 
 // この例は、Loggerのメソッドチェーンの使い方を示しています
@@ -21,11 +21,11 @@ func ExampleLogger_methodChaining() {
 
 	// 色指定も同様
 	New(testLog).
-		ColorRGBA(colors.ColorCyan). // Cyan
+		ColorRGBA(consts.ColorCyan). // Cyan
 		Append("John").
-		ColorRGBA(colors.ColorWhite).
+		ColorRGBA(consts.ColorWhite).
 		Append(" considers attacking ").
-		ColorRGBA(colors.ColorCyan).
+		ColorRGBA(consts.ColorCyan).
 		Append("Orc").
 		Log()
 
@@ -48,11 +48,11 @@ func ExampleLogger_customColors() {
 	testFieldLog.Clear()
 
 	New(testFieldLog).
-		ColorRGBA(colors.ColorPurple).
+		ColorRGBA(consts.ColorPurple).
 		Append("Magic spell ").
-		ColorRGBA(colors.ColorOrange).
+		ColorRGBA(consts.ColorOrange).
 		Append("Fire Bolt").
-		ColorRGBA(colors.ColorWhite).
+		ColorRGBA(consts.ColorWhite).
 		Append(" hits for ").
 		Damage(20).
 		Append(" damage!").

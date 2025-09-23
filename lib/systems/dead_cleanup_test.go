@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -13,7 +13,7 @@ import (
 func TestDeadCleanupSystem(t *testing.T) {
 	t.Parallel()
 
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// テスト用エンティティを作成
@@ -67,7 +67,7 @@ func TestDeadCleanupSystem(t *testing.T) {
 func TestDeadCleanupSystem_NoDeadEntities(t *testing.T) {
 	t.Parallel()
 
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// Deadエンティティが存在しない状態でテスト
@@ -93,7 +93,7 @@ func TestDeadCleanupSystem_NoDeadEntities(t *testing.T) {
 func TestDeadCleanupSystem_EmptyWorld(t *testing.T) {
 	t.Parallel()
 
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// エンティティが存在しない状態でテスト

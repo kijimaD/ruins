@@ -4,14 +4,14 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetAmount(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// テスト用素材エンティティを作成
@@ -34,7 +34,7 @@ func TestGetAmount(t *testing.T) {
 
 func TestPlusMinusAmount(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// テスト用素材エンティティを作成

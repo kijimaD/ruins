@@ -44,18 +44,21 @@
 
 ゲーム作成で参考にしたコード等。
 
-- ゲームシステム面で、KONAMIのビデオゲーム『パワプロクンポケット』シリーズ10・11・12を参考にした
 - https://github.com/x-hgg-x/sokoban-go
   - 最初にコピペして作成をはじめ、改変していった
-  - ECSの使い方まわりで大きく参考にした
+  - ECSの使い方まわりで参考にした
 - https://github.com/x-hgg-x/goecsengine
-  - sokoban-goの依存ライブラリ。ECSまわりの実装を参考にした
+  - ゲームステート作成まわりで参考にした
 - https://bfnihtly.bracketproductions.com/
-  - 設定ファイルによるファクトリまわりを参考にした
+  - 設定ファイルによるファクトリ、ゲームログまわりを参考にした
 - https://krkrz.github.io/krkr2doc/kag3doc/contents/
   - サウンドノベルに必要な記法を参考にした
 - https://ebitengine.org/en/examples/raycasting.html
   - レイキャストの実装の参考にした
+- https://cataclysmdda.org/
+  - ローグライクシステムの参考にした
+- ゲームシステム面で、KONAMIのビデオゲーム『パワプロクンポケット』シリーズ10・11・12を参考にした
+  - 途中の方針転換で、あまり残っていない
 
 使用した素材類。
 

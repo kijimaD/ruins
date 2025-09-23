@@ -3,7 +3,7 @@ package styled
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -24,7 +24,7 @@ func TestNewFragmentText(t *testing.T) {
 
 	// 基本的な呼び出しテスト
 	text := "テストテキスト"
-	color := colors.ColorRed
+	color := consts.ColorRed
 
 	NewFragmentText(text, color, world.Resources.UIResources)
 

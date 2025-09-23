@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mathutil"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -30,10 +29,10 @@ func (h Healing) Apply(world w.World, scope *Scope) error {
 		switch amount := h.Amount.(type) {
 		case gc.RatioAmount:
 			healAmount := amount.Calc(pools.HP.Max)
-			pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+healAmount)
+			pools.HP.Current = min(pools.HP.Max, pools.HP.Current+healAmount)
 		case gc.NumeralAmount:
 			healAmount := amount.Calc()
-			pools.HP.Current = mathutil.Min(pools.HP.Max, pools.HP.Current+healAmount)
+			pools.HP.Current = min(pools.HP.Max, pools.HP.Current+healAmount)
 		default:
 			return fmt.Errorf("未対応の回復量タイプ: %T", amount)
 		}

@@ -5,7 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/entities"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -13,7 +13,7 @@ import (
 
 func TestMergeMaterialIntoInventoryWithMaterial(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// 既存のmaterialをバックパックに配置（初期数量5）
@@ -38,7 +38,7 @@ func TestMergeMaterialIntoInventoryWithMaterial(t *testing.T) {
 
 func TestMergeMaterialIntoInventoryWithNewMaterial(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// 新しいmaterialを作成（既存のものはなし）
@@ -78,7 +78,7 @@ func TestMergeMaterialIntoInventoryWithNewMaterial(t *testing.T) {
 
 func TestMergeMaterialIntoInventoryWithNonMaterial(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// 既存のアイテム（material以外）をバックパックに配置
@@ -119,7 +119,7 @@ func TestMergeMaterialIntoInventoryWithNonMaterial(t *testing.T) {
 
 func TestMergeMaterialIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// ItemもMaterialコンポーネントも持たないエンティティを作成

@@ -1,7 +1,6 @@
 package worldhelper
 
 import (
-	"github.com/kijimaD/ruins/lib/mathutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -36,7 +35,7 @@ func changeAmount(name string, amount int, world w.World) {
 		n := world.Components.Name.Get(entity).(*gc.Name)
 		if n.Name == name {
 			material := world.Components.Material.Get(entity).(*gc.Material)
-			material.Amount = mathutil.Min(999, mathutil.Max(0, material.Amount+amount))
+			material.Amount = min(999, max(0, material.Amount+amount))
 		}
 	}, world)
 }

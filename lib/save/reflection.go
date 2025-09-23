@@ -77,7 +77,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Description{}), components.Description, r.extractDescription, r.restoreDescription, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Job{}), components.Job, r.extractJob, r.restoreJob, nil)
 
 	// アイテム関連コンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
@@ -424,24 +423,6 @@ func (r *ComponentRegistry) restoreDescription(world w.World, entity ecs.Entity,
 		return fmt.Errorf("invalid Description data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Description, &desc)
-	return nil
-}
-
-// Job コンポーネントの処理
-func (r *ComponentRegistry) extractJob(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Job) {
-		return nil, false
-	}
-	job := world.Components.Job.Get(entity).(*gc.Job)
-	return *job, true
-}
-
-func (r *ComponentRegistry) restoreJob(world w.World, entity ecs.Entity, data interface{}) error {
-	job, ok := data.(gc.Job)
-	if !ok {
-		return fmt.Errorf("invalid Job data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Job, &job)
 	return nil
 }
 

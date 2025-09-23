@@ -5,7 +5,6 @@ import (
 
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/helpers"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
@@ -43,12 +42,13 @@ func GetItemGetEvent1Factories() []es.StateFactory[w.World] {
 			Log()
 	}))
 	factories = then(factories, func() es.State[w.World] {
+		f := func() string {
+			history := gamelog.SceneLog.GetHistory()
+			gamelog.SceneLog.Clear()
+			return strings.Join(history, "\n")
+		}
 		return &MessageState{
-			textFunc: helpers.GetPtr(func() string {
-				history := gamelog.SceneLog.GetHistory()
-				gamelog.SceneLog.Clear()
-				return strings.Join(history, "\n")
-			}),
+			textFunc: &f,
 		}
 	})
 

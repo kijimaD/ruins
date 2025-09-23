@@ -4,7 +4,7 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
@@ -60,7 +60,7 @@ func (st *GameOverState) Update(_ w.World) es.Transition[w.World] {
 func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image) {
 	// 半透明の黒い背景を描画してダンジョン画面を暗くする
 	overlay := ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy())
-	overlay.Fill(colors.TransBlackColor)
+	overlay.Fill(consts.TransBlackColor)
 	screen.DrawImage(overlay, &ebiten.DrawImageOptions{})
 
 	st.ui.Draw(screen)

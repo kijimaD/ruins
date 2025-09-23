@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -64,7 +64,7 @@ func TestSortEntities(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			// 各テストケースで新しいworldを作成
-			world, err := game.InitWorld(960, 720)
+			world, err := maingame.InitWorld(960, 720)
 			require.NoError(t, err)
 
 			entities := tt.entities(world)
@@ -86,7 +86,7 @@ func TestSortEntities(t *testing.T) {
 
 func TestSortEntitiesWithMixedComponents(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// Nameコンポーネントを持つエンティティと持たないエンティティの混在
@@ -125,7 +125,7 @@ func TestSortEntitiesWithMixedComponents(t *testing.T) {
 
 func TestSortEntitiesEmptyAndNilCases(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// 空のリストのテスト

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -12,7 +12,7 @@ import (
 
 func TestSpawnFieldItem(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// フィールドアイテムを生成
@@ -47,7 +47,7 @@ func TestSpawnFieldItem(t *testing.T) {
 
 func TestSpawnMultipleFieldItems(t *testing.T) {
 	t.Parallel()
-	world, err := game.InitWorld(960, 720)
+	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
 	// 複数のフィールドアイテムを生成

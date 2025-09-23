@@ -20,7 +20,6 @@ const (
 	ComponentBlockView          = "BlockView"
 	ComponentBlockPass          = "BlockPass"
 	ComponentPlayer             = "Player"
-	ComponentJob                = "Job"
 	ComponentFactionAllyData    = "FactionAllyData"
 	ComponentFactionEnemyData   = "FactionEnemyData"
 	ComponentItem               = "Item"
@@ -214,11 +213,6 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		case ComponentPlayer:
 			world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentJob:
-			world.Manager.Join(world.Components.Job).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))

@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mathutil"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -27,10 +26,10 @@ func (c ConsumeStamina) Apply(world w.World, scope *Scope) error {
 		switch amount := c.Amount.(type) {
 		case gc.RatioAmount:
 			consumeAmount := amount.Calc(pools.SP.Max)
-			pools.SP.Current = mathutil.Max(0, pools.SP.Current-consumeAmount)
+			pools.SP.Current = max(0, pools.SP.Current-consumeAmount)
 		case gc.NumeralAmount:
 			consumeAmount := amount.Calc()
-			pools.SP.Current = mathutil.Max(0, pools.SP.Current-consumeAmount)
+			pools.SP.Current = max(0, pools.SP.Current-consumeAmount)
 		default:
 			return fmt.Errorf("未対応のスタミナ消費量タイプ: %T", amount)
 		}
@@ -78,10 +77,10 @@ func (r RestoreStamina) Apply(world w.World, scope *Scope) error {
 		switch amount := r.Amount.(type) {
 		case gc.RatioAmount:
 			restoreAmount := amount.Calc(pools.SP.Max)
-			pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+restoreAmount)
+			pools.SP.Current = min(pools.SP.Max, pools.SP.Current+restoreAmount)
 		case gc.NumeralAmount:
 			restoreAmount := amount.Calc()
-			pools.SP.Current = mathutil.Min(pools.SP.Max, pools.SP.Current+restoreAmount)
+			pools.SP.Current = min(pools.SP.Max, pools.SP.Current+restoreAmount)
 		default:
 			return fmt.Errorf("未対応のスタミナ回復量タイプ: %T", amount)
 		}

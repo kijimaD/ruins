@@ -14,7 +14,6 @@ type EntitySpec struct {
 	// general ================
 	Name        *Name
 	Description *Description
-	Job         *Job
 
 	// item ================
 	Item             *Item
@@ -65,8 +64,6 @@ type Components struct {
 	// general ================
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
-	Job         *ecs.SliceComponent
-	Render      *ecs.SliceComponent
 
 	// item ================
 	Item                   *ecs.NullComponent
@@ -179,11 +176,6 @@ type Name struct {
 // Description は説明
 type Description struct {
 	Description string
-}
-
-// Job は職業表示
-type Job struct {
-	Job string
 }
 
 // Wearable は装備品。キャラクタが装備することでパラメータを変更できる

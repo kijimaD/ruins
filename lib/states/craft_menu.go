@@ -8,14 +8,14 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/ruins/lib/colors"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/views"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
+	"github.com/kijimaD/ruins/lib/widgets/views"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -363,7 +363,7 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 	// ボタン項目を表示
 	for i, action := range st.resultItems {
 		isSelected := i == st.resultFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
+		actionWidget := styled.NewListItemText(action, consts.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 
@@ -382,9 +382,9 @@ func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entit
 				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, worldhelper.GetAmount(input.Name, world))
 				var color color.RGBA
 				if worldhelper.GetAmount(input.Name, world) >= input.Amount {
-					color = colors.SuccessColor
+					color = consts.SuccessColor
 				} else {
-					color = colors.DangerColor
+					color = consts.DangerColor
 				}
 
 				st.recipeList.AddChild(styled.NewBodyText(str, color, world.Resources.UIResources))
@@ -442,7 +442,7 @@ func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
 	// アクション項目を表示
 	for i, action := range st.actionItems {
 		isSelected := i == st.actionFocusIndex
-		actionWidget := styled.NewListItemText(action, colors.TextColor, isSelected, world.Resources.UIResources)
+		actionWidget := styled.NewListItemText(action, consts.TextColor, isSelected, world.Resources.UIResources)
 		windowContainer.AddChild(actionWidget)
 	}
 
@@ -615,11 +615,11 @@ func (st *CraftMenuState) updateCategoryDisplay(world w.World) {
 		isSelected := i == currentTabIndex
 		if isSelected {
 			// 選択中のカテゴリは背景色付きで明るい文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.TextColor, true, world.Resources.UIResources)
+			categoryWidget := styled.NewListItemText(tab.Label, consts.TextColor, true, world.Resources.UIResources)
 			st.categoryContainer.AddChild(categoryWidget)
 		} else {
 			// 非選択のカテゴリは背景なしでグレー文字色
-			categoryWidget := styled.NewListItemText(tab.Label, colors.ForegroundColor, false, world.Resources.UIResources)
+			categoryWidget := styled.NewListItemText(tab.Label, consts.ForegroundColor, false, world.Resources.UIResources)
 			st.categoryContainer.AddChild(categoryWidget)
 		}
 	}
@@ -653,11 +653,11 @@ func (st *CraftMenuState) updateTabDisplay(world w.World) {
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
 		if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.TextColor, true, world.Resources.UIResources)
+			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		} else {
 			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, colors.ForegroundColor, false, world.Resources.UIResources)
+			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
 			st.tabDisplayContainer.AddChild(itemWidget)
 		}
 	}

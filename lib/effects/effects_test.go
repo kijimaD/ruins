@@ -6,7 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/engine/entities"
-	"github.com/kijimaD/ruins/lib/game"
+	"github.com/kijimaD/ruins/lib/maingame"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -108,7 +108,7 @@ func TestEffectSystem(t *testing.T) {
 
 	t.Run("ターゲットセレクタの文字列表現", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		entity := createTestEntity(world)
@@ -134,7 +134,7 @@ func TestEffectSystem(t *testing.T) {
 
 	t.Run("生存者・死亡者ターゲット選択", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 生存プレイヤーを作成
@@ -177,7 +177,7 @@ func TestEffectSystem(t *testing.T) {
 
 	t.Run("エフェクトの検証", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 負のダメージは無効
@@ -197,7 +197,7 @@ func TestEffectSystem(t *testing.T) {
 
 	t.Run("Poolsコンポーネントの検証", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// Poolsコンポーネントがないエンティティを作成
@@ -228,7 +228,7 @@ func TestEffectSystem(t *testing.T) {
 
 	t.Run("無効なアイテムの検証", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 無効なアイテムIDの場合（存在しないエンティティID）
@@ -246,7 +246,7 @@ func TestDeadComponentManagement(t *testing.T) {
 	t.Parallel()
 	t.Run("ダメージによる死亡状態の付与", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// HP 1のプレイヤーを作成
@@ -270,7 +270,7 @@ func TestDeadComponentManagement(t *testing.T) {
 
 	t.Run("すでに死亡している場合の重複付与防止", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 生きているプレイヤーを作成してダメージで死亡させる
@@ -299,7 +299,7 @@ func TestDeadComponentManagement(t *testing.T) {
 
 	t.Run("生存者への回復はDeadコンポーネントに影響しない", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 生存しているプレイヤーを作成
@@ -321,7 +321,7 @@ func TestDeadComponentManagement(t *testing.T) {
 
 	t.Run("死亡者への通常回復エフェクトは拒否される", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 生きているプレイヤーを作成してダメージで死亡させる
@@ -349,7 +349,7 @@ func TestCombatEffects(t *testing.T) {
 	t.Parallel()
 	t.Run("ダメージエフェクトの適用", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// プレイヤーエンティティを作成
@@ -373,7 +373,7 @@ func TestCombatEffects(t *testing.T) {
 
 	t.Run("戦闘時回復エフェクトの適用", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// ダメージを受けたプレイヤーを作成
@@ -397,7 +397,7 @@ func TestCombatEffects(t *testing.T) {
 
 	t.Run("スタミナ消費エフェクトの適用", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 100, 50)
@@ -420,7 +420,7 @@ func TestCombatEffects(t *testing.T) {
 
 	t.Run("スタミナ回復エフェクトの適用", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 100, 20)
@@ -446,7 +446,7 @@ func TestRecoveryEffects(t *testing.T) {
 	t.Parallel()
 	t.Run("非戦闘時HP全回復", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 10, 50)
@@ -468,7 +468,7 @@ func TestRecoveryEffects(t *testing.T) {
 
 	t.Run("非戦闘時SP全回復", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 100, 5)
@@ -490,7 +490,7 @@ func TestRecoveryEffects(t *testing.T) {
 
 	t.Run("非戦闘時HP部分回復", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 40, 50)
@@ -512,7 +512,7 @@ func TestRecoveryEffects(t *testing.T) {
 
 	t.Run("割合回復のテスト", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 50, 25)
@@ -537,7 +537,7 @@ func TestItemEffects(t *testing.T) {
 	t.Parallel()
 	t.Run("回復アイテムの使用", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 回復アイテムを作成
@@ -565,7 +565,7 @@ func TestItemEffects(t *testing.T) {
 
 	t.Run("効果のないアイテムの検証", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 効果のないアイテムを作成（Itemコンポーネントはあるが効果なし）
@@ -582,7 +582,7 @@ func TestItemEffects(t *testing.T) {
 
 	t.Run("アイテム消費エフェクト", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		item := createTestBasicItem(world, "テストアイテム")
@@ -602,7 +602,7 @@ func TestItemEffects(t *testing.T) {
 
 	t.Run("アイテム生成エフェクト", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// 生成前のアイテム数を数える（Name コンポーネントを持つエンティティ）
@@ -633,7 +633,7 @@ func TestProcessor(t *testing.T) {
 	t.Parallel()
 	t.Run("プロセッサーでのエフェクト実行", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		// プレイヤーエンティティを作成
@@ -664,7 +664,7 @@ func TestProcessor(t *testing.T) {
 
 	t.Run("検証失敗時のエラーハンドリング", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		processor := NewProcessor()
@@ -701,7 +701,7 @@ func TestValidationErrors(t *testing.T) {
 	t.Parallel()
 	t.Run("エフェクトパラメータの検証", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 100, 50)
@@ -728,7 +728,7 @@ func TestValidationErrors(t *testing.T) {
 
 	t.Run("ターゲットなしの検証", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		emptyScope := &Scope{Targets: []ecs.Entity{}}
@@ -754,7 +754,7 @@ func TestLoggerIntegration(t *testing.T) {
 	t.Parallel()
 	t.Run("戦闘時回復エフェクトのログ出力", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 50, 50)
@@ -777,7 +777,7 @@ func TestLoggerIntegration(t *testing.T) {
 
 	t.Run("ダメージエフェクトのログ出力", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 100, 50)
@@ -800,7 +800,7 @@ func TestLoggerIntegration(t *testing.T) {
 
 	t.Run("Logger無しの場合はログ出力なし", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 50, 50)
@@ -822,7 +822,7 @@ func TestLoggerIntegration(t *testing.T) {
 
 	t.Run("ProcessorのAddEffectWithLoggerメソッド", func(t *testing.T) {
 		t.Parallel()
-		world, err := game.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
+		world, err := maingame.InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		assert.NoError(t, err)
 
 		player := createTestPlayerEntity(world, 50, 50)

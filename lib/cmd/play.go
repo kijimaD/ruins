@@ -8,8 +8,8 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/config"
-	"github.com/kijimaD/ruins/lib/game"
 	"github.com/kijimaD/ruins/lib/logger"
+	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/pkg/profile"
 	"github.com/urfave/cli/v2"
 
@@ -89,7 +89,7 @@ func runPlay(_ *cli.Context) error {
 		}()
 	}
 
-	world, err := game.InitWorld(cfg.WindowWidth, cfg.WindowHeight)
+	world, err := maingame.InitWorld(cfg.WindowWidth, cfg.WindowHeight)
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func runPlay(_ *cli.Context) error {
 		log.Fatalf("無効なstate: %s", cfg.StartingState)
 	}
 
-	err = ebiten.RunGame(&game.MainGame{
+	err = ebiten.RunGame(&maingame.MainGame{
 		World:        world,
 		StateMachine: es.Init(initialState, world),
 	})
