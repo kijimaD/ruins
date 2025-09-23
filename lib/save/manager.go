@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strings"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -103,8 +104,8 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	checksum := sm.calculateChecksum(&saveData)
 	saveData.Checksum = checksum
 
-	// JSONにシリアライズ
-	data, err := json.MarshalIndent(saveData, "", "  ")
+	// JSONにシリアライズ（キーをソート）
+	data, err := sm.marshalSortedJSON(saveData)
 	if err != nil {
 		return fmt.Errorf("failed to marshal save data: %w", err)
 	}
@@ -750,4 +751,108 @@ func (sm *SerializationManager) validateChecksum(data *Data) error {
 	}
 
 	return nil
+}
+
+// marshalSortedJSON はキーをソートしてJSONマーシャリングを行う
+func (sm *SerializationManager) marshalSortedJSON(data interface{}) ([]byte, error) {
+	// 最初に標準のMarshalでJSONに変換
+	jsonBytes, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	// JSONを一度map[string]interface{}に変換
+	var jsonObj interface{}
+	if err := json.Unmarshal(jsonBytes, &jsonObj); err != nil {
+		return nil, err
+	}
+
+	// ソート済みJSONを生成
+	return sm.marshalSortedIndent(jsonObj, "", "  ")
+}
+
+// marshalSortedIndent は再帰的にキーをソートしてインデント付きJSONを生成
+func (sm *SerializationManager) marshalSortedIndent(v interface{}, prefix, indent string) ([]byte, error) {
+	switch value := v.(type) {
+	case map[string]interface{}:
+		return sm.marshalSortedObject(value, prefix, indent)
+	case []interface{}:
+		return sm.marshalSortedArray(value, prefix, indent)
+	default:
+		// プリミティブ値の場合は標準のMarshalを使用
+		return json.Marshal(value)
+	}
+}
+
+// marshalSortedObject はオブジェクトのキーをソートしてマーシャリング
+func (sm *SerializationManager) marshalSortedObject(obj map[string]interface{}, prefix, indent string) ([]byte, error) {
+	if len(obj) == 0 {
+		return []byte("{}"), nil
+	}
+
+	// キーを取得してソート
+	keys := make([]string, 0, len(obj))
+	for k := range obj {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var buf strings.Builder
+	buf.WriteString("{\n")
+
+	newPrefix := prefix + indent
+	for i, key := range keys {
+		// キーを書き込み
+		buf.WriteString(newPrefix)
+		keyBytes, _ := json.Marshal(key)
+		buf.Write(keyBytes)
+		buf.WriteString(": ")
+
+		// 値を再帰的に処理
+		valueBytes, err := sm.marshalSortedIndent(obj[key], newPrefix, indent)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(valueBytes)
+
+		// 最後の要素以外はカンマを追加
+		if i < len(keys)-1 {
+			buf.WriteString(",")
+		}
+		buf.WriteString("\n")
+	}
+
+	buf.WriteString(prefix + "}")
+	return []byte(buf.String()), nil
+}
+
+// marshalSortedArray は配列をマーシャリング
+func (sm *SerializationManager) marshalSortedArray(arr []interface{}, prefix, indent string) ([]byte, error) {
+	if len(arr) == 0 {
+		return []byte("[]"), nil
+	}
+
+	var buf strings.Builder
+	buf.WriteString("[\n")
+
+	newPrefix := prefix + indent
+	for i, item := range arr {
+		buf.WriteString(newPrefix)
+
+		// 要素を再帰的に処理
+		itemBytes, err := sm.marshalSortedIndent(item, newPrefix, indent)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(itemBytes)
+
+		// 最後の要素以外はカンマを追加
+		if i < len(arr)-1 {
+			buf.WriteString(",")
+		}
+		buf.WriteString("\n")
+	}
+
+	buf.WriteString(prefix + "]")
+	return []byte(buf.String()), nil
 }
