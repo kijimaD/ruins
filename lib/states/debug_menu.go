@@ -283,7 +283,7 @@ var debugMenuTrans = []struct {
 		},
 	},
 	{
-		label: "処理テスト",
+		label: "選択肢処理テスト",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
 			// カウンターを共有変数として使用
