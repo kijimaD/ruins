@@ -3,6 +3,7 @@ package save
 import (
 	"fmt"
 	"reflect"
+	"sort"
 	"sync"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -48,12 +49,16 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	components := world.Components
 
 	// リフレクションを使って全コンポーネント型を自動登録
+	// 特別処理が必要なコンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.AIVision{}), components.AIVision, r.extractAIVision, r.restoreAIVision, r.resolveAIVisionRefs)
-	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, nil)
-	r.registerComponent(reflect.TypeOf(&gc.AIChasing{}), components.AIChasing, r.extractAIChasing, r.restoreAIChasing, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Camera{}), components.Camera, r.extractCamera, r.restoreCamera, nil)
-	r.registerComponent(reflect.TypeOf(&gc.SpriteRender{}), components.SpriteRender, r.extractSpriteRender, r.restoreSpriteRender, nil)
-	r.registerComponent(reflect.TypeOf(&gc.GridElement{}), components.GridElement, r.extractGridElement, r.restoreGridElement, nil)
+
+	// テストで使用されているコンポーネント
+	r.registerComponent(reflect.TypeOf(&gc.GridElement{}), components.GridElement, r.extractGridElement, r.restoreGridElement, r.resolveGridElementRefs)
+	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, r.resolveAIRoamingRefs)
+	r.registerComponent(reflect.TypeOf(&gc.SpriteRender{}), components.SpriteRender, r.extractSpriteRender, r.restoreSpriteRender, r.resolveSpriteRenderRefs)
+
+	// 汎用処理で十分なコンポーネント（削除済み - 未使用のため登録しない）
+	// AIChasing, Cameraは現在テストで使用されていないため登録を削除
 
 	// NullComponentは特別扱い
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
@@ -72,7 +77,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// 装備変更フラグ
 	r.registerNullComponent(reflect.TypeOf(&gc.EquipmentChanged{}), components.EquipmentChanged)
 
-	// データコンポーネント
+	// データコンポーネント（汎用処理）
 	r.registerComponent(reflect.TypeOf(&gc.Name{}), components.Name, r.extractName, r.restoreName, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
@@ -85,6 +90,8 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Recipe{}), components.Recipe, r.extractRecipe, r.restoreRecipe, nil)
+
+	// 特別処理が必要なコンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.ProvidesHealing{}), components.ProvidesHealing, r.extractProvidesHealing, r.restoreProvidesHealing, nil)
 	r.registerComponent(reflect.TypeOf(&gc.InflictsDamage{}), components.InflictsDamage, r.extractInflictsDamage, r.restoreInflictsDamage, nil)
 
@@ -206,7 +213,7 @@ func (r *ComponentRegistry) GetTypeInfoByName(name string) (*ComponentTypeInfo, 
 	return info, exists
 }
 
-// GetAllTypes は登録されている全ての型を取得
+// GetAllTypes は登録されている全ての型を取得（名前順でソート済み）
 func (r *ComponentRegistry) GetAllTypes() []*ComponentTypeInfo {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
@@ -215,6 +222,11 @@ func (r *ComponentRegistry) GetAllTypes() []*ComponentTypeInfo {
 	for _, info := range r.types {
 		types = append(types, info)
 	}
+
+	// 名前順でソートして決定的な順序にする
+	sort.Slice(types, func(i, j int) bool {
+		return types[i].Name < types[j].Name
+	})
 
 	return types
 }
@@ -246,6 +258,29 @@ func (r *ComponentRegistry) resolveAIVisionRefs(_ w.World, _ ecs.Entity, _ inter
 	return nil
 }
 
+// GridElement コンポーネントの処理
+func (r *ComponentRegistry) extractGridElement(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.GridElement) {
+		return nil, false
+	}
+	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+	return *gridElement, true
+}
+
+func (r *ComponentRegistry) restoreGridElement(world w.World, entity ecs.Entity, data interface{}) error {
+	gridElement, ok := data.(gc.GridElement)
+	if !ok {
+		return fmt.Errorf("invalid GridElement data type: %T", data)
+	}
+	entity.AddComponent(world.Components.GridElement, &gridElement)
+	return nil
+}
+
+func (r *ComponentRegistry) resolveGridElementRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
+	return nil
+}
+
+// AIRoaming コンポーネントの処理
 func (r *ComponentRegistry) extractAIRoaming(world w.World, entity ecs.Entity) (interface{}, bool) {
 	if !entity.HasComponent(world.Components.AIRoaming) {
 		return nil, false
@@ -263,125 +298,29 @@ func (r *ComponentRegistry) restoreAIRoaming(world w.World, entity ecs.Entity, d
 	return nil
 }
 
-func (r *ComponentRegistry) extractAIChasing(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.AIChasing) {
-		return nil, false
-	}
-	chasing := world.Components.AIChasing.Get(entity).(*gc.AIChasing)
-	return *chasing, true
-}
-
-func (r *ComponentRegistry) restoreAIChasing(world w.World, entity ecs.Entity, data interface{}) error {
-	chasing, ok := data.(gc.AIChasing)
-	if !ok {
-		return fmt.Errorf("invalid AIChasing data type: %T", data)
-	}
-	entity.AddComponent(world.Components.AIChasing, &chasing)
+func (r *ComponentRegistry) resolveAIRoamingRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
 	return nil
 }
 
-func (r *ComponentRegistry) extractCamera(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Camera) {
-		return nil, false
-	}
-	camera := world.Components.Camera.Get(entity).(*gc.Camera)
-	return *camera, true
-}
-
-func (r *ComponentRegistry) restoreCamera(world w.World, entity ecs.Entity, data interface{}) error {
-	camera, ok := data.(gc.Camera)
-	if !ok {
-		return fmt.Errorf("invalid Camera data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Camera, &camera)
-	return nil
-}
-
+// SpriteRender コンポーネントの処理
 func (r *ComponentRegistry) extractSpriteRender(world w.World, entity ecs.Entity) (interface{}, bool) {
 	if !entity.HasComponent(world.Components.SpriteRender) {
 		return nil, false
 	}
-	sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-	return *sprite, true
+	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
+	return *spriteRender, true
 }
 
 func (r *ComponentRegistry) restoreSpriteRender(world w.World, entity ecs.Entity, data interface{}) error {
-	sprite, ok := data.(gc.SpriteRender)
+	spriteRender, ok := data.(gc.SpriteRender)
 	if !ok {
 		return fmt.Errorf("invalid SpriteRender data type: %T", data)
 	}
-	entity.AddComponent(world.Components.SpriteRender, &sprite)
+	entity.AddComponent(world.Components.SpriteRender, &spriteRender)
 	return nil
 }
 
-func (r *ComponentRegistry) extractGridElement(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.GridElement) {
-		return nil, false
-	}
-	grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	return *grid, true
-}
-
-func (r *ComponentRegistry) restoreGridElement(world w.World, entity ecs.Entity, data interface{}) error {
-	grid, ok := data.(gc.GridElement)
-	if !ok {
-		return fmt.Errorf("invalid GridElement data type: %T", data)
-	}
-	entity.AddComponent(world.Components.GridElement, &grid)
-	return nil
-}
-
-// Name コンポーネントの処理
-func (r *ComponentRegistry) extractName(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Name) {
-		return nil, false
-	}
-	name := world.Components.Name.Get(entity).(*gc.Name)
-	return *name, true
-}
-
-func (r *ComponentRegistry) restoreName(world w.World, entity ecs.Entity, data interface{}) error {
-	name, ok := data.(gc.Name)
-	if !ok {
-		return fmt.Errorf("invalid Name data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Name, &name)
-	return nil
-}
-
-// Pools コンポーネントの処理
-func (r *ComponentRegistry) extractPools(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Pools) {
-		return nil, false
-	}
-	pools := world.Components.Pools.Get(entity).(*gc.Pools)
-	return *pools, true
-}
-
-func (r *ComponentRegistry) restorePools(world w.World, entity ecs.Entity, data interface{}) error {
-	pools, ok := data.(gc.Pools)
-	if !ok {
-		return fmt.Errorf("invalid Pools data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Pools, &pools)
-	return nil
-}
-
-// Attributes コンポーネントの処理
-func (r *ComponentRegistry) extractAttributes(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Attributes) {
-		return nil, false
-	}
-	attributes := world.Components.Attributes.Get(entity).(*gc.Attributes)
-	return *attributes, true
-}
-
-func (r *ComponentRegistry) restoreAttributes(world w.World, entity ecs.Entity, data interface{}) error {
-	attributes, ok := data.(gc.Attributes)
-	if !ok {
-		return fmt.Errorf("invalid Attributes data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Attributes, &attributes)
+func (r *ComponentRegistry) resolveSpriteRenderRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
 	return nil
 }
 
@@ -405,132 +344,6 @@ func (r *ComponentRegistry) restoreItemLocationEquipped(world w.World, entity ec
 
 func (r *ComponentRegistry) resolveLocationEquippedRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
 	// エンティティ参照の解決はSerializationManagerで実装
-	return nil
-}
-
-// Description コンポーネントの処理
-func (r *ComponentRegistry) extractDescription(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Description) {
-		return nil, false
-	}
-	desc := world.Components.Description.Get(entity).(*gc.Description)
-	return *desc, true
-}
-
-func (r *ComponentRegistry) restoreDescription(world w.World, entity ecs.Entity, data interface{}) error {
-	desc, ok := data.(gc.Description)
-	if !ok {
-		return fmt.Errorf("invalid Description data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Description, &desc)
-	return nil
-}
-
-// Wearable コンポーネントの処理
-func (r *ComponentRegistry) extractWearable(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Wearable) {
-		return nil, false
-	}
-	wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
-	return *wearable, true
-}
-
-func (r *ComponentRegistry) restoreWearable(world w.World, entity ecs.Entity, data interface{}) error {
-	wearable, ok := data.(gc.Wearable)
-	if !ok {
-		return fmt.Errorf("invalid Wearable data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Wearable, &wearable)
-	return nil
-}
-
-// Card コンポーネントの処理
-func (r *ComponentRegistry) extractCard(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Card) {
-		return nil, false
-	}
-	card := world.Components.Card.Get(entity).(*gc.Card)
-	return *card, true
-}
-
-func (r *ComponentRegistry) restoreCard(world w.World, entity ecs.Entity, data interface{}) error {
-	card, ok := data.(gc.Card)
-	if !ok {
-		return fmt.Errorf("invalid Card data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Card, &card)
-	return nil
-}
-
-// Material コンポーネントの処理
-func (r *ComponentRegistry) extractMaterial(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Material) {
-		return nil, false
-	}
-	material := world.Components.Material.Get(entity).(*gc.Material)
-	return *material, true
-}
-
-func (r *ComponentRegistry) restoreMaterial(world w.World, entity ecs.Entity, data interface{}) error {
-	material, ok := data.(gc.Material)
-	if !ok {
-		return fmt.Errorf("invalid Material data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Material, &material)
-	return nil
-}
-
-// Consumable コンポーネントの処理
-func (r *ComponentRegistry) extractConsumable(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Consumable) {
-		return nil, false
-	}
-	consumable := world.Components.Consumable.Get(entity).(*gc.Consumable)
-	return *consumable, true
-}
-
-func (r *ComponentRegistry) restoreConsumable(world w.World, entity ecs.Entity, data interface{}) error {
-	consumable, ok := data.(gc.Consumable)
-	if !ok {
-		return fmt.Errorf("invalid Consumable data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Consumable, &consumable)
-	return nil
-}
-
-// Attack コンポーネントの処理
-func (r *ComponentRegistry) extractAttack(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Attack) {
-		return nil, false
-	}
-	attack := world.Components.Attack.Get(entity).(*gc.Attack)
-	return *attack, true
-}
-
-func (r *ComponentRegistry) restoreAttack(world w.World, entity ecs.Entity, data interface{}) error {
-	attack, ok := data.(gc.Attack)
-	if !ok {
-		return fmt.Errorf("invalid Attack data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Attack, &attack)
-	return nil
-}
-
-// Recipe コンポーネントの処理
-func (r *ComponentRegistry) extractRecipe(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Recipe) {
-		return nil, false
-	}
-	recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
-	return *recipe, true
-}
-
-func (r *ComponentRegistry) restoreRecipe(world w.World, entity ecs.Entity, data interface{}) error {
-	recipe, ok := data.(gc.Recipe)
-	if !ok {
-		return fmt.Errorf("invalid Recipe data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Recipe, &recipe)
 	return nil
 }
 
@@ -600,7 +413,177 @@ func (r *ComponentRegistry) restoreProvidesHealing(world w.World, entity ecs.Ent
 	return nil
 }
 
-// InflictsDamage コンポーネントの処理
+// 基本的なコンポーネント処理メソッド
+func (r *ComponentRegistry) extractName(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Name) {
+		return nil, false
+	}
+	name := world.Components.Name.Get(entity).(*gc.Name)
+	return *name, true
+}
+
+func (r *ComponentRegistry) restoreName(world w.World, entity ecs.Entity, data interface{}) error {
+	name, ok := data.(gc.Name)
+	if !ok {
+		return fmt.Errorf("invalid Name data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Name, &name)
+	return nil
+}
+
+func (r *ComponentRegistry) extractPools(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Pools) {
+		return nil, false
+	}
+	pools := world.Components.Pools.Get(entity).(*gc.Pools)
+	return *pools, true
+}
+
+func (r *ComponentRegistry) restorePools(world w.World, entity ecs.Entity, data interface{}) error {
+	pools, ok := data.(gc.Pools)
+	if !ok {
+		return fmt.Errorf("invalid Pools data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Pools, &pools)
+	return nil
+}
+
+func (r *ComponentRegistry) extractAttributes(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Attributes) {
+		return nil, false
+	}
+	attributes := world.Components.Attributes.Get(entity).(*gc.Attributes)
+	return *attributes, true
+}
+
+func (r *ComponentRegistry) restoreAttributes(world w.World, entity ecs.Entity, data interface{}) error {
+	attributes, ok := data.(gc.Attributes)
+	if !ok {
+		return fmt.Errorf("invalid Attributes data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Attributes, &attributes)
+	return nil
+}
+
+func (r *ComponentRegistry) extractDescription(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Description) {
+		return nil, false
+	}
+	desc := world.Components.Description.Get(entity).(*gc.Description)
+	return *desc, true
+}
+
+func (r *ComponentRegistry) restoreDescription(world w.World, entity ecs.Entity, data interface{}) error {
+	desc, ok := data.(gc.Description)
+	if !ok {
+		return fmt.Errorf("invalid Description data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Description, &desc)
+	return nil
+}
+
+func (r *ComponentRegistry) extractWearable(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Wearable) {
+		return nil, false
+	}
+	wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
+	return *wearable, true
+}
+
+func (r *ComponentRegistry) restoreWearable(world w.World, entity ecs.Entity, data interface{}) error {
+	wearable, ok := data.(gc.Wearable)
+	if !ok {
+		return fmt.Errorf("invalid Wearable data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Wearable, &wearable)
+	return nil
+}
+
+func (r *ComponentRegistry) extractCard(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Card) {
+		return nil, false
+	}
+	card := world.Components.Card.Get(entity).(*gc.Card)
+	return *card, true
+}
+
+func (r *ComponentRegistry) restoreCard(world w.World, entity ecs.Entity, data interface{}) error {
+	card, ok := data.(gc.Card)
+	if !ok {
+		return fmt.Errorf("invalid Card data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Card, &card)
+	return nil
+}
+
+func (r *ComponentRegistry) extractMaterial(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Material) {
+		return nil, false
+	}
+	material := world.Components.Material.Get(entity).(*gc.Material)
+	return *material, true
+}
+
+func (r *ComponentRegistry) restoreMaterial(world w.World, entity ecs.Entity, data interface{}) error {
+	material, ok := data.(gc.Material)
+	if !ok {
+		return fmt.Errorf("invalid Material data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Material, &material)
+	return nil
+}
+
+func (r *ComponentRegistry) extractConsumable(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Consumable) {
+		return nil, false
+	}
+	consumable := world.Components.Consumable.Get(entity).(*gc.Consumable)
+	return *consumable, true
+}
+
+func (r *ComponentRegistry) restoreConsumable(world w.World, entity ecs.Entity, data interface{}) error {
+	consumable, ok := data.(gc.Consumable)
+	if !ok {
+		return fmt.Errorf("invalid Consumable data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Consumable, &consumable)
+	return nil
+}
+
+func (r *ComponentRegistry) extractAttack(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Attack) {
+		return nil, false
+	}
+	attack := world.Components.Attack.Get(entity).(*gc.Attack)
+	return *attack, true
+}
+
+func (r *ComponentRegistry) restoreAttack(world w.World, entity ecs.Entity, data interface{}) error {
+	attack, ok := data.(gc.Attack)
+	if !ok {
+		return fmt.Errorf("invalid Attack data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Attack, &attack)
+	return nil
+}
+
+func (r *ComponentRegistry) extractRecipe(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Recipe) {
+		return nil, false
+	}
+	recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
+	return *recipe, true
+}
+
+func (r *ComponentRegistry) restoreRecipe(world w.World, entity ecs.Entity, data interface{}) error {
+	recipe, ok := data.(gc.Recipe)
+	if !ok {
+		return fmt.Errorf("invalid Recipe data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Recipe, &recipe)
+	return nil
+}
+
 func (r *ComponentRegistry) extractInflictsDamage(world w.World, entity ecs.Entity) (interface{}, bool) {
 	if !entity.HasComponent(world.Components.InflictsDamage) {
 		return nil, false

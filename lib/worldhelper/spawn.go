@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand/v2"
+	"sort"
 
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/effects"
@@ -326,7 +327,16 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 // SpawnAllMaterials は所持素材の個数を0で初期化する
 func SpawnAllMaterials(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	// マップのキーをソートして決定的な順序にする
+	keys := make([]string, 0, len(rawMaster.MaterialIndex))
 	for k := range rawMaster.MaterialIndex {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	// ソート済みの順序でマテリアルを生成
+	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
 		if err != nil {
@@ -341,7 +351,16 @@ func SpawnAllMaterials(world w.World) error {
 // SpawnAllRecipes はレシピ初期化
 func SpawnAllRecipes(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	// マップのキーをソートして決定的な順序にする
+	keys := make([]string, 0, len(rawMaster.RecipeIndex))
 	for k := range rawMaster.RecipeIndex {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	// ソート済みの順序でレシピを生成
+	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateRecipe(k)
 		if err != nil {
@@ -356,7 +375,16 @@ func SpawnAllRecipes(world w.World) error {
 // SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
 func SpawnAllCards(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	// マップのキーをソートして決定的な順序にする
+	keys := make([]string, 0, len(rawMaster.ItemIndex))
 	for k := range rawMaster.ItemIndex {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	// ソート済みの順序でカードを生成
+	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
 		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
 		if err != nil {

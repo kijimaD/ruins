@@ -82,12 +82,12 @@ func NewSerializationManager(saveDir string) *SerializationManager {
 	return sm
 }
 
-// SaveWorld はワールド全体をファイルに保存
-func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error {
+// GenerateWorldJSON はワールドからJSON文字列を生成する
+func (sm *SerializationManager) GenerateWorldJSON(world w.World) (string, error) {
 	// コンポーネントレジストリを初期化
 	err := sm.componentRegistry.InitializeFromWorld(world)
 	if err != nil {
-		return fmt.Errorf("failed to initialize component registry: %w", err)
+		return "", fmt.Errorf("failed to initialize component registry: %w", err)
 	}
 
 	// ワールドデータを抽出
@@ -107,30 +107,51 @@ func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error 
 	// JSONにシリアライズ（キーをソート）
 	data, err := sm.marshalSortedJSON(saveData)
 	if err != nil {
-		return fmt.Errorf("failed to marshal save data: %w", err)
+		return "", fmt.Errorf("failed to marshal save data: %w", err)
 	}
 
-	// プラットフォーム固有の保存処理を実行
-	return sm.saveDataImpl(slotName, data)
+	return string(data), nil
 }
 
-// LoadWorld はファイルからワールドを復元
-func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error {
+// SaveWorldJSON はJSON文字列をファイルに保存する
+func (sm *SerializationManager) SaveWorldJSON(jsonData string, slotName string) error {
+	return sm.saveDataImpl(slotName, []byte(jsonData))
+}
+
+// SaveWorld はワールド全体をファイルに保存（既存のインターフェース維持）
+func (sm *SerializationManager) SaveWorld(world w.World, slotName string) error {
+	// JSON生成
+	jsonData, err := sm.GenerateWorldJSON(world)
+	if err != nil {
+		return err
+	}
+
+	// ファイル保存
+	return sm.SaveWorldJSON(jsonData, slotName)
+}
+
+// LoadWorldJSON はJSON文字列をファイルから読み込む
+func (sm *SerializationManager) LoadWorldJSON(slotName string) (string, error) {
+	// プラットフォーム固有のデータ読み込み処理を実行
+	data, err := sm.loadDataImpl(slotName)
+	if err != nil {
+		return "", fmt.Errorf("failed to load save data: %w", err)
+	}
+
+	return string(data), nil
+}
+
+// RestoreWorldFromJSON はJSON文字列からワールドを復元する（ファイル読み込みなし）
+func (sm *SerializationManager) RestoreWorldFromJSON(world w.World, jsonData string) error {
 	// コンポーネントレジストリを初期化
 	err := sm.componentRegistry.InitializeFromWorld(world)
 	if err != nil {
 		return fmt.Errorf("failed to initialize component registry: %w", err)
 	}
 
-	// プラットフォーム固有のデータ読み込み処理を実行
-	data, err := sm.loadDataImpl(slotName)
-	if err != nil {
-		return fmt.Errorf("failed to load save data: %w", err)
-	}
-
 	// JSONをパース
 	var saveData Data
-	err = json.Unmarshal(data, &saveData)
+	err = json.Unmarshal([]byte(jsonData), &saveData)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal save data: %w", err)
 	}
@@ -157,6 +178,18 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 	}
 
 	return nil
+}
+
+// LoadWorld はファイルからワールドを復元（既存のインターフェース維持）
+func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error {
+	// JSONファイル読み込み
+	jsonData, err := sm.LoadWorldJSON(slotName)
+	if err != nil {
+		return err
+	}
+
+	// JSON文字列から復元
+	return sm.RestoreWorldFromJSON(world, jsonData)
 }
 
 // extractWorldData はワールドからセーブデータを抽出
@@ -319,6 +352,11 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		}
 	}
+
+	// エンティティをStableIDでソートして決定的な順序にする
+	sort.Slice(entities, func(i, j int) bool {
+		return entities[i].StableID.Index < entities[j].StableID.Index
+	})
 
 	return WorldSaveData{
 		Entities: entities,
