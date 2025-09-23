@@ -64,7 +64,6 @@ type Components struct {
 	// general ================
 	Name        *ecs.SliceComponent
 	Description *ecs.SliceComponent
-	Render      *ecs.SliceComponent
 
 	// item ================
 	Item                   *ecs.NullComponent
