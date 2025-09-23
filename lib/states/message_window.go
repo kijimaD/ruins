@@ -141,11 +141,6 @@ func (st *MessageWindowState) buildMessageWindow(world w.World) {
 		}
 	}
 
-	// 完了コールバックが設定されている場合
-	if st.messageData.OnComplete != nil {
-		builder = builder.OnClose(st.messageData.OnComplete)
-	}
-
 	st.messageWindow = builder.Build()
 }
 
