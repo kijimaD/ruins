@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/kijimaD/ruins/lib/messagedata"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
 	"github.com/urfave/cli/v2"
@@ -49,7 +50,19 @@ func runScreenshot(ctx *cli.Context) error {
 	case gs.MessageState{}.String():
 		vrt.RunTestGame(&gs.MessageState{}, mode)
 	case gs.MessageWindowState{}.String():
-		vrt.RunTestGame(&gs.MessageWindowState{}, mode)
+		// VRT用のサンプルメッセージデータを作成
+		messageData := messagedata.NewDialogMessage(
+			"これはメッセージウィンドウのVRTテストです。\n\n表示状態の確認用メッセージです。",
+			"VRTテスト",
+		).WithChoice(
+			"選択肢1", func() {},
+		).WithChoice(
+			"選択肢2", func() {},
+		)
+
+		// MessageDataを設定したMessageWindowStateを作成
+		messageWindowState := gs.NewMessageWindowState(messageData)()
+		vrt.RunTestGame(messageWindowState, mode)
 	case gs.SaveMenuState{}.String():
 		vrt.RunTestGame(&gs.SaveMenuState{}, mode)
 	case gs.DungeonState{}.String():

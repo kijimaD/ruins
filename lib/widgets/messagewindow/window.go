@@ -135,7 +135,8 @@ func (w *Window) createAndAddWindow() {
 	)
 
 	// 明示的に画面中央に配置
-	screenWidth, screenHeight := ebiten.WindowSize()
+	screenWidth := w.world.Resources.ScreenDimensions.Width
+	screenHeight := w.world.Resources.ScreenDimensions.Height
 	x := (screenWidth - windowSize.Width) / 2
 	y := (screenHeight - windowSize.Height) / 2
 	w.window.SetLocation(image.Rect(x, y, x+windowSize.Width, y+windowSize.Height))
