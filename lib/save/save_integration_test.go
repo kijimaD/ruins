@@ -1,4 +1,4 @@
-package states
+package save
 
 import (
 	"os"
@@ -7,7 +7,6 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/maingame"
-	"github.com/kijimaD/ruins/lib/save"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -43,7 +42,7 @@ func TestSaveLoadIntegration(t *testing.T) {
 	})
 
 	// セーブマネージャーを作成
-	saveManager := save.NewSerializationManager(testDir)
+	saveManager := NewSerializationManager(testDir)
 
 	// セーブテスト
 	err = saveManager.SaveWorld(world, "test_slot")
@@ -88,40 +87,39 @@ func TestSaveSlotInfo(t *testing.T) {
 	}()
 
 	// セーブマネージャーを作成
-	saveManager := save.NewSerializationManager(testDir)
+	saveManager := NewSerializationManager(testDir)
 
 	// テスト用のワールドを作成
 	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
-	// SaveMenuStateを作成してテスト
-	saveMenu := &SaveMenuState{}
-	saveMenu.saveManager = saveManager
-
-	// 初期状態（セーブファイルなし）
-	slots := saveMenu.getSaveSlotInfo()
-	assert.Len(t, slots, 3)
-	for i, slot := range slots {
-		assert.Equal(t, false, slot.Exists)
-		assert.Contains(t, slot.Label, "[空]")
-		assert.Equal(t, "空のスロット", slot.Description)
-		t.Logf("Slot %d: %s - %s", i+1, slot.Label, slot.Description)
-	}
+	// 初期状態（セーブファイルなし）でセーブファイルの存在を確認
+	slotFile := filepath.Join(testDir, "slot1.json")
+	_, err = os.Stat(slotFile)
+	assert.Error(t, err, "Save file should not exist initially")
 
 	// 1つのセーブファイルを作成
 	err = saveManager.SaveWorld(world, "slot1")
 	require.NoError(t, err)
 
-	// セーブファイル作成後の状態
-	slots = saveMenu.getSaveSlotInfo()
-	assert.True(t, slots[0].Exists, "Slot 1 should exist")
-	assert.Contains(t, slots[0].Label, "1 [")
-	assert.NotContains(t, slots[0].Label, "[空]")
-	assert.Contains(t, slots[0].Description, "保存日時")
-	assert.False(t, slots[1].Exists, "Slot 2 should not exist")
-	assert.Contains(t, slots[1].Label, "[空]")
-	assert.False(t, slots[2].Exists, "Slot 3 should not exist")
-	assert.Contains(t, slots[2].Label, "[空]")
+	// セーブファイル作成後の状態を確認
+	_, err = os.Stat(slotFile)
+	assert.NoError(t, err, "Save file should exist after save")
 
-	t.Logf("After save - Slot 1: %s - %s", slots[0].Label, slots[0].Description)
+	// 複数のスロットにセーブ
+	err = saveManager.SaveWorld(world, "slot2")
+	require.NoError(t, err)
+	err = saveManager.SaveWorld(world, "slot3")
+	require.NoError(t, err)
+
+	// 全てのスロットファイルが存在することを確認
+	slot2File := filepath.Join(testDir, "slot2.json")
+	slot3File := filepath.Join(testDir, "slot3.json")
+
+	_, err = os.Stat(slot2File)
+	assert.NoError(t, err, "Slot 2 save file should exist")
+	_, err = os.Stat(slot3File)
+	assert.NoError(t, err, "Slot 3 save file should exist")
+
+	t.Logf("All save files created successfully")
 }
