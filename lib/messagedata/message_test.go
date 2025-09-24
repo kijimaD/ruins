@@ -74,15 +74,6 @@ func TestNewSystemMessage(t *testing.T) {
 func TestMessageDataBuilderMethods(t *testing.T) {
 	t.Parallel()
 
-	t.Run("WithSpeakerメソッド", func(t *testing.T) {
-		t.Parallel()
-
-		msg := NewSystemMessage("テスト").WithSpeaker("システム")
-
-		assert.Equal(t, "システム", msg.Speaker)
-		assert.Equal(t, "テスト", msg.Text)
-	})
-
 	t.Run("WithSizeメソッド", func(t *testing.T) {
 		t.Parallel()
 
@@ -112,8 +103,7 @@ func TestMessageDataBuilderMethods(t *testing.T) {
 		t.Parallel()
 
 		callbackExecuted := false
-		msg := NewDialogMessage("テストメッセージ", "初期話者").
-			WithSpeaker("最終話者").
+		msg := NewDialogMessage("テストメッセージ", "最終話者").
 			WithSize(1024, 768).
 			WithOnComplete(func() { callbackExecuted = true })
 
@@ -145,26 +135,12 @@ func TestChoiceMethods(t *testing.T) {
 		require.Len(t, msg.Choices, 1)
 		choice := msg.Choices[0]
 		assert.Equal(t, "選択肢1", choice.Text)
-		assert.Equal(t, "", choice.Description)
 		assert.Nil(t, choice.MessageData)
 		assert.False(t, choice.Disabled)
 
 		require.NotNil(t, choice.Action)
 		choice.Action()
 		assert.True(t, actionExecuted)
-	})
-
-	t.Run("WithChoiceDescriptionメソッド", func(t *testing.T) {
-		t.Parallel()
-
-		msg := NewSystemMessage("選択してください").
-			WithChoiceDescription("攻撃", "敵を攻撃する", func() {})
-
-		require.Len(t, msg.Choices, 1)
-		choice := msg.Choices[0]
-		assert.Equal(t, "攻撃", choice.Text)
-		assert.Equal(t, "敵を攻撃する", choice.Description)
-		assert.NotNil(t, choice.Action)
 	})
 
 	t.Run("WithChoiceMessageメソッド", func(t *testing.T) {
@@ -180,33 +156,18 @@ func TestChoiceMethods(t *testing.T) {
 		assert.Equal(t, resultMessage, choice.MessageData)
 	})
 
-	t.Run("WithChoiceMessageDescriptionメソッド", func(t *testing.T) {
-		t.Parallel()
-
-		resultMessage := NewSystemMessage("処理完了")
-		msg := NewDialogMessage("何をしますか？", "").
-			WithChoiceMessageDescription("実行", "処理を実行します", resultMessage)
-
-		require.Len(t, msg.Choices, 1)
-		choice := msg.Choices[0]
-		assert.Equal(t, "実行", choice.Text)
-		assert.Equal(t, "処理を実行します", choice.Description)
-		assert.Equal(t, resultMessage, choice.MessageData)
-	})
-
 	t.Run("複数の選択肢の追加", func(t *testing.T) {
 		t.Parallel()
 
 		msg := NewDialogMessage("どうしますか？", "NPC").
 			WithChoice("はい", func() {}).
 			WithChoice("いいえ", func() {}).
-			WithChoiceDescription("詳細", "詳しく見る", func() {})
+			WithChoice("詳細", func() {})
 
 		assert.Len(t, msg.Choices, 3)
 		assert.Equal(t, "はい", msg.Choices[0].Text)
 		assert.Equal(t, "いいえ", msg.Choices[1].Text)
 		assert.Equal(t, "詳細", msg.Choices[2].Text)
-		assert.Equal(t, "詳しく見る", msg.Choices[2].Description)
 	})
 
 	t.Run("nilアクションでも追加可能", func(t *testing.T) {
@@ -337,14 +298,12 @@ func TestChoice(t *testing.T) {
 		resultMsg := NewSystemMessage("結果")
 		choice := Choice{
 			Text:        "選択肢",
-			Description: "説明",
 			Action:      func() {},
 			MessageData: resultMsg,
 			Disabled:    true,
 		}
 
 		assert.Equal(t, "選択肢", choice.Text)
-		assert.Equal(t, "説明", choice.Description)
 		assert.NotNil(t, choice.Action)
 		assert.Equal(t, resultMsg, choice.MessageData)
 		assert.True(t, choice.Disabled)
@@ -356,7 +315,6 @@ func TestChoice(t *testing.T) {
 		choice := Choice{}
 
 		assert.Equal(t, "", choice.Text)
-		assert.Equal(t, "", choice.Description)
 		assert.Nil(t, choice.Action)
 		assert.Nil(t, choice.MessageData)
 		assert.False(t, choice.Disabled)
@@ -410,11 +368,10 @@ func TestComplexScenarios(t *testing.T) {
 		completeCalled := false
 		actionCalled := false
 
-		msg := NewDialogMessage("複雑なテスト", "テストキャラクター").
-			WithSpeaker("最終キャラクター").
+		msg := NewDialogMessage("複雑なテスト", "最終キャラクター").
 			WithSize(1024, 768).
 			WithChoice("アクション", func() { actionCalled = true }).
-			WithChoiceDescription("説明付き", "詳細な説明", func() {}).
+			WithChoice("説明付き", func() {}).
 			WithOnComplete(func() { completeCalled = true }).
 			SystemMessage("次のメッセージ").
 			SystemMessage("システム通知").
@@ -431,7 +388,6 @@ func TestComplexScenarios(t *testing.T) {
 		assert.Len(t, msg.Choices, 2)
 		assert.Equal(t, "アクション", msg.Choices[0].Text)
 		assert.Equal(t, "説明付き", msg.Choices[1].Text)
-		assert.Equal(t, "詳細な説明", msg.Choices[1].Description)
 
 		// 連鎖メッセージの確認
 		assert.Len(t, msg.NextMessages, 3)

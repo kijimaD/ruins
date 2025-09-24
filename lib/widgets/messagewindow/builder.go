@@ -9,11 +9,9 @@ import (
 
 // Choice は選択肢を表す
 type Choice struct {
-	Text        string
-	Description string      // 選択肢の詳細説明
-	Action      func()      // 選択時の処理
-	Disabled    bool        // 無効化フラグ
-	UserData    interface{} // 任意のデータ
+	Text     string
+	Action   func() // 選択時の処理
+	Disabled bool   // 無効化フラグ
 }
 
 // MessageContent はメッセージの内容
@@ -57,17 +55,6 @@ func (b *Builder) Choice(text string, action func()) *Builder {
 	choice := Choice{
 		Text:   text,
 		Action: action,
-	}
-	b.content.Choices = append(b.content.Choices, choice)
-	return b
-}
-
-// ChoiceWithDescription は説明付きの選択肢を追加する
-func (b *Builder) ChoiceWithDescription(text, description string, action func()) *Builder {
-	choice := Choice{
-		Text:        text,
-		Description: description,
-		Action:      action,
 	}
 	b.content.Choices = append(b.content.Choices, choice)
 	return b

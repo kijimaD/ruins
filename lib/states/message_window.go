@@ -119,11 +119,7 @@ func (st *MessageWindowState) buildMessageWindow(world w.World) {
 			actionFunc = choiceCopy.Action
 		}
 
-		if choiceCopy.Description != "" {
-			builder = builder.ChoiceWithDescription(choiceCopy.Text, choiceCopy.Description, actionFunc)
-		} else {
-			builder = builder.Choice(choiceCopy.Text, actionFunc)
-		}
+		builder = builder.Choice(choiceCopy.Text, actionFunc)
 	}
 
 	st.messageWindow = builder.Build()

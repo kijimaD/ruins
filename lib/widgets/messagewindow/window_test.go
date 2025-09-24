@@ -187,16 +187,15 @@ func TestMessageWindowFutureFeatures(t *testing.T) {
 		assert.False(t, window.IsOpen()) // 選択後はウィンドウが閉じる
 	})
 
-	t.Run("説明付き選択肢", func(t *testing.T) {
+	t.Run("選択肢", func(t *testing.T) {
 		t.Parallel()
 
 		window := NewBuilder(world).
-			Message("詳細な選択肢").
-			ChoiceWithDescription("攻撃", "敵に攻撃を仕掛ける", func() {}).
+			Message("選択肢").
+			Choice("攻撃", func() {}).
 			Build()
 
 		assert.Equal(t, "攻撃", window.content.Choices[0].Text)
-		assert.Equal(t, "敵に攻撃を仕掛ける", window.content.Choices[0].Description)
 	})
 }
 
@@ -233,7 +232,7 @@ func TestBuilderChaining(t *testing.T) {
 			Position(100, 200).
 			Choice("はい", func() { callbackExecuted = true }).
 			Choice("いいえ", func() {}).
-			ChoiceWithDescription("詳細", "詳細な説明", func() {}).
+			Choice("詳細", func() {}).
 			OnClose(func() {}).
 			Build()
 
@@ -366,21 +365,19 @@ func TestBuilderChoiceFeatures(t *testing.T) {
 		assert.Len(t, window.content.Choices, 10)
 	})
 
-	t.Run("選択肢の説明文", func(t *testing.T) {
+	t.Run("複数の選択肢", func(t *testing.T) {
 		t.Parallel()
 
 		window := NewBuilder(world).
-			Message("説明付き選択肢").
-			ChoiceWithDescription("攻撃", "敵に物理攻撃を仕掛ける", func() {}).
-			ChoiceWithDescription("魔法", "魔法による攻撃を行う", func() {}).
-			ChoiceWithDescription("防御", "次のターンまでダメージを軽減する", func() {}).
+			Message("選択肢").
+			Choice("攻撃", func() {}).
+			Choice("魔法", func() {}).
+			Choice("防御", func() {}).
 			Build()
 
 		assert.Len(t, window.content.Choices, 3)
 		assert.Equal(t, "攻撃", window.content.Choices[0].Text)
-		assert.Equal(t, "敵に物理攻撃を仕掛ける", window.content.Choices[0].Description)
 		assert.Equal(t, "魔法", window.content.Choices[1].Text)
-		assert.Equal(t, "魔法による攻撃を行う", window.content.Choices[1].Description)
 	})
 }
 

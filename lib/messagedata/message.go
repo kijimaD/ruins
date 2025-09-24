@@ -14,7 +14,6 @@ type MessageData struct {
 // Choice は選択肢のデータ
 type Choice struct {
 	Text        string
-	Description string
 	Action      func()
 	MessageData *MessageData // 選択肢を選んだ時に表示するメッセージ
 	Disabled    bool
@@ -42,12 +41,6 @@ func NewSystemMessage(text string) *MessageData {
 	}
 }
 
-// WithSpeaker は話者を設定する
-func (m *MessageData) WithSpeaker(speaker string) *MessageData {
-	m.Speaker = speaker
-	return m
-}
-
 // WithSize はカスタムサイズを設定する
 func (m *MessageData) WithSize(width, height int) *MessageData {
 	m.Size = &Size{Width: width, Height: height}
@@ -63,30 +56,10 @@ func (m *MessageData) WithChoice(text string, action func()) *MessageData {
 	return m
 }
 
-// WithChoiceDescription は説明付き選択肢を追加する
-func (m *MessageData) WithChoiceDescription(text, description string, action func()) *MessageData {
-	m.Choices = append(m.Choices, Choice{
-		Text:        text,
-		Description: description,
-		Action:      action,
-	})
-	return m
-}
-
 // WithChoiceMessage は選択肢にメッセージを関連付けて追加する
 func (m *MessageData) WithChoiceMessage(text string, messageData *MessageData) *MessageData {
 	m.Choices = append(m.Choices, Choice{
 		Text:        text,
-		MessageData: messageData,
-	})
-	return m
-}
-
-// WithChoiceMessageDescription は説明付き選択肢にメッセージを関連付けて追加する
-func (m *MessageData) WithChoiceMessageDescription(text, description string, messageData *MessageData) *MessageData {
-	m.Choices = append(m.Choices, Choice{
-		Text:        text,
-		Description: description,
 		MessageData: messageData,
 	})
 	return m

@@ -301,11 +301,10 @@ func (w *Window) initChoiceMenu() {
 	items := make([]menu.Item, len(w.content.Choices))
 	for i, choice := range w.content.Choices {
 		items[i] = menu.Item{
-			ID:          choice.Text,
-			Label:       choice.Text,
-			Description: choice.Description,
-			Disabled:    choice.Disabled,
-			UserData:    i, // インデックスを保存
+			ID:       choice.Text,
+			Label:    choice.Text,
+			Disabled: choice.Disabled,
+			UserData: i, // インデックスを保存
 		}
 	}
 
