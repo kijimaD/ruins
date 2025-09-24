@@ -5,6 +5,7 @@ import (
 
 	"github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -184,11 +185,11 @@ func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
 
 // createFocusedButtonImage はフォーカス時の明るいボタン画像を作成する
 func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
-	// フォーカス時: より明るい半透明の灰色
-	focused := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 120})
+	// フォーカス時: 半透明の灰色
+	focused := image.NewNineSliceColor(consts.ButtonHoverColor)
 
 	// プレス状態: さらに明るい色
-	pressed := image.NewNineSliceColor(color.NRGBA{R: 120, G: 120, B: 120, A: 200})
+	pressed := image.NewNineSliceColor(consts.ButtonPressedColor)
 
 	// 無効状態: 暗い半透明
 	disabled := image.NewNineSliceColor(color.NRGBA{R: 30, G: 30, B: 30, A: 80})

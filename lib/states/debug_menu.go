@@ -1,6 +1,8 @@
 package states
 
 import (
+	"fmt"
+
 	"github.com/ebitenui/ebitenui"
 	e_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
@@ -10,6 +12,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
+	"github.com/kijimaD/ruins/lib/messagedata"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -217,6 +220,102 @@ var debugMenuTrans = []struct {
 			return es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeForest),
 			}}
+		},
+	},
+	{
+		label: "メッセージ表示テスト",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition[w.World] {
+			// システムメッセージのデモ
+			messageData := messagedata.NewSystemMessage("ゲームが自動保存されました。\n\n進行状況は安全に記録されています。")
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+		},
+	},
+	{
+		label: "長いメッセージテスト",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition[w.World] {
+			// 長いメッセージのデモ
+			longText := `これは非常に長いメッセージのテストです。
+
+メッセージウィンドウは自動的にサイズを調整し、
+長いテキストでも適切に表示されることを確認しています。
+
+複数行のテキストと改行が正しく処理されること、
+そしてウィンドウの背景やボーダーが適切に描画されることを
+このテストで検証できます。
+
+日本語のテキストも問題なく表示されるはずです。
+句読点、記号、数字123なども含めて確認してみましょう。`
+
+			messageData := messagedata.NewSystemMessage(longText)
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+		},
+	},
+	{
+		label: "連鎖メッセージテスト",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition[w.World] {
+			// 連鎖メッセージのデモ
+			messageData := messagedata.NewSystemMessage("戦闘開始。").
+				SystemMessage("剣と剣がぶつかり合う。").
+				SystemMessage("勝利した。")
+
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+		},
+	},
+	{
+		label: "選択肢分岐メッセージテスト",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition[w.World] {
+			// 各選択肢のメッセージシーケンスを定義
+			battleMessage := messagedata.NewSystemMessage("戦闘した。")
+			negotiateMessage := messagedata.NewSystemMessage("交渉した。")
+			escapeMessage := messagedata.NewSystemMessage("逃走した。")
+
+			messageData := messagedata.NewDialogMessage("敵に遭遇した。", "").
+				WithChoiceMessage("戦う", battleMessage).
+				WithChoiceMessage("交渉する", negotiateMessage).
+				WithChoiceMessage("逃走する", escapeMessage)
+
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+		},
+	},
+	{
+		label: "選択肢処理テスト",
+		f:     func(_ w.World) {},
+		getTransFunc: func() es.Transition[w.World] {
+			choiceAction1 := func() {
+				fmt.Println("実行: 1")
+			}
+			choiceAction2 := func() {
+				fmt.Println("実行: 2")
+			}
+
+			// メッセージ完了時の処理
+			onCompleteAction := func() {
+				fmt.Println("Complete Action")
+			}
+
+			// 各選択肢の結果メッセージ
+			result1 := messagedata.NewSystemMessage("選択肢1を選びました。").
+				SystemMessage("何かの処理が実行されました。").
+				WithOnComplete(onCompleteAction)
+
+			result2 := messagedata.NewSystemMessage("選択肢2を選びました。").
+				SystemMessage("別の処理が実行されました。").
+				WithOnComplete(onCompleteAction)
+
+			// 選択肢付きメッセージを作成
+			messageData := messagedata.NewDialogMessage("処理のテストです。選択肢を選んでください。", "システム").
+				WithChoiceMessage("処理1を実行", result1).
+				WithChoiceMessage("処理2を実行", result2)
+
+			// 各選択肢にActionを設定
+			messageData.Choices[0].Action = choiceAction1
+			messageData.Choices[1].Action = choiceAction2
+
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},
 	{

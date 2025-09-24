@@ -17,7 +17,7 @@
 
 <img src="./vrtimages/LoadMenu.png" width="50%" /><img src="./vrtimages/SaveMenu.png" width="50%" />
 
-<img src="./vrtimages/DebugMenu.png" width="50%" />
+<img src="./vrtimages/DebugMenu.png" width="50%" /><img src="./vrtimages/MessageWindow.png" width="50%" />
 
 各画像は全自動でキャプチャされる。最新なことをCIで保証している。
 
