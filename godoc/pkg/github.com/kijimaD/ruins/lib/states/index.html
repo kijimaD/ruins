@@ -168,6 +168,9 @@
 				<dd><a href="index.html#NewMessageStateWithText">func NewMessageStateWithText(text string) es.StateFactory[w.World]</a></dd>
 			
 				
+				<dd><a href="index.html#NewMessageWindowState">func NewMessageWindowState(messageData *messagedata.MessageData) es.State[w.World]</a></dd>
+			
+				
 				<dd><a href="index.html#NewSaveMenuState">func NewSaveMenuState() es.State[w.World]</a></dd>
 			
 			
@@ -539,6 +542,32 @@
 				
 			
 				
+				<dd><a href="index.html#MessageWindowState">type MessageWindowState</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.Draw">func (st *MessageWindowState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.OnPause">func (st *MessageWindowState) OnPause(_ w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.OnResume">func (st *MessageWindowState) OnResume(_ w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.OnStart">func (st *MessageWindowState) OnStart(world w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.OnStop">func (st *MessageWindowState) OnStop(_ w.World)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.String">func (st MessageWindowState) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageWindowState.Update">func (st *MessageWindowState) Update(_ w.World) es.Transition[w.World]</a></dd>
+				
+			
+				
 				<dd><a href="index.html#SaveMenuState">type SaveMenuState</a></dd>
 				
 				
@@ -614,6 +643,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go">message.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go">message_window.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go">save_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/scenes.go">scenes.go</a>
@@ -656,7 +687,7 @@
 		
 			
 			
-			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=872:914#L17">NewCraftMenuState</a>
+			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=916:958#L18">NewCraftMenuState</a>
 				<a class="permalink" href="index.html#NewCraftMenuState">&#xb6;</a>
 				
 				
@@ -670,7 +701,7 @@
 		
 			
 			
-			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1425:1467#L32">NewDebugMenuState</a>
+			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1469:1511#L33">NewDebugMenuState</a>
 				<a class="permalink" href="index.html#NewDebugMenuState">&#xb6;</a>
 				
 				
@@ -684,7 +715,7 @@
 		
 			
 			
-			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1608:1652#L37">NewDungeonMenuState</a>
+			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1652:1696#L38">NewDungeonMenuState</a>
 				<a class="permalink" href="index.html#NewDungeonMenuState">&#xb6;</a>
 				
 				
@@ -698,7 +729,7 @@
 		
 			
 			
-			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=685:731#L12">NewDungeonSelectState</a>
+			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=729:775#L13">NewDungeonSelectState</a>
 				<a class="permalink" href="index.html#NewDungeonSelectState">&#xb6;</a>
 				
 				
@@ -712,7 +743,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2474:2577#L56">NewDungeonStateWithBuilder</a>
+			<h2 id="NewDungeonStateWithBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2518:2621#L57">NewDungeonStateWithBuilder</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithBuilder">&#xb6;</a>
 				
 				
@@ -726,7 +757,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1810:1875#L42">NewDungeonStateWithDepth</a>
+			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1854:1919#L43">NewDungeonStateWithDepth</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithDepth">&#xb6;</a>
 				
 				
@@ -740,7 +771,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2129:2206#L49">NewDungeonStateWithSeed</a>
+			<h2 id="NewDungeonStateWithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2173:2250#L50">NewDungeonStateWithSeed</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithSeed">&#xb6;</a>
 				
 				
@@ -754,7 +785,7 @@
 		
 			
 			
-			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1246:1288#L27">NewEquipMenuState</a>
+			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1290:1332#L28">NewEquipMenuState</a>
 				<a class="permalink" href="index.html#NewEquipMenuState">&#xb6;</a>
 				
 				
@@ -768,7 +799,7 @@
 		
 			
 			
-			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3085:3152#L72">NewExecStateWithFunc</a>
+			<h2 id="NewExecStateWithFunc">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3129:3196#L73">NewExecStateWithFunc</a>
 				<a class="permalink" href="index.html#NewExecStateWithFunc">&#xb6;</a>
 				
 				
@@ -782,7 +813,7 @@
 		
 			
 			
-			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3499:3540#L84">NewGameOverState</a>
+			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3543:3584#L85">NewGameOverState</a>
 				<a class="permalink" href="index.html#NewGameOverState">&#xb6;</a>
 				
 				
@@ -796,7 +827,7 @@
 		
 			
 			
-			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=500:541#L7">NewHomeMenuState</a>
+			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=544:585#L8">NewHomeMenuState</a>
 				<a class="permalink" href="index.html#NewHomeMenuState">&#xb6;</a>
 				
 				
@@ -810,7 +841,7 @@
 		
 			
 			
-			<h2 id="NewIntroState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=331:369#L2">NewIntroState</a>
+			<h2 id="NewIntroState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=375:413#L3">NewIntroState</a>
 				<a class="permalink" href="index.html#NewIntroState">&#xb6;</a>
 				
 				
@@ -824,7 +855,7 @@
 		
 			
 			
-			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1059:1105#L22">NewInventoryMenuState</a>
+			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1103:1149#L23">NewInventoryMenuState</a>
 				<a class="permalink" href="index.html#NewInventoryMenuState">&#xb6;</a>
 				
 				
@@ -838,7 +869,7 @@
 		
 			
 			
-			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3849:3890#L94">NewLoadMenuState</a>
+			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3893:3934#L95">NewLoadMenuState</a>
 				<a class="permalink" href="index.html#NewLoadMenuState">&#xb6;</a>
 				
 				
@@ -852,7 +883,7 @@
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3324:3365#L79">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3368:3409#L80">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -866,7 +897,7 @@
 		
 			
 			
-			<h2 id="NewMessageStateWithText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2814:2880#L63">NewMessageStateWithText</a>
+			<h2 id="NewMessageStateWithText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2858:2924#L64">NewMessageStateWithText</a>
 				<a class="permalink" href="index.html#NewMessageStateWithText">&#xb6;</a>
 				
 				
@@ -880,7 +911,21 @@
 		
 			
 			
-			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3674:3715#L89">NewSaveMenuState</a>
+			<h2 id="NewMessageWindowState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=4102:4184#L100">NewMessageWindowState</a>
+				<a class="permalink" href="index.html#NewMessageWindowState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewMessageWindowState(messageData *<a href="../messagedata/index.html">messagedata</a>.<a href="../messagedata/index.html#MessageData">MessageData</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewMessageWindowState はメッセージデータを受け取って新しいMessageWindowStateを作成するファクトリー関数
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3718:3759#L90">NewSaveMenuState</a>
 				<a class="permalink" href="index.html#NewSaveMenuState">&#xb6;</a>
 				
 				
@@ -1012,7 +1057,7 @@
 		
 			
 			
-			<h2 id="DebugMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=642:815#L10">DebugMenuState</a>
+			<h2 id="DebugMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=694:867#L13">DebugMenuState</a>
 				<a class="permalink" href="index.html#DebugMenuState">&#xb6;</a>
 				
 				
@@ -1037,7 +1082,7 @@
 
 			
 				
-				<h3 id="DebugMenuState.Draw">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1870:1933#L55">Draw</a>
+				<h3 id="DebugMenuState.Draw">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1922:1985#L58">Draw</a>
 					<a class="permalink" href="index.html#DebugMenuState.Draw">&#xb6;</a>
 					
 					
@@ -1050,7 +1095,7 @@
 				
 			
 				
-				<h3 id="DebugMenuState.OnPause">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1034:1078#L27">OnPause</a>
+				<h3 id="DebugMenuState.OnPause">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1086:1130#L30">OnPause</a>
 					<a class="permalink" href="index.html#DebugMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -1063,7 +1108,7 @@
 				
 			
 				
-				<h3 id="DebugMenuState.OnResume">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1147:1192#L30">OnResume</a>
+				<h3 id="DebugMenuState.OnResume">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1199:1244#L33">OnResume</a>
 					<a class="permalink" href="index.html#DebugMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -1076,7 +1121,7 @@
 				
 			
 				
-				<h3 id="DebugMenuState.OnStart">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1260:1308#L33">OnStart</a>
+				<h3 id="DebugMenuState.OnStart">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1312:1360#L36">OnStart</a>
 					<a class="permalink" href="index.html#DebugMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -1089,7 +1134,7 @@
 				
 			
 				
-				<h3 id="DebugMenuState.OnStop">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1487:1530#L41">OnStop</a>
+				<h3 id="DebugMenuState.OnStop">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1539:1582#L44">OnStop</a>
 					<a class="permalink" href="index.html#DebugMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -1102,7 +1147,7 @@
 				
 			
 				
-				<h3 id="DebugMenuState.String">func (DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=817:857#L18">String</a>
+				<h3 id="DebugMenuState.String">func (DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=869:909#L21">String</a>
 					<a class="permalink" href="index.html#DebugMenuState.String">&#xb6;</a>
 					
 					
@@ -1114,7 +1159,7 @@
 				
 			
 				
-				<h3 id="DebugMenuState.Update">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1594:1660#L44">Update</a>
+				<h3 id="DebugMenuState.Update">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1646:1712#L47">Update</a>
 					<a class="permalink" href="index.html#DebugMenuState.Update">&#xb6;</a>
 					
 					
@@ -2543,6 +2588,123 @@
 				</h3>
 				<pre>func (st *<a href="index.html#MessageState">MessageState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
 				<p>Update はメッセージステートの更新処理を行う
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MessageWindowState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=340:474#L2">MessageWindowState</a>
+				<a class="permalink" href="index.html#MessageWindowState">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MessageWindowState はメッセージウィンドウを表示する専用ステート
+
+			<pre>type MessageWindowState struct {
+    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MessageWindowState.Draw">func (*MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=1701:1768#L44">Draw</a>
+					<a class="permalink" href="index.html#MessageWindowState.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageWindowState">MessageWindowState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				<p>Draw はゲームステートの描画処理を行う
+
+				
+				
+				
+			
+				
+				<h3 id="MessageWindowState.OnPause">func (*MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=668:716#L15">OnPause</a>
+					<a class="permalink" href="index.html#MessageWindowState.OnPause">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageWindowState">MessageWindowState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<p>OnPause はステートが一時停止される際に呼ばれる
+
+				
+				
+				
+			
+				
+				<h3 id="MessageWindowState.OnResume">func (*MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=785:834#L18">OnResume</a>
+					<a class="permalink" href="index.html#MessageWindowState.OnResume">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageWindowState">MessageWindowState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<p>OnResume はステートが再開される際に呼ばれる
+
+				
+				
+				
+			
+				
+				<h3 id="MessageWindowState.OnStart">func (*MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=902:954#L21">OnStart</a>
+					<a class="permalink" href="index.html#MessageWindowState.OnStart">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageWindowState">MessageWindowState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<p>OnStart はステートが開始される際に呼ばれる
+
+				
+				
+				
+			
+				
+				<h3 id="MessageWindowState.OnStop">func (*MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=1185:1232#L27">OnStop</a>
+					<a class="permalink" href="index.html#MessageWindowState.OnStop">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageWindowState">MessageWindowState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<p>OnStop はステートが停止される際に呼ばれる
+
+				
+				
+				
+			
+				
+				<h3 id="MessageWindowState.String">func (MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=476:520#L8">String</a>
+					<a class="permalink" href="index.html#MessageWindowState.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st <a href="index.html#MessageWindowState">MessageWindowState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="MessageWindowState.Update">func (*MessageWindowState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message_window.go?s=1296:1366#L30">Update</a>
+					<a class="permalink" href="index.html#MessageWindowState.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MessageWindowState">MessageWindowState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+				<p>Update はゲームステートの更新処理を行う
 
 				
 				
