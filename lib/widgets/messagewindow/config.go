@@ -8,8 +8,8 @@ import (
 
 // 最小サイズの定数
 const (
-	MinWidth  = 400 // 最小幅
-	MinHeight = 150 // 最小高さ
+	MinWidth  = 600 // 最小幅
+	MinHeight = 300 // 最小高さ
 )
 
 // WindowSize はウィンドウサイズの設定

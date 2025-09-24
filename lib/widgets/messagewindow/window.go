@@ -228,9 +228,9 @@ func (w *Window) calculateWindowSize() WindowSize {
 
 	// 選択肢がある場合は高さを追加
 	if w.hasChoices && len(w.content.Choices) > 0 {
-		// 選択肢1つあたり約30px、最低400px確保
+		// 選択肢1つあたり約30px、最低500px確保
 		choiceHeight := len(w.content.Choices) * 30
-		minHeightWithChoices := 400
+		minHeightWithChoices := 500
 		if baseHeight+choiceHeight > minHeightWithChoices {
 			baseHeight = baseHeight + choiceHeight
 		} else {
@@ -246,7 +246,40 @@ func (w *Window) calculateWindowSize() WindowSize {
 
 // createWindowContainer はウィンドウコンテナを作成する
 func (w *Window) createWindowContainer() *widget.Container {
-	windowContainer := styled.NewWindowContainer(w.world.Resources.UIResources)
+	// AnchorLayoutを使用してEnterプロンプトを絶対位置に配置
+	windowContainer := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(w.world.Resources.UIResources.Panel.ImageTrans),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.GridLayoutData{
+				MaxHeight: 500,
+			}),
+		),
+	)
+
+	// メッセージコンテンツエリア（上部全体）
+	contentArea := widget.NewContainer(
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Padding(widget.Insets{
+					Top:    20,
+					Bottom: 60, // Enterプロンプト用のスペースを確保
+					Left:   10,
+					Right:  10,
+				}),
+				widget.RowLayoutOpts.Spacing(2),
+			),
+		),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionStart,
+				VerticalPosition:   widget.AnchorLayoutPositionStart,
+				StretchHorizontal:  true,
+				StretchVertical:    true,
+			}),
+		),
+	)
 
 	messageText := styled.NewListItemText(
 		w.content.Text,
@@ -254,14 +287,18 @@ func (w *Window) createWindowContainer() *widget.Container {
 		false,
 		w.world.Resources.UIResources,
 	)
-	windowContainer.AddChild(messageText)
+	contentArea.AddChild(messageText)
 
 	// 選択肢表示エリア
 	if w.hasChoices && w.choiceMenu != nil {
 		choicesContainer := w.createChoicesContainer()
-		windowContainer.AddChild(choicesContainer)
-	} else {
-		// 選択肢がない場合は Enter プロンプトを表示する
+		contentArea.AddChild(choicesContainer)
+	}
+
+	windowContainer.AddChild(contentArea)
+
+	// 選択肢がない場合のみ Enter プロンプトを固定下部に表示
+	if !w.hasChoices || w.choiceMenu == nil {
 		enterPrompt := w.createEnterPrompt()
 		windowContainer.AddChild(enterPrompt)
 	}
@@ -301,19 +338,20 @@ func (w *Window) createChoicesContainer() *widget.Container {
 	return container
 }
 
-// createEnterPrompt はEnter待ちプロンプトを作成する
+// createEnterPrompt はウィンドウ下部に固定されたEnterプロンプトを作成する
 func (w *Window) createEnterPrompt() *widget.Container {
 	container := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
 				widget.RowLayoutOpts.Spacing(0),
-				widget.RowLayoutOpts.Padding(widget.Insets{Top: 15, Right: 10}),
 			),
 		),
 		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Position: widget.RowLayoutPositionCenter, // 中央寄せ
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter, // 水平中央
+				VerticalPosition:   widget.AnchorLayoutPositionEnd,    // 下部に固定
+				Padding:            widget.Insets{Bottom: 15},         // 下端からの余白
 			}),
 		),
 	)
