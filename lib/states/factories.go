@@ -9,11 +9,6 @@ import (
 
 // 各ステートのファクトリー関数を集約したファイル
 
-// NewIntroState は新しいIntroStateインスタンスを作成するファクトリー関数
-func NewIntroState() es.State[w.World] {
-	return &IntroState{}
-}
-
 // NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
 func NewHomeMenuState() es.State[w.World] {
 	return &HomeMenuState{}
