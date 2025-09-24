@@ -6,6 +6,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// 最小サイズの定数
+const (
+	MinWidth  = 400 // 最小幅
+	MinHeight = 150 // 最小高さ
+)
+
 // WindowSize はウィンドウサイズの設定
 type WindowSize struct {
 	Width  int
@@ -61,7 +67,6 @@ type Config struct {
 	ActionStyle ActionStyle
 
 	// 動作設定
-	AutoSize       bool // テキスト量に応じて自動サイズ調整
 	SkippableKeys  []ebiten.Key
 	CloseOnClick   bool // ウィンドウ外クリックで閉じる
 	ShowBackground bool // 背景オーバーレイを表示
@@ -71,8 +76,8 @@ type Config struct {
 func DefaultConfig() Config {
 	return Config{
 		Size: WindowSize{
-			Width:  600,
-			Height: 200,
+			Width:  MinWidth,
+			Height: MinHeight,
 		},
 		Center: true,
 
@@ -100,7 +105,6 @@ func DefaultConfig() Config {
 			ActionTextColor: color.RGBA{180, 180, 200, 255},
 		},
 
-		AutoSize: false,
 		SkippableKeys: []ebiten.Key{
 			ebiten.KeyEnter,
 			ebiten.KeyEscape,

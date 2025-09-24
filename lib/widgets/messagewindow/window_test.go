@@ -207,8 +207,8 @@ func TestConfig(t *testing.T) {
 
 		config := DefaultConfig()
 
-		assert.Equal(t, 600, config.Size.Width)
-		assert.Equal(t, 200, config.Size.Height)
+		assert.Equal(t, MinWidth, config.Size.Width)
+		assert.Equal(t, MinHeight, config.Size.Height)
 		assert.True(t, config.Center)
 		assert.True(t, config.ActionStyle.ShowCloseButton)
 		assert.Contains(t, config.SkippableKeys, ebiten.KeyEnter)

@@ -20,7 +20,6 @@ func TestNewDialogMessage(t *testing.T) {
 		assert.Equal(t, text, msg.Text)
 		assert.Equal(t, speaker, msg.Speaker)
 		assert.Empty(t, msg.Choices)
-		assert.Nil(t, msg.Size)
 		assert.Nil(t, msg.OnComplete)
 		assert.Empty(t, msg.NextMessages)
 	})
@@ -56,7 +55,6 @@ func TestNewSystemMessage(t *testing.T) {
 		assert.Equal(t, text, msg.Text)
 		assert.Equal(t, "システム", msg.Speaker)
 		assert.Empty(t, msg.Choices)
-		assert.Nil(t, msg.Size)
 		assert.Nil(t, msg.OnComplete)
 		assert.Empty(t, msg.NextMessages)
 	})
@@ -73,16 +71,6 @@ func TestNewSystemMessage(t *testing.T) {
 
 func TestMessageDataBuilderMethods(t *testing.T) {
 	t.Parallel()
-
-	t.Run("WithSizeメソッド", func(t *testing.T) {
-		t.Parallel()
-
-		msg := NewDialogMessage("テスト", "").WithSize(800, 600)
-
-		require.NotNil(t, msg.Size)
-		assert.Equal(t, 800, msg.Size.Width)
-		assert.Equal(t, 600, msg.Size.Height)
-	})
 
 	t.Run("WithOnCompleteメソッド", func(t *testing.T) {
 		t.Parallel()
@@ -104,14 +92,10 @@ func TestMessageDataBuilderMethods(t *testing.T) {
 
 		callbackExecuted := false
 		msg := NewDialogMessage("テストメッセージ", "最終話者").
-			WithSize(1024, 768).
 			WithOnComplete(func() { callbackExecuted = true })
 
 		assert.Equal(t, "テストメッセージ", msg.Text)
 		assert.Equal(t, "最終話者", msg.Speaker)
-		require.NotNil(t, msg.Size)
-		assert.Equal(t, 1024, msg.Size.Width)
-		assert.Equal(t, 768, msg.Size.Height)
 		require.NotNil(t, msg.OnComplete)
 		msg.OnComplete()
 		assert.True(t, callbackExecuted)
@@ -259,36 +243,6 @@ func TestMessageChaining(t *testing.T) {
 	})
 }
 
-func TestSize(t *testing.T) {
-	t.Parallel()
-
-	t.Run("Sizeの基本構造", func(t *testing.T) {
-		t.Parallel()
-
-		size := &Size{Width: 800, Height: 600}
-		assert.Equal(t, 800, size.Width)
-		assert.Equal(t, 600, size.Height)
-	})
-
-	t.Run("WithSizeで負の値も設定可能", func(t *testing.T) {
-		t.Parallel()
-
-		msg := NewSystemMessage("テスト").WithSize(-100, -50)
-		require.NotNil(t, msg.Size)
-		assert.Equal(t, -100, msg.Size.Width)
-		assert.Equal(t, -50, msg.Size.Height)
-	})
-
-	t.Run("WithSizeでゼロ値も設定可能", func(t *testing.T) {
-		t.Parallel()
-
-		msg := NewSystemMessage("テスト").WithSize(0, 0)
-		require.NotNil(t, msg.Size)
-		assert.Equal(t, 0, msg.Size.Width)
-		assert.Equal(t, 0, msg.Size.Height)
-	})
-}
-
 func TestChoice(t *testing.T) {
 	t.Parallel()
 
@@ -369,7 +323,6 @@ func TestComplexScenarios(t *testing.T) {
 		actionCalled := false
 
 		msg := NewDialogMessage("複雑なテスト", "最終キャラクター").
-			WithSize(1024, 768).
 			WithChoice("アクション", func() { actionCalled = true }).
 			WithChoice("説明付き", func() {}).
 			WithOnComplete(func() { completeCalled = true }).
@@ -380,9 +333,6 @@ func TestComplexScenarios(t *testing.T) {
 		// 基本設定の確認
 		assert.Equal(t, "複雑なテスト", msg.Text)
 		assert.Equal(t, "最終キャラクター", msg.Speaker)
-		require.NotNil(t, msg.Size)
-		assert.Equal(t, 1024, msg.Size.Width)
-		assert.Equal(t, 768, msg.Size.Height)
 
 		// 選択肢の確認
 		assert.Len(t, msg.Choices, 2)

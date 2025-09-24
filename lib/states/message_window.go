@@ -87,11 +87,6 @@ func (st *MessageWindowState) buildMessageWindow(world w.World) {
 		builder = builder.Speaker(st.messageData.Speaker)
 	}
 
-	// カスタムサイズが設定されている場合
-	if st.messageData.Size != nil {
-		builder = builder.Size(st.messageData.Size.Width, st.messageData.Size.Height)
-	}
-
 	// 選択肢が設定されている場合
 	for _, choice := range st.messageData.Choices {
 		// 選択肢のコピーを作成（クロージャのキャプチャ問題を回避）

@@ -6,7 +6,6 @@ type MessageData struct {
 	Text         string
 	Speaker      string
 	Choices      []Choice
-	Size         *Size
 	OnComplete   func()         // メッセージ完了時のコールバック
 	NextMessages []*MessageData // 次に表示するメッセージ群
 }
@@ -17,12 +16,6 @@ type Choice struct {
 	Action      func()
 	MessageData *MessageData // 選択肢を選んだ時に表示するメッセージ
 	Disabled    bool
-}
-
-// Size はカスタムサイズ
-type Size struct {
-	Width  int
-	Height int
 }
 
 // NewDialogMessage は会話メッセージを作成する
@@ -39,12 +32,6 @@ func NewSystemMessage(text string) *MessageData {
 		Text:    text,
 		Speaker: "システム",
 	}
-}
-
-// WithSize はカスタムサイズを設定する
-func (m *MessageData) WithSize(width, height int) *MessageData {
-	m.Size = &Size{Width: width, Height: height}
-	return m
 }
 
 // WithChoice は選択肢を追加する
