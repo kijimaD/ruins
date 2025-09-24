@@ -9,11 +9,6 @@ import (
 
 // 各ステートのファクトリー関数を集約したファイル
 
-// NewIntroState は新しいIntroStateインスタンスを作成するファクトリー関数
-func NewIntroState() es.State[w.World] {
-	return &IntroState{}
-}
-
 // NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
 func NewHomeMenuState() es.State[w.World] {
 	return &HomeMenuState{}
@@ -70,22 +65,6 @@ func NewDungeonStateWithBuilder(depth int, builderType mapbuilder.BuilderType) e
 	}
 }
 
-// NewMessageStateWithText は指定されたテキストでMessageStateインスタンスを作成するファクトリー関数
-func NewMessageStateWithText(text string) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return &MessageState{
-			text: text,
-		}
-	}
-}
-
-// NewExecStateWithFunc は指定された関数でExecStateインスタンスを作成するファクトリー関数
-func NewExecStateWithFunc(f func(w.World)) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return NewExecState(f)
-	}
-}
-
 // NewMainMenuState は新しいMainMenuStateインスタンスを作成するファクトリー関数
 func NewMainMenuState() es.State[w.World] {
 	return &MainMenuState{}
@@ -106,9 +85,9 @@ func NewLoadMenuState() es.State[w.World] {
 	return &LoadMenuState{}
 }
 
-// NewMessageWindowState はメッセージデータを受け取って新しいMessageWindowStateを作成するファクトリー関数
-func NewMessageWindowState(messageData *messagedata.MessageData) es.State[w.World] {
-	return &MessageWindowState{
+// NewMessageState はメッセージデータを受け取って新しいMessageStateを作成するファクトリー関数
+func NewMessageState(messageData *messagedata.MessageData) es.State[w.World] {
+	return &MessageState{
 		messageData: messageData,
 	}
 }

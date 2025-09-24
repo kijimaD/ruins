@@ -85,11 +85,6 @@ func (st *MainMenuState) initMenu(world w.World) {
 			UserData: es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewLoadMenuState}},
 		},
 		{
-			ID:       "intro",
-			Label:    "導入",
-			UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewIntroState}},
-		},
-		{
 			ID:       "exit",
 			Label:    "終了",
 			UserData: es.Transition[w.World]{Type: es.TransQuit},

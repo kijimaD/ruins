@@ -35,12 +35,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.DungeonSelectState{}, mode)
 	case gs.EquipMenuState{}.String():
 		vrt.RunTestGame(&gs.EquipMenuState{}, mode)
-	case gs.ExecState{}.String():
-		vrt.RunTestGame(&gs.ExecState{}, mode)
 	case gs.HomeMenuState{}.String():
 		vrt.RunTestGame(&gs.HomeMenuState{}, mode)
-	case gs.IntroState{}.String():
-		vrt.RunTestGame(&gs.IntroState{}, mode)
 	case gs.InventoryMenuState{}.String():
 		vrt.RunTestGame(&gs.InventoryMenuState{}, mode)
 	case gs.LoadMenuState{}.String():
@@ -48,8 +44,6 @@ func runScreenshot(ctx *cli.Context) error {
 	case gs.MainMenuState{}.String():
 		vrt.RunTestGame(&gs.MainMenuState{}, mode)
 	case gs.MessageState{}.String():
-		vrt.RunTestGame(&gs.MessageState{}, mode)
-	case gs.MessageWindowState{}.String():
 		messageData := messagedata.NewDialogMessage(
 			"これはメッセージウィンドウのVRTテストです。\n\n表示状態の確認用メッセージです。",
 			"VRTテスト",
@@ -58,7 +52,7 @@ func runScreenshot(ctx *cli.Context) error {
 		).WithChoice(
 			"選択肢2", func() {},
 		)
-		vrt.RunTestGame(gs.NewMessageWindowState(messageData), mode)
+		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
 	case gs.SaveMenuState{}.String():
 		vrt.RunTestGame(&gs.SaveMenuState{}, mode)
 	case gs.DungeonState{}.String():

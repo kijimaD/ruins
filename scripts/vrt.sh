@@ -23,13 +23,10 @@ cmd Dungeon
 cmd DungeonMenu
 cmd DungeonSelect
 cmd EquipMenu
-cmd Exec
 cmd GameOver
 cmd HomeMenu
-cmd Intro
 cmd InventoryMenu
 cmd LoadMenu
 cmd MainMenu
 cmd Message
-cmd MessageWindow
 cmd SaveMenu
