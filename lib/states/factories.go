@@ -3,6 +3,7 @@ package states
 import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
+	"github.com/kijimaD/ruins/lib/messagedata"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -103,4 +104,11 @@ func NewSaveMenuState() es.State[w.World] {
 // NewLoadMenuState は新しいLoadMenuStateインスタンスを作成するファクトリー関数
 func NewLoadMenuState() es.State[w.World] {
 	return &LoadMenuState{}
+}
+
+// NewMessageWindowState はメッセージデータを受け取って新しいMessageWindowStateを作成するファクトリー関数
+func NewMessageWindowState(messageData *messagedata.MessageData) es.State[w.World] {
+	return &MessageWindowState{
+		messageData: messageData,
+	}
 }

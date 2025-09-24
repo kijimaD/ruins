@@ -16,13 +16,15 @@
 //
 // # Basic Usage
 //
-//	// シンプルなメッセージウィンドウ
-//	window := messagewindow.NewBuilder().
-//		Message("冒険者よ、ようこそ！").
-//		Build()
+//	// MessageDataからメッセージウィンドウを構築
+//	messageData := &messagedata.MessageData{
+//		Text:    "冒険者よ、ようこそ！",
+//		Speaker: "村人",
+//	}
+//	window := messagewindow.NewBuilder(world).Build(messageData)
 //
 //	// ゲームループで更新・描画
-//	window.Update(input)
+//	window.Update()
 //	window.Draw(screen)
 //
 //	// ウィンドウが閉じられたかチェック
@@ -30,21 +32,34 @@
 //		// 次の処理へ
 //	}
 //
-// # Future Extensions
+// # アーキテクチャ上の責務
 //
-//	// 選択肢システムの使用例
-//	window := messagewindow.NewBuilder().
-//		Message("この中から選べ。").
-//		Choice("戦う", func() { fight() }).
-//		Choice("逃げる", func() { escape() }).
-//		Choice("交渉する", func() { negotiate() }).
-//		Build()
+// このパッケージは **プレゼンテーション層** として以下の責務を持ちます：
+//
+//   - UI描画とレンダリング（Ebiten固有の実装）
+//   - ユーザー入力処理（キーボード、マウスイベント）
+//   - 画面レイアウトとスタイリング（ウィンドウ、フォント、色）
+//   - メッセージキューの表示制御とアニメーション
+//
+// 対して messagedata パッケージは **データモデル層** として：
+//
+//   - メッセージデータ構造の定義と管理
+//   - ビジネスロジック（連鎖、分岐）の実装
+//   - UI実装に依存しないピュアなデータ操作
+//   - 異なるプレゼンテーション層で再利用可能なデータ提供
+//
+// この分離により以下のメリットを実現：
+//
+//   - 責務の明確化: UIとデータの関心事を分離
+//   - 再利用性: 異なるUI実装（Web版、モバイル版など）が可能
+//   - テスタビリティ: データ層は軽量テスト、UI層はモックデータでテスト
+//   - 拡張性: データ構造変更時のUI層への影響を最小化
 //
 // # Design Principles
 //
-//   - Builder Pattern: 柔軟で読みやすい設定
-//   - Event-Driven: コールバックによる拡張性
+//   - MessageData-Driven: MessageDataによる統一的なメッセージ管理
+//   - Queue-Based: メッセージキューによる連続表示対応
 //   - Single Responsibility: メッセージ表示に特化
 //   - Separation of Concerns: UIとロジックの分離
-//   - Future-Proof: 選択肢システムへの拡張を考慮
+//   - Choice System: 選択肢による分岐対応
 package messagewindow

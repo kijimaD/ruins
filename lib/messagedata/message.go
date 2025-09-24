@@ -58,8 +58,6 @@ func (m *MessageData) WithOnComplete(callback func()) *MessageData {
 	return m
 }
 
-// MessageDataのチェーンメソッド
-
 // DialogMessage は会話メッセージを連鎖
 func (m *MessageData) DialogMessage(text, speaker string) *MessageData {
 	m.NextMessages = append(m.NextMessages, NewDialogMessage(text, speaker))

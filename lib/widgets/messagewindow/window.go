@@ -8,6 +8,7 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/messagedata"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -34,6 +35,10 @@ type Window struct {
 	choiceMenu    *menu.Menu
 	choiceBuilder *menu.UIBuilder
 	hasChoices    bool
+
+	// メッセージキュー管理
+	queueManager   *QueueManager
+	currentMessage *messagedata.MessageData
 }
 
 // Update はウィンドウを更新する
@@ -95,11 +100,75 @@ func (w *Window) Close() {
 		return
 	}
 
+	// 現在のメッセージの完了コールバック実行
+	if w.currentMessage != nil && w.currentMessage.OnComplete != nil {
+		w.currentMessage.OnComplete()
+	}
+
+	// キューに次のメッセージがある場合は次を表示
+	if w.queueManager != nil && w.queueManager.HasNext() {
+		w.showNextMessage()
+		return
+	}
+
 	w.isOpen = false
 
 	// コールバック実行
 	if w.onClose != nil {
 		w.onClose()
+	}
+}
+
+// showNextMessage は次のメッセージを表示する
+func (w *Window) showNextMessage() {
+	if w.queueManager == nil {
+		return
+	}
+
+	nextMessage := w.queueManager.Dequeue()
+	if nextMessage == nil {
+		w.isOpen = false
+		if w.onClose != nil {
+			w.onClose()
+		}
+		return
+	}
+
+	w.currentMessage = nextMessage
+	w.updateContentFromMessage(nextMessage)
+
+	// UIを再初期化
+	w.initialized = false
+	w.ui = nil
+	w.window = nil
+	w.choiceMenu = nil
+	w.choiceBuilder = nil
+}
+
+// updateContentFromMessage はMessageDataからcontentを更新する
+func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
+	w.content.Text = msg.Text
+	w.content.SpeakerName = msg.Speaker
+
+	// 選択肢をconvertする
+	w.content.Choices = make([]Choice, len(msg.Choices))
+	for i, choice := range msg.Choices {
+		choiceCopy := choice // クロージャのキャプチャ問題を回避
+		w.content.Choices[i] = Choice{
+			Text: choice.Text,
+			Action: func() {
+				if choiceCopy.Action != nil {
+					choiceCopy.Action()
+				}
+				// 選択肢にメッセージが関連付けられている場合はキューに追加
+				if choiceCopy.MessageData != nil {
+					if w.queueManager == nil {
+						w.queueManager = NewQueueManager()
+					}
+					w.queueManager.EnqueueFront(choiceCopy.MessageData)
+				}
+			},
+		}
 	}
 }
 
@@ -303,7 +372,7 @@ func (w *Window) initChoiceMenu() {
 		items[i] = menu.Item{
 			ID:       choice.Text,
 			Label:    choice.Text,
-			Disabled: choice.Disabled,
+			Disabled: false,
 			UserData: i, // インデックスを保存
 		}
 	}
