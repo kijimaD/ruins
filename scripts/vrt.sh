@@ -28,5 +28,5 @@ cmd HomeMenu
 cmd InventoryMenu
 cmd LoadMenu
 cmd MainMenu
-cmd MessageWindow
+cmd Message
 cmd SaveMenu

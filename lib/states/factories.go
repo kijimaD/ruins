@@ -85,9 +85,9 @@ func NewLoadMenuState() es.State[w.World] {
 	return &LoadMenuState{}
 }
 
-// NewMessageWindowState はメッセージデータを受け取って新しいMessageWindowStateを作成するファクトリー関数
-func NewMessageWindowState(messageData *messagedata.MessageData) es.State[w.World] {
-	return &MessageWindowState{
+// NewMessageState はメッセージデータを受け取って新しいMessageStateを作成するファクトリー関数
+func NewMessageState(messageData *messagedata.MessageData) es.State[w.World] {
+	return &MessageState{
 		messageData: messageData,
 	}
 }

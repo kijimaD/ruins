@@ -221,7 +221,7 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition[w.World] {
 			// システムメッセージのデモ
 			messageData := messagedata.NewSystemMessage("ゲームが自動保存されました。\n\n進行状況は安全に記録されています。")
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
 	},
 	{
@@ -253,7 +253,7 @@ var debugMenuTrans = []struct {
 				Text:    messageText,
 				Speaker: "",
 			}
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
 	},
 	{
@@ -274,7 +274,7 @@ var debugMenuTrans = []struct {
 句読点、記号、数字123なども含めて確認してみましょう。`
 
 			messageData := messagedata.NewSystemMessage(longText)
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
 	},
 	{
@@ -286,7 +286,7 @@ var debugMenuTrans = []struct {
 				SystemMessage("剣と剣がぶつかり合う。").
 				SystemMessage("勝利した。")
 
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
 	},
 	{
@@ -303,7 +303,7 @@ var debugMenuTrans = []struct {
 				WithChoiceMessage("交渉する", negotiateMessage).
 				WithChoiceMessage("逃走する", escapeMessage)
 
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
 	},
 	{
@@ -340,7 +340,7 @@ var debugMenuTrans = []struct {
 			messageData.Choices[0].Action = choiceAction1
 			messageData.Choices[1].Action = choiceAction2
 
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
 	},
 	{

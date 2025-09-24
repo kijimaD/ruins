@@ -15,7 +15,7 @@
 
 <img src="./vrtimages/LoadMenu.png" width="50%" /><img src="./vrtimages/SaveMenu.png" width="50%" />
 
-<img src="./vrtimages/GameOver.png" width="50%" /><img src="./vrtimages/MessageWindow.png" width="50%" />
+<img src="./vrtimages/GameOver.png" width="50%" /><img src="./vrtimages/Message.png" width="50%" />
 
 <img src="./vrtimages/DebugMenu.png" width="50%" />
 

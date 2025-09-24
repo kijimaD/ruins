@@ -8,36 +8,36 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// MessageWindowState はメッセージウィンドウを表示する専用ステート
-type MessageWindowState struct {
+// MessageState はメッセージを表示する専用ステート
+type MessageState struct {
 	es.BaseState[w.World]
 	messageData   *messagedata.MessageData
 	messageWindow *messagewindow.Window
 }
 
-func (st MessageWindowState) String() string {
-	return "MessageWindow"
+func (st MessageState) String() string {
+	return "Message"
 }
 
-var _ es.State[w.World] = &MessageWindowState{}
+var _ es.State[w.World] = &MessageState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *MessageWindowState) OnPause(_ w.World) {}
+func (st *MessageState) OnPause(_ w.World) {}
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *MessageWindowState) OnResume(_ w.World) {}
+func (st *MessageState) OnResume(_ w.World) {}
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *MessageWindowState) OnStart(world w.World) {
+func (st *MessageState) OnStart(world w.World) {
 	// メッセージデータからキュー対応メッセージウィンドウを構築
 	st.messageWindow = messagewindow.NewBuilder(world).Build(st.messageData)
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *MessageWindowState) OnStop(_ w.World) {}
+func (st *MessageState) OnStop(_ w.World) {}
 
 // Update はゲームステートの更新処理を行う
-func (st *MessageWindowState) Update(_ w.World) es.Transition[w.World] {
+func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 	if st.messageWindow != nil {
 		st.messageWindow.Update()
 
@@ -51,7 +51,7 @@ func (st *MessageWindowState) Update(_ w.World) es.Transition[w.World] {
 }
 
 // Draw はゲームステートの描画処理を行う
-func (st *MessageWindowState) Draw(_ w.World, screen *ebiten.Image) {
+func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
 	if st.messageWindow != nil {
 		st.messageWindow.Draw(screen)
 	}
