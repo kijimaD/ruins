@@ -23,7 +23,6 @@ cmd Dungeon
 cmd DungeonMenu
 cmd DungeonSelect
 cmd EquipMenu
-cmd Exec
 cmd GameOver
 cmd HomeMenu
 cmd InventoryMenu

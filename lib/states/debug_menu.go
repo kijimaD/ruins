@@ -164,13 +164,6 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition[w.World] { return es.Transition[w.World]{Type: es.TransNone} },
 	},
 	{
-		label: "汎用アイテム入手イベント開始",
-		f:     func(_ w.World) {},
-		getTransFunc: func() es.Transition[w.World] {
-			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: GetItemGetEvent1Factories()}
-		},
-	},
-	{
 		label: "ゲームオーバー",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
@@ -228,6 +221,38 @@ var debugMenuTrans = []struct {
 		getTransFunc: func() es.Transition[w.World] {
 			// システムメッセージのデモ
 			messageData := messagedata.NewSystemMessage("ゲームが自動保存されました。\n\n進行状況は安全に記録されています。")
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
+		},
+	},
+	{
+		label: "アイテム入手イベント",
+		f: func(world w.World) {
+			// アイテム入手データを構造化して定義
+			items := []struct {
+				Name   string
+				Amount int
+			}{
+				{Name: "鉄", Amount: 1},
+				{Name: "木の棒", Amount: 1},
+				{Name: "フェライトコア", Amount: 2},
+			}
+
+			// アイテムを実際にインベントリに追加
+			for _, item := range items {
+				worldhelper.PlusAmount(item.Name, item.Amount, world)
+			}
+		},
+		getTransFunc: func() es.Transition[w.World] {
+			// アイテム入手完了後の表示用メッセージを生成
+			messageText := "宝箱を発見した。\n\n" +
+				"鉄を手に入れた。\n" +
+				"木の棒を手に入れた。\n" +
+				"フェライトコアを2個手に入れた。\n"
+
+			messageData := &messagedata.MessageData{
+				Text:    messageText,
+				Speaker: "",
+			}
 			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageWindowState(messageData) }}}
 		},
 	},

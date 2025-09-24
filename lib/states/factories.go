@@ -74,13 +74,6 @@ func NewMessageStateWithText(text string) es.StateFactory[w.World] {
 	}
 }
 
-// NewExecStateWithFunc は指定された関数でExecStateインスタンスを作成するファクトリー関数
-func NewExecStateWithFunc(f func(w.World)) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return NewExecState(f)
-	}
-}
-
 // NewMainMenuState は新しいMainMenuStateインスタンスを作成するファクトリー関数
 func NewMainMenuState() es.State[w.World] {
 	return &MainMenuState{}
