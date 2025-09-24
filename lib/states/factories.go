@@ -65,15 +65,6 @@ func NewDungeonStateWithBuilder(depth int, builderType mapbuilder.BuilderType) e
 	}
 }
 
-// NewMessageStateWithText は指定されたテキストでMessageStateインスタンスを作成するファクトリー関数
-func NewMessageStateWithText(text string) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return &MessageState{
-			text: text,
-		}
-	}
-}
-
 // NewMainMenuState は新しいMainMenuStateインスタンスを作成するファクトリー関数
 func NewMainMenuState() es.State[w.World] {
 	return &MainMenuState{}
