@@ -460,12 +460,11 @@ func (w *Window) initChoiceMenu() {
 	itemsPerPage := w.calculateItemsPerPage(len(w.content.Choices))
 
 	config := menu.Config{
-		Items:             items,
-		InitialIndex:      0,
-		WrapNavigation:    true,
-		Orientation:       menu.Vertical,
-		ItemsPerPage:      itemsPerPage,
-		ShowPageIndicator: true, // ページインジケーターを表示
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+		ItemsPerPage:   itemsPerPage,
 	}
 
 	// Menuコールバック

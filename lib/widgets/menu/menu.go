@@ -35,8 +35,7 @@ type Config struct {
 	WrapNavigation bool        // 端で循環するか
 	Orientation    Orientation // Vertical or Horizontal
 	// ペジネーション設定
-	ItemsPerPage      int  // 1ページに表示する項目数（0=制限なし）
-	ShowPageIndicator bool // ページインジケーターを表示するか
+	ItemsPerPage int // 1ページに表示する項目数（0=制限なし）
 }
 
 // Callbacks はメニューのコールバック
@@ -313,8 +312,8 @@ func (m *Menu) rebuildUI() {
 	// コンテナをクリアして再構築
 	m.container.RemoveChildren()
 
-	// ページインジケーターを追加
-	if m.config.ShowPageIndicator && m.config.ItemsPerPage > 0 && m.GetTotalPages() > 1 {
+	// ページインジケーターを追加（2ページ以上ある場合のみ自動表示）
+	if m.config.ItemsPerPage > 0 && m.GetTotalPages() > 1 {
 		pageIndicator := m.uiBuilder.CreatePageIndicator(m)
 		m.container.AddChild(pageIndicator)
 	}
@@ -450,11 +449,7 @@ func (m *Menu) GetVisibleItems() ([]Item, []int) {
 
 // GetPageIndicatorText はページインジケーターのテキストを返す
 func (m *Menu) GetPageIndicatorText() string {
-	if !m.config.ShowPageIndicator || m.config.ItemsPerPage <= 0 {
-		return ""
-	}
-
-	if m.GetTotalPages() <= 1 {
+	if m.config.ItemsPerPage <= 0 || m.GetTotalPages() <= 1 {
 		return ""
 	}
 

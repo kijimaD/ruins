@@ -144,12 +144,11 @@ func (st *HomeMenuState) initMenu(world w.World) {
 
 	// メニューの設定
 	config := menu.Config{
-		Items:             items,
-		InitialIndex:      0,
-		WrapNavigation:    true,
-		Orientation:       menu.Vertical,
-		ItemsPerPage:      10,
-		ShowPageIndicator: true,
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+		ItemsPerPage:   10,
 	}
 
 	// コールバックの設定

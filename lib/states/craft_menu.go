@@ -115,12 +115,11 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	// TabMenuの設定
 	tabs := st.createTabs(world)
 	config := tabmenu.Config{
-		Tabs:              tabs,
-		InitialTabIndex:   0,
-		InitialItemIndex:  0,
-		WrapNavigation:    true,
-		ItemsPerPage:      20,
-		ShowPageIndicator: true,
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
+		ItemsPerPage:     20,
 	}
 
 	callbacks := tabmenu.Callbacks{
