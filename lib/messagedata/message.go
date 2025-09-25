@@ -6,17 +6,14 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// TransitionFactory はステート遷移を生成する関数の型
-type TransitionFactory func() es.Transition[w.World]
-
 // MessageData はメッセージウィンドウに表示するデータ
 type MessageData struct {
 	Text              string
 	Speaker           string
 	Choices           []Choice
-	OnComplete        func()            // メッセージ完了時のコールバック
-	NextMessages      []*MessageData    // 次に表示するメッセージ群
-	TransitionFactory TransitionFactory // カスタム遷移を生成する関数（nilの場合はデフォルトのTransPop）
+	OnComplete        func()                        // メッセージ完了時のコールバック
+	NextMessages      []*MessageData                // 次に表示するメッセージ群
+	TransitionFactory es.TransitionFactory[w.World] // カスタム遷移を生成する関数（nilの場合はデフォルトのTransPop）
 }
 
 // Choice は選択肢のデータ
@@ -68,7 +65,7 @@ func (m *MessageData) WithOnComplete(callback func()) *MessageData {
 }
 
 // WithTransition はカスタム遷移を設定する
-func (m *MessageData) WithTransition(transitionFactory TransitionFactory) *MessageData {
+func (m *MessageData) WithTransition(transitionFactory es.TransitionFactory[w.World]) *MessageData {
 	m.TransitionFactory = transitionFactory
 	return m
 }
