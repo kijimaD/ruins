@@ -16,7 +16,63 @@ import (
 
 // NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
 func NewHomeMenuState() es.State[w.World] {
-	return &HomeMenuState{}
+	messageState := &MessageState{}
+
+	messageData := messagedata.NewSystemMessage("拠点メニュー")
+
+	// ホームメニューの選択肢を生成
+	homeActions := []struct {
+		label  string
+		action func(w.World)
+	}{
+		{
+			"出発",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonSelectState}})
+			},
+		},
+		{
+			"合成",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}})
+			},
+		},
+		{
+			"所持",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}})
+			},
+		},
+		{
+			"装備",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
+			},
+		},
+		{
+			"書込",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
+			},
+		},
+		{
+			"終了",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
+			},
+		},
+	}
+
+	// 各選択肢を追加
+	for _, homeAction := range homeActions {
+		actionCopy := homeAction.action // クロージャキャプチャ対策
+		messageData = messageData.WithChoice(homeAction.label, actionCopy)
+	}
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
 }
 
 // NewDungeonSelectState は新しいDungeonSelectStateインスタンスを作成するファクトリー関数
