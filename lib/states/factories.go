@@ -88,15 +88,20 @@ func NewMainMenuState() es.State[w.World] {
 
 // NewGameOverMessageState はゲームオーバー用のMessageStateを作成するファクトリー関数
 func NewGameOverMessageState() es.State[w.World] {
-	// TransitionFactoryを使用してメインメニューに戻る遷移を設定
-	messageData := &messagedata.MessageData{
-		Text:    "死亡した。",
-		Speaker: "",
-		TransitionFactory: func() es.Transition[w.World] {
-			return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}}
-		},
-	}
-	return NewMessageState(messageData)
+	// MessageStateインスタンスを作成
+	messageState := &MessageState{}
+
+	// ゲームオーバーメッセージを作成（選択肢付き）
+	messageData := messagedata.NewSystemMessage("死亡した。").
+		WithChoice("メインメニューに戻る", func(_ w.World) {
+			// メインメニューに遷移
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
+		})
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
 }
 
 // NewSaveMenuState は新しいSaveMenuStateインスタンスを作成するファクトリー関数

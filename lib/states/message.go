@@ -46,10 +46,6 @@ func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 			if transition := st.ConsumeTransition(); transition.Type != es.TransNone {
 				return transition
 			}
-			// TransitionFactoryが設定されている場合はそれを使用
-			if st.messageData != nil && st.messageData.TransitionFactory != nil {
-				return st.messageData.TransitionFactory()
-			}
 			// デフォルトはステートをポップ
 			return es.Transition[w.World]{Type: es.TransPop}
 		}

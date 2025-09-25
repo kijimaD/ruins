@@ -28,9 +28,6 @@ type Transition[T any] struct {
 	NewStateFuncs []StateFactory[T]
 }
 
-// TransitionFactory はステート遷移を生成するファクトリー関数の型
-type TransitionFactory[T any] func() Transition[T]
-
 // State はゲームステートのジェネリックインターフェース
 type State[T any] interface {
 	// Executed when the state begins
