@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"log"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
@@ -131,7 +132,7 @@ func NewDebugMenuState() es.State[w.World] {
 			func(world w.World) {
 				_, err := worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
 				if err != nil {
-					println("Error spawning item:", err.Error())
+					log.Fatal("Error spawning item:", err.Error())
 				}
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			},
@@ -141,7 +142,7 @@ func NewDebugMenuState() es.State[w.World] {
 			func(world w.World) {
 				_, err := worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
 				if err != nil {
-					println("Error spawning item:", err.Error())
+					log.Fatal("Error spawning item:", err.Error())
 				}
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			},
@@ -406,7 +407,7 @@ func NewSaveMenuState() es.State[w.World] {
 		slotNameCopy := slotName // クロージャキャプチャ対策
 		messageData = messageData.WithChoice(label, func(world w.World) {
 			if err := saveManager.SaveWorld(world, slotNameCopy); err != nil {
-				println("Save failed:", err.Error())
+				log.Fatal("Save failed:", err.Error())
 			}
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		})
