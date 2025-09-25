@@ -41,7 +41,23 @@ func NewDebugMenuState() es.State[w.World] {
 
 // NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
 func NewDungeonMenuState() es.State[w.World] {
-	return &DungeonMenuState{}
+	// MessageStateインスタンスを作成
+	messageState := &MessageState{}
+
+	// ダンジョンメニューのメッセージを作成
+	messageData := messagedata.NewSystemMessage("どうしますか？").
+		WithChoice("脱出", func(_ w.World) {
+			// MessageStateで直接HomeMenuStateに遷移
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
+		}).
+		WithChoice("閉じる", func(_ w.World) {
+			// 何も処理しない（デフォルトのTransPopが適用される）
+		})
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
 }
 
 // NewDungeonStateWithDepth は指定されたDepthでDungeonStateインスタンスを作成するファクトリー関数

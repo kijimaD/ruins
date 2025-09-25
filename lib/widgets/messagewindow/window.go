@@ -158,7 +158,7 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 			Text: choice.Text,
 			Action: func() {
 				if choiceCopy.Action != nil {
-					choiceCopy.Action()
+					choiceCopy.Action(w.world)
 				}
 				// 選択肢にメッセージが関連付けられている場合はキューに追加
 				if choiceCopy.MessageData != nil {

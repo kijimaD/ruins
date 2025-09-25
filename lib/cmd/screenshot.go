@@ -6,6 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/messagedata"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/urfave/cli/v2"
 )
 
@@ -29,8 +30,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.CraftMenuState{}, mode)
 	case gs.DebugMenuState{}.String():
 		vrt.RunTestGame(&gs.DebugMenuState{}, mode)
-	case gs.DungeonMenuState{}.String():
-		vrt.RunTestGame(&gs.DungeonMenuState{}, mode)
+	case "DungeonMenu":
+		vrt.RunTestGame(gs.NewDungeonMenuState(), mode)
 	case gs.DungeonSelectState{}.String():
 		vrt.RunTestGame(&gs.DungeonSelectState{}, mode)
 	case gs.EquipMenuState{}.String():
@@ -48,9 +49,9 @@ func runScreenshot(ctx *cli.Context) error {
 			"これはメッセージウィンドウのVRTテストです。\n\n表示状態の確認用メッセージです。",
 			"VRTテスト",
 		).WithChoice(
-			"選択肢1", func() {},
+			"選択肢1", func(_ w.World) {},
 		).WithChoice(
-			"選択肢2", func() {},
+			"選択肢2", func(_ w.World) {},
 		)
 		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
 	case gs.SaveMenuState{}.String():

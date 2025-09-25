@@ -42,6 +42,10 @@ func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 		st.messageWindow.Update()
 
 		if st.messageWindow.IsClosed() {
+			// BaseStateで設定された遷移を優先確認
+			if transition := st.ConsumeTransition(); transition.Type != es.TransNone {
+				return transition
+			}
 			// TransitionFactoryが設定されている場合はそれを使用
 			if st.messageData != nil && st.messageData.TransitionFactory != nil {
 				return st.messageData.TransitionFactory()
@@ -49,6 +53,8 @@ func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 			// デフォルトはステートをポップ
 			return es.Transition[w.World]{Type: es.TransPop}
 		}
+		// MessageWindowがアクティブな間は何もしない
+		return es.Transition[w.World]{Type: es.TransNone}
 	}
 
 	return st.ConsumeTransition()

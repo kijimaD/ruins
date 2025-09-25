@@ -337,8 +337,8 @@ var debugMenuTrans = []struct {
 				WithChoiceMessage("処理2を実行", result2)
 
 			// 各選択肢にActionを設定
-			messageData.Choices[0].Action = choiceAction1
-			messageData.Choices[1].Action = choiceAction2
+			messageData.Choices[0].Action = func(_ w.World) { choiceAction1() }
+			messageData.Choices[1].Action = func(_ w.World) { choiceAction2() }
 
 			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(messageData) }}}
 		},
