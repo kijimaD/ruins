@@ -30,8 +30,6 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.CraftMenuState{}, mode)
 	case "DebugMenu":
 		vrt.RunTestGame(gs.NewDebugMenuState(), mode)
-	case "DungeonMenu":
-		vrt.RunTestGame(gs.NewDungeonMenuState(), mode)
 	case "DungeonSelect":
 		vrt.RunTestGame(gs.NewDungeonSelectState(), mode)
 	case gs.EquipMenuState{}.String():

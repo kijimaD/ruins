@@ -154,6 +154,13 @@ func NewDebugMenuState() es.State[w.World] {
 			},
 		},
 		{
+			"脱出（ホームに戻る）",
+			func(_ w.World) {
+				// ダンジョンからホームメニューに脱出
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
+			},
+		},
+		{
 			"ダンジョン開始(大部屋)",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
@@ -309,26 +316,6 @@ func NewDebugMenuState() es.State[w.World] {
 	messageData = messageData.WithChoice("閉じる", func(_ w.World) {
 		messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 	})
-
-	// MessageStateにMessageDataを設定
-	messageState.messageData = messageData
-
-	return messageState
-}
-
-// NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
-func NewDungeonMenuState() es.State[w.World] {
-	messageState := &MessageState{}
-
-	// ダンジョンメニューのメッセージを作成
-	messageData := messagedata.NewSystemMessage("どうしますか？").
-		WithChoice("脱出", func(_ w.World) {
-			// MessageStateで直接HomeMenuStateに遷移
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
-		}).
-		WithChoice("閉じる", func(_ w.World) {
-			// 何も処理しない（デフォルトのTransPopが適用される）
-		})
 
 	// MessageStateにMessageDataを設定
 	messageState.messageData = messageData

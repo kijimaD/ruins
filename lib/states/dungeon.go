@@ -112,10 +112,6 @@ func (st *DungeonState) Update(world w.World) es.Transition[w.World] {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}
 	}
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}
-	}
-
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
