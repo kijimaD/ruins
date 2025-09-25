@@ -40,8 +40,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.HomeMenuState{}, mode)
 	case gs.InventoryMenuState{}.String():
 		vrt.RunTestGame(&gs.InventoryMenuState{}, mode)
-	case gs.LoadMenuState{}.String():
-		vrt.RunTestGame(&gs.LoadMenuState{}, mode)
+	case "LoadMenu":
+		vrt.RunTestGame(gs.NewLoadMenuState(), mode)
 	case gs.MainMenuState{}.String():
 		vrt.RunTestGame(&gs.MainMenuState{}, mode)
 	case gs.MessageState{}.String():
