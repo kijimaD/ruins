@@ -1,9 +1,12 @@
 package states
 
 import (
+	"fmt"
+
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/mapbuilder"
 	"github.com/kijimaD/ruins/lib/messagedata"
+	"github.com/kijimaD/ruins/lib/save"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -123,9 +126,51 @@ func NewGameOverMessageState() es.State[w.World] {
 	return messageState
 }
 
+type SaveSlotInfo struct {
+	Label       string
+	Description string
+	Exists      bool
+}
+
 // NewSaveMenuState は新しいSaveMenuStateインスタンスを作成するファクトリー関数
 func NewSaveMenuState() es.State[w.World] {
-	return &SaveMenuState{}
+	messageState := &MessageState{}
+
+	// セーブマネージャーで現在のスロット状態を取得
+	saveManager := save.NewSerializationManager("./saves")
+
+	messageData := messagedata.NewSystemMessage("どのスロットにセーブしますか？")
+
+	// 各スロットの状態を確認して選択肢を動的に生成
+	for i := 1; i <= 3; i++ {
+		slotName := fmt.Sprintf("slot%d", i)
+		var label string
+
+		if saveManager.SaveFileExists(slotName) {
+			if timestamp, err := saveManager.GetSaveFileTimestamp(slotName); err == nil {
+				label = fmt.Sprintf("スロット%d [%s]", i, timestamp.Format("01/02 15:04"))
+			} else {
+				label = fmt.Sprintf("スロット%d [データあり]", i)
+			}
+		} else {
+			label = fmt.Sprintf("スロット%d [空]", i)
+		}
+
+		slotNameCopy := slotName // クロージャキャプチャ対策
+		messageData = messageData.WithChoice(label, func(world w.World) {
+			if err := saveManager.SaveWorld(world, slotNameCopy); err != nil {
+				println("Save failed:", err.Error())
+			}
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		})
+	}
+
+	messageData = messageData.WithChoice("戻る", func(_ w.World) {
+		messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+	})
+
+	messageState.messageData = messageData
+	return messageState
 }
 
 // NewLoadMenuState は新しいLoadMenuStateインスタンスを作成するファクトリー関数

@@ -54,8 +54,8 @@ func runScreenshot(ctx *cli.Context) error {
 			"選択肢2", func(_ w.World) {},
 		)
 		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
-	case gs.SaveMenuState{}.String():
-		vrt.RunTestGame(&gs.SaveMenuState{}, mode)
+	case "SaveMenu":
+		vrt.RunTestGame(gs.NewSaveMenuState(), mode)
 	case gs.DungeonState{}.String():
 		// いい感じのseed値。画面内に敵がいると動いて差分が出てしまうので、いないものを選んだ
 		const seedVal = 4012
