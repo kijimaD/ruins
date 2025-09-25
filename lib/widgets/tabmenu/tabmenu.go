@@ -17,12 +17,11 @@ type TabItem struct {
 
 // Config はタブメニューの設定
 type Config struct {
-	Tabs              []TabItem
-	InitialTabIndex   int
-	InitialItemIndex  int
-	WrapNavigation    bool // タブ/アイテム両方で端循環するか
-	ItemsPerPage      int  // 1ページに表示する項目数（0=制限なし）
-	ShowPageIndicator bool // ページインジケーターを表示するか
+	Tabs             []TabItem
+	InitialTabIndex  int
+	InitialItemIndex int
+	WrapNavigation   bool // タブ/アイテム両方で端循環するか
+	ItemsPerPage     int  // 1ページに表示する項目数（0=制限なし）
 }
 
 // Callbacks はタブメニューのコールバック
@@ -563,11 +562,7 @@ func (tm *TabMenu) GetTotalPages() int {
 
 // GetPageIndicatorText はページインジケーターのテキストを返す
 func (tm *TabMenu) GetPageIndicatorText() string {
-	if !tm.config.ShowPageIndicator || tm.config.ItemsPerPage <= 0 {
-		return ""
-	}
-
-	if tm.GetTotalPages() <= 1 {
+	if tm.config.ItemsPerPage <= 0 || tm.GetTotalPages() <= 1 {
 		return ""
 	}
 

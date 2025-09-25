@@ -41,10 +41,16 @@ func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 	if st.messageWindow != nil {
 		st.messageWindow.Update()
 
-		// メッセージウィンドウが閉じられた場合はステートをポップ
 		if st.messageWindow.IsClosed() {
+			// BaseStateで設定された遷移を優先確認
+			if transition := st.ConsumeTransition(); transition.Type != es.TransNone {
+				return transition
+			}
+			// デフォルトはステートをポップ
 			return es.Transition[w.World]{Type: es.TransPop}
 		}
+		// MessageWindowがアクティブな間は何もしない
+		return es.Transition[w.World]{Type: es.TransNone}
 	}
 
 	return st.ConsumeTransition()

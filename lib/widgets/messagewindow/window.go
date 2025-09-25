@@ -158,7 +158,7 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 			Text: choice.Text,
 			Action: func() {
 				if choiceCopy.Action != nil {
-					choiceCopy.Action()
+					choiceCopy.Action(w.world)
 				}
 				// 選択肢にメッセージが関連付けられている場合はキューに追加
 				if choiceCopy.MessageData != nil {
@@ -202,11 +202,40 @@ func (w *Window) createAndAddWindow() {
 		widget.WindowOpts.MaxSize(windowSize.Width, windowSize.Height), // 固定サイズ
 	)
 
-	// 明示的に画面中央に配置
+	// 選択肢に応じて位置を調整
 	screenWidth := w.world.Resources.ScreenDimensions.Width
 	screenHeight := w.world.Resources.ScreenDimensions.Height
 	x := (screenWidth - windowSize.Width) / 2
-	y := (screenHeight - windowSize.Height) / 2
+
+	var y int
+	numChoices := len(w.content.Choices)
+
+	if w.hasChoices && numChoices > 0 {
+		// 選択肢の数に応じて位置を調整
+		if numChoices <= 3 {
+			// 少ない選択肢は画面中央
+			y = (screenHeight - windowSize.Height) / 2
+		} else if numChoices <= 8 {
+			// 中程度の選択肢は上寄り中央
+			y = screenHeight / 3
+		} else {
+			// 多い選択肢は上寄りに配置
+			y = screenHeight / 5
+		}
+	} else {
+		// 選択肢がない場合は画面中央に配置
+		y = (screenHeight - windowSize.Height) / 2
+	}
+
+	// 画面からはみ出さないように調整
+	margin := 30
+	if y+windowSize.Height > screenHeight-margin {
+		y = screenHeight - windowSize.Height - margin
+	}
+	if y < margin {
+		y = margin
+	}
+
 	w.window.SetLocation(image.Rect(x, y, x+windowSize.Width, y+windowSize.Height))
 
 	// UIにウィンドウを追加
@@ -228,13 +257,24 @@ func (w *Window) calculateWindowSize() WindowSize {
 
 	// 選択肢がある場合は高さを追加
 	if w.hasChoices && len(w.content.Choices) > 0 {
-		// 選択肢1つあたり約30px、最低500px確保
-		choiceHeight := len(w.content.Choices) * 30
-		minHeightWithChoices := 500
-		if baseHeight+choiceHeight > minHeightWithChoices {
-			baseHeight = baseHeight + choiceHeight
-		} else {
+		numChoices := len(w.content.Choices)
+
+		// 選択肢1つあたりの高さを計算（フォントサイズ + 余白）
+		choiceItemHeight := 35
+		choiceHeight := numChoices * choiceItemHeight
+
+		// 最低高さと最大高さを設定
+		minHeightWithChoices := 400
+		maxHeightWithChoices := int(float64(w.world.Resources.ScreenDimensions.Height) * 0.8) // 画面高さの80%まで
+
+		calculatedHeight := baseHeight + choiceHeight + 100 // +100 for padding and buttons
+
+		if calculatedHeight < minHeightWithChoices {
 			baseHeight = minHeightWithChoices
+		} else if calculatedHeight > maxHeightWithChoices {
+			baseHeight = maxHeightWithChoices
+		} else {
+			baseHeight = calculatedHeight
 		}
 	}
 
@@ -416,13 +456,15 @@ func (w *Window) initChoiceMenu() {
 	}
 
 	// Menu設定
+	// 選択肢の数に応じてページサイズを調整
+	itemsPerPage := w.calculateItemsPerPage(len(w.content.Choices))
+
 	config := menu.Config{
-		Items:             items,
-		InitialIndex:      0,
-		WrapNavigation:    true,
-		Orientation:       menu.Vertical,
-		ItemsPerPage:      10,
-		ShowPageIndicator: false,
+		Items:          items,
+		InitialIndex:   0,
+		WrapNavigation: true,
+		Orientation:    menu.Vertical,
+		ItemsPerPage:   itemsPerPage,
 	}
 
 	// Menuコールバック
@@ -444,6 +486,35 @@ func (w *Window) initChoiceMenu() {
 	// Menuを作成
 	w.choiceMenu = menu.NewMenu(config, callbacks)
 	w.choiceBuilder = menu.NewUIBuilder(w.world)
+}
+
+// calculateItemsPerPage は選択肢の数とウィンドウサイズに応じて1ページあたりのアイテム数を計算する
+func (w *Window) calculateItemsPerPage(totalItems int) int {
+	// ウィンドウの高さからメッセージテキストとパディング、ページインジケーターを除いた利用可能な高さを計算
+	windowHeight := w.calculateWindowSize().Height
+
+	// メッセージテキスト部分とパディングを除く
+	textAreaHeight := 150     // メッセージテキスト + パディング
+	pageIndicatorHeight := 30 // ページインジケーターの高さ
+	availableHeight := windowHeight - textAreaHeight - pageIndicatorHeight
+
+	// 1つのアイテムあたりの高さ（35px）
+	itemHeight := 35
+	maxItemsPerPage := availableHeight / itemHeight
+
+	// 最低3つ、最大15つの範囲で制限
+	if maxItemsPerPage < 3 {
+		maxItemsPerPage = 3
+	} else if maxItemsPerPage > 15 {
+		maxItemsPerPage = 15
+	}
+
+	// 総アイテム数がページサイズより少ない場合は、総アイテム数を返す
+	if totalItems <= maxItemsPerPage {
+		return totalItems
+	}
+
+	return maxItemsPerPage
 }
 
 // selectChoice は選択肢を選択する

@@ -109,11 +109,7 @@ func (st *DungeonState) Update(world w.World) es.Transition[w.World] {
 
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverState}}
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}
 	}
 
 	cfg := config.MustGet()

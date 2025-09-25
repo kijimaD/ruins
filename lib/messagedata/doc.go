@@ -24,8 +24,8 @@
 //
 //	// 単純な選択肢（アクションのみ）
 //	msg := messagedata.NewDialogMessage("どうしますか？", "").
-//	    WithChoice("はい", func() { fmt.Println("はいが選ばれました") }).
-//	    WithChoice("いいえ", func() { fmt.Println("いいえが選ばれました") })
+//	    WithChoice("はい", func(_ w.World) { fmt.Println("はいが選ばれました") }).
+//	    WithChoice("いいえ", func(_ w.World) { fmt.Println("いいえが選ばれました") })
 //
 //	// 選択肢から別のメッセージへの分岐
 //	battleResult := messagedata.NewSystemMessage("戦闘開始").

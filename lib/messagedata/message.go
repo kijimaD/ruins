@@ -1,6 +1,10 @@
 // Package messagedata はメッセージウィンドウに表示するデータ構造を提供する
 package messagedata
 
+import (
+	w "github.com/kijimaD/ruins/lib/world"
+)
+
 // MessageData はメッセージウィンドウに表示するデータ
 type MessageData struct {
 	Text         string
@@ -13,8 +17,8 @@ type MessageData struct {
 // Choice は選択肢のデータ
 type Choice struct {
 	Text        string
-	Action      func()
-	MessageData *MessageData // 選択肢を選んだ時に表示するメッセージ
+	Action      func(w.World) // 選択時に実行する
+	MessageData *MessageData  // 選択肢を選んだ時に表示するメッセージ
 	Disabled    bool
 }
 
@@ -35,7 +39,7 @@ func NewSystemMessage(text string) *MessageData {
 }
 
 // WithChoice は選択肢を追加する
-func (m *MessageData) WithChoice(text string, action func()) *MessageData {
+func (m *MessageData) WithChoice(text string, action func(w.World)) *MessageData {
 	m.Choices = append(m.Choices, Choice{
 		Text:   text,
 		Action: action,

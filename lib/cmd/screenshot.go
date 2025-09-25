@@ -6,6 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/messagedata"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
+	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/urfave/cli/v2"
 )
 
@@ -27,20 +28,18 @@ func runScreenshot(ctx *cli.Context) error {
 	switch mode {
 	case gs.CraftMenuState{}.String():
 		vrt.RunTestGame(&gs.CraftMenuState{}, mode)
-	case gs.DebugMenuState{}.String():
-		vrt.RunTestGame(&gs.DebugMenuState{}, mode)
-	case gs.DungeonMenuState{}.String():
-		vrt.RunTestGame(&gs.DungeonMenuState{}, mode)
-	case gs.DungeonSelectState{}.String():
-		vrt.RunTestGame(&gs.DungeonSelectState{}, mode)
+	case "DebugMenu":
+		vrt.RunTestGame(gs.NewDebugMenuState(), mode)
+	case "DungeonSelect":
+		vrt.RunTestGame(gs.NewDungeonSelectState(), mode)
 	case gs.EquipMenuState{}.String():
 		vrt.RunTestGame(&gs.EquipMenuState{}, mode)
-	case gs.HomeMenuState{}.String():
-		vrt.RunTestGame(&gs.HomeMenuState{}, mode)
+	case "HomeMenu":
+		vrt.RunTestGame(gs.NewHomeMenuState(), mode)
 	case gs.InventoryMenuState{}.String():
 		vrt.RunTestGame(&gs.InventoryMenuState{}, mode)
-	case gs.LoadMenuState{}.String():
-		vrt.RunTestGame(&gs.LoadMenuState{}, mode)
+	case "LoadMenu":
+		vrt.RunTestGame(gs.NewLoadMenuState(), mode)
 	case gs.MainMenuState{}.String():
 		vrt.RunTestGame(&gs.MainMenuState{}, mode)
 	case gs.MessageState{}.String():
@@ -48,19 +47,19 @@ func runScreenshot(ctx *cli.Context) error {
 			"これはメッセージウィンドウのVRTテストです。\n\n表示状態の確認用メッセージです。",
 			"VRTテスト",
 		).WithChoice(
-			"選択肢1", func() {},
+			"選択肢1", func(_ w.World) {},
 		).WithChoice(
-			"選択肢2", func() {},
+			"選択肢2", func(_ w.World) {},
 		)
 		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
-	case gs.SaveMenuState{}.String():
-		vrt.RunTestGame(&gs.SaveMenuState{}, mode)
+	case "SaveMenu":
+		vrt.RunTestGame(gs.NewSaveMenuState(), mode)
 	case gs.DungeonState{}.String():
 		// いい感じのseed値。画面内に敵がいると動いて差分が出てしまうので、いないものを選んだ
 		const seedVal = 4012
 		vrt.RunTestGame(&gs.DungeonState{Depth: 1, Seed: seedVal}, mode)
-	case gs.GameOverState{}.String():
-		vrt.RunTestGame(&gs.GameOverState{}, mode)
+	case "GameOver":
+		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
 	default:
 		return fmt.Errorf("スクリーンショット実行時に対応してないステートが指定された: %s", mode)
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	"github.com/pkg/profile"
 	"github.com/urfave/cli/v2"
 
@@ -94,13 +95,16 @@ func runPlay(_ *cli.Context) error {
 		return err
 	}
 
+	// デバッグ用データ初期化
+	worldhelper.InitDebugData(world)
+
 	// 開始ステートの決定
 	var initialState es.State[w.World]
 	switch cfg.StartingState {
 	case "home_menu":
-		initialState = &gs.HomeMenuState{}
+		initialState = gs.NewHomeMenuState()
 	case "debug_menu":
-		initialState = &gs.DebugMenuState{}
+		initialState = gs.NewDebugMenuState()
 	case "dungeon":
 		initialState = &gs.DungeonState{Depth: 1}
 	case "main_menu":
