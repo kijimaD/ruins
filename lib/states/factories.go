@@ -16,7 +16,27 @@ func NewHomeMenuState() es.State[w.World] {
 
 // NewDungeonSelectState は新しいDungeonSelectStateインスタンスを作成するファクトリー関数
 func NewDungeonSelectState() es.State[w.World] {
-	return &DungeonSelectState{}
+	messageState := &MessageState{}
+
+	// ダンジョン選択メッセージを作成
+	messageData := messagedata.NewSystemMessage("ダンジョン選択").
+		WithChoice("森の遺跡", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
+		}).
+		WithChoice("山の遺跡", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
+		}).
+		WithChoice("塔の遺跡", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
+		}).
+		WithChoice("拠点メニューに戻る", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
+		})
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
 }
 
 // NewCraftMenuState は新しいCraftMenuStateインスタンスを作成するファクトリー関数
@@ -41,7 +61,6 @@ func NewDebugMenuState() es.State[w.World] {
 
 // NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
 func NewDungeonMenuState() es.State[w.World] {
-	// MessageStateインスタンスを作成
 	messageState := &MessageState{}
 
 	// ダンジョンメニューのメッセージを作成
