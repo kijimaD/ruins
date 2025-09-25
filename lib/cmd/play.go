@@ -100,7 +100,7 @@ func runPlay(_ *cli.Context) error {
 	case "home_menu":
 		initialState = &gs.HomeMenuState{}
 	case "debug_menu":
-		initialState = &gs.DebugMenuState{}
+		initialState = gs.NewDebugMenuState()
 	case "dungeon":
 		initialState = &gs.DungeonState{Depth: 1}
 	case "main_menu":
