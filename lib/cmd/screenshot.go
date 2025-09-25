@@ -59,8 +59,8 @@ func runScreenshot(ctx *cli.Context) error {
 		// いい感じのseed値。画面内に敵がいると動いて差分が出てしまうので、いないものを選んだ
 		const seedVal = 4012
 		vrt.RunTestGame(&gs.DungeonState{Depth: 1, Seed: seedVal}, mode)
-	case gs.GameOverState{}.String():
-		vrt.RunTestGame(&gs.GameOverState{}, mode)
+	case "GameOver":
+		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
 	default:
 		return fmt.Errorf("スクリーンショット実行時に対応してないステートが指定された: %s", mode)
 	}

@@ -1,13 +1,22 @@
 // Package messagedata はメッセージウィンドウに表示するデータ構造を提供する
 package messagedata
 
+import (
+	es "github.com/kijimaD/ruins/lib/engine/states"
+	w "github.com/kijimaD/ruins/lib/world"
+)
+
+// TransitionFactory はステート遷移を生成する関数の型
+type TransitionFactory func() es.Transition[w.World]
+
 // MessageData はメッセージウィンドウに表示するデータ
 type MessageData struct {
-	Text         string
-	Speaker      string
-	Choices      []Choice
-	OnComplete   func()         // メッセージ完了時のコールバック
-	NextMessages []*MessageData // 次に表示するメッセージ群
+	Text              string
+	Speaker           string
+	Choices           []Choice
+	OnComplete        func()            // メッセージ完了時のコールバック
+	NextMessages      []*MessageData    // 次に表示するメッセージ群
+	TransitionFactory TransitionFactory // カスタム遷移を生成する関数（nilの場合はデフォルトのTransPop）
 }
 
 // Choice は選択肢のデータ
@@ -55,6 +64,12 @@ func (m *MessageData) WithChoiceMessage(text string, messageData *MessageData) *
 // WithOnComplete は完了時のコールバックを設定する
 func (m *MessageData) WithOnComplete(callback func()) *MessageData {
 	m.OnComplete = callback
+	return m
+}
+
+// WithTransition はカスタム遷移を設定する
+func (m *MessageData) WithTransition(transitionFactory TransitionFactory) *MessageData {
+	m.TransitionFactory = transitionFactory
 	return m
 }
 

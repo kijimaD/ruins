@@ -70,9 +70,17 @@ func NewMainMenuState() es.State[w.World] {
 	return &MainMenuState{}
 }
 
-// NewGameOverState は新しいGameOverStateインスタンスを作成するファクトリー関数
-func NewGameOverState() es.State[w.World] {
-	return &GameOverState{}
+// NewGameOverMessageState はゲームオーバー用のMessageStateを作成するファクトリー関数
+func NewGameOverMessageState() es.State[w.World] {
+	// TransitionFactoryを使用してメインメニューに戻る遷移を設定
+	messageData := &messagedata.MessageData{
+		Text:    "死亡した。",
+		Speaker: "",
+		TransitionFactory: func() es.Transition[w.World] {
+			return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}}
+		},
+	}
+	return NewMessageState(messageData)
 }
 
 // NewSaveMenuState は新しいSaveMenuStateインスタンスを作成するファクトリー関数

@@ -2,7 +2,6 @@
 # base #
 ########
 
-# なぜかbuster以外だと、WASMビルドで真っ白表示になってしまう
 FROM golang:1.24.6-bullseye AS base
 RUN apt update
 RUN apt install -y \

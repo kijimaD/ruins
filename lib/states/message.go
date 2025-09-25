@@ -41,8 +41,12 @@ func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
 	if st.messageWindow != nil {
 		st.messageWindow.Update()
 
-		// メッセージウィンドウが閉じられた場合はステートをポップ
 		if st.messageWindow.IsClosed() {
+			// TransitionFactoryが設定されている場合はそれを使用
+			if st.messageData != nil && st.messageData.TransitionFactory != nil {
+				return st.messageData.TransitionFactory()
+			}
+			// デフォルトはステートをポップ
 			return es.Transition[w.World]{Type: es.TransPop}
 		}
 	}

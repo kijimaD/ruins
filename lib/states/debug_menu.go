@@ -167,7 +167,7 @@ var debugMenuTrans = []struct {
 		label: "ゲームオーバー",
 		f:     func(_ w.World) {},
 		getTransFunc: func() es.Transition[w.World] {
-			return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverState}}
+			return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}
 		},
 	},
 	{
