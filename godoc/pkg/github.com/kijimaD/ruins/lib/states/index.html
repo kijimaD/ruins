@@ -94,7 +94,6 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package states はゲームステートの実装を提供する。
-<p>Package states は拠点でのコマンド選択画面
 
 				
 			</div>
@@ -122,9 +121,6 @@
 				<dd><a href="index.html#NewDebugMenuState">func NewDebugMenuState() es.State[w.World]</a></dd>
 			
 				
-				<dd><a href="index.html#NewDungeonMenuState">func NewDungeonMenuState() es.State[w.World]</a></dd>
-			
-				
 				<dd><a href="index.html#NewDungeonSelectState">func NewDungeonSelectState() es.State[w.World]</a></dd>
 			
 				
@@ -140,7 +136,7 @@
 				<dd><a href="index.html#NewEquipMenuState">func NewEquipMenuState() es.State[w.World]</a></dd>
 			
 				
-				<dd><a href="index.html#NewGameOverState">func NewGameOverState() es.State[w.World]</a></dd>
+				<dd><a href="index.html#NewGameOverMessageState">func NewGameOverMessageState() es.State[w.World]</a></dd>
 			
 				
 				<dd><a href="index.html#NewHomeMenuState">func NewHomeMenuState() es.State[w.World]</a></dd>
@@ -185,84 +181,6 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.Update">func (st *CraftMenuState) Update(world w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
-				<dd><a href="index.html#DebugMenuState">type DebugMenuState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.Draw">func (st *DebugMenuState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnPause">func (st *DebugMenuState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnResume">func (st *DebugMenuState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnStart">func (st *DebugMenuState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.OnStop">func (st *DebugMenuState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.String">func (st DebugMenuState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DebugMenuState.Update">func (st *DebugMenuState) Update(_ w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
-				<dd><a href="index.html#DungeonMenuState">type DungeonMenuState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.Draw">func (st *DungeonMenuState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnPause">func (st *DungeonMenuState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnResume">func (st *DungeonMenuState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnStart">func (st *DungeonMenuState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.OnStop">func (st *DungeonMenuState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.String">func (st DungeonMenuState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonMenuState.Update">func (st *DungeonMenuState) Update(_ w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
-				<dd><a href="index.html#DungeonSelectState">type DungeonSelectState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.Draw">func (st *DungeonSelectState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnPause">func (st *DungeonSelectState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnResume">func (st *DungeonSelectState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnStart">func (st *DungeonSelectState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.OnStop">func (st *DungeonSelectState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.String">func (st DungeonSelectState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DungeonSelectState.Update">func (st *DungeonSelectState) Update(_ w.World) es.Transition[w.World]</a></dd>
 				
 			
 				
@@ -318,58 +236,6 @@
 				
 			
 				
-				<dd><a href="index.html#GameOverState">type GameOverState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.Draw">func (st *GameOverState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnPause">func (st *GameOverState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnResume">func (st *GameOverState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnStart">func (st *GameOverState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.OnStop">func (st *GameOverState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.String">func (st GameOverState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#GameOverState.Update">func (st *GameOverState) Update(_ w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
-				<dd><a href="index.html#HomeMenuState">type HomeMenuState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.Draw">func (st *HomeMenuState) Draw(_ w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnPause">func (st *HomeMenuState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnResume">func (st *HomeMenuState) OnResume(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnStart">func (st *HomeMenuState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.OnStop">func (st *HomeMenuState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.String">func (st HomeMenuState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#HomeMenuState.Update">func (st *HomeMenuState) Update(_ w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
 				<dd><a href="index.html#InventoryMenuState">type InventoryMenuState</a></dd>
 				
 				
@@ -393,32 +259,6 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.Update">func (st *InventoryMenuState) Update(world w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
-				<dd><a href="index.html#LoadMenuState">type LoadMenuState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.Draw">func (st *LoadMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.OnPause">func (st *LoadMenuState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.OnResume">func (st *LoadMenuState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.OnStart">func (st *LoadMenuState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.OnStop">func (st *LoadMenuState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.String">func (st LoadMenuState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#LoadMenuState.Update">func (st *LoadMenuState) Update(_ w.World) es.Transition[w.World]</a></dd>
 				
 			
 				
@@ -473,37 +313,6 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageState.Update">func (st *MessageState) Update(_ w.World) es.Transition[w.World]</a></dd>
 				
 			
-				
-				<dd><a href="index.html#SaveMenuState">type SaveMenuState</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.Draw">func (st *SaveMenuState) Draw(world w.World, screen *ebiten.Image)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.OnPause">func (st *SaveMenuState) OnPause(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.OnResume">func (st *SaveMenuState) OnResume(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.OnStart">func (st *SaveMenuState) OnStart(world w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.OnStop">func (st *SaveMenuState) OnStop(_ w.World)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.String">func (st SaveMenuState) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SaveMenuState.Update">func (st *SaveMenuState) Update(_ w.World) es.Transition[w.World]</a></dd>
-				
-			
-				
-				<dd><a href="index.html#SaveSlotInfo">type SaveSlotInfo</a></dd>
-				
-				
-			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -517,35 +326,21 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go">craft_menu.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go">debug_menu.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go">dungeon.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go">dungeon_menu.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go">dungeon_select.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go">equip_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go">factories.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go">game_over.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go">home_menu.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go">inventory_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/lib.go">lib.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go">load_menu.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go">main_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go">message.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go">save_menu.go</a>
 			
 			</span>
 			</p>
@@ -571,7 +366,7 @@
 		
 			
 			
-			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=753:795#L13">NewCraftMenuState</a>
+			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3576:3618#L95">NewCraftMenuState</a>
 				<a class="permalink" href="index.html#NewCraftMenuState">&#xb6;</a>
 				
 				
@@ -585,7 +380,7 @@
 		
 			
 			
-			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1306:1348#L28">NewDebugMenuState</a>
+			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=4129:4171#L110">NewDebugMenuState</a>
 				<a class="permalink" href="index.html#NewDebugMenuState">&#xb6;</a>
 				
 				
@@ -599,21 +394,7 @@
 		
 			
 			
-			<h2 id="NewDungeonMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1489:1533#L33">NewDungeonMenuState</a>
-				<a class="permalink" href="index.html#NewDungeonMenuState">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewDungeonMenuState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-			<p>NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
-
-			
-			
-
-		
-			
-			
-			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=566:612#L8">NewDungeonSelectState</a>
+			<h2 id="NewDungeonSelectState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2351:2397#L70">NewDungeonSelectState</a>
 				<a class="permalink" href="index.html#NewDungeonSelectState">&#xb6;</a>
 				
 				
@@ -627,7 +408,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2355:2458#L52">NewDungeonStateWithBuilder</a>
+			<h2 id="NewDungeonStateWithBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12697:12800#L331">NewDungeonStateWithBuilder</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithBuilder">&#xb6;</a>
 				
 				
@@ -641,7 +422,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1691:1756#L38">NewDungeonStateWithDepth</a>
+			<h2 id="NewDungeonStateWithDepth">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12033:12098#L317">NewDungeonStateWithDepth</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithDepth">&#xb6;</a>
 				
 				
@@ -655,7 +436,7 @@
 		
 			
 			
-			<h2 id="NewDungeonStateWithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2010:2087#L45">NewDungeonStateWithSeed</a>
+			<h2 id="NewDungeonStateWithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12352:12429#L324">NewDungeonStateWithSeed</a>
 				<a class="permalink" href="index.html#NewDungeonStateWithSeed">&#xb6;</a>
 				
 				
@@ -669,7 +450,7 @@
 		
 			
 			
-			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1127:1169#L23">NewEquipMenuState</a>
+			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3950:3992#L105">NewEquipMenuState</a>
 				<a class="permalink" href="index.html#NewEquipMenuState">&#xb6;</a>
 				
 				
@@ -683,13 +464,13 @@
 		
 			
 			
-			<h2 id="NewGameOverState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2843:2884#L64">NewGameOverState</a>
-				<a class="permalink" href="index.html#NewGameOverState">&#xb6;</a>
+			<h2 id="NewGameOverMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=13191:13239#L343">NewGameOverMessageState</a>
+				<a class="permalink" href="index.html#NewGameOverMessageState">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewGameOverState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-			<p>NewGameOverState は新しいGameOverStateインスタンスを作成するファクトリー関数
+			<pre>func NewGameOverMessageState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewGameOverMessageState はゲームオーバー用のMessageStateを作成するファクトリー関数
 
 			
 			
@@ -697,7 +478,7 @@
 		
 			
 			
-			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=381:422#L3">NewHomeMenuState</a>
+			<h2 id="NewHomeMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=523:564#L9">NewHomeMenuState</a>
 				<a class="permalink" href="index.html#NewHomeMenuState">&#xb6;</a>
 				
 				
@@ -711,7 +492,7 @@
 		
 			
 			
-			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=940:986#L18">NewInventoryMenuState</a>
+			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3763:3809#L100">NewInventoryMenuState</a>
 				<a class="permalink" href="index.html#NewInventoryMenuState">&#xb6;</a>
 				
 				
@@ -725,7 +506,7 @@
 		
 			
 			
-			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3193:3234#L74">NewLoadMenuState</a>
+			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=15366:15407#L402">NewLoadMenuState</a>
 				<a class="permalink" href="index.html#NewLoadMenuState">&#xb6;</a>
 				
 				
@@ -739,7 +520,7 @@
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2668:2709#L59">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=13010:13051#L338">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -753,7 +534,7 @@
 		
 			
 			
-			<h2 id="NewMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3390:3466#L79">NewMessageState</a>
+			<h2 id="NewMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17385:17461#L457">NewMessageState</a>
 				<a class="permalink" href="index.html#NewMessageState">&#xb6;</a>
 				
 				
@@ -767,7 +548,7 @@
 		
 			
 			
-			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=3018:3059#L69">NewSaveMenuState</a>
+			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=13909:13950#L361">NewSaveMenuState</a>
 				<a class="permalink" href="index.html#NewSaveMenuState">&#xb6;</a>
 				
 				
@@ -899,357 +680,6 @@
 		
 			
 			
-			<h2 id="DebugMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=694:867#L13">DebugMenuState</a>
-				<a class="permalink" href="index.html#DebugMenuState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>DebugMenuState はデバッグメニューのゲームステート
-
-			<pre>type DebugMenuState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="DebugMenuState.Draw">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1922:1985#L58">Draw</a>
-					<a class="permalink" href="index.html#DebugMenuState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はゲームステートの描画処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="DebugMenuState.OnPause">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1086:1130#L30">OnPause</a>
-					<a class="permalink" href="index.html#DebugMenuState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DebugMenuState.OnResume">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1199:1244#L33">OnResume</a>
-					<a class="permalink" href="index.html#DebugMenuState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DebugMenuState.OnStart">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1312:1360#L36">OnStart</a>
-					<a class="permalink" href="index.html#DebugMenuState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステートが開始される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DebugMenuState.OnStop">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1539:1582#L44">OnStop</a>
-					<a class="permalink" href="index.html#DebugMenuState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DebugMenuState.String">func (DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=869:909#L21">String</a>
-					<a class="permalink" href="index.html#DebugMenuState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#DebugMenuState">DebugMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="DebugMenuState.Update">func (*DebugMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/debug_menu.go?s=1646:1712#L47">Update</a>
-					<a class="permalink" href="index.html#DebugMenuState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DebugMenuState">DebugMenuState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="DungeonMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=567:742#L10">DungeonMenuState</a>
-				<a class="permalink" href="index.html#DungeonMenuState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>DungeonMenuState はダンジョン内メニューのゲームステート
-
-			<pre>type DungeonMenuState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="DungeonMenuState.Draw">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=1953:2018#L62">Draw</a>
-					<a class="permalink" href="index.html#DungeonMenuState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はゲームステートの描画処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonMenuState.OnPause">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=967:1013#L27">OnPause</a>
-					<a class="permalink" href="index.html#DungeonMenuState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonMenuState.OnResume">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=1082:1129#L30">OnResume</a>
-					<a class="permalink" href="index.html#DungeonMenuState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonMenuState.OnStart">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=1316:1366#L38">OnStart</a>
-					<a class="permalink" href="index.html#DungeonMenuState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステートが開始される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonMenuState.OnStop">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=1566:1611#L48">OnStop</a>
-					<a class="permalink" href="index.html#DungeonMenuState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonMenuState.String">func (DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=744:786#L18">String</a>
-					<a class="permalink" href="index.html#DungeonMenuState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#DungeonMenuState">DungeonMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="DungeonMenuState.Update">func (*DungeonMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_menu.go?s=1675:1743#L51">Update</a>
-					<a class="permalink" href="index.html#DungeonMenuState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonMenuState">DungeonMenuState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="DungeonSelectState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=510:755#L7">DungeonSelectState</a>
-				<a class="permalink" href="index.html#DungeonSelectState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>DungeonSelectState はダンジョン選択のゲームステート
-
-			<pre>type DungeonSelectState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="DungeonSelectState.Draw">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=2159:2226#L64">Draw</a>
-					<a class="permalink" href="index.html#DungeonSelectState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はゲームステートの描画処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonSelectState.OnPause">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=986:1034#L25">OnPause</a>
-					<a class="permalink" href="index.html#DungeonSelectState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonSelectState.OnResume">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=1103:1152#L28">OnResume</a>
-					<a class="permalink" href="index.html#DungeonSelectState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonSelectState.OnStart">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=1339:1391#L36">OnStart</a>
-					<a class="permalink" href="index.html#DungeonSelectState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステートが開始される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonSelectState.OnStop">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=1591:1638#L46">OnStop</a>
-					<a class="permalink" href="index.html#DungeonSelectState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="DungeonSelectState.String">func (DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=757:801#L16">String</a>
-					<a class="permalink" href="index.html#DungeonSelectState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#DungeonSelectState">DungeonSelectState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="DungeonSelectState.Update">func (*DungeonSelectState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon_select.go?s=1702:1772#L49">Update</a>
-					<a class="permalink" href="index.html#DungeonSelectState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#DungeonSelectState">DungeonSelectState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
 			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=673:1010#L15">DungeonState</a>
 				<a class="permalink" href="index.html#DungeonState">&#xb6;</a>
 				
@@ -1279,7 +709,7 @@
 
 			
 				
-				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5334:5399#L150">Draw</a>
+				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5170:5235#L146">Draw</a>
 					<a class="permalink" href="index.html#DungeonState.Draw">&#xb6;</a>
 					
 					
@@ -1488,240 +918,6 @@
 		
 			
 			
-			<h2 id="GameOverState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=414:529#L5">GameOverState</a>
-				<a class="permalink" href="index.html#GameOverState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>GameOverState はゲームオーバーのゲームステート
-
-			<pre>type GameOverState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="GameOverState.Draw">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=1683:1745#L50">Draw</a>
-					<a class="permalink" href="index.html#GameOverState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はゲームステートの描画処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="GameOverState.OnPause">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=745:788#L20">OnPause</a>
-					<a class="permalink" href="index.html#GameOverState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="GameOverState.OnResume">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=857:901#L23">OnResume</a>
-					<a class="permalink" href="index.html#GameOverState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="GameOverState.OnStart">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=969:1016#L26">OnStart</a>
-					<a class="permalink" href="index.html#GameOverState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステートが開始される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="GameOverState.OnStop">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=1196:1238#L35">OnStop</a>
-					<a class="permalink" href="index.html#GameOverState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="GameOverState.String">func (GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=531:570#L11">String</a>
-					<a class="permalink" href="index.html#GameOverState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#GameOverState">GameOverState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="GameOverState.Update">func (*GameOverState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/game_over.go?s=1302:1367#L38">Update</a>
-					<a class="permalink" href="index.html#GameOverState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#GameOverState">GameOverState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="HomeMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=762:1124#L13">HomeMenuState</a>
-				<a class="permalink" href="index.html#HomeMenuState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>HomeMenuState は拠点メニューのゲームステート
-
-			<pre>type HomeMenuState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="HomeMenuState.Draw">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=2722:2784#L85">Draw</a>
-					<a class="permalink" href="index.html#HomeMenuState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) Draw(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はゲームステートの描画処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="HomeMenuState.OnPause">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1340:1383#L38">OnPause</a>
-					<a class="permalink" href="index.html#HomeMenuState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="HomeMenuState.OnResume">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1452:1500#L41">OnResume</a>
-					<a class="permalink" href="index.html#HomeMenuState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnResume(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="HomeMenuState.OnStart">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1720:1767#L50">OnStart</a>
-					<a class="permalink" href="index.html#HomeMenuState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステートが開始される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="HomeMenuState.OnStop">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=2135:2177#L66">OnStop</a>
-					<a class="permalink" href="index.html#HomeMenuState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="HomeMenuState.String">func (HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=1126:1165#L29">String</a>
-					<a class="permalink" href="index.html#HomeMenuState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#HomeMenuState">HomeMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="HomeMenuState.Update">func (*HomeMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/home_menu.go?s=2241:2306#L69">Update</a>
-					<a class="permalink" href="index.html#HomeMenuState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#HomeMenuState">HomeMenuState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
 			<h2 id="InventoryMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=747:1639#L15">InventoryMenuState</a>
 				<a class="permalink" href="index.html#InventoryMenuState">&#xb6;</a>
 				
@@ -1830,123 +1026,6 @@
 					
 				</h3>
 				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="LoadMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=451:665#L8">LoadMenuState</a>
-				<a class="permalink" href="index.html#LoadMenuState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>LoadMenuState はロードスロット選択メニュー
-
-			<pre>type LoadMenuState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="LoadMenuState.Draw">func (*LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=1756:1822#L56">Draw</a>
-					<a class="permalink" href="index.html#LoadMenuState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#LoadMenuState">LoadMenuState</a>) Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はスクリーンに描画する
-
-				
-				
-				
-			
-				
-				<h3 id="LoadMenuState.OnPause">func (*LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=844:887#L24">OnPause</a>
-					<a class="permalink" href="index.html#LoadMenuState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#LoadMenuState">LoadMenuState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="LoadMenuState.OnResume">func (*LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=956:1000#L27">OnResume</a>
-					<a class="permalink" href="index.html#LoadMenuState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#LoadMenuState">LoadMenuState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="LoadMenuState.OnStart">func (*LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=1059:1106#L30">OnStart</a>
-					<a class="permalink" href="index.html#LoadMenuState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#LoadMenuState">LoadMenuState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステート開始時の処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="LoadMenuState.OnStop">func (*LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=1429:1471#L44">OnStop</a>
-					<a class="permalink" href="index.html#LoadMenuState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#LoadMenuState">LoadMenuState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="LoadMenuState.String">func (LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=667:706#L17">String</a>
-					<a class="permalink" href="index.html#LoadMenuState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#LoadMenuState">LoadMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="LoadMenuState.Update">func (*LoadMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/load_menu.go?s=1535:1600#L47">Update</a>
-					<a class="permalink" href="index.html#LoadMenuState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#LoadMenuState">LoadMenuState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
 				<p>Update はゲームステートの更新処理を行う
 
 				
@@ -2098,7 +1177,7 @@
 
 			
 				
-				<h3 id="MessageState.Draw">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1626:1687#L44">Draw</a>
+				<h3 id="MessageState.Draw">func (*MessageState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/message.go?s=1861:1922#L50">Draw</a>
 					<a class="permalink" href="index.html#MessageState.Draw">&#xb6;</a>
 					
 					
@@ -2186,151 +1265,6 @@
 				
 				
 				
-			
-		
-			
-			
-			<h2 id="SaveMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=451:665#L8">SaveMenuState</a>
-				<a class="permalink" href="index.html#SaveMenuState">&#xb6;</a>
-				
-				
-			</h2>
-			<p>SaveMenuState はセーブスロット選択メニュー
-
-			<pre>type SaveMenuState struct {
-    <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#BaseState">BaseState</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="SaveMenuState.Draw">func (*SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=1756:1822#L56">Draw</a>
-					<a class="permalink" href="index.html#SaveMenuState.Draw">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#SaveMenuState">SaveMenuState</a>) Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-				<p>Draw はスクリーンに描画する
-
-				
-				
-				
-			
-				
-				<h3 id="SaveMenuState.OnPause">func (*SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=844:887#L24">OnPause</a>
-					<a class="permalink" href="index.html#SaveMenuState.OnPause">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#SaveMenuState">SaveMenuState</a>) OnPause(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnPause はステートが一時停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="SaveMenuState.OnResume">func (*SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=956:1000#L27">OnResume</a>
-					<a class="permalink" href="index.html#SaveMenuState.OnResume">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#SaveMenuState">SaveMenuState</a>) OnResume(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnResume はステートが再開される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="SaveMenuState.OnStart">func (*SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=1059:1106#L30">OnStart</a>
-					<a class="permalink" href="index.html#SaveMenuState.OnStart">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#SaveMenuState">SaveMenuState</a>) OnStart(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStart はステート開始時の処理を行う
-
-				
-				
-				
-			
-				
-				<h3 id="SaveMenuState.OnStop">func (*SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=1429:1471#L44">OnStop</a>
-					<a class="permalink" href="index.html#SaveMenuState.OnStop">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#SaveMenuState">SaveMenuState</a>) OnStop(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-				<p>OnStop はステートが停止される際に呼ばれる
-
-				
-				
-				
-			
-				
-				<h3 id="SaveMenuState.String">func (SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=667:706#L17">String</a>
-					<a class="permalink" href="index.html#SaveMenuState.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st <a href="index.html#SaveMenuState">SaveMenuState</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-				
-				<h3 id="SaveMenuState.Update">func (*SaveMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=1535:1600#L47">Update</a>
-					<a class="permalink" href="index.html#SaveMenuState.Update">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (st *<a href="index.html#SaveMenuState">SaveMenuState</a>) Update(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-				<p>Update はゲームステートの更新処理を行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="SaveSlotInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/save_menu.go?s=4035:4121#L145">SaveSlotInfo</a>
-				<a class="permalink" href="index.html#SaveSlotInfo">&#xb6;</a>
-				
-				
-			</h2>
-			<p>SaveSlotInfo はセーブスロットの情報
-
-			<pre>type SaveSlotInfo struct {
-<span id="SaveSlotInfo.Label"></span>    Label       <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="SaveSlotInfo.Description"></span>    Description <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="SaveSlotInfo.Exists"></span>    Exists      <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
 			
 		
 	
