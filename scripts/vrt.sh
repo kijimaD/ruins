@@ -20,7 +20,6 @@ cmd() {
 cmd CraftMenu
 cmd DebugMenu
 cmd Dungeon
-cmd DungeonMenu
 cmd DungeonSelect
 cmd EquipMenu
 cmd GameOver
