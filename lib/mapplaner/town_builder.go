@@ -1,4 +1,4 @@
-// Package mapbuilder の街用ビルダー
+// Package mapplaner の街用ビルダー
 // 固定レイアウトの街マップを生成する
 package mapplaner
 
@@ -6,11 +6,11 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// TownMapBuilder は街の固定マップ初期ビルダー
-type TownMapBuilder struct{}
+// TownMapPlanner は街の固定マップ初期ビルダー
+type TownMapPlanner struct{}
 
 // BuildInitial は市街地の固定マップ構造を初期化する
-func (b TownMapBuilder) BuildInitial(buildData *BuilderMap) {
+func (b TownMapPlanner) BuildInitial(buildData *PlannerMap) {
 	// 一般的な市街地レイアウト
 	// - 中央に市庁舎・公園
 	// - 周囲に住宅・商業・公共施設
@@ -137,7 +137,7 @@ func (b TownMapBuilder) BuildInitial(buildData *BuilderMap) {
 type TownMapDraw struct{}
 
 // BuildMeta は街マップの描画を行う
-func (b TownMapDraw) BuildMeta(buildData *BuilderMap) {
+func (b TownMapDraw) BuildMeta(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 	centerX := width / 2
@@ -154,7 +154,7 @@ func (b TownMapDraw) BuildMeta(buildData *BuilderMap) {
 }
 
 // drawRooms は部屋（建物）を描画する
-func (b TownMapDraw) drawRooms(buildData *BuilderMap, width, height int) {
+func (b TownMapDraw) drawRooms(buildData *PlannerMap, width, height int) {
 	for _, room := range buildData.Rooms {
 		for x := room.X1; x < room.X2; x++ {
 			for y := room.Y1; y < room.Y2; y++ {
@@ -168,7 +168,7 @@ func (b TownMapDraw) drawRooms(buildData *BuilderMap, width, height int) {
 }
 
 // drawRoadNetwork は街路網を描画する
-func (b TownMapDraw) drawRoadNetwork(buildData *BuilderMap, width, height, centerX, centerY int) {
+func (b TownMapDraw) drawRoadNetwork(buildData *PlannerMap, width, height, centerX, centerY int) {
 	// メイン通り（十字路）
 	b.drawMainStreets(buildData, width, height, centerX, centerY)
 
@@ -177,7 +177,7 @@ func (b TownMapDraw) drawRoadNetwork(buildData *BuilderMap, width, height, cente
 }
 
 // drawMainStreets はメインストリートを描画する
-func (b TownMapDraw) drawMainStreets(buildData *BuilderMap, width, height, centerX, centerY int) {
+func (b TownMapDraw) drawMainStreets(buildData *PlannerMap, width, height, centerX, centerY int) {
 	// メイン通り（南北）- 幅広の大通り
 	for y := 0; y < height; y++ {
 		for roadWidth := -2; roadWidth <= 2; roadWidth++ {
@@ -202,7 +202,7 @@ func (b TownMapDraw) drawMainStreets(buildData *BuilderMap, width, height, cente
 }
 
 // drawDistrictRoads は中央聖域から各区域への道を描画する
-func (b TownMapDraw) drawDistrictRoads(buildData *BuilderMap, width, height, centerX, centerY int) {
+func (b TownMapDraw) drawDistrictRoads(buildData *PlannerMap, width, height, centerX, centerY int) {
 	// 中央から北の学術区域への道
 	b.drawScholarRoad(buildData, width, height, centerX, centerY)
 
@@ -220,7 +220,7 @@ func (b TownMapDraw) drawDistrictRoads(buildData *BuilderMap, width, height, cen
 }
 
 // drawScholarRoad は中央から北の学術区域への道を描画する
-func (b TownMapDraw) drawScholarRoad(buildData *BuilderMap, width, _, centerX, centerY int) {
+func (b TownMapDraw) drawScholarRoad(buildData *PlannerMap, width, _, centerX, centerY int) {
 	// 中央から北へ向かう石畳の道（拡張された学術区域まで）
 	for y := centerY - 6; y >= centerY-22 && y >= 0; y-- {
 		for roadWidth := -1; roadWidth <= 1; roadWidth++ {
@@ -234,7 +234,7 @@ func (b TownMapDraw) drawScholarRoad(buildData *BuilderMap, width, _, centerX, c
 }
 
 // drawCraftRoad は中央から東の工芸区域への道を描画する
-func (b TownMapDraw) drawCraftRoad(buildData *BuilderMap, width, height, centerX, centerY int) {
+func (b TownMapDraw) drawCraftRoad(buildData *PlannerMap, width, height, centerX, centerY int) {
 	// 中央から東へ向かう石畳の道（拡張された工芸区域まで）
 	for x := centerX + 7; x <= centerX+22 && x < width; x++ {
 		for roadWidth := -1; roadWidth <= 1; roadWidth++ {
@@ -248,7 +248,7 @@ func (b TownMapDraw) drawCraftRoad(buildData *BuilderMap, width, height, centerX
 }
 
 // drawTempleRoad は中央から南の神殿区域への大通りを描画する
-func (b TownMapDraw) drawTempleRoad(buildData *BuilderMap, width, height, centerX, centerY int) {
+func (b TownMapDraw) drawTempleRoad(buildData *PlannerMap, width, height, centerX, centerY int) {
 	// 中央から南へ向かう幅広の参道（拡張された神殿区域まで）
 	for y := centerY + 7; y <= centerY+24 && y < height; y++ {
 		for roadWidth := -2; roadWidth <= 2; roadWidth++ {
@@ -262,7 +262,7 @@ func (b TownMapDraw) drawTempleRoad(buildData *BuilderMap, width, height, center
 }
 
 // drawTradeRoad は中央から西の交易区域への道を描画する
-func (b TownMapDraw) drawTradeRoad(buildData *BuilderMap, _, height, centerX, centerY int) {
+func (b TownMapDraw) drawTradeRoad(buildData *PlannerMap, _, height, centerX, centerY int) {
 	// 中央から西へ向かう石畳の道（拡張された交易区域まで）
 	for x := centerX - 6; x >= centerX-22 && x >= 0; x-- {
 		for roadWidth := -1; roadWidth <= 1; roadWidth++ {
@@ -276,7 +276,7 @@ func (b TownMapDraw) drawTradeRoad(buildData *BuilderMap, _, height, centerX, ce
 }
 
 // drawInnerPaths は各エリア内の小道を描画する
-func (b TownMapDraw) drawInnerPaths(buildData *BuilderMap, width, height, centerX, centerY int) {
+func (b TownMapDraw) drawInnerPaths(buildData *PlannerMap, width, height, centerX, centerY int) {
 	// 北西の隠居者の庵への小道（拡張エリアに合わせて延長）
 	for i := 0; i < 8; i++ {
 		x := centerX - 6 - i
@@ -328,7 +328,7 @@ func (b TownMapDraw) drawInnerPaths(buildData *BuilderMap, width, height, center
 }
 
 // fillDiagonalGaps は斜めの空いている箇所を壁で埋める
-func (b TownMapDraw) fillDiagonalGaps(buildData *BuilderMap, width, height int) {
+func (b TownMapDraw) fillDiagonalGaps(buildData *PlannerMap, width, height int) {
 	// マップ全体をスキャンして、斜めの空いている不自然な箇所を検出・修正
 	for y := 1; y < height-1; y++ {
 		for x := 1; x < width-1; x++ {
@@ -351,7 +351,7 @@ func (b TownMapDraw) fillDiagonalGaps(buildData *BuilderMap, width, height int) 
 }
 
 // shouldFillDiagonalGap は斜めギャップを埋めるべきかを判定する
-func (b TownMapDraw) shouldFillDiagonalGap(buildData *BuilderMap, x, y, _, _ int) bool {
+func (b TownMapDraw) shouldFillDiagonalGap(buildData *PlannerMap, x, y, _, _ int) bool {
 	// 4つの直交方向の隣接タイル
 	upIdx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y-1))
 	downIdx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y+1))
@@ -411,7 +411,7 @@ func (b TownMapDraw) shouldFillDiagonalGap(buildData *BuilderMap, x, y, _, _ int
 }
 
 // fillSurroundingGaps は周囲の問題のあるギャップを埋める
-func (b TownMapDraw) fillSurroundingGaps(buildData *BuilderMap, centerX, centerY, width, height int) {
+func (b TownMapDraw) fillSurroundingGaps(buildData *PlannerMap, centerX, centerY, width, height int) {
 	// 中心点から3x3の範囲を調査し、孤立した床タイルを壁に変更
 	for dy := -1; dy <= 1; dy++ {
 		for dx := -1; dx <= 1; dx++ {
@@ -434,7 +434,7 @@ func (b TownMapDraw) fillSurroundingGaps(buildData *BuilderMap, centerX, centerY
 }
 
 // isSurroundedByWalls は指定位置が壁に囲まれているかを判定する
-func (b TownMapDraw) isSurroundedByWalls(buildData *BuilderMap, x, y, width, height int) bool {
+func (b TownMapDraw) isSurroundedByWalls(buildData *PlannerMap, x, y, width, height int) bool {
 	wallCount := 0
 	totalNeighbors := 0
 

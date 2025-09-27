@@ -9,10 +9,13 @@ import (
 // MapPlan はマップ生成計画を表す
 // タイル配置とエンティティ配置を事前に計画し、後で一括実行する
 type MapPlan struct {
-	Width    int          // マップ幅
-	Height   int          // マップ高さ
-	Tiles    []TileSpec   // タイル配置計画
-	Entities []EntitySpec // エンティティ配置計画
+	Width        int          // マップ幅
+	Height       int          // マップ高さ
+	Tiles        []TileSpec   // タイル配置計画
+	Entities     []EntitySpec // エンティティ配置計画
+	PlayerStartX int          // プレイヤー開始X座標
+	PlayerStartY int          // プレイヤー開始Y座標
+	HasPlayerPos bool         // プレイヤー位置が設定されているか
 }
 
 // TileSpec はタイル配置仕様
@@ -51,6 +54,10 @@ const (
 	EntityTypeNPC
 	// EntityTypeItem はアイテムエンティティ
 	EntityTypeItem
+	// EntityTypePlayer はプレイヤーエンティティ
+	EntityTypePlayer
+	// EntityTypeDoor はドアエンティティ
+	EntityTypeDoor
 )
 
 // String はEntityTypeの文字列表現を返す
@@ -70,6 +77,10 @@ func (et EntityType) String() string {
 		return "NPC"
 	case EntityTypeItem:
 		return "Item"
+	case EntityTypePlayer:
+		return "Player"
+	case EntityTypeDoor:
+		return "Door"
 	default:
 		return "Unknown"
 	}
@@ -78,10 +89,13 @@ func (et EntityType) String() string {
 // NewMapPlan は新しいMapPlanを作成する
 func NewMapPlan(width, height int) *MapPlan {
 	return &MapPlan{
-		Width:    width,
-		Height:   height,
-		Tiles:    make([]TileSpec, 0),
-		Entities: make([]EntitySpec, 0),
+		Width:        width,
+		Height:       height,
+		Tiles:        make([]TileSpec, 0),
+		Entities:     make([]EntitySpec, 0),
+		PlayerStartX: 0,
+		PlayerStartY: 0,
+		HasPlayerPos: false,
 	}
 }
 
@@ -161,7 +175,7 @@ func (mp *MapPlan) AddItem(x, y int, itemType string) {
 	})
 }
 
-// Validateplan は計画の妥当性をチェックする
+// ValidatePlan は計画の妥当性をチェックする
 func (mp *MapPlan) ValidatePlan() error {
 	// 座標範囲チェック
 	for _, tile := range mp.Tiles {
@@ -196,4 +210,17 @@ func NewValidationError(message string, x, y int) ValidationError {
 		X:       x,
 		Y:       y,
 	}
+}
+
+// SetPlayerStartPosition はプレイヤーの開始位置を設定する
+func (mp *MapPlan) SetPlayerStartPosition(x, y int) {
+	mp.PlayerStartX = x
+	mp.PlayerStartY = y
+	mp.HasPlayerPos = true
+}
+
+// GetPlayerStartPosition はプレイヤーの開始位置を取得する
+// プレイヤー位置が設定されていない場合はfalseを返す
+func (mp *MapPlan) GetPlayerStartPosition() (int, int, bool) {
+	return mp.PlayerStartX, mp.PlayerStartY, mp.HasPlayerPos
 }

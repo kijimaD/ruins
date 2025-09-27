@@ -1,9 +1,8 @@
-// Package mapbuilder はマップ生成機能を提供する
+// Package mapplaner はマップ生成機能を提供する
 // 参考: https://bfnightly.bracketproductions.com
 package mapplaner
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -13,8 +12,8 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// BuilderMap は階層のタイルを作る元になる概念の集合体
-type BuilderMap struct {
+// PlannerMap は階層のタイルを作る元になる概念の集合体
+type PlannerMap struct {
 	// 階層情報
 	Level resources.Level
 	// 階層を構成するタイル群。長さはステージの大きさで決まる
@@ -31,7 +30,7 @@ type BuilderMap struct {
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
-func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
+func (bm PlannerMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
 	if tile != TileFloor {
@@ -46,7 +45,7 @@ func (bm BuilderMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool
 }
 
 // 指定タイル座標にエンティティがすでにあるかを返す
-func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
+func (bm PlannerMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	isExist := false
 
 	world.Manager.Join(
@@ -64,7 +63,7 @@ func (bm BuilderMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bo
 }
 
 // UpTile は上にあるタイルを調べる
-func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile {
+func (bm PlannerMap) UpTile(idx resources.TileIdx) Tile {
 	targetIdx := resources.TileIdx(int(idx) - int(bm.Level.TileWidth))
 	if targetIdx < 0 {
 		return TileEmpty
@@ -74,7 +73,7 @@ func (bm BuilderMap) UpTile(idx resources.TileIdx) Tile {
 }
 
 // DownTile は下にあるタイルを調べる
-func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile {
+func (bm PlannerMap) DownTile(idx resources.TileIdx) Tile {
 	targetIdx := int(idx) + int(bm.Level.TileWidth)
 	if targetIdx > len(bm.Tiles)-1 {
 		return TileEmpty
@@ -84,7 +83,7 @@ func (bm BuilderMap) DownTile(idx resources.TileIdx) Tile {
 }
 
 // LeftTile は左にあるタイルを調べる
-func (bm BuilderMap) LeftTile(idx resources.TileIdx) Tile {
+func (bm PlannerMap) LeftTile(idx resources.TileIdx) Tile {
 	targetIdx := idx - 1
 	if targetIdx < 0 {
 		return TileEmpty
@@ -94,7 +93,7 @@ func (bm BuilderMap) LeftTile(idx resources.TileIdx) Tile {
 }
 
 // RightTile は右にあるタイルを調べる
-func (bm BuilderMap) RightTile(idx resources.TileIdx) Tile {
+func (bm PlannerMap) RightTile(idx resources.TileIdx) Tile {
 	targetIdx := idx + 1
 	if int(targetIdx) > len(bm.Tiles)-1 {
 		return TileEmpty
@@ -104,7 +103,7 @@ func (bm BuilderMap) RightTile(idx resources.TileIdx) Tile {
 }
 
 // AdjacentOrthoAnyFloor は直交する近傍4タイルに床があるか判定する
-func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
+func (bm PlannerMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 	return bm.UpTile(idx) == TileFloor ||
 		bm.DownTile(idx) == TileFloor ||
 		bm.RightTile(idx) == TileFloor ||
@@ -116,7 +115,7 @@ func (bm BuilderMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 }
 
 // AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
-func (bm BuilderMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
+func (bm PlannerMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
 	x, y := bm.Level.XYTileCoord(idx)
 	width := int(bm.Level.TileWidth)
 	height := int(bm.Level.TileHeight)
@@ -148,7 +147,7 @@ func (bm BuilderMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
 }
 
 // GetWallType は近傍パターンから適切な壁タイプを判定する
-func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType {
+func (bm PlannerMap) GetWallType(idx resources.TileIdx) WallType {
 	// 4方向の隣接タイルの床状況をチェック
 	upFloor := bm.isFloorOrWarp(bm.UpTile(idx))
 	downFloor := bm.isFloorOrWarp(bm.DownTile(idx))
@@ -170,7 +169,7 @@ func (bm BuilderMap) GetWallType(idx resources.TileIdx) WallType {
 }
 
 // checkSingleDirectionWalls は単一方向に床がある場合の壁タイプを返す
-func (bm BuilderMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
+func (bm PlannerMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
 	if downFloor && !upFloor && !leftFloor && !rightFloor {
 		return WallTypeTop // 下に床がある → 上壁
 	}
@@ -187,7 +186,7 @@ func (bm BuilderMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, ri
 }
 
 // checkCornerWalls は2方向に床がある場合の壁タイプを返す
-func (bm BuilderMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
+func (bm PlannerMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
 	if downFloor && rightFloor && !upFloor && !leftFloor {
 		return WallTypeTopLeft // 下右に床 → 左上角
 	}
@@ -204,20 +203,20 @@ func (bm BuilderMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor 
 }
 
 // isFloorOrWarp は床またはワープタイルかを判定する
-func (bm BuilderMap) isFloorOrWarp(tile Tile) bool {
+func (bm PlannerMap) isFloorOrWarp(tile Tile) bool {
 	return tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape
 }
 
-// BuilderChain は階層データBuilderMapに対して適用する生成ロジックを保持する構造体
-type BuilderChain struct {
-	Starter   *InitialMapBuilder
-	Builders  []MetaMapBuilder
-	BuildData BuilderMap
+// PlannerChain は階層データPlannerMapに対して適用する生成ロジックを保持する構造体
+type PlannerChain struct {
+	Starter  *InitialMapPlanner
+	Planners []MetaMapPlanner
+	PlanData PlannerMap
 }
 
-// NewBuilderChain はシード値を指定してビルダーチェーンを作成する
+// NewPlannerChain はシード値を指定してプランナーチェーンを作成する
 // シードが0の場合はランダムなシードを生成する
-func NewBuilderChain(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
+func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	tileCount := int(width) * int(height)
 	tiles := make([]Tile, tileCount)
 
@@ -226,10 +225,10 @@ func NewBuilderChain(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 		seed = uint64(time.Now().UnixNano())
 	}
 
-	return &BuilderChain{
+	return &PlannerChain{
 		Starter:  nil,
-		Builders: []MetaMapBuilder{},
-		BuildData: BuilderMap{
+		Planners: []MetaMapPlanner{},
+		PlanData: PlannerMap{
 			Level: resources.Level{
 				TileWidth:  width,
 				TileHeight: height,
@@ -243,84 +242,69 @@ func NewBuilderChain(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 	}
 }
 
-// StartWith は初期ビルダーを設定する
-func (b *BuilderChain) StartWith(initialMapBuilder InitialMapBuilder) {
-	b.Starter = &initialMapBuilder
+// StartWith は初期プランナーを設定する
+func (b *PlannerChain) StartWith(initialMapPlanner InitialMapPlanner) {
+	b.Starter = &initialMapPlanner
 }
 
-// With はメタビルダーを追加する
-func (b *BuilderChain) With(metaMapBuilder MetaMapBuilder) {
-	b.Builders = append(b.Builders, metaMapBuilder)
+// With はメタプランナーを追加する
+func (b *PlannerChain) With(metaMapPlanner MetaMapPlanner) {
+	b.Planners = append(b.Planners, metaMapPlanner)
 }
 
-// Build はビルダーチェーンを実行してマップを生成する
-func (b *BuilderChain) Build() {
+// Build はプランナーチェーンを実行してマップを生成する
+func (b *PlannerChain) Build() {
 	if b.Starter == nil {
-		log.Fatal("empty starter builder!")
+		log.Fatal("empty starter planner!")
 	}
-	(*b.Starter).BuildInitial(&b.BuildData)
+	(*b.Starter).BuildInitial(&b.PlanData)
 
-	for _, meta := range b.Builders {
-		meta.BuildMeta(&b.BuildData)
+	for _, meta := range b.Planners {
+		meta.BuildMeta(&b.PlanData)
 	}
-}
-
-// BuildPlan はビルダーチェーンを実行してMapPlanを生成する
-func (b *BuilderChain) BuildPlan() (*MapPlan, error) {
-	// 通常のBuildを実行
-	b.Build()
-
-	// mapspawnerパッケージのBuildPlanFromTiles関数を使用する必要がある
-	// この関数の実装は後でmapspawnerパッケージから呼び出すように修正する
-	return nil, fmt.Errorf("BuildPlan機能はmapspawnerパッケージに移動されました")
 }
 
 // ValidateConnectivity はマップの接続性を検証する
 // プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
-func (b *BuilderChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
-	pf := NewPathFinder(&b.BuildData)
+func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
+	pf := NewPathFinder(&b.PlanData)
 	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
 }
 
-// InitialMapBuilder は初期マップをビルドするインターフェース
+// InitialMapPlanner は初期マップをプランするインターフェース
 // タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
-type InitialMapBuilder interface {
-	BuildInitial(*BuilderMap)
+type InitialMapPlanner interface {
+	BuildInitial(*PlannerMap)
 }
 
-// MetaMapBuilder はメタ情報をビルドするインターフェース
-type MetaMapBuilder interface {
-	BuildMeta(*BuilderMap)
+// MetaMapPlanner はメタ情報をプランするインターフェース
+type MetaMapPlanner interface {
+	BuildMeta(*PlannerMap)
 }
 
-// NewSmallRoomBuilder はシンプルな小部屋ビルダーを作成する
-func NewSmallRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(RectRoomBuilder{})
+// NewSmallRoomPlanner はシンプルな小部屋プランナーを作成する
+func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	chain := NewPlannerChain(width, height, seed)
+	chain.StartWith(RectRoomPlanner{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
 	chain.With(RoomDraw{})                // 部屋を描画
-	chain.With(LineCorridorBuilder{})     // 廊下を作成
+	chain.With(LineCorridorPlanner{})     // 廊下を作成
 	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
 
 	return chain
 }
 
-// NewTownBuilder は街の固定マップビルダーを作成する
-func NewTownBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(TownMapBuilder{})     // 固定町マップを生成
-	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
-	chain.With(TownMapDraw{})             // 固定町マップを描画
-	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
-
-	return chain
+// NewTownPlanner は街の固定マッププランナーを作成する
+func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	// 新しい文字列ベースの街プランナーを使用
+	return NewStringTownPlanner(width, height, seed)
 }
 
-// NewBigRoomBuilder は大部屋ビルダーを作成する
+// NewBigRoomPlanner は大部屋プランナーを作成する
 // ランダムにバリエーションを適用する統合版
-func NewBigRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(BigRoomBuilder{})
+func NewBigRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	chain := NewPlannerChain(width, height, seed)
+	chain.StartWith(BigRoomPlanner{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
 	chain.With(BigRoomDraw{})             // 大部屋を描画（バリエーション込み）
 	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
@@ -328,89 +312,81 @@ func NewBigRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain
 	return chain
 }
 
-// BuilderType はマップ生成の設定を表す構造体
-type BuilderType struct {
-	// ビルダー名
+// PlannerType はマップ生成の設定を表す構造体
+type PlannerType struct {
+	// プランナー名
 	Name string
 	// 敵をスポーンするか
 	SpawnEnemies bool
 	// アイテムをスポーンするか
 	SpawnItems bool
-	// プレイヤー位置を固定するか
-	UseFixedPlayerPos bool
 	// ポータル位置を固定するか
 	UseFixedPortalPos bool
-	// ビルダー関数
-	BuilderFunc func(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain
+	// プランナー関数
+	PlannerFunc func(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain
 }
 
 var (
-	// BuilderTypeRandom はランダム選択用のビルダータイプ
-	BuilderTypeRandom = BuilderType{Name: "ランダム"}
+	// PlannerTypeRandom はランダム選択用のプランナータイプ
+	PlannerTypeRandom = PlannerType{Name: "ランダム"}
 
-	// BuilderTypeSmallRoom は小部屋ダンジョンのビルダータイプ
-	BuilderTypeSmallRoom = BuilderType{
+	// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ
+	PlannerTypeSmallRoom = PlannerType{
 		Name:              "小部屋",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
-		UseFixedPlayerPos: false,
 		UseFixedPortalPos: false,
-		BuilderFunc:       NewSmallRoomBuilder,
+		PlannerFunc:       NewSmallRoomPlanner,
 	}
 
-	// BuilderTypeBigRoom は大部屋ダンジョンのビルダータイプ
-	BuilderTypeBigRoom = BuilderType{
+	// PlannerTypeBigRoom は大部屋ダンジョンのプランナータイプ
+	PlannerTypeBigRoom = PlannerType{
 		Name:              "大部屋",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
-		UseFixedPlayerPos: false,
 		UseFixedPortalPos: false,
-		BuilderFunc:       NewBigRoomBuilder,
+		PlannerFunc:       NewBigRoomPlanner,
 	}
 
-	// BuilderTypeCave は洞窟ダンジョンのビルダータイプ
-	BuilderTypeCave = BuilderType{
+	// PlannerTypeCave は洞窟ダンジョンのプランナータイプ
+	PlannerTypeCave = PlannerType{
 		Name:              "洞窟",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
-		UseFixedPlayerPos: false,
 		UseFixedPortalPos: false,
-		BuilderFunc:       NewCaveBuilder,
+		PlannerFunc:       NewCavePlanner,
 	}
 
-	// BuilderTypeRuins は遺跡ダンジョンのビルダータイプ
-	BuilderTypeRuins = BuilderType{
+	// PlannerTypeRuins は遺跡ダンジョンのプランナータイプ
+	PlannerTypeRuins = PlannerType{
 		Name:              "遺跡",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
-		UseFixedPlayerPos: false,
 		UseFixedPortalPos: false,
-		BuilderFunc:       NewRuinsBuilder,
+		PlannerFunc:       NewRuinsPlanner,
 	}
 
-	// BuilderTypeForest は森ダンジョンのビルダータイプ
-	BuilderTypeForest = BuilderType{
+	// PlannerTypeForest は森ダンジョンのプランナータイプ
+	PlannerTypeForest = PlannerType{
 		Name:              "森",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
-		UseFixedPlayerPos: false,
 		UseFixedPortalPos: false,
-		BuilderFunc:       NewForestBuilder,
+		PlannerFunc:       NewForestPlanner,
 	}
 
-	// BuilderTypeTown は市街地のビルダータイプ
-	BuilderTypeTown = BuilderType{
+	// PlannerTypeTown は市街地のプランナータイプ
+	PlannerTypeTown = PlannerType{
 		Name:              "市街地",
 		SpawnEnemies:      false, // 街では敵をスポーンしない
 		SpawnItems:        false, // 街ではフィールドアイテムをスポーンしない
-		UseFixedPlayerPos: true,  // プレイヤー位置を固定
 		UseFixedPortalPos: true,  // ポータル位置を固定
-		BuilderFunc:       NewTownBuilder,
+		PlannerFunc:       NewTownPlanner,
 	}
 )
 
-// NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
-func NewRandomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
+// NewRandomPlanner はシード値を使用してランダムにプランナーを選択し作成する
+func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	// シードが0の場合はランダムなシードを生成する。後続のビルダーに渡される
 	if seed == 0 {
 		seed = uint64(time.Now().UnixNano())
@@ -419,17 +395,17 @@ func NewRandomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain 
 	// シード値からランダムソースを作成（ビルダー選択用）
 	rs := NewRandomSource(seed)
 
-	// ランダム選択対象のビルダータイプ（街は除外）
-	candidateTypes := []BuilderType{
-		BuilderTypeSmallRoom,
-		BuilderTypeBigRoom,
-		BuilderTypeCave,
-		BuilderTypeRuins,
-		BuilderTypeForest,
+	// ランダム選択対象のプランナータイプ（街は除外）
+	candidateTypes := []PlannerType{
+		PlannerTypeSmallRoom,
+		PlannerTypeBigRoom,
+		PlannerTypeCave,
+		PlannerTypeRuins,
+		PlannerTypeForest,
 	}
 
 	// ランダムに選択
 	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
 
-	return selectedType.BuilderFunc(width, height, seed)
+	return selectedType.PlannerFunc(width, height, seed)
 }

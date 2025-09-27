@@ -13,20 +13,20 @@ func TestSeedReproducibility(t *testing.T) {
 	width, height := gc.Tile(20), gc.Tile(20)
 
 	// 1回目の生成
-	chain1 := NewSmallRoomBuilder(width, height, testSeed)
+	chain1 := NewSmallRoomPlanner(width, height, testSeed)
 	chain1.Build()
-	tiles1 := make([]Tile, len(chain1.BuildData.Tiles))
-	copy(tiles1, chain1.BuildData.Tiles)
-	rooms1 := make([]gc.Rect, len(chain1.BuildData.Rooms))
-	copy(rooms1, chain1.BuildData.Rooms)
+	tiles1 := make([]Tile, len(chain1.PlanData.Tiles))
+	copy(tiles1, chain1.PlanData.Tiles)
+	rooms1 := make([]gc.Rect, len(chain1.PlanData.Rooms))
+	copy(rooms1, chain1.PlanData.Rooms)
 
 	// 2回目の生成（同じシード）
-	chain2 := NewSmallRoomBuilder(width, height, testSeed)
+	chain2 := NewSmallRoomPlanner(width, height, testSeed)
 	chain2.Build()
-	tiles2 := make([]Tile, len(chain2.BuildData.Tiles))
-	copy(tiles2, chain2.BuildData.Tiles)
-	rooms2 := make([]gc.Rect, len(chain2.BuildData.Rooms))
-	copy(rooms2, chain2.BuildData.Rooms)
+	tiles2 := make([]Tile, len(chain2.PlanData.Tiles))
+	copy(tiles2, chain2.PlanData.Tiles)
+	rooms2 := make([]gc.Rect, len(chain2.PlanData.Rooms))
+	copy(rooms2, chain2.PlanData.Rooms)
 
 	// タイルが完全に一致することを確認
 	if len(tiles1) != len(tiles2) {
@@ -55,18 +55,18 @@ func TestDifferentSeeds(t *testing.T) {
 	width, height := gc.Tile(20), gc.Tile(20)
 
 	// シード1で生成
-	chain1 := NewSmallRoomBuilder(width, height, 11111)
+	chain1 := NewSmallRoomPlanner(width, height, 11111)
 	chain1.Build()
 
 	// シード2で生成
-	chain2 := NewSmallRoomBuilder(width, height, 22222)
+	chain2 := NewSmallRoomPlanner(width, height, 22222)
 	chain2.Build()
 
 	// 部屋数が異なる可能性が高い（必ずしも異なるとは限らないが）
 	// 少なくともいくつかのタイルは異なるはず
 	differentTiles := 0
-	for i := range chain1.BuildData.Tiles {
-		if chain1.BuildData.Tiles[i] != chain2.BuildData.Tiles[i] {
+	for i := range chain1.PlanData.Tiles {
+		if chain1.PlanData.Tiles[i] != chain2.PlanData.Tiles[i] {
 			differentTiles++
 		}
 	}
@@ -110,20 +110,20 @@ func TestZeroSeedHandling(t *testing.T) {
 	width, height := gc.Tile(10), gc.Tile(10)
 
 	// シード0で2回生成
-	chain1 := NewSmallRoomBuilder(width, height, 0)
+	chain1 := NewSmallRoomPlanner(width, height, 0)
 	chain1.Build()
 
 	// 少し時間をずらして再度生成
-	chain2 := NewSmallRoomBuilder(width, height, 0)
+	chain2 := NewSmallRoomPlanner(width, height, 0)
 	chain2.Build()
 
 	// 高確率で異なるマップになるはず（厳密には同じになる可能性もあるが極めて低い）
 	// ここでは部屋数だけチェック
-	if len(chain1.BuildData.Rooms) == len(chain2.BuildData.Rooms) {
+	if len(chain1.PlanData.Rooms) == len(chain2.PlanData.Rooms) {
 		// 部屋数が同じでも、タイルが異なる可能性をチェック
 		differentTiles := 0
-		for i := range chain1.BuildData.Tiles {
-			if chain1.BuildData.Tiles[i] != chain2.BuildData.Tiles[i] {
+		for i := range chain1.PlanData.Tiles {
+			if chain1.PlanData.Tiles[i] != chain2.PlanData.Tiles[i] {
 				differentTiles++
 			}
 		}

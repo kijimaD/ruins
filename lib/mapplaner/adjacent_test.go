@@ -8,11 +8,11 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func TestBuildData_AdjacentAnyFloor(t *testing.T) {
+func TestPlanData_AdjacentAnyFloor(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Tile(5), gc.Tile(5)
-	buildData := &BuilderMap{
+	buildData := &PlannerMap{
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
@@ -77,11 +77,11 @@ func TestBuildData_AdjacentAnyFloor(t *testing.T) {
 	}
 }
 
-func TestBuildData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
+func TestPlanData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Tile(5), gc.Tile(5)
-	buildData := &BuilderMap{
+	buildData := &PlannerMap{
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,

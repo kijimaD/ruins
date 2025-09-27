@@ -5,13 +5,13 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
-// CaveBuilder は洞窟風レイアウトを生成するビルダー
+// CavePlanner は洞窟風レイアウトを生成するビルダー
 // セルラーオートマトンを使用して有機的な洞窟形状を作成
 // TODO: 全然わかってないので理解する
-type CaveBuilder struct{}
+type CavePlanner struct{}
 
 // BuildInitial は初期洞窟マップをビルドする
-func (c CaveBuilder) BuildInitial(buildData *BuilderMap) {
+func (c CavePlanner) BuildInitial(buildData *PlannerMap) {
 	// 初期状態をランダムに設定（30%の確率で壁、より広い空間を確保）
 	for i := range buildData.Tiles {
 		if buildData.RandomSource.Float64() < 0.30 {
@@ -29,7 +29,7 @@ type CaveCellularAutomata struct {
 }
 
 // BuildMeta はセルラーオートマトンで洞窟を生成する
-func (c CaveCellularAutomata) BuildMeta(buildData *BuilderMap) {
+func (c CaveCellularAutomata) BuildMeta(buildData *PlannerMap) {
 	iterations := c.Iterations
 	if iterations <= 0 {
 		iterations = 5 // デフォルト反復回数
@@ -72,7 +72,7 @@ func (c CaveCellularAutomata) BuildMeta(buildData *BuilderMap) {
 }
 
 // countWallsInRadius は指定半径内の壁タイル数を数える
-func (c CaveCellularAutomata) countWallsInRadius(buildData *BuilderMap, centerX, centerY, radius int) int {
+func (c CaveCellularAutomata) countWallsInRadius(buildData *PlannerMap, centerX, centerY, radius int) int {
 	wallCount := 0
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
@@ -96,7 +96,7 @@ func (c CaveCellularAutomata) countWallsInRadius(buildData *BuilderMap, centerX,
 }
 
 // extractCaveRooms は洞窟から部屋領域を抽出する
-func (c CaveCellularAutomata) extractCaveRooms(buildData *BuilderMap) {
+func (c CaveCellularAutomata) extractCaveRooms(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 	visited := make([]bool, len(buildData.Tiles))
@@ -147,7 +147,7 @@ func (c CaveCellularAutomata) extractCaveRooms(buildData *BuilderMap) {
 }
 
 // floodFill は洪水塗りつぶしで連結する床タイルを見つける
-func (c CaveCellularAutomata) floodFill(buildData *BuilderMap, startX, startY int, visited []bool) []int {
+func (c CaveCellularAutomata) floodFill(buildData *PlannerMap, startX, startY int, visited []bool) []int {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 	var result []int
@@ -190,7 +190,7 @@ func (c CaveCellularAutomata) floodFill(buildData *BuilderMap, startX, startY in
 type CavePathWidener struct{}
 
 // BuildMeta は狭い通路を広げる
-func (c CavePathWidener) BuildMeta(buildData *BuilderMap) {
+func (c CavePathWidener) BuildMeta(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -218,7 +218,7 @@ func (c CavePathWidener) BuildMeta(buildData *BuilderMap) {
 }
 
 // countAdjacentFloors は隣接する床タイルの数を数える
-func (c CavePathWidener) countAdjacentFloors(buildData *BuilderMap, centerX, centerY int) int {
+func (c CavePathWidener) countAdjacentFloors(buildData *PlannerMap, centerX, centerY int) int {
 	count := 0
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
@@ -244,7 +244,7 @@ func (c CavePathWidener) countAdjacentFloors(buildData *BuilderMap, centerX, cen
 type CaveStalactites struct{}
 
 // BuildMeta は洞窟内に鍾乳石を配置する
-func (c CaveStalactites) BuildMeta(buildData *BuilderMap) {
+func (c CaveStalactites) BuildMeta(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -267,7 +267,7 @@ func (c CaveStalactites) BuildMeta(buildData *BuilderMap) {
 type CaveConnector struct{}
 
 // BuildMeta は隔離された洞窟領域を接続する
-func (c CaveConnector) BuildMeta(buildData *BuilderMap) {
+func (c CaveConnector) BuildMeta(buildData *PlannerMap) {
 	if len(buildData.Rooms) < 2 {
 		return
 	}
@@ -282,7 +282,7 @@ func (c CaveConnector) BuildMeta(buildData *BuilderMap) {
 }
 
 // createCaveTunnel は2つの洞窟領域間にトンネルを作成する
-func (c CaveConnector) createCaveTunnel(buildData *BuilderMap, room1, room2 gc.Rect) {
+func (c CaveConnector) createCaveTunnel(buildData *PlannerMap, room1, room2 gc.Rect) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -332,10 +332,10 @@ func (c CaveConnector) createCaveTunnel(buildData *BuilderMap, room1, room2 gc.R
 	}
 }
 
-// NewCaveBuilder は洞窟ビルダーを作成する
-func NewCaveBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(CaveBuilder{})
+// NewCavePlanner は洞窟ビルダーを作成する
+func NewCavePlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	chain := NewPlannerChain(width, height, seed)
+	chain.StartWith(CavePlanner{})
 	chain.With(CaveCellularAutomata{Iterations: 3}) // セルラーオートマトン
 	chain.With(CavePathWidener{})                   // 通路を広げる
 	chain.With(CaveConnector{})                     // 隔離領域を接続

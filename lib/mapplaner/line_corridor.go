@@ -7,16 +7,16 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
-// LineCorridorBuilder は直線廊下を生成するビルダー
-type LineCorridorBuilder struct{}
+// LineCorridorPlanner は直線廊下を生成するビルダー
+type LineCorridorPlanner struct{}
 
 // BuildMeta はメタデータをビルドする
-func (b LineCorridorBuilder) BuildMeta(buildData *BuilderMap) {
+func (b LineCorridorPlanner) BuildMeta(buildData *PlannerMap) {
 	b.BuildCorridors(buildData)
 }
 
 // BuildCorridors は廊下をビルドする
-func (b LineCorridorBuilder) BuildCorridors(buildData *BuilderMap) {
+func (b LineCorridorPlanner) BuildCorridors(buildData *PlannerMap) {
 	// 接続済みの部屋。通路を2重に計算しないようにする
 	connected := map[int]bool{}
 	// 廊下のスライス

@@ -6,7 +6,7 @@ import (
 
 func TestFindPlayerStartPosition_MockTest(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(10, 10)
+	buildData := createTestPlanData(10, 10)
 
 	// 中央に床を配置
 	centerIdx := buildData.Level.XYTileIndex(5, 5)
@@ -25,8 +25,8 @@ func TestFindPlayerStartPosition_MockTest(t *testing.T) {
 // 基本的な再生成システムが実装されたことを確認するテスト
 func TestRegenerationSystem_Integration(t *testing.T) {
 	t.Parallel()
-	// BuilderChainの接続性検証機能が統合されていることを確認
-	chain := NewSmallRoomBuilder(20, 20, 42)
+	// PlannerChainの接続性検証機能が統合されていることを確認
+	chain := NewSmallRoomPlanner(20, 20, 42)
 	chain.Build()
 
 	// ValidateConnectivity メソッドが使用可能であることを確認

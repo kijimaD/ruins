@@ -3,6 +3,11 @@ package components
 // PropType は置物のタイプを表す
 type PropType string
 
+// String はPropTypeの文字列表現を返す
+func (pt PropType) String() string {
+	return "PropType"
+}
+
 const (
 	// PropTypeTable はテーブル
 	PropTypeTable PropType = "table"

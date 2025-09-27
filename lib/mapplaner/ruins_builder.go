@@ -4,12 +4,12 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// RuinsBuilder は廃墟風レイアウトを生成するビルダー
+// RuinsPlanner は廃墟風レイアウトを生成するビルダー
 // 建物の残骸や瓦礫が散在する廃墟を作成
-type RuinsBuilder struct{}
+type RuinsPlanner struct{}
 
 // BuildInitial は初期廃墟マップをビルドする
-func (r RuinsBuilder) BuildInitial(buildData *BuilderMap) {
+func (r RuinsPlanner) BuildInitial(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -39,7 +39,7 @@ func (r RuinsBuilder) BuildInitial(buildData *BuilderMap) {
 type RuinsDraw struct{}
 
 // BuildMeta は廃墟構造をタイルに描画する
-func (r RuinsDraw) BuildMeta(buildData *BuilderMap) {
+func (r RuinsDraw) BuildMeta(buildData *PlannerMap) {
 	// まず全体を床で埋める（屋外エリア）
 	for i := range buildData.Tiles {
 		buildData.Tiles[i] = TileFloor
@@ -52,7 +52,7 @@ func (r RuinsDraw) BuildMeta(buildData *BuilderMap) {
 }
 
 // drawRuinedBuilding は破損した建物を描画する
-func (r RuinsDraw) drawRuinedBuilding(buildData *BuilderMap, building gc.Rect) {
+func (r RuinsDraw) drawRuinedBuilding(buildData *PlannerMap, building gc.Rect) {
 	// 建物の外壁を描画（一部欠損あり）
 	for x := building.X1; x <= building.X2; x++ {
 		// 上辺
@@ -85,7 +85,7 @@ func (r RuinsDraw) drawRuinedBuilding(buildData *BuilderMap, building gc.Rect) {
 }
 
 // addInteriorWalls は建物内部に仕切り壁を追加する
-func (r RuinsDraw) addInteriorWalls(buildData *BuilderMap, building gc.Rect) {
+func (r RuinsDraw) addInteriorWalls(buildData *PlannerMap, building gc.Rect) {
 	buildingWidth := int(building.X2 - building.X1 + 1)
 	buildingHeight := int(building.Y2 - building.Y1 + 1)
 
@@ -115,7 +115,7 @@ func (r RuinsDraw) addInteriorWalls(buildData *BuilderMap, building gc.Rect) {
 type RuinsDebris struct{}
 
 // BuildMeta は廃墟に瓦礫を配置する
-func (r RuinsDebris) BuildMeta(buildData *BuilderMap) {
+func (r RuinsDebris) BuildMeta(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -137,7 +137,7 @@ func (r RuinsDebris) BuildMeta(buildData *BuilderMap) {
 }
 
 // calculateDebrisChance は瓦礫の配置確率を計算する
-func (r RuinsDebris) calculateDebrisChance(buildData *BuilderMap, x, y int) float64 {
+func (r RuinsDebris) calculateDebrisChance(buildData *PlannerMap, x, y int) float64 {
 	// 最寄りの建物までの距離を計算
 	minDistance := 1000.0
 
@@ -169,7 +169,7 @@ func (r RuinsDebris) calculateDebrisChance(buildData *BuilderMap, x, y int) floa
 type RuinsCorridors struct{}
 
 // BuildMeta は廃墟間に通路を作成する
-func (r RuinsCorridors) BuildMeta(buildData *BuilderMap) {
+func (r RuinsCorridors) BuildMeta(buildData *PlannerMap) {
 	if len(buildData.Rooms) < 2 {
 		return
 	}
@@ -189,7 +189,7 @@ func (r RuinsCorridors) BuildMeta(buildData *BuilderMap) {
 }
 
 // createRuinedPath は破損した通路を作成する
-func (r RuinsCorridors) createRuinedPath(buildData *BuilderMap, room1, room2 gc.Rect) {
+func (r RuinsCorridors) createRuinedPath(buildData *PlannerMap, room1, room2 gc.Rect) {
 	// 各建物の中心を計算
 	center1X := (room1.X1 + room1.X2) / 2
 	center1Y := (room1.Y1 + room1.Y2) / 2
@@ -234,10 +234,10 @@ func (r RuinsCorridors) createRuinedPath(buildData *BuilderMap, room1, room2 gc.
 	}
 }
 
-// NewRuinsBuilder は廃墟ビルダーを作成する
-func NewRuinsBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(RuinsBuilder{})
+// NewRuinsPlanner は廃墟ビルダーを作成する
+func NewRuinsPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	chain := NewPlannerChain(width, height, seed)
+	chain.StartWith(RuinsPlanner{})
 	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
 	chain.With(RuinsDraw{})               // 廃墟構造を描画
 	chain.With(RuinsDebris{})             // 瓦礫を配置

@@ -4,11 +4,11 @@ import gc "github.com/kijimaD/ruins/lib/components"
 
 // PathFinder はパスファインディング機能を提供する
 type PathFinder struct {
-	buildData *BuilderMap
+	buildData *PlannerMap
 }
 
 // NewPathFinder はPathFinderを作成する
-func NewPathFinder(buildData *BuilderMap) *PathFinder {
+func NewPathFinder(buildData *PlannerMap) *PathFinder {
 	return &PathFinder{buildData: buildData}
 }
 

@@ -8,11 +8,11 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func TestBuildData_GetWallType(t *testing.T) {
+func TestPlanData_GetWallType(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成（7x7）
 	width, height := gc.Tile(7), gc.Tile(7)
-	buildData := &BuilderMap{
+	buildData := &PlannerMap{
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
@@ -90,11 +90,11 @@ func TestBuildData_GetWallType(t *testing.T) {
 	}
 }
 
-func TestBuildData_GetWallType_WithWarpTiles(t *testing.T) {
+func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Tile(5), gc.Tile(5)
-	buildData := &BuilderMap{
+	buildData := &PlannerMap{
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,

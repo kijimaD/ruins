@@ -6,12 +6,12 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// ForestBuilder は森風レイアウトを生成するビルダー
+// ForestPlanner は森風レイアウトを生成するビルダー
 // 木々が点在し、自然な通路を持つ森を作成
-type ForestBuilder struct{}
+type ForestPlanner struct{}
 
 // BuildInitial は初期森マップをビルドする
-func (f ForestBuilder) BuildInitial(buildData *BuilderMap) {
+func (f ForestPlanner) BuildInitial(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -45,7 +45,7 @@ func (f ForestBuilder) BuildInitial(buildData *BuilderMap) {
 type ForestTerrain struct{}
 
 // BuildMeta は森の基本地形をタイルに描画する
-func (f ForestTerrain) BuildMeta(buildData *BuilderMap) {
+func (f ForestTerrain) BuildMeta(buildData *PlannerMap) {
 	// まず全体を床で埋める（森の地面）
 	for i := range buildData.Tiles {
 		buildData.Tiles[i] = TileFloor
@@ -58,7 +58,7 @@ func (f ForestTerrain) BuildMeta(buildData *BuilderMap) {
 }
 
 // createCircularClearing は円形の空き地を作成する
-func (f ForestTerrain) createCircularClearing(buildData *BuilderMap, clearing gc.Rect) {
+func (f ForestTerrain) createCircularClearing(buildData *PlannerMap, clearing gc.Rect) {
 	centerX := float64(clearing.X1+clearing.X2) / 2.0
 	centerY := float64(clearing.Y1+clearing.Y2) / 2.0
 	radius := math.Min(float64(clearing.X2-clearing.X1), float64(clearing.Y2-clearing.Y1)) / 2.0
@@ -81,7 +81,7 @@ func (f ForestTerrain) createCircularClearing(buildData *BuilderMap, clearing gc
 type ForestTrees struct{}
 
 // BuildMeta は森に木を配置する
-func (f ForestTrees) BuildMeta(buildData *BuilderMap) {
+func (f ForestTrees) BuildMeta(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -108,7 +108,7 @@ func (f ForestTrees) BuildMeta(buildData *BuilderMap) {
 }
 
 // calculateTreeDensity は位置に基づいて木の密度を計算する
-func (f ForestTrees) calculateTreeDensity(buildData *BuilderMap, x, y int) float64 {
+func (f ForestTrees) calculateTreeDensity(buildData *PlannerMap, x, y int) float64 {
 	baseDensity := 0.6 // 基本密度60%
 
 	// 空き地からの距離に基づいて密度を調整
@@ -137,7 +137,7 @@ func (f ForestTrees) calculateTreeDensity(buildData *BuilderMap, x, y int) float
 }
 
 // placeLargeTree は大きな木を配置する
-func (f ForestTrees) placeLargeTree(buildData *BuilderMap, centerX, centerY int) {
+func (f ForestTrees) placeLargeTree(buildData *PlannerMap, centerX, centerY int) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -163,7 +163,7 @@ func (f ForestTrees) placeLargeTree(buildData *BuilderMap, centerX, centerY int)
 type ForestPaths struct{}
 
 // BuildMeta は空き地間に自然な通路を作成する
-func (f ForestPaths) BuildMeta(buildData *BuilderMap) {
+func (f ForestPaths) BuildMeta(buildData *PlannerMap) {
 	if len(buildData.Rooms) < 2 {
 		return
 	}
@@ -180,7 +180,7 @@ func (f ForestPaths) BuildMeta(buildData *BuilderMap) {
 }
 
 // shouldCreatePath は通路を作成するかどうかを判定する
-func (f ForestPaths) shouldCreatePath(buildData *BuilderMap, room1, room2 gc.Rect) bool {
+func (f ForestPaths) shouldCreatePath(buildData *PlannerMap, room1, room2 gc.Rect) bool {
 	// 空き地間の距離を計算
 	center1X := float64(room1.X1+room1.X2) / 2.0
 	center1Y := float64(room1.Y1+room1.Y2) / 2.0
@@ -201,7 +201,7 @@ func (f ForestPaths) shouldCreatePath(buildData *BuilderMap, room1, room2 gc.Rec
 }
 
 // createNaturalPath は自然な曲線状の通路を作成する
-func (f ForestPaths) createNaturalPath(buildData *BuilderMap, room1, room2 gc.Rect) {
+func (f ForestPaths) createNaturalPath(buildData *PlannerMap, room1, room2 gc.Rect) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -248,7 +248,7 @@ func (f ForestPaths) createNaturalPath(buildData *BuilderMap, room1, room2 gc.Re
 type ForestWildlife struct{}
 
 // BuildMeta は森に小さな動物の痕跡を追加する
-func (f ForestWildlife) BuildMeta(buildData *BuilderMap) {
+func (f ForestWildlife) BuildMeta(buildData *PlannerMap) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -277,10 +277,10 @@ func (f ForestWildlife) BuildMeta(buildData *BuilderMap) {
 	}
 }
 
-// NewForestBuilder は森ビルダーを作成する
-func NewForestBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	chain := NewBuilderChain(width, height, seed)
-	chain.StartWith(ForestBuilder{})
+// NewForestPlanner は森ビルダーを作成する
+func NewForestPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	chain := NewPlannerChain(width, height, seed)
+	chain.StartWith(ForestPlanner{})
 	chain.With(ForestTerrain{})           // 基本地形を生成
 	chain.With(ForestTrees{})             // 木を配置
 	chain.With(ForestPaths{})             // 自然な通路を作成

@@ -1,0 +1,189 @@
+package mapspawner
+
+import (
+	"testing"
+
+	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/mapplaner"
+)
+
+func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
+	t.Parallel()
+	// 3x3のシンプルなマップを作成
+	width, height := 3, 3
+	chain := mapplaner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+
+	// タイル配列を手動で設定
+	chain.PlanData.Tiles = []mapplaner.Tile{
+		mapplaner.TileWall, mapplaner.TileWall, mapplaner.TileWall, // Row 0
+		mapplaner.TileWall, mapplaner.TileFloor, mapplaner.TileWall, // Row 1
+		mapplaner.TileWall, mapplaner.TileWall, mapplaner.TileWall, // Row 2
+	}
+
+	// BuildPlanFromTilesをテスト
+	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	if err != nil {
+		t.Fatalf("BuildPlanFromTiles failed: %v", err)
+	}
+
+	// MapPlanの基本プロパティをチェック
+	if plan.Width != width {
+		t.Errorf("Expected Width %d, got %d", width, plan.Width)
+	}
+	if plan.Height != height {
+		t.Errorf("Expected Height %d, got %d", height, plan.Height)
+	}
+
+	// エンティティ数をチェック（床1個 + 隣接する壁8個）
+	// 実際の数は隣接判定ロジックに依存するため、最低限のチェックのみ
+	if len(plan.Entities) == 0 {
+		t.Error("Expected some entities, but got none")
+	}
+
+	// 床エンティティが含まれていることを確認
+	hasFloor := false
+	for _, entity := range plan.Entities {
+		if entity.EntityType == mapplaner.EntityTypeFloor && entity.X == 1 && entity.Y == 1 {
+			hasFloor = true
+			break
+		}
+	}
+	if !hasFloor {
+		t.Error("Expected floor entity at (1,1), but not found")
+	}
+}
+
+func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
+	t.Parallel()
+	// 空のマップを作成
+	width, height := 2, 2
+	chain := mapplaner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+
+	// 全て空のタイル
+	chain.PlanData.Tiles = []mapplaner.Tile{
+		mapplaner.TileEmpty, mapplaner.TileEmpty,
+		mapplaner.TileEmpty, mapplaner.TileEmpty,
+	}
+
+	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
+	_, err := BuildPlanFromTiles(&chain.PlanData)
+	if err == nil {
+		t.Fatalf("Expected error for empty map, but got nil")
+	}
+
+	expectedMsg := "プレイヤー配置可能な床タイルが見つかりません"
+	if err.Error() != expectedMsg {
+		t.Errorf("Expected error message %q, got %q", expectedMsg, err.Error())
+	}
+}
+
+func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
+	t.Parallel()
+	// ワープタイルを含むマップを作成
+	width, height := 2, 2
+	chain := mapplaner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+
+	chain.PlanData.Tiles = []mapplaner.Tile{
+		mapplaner.TileWarpNext, mapplaner.TileFloor,
+		mapplaner.TileFloor, mapplaner.TileWarpEscape,
+	}
+
+	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	if err != nil {
+		t.Fatalf("BuildPlanFromTiles failed: %v", err)
+	}
+
+	// ワープエンティティが含まれていることを確認
+	hasWarpNext := false
+	hasWarpEscape := false
+	hasFloors := 0
+
+	for _, entity := range plan.Entities {
+		switch entity.EntityType {
+		case mapplaner.EntityTypeWarpNext:
+			if entity.X == 0 && entity.Y == 0 {
+				hasWarpNext = true
+			}
+		case mapplaner.EntityTypeWarpEscape:
+			if entity.X == 1 && entity.Y == 1 {
+				hasWarpEscape = true
+			}
+		case mapplaner.EntityTypeFloor:
+			hasFloors++
+		}
+	}
+
+	if !hasWarpNext {
+		t.Error("Expected WarpNext entity at (0,0), but not found")
+	}
+	if !hasWarpEscape {
+		t.Error("Expected WarpEscape entity at (1,1), but not found")
+	}
+	if hasFloors != 2 {
+		t.Errorf("Expected 2 floor entities, got %d", hasFloors)
+	}
+}
+
+func TestGetSpriteNumberForWallType(t *testing.T) {
+	t.Parallel()
+	testCases := []struct {
+		wallType mapplaner.WallType
+		expected int
+	}{
+		{mapplaner.WallTypeTop, 10},
+		{mapplaner.WallTypeBottom, 11},
+		{mapplaner.WallTypeLeft, 12},
+		{mapplaner.WallTypeRight, 13},
+		{mapplaner.WallTypeGeneric, 1},
+	}
+
+	for _, tc := range testCases {
+		actual := getSpriteNumberForWallType(tc.wallType)
+		if actual != tc.expected {
+			t.Errorf("壁タイプ %s のスプライト番号が間違っています。期待値: %d, 実際: %d",
+				tc.wallType.String(), tc.expected, actual)
+		}
+	}
+}
+
+// TestBuildPlanFromTiles_Integration は実際のBuilderChainとの統合テスト
+func TestBuildPlanFromTiles_Integration(t *testing.T) {
+	t.Parallel()
+	// 実際のSmallRoomBuilderを使用
+	width, height := 10, 10
+	chain := mapplaner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
+
+	// マップを生成
+	chain.Build()
+
+	// BuildPlanFromTilesをテスト
+	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	if err != nil {
+		t.Fatalf("BuildPlanFromTiles integration test failed: %v", err)
+	}
+
+	// 基本的な整合性をチェック
+	if plan.Width != width {
+		t.Errorf("Expected Width %d, got %d", width, plan.Width)
+	}
+	if plan.Height != height {
+		t.Errorf("Expected Height %d, got %d", height, plan.Height)
+	}
+
+	// エンティティが生成されていることを確認
+	if len(plan.Entities) == 0 {
+		t.Error("Expected some entities from SmallRoomBuilder, but got none")
+	}
+
+	// 床エンティティが含まれていることを確認
+	hasFloor := false
+	for _, entity := range plan.Entities {
+		if entity.EntityType == mapplaner.EntityTypeFloor {
+			hasFloor = true
+			break
+		}
+	}
+	if !hasFloor {
+		t.Error("Expected at least one floor entity from SmallRoomBuilder")
+	}
+}

@@ -13,11 +13,11 @@ func NewFillAll(tileType Tile) FillAll {
 }
 
 // BuildMeta はメタデータをビルドする
-func (b FillAll) BuildMeta(buildData *BuilderMap) {
+func (b FillAll) BuildMeta(buildData *PlannerMap) {
 	b.build(buildData)
 }
 
-func (b FillAll) build(buildData *BuilderMap) {
+func (b FillAll) build(buildData *PlannerMap) {
 	// 全体を指定したタイルで埋める
 	for i := range buildData.Tiles {
 		buildData.Tiles[i] = b.TileType

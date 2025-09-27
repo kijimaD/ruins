@@ -9,7 +9,8 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/mapbuilder"
+	"github.com/kijimaD/ruins/lib/levelgen"
+	"github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/turns"
@@ -28,7 +29,7 @@ type DungeonState struct {
 	// Seed はマップ生成用のシード値（0の場合はDungeonリソースのシード値を使用）
 	Seed uint64
 	// BuilderType は使用するマップビルダーのタイプ（BuilderTypeRandom の場合はランダム選択）
-	BuilderType mapbuilder.BuilderType
+	BuilderType mapplaner.PlannerType
 }
 
 func (st DungeonState) String() string {
@@ -62,7 +63,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	}
 
 	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
-	level, err := mapbuilder.NewLevel(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
+	level, err := levelgen.NewLevel(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
 	if err != nil {
 		panic(err)
 	}

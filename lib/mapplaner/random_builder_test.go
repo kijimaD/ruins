@@ -6,7 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-func TestNewRandomBuilder(t *testing.T) {
+func TestNewRandomPlanner(t *testing.T) {
 	t.Parallel()
 
 	width, height := gc.Tile(20), gc.Tile(20)
@@ -14,33 +14,33 @@ func TestNewRandomBuilder(t *testing.T) {
 	// 同じシードで複数回実行して同じビルダータイプが選択されることを確認
 	seed := uint64(12345)
 
-	chain1 := NewRandomBuilder(width, height, seed)
+	chain1 := NewRandomPlanner(width, height, seed)
 	chain1.Build()
 
-	chain2 := NewRandomBuilder(width, height, seed)
+	chain2 := NewRandomPlanner(width, height, seed)
 	chain2.Build()
 
 	// 同じシードなので同じビルダータイプが選ばれ、同じ結果になるはず
-	if len(chain1.BuildData.Rooms) != len(chain2.BuildData.Rooms) {
+	if len(chain1.PlanData.Rooms) != len(chain2.PlanData.Rooms) {
 		t.Errorf("同じシードなのに部屋数が異なります。1回目: %d, 2回目: %d",
-			len(chain1.BuildData.Rooms), len(chain2.BuildData.Rooms))
+			len(chain1.PlanData.Rooms), len(chain2.PlanData.Rooms))
 	}
 
 	// タイル配置が同じことを確認
-	if len(chain1.BuildData.Tiles) != len(chain2.BuildData.Tiles) {
+	if len(chain1.PlanData.Tiles) != len(chain2.PlanData.Tiles) {
 		t.Errorf("同じシードなのにタイル数が異なります。1回目: %d, 2回目: %d",
-			len(chain1.BuildData.Tiles), len(chain2.BuildData.Tiles))
+			len(chain1.PlanData.Tiles), len(chain2.PlanData.Tiles))
 	}
 
-	for i, tile1 := range chain1.BuildData.Tiles {
-		if chain2.BuildData.Tiles[i] != tile1 {
-			t.Errorf("タイル[%d]が異なります。1回目: %v, 2回目: %v", i, tile1, chain2.BuildData.Tiles[i])
+	for i, tile1 := range chain1.PlanData.Tiles {
+		if chain2.PlanData.Tiles[i] != tile1 {
+			t.Errorf("タイル[%d]が異なります。1回目: %v, 2回目: %v", i, tile1, chain2.PlanData.Tiles[i])
 			break // 最初の違いだけ報告
 		}
 	}
 }
 
-func TestNewRandomBuilderVariety(t *testing.T) {
+func TestNewRandomPlannerVariety(t *testing.T) {
 	t.Parallel()
 
 	width, height := gc.Tile(20), gc.Tile(20)
@@ -52,17 +52,17 @@ func TestNewRandomBuilderVariety(t *testing.T) {
 	seeds := []uint64{1, 2, 3, 42, 123, 456, 789, 999, 1337, 9999}
 
 	for _, seed := range seeds {
-		chain := NewRandomBuilder(width, height, seed)
+		chain := NewRandomPlanner(width, height, seed)
 		chain.Build()
 
-		roomCount := len(chain.BuildData.Rooms)
+		roomCount := len(chain.PlanData.Rooms)
 		results[roomCount]++
 
 		// 基本的な整合性チェック
 		expectedTileCount := int(width) * int(height)
-		if len(chain.BuildData.Tiles) != expectedTileCount {
+		if len(chain.PlanData.Tiles) != expectedTileCount {
 			t.Errorf("シード%dでタイル数が不正です。期待: %d, 実際: %d",
-				seed, expectedTileCount, len(chain.BuildData.Tiles))
+				seed, expectedTileCount, len(chain.PlanData.Tiles))
 		}
 
 		// 少なくとも部屋が生成されることを確認
@@ -80,7 +80,7 @@ func TestNewRandomBuilderVariety(t *testing.T) {
 	}
 }
 
-func TestNewRandomBuilderBuildsSuccessfully(t *testing.T) {
+func TestNewRandomPlannerBuildsSuccessfully(t *testing.T) {
 	t.Parallel()
 
 	// 様々なマップサイズでテスト
@@ -102,7 +102,7 @@ func TestNewRandomBuilderBuildsSuccessfully(t *testing.T) {
 			t.Parallel()
 
 			// パニックなく実行できることを確認
-			var chain *BuilderChain
+			var chain *PlannerChain
 			func() {
 				defer func() {
 					if r := recover(); r != nil {
@@ -110,7 +110,7 @@ func TestNewRandomBuilderBuildsSuccessfully(t *testing.T) {
 					}
 				}()
 
-				chain = NewRandomBuilder(tc.width, tc.height, tc.seed)
+				chain = NewRandomPlanner(tc.width, tc.height, tc.seed)
 				chain.Build()
 			}()
 
@@ -120,19 +120,19 @@ func TestNewRandomBuilderBuildsSuccessfully(t *testing.T) {
 
 			// タイル数が正しいことを確認
 			expectedCount := int(tc.width) * int(tc.height)
-			if len(chain.BuildData.Tiles) != expectedCount {
+			if len(chain.PlanData.Tiles) != expectedCount {
 				t.Errorf("%sのタイル数が正しくない。期待: %d, 実際: %d",
-					tc.name, expectedCount, len(chain.BuildData.Tiles))
+					tc.name, expectedCount, len(chain.PlanData.Tiles))
 			}
 
 			// 部屋が生成されていることを確認
-			if len(chain.BuildData.Rooms) == 0 {
+			if len(chain.PlanData.Rooms) == 0 {
 				t.Errorf("%sで部屋が生成されませんでした", tc.name)
 			}
 
 			// 床タイルが存在することを確認
 			floorCount := 0
-			for _, tile := range chain.BuildData.Tiles {
+			for _, tile := range chain.PlanData.Tiles {
 				if tile == TileFloor {
 					floorCount++
 				}
@@ -145,7 +145,7 @@ func TestNewRandomBuilderBuildsSuccessfully(t *testing.T) {
 	}
 }
 
-func TestRandomBuilderTypes(t *testing.T) {
+func TestRandomPlannerTypes(t *testing.T) {
 	t.Parallel()
 
 	// 特定のシードで特定のビルダータイプが選ばれることを確認
@@ -159,10 +159,10 @@ func TestRandomBuilderTypes(t *testing.T) {
 	testSeeds := []uint64{1, 2, 3, 4, 5, 10, 20, 30, 100, 200}
 
 	for _, seed := range testSeeds {
-		chain := NewRandomBuilder(width, height, seed)
+		chain := NewRandomPlanner(width, height, seed)
 		chain.Build()
 
-		roomCount := len(chain.BuildData.Rooms)
+		roomCount := len(chain.PlanData.Rooms)
 		seedResults[seed] = roomCount
 
 		// 各シードで正常にマップが生成されることを確認
@@ -172,9 +172,9 @@ func TestRandomBuilderTypes(t *testing.T) {
 
 		// タイル総数の確認
 		expectedTileCount := int(width) * int(height)
-		if len(chain.BuildData.Tiles) != expectedTileCount {
+		if len(chain.PlanData.Tiles) != expectedTileCount {
 			t.Errorf("シード%dでタイル数が不正。期待: %d, 実際: %d",
-				seed, expectedTileCount, len(chain.BuildData.Tiles))
+				seed, expectedTileCount, len(chain.PlanData.Tiles))
 		}
 	}
 

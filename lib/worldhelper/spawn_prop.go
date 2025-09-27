@@ -57,19 +57,6 @@ func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.E
 	return entities[len(entities)-1], nil
 }
 
-// PlacePropAt は指定位置に置物を配置する
-// 位置の安全性をチェックしてから配置を行う
-func PlacePropAt(world w.World, propType gc.PropType, x, y gc.Tile) error {
-	// 位置が安全かチェック
-	if !isPositionSafeForProp(world, x, y) {
-		return fmt.Errorf("位置 (%d,%d) は配置不可能: 他のエンティティと重複", x, y)
-	}
-
-	// 置物を配置
-	_, err := SpawnProp(world, propType, x, y)
-	return err
-}
-
 // hasFloorAt は指定位置に床が存在するかチェックする
 func hasFloorAt(world w.World, x, y gc.Tile) bool {
 	floorExists := false
@@ -88,32 +75,4 @@ func hasFloorAt(world w.World, x, y gc.Tile) bool {
 	}))
 
 	return floorExists
-}
-
-// isPositionSafeForProp は指定位置が家具配置に安全かチェックする
-// プレイヤーや他のエンティティと重複しない位置かを確認（床は除外）
-func isPositionSafeForProp(world w.World, x, y gc.Tile) bool {
-	// 指定位置に床以外のエンティティが存在するかチェック
-	entityExists := false
-
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-
-		if gridElement.X == x && gridElement.Y == y {
-			// 床は除外（床の上には家具を配置可能）
-			if spriteRender.Depth == gc.DepthNumFloor {
-				return
-			}
-			// 床以外のエンティティがある場合は配置不可
-			entityExists = true
-			return
-		}
-	}))
-
-	// 床以外のエンティティが存在する場合は安全ではない
-	return !entityExists
 }

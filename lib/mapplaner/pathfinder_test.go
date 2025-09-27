@@ -7,8 +7,8 @@ import (
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
-// createTestBuildData はテスト用のBuildDataを作成する
-func createTestBuildData(width, height int) *BuilderMap {
+// createTestPlanData はテスト用のPlanDataを作成する
+func createTestPlanData(width, height int) *PlannerMap {
 	tileCount := width * height
 	tiles := make([]Tile, tileCount)
 
@@ -17,7 +17,7 @@ func createTestBuildData(width, height int) *BuilderMap {
 		tiles[i] = TileWall
 	}
 
-	return &BuilderMap{
+	return &PlannerMap{
 		Level: resources.Level{
 			TileWidth:  gc.Tile(width),
 			TileHeight: gc.Tile(height),
@@ -28,7 +28,7 @@ func createTestBuildData(width, height int) *BuilderMap {
 
 func TestPathFinder_IsWalkable(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(5, 5)
+	buildData := createTestPlanData(5, 5)
 	pf := NewPathFinder(buildData)
 
 	// 境界外テスト
@@ -74,7 +74,7 @@ func TestPathFinder_IsWalkable(t *testing.T) {
 
 func TestPathFinder_FindPath_SimplePath(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(5, 5)
+	buildData := createTestPlanData(5, 5)
 	pf := NewPathFinder(buildData)
 
 	// 簡単な一直線のパスを作成
@@ -103,7 +103,7 @@ func TestPathFinder_FindPath_SimplePath(t *testing.T) {
 
 func TestPathFinder_FindPath_NoPath(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(5, 5)
+	buildData := createTestPlanData(5, 5)
 	pf := NewPathFinder(buildData)
 
 	// スタート地点のみ床にする（ゴールは壁のまま）
@@ -119,7 +119,7 @@ func TestPathFinder_FindPath_NoPath(t *testing.T) {
 
 func TestPathFinder_FindPath_LShapedPath(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(5, 5)
+	buildData := createTestPlanData(5, 5)
 	pf := NewPathFinder(buildData)
 
 	// L字型のパスを作成
@@ -148,7 +148,7 @@ func TestPathFinder_FindPath_LShapedPath(t *testing.T) {
 
 func TestPathFinder_IsReachable(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(5, 5)
+	buildData := createTestPlanData(5, 5)
 	pf := NewPathFinder(buildData)
 
 	// パスを作成
@@ -171,7 +171,7 @@ func TestPathFinder_IsReachable(t *testing.T) {
 
 func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(6, 6)
+	buildData := createTestPlanData(6, 6)
 	pf := NewPathFinder(buildData)
 
 	// プレイヤースタート地点
@@ -230,7 +230,7 @@ func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 
 func TestPathFinder_ValidateMapConnectivity_FullyConnected(t *testing.T) {
 	t.Parallel()
-	buildData := createTestBuildData(6, 6)
+	buildData := createTestPlanData(6, 6)
 	pf := NewPathFinder(buildData)
 
 	// プレイヤースタート地点から全ポータルへの直線パス

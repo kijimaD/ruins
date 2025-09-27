@@ -6,17 +6,17 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// TestBuilderChain_ValidateConnectivity はBuilderChainの接続性検証をテストする
-func TestBuilderChain_ValidateConnectivity(t *testing.T) {
+// TestPlannerChain_ValidateConnectivity はPlannerChainの接続性検証をテストする
+func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 小さなテスト用マップを生成
-	chain := NewSmallRoomBuilder(20, 20, 42) // 固定シードで再現可能
+	chain := NewSmallRoomPlanner(20, 20, 42) // 固定シードで再現可能
 	chain.Build()
 
 	// プレイヤーのスタート位置を部屋の中心付近に設定
 	var playerStartX, playerStartY int
-	if len(chain.BuildData.Rooms) > 0 {
-		room := chain.BuildData.Rooms[0]
+	if len(chain.PlanData.Rooms) > 0 {
+		room := chain.PlanData.Rooms[0]
 		playerStartX = int(room.X1+room.X2) / 2
 		playerStartY = int(room.Y1+room.Y2) / 2
 	} else {
@@ -25,8 +25,8 @@ func TestBuilderChain_ValidateConnectivity(t *testing.T) {
 		playerStartY = 10
 
 		// プレイヤーのスタート位置を確実に床にする
-		idx := chain.BuildData.Level.XYTileIndex(gc.Tile(playerStartX), gc.Tile(playerStartY))
-		chain.BuildData.Tiles[idx] = TileFloor
+		idx := chain.PlanData.Level.XYTileIndex(gc.Tile(playerStartX), gc.Tile(playerStartY))
+		chain.PlanData.Tiles[idx] = TileFloor
 	}
 
 	// 接続性を検証
@@ -48,26 +48,26 @@ func TestBuilderChain_ValidateConnectivity(t *testing.T) {
 	}
 }
 
-// TestCaveBuilder_ValidateConnectivity は洞窟ビルダーの接続性をテストする
-func TestCaveBuilder_ValidateConnectivity(t *testing.T) {
+// TestCavePlanner_ValidateConnectivity は洞窟ビルダーの接続性をテストする
+func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 洞窟マップを生成
-	chain := NewCaveBuilder(30, 30, 123)
+	chain := NewCavePlanner(30, 30, 123)
 	chain.Build()
 
 	// 床タイルを見つけてプレイヤーのスタート位置とする
 	var playerStartX, playerStartY int
 	var foundFloor bool
 
-	width := int(chain.BuildData.Level.TileWidth)
-	height := int(chain.BuildData.Level.TileHeight)
+	width := int(chain.PlanData.Level.TileWidth)
+	height := int(chain.PlanData.Level.TileHeight)
 
 	// 中央付近から床タイルを探す
 	for x := width/2 - 5; x < width/2+5 && !foundFloor; x++ {
 		for y := height/2 - 5; y < height/2+5 && !foundFloor; y++ {
 			if x >= 0 && x < width && y >= 0 && y < height {
-				idx := chain.BuildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				if chain.BuildData.Tiles[idx] == TileFloor {
+				idx := chain.PlanData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+				if chain.PlanData.Tiles[idx] == TileFloor {
 					playerStartX = x
 					playerStartY = y
 					foundFloor = true
@@ -98,20 +98,20 @@ func TestCaveBuilder_ValidateConnectivity(t *testing.T) {
 func TestPathFinder_WithPortals(t *testing.T) {
 	t.Parallel()
 	// テスト用の小さなマップを作成
-	chain := NewBuilderChain(10, 10, 1)
-	chain.StartWith(&TestRoomBuilder{})
+	chain := NewPlannerChain(10, 10, 1)
+	chain.StartWith(&TestRoomPlanner{})
 	chain.Build()
 
 	// プレイヤーのスタート位置（十字の中心）
 	playerStartX, playerStartY := 5, 5
 
 	// ワープポータルを配置（垂直通路上、到達可能な位置）
-	warpIdx := chain.BuildData.Level.XYTileIndex(5, 2)
-	chain.BuildData.Tiles[warpIdx] = TileWarpNext
+	warpIdx := chain.PlanData.Level.XYTileIndex(5, 2)
+	chain.PlanData.Tiles[warpIdx] = TileWarpNext
 
 	// 脱出ポータルを配置（到達不可能な位置：壁の中）
-	escapeIdx := chain.BuildData.Level.XYTileIndex(1, 1)
-	chain.BuildData.Tiles[escapeIdx] = TileWarpEscape
+	escapeIdx := chain.PlanData.Level.XYTileIndex(1, 1)
+	chain.PlanData.Tiles[escapeIdx] = TileWarpEscape
 
 	// 接続性を検証
 	result := chain.ValidateConnectivity(playerStartX, playerStartY)
@@ -143,10 +143,10 @@ func TestPathFinder_WithPortals(t *testing.T) {
 	}
 }
 
-// TestRoomBuilder はテスト用の簡単な部屋ビルダー
-type TestRoomBuilder struct{}
+// TestRoomPlanner はテスト用の簡単な部屋ビルダー
+type TestRoomPlanner struct{}
 
-func (t *TestRoomBuilder) BuildInitial(buildData *BuilderMap) {
+func (t *TestRoomPlanner) BuildInitial(buildData *PlannerMap) {
 	// 中央に簡単な十字型の部屋を作成
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)

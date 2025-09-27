@@ -4,11 +4,11 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// SingleRoomBuilder は1つの大きな部屋を作成する（テスト用）
-type SingleRoomBuilder struct{}
+// SingleRoomPlanner は1つの大きな部屋を作成する（テスト用）
+type SingleRoomPlanner struct{}
 
 // BuildInitial は初期ビルドを行う
-func (b SingleRoomBuilder) BuildInitial(buildData *BuilderMap) {
+func (b SingleRoomPlanner) BuildInitial(buildData *PlannerMap) {
 	// マップの中央に大きな部屋を1つ作成
 	width := buildData.Level.TileWidth
 	height := buildData.Level.TileHeight
@@ -28,7 +28,7 @@ func (b SingleRoomBuilder) BuildInitial(buildData *BuilderMap) {
 type SingleRoomDraw struct{}
 
 // BuildMeta は1部屋を描画する
-func (d SingleRoomDraw) BuildMeta(buildData *BuilderMap) {
+func (d SingleRoomDraw) BuildMeta(buildData *PlannerMap) {
 	for _, room := range buildData.Rooms {
 		// 部屋の内部を床タイルで埋める
 		for y := room.Y1 + 1; y < room.Y2; y++ {
