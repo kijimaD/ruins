@@ -37,26 +37,26 @@ func NewNPCPlanner(world w.World, plannerType PlannerType) *NPCPlanner {
 	}
 }
 
-// BuildMeta はNPC配置情報をMetaPlanに追加する
-func (n *NPCPlanner) BuildMeta(buildData *MetaPlan) {
+// PlanMeta はNPC配置情報をMetaPlanに追加する
+func (n *NPCPlanner) PlanMeta(planData *MetaPlan) {
 	if !n.plannerType.SpawnEnemies {
 		return // 敵をスポーンしない設定の場合は何もしない
 	}
 
 	failCount := 0
-	total := baseNPCCount + buildData.RandomSource.Intn(randomNPCCount)
+	total := baseNPCCount + planData.RandomSource.Intn(randomNPCCount)
 	successCount := 0
 
 	// NPCsフィールドが存在しない場合は初期化
-	if buildData.NPCs == nil {
-		buildData.NPCs = []NPCSpec{}
+	if planData.NPCs == nil {
+		planData.NPCs = []NPCSpec{}
 	}
 
 	for successCount < total && failCount <= maxNPCFailCount {
-		tx := gc.Tile(buildData.RandomSource.Intn(int(buildData.Level.TileWidth)))
-		ty := gc.Tile(buildData.RandomSource.Intn(int(buildData.Level.TileHeight)))
+		tx := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileWidth)))
+		ty := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileHeight)))
 
-		if !buildData.IsSpawnableTile(n.world, tx, ty) {
+		if !planData.IsSpawnableTile(n.world, tx, ty) {
 			failCount++
 			continue
 		}
@@ -64,7 +64,7 @@ func (n *NPCPlanner) BuildMeta(buildData *MetaPlan) {
 		// NPCタイプを選択（現在は固定、将来的にはテーブル化）
 		npcType := "火の玉" // TODO: テーブルで選ぶ
 
-		buildData.NPCs = append(buildData.NPCs, NPCSpec{
+		planData.NPCs = append(planData.NPCs, NPCSpec{
 			X:       int(tx),
 			Y:       int(ty),
 			NPCType: npcType,

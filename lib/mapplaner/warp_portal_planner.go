@@ -28,28 +28,28 @@ func NewWarpPortalPlanner(world w.World, plannerType PlannerType) *WarpPortalPla
 	}
 }
 
-// BuildMeta はワープポータルをMetaPlanに追加する
-func (w *WarpPortalPlanner) BuildMeta(buildData *MetaPlan) {
+// PlanMeta はワープポータルをMetaPlanに追加する
+func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
 	// プランナーが既にワープポータルを配置済みかどうかを確認
-	existingWarpCount := len(buildData.WarpPortals)
+	existingWarpCount := len(planData.WarpPortals)
 
 	// 進行ワープホールを配置
 	if w.plannerType.UseFixedPortalPos {
 		if existingWarpCount == 0 {
 			// 街の公民館（下部の部屋）の中央にワープポータルを配置
-			centerX := int(buildData.Level.TileWidth) / 2
-			centerY := int(buildData.Level.TileHeight) / 2
+			centerX := int(planData.Level.TileWidth) / 2
+			centerY := int(planData.Level.TileHeight) / 2
 			// 公民館の中央: Y1=centerY+10, Y2=centerY+22 の中央 = centerY+16
 			warpX := centerX
 			warpY := centerY + 16
 
 			// 小さなマップの場合は範囲内に調整
-			maxY := int(buildData.Level.TileHeight) - 1
+			maxY := int(planData.Level.TileHeight) - 1
 			if warpY >= maxY {
 				warpY = maxY - 1
 			}
 
-			buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+			planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 				X:    warpX,
 				Y:    warpY,
 				Type: WarpPortalNext,
@@ -58,11 +58,11 @@ func (w *WarpPortalPlanner) BuildMeta(buildData *MetaPlan) {
 	} else {
 		// ダンジョンの場合は通常のランダム配置
 		for attempt := 0; attempt < maxPortalPlacementAttempts; attempt++ {
-			x := buildData.RandomSource.Intn(int(buildData.Level.TileWidth))
-			y := buildData.RandomSource.Intn(int(buildData.Level.TileHeight))
+			x := planData.RandomSource.Intn(int(planData.Level.TileWidth))
+			y := planData.RandomSource.Intn(int(planData.Level.TileHeight))
 
-			if buildData.IsSpawnableTile(w.world, gc.Tile(x), gc.Tile(y)) {
-				buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+			if planData.IsSpawnableTile(w.world, gc.Tile(x), gc.Tile(y)) {
+				planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 					X:    x,
 					Y:    y,
 					Type: WarpPortalNext,
@@ -75,7 +75,7 @@ func (w *WarpPortalPlanner) BuildMeta(buildData *MetaPlan) {
 	// 帰還ワープホール配置（5階層ごと、またはデバッグ用）
 	// 既に帰還ワープポータルが存在するかチェック
 	hasEscapePortal := false
-	for _, portal := range buildData.WarpPortals {
+	for _, portal := range planData.WarpPortals {
 		if portal.Type == WarpPortalEscape {
 			hasEscapePortal = true
 			break
@@ -84,13 +84,13 @@ func (w *WarpPortalPlanner) BuildMeta(buildData *MetaPlan) {
 
 	if !hasEscapePortal && w.world.Resources.Dungeon != nil && w.world.Resources.Dungeon.Depth%escapePortalInterval == 0 {
 		if w.plannerType.UseFixedPortalPos {
-			centerX := int(buildData.Level.TileWidth) / 2
-			centerY := int(buildData.Level.TileHeight) / 2
+			centerX := int(planData.Level.TileWidth) / 2
+			centerY := int(planData.Level.TileHeight) / 2
 			// 図書館（知識が集まる場所）に帰還ポータルを配置
 			escapeX := centerX - 3
 			escapeY := centerY - 15 // 図書館の中心
 
-			buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+			planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 				X:    escapeX,
 				Y:    escapeY,
 				Type: WarpPortalEscape,
@@ -98,11 +98,11 @@ func (w *WarpPortalPlanner) BuildMeta(buildData *MetaPlan) {
 		} else {
 			// ダンジョンの場合は通常のランダム配置
 			for attempt := 0; attempt < maxPortalPlacementAttempts; attempt++ {
-				x := buildData.RandomSource.Intn(int(buildData.Level.TileWidth))
-				y := buildData.RandomSource.Intn(int(buildData.Level.TileHeight))
+				x := planData.RandomSource.Intn(int(planData.Level.TileWidth))
+				y := planData.RandomSource.Intn(int(planData.Level.TileHeight))
 
-				if buildData.IsSpawnableTile(w.world, gc.Tile(x), gc.Tile(y)) {
-					buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+				if planData.IsSpawnableTile(w.world, gc.Tile(x), gc.Tile(y)) {
+					planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 						X:    x,
 						Y:    y,
 						Type: WarpPortalEscape,

@@ -10,14 +10,14 @@ import (
 // TODO: 全然わかってないので理解する
 type CavePlanner struct{}
 
-// BuildInitial は初期洞窟マップをビルドする
-func (c CavePlanner) BuildInitial(buildData *MetaPlan) error {
+// PlanInitial は初期洞窟マップをプランする
+func (c CavePlanner) PlanInitial(planData *MetaPlan) error {
 	// 初期状態をランダムに設定（30%の確率で壁、より広い空間を確保）
-	for i := range buildData.Tiles {
-		if buildData.RandomSource.Float64() < 0.30 {
-			buildData.Tiles[i] = TileWall
+	for i := range planData.Tiles {
+		if planData.RandomSource.Float64() < 0.30 {
+			planData.Tiles[i] = TileWall
 		} else {
-			buildData.Tiles[i] = TileFloor
+			planData.Tiles[i] = TileFloor
 		}
 	}
 	return nil
@@ -29,23 +29,23 @@ type CaveCellularAutomata struct {
 	Iterations int
 }
 
-// BuildMeta はセルラーオートマトンで洞窟を生成する
-func (c CaveCellularAutomata) BuildMeta(buildData *MetaPlan) {
+// PlanMeta はセルラーオートマトンで洞窟を生成する
+func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
 	iterations := c.Iterations
 	if iterations <= 0 {
 		iterations = 5 // デフォルト反復回数
 	}
 
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	// セルラーオートマトンを指定回数実行
 	for iter := 0; iter < iterations; iter++ {
-		newTiles := make([]Tile, len(buildData.Tiles))
+		newTiles := make([]Tile, len(planData.Tiles))
 
 		for x := 0; x < width; x++ {
 			for y := 0; y < height; y++ {
-				idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
 				// 境界は常に壁
 				if x == 0 || x == width-1 || y == 0 || y == height-1 {
@@ -54,7 +54,7 @@ func (c CaveCellularAutomata) BuildMeta(buildData *MetaPlan) {
 				}
 
 				// 周囲の壁の数を数える
-				wallCount := c.countWallsInRadius(buildData, x, y, 1)
+				wallCount := c.countWallsInRadius(planData, x, y, 1)
 
 				// ルール：周囲に6つ以上の壁があれば壁、そうでなければ床（より通路を確保）
 				if wallCount >= 6 {
@@ -65,18 +65,18 @@ func (c CaveCellularAutomata) BuildMeta(buildData *MetaPlan) {
 			}
 		}
 
-		buildData.Tiles = newTiles
+		planData.Tiles = newTiles
 	}
 
 	// 生成された洞窟から部屋領域を抽出
-	c.extractCaveRooms(buildData)
+	c.extractCaveRooms(planData)
 }
 
 // countWallsInRadius は指定半径内の壁タイル数を数える
-func (c CaveCellularAutomata) countWallsInRadius(buildData *MetaPlan, centerX, centerY, radius int) int {
+func (c CaveCellularAutomata) countWallsInRadius(planData *MetaPlan, centerX, centerY, radius int) int {
 	wallCount := 0
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	for x := centerX - radius; x <= centerX+radius; x++ {
 		for y := centerY - radius; y <= centerY+radius; y++ {
@@ -86,8 +86,8 @@ func (c CaveCellularAutomata) countWallsInRadius(buildData *MetaPlan, centerX, c
 				continue
 			}
 
-			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			if buildData.Tiles[idx] == TileWall {
+			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+			if planData.Tiles[idx] == TileWall {
 				wallCount++
 			}
 		}
@@ -97,19 +97,19 @@ func (c CaveCellularAutomata) countWallsInRadius(buildData *MetaPlan, centerX, c
 }
 
 // extractCaveRooms は洞窟から部屋領域を抽出する
-func (c CaveCellularAutomata) extractCaveRooms(buildData *MetaPlan) {
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
-	visited := make([]bool, len(buildData.Tiles))
+func (c CaveCellularAutomata) extractCaveRooms(planData *MetaPlan) {
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
+	visited := make([]bool, len(planData.Tiles))
 
 	// 連結している床領域を見つけて部屋として登録
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
-			if buildData.Tiles[idx] == TileFloor && !visited[idx] {
+			if planData.Tiles[idx] == TileFloor && !visited[idx] {
 				// 洪水塗りつぶしで連結領域を見つける
-				floorTiles := c.floodFill(buildData, x, y, visited)
+				floorTiles := c.floodFill(planData, x, y, visited)
 
 				// 十分な大きさの領域のみ部屋として認識
 				if len(floorTiles) >= 10 {
@@ -118,7 +118,7 @@ func (c CaveCellularAutomata) extractCaveRooms(buildData *MetaPlan) {
 					minY, maxY := y, y
 
 					for _, tilePos := range floorTiles {
-						tileX, tileY := buildData.Level.XYTileCoord(resources.TileIdx(tilePos))
+						tileX, tileY := planData.Level.XYTileCoord(resources.TileIdx(tilePos))
 						if int(tileX) < minX {
 							minX = int(tileX)
 						}
@@ -140,7 +140,7 @@ func (c CaveCellularAutomata) extractCaveRooms(buildData *MetaPlan) {
 						X2: gc.Tile(maxX),
 						Y2: gc.Tile(maxY),
 					}
-					buildData.Rooms = append(buildData.Rooms, room)
+					planData.Rooms = append(planData.Rooms, room)
 				}
 			}
 		}
@@ -148,13 +148,13 @@ func (c CaveCellularAutomata) extractCaveRooms(buildData *MetaPlan) {
 }
 
 // floodFill は洪水塗りつぶしで連結する床タイルを見つける
-func (c CaveCellularAutomata) floodFill(buildData *MetaPlan, startX, startY int, visited []bool) []int {
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+func (c CaveCellularAutomata) floodFill(planData *MetaPlan, startX, startY int, visited []bool) []int {
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 	var result []int
 	var queue [][2]int
 
-	startIdx := buildData.Level.XYTileIndex(gc.Tile(startX), gc.Tile(startY))
+	startIdx := planData.Level.XYTileIndex(gc.Tile(startX), gc.Tile(startY))
 	queue = append(queue, [2]int{startX, startY})
 	visited[startIdx] = true
 
@@ -166,7 +166,7 @@ func (c CaveCellularAutomata) floodFill(buildData *MetaPlan, startX, startY int,
 		queue = queue[1:]
 
 		x, y := current[0], current[1]
-		idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+		idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 		result = append(result, int(idx))
 
 		// 隣接タイルをチェック
@@ -174,9 +174,9 @@ func (c CaveCellularAutomata) floodFill(buildData *MetaPlan, startX, startY int,
 			nx, ny := x+dir[0], y+dir[1]
 
 			if nx >= 0 && nx < width && ny >= 0 && ny < height {
-				nIdx := buildData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
+				nIdx := planData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 
-				if !visited[nIdx] && buildData.Tiles[nIdx] == TileFloor {
+				if !visited[nIdx] && planData.Tiles[nIdx] == TileFloor {
 					visited[nIdx] = true
 					queue = append(queue, [2]int{nx, ny})
 				}
@@ -190,39 +190,39 @@ func (c CaveCellularAutomata) floodFill(buildData *MetaPlan, startX, startY int,
 // CavePathWidener は通路を広げる
 type CavePathWidener struct{}
 
-// BuildMeta は狭い通路を広げる
-func (c CavePathWidener) BuildMeta(buildData *MetaPlan) {
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+// PlanMeta は狭い通路を広げる
+func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	// 床タイルの周囲1マスを床にして通路を広げる
-	newTiles := make([]Tile, len(buildData.Tiles))
-	copy(newTiles, buildData.Tiles)
+	newTiles := make([]Tile, len(planData.Tiles))
+	copy(newTiles, planData.Tiles)
 
 	for x := 1; x < width-1; x++ {
 		for y := 1; y < height-1; y++ {
-			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
 			// 現在が壁で、隣接に床がある場合
-			if buildData.Tiles[idx] == TileWall {
-				adjacentFloorCount := c.countAdjacentFloors(buildData, x, y)
+			if planData.Tiles[idx] == TileWall {
+				adjacentFloorCount := c.countAdjacentFloors(planData, x, y)
 
 				// 隣接する床が2個以上ある場合、30%の確率で床にする
-				if adjacentFloorCount >= 2 && buildData.RandomSource.Float64() < 0.3 {
+				if adjacentFloorCount >= 2 && planData.RandomSource.Float64() < 0.3 {
 					newTiles[idx] = TileFloor
 				}
 			}
 		}
 	}
 
-	buildData.Tiles = newTiles
+	planData.Tiles = newTiles
 }
 
 // countAdjacentFloors は隣接する床タイルの数を数える
-func (c CavePathWidener) countAdjacentFloors(buildData *MetaPlan, centerX, centerY int) int {
+func (c CavePathWidener) countAdjacentFloors(planData *MetaPlan, centerX, centerY int) int {
 	count := 0
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	// 4方向の隣接タイルをチェック
 	directions := [][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
@@ -231,8 +231,8 @@ func (c CavePathWidener) countAdjacentFloors(buildData *MetaPlan, centerX, cente
 		x, y := centerX+dir[0], centerY+dir[1]
 
 		if x >= 0 && x < width && y >= 0 && y < height {
-			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			if buildData.Tiles[idx] == TileFloor {
+			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+			if planData.Tiles[idx] == TileFloor {
 				count++
 			}
 		}
@@ -244,20 +244,20 @@ func (c CavePathWidener) countAdjacentFloors(buildData *MetaPlan, centerX, cente
 // CaveStalactites は鍾乳石や岩の障害物を配置する
 type CaveStalactites struct{}
 
-// BuildMeta は洞窟内に鍾乳石を配置する
-func (c CaveStalactites) BuildMeta(buildData *MetaPlan) {
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+// PlanMeta は洞窟内に鍾乳石を配置する
+func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	// 床タイルの一部を鍾乳石（壁）に変換
 	for x := 2; x < width-2; x++ {
 		for y := 2; y < height-2; y++ {
-			idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
-			if buildData.Tiles[idx] == TileFloor {
+			if planData.Tiles[idx] == TileFloor {
 				// 2%の確率で鍾乳石を配置（確率を下げてより通行可能に）
-				if buildData.RandomSource.Float64() < 0.02 {
-					buildData.Tiles[idx] = TileWall
+				if planData.RandomSource.Float64() < 0.02 {
+					planData.Tiles[idx] = TileWall
 				}
 			}
 		}
@@ -267,25 +267,25 @@ func (c CaveStalactites) BuildMeta(buildData *MetaPlan) {
 // CaveConnector は隔離された洞窟領域を接続する
 type CaveConnector struct{}
 
-// BuildMeta は隔離された洞窟領域を接続する
-func (c CaveConnector) BuildMeta(buildData *MetaPlan) {
-	if len(buildData.Rooms) < 2 {
+// PlanMeta は隔離された洞窟領域を接続する
+func (c CaveConnector) PlanMeta(planData *MetaPlan) {
+	if len(planData.Rooms) < 2 {
 		return
 	}
 
 	// 各部屋を最低1つの他の部屋と接続する
-	for i := 0; i < len(buildData.Rooms)-1; i++ {
-		room1 := buildData.Rooms[i]
-		room2 := buildData.Rooms[i+1]
+	for i := 0; i < len(planData.Rooms)-1; i++ {
+		room1 := planData.Rooms[i]
+		room2 := planData.Rooms[i+1]
 
-		c.createCaveTunnel(buildData, room1, room2)
+		c.createCaveTunnel(planData, room1, room2)
 	}
 }
 
 // createCaveTunnel は2つの洞窟領域間にトンネルを作成する
-func (c CaveConnector) createCaveTunnel(buildData *MetaPlan, room1, room2 gc.Rect) {
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+func (c CaveConnector) createCaveTunnel(planData *MetaPlan, room1, room2 gc.Rect) {
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	// 各部屋の中心を計算
 	center1X := int(room1.X1+room1.X2) / 2
@@ -308,8 +308,8 @@ func (c CaveConnector) createCaveTunnel(buildData *MetaPlan, room1, room2 gc.Rec
 		for dy := -1; dy <= 1; dy++ {
 			y := currentY + dy
 			if y >= 1 && y < height-1 && currentX >= 1 && currentX < width-1 {
-				idx := buildData.Level.XYTileIndex(gc.Tile(currentX), gc.Tile(y))
-				buildData.Tiles[idx] = TileFloor
+				idx := planData.Level.XYTileIndex(gc.Tile(currentX), gc.Tile(y))
+				planData.Tiles[idx] = TileFloor
 			}
 		}
 	}
@@ -326,8 +326,8 @@ func (c CaveConnector) createCaveTunnel(buildData *MetaPlan, room1, room2 gc.Rec
 		for dx := -1; dx <= 1; dx++ {
 			x := currentX + dx
 			if x >= 1 && x < width-1 && currentY >= 1 && currentY < height-1 {
-				idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(currentY))
-				buildData.Tiles[idx] = TileFloor
+				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(currentY))
+				planData.Tiles[idx] = TileFloor
 			}
 		}
 	}

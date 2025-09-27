@@ -133,7 +133,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// マップを構築
-	chain.Build()
+	chain.Plan()
 
 	// 中央座標
 	centerX := width / 2

@@ -172,7 +172,7 @@ func TestBuildPlanFromTiles_Integration(t *testing.T) {
 	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
 
 	// マップを生成
-	chain.Build()
+	chain.Plan()
 
 	// BuildPlanFromTilesをテスト
 	plan, err := chain.PlanData.BuildPlanFromTiles()

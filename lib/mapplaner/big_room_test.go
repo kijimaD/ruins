@@ -13,7 +13,7 @@ func TestBigRoomPlanner(t *testing.T) {
 	seed := uint64(12345)
 
 	chain := NewBigRoomPlanner(width, height, seed)
-	chain.Build()
+	chain.Plan()
 
 	// 部屋が1つだけ生成されることを確認
 	if len(chain.PlanData.Rooms) != 1 {
@@ -68,7 +68,7 @@ func TestBigRoomVariations(t *testing.T) {
 
 	for _, seed := range seeds {
 		chain := NewBigRoomPlanner(20, 20, seed)
-		chain.Build()
+		chain.Plan()
 
 		// 部屋が1つ生成されることを確認
 		if len(chain.PlanData.Rooms) != 1 {
@@ -123,11 +123,11 @@ func TestBigRoomPlannerReproducibility(t *testing.T) {
 
 	// 1回目の生成
 	chain1 := NewBigRoomPlanner(width, height, seed)
-	chain1.Build()
+	chain1.Plan()
 
 	// 2回目の生成
 	chain2 := NewBigRoomPlanner(width, height, seed)
-	chain2.Build()
+	chain2.Plan()
 
 	// 部屋数が同じことを確認
 	if len(chain1.PlanData.Rooms) != len(chain2.PlanData.Rooms) {
@@ -162,7 +162,7 @@ func TestBigRoomPlannerBoundaries(t *testing.T) {
 	seed := uint64(11111)
 
 	chain := NewBigRoomPlanner(width, height, seed)
-	chain.Build()
+	chain.Plan()
 
 	// マップの境界が壁になっていることを確認
 	for x := 0; x < int(width); x++ {

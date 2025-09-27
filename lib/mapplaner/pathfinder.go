@@ -4,26 +4,26 @@ import gc "github.com/kijimaD/ruins/lib/components"
 
 // PathFinder はパスファインディング機能を提供する
 type PathFinder struct {
-	buildData *MetaPlan
+	planData *MetaPlan
 }
 
 // NewPathFinder はPathFinderを作成する
-func NewPathFinder(buildData *MetaPlan) *PathFinder {
-	return &PathFinder{buildData: buildData}
+func NewPathFinder(planData *MetaPlan) *PathFinder {
+	return &PathFinder{planData: planData}
 }
 
 // IsWalkable は指定座標が歩行可能かを判定する
 func (pf *PathFinder) IsWalkable(x, y int) bool {
-	width := int(pf.buildData.Level.TileWidth)
-	height := int(pf.buildData.Level.TileHeight)
+	width := int(pf.planData.Level.TileWidth)
+	height := int(pf.planData.Level.TileHeight)
 
 	// 境界チェック
 	if x < 0 || x >= width || y < 0 || y >= height {
 		return false
 	}
 
-	idx := pf.buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-	tile := pf.buildData.Tiles[idx]
+	idx := pf.planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+	tile := pf.planData.Tiles[idx]
 
 	return tile.Walkable
 }
@@ -31,8 +31,8 @@ func (pf *PathFinder) IsWalkable(x, y int) bool {
 // FindPath はBFSを使ってスタート地点からゴールまでのパスを探索する
 // 上下左右の4方向移動のみサポート
 func (pf *PathFinder) FindPath(startX, startY, goalX, goalY int) []Position {
-	width := int(pf.buildData.Level.TileWidth)
-	height := int(pf.buildData.Level.TileHeight)
+	width := int(pf.planData.Level.TileWidth)
+	height := int(pf.planData.Level.TileHeight)
 
 	// スタートまたはゴールが歩行不可能な場合は空のパスを返す
 	if !pf.IsWalkable(startX, startY) || !pf.IsWalkable(goalX, goalY) {
@@ -137,7 +137,7 @@ func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) Ma
 	}
 
 	// MetaPlanからワープポータルエンティティを取得して検証
-	for _, portal := range pf.buildData.WarpPortals {
+	for _, portal := range pf.planData.WarpPortals {
 		reachable := pf.IsReachable(playerStartX, playerStartY, portal.X, portal.Y)
 
 		switch portal.Type {

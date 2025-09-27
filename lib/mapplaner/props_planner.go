@@ -27,11 +27,11 @@ func NewPropsPlanner(world w.World, plannerType PlannerType) *PropsPlanner {
 	}
 }
 
-// BuildMeta はProps配置情報をMetaPlanに追加する
-func (p *PropsPlanner) BuildMeta(buildData *MetaPlan) {
+// PlanMeta はProps配置情報をMetaPlanに追加する
+func (p *PropsPlanner) PlanMeta(planData *MetaPlan) {
 	// 町タイプの場合は固定Props配置を追加
 	if p.plannerType.Name == PlannerTypeTown.Name {
-		p.addTownProps(buildData)
+		p.addTownProps(planData)
 	}
 
 	// ダンジョンタイプの場合は固定Props配置を追加（必要に応じて実装）
@@ -39,9 +39,9 @@ func (p *PropsPlanner) BuildMeta(buildData *MetaPlan) {
 }
 
 // addTownProps は町用の固定Props配置をMetaPlanに追加する
-func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
-	centerX := int(buildData.Level.TileWidth) / 2
-	centerY := int(buildData.Level.TileHeight) / 2
+func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
+	centerX := int(planData.Level.TileWidth) / 2
+	centerY := int(planData.Level.TileHeight) / 2
 
 	// 図書館の家具配置
 	libraryProps := []struct {
@@ -59,8 +59,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range libraryProps {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -86,8 +86,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range schoolProps {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -110,8 +110,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range house1Props {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -133,8 +133,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range house2Props {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -157,8 +157,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range hallProps {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -181,8 +181,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range officeProps {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -204,8 +204,8 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 	for _, prop := range marketProps {
 		x := centerX + prop.offsetX
 		y := centerY + prop.offsetY
-		if p.isValidPropPosition(buildData, gc.Tile(x), gc.Tile(y)) {
-			buildData.Props = append(buildData.Props, PropsSpec{
+		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
+			planData.Props = append(planData.Props, PropsSpec{
 				X:        x,
 				Y:        y,
 				PropType: prop.propType,
@@ -215,18 +215,18 @@ func (p *PropsPlanner) addTownProps(buildData *MetaPlan) {
 }
 
 // isValidPropPosition はProp配置に適した位置かチェックする
-func (p *PropsPlanner) isValidPropPosition(buildData *MetaPlan, x, y gc.Tile) bool {
+func (p *PropsPlanner) isValidPropPosition(planData *MetaPlan, x, y gc.Tile) bool {
 	// 範囲チェック
-	if x < 0 || x >= buildData.Level.TileWidth || y < 0 || y >= buildData.Level.TileHeight {
+	if x < 0 || x >= planData.Level.TileWidth || y < 0 || y >= planData.Level.TileHeight {
 		return false
 	}
 
-	tileIdx := buildData.Level.XYTileIndex(x, y)
-	if int(tileIdx) >= len(buildData.Tiles) {
+	tileIdx := planData.Level.XYTileIndex(x, y)
+	if int(tileIdx) >= len(planData.Tiles) {
 		return false
 	}
 
-	tile := buildData.Tiles[tileIdx]
+	tile := planData.Tiles[tileIdx]
 	// 床タイルにのみ配置可能
 	return tile == TileFloor
 }

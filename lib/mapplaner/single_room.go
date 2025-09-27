@@ -7,11 +7,11 @@ import (
 // SingleRoomPlanner は1つの大きな部屋を作成する（テスト用）
 type SingleRoomPlanner struct{}
 
-// BuildInitial は初期ビルドを行う
-func (b SingleRoomPlanner) BuildInitial(buildData *MetaPlan) error {
+// PlanInitial は初期プランを行う
+func (b SingleRoomPlanner) PlanInitial(planData *MetaPlan) error {
 	// マップの中央に大きな部屋を1つ作成
-	width := buildData.Level.TileWidth
-	height := buildData.Level.TileHeight
+	width := planData.Level.TileWidth
+	height := planData.Level.TileHeight
 
 	// 境界から2タイル内側に部屋を作成
 	room := gc.Rect{
@@ -21,21 +21,21 @@ func (b SingleRoomPlanner) BuildInitial(buildData *MetaPlan) error {
 		Y2: height - 2,
 	}
 
-	buildData.Rooms = []gc.Rect{room}
+	planData.Rooms = []gc.Rect{room}
 	return nil
 }
 
 // SingleRoomDraw は1部屋を描画する
 type SingleRoomDraw struct{}
 
-// BuildMeta は1部屋を描画する
-func (d SingleRoomDraw) BuildMeta(buildData *MetaPlan) {
-	for _, room := range buildData.Rooms {
+// PlanMeta は1部屋を描画する
+func (d SingleRoomDraw) PlanMeta(planData *MetaPlan) {
+	for _, room := range planData.Rooms {
 		// 部屋の内部を床タイルで埋める
 		for y := room.Y1 + 1; y < room.Y2; y++ {
 			for x := room.X1 + 1; x < room.X2; x++ {
-				idx := buildData.Level.XYTileIndex(x, y)
-				buildData.Tiles[idx] = TileFloor
+				idx := planData.Level.XYTileIndex(x, y)
+				planData.Tiles[idx] = TileFloor
 			}
 		}
 	}

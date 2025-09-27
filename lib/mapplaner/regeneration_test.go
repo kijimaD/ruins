@@ -6,18 +6,18 @@ import (
 
 func TestFindPlayerStartPosition_MockTest(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(10, 10)
+	planData := createTestPlanData(10, 10)
 
 	// 中央に床を配置
-	centerIdx := buildData.Level.XYTileIndex(5, 5)
-	buildData.Tiles[centerIdx] = TileFloor
+	centerIdx := planData.Level.XYTileIndex(5, 5)
+	planData.Tiles[centerIdx] = TileFloor
 
 	// IsSpawnableTileをモックしてテスト
 	// この関数は実際のworld構造に依存するため、
 	// ロジックのテストは基本的なパス検証のみに限定する
 
 	// 単純に床タイルのチェックのみテスト
-	if buildData.Tiles[centerIdx] != TileFloor {
+	if planData.Tiles[centerIdx] != TileFloor {
 		t.Error("Expected center tile to be floor")
 	}
 }
@@ -27,7 +27,7 @@ func TestRegenerationSystem_Integration(t *testing.T) {
 	t.Parallel()
 	// PlannerChainの接続性検証機能が統合されていることを確認
 	chain := NewSmallRoomPlanner(20, 20, 42)
-	chain.Build()
+	chain.Plan()
 
 	// ValidateConnectivity メソッドが使用可能であることを確認
 	result := chain.ValidateConnectivity(10, 10)

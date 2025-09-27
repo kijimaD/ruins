@@ -22,8 +22,8 @@ type EntityTemplate struct {
 	Data       interface{} // PropType等の追加データ
 }
 
-// BuildInitial は文字列定義からマップ構造を初期化する
-func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) error {
+// PlanInitial は文字列定義からマップ構造を初期化する
+func (b StringMapPlanner) PlanInitial(planData *MetaPlan) error {
 	if len(b.TileMap) == 0 {
 		return nil
 	}
@@ -38,8 +38,8 @@ func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) error {
 	}
 
 	// 既存のBuildDataサイズを保持（引数で指定されたサイズを優先）
-	existingWidth := int(buildData.Level.TileWidth)
-	existingHeight := int(buildData.Level.TileHeight)
+	existingWidth := int(planData.Level.TileWidth)
+	existingHeight := int(planData.Level.TileHeight)
 
 	// 文字列サイズと指定サイズが異なる場合は指定サイズを使用
 	if existingWidth > 0 && existingHeight > 0 {
@@ -47,11 +47,11 @@ func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) error {
 		height = existingHeight
 	} else {
 		// BuildDataのサイズを文字列サイズで調整
-		buildData.Level.TileWidth = gc.Tile(width)
-		buildData.Level.TileHeight = gc.Tile(height)
+		planData.Level.TileWidth = gc.Tile(width)
+		planData.Level.TileHeight = gc.Tile(height)
 	}
 
-	buildData.Tiles = make([]Tile, width*height)
+	planData.Tiles = make([]Tile, width*height)
 
 	// タイルマップを解析してタイルを配置
 	for y, row := range b.TileMap {
@@ -60,9 +60,9 @@ func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) error {
 				continue
 			}
 
-			tileIdx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+			tileIdx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 			if tileType, exists := b.TileMapping[char]; exists {
-				buildData.Tiles[tileIdx] = tileType
+				planData.Tiles[tileIdx] = tileType
 			} else {
 				return fmt.Errorf("未知のタイル文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
 			}
@@ -71,7 +71,7 @@ func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) error {
 
 	// エンティティマップが指定されている場合はエンティティを配置
 	if len(b.EntityMap) > 0 {
-		if err := b.parseEntities(buildData, width, height); err != nil {
+		if err := b.parseEntities(planData, width, height); err != nil {
 			return err
 		}
 	}

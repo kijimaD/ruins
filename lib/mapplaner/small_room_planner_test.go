@@ -46,7 +46,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		chain := NewSmallRoomPlanner(width, height, 12345)
 
 		// ビルド実行
-		chain.Build()
+		chain.Plan()
 
 		// タイル数が正しいことを確認
 		expectedCount := int(width) * int(height)
@@ -80,7 +80,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		height := gc.Tile(25)
 
 		chain := NewSmallRoomPlanner(width, height, 12345)
-		chain.Build()
+		chain.Plan()
 
 		// 各部屋が有効な範囲内にあることを確認
 		for i, room := range chain.PlanData.Rooms {
@@ -101,7 +101,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		height := gc.Tile(20)
 
 		chain := NewSmallRoomPlanner(width, height, 12345)
-		chain.Build()
+		chain.Plan()
 
 		// 各部屋の内部の少なくとも一部が床タイルであることを確認
 		for i, room := range chain.PlanData.Rooms {
@@ -142,7 +142,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 
 				// パニックなく実行できることを確認
 				assert.NotPanics(t, func() {
-					chain.Build()
+					chain.Plan()
 				}, "%sでパニックが発生した", tc.name)
 
 				// タイル数が正しいことを確認
@@ -159,7 +159,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		height := gc.Tile(30)
 
 		chain := NewSmallRoomPlanner(width, height, 12345)
-		chain.Build()
+		chain.Plan()
 
 		// 廊下が生成されていることを確認
 		// LineCorridorPlannerの仕様により、部屋が2つ以上ある場合は廊下が生成される

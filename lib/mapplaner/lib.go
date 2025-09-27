@@ -349,17 +349,17 @@ func (b *PlannerChain) With(metaMapPlanner MetaMapPlanner) {
 	b.Planners = append(b.Planners, metaMapPlanner)
 }
 
-// Build はプランナーチェーンを実行してマップを生成する
-func (b *PlannerChain) Build() {
+// Plan はプランナーチェーンを実行してマップを生成する
+func (b *PlannerChain) Plan() {
 	if b.Starter == nil {
 		log.Fatal("empty starter planner!")
 	}
-	if err := (*b.Starter).BuildInitial(&b.PlanData); err != nil {
-		log.Fatalf("BuildInitial failed: %v", err)
+	if err := (*b.Starter).PlanInitial(&b.PlanData); err != nil {
+		log.Fatalf("PlanInitial failed: %v", err)
 	}
 
 	for _, meta := range b.Planners {
-		meta.BuildMeta(&b.PlanData)
+		meta.PlanMeta(&b.PlanData)
 	}
 }
 
@@ -481,12 +481,12 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 // InitialMapPlanner は初期マップをプランするインターフェース
 // タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapPlanner interface {
-	BuildInitial(*MetaPlan) error
+	PlanInitial(*MetaPlan) error
 }
 
 // MetaMapPlanner はメタ情報をプランするインターフェース
 type MetaMapPlanner interface {
-	BuildMeta(*MetaPlan)
+	PlanMeta(*MetaPlan)
 }
 
 // NewSmallRoomPlanner はシンプルな小部屋プランナーを作成する
@@ -630,7 +630,7 @@ func (b *PlannerChain) GetPlanners() []MetaMapPlanner {
 // BuildPlan はPlannerChainを実行してEntityPlanを生成する
 func BuildPlan(chain *PlannerChain) (*EntityPlan, error) {
 	// プランナーチェーンを実行
-	chain.Build()
+	chain.Plan()
 
 	// PlanDataからEntityPlanを構築
 	plan, err := chain.PlanData.BuildPlanFromTiles()

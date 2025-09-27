@@ -10,20 +10,20 @@ import (
 // LineCorridorPlanner は直線廊下を生成するビルダー
 type LineCorridorPlanner struct{}
 
-// BuildMeta はメタデータをビルドする
-func (b LineCorridorPlanner) BuildMeta(buildData *MetaPlan) {
-	b.BuildCorridors(buildData)
+// PlanMeta はメタデータをビルドする
+func (b LineCorridorPlanner) PlanMeta(planData *MetaPlan) {
+	b.BuildCorridors(planData)
 }
 
 // BuildCorridors は廊下をビルドする
-func (b LineCorridorPlanner) BuildCorridors(buildData *MetaPlan) {
+func (b LineCorridorPlanner) BuildCorridors(planData *MetaPlan) {
 	// 接続済みの部屋。通路を2重に計算しないようにする
 	connected := map[int]bool{}
 	// 廊下のスライス
-	for i, room := range buildData.Rooms {
+	for i, room := range planData.Rooms {
 		roomDistances := map[int]float64{}
 		centerX, centerY := room.Center()
-		for j, otherRoom := range buildData.Rooms {
+		for j, otherRoom := range planData.Rooms {
 			isExist := connected[j]
 			if i != j && !isExist {
 				oCenterX, oCenterY := otherRoom.Center()
@@ -39,7 +39,7 @@ func (b LineCorridorPlanner) BuildCorridors(buildData *MetaPlan) {
 					closestIdx = k
 				}
 			}
-			destCenterX, destCenterY := buildData.Rooms[closestIdx].Center()
+			destCenterX, destCenterY := planData.Rooms[closestIdx].Center()
 
 			points := []point{}
 			corridorWidth := 3
@@ -54,13 +54,13 @@ func (b LineCorridorPlanner) BuildCorridors(buildData *MetaPlan) {
 			}
 			corridor := []resources.TileIdx{}
 			for _, p := range points {
-				idx := buildData.Level.XYTileIndex(p.x, p.y)
-				if 0 < int(idx) && int(idx) < int(buildData.Level.TileWidth)*int(buildData.Level.TileHeight)-1 && buildData.Tiles[idx] == TileWall {
-					buildData.Tiles[idx] = TileFloor
+				idx := planData.Level.XYTileIndex(p.x, p.y)
+				if 0 < int(idx) && int(idx) < int(planData.Level.TileWidth)*int(planData.Level.TileHeight)-1 && planData.Tiles[idx] == TileWall {
+					planData.Tiles[idx] = TileFloor
 				}
 				corridor = append(corridor, idx)
 			}
-			buildData.Corridors = append(buildData.Corridors, corridor)
+			planData.Corridors = append(planData.Corridors, corridor)
 		}
 		connected[i] = true
 	}

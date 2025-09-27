@@ -13,7 +13,7 @@ func TestNewStringTownPlanner(t *testing.T) {
 	chain := NewStringTownPlanner(width, height, 12345)
 
 	// ビルダーチェーンを実行
-	chain.Build()
+	chain.Plan()
 
 	// サイズをチェック
 	if chain.PlanData.Level.TileWidth != width {
@@ -170,7 +170,7 @@ func TestNewTownPlannerIntegration(t *testing.T) {
 	chain := NewTownPlanner(width, height, 54321)
 
 	// ビルダーチェーンを実行
-	chain.Build()
+	chain.Plan()
 
 	// 基本的な構造チェック
 	if chain.PlanData.Level.TileWidth != width {

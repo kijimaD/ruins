@@ -15,10 +15,10 @@ func TestNewRandomPlanner(t *testing.T) {
 	seed := uint64(12345)
 
 	chain1 := NewRandomPlanner(width, height, seed)
-	chain1.Build()
+	chain1.Plan()
 
 	chain2 := NewRandomPlanner(width, height, seed)
-	chain2.Build()
+	chain2.Plan()
 
 	// 同じシードなので同じビルダータイプが選ばれ、同じ結果になるはず
 	if len(chain1.PlanData.Rooms) != len(chain2.PlanData.Rooms) {
@@ -53,7 +53,7 @@ func TestNewRandomPlannerVariety(t *testing.T) {
 
 	for _, seed := range seeds {
 		chain := NewRandomPlanner(width, height, seed)
-		chain.Build()
+		chain.Plan()
 
 		roomCount := len(chain.PlanData.Rooms)
 		results[roomCount]++
@@ -111,7 +111,7 @@ func TestNewRandomPlannerBuildsSuccessfully(t *testing.T) {
 				}()
 
 				chain = NewRandomPlanner(tc.width, tc.height, tc.seed)
-				chain.Build()
+				chain.Plan()
 			}()
 
 			if chain == nil {
@@ -160,7 +160,7 @@ func TestRandomPlannerTypes(t *testing.T) {
 
 	for _, seed := range testSeeds {
 		chain := NewRandomPlanner(width, height, seed)
-		chain.Build()
+		chain.Plan()
 
 		roomCount := len(chain.PlanData.Rooms)
 		seedResults[seed] = roomCount

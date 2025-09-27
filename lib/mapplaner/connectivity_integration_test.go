@@ -11,7 +11,7 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 小さなテスト用マップを生成
 	chain := NewSmallRoomPlanner(20, 20, 42) // 固定シードで再現可能
-	chain.Build()
+	chain.Plan()
 
 	// プレイヤーのスタート位置を部屋の中心付近に設定
 	var playerStartX, playerStartY int
@@ -53,7 +53,7 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 洞窟マップを生成
 	chain := NewCavePlanner(30, 30, 123)
-	chain.Build()
+	chain.Plan()
 
 	// 床タイルを見つけてプレイヤーのスタート位置とする
 	var playerStartX, playerStartY int
@@ -100,7 +100,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 	// テスト用の小さなマップを作成
 	chain := NewPlannerChain(10, 10, 1)
 	chain.StartWith(&TestRoomPlanner{})
-	chain.Build()
+	chain.Plan()
 
 	// プレイヤーのスタート位置（十字の中心）
 	playerStartX, playerStartY := 5, 5
@@ -158,26 +158,26 @@ func TestPathFinder_WithPortals(t *testing.T) {
 // TestRoomPlanner はテスト用の簡単な部屋ビルダー
 type TestRoomPlanner struct{}
 
-func (t *TestRoomPlanner) BuildInitial(buildData *MetaPlan) error {
+func (t *TestRoomPlanner) PlanInitial(planData *MetaPlan) error {
 	// 中央に簡単な十字型の部屋を作成
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	// 全体を壁で埋める
-	for i := range buildData.Tiles {
-		buildData.Tiles[i] = TileWall
+	for i := range planData.Tiles {
+		planData.Tiles[i] = TileWall
 	}
 
 	// 垂直方向の通路
 	for y := 1; y < height-1; y++ {
-		idx := buildData.Level.XYTileIndex(gc.Tile(width/2), gc.Tile(y))
-		buildData.Tiles[idx] = TileFloor
+		idx := planData.Level.XYTileIndex(gc.Tile(width/2), gc.Tile(y))
+		planData.Tiles[idx] = TileFloor
 	}
 
 	// 水平方向の通路
 	for x := 1; x < width-1; x++ {
-		idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(height/2))
-		buildData.Tiles[idx] = TileFloor
+		idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(height/2))
+		planData.Tiles[idx] = TileFloor
 	}
 
 	return nil

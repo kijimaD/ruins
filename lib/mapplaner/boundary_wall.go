@@ -16,24 +16,24 @@ func NewBoundaryWall(wallTileType Tile) BoundaryWall {
 	}
 }
 
-// BuildMeta はメタデータをビルドする
-func (b BoundaryWall) BuildMeta(buildData *MetaPlan) {
+// PlanMeta はメタデータをビルドする
+func (b BoundaryWall) PlanMeta(planData *MetaPlan) {
 	// 全タイルをチェックして最外枠のタイルを壁で覆う
-	for i := range buildData.Tiles {
+	for i := range planData.Tiles {
 		idx := resources.TileIdx(i)
 
 		// 最外枠タイルの場合は無条件で壁にする
-		if b.isBoundaryTile(buildData, idx) {
-			buildData.Tiles[idx] = b.WallTileType
+		if b.isBoundaryTile(planData, idx) {
+			planData.Tiles[idx] = b.WallTileType
 		}
 	}
 }
 
 // isBoundaryTile はマップの最外枠のタイルかを判定する
-func (b BoundaryWall) isBoundaryTile(buildData *MetaPlan, idx resources.TileIdx) bool {
-	x, y := buildData.Level.XYTileCoord(idx)
-	width := int(buildData.Level.TileWidth)
-	height := int(buildData.Level.TileHeight)
+func (b BoundaryWall) isBoundaryTile(planData *MetaPlan, idx resources.TileIdx) bool {
+	x, y := planData.Level.XYTileCoord(idx)
+	width := int(planData.Level.TileWidth)
+	height := int(planData.Level.TileHeight)
 
 	return int(x) == 0 || int(x) == width-1 || int(y) == 0 || int(y) == height-1
 }

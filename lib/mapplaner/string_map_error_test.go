@@ -94,9 +94,9 @@ func TestStringMapPlanner_ValidCharactersNoError(t *testing.T) {
 	}
 }
 
-func TestStringMapBuilder_BuildInitialError(t *testing.T) {
+func TestStringMapBuilder_PlanInitialError(t *testing.T) {
 	t.Parallel()
-	// BuildInitialでエラーが発生することをテスト
+	// PlanInitialでエラーが発生することをテスト
 	builder := &StringMapPlanner{
 		TileMap: []string{
 			"#Y#", // 'Y'は未知のタイル文字
@@ -119,9 +119,9 @@ func TestStringMapBuilder_BuildInitialError(t *testing.T) {
 		Tiles:        make([]Tile, 9),
 	}
 
-	err := builder.BuildInitial(metaPlan)
+	err := builder.PlanInitial(metaPlan)
 	if err == nil {
-		t.Fatal("BuildInitialでエラーが期待されましたが、エラーが返されませんでした")
+		t.Fatal("PlanInitialでエラーが期待されましたが、エラーが返されませんでした")
 	}
 
 	expectedErrorSubstring := "未知のタイル文字 'Y'"

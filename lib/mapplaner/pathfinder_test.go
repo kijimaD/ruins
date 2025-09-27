@@ -28,8 +28,8 @@ func createTestPlanData(width, height int) *MetaPlan {
 
 func TestPathFinder_IsWalkable(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(5, 5)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(5, 5)
+	pf := NewPathFinder(planData)
 
 	// 境界外テスト
 	if pf.IsWalkable(-1, 0) {
@@ -51,22 +51,22 @@ func TestPathFinder_IsWalkable(t *testing.T) {
 	}
 
 	// 床タイルに変更してテスト
-	idx := buildData.Level.XYTileIndex(1, 1)
-	buildData.Tiles[idx] = TileFloor
+	idx := planData.Level.XYTileIndex(1, 1)
+	planData.Tiles[idx] = TileFloor
 	if !pf.IsWalkable(1, 1) {
 		t.Error("Expected floor tile to be walkable")
 	}
 
 	// ワープタイルテスト
-	idx = buildData.Level.XYTileIndex(2, 2)
-	buildData.Tiles[idx] = TileFloor
+	idx = planData.Level.XYTileIndex(2, 2)
+	planData.Tiles[idx] = TileFloor
 	if !pf.IsWalkable(2, 2) {
 		t.Error("Expected warp next tile to be walkable")
 	}
 
 	// 脱出タイルテスト
-	idx = buildData.Level.XYTileIndex(3, 3)
-	buildData.Tiles[idx] = TileFloor
+	idx = planData.Level.XYTileIndex(3, 3)
+	planData.Tiles[idx] = TileFloor
 	if !pf.IsWalkable(3, 3) {
 		t.Error("Expected warp escape tile to be walkable")
 	}
@@ -74,14 +74,14 @@ func TestPathFinder_IsWalkable(t *testing.T) {
 
 func TestPathFinder_FindPath_SimplePath(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(5, 5)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(5, 5)
+	pf := NewPathFinder(planData)
 
 	// 簡単な一直線のパスを作成
 	// (1,1) -> (1,2) -> (1,3)
 	for y := 1; y <= 3; y++ {
-		idx := buildData.Level.XYTileIndex(1, gc.Tile(y))
-		buildData.Tiles[idx] = TileFloor
+		idx := planData.Level.XYTileIndex(1, gc.Tile(y))
+		planData.Tiles[idx] = TileFloor
 	}
 
 	path := pf.FindPath(1, 1, 1, 3)
@@ -103,12 +103,12 @@ func TestPathFinder_FindPath_SimplePath(t *testing.T) {
 
 func TestPathFinder_FindPath_NoPath(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(5, 5)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(5, 5)
+	pf := NewPathFinder(planData)
 
 	// スタート地点のみ床にする（ゴールは壁のまま）
-	idx := buildData.Level.XYTileIndex(1, 1)
-	buildData.Tiles[idx] = TileFloor
+	idx := planData.Level.XYTileIndex(1, 1)
+	planData.Tiles[idx] = TileFloor
 
 	path := pf.FindPath(1, 1, 3, 3)
 
@@ -119,15 +119,15 @@ func TestPathFinder_FindPath_NoPath(t *testing.T) {
 
 func TestPathFinder_FindPath_LShapedPath(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(5, 5)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(5, 5)
+	pf := NewPathFinder(planData)
 
 	// L字型のパスを作成
 	// (1,1) -> (1,2) -> (2,2) -> (3,2)
 	positions := []Position{{1, 1}, {1, 2}, {2, 2}, {3, 2}}
 	for _, pos := range positions {
-		idx := buildData.Level.XYTileIndex(gc.Tile(pos.X), gc.Tile(pos.Y))
-		buildData.Tiles[idx] = TileFloor
+		idx := planData.Level.XYTileIndex(gc.Tile(pos.X), gc.Tile(pos.Y))
+		planData.Tiles[idx] = TileFloor
 	}
 
 	path := pf.FindPath(1, 1, 3, 2)
@@ -148,14 +148,14 @@ func TestPathFinder_FindPath_LShapedPath(t *testing.T) {
 
 func TestPathFinder_IsReachable(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(5, 5)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(5, 5)
+	pf := NewPathFinder(planData)
 
 	// パスを作成
 	positions := []Position{{1, 1}, {1, 2}, {2, 2}}
 	for _, pos := range positions {
-		idx := buildData.Level.XYTileIndex(gc.Tile(pos.X), gc.Tile(pos.Y))
-		buildData.Tiles[idx] = TileFloor
+		idx := planData.Level.XYTileIndex(gc.Tile(pos.X), gc.Tile(pos.Y))
+		planData.Tiles[idx] = TileFloor
 	}
 
 	// 到達可能なテスト
@@ -171,31 +171,31 @@ func TestPathFinder_IsReachable(t *testing.T) {
 
 func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(6, 6)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(6, 6)
+	pf := NewPathFinder(planData)
 
 	// プレイヤースタート地点
 	playerX, playerY := 1, 1
-	idx := buildData.Level.XYTileIndex(gc.Tile(playerX), gc.Tile(playerY))
-	buildData.Tiles[idx] = TileFloor
+	idx := planData.Level.XYTileIndex(gc.Tile(playerX), gc.Tile(playerY))
+	planData.Tiles[idx] = TileFloor
 
 	// 到達可能なワープポータル
-	idx = buildData.Level.XYTileIndex(1, 2)
-	buildData.Tiles[idx] = TileFloor
-	idx = buildData.Level.XYTileIndex(1, 3)
-	buildData.Tiles[idx] = TileFloor
+	idx = planData.Level.XYTileIndex(1, 2)
+	planData.Tiles[idx] = TileFloor
+	idx = planData.Level.XYTileIndex(1, 3)
+	planData.Tiles[idx] = TileFloor
 	// ワープポータルエンティティを追加
-	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 		X:    1,
 		Y:    3,
 		Type: WarpPortalNext,
 	})
 
 	// 到達不可能な脱出ポータル（孤立している）
-	idx = buildData.Level.XYTileIndex(4, 4)
-	buildData.Tiles[idx] = TileFloor
+	idx = planData.Level.XYTileIndex(4, 4)
+	planData.Tiles[idx] = TileFloor
 	// 脱出ポータルエンティティを追加
-	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 		X:    4,
 		Y:    4,
 		Type: WarpPortalEscape,
@@ -242,33 +242,33 @@ func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 
 func TestPathFinder_ValidateMapConnectivity_FullyConnected(t *testing.T) {
 	t.Parallel()
-	buildData := createTestPlanData(6, 6)
-	pf := NewPathFinder(buildData)
+	planData := createTestPlanData(6, 6)
+	pf := NewPathFinder(planData)
 
 	// プレイヤースタート地点から全ポータルへの直線パス
 	playerX, playerY := 2, 2
 
 	// 床を配置
 	for y := 1; y <= 4; y++ {
-		idx := buildData.Level.XYTileIndex(2, gc.Tile(y))
-		buildData.Tiles[idx] = TileFloor
+		idx := planData.Level.XYTileIndex(2, gc.Tile(y))
+		planData.Tiles[idx] = TileFloor
 	}
 
 	// ワープポータル（到達可能）
-	idx := buildData.Level.XYTileIndex(2, 1)
-	buildData.Tiles[idx] = TileFloor
+	idx := planData.Level.XYTileIndex(2, 1)
+	planData.Tiles[idx] = TileFloor
 	// ワープポータルエンティティを追加
-	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 		X:    2,
 		Y:    1,
 		Type: WarpPortalNext,
 	})
 
 	// 脱出ポータル（到達可能）
-	idx = buildData.Level.XYTileIndex(2, 4)
-	buildData.Tiles[idx] = TileFloor
+	idx = planData.Level.XYTileIndex(2, 4)
+	planData.Tiles[idx] = TileFloor
 	// 脱出ポータルエンティティを追加
-	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 		X:    2,
 		Y:    4,
 		Type: WarpPortalEscape,

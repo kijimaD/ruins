@@ -33,7 +33,7 @@ func PlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerType map
 	chain.With(propsPlanner)
 
 	// プランナーチェーンを実行
-	chain.Build()
+	chain.Plan()
 
 	// PlanDataからEntityPlanを構築
 	plan, err := chain.PlanData.BuildPlanFromTiles()

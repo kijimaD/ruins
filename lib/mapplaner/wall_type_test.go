@@ -12,7 +12,7 @@ func TestPlanData_GetWallType(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成（7x7）
 	width, height := gc.Tile(7), gc.Tile(7)
-	buildData := &MetaPlan{
+	planData := &MetaPlan{
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
@@ -24,8 +24,8 @@ func TestPlanData_GetWallType(t *testing.T) {
 	}
 
 	// 全体を壁で埋める
-	for i := range buildData.Tiles {
-		buildData.Tiles[i] = TileWall
+	for i := range planData.Tiles {
+		planData.Tiles[i] = TileWall
 	}
 
 	// テストケース1: WallTypeTop（下に床がある壁）
@@ -34,18 +34,18 @@ func TestPlanData_GetWallType(t *testing.T) {
 	centerWallX, centerWallY := gc.Tile(3), gc.Tile(3)
 	bottomFloorX, bottomFloorY := centerWallX, centerWallY+1 // 下の床（Y座標が大きくなる）
 
-	centerWallIdx := buildData.Level.XYTileIndex(centerWallX, centerWallY)
-	bottomFloorIdx := buildData.Level.XYTileIndex(bottomFloorX, bottomFloorY)
+	centerWallIdx := planData.Level.XYTileIndex(centerWallX, centerWallY)
+	bottomFloorIdx := planData.Level.XYTileIndex(bottomFloorX, bottomFloorY)
 
-	buildData.Tiles[bottomFloorIdx] = TileFloor
+	planData.Tiles[bottomFloorIdx] = TileFloor
 
 	// デバッグ情報を追加
-	upFloor := buildData.isFloorOrWarp(buildData.UpTile(centerWallIdx))
-	downFloor := buildData.isFloorOrWarp(buildData.DownTile(centerWallIdx))
-	leftFloor := buildData.isFloorOrWarp(buildData.LeftTile(centerWallIdx))
-	rightFloor := buildData.isFloorOrWarp(buildData.RightTile(centerWallIdx))
+	upFloor := planData.isFloorOrWarp(planData.UpTile(centerWallIdx))
+	downFloor := planData.isFloorOrWarp(planData.DownTile(centerWallIdx))
+	leftFloor := planData.isFloorOrWarp(planData.LeftTile(centerWallIdx))
+	rightFloor := planData.isFloorOrWarp(planData.RightTile(centerWallIdx))
 
-	wallType := buildData.GetWallType(centerWallIdx)
+	wallType := planData.GetWallType(centerWallIdx)
 	if wallType != WallTypeTop {
 		t.Errorf("WallTypeTopの判定が間違っています。期待値: %s, 実際: %s\n上:%t, 下:%t, 左:%t, 右:%t",
 			WallTypeTop.String(), wallType.String(), upFloor, downFloor, leftFloor, rightFloor)
@@ -53,12 +53,12 @@ func TestPlanData_GetWallType(t *testing.T) {
 
 	// テストケース2: WallTypeRight（左に床がある壁）
 	leftFloorX, leftFloorY := centerWallX-1, centerWallY // 左の床（X座標が小さくなる）
-	leftFloorIdx := buildData.Level.XYTileIndex(leftFloorX, leftFloorY)
+	leftFloorIdx := planData.Level.XYTileIndex(leftFloorX, leftFloorY)
 
-	buildData.Tiles[leftFloorIdx] = TileFloor
-	buildData.Tiles[bottomFloorIdx] = TileWall // 前のテストケースをリセット
+	planData.Tiles[leftFloorIdx] = TileFloor
+	planData.Tiles[bottomFloorIdx] = TileWall // 前のテストケースをリセット
 
-	wallType = buildData.GetWallType(centerWallIdx)
+	wallType = planData.GetWallType(centerWallIdx)
 	if wallType != WallTypeRight {
 		t.Errorf("WallTypeRightの判定が間違っています。期待値: %s, 実際: %s", WallTypeRight.String(), wallType.String())
 	}
@@ -67,24 +67,24 @@ func TestPlanData_GetWallType(t *testing.T) {
 	rightFloorX, rightFloorY := centerWallX+1, centerWallY // 右の床（X座標が大きくなる）
 	downFloorX, downFloorY := centerWallX, centerWallY+1   // 下の床（Y座標が大きくなる）
 
-	rightFloorIdx := buildData.Level.XYTileIndex(rightFloorX, rightFloorY)
-	downFloorIdx := buildData.Level.XYTileIndex(downFloorX, downFloorY)
+	rightFloorIdx := planData.Level.XYTileIndex(rightFloorX, rightFloorY)
+	downFloorIdx := planData.Level.XYTileIndex(downFloorX, downFloorY)
 
-	buildData.Tiles[rightFloorIdx] = TileFloor
-	buildData.Tiles[downFloorIdx] = TileFloor
-	buildData.Tiles[leftFloorIdx] = TileWall // リセット
+	planData.Tiles[rightFloorIdx] = TileFloor
+	planData.Tiles[downFloorIdx] = TileFloor
+	planData.Tiles[leftFloorIdx] = TileWall // リセット
 
-	wallType = buildData.GetWallType(centerWallIdx)
+	wallType = planData.GetWallType(centerWallIdx)
 	if wallType != WallTypeTopLeft {
 		t.Errorf("WallTypeTopLeftの判定が間違っています。期待値: %s, 実際: %s", WallTypeTopLeft.String(), wallType.String())
 	}
 
 	// テストケース4: WallTypeGeneric（複雑なパターン）
 	upFloorX, upFloorY := centerWallX, centerWallY-1 // 上の床（Y座標が小さくなる）
-	upFloorIdx := buildData.Level.XYTileIndex(upFloorX, upFloorY)
-	buildData.Tiles[upFloorIdx] = TileFloor
+	upFloorIdx := planData.Level.XYTileIndex(upFloorX, upFloorY)
+	planData.Tiles[upFloorIdx] = TileFloor
 
-	wallType = buildData.GetWallType(centerWallIdx) // 今は上、右、下に床がある状態
+	wallType = planData.GetWallType(centerWallIdx) // 今は上、右、下に床がある状態
 	if wallType != WallTypeGeneric {
 		t.Errorf("WallTypeGenericの判定が間違っています。期待値: %s, 実際: %s", WallTypeGeneric.String(), wallType.String())
 	}
@@ -94,7 +94,7 @@ func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 	t.Parallel()
 	// テスト用のマップを作成
 	width, height := gc.Tile(5), gc.Tile(5)
-	buildData := &MetaPlan{
+	planData := &MetaPlan{
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
@@ -106,24 +106,24 @@ func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 	}
 
 	// 全体を壁で埋める
-	for i := range buildData.Tiles {
-		buildData.Tiles[i] = TileWall
+	for i := range planData.Tiles {
+		planData.Tiles[i] = TileWall
 	}
 
 	// ワープポータルを配置
 	wallX, wallY := gc.Tile(2), gc.Tile(2)
 	warpX, warpY := wallX, wallY+1 // 下にワープネクスト（Y座標が大きくなる）
 
-	warpNextIdx := buildData.Level.XYTileIndex(warpX, warpY)
-	wallIdx := buildData.Level.XYTileIndex(wallX, wallY)
-	buildData.Tiles[warpNextIdx] = TileFloor
-	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+	warpNextIdx := planData.Level.XYTileIndex(warpX, warpY)
+	wallIdx := planData.Level.XYTileIndex(wallX, wallY)
+	planData.Tiles[warpNextIdx] = TileFloor
+	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 		X:    int(warpX),
 		Y:    int(warpY),
 		Type: WarpPortalNext,
 	})
 
-	wallType := buildData.GetWallType(wallIdx)
+	wallType := planData.GetWallType(wallIdx)
 	if wallType != WallTypeTop {
 		t.Errorf("ワープポータル（床）に対するWallTypeTopの判定が間違っています。期待値: %s, 実際: %s", WallTypeTop.String(), wallType.String())
 	}
