@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/mapspawner"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -22,10 +22,10 @@ var (
 
 // NewLevel は新規に階層を生成する。
 // mapplanerとmapspawnerを統合して完全なゲームレベルを生成する
-func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, plannerType mapplaner.PlannerType) (resources.Level, error) {
+func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, plannerType mapplanner.PlannerType) (resources.Level, error) {
 	log.Printf("NewLevel開始: PlannerType=%s UseFixedPortalPos=%v", plannerType.Name, plannerType.UseFixedPortalPos)
 
-	var chain *mapplaner.PlannerChain
+	var chain *mapplanner.PlannerChain
 	var playerX, playerY int
 
 	// mapspawner方式でMapPlanを生成し、Levelをスポーンする
@@ -59,10 +59,10 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, planner
 }
 
 // createPlannerChain は指定されたプランナータイプに応じてプランナーチェーンを作成する
-func createPlannerChain(plannerType mapplaner.PlannerType, width gc.Tile, height gc.Tile, seed uint64) *mapplaner.PlannerChain {
+func createPlannerChain(plannerType mapplanner.PlannerType, width gc.Tile, height gc.Tile, seed uint64) *mapplanner.PlannerChain {
 	// ランダム選択の場合は特別処理
-	if plannerType.Name == mapplaner.PlannerTypeRandom.Name {
-		return mapplaner.NewRandomPlanner(width, height, seed)
+	if plannerType.Name == mapplanner.PlannerTypeRandom.Name {
+		return mapplanner.NewRandomPlanner(width, height, seed)
 	}
 
 	return plannerType.PlannerFunc(width, height, seed)

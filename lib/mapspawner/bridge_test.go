@@ -4,20 +4,20 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 )
 
 func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	t.Parallel()
 	// 3x3のシンプルなマップを作成
 	width, height := 3, 3
-	chain := mapplaner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// タイル配列を手動で設定
-	chain.PlanData.Tiles = []mapplaner.Tile{
-		mapplaner.TileWall, mapplaner.TileWall, mapplaner.TileWall, // Row 0
-		mapplaner.TileWall, mapplaner.TileFloor, mapplaner.TileWall, // Row 1
-		mapplaner.TileWall, mapplaner.TileWall, mapplaner.TileWall, // Row 2
+	chain.PlanData.Tiles = []mapplanner.Tile{
+		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 0
+		mapplanner.TileWall, mapplanner.TileFloor, mapplanner.TileWall, // Row 1
+		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 2
 	}
 
 	// BuildPlanFromTilesをテスト
@@ -43,7 +43,7 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	// 床エンティティが含まれていることを確認
 	hasFloor := false
 	for _, entity := range plan.Entities {
-		if entity.EntityType == mapplaner.EntityTypeFloor && entity.X == 1 && entity.Y == 1 {
+		if entity.EntityType == mapplanner.EntityTypeFloor && entity.X == 1 && entity.Y == 1 {
 			hasFloor = true
 			break
 		}
@@ -57,12 +57,12 @@ func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
 	t.Parallel()
 	// 空のマップを作成
 	width, height := 2, 2
-	chain := mapplaner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// 全て空のタイル
-	chain.PlanData.Tiles = []mapplaner.Tile{
-		mapplaner.TileEmpty, mapplaner.TileEmpty,
-		mapplaner.TileEmpty, mapplaner.TileEmpty,
+	chain.PlanData.Tiles = []mapplanner.Tile{
+		mapplanner.TileEmpty, mapplanner.TileEmpty,
+		mapplanner.TileEmpty, mapplanner.TileEmpty,
 	}
 
 	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
@@ -81,11 +81,11 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 	t.Parallel()
 	// ワープタイルを含むマップを作成
 	width, height := 2, 2
-	chain := mapplaner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
-	chain.PlanData.Tiles = []mapplaner.Tile{
-		mapplaner.TileWarpNext, mapplaner.TileFloor,
-		mapplaner.TileFloor, mapplaner.TileWarpEscape,
+	chain.PlanData.Tiles = []mapplanner.Tile{
+		mapplanner.TileWarpNext, mapplanner.TileFloor,
+		mapplanner.TileFloor, mapplanner.TileWarpEscape,
 	}
 
 	plan, err := BuildPlanFromTiles(&chain.PlanData)
@@ -100,15 +100,15 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 
 	for _, entity := range plan.Entities {
 		switch entity.EntityType {
-		case mapplaner.EntityTypeWarpNext:
+		case mapplanner.EntityTypeWarpNext:
 			if entity.X == 0 && entity.Y == 0 {
 				hasWarpNext = true
 			}
-		case mapplaner.EntityTypeWarpEscape:
+		case mapplanner.EntityTypeWarpEscape:
 			if entity.X == 1 && entity.Y == 1 {
 				hasWarpEscape = true
 			}
-		case mapplaner.EntityTypeFloor:
+		case mapplanner.EntityTypeFloor:
 			hasFloors++
 		}
 	}
@@ -127,14 +127,14 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 func TestGetSpriteNumberForWallType(t *testing.T) {
 	t.Parallel()
 	testCases := []struct {
-		wallType mapplaner.WallType
+		wallType mapplanner.WallType
 		expected int
 	}{
-		{mapplaner.WallTypeTop, 10},
-		{mapplaner.WallTypeBottom, 11},
-		{mapplaner.WallTypeLeft, 12},
-		{mapplaner.WallTypeRight, 13},
-		{mapplaner.WallTypeGeneric, 1},
+		{mapplanner.WallTypeTop, 10},
+		{mapplanner.WallTypeBottom, 11},
+		{mapplanner.WallTypeLeft, 12},
+		{mapplanner.WallTypeRight, 13},
+		{mapplanner.WallTypeGeneric, 1},
 	}
 
 	for _, tc := range testCases {
@@ -151,7 +151,7 @@ func TestBuildPlanFromTiles_Integration(t *testing.T) {
 	t.Parallel()
 	// 実際のSmallRoomBuilderを使用
 	width, height := 10, 10
-	chain := mapplaner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
+	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
 
 	// マップを生成
 	chain.Build()
@@ -178,7 +178,7 @@ func TestBuildPlanFromTiles_Integration(t *testing.T) {
 	// 床エンティティが含まれていることを確認
 	hasFloor := false
 	for _, entity := range plan.Entities {
-		if entity.EntityType == mapplaner.EntityTypeFloor {
+		if entity.EntityType == mapplanner.EntityTypeFloor {
 			hasFloor = true
 			break
 		}

@@ -1,4 +1,4 @@
-// Package mapplaner provides map planning functionality.
+// Package mapplanner provides map planning functionality.
 //
 // このパッケージは階層マップの生成機能を提供します：
 //   - タイルベースのマップ生成
@@ -29,4 +29,4 @@
 // 2. タイル配列の構築
 // 3. エンティティへの変換
 // 4. NPC・アイテム配置
-package mapplaner
+package mapplanner

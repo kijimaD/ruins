@@ -1,6 +1,6 @@
-// Package mapplaner はマップ生成機能を提供する
+// Package mapplanner はマップ生成機能を提供する
 // 参考: https://bfnightly.bracketproductions.com
-package mapplaner
+package mapplanner
 
 import (
 	"log"

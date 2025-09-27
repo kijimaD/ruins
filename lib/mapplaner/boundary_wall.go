@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 import "github.com/kijimaD/ruins/lib/resources"
 

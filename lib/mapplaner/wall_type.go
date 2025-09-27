@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 // WallType は壁の種類を表す
 type WallType int

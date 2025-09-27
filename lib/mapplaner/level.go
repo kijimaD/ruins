@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 // 壁スプライト番号定数（mapspawnerに移動済み、互換性のため残している）
 const (

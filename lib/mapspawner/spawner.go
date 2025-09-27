@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
@@ -12,7 +12,7 @@ import (
 )
 
 // SpawnLevel はMapPlanに基づいてレベルを生成する
-func SpawnLevel(world w.World, plan *mapplaner.MapPlan) (resources.Level, error) {
+func SpawnLevel(world w.World, plan *mapplanner.MapPlan) (resources.Level, error) {
 	// 計画の妥当性をチェック
 	if err := plan.ValidatePlan(); err != nil {
 		return resources.Level{}, fmt.Errorf("計画検証エラー: %w", err)
@@ -44,39 +44,39 @@ func SpawnLevel(world w.World, plan *mapplaner.MapPlan) (resources.Level, error)
 }
 
 // spawnEntityFromSpec は EntitySpec に基づいてエンティティを生成する
-func spawnEntityFromSpec(world w.World, spec mapplaner.EntitySpec) (ecs.Entity, error) {
+func spawnEntityFromSpec(world w.World, spec mapplanner.EntitySpec) (ecs.Entity, error) {
 	x := gc.Tile(spec.X)
 	y := gc.Tile(spec.Y)
 
 	switch spec.EntityType {
-	case mapplaner.EntityTypeFloor:
+	case mapplanner.EntityTypeFloor:
 		return worldhelper.SpawnFloor(world, x, y)
 
-	case mapplaner.EntityTypeWall:
+	case mapplanner.EntityTypeWall:
 		if spec.WallSprite == nil {
 			return ecs.Entity(0), fmt.Errorf("壁エンティティにスプライト番号が指定されていません")
 		}
 		return worldhelper.SpawnWall(world, x, y, *spec.WallSprite)
 
-	case mapplaner.EntityTypeWarpNext:
+	case mapplanner.EntityTypeWarpNext:
 		return worldhelper.SpawnFieldWarpNext(world, x, y)
 
-	case mapplaner.EntityTypeWarpEscape:
+	case mapplanner.EntityTypeWarpEscape:
 		return worldhelper.SpawnFieldWarpEscape(world, x, y)
 
-	case mapplaner.EntityTypeProp:
+	case mapplanner.EntityTypeProp:
 		if spec.PropType == nil {
 			return ecs.Entity(0), fmt.Errorf("置物エンティティにPropTypeが指定されていません")
 		}
 		return worldhelper.SpawnProp(world, *spec.PropType, x, y)
 
-	case mapplaner.EntityTypeNPC:
+	case mapplanner.EntityTypeNPC:
 		if spec.NPCType == nil {
 			return ecs.Entity(0), fmt.Errorf("NPCエンティティにNPCTypeが指定されていません")
 		}
 		return worldhelper.SpawnEnemy(world, spec.X, spec.Y, *spec.NPCType)
 
-	case mapplaner.EntityTypeItem:
+	case mapplanner.EntityTypeItem:
 		if spec.ItemType == nil {
 			return ecs.Entity(0), fmt.Errorf("アイテムエンティティにItemTypeが指定されていません")
 		}

@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 // FillAll は全体を指定したタイルで埋めるビルダー
 type FillAll struct {

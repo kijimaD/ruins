@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 import gc "github.com/kijimaD/ruins/lib/components"
 

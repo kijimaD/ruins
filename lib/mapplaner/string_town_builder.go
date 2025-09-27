@@ -1,6 +1,6 @@
-// Package mapplaner の文字列ベース街ビルダー
+// Package mapplanner の文字列ベース街ビルダー
 // 文字列で直接街のレイアウトを定義するシステム
-package mapplaner
+package mapplanner
 
 import (
 	"fmt"

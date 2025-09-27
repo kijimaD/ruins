@@ -10,7 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/levelgen"
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/turns"
@@ -29,7 +29,7 @@ type DungeonState struct {
 	// Seed はマップ生成用のシード値（0の場合はDungeonリソースのシード値を使用）
 	Seed uint64
 	// BuilderType は使用するマップビルダーのタイプ（BuilderTypeRandom の場合はランダム選択）
-	BuilderType mapplaner.PlannerType
+	BuilderType mapplanner.PlannerType
 }
 
 func (st DungeonState) String() string {

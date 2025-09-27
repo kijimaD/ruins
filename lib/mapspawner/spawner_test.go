@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -19,7 +19,7 @@ func TestSpawnLevel_ValidPlan(t *testing.T) {
 	world, _ := world.InitWorld(components)
 
 	// シンプルなMapPlanを作成（エンティティなし）
-	plan := mapplaner.NewMapPlan(3, 3)
+	plan := mapplanner.NewMapPlan(3, 3)
 
 	// SpawnLevelをテスト（エンティティ生成なしで基本機能をテスト）
 	level, err := SpawnLevel(world, plan)
@@ -60,7 +60,7 @@ func TestSpawnLevel_InvalidPlan(t *testing.T) {
 	world, _ := world.InitWorld(components)
 
 	// 無効な座標を持つMapPlanを作成
-	plan := mapplaner.NewMapPlan(2, 2)
+	plan := mapplanner.NewMapPlan(2, 2)
 	plan.AddFloor(5, 5) // 範囲外の座標
 
 	// SpawnLevelがエラーを返すことを確認
@@ -79,7 +79,7 @@ func TestSpawnLevel_EmptyPlan(t *testing.T) {
 	world, _ := world.InitWorld(components)
 
 	// 空のMapPlanを作成
-	plan := mapplaner.NewMapPlan(2, 2)
+	plan := mapplanner.NewMapPlan(2, 2)
 
 	// 空のプランでもエラーなく動作することを確認
 	level, err := SpawnLevel(world, plan)
@@ -106,58 +106,6 @@ func TestSpawnLevel_EmptyPlan(t *testing.T) {
 	}
 }
 
-func TestSpawnEntityFromSpec_Floor(t *testing.T) {
-	t.Parallel()
-	t.Skip("エンティティ生成機能のテストは基盤実装確認が必要")
-	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
-	world, _ := world.InitWorld(components)
-
-	spec := mapplaner.EntitySpec{
-		X:          1,
-		Y:          1,
-		EntityType: mapplaner.EntityTypeFloor,
-	}
-
-	entity, err := spawnEntityFromSpec(world, spec)
-	if err != nil {
-		t.Fatalf("Failed to spawn floor entity: %v", err)
-	}
-
-	if entity == 0 {
-		t.Errorf("Expected non-zero entity, got 0. Floor spec: %+v", spec)
-	}
-}
-
-func TestSpawnEntityFromSpec_Wall(t *testing.T) {
-	t.Parallel()
-	t.Skip("エンティティ生成機能のテストは基盤実装確認が必要")
-	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
-	world, _ := world.InitWorld(components)
-
-	spriteNumber := 1
-	spec := mapplaner.EntitySpec{
-		X:          0,
-		Y:          0,
-		EntityType: mapplaner.EntityTypeWall,
-		WallSprite: &spriteNumber,
-	}
-
-	entity, err := spawnEntityFromSpec(world, spec)
-	if err != nil {
-		t.Fatalf("Failed to spawn wall entity: %v", err)
-	}
-
-	if entity == 0 {
-		t.Error("Expected non-zero entity, got 0")
-	}
-}
-
 func TestSpawnEntityFromSpec_WallWithoutSprite(t *testing.T) {
 	t.Parallel()
 	components := &gc.Components{}
@@ -166,10 +114,10 @@ func TestSpawnEntityFromSpec_WallWithoutSprite(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	spec := mapplaner.EntitySpec{
+	spec := mapplanner.EntitySpec{
 		X:          0,
 		Y:          0,
-		EntityType: mapplaner.EntityTypeWall,
+		EntityType: mapplanner.EntityTypeWall,
 		// WallSprite is nil
 	}
 
@@ -188,10 +136,10 @@ func TestSpawnEntityFromSpec_Prop(t *testing.T) {
 	world, _ := world.InitWorld(components)
 
 	propType := gc.PropTypeTable
-	spec := mapplaner.EntitySpec{
+	spec := mapplanner.EntitySpec{
 		X:          2,
 		Y:          2,
-		EntityType: mapplaner.EntityTypeProp,
+		EntityType: mapplanner.EntityTypeProp,
 		PropType:   &propType,
 	}
 
@@ -213,10 +161,10 @@ func TestSpawnEntityFromSpec_PropWithoutType(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	spec := mapplaner.EntitySpec{
+	spec := mapplanner.EntitySpec{
 		X:          2,
 		Y:          2,
-		EntityType: mapplaner.EntityTypeProp,
+		EntityType: mapplanner.EntityTypeProp,
 		// PropType is nil
 	}
 
@@ -234,10 +182,10 @@ func TestSpawnEntityFromSpec_UnknownEntityType(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	spec := mapplaner.EntitySpec{
+	spec := mapplanner.EntitySpec{
 		X:          1,
 		Y:          1,
-		EntityType: mapplaner.EntityType(999), // 未知のタイプ
+		EntityType: mapplanner.EntityType(999), // 未知のタイプ
 	}
 
 	_, err := spawnEntityFromSpec(world, spec)

@@ -4,14 +4,14 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
 // BuildPlanFromTiles は既存のタイル配列からMapPlanを構築する
 // 既存のPlannerChainとの橋渡し用の関数
-func BuildPlanFromTiles(planData *mapplaner.PlannerMap) (*mapplaner.MapPlan, error) {
-	plan := mapplaner.NewMapPlan(int(planData.Level.TileWidth), int(planData.Level.TileHeight))
+func BuildPlanFromTiles(planData *mapplanner.PlannerMap) (*mapplanner.MapPlan, error) {
+	plan := mapplanner.NewMapPlan(int(planData.Level.TileWidth), int(planData.Level.TileHeight))
 
 	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
 	width := int(planData.Level.TileWidth)
@@ -35,7 +35,7 @@ func BuildPlanFromTiles(planData *mapplaner.PlannerMap) (*mapplaner.MapPlan, err
 	// 最適な位置を探す
 	for _, pos := range attempts {
 		tileIdx := planData.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
-		if int(tileIdx) < len(planData.Tiles) && planData.Tiles[tileIdx] == mapplaner.TileFloor {
+		if int(tileIdx) < len(planData.Tiles) && planData.Tiles[tileIdx] == mapplanner.TileFloor {
 			playerX, playerY = pos.x, pos.y
 			found = true
 			break
@@ -45,7 +45,7 @@ func BuildPlanFromTiles(planData *mapplaner.PlannerMap) (*mapplaner.MapPlan, err
 	// 見つからない場合は全体をスキャン
 	if !found {
 		for _i, tile := range planData.Tiles {
-			if tile == mapplaner.TileFloor {
+			if tile == mapplanner.TileFloor {
 				i := resources.TileIdx(_i)
 				x, y := planData.Level.XYTileCoord(i)
 				playerX, playerY = int(x), int(y)
@@ -68,10 +68,10 @@ func BuildPlanFromTiles(planData *mapplaner.PlannerMap) (*mapplaner.MapPlan, err
 		x, y := planData.Level.XYTileCoord(i)
 
 		switch tile {
-		case mapplaner.TileFloor:
+		case mapplanner.TileFloor:
 			plan.AddFloor(int(x), int(y))
 
-		case mapplaner.TileWall:
+		case mapplanner.TileWall:
 			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
 			if planData.AdjacentAnyFloor(i) {
 				// 壁タイプを判定してスプライト番号を決定
@@ -80,13 +80,13 @@ func BuildPlanFromTiles(planData *mapplaner.PlannerMap) (*mapplaner.MapPlan, err
 				plan.AddWall(int(x), int(y), spriteNumber)
 			}
 
-		case mapplaner.TileWarpNext:
+		case mapplanner.TileWarpNext:
 			plan.AddWarpNext(int(x), int(y))
 
-		case mapplaner.TileWarpEscape:
+		case mapplanner.TileWarpEscape:
 			plan.AddWarpEscape(int(x), int(y))
 
-		case mapplaner.TileEmpty:
+		case mapplanner.TileEmpty:
 			// 空のタイルはエンティティを生成しない
 			continue
 
@@ -112,25 +112,25 @@ const (
 )
 
 // getSpriteNumberForWallType は壁タイプからスプライト番号を取得する
-func getSpriteNumberForWallType(wallType mapplaner.WallType) int {
+func getSpriteNumberForWallType(wallType mapplanner.WallType) int {
 	switch wallType {
-	case mapplaner.WallTypeTop:
+	case mapplanner.WallTypeTop:
 		return spriteWallTop // 上壁（下に床がある）
-	case mapplaner.WallTypeBottom:
+	case mapplanner.WallTypeBottom:
 		return spriteWallBottom // 下壁（上に床がある）
-	case mapplaner.WallTypeLeft:
+	case mapplanner.WallTypeLeft:
 		return spriteWallLeft // 左壁（右に床がある）
-	case mapplaner.WallTypeRight:
+	case mapplanner.WallTypeRight:
 		return spriteWallRight // 右壁（左に床がある）
-	case mapplaner.WallTypeTopLeft:
+	case mapplanner.WallTypeTopLeft:
 		return spriteWallTopLeft // 左上角（右下に床がある）
-	case mapplaner.WallTypeTopRight:
+	case mapplanner.WallTypeTopRight:
 		return spriteWallTopRight // 右上角（左下に床がある）
-	case mapplaner.WallTypeBottomLeft:
+	case mapplanner.WallTypeBottomLeft:
 		return spriteWallBottomLeft // 左下角（右上に床がある）
-	case mapplaner.WallTypeBottomRight:
+	case mapplanner.WallTypeBottomRight:
 		return spriteWallBottomRight // 右下角（左上に床がある）
-	case mapplaner.WallTypeGeneric:
+	case mapplanner.WallTypeGeneric:
 		return spriteWallGeneric // 汎用壁
 	default:
 		return spriteWallGeneric // 不明な場合は汎用壁

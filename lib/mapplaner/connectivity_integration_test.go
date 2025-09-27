@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 import (
 	"testing"

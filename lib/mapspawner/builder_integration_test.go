@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -13,7 +13,7 @@ func TestBuildPlan(t *testing.T) {
 	t.Parallel()
 	// SmallRoomBuilderチェーンを作成
 	width, height := 8, 8
-	chain := mapplaner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
+	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
 
 	// BuildPlanをテスト
 	plan, err := BuildPlan(chain)
@@ -46,14 +46,14 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 
 	// SmallRoomBuilderチェーンを作成
 	width, height := 6, 6
-	chain := mapplaner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 123)
+	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
-	plannerType := mapplaner.PlannerType{
+	plannerType := mapplanner.PlannerType{
 		Name:         "SmallRoom",
 		SpawnEnemies: false, // テストではNPC生成を無効化
 		SpawnItems:   false, // テストではアイテム生成を無効化
-		PlannerFunc:  mapplaner.PlannerTypeSmallRoom.PlannerFunc,
+		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
 	level, err := BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
@@ -95,15 +95,15 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 
 	// TownBuilderチェーンを作成
 	width, height := 15, 15
-	chain := mapplaner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 456)
+	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 456)
 
 	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
-	plannerType := mapplaner.PlannerType{
+	plannerType := mapplanner.PlannerType{
 		Name:              "Town",
 		SpawnEnemies:      false, // テストではNPC生成を無効化
 		SpawnItems:        false, // テストではアイテム生成を無効化
 		UseFixedPortalPos: true,  // ポータル位置を固定
-		PlannerFunc:       mapplaner.PlannerTypeTown.PlannerFunc,
+		PlannerFunc:       mapplanner.PlannerTypeTown.PlannerFunc,
 	}
 	level, err := BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
@@ -127,7 +127,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	// BuilderChainを作成してタイル配置をテスト
 	// TownPlannerは固定の50x50マップを生成する
 	width, height := 50, 50
-	chain := mapplaner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// マップを構築
 	chain.Build()
@@ -141,7 +141,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	centerTile := chain.PlanData.Tiles[centerIdx]
 	t.Logf("Center tile at (%d,%d): %v", centerX, centerY, centerTile)
 
-	if centerTile != mapplaner.TileFloor {
+	if centerTile != mapplanner.TileFloor {
 		t.Errorf("Expected center tile to be floor, got %v", centerTile)
 	}
 
@@ -152,7 +152,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 		communityHallY = height - 1
 	}
 	portalIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
-	chain.PlanData.Tiles[portalIdx] = mapplaner.TileWarpNext
+	chain.PlanData.Tiles[portalIdx] = mapplanner.TileWarpNext
 
 	// BuildPlanFromTilesを使用してMapPlanを生成
 	plan, err := BuildPlanFromTiles(&chain.PlanData)
@@ -163,7 +163,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	// ワープポータルエンティティが含まれているかチェック（公民館の中央）
 	hasWarpPortal := false
 	for _, entity := range plan.Entities {
-		if entity.EntityType == mapplaner.EntityTypeWarpNext &&
+		if entity.EntityType == mapplanner.EntityTypeWarpNext &&
 			entity.X == communityHallX && entity.Y == communityHallY {
 			hasWarpPortal = true
 			break
@@ -208,10 +208,10 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 
 	// TownPlannerは固定の50x50マップを生成する
 	width, height := 50, 50
-	chain := mapplaner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// 実際のBuildPlanAndSpawnを使用（街の設定で）
-	level, err := BuildPlanAndSpawn(world, chain, mapplaner.PlannerTypeTown)
+	level, err := BuildPlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -228,7 +228,7 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 
 	t.Logf("Testing BuildPlanAndSpawn with town center at (%d,%d)", centerX, centerY)
 	t.Logf("Expected warp portal at community hall (%d,%d)", communityHallX, communityHallY)
-	t.Logf("BuilderTypeTown.UseFixedPortalPos: %v", mapplaner.PlannerTypeTown.UseFixedPortalPos)
+	t.Logf("BuilderTypeTown.UseFixedPortalPos: %v", mapplanner.PlannerTypeTown.UseFixedPortalPos)
 
 	// 公民館の中央にエンティティが生成されているかチェック
 	portalEntityIdx := level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
@@ -251,14 +251,14 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 
 	// BigRoomBuilderチェーンを作成
 	width, height := 12, 12
-	chain := mapplaner.NewBigRoomPlanner(gc.Tile(width), gc.Tile(height), 789)
+	chain := mapplanner.NewBigRoomPlanner(gc.Tile(width), gc.Tile(height), 789)
 
 	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
-	plannerType := mapplaner.PlannerType{
+	plannerType := mapplanner.PlannerType{
 		Name:         "BigRoom",
 		SpawnEnemies: false, // テストではNPC生成を無効化
 		SpawnItems:   false, // テストではアイテム生成を無効化
-		PlannerFunc:  mapplaner.PlannerTypeBigRoom.PlannerFunc,
+		PlannerFunc:  mapplanner.PlannerTypeBigRoom.PlannerFunc,
 	}
 	level, err := BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
@@ -284,13 +284,13 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 	seed := uint64(999)
 
 	// 同じパラメータで2回実行
-	chain1 := mapplaner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	chain1 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	plan1, err1 := BuildPlan(chain1)
 	if err1 != nil {
 		t.Fatalf("First BuildPlan failed: %v", err1)
 	}
 
-	chain2 := mapplaner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	chain2 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	plan2, err2 := BuildPlan(chain2)
 	if err2 != nil {
 		t.Fatalf("Second BuildPlan failed: %v", err2)

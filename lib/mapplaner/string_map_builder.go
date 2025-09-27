@@ -1,6 +1,6 @@
-// Package mapplaner の文字列ベースマップビルダー
+// Package mapplanner の文字列ベースマップビルダー
 // 文字列で直接タイルとエンティティ配置を指定できるシステム
-package mapplaner
+package mapplanner
 
 import (
 	"fmt"

@@ -1,6 +1,6 @@
-// Package mapplaner の街用ビルダー
+// Package mapplanner の街用ビルダー
 // 固定レイアウトの街マップを生成する
-package mapplaner
+package mapplanner
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"

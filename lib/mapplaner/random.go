@@ -1,4 +1,4 @@
-package mapplaner
+package mapplanner
 
 import (
 	"math/rand/v2"
