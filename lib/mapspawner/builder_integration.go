@@ -3,40 +3,24 @@ package mapspawner
 import (
 	"fmt"
 
+	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// PlanAndSpawn はPlannerChainを実行してEntityPlanを生成し、Levelをスポーンする
-func PlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerType mapplanner.PlannerType) (resources.Level, int, int, error) {
-	// ワープポータルプランナーを追加（StringMapPlannerは既に独自にワープポータルを処理しているため条件判定）
-	if len(chain.PlanData.WarpPortals) == 0 {
-		warpPlanner := mapplanner.NewWarpPortalPlanner(world, plannerType)
-		chain.With(warpPlanner)
+// PlanAndSpawn はEntityPlanを構築してLevelをスポーンする
+func PlanAndSpawn(world w.World, width, height int, seed uint64, plannerType mapplanner.PlannerType) (resources.Level, int, int, error) {
+	// PlannerChainを初期化
+	var chain *mapplanner.PlannerChain
+	if plannerType.Name == mapplanner.PlannerTypeRandom.Name {
+		chain = mapplanner.NewRandomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	} else {
+		chain = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
 	}
 
-	// NPCプランナーを追加
-	if plannerType.SpawnEnemies {
-		npcPlanner := mapplanner.NewNPCPlanner(world, plannerType)
-		chain.With(npcPlanner)
-	}
-
-	// アイテムプランナーを追加
-	if plannerType.SpawnItems {
-		itemPlanner := mapplanner.NewItemPlanner(world, plannerType)
-		chain.With(itemPlanner)
-	}
-
-	// Propsプランナーを追加（町タイプで固定Props配置）
-	propsPlanner := mapplanner.NewPropsPlanner(world, plannerType)
-	chain.With(propsPlanner)
-
-	// プランナーチェーンを実行
-	chain.Plan()
-
-	// PlanDataからEntityPlanを構築
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	// EntityPlan構築
+	plan, err := mapplanner.Plan(world, chain, plannerType)
 	if err != nil {
 		return resources.Level{}, 0, 0, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}

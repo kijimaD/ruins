@@ -47,9 +47,9 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// SmallRoomBuilderチェーンを作成
+	// マップサイズとシード
 	width, height := 6, 6
-	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 123)
+	seed := uint64(123)
 
 	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
 	plannerType := mapplanner.PlannerType{
@@ -58,7 +58,7 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -96,9 +96,9 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// TownBuilderチェーンを作成
+	// マップサイズとシード
 	width, height := 15, 15
-	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 456)
+	seed := uint64(456)
 
 	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
 	plannerType := mapplanner.PlannerType{
@@ -108,7 +108,7 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 		UseFixedPortalPos: true,  // ポータル位置を固定
 		PlannerFunc:       mapplanner.PlannerTypeTown.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn with TownBuilder failed: %v", err)
 	}
@@ -221,10 +221,10 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 
 	// TownPlannerは固定の50x50マップを生成する
 	width, height := 50, 50
-	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	seed := uint64(123)
 
 	// 実際のBuildPlanAndSpawnを使用（街の設定で）
-	level, _, _, err := PlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
+	level, _, _, err := PlanAndSpawn(world, width, height, seed, mapplanner.PlannerTypeTown)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -262,9 +262,9 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// BigRoomBuilderチェーンを作成
+	// マップサイズとシード
 	width, height := 12, 12
-	chain := mapplanner.NewBigRoomPlanner(gc.Tile(width), gc.Tile(height), 789)
+	seed := uint64(789)
 
 	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
 	plannerType := mapplanner.PlannerType{
@@ -273,7 +273,7 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeBigRoom.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn with BigRoomBuilder failed: %v", err)
 	}

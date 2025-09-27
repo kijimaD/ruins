@@ -63,13 +63,7 @@ func (st *DungeonState) OnStart(world w.World) {
 		world.Resources.TurnManager = turns.NewTurnManager()
 	}
 
-	var chain *mapplanner.PlannerChain
-	if st.BuilderType.Name == mapplanner.PlannerTypeRandom.Name {
-		chain = mapplanner.NewRandomPlanner(consts.MapTileWidth, consts.MapTileHeight, st.Seed)
-	} else {
-		chain = st.BuilderType.PlannerFunc(consts.MapTileWidth, consts.MapTileHeight, st.Seed)
-	}
-	level, playerX, playerY, err := mapspawner.PlanAndSpawn(world, chain, st.BuilderType)
+	level, playerX, playerY, err := mapspawner.PlanAndSpawn(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
 	if err != nil {
 		panic(err)
 	}
