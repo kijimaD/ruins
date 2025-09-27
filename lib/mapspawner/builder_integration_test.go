@@ -155,10 +155,13 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	chain.PlanData.Tiles[portalIdx] = mapplanner.TileWarpNext
 
 	// BuildPlanFromTilesを使用してMapPlanを生成
-	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		t.Fatalf("BuildPlanFromTiles failed: %v", err)
 	}
+
+	// 壁スプライト番号を補完
+	CompleteWallSprites(plan)
 
 	// ワープポータルエンティティが含まれているかチェック（公民館の中央）
 	hasWarpPortal := false

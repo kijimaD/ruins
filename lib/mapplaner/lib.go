@@ -3,6 +3,7 @@
 package mapplanner
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -269,6 +270,95 @@ func (b *PlannerChain) Build() {
 func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
 	pf := NewPathFinder(&b.PlanData)
 	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
+}
+
+// BuildPlanFromTiles はPlannerMapからMapPlanを構築する
+// PlannerMapは生成過程で使用される中間データ、MapPlanは最終的な配置計画
+func (bm *PlannerMap) BuildPlanFromTiles() (*MapPlan, error) {
+	plan := NewMapPlan(int(bm.Level.TileWidth), int(bm.Level.TileHeight))
+
+	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
+	width := int(bm.Level.TileWidth)
+	height := int(bm.Level.TileHeight)
+	centerX := width / 2
+	centerY := height / 2
+
+	// スポーン可能な位置を探す
+	playerX, playerY := centerX, centerY
+	found := false
+
+	// 複数の候補位置を試す
+	attempts := []struct{ x, y int }{
+		{width / 2, height / 2},         // 中央
+		{width / 4, height / 4},         // 左上寄り
+		{3 * width / 4, height / 4},     // 右上寄り
+		{width / 4, 3 * height / 4},     // 左下寄り
+		{3 * width / 4, 3 * height / 4}, // 右下寄り
+	}
+
+	// 最適な位置を探す
+	for _, pos := range attempts {
+		tileIdx := bm.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
+		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx] == TileFloor {
+			playerX, playerY = pos.x, pos.y
+			found = true
+			break
+		}
+	}
+
+	// 見つからない場合は全体をスキャン
+	if !found {
+		for _i, tile := range bm.Tiles {
+			if tile == TileFloor {
+				i := resources.TileIdx(_i)
+				x, y := bm.Level.XYTileCoord(i)
+				playerX, playerY = int(x), int(y)
+				found = true
+				break
+			}
+		}
+	}
+
+	if !found {
+		return nil, fmt.Errorf("プレイヤー配置可能な床タイルが見つかりません")
+	}
+
+	// プレイヤー位置を設定
+	plan.SetPlayerStartPosition(playerX, playerY)
+
+	// タイルを走査してMapPlanを構築
+	for _i, tile := range bm.Tiles {
+		i := resources.TileIdx(_i)
+		x, y := bm.Level.XYTileCoord(i)
+
+		switch tile {
+		case TileFloor:
+			plan.AddFloor(int(x), int(y))
+
+		case TileWall:
+			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
+			if bm.AdjacentAnyFloor(i) {
+				// 壁タイプを判定（スプライト番号はmapspawnerで決定）
+				wallType := bm.GetWallType(i)
+				plan.AddWallWithType(int(x), int(y), wallType)
+			}
+
+		case TileWarpNext:
+			plan.AddWarpNext(int(x), int(y))
+
+		case TileWarpEscape:
+			plan.AddWarpEscape(int(x), int(y))
+
+		case TileEmpty:
+			// 空のタイルはエンティティを生成しない
+			continue
+
+		default:
+			return nil, fmt.Errorf("未知のタイルタイプ: %d", tile)
+		}
+	}
+
+	return plan, nil
 }
 
 // InitialMapPlanner は初期マップをプランするインターフェース

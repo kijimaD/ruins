@@ -33,7 +33,8 @@ type EntitySpec struct {
 	PropType   *gc.PropType // 置物タイプ（置物の場合）
 	NPCType    *string      // NPCタイプ（NPCの場合）
 	ItemType   *string      // アイテムタイプ（アイテムの場合）
-	WallSprite *int         // 壁スプライト番号（壁の場合）
+	WallSprite *int         // 壁スプライト番号（壁の場合、直接指定）
+	WallType   *WallType    // 壁タイプ
 }
 
 // EntityType はエンティティの種類を表す
@@ -124,6 +125,17 @@ func (mp *MapPlan) AddWall(x, y int, spriteNumber int) {
 		Y:          y,
 		EntityType: EntityTypeWall,
 		WallSprite: &spriteNumber,
+	})
+}
+
+// AddWallWithType は壁タイプを指定して壁エンティティを計画に追加する
+// スプライト番号はmapspawnerで決定される
+func (mp *MapPlan) AddWallWithType(x, y int, wallType WallType) {
+	mp.Entities = append(mp.Entities, EntitySpec{
+		X:          x,
+		Y:          y,
+		EntityType: EntityTypeWall,
+		WallType:   &wallType,
 	})
 }
 

@@ -16,10 +16,13 @@ func BuildPlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerTyp
 	chain.Build()
 
 	// PlanDataからMapPlanを構築
-	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		return resources.Level{}, fmt.Errorf("MapPlan構築エラー: %w", err)
 	}
+
+	// 壁スプライト番号を補完
+	CompleteWallSprites(plan)
 
 	// プランナー設定に基づいてNPCとアイテムをMapPlanに追加
 	if plannerType.SpawnEnemies {
@@ -57,10 +60,13 @@ func BuildPlan(chain *mapplanner.PlannerChain) (*mapplanner.MapPlan, error) {
 	chain.Build()
 
 	// PlanDataからMapPlanを構築
-	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		return nil, fmt.Errorf("MapPlan構築エラー: %w", err)
 	}
+
+	// 壁スプライト番号を補完
+	CompleteWallSprites(plan)
 
 	return plan, nil
 }

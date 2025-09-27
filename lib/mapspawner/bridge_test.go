@@ -21,10 +21,13 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	}
 
 	// BuildPlanFromTilesをテスト
-	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		t.Fatalf("BuildPlanFromTiles failed: %v", err)
 	}
+
+	// 壁スプライト番号を補完
+	CompleteWallSprites(plan)
 
 	// MapPlanの基本プロパティをチェック
 	if plan.Width != width {
@@ -66,7 +69,7 @@ func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
 	}
 
 	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
-	_, err := BuildPlanFromTiles(&chain.PlanData)
+	_, err := chain.PlanData.BuildPlanFromTiles()
 	if err == nil {
 		t.Fatalf("Expected error for empty map, but got nil")
 	}
@@ -88,10 +91,13 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 		mapplanner.TileFloor, mapplanner.TileWarpEscape,
 	}
 
-	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		t.Fatalf("BuildPlanFromTiles failed: %v", err)
 	}
+
+	// 壁スプライト番号を補完
+	CompleteWallSprites(plan)
 
 	// ワープエンティティが含まれていることを確認
 	hasWarpNext := false
@@ -157,10 +163,13 @@ func TestBuildPlanFromTiles_Integration(t *testing.T) {
 	chain.Build()
 
 	// BuildPlanFromTilesをテスト
-	plan, err := BuildPlanFromTiles(&chain.PlanData)
+	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		t.Fatalf("BuildPlanFromTiles integration test failed: %v", err)
 	}
+
+	// 壁スプライト番号を補完
+	CompleteWallSprites(plan)
 
 	// 基本的な整合性をチェック
 	if plan.Width != width {

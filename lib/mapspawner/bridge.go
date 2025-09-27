@@ -1,101 +1,20 @@
 package mapspawner
 
 import (
-	"fmt"
-
-	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
-	"github.com/kijimaD/ruins/lib/resources"
 )
 
-// BuildPlanFromTiles は既存のタイル配列からMapPlanを構築する
-// 既存のPlannerChainとの橋渡し用の関数
-func BuildPlanFromTiles(planData *mapplanner.PlannerMap) (*mapplanner.MapPlan, error) {
-	plan := mapplanner.NewMapPlan(int(planData.Level.TileWidth), int(planData.Level.TileHeight))
-
-	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
-	width := int(planData.Level.TileWidth)
-	height := int(planData.Level.TileHeight)
-	centerX := width / 2
-	centerY := height / 2
-
-	// スポーン可能な位置を探す
-	playerX, playerY := centerX, centerY
-	found := false
-
-	// 複数の候補位置を試す
-	attempts := []struct{ x, y int }{
-		{width / 2, height / 2},         // 中央
-		{width / 4, height / 4},         // 左上寄り
-		{3 * width / 4, height / 4},     // 右上寄り
-		{width / 4, 3 * height / 4},     // 左下寄り
-		{3 * width / 4, 3 * height / 4}, // 右下寄り
-	}
-
-	// 最適な位置を探す
-	for _, pos := range attempts {
-		tileIdx := planData.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
-		if int(tileIdx) < len(planData.Tiles) && planData.Tiles[tileIdx] == mapplanner.TileFloor {
-			playerX, playerY = pos.x, pos.y
-			found = true
-			break
+// CompleteWallSprites はMapPlan内の壁エンティティのスプライト番号を補完する
+func CompleteWallSprites(plan *mapplanner.MapPlan) {
+	for i := range plan.Entities {
+		entity := &plan.Entities[i]
+		if entity.EntityType == mapplanner.EntityTypeWall && entity.WallType != nil {
+			// WallTypeからスプライト番号を決定
+			spriteNumber := getSpriteNumberForWallType(*entity.WallType)
+			entity.WallSprite = &spriteNumber
+			entity.WallType = nil // スプライト番号が決定されたのでWallTypeをクリア
 		}
 	}
-
-	// 見つからない場合は全体をスキャン
-	if !found {
-		for _i, tile := range planData.Tiles {
-			if tile == mapplanner.TileFloor {
-				i := resources.TileIdx(_i)
-				x, y := planData.Level.XYTileCoord(i)
-				playerX, playerY = int(x), int(y)
-				found = true
-				break
-			}
-		}
-	}
-
-	if !found {
-		return nil, fmt.Errorf("プレイヤー配置可能な床タイルが見つかりません")
-	}
-
-	// プレイヤー位置を設定
-	plan.SetPlayerStartPosition(playerX, playerY)
-
-	// タイルを走査してMapPlanを構築
-	for _i, tile := range planData.Tiles {
-		i := resources.TileIdx(_i)
-		x, y := planData.Level.XYTileCoord(i)
-
-		switch tile {
-		case mapplanner.TileFloor:
-			plan.AddFloor(int(x), int(y))
-
-		case mapplanner.TileWall:
-			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
-			if planData.AdjacentAnyFloor(i) {
-				// 壁タイプを判定してスプライト番号を決定
-				wallType := planData.GetWallType(i)
-				spriteNumber := getSpriteNumberForWallType(wallType)
-				plan.AddWall(int(x), int(y), spriteNumber)
-			}
-
-		case mapplanner.TileWarpNext:
-			plan.AddWarpNext(int(x), int(y))
-
-		case mapplanner.TileWarpEscape:
-			plan.AddWarpEscape(int(x), int(y))
-
-		case mapplanner.TileEmpty:
-			// 空のタイルはエンティティを生成しない
-			continue
-
-		default:
-			return nil, fmt.Errorf("未知のタイルタイプ: %d", tile)
-		}
-	}
-
-	return plan, nil
 }
 
 // 壁スプライト番号定数
