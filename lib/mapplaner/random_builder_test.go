@@ -133,7 +133,7 @@ func TestNewRandomPlannerBuildsSuccessfully(t *testing.T) {
 			// 床タイルが存在することを確認
 			floorCount := 0
 			for _, tile := range chain.PlanData.Tiles {
-				if tile == TileFloor {
+				if tile.Type == TileTypeFloor {
 					floorCount++
 				}
 			}

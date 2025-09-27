@@ -34,7 +34,7 @@ type MetaPlan struct {
 func (bm MetaPlan) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
-	if tile != TileFloor {
+	if !tile.Walkable {
 		return false
 	}
 
@@ -103,16 +103,12 @@ func (bm MetaPlan) RightTile(idx resources.TileIdx) Tile {
 	return bm.Tiles[targetIdx]
 }
 
-// AdjacentOrthoAnyFloor は直交する近傍4タイルに床があるか判定する
+// AdjacentOrthoAnyFloor は直交する近傍4タイルに移動可能タイルがあるか判定する
 func (bm MetaPlan) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
-	return bm.UpTile(idx) == TileFloor ||
-		bm.DownTile(idx) == TileFloor ||
-		bm.RightTile(idx) == TileFloor ||
-		bm.LeftTile(idx) == TileFloor ||
-		bm.UpTile(idx) == TileWarpNext ||
-		bm.DownTile(idx) == TileWarpNext ||
-		bm.RightTile(idx) == TileWarpNext ||
-		bm.LeftTile(idx) == TileWarpNext
+	return bm.UpTile(idx).Walkable ||
+		bm.DownTile(idx).Walkable ||
+		bm.RightTile(idx).Walkable ||
+		bm.LeftTile(idx).Walkable
 }
 
 // AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
@@ -139,7 +135,7 @@ func (bm MetaPlan) AdjacentAnyFloor(idx resources.TileIdx) bool {
 		neighborIdx := bm.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 		tile := bm.Tiles[neighborIdx]
 
-		if tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape {
+		if tile.Walkable {
 			return true
 		}
 	}
@@ -203,9 +199,9 @@ func (bm MetaPlan) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bo
 	return WallTypeGeneric
 }
 
-// isFloorOrWarp は床またはワープタイルかを判定する
+// isFloorOrWarp は移動可能タイルかを判定する
 func (bm MetaPlan) isFloorOrWarp(tile Tile) bool {
-	return tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape
+	return tile.Walkable
 }
 
 // PlannerChain は階層データMetaPlanに対して適用する生成ロジックを保持する構造体
@@ -299,7 +295,7 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 	// 最適な位置を探す
 	for _, pos := range attempts {
 		tileIdx := bm.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
-		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx] == TileFloor {
+		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx].Walkable {
 			playerX, playerY = pos.x, pos.y
 			found = true
 			break
@@ -309,7 +305,7 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 	// 見つからない場合は全体をスキャン
 	if !found {
 		for _i, tile := range bm.Tiles {
-			if tile == TileFloor {
+			if tile.Walkable {
 				i := resources.TileIdx(_i)
 				x, y := bm.Level.XYTileCoord(i)
 				playerX, playerY = int(x), int(y)
@@ -331,11 +327,11 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 		i := resources.TileIdx(_i)
 		x, y := bm.Level.XYTileCoord(i)
 
-		switch tile {
-		case TileFloor:
+		switch tile.Type {
+		case TileTypeFloor:
 			plan.AddFloor(int(x), int(y))
 
-		case TileWall:
+		case TileTypeWall:
 			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
 			if bm.AdjacentAnyFloor(i) {
 				// 壁タイプを判定（スプライト番号はmapspawnerで決定）
@@ -343,18 +339,18 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 				plan.AddWallWithType(int(x), int(y), wallType)
 			}
 
-		case TileWarpNext:
+		case TileTypeWarpNext:
 			plan.AddWarpNext(int(x), int(y))
 
-		case TileWarpEscape:
+		case TileTypeWarpEscape:
 			plan.AddWarpEscape(int(x), int(y))
 
-		case TileEmpty:
+		case TileTypeEmpty:
 			// 空のタイルはエンティティを生成しない
 			continue
 
 		default:
-			return nil, fmt.Errorf("未知のタイルタイプ: %d", tile)
+			return nil, fmt.Errorf("未知のタイルタイプ: %d", tile.Type)
 		}
 	}
 

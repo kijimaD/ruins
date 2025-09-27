@@ -379,16 +379,16 @@ func (b TownMapDraw) shouldFillDiagonalGap(buildData *MetaPlan, x, y, _, _ int) 
 	diagonalFloorCount := 0
 	orthogonalWallCount := 0
 
-	if b.isPassableTile(upLeftTile) {
+	if upLeftTile.Walkable {
 		diagonalFloorCount++
 	}
-	if b.isPassableTile(upRightTile) {
+	if upRightTile.Walkable {
 		diagonalFloorCount++
 	}
-	if b.isPassableTile(downLeftTile) {
+	if downLeftTile.Walkable {
 		diagonalFloorCount++
 	}
-	if b.isPassableTile(downRightTile) {
+	if downRightTile.Walkable {
 		diagonalFloorCount++
 	}
 
@@ -426,7 +426,7 @@ func (b TownMapDraw) fillSurroundingGaps(buildData *MetaPlan, centerX, centerY, 
 			tile := buildData.Tiles[idx]
 
 			// 床タイルで、周囲に壁が多い場合は壁に変更
-			if b.isPassableTile(tile) && b.isSurroundedByWalls(buildData, x, y, width, height) {
+			if tile.Walkable && b.isSurroundedByWalls(buildData, x, y, width, height) {
 				buildData.Tiles[idx] = TileWall
 			}
 		}
@@ -462,9 +462,4 @@ func (b TownMapDraw) isSurroundedByWalls(buildData *MetaPlan, x, y, width, heigh
 
 	// 隣接タイルの75%以上が壁の場合、囲まれていると判定
 	return float64(wallCount)/float64(totalNeighbors) >= 0.75
-}
-
-// isPassableTile は通行可能なタイルかを判定する
-func (b TownMapDraw) isPassableTile(tile Tile) bool {
-	return tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape
 }

@@ -25,8 +25,7 @@ func (pf *PathFinder) IsWalkable(x, y int) bool {
 	idx := pf.buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 	tile := pf.buildData.Tiles[idx]
 
-	// 床、ワープタイルは歩行可能
-	return tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape
+	return tile.Walkable
 }
 
 // FindPath はBFSを使ってスタート地点からゴールまでのパスを探索する
