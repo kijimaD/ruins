@@ -11,7 +11,7 @@ import (
 type ForestPlanner struct{}
 
 // BuildInitial は初期森マップをビルドする
-func (f ForestPlanner) BuildInitial(buildData *PlannerMap) {
+func (f ForestPlanner) BuildInitial(buildData *MetaPlan) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -45,7 +45,7 @@ func (f ForestPlanner) BuildInitial(buildData *PlannerMap) {
 type ForestTerrain struct{}
 
 // BuildMeta は森の基本地形をタイルに描画する
-func (f ForestTerrain) BuildMeta(buildData *PlannerMap) {
+func (f ForestTerrain) BuildMeta(buildData *MetaPlan) {
 	// まず全体を床で埋める（森の地面）
 	for i := range buildData.Tiles {
 		buildData.Tiles[i] = TileFloor
@@ -58,7 +58,7 @@ func (f ForestTerrain) BuildMeta(buildData *PlannerMap) {
 }
 
 // createCircularClearing は円形の空き地を作成する
-func (f ForestTerrain) createCircularClearing(buildData *PlannerMap, clearing gc.Rect) {
+func (f ForestTerrain) createCircularClearing(buildData *MetaPlan, clearing gc.Rect) {
 	centerX := float64(clearing.X1+clearing.X2) / 2.0
 	centerY := float64(clearing.Y1+clearing.Y2) / 2.0
 	radius := math.Min(float64(clearing.X2-clearing.X1), float64(clearing.Y2-clearing.Y1)) / 2.0
@@ -81,7 +81,7 @@ func (f ForestTerrain) createCircularClearing(buildData *PlannerMap, clearing gc
 type ForestTrees struct{}
 
 // BuildMeta は森に木を配置する
-func (f ForestTrees) BuildMeta(buildData *PlannerMap) {
+func (f ForestTrees) BuildMeta(buildData *MetaPlan) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -108,7 +108,7 @@ func (f ForestTrees) BuildMeta(buildData *PlannerMap) {
 }
 
 // calculateTreeDensity は位置に基づいて木の密度を計算する
-func (f ForestTrees) calculateTreeDensity(buildData *PlannerMap, x, y int) float64 {
+func (f ForestTrees) calculateTreeDensity(buildData *MetaPlan, x, y int) float64 {
 	baseDensity := 0.6 // 基本密度60%
 
 	// 空き地からの距離に基づいて密度を調整
@@ -137,7 +137,7 @@ func (f ForestTrees) calculateTreeDensity(buildData *PlannerMap, x, y int) float
 }
 
 // placeLargeTree は大きな木を配置する
-func (f ForestTrees) placeLargeTree(buildData *PlannerMap, centerX, centerY int) {
+func (f ForestTrees) placeLargeTree(buildData *MetaPlan, centerX, centerY int) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -163,7 +163,7 @@ func (f ForestTrees) placeLargeTree(buildData *PlannerMap, centerX, centerY int)
 type ForestPaths struct{}
 
 // BuildMeta は空き地間に自然な通路を作成する
-func (f ForestPaths) BuildMeta(buildData *PlannerMap) {
+func (f ForestPaths) BuildMeta(buildData *MetaPlan) {
 	if len(buildData.Rooms) < 2 {
 		return
 	}
@@ -180,7 +180,7 @@ func (f ForestPaths) BuildMeta(buildData *PlannerMap) {
 }
 
 // shouldCreatePath は通路を作成するかどうかを判定する
-func (f ForestPaths) shouldCreatePath(buildData *PlannerMap, room1, room2 gc.Rect) bool {
+func (f ForestPaths) shouldCreatePath(buildData *MetaPlan, room1, room2 gc.Rect) bool {
 	// 空き地間の距離を計算
 	center1X := float64(room1.X1+room1.X2) / 2.0
 	center1Y := float64(room1.Y1+room1.Y2) / 2.0
@@ -201,7 +201,7 @@ func (f ForestPaths) shouldCreatePath(buildData *PlannerMap, room1, room2 gc.Rec
 }
 
 // createNaturalPath は自然な曲線状の通路を作成する
-func (f ForestPaths) createNaturalPath(buildData *PlannerMap, room1, room2 gc.Rect) {
+func (f ForestPaths) createNaturalPath(buildData *MetaPlan, room1, room2 gc.Rect) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -248,7 +248,7 @@ func (f ForestPaths) createNaturalPath(buildData *PlannerMap, room1, room2 gc.Re
 type ForestWildlife struct{}
 
 // BuildMeta は森に小さな動物の痕跡を追加する
-func (f ForestWildlife) BuildMeta(buildData *PlannerMap) {
+func (f ForestWildlife) BuildMeta(buildData *MetaPlan) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 

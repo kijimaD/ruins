@@ -10,20 +10,20 @@ import (
 
 // StringMapPlanner は文字列ベースでマップを生成するプランナー
 type StringMapPlanner struct {
-	TileMap       []string            // タイル配置を表す文字列のスライス
-	EntityMap     []string            // エンティティ配置を表す文字列のスライス
-	TileMapping   map[rune]Tile       // 文字からTileへのマッピング
-	EntityMapping map[rune]EntityPlan // 文字からEntityPlanへのマッピング
+	TileMap       []string                // タイル配置を表す文字列のスライス
+	EntityMap     []string                // エンティティ配置を表す文字列のスライス
+	TileMapping   map[rune]Tile           // 文字からTileへのマッピング
+	EntityMapping map[rune]EntityTemplate // 文字からEntityTemplateへのマッピング
 }
 
-// EntityPlan はエンティティ生成計画
-type EntityPlan struct {
+// EntityTemplate はエンティティ生成計画
+type EntityTemplate struct {
 	EntityType EntityType
 	Data       interface{} // PropType等の追加データ
 }
 
 // BuildInitial は文字列定義からマップ構造を初期化する
-func (b StringMapPlanner) BuildInitial(buildData *PlannerMap) {
+func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) {
 	if len(b.TileMap) == 0 {
 		return
 	}
@@ -77,7 +77,7 @@ func (b StringMapPlanner) BuildInitial(buildData *PlannerMap) {
 }
 
 // parseEntities はエンティティマップを解析してエンティティを配置
-func (b StringMapPlanner) parseEntities(plannerMap *PlannerMap, width, height int) {
+func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int) {
 	// エンティティマップから特殊なタイル（ワープホールなど）を配置
 	for y := 0; y < len(b.EntityMap) && y < height; y++ {
 		for x := 0; x < len(b.EntityMap[y]) && x < width; x++ {
@@ -96,7 +96,7 @@ func (b StringMapPlanner) parseEntities(plannerMap *PlannerMap, width, height in
 			}
 
 			// TODO: 他のエンティティ（NPC、アイテムなど）の処理は
-			// PlannerMapにEntitiesフィールドを追加後に実装
+			// MetaPlanにEntitiesフィールドを追加後に実装
 		}
 	}
 }
@@ -150,8 +150,8 @@ func getDefaultTileMapping() map[rune]Tile {
 }
 
 // getDefaultEntityMapping はデフォルトのエンティティ文字マッピングを返す
-func getDefaultEntityMapping() map[rune]EntityPlan {
-	return map[rune]EntityPlan{
+func getDefaultEntityMapping() map[rune]EntityTemplate {
+	return map[rune]EntityTemplate{
 		'@': {EntityType: EntityTypePlayer},
 		'D': {EntityType: EntityTypeDoor},
 		'C': {EntityType: EntityTypeProp, Data: gc.PropTypeChair},     // 椅子
@@ -175,7 +175,7 @@ func (b *StringMapPlanner) SetTileMapping(mapping map[rune]Tile) *StringMapPlann
 }
 
 // SetEntityMapping はカスタムエンティティマッピングを設定する
-func (b *StringMapPlanner) SetEntityMapping(mapping map[rune]EntityPlan) *StringMapPlanner {
+func (b *StringMapPlanner) SetEntityMapping(mapping map[rune]EntityTemplate) *StringMapPlanner {
 	b.EntityMapping = mapping
 	return b
 }
@@ -194,12 +194,12 @@ func (b *StringMapPlanner) AddEntityMapping(char rune, entityType EntityType, da
 	if b.EntityMapping == nil {
 		b.EntityMapping = getDefaultEntityMapping()
 	}
-	b.EntityMapping[char] = EntityPlan{EntityType: entityType, Data: data}
+	b.EntityMapping[char] = EntityTemplate{EntityType: entityType, Data: data}
 	return b
 }
 
-// BuildMapPlanFromStrings は文字列マップから直接MapPlanを生成する
-func BuildMapPlanFromStrings(tileMap, entityMap []string) (*MapPlan, error) {
+// BuildEntityPlanFromStrings は文字列マップから直接EntityPlanを生成する
+func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error) {
 	if err := ValidateStringMap(tileMap, entityMap); err != nil {
 		return nil, err
 	}
@@ -213,7 +213,7 @@ func BuildMapPlanFromStrings(tileMap, entityMap []string) (*MapPlan, error) {
 		}
 	}
 
-	plan := NewMapPlan(width, height)
+	plan := NewEntityPlan(width, height)
 
 	// デフォルトマッピングを取得
 	tileMapping := getDefaultTileMapping()
@@ -292,7 +292,7 @@ func BuildMapPlanFromStrings(tileMap, entityMap []string) (*MapPlan, error) {
 					case EntityTypePlayer:
 						// プレイヤーの開始位置を設定
 						plan.SetPlayerStartPosition(x, y)
-						// EntityTypeDoorは現在MapPlanに追加メソッドがないため
+						// EntityTypeDoorは現在EntityTemplateに追加メソッドがないため
 						// 将来的に追加予定
 					}
 				}

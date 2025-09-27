@@ -8,12 +8,12 @@ import (
 type RectRoomPlanner struct{}
 
 // BuildInitial は初期ビルドを行う
-func (b RectRoomPlanner) BuildInitial(buildData *PlannerMap) {
+func (b RectRoomPlanner) BuildInitial(buildData *MetaPlan) {
 	b.BuildRooms(buildData)
 }
 
 // BuildRooms は部屋をビルドする
-func (b RectRoomPlanner) BuildRooms(buildData *PlannerMap) {
+func (b RectRoomPlanner) BuildRooms(buildData *MetaPlan) {
 	maxRooms := 4 + buildData.RandomSource.Intn(10)
 	rooms := []gc.Rect{}
 	for i := 0; i < maxRooms; i++ {

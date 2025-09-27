@@ -6,17 +6,17 @@ import gc "github.com/kijimaD/ruins/lib/components"
 type RoomDraw struct{}
 
 // BuildMeta はメタデータをビルドする
-func (b RoomDraw) BuildMeta(buildData *PlannerMap) {
+func (b RoomDraw) BuildMeta(buildData *MetaPlan) {
 	b.build(buildData)
 }
 
-func (b RoomDraw) build(buildData *PlannerMap) {
+func (b RoomDraw) build(buildData *MetaPlan) {
 	for _, room := range buildData.Rooms {
 		b.rectangle(buildData, room)
 	}
 }
 
-func (b RoomDraw) rectangle(buildData *PlannerMap, room gc.Rect) {
+func (b RoomDraw) rectangle(buildData *MetaPlan, room gc.Rect) {
 	for x := room.X1; x <= room.X2; x++ {
 		for y := room.Y1; y <= room.Y2; y++ {
 			idx := buildData.Level.XYTileIndex(x, y)

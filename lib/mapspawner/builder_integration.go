@@ -10,21 +10,21 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// BuildPlanAndSpawn はPlannerChainを実行してMapPlanを生成し、Levelをスポーンする
+// BuildPlanAndSpawn はPlannerChainを実行してEntityPlanを生成し、Levelをスポーンする
 func BuildPlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerType mapplanner.PlannerType) (resources.Level, error) {
 	// プランナーチェーンを実行
 	chain.Build()
 
-	// PlanDataからMapPlanを構築
+	// PlanDataからEntityPlanを構築
 	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
-		return resources.Level{}, fmt.Errorf("MapPlan構築エラー: %w", err)
+		return resources.Level{}, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}
 
 	// 壁スプライト番号を補完
 	CompleteWallSprites(plan)
 
-	// プランナー設定に基づいてNPCとアイテムをMapPlanに追加
+	// プランナー設定に基づいてNPCとアイテムをEntityPlanに追加
 	if plannerType.SpawnEnemies {
 		if err := addNPCsToPlan(world, chain, plan); err != nil {
 			return resources.Level{}, fmt.Errorf("NPC追加エラー: %w", err)
@@ -45,7 +45,7 @@ func BuildPlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerTyp
 		return resources.Level{}, fmt.Errorf("固定Props追加エラー: %w", err)
 	}
 
-	// MapPlanからLevelをスポーン
+	// EntityPlanからLevelをスポーン
 	level, err := SpawnLevel(world, plan)
 	if err != nil {
 		return resources.Level{}, fmt.Errorf("level生成エラー: %w", err)
@@ -54,15 +54,15 @@ func BuildPlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerTyp
 	return level, nil
 }
 
-// BuildPlan はPlannerChainを実行してMapPlanを生成する
-func BuildPlan(chain *mapplanner.PlannerChain) (*mapplanner.MapPlan, error) {
+// BuildPlan はPlannerChainを実行してEntityPlanを生成する
+func BuildPlan(chain *mapplanner.PlannerChain) (*mapplanner.EntityPlan, error) {
 	// プランナーチェーンを実行
 	chain.Build()
 
-	// PlanDataからMapPlanを構築
+	// PlanDataからEntityPlanを構築
 	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
-		return nil, fmt.Errorf("MapPlan構築エラー: %w", err)
+		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}
 
 	// 壁スプライト番号を補完
@@ -93,8 +93,8 @@ const (
 	escapePortalInterval = 5 // 帰還ワープホール配置間隔（n階層ごと）
 )
 
-// addNPCsToPlan はMapPlanにNPCを追加する
-func addNPCsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplanner.MapPlan) error {
+// addNPCsToPlan はEntityPlanにNPCを追加する
+func addNPCsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplanner.EntityPlan) error {
 	failCount := 0
 	total := baseNPCCount + chain.PlanData.RandomSource.Intn(randomNPCCount)
 	successCount := 0
@@ -123,8 +123,8 @@ func addNPCsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplann
 	return nil
 }
 
-// addItemsToPlan はMapPlanにアイテムを追加する
-func addItemsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplanner.MapPlan) error {
+// addItemsToPlan はEntityPlanにアイテムを追加する
+func addItemsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplanner.EntityPlan) error {
 	// 利用可能なアイテムリスト
 	// TODO: テーブル化・レアリティ考慮する
 	availableItems := []string{
@@ -171,8 +171,8 @@ func addItemsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplan
 	return nil
 }
 
-// addItemsOfTypeToPlan は指定された数のアイテムをMapPlanに追加する
-func addItemsOfTypeToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.MapPlan, itemList []string, count int) error {
+// addItemsOfTypeToPlan は指定された数のアイテムをEntityPlanに追加する
+func addItemsOfTypeToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.EntityPlan, itemList []string, count int) error {
 	failCount := 0
 	successCount := 0
 
@@ -195,7 +195,7 @@ func addItemsOfTypeToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.MapPl
 		// アイテム名をランダム選択
 		itemName := itemList[chain.PlanData.RandomSource.Intn(len(itemList))]
 
-		// MapPlanにアイテムを追加
+		// EntityPlanにアイテムを追加
 		plan.AddItem(int(x), int(y), itemName)
 
 		successCount++
@@ -216,8 +216,8 @@ func isValidItemPosition(chain *mapplanner.PlannerChain, x, y gc.Tile) bool {
 	return tile == mapplanner.TileFloor || tile == mapplanner.TileWarpNext || tile == mapplanner.TileWarpEscape
 }
 
-// addFixedPropsToPlan はプランナータイプに応じて固定Props配置をMapPlanに追加する
-func addFixedPropsToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.MapPlan, plannerType mapplanner.PlannerType) error {
+// addFixedPropsToPlan はプランナータイプに応じて固定Props配置をEntityPlanに追加する
+func addFixedPropsToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.EntityPlan, plannerType mapplanner.PlannerType) error {
 	// 町タイプの場合は固定Props配置を追加
 	if plannerType.Name == mapplanner.PlannerTypeTown.Name {
 		return addTownPropsToPlan(chain, plan)
@@ -229,8 +229,8 @@ func addFixedPropsToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.MapPla
 	return nil
 }
 
-// addWarpPortalsToPlan はプランナータイプに応じてワープポータルをMapPlanに追加する
-func addWarpPortalsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplanner.MapPlan, plannerType mapplanner.PlannerType) {
+// addWarpPortalsToPlan はプランナータイプに応じてワープポータルをEntityPlanに追加する
+func addWarpPortalsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *mapplanner.EntityPlan, plannerType mapplanner.PlannerType) {
 	// プランナーが既にワープホールを配置済みかどうかを確認
 	// StringMapPlannerベースのプランナーはentityMapでワープホールを完全に配置するため、
 	// mapspawnerでの追加配置は不要
@@ -300,8 +300,8 @@ func addWarpPortalsToPlan(world w.World, chain *mapplanner.PlannerChain, plan *m
 	}
 }
 
-// addTownPropsToPlan は町用の固定Props配置をMapPlanに追加する
-func addTownPropsToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.MapPlan) error {
+// addTownPropsToPlan は町用の固定Props配置をEntityPlanに追加する
+func addTownPropsToPlan(chain *mapplanner.PlannerChain, plan *mapplanner.EntityPlan) error {
 	centerX := int(chain.PlanData.Level.TileWidth) / 2
 	centerY := int(chain.PlanData.Level.TileHeight) / 2
 

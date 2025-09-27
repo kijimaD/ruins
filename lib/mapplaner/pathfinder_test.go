@@ -8,7 +8,7 @@ import (
 )
 
 // createTestPlanData はテスト用のPlanDataを作成する
-func createTestPlanData(width, height int) *PlannerMap {
+func createTestPlanData(width, height int) *MetaPlan {
 	tileCount := width * height
 	tiles := make([]Tile, tileCount)
 
@@ -17,7 +17,7 @@ func createTestPlanData(width, height int) *PlannerMap {
 		tiles[i] = TileWall
 	}
 
-	return &PlannerMap{
+	return &MetaPlan{
 		Level: resources.Level{
 			TileWidth:  gc.Tile(width),
 			TileHeight: gc.Tile(height),

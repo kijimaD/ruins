@@ -6,7 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-func TestStringMapPlanner_BasicExample(t *testing.T) {
+func TestStringEntityPlanner_BasicExample(t *testing.T) {
 	t.Parallel()
 	// あなたの例を使ったテスト
 	tileMap := []string{
@@ -31,10 +31,10 @@ func TestStringMapPlanner_BasicExample(t *testing.T) {
 		t.Fatalf("マップバリデーションに失敗: %v", err)
 	}
 
-	// MapPlanを直接生成
-	plan, err := BuildMapPlanFromStrings(tileMap, entityMap)
+	// EntityPlanを直接生成
+	plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
 	if err != nil {
-		t.Fatalf("MapPlan生成に失敗: %v", err)
+		t.Fatalf("EntityPlan生成に失敗: %v", err)
 	}
 
 	// サイズをチェック
@@ -84,14 +84,14 @@ func TestStringMapPlanner_BasicExample(t *testing.T) {
 	}
 }
 
-func TestStringMapPlanner_CustomMapping(t *testing.T) {
+func TestStringEntityPlanner_CustomMapping(t *testing.T) {
 	t.Parallel()
 	// カスタムマッピングのテストは現在スキップ
 	// TODO: 将来的にカスタムマッピング機能を実装予定
 	t.Skip("カスタムマッピング機能は未実装")
 }
 
-func TestStringMapPlanner_EmptyEntityMap(t *testing.T) {
+func TestStringEntityPlanner_EmptyEntityMap(t *testing.T) {
 	t.Parallel()
 	tileMap := []string{
 		"###",
@@ -100,9 +100,9 @@ func TestStringMapPlanner_EmptyEntityMap(t *testing.T) {
 	}
 
 	// エンティティマップなし
-	plan, err := BuildMapPlanFromStrings(tileMap, nil)
+	plan, err := BuildEntityPlanFromStrings(tileMap, nil)
 	if err != nil {
-		t.Fatalf("MapPlan生成に失敗: %v", err)
+		t.Fatalf("EntityPlan生成に失敗: %v", err)
 	}
 
 	// エンティティは最低限タイルエンティティが生成される
@@ -124,7 +124,7 @@ func TestStringMapPlanner_EmptyEntityMap(t *testing.T) {
 	}
 }
 
-func TestStringMapPlanner_AllPropTypes(t *testing.T) {
+func TestStringEntityPlanner_AllPropTypes(t *testing.T) {
 	t.Parallel()
 	tileMap := []string{
 		"ffffffffff",
@@ -138,9 +138,9 @@ func TestStringMapPlanner_AllPropTypes(t *testing.T) {
 		"..........",
 	}
 
-	plan, err := BuildMapPlanFromStrings(tileMap, entityMap)
+	plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
 	if err != nil {
-		t.Fatalf("MapPlan生成に失敗: %v", err)
+		t.Fatalf("EntityPlan生成に失敗: %v", err)
 	}
 
 	// Propエンティティをカウント

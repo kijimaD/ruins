@@ -18,8 +18,8 @@ func TestSpawnLevel_ValidPlan(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// シンプルなMapPlanを作成（エンティティなし）
-	plan := mapplanner.NewMapPlan(3, 3)
+	// シンプルなEntityPlanを作成（エンティティなし）
+	plan := mapplanner.NewEntityPlan(3, 3)
 
 	// SpawnLevelをテスト（エンティティ生成なしで基本機能をテスト）
 	level, err := SpawnLevel(world, plan)
@@ -59,8 +59,8 @@ func TestSpawnLevel_InvalidPlan(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// 無効な座標を持つMapPlanを作成
-	plan := mapplanner.NewMapPlan(2, 2)
+	// 無効な座標を持つEntityPlanを作成
+	plan := mapplanner.NewEntityPlan(2, 2)
 	plan.AddFloor(5, 5) // 範囲外の座標
 
 	// SpawnLevelがエラーを返すことを確認
@@ -78,8 +78,8 @@ func TestSpawnLevel_EmptyPlan(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// 空のMapPlanを作成
-	plan := mapplanner.NewMapPlan(2, 2)
+	// 空のEntityPlanを作成
+	plan := mapplanner.NewEntityPlan(2, 2)
 
 	// 空のプランでもエラーなく動作することを確認
 	level, err := SpawnLevel(world, plan)

@@ -7,7 +7,7 @@ import (
 )
 
 // 文字列ベースマップビルダーの使用例
-func ExampleBuildMapPlanFromStrings() {
+func ExampleBuildEntityPlanFromStrings() {
 	// タイル配置を文字列で定義
 	tileMap := []string{
 		"######......",
@@ -26,8 +26,8 @@ func ExampleBuildMapPlanFromStrings() {
 		"............",
 	}
 
-	// MapPlanを生成
-	plan, err := BuildMapPlanFromStrings(tileMap, entityMap)
+	// EntityPlanを生成
+	plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
 	if err != nil {
 		panic(err)
 	}
@@ -50,8 +50,8 @@ func ExampleBuildMapPlanFromStrings() {
 	// Props数: 2
 }
 
-// MapPlan統合使用例（mapspawnerは別パッケージで使用）
-func Example_stringMapPlanGeneration() {
+// EntityPlan統合使用例（mapspawnerは別パッケージで使用）
+func Example_stringEntityPlanGeneration() {
 	// 小さな街のレイアウト
 	tileMap := []string{
 		"##########",
@@ -71,8 +71,8 @@ func Example_stringMapPlanGeneration() {
 		"..........",
 	}
 
-	// MapPlanを生成
-	plan, err := BuildMapPlanFromStrings(tileMap, entityMap)
+	// EntityPlanを生成
+	plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
 	if err != nil {
 		panic(err)
 	}
@@ -188,7 +188,7 @@ func Example_complexLayout() {
 		"..................",
 	}
 
-	plan, err := BuildMapPlanFromStrings(tileMap, entityMap)
+	plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
 	if err != nil {
 		panic(err)
 	}

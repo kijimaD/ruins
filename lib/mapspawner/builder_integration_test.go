@@ -21,7 +21,7 @@ func TestBuildPlan(t *testing.T) {
 		t.Fatalf("BuildPlan failed: %v", err)
 	}
 
-	// MapPlanの基本プロパティをチェック
+	// EntityPlanの基本プロパティをチェック
 	if plan.Width != width {
 		t.Errorf("Expected Width %d, got %d", width, plan.Width)
 	}
@@ -154,7 +154,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	portalIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
 	chain.PlanData.Tiles[portalIdx] = mapplanner.TileWarpNext
 
-	// BuildPlanFromTilesを使用してMapPlanを生成
+	// BuildPlanFromTilesを使用してEntityPlanを生成
 	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
 		t.Fatalf("BuildPlanFromTiles failed: %v", err)

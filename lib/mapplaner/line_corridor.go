@@ -11,12 +11,12 @@ import (
 type LineCorridorPlanner struct{}
 
 // BuildMeta はメタデータをビルドする
-func (b LineCorridorPlanner) BuildMeta(buildData *PlannerMap) {
+func (b LineCorridorPlanner) BuildMeta(buildData *MetaPlan) {
 	b.BuildCorridors(buildData)
 }
 
 // BuildCorridors は廊下をビルドする
-func (b LineCorridorPlanner) BuildCorridors(buildData *PlannerMap) {
+func (b LineCorridorPlanner) BuildCorridors(buildData *MetaPlan) {
 	// 接続済みの部屋。通路を2重に計算しないようにする
 	connected := map[int]bool{}
 	// 廊下のスライス

@@ -13,8 +13,8 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// PlannerMap は階層のタイルを作る元になる概念の集合体
-type PlannerMap struct {
+// MetaPlan は階層のタイルを作る元になる概念の集合体
+type MetaPlan struct {
 	// 階層情報
 	Level resources.Level
 	// 階層を構成するタイル群。長さはステージの大きさで決まる
@@ -31,7 +31,7 @@ type PlannerMap struct {
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
-func (bm PlannerMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
+func (bm MetaPlan) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
 	if tile != TileFloor {
@@ -46,7 +46,7 @@ func (bm PlannerMap) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool
 }
 
 // 指定タイル座標にエンティティがすでにあるかを返す
-func (bm PlannerMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
+func (bm MetaPlan) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
 	isExist := false
 
 	world.Manager.Join(
@@ -64,7 +64,7 @@ func (bm PlannerMap) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bo
 }
 
 // UpTile は上にあるタイルを調べる
-func (bm PlannerMap) UpTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) UpTile(idx resources.TileIdx) Tile {
 	targetIdx := resources.TileIdx(int(idx) - int(bm.Level.TileWidth))
 	if targetIdx < 0 {
 		return TileEmpty
@@ -74,7 +74,7 @@ func (bm PlannerMap) UpTile(idx resources.TileIdx) Tile {
 }
 
 // DownTile は下にあるタイルを調べる
-func (bm PlannerMap) DownTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) DownTile(idx resources.TileIdx) Tile {
 	targetIdx := int(idx) + int(bm.Level.TileWidth)
 	if targetIdx > len(bm.Tiles)-1 {
 		return TileEmpty
@@ -84,7 +84,7 @@ func (bm PlannerMap) DownTile(idx resources.TileIdx) Tile {
 }
 
 // LeftTile は左にあるタイルを調べる
-func (bm PlannerMap) LeftTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) LeftTile(idx resources.TileIdx) Tile {
 	targetIdx := idx - 1
 	if targetIdx < 0 {
 		return TileEmpty
@@ -94,7 +94,7 @@ func (bm PlannerMap) LeftTile(idx resources.TileIdx) Tile {
 }
 
 // RightTile は右にあるタイルを調べる
-func (bm PlannerMap) RightTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) RightTile(idx resources.TileIdx) Tile {
 	targetIdx := idx + 1
 	if int(targetIdx) > len(bm.Tiles)-1 {
 		return TileEmpty
@@ -104,7 +104,7 @@ func (bm PlannerMap) RightTile(idx resources.TileIdx) Tile {
 }
 
 // AdjacentOrthoAnyFloor は直交する近傍4タイルに床があるか判定する
-func (bm PlannerMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
+func (bm MetaPlan) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 	return bm.UpTile(idx) == TileFloor ||
 		bm.DownTile(idx) == TileFloor ||
 		bm.RightTile(idx) == TileFloor ||
@@ -116,7 +116,7 @@ func (bm PlannerMap) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
 }
 
 // AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
-func (bm PlannerMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
+func (bm MetaPlan) AdjacentAnyFloor(idx resources.TileIdx) bool {
 	x, y := bm.Level.XYTileCoord(idx)
 	width := int(bm.Level.TileWidth)
 	height := int(bm.Level.TileHeight)
@@ -148,7 +148,7 @@ func (bm PlannerMap) AdjacentAnyFloor(idx resources.TileIdx) bool {
 }
 
 // GetWallType は近傍パターンから適切な壁タイプを判定する
-func (bm PlannerMap) GetWallType(idx resources.TileIdx) WallType {
+func (bm MetaPlan) GetWallType(idx resources.TileIdx) WallType {
 	// 4方向の隣接タイルの床状況をチェック
 	upFloor := bm.isFloorOrWarp(bm.UpTile(idx))
 	downFloor := bm.isFloorOrWarp(bm.DownTile(idx))
@@ -170,7 +170,7 @@ func (bm PlannerMap) GetWallType(idx resources.TileIdx) WallType {
 }
 
 // checkSingleDirectionWalls は単一方向に床がある場合の壁タイプを返す
-func (bm PlannerMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
+func (bm MetaPlan) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
 	if downFloor && !upFloor && !leftFloor && !rightFloor {
 		return WallTypeTop // 下に床がある → 上壁
 	}
@@ -187,7 +187,7 @@ func (bm PlannerMap) checkSingleDirectionWalls(upFloor, downFloor, leftFloor, ri
 }
 
 // checkCornerWalls は2方向に床がある場合の壁タイプを返す
-func (bm PlannerMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
+func (bm MetaPlan) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bool) WallType {
 	if downFloor && rightFloor && !upFloor && !leftFloor {
 		return WallTypeTopLeft // 下右に床 → 左上角
 	}
@@ -204,15 +204,15 @@ func (bm PlannerMap) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor 
 }
 
 // isFloorOrWarp は床またはワープタイルかを判定する
-func (bm PlannerMap) isFloorOrWarp(tile Tile) bool {
+func (bm MetaPlan) isFloorOrWarp(tile Tile) bool {
 	return tile == TileFloor || tile == TileWarpNext || tile == TileWarpEscape
 }
 
-// PlannerChain は階層データPlannerMapに対して適用する生成ロジックを保持する構造体
+// PlannerChain は階層データMetaPlanに対して適用する生成ロジックを保持する構造体
 type PlannerChain struct {
 	Starter  *InitialMapPlanner
 	Planners []MetaMapPlanner
-	PlanData PlannerMap
+	PlanData MetaPlan
 }
 
 // NewPlannerChain はシード値を指定してプランナーチェーンを作成する
@@ -229,7 +229,7 @@ func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	return &PlannerChain{
 		Starter:  nil,
 		Planners: []MetaMapPlanner{},
-		PlanData: PlannerMap{
+		PlanData: MetaPlan{
 			Level: resources.Level{
 				TileWidth:  width,
 				TileHeight: height,
@@ -272,10 +272,10 @@ func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapC
 	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
 }
 
-// BuildPlanFromTiles はPlannerMapからMapPlanを構築する
-// PlannerMapは生成過程で使用される中間データ、MapPlanは最終的な配置計画
-func (bm *PlannerMap) BuildPlanFromTiles() (*MapPlan, error) {
-	plan := NewMapPlan(int(bm.Level.TileWidth), int(bm.Level.TileHeight))
+// BuildPlanFromTiles はMetaPlanからEntityPlanを構築する
+// MetaPlanは生成過程で使用される中間データ、EntityPlanは最終的な配置計画
+func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
+	plan := NewEntityPlan(int(bm.Level.TileWidth), int(bm.Level.TileHeight))
 
 	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
 	width := int(bm.Level.TileWidth)
@@ -326,7 +326,7 @@ func (bm *PlannerMap) BuildPlanFromTiles() (*MapPlan, error) {
 	// プレイヤー位置を設定
 	plan.SetPlayerStartPosition(playerX, playerY)
 
-	// タイルを走査してMapPlanを構築
+	// タイルを走査してEntityPlanを構築
 	for _i, tile := range bm.Tiles {
 		i := resources.TileIdx(_i)
 		x, y := bm.Level.XYTileCoord(i)
@@ -364,12 +364,12 @@ func (bm *PlannerMap) BuildPlanFromTiles() (*MapPlan, error) {
 // InitialMapPlanner は初期マップをプランするインターフェース
 // タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapPlanner interface {
-	BuildInitial(*PlannerMap)
+	BuildInitial(*MetaPlan)
 }
 
 // MetaMapPlanner はメタ情報をプランするインターフェース
 type MetaMapPlanner interface {
-	BuildMeta(*PlannerMap)
+	BuildMeta(*MetaPlan)
 }
 
 // NewSmallRoomPlanner はシンプルな小部屋プランナーを作成する

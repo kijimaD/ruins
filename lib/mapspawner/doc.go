@@ -1,7 +1,7 @@
-// Package mapspawner はMapPlanに基づいてECSエンティティを生成する機能を提供する
+// Package mapspawner はEntityPlanに基づいてECSエンティティを生成する機能を提供する
 //
 // このパッケージの責務:
-// - MapPlanからLevelオブジェクトの生成
+// - EntityPlanからLevelオブジェクトの生成
 // - EntitySpecからECSエンティティの生成
 // - スポーン処理のエラーハンドリング
 //
@@ -11,5 +11,5 @@
 //
 // 依存関係:
 // - worldhelper: 各種エンティティ生成関数
-// - mapplaner: MapPlan, EntitySpec等の型定義
+// - mapplaner: EntityPlan, EntitySpec等の型定義
 package mapspawner

@@ -9,7 +9,7 @@ import (
 type BigRoomPlanner struct{}
 
 // BuildInitial は初期マップをビルドする
-func (b BigRoomPlanner) BuildInitial(buildData *PlannerMap) {
+func (b BigRoomPlanner) BuildInitial(buildData *MetaPlan) {
 	// マップの境界を考慮して大きな部屋を1つ作成
 	// 外周に1タイル分の壁を残す
 	margin := 2
@@ -28,7 +28,7 @@ func (b BigRoomPlanner) BuildInitial(buildData *PlannerMap) {
 type BigRoomDraw struct{}
 
 // BuildMeta は大部屋をタイルに描画し、ランダムにバリエーションを適用する
-func (b BigRoomDraw) BuildMeta(buildData *PlannerMap) {
+func (b BigRoomDraw) BuildMeta(buildData *MetaPlan) {
 	// まず基本の大部屋を描画
 	b.drawBasicBigRoom(buildData)
 
@@ -54,7 +54,7 @@ func (b BigRoomDraw) BuildMeta(buildData *PlannerMap) {
 }
 
 // drawBasicBigRoom は基本の大部屋を描画する
-func (b BigRoomDraw) drawBasicBigRoom(buildData *PlannerMap) {
+func (b BigRoomDraw) drawBasicBigRoom(buildData *MetaPlan) {
 	for _, room := range buildData.Rooms {
 		// 部屋の内部を床タイルで埋める
 		for x := room.X1; x <= room.X2; x++ {
@@ -104,7 +104,7 @@ func (b BigRoomDraw) drawBasicBigRoom(buildData *PlannerMap) {
 }
 
 // applyPillars は部屋に柱を追加する
-func (b BigRoomDraw) applyPillars(buildData *PlannerMap) {
+func (b BigRoomDraw) applyPillars(buildData *MetaPlan) {
 	// 柱の間隔をランダムに決定（3-6の範囲）
 	spacing := 3 + buildData.RandomSource.Intn(4)
 
@@ -124,7 +124,7 @@ func (b BigRoomDraw) applyPillars(buildData *PlannerMap) {
 }
 
 // applyObstacles は部屋にランダムな障害物を追加する
-func (b BigRoomDraw) applyObstacles(buildData *PlannerMap) {
+func (b BigRoomDraw) applyObstacles(buildData *MetaPlan) {
 	for _, room := range buildData.Rooms {
 		// 障害物の数を部屋のサイズに基づいて決定
 		roomWidth := int(room.X2 - room.X1)
@@ -143,7 +143,7 @@ func (b BigRoomDraw) applyObstacles(buildData *PlannerMap) {
 }
 
 // applyMazePattern は部屋に迷路パターンを追加する
-func (b BigRoomDraw) applyMazePattern(buildData *PlannerMap) {
+func (b BigRoomDraw) applyMazePattern(buildData *MetaPlan) {
 	for _, room := range buildData.Rooms {
 		// 格子状に壁を配置し、ランダムに開口部を作る
 		for x := int(room.X1) + 2; x < int(room.X2)-1; x += 3 {
@@ -169,7 +169,7 @@ func (b BigRoomDraw) applyMazePattern(buildData *PlannerMap) {
 }
 
 // applyCenterPlatform は部屋に中央台座を追加する
-func (b BigRoomDraw) applyCenterPlatform(buildData *PlannerMap) {
+func (b BigRoomDraw) applyCenterPlatform(buildData *MetaPlan) {
 	for _, room := range buildData.Rooms {
 		centerX := int(room.X1+room.X2) / 2
 		centerY := int(room.Y1+room.Y2) / 2

@@ -9,7 +9,7 @@ import (
 type RuinsPlanner struct{}
 
 // BuildInitial は初期廃墟マップをビルドする
-func (r RuinsPlanner) BuildInitial(buildData *PlannerMap) {
+func (r RuinsPlanner) BuildInitial(buildData *MetaPlan) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -39,7 +39,7 @@ func (r RuinsPlanner) BuildInitial(buildData *PlannerMap) {
 type RuinsDraw struct{}
 
 // BuildMeta は廃墟構造をタイルに描画する
-func (r RuinsDraw) BuildMeta(buildData *PlannerMap) {
+func (r RuinsDraw) BuildMeta(buildData *MetaPlan) {
 	// まず全体を床で埋める（屋外エリア）
 	for i := range buildData.Tiles {
 		buildData.Tiles[i] = TileFloor
@@ -52,7 +52,7 @@ func (r RuinsDraw) BuildMeta(buildData *PlannerMap) {
 }
 
 // drawRuinedBuilding は破損した建物を描画する
-func (r RuinsDraw) drawRuinedBuilding(buildData *PlannerMap, building gc.Rect) {
+func (r RuinsDraw) drawRuinedBuilding(buildData *MetaPlan, building gc.Rect) {
 	// 建物の外壁を描画（一部欠損あり）
 	for x := building.X1; x <= building.X2; x++ {
 		// 上辺
@@ -85,7 +85,7 @@ func (r RuinsDraw) drawRuinedBuilding(buildData *PlannerMap, building gc.Rect) {
 }
 
 // addInteriorWalls は建物内部に仕切り壁を追加する
-func (r RuinsDraw) addInteriorWalls(buildData *PlannerMap, building gc.Rect) {
+func (r RuinsDraw) addInteriorWalls(buildData *MetaPlan, building gc.Rect) {
 	buildingWidth := int(building.X2 - building.X1 + 1)
 	buildingHeight := int(building.Y2 - building.Y1 + 1)
 
@@ -115,7 +115,7 @@ func (r RuinsDraw) addInteriorWalls(buildData *PlannerMap, building gc.Rect) {
 type RuinsDebris struct{}
 
 // BuildMeta は廃墟に瓦礫を配置する
-func (r RuinsDebris) BuildMeta(buildData *PlannerMap) {
+func (r RuinsDebris) BuildMeta(buildData *MetaPlan) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -137,7 +137,7 @@ func (r RuinsDebris) BuildMeta(buildData *PlannerMap) {
 }
 
 // calculateDebrisChance は瓦礫の配置確率を計算する
-func (r RuinsDebris) calculateDebrisChance(buildData *PlannerMap, x, y int) float64 {
+func (r RuinsDebris) calculateDebrisChance(buildData *MetaPlan, x, y int) float64 {
 	// 最寄りの建物までの距離を計算
 	minDistance := 1000.0
 
@@ -169,7 +169,7 @@ func (r RuinsDebris) calculateDebrisChance(buildData *PlannerMap, x, y int) floa
 type RuinsCorridors struct{}
 
 // BuildMeta は廃墟間に通路を作成する
-func (r RuinsCorridors) BuildMeta(buildData *PlannerMap) {
+func (r RuinsCorridors) BuildMeta(buildData *MetaPlan) {
 	if len(buildData.Rooms) < 2 {
 		return
 	}
@@ -189,7 +189,7 @@ func (r RuinsCorridors) BuildMeta(buildData *PlannerMap) {
 }
 
 // createRuinedPath は破損した通路を作成する
-func (r RuinsCorridors) createRuinedPath(buildData *PlannerMap, room1, room2 gc.Rect) {
+func (r RuinsCorridors) createRuinedPath(buildData *MetaPlan, room1, room2 gc.Rect) {
 	// 各建物の中心を計算
 	center1X := (room1.X1 + room1.X2) / 2
 	center1Y := (room1.Y1 + room1.Y2) / 2

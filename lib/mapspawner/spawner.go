@@ -11,8 +11,8 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// SpawnLevel はMapPlanに基づいてレベルを生成する
-func SpawnLevel(world w.World, plan *mapplanner.MapPlan) (resources.Level, error) {
+// SpawnLevel はEntityPlanに基づいてレベルを生成する
+func SpawnLevel(world w.World, plan *mapplanner.EntityPlan) (resources.Level, error) {
 	// 計画の妥当性をチェック
 	if err := plan.ValidatePlan(); err != nil {
 		return resources.Level{}, fmt.Errorf("計画検証エラー: %w", err)

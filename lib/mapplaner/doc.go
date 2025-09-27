@@ -13,14 +13,14 @@
 //
 // ## 主要データ構造の違い
 //
-// - **PlannerMap**: マップ生成プロセス中の中間データ
+// - **MetaPlan**: マップ生成プロセス中の中間データ
 //   - タイル配列（[]Tile）、部屋情報、廊下情報、乱数生成器を含む
 //   - PlannerChain内で段階的に構築される
 //   - 生成アルゴリズムで使用される作業用データ
 //
-// - **MapPlan**: エンティティ生成用の最終配置計画
+// - **EntityPlan**: エンティティ生成用の最終配置計画
 //   - TileSpec、EntitySpecのリストとして詳細な配置計画を管理
-//   - PlannerMapから BuildPlanFromTiles() で生成される
+//   - MetaPlanから BuildPlanFromTiles() で生成される
 //   - mapspawnerで実際のECSエンティティ生成に使用される
 //
 // ## タイル定義
@@ -44,26 +44,26 @@
 //
 // ### 1. タイルベース生成（標準）
 //   - PlannerChainでタイル配列を生成
-//   - mapspawnerでタイルからエンティティ配置計画（MapPlan）を自動生成
+//   - mapspawnerでタイルからエンティティ配置計画（EntityPlan）を自動生成
 //   - タイルタイプに応じて対応するエンティティ（床、壁、ワープホールなど）を配置
 //
 // ### 2. 文字列ベース生成（高度）
 //   - 文字列マップから直接タイルとエンティティの配置計画を作成
 //   - NPCやアイテムなどの詳細なエンティティ配置も可能
-//   - MapPlanで明示的にエンティティ配置計画（EntitySpec）を管理
+//   - EntityPlanで明示的にエンティティ配置計画（EntitySpec）を管理
 //
 // ## マップ生成の流れ
 //
 // ### タイルベース生成の場合
 // 1. タイル配列の初期化（全てTileEmpty）
-// 2. PlannerChainによる段階的タイル配置（PlannerMap）
-// 3. PlannerMap.BuildPlanFromTiles()でMapPlan生成
+// 2. PlannerChainによる段階的タイル配置（MetaPlan）
+// 3. MetaPlan.BuildPlanFromTiles()でEntityPlan生成
 // 4. mapspawner.SpawnLevelで実際のECSエンティティ生成
 //
 // ### 文字列ベース生成の場合
 // 1. 文字列マップ定義からタイル・エンティティ配置計画を作成
-// 2. MapPlanにEntitySpecとして詳細なエンティティ配置計画を記録
-// 3. mapspawner.SpawnLevelでMapPlanに基づくECSエンティティ生成
+// 2. EntityPlanにEntitySpecとして詳細なエンティティ配置計画を記録
+// 3. mapspawner.SpawnLevelでEntityPlanに基づくECSエンティティ生成
 //
 // いずれの場合も実行時はエンティティベースの通行可否判定（movement.CanMoveTo）を使用
 package mapplanner

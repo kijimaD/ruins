@@ -45,15 +45,15 @@ func TestNewStringTownPlanner(t *testing.T) {
 	}
 }
 
-func TestStringTownPlannerWithMapPlan(t *testing.T) {
+func TestStringTownPlannerWithEntityPlan(t *testing.T) {
 	t.Parallel()
 	// 街レイアウトを取得
 	tileMap, entityMap := GetTownLayout()
 
-	// MapPlanを直接生成
-	plan, err := BuildMapPlanFromStrings(tileMap, entityMap)
+	// EntityPlanを直接生成
+	plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
 	if err != nil {
-		t.Fatalf("MapPlan生成に失敗: %v", err)
+		t.Fatalf("EntityPlan生成に失敗: %v", err)
 	}
 
 	// サイズをチェック

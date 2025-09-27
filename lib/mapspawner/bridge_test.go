@@ -29,7 +29,7 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	// 壁スプライト番号を補完
 	CompleteWallSprites(plan)
 
-	// MapPlanの基本プロパティをチェック
+	// EntityPlanの基本プロパティをチェック
 	if plan.Width != width {
 		t.Errorf("Expected Width %d, got %d", width, plan.Width)
 	}

@@ -6,9 +6,9 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// MapPlan はマップ生成計画を表す
+// EntityPlan はマップ生成計画を表す
 // タイル配置とエンティティ配置を事前に計画し、後で一括実行する
-type MapPlan struct {
+type EntityPlan struct {
 	Width        int          // マップ幅
 	Height       int          // マップ高さ
 	Tiles        []TileSpec   // タイル配置計画
@@ -87,9 +87,9 @@ func (et EntityType) String() string {
 	}
 }
 
-// NewMapPlan は新しいMapPlanを作成する
-func NewMapPlan(width, height int) *MapPlan {
-	return &MapPlan{
+// NewEntityPlan は新しいEntityPlanを作成する
+func NewEntityPlan(width, height int) *EntityPlan {
+	return &EntityPlan{
 		Width:        width,
 		Height:       height,
 		Tiles:        make([]TileSpec, 0),
@@ -101,7 +101,7 @@ func NewMapPlan(width, height int) *MapPlan {
 }
 
 // AddTile はタイル配置を計画に追加する
-func (mp *MapPlan) AddTile(x, y int, tileType Tile) {
+func (mp *EntityPlan) AddTile(x, y int, tileType Tile) {
 	mp.Tiles = append(mp.Tiles, TileSpec{
 		X:        x,
 		Y:        y,
@@ -110,7 +110,7 @@ func (mp *MapPlan) AddTile(x, y int, tileType Tile) {
 }
 
 // AddFloor は床エンティティを計画に追加する
-func (mp *MapPlan) AddFloor(x, y int) {
+func (mp *EntityPlan) AddFloor(x, y int) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -119,7 +119,7 @@ func (mp *MapPlan) AddFloor(x, y int) {
 }
 
 // AddWall は壁エンティティを計画に追加する
-func (mp *MapPlan) AddWall(x, y int, spriteNumber int) {
+func (mp *EntityPlan) AddWall(x, y int, spriteNumber int) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -130,7 +130,7 @@ func (mp *MapPlan) AddWall(x, y int, spriteNumber int) {
 
 // AddWallWithType は壁タイプを指定して壁エンティティを計画に追加する
 // スプライト番号はmapspawnerで決定される
-func (mp *MapPlan) AddWallWithType(x, y int, wallType WallType) {
+func (mp *EntityPlan) AddWallWithType(x, y int, wallType WallType) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -140,7 +140,7 @@ func (mp *MapPlan) AddWallWithType(x, y int, wallType WallType) {
 }
 
 // AddProp は置物エンティティを計画に追加する
-func (mp *MapPlan) AddProp(x, y int, propType gc.PropType) {
+func (mp *EntityPlan) AddProp(x, y int, propType gc.PropType) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -150,7 +150,7 @@ func (mp *MapPlan) AddProp(x, y int, propType gc.PropType) {
 }
 
 // AddWarpNext は進行ワープホールを計画に追加する
-func (mp *MapPlan) AddWarpNext(x, y int) {
+func (mp *EntityPlan) AddWarpNext(x, y int) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -159,7 +159,7 @@ func (mp *MapPlan) AddWarpNext(x, y int) {
 }
 
 // AddWarpEscape は脱出ワープホールを計画に追加する
-func (mp *MapPlan) AddWarpEscape(x, y int) {
+func (mp *EntityPlan) AddWarpEscape(x, y int) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -168,7 +168,7 @@ func (mp *MapPlan) AddWarpEscape(x, y int) {
 }
 
 // AddNPC はNPCエンティティを計画に追加する
-func (mp *MapPlan) AddNPC(x, y int, npcType string) {
+func (mp *EntityPlan) AddNPC(x, y int, npcType string) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -178,7 +178,7 @@ func (mp *MapPlan) AddNPC(x, y int, npcType string) {
 }
 
 // AddItem はアイテムエンティティを計画に追加する
-func (mp *MapPlan) AddItem(x, y int, itemType string) {
+func (mp *EntityPlan) AddItem(x, y int, itemType string) {
 	mp.Entities = append(mp.Entities, EntitySpec{
 		X:          x,
 		Y:          y,
@@ -188,7 +188,7 @@ func (mp *MapPlan) AddItem(x, y int, itemType string) {
 }
 
 // ValidatePlan は計画の妥当性をチェックする
-func (mp *MapPlan) ValidatePlan() error {
+func (mp *EntityPlan) ValidatePlan() error {
 	// 座標範囲チェック
 	for _, tile := range mp.Tiles {
 		if tile.X < 0 || tile.X >= mp.Width || tile.Y < 0 || tile.Y >= mp.Height {
@@ -225,7 +225,7 @@ func NewValidationError(message string, x, y int) ValidationError {
 }
 
 // SetPlayerStartPosition はプレイヤーの開始位置を設定する
-func (mp *MapPlan) SetPlayerStartPosition(x, y int) {
+func (mp *EntityPlan) SetPlayerStartPosition(x, y int) {
 	mp.PlayerStartX = x
 	mp.PlayerStartY = y
 	mp.HasPlayerPos = true
@@ -233,6 +233,6 @@ func (mp *MapPlan) SetPlayerStartPosition(x, y int) {
 
 // GetPlayerStartPosition はプレイヤーの開始位置を取得する
 // プレイヤー位置が設定されていない場合はfalseを返す
-func (mp *MapPlan) GetPlayerStartPosition() (int, int, bool) {
+func (mp *EntityPlan) GetPlayerStartPosition() (int, int, bool) {
 	return mp.PlayerStartX, mp.PlayerStartY, mp.HasPlayerPos
 }
