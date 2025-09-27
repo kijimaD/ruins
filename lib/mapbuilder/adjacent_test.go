@@ -19,7 +19,7 @@ func TestBuildData_AdjacentAnyFloor(t *testing.T) {
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]Tile, int(width)*int(height)),
-		Rooms:     []Rect{},
+		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
 	}
 
@@ -88,7 +88,7 @@ func TestBuildData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]Tile, int(width)*int(height)),
-		Rooms:     []Rect{},
+		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
 	}
 

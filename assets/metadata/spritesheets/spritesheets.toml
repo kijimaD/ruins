@@ -39,6 +39,12 @@ sprites = [
     { x = 32,  y = 64, width = 32, height = 32 }, # Sprite 17
     # Field Item (フィールドアイテム)
     { x = 64,  y = 64, width = 32, height = 32 }, # Sprite 18
+    # Props (家具) - 連続して追加
+    { x = 96,  y = 64, width = 32, height = 32 }, # Sprite 19 - Table (テーブル)
+    { x = 128, y = 64, width = 32, height = 32 }, # Sprite 20 - Chair (椅子)
+    { x = 160, y = 64, width = 32, height = 32 }, # Sprite 21 - Bookshelf (本棚)
+    { x = 192, y = 64, width = 32, height = 32 }, # Sprite 22 - Barrel (樽)
+    { x = 224, y = 64, width = 32, height = 32 }, # Sprite 23 - Crate (木箱)
 ]
 
 [sprite_sheet.bg_title1]

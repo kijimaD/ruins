@@ -13,7 +13,7 @@ func (b BigRoomBuilder) BuildInitial(buildData *BuilderMap) {
 	// マップの境界を考慮して大きな部屋を1つ作成
 	// 外周に1タイル分の壁を残す
 	margin := 2
-	room := Rect{
+	room := gc.Rect{
 		X1: gc.Tile(margin),
 		Y1: gc.Tile(margin),
 		X2: gc.Tile(int(buildData.Level.TileWidth) - margin - 1),

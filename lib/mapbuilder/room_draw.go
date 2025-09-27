@@ -1,5 +1,7 @@
 package mapbuilder
 
+import gc "github.com/kijimaD/ruins/lib/components"
+
 // RoomDraw は部屋を描画するビルダー
 type RoomDraw struct{}
 
@@ -14,7 +16,7 @@ func (b RoomDraw) build(buildData *BuilderMap) {
 	}
 }
 
-func (b RoomDraw) rectangle(buildData *BuilderMap, room Rect) {
+func (b RoomDraw) rectangle(buildData *BuilderMap, room gc.Rect) {
 	for x := room.X1; x <= room.X2; x++ {
 		for y := room.Y1; y <= room.Y2; y++ {
 			idx := buildData.Level.XYTileIndex(x, y)

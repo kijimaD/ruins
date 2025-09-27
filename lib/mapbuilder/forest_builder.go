@@ -31,7 +31,7 @@ func (f ForestBuilder) BuildInitial(buildData *BuilderMap) {
 		centerY := y + clearingHeight/2
 		radius := math.Min(float64(clearingWidth), float64(clearingHeight)) / 2.0
 
-		clearing := Rect{
+		clearing := gc.Rect{
 			X1: gc.Tile(centerX - int(radius)),
 			Y1: gc.Tile(centerY - int(radius)),
 			X2: gc.Tile(centerX + int(radius)),
@@ -58,7 +58,7 @@ func (f ForestTerrain) BuildMeta(buildData *BuilderMap) {
 }
 
 // createCircularClearing は円形の空き地を作成する
-func (f ForestTerrain) createCircularClearing(buildData *BuilderMap, clearing Rect) {
+func (f ForestTerrain) createCircularClearing(buildData *BuilderMap, clearing gc.Rect) {
 	centerX := float64(clearing.X1+clearing.X2) / 2.0
 	centerY := float64(clearing.Y1+clearing.Y2) / 2.0
 	radius := math.Min(float64(clearing.X2-clearing.X1), float64(clearing.Y2-clearing.Y1)) / 2.0
@@ -180,7 +180,7 @@ func (f ForestPaths) BuildMeta(buildData *BuilderMap) {
 }
 
 // shouldCreatePath は通路を作成するかどうかを判定する
-func (f ForestPaths) shouldCreatePath(buildData *BuilderMap, room1, room2 Rect) bool {
+func (f ForestPaths) shouldCreatePath(buildData *BuilderMap, room1, room2 gc.Rect) bool {
 	// 空き地間の距離を計算
 	center1X := float64(room1.X1+room1.X2) / 2.0
 	center1Y := float64(room1.Y1+room1.Y2) / 2.0
@@ -201,7 +201,7 @@ func (f ForestPaths) shouldCreatePath(buildData *BuilderMap, room1, room2 Rect) 
 }
 
 // createNaturalPath は自然な曲線状の通路を作成する
-func (f ForestPaths) createNaturalPath(buildData *BuilderMap, room1, room2 Rect) {
+func (f ForestPaths) createNaturalPath(buildData *BuilderMap, room1, room2 gc.Rect) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 

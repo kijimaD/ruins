@@ -17,7 +17,7 @@ func TestSeedReproducibility(t *testing.T) {
 	chain1.Build()
 	tiles1 := make([]Tile, len(chain1.BuildData.Tiles))
 	copy(tiles1, chain1.BuildData.Tiles)
-	rooms1 := make([]Rect, len(chain1.BuildData.Rooms))
+	rooms1 := make([]gc.Rect, len(chain1.BuildData.Rooms))
 	copy(rooms1, chain1.BuildData.Rooms)
 
 	// 2回目の生成（同じシード）
@@ -25,7 +25,7 @@ func TestSeedReproducibility(t *testing.T) {
 	chain2.Build()
 	tiles2 := make([]Tile, len(chain2.BuildData.Tiles))
 	copy(tiles2, chain2.BuildData.Tiles)
-	rooms2 := make([]Rect, len(chain2.BuildData.Rooms))
+	rooms2 := make([]gc.Rect, len(chain2.BuildData.Rooms))
 	copy(rooms2, chain2.BuildData.Rooms)
 
 	// タイルが完全に一致することを確認

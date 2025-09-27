@@ -1860,7 +1860,7 @@ Name = "セレスティン"
 Job = "探索者"
 Player = true
 [member.attributes]
-Vitality = 7
+Vitality = 50
 Strength = 50
 Sensation = 5
 Dexterity = 6

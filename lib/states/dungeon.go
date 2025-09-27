@@ -27,7 +27,7 @@ type DungeonState struct {
 	Depth int
 	// Seed はマップ生成用のシード値（0の場合はDungeonリソースのシード値を使用）
 	Seed uint64
-	// BuilderType は使用するマップビルダーのタイプ（BuilderTypeRandomの場合はランダム選択）
+	// BuilderType は使用するマップビルダーのタイプ（BuilderTypeRandom の場合はランダム選択）
 	BuilderType mapbuilder.BuilderType
 }
 

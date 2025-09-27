@@ -133,7 +133,7 @@ func (c CaveCellularAutomata) extractCaveRooms(buildData *BuilderMap) {
 					}
 
 					// 部屋として登録
-					room := Rect{
+					room := gc.Rect{
 						X1: gc.Tile(minX),
 						Y1: gc.Tile(minY),
 						X2: gc.Tile(maxX),
@@ -282,7 +282,7 @@ func (c CaveConnector) BuildMeta(buildData *BuilderMap) {
 }
 
 // createCaveTunnel は2つの洞窟領域間にトンネルを作成する
-func (c CaveConnector) createCaveTunnel(buildData *BuilderMap, room1, room2 Rect) {
+func (c CaveConnector) createCaveTunnel(buildData *BuilderMap, room1, room2 gc.Rect) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 

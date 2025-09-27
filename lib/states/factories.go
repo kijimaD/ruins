@@ -85,11 +85,10 @@ func NewDungeonSelectState() es.State[w.World] {
 		WithChoice("森の遺跡", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
 		}).
-		WithChoice("山の遺跡", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
-		}).
-		WithChoice("塔の遺跡", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
+		WithChoice("市街地", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeTown),
+			}})
 		}).
 		WithChoice("拠点メニューに戻る", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
@@ -197,6 +196,14 @@ func NewDebugMenuState() es.State[w.World] {
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeForest),
+				}})
+			},
+		},
+		{
+			"市街地開始",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeTown),
 				}})
 			},
 		},

@@ -40,6 +40,7 @@ type EntitySpec struct {
 	BlockView    *BlockView
 	BlockPass    *BlockPass
 	TurnBased    *TurnBased
+	PropType     *PropType
 
 	// member ================
 	Player      *Player
@@ -92,6 +93,7 @@ type Components struct {
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
+	PropType     *ecs.SliceComponent
 
 	// member ================
 	Player       *ecs.NullComponent

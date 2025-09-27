@@ -71,13 +71,13 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builder
 
 		// プレイヤーのスタート位置を見つける（最初にスポーン可能な位置）
 		var err error
-		playerX, playerY, err = findPlayerStartPosition(&chain.BuildData, world)
+		playerX, playerY, err = findPlayerStartPosition(&chain.BuildData, world, builderType)
 		if err != nil {
 			continue // スタート位置が見つからない場合は再生成
 		}
 
 		// 接続性を検証（ポータル配置後）
-		validMap = validateMapWithPortals(chain, world, world.Resources.Dungeon, playerX, playerY)
+		validMap = validateMapWithPortals(chain, world, world.Resources.Dungeon, playerX, playerY, builderType)
 
 		if !validMap && attempt < maxMapGenerationAttempts-1 {
 			log.Printf("マップ生成試行 %d: 接続性検証失敗、再生成します", attempt+1)
@@ -94,14 +94,25 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, builder
 		return resources.Level{}, fmt.Errorf("プレイヤー移動エラー: %w", err)
 	}
 
-	// フィールドにNPCを生成する
-	if err := spawnNPCs(world, chain); err != nil {
-		return resources.Level{}, err
+	// ビルダー設定に基づいてNPCとアイテムをスポーンする
+	// 設定に基づいてNPCを生成
+	if builderType.SpawnEnemies {
+		if err := spawnNPCs(world, chain); err != nil {
+			return resources.Level{}, err
+		}
 	}
 
-	// フィールドアイテムを生成する
-	if err := spawnFieldItems(world, chain); err != nil {
-		return resources.Level{}, err
+	// 設定に基づいてフィールドアイテムを生成
+	if builderType.SpawnItems {
+		if err := spawnFieldItems(world, chain); err != nil {
+			return resources.Level{}, err
+		}
+	}
+
+	// SpawnRuleEngineを使用してエンティティを配置する
+	spawnEngine := NewSpawnRuleEngine()
+	if err := spawnEngine.ExecuteRules(builderType, world, &chain.BuildData); err != nil {
+		return resources.Level{}, fmt.Errorf("スポーンルール実行エラー: %w", err)
 	}
 
 	// tilesを元にタイルエンティティを生成する
@@ -292,10 +303,19 @@ func getSpriteNumberForWallType(wallType WallType) int {
 }
 
 // findPlayerStartPosition はプレイヤーのスタート位置を見つける
-func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int, error) {
+func findPlayerStartPosition(buildData *BuilderMap, world w.World, builderType BuilderType) (int, int, error) {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
+	centerX := width / 2
+	centerY := height / 2
 
+	// ビルダー設定でプレイヤー位置が固定されている場合
+	if builderType.UseFixedPlayerPos {
+		// 中央聖域の中央を返す
+		return centerX, centerY, nil
+	}
+
+	// ダンジョンの場合は通常の探索処理
 	// 複数の候補位置を試す
 	attempts := []struct{ x, y int }{
 		{width / 2, height / 2},         // 中央
@@ -325,18 +345,34 @@ func findPlayerStartPosition(buildData *BuilderMap, world w.World) (int, int, er
 }
 
 // validateMapWithPortals はポータルを配置してマップの接続性を検証する
-func validateMapWithPortals(chain *BuilderChain, world w.World, dungeon *resources.Dungeon, playerX, playerY int) bool {
+func validateMapWithPortals(chain *BuilderChain, world w.World, dungeon *resources.Dungeon, playerX, playerY int, builderType BuilderType) bool {
 	// 進行ワープホールを配置
 	warpNextPlaced := false
-	for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
-		x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-		y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
-		tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
 
-		if chain.BuildData.IsSpawnableTile(world, x, y) {
-			chain.BuildData.Tiles[tileIdx] = TileWarpNext
-			warpNextPlaced = true
-			break
+	// ビルダー設定でポータル位置が固定されている場合
+	if builderType.UseFixedPortalPos {
+		// 大神殿の祭壇（中心部）にワープポータルを配置
+		centerX := int(chain.BuildData.Level.TileWidth) / 2
+		centerY := int(chain.BuildData.Level.TileHeight) / 2
+		// 大神殿の中心座標：Y軸は+10〜+22なので、その中心+16
+		warpX := gc.Tile(centerX)
+		warpY := gc.Tile(centerY + 16) // 大神殿の中心（祭壇位置）
+
+		tileIdx := chain.BuildData.Level.XYTileIndex(warpX, warpY)
+		chain.BuildData.Tiles[tileIdx] = TileWarpNext
+		warpNextPlaced = true
+	} else {
+		// ダンジョンの場合は通常のランダム配置
+		for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
+			x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+			y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+			tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+
+			if chain.BuildData.IsSpawnableTile(world, x, y) {
+				chain.BuildData.Tiles[tileIdx] = TileWarpNext
+				warpNextPlaced = true
+				break
+			}
 		}
 	}
 
@@ -349,15 +385,30 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, dungeon *resourc
 	escapePortalPlaced := !escapePortalRequired
 
 	if escapePortalRequired {
-		for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
-			x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
-			y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+		// ビルダー設定でポータル位置が固定されている場合
+		if builderType.UseFixedPortalPos {
+			centerX := int(chain.BuildData.Level.TileWidth) / 2
+			centerY := int(chain.BuildData.Level.TileHeight) / 2
+			// 学者の研究室の中心に帰還ポータルを配置（古の知識が集まる場所）
+			// 研究室の中心座標：X軸は-10〜+3の中心-3.5、Y軸は-20〜-10の中心-15
+			escapeX := gc.Tile(centerX - 3)
+			escapeY := gc.Tile(centerY - 15) // 学者の研究室の中心（知識の祭壇）
 
-			if chain.BuildData.IsSpawnableTile(world, x, y) {
-				tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
-				chain.BuildData.Tiles[tileIdx] = TileWarpEscape
-				escapePortalPlaced = true
-				break
+			tileIdx := chain.BuildData.Level.XYTileIndex(escapeX, escapeY)
+			chain.BuildData.Tiles[tileIdx] = TileWarpEscape
+			escapePortalPlaced = true
+		} else {
+			// ダンジョンの場合は通常のランダム配置
+			for attempt := 0; attempt < maxPlacementAttempts; attempt++ {
+				x := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileWidth)))
+				y := gc.Tile(chain.BuildData.RandomSource.Intn(int(chain.BuildData.Level.TileHeight)))
+
+				if chain.BuildData.IsSpawnableTile(world, x, y) {
+					tileIdx := chain.BuildData.Level.XYTileIndex(x, y)
+					chain.BuildData.Tiles[tileIdx] = TileWarpEscape
+					escapePortalPlaced = true
+					break
+				}
 			}
 		}
 	}
@@ -387,21 +438,10 @@ func validateMapWithPortals(chain *BuilderChain, world w.World, dungeon *resourc
 
 // createBuilderChain は指定されたビルダータイプに応じてビルダーチェーンを作成する
 func createBuilderChain(builderType BuilderType, width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
-	switch builderType {
-	case BuilderTypeSmallRoom:
-		return NewSmallRoomBuilder(width, height, seed)
-	case BuilderTypeBigRoom:
-		return NewBigRoomBuilder(width, height, seed)
-	case BuilderTypeCave:
-		return NewCaveBuilder(width, height, seed)
-	case BuilderTypeForest:
-		return NewForestBuilder(width, height, seed)
-	case BuilderTypeRuins:
-		return NewRuinsBuilder(width, height, seed)
-	case BuilderTypeRandom:
-		fallthrough
-	default:
-		// デフォルト（BuilderTypeRandomを含む）はランダムビルダー
+	// ランダム選択の場合は特別処理
+	if builderType.Name == BuilderTypeRandom.Name {
 		return NewRandomBuilder(width, height, seed)
 	}
+
+	return builderType.BuilderFunc(width, height, seed)
 }

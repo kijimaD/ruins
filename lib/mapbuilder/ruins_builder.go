@@ -25,7 +25,7 @@ func (r RuinsBuilder) BuildInitial(buildData *BuilderMap) {
 		y := 2 + buildData.RandomSource.Intn(height-buildingHeight-4)
 
 		// 建物の外壁を作成
-		room := Rect{
+		room := gc.Rect{
 			X1: gc.Tile(x),
 			Y1: gc.Tile(y),
 			X2: gc.Tile(x + buildingWidth - 1),
@@ -52,7 +52,7 @@ func (r RuinsDraw) BuildMeta(buildData *BuilderMap) {
 }
 
 // drawRuinedBuilding は破損した建物を描画する
-func (r RuinsDraw) drawRuinedBuilding(buildData *BuilderMap, building Rect) {
+func (r RuinsDraw) drawRuinedBuilding(buildData *BuilderMap, building gc.Rect) {
 	// 建物の外壁を描画（一部欠損あり）
 	for x := building.X1; x <= building.X2; x++ {
 		// 上辺
@@ -85,7 +85,7 @@ func (r RuinsDraw) drawRuinedBuilding(buildData *BuilderMap, building Rect) {
 }
 
 // addInteriorWalls は建物内部に仕切り壁を追加する
-func (r RuinsDraw) addInteriorWalls(buildData *BuilderMap, building Rect) {
+func (r RuinsDraw) addInteriorWalls(buildData *BuilderMap, building gc.Rect) {
 	buildingWidth := int(building.X2 - building.X1 + 1)
 	buildingHeight := int(building.Y2 - building.Y1 + 1)
 
@@ -189,7 +189,7 @@ func (r RuinsCorridors) BuildMeta(buildData *BuilderMap) {
 }
 
 // createRuinedPath は破損した通路を作成する
-func (r RuinsCorridors) createRuinedPath(buildData *BuilderMap, room1, room2 Rect) {
+func (r RuinsCorridors) createRuinedPath(buildData *BuilderMap, room1, room2 gc.Rect) {
 	// 各建物の中心を計算
 	center1X := (room1.X1 + room1.X2) / 2
 	center1Y := (room1.Y1 + room1.Y2) / 2

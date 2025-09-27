@@ -20,7 +20,7 @@ type BuilderMap struct {
 	Tiles []Tile
 	// 部屋群。部屋は長方形の移動可能な空間のことをいう。
 	// 部屋はタイルの集合体である
-	Rooms []Rect
+	Rooms []gc.Rect
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
 	Corridors [][]resources.TileIdx
@@ -235,7 +235,7 @@ func NewBuilderChain(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
 				Entities:   make([]ecs.Entity, tileCount),
 			},
 			Tiles:        tiles,
-			Rooms:        []Rect{},
+			Rooms:        []gc.Rect{},
 			Corridors:    [][]resources.TileIdx{},
 			RandomSource: NewRandomSource(seed),
 		},
@@ -294,6 +294,17 @@ func NewSmallRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderCha
 	return chain
 }
 
+// NewTownBuilder は街の固定マップビルダーを作成する
+func NewTownBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
+	chain := NewBuilderChain(width, height, seed)
+	chain.StartWith(TownMapBuilder{})     // 固定町マップを生成
+	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
+	chain.With(TownMapDraw{})             // 固定町マップを描画
+	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
+
+	return chain
+}
+
 // NewBigRoomBuilder は大部屋ビルダーを作成する
 // ランダムにバリエーションを適用する統合版
 func NewBigRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain {
@@ -306,17 +317,85 @@ func NewBigRoomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain
 	return chain
 }
 
-// BuilderType はマップ生成に使用するビルダーのタイプを表す
-type BuilderType int
+// BuilderType はマップ生成の設定を表す構造体
+type BuilderType struct {
+	// ビルダー名
+	Name string
+	// 敵をスポーンするか
+	SpawnEnemies bool
+	// アイテムをスポーンするか
+	SpawnItems bool
+	// プレイヤー位置を固定するか
+	UseFixedPlayerPos bool
+	// ポータル位置を固定するか
+	UseFixedPortalPos bool
+	// ビルダー関数
+	BuilderFunc func(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain
+}
 
-// ビルダータイプ定数
-const (
-	BuilderTypeRandom    BuilderType = -1   // ランダム選択。ランダム選択で再度ランダムが出るのを防ぐために-1にしている
-	BuilderTypeSmallRoom BuilderType = iota // 小部屋
-	BuilderTypeBigRoom                      // 大部屋
-	BuilderTypeCave                         // 洞窟
-	BuilderTypeRuins                        // 遺跡
-	BuilderTypeForest                       // 森
+var (
+	// BuilderTypeRandom はランダム選択用のビルダータイプ
+	BuilderTypeRandom = BuilderType{Name: "ランダム"}
+
+	// BuilderTypeSmallRoom は小部屋ダンジョンのビルダータイプ
+	BuilderTypeSmallRoom = BuilderType{
+		Name:              "小部屋",
+		SpawnEnemies:      true,
+		SpawnItems:        true,
+		UseFixedPlayerPos: false,
+		UseFixedPortalPos: false,
+		BuilderFunc:       NewSmallRoomBuilder,
+	}
+
+	// BuilderTypeBigRoom は大部屋ダンジョンのビルダータイプ
+	BuilderTypeBigRoom = BuilderType{
+		Name:              "大部屋",
+		SpawnEnemies:      true,
+		SpawnItems:        true,
+		UseFixedPlayerPos: false,
+		UseFixedPortalPos: false,
+		BuilderFunc:       NewBigRoomBuilder,
+	}
+
+	// BuilderTypeCave は洞窟ダンジョンのビルダータイプ
+	BuilderTypeCave = BuilderType{
+		Name:              "洞窟",
+		SpawnEnemies:      true,
+		SpawnItems:        true,
+		UseFixedPlayerPos: false,
+		UseFixedPortalPos: false,
+		BuilderFunc:       NewCaveBuilder,
+	}
+
+	// BuilderTypeRuins は遺跡ダンジョンのビルダータイプ
+	BuilderTypeRuins = BuilderType{
+		Name:              "遺跡",
+		SpawnEnemies:      true,
+		SpawnItems:        true,
+		UseFixedPlayerPos: false,
+		UseFixedPortalPos: false,
+		BuilderFunc:       NewRuinsBuilder,
+	}
+
+	// BuilderTypeForest は森ダンジョンのビルダータイプ
+	BuilderTypeForest = BuilderType{
+		Name:              "森",
+		SpawnEnemies:      true,
+		SpawnItems:        true,
+		UseFixedPlayerPos: false,
+		UseFixedPortalPos: false,
+		BuilderFunc:       NewForestBuilder,
+	}
+
+	// BuilderTypeTown は市街地のビルダータイプ
+	BuilderTypeTown = BuilderType{
+		Name:              "市街地",
+		SpawnEnemies:      false, // 街では敵をスポーンしない
+		SpawnItems:        false, // 街ではフィールドアイテムをスポーンしない
+		UseFixedPlayerPos: true,  // プレイヤー位置を固定
+		UseFixedPortalPos: true,  // ポータル位置を固定
+		BuilderFunc:       NewTownBuilder,
+	}
 )
 
 // NewRandomBuilder はシード値を使用してランダムにビルダーを選択し作成する
@@ -328,21 +407,18 @@ func NewRandomBuilder(width gc.Tile, height gc.Tile, seed uint64) *BuilderChain 
 
 	// シード値からランダムソースを作成（ビルダー選択用）
 	rs := NewRandomSource(seed)
-	builderType := BuilderType(rs.Intn(5))
 
-	switch builderType {
-	case BuilderTypeSmallRoom:
-		return NewSmallRoomBuilder(width, height, seed)
-	case BuilderTypeBigRoom:
-		return NewBigRoomBuilder(width, height, seed) // 統合版BigRoomを使用
-	case BuilderTypeCave:
-		return NewCaveBuilder(width, height, seed)
-	case BuilderTypeRuins:
-		return NewRuinsBuilder(width, height, seed)
-	case BuilderTypeForest:
-		return NewForestBuilder(width, height, seed)
-	default:
-		// フォールバック（通常は発生しない）
-		return NewSmallRoomBuilder(width, height, seed)
+	// ランダム選択対象のビルダータイプ（街は除外）
+	candidateTypes := []BuilderType{
+		BuilderTypeSmallRoom,
+		BuilderTypeBigRoom,
+		BuilderTypeCave,
+		BuilderTypeRuins,
+		BuilderTypeForest,
 	}
+
+	// ランダムに選択
+	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
+
+	return selectedType.BuilderFunc(width, height, seed)
 }
