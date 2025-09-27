@@ -14,11 +14,11 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// タイル配列を手動で設定
-	chain.PlanData.SetTiles([]mapplanner.Tile{
+	chain.PlanData.Tiles = []mapplanner.Tile{
 		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 0
 		mapplanner.TileWall, mapplanner.TileFloor, mapplanner.TileWall, // Row 1
 		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 2
-	})
+	}
 
 	// BuildPlanFromTilesをテスト
 	plan, err := chain.PlanData.BuildPlanFromTiles()
@@ -63,10 +63,10 @@ func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// 全て空のタイル
-	chain.PlanData.SetTiles([]mapplanner.Tile{
+	chain.PlanData.Tiles = []mapplanner.Tile{
 		mapplanner.TileEmpty, mapplanner.TileEmpty,
 		mapplanner.TileEmpty, mapplanner.TileEmpty,
-	})
+	}
 
 	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
 	_, err := chain.PlanData.BuildPlanFromTiles()
@@ -86,18 +86,18 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 	width, height := 2, 2
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
-	chain.PlanData.SetTiles([]mapplanner.Tile{
+	chain.PlanData.Tiles = []mapplanner.Tile{
 		mapplanner.TileFloor, mapplanner.TileFloor,
 		mapplanner.TileFloor, mapplanner.TileFloor,
-	})
+	}
 
 	// ワープポータルエンティティを追加
-	chain.PlanData.AddWarpPortal(mapplanner.WarpPortal{
+	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
 		X:    0,
 		Y:    0,
 		Type: mapplanner.WarpPortalNext,
 	})
-	chain.PlanData.AddWarpPortal(mapplanner.WarpPortal{
+	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
 		X:    1,
 		Y:    1,
 		Type: mapplanner.WarpPortalEscape,

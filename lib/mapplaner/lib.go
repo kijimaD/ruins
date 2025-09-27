@@ -54,61 +54,6 @@ type MetaPlan struct {
 	Props []PropsSpec
 }
 
-// GetLevel は階層情報を読み取り専用で返す（外部からのアクセス用）
-func (bm *MetaPlan) GetLevel() *resources.Level {
-	return &bm.Level
-}
-
-// GetTiles はタイル配列を読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetTiles() []Tile {
-	return bm.Tiles
-}
-
-// GetRooms は部屋リストを読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetRooms() []gc.Rect {
-	return bm.Rooms
-}
-
-// GetCorridors は廊下リストを読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetCorridors() [][]resources.TileIdx {
-	return bm.Corridors
-}
-
-// GetWarpPortals はワープポータルリストを読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetWarpPortals() []WarpPortal {
-	return bm.WarpPortals
-}
-
-// GetNPCs はNPCリストを読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetNPCs() []NPCSpec {
-	return bm.NPCs
-}
-
-// GetItems はアイテムリストを読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetItems() []ItemSpec {
-	return bm.Items
-}
-
-// GetProps はPropsリストを読み取り専用で返す（外部からのアクセス用）
-func (bm MetaPlan) GetProps() []PropsSpec {
-	return bm.Props
-}
-
-// SetTiles はタイル配列を設定する（テスト用）
-func (bm *MetaPlan) SetTiles(tiles []Tile) {
-	bm.Tiles = tiles
-}
-
-// SetWarpPortals はワープポータルリストを設定する（テスト用）
-func (bm *MetaPlan) SetWarpPortals(portals []WarpPortal) {
-	bm.WarpPortals = portals
-}
-
-// AddWarpPortal はワープポータルを追加する（テスト用）
-func (bm *MetaPlan) AddWarpPortal(portal WarpPortal) {
-	bm.WarpPortals = append(bm.WarpPortals, portal)
-}
-
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
 func (bm MetaPlan) IsSpawnableTile(_ w.World, tx gc.Tile, ty gc.Tile) bool {

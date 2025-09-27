@@ -140,8 +140,8 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	centerY := height / 2
 
 	// 中央のタイルが床タイルかを確認
-	centerIdx := chain.PlanData.GetLevel().XYTileIndex(gc.Tile(centerX), gc.Tile(centerY))
-	centerTile := chain.PlanData.GetTiles()[centerIdx]
+	centerIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(centerX), gc.Tile(centerY))
+	centerTile := chain.PlanData.Tiles[centerIdx]
 	t.Logf("Center tile at (%d,%d): %v", centerX, centerY, centerTile)
 
 	if centerTile != mapplanner.TileFloor {
@@ -154,11 +154,11 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	if communityHallY >= height {
 		communityHallY = height - 1
 	}
-	portalIdx := chain.PlanData.GetLevel().XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
+	portalIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
 	// 直接タイルアクセスが必要な場合は専用メソッドを追加検討
 	chain.PlanData.Tiles[portalIdx] = mapplanner.TileFloor
 	// ワープポータルエンティティを追加
-	chain.PlanData.AddWarpPortal(mapplanner.WarpPortal{
+	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
 		X:    communityHallX,
 		Y:    communityHallY,
 		Type: mapplanner.WarpPortalNext,
