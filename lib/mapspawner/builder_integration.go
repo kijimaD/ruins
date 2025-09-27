@@ -8,8 +8,8 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// BuildPlanAndSpawn はPlannerChainを実行してEntityPlanを生成し、Levelをスポーンする
-func BuildPlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerType mapplanner.PlannerType) (resources.Level, int, int, error) {
+// PlanAndSpawn はPlannerChainを実行してEntityPlanを生成し、Levelをスポーンする
+func PlanAndSpawn(world w.World, chain *mapplanner.PlannerChain, plannerType mapplanner.PlannerType) (resources.Level, int, int, error) {
 	// ワープポータルプランナーを追加（StringMapPlannerは既に独自にワープポータルを処理しているため条件判定）
 	if len(chain.PlanData.GetWarpPortals()) == 0 {
 		warpPlanner := mapplanner.NewWarpPortalPlanner(world, plannerType)

@@ -86,7 +86,7 @@ func TestWarpPortalNoDuplication_NonStringMapPlanner(t *testing.T) {
 	world, _ := world.InitWorld(components)
 
 	// BuildPlanAndSpawnでLevelを生成（ワープポータル重複が起きるかの確認）
-	_, _, _, err := BuildPlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
+	_, _, _, err := PlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}

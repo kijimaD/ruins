@@ -9,12 +9,13 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/levelgen"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
+	"github.com/kijimaD/ruins/lib/mapspawner"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -62,12 +63,22 @@ func (st *DungeonState) OnStart(world w.World) {
 		world.Resources.TurnManager = turns.NewTurnManager()
 	}
 
-	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
-	level, err := levelgen.NewLevel(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
+	var chain *mapplanner.PlannerChain
+	if st.BuilderType.Name == mapplanner.PlannerTypeRandom.Name {
+		chain = mapplanner.NewRandomPlanner(consts.MapTileWidth, consts.MapTileHeight, st.Seed)
+	} else {
+		chain = st.BuilderType.PlannerFunc(consts.MapTileWidth, consts.MapTileHeight, st.Seed)
+	}
+	level, playerX, playerY, err := mapspawner.PlanAndSpawn(world, chain, st.BuilderType)
 	if err != nil {
 		panic(err)
 	}
 	world.Resources.Dungeon.Level = level
+
+	// プレイヤーを配置（worldhelper）
+	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {
+		panic(err)
+	}
 
 	// フロア移動時に探索済みマップをリセット
 	world.Resources.Dungeon.ExploredTiles = make(map[gc.GridElement]bool)

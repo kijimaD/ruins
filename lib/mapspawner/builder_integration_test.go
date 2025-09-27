@@ -58,7 +58,7 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
-	level, _, _, err := BuildPlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := PlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -108,7 +108,7 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 		UseFixedPortalPos: true,  // ポータル位置を固定
 		PlannerFunc:       mapplanner.PlannerTypeTown.PlannerFunc,
 	}
-	level, _, _, err := BuildPlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := PlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn with TownBuilder failed: %v", err)
 	}
@@ -224,7 +224,7 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// 実際のBuildPlanAndSpawnを使用（街の設定で）
-	level, _, _, err := BuildPlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
+	level, _, _, err := PlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -273,7 +273,7 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeBigRoom.PlannerFunc,
 	}
-	level, _, _, err := BuildPlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := PlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn with BigRoomBuilder failed: %v", err)
 	}

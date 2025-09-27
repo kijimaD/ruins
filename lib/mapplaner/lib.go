@@ -533,7 +533,12 @@ type PlannerType struct {
 
 var (
 	// PlannerTypeRandom はランダム選択用のプランナータイプ
-	PlannerTypeRandom = PlannerType{Name: "ランダム"}
+	PlannerTypeRandom = PlannerType{
+		Name:              "ランダム",
+		SpawnEnemies:      true,
+		SpawnItems:        true,
+		UseFixedPortalPos: false,
+	}
 
 	// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ
 	PlannerTypeSmallRoom = PlannerType{
