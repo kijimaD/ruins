@@ -23,9 +23,9 @@ type EntityTemplate struct {
 }
 
 // BuildInitial は文字列定義からマップ構造を初期化する
-func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) {
+func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) error {
 	if len(b.TileMap) == 0 {
-		return
+		return nil
 	}
 
 	// マップサイズを文字列から自動検出
@@ -64,24 +64,32 @@ func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) {
 			if tileType, exists := b.TileMapping[char]; exists {
 				buildData.Tiles[tileIdx] = tileType
 			} else {
-				// デフォルトは床タイル
-				buildData.Tiles[tileIdx] = TileFloor
+				return fmt.Errorf("未知のタイル文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
 			}
 		}
 	}
 
 	// エンティティマップが指定されている場合はエンティティを配置
 	if len(b.EntityMap) > 0 {
-		b.parseEntities(buildData, width, height)
+		if err := b.parseEntities(buildData, width, height); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
-// parseEntities はエンティティマップを解析してワープポータルを配置
-func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int) {
+// parseEntities はエンティティマップを解析して計画に追加する
+func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int) error {
 	// エンティティマップからワープポータルを解析してMetaPlanに追加
 	for y := 0; y < len(b.EntityMap) && y < height; y++ {
 		for x := 0; x < len(b.EntityMap[y]) && x < width; x++ {
 			char := rune(b.EntityMap[y][x])
+
+			// 空文字やドット（空エンティティ）はスキップ
+			if char == '.' {
+				continue
+			}
 
 			// ワープポータル文字を処理（床タイル + MetaPlanへのワープポータル情報追加）
 			switch char {
@@ -105,12 +113,16 @@ func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int)
 					Y:    y,
 					Type: WarpPortalEscape,
 				})
+			default:
+				// その他のエンティティ文字をチェック
+				if _, exists := b.EntityMapping[char]; !exists {
+					return fmt.Errorf("未知のエンティティ文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
+				}
 			}
-
-			// TODO: 他のエンティティ（NPC、アイテムなど）の処理は
-			// MetaPlanにEntitiesフィールドを追加後に実装
 		}
 	}
+
+	return nil
 }
 
 // NewStringMapPlanner は文字列ベースマッププランナーを作成する
@@ -154,7 +166,6 @@ func getDefaultTileMapping() map[rune]Tile {
 		'#': TileWall,  // 壁
 		'f': TileFloor, // 床（建物内・住宅）
 		'r': TileFloor, // 道路 (TODO: スプライト未対応)
-		' ': TileFloor, // 空白は床として扱う
 		'.': TileFloor, // 空地・庭
 	}
 }
@@ -163,18 +174,12 @@ func getDefaultTileMapping() map[rune]Tile {
 func getDefaultEntityMapping() map[rune]EntityTemplate {
 	return map[rune]EntityTemplate{
 		'@': {EntityType: EntityTypePlayer},
-		'D': {EntityType: EntityTypeDoor},
-		'C': {EntityType: EntityTypeProp, Data: gc.PropTypeChair},     // 椅子
-		'T': {EntityType: EntityTypeProp, Data: gc.PropTypeTable},     // テーブル
-		'B': {EntityType: EntityTypeProp, Data: gc.PropTypeBed},       // ベッド
-		'S': {EntityType: EntityTypeProp, Data: gc.PropTypeBookshelf}, // 本棚（店舗の棚）
-		'A': {EntityType: EntityTypeProp, Data: gc.PropTypeAltar},     // 祭壇（農家・家具）
-		'H': {EntityType: EntityTypeProp, Data: gc.PropTypeChest},     // 宝箱（住宅の壁）
-		'O': {EntityType: EntityTypeProp, Data: gc.PropTypeTorch},     // 松明
-		'M': {EntityType: EntityTypeProp, Data: gc.PropTypeBarrel},    // 樽
-		'R': {EntityType: EntityTypeProp, Data: gc.PropTypeCrate},     // 木箱
-		'&': {EntityType: EntityTypeNPC, Data: "街の住人"},                // NPC（街の住人）
-		// 空のエンティティは明示的に含めない（何も配置されない）
+		'&': {EntityType: EntityTypeNPC},
+		'C': {EntityType: EntityTypeProp, Data: gc.PropTypeChair},
+		'T': {EntityType: EntityTypeProp, Data: gc.PropTypeTable},
+		'S': {EntityType: EntityTypeProp, Data: gc.PropTypeBookshelf},
+		'M': {EntityType: EntityTypeProp, Data: gc.PropTypeBarrel},
+		'R': {EntityType: EntityTypeProp, Data: gc.PropTypeCrate},
 	}
 }
 
@@ -240,7 +245,7 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 			if mappedType, exists := tileMapping[char]; exists {
 				tileType = mappedType
 			} else {
-				tileType = TileFloor // デフォルト
+				return nil, fmt.Errorf("未知のタイル文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
 			}
 
 			// タイルタイプに応じてエンティティを追加
@@ -301,6 +306,8 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 						// EntityTypeDoorは現在EntityTemplateに追加メソッドがないため
 						// 将来的に追加予定
 					}
+				} else {
+					return nil, fmt.Errorf("未知のエンティティ文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
 				}
 			}
 		}

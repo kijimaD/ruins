@@ -10,7 +10,7 @@ import (
 type TownEntityPlanner struct{}
 
 // BuildInitial は市街地の固定マップ構造を初期化する
-func (b TownEntityPlanner) BuildInitial(buildData *MetaPlan) {
+func (b TownEntityPlanner) BuildInitial(buildData *MetaPlan) error {
 	// 一般的な市街地レイアウト
 	// - 中央に市庁舎・公園
 	// - 周囲に住宅・商業・公共施設
@@ -131,6 +131,7 @@ func (b TownEntityPlanner) BuildInitial(buildData *MetaPlan) {
 		Y2: gc.Tile(centerY + 17),
 	}
 	buildData.Rooms = append(buildData.Rooms, park)
+	return nil
 }
 
 // TownMapDraw は街の固定マップを描画する

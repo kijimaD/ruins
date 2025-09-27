@@ -158,7 +158,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 // TestRoomPlanner はテスト用の簡単な部屋ビルダー
 type TestRoomPlanner struct{}
 
-func (t *TestRoomPlanner) BuildInitial(buildData *MetaPlan) {
+func (t *TestRoomPlanner) BuildInitial(buildData *MetaPlan) error {
 	// 中央に簡単な十字型の部屋を作成
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
@@ -179,4 +179,6 @@ func (t *TestRoomPlanner) BuildInitial(buildData *MetaPlan) {
 		idx := buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(height/2))
 		buildData.Tiles[idx] = TileFloor
 	}
+
+	return nil
 }

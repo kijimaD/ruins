@@ -9,7 +9,7 @@ import (
 type BigRoomPlanner struct{}
 
 // BuildInitial は初期マップをビルドする
-func (b BigRoomPlanner) BuildInitial(buildData *MetaPlan) {
+func (b BigRoomPlanner) BuildInitial(buildData *MetaPlan) error {
 	// マップの境界を考慮して大きな部屋を1つ作成
 	// 外周に1タイル分の壁を残す
 	margin := 2
@@ -22,6 +22,7 @@ func (b BigRoomPlanner) BuildInitial(buildData *MetaPlan) {
 
 	// 部屋をリストに追加
 	buildData.Rooms = append(buildData.Rooms, room)
+	return nil
 }
 
 // BigRoomDraw は大部屋を描画し、ランダムにバリエーションを適用するビルダー

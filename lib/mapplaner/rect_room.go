@@ -8,8 +8,9 @@ import (
 type RectRoomPlanner struct{}
 
 // BuildInitial は初期ビルドを行う
-func (b RectRoomPlanner) BuildInitial(buildData *MetaPlan) {
+func (b RectRoomPlanner) BuildInitial(buildData *MetaPlan) error {
 	b.BuildRooms(buildData)
+	return nil
 }
 
 // BuildRooms は部屋をビルドする

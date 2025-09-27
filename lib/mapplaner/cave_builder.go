@@ -11,7 +11,7 @@ import (
 type CavePlanner struct{}
 
 // BuildInitial は初期洞窟マップをビルドする
-func (c CavePlanner) BuildInitial(buildData *MetaPlan) {
+func (c CavePlanner) BuildInitial(buildData *MetaPlan) error {
 	// 初期状態をランダムに設定（30%の確率で壁、より広い空間を確保）
 	for i := range buildData.Tiles {
 		if buildData.RandomSource.Float64() < 0.30 {
@@ -20,6 +20,7 @@ func (c CavePlanner) BuildInitial(buildData *MetaPlan) {
 			buildData.Tiles[i] = TileFloor
 		}
 	}
+	return nil
 }
 
 // CaveCellularAutomata はセルラーオートマトンによる洞窟生成

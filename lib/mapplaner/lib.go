@@ -354,7 +354,9 @@ func (b *PlannerChain) Build() {
 	if b.Starter == nil {
 		log.Fatal("empty starter planner!")
 	}
-	(*b.Starter).BuildInitial(&b.PlanData)
+	if err := (*b.Starter).BuildInitial(&b.PlanData); err != nil {
+		log.Fatalf("BuildInitial failed: %v", err)
+	}
 
 	for _, meta := range b.Planners {
 		meta.BuildMeta(&b.PlanData)
@@ -479,7 +481,7 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 // InitialMapPlanner は初期マップをプランするインターフェース
 // タイルへの描画は行わず、構造体フィールドの値を初期化するだけ
 type InitialMapPlanner interface {
-	BuildInitial(*MetaPlan)
+	BuildInitial(*MetaPlan) error
 }
 
 // MetaMapPlanner はメタ情報をプランするインターフェース

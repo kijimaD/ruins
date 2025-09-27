@@ -11,7 +11,7 @@ import (
 type ForestPlanner struct{}
 
 // BuildInitial は初期森マップをビルドする
-func (f ForestPlanner) BuildInitial(buildData *MetaPlan) {
+func (f ForestPlanner) BuildInitial(buildData *MetaPlan) error {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -39,6 +39,7 @@ func (f ForestPlanner) BuildInitial(buildData *MetaPlan) {
 		}
 		buildData.Rooms = append(buildData.Rooms, clearing)
 	}
+	return nil
 }
 
 // ForestTerrain は森の基本地形を生成する

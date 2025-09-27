@@ -8,7 +8,7 @@ import (
 type SingleRoomPlanner struct{}
 
 // BuildInitial は初期ビルドを行う
-func (b SingleRoomPlanner) BuildInitial(buildData *MetaPlan) {
+func (b SingleRoomPlanner) BuildInitial(buildData *MetaPlan) error {
 	// マップの中央に大きな部屋を1つ作成
 	width := buildData.Level.TileWidth
 	height := buildData.Level.TileHeight
@@ -22,6 +22,7 @@ func (b SingleRoomPlanner) BuildInitial(buildData *MetaPlan) {
 	}
 
 	buildData.Rooms = []gc.Rect{room}
+	return nil
 }
 
 // SingleRoomDraw は1部屋を描画する

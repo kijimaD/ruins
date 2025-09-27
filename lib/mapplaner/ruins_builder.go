@@ -9,7 +9,7 @@ import (
 type RuinsPlanner struct{}
 
 // BuildInitial は初期廃墟マップをビルドする
-func (r RuinsPlanner) BuildInitial(buildData *MetaPlan) {
+func (r RuinsPlanner) BuildInitial(buildData *MetaPlan) error {
 	width := int(buildData.Level.TileWidth)
 	height := int(buildData.Level.TileHeight)
 
@@ -33,6 +33,7 @@ func (r RuinsPlanner) BuildInitial(buildData *MetaPlan) {
 		}
 		buildData.Rooms = append(buildData.Rooms, room)
 	}
+	return nil
 }
 
 // RuinsDraw は廃墟構造を描画する

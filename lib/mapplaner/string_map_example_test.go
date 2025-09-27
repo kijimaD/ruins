@@ -20,7 +20,7 @@ func ExampleBuildEntityPlanFromStrings() {
 	// エンティティ配置を文字列で定義
 	entityMap := []string{
 		"............",
-		"......D.....",
+		"............",
 		"....@.......",
 		"..CT........",
 		"............",
@@ -119,7 +119,7 @@ func Example_tileMappings() {
 	// ' ' -> 床 (TileFloor)
 	// '.' -> 空地・庭 (TileFloor)
 	//
-	// 実際のマッピング数: 5
+	// 実際のマッピング数: 4
 	//
 	// ワープポータル ('w', 'e') はエンティティとして別途処理されます
 }
@@ -130,14 +130,10 @@ func Example_entityMappings() {
 
 	fmt.Println("エンティティ文字マッピング:")
 	fmt.Printf("'@' -> プレイヤー (EntityTypePlayer)\n")
-	fmt.Printf("'D' -> ドア (EntityTypeDoor)\n")
+	fmt.Printf("'&' -> NPC (EntityTypeNPC)\n")
 	fmt.Printf("'C' -> 椅子 (PropTypeChair)\n")
 	fmt.Printf("'T' -> テーブル (PropTypeTable)\n")
-	fmt.Printf("'B' -> ベッド (PropTypeBed)\n")
 	fmt.Printf("'S' -> 本棚 (PropTypeBookshelf)\n")
-	fmt.Printf("'A' -> 祭壇 (PropTypeAltar)\n")
-	fmt.Printf("'H' -> 宝箱 (PropTypeChest)\n")
-	fmt.Printf("'O' -> たいまつ (PropTypeTorch)\n")
 	fmt.Printf("'M' -> 樽 (PropTypeBarrel)\n")
 	fmt.Printf("'R' -> 木箱 (PropTypeCrate)\n")
 
@@ -146,18 +142,14 @@ func Example_entityMappings() {
 	// Output:
 	// エンティティ文字マッピング:
 	// '@' -> プレイヤー (EntityTypePlayer)
-	// 'D' -> ドア (EntityTypeDoor)
+	// '&' -> NPC (EntityTypeNPC)
 	// 'C' -> 椅子 (PropTypeChair)
 	// 'T' -> テーブル (PropTypeTable)
-	// 'B' -> ベッド (PropTypeBed)
 	// 'S' -> 本棚 (PropTypeBookshelf)
-	// 'A' -> 祭壇 (PropTypeAltar)
-	// 'H' -> 宝箱 (PropTypeChest)
-	// 'O' -> たいまつ (PropTypeTorch)
 	// 'M' -> 樽 (PropTypeBarrel)
 	// 'R' -> 木箱 (PropTypeCrate)
 	//
-	// 実際のマッピング数: 12
+	// 実際のマッピング数: 7
 }
 
 // 複雑なマップレイアウトの例
@@ -185,7 +177,7 @@ func Example_complexLayout() {
 		"..................",
 		"..................",
 		"..................",
-		"...HA......TO.....",
+		"..................",
 		"..................",
 		"..................",
 		"..................",

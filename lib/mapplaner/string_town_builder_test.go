@@ -79,11 +79,10 @@ func TestStringTownPlannerWithEntityPlan(t *testing.T) {
 
 	t.Logf("総Props数: %d", propCount)
 
-	// 主要なPropタイプが存在することを確認
+	// スプライトが存在するPropタイプが存在することを確認
 	expectedTypes := []gc.PropType{
-		gc.PropTypeChair, gc.PropTypeTable, gc.PropTypeBed,
-		gc.PropTypeBookshelf, gc.PropTypeAltar, gc.PropTypeChest,
-		gc.PropTypeBarrel, gc.PropTypeCrate, gc.PropTypeTorch,
+		gc.PropTypeChair, gc.PropTypeTable,
+		gc.PropTypeBookshelf, gc.PropTypeBarrel, gc.PropTypeCrate,
 	}
 
 	for _, expectedType := range expectedTypes {
