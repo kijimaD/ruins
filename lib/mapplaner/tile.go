@@ -9,11 +9,7 @@ const (
 	// TileTypeFloor は床タイル
 	TileTypeFloor
 	// TileTypeWall は壁タイル
-	TileTypeWall //  将来的にはエンティティに移行予定
-	// TileTypeWarpNext は次の階に向かうワープタイル（将来的にはエンティティに移行予定）
-	TileTypeWarpNext
-	// TileTypeWarpEscape は脱出用ワープタイル（将来的にはエンティティに移行予定）
-	TileTypeWarpEscape
+	TileTypeWall
 )
 
 // Tile はマップの基盤構造を表すタイル
@@ -40,8 +36,4 @@ var (
 	TileFloor = Tile{Type: TileTypeFloor, Walkable: true, BlocksLOS: false}
 	// TileWall は壁タイル
 	TileWall = Tile{Type: TileTypeWall, Walkable: false, BlocksLOS: true}
-	// TileWarpNext は次の階に向かうワープタイル（将来的にはエンティティに移行予定）
-	TileWarpNext = Tile{Type: TileTypeWarpNext, Walkable: true, BlocksLOS: false}
-	// TileWarpEscape は脱出用ワープタイル（将来的にはエンティティに移行予定）
-	TileWarpEscape = Tile{Type: TileTypeWarpEscape, Walkable: true, BlocksLOS: false}
 )

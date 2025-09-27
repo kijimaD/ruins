@@ -14,11 +14,11 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// タイル配列を手動で設定
-	chain.PlanData.Tiles = []mapplanner.Tile{
+	chain.PlanData.SetTiles([]mapplanner.Tile{
 		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 0
 		mapplanner.TileWall, mapplanner.TileFloor, mapplanner.TileWall, // Row 1
 		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 2
-	}
+	})
 
 	// BuildPlanFromTilesをテスト
 	plan, err := chain.PlanData.BuildPlanFromTiles()
@@ -63,10 +63,10 @@ func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// 全て空のタイル
-	chain.PlanData.Tiles = []mapplanner.Tile{
+	chain.PlanData.SetTiles([]mapplanner.Tile{
 		mapplanner.TileEmpty, mapplanner.TileEmpty,
 		mapplanner.TileEmpty, mapplanner.TileEmpty,
-	}
+	})
 
 	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
 	_, err := chain.PlanData.BuildPlanFromTiles()
@@ -86,10 +86,22 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 	width, height := 2, 2
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
-	chain.PlanData.Tiles = []mapplanner.Tile{
-		mapplanner.TileWarpNext, mapplanner.TileFloor,
-		mapplanner.TileFloor, mapplanner.TileWarpEscape,
-	}
+	chain.PlanData.SetTiles([]mapplanner.Tile{
+		mapplanner.TileFloor, mapplanner.TileFloor,
+		mapplanner.TileFloor, mapplanner.TileFloor,
+	})
+
+	// ワープポータルエンティティを追加
+	chain.PlanData.AddWarpPortal(mapplanner.WarpPortal{
+		X:    0,
+		Y:    0,
+		Type: mapplanner.WarpPortalNext,
+	})
+	chain.PlanData.AddWarpPortal(mapplanner.WarpPortal{
+		X:    1,
+		Y:    1,
+		Type: mapplanner.WarpPortalEscape,
+	})
 
 	plan, err := chain.PlanData.BuildPlanFromTiles()
 	if err != nil {
@@ -125,8 +137,8 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 	if !hasWarpEscape {
 		t.Error("Expected WarpEscape entity at (1,1), but not found")
 	}
-	if hasFloors != 2 {
-		t.Errorf("Expected 2 floor entities, got %d", hasFloors)
+	if hasFloors != 4 {
+		t.Errorf("Expected 4 floor entities, got %d", hasFloors)
 	}
 }
 

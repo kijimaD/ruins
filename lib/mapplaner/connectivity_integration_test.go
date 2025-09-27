@@ -67,7 +67,7 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 		for y := height/2 - 5; y < height/2+5 && !foundFloor; y++ {
 			if x >= 0 && x < width && y >= 0 && y < height {
 				idx := chain.PlanData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				if chain.PlanData.Tiles[idx] == TileFloor {
+				if chain.PlanData.Tiles[idx].Type == TileTypeFloor {
 					playerStartX = x
 					playerStartY = y
 					foundFloor = true
@@ -107,11 +107,23 @@ func TestPathFinder_WithPortals(t *testing.T) {
 
 	// ワープポータルを配置（垂直通路上、到達可能な位置）
 	warpIdx := chain.PlanData.Level.XYTileIndex(5, 2)
-	chain.PlanData.Tiles[warpIdx] = TileWarpNext
+	chain.PlanData.Tiles[warpIdx] = TileFloor
+	// ワープポータルエンティティを追加
+	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, WarpPortal{
+		X:    5,
+		Y:    2,
+		Type: WarpPortalNext,
+	})
 
 	// 脱出ポータルを配置（到達不可能な位置：壁の中）
 	escapeIdx := chain.PlanData.Level.XYTileIndex(1, 1)
-	chain.PlanData.Tiles[escapeIdx] = TileWarpEscape
+	chain.PlanData.Tiles[escapeIdx] = TileFloor
+	// 脱出ポータルエンティティを追加
+	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, WarpPortal{
+		X:    1,
+		Y:    1,
+		Type: WarpPortalEscape,
+	})
 
 	// 接続性を検証
 	result := chain.ValidateConnectivity(playerStartX, playerStartY)

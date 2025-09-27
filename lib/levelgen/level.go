@@ -31,22 +31,10 @@ func NewLevel(world w.World, width gc.Tile, height gc.Tile, seed uint64, planner
 	// mapspawner方式でEntityPlanを生成し、Levelをスポーンする
 	chain = createPlannerChain(plannerType, width, height, seed)
 
-	// BuildPlanAndSpawnでEntityPlanからLevelまで一括生成
-	level, err := mapspawner.BuildPlanAndSpawn(world, chain, plannerType)
+	// BuildPlanAndSpawnでEntityPlanからLevelまで一括生成（プレイヤー位置も取得）
+	level, px, py, err := mapspawner.BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		return resources.Level{}, fmt.Errorf("EntityPlanからのLevel生成に失敗: %w", err)
-	}
-
-	// EntityPlanからプレイヤー位置を取得
-	plan, err := mapspawner.BuildPlan(chain)
-	if err != nil {
-		return resources.Level{}, fmt.Errorf("EntityPlan生成に失敗: %w", err)
-	}
-
-	// プレイヤー位置を取得
-	px, py, hasPlayerPos := plan.GetPlayerStartPosition()
-	if !hasPlayerPos {
-		return resources.Level{}, fmt.Errorf("EntityPlanにプレイヤー開始位置が設定されていません")
 	}
 	playerX, playerY = px, py
 

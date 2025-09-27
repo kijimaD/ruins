@@ -13,6 +13,23 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
+// WarpPortalType はワープポータルの種別
+type WarpPortalType uint8
+
+const (
+	// WarpPortalNext は次の階に向かうワープポータル
+	WarpPortalNext WarpPortalType = iota
+	// WarpPortalEscape は脱出用ワープポータル
+	WarpPortalEscape
+)
+
+// WarpPortal はワープポータルエンティティの配置情報
+type WarpPortal struct {
+	X    int            // X座標
+	Y    int            // Y座標
+	Type WarpPortalType // ポータルの種別
+}
+
 // MetaPlan は階層のタイルを作る元になる概念の集合体
 type MetaPlan struct {
 	// 階層情報
@@ -25,42 +42,121 @@ type MetaPlan struct {
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
 	Corridors [][]resources.TileIdx
-	// RandomSource はシード値による再現可能なランダム生成を提供する
+	// RandomSource はシード値による再現可能なランダム生成を提供する（内部プランナーのみアクセス可能）
 	RandomSource *RandomSource
+	// WarpPortals は配置予定のワープポータルリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	WarpPortals []WarpPortal
+	// NPCs は配置予定のNPCリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	NPCs []NPCSpec
+	// Items は配置予定のアイテムリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	Items []ItemSpec
+	// Props は配置予定のPropsリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	Props []PropsSpec
+}
+
+// GetLevel は階層情報を読み取り専用で返す（外部からのアクセス用）
+func (bm *MetaPlan) GetLevel() *resources.Level {
+	return &bm.Level
+}
+
+// GetTiles はタイル配列を読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetTiles() []Tile {
+	return bm.Tiles
+}
+
+// GetRooms は部屋リストを読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetRooms() []gc.Rect {
+	return bm.Rooms
+}
+
+// GetCorridors は廊下リストを読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetCorridors() [][]resources.TileIdx {
+	return bm.Corridors
+}
+
+// GetWarpPortals はワープポータルリストを読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetWarpPortals() []WarpPortal {
+	return bm.WarpPortals
+}
+
+// GetNPCs はNPCリストを読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetNPCs() []NPCSpec {
+	return bm.NPCs
+}
+
+// GetItems はアイテムリストを読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetItems() []ItemSpec {
+	return bm.Items
+}
+
+// GetProps はPropsリストを読み取り専用で返す（外部からのアクセス用）
+func (bm MetaPlan) GetProps() []PropsSpec {
+	return bm.Props
+}
+
+// SetTiles はタイル配列を設定する（テスト用）
+func (bm *MetaPlan) SetTiles(tiles []Tile) {
+	bm.Tiles = tiles
+}
+
+// SetWarpPortals はワープポータルリストを設定する（テスト用）
+func (bm *MetaPlan) SetWarpPortals(portals []WarpPortal) {
+	bm.WarpPortals = portals
+}
+
+// AddWarpPortal はワープポータルを追加する（テスト用）
+func (bm *MetaPlan) AddWarpPortal(portal WarpPortal) {
+	bm.WarpPortals = append(bm.WarpPortals, portal)
 }
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
 // スポーンチェックは地図生成時にしか使わないだろう
-func (bm MetaPlan) IsSpawnableTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
+func (bm MetaPlan) IsSpawnableTile(_ w.World, tx gc.Tile, ty gc.Tile) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
 	if !tile.Walkable {
 		return false
 	}
 
-	if bm.existEntityOnTile(world, tx, ty) {
+	// planning段階では、MetaPlan内の計画済みエンティティをチェック
+	if bm.existPlannedEntityOnTile(int(tx), int(ty)) {
 		return false
 	}
 
 	return true
 }
 
-// 指定タイル座標にエンティティがすでにあるかを返す
-func (bm MetaPlan) existEntityOnTile(world w.World, tx gc.Tile, ty gc.Tile) bool {
-	isExist := false
-
-	world.Manager.Join(
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		if gridElement.X == tx && gridElement.Y == ty {
-			isExist = true
-
-			return
+// existPlannedEntityOnTile は指定座標に計画済みエンティティがあるかをチェック
+func (bm MetaPlan) existPlannedEntityOnTile(x, y int) bool {
+	// ワープポータルをチェック
+	for _, portal := range bm.WarpPortals {
+		if portal.X == x && portal.Y == y {
+			return true
 		}
-	}))
+	}
 
-	return isExist
+	// NPCをチェック
+	for _, npc := range bm.NPCs {
+		if npc.X == x && npc.Y == y {
+			return true
+		}
+	}
+
+	// アイテムをチェック
+	for _, item := range bm.Items {
+		if item.X == x && item.Y == y {
+			return true
+		}
+	}
+
+	// Propsをチェック
+	for _, prop := range bm.Props {
+		if prop.X == x && prop.Y == y {
+			return true
+		}
+	}
+
+	return false
 }
 
 // UpTile は上にあるタイルを調べる
@@ -235,6 +331,10 @@ func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 			Rooms:        []gc.Rect{},
 			Corridors:    [][]resources.TileIdx{},
 			RandomSource: NewRandomSource(seed),
+			WarpPortals:  []WarpPortal{},
+			NPCs:         []NPCSpec{},
+			Items:        []ItemSpec{},
+			Props:        []PropsSpec{},
 		},
 	}
 }
@@ -339,12 +439,6 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 				plan.AddWallWithType(int(x), int(y), wallType)
 			}
 
-		case TileTypeWarpNext:
-			plan.AddWarpNext(int(x), int(y))
-
-		case TileTypeWarpEscape:
-			plan.AddWarpEscape(int(x), int(y))
-
 		case TileTypeEmpty:
 			// 空のタイルはエンティティを生成しない
 			continue
@@ -352,6 +446,31 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 		default:
 			return nil, fmt.Errorf("未知のタイルタイプ: %d", tile.Type)
 		}
+	}
+
+	// ワープポータルエンティティをEntityPlanに追加
+	for _, portal := range bm.WarpPortals {
+		switch portal.Type {
+		case WarpPortalNext:
+			plan.AddWarpNext(portal.X, portal.Y)
+		case WarpPortalEscape:
+			plan.AddWarpEscape(portal.X, portal.Y)
+		}
+	}
+
+	// NPCエンティティをEntityPlanに追加
+	for _, npc := range bm.NPCs {
+		plan.AddNPC(npc.X, npc.Y, npc.NPCType)
+	}
+
+	// アイテムエンティティをEntityPlanに追加
+	for _, item := range bm.Items {
+		plan.AddItem(item.X, item.Y, item.ItemName)
+	}
+
+	// PropsエンティティをEntityPlanに追加
+	for _, prop := range bm.Props {
+		plan.AddProp(prop.X, prop.Y, prop.PropType)
 	}
 
 	return plan, nil
@@ -494,4 +613,23 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
 
 	return selectedType.PlannerFunc(width, height, seed)
+}
+
+// GetPlanners は登録されているプランナーのスライスを返す
+func (b *PlannerChain) GetPlanners() []MetaMapPlanner {
+	return b.Planners
+}
+
+// BuildPlan はPlannerChainを実行してEntityPlanを生成する
+func BuildPlan(chain *PlannerChain) (*EntityPlan, error) {
+	// プランナーチェーンを実行
+	chain.Build()
+
+	// PlanDataからEntityPlanを構築
+	plan, err := chain.PlanData.BuildPlanFromTiles()
+	if err != nil {
+		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
+	}
+
+	return plan, nil
 }

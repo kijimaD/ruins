@@ -59,14 +59,14 @@ func TestPathFinder_IsWalkable(t *testing.T) {
 
 	// ワープタイルテスト
 	idx = buildData.Level.XYTileIndex(2, 2)
-	buildData.Tiles[idx] = TileWarpNext
+	buildData.Tiles[idx] = TileFloor
 	if !pf.IsWalkable(2, 2) {
 		t.Error("Expected warp next tile to be walkable")
 	}
 
 	// 脱出タイルテスト
 	idx = buildData.Level.XYTileIndex(3, 3)
-	buildData.Tiles[idx] = TileWarpEscape
+	buildData.Tiles[idx] = TileFloor
 	if !pf.IsWalkable(3, 3) {
 		t.Error("Expected warp escape tile to be walkable")
 	}
@@ -183,11 +183,23 @@ func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 	idx = buildData.Level.XYTileIndex(1, 2)
 	buildData.Tiles[idx] = TileFloor
 	idx = buildData.Level.XYTileIndex(1, 3)
-	buildData.Tiles[idx] = TileWarpNext
+	buildData.Tiles[idx] = TileFloor
+	// ワープポータルエンティティを追加
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    1,
+		Y:    3,
+		Type: WarpPortalNext,
+	})
 
 	// 到達不可能な脱出ポータル（孤立している）
 	idx = buildData.Level.XYTileIndex(4, 4)
-	buildData.Tiles[idx] = TileWarpEscape
+	buildData.Tiles[idx] = TileFloor
+	// 脱出ポータルエンティティを追加
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    4,
+		Y:    4,
+		Type: WarpPortalEscape,
+	})
 
 	result := pf.ValidateMapConnectivity(playerX, playerY)
 
@@ -244,11 +256,23 @@ func TestPathFinder_ValidateMapConnectivity_FullyConnected(t *testing.T) {
 
 	// ワープポータル（到達可能）
 	idx := buildData.Level.XYTileIndex(2, 1)
-	buildData.Tiles[idx] = TileWarpNext
+	buildData.Tiles[idx] = TileFloor
+	// ワープポータルエンティティを追加
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    2,
+		Y:    1,
+		Type: WarpPortalNext,
+	})
 
 	// 脱出ポータル（到達可能）
 	idx = buildData.Level.XYTileIndex(2, 4)
-	buildData.Tiles[idx] = TileWarpEscape
+	buildData.Tiles[idx] = TileFloor
+	// 脱出ポータルエンティティを追加
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    2,
+		Y:    4,
+		Type: WarpPortalEscape,
+	})
 
 	result := pf.ValidateMapConnectivity(playerX, playerY)
 

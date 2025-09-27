@@ -97,20 +97,32 @@ func TestPlanData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 		buildData.Tiles[i] = TileWall
 	}
 
-	// ワープタイルを配置
+	// ワープポータルを配置（床 + エンティティ）
 	warpNextIdx := buildData.Level.XYTileIndex(2, 2)
 	warpEscapeIdx := buildData.Level.XYTileIndex(2, 3)
-	buildData.Tiles[warpNextIdx] = TileWarpNext
-	buildData.Tiles[warpEscapeIdx] = TileWarpEscape
+	buildData.Tiles[warpNextIdx] = TileFloor
+	buildData.Tiles[warpEscapeIdx] = TileFloor
 
-	// ワープタイルに隣接するタイルは床を検出するべき
-	adjacentIdx := buildData.Level.XYTileIndex(1, 2) // 上
+	// ワープポータルエンティティを追加
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    2,
+		Y:    2,
+		Type: WarpPortalNext,
+	})
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    2,
+		Y:    3,
+		Type: WarpPortalEscape,
+	})
+
+	// 床タイルに隣接する場所から床の検出をテスト
+	adjacentIdx := buildData.Level.XYTileIndex(1, 2) // (2,2)の床タイルの左隣
 	if !buildData.AdjacentAnyFloor(adjacentIdx) {
-		t.Error("ワープタイルに隣接するタイルで床を検出できていない")
+		t.Error("床タイルに隣接する位置で隣接床検出が失敗")
 	}
 
-	adjacentEscapeIdx := buildData.Level.XYTileIndex(1, 3) // ワープエスケープの上
+	adjacentEscapeIdx := buildData.Level.XYTileIndex(1, 3) // (2,3)の床タイルの左隣
 	if !buildData.AdjacentAnyFloor(adjacentEscapeIdx) {
-		t.Error("ワープエスケープタイルに隣接するタイルで床を検出できていない")
+		t.Error("床タイルに隣接する位置で隣接床検出が失敗")
 	}
 }

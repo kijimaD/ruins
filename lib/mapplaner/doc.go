@@ -29,14 +29,17 @@
 //   - TileEmpty: 空のタイル（デフォルト状態）
 //   - TileFloor: 床タイル（通行可能）
 //   - TileWall: 壁タイル（通行不可）
-//   - TileWarpNext: 次階層へのワープタイル（通行可能）
-//   - TileWarpEscape: 脱出用ワープタイル（通行可能）
+//
+// ## エンティティ
+//
+// エンティティとして実装されます：
+//   - 床タイル + ワープポータルエンティティ = ワープ機能のある場所
 //
 // ## 通行可否判定
 //
-// マップ生成時には PathFinder.IsWalkable() で通行可否を判定します：
-//   - 通行可能: TileFloor, TileWarpNext, TileWarpEscape
-//   - 通行不可: TileWall, TileEmpty
+// マップ生成時にはタイルの Walkable フィールドで通行可否を判定します：
+//   - 通行可能: TileFloor（Walkable=true）
+//   - 通行不可: TileWall（Walkable=false）, TileEmpty（Walkable=false）
 //
 // ## 配置計画の作成
 //

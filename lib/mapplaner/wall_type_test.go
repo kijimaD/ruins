@@ -110,17 +110,22 @@ func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 		buildData.Tiles[i] = TileWall
 	}
 
-	// ワープタイルを配置
+	// ワープポータルを配置
 	wallX, wallY := gc.Tile(2), gc.Tile(2)
 	warpX, warpY := wallX, wallY+1 // 下にワープネクスト（Y座標が大きくなる）
 
 	warpNextIdx := buildData.Level.XYTileIndex(warpX, warpY)
 	wallIdx := buildData.Level.XYTileIndex(wallX, wallY)
-	buildData.Tiles[warpNextIdx] = TileWarpNext
+	buildData.Tiles[warpNextIdx] = TileFloor
+	buildData.WarpPortals = append(buildData.WarpPortals, WarpPortal{
+		X:    int(warpX),
+		Y:    int(warpY),
+		Type: WarpPortalNext,
+	})
 
 	wallType := buildData.GetWallType(wallIdx)
 	if wallType != WallTypeTop {
-		t.Errorf("ワープタイルに対するWallTypeTopの判定が間違っています。期待値: %s, 実際: %s", WallTypeTop.String(), wallType.String())
+		t.Errorf("ワープポータル（床）に対するWallTypeTopの判定が間違っています。期待値: %s, 実際: %s", WallTypeTop.String(), wallType.String())
 	}
 }
 

@@ -76,23 +76,35 @@ func (b StringMapPlanner) BuildInitial(buildData *MetaPlan) {
 	}
 }
 
-// parseEntities はエンティティマップを解析してエンティティを配置
+// parseEntities はエンティティマップを解析してワープポータルを配置
 func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int) {
-	// エンティティマップから特殊なタイル（ワープホールなど）を配置
+	// エンティティマップからワープポータルを解析してMetaPlanに追加
 	for y := 0; y < len(b.EntityMap) && y < height; y++ {
 		for x := 0; x < len(b.EntityMap[y]) && x < width; x++ {
 			char := rune(b.EntityMap[y][x])
 
-			// ワープホールなどのタイルとして扱うべきエンティティを処理
+			// ワープポータル文字を処理（床タイル + MetaPlanへのワープポータル情報追加）
 			switch char {
 			case 'w':
-				// ワープホール（次のレベル）をタイルとして配置
+				// 進行ワープポータル位置に床タイルを配置
 				tileIdx := plannerMap.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				plannerMap.Tiles[tileIdx] = TileWarpNext
+				plannerMap.Tiles[tileIdx] = TileFloor
+				// MetaPlanにワープポータル情報を追加
+				plannerMap.WarpPortals = append(plannerMap.WarpPortals, WarpPortal{
+					X:    x,
+					Y:    y,
+					Type: WarpPortalNext,
+				})
 			case 'e':
-				// エスケープワープホールをタイルとして配置
+				// 帰還ワープポータル位置に床タイルを配置
 				tileIdx := plannerMap.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				plannerMap.Tiles[tileIdx] = TileWarpEscape
+				plannerMap.Tiles[tileIdx] = TileFloor
+				// MetaPlanにワープポータル情報を追加
+				plannerMap.WarpPortals = append(plannerMap.WarpPortals, WarpPortal{
+					X:    x,
+					Y:    y,
+					Type: WarpPortalEscape,
+				})
 			}
 
 			// TODO: 他のエンティティ（NPC、アイテムなど）の処理は
@@ -139,13 +151,11 @@ func NewStringMapPlannerWithMaps(tileMap, entityMap []string, seed uint64) *Plan
 // getDefaultTileMapping はデフォルトのタイル文字マッピングを返す
 func getDefaultTileMapping() map[rune]Tile {
 	return map[rune]Tile{
-		'#': TileWall,       // 壁
-		'f': TileFloor,      // 床（建物内・住宅）
-		'r': TileFloor,      // 道路（実際は床として処理、視覚的に区別される）
-		'w': TileWarpNext,   // 進行ワープポータル
-		'e': TileWarpEscape, // 帰還ワープポータル
-		' ': TileFloor,      // 空白は床として扱う
-		'.': TileFloor,      // 空地・庭
+		'#': TileWall,  // 壁
+		'f': TileFloor, // 床（建物内・住宅）
+		'r': TileFloor, // 道路 (TODO: スプライト未対応)
+		' ': TileFloor, // 空白は床として扱う
+		'.': TileFloor, // 空地・庭
 	}
 }
 
@@ -198,7 +208,7 @@ func (b *StringMapPlanner) AddEntityMapping(char rune, entityType EntityType, da
 	return b
 }
 
-// BuildEntityPlanFromStrings は文字列マップから直接EntityPlanを生成する
+// BuildEntityPlanFromStrings は文字列マップからEntityPlanを生成する
 func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error) {
 	if err := ValidateStringMap(tileMap, entityMap); err != nil {
 		return nil, err
@@ -239,10 +249,6 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 				plan.AddFloor(x, y)
 			case TileWall:
 				plan.AddWall(x, y, 0) // スプライト番号は0をデフォルト
-			case TileWarpNext:
-				plan.AddWarpNext(x, y)
-			case TileWarpEscape:
-				plan.AddWarpEscape(x, y)
 			default:
 				// その他のタイプは床として扱う
 				plan.AddFloor(x, y)
@@ -261,7 +267,7 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 					continue
 				}
 
-				// ワープホールを直接処理（entityMappingを使わない）
+				// ワープポータルを処理
 				if char == 'w' {
 					plan.AddWarpNext(x, y)
 					continue

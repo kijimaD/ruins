@@ -9,14 +9,17 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func TestBuildPlan(t *testing.T) {
+func TestMapPlannerBuildPlan(t *testing.T) {
 	t.Parallel()
 	// SmallRoomBuilderチェーンを作成
 	width, height := 8, 8
 	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
 
 	// BuildPlanをテスト
-	plan, err := BuildPlan(chain)
+	plan, err := mapplanner.BuildPlan(chain)
+	if err == nil {
+		CompleteWallSprites(plan)
+	}
 	if err != nil {
 		t.Fatalf("BuildPlan failed: %v", err)
 	}
@@ -55,7 +58,7 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
-	level, err := BuildPlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -105,7 +108,7 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 		UseFixedPortalPos: true,  // ポータル位置を固定
 		PlannerFunc:       mapplanner.PlannerTypeTown.PlannerFunc,
 	}
-	level, err := BuildPlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn with TownBuilder failed: %v", err)
 	}
@@ -137,8 +140,8 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	centerY := height / 2
 
 	// 中央のタイルが床タイルかを確認
-	centerIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(centerX), gc.Tile(centerY))
-	centerTile := chain.PlanData.Tiles[centerIdx]
+	centerIdx := chain.PlanData.GetLevel().XYTileIndex(gc.Tile(centerX), gc.Tile(centerY))
+	centerTile := chain.PlanData.GetTiles()[centerIdx]
 	t.Logf("Center tile at (%d,%d): %v", centerX, centerY, centerTile)
 
 	if centerTile != mapplanner.TileFloor {
@@ -151,8 +154,15 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	if communityHallY >= height {
 		communityHallY = height - 1
 	}
-	portalIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
-	chain.PlanData.Tiles[portalIdx] = mapplanner.TileWarpNext
+	portalIdx := chain.PlanData.GetLevel().XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
+	// 直接タイルアクセスが必要な場合は専用メソッドを追加検討
+	chain.PlanData.Tiles[portalIdx] = mapplanner.TileFloor
+	// ワープポータルエンティティを追加
+	chain.PlanData.AddWarpPortal(mapplanner.WarpPortal{
+		X:    communityHallX,
+		Y:    communityHallY,
+		Type: mapplanner.WarpPortalNext,
+	})
 
 	// BuildPlanFromTilesを使用してEntityPlanを生成
 	plan, err := chain.PlanData.BuildPlanFromTiles()
@@ -214,7 +224,7 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// 実際のBuildPlanAndSpawnを使用（街の設定で）
-	level, err := BuildPlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
+	level, _, _, err := BuildPlanAndSpawn(world, chain, mapplanner.PlannerTypeTown)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
 	}
@@ -263,7 +273,7 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeBigRoom.PlannerFunc,
 	}
-	level, err := BuildPlanAndSpawn(world, chain, plannerType)
+	level, _, _, err := BuildPlanAndSpawn(world, chain, plannerType)
 	if err != nil {
 		t.Fatalf("BuildPlanAndSpawn with BigRoomBuilder failed: %v", err)
 	}
@@ -288,16 +298,18 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 
 	// 同じパラメータで2回実行
 	chain1 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
-	plan1, err1 := BuildPlan(chain1)
+	plan1, err1 := mapplanner.BuildPlan(chain1)
 	if err1 != nil {
 		t.Fatalf("First BuildPlan failed: %v", err1)
 	}
+	CompleteWallSprites(plan1)
 
 	chain2 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
-	plan2, err2 := BuildPlan(chain2)
+	plan2, err2 := mapplanner.BuildPlan(chain2)
 	if err2 != nil {
 		t.Fatalf("Second BuildPlan failed: %v", err2)
 	}
+	CompleteWallSprites(plan2)
 
 	// 結果が同じであることを確認
 	if plan1.Width != plan2.Width {

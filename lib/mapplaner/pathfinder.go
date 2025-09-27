@@ -129,8 +129,6 @@ func (pf *PathFinder) IsReachable(startX, startY, goalX, goalY int) bool {
 // ValidateMapConnectivity はマップの接続性を検証する
 // プレイヤーのスタート位置からワープポータル、脱出ポータルへの到達可能性をチェックする
 func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
-	width := int(pf.buildData.Level.TileWidth)
-	height := int(pf.buildData.Level.TileHeight)
 
 	result := MapConnectivityResult{
 		PlayerStartReachable: pf.IsWalkable(playerStartX, playerStartY),
@@ -138,29 +136,23 @@ func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) Ma
 		EscapePortals:        []PortalReachability{},
 	}
 
-	// 全タイルをスキャンしてワープポータルと脱出ポータルを見つける
-	for x := 0; x < width; x++ {
-		for y := 0; y < height; y++ {
-			idx := pf.buildData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			tile := pf.buildData.Tiles[idx]
+	// MetaPlanからワープポータルエンティティを取得して検証
+	for _, portal := range pf.buildData.WarpPortals {
+		reachable := pf.IsReachable(playerStartX, playerStartY, portal.X, portal.Y)
 
-			switch tile {
-			case TileWarpNext:
-				reachable := pf.IsReachable(playerStartX, playerStartY, x, y)
-				result.WarpPortals = append(result.WarpPortals, PortalReachability{
-					X:         x,
-					Y:         y,
-					Reachable: reachable,
-				})
-
-			case TileWarpEscape:
-				reachable := pf.IsReachable(playerStartX, playerStartY, x, y)
-				result.EscapePortals = append(result.EscapePortals, PortalReachability{
-					X:         x,
-					Y:         y,
-					Reachable: reachable,
-				})
-			}
+		switch portal.Type {
+		case WarpPortalNext:
+			result.WarpPortals = append(result.WarpPortals, PortalReachability{
+				X:         portal.X,
+				Y:         portal.Y,
+				Reachable: reachable,
+			})
+		case WarpPortalEscape:
+			result.EscapePortals = append(result.EscapePortals, PortalReachability{
+				X:         portal.X,
+				Y:         portal.Y,
+				Reachable: reachable,
+			})
 		}
 	}
 

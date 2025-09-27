@@ -104,21 +104,24 @@ func Example_tileMappings() {
 	fmt.Println("タイル文字マッピング:")
 	fmt.Printf("'#' -> 壁 (TileWall)\n")
 	fmt.Printf("'f' -> 床 (TileFloor)\n")
-	fmt.Printf("'w' -> 進行ワープポータル (TileWarpNext)\n")
-	fmt.Printf("'e' -> 帰還ワープポータル (TileWarpEscape)\n")
+	fmt.Printf("'r' -> 道路 (TileFloor)\n")
 	fmt.Printf("' ' -> 床 (TileFloor)\n")
+	fmt.Printf("'.' -> 空地・庭 (TileFloor)\n")
 
 	fmt.Printf("\n実際のマッピング数: %d\n", len(mapping))
+	fmt.Printf("\nワープポータル ('w', 'e') はエンティティとして別途処理されます\n")
 
 	// Output:
 	// タイル文字マッピング:
 	// '#' -> 壁 (TileWall)
 	// 'f' -> 床 (TileFloor)
-	// 'w' -> 進行ワープポータル (TileWarpNext)
-	// 'e' -> 帰還ワープポータル (TileWarpEscape)
+	// 'r' -> 道路 (TileFloor)
 	// ' ' -> 床 (TileFloor)
+	// '.' -> 空地・庭 (TileFloor)
 	//
-	// 実際のマッピング数: 7
+	// 実際のマッピング数: 5
+	//
+	// ワープポータル ('w', 'e') はエンティティとして別途処理されます
 }
 
 // エンティティ文字のマッピング一覧を表示する例
