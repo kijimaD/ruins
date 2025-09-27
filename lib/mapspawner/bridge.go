@@ -98,7 +98,7 @@ func BuildPlanFromTiles(planData *mapplanner.PlannerMap) (*mapplanner.MapPlan, e
 	return plan, nil
 }
 
-// 壁スプライト番号定数（mapplaner/level.goから移動）
+// 壁スプライト番号定数
 const (
 	spriteWallTop         = 10 // 上壁
 	spriteWallBottom      = 11 // 下壁
