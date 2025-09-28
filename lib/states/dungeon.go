@@ -9,11 +9,13 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/mapbuilder"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
+	"github.com/kijimaD/ruins/lib/mapspawner"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -27,8 +29,8 @@ type DungeonState struct {
 	Depth int
 	// Seed はマップ生成用のシード値（0の場合はDungeonリソースのシード値を使用）
 	Seed uint64
-	// BuilderType は使用するマップビルダーのタイプ（BuilderTypeRandomの場合はランダム選択）
-	BuilderType mapbuilder.BuilderType
+	// BuilderType は使用するマップビルダーのタイプ（BuilderTypeRandom の場合はランダム選択）
+	BuilderType mapplanner.PlannerType
 }
 
 func (st DungeonState) String() string {
@@ -61,12 +63,27 @@ func (st *DungeonState) OnStart(world w.World) {
 		world.Resources.TurnManager = turns.NewTurnManager()
 	}
 
-	// seed が 0 の場合は NewLevel 内部でランダムシードが生成される
-	level, err := mapbuilder.NewLevel(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
+	// 計画作成する
+	plan, err := mapplanner.Plan(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
+	if err != nil {
+		panic(err)
+	}
+	// スポーンする
+	level, err := mapspawner.Spawn(world, plan)
 	if err != nil {
 		panic(err)
 	}
 	world.Resources.Dungeon.Level = level
+
+	// プレイヤー位置を取得する
+	playerX, playerY, hasPlayerPos := plan.GetPlayerStartPosition()
+	if !hasPlayerPos {
+		panic("EntityPlanにプレイヤー開始位置が設定されていません")
+	}
+	// プレイヤーを配置する
+	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {
+		panic(err)
+	}
 
 	// フロア移動時に探索済みマップをリセット
 	world.Resources.Dungeon.ExploredTiles = make(map[gc.GridElement]bool)

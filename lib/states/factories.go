@@ -6,7 +6,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/mapbuilder"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/messagedata"
 	"github.com/kijimaD/ruins/lib/save"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -85,11 +85,10 @@ func NewDungeonSelectState() es.State[w.World] {
 		WithChoice("森の遺跡", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
 		}).
-		WithChoice("山の遺跡", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
-		}).
-		WithChoice("塔の遺跡", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
+		WithChoice("市街地", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown),
+			}})
 		}).
 		WithChoice("拠点メニューに戻る", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
@@ -164,7 +163,7 @@ func NewDebugMenuState() es.State[w.World] {
 			"ダンジョン開始(大部屋)",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeBigRoom),
+					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeBigRoom),
 				}})
 			},
 		},
@@ -172,7 +171,7 @@ func NewDebugMenuState() es.State[w.World] {
 			"ダンジョン開始(小部屋)",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeSmallRoom),
+					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeSmallRoom),
 				}})
 			},
 		},
@@ -180,7 +179,7 @@ func NewDebugMenuState() es.State[w.World] {
 			"ダンジョン開始(洞窟)",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeCave),
+					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeCave),
 				}})
 			},
 		},
@@ -188,7 +187,7 @@ func NewDebugMenuState() es.State[w.World] {
 			"ダンジョン開始(廃墟)",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeRuins),
+					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeRuins),
 				}})
 			},
 		},
@@ -196,7 +195,15 @@ func NewDebugMenuState() es.State[w.World] {
 			"ダンジョン開始(森)",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapbuilder.BuilderTypeForest),
+					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeForest),
+				}})
+			},
+		},
+		{
+			"市街地開始",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown),
 				}})
 			},
 		},
@@ -326,19 +333,19 @@ func NewDebugMenuState() es.State[w.World] {
 // NewDungeonStateWithDepth は指定されたDepthでDungeonStateインスタンスを作成するファクトリー関数
 func NewDungeonStateWithDepth(depth int) es.StateFactory[w.World] {
 	return func() es.State[w.World] {
-		return &DungeonState{Depth: depth, BuilderType: mapbuilder.BuilderTypeRandom}
+		return &DungeonState{Depth: depth, BuilderType: mapplanner.PlannerTypeRandom}
 	}
 }
 
 // NewDungeonStateWithSeed は指定されたDepthとSeedでDungeonStateインスタンスを作成するファクトリー関数
 func NewDungeonStateWithSeed(depth int, seed uint64) es.StateFactory[w.World] {
 	return func() es.State[w.World] {
-		return &DungeonState{Depth: depth, Seed: seed, BuilderType: mapbuilder.BuilderTypeRandom}
+		return &DungeonState{Depth: depth, Seed: seed, BuilderType: mapplanner.PlannerTypeRandom}
 	}
 }
 
 // NewDungeonStateWithBuilder は指定されたBuilderTypeでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithBuilder(depth int, builderType mapbuilder.BuilderType) es.StateFactory[w.World] {
+func NewDungeonStateWithBuilder(depth int, builderType mapplanner.PlannerType) es.StateFactory[w.World] {
 	return func() es.State[w.World] {
 		return &DungeonState{Depth: depth, BuilderType: builderType}
 	}

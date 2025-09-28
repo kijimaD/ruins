@@ -35,7 +35,7 @@ tools-install: ## 開発ツールをインストールする
 	@./scripts/setup-hooks.sh
 
 .PHONY: check
-check: test build fmt lint ## 一気にチェックする
+check: fmt build test lint ## 一気にチェックする
 
 # ================
 

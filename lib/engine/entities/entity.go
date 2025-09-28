@@ -79,6 +79,12 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 					ecsComponent := ecv.FieldByName(result).Interface().(ecs.DataComponent)
 					entity.AddComponent(ecsComponent, value.Interface())
 				}
+			case reflect.String:
+				// 文字列ベースの型エイリアス（PropType等）を処理
+				// 型名を使ってコンポーネントを特定する
+				value.Elem().Set(component)
+				ecsComponent := ecv.FieldByName(component.Type().Name()).Interface().(ecs.DataComponent)
+				entity.AddComponent(ecsComponent, value.Interface())
 			default:
 				log.Fatalf("EntitySpecフィールドに指定された型の処理は定義されていない: %s", component.Kind())
 			}

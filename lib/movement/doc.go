@@ -15,7 +15,7 @@
 //
 //   - TileFloor, TileWarpNext, TileWarpEscape: 通行可能
 //   - TileWall: 通行不可
-//   - mapbuilder.PathFinder.IsWalkable() で判定
+//   - mapplanner.PathFinder.IsWalkable() で判定
 //   - 用途: 接続性検証、部屋配置、コリドー生成
 //
 // ## 2. エンティティレベルでの通行可否判定 (実行時)
