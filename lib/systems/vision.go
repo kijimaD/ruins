@@ -269,28 +269,22 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 
 	// 距離の正規化 (0.0-1.0)
 	normalizedDistance := distance / maxRadius
-
-	// より滑らかな段階的暗闇レベル計算（10段階）
-	if normalizedDistance <= 0.2 {
-		return 0.0 // 近い範囲は完全に明るい
-	} else if normalizedDistance <= 0.4 {
-		return 0.1 // 10%暗い
-	} else if normalizedDistance <= 0.5 {
-		return 0.2 // 20%暗い
-	} else if normalizedDistance <= 0.6 {
-		return 0.3 // 30%暗い
-	} else if normalizedDistance <= 0.7 {
-		return 0.4 // 40%暗い
-	} else if normalizedDistance <= 0.8 {
-		return 0.5 // 50%暗い
-	} else if normalizedDistance <= 0.85 {
-		return 0.6 // 60%暗い
-	} else if normalizedDistance <= 0.9 {
-		return 0.7 // 70%暗い
-	} else if normalizedDistance <= 0.95 {
-		return 0.8 // 80%暗い
+	if normalizedDistance >= 1.0 {
+		return 0.95 // 最遠距離でも完全に真っ暗にはしない
 	}
-	return 0.9 // 90%暗い（完全に真っ暗にはしない）
+
+	// 滑らかな二次カーブによる減衰（中心が明るく、外側に向かって滑らかに暗くなる）
+	// 0.2までは完全に明るい（コア照明領域）
+	if normalizedDistance <= 0.2 {
+		return 0.0
+	}
+
+	// 0.2から1.0にかけて滑らかに暗くなる
+	// 二次関数: y = ((x-0.2) / 0.8)^1.5 * 0.95
+	adjustedDistance := (normalizedDistance - 0.2) / 0.8
+	darkness := math.Pow(adjustedDistance, 1.5) * 0.95
+
+	return darkness
 }
 
 // drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
@@ -402,7 +396,18 @@ func initializeDarknessCache(tileSize int) {
 		alpha := uint8(darkness * 255) // 透明度を0-255に変換
 
 		darknessCacheImages[i] = ebiten.NewImage(tileSize, tileSize)
-		darknessCacheImages[i].Fill(color.RGBA{0, 0, 0, alpha})
+
+		// 最外側（80%以上の暗さ）は真っ黒、それ以外は暖色系
+		if darkness >= 0.8 {
+			// 最外側は純黒
+			darknessCacheImages[i].Fill(color.RGBA{0, 0, 0, alpha})
+		} else {
+			// 内側は暖色系の暗闇（微かな茶色がかった暗闇）
+			r := uint8(float64(alpha) * 0.15) // 透明度の15%の赤成分
+			g := uint8(float64(alpha) * 0.10) // 透明度の10%の緑成分
+			b := uint8(float64(alpha) * 0.05) // 透明度の5%の青成分
+			darknessCacheImages[i].Fill(color.RGBA{r, g, b, alpha})
+		}
 	}
 }
 
