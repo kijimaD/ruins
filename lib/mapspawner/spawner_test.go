@@ -22,7 +22,7 @@ func TestSpawnLevel_ValidPlan(t *testing.T) {
 	plan := mapplanner.NewEntityPlan(3, 3)
 
 	// SpawnLevelをテスト（エンティティ生成なしで基本機能をテスト）
-	level, err := SpawnLevel(world, plan)
+	level, err := Spawn(world, plan)
 	if err != nil {
 		t.Fatalf("SpawnLevel failed: %v", err)
 	}
@@ -64,7 +64,7 @@ func TestSpawnLevel_InvalidPlan(t *testing.T) {
 	plan.AddFloor(5, 5) // 範囲外の座標
 
 	// SpawnLevelがエラーを返すことを確認
-	_, err := SpawnLevel(world, plan)
+	_, err := Spawn(world, plan)
 	if err == nil {
 		t.Error("Expected error for invalid plan, but got none")
 	}
@@ -82,7 +82,7 @@ func TestSpawnLevel_EmptyPlan(t *testing.T) {
 	plan := mapplanner.NewEntityPlan(2, 2)
 
 	// 空のプランでもエラーなく動作することを確認
-	level, err := SpawnLevel(world, plan)
+	level, err := Spawn(world, plan)
 	if err != nil {
 		t.Fatalf("SpawnLevel failed with empty plan: %v", err)
 	}

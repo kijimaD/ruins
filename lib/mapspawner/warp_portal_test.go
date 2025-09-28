@@ -36,7 +36,7 @@ func TestWarpPortalNoDuplication_StringMapPlanner(t *testing.T) {
 	// BuildPlanでEntityPlanを生成
 	plan, err := mapplanner.BuildPlan(chain)
 	if err == nil {
-		CompleteWallSprites(plan)
+		completeWallSprites(plan)
 	}
 	if err != nil {
 		t.Fatalf("BuildPlan failed: %v", err)
@@ -91,7 +91,7 @@ func TestWarpPortalNoDuplication_NonStringMapPlanner(t *testing.T) {
 	gameResource.Depth = 5 // 5の倍数にして帰還ワープホールを配置
 	world.Resources.Dungeon = gameResource
 
-	// BuildPlanAndSpawnでLevelを生成（ワープポータル重複が起きるかの確認）
+	// EntityPlan構築とSpawnLevelを個別にテスト（ワープポータル重複が起きるかの確認）
 	// テスト用のPlannerTypeを作成（NPC生成を無効化）
 	plannerType := mapplanner.PlannerType{
 		Name:         "SmallRoom",
@@ -99,16 +99,27 @@ func TestWarpPortalNoDuplication_NonStringMapPlanner(t *testing.T) {
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
+
+	// EntityPlan構築
+	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
 	if err != nil {
-		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
+		t.Fatalf("Plan failed: %v", err)
+	}
+
+	// 壁スプライト番号を補完
+	completeWallSprites(plan)
+
+	// SpawnLevel
+	level, err := Spawn(world, plan)
+	if err != nil {
+		t.Fatalf("SpawnLevel failed: %v", err)
 	}
 
 	// このテストはmapspawnerでのワープポータル重複確認のため、
 	// Levelから実際に生成されたエンティティをカウントする
 	// (ワープポータルプランナーの詳細テストはmapplanerパッケージで行う)
 
-	// PlanAndSpawnが成功したこと自体が、ワープポータルが適切に生成されたことを示す
+	// Plan()とSpawnLevel()が成功したこと自体が、ワープポータルが適切に生成されたことを示す
 	// (詳細なワープポータル生成テストはmapplanerパッケージで行う)
 	if len(level.Entities) != width*height {
 		t.Errorf("Level.Entities数が期待値と異なる: 期待値=%d, 実際=%d", width*height, len(level.Entities))

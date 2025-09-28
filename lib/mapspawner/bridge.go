@@ -4,8 +4,8 @@ import (
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 )
 
-// CompleteWallSprites はEntityPlan内の壁エンティティのスプライト番号を補完する
-func CompleteWallSprites(plan *mapplanner.EntityPlan) {
+// completeWallSprites はEntityPlan内の壁エンティティのスプライト番号を補完する
+func completeWallSprites(plan *mapplanner.EntityPlan) {
 	for i := range plan.Entities {
 		entity := &plan.Entities[i]
 		if entity.EntityType == mapplanner.EntityTypeWall && entity.WallType != nil {

@@ -27,7 +27,7 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	}
 
 	// 壁スプライト番号を補完
-	CompleteWallSprites(plan)
+	completeWallSprites(plan)
 
 	// EntityPlanの基本プロパティをチェック
 	if plan.Width != width {
@@ -109,7 +109,7 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 	}
 
 	// 壁スプライト番号を補完
-	CompleteWallSprites(plan)
+	completeWallSprites(plan)
 
 	// ワープエンティティが含まれていることを確認
 	hasWarpNext := false
@@ -181,7 +181,7 @@ func TestBuildPlanFromTiles_Integration(t *testing.T) {
 	}
 
 	// 壁スプライト番号を補完
-	CompleteWallSprites(plan)
+	completeWallSprites(plan)
 
 	// 基本的な整合性をチェック
 	if plan.Width != width {

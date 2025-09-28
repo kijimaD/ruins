@@ -13,7 +13,7 @@
 // 責務境界:
 // - mapplanerが全てのplanning（計画）を担当
 // - mapspawnerは純粋にspawning（生成）のみを担当
-// - PlanAndSpawn関数はmapplanerのBuildPlanWithIntegrationを呼び出してEntityPlanを取得
+// - 呼び出し側でmapplaner.Plan()とmapspawner.SpawnLevel()を個別に呼び出す
 //
 // 依存関係:
 // - worldhelper: 各種エンティティ生成関数

@@ -18,7 +18,7 @@ func TestMapPlannerBuildPlan(t *testing.T) {
 	// BuildPlanをテスト
 	plan, err := mapplanner.BuildPlan(chain)
 	if err == nil {
-		CompleteWallSprites(plan)
+		completeWallSprites(plan)
 	}
 	if err != nil {
 		t.Fatalf("BuildPlan failed: %v", err)
@@ -51,16 +51,27 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 	width, height := 6, 6
 	seed := uint64(123)
 
-	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
+	// EntityPlan構築とSpawnLevelを個別にテスト（NPCとアイテム生成を無効化）
 	plannerType := mapplanner.PlannerType{
 		Name:         "SmallRoom",
 		SpawnEnemies: false, // テストではNPC生成を無効化
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
+
+	// EntityPlan構築
+	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
 	if err != nil {
-		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
+		t.Fatalf("Plan failed: %v", err)
+	}
+
+	// 壁スプライト番号を補完
+	completeWallSprites(plan)
+
+	// SpawnLevel
+	level, err := Spawn(world, plan)
+	if err != nil {
+		t.Fatalf("SpawnLevel failed: %v", err)
 	}
 
 	// Levelの基本プロパティをチェック
@@ -100,7 +111,7 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 	width, height := 15, 15
 	seed := uint64(456)
 
-	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
+	// EntityPlan構築とSpawnLevelを個別にテスト（NPCとアイテム生成を無効化）
 	plannerType := mapplanner.PlannerType{
 		Name:              "Town",
 		SpawnEnemies:      false, // テストではNPC生成を無効化
@@ -108,9 +119,20 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 		UseFixedPortalPos: true,  // ポータル位置を固定
 		PlannerFunc:       mapplanner.PlannerTypeTown.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
+
+	// EntityPlan構築
+	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
 	if err != nil {
-		t.Fatalf("BuildPlanAndSpawn with TownBuilder failed: %v", err)
+		t.Fatalf("Plan failed: %v", err)
+	}
+
+	// 壁スプライト番号を補完
+	completeWallSprites(plan)
+
+	// SpawnLevel
+	level, err := Spawn(world, plan)
+	if err != nil {
+		t.Fatalf("SpawnLevel with TownBuilder failed: %v", err)
 	}
 
 	// Levelの基本プロパティをチェック
@@ -171,7 +193,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	}
 
 	// 壁スプライト番号を補完
-	CompleteWallSprites(plan)
+	completeWallSprites(plan)
 
 	// ワープポータルエンティティが含まれているかチェック（公民館の中央）
 	hasWarpPortal := false
@@ -194,7 +216,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	level, err := SpawnLevel(world, plan)
+	level, err := Spawn(world, plan)
 	if err != nil {
 		t.Fatalf("SpawnLevel failed: %v", err)
 	}
@@ -223,10 +245,19 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 	width, height := 50, 50
 	seed := uint64(123)
 
-	// 実際のBuildPlanAndSpawnを使用（街の設定で）
-	level, _, _, err := PlanAndSpawn(world, width, height, seed, mapplanner.PlannerTypeTown)
+	// EntityPlan構築とSpawnLevelを個別に実行（街の設定で）
+	plan, err := mapplanner.Plan(world, width, height, seed, mapplanner.PlannerTypeTown)
 	if err != nil {
-		t.Fatalf("BuildPlanAndSpawn failed: %v", err)
+		t.Fatalf("Plan failed: %v", err)
+	}
+
+	// 壁スプライト番号を補完
+	completeWallSprites(plan)
+
+	// SpawnLevel
+	level, err := Spawn(world, plan)
+	if err != nil {
+		t.Fatalf("SpawnLevel failed: %v", err)
 	}
 
 	// 中央座標
@@ -266,16 +297,27 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 	width, height := 12, 12
 	seed := uint64(789)
 
-	// BuildPlanAndSpawnをテスト（NPCとアイテム生成を無効化）
+	// EntityPlan構築とSpawnLevelを個別にテスト（NPCとアイテム生成を無効化）
 	plannerType := mapplanner.PlannerType{
 		Name:         "BigRoom",
 		SpawnEnemies: false, // テストではNPC生成を無効化
 		SpawnItems:   false, // テストではアイテム生成を無効化
 		PlannerFunc:  mapplanner.PlannerTypeBigRoom.PlannerFunc,
 	}
-	level, _, _, err := PlanAndSpawn(world, width, height, seed, plannerType)
+
+	// EntityPlan構築
+	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
 	if err != nil {
-		t.Fatalf("BuildPlanAndSpawn with BigRoomBuilder failed: %v", err)
+		t.Fatalf("Plan failed: %v", err)
+	}
+
+	// 壁スプライト番号を補完
+	completeWallSprites(plan)
+
+	// SpawnLevel
+	level, err := Spawn(world, plan)
+	if err != nil {
+		t.Fatalf("SpawnLevel with BigRoomBuilder failed: %v", err)
 	}
 
 	// Levelの基本プロパティをチェック
@@ -302,14 +344,14 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 	if err1 != nil {
 		t.Fatalf("First BuildPlan failed: %v", err1)
 	}
-	CompleteWallSprites(plan1)
+	completeWallSprites(plan1)
 
 	chain2 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	plan2, err2 := mapplanner.BuildPlan(chain2)
 	if err2 != nil {
 		t.Fatalf("Second BuildPlan failed: %v", err2)
 	}
-	CompleteWallSprites(plan2)
+	completeWallSprites(plan2)
 
 	// 結果が同じであることを確認
 	if plan1.Width != plan2.Width {

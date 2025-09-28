@@ -63,13 +63,24 @@ func (st *DungeonState) OnStart(world w.World) {
 		world.Resources.TurnManager = turns.NewTurnManager()
 	}
 
-	level, playerX, playerY, err := mapspawner.PlanAndSpawn(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
+	// 計画作成する
+	plan, err := mapplanner.Plan(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
+	if err != nil {
+		panic(err)
+	}
+	// スポーンする
+	level, err := mapspawner.Spawn(world, plan)
 	if err != nil {
 		panic(err)
 	}
 	world.Resources.Dungeon.Level = level
 
-	// プレイヤーを配置（worldhelper）
+	// プレイヤー位置を取得する
+	playerX, playerY, hasPlayerPos := plan.GetPlayerStartPosition()
+	if !hasPlayerPos {
+		panic("EntityPlanにプレイヤー開始位置が設定されていません")
+	}
+	// プレイヤーを配置する
 	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {
 		panic(err)
 	}
