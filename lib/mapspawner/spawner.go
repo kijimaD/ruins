@@ -16,11 +16,6 @@ func Spawn(world w.World, plan *mapplanner.EntityPlan) (resources.Level, error) 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
 
-	// 計画の妥当性をチェック
-	if err := plan.ValidatePlan(); err != nil {
-		return resources.Level{}, fmt.Errorf("計画検証エラー: %w", err)
-	}
-
 	// Levelオブジェクトを作成
 	totalTiles := plan.Width * plan.Height
 	level := resources.Level{

@@ -187,8 +187,8 @@ func (mp *EntityPlan) AddItem(x, y int, itemType string) {
 	})
 }
 
-// ValidatePlan は計画の妥当性をチェックする
-func (mp *EntityPlan) ValidatePlan() error {
+// Validate は計画の妥当性をチェックする
+func (mp *EntityPlan) Validate() error {
 	// 座標範囲チェック
 	for _, tile := range mp.Tiles {
 		if tile.X < 0 || tile.X >= mp.Width || tile.Y < 0 || tile.Y >= mp.Height {

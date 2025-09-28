@@ -51,7 +51,7 @@ func TestSpawnLevel_ValidPlan(t *testing.T) {
 	}
 }
 
-func TestSpawnLevel_InvalidPlan(t *testing.T) {
+func TestSpawnLevel_NoPlayerStartPosition(t *testing.T) {
 	t.Parallel()
 	components := &gc.Components{}
 	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
@@ -59,14 +59,16 @@ func TestSpawnLevel_InvalidPlan(t *testing.T) {
 	}
 	world, _ := world.InitWorld(components)
 
-	// 無効な座標を持つEntityPlanを作成
+	// プレイヤー開始位置が設定されていないEntityPlanを作成
 	plan := mapplanner.NewEntityPlan(2, 2)
-	plan.AddFloor(5, 5) // 範囲外の座標
+	plan.AddFloor(0, 0)
+	plan.AddFloor(1, 1)
+	// プレイヤー開始位置を設定しない
 
-	// SpawnLevelがエラーを返すことを確認
+	// Spawnはプレイヤー配置を行わないため、エラーは返さない
 	_, err := Spawn(world, plan)
-	if err == nil {
-		t.Error("Expected error for invalid plan, but got none")
+	if err != nil {
+		t.Errorf("Expected no error for spawn without player position, but got: %v", err)
 	}
 }
 

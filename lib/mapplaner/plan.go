@@ -48,5 +48,10 @@ func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType
 		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}
 
+	// 計画の妥当性をチェック
+	if err := plan.Validate(); err != nil {
+		return nil, fmt.Errorf("計画検証エラー: %w", err)
+	}
+
 	return plan, nil
 }
