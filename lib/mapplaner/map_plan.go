@@ -187,8 +187,8 @@ func (mp *EntityPlan) AddItem(x, y int, itemType string) {
 	})
 }
 
-// Validate は計画の妥当性をチェックする
-func (mp *EntityPlan) Validate() error {
+// Validate は計画の妥当性と接続性をチェックする
+func (mp *EntityPlan) Validate(metaPlan *MetaPlan) error {
 	// 座標範囲チェック
 	for _, tile := range mp.Tiles {
 		if tile.X < 0 || tile.X >= mp.Width || tile.Y < 0 || tile.Y >= mp.Height {
@@ -199,6 +199,17 @@ func (mp *EntityPlan) Validate() error {
 	for _, entity := range mp.Entities {
 		if entity.X < 0 || entity.X >= mp.Width || entity.Y < 0 || entity.Y >= mp.Height {
 			return NewValidationError("エンティティ座標が範囲外", entity.X, entity.Y)
+		}
+	}
+
+	// 接続性チェック
+	// TODO: そもそもPlayerPosがないのは異常なのでエラーを返すべき
+	if mp.HasPlayerPos {
+		// MetaPlanからPathFinderを作成して接続性を検証
+		pf := NewPathFinder(metaPlan)
+		connectivityResult := pf.ValidateMapConnectivity(mp.PlayerStartX, mp.PlayerStartY)
+		if !connectivityResult.IsFullyConnected() {
+			return ErrConnectivity
 		}
 	}
 

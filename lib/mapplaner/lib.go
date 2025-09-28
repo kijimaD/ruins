@@ -363,7 +363,7 @@ func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
 	}
 
 	if !found {
-		return nil, fmt.Errorf("プレイヤー配置可能な床タイルが見つかりません")
+		return nil, ErrPlayerPlacement
 	}
 
 	// プレイヤー位置を設定

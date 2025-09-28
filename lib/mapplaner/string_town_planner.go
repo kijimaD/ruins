@@ -4,7 +4,6 @@ package mapplanner
 
 import (
 	"fmt"
-	"strings"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 )
@@ -14,15 +13,9 @@ func NewStringTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerCh
 	// 50x50の大規模な街レイアウトを文字列で定義
 	tileMap, entityMap := GetTownLayout()
 
-	// レイアウトの整合性を検証
-	if err := ValidateTownLayout(tileMap, entityMap); err != nil {
-		// 連結性エラーの場合は警告のみ（ゲームは継続可能）
-		if strings.Contains(err.Error(), "連結性検証エラー") {
-			fmt.Printf("警告: %v\n", err)
-		} else {
-			// その他の重要なエラー（サイズ不整合、ワープホール数など）は致命的
-			panic(fmt.Sprintf("街レイアウト検証エラー: %v", err))
-		}
+	// レイアウトの基本整合性を検証（接続性検証はPlan関数で実行）
+	if err := validateTownLayout(tileMap, entityMap); err != nil {
+		panic(fmt.Sprintf("街レイアウト検証エラー: %v", err))
 	}
 
 	planner := &StringMapPlanner{
@@ -153,8 +146,8 @@ func GetTownLayout() ([]string, []string) {
 	return tileMap, entityMap
 }
 
-// ValidateTownLayout は街レイアウトの整合性を検証する
-func ValidateTownLayout(tileMap, entityMap []string) error {
+// validateTownLayout は街レイアウトの基本整合性を検証する（接続性を除く）
+func validateTownLayout(tileMap, entityMap []string) error {
 	if len(tileMap) == 0 || len(entityMap) == 0 {
 		return fmt.Errorf("マップが空です")
 	}
@@ -216,79 +209,5 @@ func ValidateTownLayout(tileMap, entityMap []string) error {
 		return fmt.Errorf("ワープホールが正確に1つある必要があります: 実際 %d", warpCount)
 	}
 
-	// 連結性の確認（簡易版）
-	if err := validateConnectivity(tileMap, width, height); err != nil {
-		return fmt.Errorf("連結性検証エラー: %w", err)
-	}
-
 	return nil
-}
-
-// validateConnectivity は簡易的な連結性チェックを行う
-func validateConnectivity(tileMap []string, width, height int) error {
-	// 歩行可能なタイルを探索
-	visited := make([][]bool, height)
-	for i := range visited {
-		visited[i] = make([]bool, width)
-	}
-
-	// 最初の歩行可能な位置を見つける
-	startX, startY := -1, -1
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			if isWalkable(tileMap[y][x]) {
-				startX, startY = x, y
-				break
-			}
-		}
-		if startX >= 0 {
-			break
-		}
-	}
-
-	if startX < 0 {
-		return fmt.Errorf("歩行可能なタイルが見つかりません")
-	}
-
-	// 深度優先探索で到達可能な全タイルをマーク
-	reachableCount := dfs(tileMap, visited, startX, startY, width, height)
-
-	// 全歩行可能タイルの数をカウント
-	totalWalkable := 0
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			if isWalkable(tileMap[y][x]) {
-				totalWalkable++
-			}
-		}
-	}
-
-	if reachableCount != totalWalkable {
-		return fmt.Errorf("一部のフロアに到達できません: 到達可能 %d, 総フロア数 %d", reachableCount, totalWalkable)
-	}
-
-	return nil
-}
-
-// isWalkable は歩行可能なタイルかを判定する
-func isWalkable(tile byte) bool {
-	return tile == 'f' || tile == 'r' || tile == 'w' // 床、道路、ワープホール
-}
-
-// dfs は深度優先探索で到達可能なタイル数を返す
-func dfs(tileMap []string, visited [][]bool, x, y, width, height int) int {
-	if x < 0 || x >= width || y < 0 || y >= height || visited[y][x] || !isWalkable(tileMap[y][x]) {
-		return 0
-	}
-
-	visited[y][x] = true
-	count := 1
-
-	// 4方向を探索
-	directions := [][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
-	for _, dir := range directions {
-		count += dfs(tileMap, visited, x+dir[0], y+dir[1], width, height)
-	}
-
-	return count
 }
