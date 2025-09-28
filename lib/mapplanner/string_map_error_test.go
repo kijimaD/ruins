@@ -119,7 +119,7 @@ func TestStringMapBuilder_PlanInitialError(t *testing.T) {
 		Level:        resources.Level{TileWidth: 3, TileHeight: 3},
 		RandomSource: NewRandomSource(42),
 		Tiles:        make([]raw.TileRaw, 9),
-		RawMaster:    createTestRawMaster(),
+		RawMaster:    CreateTestRawMaster(),
 	}
 
 	err := builder.PlanInitial(metaPlan)

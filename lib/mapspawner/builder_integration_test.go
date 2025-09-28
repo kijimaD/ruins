@@ -17,6 +17,8 @@ func TestMapPlannerBuildPlan(t *testing.T) {
 	width, height := 8, 8
 	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
 
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
+
 	// BuildPlanをテスト
 	plan, err := mapplanner.BuildPlan(chain)
 	if err == nil {
@@ -44,6 +46,8 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 	components := &gc.Components{}
 	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
+
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
 
 	// マップサイズとシード
 	width, height := 6, 6
@@ -99,6 +103,8 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+
 	// マップサイズとシード
 	width, height := 15, 15
 	seed := uint64(456)
@@ -142,6 +148,8 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	width, height := 50, 50
 	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
+
 	// マップを構築
 	chain.Plan()
 
@@ -154,8 +162,8 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	centerTile := chain.PlanData.Tiles[centerIdx]
 	t.Logf("Center tile at (%d,%d): %v", centerX, centerY, centerTile)
 
-	if centerTile != (raw.TileRaw{Walkable: true}) {
-		t.Errorf("Expected center tile to be floor, got %v", centerTile)
+	if !centerTile.Walkable {
+		t.Errorf("Expected center tile to be walkable (floor), got %v", centerTile)
 	}
 
 	// 公民館の中心位置にワープポータルタイルを手動で配置（50x50マップに合わせて調整）
@@ -166,7 +174,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	}
 	portalIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
 	// 直接タイルアクセスが必要な場合は専用メソッドを追加検討
-	chain.PlanData.Tiles[portalIdx] = (raw.TileRaw{Walkable: true})
+	chain.PlanData.Tiles[portalIdx] = chain.PlanData.GenerateTile("Floor")
 	// ワープポータルエンティティを追加
 	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
 		X:    communityHallX,
@@ -221,6 +229,8 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+
 	// TownPlannerは固定の50x50マップを生成する
 	width, height := 50, 50
 	seed := uint64(123)
@@ -267,6 +277,8 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+
 	// マップサイズとシード
 	width, height := 12, 12
 	seed := uint64(789)
@@ -310,6 +322,7 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 
 	// 同じパラメータで2回実行
 	chain1 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	chain1.PlanData.RawMaster = createMapspawnerTestRawMaster()
 	plan1, err1 := mapplanner.BuildPlan(chain1)
 	if err1 != nil {
 		t.Fatalf("First BuildPlan failed: %v", err1)
@@ -317,6 +330,7 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 	completeWallSprites(plan1)
 
 	chain2 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	chain2.PlanData.RawMaster = createMapspawnerTestRawMaster()
 	plan2, err2 := mapplanner.BuildPlan(chain2)
 	if err2 != nil {
 		t.Fatalf("Second BuildPlan failed: %v", err2)
@@ -345,5 +359,28 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 				i, entity1.X, entity1.Y, entity1.EntityType,
 				entity2.X, entity2.Y, entity2.EntityType)
 		}
+	}
+}
+
+// createMapspawnerTestRawMaster はテスト用の raw.Master インスタンスを作成する
+func createMapspawnerTestRawMaster() *raw.Master {
+	// テスト用の基本的なタイルデータを定義
+	testTiles := []raw.TileRaw{
+		{Name: "Wall", Walkable: false},
+		{Name: "Floor", Walkable: true},
+		{Name: "Empty", Walkable: false},
+	}
+
+	// インデックスを作成
+	tileIndex := make(map[string]int)
+	for i, tile := range testTiles {
+		tileIndex[tile.Name] = i
+	}
+
+	return &raw.Master{
+		Raws: raw.Raws{
+			Tiles: testTiles,
+		},
+		TileIndex: tileIndex,
 	}
 }

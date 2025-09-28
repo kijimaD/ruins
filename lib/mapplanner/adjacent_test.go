@@ -22,7 +22,7 @@ func TestPlanData_AdjacentAnyFloor(t *testing.T) {
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
-		RawMaster: createTestRawMaster(),
+		RawMaster: CreateTestRawMaster(),
 	}
 
 	// 全体を壁で埋める
@@ -92,7 +92,7 @@ func TestPlanData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
-		RawMaster: createTestRawMaster(),
+		RawMaster: CreateTestRawMaster(),
 	}
 
 	// 全体を壁で埋める

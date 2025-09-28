@@ -2,8 +2,8 @@ package mapplanner
 
 import "github.com/kijimaD/ruins/lib/raw"
 
-// createTestRawMaster はテスト用の raw.Master インスタンスを作成する
-func createTestRawMaster() *raw.Master {
+// CreateTestRawMaster はテスト用の raw.Master インスタンスを作成する
+func CreateTestRawMaster() *raw.Master {
 	// テスト用の基本的なタイルデータを定義
 	testTiles := []raw.TileRaw{
 		{Name: "Wall", Walkable: false},

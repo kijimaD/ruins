@@ -12,10 +12,10 @@ func TestNewStringTownPlanner(t *testing.T) {
 	// 新しい文字列ベースの街ビルダーをテスト
 	width, height := gc.Tile(50), gc.Tile(50)
 	chain := NewTownPlanner(width, height, 12345)
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 
 	// ビルダーチェーンを実行
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// サイズをチェック
@@ -173,7 +173,7 @@ func TestNewTownPlannerIntegration(t *testing.T) {
 	chain := NewTownPlanner(width, height, 54321)
 
 	// ビルダーチェーンを実行
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// 基本的な構造チェック

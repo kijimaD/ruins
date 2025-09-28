@@ -20,7 +20,7 @@ func createTestPlanData(width, height int) *MetaPlan {
 			TileHeight: gc.Tile(height),
 		},
 		Tiles:     tiles,
-		RawMaster: createTestRawMaster(),
+		RawMaster: CreateTestRawMaster(),
 	}
 
 	// デフォルトで全て壁にする

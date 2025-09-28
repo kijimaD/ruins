@@ -34,6 +34,8 @@ func TestWarpPortalNoDuplication_StringMapPlanner(t *testing.T) {
 	// StringMapPlannerでチェーンを作成
 	chain := mapplanner.NewStringMapPlannerWithMaps(tileMap, entityMap, 12345)
 
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
+
 	// BuildPlanでEntityPlanを生成
 	plan, err := mapplanner.BuildPlan(chain)
 	if err == nil {
@@ -81,6 +83,8 @@ func TestWarpPortalNoDuplication_NonStringMapPlanner(t *testing.T) {
 	components := &gc.Components{}
 	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
+
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
 
 	// Dungeonリソースを初期化（帰還ワープホール配置のため、5の倍数の階層）
 	gameResource := &resources.Dungeon{}

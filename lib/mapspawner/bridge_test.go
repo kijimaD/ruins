@@ -15,6 +15,8 @@ func TestBuildPlan_SimpleFloorAndWall(t *testing.T) {
 	width, height := 3, 3
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
+
 	// タイル配列を手動で設定
 	chain.PlanData.Tiles = []raw.TileRaw{
 		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), // Row 0
@@ -62,6 +64,8 @@ func TestBuildPlan_EmptyMap(t *testing.T) {
 	width, height := 2, 2
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
+
 	// 全て空のタイル
 	chain.PlanData.Tiles = []raw.TileRaw{
 		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"),
@@ -85,6 +89,8 @@ func TestBuildPlan_WarpTiles(t *testing.T) {
 	// ワープタイルを含むマップを作成
 	width, height := 2, 2
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
+
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
 
 	chain.PlanData.Tiles = []raw.TileRaw{
 		chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Floor"),
@@ -168,6 +174,8 @@ func TestBuildPlan_Integration(t *testing.T) {
 	// 実際のSmallRoomBuilderを使用
 	width, height := 10, 10
 	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
+
+	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
 
 	// マップを生成
 	chain.Plan()

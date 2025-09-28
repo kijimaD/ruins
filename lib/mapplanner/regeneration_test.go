@@ -27,7 +27,7 @@ func TestRegenerationSystem_Integration(t *testing.T) {
 	t.Parallel()
 	// PlannerChainの接続性検証機能が統合されていることを確認
 	chain := NewSmallRoomPlanner(20, 20, 42)
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// ValidateConnectivity メソッドが使用可能であることを確認

@@ -11,7 +11,7 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 小さなテスト用マップを生成
 	chain := NewSmallRoomPlanner(20, 20, 42) // 固定シードで再現可能
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// プレイヤーのスタート位置を部屋の中心付近に設定
@@ -54,7 +54,7 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 洞窟マップを生成
 	chain := NewCavePlanner(30, 30, 123)
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// 床タイルを見つけてプレイヤーのスタート位置とする
@@ -101,7 +101,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 	t.Parallel()
 	// テスト用の小さなマップを作成
 	chain := NewPlannerChain(10, 10, 1)
-	chain.PlanData.RawMaster = createTestRawMaster()
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.StartWith(&TestRoomPlanner{})
 	chain.Plan()
 
