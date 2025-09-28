@@ -187,7 +187,7 @@ func TestSpawnEntityFromSpec_UnknownEntityType(t *testing.T) {
 	spec := mapplanner.EntitySpec{
 		X:          1,
 		Y:          1,
-		EntityType: mapplanner.EntityType(999), // 未知のタイプ
+		EntityType: "UnknownType", // 未知のタイプ
 	}
 
 	_, err := spawnEntityFromSpec(world, spec)
