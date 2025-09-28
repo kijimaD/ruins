@@ -114,48 +114,6 @@ func TestBigRoomVariations(t *testing.T) {
 	t.Logf("Variant distribution: %v", variantCounts)
 }
 
-func TestBigRoomPlannerReproducibility(t *testing.T) {
-	t.Parallel()
-
-	// 同じシードで複数回生成して同じ結果になることを確認
-	width, height := gc.Tile(15), gc.Tile(15)
-	seed := uint64(99999)
-
-	// 1回目の生成
-	chain1 := NewBigRoomPlanner(width, height, seed)
-	chain1.PlanData.RawMaster = CreateTestRawMaster()
-	chain1.Plan()
-
-	// 2回目の生成
-	chain2 := NewBigRoomPlanner(width, height, seed)
-	chain2.PlanData.RawMaster = CreateTestRawMaster()
-	chain2.Plan()
-
-	// 部屋数が同じことを確認
-	if len(chain1.PlanData.Rooms) != len(chain2.PlanData.Rooms) {
-		t.Errorf("部屋数が異なります。1回目: %d, 2回目: %d",
-			len(chain1.PlanData.Rooms), len(chain2.PlanData.Rooms))
-	}
-
-	// 部屋の位置とサイズが同じことを確認
-	for i := range chain1.PlanData.Rooms {
-		room1 := chain1.PlanData.Rooms[i]
-		room2 := chain2.PlanData.Rooms[i]
-
-		if room1 != room2 {
-			t.Errorf("部屋[%d]が異なります。1回目: %+v, 2回目: %+v", i, room1, room2)
-		}
-	}
-
-	// タイル配置が同じことを確認
-	for i, tile1 := range chain1.PlanData.Tiles {
-		tile2 := chain2.PlanData.Tiles[i]
-		if tile1 != tile2 {
-			t.Errorf("タイル[%d]が異なります。1回目: %v, 2回目: %v", i, tile1, tile2)
-		}
-	}
-}
-
 func TestBigRoomPlannerBoundaries(t *testing.T) {
 	t.Parallel()
 

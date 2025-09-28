@@ -146,14 +146,6 @@ func (bm MetaPlan) RightTile(idx resources.TileIdx) raw.TileRaw {
 	return bm.Tiles[targetIdx]
 }
 
-// AdjacentOrthoAnyFloor は直交する近傍4タイルに移動可能タイルがあるか判定する
-func (bm MetaPlan) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
-	return bm.UpTile(idx).Walkable ||
-		bm.DownTile(idx).Walkable ||
-		bm.RightTile(idx).Walkable ||
-		bm.LeftTile(idx).Walkable
-}
-
 // AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
 func (bm MetaPlan) AdjacentAnyFloor(idx resources.TileIdx) bool {
 	x, y := bm.Level.XYTileCoord(idx)
@@ -453,11 +445,6 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
 
 	return selectedType.PlannerFunc(width, height, seed)
-}
-
-// GetPlanners は登録されているプランナーのスライスを返す
-func (b *PlannerChain) GetPlanners() []MetaMapPlanner {
-	return b.Planners
 }
 
 // GenerateTile は指定されたタイルを生成する

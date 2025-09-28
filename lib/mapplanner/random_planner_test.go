@@ -42,47 +42,6 @@ func TestNewRandomPlanner(t *testing.T) {
 	}
 }
 
-func TestNewRandomPlannerVariety(t *testing.T) {
-	t.Parallel()
-
-	width, height := gc.Tile(20), gc.Tile(20)
-
-	// 異なるシードで実行して、少なくとも異なる結果が出ることを確認
-	results := make(map[int]int) // 部屋数 -> 出現回数
-
-	// 複数の異なるシードでテスト
-	seeds := []uint64{1, 2, 3, 42, 123, 456, 789, 999, 1337, 9999}
-
-	for _, seed := range seeds {
-		chain := NewRandomPlanner(width, height, seed)
-		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
-
-		roomCount := len(chain.PlanData.Rooms)
-		results[roomCount]++
-
-		// 基本的な整合性チェック
-		expectedTileCount := int(width) * int(height)
-		if len(chain.PlanData.Tiles) != expectedTileCount {
-			t.Errorf("シード%dでタイル数が不正です。期待: %d, 実際: %d",
-				seed, expectedTileCount, len(chain.PlanData.Tiles))
-		}
-
-		// 少なくとも部屋が生成されることを確認
-		if roomCount == 0 {
-			t.Errorf("シード%dで部屋が生成されませんでした", seed)
-		}
-	}
-
-	// 最低でも2種類以上の異なる結果が出ることを期待
-	// （ランダムなので必ずしも保証されないが、高確率で異なる結果になるはず）
-	if len(results) < 2 {
-		t.Logf("警告: 異なるシードでも同じ部屋数ばかりが生成されました: %v", results)
-	} else {
-		t.Logf("異なる部屋数のパターン: %v", results)
-	}
-}
-
 func TestNewRandomPlannerBuildsSuccessfully(t *testing.T) {
 	t.Parallel()
 

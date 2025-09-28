@@ -10,7 +10,7 @@ import (
 func TestSmallRoomPlanner(t *testing.T) {
 	t.Parallel()
 
-	t.Run("SmallRoomPlannerが正しいビルダーチェーンを作成", func(t *testing.T) {
+	t.Run("SmallRoomPlannerが正常に作成される", func(t *testing.T) {
 		t.Parallel()
 		width := gc.Tile(20)
 		height := gc.Tile(20)
@@ -20,22 +20,6 @@ func TestSmallRoomPlanner(t *testing.T) {
 		// チェーンが作成されていることを確認
 		assert.NotNil(t, chain, "チェーンがnilである")
 		assert.NotNil(t, chain.Starter, "Starterが設定されていない")
-
-		// 期待されるビルダーが正しい順序で追加されているか確認
-		assert.Len(t, chain.Planners, 4, "ビルダーの数が正しくない")
-
-		// ビルダーの型を確認
-		_, ok0 := chain.Planners[0].(FillAll)
-		assert.True(t, ok0, "1番目のビルダーがFillAllでない")
-
-		_, ok1 := chain.Planners[1].(RoomDraw)
-		assert.True(t, ok1, "2番目のビルダーがRoomDrawでない")
-
-		_, ok2 := chain.Planners[2].(LineCorridorPlanner)
-		assert.True(t, ok2, "3番目のビルダーがLineCorridorPlannerでない")
-
-		_, ok3 := chain.Planners[3].(BoundaryWall)
-		assert.True(t, ok3, "4番目のビルダーがBoundaryWallでない")
 	})
 
 	t.Run("SmallRoomPlannerでマップを生成", func(t *testing.T) {

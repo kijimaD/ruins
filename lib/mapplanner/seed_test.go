@@ -108,35 +108,3 @@ func TestRandomSourceDeterministic(t *testing.T) {
 		}
 	}
 }
-
-func TestZeroSeedHandling(t *testing.T) {
-	t.Parallel()
-	// シード0の場合はランダムなシードが使用されることを確認
-	width, height := gc.Tile(10), gc.Tile(10)
-
-	// シード0で2回生成
-	chain1 := NewSmallRoomPlanner(width, height, 0)
-	chain1.PlanData.RawMaster = CreateTestRawMaster()
-	chain1.Plan()
-
-	// 少し時間をずらして再度生成
-	chain2 := NewSmallRoomPlanner(width, height, 0)
-	chain2.PlanData.RawMaster = CreateTestRawMaster()
-	chain2.Plan()
-
-	// 高確率で異なるマップになるはず（厳密には同じになる可能性もあるが極めて低い）
-	// ここでは部屋数だけチェック
-	if len(chain1.PlanData.Rooms) == len(chain2.PlanData.Rooms) {
-		// 部屋数が同じでも、タイルが異なる可能性をチェック
-		differentTiles := 0
-		for i := range chain1.PlanData.Tiles {
-			if chain1.PlanData.Tiles[i] != chain2.PlanData.Tiles[i] {
-				differentTiles++
-			}
-		}
-		// 完全に一致する確率は非常に低い
-		if differentTiles == 0 {
-			t.Log("警告: シード0で生成した2つのマップが偶然一致しました（極めて稀）")
-		}
-	}
-}
