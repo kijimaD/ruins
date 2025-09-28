@@ -381,14 +381,23 @@ func (bm *MetaPlan) BuildPlan() (*EntityPlan, error) {
 		// TODO: TileNameで判定するべき
 		if tile.Walkable {
 			// 移動可能 = 床タイル
-			plan.AddFloor(int(x), int(y))
+			plan.Entities = append(plan.Entities, EntitySpec{
+				X:          int(x),
+				Y:          int(y),
+				EntityType: EntityTypeFloor,
+			})
 		} else {
 			// 移動不可 = 壁タイル（隣接に床がある場合のみ）
 			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
 			if bm.AdjacentAnyFloor(i) {
 				// 壁タイプを判定（スプライト番号はmapspawnerで決定）
 				wallType := bm.GetWallType(i)
-				plan.AddWallWithType(int(x), int(y), wallType)
+				plan.Entities = append(plan.Entities, EntitySpec{
+					X:          int(x),
+					Y:          int(y),
+					EntityType: EntityTypeWall,
+					WallType:   &wallType,
+				})
 			}
 		}
 	}
@@ -397,25 +406,48 @@ func (bm *MetaPlan) BuildPlan() (*EntityPlan, error) {
 	for _, portal := range bm.WarpPortals {
 		switch portal.Type {
 		case WarpPortalNext:
-			plan.AddWarpNext(portal.X, portal.Y)
+			plan.Entities = append(plan.Entities, EntitySpec{
+				X:          portal.X,
+				Y:          portal.Y,
+				EntityType: EntityTypeWarpNext,
+			})
 		case WarpPortalEscape:
-			plan.AddWarpEscape(portal.X, portal.Y)
+			plan.Entities = append(plan.Entities, EntitySpec{
+				X:          portal.X,
+				Y:          portal.Y,
+				EntityType: EntityTypeWarpEscape,
+			})
 		}
 	}
 
 	// NPCエンティティをEntityPlanに追加
 	for _, npc := range bm.NPCs {
-		plan.AddNPC(npc.X, npc.Y, npc.NPCType)
+		plan.Entities = append(plan.Entities, EntitySpec{
+			X:          npc.X,
+			Y:          npc.Y,
+			EntityType: EntityTypeNPC,
+			NPCType:    &npc.NPCType,
+		})
 	}
 
 	// アイテムエンティティをEntityPlanに追加
 	for _, item := range bm.Items {
-		plan.AddItem(item.X, item.Y, item.ItemName)
+		plan.Entities = append(plan.Entities, EntitySpec{
+			X:          item.X,
+			Y:          item.Y,
+			EntityType: EntityTypeItem,
+			ItemType:   &item.ItemName,
+		})
 	}
 
 	// PropsエンティティをEntityPlanに追加
 	for _, prop := range bm.Props {
-		plan.AddProp(prop.X, prop.Y, prop.PropType)
+		plan.Entities = append(plan.Entities, EntitySpec{
+			X:          prop.X,
+			Y:          prop.Y,
+			EntityType: EntityTypeProp,
+			PropType:   &prop.PropType,
+		})
 	}
 
 	return plan, nil

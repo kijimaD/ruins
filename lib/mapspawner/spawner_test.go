@@ -60,8 +60,16 @@ func TestSpawnLevel_NoPlayerStartPosition(t *testing.T) {
 
 	// プレイヤー開始位置が設定されていないEntityPlanを作成
 	plan := mapplanner.NewEntityPlan(2, 2)
-	plan.AddFloor(0, 0)
-	plan.AddFloor(1, 1)
+	plan.Entities = append(plan.Entities, mapplanner.EntitySpec{
+		X:          0,
+		Y:          0,
+		EntityType: mapplanner.EntityTypeFloor,
+	})
+	plan.Entities = append(plan.Entities, mapplanner.EntitySpec{
+		X:          1,
+		Y:          1,
+		EntityType: mapplanner.EntityTypeFloor,
+	})
 	// プレイヤー開始位置を設定しない
 
 	// Spawnはプレイヤー配置を行わないため、エラーは返さない

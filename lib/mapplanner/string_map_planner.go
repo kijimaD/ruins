@@ -251,9 +251,19 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 
 			// タイル名に応じてエンティティを追加
 			if tileName == "Floor" {
-				plan.AddFloor(x, y)
+				plan.Entities = append(plan.Entities, EntitySpec{
+					X:          x,
+					Y:          y,
+					EntityType: EntityTypeFloor,
+				})
 			} else {
-				plan.AddWall(x, y, 0) // スプライト番号は0をデフォルト
+				spriteNumber := 0 // スプライト番号は0をデフォルト
+				plan.Entities = append(plan.Entities, EntitySpec{
+					X:          x,
+					Y:          y,
+					EntityType: EntityTypeWall,
+					WallSprite: &spriteNumber,
+				})
 			}
 		}
 	}
@@ -271,11 +281,19 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 
 				// ワープポータルを処理
 				if char == 'w' {
-					plan.AddWarpNext(x, y)
+					plan.Entities = append(plan.Entities, EntitySpec{
+						X:          x,
+						Y:          y,
+						EntityType: EntityTypeWarpNext,
+					})
 					continue
 				}
 				if char == 'e' {
-					plan.AddWarpEscape(x, y)
+					plan.Entities = append(plan.Entities, EntitySpec{
+						X:          x,
+						Y:          y,
+						EntityType: EntityTypeWarpEscape,
+					})
 					continue
 				}
 
@@ -283,20 +301,39 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 					switch entityPlan.EntityType {
 					case EntityTypeProp:
 						if propType, ok := entityPlan.Data.(gc.PropType); ok {
-							plan.AddProp(x, y, propType)
+							plan.Entities = append(plan.Entities, EntitySpec{
+								X:          x,
+								Y:          y,
+								EntityType: EntityTypeProp,
+								PropType:   &propType,
+							})
 						}
 					case EntityTypeNPC:
-						if npcType, ok := entityPlan.Data.(string); ok {
-							plan.AddNPC(x, y, npcType)
+						var npcType string
+						if npcTypeValue, ok := entityPlan.Data.(string); ok {
+							npcType = npcTypeValue
 						} else {
-							plan.AddNPC(x, y, "デフォルトNPC")
+							npcType = "デフォルトNPC"
 						}
+						plan.Entities = append(plan.Entities, EntitySpec{
+							X:          x,
+							Y:          y,
+							EntityType: EntityTypeNPC,
+							NPCType:    &npcType,
+						})
 					case EntityTypeItem:
-						if itemName, ok := entityPlan.Data.(string); ok {
-							plan.AddItem(x, y, itemName)
+						var itemName string
+						if itemNameValue, ok := entityPlan.Data.(string); ok {
+							itemName = itemNameValue
 						} else {
-							plan.AddItem(x, y, "デフォルトアイテム")
+							itemName = "デフォルトアイテム"
 						}
+						plan.Entities = append(plan.Entities, EntitySpec{
+							X:          x,
+							Y:          y,
+							EntityType: EntityTypeItem,
+							ItemType:   &itemName,
+						})
 					case EntityTypePlayer:
 						// プレイヤーの開始位置を設定
 						plan.SetPlayerStartPosition(x, y)
