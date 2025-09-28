@@ -93,10 +93,10 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				<p>Package mapspawner はEntityPlanに基づいてECSエンティティを生成する機能を提供する
+				<p>Package mapspawner はMetaPlanに基づいてECSエンティティを生成する機能を提供する
 <p>このパッケージの責務:
-- EntityPlanからLevelオブジェクトの生成
-- EntitySpecからECSエンティティの生成
+- MetaPlanからLevelオブジェクトの生成
+- タイル・NPC・Props情報からECSエンティティの生成
 - スプライト番号の補完などスポーン時の最終調整
 - スポーン処理のエラーハンドリング
 <p>使い分け:
@@ -105,10 +105,10 @@
 <p>責務境界:
 - mapplanerが全てのplanning（計画）を担当
 - mapspawnerは純粋にspawning（生成）のみを担当
-- 呼び出し側でmapplaner.Plan()とmapspawner.SpawnLevel()を個別に呼び出す
+- 呼び出し側でmapplaner.Plan()とmapspawner.SpawnFromMetaPlan()を個別に呼び出す
 <p>依存関係:
 - worldhelper: 各種エンティティ生成関数
-- mapplaner: EntityPlan, EntitySpec等の型定義
+- mapplaner: MetaPlan等の型定義
 
 				
 			</div>
@@ -128,7 +128,7 @@
 			
 			
 				
-				<dd><a href="index.html#Spawn">func Spawn(world w.World, plan *mapplanner.EntityPlan) (resources.Level, error)</a></dd>
+				<dd><a href="index.html#Spawn">func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error)</a></dd>
 			
 			
 			
@@ -161,13 +161,14 @@
 		
 			
 			
-			<h2 id="Spawn">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapspawner/spawner.go?s=363:442#L5">Spawn</a>
+			<h2 id="Spawn">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapspawner/spawner.go?s=460:541#L6">Spawn</a>
 				<a class="permalink" href="index.html#Spawn">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func Spawn(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, plan *<a href="../mapplanner/index.html">mapplanner</a>.<a href="../mapplanner/index.html#EntityPlan">EntityPlan</a>) (<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Level">Level</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-			<p>Spawn はEntityPlanに基づいてレベルを生成する
+			<pre>func Spawn(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, metaPlan *<a href="../mapplanner/index.html">mapplanner</a>.<a href="../mapplanner/index.html#MetaPlan">MetaPlan</a>) (<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Level">Level</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>Spawn はMetaPlanからレベルを生成する
+タイル、NPC、Props、ワープポータル情報から効率的にエンティティを生成する
 
 			
 			

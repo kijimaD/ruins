@@ -83,8 +83,6 @@
 			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
 			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
 			
-				<dd><a href="index.html#pkg-examples" class="examplesLink">Examples</a></dd>
-			
 			
 			</dl>
 		</div>
@@ -106,25 +104,37 @@
 <p>マップは規定数のタイル（TileWidth × TileHeight）で正方形に構成されます。
 各位置には必ず1つのタイルが存在し、タイル自体は不変です。
 タイルの上にエンティティ（壁、床、アイテム、NPCなど）を配置していきます。
-<p>## 主要データ構造の違い
-<p>- **MetaPlan**: マップ生成プロセス中の中間データ
+<p>## 主要データ構造
+<p>- **MetaPlan**: マップ生成・エンティティ生成用の統一データ構造
 <ul>
-<li>タイル配列（[]Tile）、部屋情報、廊下情報、乱数生成器を含む
+<li>タイル配列（[]raw.TileRaw）、部屋情報、廊下情報、乱数生成器を含む
 <li>PlannerChain内で段階的に構築される
-<li>生成アルゴリズムで使用される作業用データ
-</ul>
-<p>- **EntityPlan**: エンティティ生成用の最終配置計画
-<ul>
-<li>TileSpec、EntitySpecのリストとして詳細な配置計画を管理
-<li>MetaPlanから BuildPlan() で生成される
-<li>mapspawnerで実際のECSエンティティ生成に使用される
+<li>mapspawnerで直接ECSエンティティ生成に使用される
 </ul>
 <p>## タイル定義
-<p>マップ生成で使用されるタイルタイプ：
+<p>### 基本タイルタイプ
+マップ生成で使用される標準タイルタイプ：
 <ul>
-<li>TileEmpty: 空のタイル（デフォルト状態）
-<li>TileFloor: 床タイル（通行可能）
-<li>TileWall: 壁タイル（通行不可）
+<li>planData.GenerateTile(&quot;Empty&quot;): 空のタイル（デフォルト状態）
+<li>planData.GenerateTile(&quot;Floor&quot;): 床タイル（通行可能）
+<li>planData.GenerateTile(&quot;Wall&quot;): 壁タイル（通行不可）
+<li>TileWater: 水タイル（通行可能だが特殊）
+<li>TileDoor: 扉タイル（開閉可能な通路）
+<li>TilePit: 落とし穴タイル（歩くと落下）
+</ul>
+<p>### TOMLベースタイル定義システム
+新しいタイル定義システムでは、TOMLファイルでタイルの種類と属性を定義できます：
+<pre>[[tile]]
+Name = &quot;Floor&quot;
+Description = &quot;床タイル - 移動可能な基本的なタイル&quot;
+Type = &quot;FLOOR&quot;
+Walkable = true
+BlocksLOS = false
+</pre>
+<p>TileMasterクラスを使用してタイル定義を読み込み・管理：
+<ul>
+<li>LoadTileFromFile(): TOMLファイルからタイル定義を読み込み
+<li>GenerateTile(): 名前指定でタイルオブジェクトを生成
 </ul>
 <p>## エンティティ
 <p>エンティティとして実装されます：
@@ -134,268 +144,28 @@
 <p>## 通行可否判定
 <p>マップ生成時にはタイルの Walkable フィールドで通行可否を判定します：
 <ul>
-<li>通行可能: TileFloor（Walkable=true）
-<li>通行不可: TileWall（Walkable=false）, TileEmpty（Walkable=false）
-</ul>
-<p>## 配置計画の作成
-<p>mapplannerは以下の2つのアプローチで配置計画を作成します：
-<p>### 1. タイルベース生成（標準）
-<ul>
-<li>PlannerChainでタイル配列を生成
-<li>mapspawnerでタイルからエンティティ配置計画（EntityPlan）を自動生成
-<li>タイルタイプに応じて対応するエンティティ（床、壁、ワープホールなど）を配置
-</ul>
-<p>### 2. 文字列ベース生成（高度）
-<ul>
-<li>文字列マップから直接タイルとエンティティの配置計画を作成
-<li>NPCやアイテムなどの詳細なエンティティ配置も可能
-<li>EntityPlanで明示的にエンティティ配置計画（EntitySpec）を管理
+<li>通行可能: planData.GenerateTile(&quot;Floor&quot;)（Walkable=true）
+<li>通行不可: planData.GenerateTile(&quot;Wall&quot;)（Walkable=false）, planData.GenerateTile(&quot;Empty&quot;)（Walkable=false）
 </ul>
 <p>## マップ生成の流れ
-<p>### タイルベース生成の場合
-1. タイル配列の初期化（全てTileEmpty）
+<p>### MetaPlan統一方式
+1. タイル配列の初期化（全てplanData.GenerateTile(&quot;Empty&quot;)）
 2. PlannerChainによる段階的タイル配置（MetaPlan）
-3. MetaPlan.BuildPlan()でEntityPlan生成
-4. mapspawner.SpawnLevelで実際のECSエンティティ生成
-<p>### 文字列ベース生成の場合
-1. 文字列マップ定義からタイル・エンティティ配置計画を作成
-2. EntityPlanにEntitySpecとして詳細なエンティティ配置計画を記録
-3. mapspawner.SpawnLevelでEntityPlanに基づくECSエンティティ生成
+3. mapspawner.SpawnFromMetaPlanで直接ECSエンティティ生成
+<ul>
+<li>タイルタイプに応じて対応するエンティティ（床、壁、ワープホールなど）を配置
+<li>NPCやアイテムなどの詳細なエンティティ配置も直接処理
+</ul>
 <p>いずれの場合も実行時はエンティティベースの通行可否判定（movement.CanMoveTo）を使用
 <p>Package mapplanner はマップ生成機能を提供する
 参考: <a href="https://bfnightly.bracketproductions.com">https://bfnightly.bracketproductions.com</a>
 <h3 id="hdr-Package_mapplanner__NPC_________________mapspawner____">Package mapplanner のNPC配置プランナー - 責務分離によりmapspawnerから移動</h3>
 <h3 id="hdr-Package_mapplanner__Props_________________mapspawner____">Package mapplanner のProps配置プランナー - 責務分離によりmapspawnerから移動</h3>
-<p>Package mapplanner の文字列ベースマップビルダー
-文字列で直接タイルとエンティティ配置を指定できるシステム
-<p>Package mapplanner の文字列ベース街ビルダー
-文字列で直接街のレイアウトを定義するシステム
-<p>Package mapplanner の街用ビルダー
-固定レイアウトの街マップを生成する
+<p>Package mapplanner の MetaPlan 対応街プランナー
+元の文字列ベース街レイアウトを MetaPlan 方式で実装
 <p>Package mapplanner のワープポータル配置プランナー - 責務分離によりmapspawnerから移動
 
-				<div id="example__complexLayout" class="toggle">
-	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example (ComplexLayout)</span></p>
-	</div>
-	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example (ComplexLayout)</span></p>
-		<p>複雑なマップレイアウトの例
-</p>
-		
-		
-			<p>Code:</p>
-			<pre class="code">
-<span class="comment">// より複雑な街のレイアウト</span>
-tileMap := []string{
-    &#34;##################&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;#ffffffffffffffff#&#34;,
-    &#34;##################&#34;,
-}
-
-entityMap := []string{
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..CT.......BS.....&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-    &#34;..................&#34;,
-}
-
-plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
-if err != nil {
-    panic(err)
-}
-
-<span class="comment">// 各種統計を表示</span>
-tileTypeCount := make(map[string]int)
-propTypeCount := make(map[gc.PropType]int)
-
-for _, entity := range plan.Entities {
-    switch entity.EntityType {
-    case EntityTypeFloor:
-        tileTypeCount[&#34;床&#34;]++
-    case EntityTypeWall:
-        tileTypeCount[&#34;壁&#34;]++
-    case EntityTypeProp:
-        if entity.PropType != nil {
-            propTypeCount[*entity.PropType]++
-        }
-    }
-}
-
-fmt.Printf(&#34;複雑なレイアウト統計:\n&#34;)
-fmt.Printf(&#34;マップサイズ: %dx%d\n&#34;, plan.Width, plan.Height)
-fmt.Printf(&#34;床タイル数: %d\n&#34;, tileTypeCount[&#34;床&#34;])
-fmt.Printf(&#34;壁タイル数: %d\n&#34;, tileTypeCount[&#34;壁&#34;])
-fmt.Printf(&#34;総Props数: %d\n&#34;, len(propTypeCount))
-
-for propType, count := range propTypeCount {
-    fmt.Printf(&#34;  %s: %d個\n&#34;, propType, count)
-}
-</pre>
-			
-		
-	</div>
-</div>
-<div id="example__entityMappings" class="toggle">
-	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example (EntityMappings)</span></p>
-	</div>
-	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example (EntityMappings)</span></p>
-		<p>エンティティ文字のマッピング一覧を表示する例
-</p>
-		
-		
-			<p>Code:</p>
-			<pre class="code">mapping := getDefaultEntityMapping()
-
-fmt.Println(&#34;エンティティ文字マッピング:&#34;)
-fmt.Printf(&#34;&#39;@&#39; -&gt; プレイヤー (EntityTypePlayer)\n&#34;)
-fmt.Printf(&#34;&#39;&amp;&#39; -&gt; NPC (EntityTypeNPC)\n&#34;)
-fmt.Printf(&#34;&#39;C&#39; -&gt; 椅子 (PropTypeChair)\n&#34;)
-fmt.Printf(&#34;&#39;T&#39; -&gt; テーブル (PropTypeTable)\n&#34;)
-fmt.Printf(&#34;&#39;S&#39; -&gt; 本棚 (PropTypeBookshelf)\n&#34;)
-fmt.Printf(&#34;&#39;M&#39; -&gt; 樽 (PropTypeBarrel)\n&#34;)
-fmt.Printf(&#34;&#39;R&#39; -&gt; 木箱 (PropTypeCrate)\n&#34;)
-
-fmt.Printf(&#34;\n実際のマッピング数: %d\n&#34;, len(mapping))
-
-<span class="comment"></pre>
-			
-			<p>Output:</p>
-			<pre class="output">エンティティ文字マッピング:
-&#39;@&#39; -&gt; プレイヤー (EntityTypePlayer)
-&#39;&amp;&#39; -&gt; NPC (EntityTypeNPC)
-&#39;C&#39; -&gt; 椅子 (PropTypeChair)
-&#39;T&#39; -&gt; テーブル (PropTypeTable)
-&#39;S&#39; -&gt; 本棚 (PropTypeBookshelf)
-&#39;M&#39; -&gt; 樽 (PropTypeBarrel)
-&#39;R&#39; -&gt; 木箱 (PropTypeCrate)
-
-実際のマッピング数: 7
-</pre>
-			
-		
-	</div>
-</div>
-<div id="example__stringEntityPlanGeneration" class="toggle">
-	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example (StringEntityPlanGeneration)</span></p>
-	</div>
-	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example (StringEntityPlanGeneration)</span></p>
-		<p>EntityPlan統合使用例（mapspawnerは別パッケージで使用）
-</p>
-		
-		
-			<p>Code:</p>
-			<pre class="code"><span class="comment">// 小さな街のレイアウト</span>
-tileMap := []string{
-    &#34;##########&#34;,
-    &#34;#ffffffff#&#34;,
-    &#34;#ffffffff#&#34;,
-    &#34;#ffffffff#&#34;,
-    &#34;#ffffffff#&#34;,
-    &#34;##########&#34;,
-}
-
-entityMap := []string{
-    &#34;..........&#34;,
-    &#34;..........&#34;,
-    &#34;..CT......&#34;,
-    &#34;..........&#34;,
-    &#34;..........&#34;,
-    &#34;..........&#34;,
-}
-
-<span class="comment">// EntityPlanを生成</span>
-plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
-if err != nil {
-    panic(err)
-}
-
-fmt.Printf(&#34;統合例:\n&#34;)
-fmt.Printf(&#34;マップサイズ: %dx%d\n&#34;, plan.Width, plan.Height)
-fmt.Printf(&#34;エンティティ数: %d\n&#34;, len(plan.Entities))
-
-<span class="comment">// Props数をカウント</span>
-propCount := 0
-for _, entity := range plan.Entities {
-    if entity.EntityType == EntityTypeProp {
-        propCount++
-    }
-}
-fmt.Printf(&#34;Props数: %d\n&#34;, propCount)
-
-<span class="comment"></pre>
-			
-			<p>Output:</p>
-			<pre class="output">統合例:
-マップサイズ: 10x6
-エンティティ数: 62
-Props数: 2
-</pre>
-			
-		
-	</div>
-</div>
-<div id="example__tileMappings" class="toggle">
-	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example (TileMappings)</span></p>
-	</div>
-	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example (TileMappings)</span></p>
-		<p>タイル文字のマッピング一覧を表示する例
-</p>
-		
-		
-			<p>Code:</p>
-			<pre class="code">mapping := getDefaultTileMapping()
-
-fmt.Println(&#34;タイル文字マッピング:&#34;)
-fmt.Printf(&#34;&#39;#&#39; -&gt; 壁 (TileWall)\n&#34;)
-fmt.Printf(&#34;&#39;f&#39; -&gt; 床 (TileFloor)\n&#34;)
-fmt.Printf(&#34;&#39;r&#39; -&gt; 道路 (TileFloor)\n&#34;)
-fmt.Printf(&#34;&#39; &#39; -&gt; 床 (TileFloor)\n&#34;)
-fmt.Printf(&#34;&#39;.&#39; -&gt; 空地・庭 (TileFloor)\n&#34;)
-
-fmt.Printf(&#34;\n実際のマッピング数: %d\n&#34;, len(mapping))
-fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンティティとして別途処理されます\n&#34;)
-
-<span class="comment"></pre>
-			
-			<p>Output:</p>
-			<pre class="output">タイル文字マッピング:
-&#39;#&#39; -&gt; 壁 (TileWall)
-&#39;f&#39; -&gt; 床 (TileFloor)
-&#39;r&#39; -&gt; 道路 (TileFloor)
-&#39; &#39; -&gt; 床 (TileFloor)
-&#39;.&#39; -&gt; 空地・庭 (TileFloor)
-
-実際のマッピング数: 4
-
-ワープポータル (&#39;w&#39;, &#39;e&#39;) はエンティティとして別途処理されます
-</pre>
-			
-		
-	</div>
-</div>
-
+				
 			</div>
 		</div>
 
@@ -417,10 +187,7 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 			
 			
 				
-				<dd><a href="index.html#GetTownLayout">func GetTownLayout() ([]string, []string)</a></dd>
-			
-				
-				<dd><a href="index.html#ValidateStringMap">func ValidateStringMap(tileMap, entityMap []string) error</a></dd>
+				<dd><a href="index.html#CreateTestRawMaster">func CreateTestRawMaster() *raw.Master</a></dd>
 			
 			
 				
@@ -443,7 +210,7 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 				<dd><a href="index.html#BoundaryWall">type BoundaryWall</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewBoundaryWall">func NewBoundaryWall(wallTileType Tile) BoundaryWall</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewBoundaryWall">func NewBoundaryWall(wallTileName string) BoundaryWall</a></dd>
 				
 				
 					
@@ -491,78 +258,10 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 				
 			
 				
-				<dd><a href="index.html#EntityPlan">type EntityPlan</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BuildEntityPlanFromStrings">func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#BuildPlan">func BuildPlan(chain *PlannerChain) (*EntityPlan, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewEntityPlan">func NewEntityPlan(width, height int) *EntityPlan</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#Plan">func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*EntityPlan, error)</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddFloor">func (mp *EntityPlan) AddFloor(x, y int)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddItem">func (mp *EntityPlan) AddItem(x, y int, itemType string)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddNPC">func (mp *EntityPlan) AddNPC(x, y int, npcType string)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddProp">func (mp *EntityPlan) AddProp(x, y int, propType gc.PropType)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddTile">func (mp *EntityPlan) AddTile(x, y int, tileType Tile)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddWall">func (mp *EntityPlan) AddWall(x, y int, spriteNumber int)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddWallWithType">func (mp *EntityPlan) AddWallWithType(x, y int, wallType WallType)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddWarpEscape">func (mp *EntityPlan) AddWarpEscape(x, y int)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.AddWarpNext">func (mp *EntityPlan) AddWarpNext(x, y int)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.GetPlayerStartPosition">func (mp *EntityPlan) GetPlayerStartPosition() (int, int, bool)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.SetPlayerStartPosition">func (mp *EntityPlan) SetPlayerStartPosition(x, y int)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#EntityPlan.Validate">func (mp *EntityPlan) Validate() error</a></dd>
-				
-			
-				
-				<dd><a href="index.html#EntitySpec">type EntitySpec</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#EntityTemplate">type EntityTemplate</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#EntityType">type EntityType</a></dd>
-				
-				
-			
-				
 				<dd><a href="index.html#FillAll">type FillAll</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewFillAll">func NewFillAll(tileType Tile) FillAll</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewFillAll">func NewFillAll(tileName string) FillAll</a></dd>
 				
 				
 					
@@ -642,20 +341,6 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 				
 			
 				
-				<dd><a href="index.html#MapConnectivityResult">type MapConnectivityResult</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#MapConnectivityResult.HasReachableEscapePortal">func (result *MapConnectivityResult) HasReachableEscapePortal() bool</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#MapConnectivityResult.HasReachableWarpPortal">func (result *MapConnectivityResult) HasReachableWarpPortal() bool</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#MapConnectivityResult.IsFullyConnected">func (result *MapConnectivityResult) IsFullyConnected() bool</a></dd>
-				
-			
-				
 				<dd><a href="index.html#MetaMapPlanner">type MetaMapPlanner</a></dd>
 				
 				
@@ -663,18 +348,21 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 				
 				<dd><a href="index.html#MetaPlan">type MetaPlan</a></dd>
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Plan">func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*MetaPlan, error)</a></dd>
+				
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.AdjacentAnyFloor">func (bm MetaPlan) AdjacentAnyFloor(idx resources.TileIdx) bool</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.AdjacentOrthoAnyFloor">func (bm MetaPlan) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.DownTile">func (bm MetaPlan) DownTile(idx resources.TileIdx) raw.TileRaw</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.BuildPlan">func (bm *MetaPlan) BuildPlan() (*EntityPlan, error)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.GenerateTile">func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.DownTile">func (bm MetaPlan) DownTile(idx resources.TileIdx) Tile</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.GetPlayerStartPosition">func (bm *MetaPlan) GetPlayerStartPosition() (int, int, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.GetWallType">func (bm MetaPlan) GetWallType(idx resources.TileIdx) WallType</a></dd>
@@ -683,13 +371,21 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.IsSpawnableTile">func (bm MetaPlan) IsSpawnableTile(_ w.World, tx gc.Tile, ty gc.Tile) bool</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.LeftTile">func (bm MetaPlan) LeftTile(idx resources.TileIdx) Tile</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.LeftTile">func (bm MetaPlan) LeftTile(idx resources.TileIdx) raw.TileRaw</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.RightTile">func (bm MetaPlan) RightTile(idx resources.TileIdx) Tile</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.RightTile">func (bm MetaPlan) RightTile(idx resources.TileIdx) raw.TileRaw</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.UpTile">func (bm MetaPlan) UpTile(idx resources.TileIdx) Tile</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.UpTile">func (bm MetaPlan) UpTile(idx resources.TileIdx) raw.TileRaw</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MetaTownPlanner">type MetaTownPlanner</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaTownPlanner.PlanInitial">func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -725,7 +421,7 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.IsWalkable">func (pf *PathFinder) IsWalkable(x, y int) bool</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.ValidateMapConnectivity">func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) MapConnectivityResult</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#PathFinder.ValidateConnectivity">func (pf *PathFinder) ValidateConnectivity(playerStartX, playerStartY int) error</a></dd>
 				
 			
 				
@@ -753,17 +449,8 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 					<dd>&nbsp; &nbsp; <a href="index.html#NewSmallRoomPlanner">func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewStringMapPlanner">func NewStringMapPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewStringMapPlannerWithMaps">func NewStringMapPlannerWithMaps(tileMap, entityMap []string, seed uint64) *PlannerChain</a></dd>
-				
-					
 					<dd>&nbsp; &nbsp; <a href="index.html#NewTownPlanner">func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain</a></dd>
 				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#PlannerChain.GetPlanners">func (b *PlannerChain) GetPlanners() []MetaMapPlanner</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#PlannerChain.Plan">func (b *PlannerChain) Plan()</a></dd>
@@ -772,7 +459,7 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 					<dd>&nbsp; &nbsp; <a href="index.html#PlannerChain.StartWith">func (b *PlannerChain) StartWith(initialMapPlanner InitialMapPlanner)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#PlannerChain.ValidateConnectivity">func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#PlannerChain.ValidateConnectivity">func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#PlannerChain.With">func (b *PlannerChain) With(metaMapPlanner MetaMapPlanner)</a></dd>
@@ -780,11 +467,6 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 			
 				
 				<dd><a href="index.html#PlannerType">type PlannerType</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#PortalReachability">type PortalReachability</a></dd>
 				
 				
 			
@@ -878,84 +560,6 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 				
 			
 				
-				<dd><a href="index.html#SingleRoomDraw">type SingleRoomDraw</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SingleRoomDraw.PlanMeta">func (d SingleRoomDraw) PlanMeta(planData *MetaPlan)</a></dd>
-				
-			
-				
-				<dd><a href="index.html#SingleRoomPlanner">type SingleRoomPlanner</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#SingleRoomPlanner.PlanInitial">func (b SingleRoomPlanner) PlanInitial(planData *MetaPlan) error</a></dd>
-				
-			
-				
-				<dd><a href="index.html#StringMapPlanner">type StringMapPlanner</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#StringMapPlanner.AddEntityMapping">func (b *StringMapPlanner) AddEntityMapping(char rune, entityType EntityType, data interface{}) *StringMapPlanner</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#StringMapPlanner.AddTileMapping">func (b *StringMapPlanner) AddTileMapping(char rune, tileType Tile) *StringMapPlanner</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#StringMapPlanner.PlanInitial">func (b StringMapPlanner) PlanInitial(planData *MetaPlan) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#StringMapPlanner.SetEntityMapping">func (b *StringMapPlanner) SetEntityMapping(mapping map[rune]EntityTemplate) *StringMapPlanner</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#StringMapPlanner.SetTileMapping">func (b *StringMapPlanner) SetTileMapping(mapping map[rune]Tile) *StringMapPlanner</a></dd>
-				
-			
-				
-				<dd><a href="index.html#Tile">type Tile</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#TileSpec">type TileSpec</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#TileType">type TileType</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#TownEntityPlanner">type TownEntityPlanner</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#TownEntityPlanner.PlanInitial">func (b TownEntityPlanner) PlanInitial(planData *MetaPlan) error</a></dd>
-				
-			
-				
-				<dd><a href="index.html#TownMapDraw">type TownMapDraw</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#TownMapDraw.PlanMeta">func (b TownMapDraw) PlanMeta(planData *MetaPlan)</a></dd>
-				
-			
-				
-				<dd><a href="index.html#ValidationError">type ValidationError</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewValidationError">func NewValidationError(message string, x, y int) ValidationError</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#ValidationError.Error">func (e ValidationError) Error() string</a></dd>
-				
-			
-				
 				<dd><a href="index.html#WallType">type WallType</a></dd>
 				
 				
@@ -989,24 +593,6 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 			</div><!-- #manual-nav -->
 
 		
-		<div id="pkg-examples">
-			<h3>Examples</h3>
-			<div class="js-expandAll expandAll collapsed">(Expand All)</div>
-			<dl>
-			
-			<dd><a class="exampleLink" href="index.html#example_BuildEntityPlanFromStrings">BuildEntityPlanFromStrings</a></dd>
-			
-			<dd><a class="exampleLink" href="index.html#example__complexLayout">Package (ComplexLayout)</a></dd>
-			
-			<dd><a class="exampleLink" href="index.html#example__entityMappings">Package (EntityMappings)</a></dd>
-			
-			<dd><a class="exampleLink" href="index.html#example__stringEntityPlanGeneration">Package (StringEntityPlanGeneration)</a></dd>
-			
-			<dd><a class="exampleLink" href="index.html#example__tileMappings">Package (TileMappings)</a></dd>
-			
-			</dl>
-		</div>
-		
 
 		
 			<h3>Package files</h3>
@@ -1031,8 +617,6 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/line_corridor.go">line_corridor.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go">map_plan.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/npc_planner.go">npc_planner.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go">pathfinder.go</a>
@@ -1049,17 +633,9 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go">ruins_planner.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/single_room.go">single_room.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/test_helper.go">test_helper.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go">string_map_planner.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_town_planner.go">string_town_planner.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/tile.go">tile.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner.go">town_planner.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/validation.go">validation.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner_metaplan.go">town_planner_metaplan.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/wall_type.go">wall_type.go</a>
 			
@@ -1157,46 +733,21 @@ fmt.Printf(&#34;\nワープポータル (&#39;w&#39;, &#39;e&#39;) はエンテ�
     <span id="ErrConnectivity">ErrConnectivity</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;マップ接続性エラー: プレイヤーからワープホールに到達できません&#34;)
     <span class="comment">// ErrPlayerPlacement はプレイヤー配置エラーを表す</span>
     <span id="ErrPlayerPlacement">ErrPlayerPlacement</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;プレイヤー配置可能な床タイルが見つかりません&#34;)
-)</pre>
-			
-				<p>タイル定数の定義
-
-				<pre>var (
-    <span class="comment">// TileEmpty は空のタイル</span>
-    <span id="TileEmpty">TileEmpty</span> = <a href="index.html#Tile">Tile</a>{<a href="index.html#Tile.Type">Type</a>: <a href="index.html#TileTypeEmpty">TileTypeEmpty</a>, <a href="index.html#Tile.Walkable">Walkable</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>, <a href="index.html#Tile.BlocksLOS">BlocksLOS</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>}
-    <span class="comment">// TileFloor は床タイル</span>
-    <span id="TileFloor">TileFloor</span> = <a href="index.html#Tile">Tile</a>{<a href="index.html#Tile.Type">Type</a>: <a href="index.html#TileTypeFloor">TileTypeFloor</a>, <a href="index.html#Tile.Walkable">Walkable</a>: <a href="http://localhost:8888/pkg/builtin/#true">true</a>, <a href="index.html#Tile.BlocksLOS">BlocksLOS</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>}
-    <span class="comment">// TileWall は壁タイル</span>
-    <span id="TileWall">TileWall</span> = <a href="index.html#Tile">Tile</a>{<a href="index.html#Tile.Type">Type</a>: <a href="index.html#TileTypeWall">TileTypeWall</a>, <a href="index.html#Tile.Walkable">Walkable</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>, <a href="index.html#Tile.BlocksLOS">BlocksLOS</a>: <a href="http://localhost:8888/pkg/builtin/#true">true</a>}
+    <span class="comment">// ErrNoWarpPortal はワープポータルが存在しないエラーを表す</span>
+    <span id="ErrNoWarpPortal">ErrNoWarpPortal</span> = <a href="http://localhost:8888/pkg/errors/">errors</a>.<a href="http://localhost:8888/pkg/errors/#New">New</a>(&#34;マップにワープポータルが配置されていません&#34;)
 )</pre>
 			
 		
 		
 			
 			
-			<h2 id="GetTownLayout">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_town_planner.go?s=1295:1336#L27">GetTownLayout</a>
-				<a class="permalink" href="index.html#GetTownLayout">&#xb6;</a>
+			<h2 id="CreateTestRawMaster">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/test_helper.go?s=150:188#L1">CreateTestRawMaster</a>
+				<a class="permalink" href="index.html#CreateTestRawMaster">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func GetTownLayout() ([]<a href="http://localhost:8888/pkg/builtin/#string">string</a>, []<a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-			<p>GetTownLayout は街のタイルとエンティティレイアウトを返す
-TODO: tileMap と entityMap を明確に分ける(両方で使えるものがあって使い分けがわかりにくい)
-TODO: 建物をプレハブ式にする
-
-			
-			
-
-		
-			
-			
-			<h2 id="ValidateStringMap">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=10056:10113#L310">ValidateStringMap</a>
-				<a class="permalink" href="index.html#ValidateStringMap">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func ValidateStringMap(tileMap, entityMap []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>ValidateStringMap は文字列マップの妥当性をチェックする
+			<pre>func CreateTestRawMaster() *<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a></pre>
+			<p>CreateTestRawMaster はテスト用の raw.Master インスタンスを作成する
 
 			
 			
@@ -1280,7 +831,7 @@ TODO: 建物をプレハブ式にする
 		
 			
 			
-			<h2 id="BoundaryWall">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=234:338#L1">BoundaryWall</a>
+			<h2 id="BoundaryWall">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=239:339#L1">BoundaryWall</a>
 				<a class="permalink" href="index.html#BoundaryWall">&#xb6;</a>
 				
 				
@@ -1289,8 +840,8 @@ TODO: 建物をプレハブ式にする
 マップの最外枠のタイルを無条件で指定タイルタイプに変更する
 
 			<pre>type BoundaryWall struct {
-<span id="BoundaryWall.WallTileType"></span>    <span class="comment">// WallTileType 外枠に使用するタイルタイプ</span>
-    WallTileType <a href="index.html#Tile">Tile</a>
+<span id="BoundaryWall.WallTileName"></span>    <span class="comment">// WallTileName 外枠に使用するタイル名</span>
+    WallTileName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
 </pre>
 
@@ -1304,12 +855,12 @@ TODO: 建物をプレハブ式にする
 
 			
 				
-				<h3 id="NewBoundaryWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=411:463#L3">NewBoundaryWall</a>
+				<h3 id="NewBoundaryWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=412:466#L5">NewBoundaryWall</a>
 					<a class="permalink" href="index.html#NewBoundaryWall">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewBoundaryWall(wallTileType <a href="index.html#Tile">Tile</a>) <a href="index.html#BoundaryWall">BoundaryWall</a></pre>
+				<pre>func NewBoundaryWall(wallTileName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#BoundaryWall">BoundaryWall</a></pre>
 				<p>NewBoundaryWall は新しいBoundaryWallビルダーを作成する
 
 				
@@ -1318,7 +869,7 @@ TODO: 建物をプレハブ式にする
 
 			
 				
-				<h3 id="BoundaryWall.PlanMeta">func (BoundaryWall) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=573:623#L10">PlanMeta</a>
+				<h3 id="BoundaryWall.PlanMeta">func (BoundaryWall) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=576:626#L12">PlanMeta</a>
 					<a class="permalink" href="index.html#BoundaryWall.PlanMeta">&#xb6;</a>
 					
 					
@@ -1333,7 +884,7 @@ TODO: 建物をプレハブ式にする
 		
 			
 			
-			<h2 id="CaveCellularAutomata">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=821:890#L17">CaveCellularAutomata</a>
+			<h2 id="CaveCellularAutomata">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=899:968#L18">CaveCellularAutomata</a>
 				<a class="permalink" href="index.html#CaveCellularAutomata">&#xb6;</a>
 				
 				
@@ -1358,7 +909,7 @@ TODO: 建物をプレハブ式にする
 
 			
 				
-				<h3 id="CaveCellularAutomata.PlanMeta">func (CaveCellularAutomata) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=962:1020#L23">PlanMeta</a>
+				<h3 id="CaveCellularAutomata.PlanMeta">func (CaveCellularAutomata) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=1040:1098#L24">PlanMeta</a>
 					<a class="permalink" href="index.html#CaveCellularAutomata.PlanMeta">&#xb6;</a>
 					
 					
@@ -1373,7 +924,7 @@ TODO: 建物をプレハブ式にする
 		
 			
 			
-			<h2 id="CaveConnector">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7571:7598#L258">CaveConnector</a>
+			<h2 id="CaveConnector">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7748:7775#L259">CaveConnector</a>
 				<a class="permalink" href="index.html#CaveConnector">&#xb6;</a>
 				
 				
@@ -1395,7 +946,7 @@ TODO: 建物をプレハブ式にする
 
 			
 				
-				<h3 id="CaveConnector.PlanMeta">func (CaveConnector) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7658:7709#L261">PlanMeta</a>
+				<h3 id="CaveConnector.PlanMeta">func (CaveConnector) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7835:7886#L262">PlanMeta</a>
 					<a class="permalink" href="index.html#CaveConnector.PlanMeta">&#xb6;</a>
 					
 					
@@ -1410,7 +961,7 @@ TODO: 建物をプレハブ式にする
 		
 			
 			
-			<h2 id="CavePathWidener">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5301:5330#L181">CavePathWidener</a>
+			<h2 id="CavePathWidener">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5439:5468#L182">CavePathWidener</a>
 				<a class="permalink" href="index.html#CavePathWidener">&#xb6;</a>
 				
 				
@@ -1432,7 +983,7 @@ TODO: 建物をプレハブ式にする
 
 			
 				
-				<h3 id="CavePathWidener.PlanMeta">func (CavePathWidener) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5372:5425#L184">PlanMeta</a>
+				<h3 id="CavePathWidener.PlanMeta">func (CavePathWidener) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5510:5563#L185">PlanMeta</a>
 					<a class="permalink" href="index.html#CavePathWidener.PlanMeta">&#xb6;</a>
 					
 					
@@ -1447,7 +998,7 @@ TODO: 建物をプレハブ式にする
 		
 			
 			
-			<h2 id="CavePlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=324:349#L1">CavePlanner</a>
+			<h2 id="CavePlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=360:385#L2">CavePlanner</a>
 				<a class="permalink" href="index.html#CavePlanner">&#xb6;</a>
 				
 				
@@ -1471,7 +1022,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="CavePlanner.PlanInitial">func (CavePlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=409:467#L4">PlanInitial</a>
+				<h3 id="CavePlanner.PlanInitial">func (CavePlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=445:503#L5">PlanInitial</a>
 					<a class="permalink" href="index.html#CavePlanner.PlanInitial">&#xb6;</a>
 					
 					
@@ -1486,7 +1037,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="CaveStalactites">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=6871:6900#L235">CaveStalactites</a>
+			<h2 id="CaveStalactites">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7031:7060#L236">CaveStalactites</a>
 				<a class="permalink" href="index.html#CaveStalactites">&#xb6;</a>
 				
 				
@@ -1508,7 +1059,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="CaveStalactites.PlanMeta">func (CaveStalactites) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=6954:7007#L238">PlanMeta</a>
+				<h3 id="CaveStalactites.PlanMeta">func (CaveStalactites) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7114:7167#L239">PlanMeta</a>
 					<a class="permalink" href="index.html#CaveStalactites.PlanMeta">&#xb6;</a>
 					
 					
@@ -1523,410 +1074,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="EntityPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=220:645#L1">EntityPlan</a>
-				<a class="permalink" href="index.html#EntityPlan">&#xb6;</a>
-				
-				
-			</h2>
-			<p>EntityPlan はマップ生成計画を表す
-タイル配置とエンティティ配置を事前に計画し、後で一括実行する
-
-			<pre>type EntityPlan struct {
-<span id="EntityPlan.Width"></span>    Width        <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// マップ幅</span>
-<span id="EntityPlan.Height"></span>    Height       <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// マップ高さ</span>
-<span id="EntityPlan.Tiles"></span>    Tiles        []<a href="index.html#TileSpec">TileSpec</a>   <span class="comment">// タイル配置計画</span>
-<span id="EntityPlan.Entities"></span>    Entities     []<a href="index.html#EntitySpec">EntitySpec</a> <span class="comment">// エンティティ配置計画</span>
-<span id="EntityPlan.PlayerStartX"></span>    PlayerStartX <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// プレイヤー開始X座標</span>
-<span id="EntityPlan.PlayerStartY"></span>    PlayerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// プレイヤー開始Y座標</span>
-<span id="EntityPlan.HasPlayerPos"></span>    HasPlayerPos <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>         <span class="comment">// プレイヤー位置が設定されているか</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="BuildEntityPlanFromStrings">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=7253:7334#L207">BuildEntityPlanFromStrings</a>
-					<a class="permalink" href="index.html#BuildEntityPlanFromStrings">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func BuildEntityPlanFromStrings(tileMap, entityMap []<a href="http://localhost:8888/pkg/builtin/#string">string</a>) (*<a href="index.html#EntityPlan">EntityPlan</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>BuildEntityPlanFromStrings は文字列マップからEntityPlanを生成する
-
-				<div id="example_BuildEntityPlanFromStrings" class="toggle">
-	<div class="collapsed">
-		<p class="exampleHeading toggleButton">▹ <span class="text">Example</span></p>
-	</div>
-	<div class="expanded">
-		<p class="exampleHeading toggleButton">▾ <span class="text">Example</span></p>
-		<p>文字列ベースマップビルダーの使用例
-</p>
-		
-		
-			<p>Code:</p>
-			<pre class="code"><span class="comment">// タイル配置を文字列で定義</span>
-tileMap := []string{
-    &#34;######......&#34;,
-    &#34;#ffff#......&#34;,
-    &#34;#fffffffff..&#34;,
-    &#34;#ffff#......&#34;,
-    &#34;######......&#34;,
-}
-
-<span class="comment">// エンティティ配置を文字列で定義</span>
-entityMap := []string{
-    &#34;............&#34;,
-    &#34;............&#34;,
-    &#34;....@.......&#34;,
-    &#34;..CT........&#34;,
-    &#34;............&#34;,
-}
-
-<span class="comment">// EntityPlanを生成</span>
-plan, err := BuildEntityPlanFromStrings(tileMap, entityMap)
-if err != nil {
-    panic(err)
-}
-
-fmt.Printf(&#34;マップサイズ: %dx%d\n&#34;, plan.Width, plan.Height)
-fmt.Printf(&#34;エンティティ数: %d\n&#34;, len(plan.Entities))
-
-<span class="comment">// Props数をカウント</span>
-propCount := 0
-for _, entity := range plan.Entities {
-    if entity.EntityType == EntityTypeProp {
-        propCount++
-    }
-}
-fmt.Printf(&#34;Props数: %d\n&#34;, propCount)
-
-<span class="comment"></pre>
-			
-			<p>Output:</p>
-			<pre class="output">マップサイズ: 12x5
-エンティティ数: 62
-Props数: 2
-</pre>
-			
-		
-	</div>
-</div>
-
-				
-			
-				
-				<h3 id="BuildPlan">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=17680:17736#L559">BuildPlan</a>
-					<a class="permalink" href="index.html#BuildPlan">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func BuildPlan(chain *<a href="index.html#PlannerChain">PlannerChain</a>) (*<a href="index.html#EntityPlan">EntityPlan</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>BuildPlan はPlannerChainを実行してEntityPlanを生成する
-
-				
-				
-			
-				
-				<h3 id="NewEntityPlan">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=2264:2313#L53">NewEntityPlan</a>
-					<a class="permalink" href="index.html#NewEntityPlan">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewEntityPlan(width, height <a href="http://localhost:8888/pkg/builtin/#int">int</a>) *<a href="index.html#EntityPlan">EntityPlan</a></pre>
-				<p>NewEntityPlan は新しいEntityPlanを作成する
-
-				
-				
-			
-				
-				<h3 id="Plan">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/plan.go?s=776:878#L15">Plan</a>
-					<a class="permalink" href="index.html#Plan">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func Plan(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, width, height <a href="http://localhost:8888/pkg/builtin/#int">int</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>, plannerType <a href="index.html#PlannerType">PlannerType</a>) (*<a href="index.html#EntityPlan">EntityPlan</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>Plan はPlannerChainを初期化して追加プランナーを統合し、EntityPlanを構築する
-接続性検証に失敗した場合は規定回数まで再試行する
-
-				
-				
-			
-
-			
-				
-				<h3 id="EntityPlan.AddFloor">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=2797:2837#L75">AddFloor</a>
-					<a class="permalink" href="index.html#EntityPlan.AddFloor">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddFloor(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				<p>AddFloor は床エンティティを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddItem">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=4661:4717#L143">AddItem</a>
-					<a class="permalink" href="index.html#EntityPlan.AddItem">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddItem(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>, itemType <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-				<p>AddItem はアイテムエンティティを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddNPC">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=4394:4448#L133">AddNPC</a>
-					<a class="permalink" href="index.html#EntityPlan.AddNPC">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddNPC(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>, npcType <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
-				<p>AddNPC はNPCエンティティを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddProp">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=3652:3713#L105">AddProp</a>
-					<a class="permalink" href="index.html#EntityPlan.AddProp">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddProp(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>, propType <a href="../components/index.html">gc</a>.<a href="../components/index.html#PropType">PropType</a>)</pre>
-				<p>AddProp は置物エンティティを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddTile">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=2581:2635#L66">AddTile</a>
-					<a class="permalink" href="index.html#EntityPlan.AddTile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddTile(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileType <a href="index.html#Tile">Tile</a>)</pre>
-				<p>AddTile はタイル配置を計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddWall">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=3019:3076#L84">AddWall</a>
-					<a class="permalink" href="index.html#EntityPlan.AddWall">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddWall(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>, spriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				<p>AddWall は壁エンティティを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddWallWithType">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=3377:3443#L95">AddWallWithType</a>
-					<a class="permalink" href="index.html#EntityPlan.AddWallWithType">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddWallWithType(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>, wallType <a href="index.html#WallType">WallType</a>)</pre>
-				<p>AddWallWithType は壁タイプを指定して壁エンティティを計画に追加する
-スプライト番号はmapspawnerで決定される
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddWarpEscape">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=4163:4208#L124">AddWarpEscape</a>
-					<a class="permalink" href="index.html#EntityPlan.AddWarpEscape">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddWarpEscape(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				<p>AddWarpEscape は脱出ワープホールを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.AddWarpNext">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=3926:3969#L115">AddWarpNext</a>
-					<a class="permalink" href="index.html#EntityPlan.AddWarpNext">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) AddWarpNext(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				<p>AddWarpNext は進行ワープホールを計画に追加する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.GetPlayerStartPosition">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=5214:5277#L161">GetPlayerStartPosition</a>
-					<a class="permalink" href="index.html#EntityPlan.GetPlayerStartPosition">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) GetPlayerStartPosition() (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
-				<p>GetPlayerStartPosition はプレイヤーの開始位置を取得する
-プレイヤー位置が設定されていない場合はfalseを返す
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.SetPlayerStartPosition">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=4938:4992#L153">SetPlayerStartPosition</a>
-					<a class="permalink" href="index.html#EntityPlan.SetPlayerStartPosition">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) SetPlayerStartPosition(x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
-				<p>SetPlayerStartPosition はプレイヤーの開始位置を設定する
-
-				
-				
-				
-			
-				
-				<h3 id="EntityPlan.Validate">func (*EntityPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/validation.go?s=573:611#L19">Validate</a>
-					<a class="permalink" href="index.html#EntityPlan.Validate">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (mp *<a href="index.html#EntityPlan">EntityPlan</a>) Validate() <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Validate は計画の妥当性と接続性をチェックする
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="EntitySpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=847:1329#L17">EntitySpec</a>
-				<a class="permalink" href="index.html#EntitySpec">&#xb6;</a>
-				
-				
-			</h2>
-			<p>EntitySpec はエンティティ配置仕様
-
-			<pre>type EntitySpec struct {
-<span id="EntitySpec.X"></span>    X          <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// X座標</span>
-<span id="EntitySpec.Y"></span>    Y          <a href="http://localhost:8888/pkg/builtin/#int">int</a>          <span class="comment">// Y座標</span>
-<span id="EntitySpec.EntityType"></span>    EntityType <a href="index.html#EntityType">EntityType</a>   <span class="comment">// エンティティタイプ</span>
-<span id="EntitySpec.PropType"></span>    PropType   *<a href="../components/index.html">gc</a>.<a href="../components/index.html#PropType">PropType</a> <span class="comment">// 置物タイプ（置物の場合）</span>
-<span id="EntitySpec.NPCType"></span>    NPCType    *<a href="http://localhost:8888/pkg/builtin/#string">string</a>      <span class="comment">// NPCタイプ（NPCの場合）</span>
-<span id="EntitySpec.ItemType"></span>    ItemType   *<a href="http://localhost:8888/pkg/builtin/#string">string</a>      <span class="comment">// アイテムタイプ（アイテムの場合）</span>
-<span id="EntitySpec.WallSprite"></span>    WallSprite *<a href="http://localhost:8888/pkg/builtin/#int">int</a>         <span class="comment">// 壁スプライト番号（壁の場合、直接指定）</span>
-<span id="EntitySpec.WallType"></span>    WallType   *<a href="index.html#WallType">WallType</a>    <span class="comment">// 壁タイプ</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="EntityTemplate">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=770:880#L10">EntityTemplate</a>
-				<a class="permalink" href="index.html#EntityTemplate">&#xb6;</a>
-				
-				
-			</h2>
-			<p>EntityTemplate はエンティティ生成計画
-
-			<pre>type EntityTemplate struct {
-<span id="EntityTemplate.EntityType"></span>    EntityType <a href="index.html#EntityType">EntityType</a>
-<span id="EntityTemplate.Data"></span>    Data       interface{} <span class="comment">// PropType等の追加データ</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="EntityType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=1385:1407#L29">EntityType</a>
-				<a class="permalink" href="index.html#EntityType">&#xb6;</a>
-				
-				
-			</h2>
-			<p>EntityType はエンティティの種類を表す
-
-			<pre>type EntityType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-
-			
-				
-				<pre>const (
-    <span class="comment">// EntityTypeFloor は床エンティティ</span>
-    <span id="EntityTypeFloor">EntityTypeFloor</span> <a href="index.html#EntityType">EntityType</a> = &#34;Floor&#34;
-    <span class="comment">// EntityTypeWall は壁エンティティ</span>
-    <span id="EntityTypeWall">EntityTypeWall</span> <a href="index.html#EntityType">EntityType</a> = &#34;Wall&#34;
-    <span class="comment">// EntityTypeWarpNext は進行ワープホール</span>
-    <span id="EntityTypeWarpNext">EntityTypeWarpNext</span> <a href="index.html#EntityType">EntityType</a> = &#34;WarpNext&#34;
-    <span class="comment">// EntityTypeWarpEscape は脱出ワープホール</span>
-    <span id="EntityTypeWarpEscape">EntityTypeWarpEscape</span> <a href="index.html#EntityType">EntityType</a> = &#34;WarpEscape&#34;
-    <span class="comment">// EntityTypeProp は置物エンティティ</span>
-    <span id="EntityTypeProp">EntityTypeProp</span> <a href="index.html#EntityType">EntityType</a> = &#34;Prop&#34;
-    <span class="comment">// EntityTypeNPC はNPCエンティティ</span>
-    <span id="EntityTypeNPC">EntityTypeNPC</span> <a href="index.html#EntityType">EntityType</a> = &#34;NPC&#34;
-    <span class="comment">// EntityTypeItem はアイテムエンティティ</span>
-    <span id="EntityTypeItem">EntityTypeItem</span> <a href="index.html#EntityType">EntityType</a> = &#34;Item&#34;
-    <span class="comment">// EntityTypePlayer はプレイヤーエンティティ</span>
-    <span id="EntityTypePlayer">EntityTypePlayer</span> <a href="index.html#EntityType">EntityType</a> = &#34;Player&#34;
-    <span class="comment">// EntityTypeDoor はドアエンティティ</span>
-    <span id="EntityTypeDoor">EntityTypeDoor</span> <a href="index.html#EntityType">EntityType</a> = &#34;Door&#34;
-)</pre>
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="FillAll">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=89:127#L1">FillAll</a>
+			<h2 id="FillAll">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=89:129#L1">FillAll</a>
 				<a class="permalink" href="index.html#FillAll">&#xb6;</a>
 				
 				
@@ -1934,7 +1082,7 @@ Props数: 2
 			<p>FillAll は全体を指定したタイルで埋めるビルダー
 
 			<pre>type FillAll struct {
-<span id="FillAll.TileType"></span>    TileType <a href="index.html#Tile">Tile</a>
+<span id="FillAll.TileName"></span>    TileName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
 </pre>
 
@@ -1948,12 +1096,12 @@ Props数: 2
 
 			
 				
-				<h3 id="NewFillAll">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=190:228#L1">NewFillAll</a>
+				<h3 id="NewFillAll">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=192:232#L1">NewFillAll</a>
 					<a class="permalink" href="index.html#NewFillAll">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewFillAll(tileType <a href="index.html#Tile">Tile</a>) <a href="index.html#FillAll">FillAll</a></pre>
+				<pre>func NewFillAll(tileName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#FillAll">FillAll</a></pre>
 				<p>NewFillAll は新しいFillAllビルダーを作成する
 
 				
@@ -1962,7 +1110,7 @@ Props数: 2
 
 			
 				
-				<h3 id="FillAll.PlanMeta">func (FillAll) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=325:370#L6">PlanMeta</a>
+				<h3 id="FillAll.PlanMeta">func (FillAll) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=329:374#L6">PlanMeta</a>
 					<a class="permalink" href="index.html#FillAll.PlanMeta">&#xb6;</a>
 					
 					
@@ -1977,7 +1125,7 @@ Props数: 2
 		
 			
 			
-			<h2 id="ForestPaths">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5030:5055#L154">ForestPaths</a>
+			<h2 id="ForestPaths">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5126:5151#L155">ForestPaths</a>
 				<a class="permalink" href="index.html#ForestPaths">&#xb6;</a>
 				
 				
@@ -1999,7 +1147,7 @@ Props数: 2
 
 			
 				
-				<h3 id="ForestPaths.PlanMeta">func (ForestPaths) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5118:5167#L157">PlanMeta</a>
+				<h3 id="ForestPaths.PlanMeta">func (ForestPaths) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5214:5263#L158">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestPaths.PlanMeta">&#xb6;</a>
 					
 					
@@ -2089,7 +1237,7 @@ Props数: 2
 		
 			
 			
-			<h2 id="ForestTrees">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2499:2524#L72">ForestTrees</a>
+			<h2 id="ForestTrees">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2541:2566#L72">ForestTrees</a>
 				<a class="permalink" href="index.html#ForestTrees">&#xb6;</a>
 				
 				
@@ -2111,7 +1259,7 @@ Props数: 2
 
 			
 				
-				<h3 id="ForestTrees.PlanMeta">func (ForestTrees) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2566:2615#L75">PlanMeta</a>
+				<h3 id="ForestTrees.PlanMeta">func (ForestTrees) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2608:2657#L75">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestTrees.PlanMeta">&#xb6;</a>
 					
 					
@@ -2126,7 +1274,7 @@ Props数: 2
 		
 			
 			
-			<h2 id="ForestWildlife">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=7928:7956#L239">ForestWildlife</a>
+			<h2 id="ForestWildlife">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8045:8073#L240">ForestWildlife</a>
 				<a class="permalink" href="index.html#ForestWildlife">&#xb6;</a>
 				
 				
@@ -2148,7 +1296,7 @@ Props数: 2
 
 			
 				
-				<h3 id="ForestWildlife.PlanMeta">func (ForestWildlife) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8019:8071#L242">PlanMeta</a>
+				<h3 id="ForestWildlife.PlanMeta">func (ForestWildlife) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8136:8188#L243">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestWildlife.PlanMeta">&#xb6;</a>
 					
 					
@@ -2163,7 +1311,7 @@ Props数: 2
 		
 			
 			
-			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13014:13080#L417">InitialMapPlanner</a>
+			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9658:9724#L304">InitialMapPlanner</a>
 				<a class="permalink" href="index.html#InitialMapPlanner">&#xb6;</a>
 				
 				
@@ -2318,77 +1466,7 @@ Props数: 2
 		
 			
 			
-			<h2 id="MapConnectivityResult">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=4815:5167#L153">MapConnectivityResult</a>
-				<a class="permalink" href="index.html#MapConnectivityResult">&#xb6;</a>
-				
-				
-			</h2>
-			<p>MapConnectivityResult はマップ接続性検証の結果
-
-			<pre>type MapConnectivityResult struct {
-<span id="MapConnectivityResult.PlayerStartReachable"></span>    <span class="comment">// PlayerStartReachable はプレイヤーのスタート位置が歩行可能か</span>
-    PlayerStartReachable <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-<span id="MapConnectivityResult.WarpPortals"></span>    <span class="comment">// WarpPortals はワープポータルの到達可能性リスト</span>
-    WarpPortals []<a href="index.html#PortalReachability">PortalReachability</a>
-<span id="MapConnectivityResult.EscapePortals"></span>    <span class="comment">// EscapePortals は脱出ポータルの到達可能性リスト</span>
-    EscapePortals []<a href="index.html#PortalReachability">PortalReachability</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="MapConnectivityResult.HasReachableEscapePortal">func (*MapConnectivityResult) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=5778:5846#L180">HasReachableEscapePortal</a>
-					<a class="permalink" href="index.html#MapConnectivityResult.HasReachableEscapePortal">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (result *<a href="index.html#MapConnectivityResult">MapConnectivityResult</a>) HasReachableEscapePortal() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				<p>HasReachableEscapePortal は到達可能な脱出ポータルがあるかを返す
-
-				
-				
-				
-			
-				
-				<h3 id="MapConnectivityResult.HasReachableWarpPortal">func (*MapConnectivityResult) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=5515:5581#L170">HasReachableWarpPortal</a>
-					<a class="permalink" href="index.html#MapConnectivityResult.HasReachableWarpPortal">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (result *<a href="index.html#MapConnectivityResult">MapConnectivityResult</a>) HasReachableWarpPortal() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				<p>HasReachableWarpPortal は到達可能なワープポータルがあるかを返す
-
-				
-				
-				
-			
-				
-				<h3 id="MapConnectivityResult.IsFullyConnected">func (*MapConnectivityResult) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=6061:6121#L190">IsFullyConnected</a>
-					<a class="permalink" href="index.html#MapConnectivityResult.IsFullyConnected">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (result *<a href="index.html#MapConnectivityResult">MapConnectivityResult</a>) IsFullyConnected() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				<p>IsFullyConnected はプレイヤーがすべての重要なポータルに到達可能かを返す
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13158:13212#L422">MetaMapPlanner</a>
+			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9802:9856#L309">MetaMapPlanner</a>
 				<a class="permalink" href="index.html#MetaMapPlanner">&#xb6;</a>
 				
 				
@@ -2413,7 +1491,7 @@ Props数: 2
 		
 			
 			
-			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=881:2152#L24">MetaPlan</a>
+			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=910:1967#L24">MetaPlan</a>
 				<a class="permalink" href="index.html#MetaPlan">&#xb6;</a>
 				
 				
@@ -2423,24 +1501,185 @@ Props数: 2
 			<pre>type MetaPlan struct {
     <span class="comment">// 階層情報</span>
 <span id="MetaPlan.Level"></span>    Level <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#Level">Level</a>
-    <span class="comment">// 階層を構成するタイル群。長さはステージの大きさで決まる</span>
-<span id="MetaPlan.Tiles"></span>    Tiles []<a href="index.html#Tile">Tile</a>
     <span class="comment">// 部屋群。部屋は長方形の移動可能な空間のことをいう。</span>
     <span class="comment">// 部屋はタイルの集合体である</span>
 <span id="MetaPlan.Rooms"></span>    Rooms []<a href="../components/index.html">gc</a>.<a href="../components/index.html#Rect">Rect</a>
     <span class="comment">// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。</span>
     <span class="comment">// 廊下はタイルの集合体である</span>
 <span id="MetaPlan.Corridors"></span>    Corridors [][]<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>
-<span id="MetaPlan.RandomSource"></span>    <span class="comment">// RandomSource はシード値による再現可能なランダム生成を提供する（内部プランナーのみアクセス可能）</span>
+<span id="MetaPlan.RandomSource"></span>    <span class="comment">// RandomSource はシード値による再現可能なランダム生成を提供する</span>
     RandomSource *<a href="index.html#RandomSource">RandomSource</a>
-<span id="MetaPlan.WarpPortals"></span>    <span class="comment">// WarpPortals は配置予定のワープポータルリスト（内部プランナーからアクセス可能、外部からは読み取り専用）</span>
+    <span class="comment">// 階層を構成するタイル群。長さはステージの大きさで決まる</span>
+    <span class="comment">// 通行可能かを判定するための情報を保持している必要がある</span>
+<span id="MetaPlan.Tiles"></span>    Tiles []<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a>
+<span id="MetaPlan.WarpPortals"></span>    <span class="comment">// WarpPortals は配置予定のワープポータルリスト</span>
     WarpPortals []<a href="index.html#WarpPortal">WarpPortal</a>
-<span id="MetaPlan.NPCs"></span>    <span class="comment">// NPCs は配置予定のNPCリスト（内部プランナーからアクセス可能、外部からは読み取り専用）</span>
+<span id="MetaPlan.NPCs"></span>    <span class="comment">// NPCs は配置予定のNPCリスト</span>
     NPCs []<a href="index.html#NPCSpec">NPCSpec</a>
-<span id="MetaPlan.Items"></span>    <span class="comment">// Items は配置予定のアイテムリスト（内部プランナーからアクセス可能、外部からは読み取り専用）</span>
+<span id="MetaPlan.Items"></span>    <span class="comment">// Items は配置予定のアイテムリスト</span>
     Items []<a href="index.html#ItemSpec">ItemSpec</a>
-<span id="MetaPlan.Props"></span>    <span class="comment">// Props は配置予定のPropsリスト（内部プランナーからアクセス可能、外部からは読み取り専用）</span>
+<span id="MetaPlan.Props"></span>    <span class="comment">// Props は配置予定のPropsリスト</span>
     Props []<a href="index.html#PropsSpec">PropsSpec</a>
+<span id="MetaPlan.RawMaster"></span>    <span class="comment">// RawMaster はタイル生成に使用するマスターデータ</span>
+    RawMaster *<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="Plan">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/plan.go?s=870:970#L17">Plan</a>
+					<a class="permalink" href="index.html#Plan">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func Plan(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, width, height <a href="http://localhost:8888/pkg/builtin/#int">int</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>, plannerType <a href="index.html#PlannerType">PlannerType</a>) (*<a href="index.html#MetaPlan">MetaPlan</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>Plan はPlannerChainを初期化してMetaPlanを返す
+
+				
+				
+			
+
+			
+				
+				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4166:4229#L140">AdjacentAnyFloor</a>
+					<a class="permalink" href="index.html#MetaPlan.AdjacentAnyFloor">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) AdjacentAnyFloor(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3384:3446#L110">DownTile</a>
+					<a class="permalink" href="index.html#MetaPlan.DownTile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) DownTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a></pre>
+				<p>DownTile は下にあるタイルを調べる
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.GenerateTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14254:14311#L443">GenerateTile</a>
+					<a class="permalink" href="index.html#MetaPlan.GenerateTile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm *<a href="index.html#MetaPlan">MetaPlan</a>) GenerateTile(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a></pre>
+				<p>GenerateTile は指定されたタイルを生成する
+TOMLからの生成に失敗した場合はパニックする
+TODO: 消して直接呼び出せばよい
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14641:14702#L452">GetPlayerStartPosition</a>
+					<a class="permalink" href="index.html#MetaPlan.GetPlayerStartPosition">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm *<a href="index.html#MetaPlan">MetaPlan</a>) GetPlayerStartPosition() (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>GetPlayerStartPosition はプレイヤーの開始位置を取得する
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4954:5016#L172">GetWallType</a>
+					<a class="permalink" href="index.html#MetaPlan.GetWallType">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) GetWallType(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#WallType">WallType</a></pre>
+				<p>GetWallType は近傍パターンから適切な壁タイプを判定する
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2046:2120#L51">IsSpawnableTile</a>
+					<a class="permalink" href="index.html#MetaPlan.IsSpawnableTile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) IsSpawnableTile(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsSpawnableTile は指定タイル座標がスポーン可能かを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3650:3712#L120">LeftTile</a>
+					<a class="permalink" href="index.html#MetaPlan.LeftTile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) LeftTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a></pre>
+				<p>LeftTile は左にあるタイルを調べる
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3876:3939#L130">RightTile</a>
+					<a class="permalink" href="index.html#MetaPlan.RightTile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) RightTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a></pre>
+				<p>RightTile は右にあるタイルを調べる
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3115:3175#L100">UpTile</a>
+					<a class="permalink" href="index.html#MetaPlan.UpTile">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) UpTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a></pre>
+				<p>UpTile は上にあるタイルを調べる
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="MetaTownPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner_metaplan.go?s=358:429#L3">MetaTownPlanner</a>
+				<a class="permalink" href="index.html#MetaTownPlanner">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MetaTownPlanner は文字列ベース街マップを MetaPlan に直接構築するプランナー
+
+			<pre>type MetaTownPlanner struct {
+<span id="MetaTownPlanner.TileMap"></span>    TileMap   []<a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="MetaTownPlanner.EntityMap"></span>    EntityMap []<a href="http://localhost:8888/pkg/builtin/#string">string</a>
 }
 </pre>
 
@@ -2456,118 +1695,13 @@ Props数: 2
 
 			
 				
-				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4568:4631#L145">AdjacentAnyFloor</a>
-					<a class="permalink" href="index.html#MetaPlan.AdjacentAnyFloor">&#xb6;</a>
+				<h3 id="MetaTownPlanner.PlanInitial">func (*MetaTownPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner_metaplan.go?s=1180:1243#L30">PlanInitial</a>
+					<a class="permalink" href="index.html#MetaTownPlanner.PlanInitial">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) AdjacentAnyFloor(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				<p>AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.AdjacentOrthoAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4274:4342#L137">AdjacentOrthoAnyFloor</a>
-					<a class="permalink" href="index.html#MetaPlan.AdjacentOrthoAnyFloor">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) AdjacentOrthoAnyFloor(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				<p>AdjacentOrthoAnyFloor は直交する近傍4タイルに移動可能タイルがあるか判定する
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.BuildPlan">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10010:10062#L309">BuildPlan</a>
-					<a class="permalink" href="index.html#MetaPlan.BuildPlan">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm *<a href="index.html#MetaPlan">MetaPlan</a>) BuildPlan() (*<a href="index.html#EntityPlan">EntityPlan</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-				<p>BuildPlan はMetaPlanからEntityPlanを構築する
-MetaPlanは生成過程で使用される中間データ、EntityPlanは最終的な配置計画
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3547:3602#L107">DownTile</a>
-					<a class="permalink" href="index.html#MetaPlan.DownTile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) DownTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#Tile">Tile</a></pre>
-				<p>DownTile は下にあるタイルを調べる
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=5356:5418#L177">GetWallType</a>
-					<a class="permalink" href="index.html#MetaPlan.GetWallType">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) GetWallType(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#WallType">WallType</a></pre>
-				<p>GetWallType は近傍パターンから適切な壁タイプを判定する
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2231:2305#L48">IsSpawnableTile</a>
-					<a class="permalink" href="index.html#MetaPlan.IsSpawnableTile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) IsSpawnableTile(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-				<p>IsSpawnableTile は指定タイル座標がスポーン可能かを返す
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3791:3846#L117">LeftTile</a>
-					<a class="permalink" href="index.html#MetaPlan.LeftTile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) LeftTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#Tile">Tile</a></pre>
-				<p>LeftTile は左にあるタイルを調べる
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3995:4051#L127">RightTile</a>
-					<a class="permalink" href="index.html#MetaPlan.RightTile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) RightTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#Tile">Tile</a></pre>
-				<p>RightTile は右にあるタイルを調べる
-
-				
-				
-				
-			
-				
-				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3300:3353#L97">UpTile</a>
-					<a class="permalink" href="index.html#MetaPlan.UpTile">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) UpTile(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="index.html#Tile">Tile</a></pre>
-				<p>UpTile は上にあるタイルを調べる
+				<pre>func (p *<a href="index.html#MetaTownPlanner">MetaTownPlanner</a>) PlanInitial(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>PlanInitial は MetaPlan の初期化を行う
 
 				
 				
@@ -2655,7 +1789,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="PathFinder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=142:188#L1">PathFinder</a>
+			<h2 id="PathFinder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=147:193#L1">PathFinder</a>
 				<a class="permalink" href="index.html#PathFinder">&#xb6;</a>
 				
 				
@@ -2677,7 +1811,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="NewPathFinder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=236:286#L1">NewPathFinder</a>
+				<h3 id="NewPathFinder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=241:291#L3">NewPathFinder</a>
 					<a class="permalink" href="index.html#NewPathFinder">&#xb6;</a>
 					
 					
@@ -2691,7 +1825,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="PathFinder.FindPath">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=890:965#L23">FindPath</a>
+				<h3 id="PathFinder.FindPath">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=895:970#L25">FindPath</a>
 					<a class="permalink" href="index.html#PathFinder.FindPath">&#xb6;</a>
 					
 					
@@ -2705,7 +1839,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="PathFinder.IsReachable">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=3486:3558#L114">IsReachable</a>
+				<h3 id="PathFinder.IsReachable">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=3491:3563#L116">IsReachable</a>
 					<a class="permalink" href="index.html#PathFinder.IsReachable">&#xb6;</a>
 					
 					
@@ -2718,7 +1852,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="PathFinder.IsWalkable">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=395:442#L6">IsWalkable</a>
+				<h3 id="PathFinder.IsWalkable">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=400:447#L8">IsWalkable</a>
 					<a class="permalink" href="index.html#PathFinder.IsWalkable">&#xb6;</a>
 					
 					
@@ -2731,14 +1865,14 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="PathFinder.ValidateMapConnectivity">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=3834:3933#L121">ValidateMapConnectivity</a>
-					<a class="permalink" href="index.html#PathFinder.ValidateMapConnectivity">&#xb6;</a>
+				<h3 id="PathFinder.ValidateConnectivity">func (*PathFinder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=3851:3931#L123">ValidateConnectivity</a>
+					<a class="permalink" href="index.html#PathFinder.ValidateConnectivity">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (pf *<a href="index.html#PathFinder">PathFinder</a>) ValidateMapConnectivity(playerStartX, playerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#MapConnectivityResult">MapConnectivityResult</a></pre>
-				<p>ValidateMapConnectivity はマップの接続性を検証する
-プレイヤーのスタート位置からワープポータル、脱出ポータルへの到達可能性をチェックする
+				<pre>func (pf *<a href="index.html#PathFinder">PathFinder</a>) ValidateConnectivity(playerStartX, playerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>ValidateConnectivity はマップの接続性を検証する
+プレイヤーのスタート位置からワープポータルへの到達可能性をチェックし、問題があればエラーを返す
 
 				
 				
@@ -2747,7 +1881,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7768:7871#L238">PlannerChain</a>
+			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7373:7476#L233">PlannerChain</a>
 				<a class="permalink" href="index.html#PlannerChain">&#xb6;</a>
 				
 				
@@ -2771,7 +1905,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13859:13939#L440">NewBigRoomPlanner</a>
+				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10495:10575#L327">NewBigRoomPlanner</a>
 					<a class="permalink" href="index.html#NewBigRoomPlanner">&#xb6;</a>
 					
 					
@@ -2784,7 +1918,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewCavePlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=9420:9497#L327">NewCavePlanner</a>
+				<h3 id="NewCavePlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=9639:9716#L328">NewCavePlanner</a>
 					<a class="permalink" href="index.html#NewCavePlanner">&#xb6;</a>
 					
 					
@@ -2796,7 +1930,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewForestPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8933:9012#L272">NewForestPlanner</a>
+				<h3 id="NewForestPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=9071:9150#L273">NewForestPlanner</a>
 					<a class="permalink" href="index.html#NewForestPlanner">&#xb6;</a>
 					
 					
@@ -2808,7 +1942,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8033:8111#L246">NewPlannerChain</a>
+				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7638:7716#L241">NewPlannerChain</a>
 					<a class="permalink" href="index.html#NewPlannerChain">&#xb6;</a>
 					
 					
@@ -2821,7 +1955,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=16731:16810#L529">NewRandomPlanner</a>
+				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13361:13440#L416">NewRandomPlanner</a>
 					<a class="permalink" href="index.html#NewRandomPlanner">&#xb6;</a>
 					
 					
@@ -2833,7 +1967,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewRuinsPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=6890:6968#L229">NewRuinsPlanner</a>
+				<h3 id="NewRuinsPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=7163:7241#L229">NewRuinsPlanner</a>
 					<a class="permalink" href="index.html#NewRuinsPlanner">&#xb6;</a>
 					
 					
@@ -2845,7 +1979,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13295:13377#L427">NewSmallRoomPlanner</a>
+				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9939:10021#L314">NewSmallRoomPlanner</a>
 					<a class="permalink" href="index.html#NewSmallRoomPlanner">&#xb6;</a>
 					
 					
@@ -2857,37 +1991,13 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="NewStringMapPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=4276:4358#L119">NewStringMapPlanner</a>
-					<a class="permalink" href="index.html#NewStringMapPlanner">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewStringMapPlanner(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#PlannerChain">PlannerChain</a></pre>
-				<p>NewStringMapPlanner は文字列ベースマッププランナーを作成する
-
-				
-				
-			
-				
-				<h3 id="NewStringMapPlannerWithMaps">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=4670:4758#L131">NewStringMapPlannerWithMaps</a>
-					<a class="permalink" href="index.html#NewStringMapPlannerWithMaps">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewStringMapPlannerWithMaps(tileMap, entityMap []<a href="http://localhost:8888/pkg/builtin/#string">string</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#PlannerChain">PlannerChain</a></pre>
-				<p>NewStringMapPlannerWithMaps は文字列マップを指定してプランナーを作成する
-
-				
-				
-			
-				
-				<h3 id="NewTownPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_town_planner.go?s=291:368#L2">NewTownPlanner</a>
+				<h3 id="NewTownPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner_metaplan.go?s=505:582#L9">NewTownPlanner</a>
 					<a class="permalink" href="index.html#NewTownPlanner">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func NewTownPlanner(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#PlannerChain">PlannerChain</a></pre>
-				<p>NewTownPlanner は文字列ベースの街プランナーを作成する
+				<p>NewTownPlanner は MetaPlan 対応の街プランナーを作成する
 
 				
 				
@@ -2895,20 +2005,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="PlannerChain.GetPlanners">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=17533:17586#L554">GetPlanners</a>
-					<a class="permalink" href="index.html#PlannerChain.GetPlanners">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#PlannerChain">PlannerChain</a>) GetPlanners() []<a href="index.html#MetaMapPlanner">MetaMapPlanner</a></pre>
-				<p>GetPlanners は登録されているプランナーのスライスを返す
-
-				
-				
-				
-			
-				
-				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9203:9232#L287">Plan</a>
+				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8815:8844#L282">Plan</a>
 					<a class="permalink" href="index.html#PlannerChain.Plan">&#xb6;</a>
 					
 					
@@ -2921,7 +2018,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8857:8926#L277">StartWith</a>
+				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8469:8538#L272">StartWith</a>
 					<a class="permalink" href="index.html#PlannerChain.StartWith">&#xb6;</a>
 					
 					
@@ -2934,21 +2031,21 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 				
 			
 				
-				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9654:9751#L302">ValidateConnectivity</a>
+				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9301:9382#L297">ValidateConnectivity</a>
 					<a class="permalink" href="index.html#PlannerChain.ValidateConnectivity">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b *<a href="index.html#PlannerChain">PlannerChain</a>) ValidateConnectivity(playerStartX, playerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#MapConnectivityResult">MapConnectivityResult</a></pre>
+				<pre>func (b *<a href="index.html#PlannerChain">PlannerChain</a>) ValidateConnectivity(playerStartX, playerStartY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>ValidateConnectivity はマップの接続性を検証する
-プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
+プレイヤーのスタート位置からワープポータルへの到達可能性をチェックし、問題があればエラーを返す
 
 				
 				
 				
 			
 				
-				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9012:9070#L282">With</a>
+				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8624:8682#L277">With</a>
 					<a class="permalink" href="index.html#PlannerChain.With">&#xb6;</a>
 					
 					
@@ -2963,7 +2060,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14331:14670#L451">PlannerType</a>
+			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10961:11300#L338">PlannerType</a>
 				<a class="permalink" href="index.html#PlannerType">&#xb6;</a>
 				
 				
@@ -2998,35 +2095,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="PortalReachability">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=5231:5426#L163">PortalReachability</a>
-				<a class="permalink" href="index.html#PortalReachability">&#xb6;</a>
-				
-				
-			</h2>
-			<p>PortalReachability はポータルの到達可能性情報
-
-			<pre>type PortalReachability struct {
-<span id="PortalReachability.X"></span>    X         <a href="http://localhost:8888/pkg/builtin/#int">int</a>  <span class="comment">// ポータルのX座標</span>
-<span id="PortalReachability.Y"></span>    Y         <a href="http://localhost:8888/pkg/builtin/#int">int</a>  <span class="comment">// ポータルのY座標</span>
-<span id="PortalReachability.Reachable"></span>    Reachable <a href="http://localhost:8888/pkg/builtin/#bool">bool</a> <span class="comment">// プレイヤーのスタート地点から到達可能か</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="Position">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=2689:2727#L86">Position</a>
+			<h2 id="Position">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go?s=2694:2732#L88">Position</a>
 				<a class="permalink" href="index.html#Position">&#xb6;</a>
 				
 				
@@ -3261,7 +2330,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="RoomDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go?s=122:144#L1">RoomDraw</a>
+			<h2 id="RoomDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go?s=127:149#L1">RoomDraw</a>
 				<a class="permalink" href="index.html#RoomDraw">&#xb6;</a>
 				
 				
@@ -3283,7 +2352,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="RoomDraw.PlanMeta">func (RoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go?s=195:241#L1">PlanMeta</a>
+				<h3 id="RoomDraw.PlanMeta">func (RoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go?s=200:246#L1">PlanMeta</a>
 					<a class="permalink" href="index.html#RoomDraw.PlanMeta">&#xb6;</a>
 					
 					
@@ -3298,7 +2367,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="RuinsCorridors">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5120:5148#L160">RuinsCorridors</a>
+			<h2 id="RuinsCorridors">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5309:5337#L160">RuinsCorridors</a>
 				<a class="permalink" href="index.html#RuinsCorridors">&#xb6;</a>
 				
 				
@@ -3320,7 +2389,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="RuinsCorridors.PlanMeta">func (RuinsCorridors) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5199:5251#L163">PlanMeta</a>
+				<h3 id="RuinsCorridors.PlanMeta">func (RuinsCorridors) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5388:5440#L163">PlanMeta</a>
 					<a class="permalink" href="index.html#RuinsCorridors.PlanMeta">&#xb6;</a>
 					
 					
@@ -3335,7 +2404,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="RuinsDebris">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3585:3610#L106">RuinsDebris</a>
+			<h2 id="RuinsDebris">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3732:3757#L106">RuinsDebris</a>
 				<a class="permalink" href="index.html#RuinsDebris">&#xb6;</a>
 				
 				
@@ -3357,7 +2426,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 
 			
 				
-				<h3 id="RuinsDebris.PlanMeta">func (RuinsDebris) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3658:3707#L109">PlanMeta</a>
+				<h3 id="RuinsDebris.PlanMeta">func (RuinsDebris) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3805:3854#L109">PlanMeta</a>
 					<a class="permalink" href="index.html#RuinsDebris.PlanMeta">&#xb6;</a>
 					
 					
@@ -3447,395 +2516,6 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="SingleRoomDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/single_room.go?s=665:693#L19">SingleRoomDraw</a>
-				<a class="permalink" href="index.html#SingleRoomDraw">&#xb6;</a>
-				
-				
-			</h2>
-			<p>SingleRoomDraw は1部屋を描画する
-
-			<pre>type SingleRoomDraw struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="SingleRoomDraw.PlanMeta">func (SingleRoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/single_room.go?s=733:785#L22">PlanMeta</a>
-					<a class="permalink" href="index.html#SingleRoomDraw.PlanMeta">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (d <a href="index.html#SingleRoomDraw">SingleRoomDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
-				<p>PlanMeta は1部屋を描画する
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="SingleRoomPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/single_room.go?s=158:189#L1">SingleRoomPlanner</a>
-				<a class="permalink" href="index.html#SingleRoomPlanner">&#xb6;</a>
-				
-				
-			</h2>
-			<p>SingleRoomPlanner は1つの大きな部屋を作成する（テスト用）
-
-			<pre>type SingleRoomPlanner struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="SingleRoomPlanner.PlanInitial">func (SingleRoomPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/single_room.go?s=234:298#L1">PlanInitial</a>
-					<a class="permalink" href="index.html#SingleRoomPlanner.PlanInitial">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b <a href="index.html#SingleRoomPlanner">SingleRoomPlanner</a>) PlanInitial(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>PlanInitial は初期プランを行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="StringMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=323:716#L2">StringMapPlanner</a>
-				<a class="permalink" href="index.html#StringMapPlanner">&#xb6;</a>
-				
-				
-			</h2>
-			<p>StringMapPlanner は文字列ベースでマップを生成するプランナー
-
-			<pre>type StringMapPlanner struct {
-<span id="StringMapPlanner.TileMap"></span>    TileMap       []<a href="http://localhost:8888/pkg/builtin/#string">string</a>                <span class="comment">// タイル配置を表す文字列のスライス</span>
-<span id="StringMapPlanner.EntityMap"></span>    EntityMap     []<a href="http://localhost:8888/pkg/builtin/#string">string</a>                <span class="comment">// エンティティ配置を表す文字列のスライス</span>
-<span id="StringMapPlanner.TileMapping"></span>    TileMapping   map[<a href="http://localhost:8888/pkg/builtin/#rune">rune</a>]<a href="index.html#Tile">Tile</a>           <span class="comment">// 文字からTileへのマッピング</span>
-<span id="StringMapPlanner.EntityMapping"></span>    EntityMapping map[<a href="http://localhost:8888/pkg/builtin/#rune">rune</a>]<a href="index.html#EntityTemplate">EntityTemplate</a> <span class="comment">// 文字からEntityTemplateへのマッピング</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="StringMapPlanner.AddEntityMapping">func (*StringMapPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=6887:7000#L198">AddEntityMapping</a>
-					<a class="permalink" href="index.html#StringMapPlanner.AddEntityMapping">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#StringMapPlanner">StringMapPlanner</a>) AddEntityMapping(char <a href="http://localhost:8888/pkg/builtin/#rune">rune</a>, entityType <a href="index.html#EntityType">EntityType</a>, data interface{}) *<a href="index.html#StringMapPlanner">StringMapPlanner</a></pre>
-				<p>AddEntityMapping は追加のエンティティマッピングを設定する
-
-				
-				
-				
-			
-				
-				<h3 id="StringMapPlanner.AddTileMapping">func (*StringMapPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=6601:6686#L189">AddTileMapping</a>
-					<a class="permalink" href="index.html#StringMapPlanner.AddTileMapping">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#StringMapPlanner">StringMapPlanner</a>) AddTileMapping(char <a href="http://localhost:8888/pkg/builtin/#rune">rune</a>, tileType <a href="index.html#Tile">Tile</a>) *<a href="index.html#StringMapPlanner">StringMapPlanner</a></pre>
-				<p>AddTileMapping は追加のタイルマッピングを設定する
-
-				
-				
-				
-			
-				
-				<h3 id="StringMapPlanner.PlanInitial">func (StringMapPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=955:1018#L16">PlanInitial</a>
-					<a class="permalink" href="index.html#StringMapPlanner.PlanInitial">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b <a href="index.html#StringMapPlanner">StringMapPlanner</a>) PlanInitial(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>PlanInitial は文字列定義からマップ構造を初期化する
-
-				
-				
-				
-			
-				
-				<h3 id="StringMapPlanner.SetEntityMapping">func (*StringMapPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=6394:6488#L183">SetEntityMapping</a>
-					<a class="permalink" href="index.html#StringMapPlanner.SetEntityMapping">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#StringMapPlanner">StringMapPlanner</a>) SetEntityMapping(mapping map[<a href="http://localhost:8888/pkg/builtin/#rune">rune</a>]<a href="index.html#EntityTemplate">EntityTemplate</a>) *<a href="index.html#StringMapPlanner">StringMapPlanner</a></pre>
-				<p>SetEntityMapping はカスタムエンティティマッピングを設定する
-
-				
-				
-				
-			
-				
-				<h3 id="StringMapPlanner.SetTileMapping">func (*StringMapPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/string_map_planner.go?s=6187:6269#L177">SetTileMapping</a>
-					<a class="permalink" href="index.html#StringMapPlanner.SetTileMapping">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b *<a href="index.html#StringMapPlanner">StringMapPlanner</a>) SetTileMapping(mapping map[<a href="http://localhost:8888/pkg/builtin/#rune">rune</a>]<a href="index.html#Tile">Tile</a>) *<a href="index.html#StringMapPlanner">StringMapPlanner</a></pre>
-				<p>SetTileMapping はカスタムタイルマッピングを設定する
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="Tile">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/tile.go?s=823:1023#L15">Tile</a>
-				<a class="permalink" href="index.html#Tile">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Tile はマップの基盤構造を表すタイル
-<p>## タイルの概念
-マップは規定数のタイル（TileWidth × TileHeight）で正方形に構成される。
-各位置には必ず1つのタイルが存在し、タイル自体は不変である。
-タイルの上にエンティティ（壁、アイテム、NPCなど）を配置する。
-<p>## マップ生成での役割
-マップ生成時に使用されるタイルタイプ。
-生成後はmapspawnerでエンティティに変換される。
-
-			<pre>type Tile struct {
-<span id="Tile.Type"></span>    Type      <a href="index.html#TileType">TileType</a> <span class="comment">// タイルの種類（識別用）</span>
-<span id="Tile.Walkable"></span>    Walkable  <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>     <span class="comment">// 移動可能かどうか</span>
-<span id="Tile.BlocksLOS"></span>    BlocksLOS <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>     <span class="comment">// 視線を遮るかどうか（将来の拡張用）</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="TileSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/map_plan.go?s=684:797#L10">TileSpec</a>
-				<a class="permalink" href="index.html#TileSpec">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TileSpec はタイル配置仕様
-
-			<pre>type TileSpec struct {
-<span id="TileSpec.X"></span>    X        <a href="http://localhost:8888/pkg/builtin/#int">int</a>  <span class="comment">// X座標</span>
-<span id="TileSpec.Y"></span>    Y        <a href="http://localhost:8888/pkg/builtin/#int">int</a>  <span class="comment">// Y座標</span>
-<span id="TileSpec.TileType"></span>    TileType <a href="index.html#Tile">Tile</a> <span class="comment">// タイルタイプ</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="TileType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/tile.go?s=67:86#L1">TileType</a>
-				<a class="permalink" href="index.html#TileType">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TileType はタイルの種類を表すenum
-
-			<pre>type TileType <a href="http://localhost:8888/pkg/builtin/#uint8">uint8</a></pre>
-
-			
-				
-				<pre>const (
-    <span class="comment">// TileTypeEmpty は空のタイル（デフォルト状態）</span>
-    <span id="TileTypeEmpty">TileTypeEmpty</span> <a href="index.html#TileType">TileType</a> = <a href="http://localhost:8888/pkg/builtin/#iota">iota</a>
-    <span class="comment">// TileTypeFloor は床タイル</span>
-    <span id="TileTypeFloor">TileTypeFloor</span>
-    <span class="comment">// TileTypeWall は壁タイル</span>
-    <span id="TileTypeWall">TileTypeWall</span>
-)</pre>
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="TownEntityPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner.go?s=241:272#L1">TownEntityPlanner</a>
-				<a class="permalink" href="index.html#TownEntityPlanner">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TownEntityPlanner は街の固定マップ初期ビルダー
-
-			<pre>type TownEntityPlanner struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="TownEntityPlanner.PlanInitial">func (TownEntityPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner.go?s=344:408#L3">PlanInitial</a>
-					<a class="permalink" href="index.html#TownEntityPlanner.PlanInitial">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b <a href="index.html#TownEntityPlanner">TownEntityPlanner</a>) PlanInitial(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>PlanInitial は市街地の固定マップ構造を初期化する
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="TownMapDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner.go?s=3330:3355#L128">TownMapDraw</a>
-				<a class="permalink" href="index.html#TownMapDraw">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TownMapDraw は街の固定マップを描画する
-
-			<pre>type TownMapDraw struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="TownMapDraw.PlanMeta">func (TownMapDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/town_planner.go?s=3403:3452#L131">PlanMeta</a>
-					<a class="permalink" href="index.html#TownMapDraw.PlanMeta">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (b <a href="index.html#TownMapDraw">TownMapDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
-				<p>PlanMeta は街マップの描画を行う
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="ValidationError">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/validation.go?s=130:190#L1">ValidationError</a>
-				<a class="permalink" href="index.html#ValidationError">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ValidationError は計画検証エラー
-
-			<pre>type ValidationError struct {
-<span id="ValidationError.Message"></span>    Message <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="ValidationError.X"></span>    X, Y    <a href="http://localhost:8888/pkg/builtin/#int">int</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewValidationError">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/validation.go?s=359:424#L10">NewValidationError</a>
-					<a class="permalink" href="index.html#NewValidationError">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewValidationError(message <a href="http://localhost:8888/pkg/builtin/#string">string</a>, x, y <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="index.html#ValidationError">ValidationError</a></pre>
-				<p>NewValidationError は新しいValidationErrorを作成する
-
-				
-				
-			
-
-			
-				
-				<h3 id="ValidationError.Error">func (ValidationError) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/validation.go?s=192:231#L5">Error</a>
-					<a class="permalink" href="index.html#ValidationError.Error">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (e <a href="index.html#ValidationError">ValidationError</a>) Error() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				
-				
-				
-				
-			
-		
-			
-			
 			<h2 id="WallType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/wall_type.go?s=57:74#L1">WallType</a>
 				<a class="permalink" href="index.html#WallType">&#xb6;</a>
 				
@@ -3894,7 +2574,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="WarpPortal">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=670:806#L17">WarpPortal</a>
+			<h2 id="WarpPortal">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=699:835#L17">WarpPortal</a>
 				<a class="permalink" href="index.html#WarpPortal">&#xb6;</a>
 				
 				
@@ -3973,7 +2653,7 @@ MetaPlanは生成過程で使用される中間データ、EntityPlanは最終�
 		
 			
 			
-			<h2 id="WarpPortalType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=384:409#L7">WarpPortalType</a>
+			<h2 id="WarpPortalType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=413:438#L7">WarpPortalType</a>
 				<a class="permalink" href="index.html#WarpPortalType">&#xb6;</a>
 				
 				
