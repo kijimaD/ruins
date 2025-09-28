@@ -1,6 +1,7 @@
 package components
 
 // PropType は置物のタイプを表す
+// TODO: rawファイルから読み込むようにしたい
 type PropType string
 
 const (

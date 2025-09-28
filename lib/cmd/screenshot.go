@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	mapplaner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/messagedata"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
@@ -55,9 +56,13 @@ func runScreenshot(ctx *cli.Context) error {
 	case "SaveMenu":
 		vrt.RunTestGame(gs.NewSaveMenuState(), mode)
 	case gs.DungeonState{}.String():
-		// いい感じのseed値。画面内に敵がいると動いて差分が出てしまうので、いないものを選んだ
+		// いい感じのseed値
 		const seedVal = 4012
-		vrt.RunTestGame(&gs.DungeonState{Depth: 1, Seed: seedVal}, mode)
+		vrt.RunTestGame(&gs.DungeonState{
+			Depth:       1,
+			Seed:        seedVal,
+			BuilderType: mapplaner.PlannerTypeSmallRoom,
+		}, mode)
 	case "GameOver":
 		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
 	default:
