@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"

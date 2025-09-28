@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	mapplaner "github.com/kijimaD/ruins/lib/mapplaner"
+	"github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/messagedata"
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
@@ -61,7 +61,7 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(&gs.DungeonState{
 			Depth:       1,
 			Seed:        seedVal,
-			BuilderType: mapplaner.PlannerTypeSmallRoom,
+			BuilderType: mapplanner.PlannerTypeSmallRoom,
 		}, mode)
 	case "GameOver":
 		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -14,8 +14,7 @@ func TestMapPlannerBuildPlan(t *testing.T) {
 	t.Parallel()
 	// SmallRoomBuilderチェーンを作成
 	width, height := 8, 8
-	chain, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
-	require.NoError(t, err, "NewSmallRoomPlanner failed")
+	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
 
 	// BuildPlanをテスト
 	plan, err := mapplanner.BuildPlan(chain)
@@ -140,11 +139,10 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	// BuilderChainを作成してタイル配置をテスト
 	// TownPlannerは固定の50x50マップを生成する
 	width, height := 50, 50
-	chain, err := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
-	require.NoError(t, err, "NewTownPlanner failed")
+	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
 
 	// マップを構築
-	require.NoError(t, chain.Plan(), "Plan failed")
+	chain.Plan()
 
 	// 中央座標
 	centerX := width / 2
@@ -310,16 +308,14 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 	seed := uint64(999)
 
 	// 同じパラメータで2回実行
-	chain1, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
-	require.NoError(t, err, "NewSmallRoomPlanner failed (1st)")
+	chain1 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	plan1, err1 := mapplanner.BuildPlan(chain1)
 	if err1 != nil {
 		t.Fatalf("First BuildPlan failed: %v", err1)
 	}
 	completeWallSprites(plan1)
 
-	chain2, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
-	require.NoError(t, err, "NewSmallRoomPlanner failed (2nd)")
+	chain2 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	plan2, err2 := mapplanner.BuildPlan(chain2)
 	if err2 != nil {
 		t.Fatalf("Second BuildPlan failed: %v", err2)

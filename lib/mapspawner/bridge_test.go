@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/stretchr/testify/require"
 )
 
@@ -166,11 +166,10 @@ func TestBuildPlan_Integration(t *testing.T) {
 	t.Parallel()
 	// 実際のSmallRoomBuilderを使用
 	width, height := 10, 10
-	chain, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
-	require.NoError(t, err, "NewSmallRoomPlanner failed")
+	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
 
 	// マップを生成
-	require.NoError(t, chain.Plan(), "Plan failed")
+	chain.Plan()
 
 	// BuildPlanをテスト
 	plan, err := chain.PlanData.BuildPlan()

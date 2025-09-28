@@ -1,7 +1,7 @@
 package mapspawner
 
 import (
-	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
+	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 )
 
 // completeWallSprites はEntityPlan内の壁エンティティのスプライト番号を補完する
