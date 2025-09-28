@@ -7,7 +7,7 @@ import (
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 )
 
-func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
+func TestBuildPlan_SimpleFloorAndWall(t *testing.T) {
 	t.Parallel()
 	// 3x3のシンプルなマップを作成
 	width, height := 3, 3
@@ -20,10 +20,10 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 2
 	}
 
-	// BuildPlanFromTilesをテスト
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	// BuildPlanをテスト
+	plan, err := chain.PlanData.BuildPlan()
 	if err != nil {
-		t.Fatalf("BuildPlanFromTiles failed: %v", err)
+		t.Fatalf("BuildPlan failed: %v", err)
 	}
 
 	// 壁スプライト番号を補完
@@ -56,7 +56,7 @@ func TestBuildPlanFromTiles_SimpleFloorAndWall(t *testing.T) {
 	}
 }
 
-func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
+func TestBuildPlan_EmptyMap(t *testing.T) {
 	t.Parallel()
 	// 空のマップを作成
 	width, height := 2, 2
@@ -69,7 +69,7 @@ func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
 	}
 
 	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
-	_, err := chain.PlanData.BuildPlanFromTiles()
+	_, err := chain.PlanData.BuildPlan()
 	if err == nil {
 		t.Fatalf("Expected error for empty map, but got nil")
 	}
@@ -80,7 +80,7 @@ func TestBuildPlanFromTiles_EmptyMap(t *testing.T) {
 	}
 }
 
-func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
+func TestBuildPlan_WarpTiles(t *testing.T) {
 	t.Parallel()
 	// ワープタイルを含むマップを作成
 	width, height := 2, 2
@@ -103,9 +103,9 @@ func TestBuildPlanFromTiles_WarpTiles(t *testing.T) {
 		Type: mapplanner.WarpPortalEscape,
 	})
 
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	plan, err := chain.PlanData.BuildPlan()
 	if err != nil {
-		t.Fatalf("BuildPlanFromTiles failed: %v", err)
+		t.Fatalf("BuildPlan failed: %v", err)
 	}
 
 	// 壁スプライト番号を補完
@@ -164,8 +164,8 @@ func TestGetSpriteNumberForWallType(t *testing.T) {
 	}
 }
 
-// TestBuildPlanFromTiles_Integration は実際のBuilderChainとの統合テスト
-func TestBuildPlanFromTiles_Integration(t *testing.T) {
+// TestBuildPlan_Integration は実際のBuilderChainとの統合テスト
+func TestBuildPlan_Integration(t *testing.T) {
 	t.Parallel()
 	// 実際のSmallRoomBuilderを使用
 	width, height := 10, 10
@@ -174,10 +174,10 @@ func TestBuildPlanFromTiles_Integration(t *testing.T) {
 	// マップを生成
 	chain.Plan()
 
-	// BuildPlanFromTilesをテスト
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	// BuildPlanをテスト
+	plan, err := chain.PlanData.BuildPlan()
 	if err != nil {
-		t.Fatalf("BuildPlanFromTiles integration test failed: %v", err)
+		t.Fatalf("BuildPlan integration test failed: %v", err)
 	}
 
 	// 壁スプライト番号を補完

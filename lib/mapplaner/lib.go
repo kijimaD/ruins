@@ -315,9 +315,9 @@ func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapC
 	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
 }
 
-// BuildPlanFromTiles はMetaPlanからEntityPlanを構築する
+// BuildPlan はMetaPlanからEntityPlanを構築する
 // MetaPlanは生成過程で使用される中間データ、EntityPlanは最終的な配置計画
-func (bm *MetaPlan) BuildPlanFromTiles() (*EntityPlan, error) {
+func (bm *MetaPlan) BuildPlan() (*EntityPlan, error) {
 	plan := NewEntityPlan(int(bm.Level.TileWidth), int(bm.Level.TileHeight))
 
 	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
@@ -578,7 +578,7 @@ func BuildPlan(chain *PlannerChain) (*EntityPlan, error) {
 	chain.Plan()
 
 	// PlanDataからEntityPlanを構築
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	plan, err := chain.PlanData.BuildPlan()
 	if err != nil {
 		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}

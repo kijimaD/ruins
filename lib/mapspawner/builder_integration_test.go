@@ -186,10 +186,10 @@ func TestTownBuilderWithPortals(t *testing.T) {
 		Type: mapplanner.WarpPortalNext,
 	})
 
-	// BuildPlanFromTilesを使用してEntityPlanを生成
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	// BuildPlanを使用してEntityPlanを生成
+	plan, err := chain.PlanData.BuildPlan()
 	if err != nil {
-		t.Fatalf("BuildPlanFromTiles failed: %v", err)
+		t.Fatalf("BuildPlan failed: %v", err)
 	}
 
 	// 壁スプライト番号を補完

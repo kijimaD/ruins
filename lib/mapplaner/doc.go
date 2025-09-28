@@ -20,7 +20,7 @@
 //
 // - **EntityPlan**: エンティティ生成用の最終配置計画
 //   - TileSpec、EntitySpecのリストとして詳細な配置計画を管理
-//   - MetaPlanから BuildPlanFromTiles() で生成される
+//   - MetaPlanから BuildPlan() で生成される
 //   - mapspawnerで実際のECSエンティティ生成に使用される
 //
 // ## タイル定義
@@ -60,7 +60,7 @@
 // ### タイルベース生成の場合
 // 1. タイル配列の初期化（全てTileEmpty）
 // 2. PlannerChainによる段階的タイル配置（MetaPlan）
-// 3. MetaPlan.BuildPlanFromTiles()でEntityPlan生成
+// 3. MetaPlan.BuildPlan()でEntityPlan生成
 // 4. mapspawner.SpawnLevelで実際のECSエンティティ生成
 //
 // ### 文字列ベース生成の場合

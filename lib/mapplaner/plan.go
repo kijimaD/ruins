@@ -82,13 +82,13 @@ func attemptPlan(world w.World, width, height int, seed uint64, plannerType Plan
 	chain.Plan()
 
 	// PlanDataからEntityPlanを構築
-	plan, err := chain.PlanData.BuildPlanFromTiles()
+	plan, err := chain.PlanData.BuildPlan()
 	if err != nil {
 		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}
 
 	// 計画の妥当性と接続性をチェック
-	if err := plan.Validate(&chain.PlanData); err != nil {
+	if err := plan.Validate(); err != nil {
 		return nil, fmt.Errorf("計画検証エラー: %w", err)
 	}
 
