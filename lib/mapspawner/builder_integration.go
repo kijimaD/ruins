@@ -3,24 +3,16 @@ package mapspawner
 import (
 	"fmt"
 
-	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // PlanAndSpawn はEntityPlanを構築してLevelをスポーンする
+// planning責務は完全にmapplannerパッケージに委譲し、spawning責務のみを担当する
 func PlanAndSpawn(world w.World, width, height int, seed uint64, plannerType mapplanner.PlannerType) (resources.Level, int, int, error) {
-	// PlannerChainを初期化
-	var chain *mapplanner.PlannerChain
-	if plannerType.Name == mapplanner.PlannerTypeRandom.Name {
-		chain = mapplanner.NewRandomPlanner(gc.Tile(width), gc.Tile(height), seed)
-	} else {
-		chain = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
-	}
-
-	// EntityPlan構築
-	plan, err := mapplanner.Plan(world, chain, plannerType)
+	// EntityPlan構築（planning責務はmapplannerに完全委譲）
+	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
 	if err != nil {
 		return resources.Level{}, 0, 0, fmt.Errorf("EntityPlan構築エラー: %w", err)
 	}

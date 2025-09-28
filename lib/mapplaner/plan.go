@@ -3,12 +3,21 @@ package mapplanner
 import (
 	"fmt"
 
+	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// Plan はPlannerChainに追加プランナーを統合してEntityPlanを構築する
-func Plan(world w.World, chain *PlannerChain, plannerType PlannerType) (*EntityPlan, error) {
-	// ワープポータルプランナーを追加（StringMapPlannerは既に独自にワープポータルを処理しているため条件判定）
+// Plan はPlannerChainを初期化して追加プランナーを統合し、EntityPlanを構築する
+func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*EntityPlan, error) {
+	// PlannerChainを初期化
+	var chain *PlannerChain
+	if plannerType.Name == PlannerTypeRandom.Name {
+		chain = NewRandomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	} else {
+		chain = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
+	}
+	// ワープポータルプランナーを追加する
+	// プランナータイプによってはもうすでに計画されているので判定する
 	if len(chain.PlanData.WarpPortals) == 0 {
 		warpPlanner := NewWarpPortalPlanner(world, plannerType)
 		chain.With(warpPlanner)
