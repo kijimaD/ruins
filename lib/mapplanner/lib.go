@@ -3,7 +3,6 @@
 package mapplanner
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -312,145 +311,10 @@ func (b *PlannerChain) Plan() {
 }
 
 // ValidateConnectivity はマップの接続性を検証する
-// プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
-func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
+// プレイヤーのスタート位置からワープポータルへの到達可能性をチェックし、問題があればエラーを返す
+func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) error {
 	pf := NewPathFinder(&b.PlanData)
-	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
-}
-
-// BuildPlan はMetaPlanからEntityPlanを構築する
-// MetaPlanは生成過程で使用される中間データ、EntityPlanは最終的な配置計画
-func (bm *MetaPlan) BuildPlan() (*EntityPlan, error) {
-	plan := NewEntityPlan(int(bm.Level.TileWidth), int(bm.Level.TileHeight))
-
-	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
-	width := int(bm.Level.TileWidth)
-	height := int(bm.Level.TileHeight)
-	centerX := width / 2
-	centerY := height / 2
-
-	// スポーン可能な位置を探す
-	playerX, playerY := centerX, centerY
-	found := false
-
-	// 複数の候補位置を試す
-	attempts := []struct{ x, y int }{
-		{width / 2, height / 2},         // 中央
-		{width / 4, height / 4},         // 左上寄り
-		{3 * width / 4, height / 4},     // 右上寄り
-		{width / 4, 3 * height / 4},     // 左下寄り
-		{3 * width / 4, 3 * height / 4}, // 右下寄り
-	}
-
-	// 最適な位置を探す
-	for _, pos := range attempts {
-		tileIdx := bm.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
-		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx].Walkable {
-			playerX, playerY = pos.x, pos.y
-			found = true
-			break
-		}
-	}
-
-	// 見つからない場合は全体をスキャン
-	if !found {
-		for _i, tile := range bm.Tiles {
-			if tile.Walkable {
-				i := resources.TileIdx(_i)
-				x, y := bm.Level.XYTileCoord(i)
-				playerX, playerY = int(x), int(y)
-				found = true
-				break
-			}
-		}
-	}
-
-	if !found {
-		return nil, ErrPlayerPlacement
-	}
-
-	// プレイヤー位置を設定
-	plan.SetPlayerStartPosition(playerX, playerY)
-
-	// タイルを走査してEntityPlanを構築
-	for _i, tile := range bm.Tiles {
-		i := resources.TileIdx(_i)
-		x, y := bm.Level.XYTileCoord(i)
-
-		// Walkableフィールドで判定
-		// TODO: TileNameで判定するべき
-		if tile.Walkable {
-			// 移動可能 = 床タイル
-			plan.Entities = append(plan.Entities, EntitySpec{
-				X:          int(x),
-				Y:          int(y),
-				EntityType: EntityTypeFloor,
-			})
-		} else {
-			// 移動不可 = 壁タイル（隣接に床がある場合のみ）
-			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
-			if bm.AdjacentAnyFloor(i) {
-				// 壁タイプを判定（スプライト番号はmapspawnerで決定）
-				wallType := bm.GetWallType(i)
-				plan.Entities = append(plan.Entities, EntitySpec{
-					X:          int(x),
-					Y:          int(y),
-					EntityType: EntityTypeWall,
-					WallType:   &wallType,
-				})
-			}
-		}
-	}
-
-	// ワープポータルエンティティをEntityPlanに追加
-	for _, portal := range bm.WarpPortals {
-		switch portal.Type {
-		case WarpPortalNext:
-			plan.Entities = append(plan.Entities, EntitySpec{
-				X:          portal.X,
-				Y:          portal.Y,
-				EntityType: EntityTypeWarpNext,
-			})
-		case WarpPortalEscape:
-			plan.Entities = append(plan.Entities, EntitySpec{
-				X:          portal.X,
-				Y:          portal.Y,
-				EntityType: EntityTypeWarpEscape,
-			})
-		}
-	}
-
-	// NPCエンティティをEntityPlanに追加
-	for _, npc := range bm.NPCs {
-		plan.Entities = append(plan.Entities, EntitySpec{
-			X:          npc.X,
-			Y:          npc.Y,
-			EntityType: EntityTypeNPC,
-			NPCType:    &npc.NPCType,
-		})
-	}
-
-	// アイテムエンティティをEntityPlanに追加
-	for _, item := range bm.Items {
-		plan.Entities = append(plan.Entities, EntitySpec{
-			X:          item.X,
-			Y:          item.Y,
-			EntityType: EntityTypeItem,
-			ItemType:   &item.ItemName,
-		})
-	}
-
-	// PropsエンティティをEntityPlanに追加
-	for _, prop := range bm.Props {
-		plan.Entities = append(plan.Entities, EntitySpec{
-			X:          prop.X,
-			Y:          prop.Y,
-			EntityType: EntityTypeProp,
-			PropType:   &prop.PropType,
-		})
-	}
-
-	return plan, nil
+	return pf.ValidateConnectivity(playerStartX, playerStartY)
 }
 
 // InitialMapPlanner は初期マップをプランするインターフェース
@@ -607,16 +471,38 @@ func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
 	return bm.RawMaster.GenerateTile(name)
 }
 
-// BuildPlan はPlannerChainを実行してEntityPlanを生成する
-func BuildPlan(chain *PlannerChain) (*EntityPlan, error) {
-	// プランナーチェーンを実行
-	chain.Plan()
+// GetPlayerStartPosition はプレイヤーの開始位置を取得する
+func (bm *MetaPlan) GetPlayerStartPosition() (int, int, bool) {
+	// 適切な開始位置を探す（SpawnFromMetaPlanと同じロジック）
+	width := int(bm.Level.TileWidth)
+	height := int(bm.Level.TileHeight)
 
-	// PlanDataからEntityPlanを構築
-	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
+	// 複数の候補位置を試す
+	attempts := []struct{ x, y int }{
+		{width / 2, height / 2},         // 中央
+		{width / 4, height / 4},         // 左上寄り
+		{3 * width / 4, height / 4},     // 右上寄り
+		{width / 4, 3 * height / 4},     // 左下寄り
+		{3 * width / 4, 3 * height / 4}, // 右下寄り
 	}
 
-	return plan, nil
+	// 最適な位置を探す
+	for _, pos := range attempts {
+		tileIdx := bm.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
+		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx].Walkable {
+			return pos.x, pos.y, true
+		}
+	}
+
+	// 見つからない場合は全体をスキャン
+	for _i, tile := range bm.Tiles {
+		if tile.Walkable {
+			i := resources.TileIdx(_i)
+			x, y := bm.Level.XYTileCoord(i)
+			return int(x), int(y), true
+		}
+	}
+
+	// 見つからない場合
+	return 0, 0, false
 }

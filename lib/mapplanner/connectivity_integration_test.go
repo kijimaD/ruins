@@ -30,22 +30,10 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 		chain.PlanData.Tiles[idx] = chain.PlanData.GenerateTile("Floor")
 	}
 
-	// 接続性を検証
-	result := chain.ValidateConnectivity(playerStartX, playerStartY)
-
-	// プレイヤーのスタート位置は歩行可能である必要がある
-	if !result.PlayerStartReachable {
-		t.Error("Player start position should be reachable")
-	}
-
-	// 生成されたマップにはワープポータルや脱出ポータルはまだ配置されていないので
-	// それらは0個である必要がある
-	if len(result.WarpPortals) != 0 {
-		t.Errorf("Expected 0 warp portals in basic room builder, got %d", len(result.WarpPortals))
-	}
-
-	if len(result.EscapePortals) != 0 {
-		t.Errorf("Expected 0 escape portals in basic room builder, got %d", len(result.EscapePortals))
+	// 接続性を検証（ワープポータルがない場合はErrNoWarpPortalが期待される）
+	err := chain.ValidateConnectivity(playerStartX, playerStartY)
+	if err != ErrNoWarpPortal {
+		t.Errorf("Expected ErrNoWarpPortal for map without portals, got: %v", err)
 	}
 }
 
@@ -82,17 +70,10 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 		t.Fatal("Could not find a floor tile for player start position")
 	}
 
-	// 接続性を検証
-	result := chain.ValidateConnectivity(playerStartX, playerStartY)
-
-	// プレイヤーのスタート位置は歩行可能である必要がある
-	if !result.PlayerStartReachable {
-		t.Error("Player start position should be reachable")
-	}
-
-	// 洞窟ビルダーもまだポータルを配置しないので0個である必要がある
-	if len(result.WarpPortals) != 0 {
-		t.Errorf("Expected 0 warp portals in cave builder, got %d", len(result.WarpPortals))
+	// 接続性を検証（ワープポータルがない場合はErrNoWarpPortalが期待される）
+	err := chain.ValidateConnectivity(playerStartX, playerStartY)
+	if err != ErrNoWarpPortal {
+		t.Errorf("Expected ErrNoWarpPortal for cave map without portals, got: %v", err)
 	}
 }
 
@@ -128,34 +109,14 @@ func TestPathFinder_WithPortals(t *testing.T) {
 		Type: WarpPortalEscape,
 	})
 
-	// 接続性を検証
-	result := chain.ValidateConnectivity(playerStartX, playerStartY)
-
-	// デバッグ情報
-	t.Logf("Player start reachable: %v", result.PlayerStartReachable)
-	t.Logf("Warp portals: %d", len(result.WarpPortals))
-	for i, portal := range result.WarpPortals {
-		t.Logf("Warp portal %d: (%d, %d) reachable: %v", i, portal.X, portal.Y, portal.Reachable)
-	}
-	t.Logf("Escape portals: %d", len(result.EscapePortals))
-	for i, portal := range result.EscapePortals {
-		t.Logf("Escape portal %d: (%d, %d) reachable: %v", i, portal.X, portal.Y, portal.Reachable)
+	// 接続性を検証（ワープポータルは到達可能だが脱出ポータルは到達不可能）
+	// この場合、ワープポータルが到達可能なので接続性エラーは発生しない
+	err := chain.ValidateConnectivity(playerStartX, playerStartY)
+	if err != nil {
+		t.Errorf("Expected no connectivity error when warp portal is reachable, got: %v", err)
 	}
 
-	// ワープポータルは到達可能である必要がある
-	if !result.HasReachableWarpPortal() {
-		t.Error("Warp portal should be reachable")
-	}
-
-	// 脱出ポータルは到達不可能である必要がある
-	if result.HasReachableEscapePortal() {
-		t.Error("Escape portal should not be reachable")
-	}
-
-	// 完全には接続されていない
-	if result.IsFullyConnected() {
-		t.Error("Map should not be fully connected")
-	}
+	t.Logf("Map connectivity validation passed with mixed portal reachability")
 }
 
 // TestRoomPlanner はテスト用の簡単な部屋ビルダー

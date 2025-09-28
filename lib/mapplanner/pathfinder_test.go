@@ -174,7 +174,7 @@ func TestPathFinder_IsReachable(t *testing.T) {
 	}
 }
 
-func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
+func TestPathFinder_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	planData := createTestPlanData(6, 6)
 	pf := NewPathFinder(planData)
@@ -196,101 +196,29 @@ func TestPathFinder_ValidateMapConnectivity(t *testing.T) {
 		Type: WarpPortalNext,
 	})
 
-	// 到達不可能な脱出ポータル（孤立している）
+	// 接続性検証 - 到達可能なのでエラーなし
+	if err := pf.ValidateConnectivity(playerX, playerY); err != nil {
+		t.Errorf("Expected connectivity validation to pass, but got error: %v", err)
+	}
+
+	// エラーケース: プレイヤー開始位置が歩行不可能
+	err := pf.ValidateConnectivity(0, 0)
+	if err != ErrPlayerPlacement {
+		t.Errorf("Expected ErrPlayerPlacement, got %v", err)
+	}
+
+	// エラーケース: ワープポータルに到達不可能
+	// 到達不可能なワープポータル（孤立している）を追加
 	idx = planData.Level.XYTileIndex(4, 4)
 	planData.Tiles[idx] = planData.GenerateTile("Floor")
-	// 脱出ポータルエンティティを追加
-	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
+	planData.WarpPortals = []WarpPortal{{
 		X:    4,
 		Y:    4,
-		Type: WarpPortalEscape,
-	})
-
-	result := pf.ValidateMapConnectivity(playerX, playerY)
-
-	// プレイヤーのスタート位置は歩行可能である必要がある
-	if !result.PlayerStartReachable {
-		t.Error("Expected player start position to be reachable")
-	}
-
-	// ワープポータルが1つ見つかり、到達可能である必要がある
-	if len(result.WarpPortals) != 1 {
-		t.Errorf("Expected 1 warp portal, got %d", len(result.WarpPortals))
-	}
-	if !result.WarpPortals[0].Reachable {
-		t.Error("Expected warp portal to be reachable")
-	}
-
-	// 脱出ポータルが1つ見つかり、到達不可能である必要がある
-	if len(result.EscapePortals) != 1 {
-		t.Errorf("Expected 1 escape portal, got %d", len(result.EscapePortals))
-	}
-	if result.EscapePortals[0].Reachable {
-		t.Error("Expected escape portal to be not reachable")
-	}
-
-	// 到達可能なワープポータルがある
-	if !result.HasReachableWarpPortal() {
-		t.Error("Expected to have reachable warp portal")
-	}
-
-	// 到達可能な脱出ポータルがない
-	if result.HasReachableEscapePortal() {
-		t.Error("Expected to not have reachable escape portal")
-	}
-
-	// すべてが接続されていない（脱出ポータルに到達できない）
-	if result.IsFullyConnected() {
-		t.Error("Expected map to not be fully connected")
-	}
-}
-
-func TestPathFinder_ValidateMapConnectivity_FullyConnected(t *testing.T) {
-	t.Parallel()
-	planData := createTestPlanData(6, 6)
-	pf := NewPathFinder(planData)
-
-	// プレイヤースタート地点から全ポータルへの直線パス
-	playerX, playerY := 2, 2
-
-	// 床を配置
-	for y := 1; y <= 4; y++ {
-		idx := planData.Level.XYTileIndex(2, gc.Tile(y))
-		planData.Tiles[idx] = planData.GenerateTile("Floor")
-	}
-
-	// ワープポータル（到達可能）
-	idx := planData.Level.XYTileIndex(2, 1)
-	planData.Tiles[idx] = planData.GenerateTile("Floor")
-	// ワープポータルエンティティを追加
-	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
-		X:    2,
-		Y:    1,
 		Type: WarpPortalNext,
-	})
+	}}
 
-	// 脱出ポータル（到達可能）
-	idx = planData.Level.XYTileIndex(2, 4)
-	planData.Tiles[idx] = planData.GenerateTile("Floor")
-	// 脱出ポータルエンティティを追加
-	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
-		X:    2,
-		Y:    4,
-		Type: WarpPortalEscape,
-	})
-
-	result := pf.ValidateMapConnectivity(playerX, playerY)
-
-	// 完全に接続されている必要がある
-	if !result.IsFullyConnected() {
-		t.Error("Expected map to be fully connected")
-	}
-
-	if !result.HasReachableWarpPortal() {
-		t.Error("Expected to have reachable warp portal")
-	}
-
-	if !result.HasReachableEscapePortal() {
-		t.Error("Expected to have reachable escape portal")
+	err = pf.ValidateConnectivity(playerX, playerY)
+	if err != ErrConnectivity {
+		t.Errorf("Expected ErrConnectivity, got %v", err)
 	}
 }

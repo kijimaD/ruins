@@ -5,144 +5,60 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
-	"github.com/kijimaD/ruins/lib/raw"
+	"github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/require"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func TestBuildPlan_SimpleFloorAndWall(t *testing.T) {
+func TestSpawnFromMetaPlan_SimpleFloorAndWall(t *testing.T) {
 	t.Parallel()
+	// テスト用のワールドを作成
+	components := &gc.Components{}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
+	world, _ := world.InitWorld(components)
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+
 	// 3x3のシンプルなマップを作成
 	width, height := 3, 3
-	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
-
-	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
-
-	// タイル配列を手動で設定
-	chain.PlanData.Tiles = []raw.TileRaw{
-		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), // Row 0
-		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Wall"), // Row 1
-		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), // Row 2
+	seed := uint64(42)
+	plannerType := mapplanner.PlannerType{
+		Name:         "SmallRoom",
+		SpawnEnemies: false,
+		SpawnItems:   false,
+		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
 	}
 
-	// BuildPlanをテスト
-	plan, err := chain.PlanData.BuildPlan()
-	require.NoError(t, err, "BuildPlan failed")
+	// MetaPlanを生成
+	metaPlan, err := mapplanner.Plan(world, width, height, seed, plannerType)
+	require.NoError(t, err, "Plan failed")
 
-	// 壁スプライト番号を補完
-	completeWallSprites(plan)
+	// SpawnFromMetaPlanをテスト
+	level, err := Spawn(world, metaPlan)
+	require.NoError(t, err, "SpawnFromMetaPlan failed")
 
-	// EntityPlanの基本プロパティをチェック
-	if plan.Width != width {
-		t.Errorf("Expected Width %d, got %d", width, plan.Width)
+	// Levelの基本プロパティをチェック
+	if level.TileWidth != gc.Tile(width) {
+		t.Errorf("Expected TileWidth %d, got %d", width, level.TileWidth)
 	}
-	if plan.Height != height {
-		t.Errorf("Expected Height %d, got %d", height, plan.Height)
+	if level.TileHeight != gc.Tile(height) {
+		t.Errorf("Expected TileHeight %d, got %d", height, level.TileHeight)
 	}
 
-	// エンティティ数をチェック（床1個 + 隣接する壁8個）
-	// 実際の数は隣接判定ロジックに依存するため、最低限のチェックのみ
-	if len(plan.Entities) == 0 {
+	// エンティティが生成されていることを確認
+	if len(level.Entities) == 0 {
 		t.Error("Expected some entities, but got none")
 	}
 
-	// 床エンティティが含まれていることを確認
-	hasFloor := false
-	for _, entity := range plan.Entities {
-		if entity.EntityType == mapplanner.EntityTypeFloor && entity.X == 1 && entity.Y == 1 {
-			hasFloor = true
+	// 非ゼロエンティティ（実際に生成されたエンティティ）が存在することを確認
+	hasNonZeroEntity := false
+	for _, entity := range level.Entities {
+		if entity != 0 {
+			hasNonZeroEntity = true
 			break
 		}
 	}
-	if !hasFloor {
-		t.Error("Expected floor entity at (1,1), but not found")
-	}
-}
-
-func TestBuildPlan_EmptyMap(t *testing.T) {
-	t.Parallel()
-	// 空のマップを作成
-	width, height := 2, 2
-	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
-
-	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
-
-	// 全て空のタイル
-	chain.PlanData.Tiles = []raw.TileRaw{
-		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"),
-		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"),
-	}
-
-	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
-	_, err := chain.PlanData.BuildPlan()
-	if err == nil {
-		t.Fatalf("Expected error for empty map, but got nil")
-	}
-
-	expectedMsg := "プレイヤー配置可能な床タイルが見つかりません"
-	if err.Error() != expectedMsg {
-		t.Errorf("Expected error message %q, got %q", expectedMsg, err.Error())
-	}
-}
-
-func TestBuildPlan_WarpTiles(t *testing.T) {
-	t.Parallel()
-	// ワープタイルを含むマップを作成
-	width, height := 2, 2
-	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
-
-	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
-
-	chain.PlanData.Tiles = []raw.TileRaw{
-		chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Floor"),
-		chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Floor"),
-	}
-
-	// ワープポータルエンティティを追加
-	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
-		X:    0,
-		Y:    0,
-		Type: mapplanner.WarpPortalNext,
-	})
-	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
-		X:    1,
-		Y:    1,
-		Type: mapplanner.WarpPortalEscape,
-	})
-
-	plan, err := chain.PlanData.BuildPlan()
-	require.NoError(t, err, "BuildPlan failed")
-
-	// 壁スプライト番号を補完
-	completeWallSprites(plan)
-
-	// ワープエンティティが含まれていることを確認
-	hasWarpNext := false
-	hasWarpEscape := false
-	hasFloors := 0
-
-	for _, entity := range plan.Entities {
-		switch entity.EntityType {
-		case mapplanner.EntityTypeWarpNext:
-			if entity.X == 0 && entity.Y == 0 {
-				hasWarpNext = true
-			}
-		case mapplanner.EntityTypeWarpEscape:
-			if entity.X == 1 && entity.Y == 1 {
-				hasWarpEscape = true
-			}
-		case mapplanner.EntityTypeFloor:
-			hasFloors++
-		}
-	}
-
-	if !hasWarpNext {
-		t.Error("Expected WarpNext entity at (0,0), but not found")
-	}
-	if !hasWarpEscape {
-		t.Error("Expected WarpEscape entity at (1,1), but not found")
-	}
-	if hasFloors != 4 {
-		t.Errorf("Expected 4 floor entities, got %d", hasFloors)
+	if !hasNonZeroEntity {
+		t.Error("Expected at least one non-zero entity")
 	}
 }
 
@@ -168,47 +84,55 @@ func TestGetSpriteNumberForWallType(t *testing.T) {
 	}
 }
 
-// TestBuildPlan_Integration は実際のBuilderChainとの統合テスト
-func TestBuildPlan_Integration(t *testing.T) {
+// TestSpawnFromMetaPlan_Integration は実際のPlannerChainとの統合テスト
+func TestSpawnFromMetaPlan_Integration(t *testing.T) {
 	t.Parallel()
-	// 実際のSmallRoomBuilderを使用
+	// テスト用のワールドを作成
+	components := &gc.Components{}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
+	world, _ := world.InitWorld(components)
+	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+
+	// 実際のSmallRoomPlannerを使用
 	width, height := 10, 10
-	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
+	seed := uint64(12345)
+	plannerType := mapplanner.PlannerType{
+		Name:         "SmallRoom",
+		SpawnEnemies: false,
+		SpawnItems:   false,
+		PlannerFunc:  mapplanner.PlannerTypeSmallRoom.PlannerFunc,
+	}
 
-	chain.PlanData.RawMaster = createMapspawnerTestRawMaster()
+	// MetaPlanを生成
+	metaPlan, err := mapplanner.Plan(world, width, height, seed, plannerType)
+	require.NoError(t, err, "Plan failed")
 
-	// マップを生成
-	chain.Plan()
-
-	// BuildPlanをテスト
-	plan, err := chain.PlanData.BuildPlan()
-	require.NoError(t, err, "BuildPlan integration test failed")
-
-	// 壁スプライト番号を補完
-	completeWallSprites(plan)
+	// SpawnFromMetaPlanをテスト
+	level, err := Spawn(world, metaPlan)
+	require.NoError(t, err, "SpawnFromMetaPlan integration test failed")
 
 	// 基本的な整合性をチェック
-	if plan.Width != width {
-		t.Errorf("Expected Width %d, got %d", width, plan.Width)
+	if level.TileWidth != gc.Tile(width) {
+		t.Errorf("Expected TileWidth %d, got %d", width, level.TileWidth)
 	}
-	if plan.Height != height {
-		t.Errorf("Expected Height %d, got %d", height, plan.Height)
+	if level.TileHeight != gc.Tile(height) {
+		t.Errorf("Expected TileHeight %d, got %d", height, level.TileHeight)
 	}
 
 	// エンティティが生成されていることを確認
-	if len(plan.Entities) == 0 {
-		t.Error("Expected some entities from SmallRoomBuilder, but got none")
+	if len(level.Entities) == 0 {
+		t.Error("Expected some entities from SmallRoomPlanner, but got none")
 	}
 
-	// 床エンティティが含まれていることを確認
-	hasFloor := false
-	for _, entity := range plan.Entities {
-		if entity.EntityType == mapplanner.EntityTypeFloor {
-			hasFloor = true
+	// 非ゼロエンティティが存在することを確認
+	hasNonZeroEntity := false
+	for _, entity := range level.Entities {
+		if entity != 0 {
+			hasNonZeroEntity = true
 			break
 		}
 	}
-	if !hasFloor {
-		t.Error("Expected at least one floor entity from SmallRoomBuilder")
+	if !hasNonZeroEntity {
+		t.Error("Expected at least one non-zero entity from SmallRoomPlanner")
 	}
 }

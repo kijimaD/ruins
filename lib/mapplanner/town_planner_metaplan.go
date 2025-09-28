@@ -1,28 +1,33 @@
-// Package mapplanner の文字列ベース街ビルダー
-// 文字列で直接街のレイアウトを定義するシステム
+// Package mapplanner の MetaPlan 対応街プランナー
+// 元の文字列ベース街レイアウトを MetaPlan 方式で実装
 package mapplanner
 
 import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 )
 
-// NewTownPlanner は文字列ベースの街プランナーを作成する
-func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
-	// 50x50の大規模な街レイアウトを文字列で定義
-	tileMap, entityMap := GetTownLayout()
+// MetaTownPlanner は文字列ベース街マップを MetaPlan に直接構築するプランナー
+type MetaTownPlanner struct {
+	TileMap   []string
+	EntityMap []string
+}
 
-	// レイアウトの基本整合性を検証（接続性検証はPlan関数で実行）
+// NewTownPlanner は MetaPlan 対応の街プランナーを作成する
+func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+	// 50x50の街レイアウト（幅3の道路と5x5以上の建物）
+	tileMap, entityMap := getTownLayout()
+
+	// レイアウトの基本整合性を検証
 	if err := validateTownLayout(tileMap, entityMap); err != nil {
 		panic(fmt.Sprintf("街レイアウト検証エラー: %v", err))
 	}
 
-	planner := &StringMapPlanner{
-		TileMap:       tileMap,
-		EntityMap:     entityMap,
-		TileMapping:   getDefaultTileMapping(),
-		EntityMapping: getDefaultEntityMapping(),
+	planner := &MetaTownPlanner{
+		TileMap:   tileMap,
+		EntityMap: entityMap,
 	}
 
 	// 実際のマップサイズは文字列から自動検出される（50x50）
@@ -31,10 +36,97 @@ func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	return chain
 }
 
-// GetTownLayout は街のタイルとエンティティレイアウトを返す
-// TODO: tileMap と entityMap を明確に分ける(両方で使えるものがあって使い分けがわかりにくい)
-// TODO: 建物をプレハブ式にする
-func GetTownLayout() ([]string, []string) {
+// PlanInitial は MetaPlan の初期化を行う
+func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
+	// タイルマップのサイズを自動検出
+	height := len(p.TileMap)
+	if height == 0 {
+		return fmt.Errorf("タイルマップが空です")
+	}
+	width := len(p.TileMap[0])
+
+	// MetaPlan のサイズを更新
+	planData.Level.TileWidth = gc.Tile(width)
+	planData.Level.TileHeight = gc.Tile(height)
+
+	// タイル配列を初期化
+	totalTiles := width * height
+	planData.Tiles = make([]raw.TileRaw, totalTiles)
+
+	// 文字列マップからタイルを生成
+	for y, row := range p.TileMap {
+		for x, char := range row {
+			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+
+			switch char {
+			case '#':
+				// 壁タイル
+				planData.Tiles[idx] = planData.GenerateTile("Wall")
+			case 'f', 'r':
+				// 床タイル（'f' = 床、'r' = 道路）
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
+			default:
+				// その他は空タイル
+				planData.Tiles[idx] = planData.GenerateTile("Empty")
+			}
+		}
+	}
+
+	// エンティティマップからNPC、アイテム、ワープポータルを配置
+	for y, row := range p.EntityMap {
+		if y >= len(p.EntityMap) {
+			break
+		}
+		for x, char := range row {
+			if x >= len(row) {
+				break
+			}
+
+			switch char {
+			case '@':
+				// プレイヤー開始位置は自動で設定されるのでスキップ
+				continue
+			case '&':
+				// NPC（街プランナーではNPCをスキップ - テスト用）
+				// TODO: 適切なNPCタイプが定義されたら追加
+				continue
+			case 'w':
+				// ワープホール
+				planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
+					X:    x,
+					Y:    y,
+					Type: WarpPortalNext, // 次の階層への移動
+				})
+			case 'C', 'T', 'S', 'M', 'R':
+				// Props（家具類）
+				var propType gc.PropType
+				switch char {
+				case 'C':
+					propType = gc.PropTypeChair
+				case 'T':
+					propType = gc.PropTypeTable
+				case 'S':
+					propType = gc.PropTypeBookshelf
+				case 'M':
+					propType = gc.PropTypeBarrel
+				case 'R':
+					propType = gc.PropTypeCrate
+				}
+
+				planData.Props = append(planData.Props, PropsSpec{
+					X:        x,
+					Y:        y,
+					PropType: propType,
+				})
+			}
+		}
+	}
+
+	return nil
+}
+
+// getTownLayout は街のタイルとエンティティレイアウトを返す
+func getTownLayout() ([]string, []string) {
 	// 50x50の街レイアウト（幅3の道路と5x5以上の建物）
 	tileMap := []string{
 		"##################################################",
@@ -138,9 +230,9 @@ func GetTownLayout() ([]string, []string) {
 		"..................................................",
 		"..................................................", // 広場
 		"..................................................",
-		"..................................................", // ワープホール（下の広場の真ん中）
+		"........................w.........................", // ワープホール（下の広場の真ん中）
 		"..................................................",
-		"........................w.........................",
+		"..................................................",
 	}
 
 	return tileMap, entityMap
