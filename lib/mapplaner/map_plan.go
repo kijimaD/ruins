@@ -36,54 +36,28 @@ type EntitySpec struct {
 }
 
 // EntityType はエンティティの種類を表す
-type EntityType int
+type EntityType string
 
 const (
 	// EntityTypeFloor は床エンティティ
-	EntityTypeFloor EntityType = iota
+	EntityTypeFloor EntityType = "Floor"
 	// EntityTypeWall は壁エンティティ
-	EntityTypeWall
+	EntityTypeWall EntityType = "Wall"
 	// EntityTypeWarpNext は進行ワープホール
-	EntityTypeWarpNext
+	EntityTypeWarpNext EntityType = "WarpNext"
 	// EntityTypeWarpEscape は脱出ワープホール
-	EntityTypeWarpEscape
+	EntityTypeWarpEscape EntityType = "WarpEscape"
 	// EntityTypeProp は置物エンティティ
-	EntityTypeProp
+	EntityTypeProp EntityType = "Prop"
 	// EntityTypeNPC はNPCエンティティ
-	EntityTypeNPC
+	EntityTypeNPC EntityType = "NPC"
 	// EntityTypeItem はアイテムエンティティ
-	EntityTypeItem
+	EntityTypeItem EntityType = "Item"
 	// EntityTypePlayer はプレイヤーエンティティ
-	EntityTypePlayer
+	EntityTypePlayer EntityType = "Player"
 	// EntityTypeDoor はドアエンティティ
-	EntityTypeDoor
+	EntityTypeDoor EntityType = "Door"
 )
-
-// String はEntityTypeの文字列表現を返す
-func (et EntityType) String() string {
-	switch et {
-	case EntityTypeFloor:
-		return "Floor"
-	case EntityTypeWall:
-		return "Wall"
-	case EntityTypeWarpNext:
-		return "WarpNext"
-	case EntityTypeWarpEscape:
-		return "WarpEscape"
-	case EntityTypeProp:
-		return "Prop"
-	case EntityTypeNPC:
-		return "NPC"
-	case EntityTypeItem:
-		return "Item"
-	case EntityTypePlayer:
-		return "Player"
-	case EntityTypeDoor:
-		return "Door"
-	default:
-		return "Unknown"
-	}
-}
 
 // NewEntityPlan は新しいEntityPlanを作成する
 func NewEntityPlan(width, height int) *EntityPlan {
