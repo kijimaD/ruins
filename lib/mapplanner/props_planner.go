@@ -228,5 +228,5 @@ func (p *PropsPlanner) isValidPropPosition(planData *MetaPlan, x, y gc.Tile) boo
 
 	tile := planData.Tiles[tileIdx]
 	// 床タイルにのみ配置可能
-	return tile == TileFloor
+	return tile.Walkable
 }

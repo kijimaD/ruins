@@ -102,22 +102,20 @@ func Example_tileMappings() {
 	mapping := getDefaultTileMapping()
 
 	fmt.Println("タイル文字マッピング:")
-	fmt.Printf("'#' -> 壁 (TileWall)\n")
-	fmt.Printf("'f' -> 床 (TileFloor)\n")
-	fmt.Printf("'r' -> 道路 (TileFloor)\n")
-	fmt.Printf("' ' -> 床 (TileFloor)\n")
-	fmt.Printf("'.' -> 空地・庭 (TileFloor)\n")
+	fmt.Printf("'#' -> 壁 (planData.GenerateTile(\"Wall\"))\n")
+	fmt.Printf("'f' -> 床 (planData.GenerateTile(\"Floor\"))\n")
+	fmt.Printf("'r' -> 道路 (planData.GenerateTile(\"Floor\"))\n")
+	fmt.Printf("'.' -> 空地・庭 (planData.GenerateTile(\"Floor\"))\n")
 
 	fmt.Printf("\n実際のマッピング数: %d\n", len(mapping))
 	fmt.Printf("\nワープポータル ('w', 'e') はエンティティとして別途処理されます\n")
 
 	// Output:
 	// タイル文字マッピング:
-	// '#' -> 壁 (TileWall)
-	// 'f' -> 床 (TileFloor)
-	// 'r' -> 道路 (TileFloor)
-	// ' ' -> 床 (TileFloor)
-	// '.' -> 空地・庭 (TileFloor)
+	// '#' -> 壁 (planData.GenerateTile("Wall"))
+	// 'f' -> 床 (planData.GenerateTile("Floor"))
+	// 'r' -> 道路 (planData.GenerateTile("Floor"))
+	// '.' -> 空地・庭 (planData.GenerateTile("Floor"))
 	//
 	// 実際のマッピング数: 4
 	//

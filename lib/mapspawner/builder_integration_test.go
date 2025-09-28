@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -153,7 +154,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	centerTile := chain.PlanData.Tiles[centerIdx]
 	t.Logf("Center tile at (%d,%d): %v", centerX, centerY, centerTile)
 
-	if centerTile != mapplanner.TileFloor {
+	if centerTile != (raw.TileRaw{Walkable: true}) {
 		t.Errorf("Expected center tile to be floor, got %v", centerTile)
 	}
 
@@ -165,7 +166,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	}
 	portalIdx := chain.PlanData.Level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
 	// 直接タイルアクセスが必要な場合は専用メソッドを追加検討
-	chain.PlanData.Tiles[portalIdx] = mapplanner.TileFloor
+	chain.PlanData.Tiles[portalIdx] = (raw.TileRaw{Walkable: true})
 	// ワープポータルエンティティを追加
 	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, mapplanner.WarpPortal{
 		X:    communityHallX,

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 )
 
 func TestNewStringTownPlanner(t *testing.T) {
@@ -11,8 +12,10 @@ func TestNewStringTownPlanner(t *testing.T) {
 	// 新しい文字列ベースの街ビルダーをテスト
 	width, height := gc.Tile(50), gc.Tile(50)
 	chain := NewTownPlanner(width, height, 12345)
+	chain.PlanData.RawMaster = createTestRawMaster()
 
 	// ビルダーチェーンを実行
+	chain.PlanData.RawMaster = createTestRawMaster()
 	chain.Plan()
 
 	// サイズをチェック
@@ -26,14 +29,14 @@ func TestNewStringTownPlanner(t *testing.T) {
 	// タイル配置をチェック（50x50マップ用）
 	testCases := []struct {
 		x, y         int
-		expectedTile Tile
+		expectedTile raw.TileRaw
 		description  string
 	}{
-		{0, 0, TileWall, "左上角の壁"},
-		{25, 26, TileFloor, "中央広場の床"},
-		{11, 12, TileFloor, "住宅区域の床"},
-		{25, 19, TileFloor, "商業区域の床"},
-		{49, 49, TileWall, "右下角の壁"},
+		{0, 0, chain.PlanData.GenerateTile("Wall"), "左上角の壁"},
+		{25, 26, chain.PlanData.GenerateTile("Floor"), "中央広場の床"},
+		{11, 12, chain.PlanData.GenerateTile("Floor"), "住宅区域の床"},
+		{25, 19, chain.PlanData.GenerateTile("Floor"), "商業区域の床"},
+		{49, 49, chain.PlanData.GenerateTile("Wall"), "右下角の壁"},
 	}
 
 	for _, tc := range testCases {
@@ -170,6 +173,7 @@ func TestNewTownPlannerIntegration(t *testing.T) {
 	chain := NewTownPlanner(width, height, 54321)
 
 	// ビルダーチェーンを実行
+	chain.PlanData.RawMaster = createTestRawMaster()
 	chain.Plan()
 
 	// 基本的な構造チェック
@@ -185,10 +189,9 @@ func TestNewTownPlannerIntegration(t *testing.T) {
 	hasWall := false
 
 	for _, tile := range chain.PlanData.Tiles {
-		switch tile {
-		case TileFloor:
+		if tile.Walkable {
 			hasFloor = true
-		case TileWall:
+		} else {
 			hasWall = true
 		}
 	}

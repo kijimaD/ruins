@@ -27,13 +27,7 @@ func NewValidationError(message string, x, y int) ValidationError {
 
 // Validate は計画の妥当性と接続性をチェックする
 func (mp *EntityPlan) Validate() error {
-	// 座標範囲チェック
-	for _, tile := range mp.Tiles {
-		if tile.X < 0 || tile.X >= mp.Width || tile.Y < 0 || tile.Y >= mp.Height {
-			return NewValidationError("タイル座標が範囲外", tile.X, tile.Y)
-		}
-	}
-
+	// 座標範囲チェック（エンティティのみ）
 	for _, entity := range mp.Entities {
 		if entity.X < 0 || entity.X >= mp.Width || entity.Y < 0 || entity.Y >= mp.Height {
 			return NewValidationError("エンティティ座標が範囲外", entity.X, entity.Y)
@@ -99,11 +93,6 @@ func (mp *EntityPlan) buildWalkableMap() [][]bool {
 		for x := 0; x < mp.Width; x++ {
 			walkable[y][x] = false
 		}
-	}
-
-	// TileSpecからタイルの歩行可能性を設定
-	for _, tileSpec := range mp.Tiles {
-		walkable[tileSpec.Y][tileSpec.X] = tileSpec.TileType.Walkable
 	}
 
 	// エンティティで歩行可能性を上書き

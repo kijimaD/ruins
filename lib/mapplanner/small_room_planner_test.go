@@ -46,6 +46,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		chain := NewSmallRoomPlanner(width, height, 12345)
 
 		// ビルド実行
+		chain.PlanData.RawMaster = createTestRawMaster()
 		chain.Plan()
 
 		// タイル数が正しいことを確認
@@ -59,10 +60,9 @@ func TestSmallRoomPlanner(t *testing.T) {
 		floorCount := 0
 		wallCount := 0
 		for _, tile := range chain.PlanData.Tiles {
-			switch tile {
-			case TileFloor:
+			if tile.Walkable {
 				floorCount++
-			case TileWall:
+			} else {
 				wallCount++
 			}
 		}
@@ -80,6 +80,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		height := gc.Tile(25)
 
 		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain.PlanData.RawMaster = createTestRawMaster()
 		chain.Plan()
 
 		// 各部屋が有効な範囲内にあることを確認
@@ -101,6 +102,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		height := gc.Tile(20)
 
 		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain.PlanData.RawMaster = createTestRawMaster()
 		chain.Plan()
 
 		// 各部屋の内部の少なくとも一部が床タイルであることを確認
@@ -111,7 +113,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 				for y := room.Y1; y <= room.Y2 && !hasFloor; y++ {
 					idx := chain.PlanData.Level.XYTileIndex(x, y)
 					if idx >= 0 && int(idx) < len(chain.PlanData.Tiles) {
-						if chain.PlanData.Tiles[idx] == TileFloor {
+						if chain.PlanData.Tiles[idx].Walkable {
 							hasFloor = true
 						}
 					}
@@ -142,6 +144,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 
 				// パニックなく実行できることを確認
 				assert.NotPanics(t, func() {
+					chain.PlanData.RawMaster = createTestRawMaster()
 					chain.Plan()
 				}, "%sでパニックが発生した", tc.name)
 
@@ -159,6 +162,7 @@ func TestSmallRoomPlanner(t *testing.T) {
 		height := gc.Tile(30)
 
 		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain.PlanData.RawMaster = createTestRawMaster()
 		chain.Plan()
 
 		// 廊下が生成されていることを確認

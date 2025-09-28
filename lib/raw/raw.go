@@ -18,6 +18,7 @@ type Master struct {
 	CommandTableIndex map[string]int
 	DropTableIndex    map[string]int
 	SpriteSheetIndex  map[string]int
+	TileIndex         map[string]int
 }
 
 // Raws は全てのローデータを格納する構造体
@@ -29,6 +30,7 @@ type Raws struct {
 	CommandTables []CommandTable `toml:"command_table"`
 	DropTables    []DropTable    `toml:"drop_table"`
 	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
+	Tiles         []TileRaw      `toml:"tile"`
 }
 
 // Item はアイテムのローデータ
@@ -147,6 +149,7 @@ func Load(entityMetadataContent string) (Master, error) {
 	rw.CommandTableIndex = map[string]int{}
 	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
+	rw.TileIndex = map[string]int{}
 	_, err := toml.Decode(entityMetadataContent, &rw.Raws)
 	if err != nil {
 		return Master{}, err
@@ -172,6 +175,9 @@ func Load(entityMetadataContent string) (Master, error) {
 	}
 	for i, spriteSheet := range rw.Raws.SpriteSheets {
 		rw.SpriteSheetIndex[spriteSheet.Name] = i
+	}
+	for i, tile := range rw.Raws.Tiles {
+		rw.TileIndex[tile.Name] = i
 	}
 
 	return rw, nil
@@ -420,4 +426,21 @@ func (rw *Master) GetDropTable(name string) (DropTable, error) {
 	dropTable := rw.Raws.DropTables[dtIdx]
 
 	return dropTable, nil
+}
+
+// TileRaw はタイルのローデータ定義
+type TileRaw struct {
+	Name        string `toml:"Name"`
+	Description string `toml:"Description"`
+	Walkable    bool   `toml:"Walkable"`
+}
+
+// GenerateTile は指定された名前のタイルを生成する
+func (rw *Master) GenerateTile(name string) TileRaw {
+	tileIdx, ok := rw.TileIndex[name]
+	if !ok {
+		panic(fmt.Sprintf("タイル '%s' がTileIndexに存在しません", name))
+	}
+
+	return rw.Raws.Tiles[tileIdx]
 }

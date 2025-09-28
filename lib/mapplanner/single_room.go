@@ -35,7 +35,7 @@ func (d SingleRoomDraw) PlanMeta(planData *MetaPlan) {
 		for y := room.Y1 + 1; y < room.Y2; y++ {
 			for x := room.X1 + 1; x < room.X2; x++ {
 				idx := planData.Level.XYTileIndex(x, y)
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}

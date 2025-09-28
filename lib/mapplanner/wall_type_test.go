@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -18,14 +19,15 @@ func TestPlanData_GetWallType(t *testing.T) {
 			TileHeight: height,
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
-		Tiles:     make([]Tile, int(width)*int(height)),
+		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
+		RawMaster: createTestRawMaster(),
 	}
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = TileWall
+		planData.Tiles[i] = planData.GenerateTile("Wall")
 	}
 
 	// テストケース1: WallTypeTop（下に床がある壁）
@@ -37,7 +39,7 @@ func TestPlanData_GetWallType(t *testing.T) {
 	centerWallIdx := planData.Level.XYTileIndex(centerWallX, centerWallY)
 	bottomFloorIdx := planData.Level.XYTileIndex(bottomFloorX, bottomFloorY)
 
-	planData.Tiles[bottomFloorIdx] = TileFloor
+	planData.Tiles[bottomFloorIdx] = planData.GenerateTile("Floor")
 
 	// デバッグ情報を追加
 	upFloor := planData.isFloorOrWarp(planData.UpTile(centerWallIdx))
@@ -55,8 +57,8 @@ func TestPlanData_GetWallType(t *testing.T) {
 	leftFloorX, leftFloorY := centerWallX-1, centerWallY // 左の床（X座標が小さくなる）
 	leftFloorIdx := planData.Level.XYTileIndex(leftFloorX, leftFloorY)
 
-	planData.Tiles[leftFloorIdx] = TileFloor
-	planData.Tiles[bottomFloorIdx] = TileWall // 前のテストケースをリセット
+	planData.Tiles[leftFloorIdx] = planData.GenerateTile("Floor")
+	planData.Tiles[bottomFloorIdx] = planData.GenerateTile("Wall") // 前のテストケースをリセット
 
 	wallType = planData.GetWallType(centerWallIdx)
 	if wallType != WallTypeRight {
@@ -70,9 +72,9 @@ func TestPlanData_GetWallType(t *testing.T) {
 	rightFloorIdx := planData.Level.XYTileIndex(rightFloorX, rightFloorY)
 	downFloorIdx := planData.Level.XYTileIndex(downFloorX, downFloorY)
 
-	planData.Tiles[rightFloorIdx] = TileFloor
-	planData.Tiles[downFloorIdx] = TileFloor
-	planData.Tiles[leftFloorIdx] = TileWall // リセット
+	planData.Tiles[rightFloorIdx] = planData.GenerateTile("Floor")
+	planData.Tiles[downFloorIdx] = planData.GenerateTile("Floor")
+	planData.Tiles[leftFloorIdx] = planData.GenerateTile("Wall") // リセット
 
 	wallType = planData.GetWallType(centerWallIdx)
 	if wallType != WallTypeTopLeft {
@@ -82,7 +84,7 @@ func TestPlanData_GetWallType(t *testing.T) {
 	// テストケース4: WallTypeGeneric（複雑なパターン）
 	upFloorX, upFloorY := centerWallX, centerWallY-1 // 上の床（Y座標が小さくなる）
 	upFloorIdx := planData.Level.XYTileIndex(upFloorX, upFloorY)
-	planData.Tiles[upFloorIdx] = TileFloor
+	planData.Tiles[upFloorIdx] = planData.GenerateTile("Floor")
 
 	wallType = planData.GetWallType(centerWallIdx) // 今は上、右、下に床がある状態
 	if wallType != WallTypeGeneric {
@@ -100,14 +102,15 @@ func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 			TileHeight: height,
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
-		Tiles:     make([]Tile, int(width)*int(height)),
+		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
+		RawMaster: createTestRawMaster(),
 	}
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = TileWall
+		planData.Tiles[i] = planData.GenerateTile("Wall")
 	}
 
 	// ワープポータルを配置
@@ -116,7 +119,7 @@ func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 
 	warpNextIdx := planData.Level.XYTileIndex(warpX, warpY)
 	wallIdx := planData.Level.XYTileIndex(wallX, wallY)
-	planData.Tiles[warpNextIdx] = TileFloor
+	planData.Tiles[warpNextIdx] = planData.GenerateTile("Floor")
 	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
 		X:    int(warpX),
 		Y:    int(warpY),

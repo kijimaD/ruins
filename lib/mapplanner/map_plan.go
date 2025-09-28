@@ -9,18 +9,10 @@ import (
 type EntityPlan struct {
 	Width        int          // マップ幅
 	Height       int          // マップ高さ
-	Tiles        []TileSpec   // タイル配置計画
-	Entities     []EntitySpec // エンティティ配置計画
+	Entities     []EntitySpec // エンティティ配置計画。計画は最終的にエンティティ列として表現される
 	PlayerStartX int          // プレイヤー開始X座標
 	PlayerStartY int          // プレイヤー開始Y座標
 	HasPlayerPos bool         // プレイヤー位置が設定されているか
-}
-
-// TileSpec はタイル配置仕様
-type TileSpec struct {
-	X        int  // X座標
-	Y        int  // Y座標
-	TileType Tile // タイルタイプ
 }
 
 // EntitySpec はエンティティ配置仕様
@@ -64,21 +56,11 @@ func NewEntityPlan(width, height int) *EntityPlan {
 	return &EntityPlan{
 		Width:        width,
 		Height:       height,
-		Tiles:        make([]TileSpec, 0),
 		Entities:     make([]EntitySpec, 0),
 		PlayerStartX: 0,
 		PlayerStartY: 0,
 		HasPlayerPos: false,
 	}
-}
-
-// AddTile はタイル配置を計画に追加する
-func (mp *EntityPlan) AddTile(x, y int, tileType Tile) {
-	mp.Tiles = append(mp.Tiles, TileSpec{
-		X:        x,
-		Y:        y,
-		TileType: tileType,
-	})
 }
 
 // AddFloor は床エンティティを計画に追加する

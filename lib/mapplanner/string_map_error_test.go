@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/kijimaD/ruins/lib/raw"
+
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
@@ -116,7 +118,8 @@ func TestStringMapBuilder_PlanInitialError(t *testing.T) {
 	metaPlan := &MetaPlan{
 		Level:        resources.Level{TileWidth: 3, TileHeight: 3},
 		RandomSource: NewRandomSource(42),
-		Tiles:        make([]Tile, 9),
+		Tiles:        make([]raw.TileRaw, 9),
+		RawMaster:    createTestRawMaster(),
 	}
 
 	err := builder.PlanInitial(metaPlan)

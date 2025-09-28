@@ -1,6 +1,8 @@
 package mapplanner
 
-import gc "github.com/kijimaD/ruins/lib/components"
+import (
+	gc "github.com/kijimaD/ruins/lib/components"
+)
 
 // RoomDraw は部屋を描画するビルダー
 type RoomDraw struct{}
@@ -21,7 +23,7 @@ func (b RoomDraw) rectangle(planData *MetaPlan, room gc.Rect) {
 		for y := room.Y1; y <= room.Y2; y++ {
 			idx := planData.Level.XYTileIndex(x, y)
 			if 0 < int(idx) && int(idx) < int(planData.Level.TileWidth)*int(planData.Level.TileHeight)-1 {
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}

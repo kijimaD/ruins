@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 )
 
 func TestSeedReproducibility(t *testing.T) {
@@ -14,16 +15,18 @@ func TestSeedReproducibility(t *testing.T) {
 
 	// 1回目の生成
 	chain1 := NewSmallRoomPlanner(width, height, testSeed)
+	chain1.PlanData.RawMaster = createTestRawMaster()
 	chain1.Plan()
-	tiles1 := make([]Tile, len(chain1.PlanData.Tiles))
+	tiles1 := make([]raw.TileRaw, len(chain1.PlanData.Tiles))
 	copy(tiles1, chain1.PlanData.Tiles)
 	rooms1 := make([]gc.Rect, len(chain1.PlanData.Rooms))
 	copy(rooms1, chain1.PlanData.Rooms)
 
 	// 2回目の生成（同じシード）
 	chain2 := NewSmallRoomPlanner(width, height, testSeed)
+	chain2.PlanData.RawMaster = createTestRawMaster()
 	chain2.Plan()
-	tiles2 := make([]Tile, len(chain2.PlanData.Tiles))
+	tiles2 := make([]raw.TileRaw, len(chain2.PlanData.Tiles))
 	copy(tiles2, chain2.PlanData.Tiles)
 	rooms2 := make([]gc.Rect, len(chain2.PlanData.Rooms))
 	copy(rooms2, chain2.PlanData.Rooms)
@@ -56,10 +59,12 @@ func TestDifferentSeeds(t *testing.T) {
 
 	// シード1で生成
 	chain1 := NewSmallRoomPlanner(width, height, 11111)
+	chain1.PlanData.RawMaster = createTestRawMaster()
 	chain1.Plan()
 
 	// シード2で生成
 	chain2 := NewSmallRoomPlanner(width, height, 22222)
+	chain2.PlanData.RawMaster = createTestRawMaster()
 	chain2.Plan()
 
 	// 部屋数が異なる可能性が高い（必ずしも異なるとは限らないが）
@@ -111,10 +116,12 @@ func TestZeroSeedHandling(t *testing.T) {
 
 	// シード0で2回生成
 	chain1 := NewSmallRoomPlanner(width, height, 0)
+	chain1.PlanData.RawMaster = createTestRawMaster()
 	chain1.Plan()
 
 	// 少し時間をずらして再度生成
 	chain2 := NewSmallRoomPlanner(width, height, 0)
+	chain2.PlanData.RawMaster = createTestRawMaster()
 	chain2.Plan()
 
 	// 高確率で異なるマップになるはず（厳密には同じになる可能性もあるが極めて低い）

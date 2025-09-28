@@ -1,18 +1,20 @@
 package mapplanner
 
-import "github.com/kijimaD/ruins/lib/resources"
+import (
+	"github.com/kijimaD/ruins/lib/resources"
+)
 
 // BoundaryWall は外枠をすべて指定タイルで覆うビルダー
 // マップの最外枠のタイルを無条件で指定タイルタイプに変更する
 type BoundaryWall struct {
-	// WallTileType 外枠に使用するタイルタイプ
-	WallTileType Tile
+	// WallTileName 外枠に使用するタイル名
+	WallTileName string
 }
 
 // NewBoundaryWall は新しいBoundaryWallビルダーを作成する
-func NewBoundaryWall(wallTileType Tile) BoundaryWall {
+func NewBoundaryWall(wallTileName string) BoundaryWall {
 	return BoundaryWall{
-		WallTileType: wallTileType,
+		WallTileName: wallTileName,
 	}
 }
 
@@ -24,7 +26,7 @@ func (b BoundaryWall) PlanMeta(planData *MetaPlan) {
 
 		// 最外枠タイルの場合は無条件で壁にする
 		if b.isBoundaryTile(planData, idx) {
-			planData.Tiles[idx] = b.WallTileType
+			planData.Tiles[idx] = planData.GenerateTile(b.WallTileName)
 		}
 	}
 }

@@ -1,6 +1,8 @@
 package mapplanner
 
-import gc "github.com/kijimaD/ruins/lib/components"
+import (
+	gc "github.com/kijimaD/ruins/lib/components"
+)
 
 // PathFinder はパスファインディング機能を提供する
 type PathFinder struct {

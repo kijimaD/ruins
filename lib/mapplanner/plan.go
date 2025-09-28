@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -53,6 +54,13 @@ func attemptPlan(world w.World, width, height int, seed uint64, plannerType Plan
 		chain = NewRandomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	} else {
 		chain = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
+	}
+
+	// RawMasterを設定
+	if world.Resources != nil && world.Resources.RawMaster != nil {
+		if rawMaster, ok := world.Resources.RawMaster.(*raw.Master); ok {
+			chain.PlanData.RawMaster = rawMaster
+		}
 	}
 
 	// ワープポータルプランナーを追加する

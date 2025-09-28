@@ -6,13 +6,14 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 )
 
 // StringMapPlanner は文字列ベースでマップを生成するプランナー
 type StringMapPlanner struct {
 	TileMap       []string                // タイル配置を表す文字列のスライス
 	EntityMap     []string                // エンティティ配置を表す文字列のスライス
-	TileMapping   map[rune]Tile           // 文字からTileへのマッピング
+	TileMapping   map[rune]string         // 文字からタイル名へのマッピング
 	EntityMapping map[rune]EntityTemplate // 文字からEntityTemplateへのマッピング
 }
 
@@ -51,7 +52,7 @@ func (b StringMapPlanner) PlanInitial(planData *MetaPlan) error {
 		planData.Level.TileHeight = gc.Tile(height)
 	}
 
-	planData.Tiles = make([]Tile, width*height)
+	planData.Tiles = make([]raw.TileRaw, width*height)
 
 	// タイルマップを解析してタイルを配置
 	for y, row := range b.TileMap {
@@ -61,8 +62,8 @@ func (b StringMapPlanner) PlanInitial(planData *MetaPlan) error {
 			}
 
 			tileIdx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			if tileType, exists := b.TileMapping[char]; exists {
-				planData.Tiles[tileIdx] = tileType
+			if tileName, exists := b.TileMapping[char]; exists {
+				planData.Tiles[tileIdx] = planData.GenerateTile(tileName)
 			} else {
 				return fmt.Errorf("未知のタイル文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
 			}
@@ -96,7 +97,7 @@ func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int)
 			case 'w':
 				// 進行ワープポータル位置に床タイルを配置
 				tileIdx := plannerMap.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				plannerMap.Tiles[tileIdx] = TileFloor
+				plannerMap.Tiles[tileIdx] = plannerMap.GenerateTile("Floor")
 				// MetaPlanにワープポータル情報を追加
 				plannerMap.WarpPortals = append(plannerMap.WarpPortals, WarpPortal{
 					X:    x,
@@ -106,7 +107,7 @@ func (b StringMapPlanner) parseEntities(plannerMap *MetaPlan, width, height int)
 			case 'e':
 				// 帰還ワープポータル位置に床タイルを配置
 				tileIdx := plannerMap.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				plannerMap.Tiles[tileIdx] = TileFloor
+				plannerMap.Tiles[tileIdx] = plannerMap.GenerateTile("Floor")
 				// MetaPlanにワープポータル情報を追加
 				plannerMap.WarpPortals = append(plannerMap.WarpPortals, WarpPortal{
 					X:    x,
@@ -161,12 +162,12 @@ func NewStringMapPlannerWithMaps(tileMap, entityMap []string, seed uint64) *Plan
 }
 
 // getDefaultTileMapping はデフォルトのタイル文字マッピングを返す
-func getDefaultTileMapping() map[rune]Tile {
-	return map[rune]Tile{
-		'#': TileWall,  // 壁
-		'f': TileFloor, // 床（建物内・住宅）
-		'r': TileFloor, // 道路 (TODO: スプライト未対応)
-		'.': TileFloor, // 空地・庭
+func getDefaultTileMapping() map[rune]string {
+	return map[rune]string{
+		'#': "Wall",  // 壁
+		'f': "Floor", // 床（建物内・住宅）
+		'r': "Floor", // 道路 (TODO: スプライト未対応)
+		'.': "Floor", // 空地・庭
 	}
 }
 
@@ -184,7 +185,7 @@ func getDefaultEntityMapping() map[rune]EntityTemplate {
 }
 
 // SetTileMapping はカスタムタイルマッピングを設定する
-func (b *StringMapPlanner) SetTileMapping(mapping map[rune]Tile) *StringMapPlanner {
+func (b *StringMapPlanner) SetTileMapping(mapping map[rune]string) *StringMapPlanner {
 	b.TileMapping = mapping
 	return b
 }
@@ -196,11 +197,11 @@ func (b *StringMapPlanner) SetEntityMapping(mapping map[rune]EntityTemplate) *St
 }
 
 // AddTileMapping は追加のタイルマッピングを設定する
-func (b *StringMapPlanner) AddTileMapping(char rune, tileType Tile) *StringMapPlanner {
+func (b *StringMapPlanner) AddTileMapping(char rune, tileName string) *StringMapPlanner {
 	if b.TileMapping == nil {
 		b.TileMapping = getDefaultTileMapping()
 	}
-	b.TileMapping[char] = tileType
+	b.TileMapping[char] = tileName
 	return b
 }
 
@@ -241,22 +242,18 @@ func BuildEntityPlanFromStrings(tileMap, entityMap []string) (*EntityPlan, error
 				continue
 			}
 
-			var tileType Tile
-			if mappedType, exists := tileMapping[char]; exists {
-				tileType = mappedType
+			var tileName string
+			if mappedName, exists := tileMapping[char]; exists {
+				tileName = mappedName
 			} else {
 				return nil, fmt.Errorf("未知のタイル文字 '%c' が位置 (%d, %d) で見つかりました", char, x, y)
 			}
 
-			// タイルタイプに応じてエンティティを追加
-			switch tileType {
-			case TileFloor:
+			// タイル名に応じてエンティティを追加
+			if tileName == "Floor" {
 				plan.AddFloor(x, y)
-			case TileWall:
+			} else {
 				plan.AddWall(x, y, 0) // スプライト番号は0をデフォルト
-			default:
-				// その他のタイプは床として扱う
-				plan.AddFloor(x, y)
 			}
 		}
 	}

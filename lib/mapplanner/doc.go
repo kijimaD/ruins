@@ -14,21 +14,39 @@
 // ## 主要データ構造の違い
 //
 // - **MetaPlan**: マップ生成プロセス中の中間データ
-//   - タイル配列（[]Tile）、部屋情報、廊下情報、乱数生成器を含む
+//   - タイル配列（[]raw.TileRaw）、部屋情報、廊下情報、乱数生成器を含む
 //   - PlannerChain内で段階的に構築される
 //   - 生成アルゴリズムで使用される作業用データ
 //
 // - **EntityPlan**: エンティティ生成用の最終配置計画
-//   - TileSpec、EntitySpecのリストとして詳細な配置計画を管理
+//   - EntitySpecのリストとして詳細な配置計画を管理
 //   - MetaPlanから BuildPlan() で生成される
 //   - mapspawnerで実際のECSエンティティ生成に使用される
 //
 // ## タイル定義
 //
-// マップ生成で使用されるタイルタイプ：
-//   - TileEmpty: 空のタイル（デフォルト状態）
-//   - TileFloor: 床タイル（通行可能）
-//   - TileWall: 壁タイル（通行不可）
+// ### 基本タイルタイプ
+// マップ生成で使用される標準タイルタイプ：
+//   - planData.GenerateTile("Empty"): 空のタイル（デフォルト状態）
+//   - planData.GenerateTile("Floor"): 床タイル（通行可能）
+//   - planData.GenerateTile("Wall"): 壁タイル（通行不可）
+//   - TileWater: 水タイル（通行可能だが特殊）
+//   - TileDoor: 扉タイル（開閉可能な通路）
+//   - TilePit: 落とし穴タイル（歩くと落下）
+//
+// ### TOMLベースタイル定義システム
+// 新しいタイル定義システムでは、TOMLファイルでタイルの種類と属性を定義できます：
+//
+//	[[tile]]
+//	Name = "Floor"
+//	Description = "床タイル - 移動可能な基本的なタイル"
+//	Type = "FLOOR"
+//	Walkable = true
+//	BlocksLOS = false
+//
+// TileMasterクラスを使用してタイル定義を読み込み・管理：
+//   - LoadTileFromFile(): TOMLファイルからタイル定義を読み込み
+//   - GenerateTile(): 名前指定でタイルオブジェクトを生成
 //
 // ## エンティティ
 //
@@ -38,8 +56,8 @@
 // ## 通行可否判定
 //
 // マップ生成時にはタイルの Walkable フィールドで通行可否を判定します：
-//   - 通行可能: TileFloor（Walkable=true）
-//   - 通行不可: TileWall（Walkable=false）, TileEmpty（Walkable=false）
+//   - 通行可能: planData.GenerateTile("Floor")（Walkable=true）
+//   - 通行不可: planData.GenerateTile("Wall")（Walkable=false）, planData.GenerateTile("Empty")（Walkable=false）
 //
 // ## 配置計画の作成
 //
@@ -58,7 +76,7 @@
 // ## マップ生成の流れ
 //
 // ### タイルベース生成の場合
-// 1. タイル配列の初期化（全てTileEmpty）
+// 1. タイル配列の初期化（全てplanData.GenerateTile("Empty")）
 // 2. PlannerChainによる段階的タイル配置（MetaPlan）
 // 3. MetaPlan.BuildPlan()でEntityPlan生成
 // 4. mapspawner.SpawnLevelで実際のECSエンティティ生成

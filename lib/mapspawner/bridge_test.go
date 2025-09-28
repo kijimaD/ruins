@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,10 +16,10 @@ func TestBuildPlan_SimpleFloorAndWall(t *testing.T) {
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// タイル配列を手動で設定
-	chain.PlanData.Tiles = []mapplanner.Tile{
-		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 0
-		mapplanner.TileWall, mapplanner.TileFloor, mapplanner.TileWall, // Row 1
-		mapplanner.TileWall, mapplanner.TileWall, mapplanner.TileWall, // Row 2
+	chain.PlanData.Tiles = []raw.TileRaw{
+		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), // Row 0
+		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Wall"), // Row 1
+		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"), // Row 2
 	}
 
 	// BuildPlanをテスト
@@ -62,9 +63,9 @@ func TestBuildPlan_EmptyMap(t *testing.T) {
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
 	// 全て空のタイル
-	chain.PlanData.Tiles = []mapplanner.Tile{
-		mapplanner.TileEmpty, mapplanner.TileEmpty,
-		mapplanner.TileEmpty, mapplanner.TileEmpty,
+	chain.PlanData.Tiles = []raw.TileRaw{
+		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"),
+		chain.PlanData.GenerateTile("Wall"), chain.PlanData.GenerateTile("Wall"),
 	}
 
 	// 空のマップではプレイヤー位置が見つからずエラーになることを期待
@@ -85,9 +86,9 @@ func TestBuildPlan_WarpTiles(t *testing.T) {
 	width, height := 2, 2
 	chain := mapplanner.NewPlannerChain(gc.Tile(width), gc.Tile(height), 42)
 
-	chain.PlanData.Tiles = []mapplanner.Tile{
-		mapplanner.TileFloor, mapplanner.TileFloor,
-		mapplanner.TileFloor, mapplanner.TileFloor,
+	chain.PlanData.Tiles = []raw.TileRaw{
+		chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Floor"),
+		chain.PlanData.GenerateTile("Floor"), chain.PlanData.GenerateTile("Floor"),
 	}
 
 	// ワープポータルエンティティを追加

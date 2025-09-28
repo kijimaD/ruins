@@ -161,7 +161,7 @@ func (b TownMapDraw) drawRooms(planData *MetaPlan, width, height int) {
 			for y := room.Y1; y < room.Y2; y++ {
 				if x >= 0 && x < gc.Tile(width) && y >= 0 && y < gc.Tile(height) {
 					idx := planData.Level.XYTileIndex(x, y)
-					planData.Tiles[idx] = TileFloor
+					planData.Tiles[idx] = planData.GenerateTile("Floor")
 				}
 			}
 		}
@@ -185,7 +185,7 @@ func (b TownMapDraw) drawMainStreets(planData *MetaPlan, width, height, centerX,
 			x := centerX + roadWidth
 			if x >= 0 && x < width && y >= 0 && y < height {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -196,7 +196,7 @@ func (b TownMapDraw) drawMainStreets(planData *MetaPlan, width, height, centerX,
 			y := centerY + roadWidth
 			if x >= 0 && x < width && y >= 0 && y < height {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -228,7 +228,7 @@ func (b TownMapDraw) drawScholarRoad(planData *MetaPlan, width, _, centerX, cent
 			x := centerX + roadWidth
 			if x >= 0 && x < width {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -242,7 +242,7 @@ func (b TownMapDraw) drawCraftRoad(planData *MetaPlan, width, height, centerX, c
 			y := centerY + roadWidth
 			if y >= 0 && y < height {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -256,7 +256,7 @@ func (b TownMapDraw) drawTempleRoad(planData *MetaPlan, width, height, centerX, 
 			x := centerX + roadWidth
 			if x >= 0 && x < width {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -270,7 +270,7 @@ func (b TownMapDraw) drawTradeRoad(planData *MetaPlan, _, height, centerX, cente
 			y := centerY + roadWidth
 			if y >= 0 && y < height {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -284,7 +284,7 @@ func (b TownMapDraw) drawInnerPaths(planData *MetaPlan, width, height, centerX, 
 		y := centerY - 6 - i
 		if x >= 0 && y >= 0 && x < width && y < height {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			planData.Tiles[idx] = TileFloor
+			planData.Tiles[idx] = planData.GenerateTile("Floor")
 		}
 	}
 
@@ -294,7 +294,7 @@ func (b TownMapDraw) drawInnerPaths(planData *MetaPlan, width, height, centerX, 
 		y := centerY + 7 + i
 		if x < width && y < height {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			planData.Tiles[idx] = TileFloor
+			planData.Tiles[idx] = planData.GenerateTile("Floor")
 		}
 	}
 
@@ -305,7 +305,7 @@ func (b TownMapDraw) drawInnerPaths(planData *MetaPlan, width, height, centerX, 
 		y := centerY - 12 + i
 		if x >= 0 && x < width && y >= 0 && y < height {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			planData.Tiles[idx] = TileFloor
+			planData.Tiles[idx] = planData.GenerateTile("Floor")
 		}
 	}
 
@@ -314,7 +314,7 @@ func (b TownMapDraw) drawInnerPaths(planData *MetaPlan, width, height, centerX, 
 		y := centerY - 15
 		if x >= 0 && x < width && y >= 0 && y < height {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			planData.Tiles[idx] = TileFloor
+			planData.Tiles[idx] = planData.GenerateTile("Floor")
 		}
 	}
 
@@ -323,7 +323,7 @@ func (b TownMapDraw) drawInnerPaths(planData *MetaPlan, width, height, centerX, 
 		x := centerX + 15
 		if x >= 0 && x < width && y >= 0 && y < height {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			planData.Tiles[idx] = TileFloor
+			planData.Tiles[idx] = planData.GenerateTile("Floor")
 		}
 	}
 }
@@ -337,7 +337,7 @@ func (b TownMapDraw) fillDiagonalGaps(planData *MetaPlan, width, height int) {
 			currentTile := planData.Tiles[currentIdx]
 
 			// 現在のタイルが壁の場合のみ処理
-			if currentTile != TileWall {
+			if currentTile != planData.GenerateTile("Wall") {
 				continue
 			}
 
@@ -393,16 +393,16 @@ func (b TownMapDraw) shouldFillDiagonalGap(planData *MetaPlan, x, y, _, _ int) b
 		diagonalFloorCount++
 	}
 
-	if upTile == TileWall {
+	if upTile == planData.GenerateTile("Wall") {
 		orthogonalWallCount++
 	}
-	if downTile == TileWall {
+	if downTile == planData.GenerateTile("Wall") {
 		orthogonalWallCount++
 	}
-	if leftTile == TileWall {
+	if leftTile == planData.GenerateTile("Wall") {
 		orthogonalWallCount++
 	}
-	if rightTile == TileWall {
+	if rightTile == planData.GenerateTile("Wall") {
 		orthogonalWallCount++
 	}
 
@@ -428,7 +428,7 @@ func (b TownMapDraw) fillSurroundingGaps(planData *MetaPlan, centerX, centerY, w
 
 			// 床タイルで、周囲に壁が多い場合は壁に変更
 			if tile.Walkable && b.isSurroundedByWalls(planData, x, y, width, height) {
-				planData.Tiles[idx] = TileWall
+				planData.Tiles[idx] = planData.GenerateTile("Wall")
 			}
 		}
 	}
@@ -453,7 +453,7 @@ func (b TownMapDraw) isSurroundedByWalls(planData *MetaPlan, x, y, width, height
 				wallCount++ // 境界外は壁として扱う
 			} else {
 				idx := planData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
-				if planData.Tiles[idx] == TileWall {
+				if planData.Tiles[idx] == planData.GenerateTile("Wall") {
 					wallCount++
 				}
 			}

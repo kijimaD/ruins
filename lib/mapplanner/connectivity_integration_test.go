@@ -11,6 +11,7 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 小さなテスト用マップを生成
 	chain := NewSmallRoomPlanner(20, 20, 42) // 固定シードで再現可能
+	chain.PlanData.RawMaster = createTestRawMaster()
 	chain.Plan()
 
 	// プレイヤーのスタート位置を部屋の中心付近に設定
@@ -26,7 +27,7 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 
 		// プレイヤーのスタート位置を確実に床にする
 		idx := chain.PlanData.Level.XYTileIndex(gc.Tile(playerStartX), gc.Tile(playerStartY))
-		chain.PlanData.Tiles[idx] = TileFloor
+		chain.PlanData.Tiles[idx] = chain.PlanData.GenerateTile("Floor")
 	}
 
 	// 接続性を検証
@@ -53,6 +54,7 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 洞窟マップを生成
 	chain := NewCavePlanner(30, 30, 123)
+	chain.PlanData.RawMaster = createTestRawMaster()
 	chain.Plan()
 
 	// 床タイルを見つけてプレイヤーのスタート位置とする
@@ -67,7 +69,7 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 		for y := height/2 - 5; y < height/2+5 && !foundFloor; y++ {
 			if x >= 0 && x < width && y >= 0 && y < height {
 				idx := chain.PlanData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				if chain.PlanData.Tiles[idx].Type == TileTypeFloor {
+				if chain.PlanData.Tiles[idx].Walkable {
 					playerStartX = x
 					playerStartY = y
 					foundFloor = true
@@ -99,6 +101,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 	t.Parallel()
 	// テスト用の小さなマップを作成
 	chain := NewPlannerChain(10, 10, 1)
+	chain.PlanData.RawMaster = createTestRawMaster()
 	chain.StartWith(&TestRoomPlanner{})
 	chain.Plan()
 
@@ -107,7 +110,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 
 	// ワープポータルを配置（垂直通路上、到達可能な位置）
 	warpIdx := chain.PlanData.Level.XYTileIndex(5, 2)
-	chain.PlanData.Tiles[warpIdx] = TileFloor
+	chain.PlanData.Tiles[warpIdx] = chain.PlanData.GenerateTile("Floor")
 	// ワープポータルエンティティを追加
 	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, WarpPortal{
 		X:    5,
@@ -117,7 +120,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 
 	// 脱出ポータルを配置（到達不可能な位置：壁の中）
 	escapeIdx := chain.PlanData.Level.XYTileIndex(1, 1)
-	chain.PlanData.Tiles[escapeIdx] = TileFloor
+	chain.PlanData.Tiles[escapeIdx] = chain.PlanData.GenerateTile("Floor")
 	// 脱出ポータルエンティティを追加
 	chain.PlanData.WarpPortals = append(chain.PlanData.WarpPortals, WarpPortal{
 		X:    1,
@@ -165,19 +168,19 @@ func (t *TestRoomPlanner) PlanInitial(planData *MetaPlan) error {
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = TileWall
+		planData.Tiles[i] = planData.GenerateTile("Wall")
 	}
 
 	// 垂直方向の通路
 	for y := 1; y < height-1; y++ {
 		idx := planData.Level.XYTileIndex(gc.Tile(width/2), gc.Tile(y))
-		planData.Tiles[idx] = TileFloor
+		planData.Tiles[idx] = planData.GenerateTile("Floor")
 	}
 
 	// 水平方向の通路
 	for x := 1; x < width-1; x++ {
 		idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(height/2))
-		planData.Tiles[idx] = TileFloor
+		planData.Tiles[idx] = planData.GenerateTile("Floor")
 	}
 
 	return nil

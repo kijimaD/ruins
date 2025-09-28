@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -18,19 +19,20 @@ func TestPlanData_AdjacentAnyFloor(t *testing.T) {
 			TileHeight: height,
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
-		Tiles:     make([]Tile, int(width)*int(height)),
+		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
+		RawMaster: createTestRawMaster(),
 	}
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = TileWall
+		planData.Tiles[i] = planData.GenerateTile("Wall")
 	}
 
 	// 中央(2,2)を床にする
 	centerIdx := planData.Level.XYTileIndex(2, 2)
-	planData.Tiles[centerIdx] = TileFloor
+	planData.Tiles[centerIdx] = planData.GenerateTile("Floor")
 
 	// テストケース1: 直交する隣接タイルは床を検出する
 	upIdx := planData.Level.XYTileIndex(1, 2)    // 上
@@ -87,21 +89,22 @@ func TestPlanData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 			TileHeight: height,
 			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
-		Tiles:     make([]Tile, int(width)*int(height)),
+		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
 		Corridors: [][]resources.TileIdx{},
+		RawMaster: createTestRawMaster(),
 	}
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = TileWall
+		planData.Tiles[i] = planData.GenerateTile("Wall")
 	}
 
 	// ワープポータルを配置（床 + エンティティ）
 	warpNextIdx := planData.Level.XYTileIndex(2, 2)
 	warpEscapeIdx := planData.Level.XYTileIndex(2, 3)
-	planData.Tiles[warpNextIdx] = TileFloor
-	planData.Tiles[warpEscapeIdx] = TileFloor
+	planData.Tiles[warpNextIdx] = planData.GenerateTile("Floor")
+	planData.Tiles[warpEscapeIdx] = planData.GenerateTile("Floor")
 
 	// ワープポータルエンティティを追加
 	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
