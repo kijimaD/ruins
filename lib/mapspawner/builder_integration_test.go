@@ -6,6 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/world"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -13,16 +14,15 @@ func TestMapPlannerBuildPlan(t *testing.T) {
 	t.Parallel()
 	// SmallRoomBuilderチェーンを作成
 	width, height := 8, 8
-	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
+	chain, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 42)
+	require.NoError(t, err, "NewSmallRoomPlanner failed")
 
 	// BuildPlanをテスト
 	plan, err := mapplanner.BuildPlan(chain)
 	if err == nil {
 		completeWallSprites(plan)
 	}
-	if err != nil {
-		t.Fatalf("BuildPlan failed: %v", err)
-	}
+	require.NoError(t, err, "BuildPlan failed")
 
 	// EntityPlanの基本プロパティをチェック
 	if plan.Width != width {
@@ -42,9 +42,7 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 	t.Parallel()
 	// テスト用のワールドを作成
 	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
 	// マップサイズとシード
@@ -61,18 +59,14 @@ func TestBuildPlanAndSpawn(t *testing.T) {
 
 	// EntityPlan構築
 	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
-	if err != nil {
-		t.Fatalf("Plan failed: %v", err)
-	}
+	require.NoError(t, err, "Plan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
 
 	// SpawnLevel
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel failed")
 
 	// Levelの基本プロパティをチェック
 	if level.TileWidth != gc.Tile(width) {
@@ -102,9 +96,7 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 	t.Parallel()
 	// テスト用のワールドを作成
 	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
 	// マップサイズとシード
@@ -122,18 +114,14 @@ func TestBuildPlanAndSpawn_TownBuilder(t *testing.T) {
 
 	// EntityPlan構築
 	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
-	if err != nil {
-		t.Fatalf("Plan failed: %v", err)
-	}
+	require.NoError(t, err, "Plan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
 
 	// SpawnLevel
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel with TownBuilder failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel with TownBuilder failed")
 
 	// Levelの基本プロパティをチェック
 	if level.TileWidth != gc.Tile(width) {
@@ -152,10 +140,11 @@ func TestTownBuilderWithPortals(t *testing.T) {
 	// BuilderChainを作成してタイル配置をテスト
 	// TownPlannerは固定の50x50マップを生成する
 	width, height := 50, 50
-	chain := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	chain, err := mapplanner.NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	require.NoError(t, err, "NewTownPlanner failed")
 
 	// マップを構築
-	chain.Plan()
+	require.NoError(t, chain.Plan(), "Plan failed")
 
 	// 中央座標
 	centerX := width / 2
@@ -188,9 +177,7 @@ func TestTownBuilderWithPortals(t *testing.T) {
 
 	// BuildPlanを使用してEntityPlanを生成
 	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		t.Fatalf("BuildPlan failed: %v", err)
-	}
+	require.NoError(t, err, "BuildPlan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
@@ -211,15 +198,11 @@ func TestTownBuilderWithPortals(t *testing.T) {
 
 	// 実際にSpawnLevelでエンティティが生成されるかテスト
 	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel failed")
 
 	// 公民館の中央にエンティティが生成されているかチェック
 	portalEntityIdx := level.XYTileIndex(gc.Tile(communityHallX), gc.Tile(communityHallY))
@@ -236,9 +219,7 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 	t.Parallel()
 	// テスト用のワールドを作成
 	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
 	// TownPlannerは固定の50x50マップを生成する
@@ -247,18 +228,14 @@ func TestTownBuildPlanAndSpawnFullFlow(t *testing.T) {
 
 	// EntityPlan構築とSpawnLevelを個別に実行（街の設定で）
 	plan, err := mapplanner.Plan(world, width, height, seed, mapplanner.PlannerTypeTown)
-	if err != nil {
-		t.Fatalf("Plan failed: %v", err)
-	}
+	require.NoError(t, err, "Plan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
 
 	// SpawnLevel
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel failed")
 
 	// 中央座標
 	centerX := width / 2
@@ -288,9 +265,7 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 	t.Parallel()
 	// テスト用のワールドを作成
 	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
 	// マップサイズとシード
@@ -307,18 +282,14 @@ func TestBuildPlanAndSpawn_BigRoomBuilder(t *testing.T) {
 
 	// EntityPlan構築
 	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
-	if err != nil {
-		t.Fatalf("Plan failed: %v", err)
-	}
+	require.NoError(t, err, "Plan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
 
 	// SpawnLevel
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel with BigRoomBuilder failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel with BigRoomBuilder failed")
 
 	// Levelの基本プロパティをチェック
 	if level.TileWidth != gc.Tile(width) {
@@ -339,14 +310,16 @@ func TestBuildPlan_Reproducible(t *testing.T) {
 	seed := uint64(999)
 
 	// 同じパラメータで2回実行
-	chain1 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	chain1, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	require.NoError(t, err, "NewSmallRoomPlanner failed (1st)")
 	plan1, err1 := mapplanner.BuildPlan(chain1)
 	if err1 != nil {
 		t.Fatalf("First BuildPlan failed: %v", err1)
 	}
 	completeWallSprites(plan1)
 
-	chain2 := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	chain2, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), seed)
+	require.NoError(t, err, "NewSmallRoomPlanner failed (2nd)")
 	plan2, err2 := mapplanner.BuildPlan(chain2)
 	if err2 != nil {
 		t.Fatalf("Second BuildPlan failed: %v", err2)

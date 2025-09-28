@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
+	"github.com/stretchr/testify/require"
 )
 
 func TestBuildPlan_SimpleFloorAndWall(t *testing.T) {
@@ -22,9 +23,7 @@ func TestBuildPlan_SimpleFloorAndWall(t *testing.T) {
 
 	// BuildPlanをテスト
 	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		t.Fatalf("BuildPlan failed: %v", err)
-	}
+	require.NoError(t, err, "BuildPlan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
@@ -104,9 +103,7 @@ func TestBuildPlan_WarpTiles(t *testing.T) {
 	})
 
 	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		t.Fatalf("BuildPlan failed: %v", err)
-	}
+	require.NoError(t, err, "BuildPlan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
@@ -169,16 +166,15 @@ func TestBuildPlan_Integration(t *testing.T) {
 	t.Parallel()
 	// 実際のSmallRoomBuilderを使用
 	width, height := 10, 10
-	chain := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
+	chain, err := mapplanner.NewSmallRoomPlanner(gc.Tile(width), gc.Tile(height), 12345)
+	require.NoError(t, err, "NewSmallRoomPlanner failed")
 
 	// マップを生成
-	chain.Plan()
+	require.NoError(t, chain.Plan(), "Plan failed")
 
 	// BuildPlanをテスト
 	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		t.Fatalf("BuildPlan integration test failed: %v", err)
-	}
+	require.NoError(t, err, "BuildPlan integration test failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)

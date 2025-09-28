@@ -7,6 +7,7 @@ import (
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/world"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -38,9 +39,7 @@ func TestWarpPortalNoDuplication_StringMapPlanner(t *testing.T) {
 	if err == nil {
 		completeWallSprites(plan)
 	}
-	if err != nil {
-		t.Fatalf("BuildPlan failed: %v", err)
-	}
+	require.NoError(t, err, "BuildPlan failed")
 
 	// ワープポータルをカウント
 	warpNextCount := 0
@@ -80,9 +79,7 @@ func TestWarpPortalNoDuplication_NonStringMapPlanner(t *testing.T) {
 
 	// ワールドを初期化
 	components := &gc.Components{}
-	if err := components.InitializeComponents(&ecs.Manager{}); err != nil {
-		t.Fatalf("InitializeComponents failed: %v", err)
-	}
+	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
 	world, _ := world.InitWorld(components)
 
 	// Dungeonリソースを初期化（帰還ワープホール配置のため、5の倍数の階層）
@@ -102,18 +99,14 @@ func TestWarpPortalNoDuplication_NonStringMapPlanner(t *testing.T) {
 
 	// EntityPlan構築
 	plan, err := mapplanner.Plan(world, width, height, seed, plannerType)
-	if err != nil {
-		t.Fatalf("Plan failed: %v", err)
-	}
+	require.NoError(t, err, "Plan failed")
 
 	// 壁スプライト番号を補完
 	completeWallSprites(plan)
 
 	// SpawnLevel
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel failed")
 
 	// このテストはmapspawnerでのワープポータル重複確認のため、
 	// Levelから実際に生成されたエンティティをカウントする

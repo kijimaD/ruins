@@ -6,6 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplaner"
 	"github.com/kijimaD/ruins/lib/world"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -23,9 +24,7 @@ func TestSpawnLevel_ValidPlan(t *testing.T) {
 
 	// SpawnLevelをテスト（エンティティ生成なしで基本機能をテスト）
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel failed: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel failed")
 
 	// Levelの基本プロパティをチェック
 	if level.TileWidth != 3 {
@@ -85,9 +84,7 @@ func TestSpawnLevel_EmptyPlan(t *testing.T) {
 
 	// 空のプランでもエラーなく動作することを確認
 	level, err := Spawn(world, plan)
-	if err != nil {
-		t.Fatalf("SpawnLevel failed with empty plan: %v", err)
-	}
+	require.NoError(t, err, "SpawnLevel failed with empty plan")
 
 	// 空のLevelが作成されることを確認
 	if level.TileWidth != 2 {
@@ -146,9 +143,7 @@ func TestSpawnEntityFromSpec_Prop(t *testing.T) {
 	}
 
 	entity, err := spawnEntityFromSpec(world, spec)
-	if err != nil {
-		t.Fatalf("Failed to spawn prop entity: %v", err)
-	}
+	require.NoError(t, err, "Failed to spawn prop entity")
 
 	if entity == 0 {
 		t.Error("Expected non-zero entity, got 0")
