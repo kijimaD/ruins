@@ -1,6 +1,10 @@
 package mapplanner
 
-import "fmt"
+import (
+	"fmt"
+
+	gc "github.com/kijimaD/ruins/lib/components"
+)
 
 // ValidationError は計画検証エラー
 type ValidationError struct {
@@ -61,7 +65,7 @@ func (mp *EntityPlan) validateConnectivity() error {
 
 	// プレイヤー位置から各ワープポータルへの到達可能性をBFSで検証
 	for _, portal := range warpPortals {
-		if !mp.isReachableBFS(walkableMap, mp.PlayerStartX, mp.PlayerStartY, portal.X, portal.Y) {
+		if !mp.isReachableBFS(walkableMap, mp.PlayerStartX, mp.PlayerStartY, int(portal.X), int(portal.Y)) {
 			return ErrConnectivity
 		}
 	}
@@ -69,21 +73,14 @@ func (mp *EntityPlan) validateConnectivity() error {
 	return nil
 }
 
-// portalPosition はワープポータルの位置を表す
-type portalPosition struct {
-	X, Y int
-	Type EntityType
-}
-
 // collectWarpPortals はEntityPlan内のワープポータルを収集する
-func (mp *EntityPlan) collectWarpPortals() []portalPosition {
-	var portals []portalPosition
+func (mp *EntityPlan) collectWarpPortals() []gc.GridElement {
+	var portals []gc.GridElement
 	for _, entity := range mp.Entities {
 		if entity.EntityType == EntityTypeWarpNext || entity.EntityType == EntityTypeWarpEscape {
-			portals = append(portals, portalPosition{
-				X:    entity.X,
-				Y:    entity.Y,
-				Type: entity.EntityType,
+			portals = append(portals, gc.GridElement{
+				X: gc.Tile(entity.X),
+				Y: gc.Tile(entity.Y),
 			})
 		}
 	}

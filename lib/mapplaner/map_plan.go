@@ -185,7 +185,6 @@ func (mp *EntityPlan) AddItem(x, y int, itemType string) {
 	})
 }
 
-
 // SetPlayerStartPosition はプレイヤーの開始位置を設定する
 func (mp *EntityPlan) SetPlayerStartPosition(x, y int) {
 	mp.PlayerStartX = x
