@@ -8,8 +8,8 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
-// NewStringTownPlanner は文字列ベースの街プランナーを作成する
-func NewStringTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+// NewTownPlanner は文字列ベースの街プランナーを作成する
+func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	// 50x50の大規模な街レイアウトを文字列で定義
 	tileMap, entityMap := GetTownLayout()
 

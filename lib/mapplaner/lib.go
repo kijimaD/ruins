@@ -55,7 +55,6 @@ type MetaPlan struct {
 }
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
-// スポーンチェックは地図生成時にしか使わないだろう
 func (bm MetaPlan) IsSpawnableTile(_ w.World, tx gc.Tile, ty gc.Tile) bool {
 	idx := bm.Level.XYTileIndex(tx, ty)
 	tile := bm.Tiles[idx]
@@ -444,12 +443,6 @@ func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerCha
 	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
 
 	return chain
-}
-
-// NewTownPlanner は街の固定マッププランナーを作成する
-func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
-	// 新しい文字列ベースの街プランナーを使用
-	return NewStringTownPlanner(width, height, seed)
 }
 
 // NewBigRoomPlanner は大部屋プランナーを作成する

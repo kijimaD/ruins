@@ -10,7 +10,7 @@ func TestNewStringTownPlanner(t *testing.T) {
 	t.Parallel()
 	// 新しい文字列ベースの街ビルダーをテスト
 	width, height := gc.Tile(50), gc.Tile(50)
-	chain := NewStringTownPlanner(width, height, 12345)
+	chain := NewTownPlanner(width, height, 12345)
 
 	// ビルダーチェーンを実行
 	chain.Plan()
