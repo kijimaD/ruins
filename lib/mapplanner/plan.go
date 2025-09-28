@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -18,11 +19,12 @@ var (
 	ErrConnectivity = errors.New("マップ接続性エラー: プレイヤーからワープホールに到達できません")
 	// ErrPlayerPlacement はプレイヤー配置エラーを表す
 	ErrPlayerPlacement = errors.New("プレイヤー配置可能な床タイルが見つかりません")
+	// ErrNoWarpPortal はワープポータルが存在しないエラーを表す
+	ErrNoWarpPortal = errors.New("マップにワープポータルが配置されていません")
 )
 
-// Plan はPlannerChainを初期化して追加プランナーを統合し、EntityPlanを構築する
-// 接続性検証に失敗した場合は規定回数まで再試行する
-func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*EntityPlan, error) {
+// Plan はPlannerChainを初期化してMetaPlanを返す
+func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*MetaPlan, error) {
 	var lastErr error
 
 	// 最大再試行回数まで繰り返す
@@ -30,7 +32,7 @@ func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType
 		// 再試行時は異なるシードを使用
 		currentSeed := seed + uint64(attempt*1000)
 
-		plan, err := attemptPlan(world, width, height, currentSeed, plannerType)
+		plan, err := attemptMetaPlan(world, width, height, currentSeed, plannerType)
 		if err == nil {
 			return plan, nil
 		}
@@ -45,8 +47,8 @@ func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType
 	return nil, fmt.Errorf("プラン生成に%d回失敗しました。最後のエラー: %w", MaxPlanRetries, lastErr)
 }
 
-// attemptPlan は単一回のプラン生成を試行する
-func attemptPlan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*EntityPlan, error) {
+// attemptMetaPlan は単一回のメタプラン生成を試行する
+func attemptMetaPlan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*MetaPlan, error) {
 	// PlannerChainを初期化
 	var chain *PlannerChain
 	if plannerType.Name == PlannerTypeRandom.Name {
@@ -55,8 +57,14 @@ func attemptPlan(world w.World, width, height int, seed uint64, plannerType Plan
 		chain = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
 	}
 
+	// RawMasterを設定
+	if world.Resources != nil && world.Resources.RawMaster != nil {
+		if rawMaster, ok := world.Resources.RawMaster.(*raw.Master); ok {
+			chain.PlanData.RawMaster = rawMaster
+		}
+	}
+
 	// ワープポータルプランナーを追加する
-	// プランナータイプによってはもうすでに計画されているので判定する
 	if len(chain.PlanData.WarpPortals) == 0 {
 		warpPlanner := NewWarpPortalPlanner(world, plannerType)
 		chain.With(warpPlanner)
@@ -74,28 +82,29 @@ func attemptPlan(world w.World, width, height int, seed uint64, plannerType Plan
 		chain.With(itemPlanner)
 	}
 
-	// Propsプランナーを追加（町タイプで固定Props配置）
+	// Propsプランナーを追加
 	propsPlanner := NewPropsPlanner(world, plannerType)
 	chain.With(propsPlanner)
 
 	// プランナーチェーンを実行
 	chain.Plan()
 
-	// PlanDataからEntityPlanを構築
-	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
+	// 基本的な検証: プレイヤー開始位置があるか確認
+	playerX, playerY, hasPlayer := chain.PlanData.GetPlayerStartPosition()
+	if !hasPlayer {
+		return nil, ErrPlayerPlacement
 	}
 
-	// 計画の妥当性と接続性をチェック
-	if err := plan.Validate(); err != nil {
-		return nil, fmt.Errorf("計画検証エラー: %w", err)
+	// MetaPlan用の接続性検証
+	pathFinder := NewPathFinder(&chain.PlanData)
+	if err := pathFinder.ValidateConnectivity(playerX, playerY); err != nil {
+		return nil, err
 	}
 
-	return plan, nil
+	return &chain.PlanData, nil
 }
 
 // isConnectivityError は接続性エラーかどうかを判定する
 func isConnectivityError(err error) bool {
-	return errors.Is(err, ErrConnectivity) || errors.Is(err, ErrPlayerPlacement)
+	return errors.Is(err, ErrConnectivity) || errors.Is(err, ErrPlayerPlacement) || errors.Is(err, ErrNoWarpPortal)
 }

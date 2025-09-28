@@ -2,6 +2,7 @@ package mapplanner
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 )
 
@@ -15,9 +16,9 @@ func (c CavePlanner) PlanInitial(planData *MetaPlan) error {
 	// 初期状態をランダムに設定（30%の確率で壁、より広い空間を確保）
 	for i := range planData.Tiles {
 		if planData.RandomSource.Float64() < 0.30 {
-			planData.Tiles[i] = TileWall
+			planData.Tiles[i] = planData.GenerateTile("Wall")
 		} else {
-			planData.Tiles[i] = TileFloor
+			planData.Tiles[i] = planData.GenerateTile("Floor")
 		}
 	}
 	return nil
@@ -41,7 +42,7 @@ func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
 
 	// セルラーオートマトンを指定回数実行
 	for iter := 0; iter < iterations; iter++ {
-		newTiles := make([]Tile, len(planData.Tiles))
+		newTiles := make([]raw.TileRaw, len(planData.Tiles))
 
 		for x := 0; x < width; x++ {
 			for y := 0; y < height; y++ {
@@ -49,7 +50,7 @@ func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
 
 				// 境界は常に壁
 				if x == 0 || x == width-1 || y == 0 || y == height-1 {
-					newTiles[idx] = TileWall
+					newTiles[idx] = planData.GenerateTile("Wall")
 					continue
 				}
 
@@ -58,9 +59,9 @@ func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
 
 				// ルール：周囲に6つ以上の壁があれば壁、そうでなければ床（より通路を確保）
 				if wallCount >= 6 {
-					newTiles[idx] = TileWall
+					newTiles[idx] = planData.GenerateTile("Wall")
 				} else {
-					newTiles[idx] = TileFloor
+					newTiles[idx] = planData.GenerateTile("Floor")
 				}
 			}
 		}
@@ -87,7 +88,7 @@ func (c CaveCellularAutomata) countWallsInRadius(planData *MetaPlan, centerX, ce
 			}
 
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			if planData.Tiles[idx] == TileWall {
+			if !planData.Tiles[idx].Walkable {
 				wallCount++
 			}
 		}
@@ -107,7 +108,7 @@ func (c CaveCellularAutomata) extractCaveRooms(planData *MetaPlan) {
 		for y := 0; y < height; y++ {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
-			if planData.Tiles[idx] == TileFloor && !visited[idx] {
+			if planData.Tiles[idx].Walkable && !visited[idx] {
 				// 洪水塗りつぶしで連結領域を見つける
 				floorTiles := c.floodFill(planData, x, y, visited)
 
@@ -176,7 +177,7 @@ func (c CaveCellularAutomata) floodFill(planData *MetaPlan, startX, startY int, 
 			if nx >= 0 && nx < width && ny >= 0 && ny < height {
 				nIdx := planData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 
-				if !visited[nIdx] && planData.Tiles[nIdx] == TileFloor {
+				if !visited[nIdx] && planData.Tiles[nIdx].Walkable {
 					visited[nIdx] = true
 					queue = append(queue, [2]int{nx, ny})
 				}
@@ -196,7 +197,7 @@ func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
 	height := int(planData.Level.TileHeight)
 
 	// 床タイルの周囲1マスを床にして通路を広げる
-	newTiles := make([]Tile, len(planData.Tiles))
+	newTiles := make([]raw.TileRaw, len(planData.Tiles))
 	copy(newTiles, planData.Tiles)
 
 	for x := 1; x < width-1; x++ {
@@ -204,12 +205,12 @@ func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
 			// 現在が壁で、隣接に床がある場合
-			if planData.Tiles[idx] == TileWall {
+			if !planData.Tiles[idx].Walkable {
 				adjacentFloorCount := c.countAdjacentFloors(planData, x, y)
 
 				// 隣接する床が2個以上ある場合、30%の確率で床にする
 				if adjacentFloorCount >= 2 && planData.RandomSource.Float64() < 0.3 {
-					newTiles[idx] = TileFloor
+					newTiles[idx] = planData.GenerateTile("Floor")
 				}
 			}
 		}
@@ -232,7 +233,7 @@ func (c CavePathWidener) countAdjacentFloors(planData *MetaPlan, centerX, center
 
 		if x >= 0 && x < width && y >= 0 && y < height {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			if planData.Tiles[idx] == TileFloor {
+			if planData.Tiles[idx].Walkable {
 				count++
 			}
 		}
@@ -254,10 +255,10 @@ func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
 		for y := 2; y < height-2; y++ {
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
-			if planData.Tiles[idx] == TileFloor {
+			if planData.Tiles[idx].Walkable {
 				// 2%の確率で鍾乳石を配置（確率を下げてより通行可能に）
 				if planData.RandomSource.Float64() < 0.02 {
-					planData.Tiles[idx] = TileWall
+					planData.Tiles[idx] = planData.GenerateTile("Wall")
 				}
 			}
 		}
@@ -309,7 +310,7 @@ func (c CaveConnector) createCaveTunnel(planData *MetaPlan, room1, room2 gc.Rect
 			y := currentY + dy
 			if y >= 1 && y < height-1 && currentX >= 1 && currentX < width-1 {
 				idx := planData.Level.XYTileIndex(gc.Tile(currentX), gc.Tile(y))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -327,7 +328,7 @@ func (c CaveConnector) createCaveTunnel(planData *MetaPlan, room1, room2 gc.Rect
 			x := currentX + dx
 			if x >= 1 && x < width-1 && currentY >= 1 && currentY < height-1 {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(currentY))
-				planData.Tiles[idx] = TileFloor
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
 			}
 		}
 	}
@@ -341,7 +342,7 @@ func NewCavePlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	chain.With(CavePathWidener{})                   // 通路を広げる
 	chain.With(CaveConnector{})                     // 隔離領域を接続
 	chain.With(CaveStalactites{})                   // 鍾乳石配置
-	chain.With(NewBoundaryWall(TileWall))           // 最外周を壁で囲む
+	chain.With(NewBoundaryWall("Wall"))             // 最外周を壁で囲む
 
 	return chain
 }

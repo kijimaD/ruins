@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/resources"
 	"github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,6 +19,12 @@ func TestPlan_RetryLogic(t *testing.T) {
 		gameComponents := &gc.Components{}
 		w, err := world.InitWorld(gameComponents)
 		assert.NoError(t, err)
+
+		// テスト用のRawMasterを設定
+		if w.Resources == nil {
+			w.Resources = &resources.Resources{}
+		}
+		w.Resources.RawMaster = CreateTestRawMaster()
 
 		// 正常に生成できるプランナーでテスト
 		plan, err := Plan(w, 20, 20, 12345, PlannerTypeSmallRoom)
@@ -37,6 +44,12 @@ func TestPlan_RetryLogic(t *testing.T) {
 		w, err := world.InitWorld(gameComponents)
 		assert.NoError(t, err)
 
+		// テスト用のRawMasterを設定
+		if w.Resources == nil {
+			w.Resources = &resources.Resources{}
+		}
+		w.Resources.RawMaster = CreateTestRawMaster()
+
 		plan, err := Plan(w, 30, 30, 54321, PlannerTypeBigRoom)
 		assert.NoError(t, err)
 		assert.NotNil(t, plan)
@@ -47,6 +60,12 @@ func TestPlan_RetryLogic(t *testing.T) {
 		gameComponents := &gc.Components{}
 		w, err := world.InitWorld(gameComponents)
 		assert.NoError(t, err)
+
+		// テスト用のRawMasterを設定
+		if w.Resources == nil {
+			w.Resources = &resources.Resources{}
+		}
+		w.Resources.RawMaster = CreateTestRawMaster()
 
 		plan, err := Plan(w, 25, 25, 99999, PlannerTypeCave)
 		assert.NoError(t, err)
@@ -69,6 +88,12 @@ func TestPlan_ConnectivityValidation(t *testing.T) {
 		gameComponents := &gc.Components{}
 		w, err := world.InitWorld(gameComponents)
 		assert.NoError(t, err)
+
+		// テスト用のRawMasterを設定
+		if w.Resources == nil {
+			w.Resources = &resources.Resources{}
+		}
+		w.Resources.RawMaster = CreateTestRawMaster()
 
 		// 複数の異なるシードでテストして、すべて接続性チェックをパス
 		seeds := []uint64{1, 100, 1000, 10000, 50000}
@@ -119,8 +144,18 @@ func TestIsConnectivityError(t *testing.T) {
 			expected: true,
 		},
 		{
+			name:     "ワープポータルなしエラー（直接）",
+			err:      ErrNoWarpPortal,
+			expected: true,
+		},
+		{
+			name:     "ワープポータルなしエラー（計画検証エラー経由）",
+			err:      fmt.Errorf("計画検証エラー: %w", ErrNoWarpPortal),
+			expected: true,
+		},
+		{
 			name:     "その他のエラー",
-			err:      fmt.Errorf("EntityPlan構築エラー: 何らかの問題"),
+			err:      fmt.Errorf("MetaPlan構築エラー: 何らかの問題"),
 			expected: false,
 		},
 		{

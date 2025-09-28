@@ -78,7 +78,7 @@ func (st *DungeonState) OnStart(world w.World) {
 	// プレイヤー位置を取得する
 	playerX, playerY, hasPlayerPos := plan.GetPlayerStartPosition()
 	if !hasPlayerPos {
-		panic("EntityPlanにプレイヤー開始位置が設定されていません")
+		panic("プレイヤー開始位置が設定されていません")
 	}
 	// プレイヤーを配置する
 	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {

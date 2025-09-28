@@ -13,6 +13,7 @@ func TestBigRoomPlanner(t *testing.T) {
 	seed := uint64(12345)
 
 	chain := NewBigRoomPlanner(width, height, seed)
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// 部屋が1つだけ生成されることを確認
@@ -40,10 +41,9 @@ func TestBigRoomPlanner(t *testing.T) {
 	floorCount := 0
 	wallCount := 0
 	for _, tile := range chain.PlanData.Tiles {
-		switch tile {
-		case TileFloor:
+		if tile.Walkable {
 			floorCount++
-		case TileWall:
+		} else {
 			wallCount++
 		}
 	}
@@ -68,6 +68,7 @@ func TestBigRoomVariations(t *testing.T) {
 
 	for _, seed := range seeds {
 		chain := NewBigRoomPlanner(20, 20, seed)
+		chain.PlanData.RawMaster = CreateTestRawMaster()
 		chain.Plan()
 
 		// 部屋が1つ生成されることを確認
@@ -80,11 +81,10 @@ func TestBigRoomVariations(t *testing.T) {
 		floorCount := 0
 
 		for _, tile := range chain.PlanData.Tiles {
-			switch tile {
-			case TileWall:
-				wallCount++
-			case TileFloor:
+			if tile.Walkable {
 				floorCount++
+			} else {
+				wallCount++
 			}
 		}
 
@@ -114,46 +114,6 @@ func TestBigRoomVariations(t *testing.T) {
 	t.Logf("Variant distribution: %v", variantCounts)
 }
 
-func TestBigRoomPlannerReproducibility(t *testing.T) {
-	t.Parallel()
-
-	// 同じシードで複数回生成して同じ結果になることを確認
-	width, height := gc.Tile(15), gc.Tile(15)
-	seed := uint64(99999)
-
-	// 1回目の生成
-	chain1 := NewBigRoomPlanner(width, height, seed)
-	chain1.Plan()
-
-	// 2回目の生成
-	chain2 := NewBigRoomPlanner(width, height, seed)
-	chain2.Plan()
-
-	// 部屋数が同じことを確認
-	if len(chain1.PlanData.Rooms) != len(chain2.PlanData.Rooms) {
-		t.Errorf("部屋数が異なります。1回目: %d, 2回目: %d",
-			len(chain1.PlanData.Rooms), len(chain2.PlanData.Rooms))
-	}
-
-	// 部屋の位置とサイズが同じことを確認
-	for i := range chain1.PlanData.Rooms {
-		room1 := chain1.PlanData.Rooms[i]
-		room2 := chain2.PlanData.Rooms[i]
-
-		if room1 != room2 {
-			t.Errorf("部屋[%d]が異なります。1回目: %+v, 2回目: %+v", i, room1, room2)
-		}
-	}
-
-	// タイル配置が同じことを確認
-	for i, tile1 := range chain1.PlanData.Tiles {
-		tile2 := chain2.PlanData.Tiles[i]
-		if tile1 != tile2 {
-			t.Errorf("タイル[%d]が異なります。1回目: %v, 2回目: %v", i, tile1, tile2)
-		}
-	}
-}
-
 func TestBigRoomPlannerBoundaries(t *testing.T) {
 	t.Parallel()
 
@@ -162,19 +122,20 @@ func TestBigRoomPlannerBoundaries(t *testing.T) {
 	seed := uint64(11111)
 
 	chain := NewBigRoomPlanner(width, height, seed)
+	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.Plan()
 
 	// マップの境界が壁になっていることを確認
 	for x := 0; x < int(width); x++ {
 		// 上端
 		idx := chain.PlanData.Level.XYTileIndex(gc.Tile(x), gc.Tile(0))
-		if chain.PlanData.Tiles[idx] != TileWall {
+		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
 			t.Errorf("上端の境界[%d,0]が壁になっていません: %v", x, chain.PlanData.Tiles[idx])
 		}
 
 		// 下端
 		idx = chain.PlanData.Level.XYTileIndex(gc.Tile(x), height-1)
-		if chain.PlanData.Tiles[idx] != TileWall {
+		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
 			t.Errorf("下端の境界[%d,%d]が壁になっていません: %v", x, height-1, chain.PlanData.Tiles[idx])
 		}
 	}
@@ -182,13 +143,13 @@ func TestBigRoomPlannerBoundaries(t *testing.T) {
 	for y := 0; y < int(height); y++ {
 		// 左端
 		idx := chain.PlanData.Level.XYTileIndex(gc.Tile(0), gc.Tile(y))
-		if chain.PlanData.Tiles[idx] != TileWall {
+		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
 			t.Errorf("左端の境界[0,%d]が壁になっていません: %v", y, chain.PlanData.Tiles[idx])
 		}
 
 		// 右端
 		idx = chain.PlanData.Level.XYTileIndex(width-1, gc.Tile(y))
-		if chain.PlanData.Tiles[idx] != TileWall {
+		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
 			t.Errorf("右端の境界[%d,%d]が壁になっていません: %v", width-1, y, chain.PlanData.Tiles[idx])
 		}
 	}

@@ -3,11 +3,11 @@
 package mapplanner
 
 import (
-	"fmt"
 	"log"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -34,24 +34,27 @@ type WarpPortal struct {
 type MetaPlan struct {
 	// 階層情報
 	Level resources.Level
-	// 階層を構成するタイル群。長さはステージの大きさで決まる
-	Tiles []Tile
 	// 部屋群。部屋は長方形の移動可能な空間のことをいう。
 	// 部屋はタイルの集合体である
 	Rooms []gc.Rect
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
 	Corridors [][]resources.TileIdx
-	// RandomSource はシード値による再現可能なランダム生成を提供する（内部プランナーのみアクセス可能）
+	// RandomSource はシード値による再現可能なランダム生成を提供する
 	RandomSource *RandomSource
-	// WarpPortals は配置予定のワープポータルリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	// 階層を構成するタイル群。長さはステージの大きさで決まる
+	// 通行可能かを判定するための情報を保持している必要がある
+	Tiles []raw.TileRaw
+	// WarpPortals は配置予定のワープポータルリスト
 	WarpPortals []WarpPortal
-	// NPCs は配置予定のNPCリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	// NPCs は配置予定のNPCリスト
 	NPCs []NPCSpec
-	// Items は配置予定のアイテムリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	// Items は配置予定のアイテムリスト
 	Items []ItemSpec
-	// Props は配置予定のPropsリスト（内部プランナーからアクセス可能、外部からは読み取り専用）
+	// Props は配置予定のPropsリスト
 	Props []PropsSpec
+	// RawMaster はタイル生成に使用するマスターデータ
+	RawMaster *raw.Master
 }
 
 // IsSpawnableTile は指定タイル座標がスポーン可能かを返す
@@ -104,51 +107,43 @@ func (bm MetaPlan) existPlannedEntityOnTile(x, y int) bool {
 }
 
 // UpTile は上にあるタイルを調べる
-func (bm MetaPlan) UpTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) UpTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := resources.TileIdx(int(idx) - int(bm.Level.TileWidth))
 	if targetIdx < 0 {
-		return TileEmpty
+		return bm.GenerateTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
 }
 
 // DownTile は下にあるタイルを調べる
-func (bm MetaPlan) DownTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) DownTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := int(idx) + int(bm.Level.TileWidth)
 	if targetIdx > len(bm.Tiles)-1 {
-		return TileEmpty
+		return bm.GenerateTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
 }
 
 // LeftTile は左にあるタイルを調べる
-func (bm MetaPlan) LeftTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) LeftTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := idx - 1
 	if targetIdx < 0 {
-		return TileEmpty
+		return bm.GenerateTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
 }
 
 // RightTile は右にあるタイルを調べる
-func (bm MetaPlan) RightTile(idx resources.TileIdx) Tile {
+func (bm MetaPlan) RightTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := idx + 1
 	if int(targetIdx) > len(bm.Tiles)-1 {
-		return TileEmpty
+		return bm.GenerateTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
-}
-
-// AdjacentOrthoAnyFloor は直交する近傍4タイルに移動可能タイルがあるか判定する
-func (bm MetaPlan) AdjacentOrthoAnyFloor(idx resources.TileIdx) bool {
-	return bm.UpTile(idx).Walkable ||
-		bm.DownTile(idx).Walkable ||
-		bm.RightTile(idx).Walkable ||
-		bm.LeftTile(idx).Walkable
 }
 
 // AdjacentAnyFloor は直交・斜めを含む近傍8タイルに床があるか判定する
@@ -240,7 +235,7 @@ func (bm MetaPlan) checkCornerWalls(upFloor, downFloor, leftFloor, rightFloor bo
 }
 
 // isFloorOrWarp は移動可能タイルかを判定する
-func (bm MetaPlan) isFloorOrWarp(tile Tile) bool {
+func (bm MetaPlan) isFloorOrWarp(tile raw.TileRaw) bool {
 	return tile.Walkable
 }
 
@@ -255,7 +250,7 @@ type PlannerChain struct {
 // シードが0の場合はランダムなシードを生成する
 func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	tileCount := int(width) * int(height)
-	tiles := make([]Tile, tileCount)
+	tiles := make([]raw.TileRaw, tileCount)
 
 	// シードが0の場合はランダムなシードを生成
 	if seed == 0 {
@@ -308,118 +303,10 @@ func (b *PlannerChain) Plan() {
 }
 
 // ValidateConnectivity はマップの接続性を検証する
-// プレイヤーのスタート位置からワープ/脱出ポータルへの到達可能性をチェック
-func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
+// プレイヤーのスタート位置からワープポータルへの到達可能性をチェックし、問題があればエラーを返す
+func (b *PlannerChain) ValidateConnectivity(playerStartX, playerStartY int) error {
 	pf := NewPathFinder(&b.PlanData)
-	return pf.ValidateMapConnectivity(playerStartX, playerStartY)
-}
-
-// BuildPlan はMetaPlanからEntityPlanを構築する
-// MetaPlanは生成過程で使用される中間データ、EntityPlanは最終的な配置計画
-func (bm *MetaPlan) BuildPlan() (*EntityPlan, error) {
-	plan := NewEntityPlan(int(bm.Level.TileWidth), int(bm.Level.TileHeight))
-
-	// プレイヤー開始位置を設定（タイル配列ベースの場合は中央付近）
-	width := int(bm.Level.TileWidth)
-	height := int(bm.Level.TileHeight)
-	centerX := width / 2
-	centerY := height / 2
-
-	// スポーン可能な位置を探す
-	playerX, playerY := centerX, centerY
-	found := false
-
-	// 複数の候補位置を試す
-	attempts := []struct{ x, y int }{
-		{width / 2, height / 2},         // 中央
-		{width / 4, height / 4},         // 左上寄り
-		{3 * width / 4, height / 4},     // 右上寄り
-		{width / 4, 3 * height / 4},     // 左下寄り
-		{3 * width / 4, 3 * height / 4}, // 右下寄り
-	}
-
-	// 最適な位置を探す
-	for _, pos := range attempts {
-		tileIdx := bm.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
-		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx].Walkable {
-			playerX, playerY = pos.x, pos.y
-			found = true
-			break
-		}
-	}
-
-	// 見つからない場合は全体をスキャン
-	if !found {
-		for _i, tile := range bm.Tiles {
-			if tile.Walkable {
-				i := resources.TileIdx(_i)
-				x, y := bm.Level.XYTileCoord(i)
-				playerX, playerY = int(x), int(y)
-				found = true
-				break
-			}
-		}
-	}
-
-	if !found {
-		return nil, ErrPlayerPlacement
-	}
-
-	// プレイヤー位置を設定
-	plan.SetPlayerStartPosition(playerX, playerY)
-
-	// タイルを走査してEntityPlanを構築
-	for _i, tile := range bm.Tiles {
-		i := resources.TileIdx(_i)
-		x, y := bm.Level.XYTileCoord(i)
-
-		switch tile.Type {
-		case TileTypeFloor:
-			plan.AddFloor(int(x), int(y))
-
-		case TileTypeWall:
-			// 近傍8タイル（直交・斜め）にフロアがあるときだけ壁にする
-			if bm.AdjacentAnyFloor(i) {
-				// 壁タイプを判定（スプライト番号はmapspawnerで決定）
-				wallType := bm.GetWallType(i)
-				plan.AddWallWithType(int(x), int(y), wallType)
-			}
-
-		case TileTypeEmpty:
-			// 空のタイルはエンティティを生成しない
-			continue
-
-		default:
-			return nil, fmt.Errorf("未知のタイルタイプ: %d", tile.Type)
-		}
-	}
-
-	// ワープポータルエンティティをEntityPlanに追加
-	for _, portal := range bm.WarpPortals {
-		switch portal.Type {
-		case WarpPortalNext:
-			plan.AddWarpNext(portal.X, portal.Y)
-		case WarpPortalEscape:
-			plan.AddWarpEscape(portal.X, portal.Y)
-		}
-	}
-
-	// NPCエンティティをEntityPlanに追加
-	for _, npc := range bm.NPCs {
-		plan.AddNPC(npc.X, npc.Y, npc.NPCType)
-	}
-
-	// アイテムエンティティをEntityPlanに追加
-	for _, item := range bm.Items {
-		plan.AddItem(item.X, item.Y, item.ItemName)
-	}
-
-	// PropsエンティティをEntityPlanに追加
-	for _, prop := range bm.Props {
-		plan.AddProp(prop.X, prop.Y, prop.PropType)
-	}
-
-	return plan, nil
+	return pf.ValidateConnectivity(playerStartX, playerStartY)
 }
 
 // InitialMapPlanner は初期マップをプランするインターフェース
@@ -437,10 +324,10 @@ type MetaMapPlanner interface {
 func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(RectRoomPlanner{})
-	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
-	chain.With(RoomDraw{})                // 部屋を描画
-	chain.With(LineCorridorPlanner{})     // 廊下を作成
-	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
+	chain.With(NewFillAll("Wall"))      // 全体を壁で埋める
+	chain.With(RoomDraw{})              // 部屋を描画
+	chain.With(LineCorridorPlanner{})   // 廊下を作成
+	chain.With(NewBoundaryWall("Wall")) // 最外周を壁で囲む
 
 	return chain
 }
@@ -450,9 +337,9 @@ func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerCha
 func NewBigRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(BigRoomPlanner{})
-	chain.With(NewFillAll(TileWall))      // 全体を壁で埋める
-	chain.With(BigRoomDraw{})             // 大部屋を描画（バリエーション込み）
-	chain.With(NewBoundaryWall(TileWall)) // 最外周を壁で囲む
+	chain.With(NewFillAll("Wall"))      // 全体を壁で埋める
+	chain.With(BigRoomDraw{})           // 大部屋を描画（バリエーション込み）
+	chain.With(NewBoundaryWall("Wall")) // 最外周を壁で囲む
 
 	return chain
 }
@@ -560,21 +447,49 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	return selectedType.PlannerFunc(width, height, seed)
 }
 
-// GetPlanners は登録されているプランナーのスライスを返す
-func (b *PlannerChain) GetPlanners() []MetaMapPlanner {
-	return b.Planners
+// GenerateTile は指定されたタイルを生成する
+// TOMLからの生成に失敗した場合はパニックする
+// TODO: 消して直接呼び出せばよい
+func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
+	if bm.RawMaster == nil {
+		panic("RawMasterが設定されていない。TOMLからのタイル生成が必須である")
+	}
+	// RawMaster.GenerateTileは内部でpanicするため、そのまま呼び出す
+	return bm.RawMaster.GenerateTile(name)
 }
 
-// BuildPlan はPlannerChainを実行してEntityPlanを生成する
-func BuildPlan(chain *PlannerChain) (*EntityPlan, error) {
-	// プランナーチェーンを実行
-	chain.Plan()
+// GetPlayerStartPosition はプレイヤーの開始位置を取得する
+func (bm *MetaPlan) GetPlayerStartPosition() (int, int, bool) {
+	// 適切な開始位置を探す（SpawnFromMetaPlanと同じロジック）
+	width := int(bm.Level.TileWidth)
+	height := int(bm.Level.TileHeight)
 
-	// PlanDataからEntityPlanを構築
-	plan, err := chain.PlanData.BuildPlan()
-	if err != nil {
-		return nil, fmt.Errorf("EntityPlan構築エラー: %w", err)
+	// 複数の候補位置を試す
+	attempts := []struct{ x, y int }{
+		{width / 2, height / 2},         // 中央
+		{width / 4, height / 4},         // 左上寄り
+		{3 * width / 4, height / 4},     // 右上寄り
+		{width / 4, 3 * height / 4},     // 左下寄り
+		{3 * width / 4, 3 * height / 4}, // 右下寄り
 	}
 
-	return plan, nil
+	// 最適な位置を探す
+	for _, pos := range attempts {
+		tileIdx := bm.Level.XYTileIndex(gc.Tile(pos.x), gc.Tile(pos.y))
+		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx].Walkable {
+			return pos.x, pos.y, true
+		}
+	}
+
+	// 見つからない場合は全体をスキャン
+	for _i, tile := range bm.Tiles {
+		if tile.Walkable {
+			i := resources.TileIdx(_i)
+			x, y := bm.Level.XYTileCoord(i)
+			return int(x), int(y), true
+		}
+	}
+
+	// 見つからない場合
+	return 0, 0, false
 }

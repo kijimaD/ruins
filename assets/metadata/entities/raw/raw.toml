@@ -2116,3 +2116,20 @@ XpBase = 50
 [[drop_table.entries]]
 Material = "鉄くず"
 Weight = 1.0
+
+# tile ================
+
+[[tile]]
+Name = "Empty"
+Description = "空虚"
+Walkable = false
+
+[[tile]]
+Name = "Floor"
+Description = "床"
+Walkable = true
+
+[[tile]]
+Name = "Wall"
+Description = "壁"
+Walkable = false

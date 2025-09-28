@@ -1,6 +1,8 @@
 package mapplanner
 
-import gc "github.com/kijimaD/ruins/lib/components"
+import (
+	gc "github.com/kijimaD/ruins/lib/components"
+)
 
 // PathFinder はパスファインディング機能を提供する
 type PathFinder struct {
@@ -126,91 +128,32 @@ func (pf *PathFinder) IsReachable(startX, startY, goalX, goalY int) bool {
 	return len(path) > 0
 }
 
-// ValidateMapConnectivity はマップの接続性を検証する
-// プレイヤーのスタート位置からワープポータル、脱出ポータルへの到達可能性をチェックする
-func (pf *PathFinder) ValidateMapConnectivity(playerStartX, playerStartY int) MapConnectivityResult {
-
-	result := MapConnectivityResult{
-		PlayerStartReachable: pf.IsWalkable(playerStartX, playerStartY),
-		WarpPortals:          []PortalReachability{},
-		EscapePortals:        []PortalReachability{},
+// ValidateConnectivity はマップの接続性を検証する
+// プレイヤーのスタート位置からワープポータルへの到達可能性をチェックし、問題があればエラーを返す
+func (pf *PathFinder) ValidateConnectivity(playerStartX, playerStartY int) error {
+	// プレイヤー開始位置が歩行可能かチェック
+	if !pf.IsWalkable(playerStartX, playerStartY) {
+		return ErrPlayerPlacement
 	}
 
-	// MetaPlanからワープポータルエンティティを取得して検証
+	// ワープポータルが存在することを確認
+	if len(pf.planData.WarpPortals) == 0 {
+		return ErrNoWarpPortal
+	}
+
+	// ワープポータルへの到達可能性をチェック
+	hasReachablePortal := false
 	for _, portal := range pf.planData.WarpPortals {
-		reachable := pf.IsReachable(playerStartX, playerStartY, portal.X, portal.Y)
-
-		switch portal.Type {
-		case WarpPortalNext:
-			result.WarpPortals = append(result.WarpPortals, PortalReachability{
-				X:         portal.X,
-				Y:         portal.Y,
-				Reachable: reachable,
-			})
-		case WarpPortalEscape:
-			result.EscapePortals = append(result.EscapePortals, PortalReachability{
-				X:         portal.X,
-				Y:         portal.Y,
-				Reachable: reachable,
-			})
+		if pf.IsReachable(playerStartX, playerStartY, portal.X, portal.Y) {
+			hasReachablePortal = true
+			break
 		}
 	}
 
-	return result
-}
-
-// MapConnectivityResult はマップ接続性検証の結果
-type MapConnectivityResult struct {
-	// PlayerStartReachable はプレイヤーのスタート位置が歩行可能か
-	PlayerStartReachable bool
-	// WarpPortals はワープポータルの到達可能性リスト
-	WarpPortals []PortalReachability
-	// EscapePortals は脱出ポータルの到達可能性リスト
-	EscapePortals []PortalReachability
-}
-
-// PortalReachability はポータルの到達可能性情報
-type PortalReachability struct {
-	X         int  // ポータルのX座標
-	Y         int  // ポータルのY座標
-	Reachable bool // プレイヤーのスタート地点から到達可能か
-}
-
-// HasReachableWarpPortal は到達可能なワープポータルがあるかを返す
-func (result *MapConnectivityResult) HasReachableWarpPortal() bool {
-	for _, portal := range result.WarpPortals {
-		if portal.Reachable {
-			return true
-		}
-	}
-	return false
-}
-
-// HasReachableEscapePortal は到達可能な脱出ポータルがあるかを返す
-func (result *MapConnectivityResult) HasReachableEscapePortal() bool {
-	for _, portal := range result.EscapePortals {
-		if portal.Reachable {
-			return true
-		}
-	}
-	return false
-}
-
-// IsFullyConnected はプレイヤーがすべての重要なポータルに到達可能かを返す
-func (result *MapConnectivityResult) IsFullyConnected() bool {
-	if !result.PlayerStartReachable {
-		return false
+	// ワープポータルがあるのに到達できない場合はエラー
+	if !hasReachablePortal {
+		return ErrConnectivity
 	}
 
-	// ワープポータルがある場合は、少なくとも1つは到達可能である必要がある
-	if len(result.WarpPortals) > 0 && !result.HasReachableWarpPortal() {
-		return false
-	}
-
-	// 脱出ポータルがある場合は、少なくとも1つは到達可能である必要がある
-	if len(result.EscapePortals) > 0 && !result.HasReachableEscapePortal() {
-		return false
-	}
-
-	return true
+	return nil
 }
