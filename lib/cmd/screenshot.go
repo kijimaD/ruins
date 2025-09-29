@@ -33,7 +33,7 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(gs.NewDebugMenuState(), mode)
 	case gs.DungeonState{}.String():
 		// いい感じのseed値
-		const seedVal = 4012
+		const seedVal = 1
 		vrt.RunTestGame(&gs.DungeonState{
 			Depth:       1,
 			Seed:        seedVal,
