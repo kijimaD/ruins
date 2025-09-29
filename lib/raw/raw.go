@@ -38,6 +38,8 @@ type Item struct {
 	Name            string
 	Description     string
 	InflictsDamage  int
+	SpriteSheetName string           `toml:"sprite_sheet_name"`
+	SpriteKey       string           `toml:"sprite_key"`
 	Consumable      *Consumable      `toml:"consumable"`
 	ProvidesHealing *ProvidesHealing `toml:"provides_healing"`
 	Wearable        *Wearable        `toml:"wearable"`
@@ -93,8 +95,10 @@ type EquipBonus struct {
 
 // Material は素材アイテムの情報
 type Material struct {
-	Name        string
-	Description string
+	Name            string
+	Description     string
+	SpriteSheetName string `toml:"sprite_sheet_name"`
+	SpriteKey       string `toml:"sprite_key"`
 }
 
 // Recipe はレシピの情報
@@ -111,9 +115,11 @@ type RecipeInput struct {
 
 // Member はメンバーの情報
 type Member struct {
-	Name       string
-	Player     *bool
-	Attributes Attributes `toml:"attributes"`
+	Name            string
+	Player          *bool
+	Attributes      Attributes `toml:"attributes"`
+	SpriteSheetName string     `toml:"sprite_sheet_name"`
+	SpriteKey       string     `toml:"sprite_key"`
 }
 
 // Attributes はキャラクターの能力値
@@ -195,6 +201,14 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
+
+	if item.SpriteSheetName != "" && item.SpriteKey != "" {
+		cl.SpriteRender = &gc.SpriteRender{
+			SpriteSheetName: item.SpriteSheetName,
+			SpriteKey:       item.SpriteKey,
+			Depth:           gc.DepthNumRug,
+		}
+	}
 
 	if item.Consumable != nil {
 		if err := gc.TargetGroupType(item.Consumable.TargetGroup).Valid(); err != nil {
@@ -304,6 +318,14 @@ func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.Item
 	cl.Description = &gc.Description{Description: material.Description}
 	cl.ItemLocationType = &locationType
 
+	if material.SpriteSheetName != "" && material.SpriteKey != "" {
+		cl.SpriteRender = &gc.SpriteRender{
+			SpriteSheetName: material.SpriteSheetName,
+			SpriteKey:       material.SpriteKey,
+			Depth:           gc.DepthNumRug,
+		}
+	}
+
 	return cl, nil
 }
 
@@ -354,6 +376,14 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 	cl := gc.EntitySpec{}
 	cl.Name = &gc.Name{Name: member.Name}
 	cl.TurnBased = &gc.TurnBased{AP: gc.Pool{Current: 100, Max: 100}} // TODO: Attributesから計算する
+
+	if member.SpriteSheetName != "" && member.SpriteKey != "" {
+		cl.SpriteRender = &gc.SpriteRender{
+			SpriteSheetName: member.SpriteSheetName,
+			SpriteKey:       member.SpriteKey,
+			Depth:           gc.DepthNumPlayer,
+		}
+	}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
 		Strength:  gc.Attribute{Base: member.Attributes.Strength},

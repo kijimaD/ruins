@@ -133,11 +133,6 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}
 	gcl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	gcl.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: "field",
-		SpriteKey:       "player",
-		Depth:           gc.DepthNumPlayer,
-	}
 	// カメラ
 	{
 		// config設定を確認
@@ -174,11 +169,6 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 
 	// フィールド用のコンポーネントを設定
 	cl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	cl.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: "field",
-		SpriteKey:       "red_ball", // 敵キャラクター用スプライト
-		Depth:           gc.DepthNumTaller,
-	}
 	cl.BlockPass = &gc.BlockPass{}
 	cl.AIMoveFSM = &gc.AIMoveFSM{}
 	cl.AIRoaming = &gc.AIRoaming{
@@ -403,11 +393,6 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 
 	// フィールド表示用のコンポーネントを追加
 	item.AddComponent(world.Components.GridElement, &gc.GridElement{X: x, Y: y})
-	item.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
-		SpriteSheetName: "field", // フィールドスプライトシートを使用
-		SpriteKey:       "field_item",
-		Depth:           gc.DepthNumRug,
-	})
 
 	return item, nil
 }
