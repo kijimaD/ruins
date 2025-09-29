@@ -34,8 +34,14 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 		var err error
 
 		if tile.Walkable {
-			// 床エンティティを生成
-			entity, err = worldhelper.SpawnFloor(world, tileX, tileY)
+			// タイル名に応じて適切なスプライトを選択
+			if tile.Name == "Dirt" {
+				// 土タイルは専用スプライトを使用
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, 7)
+			} else {
+				// 通常の床エンティティを生成（デフォルトのスプライト番号2を使用）
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, 2)
+			}
 		} else {
 			// 隣接に床がある場合のみ壁エンティティを生成
 			if metaPlan.AdjacentAnyFloor(i) {

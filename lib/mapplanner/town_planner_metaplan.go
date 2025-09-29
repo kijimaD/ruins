@@ -62,9 +62,15 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 			case '#':
 				// 壁タイル
 				planData.Tiles[idx] = planData.GenerateTile("Wall")
-			case 'f', 'r':
-				// 床タイル（'f' = 床、'r' = 道路）
+			case 'f':
+				// 建物内の床タイル
 				planData.Tiles[idx] = planData.GenerateTile("Floor")
+			case 'r':
+				// 道路タイル
+				planData.Tiles[idx] = planData.GenerateTile("Floor")
+			case 'd':
+				// 土タイル（屋外の空き地）
+				planData.Tiles[idx] = planData.GenerateTile("Dirt")
 			default:
 				// その他は空タイル
 				planData.Tiles[idx] = planData.GenerateTile("Empty")
@@ -84,7 +90,11 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 
 			switch char {
 			case '@':
-				// プレイヤー開始位置は自動で設定されるのでスキップ
+				// プレイヤー開始位置を設定
+				planData.PlayerStartPosition = &struct {
+					X int
+					Y int
+				}{X: x, Y: y}
 				continue
 			case '&':
 				// NPC（街プランナーではNPCをスキップ - テスト用）
@@ -133,23 +143,23 @@ func getTownLayout() ([]string, []string) {
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 北の境界道路（幅3）
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrr#########f#########rrr##########f#########r###",
+		"#rrr#########f##########rrr#########f#########r###",
 		"#rrr#fffffffffffffffffr#rrr#ffffffffffffffffff#r##", // 北区域の大きな建物
 		"#rrr#fffffffffffffffffr#rrr#ffffffffffffffffff#r##",
 		"#rrr#fffffffffffffffffr#rrr#ffffffffffffffffff#r##",
 		"#rrr#fffffffffffffffffr#rrr#ffffffffffffffffff#r##",
 		"#rrr#fffffffffffffffffr#rrr#ffffffffffffffffff#r##",
-		"#rrr#########f#########rrr##########f#########r###",
+		"#rrr#########f##########rrr##########f#########r##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 北から中央への道路（幅3）
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrr####f###rrr####f###rrr####f###rrr####f####r###", // 住宅区域
-		"#rrr#ffffff#rrr#ffffff#rrr#ffffff#rrr#fffffff#r###", // 5x5の家
-		"#rrrfffffff#rrr#ffffff#rrr#ffffff#rrr#fffffff#r###",
-		"#rrr#ffffff#rrrfffffff#rrr#ffffff#rrr#fffffff#r###",
-		"#rrr#ffffff#rrr#ffffff#rrrfffffff#rrr#fffffff#r###",
-		"#rrr#ffffff#rrr#ffffff#rrr#ffffff#rrrfffffffr#r###",
-		"#rrr########rrr########rrr########rrr#########r###",
+		"#rrr####f###ddd####f###rrr####f###ddd####f####r###", // 住宅区域
+		"#rrr#ffffff#ddd#ffffff#rrr#ffffff#ddd#fffffff#r###", // 5x5の家
+		"#rrrfffffff#ddd#ffffff#rrr#ffffff#ddd#fffffff#r###",
+		"#rrr#ffffff#dddfffffff#rrr#ffffff#ddd#fffffff#r###",
+		"#rrr#ffffff#ddd#ffffff#rrrfffffff#ddd#fffffff#r###",
+		"#rrr#ffffff#ddd#ffffff#rrr#ffffff#dddfffffffr#r###",
+		"#rrr########ddd########rrr########ddd#########r###",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 中央大通り（幅3）
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
@@ -174,10 +184,10 @@ func getTownLayout() ([]string, []string) {
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 南の大きな建物
-		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrrdrrrrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrdddrrrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrdddddrrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrdddrrrrrrrrrrrrrrrrrrrrrr##",
 		"##################################################",
 	}
 
@@ -209,7 +219,7 @@ func getTownLayout() ([]string, []string) {
 		"..................................................",
 		"..................................................", // 中央広場エリア
 		"...........................&......................", // 広場（NPC）
-		"..................@...............................", // プレイヤー開始位置
+		"..................................................", // プレイヤー開始位置
 		"........................MM........................",
 		"..................................................",
 		"..................................................",
@@ -227,7 +237,7 @@ func getTownLayout() ([]string, []string) {
 		"..................................................", // 南区域の道路（幅3）
 		"..................................................",
 		"..................................................",
-		"..................................................",
+		"........................@.........................",
 		"..................................................", // 広場
 		"..................................................",
 		"........................w.........................", // ワープホール（下の広場の真ん中）
@@ -275,6 +285,24 @@ func validateTownLayout(tileMap, entityMap []string) error {
 	for y := 0; y < height; y++ {
 		if tileMap[y][0] != '#' || tileMap[y][width-1] != '#' {
 			return fmt.Errorf("左右の境界が壁でありません: 位置 (0, %d) または (%d, %d)", y, width-1, y)
+		}
+	}
+
+	// 有効なタイル文字の確認
+	validTileChars := map[rune]bool{
+		'#': true, // 壁
+		'f': true, // 建物内の床
+		'r': true, // 道路
+		'd': true, // 土地（屋外）
+		' ': true, // 空白（空のタイル）
+	}
+
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			char := rune(tileMap[y][x])
+			if !validTileChars[char] {
+				return fmt.Errorf("無効なタイル文字 '%c' が位置 (%d, %d) にあります", char, x, y)
+			}
 		}
 	}
 

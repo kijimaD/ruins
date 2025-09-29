@@ -9,6 +9,7 @@ func CreateTestRawMaster() *raw.Master {
 		{Name: "Wall", Walkable: false},
 		{Name: "Floor", Walkable: true},
 		{Name: "Empty", Walkable: false},
+		{Name: "Dirt", Walkable: true},
 	}
 
 	// インデックスを作成

@@ -2133,3 +2133,8 @@ Walkable = true
 Name = "Wall"
 Description = "壁"
 Walkable = false
+
+[[tile]]
+Name = "Dirt"
+Description = "土"
+Walkable = true

@@ -53,6 +53,11 @@ type MetaPlan struct {
 	Items []ItemSpec
 	// Props は配置予定のPropsリスト
 	Props []PropsSpec
+	// PlayerStartPosition はプレイヤー開始位置（'@'文字で指定された場合に使用する）
+	PlayerStartPosition *struct {
+		X int
+		Y int
+	}
 	// RawMaster はタイル生成に使用するマスターデータ
 	RawMaster *raw.Master
 }
@@ -266,14 +271,15 @@ func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 				TileHeight: height,
 				Entities:   make([]ecs.Entity, tileCount),
 			},
-			Tiles:        tiles,
-			Rooms:        []gc.Rect{},
-			Corridors:    [][]resources.TileIdx{},
-			RandomSource: NewRandomSource(seed),
-			WarpPortals:  []WarpPortal{},
-			NPCs:         []NPCSpec{},
-			Items:        []ItemSpec{},
-			Props:        []PropsSpec{},
+			Tiles:               tiles,
+			Rooms:               []gc.Rect{},
+			Corridors:           [][]resources.TileIdx{},
+			RandomSource:        NewRandomSource(seed),
+			WarpPortals:         []WarpPortal{},
+			NPCs:                []NPCSpec{},
+			Items:               []ItemSpec{},
+			Props:               []PropsSpec{},
+			PlayerStartPosition: nil,
 		},
 	}
 }
@@ -460,7 +466,17 @@ func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
 
 // GetPlayerStartPosition はプレイヤーの開始位置を取得する
 func (bm *MetaPlan) GetPlayerStartPosition() (int, int, bool) {
-	// 適切な開始位置を探す（SpawnFromMetaPlanと同じロジック）
+	// '@'文字で指定されたプレイヤー開始位置があればそれを使用する
+	if bm.PlayerStartPosition != nil {
+		x, y := bm.PlayerStartPosition.X, bm.PlayerStartPosition.Y
+		// 指定位置が有効かチェック
+		tileIdx := bm.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
+		if int(tileIdx) < len(bm.Tiles) && bm.Tiles[tileIdx].Walkable {
+			return x, y, true
+		}
+	}
+
+	// 指定位置がない場合や無効な場合は適切な開始位置を探す
 	width := int(bm.Level.TileWidth)
 	height := int(bm.Level.TileHeight)
 

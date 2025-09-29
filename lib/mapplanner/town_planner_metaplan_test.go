@@ -122,6 +122,11 @@ Type = "EMPTY"
 Walkable = false
 BlocksLOS = false
 SpriteNumber = 0
+
+[[tile]]
+Name = "Dirt"
+Description = "土タイル"
+Walkable = true
 `)
 	return &rawMaster
 }

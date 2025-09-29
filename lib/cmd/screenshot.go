@@ -63,6 +63,12 @@ func runScreenshot(ctx *cli.Context) error {
 			Seed:        seedVal,
 			BuilderType: mapplanner.PlannerTypeSmallRoom,
 		}, mode)
+	case "Town":
+		// 街マップ用のスクリーンショット
+		vrt.RunTestGame(&gs.DungeonState{
+			Depth:       1,
+			BuilderType: mapplanner.PlannerTypeTown,
+		}, mode)
 	case "GameOver":
 		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
 	default:
