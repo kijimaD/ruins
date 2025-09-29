@@ -39,11 +39,11 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 			case "Dirt":
 				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Dirt")
 				spriteKey := fmt.Sprintf("dirt_%d", int(autoTileIndex))
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", spriteKey)
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "tile", spriteKey)
 			case "Floor":
 				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Floor")
 				spriteKey := fmt.Sprintf("floor_%d", int(autoTileIndex))
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", spriteKey)
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "tile", spriteKey)
 			default:
 				// 未知のタイル名はエラーとして処理
 				return resources.Level{}, fmt.Errorf("未対応の歩行可能タイル名: %s (%d, %d)", tile.Name, int(x), int(y))
@@ -54,7 +54,7 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 				// 壁タイルも16タイルオートタイルを使用
 				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Wall")
 				spriteKey := fmt.Sprintf("wall_%d", int(autoTileIndex))
-				entity, err = worldhelper.SpawnWall(world, tileX, tileY, "field", spriteKey)
+				entity, err = worldhelper.SpawnWall(world, tileX, tileY, "tile", spriteKey)
 			}
 		}
 

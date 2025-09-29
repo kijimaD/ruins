@@ -330,7 +330,7 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 
 	// デバッグ用：スプライト番号表示(土だけ)
 	cfg := config.Get()
-	if cfg.ShowMonitor && spriteRender.SpriteSheetName == "field" && strings.HasPrefix(spriteRender.SpriteKey, "dirt_") {
+	if cfg.ShowMonitor && spriteRender.SpriteSheetName == "tile" && strings.HasPrefix(spriteRender.SpriteKey, "dirt_") {
 		// dirt_X から番号を抽出
 		number := strings.TrimPrefix(spriteRender.SpriteKey, "dirt_")
 
