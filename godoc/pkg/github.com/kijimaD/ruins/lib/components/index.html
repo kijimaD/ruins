@@ -1264,7 +1264,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="DepthNum">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1922:1939#L58">DepthNum</a>
+			<h2 id="DepthNum">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1918:1935#L58">DepthNum</a>
 				<a class="permalink" href="index.html#DepthNum">&#xb6;</a>
 				
 				
@@ -2724,7 +2724,7 @@ TODO: rawファイルから読み込むようにしたい
 		
 			
 			
-			<h2 id="SpriteRender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1529:1838#L46">SpriteRender</a>
+			<h2 id="SpriteRender">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1538:1834#L46">SpriteRender</a>
 				<a class="permalink" href="index.html#SpriteRender">&#xb6;</a>
 				
 				
@@ -2734,9 +2734,9 @@ TODO: rawファイルから読み込むようにしたい
 
 			<pre>type SpriteRender struct {
     <span class="comment">// スプライトシート名(画像データはResourcesから取得)</span>
-<span id="SpriteRender.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-    <span class="comment">// スプライトシートでのインデックス</span>
-<span id="SpriteRender.SpriteNumber"></span>    SpriteNumber <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="SpriteRender.SpriteSheetName"></span>    SpriteSheetName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+    <span class="comment">// スプライトキー名</span>
+<span id="SpriteRender.SpriteKey"></span>    SpriteKey <a href="http://localhost:8888/pkg/builtin/#string">string</a>
     <span class="comment">// 描画順。小さい順に先に(下に)描画する</span>
 <span id="SpriteRender.Depth"></span>    Depth <a href="index.html#DepthNum">DepthNum</a>
     <span class="comment">// Draw options</span>
@@ -2758,7 +2758,7 @@ TODO: rawファイルから読み込むようにしたい
 		
 			
 			
-			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1140:1361#L35">SpriteSheet</a>
+			<h2 id="SpriteSheet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go?s=1140:1370#L35">SpriteSheet</a>
 				<a class="permalink" href="index.html#SpriteSheet">&#xb6;</a>
 				
 				
@@ -2770,8 +2770,8 @@ TODO: rawファイルから読み込むようにしたい
 <span id="SpriteSheet.Name"></span>    Name <a href="http://localhost:8888/pkg/builtin/#string">string</a>
     <span class="comment">// 読み込んだ画像データ</span>
 <span id="SpriteSheet.Texture"></span>    Texture <a href="index.html#Texture">Texture</a> `toml:&#34;texture_image&#34;`
-    <span class="comment">// 画像に含まれるスプライト一覧</span>
-<span id="SpriteSheet.Sprites"></span>    Sprites []<a href="index.html#Sprite">Sprite</a>
+    <span class="comment">// 画像に含まれるスプライト辞書</span>
+<span id="SpriteSheet.Sprites"></span>    Sprites map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#Sprite">Sprite</a>
 }
 </pre>
 
