@@ -20,7 +20,6 @@ cmd() {
 cmd CraftMenu
 cmd DebugMenu
 cmd Dungeon
-cmd Town
 cmd DungeonSelect
 cmd EquipMenu
 cmd GameOver
@@ -30,3 +29,4 @@ cmd LoadMenu
 cmd MainMenu
 cmd Message
 cmd SaveMenu
+cmd Town
