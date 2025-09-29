@@ -3,10 +3,14 @@
 [[item]]
 Name = "ルビー原石"
 Description = "赤く光る鉱物。高く売れる"
+sprite_sheet_name = "field"
+sprite_key = "red_ball"
 
 [[item]]
 Name = "回復薬"
 Description = "体力を半分程度回復する"
+sprite_sheet_name = "field"
+sprite_key = "field_item"
 
 [item.consumable]
 UsableScene = "ANY"
@@ -943,6 +947,8 @@ Sensation = 3
 [[material]]
 Name = "鉄くず"
 Description = "鉄を多く含む金属の塊"
+sprite_sheet_name = "field"
+sprite_key = "field_item"
 
 [[material]]
 Name = "緑ハーブ"
@@ -1859,6 +1865,8 @@ Amount = 1
 Name = "セレスティン"
 Job = "探索者"
 Player = true
+sprite_sheet_name = "field"
+sprite_key = "player"
 [member.attributes]
 Vitality = 50
 Strength = 50
@@ -2034,6 +2042,8 @@ Defense = 0
 
 [[member]]
 Name = "軽戦車"
+sprite_sheet_name = "field"
+sprite_key = "red_ball"
 [member.attributes]
 Vitality = 12
 Strength = 8

@@ -11,7 +11,7 @@ import (
 type PropConfig struct {
 	Name             string      // 置物の名前
 	Type             gc.PropType // 置物のタイプ
-	SpriteNumber     int         // スプライト番号
+	SpriteKey        string      // スプライトキー
 	BlocksMovement   bool        // 移動を阻害するか
 	BlocksVisibility bool        // 視界を遮るか
 	SpawnWeight      int         // ランダム配置での重み
@@ -24,7 +24,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 		gc.PropTypeTable: {
 			Name:             "テーブル",
 			Type:             gc.PropTypeTable,
-			SpriteNumber:     19, // Table sprite
+			SpriteKey:        "prop_table",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      10,
@@ -33,7 +33,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 		gc.PropTypeChair: {
 			Name:             "椅子",
 			Type:             gc.PropTypeChair,
-			SpriteNumber:     20, // Chair sprite
+			SpriteKey:        "prop_chair",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      15,
@@ -42,7 +42,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 		gc.PropTypeBookshelf: {
 			Name:             "本棚",
 			Type:             gc.PropTypeBookshelf,
-			SpriteNumber:     21, // Bookshelf sprite
+			SpriteKey:        "prop_bookshelf",
 			BlocksMovement:   true,
 			BlocksVisibility: true,
 			SpawnWeight:      5,
@@ -51,7 +51,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 		gc.PropTypeBarrel: {
 			Name:             "樽",
 			Type:             gc.PropTypeBarrel,
-			SpriteNumber:     22, // Barrel sprite
+			SpriteKey:        "prop_barrel",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      8,
@@ -60,7 +60,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 		gc.PropTypeCrate: {
 			Name:             "木箱",
 			Type:             gc.PropTypeCrate,
-			SpriteNumber:     23, // Crate sprite
+			SpriteKey:        "prop_crate",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      12,
@@ -69,7 +69,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 		gc.PropTypeBed: {
 			Name:             "寝台",
 			Type:             gc.PropTypeBed,
-			SpriteNumber:     24, // Bed sprite
+			SpriteKey:        "prop_bed", // 将来追加する寝台スプライト
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      8,

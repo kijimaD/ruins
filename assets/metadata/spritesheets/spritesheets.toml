@@ -1,60 +1,34 @@
 [sprite_sheet.field]
 texture_image = "file/textures/game.png"
-sprites = [
-    # Exterior
-    { x = 0,   y = 0, width = 32, height = 32 }, # Sprite 0
-    # Wall (Generic)
-    { x = 32,  y = 0, width = 32, height = 32 }, # Sprite 1
-    # Floor
-    { x = 64,  y = 0, width = 32, height = 32 }, # Sprite 2
-    # Player
-    { x = 160, y = 0, width = 32, height = 32 }, # Sprite 3
-    # WarpNext
-    { x = 96,  y = 0, width = 32, height = 32 }, # Sprite 4
-    # WarpEscape
-    { x = 128, y = 0, width = 32, height = 32 }, # Sprite 5
-    # Red Ball
-    { x = 192, y = 0, width = 32, height = 32 }, # Sprite 6
-    # Dirt (土)
-    { x = 224, y = 0, width = 32, height = 32 }, # Sprite 7
-    # Sprite 8 (Reserved)
-    { x = 0,   y = 32, width = 32, height = 32 }, # Sprite 8
-    # Sprite 9 (Reserved)
-    { x = 32,  y = 32, width = 32, height = 32 }, # Sprite 9
-    # Wall Top (下に床がある上壁)
-    { x = 64,  y = 32, width = 32, height = 32 }, # Sprite 10
-    # Wall Bottom (上に床がある下壁)
-    { x = 96,  y = 32, width = 32, height = 32 }, # Sprite 11
-    # Wall Left (右に床がある左壁)
-    { x = 128, y = 32, width = 32, height = 32 }, # Sprite 12
-    # Wall Right (左に床がある右壁)
-    { x = 160, y = 32, width = 32, height = 32 }, # Sprite 13
-    # Wall Top-Left Corner (右下に床がある左上角)
-    { x = 192, y = 32, width = 32, height = 32 }, # Sprite 14
-    # Wall Top-Right Corner (左下に床がある右上角)
-    { x = 224, y = 32, width = 32, height = 32 }, # Sprite 15
-    # Wall Bottom-Left Corner (右上に床がある左下角)
-    { x = 0,   y = 64, width = 32, height = 32 }, # Sprite 16
-    # Wall Bottom-Right Corner (左上に床がある右下角)
-    { x = 32,  y = 64, width = 32, height = 32 }, # Sprite 17
-    # Field Item (フィールドアイテム)
-    { x = 64,  y = 64, width = 32, height = 32 }, # Sprite 18
-    # Props (家具) - 連続して追加
-    { x = 96,  y = 64, width = 32, height = 32 }, # Sprite 19 - Table (テーブル)
-    { x = 128, y = 64, width = 32, height = 32 }, # Sprite 20 - Chair (椅子)
-    { x = 160, y = 64, width = 32, height = 32 }, # Sprite 21 - Bookshelf (本棚)
-    { x = 192, y = 64, width = 32, height = 32 }, # Sprite 22 - Barrel (樽)
-    { x = 224, y = 64, width = 32, height = 32 }, # Sprite 23 - Crate (木箱)
-]
+[sprite_sheet.field.sprites]
+exterior = { x = 0,   y = 0, width = 32, height = 32 }
+wall_generic = { x = 32,  y = 0, width = 32, height = 32 }
+floor = { x = 64,  y = 0, width = 32, height = 32 }
+player = { x = 160, y = 0, width = 32, height = 32 }
+warp_next = { x = 96,  y = 0, width = 32, height = 32 }
+warp_escape = { x = 128, y = 0, width = 32, height = 32 }
+red_ball = { x = 192, y = 0, width = 32, height = 32 }
+dirt_simple = { x = 224, y = 0, width = 32, height = 32 }
+reserved_8 = { x = 0,   y = 32, width = 32, height = 32 }
+reserved_9 = { x = 32,  y = 32, width = 32, height = 32 }
+wall_top = { x = 64,  y = 32, width = 32, height = 32 }
+wall_bottom = { x = 96,  y = 32, width = 32, height = 32 }
+wall_left = { x = 128, y = 32, width = 32, height = 32 }
+wall_right = { x = 160, y = 32, width = 32, height = 32 }
+wall_corner_tl = { x = 192, y = 32, width = 32, height = 32 }
+wall_corner_tr = { x = 224, y = 32, width = 32, height = 32 }
+wall_corner_bl = { x = 0,   y = 64, width = 32, height = 32 }
+wall_corner_br = { x = 32,  y = 64, width = 32, height = 32 }
+field_item = { x = 64,  y = 64, width = 32, height = 32 }
+prop_table = { x = 96,  y = 64, width = 32, height = 32 }
+prop_chair = { x = 128, y = 64, width = 32, height = 32 }
+prop_bookshelf = { x = 160, y = 64, width = 32, height = 32 }
+prop_barrel = { x = 192, y = 64, width = 32, height = 32 }
+prop_crate = { x = 224, y = 64, width = 32, height = 32 }
+
+# ================
 
 [sprite_sheet.bg_title1]
 texture_image = "file/bg/title1.png"
-sprites = [
-    { x = 0, y = 0, width = 960, height = 720 },
-]
-
-[sprite_sheet.bg_black1]
-texture_image = "file/bg/black1.png"
-sprites = [
-    { x = 0, y = 0, width = 960, height = 720 },
-]
+[sprite_sheet.bg_title1.sprites]
+background = { x = 0, y = 0, width = 960, height = 720 }

@@ -180,14 +180,14 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	// SpriteSheetsを初期化
 	spriteSheets := make(map[string]gc.SpriteSheet)
 	spriteSheets["field"] = gc.SpriteSheet{
-		Sprites: []gc.Sprite{
-			{Width: 32, Height: 32}, // インデックス0
-			{Width: 32, Height: 32}, // インデックス1
-			{Width: 32, Height: 32}, // インデックス2
-			{Width: 32, Height: 32}, // インデックス3
-			{Width: 32, Height: 32}, // インデックス4
-			{Width: 32, Height: 32}, // インデックス5
-			{Width: 32, Height: 32}, // インデックス6 (NPCのスプライト)
+		Sprites: map[string]gc.Sprite{
+			"exterior":     {Width: 32, Height: 32},
+			"wall_generic": {Width: 32, Height: 32},
+			"floor":        {Width: 32, Height: 32},
+			"player":       {Width: 32, Height: 32},
+			"warp_next":    {Width: 32, Height: 32},
+			"warp_escape":  {Width: 32, Height: 32},
+			"red_ball":     {Width: 32, Height: 32}, // 敵のスプライト
 		},
 	}
 	world.Resources.SpriteSheets = &spriteSheets

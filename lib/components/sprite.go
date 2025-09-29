@@ -47,17 +47,17 @@ type SpriteSheet struct {
 	Name string
 	// 読み込んだ画像データ
 	Texture Texture `toml:"texture_image"`
-	// 画像に含まれるスプライト一覧
-	Sprites []Sprite
+	// 画像に含まれるスプライト辞書
+	Sprites map[string]Sprite
 }
 
 // SpriteRender component
 // コンポーネントはセーブ&ロード時のシリアライズが必要なので、ファイル類をそのまま保存できない
 type SpriteRender struct {
 	// スプライトシート名(画像データはResourcesから取得)
-	Name string
-	// スプライトシートでのインデックス
-	SpriteNumber int
+	SpriteSheetName string
+	// スプライトキー名
+	SpriteKey string
 	// 描画順。小さい順に先に(下に)描画する
 	Depth DepthNum
 	// Draw options

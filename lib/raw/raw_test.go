@@ -59,6 +59,90 @@ name = "リペア"
 	assert.NotNil(t, entity.Description)
 }
 
+func TestGenerateItemWithSprite(t *testing.T) {
+	t.Parallel()
+	str := `
+[[item]]
+name = "テストアイテム"
+description = "スプライト付きアイテム"
+sprite_sheet_name = "field"
+sprite_key = "field_item"
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+	entity, err := raw.GenerateItem("テストアイテム", gc.ItemLocationInBackpack)
+	assert.NoError(t, err)
+
+	// 基本コンポーネントの確認
+	assert.NotNil(t, entity.Name)
+	assert.NotNil(t, entity.Item)
+	assert.NotNil(t, entity.Description)
+
+	// SpriteRenderコンポーネントの確認
+	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
+	assert.Equal(t, "field", entity.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
+	assert.Equal(t, "field_item", entity.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
+	assert.Equal(t, gc.DepthNumRug, entity.SpriteRender.Depth, "Depthが正しくない")
+}
+
+func TestGenerateMemberWithSprite(t *testing.T) {
+	t.Parallel()
+	str := `
+[[member]]
+name = "テストプレイヤー"
+Player = true
+sprite_sheet_name = "field"
+sprite_key = "player"
+[member.attributes]
+Vitality = 50
+Strength = 50
+Sensation = 5
+Dexterity = 6
+Agility = 5
+Defense = 0
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+	entity, err := raw.GeneratePlayer("テストプレイヤー")
+	assert.NoError(t, err)
+
+	// 基本コンポーネントの確認
+	assert.NotNil(t, entity.Name)
+	assert.NotNil(t, entity.Player)
+
+	// SpriteRenderコンポーネントの確認
+	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
+	assert.Equal(t, "field", entity.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
+	assert.Equal(t, "player", entity.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
+	assert.Equal(t, gc.DepthNumPlayer, entity.SpriteRender.Depth, "Depthが正しくない")
+}
+
+func TestGenerateMaterialWithSprite(t *testing.T) {
+	t.Parallel()
+	str := `
+[[material]]
+name = "テスト素材"
+description = "スプライト付き素材"
+sprite_sheet_name = "field"
+sprite_key = "field_item"
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+	entity, err := raw.GenerateMaterial("テスト素材", 5, gc.ItemLocationInBackpack)
+	assert.NoError(t, err)
+
+	// 基本コンポーネントの確認
+	assert.NotNil(t, entity.Name)
+	assert.NotNil(t, entity.Material)
+	assert.NotNil(t, entity.Description)
+
+	// SpriteRenderコンポーネントの確認
+	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
+	assert.Equal(t, "field", entity.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
+	assert.Equal(t, "field_item", entity.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
+	assert.Equal(t, gc.DepthNumRug, entity.SpriteRender.Depth, "Depthが正しくない")
+}
+
 func TestLoadTilesFromRaw(t *testing.T) {
 	t.Parallel()
 

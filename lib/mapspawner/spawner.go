@@ -34,21 +34,21 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 		var err error
 
 		if tile.Walkable {
-			// タイル名に応じて適切なスプライトを選択
+			// タイル名に応じて適切なスプライトをキー名で選択
 			if tile.Name == "Dirt" {
-				// 土タイルは専用スプライトを使用
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, 7)
+				// 土タイルはキー名でアクセス
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", "dirt_simple")
 			} else {
-				// 通常の床エンティティを生成（デフォルトのスプライト番号2を使用）
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, 2)
+				// 通常の床エンティティはキー名でアクセス
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", "floor")
 			}
 		} else {
 			// 隣接に床がある場合のみ壁エンティティを生成
 			if metaPlan.AdjacentAnyFloor(i) {
-				// 壁タイプを判定してスプライト番号を決定
+				// 壁タイプを判定してスプライトキーを決定
 				wallType := metaPlan.GetWallType(i)
-				spriteNumber := getSpriteNumberForWallType(wallType)
-				entity, err = worldhelper.SpawnWall(world, tileX, tileY, spriteNumber)
+				spriteKey := getSpriteKeyForWallType(wallType)
+				entity, err = worldhelper.SpawnWall(world, tileX, tileY, "field", spriteKey)
 			}
 		}
 

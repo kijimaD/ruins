@@ -267,7 +267,7 @@ func renderMovers(world w.World, screen *ebiten.Image, visibilityData map[string
 
 func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
 	var result *ebiten.Image
-	key := fmt.Sprintf("%s/%d", spriteRender.Name, spriteRender.SpriteNumber)
+	key := fmt.Sprintf("%s/%s", spriteRender.SpriteSheetName, spriteRender.SpriteKey)
 	if v, ok := spriteImageCache[key]; ok {
 		result = v
 	} else {
@@ -275,16 +275,17 @@ func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
 		if world.Resources.SpriteSheets == nil {
 			return nil
 		}
-		spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+		spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.SpriteSheetName]
 		if !exists {
 			return nil
 		}
 
-		// テクスチャから欲しいスプライトを切り出す
-		if spriteRender.SpriteNumber >= len(spriteSheet.Sprites) {
+		// スプライトキーからスプライトを取得
+		sprite, exists := spriteSheet.Sprites[spriteRender.SpriteKey]
+		if !exists {
 			return nil
 		}
-		sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
+
 		texture := spriteSheet.Texture
 		textureWidth := texture.Image.Bounds().Dx()
 		textureHeight := texture.Image.Bounds().Dy()
@@ -306,15 +307,15 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	if world.Resources.SpriteSheets == nil {
 		return
 	}
-	spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.Name]
+	spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.SpriteSheetName]
 	if !exists {
 		return
 	}
 
-	if spriteRender.SpriteNumber >= len(spriteSheet.Sprites) {
+	sprite, exists := spriteSheet.Sprites[spriteRender.SpriteKey]
+	if !exists {
 		return
 	}
-	sprite := spriteSheet.Sprites[spriteRender.SpriteNumber]
 
 	op := &spriteRender.Options
 	op.GeoM.Reset()                                                       // FIXME: Resetがないと非表示になる。なぜ?

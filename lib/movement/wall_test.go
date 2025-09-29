@@ -19,11 +19,11 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 	require.NoError(t, err)
 
 	// プレイヤーの右側(11, 10)に壁を配置
-	_, err = worldhelper.SpawnWall(world, 11, 10, 1)
+	_, err = worldhelper.SpawnWall(world, 11, 10, "field", "wall_generic")
 	require.NoError(t, err)
 
 	// プレイヤーの上側(10, 9)に壁を配置
-	_, err = worldhelper.SpawnWall(world, 10, 9, 1)
+	_, err = worldhelper.SpawnWall(world, 10, 9, "field", "wall_generic")
 	require.NoError(t, err)
 
 	t.Run("壁がない方向への移動は可能", func(t *testing.T) {
@@ -51,9 +51,9 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 	t.Run("プレイヤーが壁に完全に囲まれた場合", func(t *testing.T) {
 		t.Parallel()
 		// 残りの方向にも壁を配置
-		_, err = worldhelper.SpawnWall(world, 9, 10, 1) // 左
+		_, err = worldhelper.SpawnWall(world, 9, 10, "field", "wall_generic") // 左
 		require.NoError(t, err)
-		_, err = worldhelper.SpawnWall(world, 10, 11, 1) // 下
+		_, err = worldhelper.SpawnWall(world, 10, 11, "field", "wall_generic") // 下
 		require.NoError(t, err)
 
 		// 全方向への移動が不可能になるはず

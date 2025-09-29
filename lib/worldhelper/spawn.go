@@ -19,15 +19,6 @@ import (
 
 // 定数定義
 const (
-	// スプライト番号
-	spriteNumberFloor      = 2  // 床
-	spriteNumberPlayer     = 3  // プレイヤー
-	spriteNumberWarpNext   = 4  // 進行ワープホール
-	spriteNumberWarpEscape = 5  // 脱出ワープホール
-	spriteNumberNPC        = 6  // NPC
-	spriteNumberDirt       = 7  // 土
-	spriteNumberFieldItem  = 18 // フィールドアイテム
-
 	// カメラスケール
 	cameraInitialScale = 0.1 // カメラの初期スケール（ズームアウト）
 	cameraNormalScale  = 1.0 // カメラの通常スケール
@@ -55,30 +46,30 @@ var (
 // Field
 // ================
 
-// SpawnFloor は指定されたスプライト番号でフィールド上に表示される床を生成する
-func SpawnFloor(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
+// SpawnFloor は指定されたスプライトキーでフィールド上に表示される床を生成する
+func SpawnFloor(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
-			Name:         "field",
-			SpriteNumber: spriteNumber,
-			Depth:        gc.DepthNumFloor,
+			SpriteSheetName: sheetName,
+			SpriteKey:       spriteKey,
+			Depth:           gc.DepthNumFloor,
 		},
 	})
 
 	return entities.AddEntities(world, componentList)[0], nil
 }
 
-// SpawnWall は指定されたスプライト番号で壁を生成する
-func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
+// SpawnWall は指定されたスプライトキーで壁を生成する
+func SpawnWall(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
-			Name:         "field",
-			SpriteNumber: spriteNumber,
-			Depth:        gc.DepthNumTaller,
+			SpriteSheetName: sheetName,
+			SpriteKey:       spriteKey,
+			Depth:           gc.DepthNumTaller,
 		},
 		BlockView: &gc.BlockView{},
 		BlockPass: &gc.BlockPass{},
@@ -89,7 +80,7 @@ func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entit
 
 // SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
 func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, spriteNumberFloor) // 下敷き描画
+	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷き描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
@@ -98,9 +89,9 @@ func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error)
 	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
-			Name:         "field",
-			SpriteNumber: spriteNumberWarpNext,
-			Depth:        gc.DepthNumRug,
+			SpriteSheetName: "field",
+			SpriteKey:       "warp_next",
+			Depth:           gc.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeNext},
 	})
@@ -110,7 +101,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error)
 
 // SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
 func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, spriteNumberFloor) // 下敷き描画
+	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷き描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
@@ -119,9 +110,9 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
-			Name:         "field",
-			SpriteNumber: spriteNumberWarpEscape,
-			Depth:        gc.DepthNumRug,
+			SpriteSheetName: "field",
+			SpriteKey:       "warp_escape",
+			Depth:           gc.DepthNumRug,
 		},
 		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
 	})
@@ -142,11 +133,6 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}
 	gcl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	gcl.SpriteRender = &gc.SpriteRender{
-		Name:         "field",
-		SpriteNumber: spriteNumberPlayer,
-		Depth:        gc.DepthNumPlayer,
-	}
 	// カメラ
 	{
 		// config設定を確認
@@ -183,11 +169,6 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 
 	// フィールド用のコンポーネントを設定
 	cl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	cl.SpriteRender = &gc.SpriteRender{
-		Name:         "field",
-		SpriteNumber: spriteNumberNPC, // 名前でスプライトを選択する
-		Depth:        gc.DepthNumTaller,
-	}
 	cl.BlockPass = &gc.BlockPass{}
 	cl.AIMoveFSM = &gc.AIMoveFSM{}
 	cl.AIRoaming = &gc.AIRoaming{
@@ -399,7 +380,7 @@ func SpawnAllCards(world w.World) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, spriteNumberFloor) // 下敷きの床を描画
+	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷きの床を描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
@@ -412,11 +393,6 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 
 	// フィールド表示用のコンポーネントを追加
 	item.AddComponent(world.Components.GridElement, &gc.GridElement{X: x, Y: y})
-	item.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
-		Name:         "field", // フィールドスプライトシートを使用
-		SpriteNumber: spriteNumberFieldItem,
-		Depth:        gc.DepthNumRug,
-	})
 
 	return item, nil
 }

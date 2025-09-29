@@ -23,7 +23,7 @@ func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.E
 
 	// 床を下敷きとして配置（既に床がある場合は配置しない）
 	if !hasFloorAt(world, x, y) {
-		_, _ = SpawnFloor(world, x, y, spriteNumberFloor)
+		_, _ = SpawnFloor(world, x, y, "field", "floor")
 	}
 
 	// 置物エンティティを構築
@@ -31,9 +31,9 @@ func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.E
 	entitySpec := gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
-			Name:         "field",
-			SpriteNumber: config.SpriteNumber,
-			Depth:        gc.DepthNumRug, // アイテムと同じ深度
+			SpriteSheetName: "field",
+			SpriteKey:       config.SpriteKey,
+			Depth:           gc.DepthNumRug, // アイテムと同じ深度
 		},
 		PropType: &propType,
 		Name: &gc.Name{

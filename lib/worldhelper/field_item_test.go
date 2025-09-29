@@ -34,8 +34,8 @@ func TestSpawnFieldItem(t *testing.T) {
 	// SpriteRenderコンポーネントの確認
 	require.True(t, item.HasComponent(world.Components.SpriteRender), "SpriteRenderコンポーネントが必要")
 	sprite := world.Components.SpriteRender.Get(item).(*gc.SpriteRender)
-	assert.Equal(t, "field", sprite.Name, "スプライト名が正しくない")
-	assert.Equal(t, 18, sprite.SpriteNumber, "スプライト番号が正しくない")
+	assert.Equal(t, "field", sprite.SpriteSheetName, "スプライトシート名が正しくない")
+	assert.Equal(t, "field_item", sprite.SpriteKey, "スプライトキーが正しくない")
 	assert.Equal(t, gc.DepthNumRug, sprite.Depth, "描画深度が正しくない")
 
 	// ItemLocationOnFieldコンポーネントの確認
