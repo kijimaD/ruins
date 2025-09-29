@@ -31,9 +31,9 @@ func TestSaveLoadSpriteRender(t *testing.T) {
 	testSpriteSheet := gc.SpriteSheet{
 		Name:    "test_sprite",
 		Texture: gc.Texture{Image: testImage},
-		Sprites: []gc.Sprite{
-			{X: 0, Y: 0, Width: 32, Height: 32},
-			{X: 32, Y: 0, Width: 32, Height: 32},
+		Sprites: map[string]gc.Sprite{
+			"sprite1": {X: 0, Y: 0, Width: 32, Height: 32},
+			"sprite2": {X: 32, Y: 0, Width: 32, Height: 32},
 		},
 	}
 	if w.Resources.SpriteSheets == nil {
@@ -46,18 +46,18 @@ func TestSaveLoadSpriteRender(t *testing.T) {
 	entity := w.Manager.NewEntity()
 	entity.AddComponent(w.Components.Name, &gc.Name{Name: "テストエンティティ"})
 	entity.AddComponent(w.Components.SpriteRender, &gc.SpriteRender{
-		Name:         "test_sprite",
-		SpriteNumber: 1,
-		Depth:        gc.DepthNum(10),
+		SpriteSheetName: "test_sprite",
+		SpriteKey:       "sprite2",
+		Depth:           gc.DepthNum(10),
 	})
 
 	// スプライトシートなしのエンティティも作成
 	entity2 := w.Manager.NewEntity()
 	entity2.AddComponent(w.Components.Name, &gc.Name{Name: "スプライトなしエンティティ"})
 	entity2.AddComponent(w.Components.SpriteRender, &gc.SpriteRender{
-		Name:         "", // スプライトシートなし
-		SpriteNumber: 0,
-		Depth:        gc.DepthNum(5),
+		SpriteSheetName: "", // スプライトシートなし
+		SpriteKey:       "",
+		Depth:           gc.DepthNum(5),
 	})
 
 	// セーブマネージャーを作成
@@ -97,13 +97,13 @@ func TestSaveLoadSpriteRender(t *testing.T) {
 
 		switch name.Name {
 		case "テストエンティティ":
-			assert.Equal(t, "test_sprite", sprite.Name, "SpriteSheetNameが正しくない")
-			assert.Equal(t, 1, sprite.SpriteNumber, "SpriteNumberが正しくない")
+			assert.Equal(t, "test_sprite", sprite.SpriteSheetName, "SpriteSheetNameが正しくない")
+			assert.Equal(t, "sprite2", sprite.SpriteKey, "SpriteKeyが正しくない")
 			assert.Equal(t, gc.DepthNum(10), sprite.Depth, "Depthが正しくない")
 			spriteCount++
 		case "スプライトなしエンティティ":
-			assert.Equal(t, "", sprite.Name, "SpriteSheetNameが空でない")
-			assert.Equal(t, 0, sprite.SpriteNumber, "SpriteNumberが正しくない")
+			assert.Equal(t, "", sprite.SpriteSheetName, "SpriteSheetNameが空でない")
+			assert.Equal(t, "", sprite.SpriteKey, "SpriteKeyが正しくない")
 			assert.Equal(t, gc.DepthNum(5), sprite.Depth, "Depthが正しくない")
 			spriteCount++
 		}

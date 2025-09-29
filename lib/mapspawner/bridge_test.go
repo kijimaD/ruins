@@ -62,23 +62,27 @@ func TestSpawnFromMetaPlan_SimpleFloorAndWall(t *testing.T) {
 	}
 }
 
-func TestGetSpriteNumberForWallType(t *testing.T) {
+func TestGetSpriteKeyForWallType(t *testing.T) {
 	t.Parallel()
 	testCases := []struct {
 		wallType mapplanner.WallType
-		expected int
+		expected string
 	}{
-		{mapplanner.WallTypeTop, 10},
-		{mapplanner.WallTypeBottom, 11},
-		{mapplanner.WallTypeLeft, 12},
-		{mapplanner.WallTypeRight, 13},
-		{mapplanner.WallTypeGeneric, 1},
+		{mapplanner.WallTypeTop, "wall_top"},
+		{mapplanner.WallTypeBottom, "wall_bottom"},
+		{mapplanner.WallTypeLeft, "wall_left"},
+		{mapplanner.WallTypeRight, "wall_right"},
+		{mapplanner.WallTypeTopLeft, "wall_corner_tl"},
+		{mapplanner.WallTypeTopRight, "wall_corner_tr"},
+		{mapplanner.WallTypeBottomLeft, "wall_corner_bl"},
+		{mapplanner.WallTypeBottomRight, "wall_corner_br"},
+		{mapplanner.WallTypeGeneric, "wall_generic"},
 	}
 
 	for _, tc := range testCases {
-		actual := getSpriteNumberForWallType(tc.wallType)
+		actual := getSpriteKeyForWallType(tc.wallType)
 		if actual != tc.expected {
-			t.Errorf("壁タイプ %s のスプライト番号が間違っています。期待値: %d, 実際: %d",
+			t.Errorf("壁タイプ %s のスプライトキーが間違っています。期待値: %s, 実際: %s",
 				tc.wallType.String(), tc.expected, actual)
 		}
 	}

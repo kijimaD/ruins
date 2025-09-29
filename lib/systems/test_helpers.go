@@ -70,8 +70,8 @@ func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 	}
 	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
 		Name: "test",
-		Sprites: []gc.Sprite{
-			{Width: 32, Height: 32}, // 標準サイズ
+		Sprites: map[string]gc.Sprite{
+			"test_sprite": {Width: 32, Height: 32}, // 標準サイズ
 		},
 	}
 
@@ -80,8 +80,8 @@ func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 		Position:    &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		FactionType: &gc.FactionAlly,
 		SpriteRender: &gc.SpriteRender{
-			SpriteNumber: 0,
-			Name:         "test",
+			SpriteSheetName: "test",
+			SpriteKey:       "test_sprite",
 		},
 	})
 	entities.AddEntities(world, cl)
@@ -98,8 +98,8 @@ func CreateEnemyEntity(t *testing.T, world w.World, x, y float64) {
 	}
 	(*world.Resources.SpriteSheets)["test"] = gc.SpriteSheet{
 		Name: "test",
-		Sprites: []gc.Sprite{
-			{Width: 32, Height: 32}, // 標準サイズ
+		Sprites: map[string]gc.Sprite{
+			"test_sprite": {Width: 32, Height: 32}, // 標準サイズ
 		},
 	}
 
@@ -108,8 +108,8 @@ func CreateEnemyEntity(t *testing.T, world w.World, x, y float64) {
 		Position:  &gc.Position{X: gc.Pixel(x), Y: gc.Pixel(y)},
 		AIMoveFSM: &gc.AIMoveFSM{}, // AI制御された敵として識別
 		SpriteRender: &gc.SpriteRender{
-			SpriteNumber: 0,
-			Name:         "test",
+			SpriteSheetName: "test",
+			SpriteKey:       "test_sprite",
 		},
 	})
 	entities.AddEntities(world, cl)
@@ -134,15 +134,15 @@ func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 	}
 	(*world.Resources.SpriteSheets)[sheetName] = gc.SpriteSheet{
 		Name: sheetName,
-		Sprites: []gc.Sprite{
-			{Width: width, Height: height}, // インデックス0のスプライト
+		Sprites: map[string]gc.Sprite{
+			"test_sprite": {Width: width, Height: height}, // テスト用スプライト
 		},
 	}
 
 	// テスト用のスプライト情報を作成
 	spriteRender := &gc.SpriteRender{
-		SpriteNumber: 0,
-		Name:         sheetName,
+		SpriteSheetName: sheetName,
+		SpriteKey:       "test_sprite",
 	}
 
 	cl := entities.ComponentList[gc.EntitySpec]{}
