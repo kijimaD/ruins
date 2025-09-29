@@ -127,9 +127,7 @@
 <pre>[[tile]]
 Name = &quot;Floor&quot;
 Description = &quot;床タイル - 移動可能な基本的なタイル&quot;
-Type = &quot;FLOOR&quot;
 Walkable = true
-BlocksLOS = false
 </pre>
 <p>TileMasterクラスを使用してタイル定義を読み込み・管理：
 <ul>
@@ -1311,7 +1309,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9658:9724#L304">InitialMapPlanner</a>
+			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9902:9968#L310">InitialMapPlanner</a>
 				<a class="permalink" href="index.html#InitialMapPlanner">&#xb6;</a>
 				
 				
@@ -1466,7 +1464,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9802:9856#L309">MetaMapPlanner</a>
+			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10046:10100#L315">MetaMapPlanner</a>
 				<a class="permalink" href="index.html#MetaMapPlanner">&#xb6;</a>
 				
 				
@@ -1491,7 +1489,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=910:1967#L24">MetaPlan</a>
+			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=910:2126#L24">MetaPlan</a>
 				<a class="permalink" href="index.html#MetaPlan">&#xb6;</a>
 				
 				
@@ -1520,6 +1518,11 @@ TODO: 全然わかってないので理解する
     Items []<a href="index.html#ItemSpec">ItemSpec</a>
 <span id="MetaPlan.Props"></span>    <span class="comment">// Props は配置予定のPropsリスト</span>
     Props []<a href="index.html#PropsSpec">PropsSpec</a>
+<span id="MetaPlan.PlayerStartPosition"></span>    <span class="comment">// PlayerStartPosition はプレイヤー開始位置（&#39;@&#39;文字で指定された場合に使用する）</span>
+    PlayerStartPosition *struct {
+        X <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+        Y <a href="http://localhost:8888/pkg/builtin/#int">int</a>
+    }
 <span id="MetaPlan.RawMaster"></span>    <span class="comment">// RawMaster はタイル生成に使用するマスターデータ</span>
     RawMaster *<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#Master">Master</a>
 }
@@ -1549,7 +1552,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4166:4229#L140">AdjacentAnyFloor</a>
+				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4325:4388#L145">AdjacentAnyFloor</a>
 					<a class="permalink" href="index.html#MetaPlan.AdjacentAnyFloor">&#xb6;</a>
 					
 					
@@ -1562,7 +1565,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3384:3446#L110">DownTile</a>
+				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3543:3605#L115">DownTile</a>
 					<a class="permalink" href="index.html#MetaPlan.DownTile">&#xb6;</a>
 					
 					
@@ -1575,7 +1578,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GenerateTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14254:14311#L443">GenerateTile</a>
+				<h3 id="MetaPlan.GenerateTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14498:14555#L449">GenerateTile</a>
 					<a class="permalink" href="index.html#MetaPlan.GenerateTile">&#xb6;</a>
 					
 					
@@ -1590,7 +1593,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14641:14702#L452">GetPlayerStartPosition</a>
+				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14885:14946#L458">GetPlayerStartPosition</a>
 					<a class="permalink" href="index.html#MetaPlan.GetPlayerStartPosition">&#xb6;</a>
 					
 					
@@ -1603,7 +1606,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4954:5016#L172">GetWallType</a>
+				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=5113:5175#L177">GetWallType</a>
 					<a class="permalink" href="index.html#MetaPlan.GetWallType">&#xb6;</a>
 					
 					
@@ -1616,7 +1619,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2046:2120#L51">IsSpawnableTile</a>
+				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2205:2279#L56">IsSpawnableTile</a>
 					<a class="permalink" href="index.html#MetaPlan.IsSpawnableTile">&#xb6;</a>
 					
 					
@@ -1629,7 +1632,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3650:3712#L120">LeftTile</a>
+				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3809:3871#L125">LeftTile</a>
 					<a class="permalink" href="index.html#MetaPlan.LeftTile">&#xb6;</a>
 					
 					
@@ -1642,7 +1645,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3876:3939#L130">RightTile</a>
+				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4035:4098#L135">RightTile</a>
 					<a class="permalink" href="index.html#MetaPlan.RightTile">&#xb6;</a>
 					
 					
@@ -1655,7 +1658,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3115:3175#L100">UpTile</a>
+				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3274:3334#L105">UpTile</a>
 					<a class="permalink" href="index.html#MetaPlan.UpTile">&#xb6;</a>
 					
 					
@@ -1881,7 +1884,7 @@ TODO: 消して直接呼び出せばよい
 		
 			
 			
-			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7373:7476#L233">PlannerChain</a>
+			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7532:7635#L238">PlannerChain</a>
 				<a class="permalink" href="index.html#PlannerChain">&#xb6;</a>
 				
 				
@@ -1905,7 +1908,7 @@ TODO: 消して直接呼び出せばよい
 
 			
 				
-				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10495:10575#L327">NewBigRoomPlanner</a>
+				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10739:10819#L333">NewBigRoomPlanner</a>
 					<a class="permalink" href="index.html#NewBigRoomPlanner">&#xb6;</a>
 					
 					
@@ -1942,7 +1945,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7638:7716#L241">NewPlannerChain</a>
+				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7797:7875#L246">NewPlannerChain</a>
 					<a class="permalink" href="index.html#NewPlannerChain">&#xb6;</a>
 					
 					
@@ -1955,7 +1958,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13361:13440#L416">NewRandomPlanner</a>
+				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13605:13684#L422">NewRandomPlanner</a>
 					<a class="permalink" href="index.html#NewRandomPlanner">&#xb6;</a>
 					
 					
@@ -1979,7 +1982,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9939:10021#L314">NewSmallRoomPlanner</a>
+				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10183:10265#L320">NewSmallRoomPlanner</a>
 					<a class="permalink" href="index.html#NewSmallRoomPlanner">&#xb6;</a>
 					
 					
@@ -2005,7 +2008,7 @@ TODO: 消して直接呼び出せばよい
 
 			
 				
-				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8815:8844#L282">Plan</a>
+				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9059:9088#L288">Plan</a>
 					<a class="permalink" href="index.html#PlannerChain.Plan">&#xb6;</a>
 					
 					
@@ -2018,7 +2021,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8469:8538#L272">StartWith</a>
+				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8713:8782#L278">StartWith</a>
 					<a class="permalink" href="index.html#PlannerChain.StartWith">&#xb6;</a>
 					
 					
@@ -2031,7 +2034,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9301:9382#L297">ValidateConnectivity</a>
+				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9545:9626#L303">ValidateConnectivity</a>
 					<a class="permalink" href="index.html#PlannerChain.ValidateConnectivity">&#xb6;</a>
 					
 					
@@ -2045,7 +2048,7 @@ TODO: 消して直接呼び出せばよい
 				
 			
 				
-				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8624:8682#L277">With</a>
+				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8868:8926#L283">With</a>
 					<a class="permalink" href="index.html#PlannerChain.With">&#xb6;</a>
 					
 					
@@ -2060,7 +2063,7 @@ TODO: 消して直接呼び出せばよい
 		
 			
 			
-			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10961:11300#L338">PlannerType</a>
+			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11205:11544#L344">PlannerType</a>
 				<a class="permalink" href="index.html#PlannerType">&#xb6;</a>
 				
 				
