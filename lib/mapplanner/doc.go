@@ -35,9 +35,7 @@
 //	[[tile]]
 //	Name = "Floor"
 //	Description = "床タイル - 移動可能な基本的なタイル"
-//	Type = "FLOOR"
 //	Walkable = true
-//	BlocksLOS = false
 //
 // TileMasterクラスを使用してタイル定義を読み込み・管理：
 //   - LoadTileFromFile(): TOMLファイルからタイル定義を読み込み

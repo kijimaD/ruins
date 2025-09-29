@@ -21,6 +21,11 @@ Walkable = false
 Name = "Empty"
 Description = "空のタイル"
 Walkable = false
+
+[[tile]]
+Name = "Dirt"
+Description = "土タイル"
+Walkable = true
 `)
 	return &rawMaster
 }

@@ -25,6 +25,7 @@ const (
 	spriteNumberWarpNext   = 4  // 進行ワープホール
 	spriteNumberWarpEscape = 5  // 脱出ワープホール
 	spriteNumberNPC        = 6  // NPC
+	spriteNumberDirt       = 7  // 土
 	spriteNumberFieldItem  = 18 // フィールドアイテム
 
 	// カメラスケール
@@ -54,14 +55,14 @@ var (
 // Field
 // ================
 
-// SpawnFloor はフィールド上に表示される床を生成する
-func SpawnFloor(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
+// SpawnFloor は指定されたスプライト番号でフィールド上に表示される床を生成する
+func SpawnFloor(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		GridElement: &gc.GridElement{X: x, Y: y},
 		SpriteRender: &gc.SpriteRender{
 			Name:         "field",
-			SpriteNumber: spriteNumberFloor,
+			SpriteNumber: spriteNumber,
 			Depth:        gc.DepthNumFloor,
 		},
 	})
@@ -88,7 +89,7 @@ func SpawnWall(world w.World, x gc.Tile, y gc.Tile, spriteNumber int) (ecs.Entit
 
 // SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
 func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y) // 下敷き描画
+	_, err := SpawnFloor(world, x, y, spriteNumberFloor) // 下敷き描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
@@ -109,7 +110,7 @@ func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error)
 
 // SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
 func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y) // 下敷き描画
+	_, err := SpawnFloor(world, x, y, spriteNumberFloor) // 下敷き描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
@@ -398,7 +399,7 @@ func SpawnAllCards(world w.World) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y) // 下敷きの床を描画
+	_, err := SpawnFloor(world, x, y, spriteNumberFloor) // 下敷きの床を描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}

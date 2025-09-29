@@ -29,3 +29,4 @@ cmd LoadMenu
 cmd MainMenu
 cmd Message
 cmd SaveMenu
+cmd Town

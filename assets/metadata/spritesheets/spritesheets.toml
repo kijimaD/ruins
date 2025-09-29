@@ -15,7 +15,7 @@ sprites = [
     { x = 128, y = 0, width = 32, height = 32 }, # Sprite 5
     # Red Ball
     { x = 192, y = 0, width = 32, height = 32 }, # Sprite 6
-    # Sprite 7 (Reserved)
+    # Dirt (土)
     { x = 224, y = 0, width = 32, height = 32 }, # Sprite 7
     # Sprite 8 (Reserved)
     { x = 0,   y = 32, width = 32, height = 32 }, # Sprite 8
