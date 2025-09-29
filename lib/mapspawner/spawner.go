@@ -36,8 +36,10 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 		if tile.Walkable {
 			// タイル名に応じて適切なスプライトをキー名で選択
 			if tile.Name == "Dirt" {
-				// 土タイルはキー名でアクセス
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", "dirt_simple")
+				// 土タイルは16タイルオートタイルを使用
+				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Dirt")
+				spriteKey := fmt.Sprintf("dirt_%d", int(autoTileIndex))
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", spriteKey)
 			} else {
 				// 通常の床エンティティはキー名でアクセス
 				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", "floor")
