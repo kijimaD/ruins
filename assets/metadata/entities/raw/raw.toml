@@ -2054,6 +2054,8 @@ Defense = 5
 
 [[member]]
 Name = "火の玉"
+sprite_sheet_name = "field"
+sprite_key = "red_ball"
 [member.attributes]
 Vitality = 7
 Strength = 8
@@ -2064,6 +2066,8 @@ Defense = 4
 
 [[member]]
 Name = "灰の偶像"
+sprite_sheet_name = "field"
+sprite_key = "red_ball"
 [member.attributes]
 Vitality = 12
 Strength = 23
