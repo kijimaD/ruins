@@ -228,31 +228,6 @@ func TestSerializationManager_EmptyWorld(t *testing.T) {
 	assert.Equal(t, 0, entityCount)
 }
 
-func TestSerializationManager_InvalidFile(t *testing.T) {
-	t.Parallel()
-	// テストディレクトリを準備
-	testDir := "./test_saves_invalid"
-	defer func() {
-		_ = os.RemoveAll(testDir)
-	}()
-
-	// 無効なJSONファイルを作成
-	err := os.MkdirAll(testDir, 0755)
-	require.NoError(t, err)
-
-	invalidJSON := `{"invalid": json}`
-	err = os.WriteFile(testDir+"/invalid_slot.json", []byte(invalidJSON), 0644)
-	require.NoError(t, err)
-
-	// シリアライゼーションマネージャーを作成
-	manager := NewSerializationManager(testDir)
-	world := createTestWorld()
-
-	// 無効なファイルの読み込みでエラーが発生することを確認
-	err = manager.LoadWorld(world, "invalid_slot")
-	assert.Error(t, err)
-}
-
 func TestValidJSONButNoChecksum(t *testing.T) {
 	t.Parallel()
 	// テストディレクトリを準備

@@ -47,9 +47,9 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 		} else {
 			// 隣接に床がある場合のみ壁エンティティを生成
 			if metaPlan.AdjacentAnyFloor(i) {
-				// 壁タイプを判定してスプライトキーを決定
-				wallType := metaPlan.GetWallType(i)
-				spriteKey := getSpriteKeyForWallType(wallType)
+				// 壁タイルも16タイルオートタイルを使用
+				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Wall")
+				spriteKey := fmt.Sprintf("wall_%d", int(autoTileIndex))
 				entity, err = worldhelper.SpawnWall(world, tileX, tileY, "field", spriteKey)
 			}
 		}
