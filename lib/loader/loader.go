@@ -76,8 +76,15 @@ func (rl *DefaultResourceLoader) LoadFonts() (map[string]resources.Font, error) 
 		return nil, fmt.Errorf("フォントファイルの読み込みに失敗: %w", err)
 	}
 
-	if _, err := toml.Decode(string(bs), &metadata); err != nil {
+	metaData, err := toml.Decode(string(bs), &metadata)
+	if err != nil {
 		return nil, fmt.Errorf("フォントメタデータのデコードに失敗: %w", err)
+	}
+
+	// 未知のキーがあった場合はエラーにする
+	undecoded := metaData.Undecoded()
+	if len(undecoded) > 0 {
+		return nil, fmt.Errorf("unknown keys found in fonts TOML: %v", undecoded)
 	}
 
 	rl.cache.Fonts = metadata.Fonts
@@ -101,8 +108,15 @@ func (rl *DefaultResourceLoader) LoadSpriteSheets() (map[string]components.Sprit
 		return nil, fmt.Errorf("スプライトシートファイルの読み込みに失敗: %w", err)
 	}
 
-	if _, err := toml.Decode(string(bs), &metadata); err != nil {
+	metaData, err := toml.Decode(string(bs), &metadata)
+	if err != nil {
 		return nil, fmt.Errorf("スプライトシートメタデータのデコードに失敗: %w", err)
+	}
+
+	// 未知のキーがあった場合はエラーにする
+	undecoded := metaData.Undecoded()
+	if len(undecoded) > 0 {
+		return nil, fmt.Errorf("unknown keys found in sprite sheets TOML: %v", undecoded)
 	}
 
 	// 名前を設定
