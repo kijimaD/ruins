@@ -49,7 +49,7 @@ func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container {
 					widget.GridLayoutOpts.Columns(3),
 					widget.GridLayoutOpts.Spacing(4, 4),
 					widget.GridLayoutOpts.Stretch([]bool{true, false, true}, []bool{false, true, false}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
+					widget.GridLayoutOpts.Padding(&widget.Insets{
 						Top:    4,
 						Bottom: 4,
 						Left:   4,
@@ -69,7 +69,7 @@ func NewVSplitContainer(top *widget.Container, bottom *widget.Container, opts ..
 					widget.GridLayoutOpts.Columns(1),
 					widget.GridLayoutOpts.Spacing(4, 4),
 					widget.GridLayoutOpts.Stretch([]bool{true}, []bool{true, true}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
+					widget.GridLayoutOpts.Padding(&widget.Insets{
 						Top:    4,
 						Bottom: 4,
 						Left:   4,
@@ -93,7 +93,7 @@ func NewWSplitContainer(right *widget.Container, left *widget.Container, opts ..
 					widget.GridLayoutOpts.Columns(2),
 					widget.GridLayoutOpts.Spacing(4, 4),
 					widget.GridLayoutOpts.Stretch([]bool{true, true}, []bool{true}),
-					widget.GridLayoutOpts.Padding(widget.Insets{
+					widget.GridLayoutOpts.Padding(&widget.Insets{
 						Top:    4,
 						Bottom: 4,
 						Left:   4,
@@ -114,7 +114,7 @@ func NewWindowContainer(res *resources.UIResources) *widget.Container {
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.Insets{
+			widget.RowLayoutOpts.Padding(&widget.Insets{
 				Top:    20,
 				Bottom: 20,
 				Left:   10,
@@ -137,7 +137,7 @@ func NewWindowHeaderContainer(title string, res *resources.UIResources) *widget.
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
-		widget.TextOpts.Text(title, res.Text.TitleFace, consts.TextColor),
+		widget.TextOpts.Text(title, &res.Text.TitleFace, consts.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 			VerticalPosition:   widget.AnchorLayoutPositionCenter,
@@ -152,7 +152,7 @@ func NewWindowHeaderContainer(title string, res *resources.UIResources) *widget.
 // NewMenuText は汎用メニューテキストを作成する
 func NewMenuText(title string, res *resources.UIResources) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, res.Text.Face, consts.TextColor),
+		widget.TextOpts.Text(title, &res.Text.Face, consts.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -164,7 +164,7 @@ func NewMenuText(title string, res *resources.UIResources) *widget.Text {
 // NewTitleText はタイトル用テキストを作成する（大きめ、目立つ）
 func NewTitleText(text string, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.TitleFace, consts.TextColor),
+		widget.TextOpts.Text(text, &res.Text.TitleFace, consts.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -174,7 +174,7 @@ func NewTitleText(text string, res *resources.UIResources) *widget.Text {
 // NewSubtitleText はサブタイトル用テキストを作成する（中サイズ）
 func NewSubtitleText(text string, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.Face, consts.TextColor),
+		widget.TextOpts.Text(text, &res.Text.Face, consts.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -184,7 +184,7 @@ func NewSubtitleText(text string, res *resources.UIResources) *widget.Text {
 // NewDescriptionText は説明文用テキストを作成する（小さめ、補助的）
 func NewDescriptionText(text string, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.SmallFace, consts.ForegroundColor),
+		widget.TextOpts.Text(text, &res.Text.SmallFace, consts.ForegroundColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -209,12 +209,12 @@ func NewPageIndicator(text string, res *resources.UIResources) *widget.Container
 
 	// 右寄せのテキスト
 	textWidget := widget.NewText(
-		widget.TextOpts.Text(text, res.Text.SmallFace, consts.ForegroundColor),
+		widget.TextOpts.Text(text, &res.Text.SmallFace, consts.ForegroundColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionEnd, // 右寄せ
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				Padding: widget.Insets{
+				Padding: &widget.Insets{
 					Top:    2,
 					Bottom: 2,
 					Left:   8,
@@ -231,7 +231,7 @@ func NewPageIndicator(text string, res *resources.UIResources) *widget.Container
 // NewBodyText は本文用テキストを作成する
 func NewBodyText(title string, _ color.RGBA, res *resources.UIResources) *widget.Text {
 	text := widget.NewText(
-		widget.TextOpts.Text(title, res.Text.Face, consts.TextColor),
+		widget.TextOpts.Text(title, &res.Text.Face, consts.TextColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
 		),
@@ -263,12 +263,12 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *re
 	)
 
 	textWidget := widget.NewText(
-		widget.TextOpts.Text(text, res.Text.Face, textColor),
+		widget.TextOpts.Text(text, &res.Text.Face, textColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionStart, // 左寄せ
 				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				Padding: widget.Insets{ // 縦パディングを小さく、横パディングは適度に
+				Padding: &widget.Insets{ // 縦パディングを小さく、横パディングは適度に
 					Top:    2,
 					Bottom: 2,
 					Left:   8,
@@ -285,7 +285,7 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *re
 // NewFragmentText は色付きログフラグメント専用のテキストを作成する（文字数分だけの幅）
 func NewFragmentText(text string, textColor color.RGBA, res *resources.UIResources) *widget.Text {
 	return widget.NewText(
-		widget.TextOpts.Text(text, res.Text.Face, textColor),
+		widget.TextOpts.Text(text, &res.Text.Face, textColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
 				Stretch: false, // 横幅を伸ばさない
@@ -329,11 +329,12 @@ func NewMessageList(entries []any, res *resources.UIResources, screenWidth int, 
 				MaxHeight:          280,
 			}),
 		)),
-		widget.ListOpts.SliderOpts(
-			widget.SliderOpts.MinHandleSize(5),
-			widget.SliderOpts.Images(res.List.Track, res.List.Handle),
-			widget.SliderOpts.TrackPadding(widget.NewInsetsSimple(4)),
-		),
+		widget.ListOpts.SliderParams(&widget.SliderParams{
+			MinHandleSize: func() *int { i := 5; return &i }(),
+			TrackImage:    res.List.Track,
+			HandleImage:   res.List.Handle,
+			TrackPadding:  widget.NewInsetsSimple(4),
+		}),
 		widget.ListOpts.Entries(entries),
 		widget.ListOpts.EntryLabelFunc(func(e any) string {
 			if str, ok := e.(string); ok {
@@ -348,17 +349,15 @@ func NewMessageList(entries []any, res *resources.UIResources, screenWidth int, 
 			SelectedBackground:        consts.ButtonHoverColor,
 			SelectedFocusedBackground: consts.ButtonHoverColor,
 		}),
-		widget.ListOpts.EntryFontFace(res.Text.Face),
+		widget.ListOpts.EntryFontFace(&res.Text.Face),
 		widget.ListOpts.EntryTextPosition(widget.TextPositionStart, widget.TextPositionCenter),
-		widget.ListOpts.EntryTextPadding(widget.Insets{
+		widget.ListOpts.EntryTextPadding(&widget.Insets{
 			Top:    4,
 			Bottom: 4,
 			Left:   16,
 			Right:  16,
 		}),
-		widget.ListOpts.ScrollContainerOpts(
-			widget.ScrollContainerOpts.Image(res.List.ImageTrans),
-		),
+		widget.ListOpts.ScrollContainerImage(res.List.ImageTrans),
 		widget.ListOpts.HideHorizontalSlider(),
 	}
 
@@ -380,10 +379,10 @@ func NewButton(text string, res *resources.UIResources, opts ...widget.ButtonOpt
 			widget.ButtonOpts.Image(res.Button.Image),
 			widget.ButtonOpts.Text(
 				text,
-				res.Button.Face,
+				&res.Button.Face,
 				res.Button.Text,
 			),
-			widget.ButtonOpts.TextPadding(res.Button.Padding),
+			widget.ButtonOpts.TextPadding(&res.Button.Padding),
 		}, opts...)...,
 	)
 }
@@ -394,7 +393,7 @@ func NewButton(text string, res *resources.UIResources, opts ...widget.ButtonOpt
 func BaseRowLayoutOpts() []widget.RowLayoutOpt {
 	return []widget.RowLayoutOpt{
 		widget.RowLayoutOpts.Spacing(4),
-		widget.RowLayoutOpts.Padding(widget.Insets{
+		widget.RowLayoutOpts.Padding(&widget.Insets{
 			Top:    10,
 			Bottom: 10,
 			Left:   4,

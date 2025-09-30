@@ -113,10 +113,10 @@ func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) *widget.B
 		widget.ButtonOpts.Image(res.Button.Image),
 		widget.ButtonOpts.Text(
 			item.Label,
-			res.Button.Face,
+			&res.Button.Face,
 			res.Button.Text,
 		),
-		widget.ButtonOpts.TextPadding(res.Button.Padding),
+		widget.ButtonOpts.TextPadding(&res.Button.Padding),
 		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter), // 左寄せ
 		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 			menu.SetFocusedIndex(index)
@@ -153,11 +153,11 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 			if isFocused {
 				// フォーカス時: より明るい背景色
 				focusedImage := b.createFocusedButtonImage()
-				btn.Image = focusedImage
+				btn.SetImage(focusedImage)
 			} else {
 				// 非フォーカス時: 通常の半透明背景
 				normalImage := b.createTransparentButtonImage()
-				btn.Image = normalImage
+				btn.SetImage(normalImage)
 			}
 		}
 	}
@@ -209,7 +209,7 @@ func (b *UIBuilder) CreatePageIndicator(menu *Menu) *widget.Text {
 	pageText := menu.GetPageIndicatorText()
 
 	return widget.NewText(
-		widget.TextOpts.Text(pageText, res.Text.SmallFace, color.White),
+		widget.TextOpts.Text(pageText, &res.Text.SmallFace, color.White),
 		widget.TextOpts.Position(widget.TextPositionCenter, widget.TextPositionCenter),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{

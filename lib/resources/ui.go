@@ -84,7 +84,7 @@ type ButtonResources struct {
 // CheckboxResources はチェックボックスリソースを管理する
 type CheckboxResources struct {
 	Image   *widget.ButtonImage
-	Graphic *widget.CheckboxGraphicImage
+	Graphic *widget.CheckboxImage
 	Spacing int
 }
 
@@ -338,17 +338,32 @@ func newCheckboxResources() (*CheckboxResources, error) {
 		return nil, err
 	}
 
-	checked, err := loadGraphicImages("assets/graphics/checkbox-checked-idle.png", "assets/graphics/checkbox-checked-disabled.png")
+	checked, err := loadImageNineSlice("assets/graphics/checkbox-checked-idle.png", 20, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	unchecked, err := loadGraphicImages("assets/graphics/checkbox-unchecked-idle.png", "assets/graphics/checkbox-unchecked-disabled.png")
+	checkedDisabled, err := loadImageNineSlice("assets/graphics/checkbox-checked-disabled.png", 20, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	greyed, err := loadGraphicImages("assets/graphics/checkbox-greyed-idle.png", "assets/graphics/checkbox-greyed-disabled.png")
+	unchecked, err := loadImageNineSlice("assets/graphics/checkbox-unchecked-idle.png", 20, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	uncheckedDisabled, err := loadImageNineSlice("assets/graphics/checkbox-unchecked-disabled.png", 20, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	greyed, err := loadImageNineSlice("assets/graphics/checkbox-greyed-idle.png", 20, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	greyedDisabled, err := loadImageNineSlice("assets/graphics/checkbox-greyed-disabled.png", 20, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -361,10 +376,13 @@ func newCheckboxResources() (*CheckboxResources, error) {
 			Disabled: disabled,
 		},
 
-		Graphic: &widget.CheckboxGraphicImage{
-			Checked:   checked,
-			Unchecked: unchecked,
-			Greyed:    greyed,
+		Graphic: &widget.CheckboxImage{
+			Checked:           checked,
+			CheckedDisabled:   checkedDisabled,
+			Unchecked:         unchecked,
+			UncheckedDisabled: uncheckedDisabled,
+			Greyed:            greyed,
+			GreyedDisabled:    greyedDisabled,
 		},
 
 		Spacing: 10,

@@ -302,7 +302,7 @@ func (w *Window) createWindowContainer() *widget.Container {
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Padding(widget.Insets{
+				widget.RowLayoutOpts.Padding(&widget.Insets{
 					Top:    20,
 					Bottom: 60, // Enterプロンプト用のスペースを確保
 					Left:   10,
@@ -359,7 +359,7 @@ func (w *Window) createChoicesContainer() *widget.Container {
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 				widget.RowLayoutOpts.Spacing(5),
-				widget.RowLayoutOpts.Padding(widget.Insets{Top: 10}),
+				widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10}),
 			),
 		),
 	)
@@ -391,7 +391,7 @@ func (w *Window) createEnterPrompt() *widget.Container {
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter, // 水平中央
 				VerticalPosition:   widget.AnchorLayoutPositionEnd,    // 下部に固定
-				Padding:            widget.Insets{Bottom: 15},         // 下端からの余白
+				Padding:            &widget.Insets{Bottom: 15},        // 下端からの余白
 			}),
 		),
 	)
