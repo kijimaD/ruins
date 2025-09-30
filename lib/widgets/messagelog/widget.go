@@ -148,7 +148,7 @@ func (widget *Widget) createColoredLogContainer(entries []gamelog.LogEntry) *eui
 			euiwidget.NewRowLayout(
 				euiwidget.RowLayoutOpts.Direction(euiwidget.DirectionVertical),
 				euiwidget.RowLayoutOpts.Spacing(widget.config.Spacing),
-				euiwidget.RowLayoutOpts.Padding(euiwidget.Insets{
+				euiwidget.RowLayoutOpts.Padding(&euiwidget.Insets{
 					Top:    widget.config.Padding.Top,
 					Bottom: widget.config.Padding.Bottom,
 					Left:   widget.config.Padding.Left,
@@ -169,8 +169,8 @@ func (widget *Widget) createColoredLogContainer(entries []gamelog.LogEntry) *eui
 			euiwidget.ContainerOpts.Layout(
 				euiwidget.NewRowLayout(
 					euiwidget.RowLayoutOpts.Direction(euiwidget.DirectionHorizontal),
-					euiwidget.RowLayoutOpts.Spacing(0),                  // フラグメント間のスペースなし
-					euiwidget.RowLayoutOpts.Padding(euiwidget.Insets{}), // パディングなし
+					euiwidget.RowLayoutOpts.Spacing(0),                   // フラグメント間のスペースなし
+					euiwidget.RowLayoutOpts.Padding(&euiwidget.Insets{}), // パディングなし
 				),
 			),
 			euiwidget.ContainerOpts.WidgetOpts(

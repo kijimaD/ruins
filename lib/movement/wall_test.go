@@ -11,23 +11,24 @@ import (
 
 func TestPlayerMovementWithWalls(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
-
-	// プレイヤーを(10, 10)にスポーン
-	player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")
-	require.NoError(t, err)
-
-	// プレイヤーの右側(11, 10)に壁を配置
-	_, err = worldhelper.SpawnWall(world, 11, 10, "field", "wall_generic")
-	require.NoError(t, err)
-
-	// プレイヤーの上側(10, 9)に壁を配置
-	_, err = worldhelper.SpawnWall(world, 10, 9, "field", "wall_generic")
-	require.NoError(t, err)
 
 	t.Run("壁がない方向への移動は可能", func(t *testing.T) {
 		t.Parallel()
+		world, err := maingame.InitWorld(960, 720)
+		require.NoError(t, err)
+
+		// プレイヤーを(10, 10)にスポーン
+		player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")
+		require.NoError(t, err)
+
+		// プレイヤーの右側(11, 10)に壁を配置
+		_, err = worldhelper.SpawnWall(world, 11, 10, "field", "wall_generic")
+		require.NoError(t, err)
+
+		// プレイヤーの上側(10, 9)に壁を配置
+		_, err = worldhelper.SpawnWall(world, 10, 9, "field", "wall_generic")
+		require.NoError(t, err)
+
 		// 左側(9, 10)への移動は可能なはず
 		canMove := CanMoveTo(world, 9, 10, player)
 		assert.True(t, canMove, "左側への移動は可能なはず")
@@ -39,6 +40,21 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 
 	t.Run("壁がある方向への移動は不可", func(t *testing.T) {
 		t.Parallel()
+		world, err := maingame.InitWorld(960, 720)
+		require.NoError(t, err)
+
+		// プレイヤーを(10, 10)にスポーン
+		player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")
+		require.NoError(t, err)
+
+		// プレイヤーの右側(11, 10)に壁を配置
+		_, err = worldhelper.SpawnWall(world, 11, 10, "field", "wall_generic")
+		require.NoError(t, err)
+
+		// プレイヤーの上側(10, 9)に壁を配置
+		_, err = worldhelper.SpawnWall(world, 10, 9, "field", "wall_generic")
+		require.NoError(t, err)
+
 		// 右側(11, 10)への移動は壁によってブロックされるはず
 		canMove := CanMoveTo(world, 11, 10, player)
 		assert.False(t, canMove, "右側の壁に移動は不可なはず")
@@ -50,7 +66,18 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 
 	t.Run("プレイヤーが壁に完全に囲まれた場合", func(t *testing.T) {
 		t.Parallel()
-		// 残りの方向にも壁を配置
+		world, err := maingame.InitWorld(960, 720)
+		require.NoError(t, err)
+
+		// プレイヤーを(10, 10)にスポーン
+		player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")
+		require.NoError(t, err)
+
+		// 全方向に壁を配置
+		_, err = worldhelper.SpawnWall(world, 11, 10, "field", "wall_generic") // 右
+		require.NoError(t, err)
+		_, err = worldhelper.SpawnWall(world, 10, 9, "field", "wall_generic") // 上
+		require.NoError(t, err)
 		_, err = worldhelper.SpawnWall(world, 9, 10, "field", "wall_generic") // 左
 		require.NoError(t, err)
 		_, err = worldhelper.SpawnWall(world, 10, 11, "field", "wall_generic") // 下

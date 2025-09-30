@@ -141,12 +141,12 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 
 	// ゲームタイトル「Ruins」のテキストを作成
 	titleText := widget.NewText(
-		widget.TextOpts.Text("Ruins", world.Resources.UIResources.Text.HugeTitleFace, amberColor),
+		widget.TextOpts.Text("Ruins", &world.Resources.UIResources.Text.HugeTitleFace, amberColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionStart,
-				Padding: widget.Insets{
+				Padding: &widget.Insets{
 					Top: 100, // 画面上部から100ピクセル下に配置
 				},
 			}),
@@ -165,12 +165,12 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 		versionInfo = append(versionInfo, consts.AppDate)
 	}
 	versionText := widget.NewText(
-		widget.TextOpts.Text(strings.Join(versionInfo, "\n"), world.Resources.UIResources.Text.SmallFace, consts.SecondaryColor),
+		widget.TextOpts.Text(strings.Join(versionInfo, "\n"), &world.Resources.UIResources.Text.SmallFace, consts.SecondaryColor),
 		widget.TextOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionEnd,
 				VerticalPosition:   widget.AnchorLayoutPositionEnd,
-				Padding: widget.Insets{
+				Padding: &widget.Insets{
 					Right:  20, // 画面右端から20ピクセル左に配置
 					Bottom: 20, // 画面下端から20ピクセル上に配置
 				},
@@ -187,7 +187,7 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 				HorizontalPosition: widget.AnchorLayoutPositionCenter,
 				VerticalPosition:   widget.AnchorLayoutPositionStart,
-				Padding: widget.Insets{
+				Padding: &widget.Insets{
 					Top: 400, // メニューを下寄りにする
 				},
 			}),

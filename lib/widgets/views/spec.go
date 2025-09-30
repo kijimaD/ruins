@@ -137,7 +137,7 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 
 	// HPラベル
 	hpLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), res.Text.SmallFace, consts.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.HPLabel, pools.HP.Current, pools.HP.Max), &res.Text.SmallFace, consts.TextColor),
 	)
 	memberContainer.AddChild(hpLabel)
 
@@ -159,7 +159,7 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 				Hover: image.NewNineSliceColor(color.NRGBA{0, 0, 255, 255}),
 			},
 		),
-		widget.ProgressBarOpts.TrackPadding(widget.Insets{
+		widget.ProgressBarOpts.TrackPadding(&widget.Insets{
 			Top:    2,
 			Bottom: 2,
 		}),
@@ -169,7 +169,7 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 
 	// SPラベル
 	spLabel := widget.NewText(
-		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), res.Text.SmallFace, consts.TextColor),
+		widget.TextOpts.Text(fmt.Sprintf("%s %3d/%3d", consts.SPLabel, pools.SP.Current, pools.SP.Max), &res.Text.SmallFace, consts.TextColor),
 	)
 	memberContainer.AddChild(spLabel)
 
@@ -191,7 +191,7 @@ func AddMemberBars(targetContainer *widget.Container, entity ecs.Entity, world w
 				Hover: image.NewNineSliceColor(color.NRGBA{0, 0, 255, 255}),
 			},
 		),
-		widget.ProgressBarOpts.TrackPadding(widget.Insets{
+		widget.ProgressBarOpts.TrackPadding(&widget.Insets{
 			Top:    2,
 			Bottom: 2,
 		}),
