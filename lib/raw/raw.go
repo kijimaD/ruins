@@ -38,14 +38,14 @@ type Item struct {
 	Name            string
 	Description     string
 	InflictsDamage  int
-	SpriteSheetName string           `toml:"sprite_sheet_name"`
-	SpriteKey       string           `toml:"sprite_key"`
-	Consumable      *Consumable      `toml:"consumable"`
-	ProvidesHealing *ProvidesHealing `toml:"provides_healing"`
-	Wearable        *Wearable        `toml:"wearable"`
-	EquipBonus      *EquipBonus      `toml:"equip_bonus"`
-	Card            *Card            `toml:"card"`
-	Attack          *Attack          `toml:"attack"`
+	SpriteSheetName string
+	SpriteKey       string
+	Consumable      *Consumable
+	ProvidesHealing *ProvidesHealing
+	Wearable        *Wearable
+	EquipBonus      *EquipBonus
+	Card            *Card
+	Attack          *Attack
 }
 
 // ProvidesHealing は回復効果を提供する構造体
@@ -97,8 +97,8 @@ type EquipBonus struct {
 type Material struct {
 	Name            string
 	Description     string
-	SpriteSheetName string `toml:"sprite_sheet_name"`
-	SpriteKey       string `toml:"sprite_key"`
+	SpriteSheetName string
+	SpriteKey       string
 }
 
 // Recipe はレシピの情報
@@ -117,9 +117,9 @@ type RecipeInput struct {
 type Member struct {
 	Name            string
 	Player          *bool
-	Attributes      Attributes `toml:"attributes"`
-	SpriteSheetName string     `toml:"sprite_sheet_name"`
-	SpriteKey       string     `toml:"sprite_key"`
+	Attributes      Attributes
+	SpriteSheetName string
+	SpriteKey       string
 }
 
 // Attributes はキャラクターの能力値
@@ -196,18 +196,16 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
 	}
 	item := rw.Raws.Items[itemIdx]
+
 	cl := gc.EntitySpec{}
 	cl.ItemLocationType = &locationType
 	cl.Item = &gc.Item{}
 	cl.Name = &gc.Name{Name: item.Name}
 	cl.Description = &gc.Description{Description: item.Description}
-
-	if item.SpriteSheetName != "" && item.SpriteKey != "" {
-		cl.SpriteRender = &gc.SpriteRender{
-			SpriteSheetName: item.SpriteSheetName,
-			SpriteKey:       item.SpriteKey,
-			Depth:           gc.DepthNumRug,
-		}
+	cl.SpriteRender = &gc.SpriteRender{
+		SpriteSheetName: item.SpriteSheetName,
+		SpriteKey:       item.SpriteKey,
+		Depth:           gc.DepthNumRug,
 	}
 
 	if item.Consumable != nil {
@@ -311,19 +309,17 @@ func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.Item
 	if !ok {
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "MaterialIndex")
 	}
+	material := rw.Raws.Materials[materialIdx]
+
 	cl := gc.EntitySpec{}
 	cl.Material = &gc.Material{Amount: amount}
-	material := rw.Raws.Materials[materialIdx]
 	cl.Name = &gc.Name{Name: material.Name}
 	cl.Description = &gc.Description{Description: material.Description}
 	cl.ItemLocationType = &locationType
-
-	if material.SpriteSheetName != "" && material.SpriteKey != "" {
-		cl.SpriteRender = &gc.SpriteRender{
-			SpriteSheetName: material.SpriteSheetName,
-			SpriteKey:       material.SpriteKey,
-			Depth:           gc.DepthNumRug,
-		}
+	cl.SpriteRender = &gc.SpriteRender{
+		SpriteSheetName: material.SpriteSheetName,
+		SpriteKey:       material.SpriteKey,
+		Depth:           gc.DepthNumRug,
 	}
 
 	return cl, nil
@@ -376,13 +372,10 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 	cl := gc.EntitySpec{}
 	cl.Name = &gc.Name{Name: member.Name}
 	cl.TurnBased = &gc.TurnBased{AP: gc.Pool{Current: 100, Max: 100}} // TODO: Attributesから計算する
-
-	if member.SpriteSheetName != "" && member.SpriteKey != "" {
-		cl.SpriteRender = &gc.SpriteRender{
-			SpriteSheetName: member.SpriteSheetName,
-			SpriteKey:       member.SpriteKey,
-			Depth:           gc.DepthNumPlayer,
-		}
+	cl.SpriteRender = &gc.SpriteRender{
+		SpriteSheetName: member.SpriteSheetName,
+		SpriteKey:       member.SpriteKey,
+		Depth:           gc.DepthNumPlayer,
 	}
 	cl.Attributes = &gc.Attributes{
 		Vitality:  gc.Attribute{Base: member.Attributes.Vitality},
@@ -460,9 +453,9 @@ func (rw *Master) GetDropTable(name string) (DropTable, error) {
 
 // TileRaw はタイルのローデータ定義
 type TileRaw struct {
-	Name        string `toml:"Name"`
-	Description string `toml:"Description"`
-	Walkable    bool   `toml:"Walkable"`
+	Name        string
+	Description string
+	Walkable    bool
 }
 
 // GenerateTile は指定された名前のタイルを生成する

@@ -3,14 +3,14 @@
 [[item]]
 Name = "ルビー原石"
 Description = "赤く光る鉱物。高く売れる"
-sprite_sheet_name = "field"
-sprite_key = "red_ball"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[item]]
 Name = "回復薬"
 Description = "体力を半分程度回復する"
-sprite_sheet_name = "field"
-sprite_key = "field_item"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [item.consumable]
 UsableScene = "ANY"
@@ -947,108 +947,158 @@ Sensation = 3
 [[material]]
 Name = "鉄くず"
 Description = "鉄を多く含む金属の塊"
-sprite_sheet_name = "field"
-sprite_key = "field_item"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "緑ハーブ"
 Description = "よい香りに鎮静・興奮などの作用がある植物"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "黄ハーブ"
 Description = "体力を増強させる作用がある植物"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "木の棒"
 Description = "滑らかな表面を持ち、軽くて持ちやすい棒"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "フェライトコア"
 Description = "フェライト製の磁性体"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "鉄"
 Description = "加工しやすく産業の中核をなす金属"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "銀の欠片"
 Description = "淡く光る銀色の金属片。不浄なものを退ける力があるとされる"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "古い歯車"
 Description = "錆びついた真鍮の歯車。精巧な工芸技術で作られている"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "水晶の粉"
 Description = "透明な結晶を砕いた粉末。微かに光を放っている"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "黒曜石"
 Description = "漆黒に輝く火山ガラス。鋭い刃を作るのに適している"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "血赤石"
 Description = "深紅に染まった鉱石。触れると温かい"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "月光草"
 Description = "夜に青白く光る神秘的な植物。薬草として珍重される"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "古代の骨"
 Description = "長い年月を経た動物の骨。異様に硬く軽い"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "星鉄"
 Description = "隕石から取れる特殊な金属。普通の鉄より遥かに硬い"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "霧の結晶"
 Description = "霧が結晶化したような不思議な物質。触れると冷たい"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "古布の切れ端"
 Description = "古い祭服の断片。聖別された布と思われる"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "琥珀"
 Description = "太古の樹液が化石化した宝石。中に小さな虫が閉じ込められている"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "深海の塩"
 Description = "深海から採取された特殊な塩。普通の塩とは違う効能がある"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "雷光石"
 Description = "雷に打たれて生まれた石。微かに電気を帯びている"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "灰"
 Description = "何かが燃え尽きた後の灰。神聖な儀式に使われていたようだ"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "蒼鉛"
 Description = "青みがかった重い金属。魔除けの効果があるとされる"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "獣の毛皮"
 Description = "未知の獣から剥いだ毛皮。非常に丈夫で防水性に優れる"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "朽ちた羊皮紙"
 Description = "古い文書の断片。文字は読めないが重要そうな内容"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "紫水晶"
 Description = "美しい紫色の水晶。精神を集中させる効果があるという"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "錆びた鎖"
 Description = "古い鎖の一部。何かを繋ぎ止めていた痕跡がある"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 [[material]]
 Name = "聖油"
 Description = "聖別された油。武器や防具の祝福に使用される"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 
 ###################
 # recipe          #
@@ -1863,10 +1913,9 @@ Amount = 1
 
 [[member]]
 Name = "セレスティン"
-Job = "探索者"
 Player = true
-sprite_sheet_name = "field"
-sprite_key = "player"
+SpriteSheetName = "field"
+SpriteKey = "player"
 [member.attributes]
 Vitality = 50
 Strength = 50
@@ -1877,7 +1926,6 @@ Defense = 0
 
 [[member]]
 Name = "コルデリア"
-Job = "狩医者"
 [member.attributes]
 Vitality = 5
 Strength = 40
@@ -1888,7 +1936,6 @@ Defense = 0
 
 [[member]]
 Name = "バルサザール"
-Job = "脱走兵"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -1899,7 +1946,6 @@ Defense = 0
 
 [[member]]
 Name = "ハンス"
-Job = "裁定者"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -1910,7 +1956,6 @@ Defense = 0
 
 [[member]]
 Name = "カイン"
-Job = "石棺戦士"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -1921,7 +1966,6 @@ Defense = 0
 
 [[member]]
 Name = "メイ"
-Job = "灰壺の守人"
 [member.attributes]
 Vitality = 5
 Strength = 5
@@ -1932,7 +1976,6 @@ Defense = 0
 
 [[member]]
 Name = "アーサス"
-Job = "歯車技師"
 [member.attributes]
 Vitality = 6
 Strength = 4
@@ -1943,7 +1986,6 @@ Defense = 0
 
 [[member]]
 Name = "エヴァンジェリン"
-Job = "従軍医官"
 [member.attributes]
 Vitality = 7
 Strength = 3
@@ -1954,7 +1996,6 @@ Defense = 0
 
 [[member]]
 Name = "サイラス"
-Job = "夜襲兵"
 [member.attributes]
 Vitality = 5
 Strength = 6
@@ -1965,7 +2006,6 @@ Defense = 0
 
 [[member]]
 Name = "ベアトリス"
-Job = "火薬調合師"
 [member.attributes]
 Vitality = 4
 Strength = 7
@@ -1976,7 +2016,6 @@ Defense = 0
 
 [[member]]
 Name = "ガーディアン"
-Job = "重鎧騎士"
 [member.attributes]
 Vitality = 8
 Strength = 8
@@ -1987,7 +2026,6 @@ Defense = 0
 
 [[member]]
 Name = "セラフィナ"
-Job = "密偵"
 [member.attributes]
 Vitality = 5
 Strength = 4
@@ -1998,7 +2036,6 @@ Defense = 0
 
 [[member]]
 Name = "モルガン"
-Job = "攻城兵"
 [member.attributes]
 Vitality = 6
 Strength = 7
@@ -2009,7 +2046,6 @@ Defense = 0
 
 [[member]]
 Name = "メリディア"
-Job = "伝令術師"
 [member.attributes]
 Vitality = 5
 Strength = 4
@@ -2020,7 +2056,6 @@ Defense = 0
 
 [[member]]
 Name = "カスパー"
-Job = "補給官"
 [member.attributes]
 Vitality = 7
 Strength = 6
@@ -2031,7 +2066,6 @@ Defense = 0
 
 [[member]]
 Name = "レティシア"
-Job = "精密射手"
 [member.attributes]
 Vitality = 4
 Strength = 5
@@ -2042,8 +2076,8 @@ Defense = 0
 
 [[member]]
 Name = "軽戦車"
-sprite_sheet_name = "field"
-sprite_key = "red_ball"
+SpriteSheetName = "field"
+SpriteKey = "red_ball"
 [member.attributes]
 Vitality = 12
 Strength = 8
@@ -2054,8 +2088,8 @@ Defense = 5
 
 [[member]]
 Name = "火の玉"
-sprite_sheet_name = "field"
-sprite_key = "red_ball"
+SpriteSheetName = "field"
+SpriteKey = "red_ball"
 [member.attributes]
 Vitality = 7
 Strength = 8
@@ -2066,8 +2100,8 @@ Defense = 4
 
 [[member]]
 Name = "灰の偶像"
-sprite_sheet_name = "field"
-sprite_key = "red_ball"
+SpriteSheetName = "field"
+SpriteKey = "red_ball"
 [member.attributes]
 Vitality = 12
 Strength = 23
