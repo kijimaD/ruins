@@ -335,3 +335,45 @@ func TestLoadFromRealTileFile(t *testing.T) {
 	wallTile := master.GenerateTile("Wall")
 	assert.False(t, wallTile.Walkable)
 }
+
+func TestLoadWithUnknownFields(t *testing.T) {
+	t.Parallel()
+
+	// 未知のフィールドを含むTOMLデータ
+	invalidToml := `
+[[Items]]
+Name = "テストアイテム"
+Description = "正常なアイテム"
+UnknownField = "これは未知のフィールド"
+
+[[UnknownSection]]
+SomeField = "これは未知のセクション"
+`
+
+	_, err := Load(invalidToml)
+	assert.Error(t, err, "未知のフィールドがあるTOMLでエラーが発生すべき")
+	assert.Contains(t, err.Error(), "unknown keys found in TOML", "エラーメッセージに未知のキーについての情報が含まれるべき")
+}
+
+func TestLoadWithValidFields(t *testing.T) {
+	t.Parallel()
+
+	// 正常なTOMLデータ（既知のフィールドのみ）
+	validToml := `
+[[Items]]
+Name = "テストアイテム"
+Description = "正常なアイテム"
+SpriteSheetName = "test_sheet"
+SpriteKey = "test_key"
+
+[[Tiles]]
+Name = "テストタイル"
+Description = "正常なタイル"
+Walkable = true
+`
+
+	master, err := Load(validToml)
+	assert.NoError(t, err, "正常なTOMLでエラーが発生してはいけない")
+	assert.Equal(t, 1, len(master.Raws.Items), "アイテムが1つ読み込まれるべき")
+	assert.Equal(t, 1, len(master.Raws.Tiles), "タイルが1つ読み込まれるべき")
+}

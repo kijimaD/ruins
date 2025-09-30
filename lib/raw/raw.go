@@ -156,9 +156,15 @@ func Load(entityMetadataContent string) (Master, error) {
 	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
 	rw.TileIndex = map[string]int{}
-	_, err := toml.Decode(entityMetadataContent, &rw.Raws)
+
+	metaData, err := toml.Decode(entityMetadataContent, &rw.Raws)
 	if err != nil {
-		return Master{}, err
+		return Master{}, fmt.Errorf("TOML decode error: %w", err)
+	}
+	// 未知のキーがあった場合はエラーにする
+	undecoded := metaData.Undecoded()
+	if len(undecoded) > 0 {
+		return Master{}, fmt.Errorf("unknown keys found in TOML: %v", undecoded)
 	}
 
 	for i, item := range rw.Raws.Items {
