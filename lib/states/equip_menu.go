@@ -130,8 +130,8 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 			st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
-			// Escapeでホームメニューに戻る
-			st.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
+			// Escapeで前の画面に戻る
+			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
 			st.updateTabDisplay(world)

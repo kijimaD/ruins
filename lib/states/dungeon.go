@@ -129,6 +129,11 @@ func (st *DungeonState) Update(world w.World) es.Transition[w.World] {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}
 	}
 
+	// メニューキー（M）でダンジョンメニューを開く
+	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}
+	}
+
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}

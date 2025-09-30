@@ -76,6 +76,55 @@ func NewHomeMenuState() es.State[w.World] {
 	return messageState
 }
 
+// NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
+func NewDungeonMenuState() es.State[w.World] {
+	messageState := &MessageState{}
+
+	messageData := messagedata.NewSystemMessage("ダンジョンメニュー")
+
+	// ダンジョンメニューの選択肢を生成
+	dungeonActions := []struct {
+		label  string
+		action func(w.World)
+	}{
+		{
+			"合成",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}})
+			},
+		},
+		{
+			"所持",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}})
+			},
+		},
+		{
+			"装備",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
+			},
+		},
+		{
+			"閉じる",
+			func(_ w.World) {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+			},
+		},
+	}
+
+	// 各選択肢を追加
+	for _, dungeonAction := range dungeonActions {
+		actionCopy := dungeonAction.action // クロージャキャプチャ対策
+		messageData = messageData.WithChoice(dungeonAction.label, actionCopy)
+	}
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
+}
+
 // NewDungeonSelectState は新しいDungeonSelectStateインスタンスを作成するファクトリー関数
 func NewDungeonSelectState() es.State[w.World] {
 	messageState := &MessageState{}
