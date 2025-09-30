@@ -99,22 +99,22 @@ func TestTownLayoutValidation(t *testing.T) {
 // createTownTestRawMaster はテスト用のRawMasterを作成する
 func createTownTestRawMaster() *raw.Master {
 	rawMaster, _ := raw.Load(`
-[[tile]]
+[[Tiles]]
 Name = "Floor"
 Description = "床タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "Wall"
 Description = "壁タイル"
 Walkable = false
 
-[[tile]]
+[[Tiles]]
 Name = "Empty"
 Description = "空のタイル"
 Walkable = false
 
-[[tile]]
+[[Tiles]]
 Name = "Dirt"
 Description = "土タイル"
 Walkable = true

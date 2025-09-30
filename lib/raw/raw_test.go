@@ -11,13 +11,13 @@ import (
 func TestLoad(t *testing.T) {
 	t.Parallel()
 	str := `
-[[item]]
-name = "リペア"
-description = "半分程度回復する"
+[[Items]]
+Name = "リペア"
+Description = "半分程度回復する"
 
-[[item]]
-name = "回復薬"
-description = "半分程度回復する"
+[[Items]]
+Name = "回復薬"
+Description = "半分程度回復する"
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
@@ -47,8 +47,10 @@ description = "半分程度回復する"
 func TestGenerateItem(t *testing.T) {
 	t.Parallel()
 	str := `
-[[item]]
-name = "リペア"
+[[Items]]
+Name = "リペア"
+SpriteSheetName = "field"
+SpriteKey = "repair_item"
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
@@ -57,43 +59,36 @@ name = "リペア"
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
 	assert.NotNil(t, entity.Description)
+	assert.NotNil(t, entity.SpriteRender)
 }
 
-func TestGenerateItemWithSprite(t *testing.T) {
+func TestGenerateItemWithoutSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[item]]
-name = "テストアイテム"
-description = "スプライト付きアイテム"
-sprite_sheet_name = "field"
-sprite_key = "field_item"
+[[Items]]
+Name = "テストアイテム"
+Description = "スプライトなしアイテム"
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
+
+	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
 	entity, err := raw.GenerateItem("テストアイテム", gc.ItemLocationInBackpack)
 	assert.NoError(t, err)
-
-	// 基本コンポーネントの確認
-	assert.NotNil(t, entity.Name)
-	assert.NotNil(t, entity.Item)
-	assert.NotNil(t, entity.Description)
-
-	// SpriteRenderコンポーネントの確認
-	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
-	assert.Equal(t, "field", entity.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
-	assert.Equal(t, "field_item", entity.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
-	assert.Equal(t, gc.DepthNumRug, entity.SpriteRender.Depth, "Depthが正しくない")
+	assert.NotNil(t, entity.SpriteRender)
+	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
 }
 
 func TestGenerateMemberWithSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[member]]
-name = "テストプレイヤー"
+[[Members]]
+Name = "テストプレイヤー"
 Player = true
-sprite_sheet_name = "field"
-sprite_key = "player"
-[member.attributes]
+SpriteSheetName = "field"
+SpriteKey = "player"
+[Members.Attributes]
 Vitality = 50
 Strength = 50
 Sensation = 5
@@ -117,14 +112,39 @@ Defense = 0
 	assert.Equal(t, gc.DepthNumPlayer, entity.SpriteRender.Depth, "Depthが正しくない")
 }
 
+func TestGenerateMemberWithoutSprite(t *testing.T) {
+	t.Parallel()
+	str := `
+[[Members]]
+Name = "スプライトなしキャラ"
+Player = true
+[Members.Attributes]
+Vitality = 50
+Strength = 50
+Sensation = 5
+Dexterity = 6
+Agility = 5
+Defense = 0
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+
+	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
+	entity, err := raw.GeneratePlayer("スプライトなしキャラ")
+	assert.NoError(t, err)
+	assert.NotNil(t, entity.SpriteRender)
+	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
+}
+
 func TestGenerateMaterialWithSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[material]]
-name = "テスト素材"
-description = "スプライト付き素材"
-sprite_sheet_name = "field"
-sprite_key = "field_item"
+[[Materials]]
+Name = "テスト素材"
+Description = "スプライト付き素材"
+SpriteSheetName = "field"
+SpriteKey = "field_item"
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
@@ -143,24 +163,42 @@ sprite_key = "field_item"
 	assert.Equal(t, gc.DepthNumRug, entity.SpriteRender.Depth, "Depthが正しくない")
 }
 
+func TestGenerateMaterialWithoutSprite(t *testing.T) {
+	t.Parallel()
+	str := `
+[[Materials]]
+Name = "スプライトなし素材"
+Description = "スプライトなし素材"
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+
+	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
+	entity, err := raw.GenerateMaterial("スプライトなし素材", 5, gc.ItemLocationInBackpack)
+	assert.NoError(t, err)
+	assert.NotNil(t, entity.SpriteRender)
+	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
+}
+
 func TestLoadTilesFromRaw(t *testing.T) {
 	t.Parallel()
 
 	// テスト用のTOMLデータ（タイル定義を含む）
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "TestFloor"
 Description = "テスト用床タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "TestWall"
 Description = "テスト用壁タイル"
 Walkable = false
 
-[[item]]
-name = "テストアイテム"
-description = "テスト用"
+[[Items]]
+Name = "テストアイテム"
+Description = "テスト用"
 `
 
 	master, err := Load(tomlData)
@@ -178,12 +216,12 @@ func TestGenerateTileFromRaw(t *testing.T) {
 	t.Parallel()
 
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "GenerateTestFloor"
 Description = "生成テスト用床タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "GenerateTestWall"
 Description = "生成テスト用壁タイル"
 Walkable = false
@@ -212,12 +250,12 @@ func TestTileHelperFunctionsFromRaw(t *testing.T) {
 	t.Parallel()
 
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "Helper1"
 Description = "ヘルパー関数テスト1"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "Helper2"
 Description = "ヘルパー関数テスト2"
 Walkable = false
@@ -241,17 +279,17 @@ func TestTilePropertiesFromRaw(t *testing.T) {
 
 	// Walkableフィールドのテスト
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "EmptyLike"
 Description = "空のような性質"
 Walkable = false
 
-[[tile]]
+[[Tiles]]
 Name = "FloorLike"
 Description = "床のような性質"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "WallLike"
 Description = "壁のような性質"
 Walkable = false

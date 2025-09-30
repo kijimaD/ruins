@@ -34,21 +34,27 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 		var err error
 
 		if tile.Walkable {
-			// タイル名に応じて適切なスプライトをキー名で選択
-			if tile.Name == "Dirt" {
-				// 土タイルはキー名でアクセス
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", "dirt_simple")
-			} else {
-				// 通常の床エンティティはキー名でアクセス
-				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "field", "floor")
+			// すべての歩行可能タイルは16オートタイルシステムを使用
+			switch tile.Name {
+			case "Dirt":
+				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Dirt")
+				spriteKey := fmt.Sprintf("dirt_%d", int(autoTileIndex))
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "tile", spriteKey)
+			case "Floor":
+				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Floor")
+				spriteKey := fmt.Sprintf("floor_%d", int(autoTileIndex))
+				entity, err = worldhelper.SpawnFloor(world, tileX, tileY, "tile", spriteKey)
+			default:
+				// 未知のタイル名はエラーとして処理
+				return resources.Level{}, fmt.Errorf("未対応の歩行可能タイル名: %s (%d, %d)", tile.Name, int(x), int(y))
 			}
 		} else {
 			// 隣接に床がある場合のみ壁エンティティを生成
 			if metaPlan.AdjacentAnyFloor(i) {
-				// 壁タイプを判定してスプライトキーを決定
-				wallType := metaPlan.GetWallType(i)
-				spriteKey := getSpriteKeyForWallType(wallType)
-				entity, err = worldhelper.SpawnWall(world, tileX, tileY, "field", spriteKey)
+				// 壁タイルも16タイルオートタイルを使用
+				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Wall")
+				spriteKey := fmt.Sprintf("wall_%d", int(autoTileIndex))
+				entity, err = worldhelper.SpawnWall(world, tileX, tileY, "tile", spriteKey)
 			}
 		}
 
