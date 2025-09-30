@@ -31,13 +31,12 @@ func TestTileColorInfo(t *testing.T) {
 	assert.Equal(t, uint8(200), hudColorInfo.A)
 }
 
-func TestGetTileColorForMinimap(t *testing.T) {
+func TestBuildTileColors(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name          string
 		setupEntities func(w.World)
-		tileX         int
-		tileY         int
+		gridElement   gc.GridElement
 		expectedColor color.RGBA
 	}{
 		{
@@ -47,9 +46,10 @@ func TestGetTileColorForMinimap(t *testing.T) {
 				entity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 5, Y: 3})
 				entity.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{})
 				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
+				// 探索済みタイルに追加
+				world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 5, Y: 3}] = true
 			},
-			tileX:         5,
-			tileY:         3,
+			gridElement:   gc.GridElement{X: 5, Y: 3},
 			expectedColor: color.RGBA{100, 100, 100, 255},
 		},
 		{
@@ -59,18 +59,19 @@ func TestGetTileColorForMinimap(t *testing.T) {
 				entity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 15})
 				entity.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{})
 				// BlockViewコンポーネントなし = 床
+				// 探索済みタイルに追加
+				world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 10, Y: 15}] = true
 			},
-			tileX:         10,
-			tileY:         15,
+			gridElement:   gc.GridElement{X: 10, Y: 15},
 			expectedColor: color.RGBA{200, 200, 200, 128},
 		},
 		{
 			name: "エンティティなしの場合は透明",
-			setupEntities: func(_ w.World) {
-				// 何もしない
+			setupEntities: func(world w.World) {
+				// 探索済みタイルに追加してるが、エンティティはない
+				world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 999, Y: 999}] = true
 			},
-			tileX:         999,
-			tileY:         999,
+			gridElement:   gc.GridElement{X: 999, Y: 999},
 			expectedColor: color.RGBA{0, 0, 0, 0},
 		},
 		{
@@ -86,9 +87,10 @@ func TestGetTileColorForMinimap(t *testing.T) {
 				wallEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 20, Y: 20})
 				wallEntity.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{})
 				wallEntity.AddComponent(world.Components.BlockView, &gc.BlockView{})
+				// 探索済みタイルに追加
+				world.Resources.Dungeon.ExploredTiles[gc.GridElement{X: 20, Y: 20}] = true
 			},
-			tileX:         20,
-			tileY:         20,
+			gridElement:   gc.GridElement{X: 20, Y: 20},
 			expectedColor: color.RGBA{100, 100, 100, 255}, // 壁が優先される
 		},
 	}
@@ -102,12 +104,15 @@ func TestGetTileColorForMinimap(t *testing.T) {
 			tt.setupEntities(world)
 
 			// テスト実行
-			actualColor := getTileColorForMinimap(world, tt.tileX, tt.tileY)
+			tileColors := buildTileColors(world)
+			actualTileColor, exists := tileColors[tt.gridElement]
 
 			// 結果検証
+			assert.True(t, exists, "gridElement %v should exist in tileColors", tt.gridElement)
+			actualColor := color.RGBA{R: actualTileColor.R, G: actualTileColor.G, B: actualTileColor.B, A: actualTileColor.A}
 			assert.Equal(t, tt.expectedColor, actualColor,
-				"getTileColorForMinimap(%d, %d) = %v, want %v",
-				tt.tileX, tt.tileY, actualColor, tt.expectedColor)
+				"buildTileColors gridElement %v = %v, want %v",
+				tt.gridElement, actualColor, tt.expectedColor)
 		})
 	}
 }

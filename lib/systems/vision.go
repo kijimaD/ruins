@@ -76,10 +76,8 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 	var visibilityData map[string]TileVisibility
 
 	if needsUpdate {
-		// Dungeonリソースから探索済みマップを取得
-
 		// タイルの可視性マップを更新
-		visionRadius := gc.Pixel(320)
+		visionRadius := gc.Pixel(384)
 		visibilityData = calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
 
 		// 視界内のタイルを探索済みとしてマーク

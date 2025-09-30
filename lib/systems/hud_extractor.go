@@ -107,19 +107,7 @@ func extractMinimapData(world w.World) hud.MinimapData {
 	playerTileY := int(playerGridElement.Y)
 
 	// タイル色情報を抽出
-	tileColors := make(map[gc.GridElement]TileColorInfo)
-	for gridElement := range world.Resources.Dungeon.ExploredTiles {
-		tileX := int(gridElement.X)
-		tileY := int(gridElement.Y)
-
-		tileColor := getTileColorForMinimap(world, tileX, tileY)
-		tileColors[gridElement] = TileColorInfo{
-			R: tileColor.R,
-			G: tileColor.G,
-			B: tileColor.B,
-			A: tileColor.A,
-		}
-	}
+	tileColors := buildTileColors(world)
 
 	return hud.MinimapData{
 		PlayerTileX:   playerTileX,
@@ -298,31 +286,41 @@ func extractMessageData(world w.World, store *gamelog.SafeSlice) hud.MessageData
 	}
 }
 
-// getTileColorForMinimap はタイルの種類に応じてミニマップ上の色を返す
-func getTileColorForMinimap(world w.World, tileX, tileY int) color.RGBA {
-	hasWall := false
-	hasFloor := false
+// buildTileColors はタイル色マップを構築する
+func buildTileColors(world w.World) map[gc.GridElement]TileColorInfo {
+	// 全エンティティをスキャンしてタイル情報をマップに格納
+	tileTypeMap := make(map[gc.GridElement]bool) // true=壁, false=床
 
 	world.Manager.Join(
 		world.Components.GridElement,
 		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
-
-		if int(grid.X) == tileX && int(grid.Y) == tileY {
-			if entity.HasComponent(world.Components.BlockView) {
-				hasWall = true
-			} else {
-				hasFloor = true
-			}
-		}
+		gridElement := gc.GridElement{X: grid.X, Y: grid.Y}
+		tileTypeMap[gridElement] = entity.HasComponent(world.Components.BlockView)
 	}))
 
-	if hasWall {
-		return color.RGBA{100, 100, 100, 255} // 壁は灰色
-	} else if hasFloor {
-		return color.RGBA{200, 200, 200, 128} // 床は薄い灰色
+	// 探索済みタイルの色情報を一括生成
+	tileColors := make(map[gc.GridElement]TileColorInfo)
+	for gridElement := range world.Resources.Dungeon.ExploredTiles {
+		var tileColor color.RGBA
+		if isWall, exists := tileTypeMap[gridElement]; exists {
+			if isWall {
+				tileColor = color.RGBA{100, 100, 100, 255} // 壁は灰色
+			} else {
+				tileColor = color.RGBA{200, 200, 200, 128} // 床は薄い灰色
+			}
+		} else {
+			tileColor = color.RGBA{0, 0, 0, 0} // 透明
+		}
+
+		tileColors[gridElement] = TileColorInfo{
+			R: tileColor.R,
+			G: tileColor.G,
+			B: tileColor.B,
+			A: tileColor.A,
+		}
 	}
 
-	return color.RGBA{0, 0, 0, 0} // 透明
+	return tileColors
 }

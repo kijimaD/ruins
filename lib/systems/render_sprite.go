@@ -5,9 +5,12 @@ import (
 	"image"
 	"image/color"
 	"sort"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	w "github.com/kijimaD/ruins/lib/world"
 
 	"github.com/kijimaD/ruins/lib/consts"
@@ -324,4 +327,20 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	SetTranslate(world, op)
 	screen.DrawImage(getImage(world, spriteRender), op)
+
+	// デバッグ用：スプライト番号表示(土だけ)
+	cfg := config.Get()
+	if cfg.ShowMonitor && spriteRender.SpriteSheetName == "tile" && strings.HasPrefix(spriteRender.SpriteKey, "dirt_") {
+		// dirt_X から番号を抽出
+		number := strings.TrimPrefix(spriteRender.SpriteKey, "dirt_")
+
+		// カメラ変換を考慮したテキスト位置を計算
+		textOp := &ebiten.DrawImageOptions{}
+		textOp.GeoM.Translate(float64(pos.X-8), float64(pos.Y-8)) // タイルの左上付近に表示
+		SetTranslate(world, textOp)
+
+		// テキスト表示位置を逆変換で求める
+		screenX, screenY := textOp.GeoM.Apply(0, 0)
+		ebitenutil.DebugPrintAt(screen, number, int(screenX), int(screenY))
+	}
 }

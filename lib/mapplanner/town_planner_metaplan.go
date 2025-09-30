@@ -183,11 +183,11 @@ func getTownLayout() ([]string, []string) {
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 南区域の道路（幅3）
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrdrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrrdddrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrdddddrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrrrrrrrrrrrrrrrrrrrrrdddrrrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrdddrdrrrrrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrdddrdrdddrrrrrrrrrrrrrrrr##",
+		"#rrrrrrrrrrrrrrrrrrrrrrdddrdrrrrrrrrrrrrrrrrrrrr##",
 		"##################################################",
 	}
 
