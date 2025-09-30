@@ -154,17 +154,17 @@ func TestIsValidIndex(t *testing.T) {
 // createTestRawMaster はテスト用のrawマスターを作成する
 func createTestRawMaster() *raw.Master {
 	rawData := `
-[[tile]]
+[[Tiles]]
 Name = "Floor"
 Description = "床タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "Dirt"
 Description = "土タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "Wall"
 Description = "壁タイル"
 Walkable = false

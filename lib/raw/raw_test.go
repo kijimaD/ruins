@@ -11,11 +11,11 @@ import (
 func TestLoad(t *testing.T) {
 	t.Parallel()
 	str := `
-[[item]]
+[[Items]]
 Name = "リペア"
 Description = "半分程度回復する"
 
-[[item]]
+[[Items]]
 Name = "回復薬"
 Description = "半分程度回復する"
 `
@@ -47,7 +47,7 @@ Description = "半分程度回復する"
 func TestGenerateItem(t *testing.T) {
 	t.Parallel()
 	str := `
-[[item]]
+[[Items]]
 Name = "リペア"
 SpriteSheetName = "field"
 SpriteKey = "repair_item"
@@ -65,7 +65,7 @@ SpriteKey = "repair_item"
 func TestGenerateItemWithoutSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[item]]
+[[Items]]
 Name = "テストアイテム"
 Description = "スプライトなしアイテム"
 `
@@ -83,12 +83,12 @@ Description = "スプライトなしアイテム"
 func TestGenerateMemberWithSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[member]]
+[[Members]]
 Name = "テストプレイヤー"
 Player = true
 SpriteSheetName = "field"
 SpriteKey = "player"
-[member.attributes]
+[Members.Attributes]
 Vitality = 50
 Strength = 50
 Sensation = 5
@@ -115,10 +115,10 @@ Defense = 0
 func TestGenerateMemberWithoutSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[member]]
+[[Members]]
 Name = "スプライトなしキャラ"
 Player = true
-[member.attributes]
+[Members.Attributes]
 Vitality = 50
 Strength = 50
 Sensation = 5
@@ -140,7 +140,7 @@ Defense = 0
 func TestGenerateMaterialWithSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[material]]
+[[Materials]]
 Name = "テスト素材"
 Description = "スプライト付き素材"
 SpriteSheetName = "field"
@@ -166,7 +166,7 @@ SpriteKey = "field_item"
 func TestGenerateMaterialWithoutSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[material]]
+[[Materials]]
 Name = "スプライトなし素材"
 Description = "スプライトなし素材"
 `
@@ -186,17 +186,17 @@ func TestLoadTilesFromRaw(t *testing.T) {
 
 	// テスト用のTOMLデータ（タイル定義を含む）
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "TestFloor"
 Description = "テスト用床タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "TestWall"
 Description = "テスト用壁タイル"
 Walkable = false
 
-[[item]]
+[[Items]]
 Name = "テストアイテム"
 Description = "テスト用"
 `
@@ -216,12 +216,12 @@ func TestGenerateTileFromRaw(t *testing.T) {
 	t.Parallel()
 
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "GenerateTestFloor"
 Description = "生成テスト用床タイル"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "GenerateTestWall"
 Description = "生成テスト用壁タイル"
 Walkable = false
@@ -250,12 +250,12 @@ func TestTileHelperFunctionsFromRaw(t *testing.T) {
 	t.Parallel()
 
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "Helper1"
 Description = "ヘルパー関数テスト1"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "Helper2"
 Description = "ヘルパー関数テスト2"
 Walkable = false
@@ -279,17 +279,17 @@ func TestTilePropertiesFromRaw(t *testing.T) {
 
 	// Walkableフィールドのテスト
 	tomlData := `
-[[tile]]
+[[Tiles]]
 Name = "EmptyLike"
 Description = "空のような性質"
 Walkable = false
 
-[[tile]]
+[[Tiles]]
 Name = "FloorLike"
 Description = "床のような性質"
 Walkable = true
 
-[[tile]]
+[[Tiles]]
 Name = "WallLike"
 Description = "壁のような性質"
 Walkable = false

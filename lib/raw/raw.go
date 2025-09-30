@@ -23,14 +23,14 @@ type Master struct {
 
 // Raws は全てのローデータを格納する構造体
 type Raws struct {
-	Items         []Item         `toml:"item"`
-	Materials     []Material     `toml:"material"`
-	Recipes       []Recipe       `toml:"recipe"`
-	Members       []Member       `toml:"member"`
-	CommandTables []CommandTable `toml:"command_table"`
-	DropTables    []DropTable    `toml:"drop_table"`
-	SpriteSheets  []SpriteSheet  `toml:"sprite_sheet"`
-	Tiles         []TileRaw      `toml:"tile"`
+	Items         []Item
+	Materials     []Material
+	Recipes       []Recipe
+	Members       []Member
+	CommandTables []CommandTable
+	DropTables    []DropTable
+	SpriteSheets  []SpriteSheet
+	Tiles         []TileRaw
 }
 
 // Item はアイテムのローデータ
@@ -104,7 +104,7 @@ type Material struct {
 // Recipe はレシピの情報
 type Recipe struct {
 	Name   string
-	Inputs []RecipeInput `toml:"inputs"`
+	Inputs []RecipeInput
 }
 
 // RecipeInput は合成の元になる素材
