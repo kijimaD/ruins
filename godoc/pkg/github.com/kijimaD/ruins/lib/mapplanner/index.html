@@ -124,7 +124,7 @@
 </ul>
 <p>### TOMLベースタイル定義システム
 新しいタイル定義システムでは、TOMLファイルでタイルの種類と属性を定義できます：
-<pre>[[tile]]
+<pre>[[Tiles]]
 Name = &quot;Floor&quot;
 Description = &quot;床タイル - 移動可能な基本的なタイル&quot;
 Walkable = true
@@ -187,6 +187,14 @@ Walkable = true
 				
 				<dd><a href="index.html#CreateTestRawMaster">func CreateTestRawMaster() *raw.Master</a></dd>
 			
+			
+				
+				<dd><a href="index.html#AutoTileIndex">type AutoTileIndex</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AutoTileIndex.String">func (ati AutoTileIndex) String() string</a></dd>
+				
 			
 				
 				<dd><a href="index.html#BigRoomDraw">type BigRoomDraw</a></dd>
@@ -354,6 +362,9 @@ Walkable = true
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.AdjacentAnyFloor">func (bm MetaPlan) AdjacentAnyFloor(idx resources.TileIdx) bool</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.CalculateAutoTileIndex">func (mp *MetaPlan) CalculateAutoTileIndex(idx resources.TileIdx, tileType string) AutoTileIndex</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.DownTile">func (bm MetaPlan) DownTile(idx resources.TileIdx) raw.TileRaw</a></dd>
 				
 					
@@ -367,6 +378,9 @@ Walkable = true
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.IsSpawnableTile">func (bm MetaPlan) IsSpawnableTile(_ w.World, tx gc.Tile, ty gc.Tile) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.IsValidIndex">func (mp *MetaPlan) IsValidIndex(idx resources.TileIdx) bool</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaPlan.LeftTile">func (bm MetaPlan) LeftTile(idx resources.TileIdx) raw.TileRaw</a></dd>
@@ -597,6 +611,8 @@ Walkable = true
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/autotile.go">autotile.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/big_room.go">big_room.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go">boundary_wall.go</a>
@@ -751,6 +767,66 @@ Walkable = true
 			
 
 		
+		
+			
+			
+			<h2 id="AutoTileIndex">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/autotile.go?s=219:241#L1">AutoTileIndex</a>
+				<a class="permalink" href="index.html#AutoTileIndex">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AutoTileIndex は16タイルオートタイルのインデックス（0-15）
+4方向の隣接情報をビットマスクで表現
+
+			<pre>type AutoTileIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+
+			
+				<p>16タイル標準パターン定数
+ビットマスク：上(1) 右(2) 下(4) 左(8)
+各ビットは「その方向に同じタイルがある」ことを示す
+
+				<pre>const (
+    <span id="AutoTileIsolated">AutoTileIsolated</span>      <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 0  <span class="comment">// 0000: 全方向が異なる（孤立）</span>
+    <span id="AutoTileUp">AutoTileUp</span>            <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 1  <span class="comment">// 0001: 上だけ同じ</span>
+    <span id="AutoTileRight">AutoTileRight</span>         <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 2  <span class="comment">// 0010: 右だけ同じ</span>
+    <span id="AutoTileUpRight">AutoTileUpRight</span>       <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 3  <span class="comment">// 0011: 上右が同じ</span>
+    <span id="AutoTileDown">AutoTileDown</span>          <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 4  <span class="comment">// 0100: 下だけ同じ</span>
+    <span id="AutoTileVertical">AutoTileVertical</span>      <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 5  <span class="comment">// 0101: 上下が同じ</span>
+    <span id="AutoTileDownRight">AutoTileDownRight</span>     <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 6  <span class="comment">// 0110: 下右が同じ</span>
+    <span id="AutoTileUpDownRight">AutoTileUpDownRight</span>   <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 7  <span class="comment">// 0111: 上下右が同じ</span>
+    <span id="AutoTileLeft">AutoTileLeft</span>          <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 8  <span class="comment">// 1000: 左だけ同じ</span>
+    <span id="AutoTileUpLeft">AutoTileUpLeft</span>        <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 9  <span class="comment">// 1001: 上左が同じ</span>
+    <span id="AutoTileHorizontal">AutoTileHorizontal</span>    <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 10 <span class="comment">// 1010: 左右が同じ</span>
+    <span id="AutoTileUpLeftRight">AutoTileUpLeftRight</span>   <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 11 <span class="comment">// 1011: 上左右が同じ</span>
+    <span id="AutoTileDownLeft">AutoTileDownLeft</span>      <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 12 <span class="comment">// 1100: 下左が同じ</span>
+    <span id="AutoTileUpDownLeft">AutoTileUpDownLeft</span>    <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 13 <span class="comment">// 1101: 上下左が同じ</span>
+    <span id="AutoTileDownLeftRight">AutoTileDownLeftRight</span> <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 14 <span class="comment">// 1110: 下左右が同じ</span>
+    <span id="AutoTileCenter">AutoTileCenter</span>        <a href="index.html#AutoTileIndex">AutoTileIndex</a> = 15 <span class="comment">// 1111: 全方向に同じタイル</span>
+)</pre>
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="AutoTileIndex.String">func (AutoTileIndex) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/autotile.go?s=1592:1632#L26">String</a>
+					<a class="permalink" href="index.html#AutoTileIndex.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ati <a href="index.html#AutoTileIndex">AutoTileIndex</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はAutoTileIndexの文字列表現を返す
+
+				
+				
+				
+			
 		
 			
 			
@@ -1565,6 +1641,19 @@ TODO: 全然わかってないので理解する
 				
 			
 				
+				<h3 id="MetaPlan.CalculateAutoTileIndex">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/autotile.go?s=2506:2602#L66">CalculateAutoTileIndex</a>
+					<a class="permalink" href="index.html#MetaPlan.CalculateAutoTileIndex">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (mp *<a href="index.html#MetaPlan">MetaPlan</a>) CalculateAutoTileIndex(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>, tileType <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="index.html#AutoTileIndex">AutoTileIndex</a></pre>
+				<p>CalculateAutoTileIndex は4方向の隣接情報からオートタイルインデックスを計算
+
+				
+				
+				
+			
+				
 				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3543:3605#L115">DownTile</a>
 					<a class="permalink" href="index.html#MetaPlan.DownTile">&#xb6;</a>
 					
@@ -1626,6 +1715,19 @@ TODO: 消して直接呼び出せばよい
 				</h3>
 				<pre>func (bm <a href="index.html#MetaPlan">MetaPlan</a>) IsSpawnableTile(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tx <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, ty <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
 				<p>IsSpawnableTile は指定タイル座標がスポーン可能かを返す
+
+				
+				
+				
+			
+				
+				<h3 id="MetaPlan.IsValidIndex">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/autotile.go?s=3225:3285#L92">IsValidIndex</a>
+					<a class="permalink" href="index.html#MetaPlan.IsValidIndex">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (mp *<a href="index.html#MetaPlan">MetaPlan</a>) IsValidIndex(idx <a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<p>IsValidIndex はインデックスが有効範囲内かチェック
 
 				
 				
