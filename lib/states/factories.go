@@ -104,6 +104,12 @@ func NewDungeonMenuState() es.State[w.World] {
 			},
 		},
 		{
+			label: "書込",
+			action: func(_ w.World) {
+				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
+			},
+		},
+		{
 			label: "閉じる",
 			action: func(_ w.World) {
 				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
@@ -442,12 +448,12 @@ func NewSaveMenuState() es.State[w.World] {
 			label = fmt.Sprintf("スロット%d [空]", i)
 		}
 
-		slotNameCopy := slotName // クロージャキャプチャ対策
 		messageData = messageData.WithChoice(label, func(world w.World) {
-			if err := saveManager.SaveWorld(world, slotNameCopy); err != nil {
+			if err := saveManager.SaveWorld(world, slotName); err != nil {
 				log.Fatal("Save failed:", err.Error())
 			}
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+			// セーブ後は同じセーブメニューを再作成してメニューを維持
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
 		})
 	}
 
