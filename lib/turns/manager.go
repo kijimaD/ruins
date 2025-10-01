@@ -1,6 +1,8 @@
 package turns
 
 import (
+	"log"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/logger"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -107,20 +109,17 @@ func (tm *TurnManager) IsAITurn() bool {
 // CalculateMaxActionPoints はエンティティの最大アクションポイントを計算する
 // CDDAスタイルで敏捷性を重視したAP計算式
 func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity) int {
-	// デフォルト値（コンポーネントがない場合）
-	defaultAP := 100
-
-	// Attributesコンポーネントがない場合はデフォルト値
+	// Attributesコンポーネントがない場合はエラー
 	attributesComponent := world.Components.Attributes.Get(entity)
 	if attributesComponent == nil {
-		return defaultAP
+		log.Fatal("attributesが設定されていない")
 	}
 
 	attrs := attributesComponent.(*gc.Attributes)
 
 	// AP計算式: 基本値 + 敏捷性の重要度を高くした式
 	// 敏捷性 * 3 + 器用性 * 1
-	baseAP := 80
+	baseAP := 100
 	agilityMultiplier := 3
 	dexterityMultiplier := 1
 
