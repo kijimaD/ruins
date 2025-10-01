@@ -189,7 +189,7 @@ func (c *Config) applyDevelopmentDefaults() {
 
 	// ゲーム設定
 	if os.Getenv("RUINS_STARTING_STATE") == "" {
-		c.StartingState = "home_menu"
+		c.StartingState = "town"
 	}
 	if os.Getenv("RUINS_DISABLE_ANIMATION") == "" {
 		c.DisableAnimation = false

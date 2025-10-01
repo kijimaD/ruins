@@ -153,19 +153,18 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 	// 選択肢をconvertする
 	w.content.Choices = make([]Choice, len(msg.Choices))
 	for i, choice := range msg.Choices {
-		choiceCopy := choice // クロージャのキャプチャ問題を回避
 		w.content.Choices[i] = Choice{
 			Text: choice.Text,
 			Action: func() {
-				if choiceCopy.Action != nil {
-					choiceCopy.Action(w.world)
+				if choice.Action != nil {
+					choice.Action(w.world)
 				}
 				// 選択肢にメッセージが関連付けられている場合はキューに追加
-				if choiceCopy.MessageData != nil {
+				if choice.MessageData != nil {
 					if w.queueManager == nil {
 						w.queueManager = NewQueueManager()
 					}
-					w.queueManager.EnqueueFront(choiceCopy.MessageData)
+					w.queueManager.EnqueueFront(choice.MessageData)
 				}
 			},
 		}

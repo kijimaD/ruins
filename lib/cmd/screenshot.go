@@ -39,14 +39,13 @@ func runScreenshot(ctx *cli.Context) error {
 			Seed:        seedVal,
 			BuilderType: mapplanner.PlannerTypeSmallRoom,
 		}, mode)
-	case "DungeonSelect":
-		vrt.RunTestGame(gs.NewDungeonSelectState(), mode)
 	case gs.EquipMenuState{}.String():
 		vrt.RunTestGame(&gs.EquipMenuState{}, mode)
 	case "GameOver":
 		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
-	case "HomeMenu":
-		vrt.RunTestGame(gs.NewHomeMenuState(), mode)
+	case "Town":
+		stateFactory := gs.NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)
+		vrt.RunTestGame(stateFactory(), mode)
 	case gs.InventoryMenuState{}.String():
 		vrt.RunTestGame(&gs.InventoryMenuState{}, mode)
 	case "LoadMenu":
@@ -65,12 +64,6 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
 	case "SaveMenu":
 		vrt.RunTestGame(gs.NewSaveMenuState(), mode)
-	case "Town":
-		// 街マップ用のスクリーンショット
-		vrt.RunTestGame(&gs.DungeonState{
-			Depth:       1,
-			BuilderType: mapplanner.PlannerTypeTown,
-		}, mode)
 	default:
 		return fmt.Errorf("スクリーンショット実行時に対応してないステートが指定された: %s", mode)
 	}

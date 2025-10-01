@@ -129,6 +129,11 @@ func (st *DungeonState) Update(world w.World) es.Transition[w.World] {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}
 	}
 
+	// メニューキー（M）でダンジョンメニューを開く
+	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}
+	}
+
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
@@ -157,12 +162,11 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
 func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
-
 	switch world.Resources.Dungeon.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:
 		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(world.Resources.Dungeon.Depth + 1)}}
 	case resources.StateEventWarpEscape:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)}}
 	default:
 		// StateEventNoneまたは未知のイベントの場合は何もしない
 		return es.Transition[w.World]{Type: es.TransNone}
