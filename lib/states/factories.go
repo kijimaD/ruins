@@ -310,10 +310,9 @@ func NewLoadMenuState() es.State[w.World] {
 				label = fmt.Sprintf("スロット%d [データあり]", i)
 			}
 
-			slotNameCopy := slotName // クロージャキャプチャ対策
 			messageData = messageData.WithChoice(label, func(world w.World) {
 				// ロードを実行
-				err := saveManager.LoadWorld(world, slotNameCopy)
+				err := saveManager.LoadWorld(world, slotName)
 				if err != nil {
 					println("Load failed:", err.Error())
 					messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
