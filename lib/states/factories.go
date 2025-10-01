@@ -17,56 +17,27 @@ import (
 
 // NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
 func NewDungeonMenuState() es.State[w.World] {
-	messageData := messagedata.NewSystemMessage("ダンジョンメニュー")
-	persistentState := NewPersistentMessageState(messageData)
+	persistentState := NewPersistentMessageState(nil)
 
-	dungeonActions := []struct {
-		label  string
-		action func(w.World)
-	}{
-		{
-			label: "合成",
-			action: func(_ w.World) {
-				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}})
-			},
-		},
-		{
-			label: "所持",
-			action: func(_ w.World) {
-				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}})
-			},
-		},
-		{
-			label: "装備",
-			action: func(_ w.World) {
-				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
-			},
-		},
-		{
-			label: "書込",
-			action: func(_ w.World) {
-				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
-			},
-		},
-		{
-			label: "終了",
-			action: func(_ w.World) {
-				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
-			},
-		},
-		{
-			label: "閉じる",
-			action: func(_ w.World) {
-				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
-			},
-		},
-	}
-
-	newMessageData := messagedata.NewSystemMessage("ダンジョンメニュー")
-	for _, dungeonAction := range dungeonActions {
-		newMessageData = newMessageData.WithChoice(dungeonAction.label, dungeonAction.action)
-	}
-	persistentState.messageData = newMessageData
+	persistentState.messageData = messagedata.NewSystemMessage("").
+		WithChoice("合成", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}})
+		}).
+		WithChoice("所持", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}})
+		}).
+		WithChoice("装備", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
+		}).
+		WithChoice("書込", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
+		}).
+		WithChoice("終了", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
+		}).
+		WithChoice("閉じる", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		})
 
 	return persistentState
 }
