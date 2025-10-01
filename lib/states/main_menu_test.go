@@ -136,7 +136,7 @@ func TestMainMenuItems(t *testing.T) {
 
 	// メニュー項目の確認
 	items := state.menu.GetItems()
-	expectedItems := []string{"home", "load", "exit"}
+	expectedItems := []string{"town", "load", "exit"}
 
 	if len(items) != len(expectedItems) {
 		t.Errorf("メニュー項目数が不正: 期待 %d, 実際 %d", len(expectedItems), len(items))
@@ -149,7 +149,7 @@ func TestMainMenuItems(t *testing.T) {
 	}
 
 	// ラベルの確認
-	expectedLabels := []string{"拠点", "読込", "終了"}
+	expectedLabels := []string{"開始", "読込", "終了"}
 	for i, expectedLabel := range expectedLabels {
 		if i < len(items) && items[i].Label != expectedLabel {
 			t.Errorf("メニュー項目ラベル[%d]が不正: 期待 %s, 実際 %s", i, expectedLabel, items[i].Label)
