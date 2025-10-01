@@ -61,119 +61,78 @@ func NewEquipMenuState() es.State[w.World] {
 func NewDebugMenuState() es.State[w.World] {
 	messageState := &MessageState{}
 
-	messageData := messagedata.NewSystemMessage("デバッグメニュー")
+	messageState.messageData = messagedata.NewSystemMessage("デバッグメニュー").
+		WithChoice("回復薬スポーン(インベントリ)", func(world w.World) {
+			_, err := worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
+			if err != nil {
+				log.Fatal("Error spawning item:", err.Error())
+			}
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		}).
+		WithChoice("手榴弾スポーン(インベントリ)", func(world w.World) {
+			_, err := worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
+			if err != nil {
+				log.Fatal("Error spawning item:", err.Error())
+			}
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		}).
+		WithChoice("ゲームオーバー", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}})
+		}).
+		WithChoice("ダンジョン開始(大部屋)", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeBigRoom),
+			}})
+		}).
+		WithChoice("ダンジョン開始(小部屋)", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeSmallRoom),
+			}})
+		}).
+		WithChoice("ダンジョン開始(洞窟)", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeCave),
+			}})
+		}).
+		WithChoice("ダンジョン開始(廃墟)", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeRuins),
+			}})
+		}).
+		WithChoice("ダンジョン開始(森)", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeForest),
+			}})
+		}).
+		WithChoice("市街地開始", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
+				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown),
+			}})
+		}).
+		WithChoice("メッセージ表示テスト", func(_ w.World) {
+			testMessageData := messagedata.NewSystemMessage("ゲームが自動保存されました。\n\n進行状況は安全に記録されています。")
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(testMessageData) }}})
+		}).
+		WithChoice("アイテム入手イベント", func(world w.World) {
+			// アイテムを実際にインベントリに追加
+			worldhelper.PlusAmount("鉄", 1, world)
+			worldhelper.PlusAmount("木の棒", 1, world)
+			worldhelper.PlusAmount("フェライトコア", 2, world)
 
-	// デバッグ機能の一覧を生成
-	debugActions := []struct {
-		label  string
-		action func(w.World)
-	}{
-		{
-			"回復薬スポーン(インベントリ)",
-			func(world w.World) {
-				_, err := worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
-				if err != nil {
-					log.Fatal("Error spawning item:", err.Error())
-				}
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
-			},
-		},
-		{
-			"手榴弾スポーン(インベントリ)",
-			func(world w.World) {
-				_, err := worldhelper.SpawnItem(world, "手榴弾", gc.ItemLocationInBackpack)
-				if err != nil {
-					log.Fatal("Error spawning item:", err.Error())
-				}
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
-			},
-		},
-		{
-			"ゲームオーバー",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}})
-			},
-		},
-		{
-			"ダンジョン開始(大部屋)",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeBigRoom),
-				}})
-			},
-		},
-		{
-			"ダンジョン開始(小部屋)",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeSmallRoom),
-				}})
-			},
-		},
-		{
-			"ダンジョン開始(洞窟)",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeCave),
-				}})
-			},
-		},
-		{
-			"ダンジョン開始(廃墟)",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeRuins),
-				}})
-			},
-		},
-		{
-			"ダンジョン開始(森)",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeForest),
-				}})
-			},
-		},
-		{
-			"市街地開始",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-					NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown),
-				}})
-			},
-		},
-		{
-			"メッセージ表示テスト",
-			func(_ w.World) {
-				testMessageData := messagedata.NewSystemMessage("ゲームが自動保存されました。\n\n進行状況は安全に記録されています。")
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(testMessageData) }}})
-			},
-		},
-		{
-			"アイテム入手イベント",
-			func(world w.World) {
-				// アイテムを実際にインベントリに追加
-				worldhelper.PlusAmount("鉄", 1, world)
-				worldhelper.PlusAmount("木の棒", 1, world)
-				worldhelper.PlusAmount("フェライトコア", 2, world)
+			// アイテム入手完了後の表示用メッセージを生成
+			messageText := "宝箱を発見した。\n\n" +
+				"鉄を手に入れた。\n" +
+				"木の棒を手に入れた。\n" +
+				"フェライトコアを2個手に入れた。\n"
 
-				// アイテム入手完了後の表示用メッセージを生成
-				messageText := "宝箱を発見した。\n\n" +
-					"鉄を手に入れた。\n" +
-					"木の棒を手に入れた。\n" +
-					"フェライトコアを2個手に入れた。\n"
-
-				itemMessageData := &messagedata.MessageData{
-					Text:    messageText,
-					Speaker: "",
-				}
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(itemMessageData) }}})
-			},
-		},
-		{
-			"長いメッセージテスト",
-			func(_ w.World) {
-				longText := `これは非常に長いメッセージのテストです。
+			itemMessageData := &messagedata.MessageData{
+				Text:    messageText,
+				Speaker: "",
+			}
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(itemMessageData) }}})
+		}).
+		WithChoice("長いメッセージテスト", func(_ w.World) {
+			longText := `これは非常に長いメッセージのテストです。
 
 メッセージウィンドウは自動的にサイズを調整し、
 長いテキストでも適切に表示されることを確認しています。
@@ -185,82 +144,60 @@ func NewDebugMenuState() es.State[w.World] {
 日本語のテキストも問題なく表示されるはずです。
 句読点、記号、数字123なども含めて確認してみましょう。`
 
-				longMessageData := messagedata.NewSystemMessage(longText)
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(longMessageData) }}})
-			},
-		},
-		{
-			"連鎖メッセージテスト",
-			func(_ w.World) {
-				chainMessageData := messagedata.NewSystemMessage("戦闘開始。").
-					SystemMessage("剣と剣がぶつかり合う。").
-					SystemMessage("勝利した。")
+			longMessageData := messagedata.NewSystemMessage(longText)
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(longMessageData) }}})
+		}).
+		WithChoice("連鎖メッセージテスト", func(_ w.World) {
+			chainMessageData := messagedata.NewSystemMessage("戦闘開始。").
+				SystemMessage("剣と剣がぶつかり合う。").
+				SystemMessage("勝利した。")
 
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(chainMessageData) }}})
-			},
-		},
-		{
-			"選択肢分岐メッセージテスト",
-			func(_ w.World) {
-				battleMessage := messagedata.NewSystemMessage("戦闘した。")
-				negotiateMessage := messagedata.NewSystemMessage("交渉した。")
-				escapeMessage := messagedata.NewSystemMessage("逃走した。")
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(chainMessageData) }}})
+		}).
+		WithChoice("選択肢分岐メッセージテスト", func(_ w.World) {
+			battleMessage := messagedata.NewSystemMessage("戦闘した。")
+			negotiateMessage := messagedata.NewSystemMessage("交渉した。")
+			escapeMessage := messagedata.NewSystemMessage("逃走した。")
 
-				choiceMessageData := messagedata.NewDialogMessage("敵に遭遇した。", "").
-					WithChoiceMessage("戦う", battleMessage).
-					WithChoiceMessage("交渉する", negotiateMessage).
-					WithChoiceMessage("逃走する", escapeMessage)
+			choiceMessageData := messagedata.NewDialogMessage("敵に遭遇した。", "").
+				WithChoiceMessage("戦う", battleMessage).
+				WithChoiceMessage("交渉する", negotiateMessage).
+				WithChoiceMessage("逃走する", escapeMessage)
 
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(choiceMessageData) }}})
-			},
-		},
-		{
-			"選択肢処理テスト",
-			func(_ w.World) {
-				choiceAction1 := func() {
-					println("実行: 1")
-				}
-				choiceAction2 := func() {
-					println("実行: 2")
-				}
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(choiceMessageData) }}})
+		}).
+		WithChoice("選択肢処理テスト", func(_ w.World) {
+			choiceAction1 := func() {
+				println("実行: 1")
+			}
+			choiceAction2 := func() {
+				println("実行: 2")
+			}
 
-				onCompleteAction := func() {
-					println("Complete Action")
-				}
+			onCompleteAction := func() {
+				println("Complete Action")
+			}
 
-				result1 := messagedata.NewSystemMessage("選択肢1を選びました。").
-					SystemMessage("何かの処理が実行されました。").
-					WithOnComplete(onCompleteAction)
+			result1 := messagedata.NewSystemMessage("選択肢1を選びました。").
+				SystemMessage("何かの処理が実行されました。").
+				WithOnComplete(onCompleteAction)
 
-				result2 := messagedata.NewSystemMessage("選択肢2を選びました。").
-					SystemMessage("別の処理が実行されました。").
-					WithOnComplete(onCompleteAction)
+			result2 := messagedata.NewSystemMessage("選択肢2を選びました。").
+				SystemMessage("別の処理が実行されました。").
+				WithOnComplete(onCompleteAction)
 
-				testMessageData := messagedata.NewDialogMessage("処理のテストです。選択肢を選んでください。", "システム").
-					WithChoiceMessage("処理1を実行", result1).
-					WithChoiceMessage("処理2を実行", result2)
+			testMessageData := messagedata.NewDialogMessage("処理のテストです。選択肢を選んでください。", "システム").
+				WithChoiceMessage("処理1を実行", result1).
+				WithChoiceMessage("処理2を実行", result2)
 
-				testMessageData.Choices[0].Action = func(_ w.World) { choiceAction1() }
-				testMessageData.Choices[1].Action = func(_ w.World) { choiceAction2() }
+			testMessageData.Choices[0].Action = func(_ w.World) { choiceAction1() }
+			testMessageData.Choices[1].Action = func(_ w.World) { choiceAction2() }
 
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(testMessageData) }}})
-			},
-		},
-	}
-
-	// 各デバッグ機能の選択肢を追加
-	for _, debugAction := range debugActions {
-		actionCopy := debugAction.action // クロージャキャプチャ対策
-		messageData = messageData.WithChoice(debugAction.label, actionCopy)
-	}
-
-	// 閉じる選択肢を追加
-	messageData = messageData.WithChoice("閉じる", func(_ w.World) {
-		messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
-	})
-
-	// MessageStateにMessageDataを設定
-	messageState.messageData = messageData
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(testMessageData) }}})
+		}).
+		WithChoice("閉じる", func(_ w.World) {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		})
 
 	return messageState
 }
