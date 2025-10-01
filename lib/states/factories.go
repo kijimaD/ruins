@@ -15,67 +15,6 @@ import (
 
 // 各ステートのファクトリー関数を集約したファイル
 
-// NewHomeMenuState は新しいHomeMenuStateインスタンスを作成するファクトリー関数
-func NewHomeMenuState() es.State[w.World] {
-	messageState := &MessageState{}
-
-	messageData := messagedata.NewSystemMessage("拠点メニュー")
-
-	// ホームメニューの選択肢を生成
-	homeActions := []struct {
-		label  string
-		action func(w.World)
-	}{
-		{
-			"出発",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonSelectState}})
-			},
-		},
-		{
-			"合成",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}})
-			},
-		},
-		{
-			"所持",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}})
-			},
-		},
-		{
-			"装備",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
-			},
-		},
-		{
-			"書込",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
-			},
-		},
-		{
-			"終了",
-			func(_ w.World) {
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
-			},
-		},
-	}
-
-	// 各選択肢を追加
-	for _, homeAction := range homeActions {
-		actionCopy := homeAction.action // クロージャキャプチャ対策
-		messageData = messageData.WithChoice(homeAction.label, actionCopy)
-	}
-
-	// MessageStateにMessageDataを設定
-	messageState.messageData = messageData
-
-	return messageState
-}
-
 // NewDungeonMenuState は新しいDungeonMenuStateインスタンスを作成するファクトリー関数
 func NewDungeonMenuState() es.State[w.World] {
 	messageData := messagedata.NewSystemMessage("ダンジョンメニュー")
@@ -110,6 +49,12 @@ func NewDungeonMenuState() es.State[w.World] {
 			},
 		},
 		{
+			label: "終了",
+			action: func(_ w.World) {
+				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
+			},
+		},
+		{
 			label: "閉じる",
 			action: func(_ w.World) {
 				persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
@@ -124,30 +69,6 @@ func NewDungeonMenuState() es.State[w.World] {
 	persistentState.messageData = newMessageData
 
 	return persistentState
-}
-
-// NewDungeonSelectState は新しいDungeonSelectStateインスタンスを作成するファクトリー関数
-func NewDungeonSelectState() es.State[w.World] {
-	messageState := &MessageState{}
-
-	// ダンジョン選択メッセージを作成
-	messageData := messagedata.NewSystemMessage("ダンジョン選択").
-		WithChoice("森の遺跡", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(1)}})
-		}).
-		WithChoice("市街地", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown),
-			}})
-		}).
-		WithChoice("拠点メニューに戻る", func(_ w.World) {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
-		})
-
-	// MessageStateにMessageDataを設定
-	messageState.messageData = messageData
-
-	return messageState
 }
 
 // NewCraftMenuState は新しいCraftMenuStateインスタンスを作成するファクトリー関数
@@ -200,13 +121,6 @@ func NewDebugMenuState() es.State[w.World] {
 			"ゲームオーバー",
 			func(_ w.World) {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}})
-			},
-		},
-		{
-			"脱出（ホームに戻る）",
-			func(_ w.World) {
-				// ダンジョンからホームメニューに脱出
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
 			},
 		},
 		{
@@ -497,8 +411,9 @@ func NewLoadMenuState() es.State[w.World] {
 					messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 					return
 				}
-				// ロード成功後、ホームメニューに遷移
-				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}})
+				// 遷移
+				stateFactory := NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{stateFactory}})
 			})
 		}
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -75,9 +76,9 @@ func (st *MainMenuState) initMenu(world w.World) {
 	// メニュー項目の定義
 	items := []menu.Item{
 		{
-			ID:       "home",
-			Label:    "拠点",
-			UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewHomeMenuState}},
+			ID:       "town",
+			Label:    "開始",
+			UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)}},
 		},
 		{
 			ID:       "load",
