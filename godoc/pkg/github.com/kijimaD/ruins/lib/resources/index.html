@@ -190,9 +190,6 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Level.AtEntity">func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity</a></dd>
-				
-					
 					<dd>&nbsp; &nbsp; <a href="index.html#Level.Height">func (l *Level) Height() gc.Pixel</a></dd>
 				
 					
@@ -440,7 +437,7 @@
 		
 			
 			
-			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=372:733#L1">Dungeon</a>
+			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=337:698#L1">Dungeon</a>
 				<a class="permalink" href="index.html#Dungeon">&#xb6;</a>
 				
 				
@@ -474,7 +471,7 @@
 
 			
 				
-				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=979:1027#L20">ConsumeStateEvent</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=944:992#L19">ConsumeStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
@@ -487,7 +484,7 @@
 				
 			
 				
-				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=781:830#L15">SetStateEvent</a>
+				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=746:795#L14">SetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.SetStateEvent">&#xb6;</a>
 					
 					
@@ -598,21 +595,20 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1175:1339#L28">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1198:1304#L28">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
 			</h2>
 			<p>Level は現在の階層
 タイル計算メソッドを提供する
+TODO: 状態として持たないほうがいいかも
 
 			<pre>type Level struct {
     <span class="comment">// 横のタイル数</span>
 <span id="Level.TileWidth"></span>    TileWidth <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>
     <span class="comment">// 縦のタイル数</span>
 <span id="Level.TileHeight"></span>    TileHeight <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>
-    <span class="comment">// タイルエンティティ群</span>
-<span id="Level.Entities"></span>    Entities []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
 }
 </pre>
 
@@ -628,20 +624,7 @@
 
 			
 				
-				<h3 id="Level.AtEntity">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1893:1952#L51">AtEntity</a>
-					<a class="permalink" href="index.html#Level.AtEntity">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (l *<a href="index.html#Level">Level</a>) AtEntity(x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Pixel">Pixel</a>) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-				<p>AtEntity はxy座標から、該当するエンティティを求める
-
-				
-				
-				
-			
-				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2318:2351#L65">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1996:2029#L54">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -654,7 +637,7 @@
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2163:2195#L60">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1841:1873#L49">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -667,7 +650,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1649:1710#L43">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1614:1675#L41">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -680,7 +663,7 @@
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1438:1497#L38">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1403:1462#L36">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
@@ -729,7 +712,7 @@
 		
 			
 			
-			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2478:2769#L70">MinimapSettings</a>
+			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2156:2447#L59">MinimapSettings</a>
 				<a class="permalink" href="index.html#MinimapSettings">&#xb6;</a>
 				
 				
