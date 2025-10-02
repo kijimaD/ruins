@@ -44,7 +44,7 @@ func runScreenshot(ctx *cli.Context) error {
 	case "GameOver":
 		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
 	case "Town":
-		stateFactory := gs.NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)
+		stateFactory := gs.NewDungeonState(1, gs.WithBuilderType(mapplanner.PlannerTypeTown))
 		vrt.RunTestGame(stateFactory(), mode)
 	case gs.InventoryMenuState{}.String():
 		vrt.RunTestGame(&gs.InventoryMenuState{}, mode)

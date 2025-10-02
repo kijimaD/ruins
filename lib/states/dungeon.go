@@ -178,9 +178,9 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
 	switch world.Resources.Dungeon.ConsumeStateEvent() {
 	case resources.StateEventWarpNext:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithDepth(world.Resources.Dungeon.Depth + 1)}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(world.Resources.Dungeon.Depth + 1)}}
 	case resources.StateEventWarpEscape:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)}}
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}}
 	default:
 		// StateEventNoneまたは未知のイベントの場合は何もしない
 		return es.Transition[w.World]{Type: es.TransNone}
