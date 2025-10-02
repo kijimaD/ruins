@@ -12,13 +12,13 @@ import (
 )
 
 // SpawnProp は置物を生成する統一関数
-func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	// PropManagerを取得（後でResourcesに追加する必要がある）
+func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
+	// PropManagerを取得
 	propManager := props.NewPropManager()
 
-	config, exists := propManager.GetConfig(propType)
+	config, exists := propManager.GetConfig(propName)
 	if !exists {
-		return ecs.Entity(0), fmt.Errorf("未定義の置物タイプ: %s", propType)
+		return ecs.Entity(0), fmt.Errorf("未定義の置物: %s", propName)
 	}
 
 	// 床を下敷きとして配置（既に床がある場合は配置しない）
@@ -35,7 +35,7 @@ func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.E
 			SpriteKey:       config.SpriteKey,
 			Depth:           gc.DepthNumRug, // アイテムと同じ深度
 		},
-		PropType: &propType,
+		Prop: &gc.Prop{},
 		Name: &gc.Name{
 			Name: config.Name,
 		},

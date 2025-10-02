@@ -3,73 +3,62 @@
 // ゲーム世界への置物配置をサポートする
 package props
 
-import (
-	gc "github.com/kijimaD/ruins/lib/components"
-)
-
 // PropConfig は置物の設定情報を保持する
 type PropConfig struct {
-	Name             string      // 置物の名前
-	Type             gc.PropType // 置物のタイプ
-	SpriteKey        string      // スプライトキー
-	BlocksMovement   bool        // 移動を阻害するか
-	BlocksVisibility bool        // 視界を遮るか
-	SpawnWeight      int         // ランダム配置での重み
-	Description      string      // 説明文
+	Name             string // 置物の名前（識別用キー）
+	SpriteKey        string // スプライトキー
+	BlocksMovement   bool   // 移動を阻害するか
+	BlocksVisibility bool   // 視界を遮るか
+	SpawnWeight      int    // ランダム配置での重み
+	Description      string // 説明文
 }
 
 // DefaultPropConfigs はデフォルトの置物設定を返す
-func DefaultPropConfigs() map[gc.PropType]PropConfig {
-	return map[gc.PropType]PropConfig{
-		gc.PropTypeTable: {
+func DefaultPropConfigs() map[string]PropConfig {
+	return map[string]PropConfig{
+		"table": {
 			Name:             "テーブル",
-			Type:             gc.PropTypeTable,
 			SpriteKey:        "prop_table",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      10,
 			Description:      "頑丈な木製のテーブル",
 		},
-		gc.PropTypeChair: {
+		"chair": {
 			Name:             "椅子",
-			Type:             gc.PropTypeChair,
 			SpriteKey:        "prop_chair",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      15,
 			Description:      "座り心地の良さそうな椅子",
 		},
-		gc.PropTypeBookshelf: {
+		"bookshelf": {
 			Name:             "本棚",
-			Type:             gc.PropTypeBookshelf,
 			SpriteKey:        "prop_bookshelf",
 			BlocksMovement:   true,
 			BlocksVisibility: true,
 			SpawnWeight:      5,
 			Description:      "たくさんの本が並んだ本棚",
 		},
-		gc.PropTypeBarrel: {
+		"barrel": {
 			Name:             "樽",
-			Type:             gc.PropTypeBarrel,
 			SpriteKey:        "prop_barrel",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      8,
 			Description:      "何か入っているかもしれない樽",
 		},
-		gc.PropTypeCrate: {
+		"crate": {
 			Name:             "木箱",
-			Type:             gc.PropTypeCrate,
 			SpriteKey:        "prop_crate",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      12,
 			Description:      "頑丈そうな木箱",
 		},
-		gc.PropTypeBed: {
+		"bed": {
 			Name:             "寝台",
-			Type:             gc.PropTypeBed,
-			SpriteKey:        "prop_bed", // 将来追加する寝台スプライト
+			SpriteKey:        "prop_bed",
 			BlocksMovement:   true,
 			BlocksVisibility: false,
 			SpawnWeight:      8,
@@ -80,7 +69,7 @@ func DefaultPropConfigs() map[gc.PropType]PropConfig {
 
 // PropManager は置物を管理するシステム
 type PropManager struct {
-	configs map[gc.PropType]PropConfig
+	configs map[string]PropConfig
 }
 
 // NewPropManager は新しいPropManagerを作成する
@@ -90,18 +79,18 @@ func NewPropManager() *PropManager {
 	}
 }
 
-// GetConfig は指定されたタイプの設定を取得する
-func (pm *PropManager) GetConfig(propType gc.PropType) (PropConfig, bool) {
-	config, exists := pm.configs[propType]
+// GetConfig は指定された名前の設定を取得する
+func (pm *PropManager) GetConfig(name string) (PropConfig, bool) {
+	config, exists := pm.configs[name]
 	return config, exists
 }
 
 // AddConfig は新しい置物設定を追加する
-func (pm *PropManager) AddConfig(config PropConfig) {
-	pm.configs[config.Type] = config
+func (pm *PropManager) AddConfig(name string, config PropConfig) {
+	pm.configs[name] = config
 }
 
 // GetAllConfigs は全ての設定を取得する
-func (pm *PropManager) GetAllConfigs() map[gc.PropType]PropConfig {
+func (pm *PropManager) GetAllConfigs() map[string]PropConfig {
 	return pm.configs
 }

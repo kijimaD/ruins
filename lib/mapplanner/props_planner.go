@@ -6,11 +6,22 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
+// TODO: rawで置き換える
+// Prop名定数
+const (
+	PropNameTable     = "table"
+	PropNameChair     = "chair"
+	PropNameBookshelf = "bookshelf"
+	PropNameBed       = "bed"
+	PropNameBarrel    = "barrel"
+	PropNameCrate     = "crate"
+)
+
 // PropsSpec はProps配置仕様を表す
 type PropsSpec struct {
-	X        int         // X座標
-	Y        int         // Y座標
-	PropType gc.PropType // Propsタイプ
+	X        int    // X座標
+	Y        int    // Y座標
+	PropType string // Propsタイプ（prop名）
 }
 
 // PropsPlanner はProps配置を担当するプランナー
@@ -45,15 +56,15 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 図書館の家具配置
 	libraryProps := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeBookshelf, -8, -19}, // 北壁沿い
-		{gc.PropTypeBookshelf, -6, -19}, // 北壁沿い
-		{gc.PropTypeTable, -7, -17},     // 閲覧机
-		{gc.PropTypeChair, -7, -16},     // 閲覧用椅子
-		{gc.PropTypeTable, -4, -15},     // 学習机
+		{"bookshelf", -8, -19}, // 北壁沿い
+		{"bookshelf", -6, -19}, // 北壁沿い
+		{"table", -7, -17},     // 閲覧机
+		{"chair", -7, -16},     // 閲覧用椅子
+		{"table", -4, -15},     // 学習机
 	}
 
 	for _, prop := range libraryProps {
@@ -70,17 +81,17 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 学校の家具配置
 	schoolProps := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeBookshelf, 6, -19},  // 北壁
-		{gc.PropTypeBookshelf, 8, -19},  // 北壁
-		{gc.PropTypeBookshelf, 10, -19}, // 北壁
-		{gc.PropTypeBookshelf, 5, -16},  // 西壁
-		{gc.PropTypeBookshelf, 11, -16}, // 東壁
-		{gc.PropTypeTable, 8, -15},      // 教卓
-		{gc.PropTypeChair, 8, -14},      // 教師用椅子
+		{"bookshelf", 6, -19},  // 北壁
+		{"bookshelf", 8, -19},  // 北壁
+		{"bookshelf", 10, -19}, // 北壁
+		{"bookshelf", 5, -16},  // 西壁
+		{"bookshelf", 11, -16}, // 東壁
+		{"table", 8, -15},      // 教卓
+		{"chair", 8, -14},      // 教師用椅子
 	}
 
 	for _, prop := range schoolProps {
@@ -97,14 +108,14 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 住民の家1の家具配置
 	house1Props := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeBed, 13, -7},   // 寝室
-		{gc.PropTypeTable, 15, -5}, // 食事台
-		{gc.PropTypeChair, 15, -4}, // 食事用椅子
-		{gc.PropTypeChair, 16, -5}, // 食事用椅子
+		{"bed", 13, -7},   // 寝室
+		{"table", 15, -5}, // 食事台
+		{"chair", 15, -4}, // 食事用椅子
+		{"chair", 16, -5}, // 食事用椅子
 	}
 
 	for _, prop := range house1Props {
@@ -121,13 +132,13 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 住民の家2の家具配置
 	house2Props := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeBed, 14, 2},   // 寝室
-		{gc.PropTypeTable, 16, 4}, // 食事台
-		{gc.PropTypeChair, 16, 5}, // 食事用椅子
+		{"bed", 14, 2},   // 寝室
+		{"table", 16, 4}, // 食事台
+		{"chair", 16, 5}, // 食事用椅子
 	}
 
 	for _, prop := range house2Props {
@@ -144,14 +155,14 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 公民館の座席配置
 	hallProps := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeChair, -6, 12}, // 集会用座席
-		{gc.PropTypeChair, -4, 12}, // 集会用座席
-		{gc.PropTypeChair, 4, 12},  // 集会用座席
-		{gc.PropTypeChair, 6, 12},  // 集会用座席
+		{"chair", -6, 12}, // 集会用座席
+		{"chair", -4, 12}, // 集会用座席
+		{"chair", 4, 12},  // 集会用座席
+		{"chair", 6, 12},  // 集会用座席
 	}
 
 	for _, prop := range hallProps {
@@ -168,14 +179,14 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 事務所の家具配置
 	officeProps := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeBed, 12, 13},       // 休憩用ベッド
-		{gc.PropTypeTable, 14, 15},     // 事務机
-		{gc.PropTypeChair, 14, 16},     // 事務用椅子
-		{gc.PropTypeBookshelf, 18, 14}, // 書類棚
+		{"bed", 12, 13},       // 休憩用ベッド
+		{"table", 14, 15},     // 事務机
+		{"chair", 14, 16},     // 事務用椅子
+		{"bookshelf", 18, 14}, // 書類棚
 	}
 
 	for _, prop := range officeProps {
@@ -192,13 +203,13 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 市場の露店（簡略化して一部のみ配置）
 	marketProps := []struct {
-		propType gc.PropType
+		propType string
 		offsetX  int
 		offsetY  int
 	}{
-		{gc.PropTypeTable, -12, 5}, // 露店1
-		{gc.PropTypeTable, -9, 5},  // 露店2
-		{gc.PropTypeTable, -6, 5},  // 露店3
+		{"table", -12, 5}, // 露店1
+		{"table", -9, 5},  // 露店2
+		{"table", -6, 5},  // 露店3
 	}
 
 	for _, prop := range marketProps {
