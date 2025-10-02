@@ -3,6 +3,7 @@
 package mapplanner
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -451,15 +452,17 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	return selectedType.PlannerFunc(width, height, seed)
 }
 
-// GenerateTile は指定されたタイルを生成する
-// TOMLからの生成に失敗した場合はパニックする
+// GenerateTile はタイルを生成する
 // TODO: 消して直接呼び出せばよい
 func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
 	if bm.RawMaster == nil {
 		panic("RawMasterが設定されていない。TOMLからのタイル生成が必須である")
 	}
-	// RawMaster.GenerateTileは内部でpanicするため、そのまま呼び出す
-	return bm.RawMaster.GenerateTile(name)
+	tile, err := bm.RawMaster.GenerateTile(name)
+	if err != nil {
+		panic(fmt.Sprintf("タイル生成エラー: %v", err))
+	}
+	return tile
 }
 
 // GetPlayerStartPosition はプレイヤーの開始位置を取得する

@@ -480,13 +480,13 @@ type PropRaw struct {
 }
 
 // GenerateTile は指定された名前のタイルを生成する
-func (rw *Master) GenerateTile(name string) TileRaw {
+func (rw *Master) GenerateTile(name string) (TileRaw, error) {
 	tileIdx, ok := rw.TileIndex[name]
 	if !ok {
-		panic(fmt.Sprintf("タイル '%s' がTileIndexに存在しません", name))
+		return TileRaw{}, NewKeyNotFoundError(name, "TileIndex")
 	}
 
-	return rw.Raws.Tiles[tileIdx]
+	return rw.Raws.Tiles[tileIdx], nil
 }
 
 // GetProp は指定された名前の置物の設定を取得する

@@ -27,12 +27,14 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// 全体を非土タイル（Floor）で初期化
 	for i := range metaPlan.Tiles {
-		metaPlan.Tiles[i] = metaPlan.RawMaster.GenerateTile(floorTileType)
+		tile, _ := metaPlan.RawMaster.GenerateTile(floorTileType)
+		metaPlan.Tiles[i] = tile
 	}
 
 	// 中央（2,2）を土タイルに設定
 	centerIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(2))
-	metaPlan.Tiles[centerIdx] = metaPlan.RawMaster.GenerateTile(dirtTileType)
+	dirtTile, _ := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	metaPlan.Tiles[centerIdx] = dirtTile
 
 	// テストケース1: 孤立した土タイル
 	autoTileIndex := metaPlan.CalculateAutoTileIndex(centerIdx, dirtTileType)
@@ -44,7 +46,8 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// テストケース2: 上に土タイルを追加（下だけが異なる状態）
 	topIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(1))
-	metaPlan.Tiles[topIdx] = metaPlan.RawMaster.GenerateTile(dirtTileType)
+	topDirt, _ := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	metaPlan.Tiles[topIdx] = topDirt
 
 	autoTileIndex = metaPlan.CalculateAutoTileIndex(centerIdx, dirtTileType)
 
@@ -63,7 +66,8 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// テストケース3: 右にも土タイルを追加（下左が異なる状態）
 	rightIdx := metaPlan.Level.XYTileIndex(gc.Tile(3), gc.Tile(2))
-	metaPlan.Tiles[rightIdx] = metaPlan.RawMaster.GenerateTile(dirtTileType)
+	rightDirt, _ := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	metaPlan.Tiles[rightIdx] = rightDirt
 
 	autoTileIndex = metaPlan.CalculateAutoTileIndex(centerIdx, dirtTileType)
 	if autoTileIndex != AutoTileUpRight {
@@ -75,8 +79,10 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 	// テストケース4: 全方向に土タイルを配置（中央タイル）
 	bottomIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(3))
 	leftIdx := metaPlan.Level.XYTileIndex(gc.Tile(1), gc.Tile(2))
-	metaPlan.Tiles[bottomIdx] = metaPlan.RawMaster.GenerateTile(dirtTileType)
-	metaPlan.Tiles[leftIdx] = metaPlan.RawMaster.GenerateTile(dirtTileType)
+	bottomDirt, _ := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	leftDirt, _ := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	metaPlan.Tiles[bottomIdx] = bottomDirt
+	metaPlan.Tiles[leftIdx] = leftDirt
 
 	autoTileIndex = metaPlan.CalculateAutoTileIndex(centerIdx, dirtTileType)
 	if autoTileIndex != AutoTileCenter {

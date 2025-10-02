@@ -232,17 +232,18 @@ Walkable = false
 	require.NoError(t, err, "テストTOMLの読み込みに失敗")
 
 	// 床タイルの生成をテスト
-	floorTile := master.GenerateTile("GenerateTestFloor")
+	floorTile, err := master.GenerateTile("GenerateTestFloor")
+	require.NoError(t, err, "床タイルの生成に失敗")
 	assert.True(t, floorTile.Walkable)
 
 	// 壁タイルの生成をテスト
-	wallTile := master.GenerateTile("GenerateTestWall")
+	wallTile, err := master.GenerateTile("GenerateTestWall")
+	require.NoError(t, err, "壁タイルの生成に失敗")
 	assert.False(t, wallTile.Walkable)
 
-	// 存在しないタイルのテスト（panicが発生する）
-	assert.Panics(t, func() {
-		master.GenerateTile("NonExistent")
-	}, "存在しないタイルでpanicが発生すべき")
+	// 存在しないタイルのテスト（エラーが発生する）
+	_, err = master.GenerateTile("NonExistent")
+	assert.Error(t, err, "存在しないタイルでエラーが発生すべき")
 }
 
 // TestGenerateTileSpecFromRaw - TileSpecは削除されたためこのテストは不要
@@ -266,13 +267,13 @@ Walkable = false
 	require.NoError(t, err, "テストTOMLの読み込みに失敗")
 
 	// GenerateTile のテスト（存在するタイル）
-	tileRaw := master.GenerateTile("Helper1")
+	tileRaw, err := master.GenerateTile("Helper1")
+	require.NoError(t, err, "タイル生成に失敗")
 	assert.True(t, tileRaw.Walkable)
 
 	// GenerateTile のテスト（存在しないタイル）
-	assert.Panics(t, func() {
-		master.GenerateTile("NonExistent")
-	}, "存在しないタイルでpanicが発生すべき")
+	_, err = master.GenerateTile("NonExistent")
+	assert.Error(t, err, "存在しないタイルでエラーが発生すべき")
 }
 
 func TestTilePropertiesFromRaw(t *testing.T) {
@@ -309,7 +310,8 @@ Walkable = false
 	}
 
 	for _, tc := range testCases {
-		tile := master.GenerateTile(tc.name)
+		tile, err := master.GenerateTile(tc.name)
+		require.NoError(t, err, "タイル生成に失敗: %s", tc.name)
 		assert.Equal(t, tc.expectedWalk, tile.Walkable, "Walkableが期待値と一致しない: %s", tc.name)
 	}
 }
@@ -329,11 +331,13 @@ func TestLoadFromRealTileFile(t *testing.T) {
 	}
 
 	// 実際のタイル生成テスト
-	floorTile := master.GenerateTile("Floor")
+	floorTile, err := master.GenerateTile("Floor")
+	require.NoError(t, err, "床タイル生成に失敗")
 	assert.True(t, floorTile.Walkable)
 
 	// 壁タイルテスト
-	wallTile := master.GenerateTile("Wall")
+	wallTile, err := master.GenerateTile("Wall")
+	require.NoError(t, err, "壁タイル生成に失敗")
 	assert.False(t, wallTile.Walkable)
 }
 
