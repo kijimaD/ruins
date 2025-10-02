@@ -17,15 +17,13 @@ type MessageAreaConfig struct {
 	YPadding      int // 下端の追加パディング
 }
 
-// DefaultMessageAreaConfig はデフォルトのメッセージエリア設定を返す
-func DefaultMessageAreaConfig() MessageAreaConfig {
-	return MessageAreaConfig{
-		LogAreaHeight: 120, // 余裕を持たせて大きめに
-		MaxLogLines:   5,   // 表示する最大行数
-		LogAreaMargin: 8,   // 余白
-		LineHeight:    20,  // 1行の高さ
-		YPadding:      8,   // 下端の追加パディング
-	}
+// DefaultMessageAreaConfig はデフォルトのメッセージエリア設定
+var DefaultMessageAreaConfig = MessageAreaConfig{
+	LogAreaHeight: 120, // 余裕を持たせて大きめに
+	MaxLogLines:   5,   // 表示する最大行数
+	LogAreaMargin: 8,   // 余白
+	LineHeight:    20,  // 1行の高さ
+	YPadding:      8,   // 下端の追加パディング
 }
 
 // MessageArea はHUDメッセージエリア
@@ -35,9 +33,10 @@ type MessageArea struct {
 	enabled bool
 }
 
-// NewMessageArea は設定を指定してHUDMessageAreaを作成する
-func NewMessageArea(world w.World, config MessageAreaConfig) *MessageArea {
-	// MessageLogWidget設定
+// NewMessageArea はデフォルト設定でHUDMessageAreaを作成する
+func NewMessageArea(world w.World) *MessageArea {
+	config := DefaultMessageAreaConfig
+
 	widgetConfig := messagelog.WidgetConfig{
 		MaxLines:   config.MaxLogLines,
 		LineHeight: config.LineHeight,
@@ -50,10 +49,7 @@ func NewMessageArea(world w.World, config MessageAreaConfig) *MessageArea {
 		},
 	}
 
-	// MessageLogWidgetを作成
 	widget := messagelog.NewWidget(widgetConfig, world)
-
-	// デフォルトでFieldLogを使用
 	widget.SetStore(gamelog.FieldLog)
 
 	return &MessageArea{
@@ -61,11 +57,6 @@ func NewMessageArea(world w.World, config MessageAreaConfig) *MessageArea {
 		config:  config,
 		enabled: true,
 	}
-}
-
-// NewMessageAreaDefault はデフォルト設定でHUDMessageAreaを作成する
-func NewMessageAreaDefault(world w.World) *MessageArea {
-	return NewMessageArea(world, DefaultMessageAreaConfig())
 }
 
 // SetStore はログストアを設定する

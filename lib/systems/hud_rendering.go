@@ -21,7 +21,7 @@ func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
 		gameInfo:     hud.NewGameInfo(),
 		minimap:      hud.NewMinimap(),
 		debugOverlay: hud.NewDebugOverlay(),
-		messageArea:  hud.NewMessageAreaDefault(world), // MessageAreaのみ初期化にworldが必要
+		messageArea:  hud.NewMessageArea(world), // MessageAreaのみ初期化にworldが必要
 		enabled:      true,
 	}
 }

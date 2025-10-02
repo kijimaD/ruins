@@ -20,7 +20,7 @@
 //
 // 使用例:
 //
-//	loader := loader.NewDefaultResourceLoader()
+//	loader := loader.NewResourceLoader()
 //	fonts, err := loader.LoadFonts()
 //	if err != nil {
 //	    return err
