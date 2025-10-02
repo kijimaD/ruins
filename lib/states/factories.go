@@ -81,32 +81,32 @@ func NewDebugMenuState() es.State[w.World] {
 		}).
 		WithChoice("ダンジョン開始(大部屋)", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeBigRoom),
+				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeBigRoom)),
 			}})
 		}).
 		WithChoice("ダンジョン開始(小部屋)", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeSmallRoom),
+				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeSmallRoom)),
 			}})
 		}).
 		WithChoice("ダンジョン開始(洞窟)", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeCave),
+				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeCave)),
 			}})
 		}).
 		WithChoice("ダンジョン開始(廃墟)", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeRuins),
+				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeRuins)),
 			}})
 		}).
 		WithChoice("ダンジョン開始(森)", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeForest),
+				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeForest)),
 			}})
 		}).
 		WithChoice("市街地開始", func(_ w.World) {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown),
+				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown)),
 			}})
 		}).
 		WithChoice("メッセージ表示テスト", func(_ w.World) {
@@ -202,24 +202,35 @@ func NewDebugMenuState() es.State[w.World] {
 	return messageState
 }
 
-// NewDungeonStateWithDepth は指定されたDepthでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithDepth(depth int) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return &DungeonState{Depth: depth, BuilderType: mapplanner.PlannerTypeRandom}
+// DungeonStateOption はDungeonStateのオプション設定関数
+type DungeonStateOption func(*DungeonState)
+
+// WithSeed はシード値を設定するオプション
+func WithSeed(seed uint64) DungeonStateOption {
+	return func(ds *DungeonState) {
+		ds.Seed = seed
 	}
 }
 
-// NewDungeonStateWithSeed は指定されたDepthとSeedでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithSeed(depth int, seed uint64) es.StateFactory[w.World] {
-	return func() es.State[w.World] {
-		return &DungeonState{Depth: depth, Seed: seed, BuilderType: mapplanner.PlannerTypeRandom}
+// WithBuilderType はマップビルダータイプを設定するオプション
+func WithBuilderType(builderType mapplanner.PlannerType) DungeonStateOption {
+	return func(ds *DungeonState) {
+		ds.BuilderType = builderType
 	}
 }
 
-// NewDungeonStateWithBuilder は指定されたBuilderTypeでDungeonStateインスタンスを作成するファクトリー関数
-func NewDungeonStateWithBuilder(depth int, builderType mapplanner.PlannerType) es.StateFactory[w.World] {
+// NewDungeonState はDungeonStateインスタンスを作成するファクトリー関数
+// デフォルトではBuilderTypeはPlannerTypeRandomになる
+func NewDungeonState(depth int, opts ...DungeonStateOption) es.StateFactory[w.World] {
 	return func() es.State[w.World] {
-		return &DungeonState{Depth: depth, BuilderType: builderType}
+		ds := &DungeonState{
+			Depth:       depth,
+			BuilderType: mapplanner.PlannerTypeRandom,
+		}
+		for _, opt := range opts {
+			opt(ds)
+		}
+		return ds
 	}
 }
 
@@ -319,7 +330,7 @@ func NewLoadMenuState() es.State[w.World] {
 					return
 				}
 				// 遷移
-				stateFactory := NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)
+				stateFactory := NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{stateFactory}})
 			})
 		}

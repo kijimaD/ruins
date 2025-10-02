@@ -277,7 +277,7 @@ func extractMessageData(world w.World, store *gamelog.SafeSlice) hud.MessageData
 	}
 
 	// デフォルト設定を使用
-	config := hud.DefaultMessageAreaConfig()
+	config := hud.DefaultMessageAreaConfig
 
 	return hud.MessageData{
 		Messages:         store.GetHistory(),

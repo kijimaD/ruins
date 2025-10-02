@@ -103,7 +103,7 @@ func runPlay(_ *cli.Context) error {
 	var initialState es.State[w.World]
 	switch cfg.StartingState {
 	case "town":
-		stateFactory := gs.NewDungeonStateWithBuilder(1, mapplanner.PlannerTypeTown)
+		stateFactory := gs.NewDungeonState(1, gs.WithBuilderType(mapplanner.PlannerTypeTown))
 		initialState = stateFactory()
 	case "main_menu":
 		initialState = &gs.MainMenuState{}

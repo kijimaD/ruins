@@ -42,21 +42,16 @@ type ResourceCache struct {
 	RawMaster    *raw.Master
 }
 
-// NewResourceLoader は新しいResourceLoaderを作成する
-func NewResourceLoader(config ResourceConfig) ResourceLoader {
+// NewResourceLoader はデフォルトのパス設定でResourceLoaderを作成する
+func NewResourceLoader() ResourceLoader {
 	return &DefaultResourceLoader{
-		config: config,
-		cache:  &ResourceCache{},
+		config: ResourceConfig{
+			FontsPath:        "metadata/fonts/fonts.toml",
+			SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
+			RawsPath:         "metadata/entities/raw/raw.toml",
+		},
+		cache: &ResourceCache{},
 	}
-}
-
-// NewDefaultResourceLoader はデフォルトのパス設定でResourceLoaderを作成する
-func NewDefaultResourceLoader() ResourceLoader {
-	return NewResourceLoader(ResourceConfig{
-		FontsPath:        "metadata/fonts/fonts.toml",
-		SpriteSheetsPath: "metadata/spritesheets/spritesheets.toml",
-		RawsPath:         "metadata/entities/raw/raw.toml",
-	})
 }
 
 // LoadFonts はフォントリソースを読み込む

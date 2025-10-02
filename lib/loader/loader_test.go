@@ -9,7 +9,7 @@ import (
 
 func TestNewDefaultResourceLoader(t *testing.T) {
 	t.Parallel()
-	rl := NewDefaultResourceLoader()
+	rl := NewResourceLoader()
 	assert.NotNil(t, rl)
 
 	// デフォルトローダーの型確認
@@ -22,31 +22,11 @@ func TestNewDefaultResourceLoader(t *testing.T) {
 	assert.Equal(t, "metadata/entities/raw/raw.toml", drl.config.RawsPath)
 }
 
-func TestNewResourceLoader(t *testing.T) {
-	t.Parallel()
-	config := ResourceConfig{
-		FontsPath:        "custom/fonts.toml",
-		SpriteSheetsPath: "custom/sprites.toml",
-		RawsPath:         "custom/raw.toml",
-	}
-
-	rl := NewResourceLoader(config)
-	assert.NotNil(t, rl)
-
-	drl, ok := rl.(*DefaultResourceLoader)
-	require.True(t, ok)
-
-	// カスタムパスの確認
-	assert.Equal(t, config.FontsPath, drl.config.FontsPath)
-	assert.Equal(t, config.SpriteSheetsPath, drl.config.SpriteSheetsPath)
-	assert.Equal(t, config.RawsPath, drl.config.RawsPath)
-}
-
 func TestLoadFonts(t *testing.T) {
 	t.Parallel()
 	t.Run("正常にフォントを読み込める", func(t *testing.T) {
 		t.Parallel()
-		rl := NewDefaultResourceLoader()
+		rl := NewResourceLoader()
 		fonts, err := rl.LoadFonts()
 
 		assert.NoError(t, err)
@@ -60,7 +40,7 @@ func TestLoadFonts(t *testing.T) {
 
 	t.Run("キャッシュから読み込む", func(t *testing.T) {
 		t.Parallel()
-		rl := NewDefaultResourceLoader()
+		rl := NewResourceLoader()
 
 		// 1回目の読み込み
 		fonts1, err1 := rl.LoadFonts()
@@ -74,25 +54,13 @@ func TestLoadFonts(t *testing.T) {
 		assert.Equal(t, fonts1, fonts2)
 	})
 
-	t.Run("存在しないファイルパスの場合", func(t *testing.T) {
-		t.Parallel()
-		config := ResourceConfig{
-			FontsPath: "invalid/path/fonts.toml",
-		}
-		rl := NewResourceLoader(config)
-
-		fonts, err := rl.LoadFonts()
-		assert.Error(t, err)
-		assert.Nil(t, fonts)
-		assert.Contains(t, err.Error(), "フォントファイルの読み込みに失敗")
-	})
 }
 
 func TestLoadSpriteSheets(t *testing.T) {
 	t.Parallel()
 	t.Run("正常にスプライトシートを読み込める", func(t *testing.T) {
 		t.Parallel()
-		rl := NewDefaultResourceLoader()
+		rl := NewResourceLoader()
 		sprites, err := rl.LoadSpriteSheets()
 
 		assert.NoError(t, err)
@@ -114,7 +82,7 @@ func TestLoadRaws(t *testing.T) {
 	t.Parallel()
 	t.Run("正常にRawデータを読み込める", func(t *testing.T) {
 		t.Parallel()
-		rl := NewDefaultResourceLoader()
+		rl := NewResourceLoader()
 		rawMaster, err := rl.LoadRaws()
 
 		assert.NoError(t, err)

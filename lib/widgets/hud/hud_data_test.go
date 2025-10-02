@@ -30,7 +30,7 @@ func TestHUDData(t *testing.T) {
 		MessageData: MessageData{
 			Messages:         []string{"Hello", "World"},
 			ScreenDimensions: ScreenDimensions{Width: 1024, Height: 768},
-			Config:           DefaultMessageAreaConfig(),
+			Config:           DefaultMessageAreaConfig,
 		},
 	}
 
