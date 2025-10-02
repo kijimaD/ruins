@@ -177,6 +177,14 @@ func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[
 
 // renderWallShadows は壁の影を描画する
 func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+	tileMap := make(map[gc.GridElement]ecs.Entity)
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.SpriteRender,
+	).Visit(ecs.Visit(func(e ecs.Entity) {
+		ge := world.Components.GridElement.Get(e).(*gc.GridElement)
+		tileMap[*ge] = e
+	}))
 
 	world.Manager.Join(
 		world.Components.SpriteRender,
@@ -186,14 +194,11 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		// 壁の影も視界チェック - 視界内または探索済みのタイルのみ描画
+		// 視界内のタイルのみ描画する
 		if visibilityData != nil {
 			tileKey := fmt.Sprintf("%d,%d", grid.X, grid.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
-				// 探索済みかどうかもチェック
-				if !world.Resources.Dungeon.ExploredTiles[*grid] {
-					return // 未探索かつ視界外の影は描画しない
-				}
+				return // 視界外の影は描画しない
 			}
 		}
 
@@ -204,11 +209,14 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 			return
 		}
 
-		belowTileIdx := world.Resources.Dungeon.Level.XYTileIndex(grid.X, grid.Y+1)
-		if (belowTileIdx < 0) || (int(belowTileIdx) > len(world.Resources.Dungeon.Level.Entities)-1) {
+		// マップから下のタイルを高速検索
+		belowPos := gc.GridElement{X: grid.X, Y: grid.Y + 1}
+		belowTileEntity, foundBelow := tileMap[belowPos]
+
+		if !foundBelow {
 			return
 		}
-		belowTileEntity := world.Resources.Dungeon.Level.Entities[int(belowTileIdx)]
+
 		belowSpriteRender, ok := world.Components.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
 		if !ok || belowSpriteRender.Depth != gc.DepthNumFloor {
 			return // 下が床でなければ影を描画しない

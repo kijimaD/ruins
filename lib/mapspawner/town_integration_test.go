@@ -35,7 +35,6 @@ func TestTownPlannerIntegration(t *testing.T) {
 	// レベルの基本プロパティを確認
 	require.Equal(t, gc.Tile(50), level.TileWidth, "TileWidth should be 50")
 	require.Equal(t, gc.Tile(50), level.TileHeight, "TileHeight should be 50")
-	require.Equal(t, 50*50, len(level.Entities), "Should have 2500 entity slots")
 
 	// プレイヤー開始位置を確認
 	playerX, playerY, hasPlayer := metaPlan.GetPlayerStartPosition()
@@ -50,17 +49,12 @@ func TestTownPlannerIntegration(t *testing.T) {
 	require.Equal(t, 1, len(metaPlan.WarpPortals), "Should have exactly one warp portal")
 	// NPCは現在スキップ中
 
-	// 非ゼロエンティティが生成されているか確認
-	nonZeroEntities := 0
-	for _, entity := range level.Entities {
-		if entity != 0 {
-			nonZeroEntities++
-		}
-	}
-	require.Greater(t, nonZeroEntities, 1000, "Should have many entities spawned (walls, floors, etc)")
+	// GridElementコンポーネントを持つエンティティ数を確認
+	entityCount := world.Manager.Join(world.Components.GridElement).Size()
+	require.Greater(t, entityCount, 1000, "Should have many entities spawned (walls, floors, etc)")
 
 	t.Logf("街マップ統合テスト成功: エンティティ数=%d, プレイヤー位置=(%d,%d)",
-		nonZeroEntities, playerX, playerY)
+		entityCount, playerX, playerY)
 }
 
 func TestTownPlannerVsSmallRoom(t *testing.T) {

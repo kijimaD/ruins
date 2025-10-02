@@ -6,7 +6,6 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestPlanData_AdjacentAnyFloor(t *testing.T) {
@@ -17,7 +16,6 @@ func TestPlanData_AdjacentAnyFloor(t *testing.T) {
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
-			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
@@ -87,7 +85,6 @@ func TestPlanData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
-			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},

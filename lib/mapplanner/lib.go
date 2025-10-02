@@ -10,7 +10,6 @@ import (
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // WarpPortalType はワープポータルの種別
@@ -269,7 +268,6 @@ func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 			Level: resources.Level{
 				TileWidth:  width,
 				TileHeight: height,
-				Entities:   make([]ecs.Entity, tileCount),
 			},
 			Tiles:               tiles,
 			Rooms:               []gc.Rect{},
