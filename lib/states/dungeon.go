@@ -9,6 +9,7 @@ import (
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
+	"github.com/kijimaD/ruins/lib/gamelog"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/mapspawner"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -90,6 +91,19 @@ func (st *DungeonState) OnStart(world w.World) {
 
 	// 視界キャッシュをクリア（新しい階のために）
 	gs.ClearVisionCaches()
+
+	// 初回の冒険開始時のみ操作ガイドを表示
+	if st.Depth == 1 {
+		gamelog.New(gamelog.FieldLog).
+			Append("冒険を開始した。").
+			Log()
+		gamelog.New(gamelog.FieldLog).
+			System("WASD: 移動する。").
+			Log()
+		gamelog.New(gamelog.FieldLog).
+			System("Mキー: メニューを開く。").
+			Log()
+	}
 }
 
 // OnStop はステートが停止される際に呼ばれる

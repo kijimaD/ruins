@@ -223,11 +223,11 @@ func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
 		switch warp.Mode {
 		case gc.WarpModeNext:
 			gamelog.New(gamelog.FieldLog).
-				Append("階段を発見した。Enterキーで移動").
+				Append("階段を発見した。Enterキーで移動。").
 				Log()
 		case gc.WarpModeEscape:
 			gamelog.New(gamelog.FieldLog).
-				Append("出口を発見した。Enterキーで移動").
+				Append("出口を発見した。Enterキーで移動。").
 				Log()
 		}
 	}
