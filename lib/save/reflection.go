@@ -80,6 +80,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// データコンポーネント（汎用処理）
 	r.registerComponent(reflect.TypeOf(&gc.Name{}), components.Name, r.extractName, r.restoreName, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
+	r.registerComponent(reflect.TypeOf(&gc.TurnBased{}), components.TurnBased, r.extractTurnBased, r.restoreTurnBased, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Description{}), components.Description, r.extractDescription, r.restoreDescription, nil)
 
@@ -445,6 +446,23 @@ func (r *ComponentRegistry) restorePools(world w.World, entity ecs.Entity, data 
 		return fmt.Errorf("invalid Pools data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Pools, &pools)
+	return nil
+}
+
+func (r *ComponentRegistry) extractTurnBased(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.TurnBased) {
+		return nil, false
+	}
+	turnBased := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
+	return *turnBased, true
+}
+
+func (r *ComponentRegistry) restoreTurnBased(world w.World, entity ecs.Entity, data interface{}) error {
+	turnBased, ok := data.(gc.TurnBased)
+	if !ok {
+		return fmt.Errorf("invalid TurnBased data type: %T", data)
+	}
+	entity.AddComponent(world.Components.TurnBased, &turnBased)
 	return nil
 }
 
