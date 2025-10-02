@@ -115,7 +115,7 @@
 <li>インターフェースベースの拡張可能な設計
 </ul>
 <p>使用例:
-<pre>loader := loader.NewDefaultResourceLoader()
+<pre>loader := loader.NewResourceLoader()
 fonts, err := loader.LoadFonts()
 if err != nil {
     return err
@@ -168,10 +168,7 @@ if err != nil {
 				<dd><a href="index.html#ResourceLoader">type ResourceLoader</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewDefaultResourceLoader">func NewDefaultResourceLoader() ResourceLoader</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewResourceLoader">func NewResourceLoader(config ResourceConfig) ResourceLoader</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewResourceLoader">func NewResourceLoader() ResourceLoader</a></dd>
 				
 				
 			
@@ -228,7 +225,7 @@ if err != nil {
 
 			
 				
-				<h3 id="DefaultResourceLoader.LoadFonts">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=1853:1932#L53">LoadFonts</a>
+				<h3 id="DefaultResourceLoader.LoadFonts">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=1679:1758#L48">LoadFonts</a>
 					<a class="permalink" href="index.html#DefaultResourceLoader.LoadFonts">&#xb6;</a>
 					
 					
@@ -241,7 +238,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="DefaultResourceLoader.LoadRaws">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=3954:4018#L123">LoadRaws</a>
+				<h3 id="DefaultResourceLoader.LoadRaws">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=3780:3844#L118">LoadRaws</a>
 					<a class="permalink" href="index.html#DefaultResourceLoader.LoadRaws">&#xb6;</a>
 					
 					
@@ -254,7 +251,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="DefaultResourceLoader.LoadSpriteSheets">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=2801:2895#L85">LoadSpriteSheets</a>
+				<h3 id="DefaultResourceLoader.LoadSpriteSheets">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=2627:2721#L80">LoadSpriteSheets</a>
 					<a class="permalink" href="index.html#DefaultResourceLoader.LoadSpriteSheets">&#xb6;</a>
 					
 					
@@ -351,25 +348,13 @@ if err != nil {
 
 			
 				
-				<h3 id="NewDefaultResourceLoader">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=1533:1579#L44">NewDefaultResourceLoader</a>
-					<a class="permalink" href="index.html#NewDefaultResourceLoader">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewDefaultResourceLoader() <a href="index.html#ResourceLoader">ResourceLoader</a></pre>
-				<p>NewDefaultResourceLoader はデフォルトのパス設定でResourceLoaderを作成する
-
-				
-				
-			
-				
-				<h3 id="NewResourceLoader">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=1292:1352#L36">NewResourceLoader</a>
+				<h3 id="NewResourceLoader">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=1316:1355#L36">NewResourceLoader</a>
 					<a class="permalink" href="index.html#NewResourceLoader">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewResourceLoader(config <a href="index.html#ResourceConfig">ResourceConfig</a>) <a href="index.html#ResourceLoader">ResourceLoader</a></pre>
-				<p>NewResourceLoader は新しいResourceLoaderを作成する
+				<pre>func NewResourceLoader() <a href="index.html#ResourceLoader">ResourceLoader</a></pre>
+				<p>NewResourceLoader はデフォルトのパス設定でResourceLoaderを作成する
 
 				
 				

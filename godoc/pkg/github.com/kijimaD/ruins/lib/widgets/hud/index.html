@@ -109,18 +109,8 @@
 </ul>
 <h3 id="hdr-Usage">Usage</h3>
 <p>基本的な使用方法：
-<pre>// HUDメッセージエリア作成（デフォルト設定）
-messageArea := hud.NewMessageAreaDefault(world)
-
-// または設定をカスタマイズして作成
-config := hud.MessageAreaConfig{
-	LogAreaHeight: 150,
-	MaxLogLines:   8,
-	LogAreaMargin: 10,
-	LineHeight:    22,
-	YPadding:      6,
-}
-messageAreaCustom := hud.NewMessageArea(world, config)
+<pre>// HUDメッセージエリア作成
+messageArea := hud.NewMessageArea(world)
 
 // ゲームループ内で更新・描画
 func Update(world w.World) {
@@ -161,6 +151,8 @@ func Draw(world w.World, screen *ebiten.Image) {
 			<div id="manual-nav">
 			<dl>
 			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
 			
 			
@@ -221,10 +213,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				<dd><a href="index.html#MessageArea">type MessageArea</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewMessageArea">func NewMessageArea(world w.World, config MessageAreaConfig) *MessageArea</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewMessageAreaDefault">func NewMessageAreaDefault(world w.World) *MessageArea</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMessageArea">func NewMessageArea(world w.World) *MessageArea</a></dd>
 				
 				
 					
@@ -245,9 +234,6 @@ func Draw(world w.World, screen *ebiten.Image) {
 			
 				
 				<dd><a href="index.html#MessageAreaConfig">type MessageAreaConfig</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultMessageAreaConfig">func DefaultMessageAreaConfig() MessageAreaConfig</a></dd>
 				
 				
 			
@@ -327,6 +313,19 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 
 		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>DefaultMessageAreaConfig はデフォルトのメッセージエリア設定
+
+				<pre>var <span id="DefaultMessageAreaConfig">DefaultMessageAreaConfig</span> = <a href="index.html#MessageAreaConfig">MessageAreaConfig</a>{
+    <a href="index.html#MessageAreaConfig.LogAreaHeight">LogAreaHeight</a>: 120,
+    <a href="index.html#MessageAreaConfig.MaxLogLines">MaxLogLines</a>:   5,
+    <a href="index.html#MessageAreaConfig.LogAreaMargin">LogAreaMargin</a>: 8,
+    <a href="index.html#MessageAreaConfig.LineHeight">LineHeight</a>:    20,
+    <a href="index.html#MessageAreaConfig.YPadding">YPadding</a>:      8,
+}</pre>
+			
 		
 		
 		
@@ -613,7 +612,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MessageArea">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1000:1096#L22">MessageArea</a>
+			<h2 id="MessageArea">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=954:1050#L20">MessageArea</a>
 				<a class="permalink" href="index.html#MessageArea">&#xb6;</a>
 				
 				
@@ -635,25 +634,13 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="NewMessageArea">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1170:1243#L29">NewMessageArea</a>
+				<h3 id="NewMessageArea">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1127:1174#L27">NewMessageArea</a>
 					<a class="permalink" href="index.html#NewMessageArea">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewMessageArea(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>, config <a href="index.html#MessageAreaConfig">MessageAreaConfig</a>) *<a href="index.html#MessageArea">MessageArea</a></pre>
-				<p>NewMessageArea は設定を指定してHUDMessageAreaを作成する
-
-				
-				
-			
-				
-				<h3 id="NewMessageAreaDefault">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1819:1873#L57">NewMessageAreaDefault</a>
-					<a class="permalink" href="index.html#NewMessageAreaDefault">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewMessageAreaDefault(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="index.html#MessageArea">MessageArea</a></pre>
-				<p>NewMessageAreaDefault はデフォルト設定でHUDMessageAreaを作成する
+				<pre>func NewMessageArea(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="index.html#MessageArea">MessageArea</a></pre>
+				<p>NewMessageArea はデフォルト設定でHUDMessageAreaを作成する
 
 				
 				
@@ -661,7 +648,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="MessageArea.Draw">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2796:2865#L92">Draw</a>
+				<h3 id="MessageArea.Draw">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2466:2535#L83">Draw</a>
 					<a class="permalink" href="index.html#MessageArea.Draw">&#xb6;</a>
 					
 					
@@ -674,7 +661,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="MessageArea.GetConfig">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2487:2541#L78">GetConfig</a>
+				<h3 id="MessageArea.GetConfig">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2157:2211#L69">GetConfig</a>
 					<a class="permalink" href="index.html#MessageArea.GetConfig">&#xb6;</a>
 					
 					
@@ -687,7 +674,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="MessageArea.SetConfig">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2152:2212#L70">SetConfig</a>
+				<h3 id="MessageArea.SetConfig">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1822:1882#L61">SetConfig</a>
 					<a class="permalink" href="index.html#MessageArea.SetConfig">&#xb6;</a>
 					
 					
@@ -700,7 +687,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="MessageArea.SetStore">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1983:2042#L62">SetStore</a>
+				<h3 id="MessageArea.SetStore">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=1653:1712#L53">SetStore</a>
 					<a class="permalink" href="index.html#MessageArea.SetStore">&#xb6;</a>
 					
 					
@@ -713,7 +700,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="MessageArea.Update">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2620:2662#L83">Update</a>
+				<h3 id="MessageArea.Update">func (*MessageArea) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=2290:2332#L74">Update</a>
 					<a class="permalink" href="index.html#MessageArea.Update">&#xb6;</a>
 					
 					
@@ -752,18 +739,6 @@ func Draw(world w.World, screen *ebiten.Image) {
 			
 			
 
-			
-				
-				<h3 id="DefaultMessageAreaConfig">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/message_area.go?s=633:682#L11">DefaultMessageAreaConfig</a>
-					<a class="permalink" href="index.html#DefaultMessageAreaConfig">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func DefaultMessageAreaConfig() <a href="index.html#MessageAreaConfig">MessageAreaConfig</a></pre>
-				<p>DefaultMessageAreaConfig はデフォルトのメッセージエリア設定を返す
-
-				
-				
 			
 
 			
