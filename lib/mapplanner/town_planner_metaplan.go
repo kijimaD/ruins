@@ -112,15 +112,15 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 				var propType string
 				switch char {
 				case 'C':
-					propType = PropNameChair
+					propType = "chair"
 				case 'T':
-					propType = PropNameTable
+					propType = "table"
 				case 'S':
-					propType = PropNameBookshelf
+					propType = "bookshelf"
 				case 'M':
-					propType = PropNameBarrel
+					propType = "barrel"
 				case 'R':
-					propType = PropNameCrate
+					propType = "crate"
 				}
 
 				planData.Props = append(planData.Props, PropsSpec{

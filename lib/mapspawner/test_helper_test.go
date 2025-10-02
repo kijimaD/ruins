@@ -26,6 +26,48 @@ Walkable = false
 Name = "Dirt"
 Description = "土タイル"
 Walkable = true
+
+[[Props]]
+Name = "table"
+Description = "テスト用テーブル"
+SpriteKey = "prop_table"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "chair"
+Description = "テスト用椅子"
+SpriteKey = "prop_chair"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "bookshelf"
+Description = "テスト用本棚"
+SpriteKey = "prop_bookshelf"
+BlockPass = true
+BlockView = true
+
+[[Props]]
+Name = "barrel"
+Description = "テスト用樽"
+SpriteKey = "prop_barrel"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "crate"
+Description = "テスト用木箱"
+SpriteKey = "prop_crate"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "bed"
+Description = "テスト用寝台"
+SpriteKey = "prop_bed"
+BlockPass = true
+BlockView = false
 `)
 	return &rawMaster
 }

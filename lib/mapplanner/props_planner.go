@@ -6,17 +6,6 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// TODO: rawで置き換える
-// Prop名定数
-const (
-	PropNameTable     = "table"
-	PropNameChair     = "chair"
-	PropNameBookshelf = "bookshelf"
-	PropNameBed       = "bed"
-	PropNameBarrel    = "barrel"
-	PropNameCrate     = "crate"
-)
-
 // PropsSpec はProps配置仕様を表す
 type PropsSpec struct {
 	X        int    // X座標

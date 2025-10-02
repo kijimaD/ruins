@@ -40,6 +40,7 @@ Description = "半分程度回復する"
 		DropTableIndex:    map[string]int{},
 		SpriteSheetIndex:  map[string]int{},
 		TileIndex:         map[string]int{},
+		PropIndex:         map[string]int{},
 	}
 	assert.Equal(t, expect, raw)
 }
