@@ -6,7 +6,6 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestPlanData_GetWallType(t *testing.T) {
@@ -17,7 +16,6 @@ func TestPlanData_GetWallType(t *testing.T) {
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
-			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},
@@ -100,7 +98,6 @@ func TestPlanData_GetWallType_WithWarpTiles(t *testing.T) {
 		Level: resources.Level{
 			TileWidth:  width,
 			TileHeight: height,
-			Entities:   make([]ecs.Entity, int(width)*int(height)),
 		},
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
 		Rooms:     []gc.Rect{},

@@ -115,12 +115,18 @@ func (wa *WarpActivity) getPlayerWarp(_ *Activity, world w.World) *gc.Warp {
 	}
 
 	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
-	pixelX := int(gridElement.X) * 32
-	pixelY := int(gridElement.Y) * 32
-	tileEntity := world.Resources.Dungeon.Level.AtEntity(gc.Pixel(pixelX), gc.Pixel(pixelY))
 
-	if tileEntity.HasComponent(world.Components.Warp) {
-		return world.Components.Warp.Get(tileEntity).(*gc.Warp)
-	}
-	return nil
+	// プレイヤーと同じ座標にあるWarpコンポーネントを探す
+	var warp *gc.Warp
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Warp,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if ge.X == gridElement.X && ge.Y == gridElement.Y {
+			warp = world.Components.Warp.Get(entity).(*gc.Warp)
+		}
+	}))
+
+	return warp
 }

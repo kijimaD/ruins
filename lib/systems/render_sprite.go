@@ -177,7 +177,6 @@ func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[
 
 // renderWallShadows は壁の影を描画する
 func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-
 	world.Manager.Join(
 		world.Components.SpriteRender,
 		world.Components.GridElement,
@@ -204,11 +203,24 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 			return
 		}
 
-		belowTileIdx := world.Resources.Dungeon.Level.XYTileIndex(grid.X, grid.Y+1)
-		if (belowTileIdx < 0) || (int(belowTileIdx) > len(world.Resources.Dungeon.Level.Entities)-1) {
+		// 下のタイルのエンティティをGridElementでクエリ
+		var belowTileEntity ecs.Entity
+		var foundBelow bool
+		world.Manager.Join(
+			world.Components.GridElement,
+			world.Components.SpriteRender,
+		).Visit(ecs.Visit(func(e ecs.Entity) {
+			ge := world.Components.GridElement.Get(e).(*gc.GridElement)
+			if ge.X == grid.X && ge.Y == grid.Y+1 {
+				belowTileEntity = e
+				foundBelow = true
+			}
+		}))
+
+		if !foundBelow {
 			return
 		}
-		belowTileEntity := world.Resources.Dungeon.Level.Entities[int(belowTileIdx)]
+
 		belowSpriteRender, ok := world.Components.SpriteRender.Get(belowTileEntity).(*gc.SpriteRender)
 		if !ok || belowSpriteRender.Depth != gc.DepthNumFloor {
 			return // 下が床でなければ影を描画しない

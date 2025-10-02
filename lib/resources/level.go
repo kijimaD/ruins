@@ -3,7 +3,6 @@ package resources
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // Dungeon は冒険出発から帰還までを1セットとした情報を保持する。
@@ -35,13 +34,12 @@ func (d *Dungeon) ConsumeStateEvent() StateEvent {
 
 // Level は現在の階層
 // タイル計算メソッドを提供する
+// TODO: 状態として持たないほうがいいかも
 type Level struct {
 	// 横のタイル数
 	TileWidth gc.Tile
 	// 縦のタイル数
 	TileHeight gc.Tile
-	// タイルエンティティ群
-	Entities []ecs.Entity
 }
 
 // XYTileIndex はタイル座標から、タイルスライスのインデックスを求める
@@ -55,15 +53,6 @@ func (l *Level) XYTileCoord(idx TileIdx) (gc.Pixel, gc.Pixel) {
 	y := int(idx) / int(l.TileWidth)
 
 	return gc.Pixel(x), gc.Pixel(y)
-}
-
-// AtEntity はxy座標から、該当するエンティティを求める
-func (l *Level) AtEntity(x gc.Pixel, y gc.Pixel) ecs.Entity {
-	tx := gc.Tile(int(x) / int(consts.TileSize))
-	ty := gc.Tile(int(y) / int(consts.TileSize))
-	idx := l.XYTileIndex(tx, ty)
-
-	return l.Entities[idx]
 }
 
 // Width はステージ幅。横の全体ピクセル数
