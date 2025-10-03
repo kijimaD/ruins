@@ -3,6 +3,7 @@ package systems
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -58,11 +59,18 @@ func CameraSystem(world w.World) {
 		}
 
 		// Smooth zoom transition.
-		div := 10.0
-		if camera.ScaleTo > camera.Scale {
-			camera.Scale += (camera.ScaleTo - camera.Scale) / div
-		} else if camera.ScaleTo < camera.Scale {
-			camera.Scale -= (camera.Scale - camera.ScaleTo) / div
+		cfg := config.MustGet()
+		if cfg.DisableAnimation {
+			// アニメーション無効時は即座にズーム
+			camera.Scale = camera.ScaleTo
+		} else {
+			// 通常時はスムーズにズーム
+			div := 10.0
+			if camera.ScaleTo > camera.Scale {
+				camera.Scale += (camera.ScaleTo - camera.Scale) / div
+			} else if camera.ScaleTo < camera.Scale {
+				camera.Scale -= (camera.Scale - camera.ScaleTo) / div
+			}
 		}
 	}))
 }

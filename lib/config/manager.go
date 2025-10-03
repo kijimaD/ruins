@@ -15,7 +15,7 @@ var (
 func Get() *Config {
 	once.Do(func() {
 		var err error
-		instance, err = Load()
+		instance, err = load()
 		if err != nil {
 			log.Fatalf("設定の読み込みに失敗しました: %v", err)
 		}
