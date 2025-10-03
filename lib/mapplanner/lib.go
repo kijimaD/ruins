@@ -453,7 +453,6 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 }
 
 // GenerateTile はタイルを生成する
-// TODO: 消して直接呼び出せばよい
 func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
 	if bm.RawMaster == nil {
 		panic("RawMasterが設定されていない。TOMLからのタイル生成が必須である")

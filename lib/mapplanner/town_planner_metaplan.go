@@ -109,24 +109,24 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 				})
 			case 'C', 'T', 'S', 'M', 'R':
 				// Props（家具類）
-				var propType string
+				var propKey string
 				switch char {
 				case 'C':
-					propType = "chair"
+					propKey = "chair"
 				case 'T':
-					propType = "table"
+					propKey = "table"
 				case 'S':
-					propType = "bookshelf"
+					propKey = "bookshelf"
 				case 'M':
-					propType = "barrel"
+					propKey = "barrel"
 				case 'R':
-					propType = "crate"
+					propKey = "crate"
 				}
 
 				planData.Props = append(planData.Props, PropsSpec{
-					X:        x,
-					Y:        y,
-					PropType: propType,
+					X:       x,
+					Y:       y,
+					PropKey: propKey,
 				})
 			}
 		}

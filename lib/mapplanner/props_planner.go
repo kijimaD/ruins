@@ -8,9 +8,9 @@ import (
 
 // PropsSpec はProps配置仕様を表す
 type PropsSpec struct {
-	X        int    // X座標
-	Y        int    // Y座標
-	PropType string // Propsタイプ（prop名）
+	X       int    // X座標
+	Y       int    // Y座標
+	PropKey string // Prop名
 }
 
 // PropsPlanner はProps配置を担当するプランナー
@@ -45,9 +45,9 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 
 	// 図書館の家具配置
 	libraryProps := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"bookshelf", -8, -19}, // 北壁沿い
 		{"bookshelf", -6, -19}, // 北壁沿い
@@ -61,18 +61,18 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
 
 	// 学校の家具配置
 	schoolProps := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"bookshelf", 6, -19},  // 北壁
 		{"bookshelf", 8, -19},  // 北壁
@@ -88,18 +88,18 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
 
 	// 住民の家1の家具配置
 	house1Props := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"bed", 13, -7},   // 寝室
 		{"table", 15, -5}, // 食事台
@@ -112,18 +112,18 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
 
 	// 住民の家2の家具配置
 	house2Props := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"bed", 14, 2},   // 寝室
 		{"table", 16, 4}, // 食事台
@@ -135,18 +135,18 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
 
 	// 公民館の座席配置
 	hallProps := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"chair", -6, 12}, // 集会用座席
 		{"chair", -4, 12}, // 集会用座席
@@ -159,18 +159,18 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
 
 	// 事務所の家具配置
 	officeProps := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"bed", 12, 13},       // 休憩用ベッド
 		{"table", 14, 15},     // 事務机
@@ -183,18 +183,18 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
 
 	// 市場の露店（簡略化して一部のみ配置）
 	marketProps := []struct {
-		propType string
-		offsetX  int
-		offsetY  int
+		propKey string
+		offsetX int
+		offsetY int
 	}{
 		{"table", -12, 5}, // 露店1
 		{"table", -9, 5},  // 露店2
@@ -206,9 +206,9 @@ func (p *PropsPlanner) addTownProps(planData *MetaPlan) {
 		y := centerY + prop.offsetY
 		if p.isValidPropPosition(planData, gc.Tile(x), gc.Tile(y)) {
 			planData.Props = append(planData.Props, PropsSpec{
-				X:        x,
-				Y:        y,
-				PropType: prop.propType,
+				X:       x,
+				Y:       y,
+				PropKey: prop.propKey,
 			})
 		}
 	}
