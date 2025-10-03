@@ -345,3 +345,6 @@ type LocationNone struct{}
 func (c LocationNone) String() string {
 	return "ItemLocationNone"
 }
+
+// Prop は置物を表すマーカーコンポーネント
+type Prop struct{}
