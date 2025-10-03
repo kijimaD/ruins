@@ -27,12 +27,6 @@ func Get() *Config {
 	return instance
 }
 
-// Reset は設定インスタンスをリセットする（主にテスト用）
-func Reset() {
-	once = sync.Once{}
-	instance = nil
-}
-
 // MustGet は設定を取得し、エラーがあればパニックする
 func MustGet() *Config {
 	return Get()
