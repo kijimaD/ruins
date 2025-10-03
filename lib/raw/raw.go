@@ -472,11 +472,12 @@ type TileRaw struct {
 
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
-	Name        string
-	Description string
-	SpriteKey   string
-	BlockPass   bool
-	BlockView   bool
+	Name            string
+	Description     string
+	SpriteSheetName string
+	SpriteKey       string
+	BlockPass       bool
+	BlockView       bool
 }
 
 // GenerateTile は指定された名前のタイルを生成する
@@ -511,7 +512,7 @@ func (rw *Master) GenerateProp(name string) (gc.EntitySpec, error) {
 	cl.Name = &gc.Name{Name: propRaw.Name}
 	cl.Description = &gc.Description{Description: propRaw.Description}
 	cl.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: "field",
+		SpriteSheetName: propRaw.SpriteSheetName,
 		SpriteKey:       propRaw.SpriteKey,
 		Depth:           gc.DepthNumRug,
 	}
