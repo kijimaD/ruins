@@ -427,6 +427,11 @@ func (rw *Master) GeneratePlayer(name string) (gc.EntitySpec, error) {
 	cl.FactionType = &gc.FactionAlly
 	cl.Player = &gc.Player{}
 	cl.Hunger = gc.NewHunger()
+	cl.LightSource = &gc.LightSource{
+		Radius:    6,
+		Intensity: 1.0,
+		Enabled:   true,
+	}
 	return cl, nil
 }
 
@@ -478,6 +483,14 @@ type PropRaw struct {
 	SpriteKey       string
 	BlockPass       bool
 	BlockView       bool
+	LightSource     *LightSourceRaw
+}
+
+// LightSourceRaw は光源のローデータ定義
+type LightSourceRaw struct {
+	Radius    gc.Tile
+	Intensity float64
+	Enabled   bool
 }
 
 // GenerateTile は指定された名前のタイルを生成する
@@ -522,6 +535,15 @@ func (rw *Master) GenerateProp(name string) (gc.EntitySpec, error) {
 	}
 	if propRaw.BlockView {
 		cl.BlockView = &gc.BlockView{}
+	}
+
+	// 光源の設定
+	if propRaw.LightSource != nil {
+		cl.LightSource = &gc.LightSource{
+			Radius:    propRaw.LightSource.Radius,
+			Intensity: propRaw.LightSource.Intensity,
+			Enabled:   propRaw.LightSource.Enabled,
+		}
 	}
 
 	return cl, nil

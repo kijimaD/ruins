@@ -41,6 +41,7 @@ type EntitySpec struct {
 	BlockPass    *BlockPass
 	TurnBased    *TurnBased
 	Prop         *Prop
+	LightSource  *LightSource
 
 	// member ================
 	Player      *Player
@@ -94,6 +95,7 @@ type Components struct {
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
 	Prop         *ecs.NullComponent
+	LightSource  *ecs.SliceComponent
 
 	// member ================
 	Player       *ecs.NullComponent
@@ -348,3 +350,10 @@ func (c LocationNone) String() string {
 
 // Prop は置物を表すマーカーコンポーネント
 type Prop struct{}
+
+// LightSource は光源コンポーネント
+type LightSource struct {
+	Radius    Tile    // 照明範囲
+	Intensity float64 // 光の強度（0.0-1.0）
+	Enabled   bool    // 有効/無効
+}
