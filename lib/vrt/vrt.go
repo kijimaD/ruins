@@ -79,12 +79,14 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 
 // RunTestGame はテストゲームを実行してスクリーンショットを保存する
 func RunTestGame(state es.State[w.World], outputPath string) {
-	cfg, err := config.Load()
-	if err != nil {
-		panic(fmt.Sprintf("Failed to load config: %v", err))
-	}
-	// VRT用にアニメーションを無効化
+	// VRT用にアニメーションを無効化（シングルトンインスタンスを直接変更）
+	cfg := config.Get()
+	originalConfig := *cfg
 	cfg.DisableAnimation = true
+	// テスト終了後に設定を復元
+	defer func() {
+		*cfg = originalConfig
+	}()
 
 	world, err := maingame.InitWorld(960, 720)
 	if err != nil {

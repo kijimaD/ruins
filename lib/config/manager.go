@@ -15,7 +15,7 @@ var (
 func Get() *Config {
 	once.Do(func() {
 		var err error
-		instance, err = Load()
+		instance, err = load()
 		if err != nil {
 			log.Fatalf("設定の読み込みに失敗しました: %v", err)
 		}
@@ -25,12 +25,6 @@ func Get() *Config {
 		}
 	})
 	return instance
-}
-
-// Reset は設定インスタンスをリセットする（主にテスト用）
-func Reset() {
-	once = sync.Once{}
-	instance = nil
 }
 
 // MustGet は設定を取得し、エラーがあればパニックする

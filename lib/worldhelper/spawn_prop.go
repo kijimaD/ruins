@@ -1,10 +1,8 @@
 package worldhelper
 
 import (
-	"fmt"
-
 	"github.com/kijimaD/ruins/lib/engine/entities"
-	"github.com/kijimaD/ruins/lib/props"
+	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -12,13 +10,12 @@ import (
 )
 
 // SpawnProp は置物を生成する統一関数
-func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	// PropManagerを取得（後でResourcesに追加する必要がある）
-	propManager := props.NewPropManager()
-
-	config, exists := propManager.GetConfig(propType)
-	if !exists {
-		return ecs.Entity(0), fmt.Errorf("未定義の置物タイプ: %s", propType)
+func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
+	// RawMasterから置物の設定を生成
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	entitySpec, err := rawMaster.GenerateProp(propName)
+	if err != nil {
+		return ecs.Entity(0), err
 	}
 
 	// 床を下敷きとして配置（既に床がある場合は配置しない）
@@ -26,32 +23,11 @@ func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.E
 		_, _ = SpawnFloor(world, x, y, "field", "floor")
 	}
 
-	// 置物エンティティを構築
+	// 位置情報を設定
+	entitySpec.GridElement = &gc.GridElement{X: x, Y: y}
+
+	// エンティティを生成
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	entitySpec := gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: "field",
-			SpriteKey:       config.SpriteKey,
-			Depth:           gc.DepthNumRug, // アイテムと同じ深度
-		},
-		PropType: &propType,
-		Name: &gc.Name{
-			Name: config.Name,
-		},
-		Description: &gc.Description{
-			Description: config.Description,
-		},
-	}
-
-	// 設定に応じてコンポーネントを追加
-	if config.BlocksMovement {
-		entitySpec.BlockPass = &gc.BlockPass{}
-	}
-	if config.BlocksVisibility {
-		entitySpec.BlockView = &gc.BlockView{}
-	}
-
 	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 	return entities[len(entities)-1], nil

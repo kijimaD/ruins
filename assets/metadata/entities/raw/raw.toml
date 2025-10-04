@@ -2186,3 +2186,53 @@ Walkable = false
 Name = "Dirt"
 Description = "土"
 Walkable = true
+
+# Props ================
+
+[[Props]]
+Name = "table"
+Description = "頑丈な木製のテーブル"
+SpriteSheetName = "field"
+SpriteKey = "prop_table"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "chair"
+Description = "座り心地の良さそうな椅子"
+SpriteSheetName = "field"
+SpriteKey = "prop_chair"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "bookshelf"
+Description = "たくさんの本が並んだ本棚"
+SpriteSheetName = "field"
+SpriteKey = "prop_bookshelf"
+BlockPass = true
+BlockView = true
+
+[[Props]]
+Name = "barrel"
+Description = "何か入っているかもしれない樽"
+SpriteSheetName = "field"
+SpriteKey = "prop_barrel"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "crate"
+Description = "頑丈そうな木箱"
+SpriteSheetName = "field"
+SpriteKey = "prop_crate"
+BlockPass = true
+BlockView = false
+
+[[Props]]
+Name = "bed"
+Description = "簡素だが清潔な寝台"
+SpriteSheetName = "field"
+SpriteKey = "prop_bed"
+BlockPass = true
+BlockView = false

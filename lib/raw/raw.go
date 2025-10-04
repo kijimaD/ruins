@@ -19,6 +19,7 @@ type Master struct {
 	DropTableIndex    map[string]int
 	SpriteSheetIndex  map[string]int
 	TileIndex         map[string]int
+	PropIndex         map[string]int
 }
 
 // Raws は全てのローデータを格納する構造体
@@ -31,6 +32,7 @@ type Raws struct {
 	DropTables    []DropTable
 	SpriteSheets  []SpriteSheet
 	Tiles         []TileRaw
+	Props         []PropRaw
 }
 
 // Item はアイテムのローデータ
@@ -156,6 +158,7 @@ func Load(entityMetadataContent string) (Master, error) {
 	rw.DropTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
 	rw.TileIndex = map[string]int{}
+	rw.PropIndex = map[string]int{}
 
 	metaData, err := toml.Decode(entityMetadataContent, &rw.Raws)
 	if err != nil {
@@ -190,6 +193,9 @@ func Load(entityMetadataContent string) (Master, error) {
 	}
 	for i, tile := range rw.Raws.Tiles {
 		rw.TileIndex[tile.Name] = i
+	}
+	for i, prop := range rw.Raws.Props {
+		rw.PropIndex[prop.Name] = i
 	}
 
 	return rw, nil
@@ -464,12 +470,59 @@ type TileRaw struct {
 	Walkable    bool
 }
 
+// PropRaw は置物のローデータ定義
+type PropRaw struct {
+	Name            string
+	Description     string
+	SpriteSheetName string
+	SpriteKey       string
+	BlockPass       bool
+	BlockView       bool
+}
+
 // GenerateTile は指定された名前のタイルを生成する
-func (rw *Master) GenerateTile(name string) TileRaw {
+func (rw *Master) GenerateTile(name string) (TileRaw, error) {
 	tileIdx, ok := rw.TileIndex[name]
 	if !ok {
-		panic(fmt.Sprintf("タイル '%s' がTileIndexに存在しません", name))
+		return TileRaw{}, NewKeyNotFoundError(name, "TileIndex")
 	}
 
-	return rw.Raws.Tiles[tileIdx]
+	return rw.Raws.Tiles[tileIdx], nil
+}
+
+// GetProp は指定された名前の置物の設定を取得する
+func (rw *Master) GetProp(name string) (PropRaw, error) {
+	propIdx, ok := rw.PropIndex[name]
+	if !ok {
+		return PropRaw{}, NewKeyNotFoundError(name, "PropIndex")
+	}
+
+	return rw.Raws.Props[propIdx], nil
+}
+
+// GenerateProp は指定された名前の置物のゲームコンポーネントを生成する
+func (rw *Master) GenerateProp(name string) (gc.EntitySpec, error) {
+	propRaw, err := rw.GetProp(name)
+	if err != nil {
+		return gc.EntitySpec{}, err
+	}
+
+	cl := gc.EntitySpec{}
+	cl.Prop = &gc.Prop{}
+	cl.Name = &gc.Name{Name: propRaw.Name}
+	cl.Description = &gc.Description{Description: propRaw.Description}
+	cl.SpriteRender = &gc.SpriteRender{
+		SpriteSheetName: propRaw.SpriteSheetName,
+		SpriteKey:       propRaw.SpriteKey,
+		Depth:           gc.DepthNumRug,
+	}
+
+	if propRaw.BlockPass {
+		cl.BlockPass = &gc.BlockPass{}
+	}
+	if propRaw.BlockView {
+		cl.BlockView = &gc.BlockView{}
+	}
+
+	return cl, nil
 }

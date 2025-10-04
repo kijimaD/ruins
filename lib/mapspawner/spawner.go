@@ -93,7 +93,7 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 	// Propsを生成
 	for _, prop := range metaPlan.Props {
 		tileX, tileY := gc.Tile(prop.X), gc.Tile(prop.Y)
-		_, err := worldhelper.SpawnProp(world, prop.PropType, tileX, tileY)
+		_, err := worldhelper.SpawnProp(world, prop.PropKey, tileX, tileY)
 		if err != nil {
 			return resources.Level{}, fmt.Errorf("props生成エラー (%d, %d): %w", prop.X, prop.Y, err)
 		}

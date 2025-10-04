@@ -32,7 +32,7 @@ func runScreenshot(ctx *cli.Context) error {
 	case "DebugMenu":
 		vrt.RunTestGame(gs.NewDebugMenuState(), mode)
 	case gs.DungeonState{}.String():
-		// いい感じのseed値
+		// 固定seed値を使用する
 		const seedVal = 1
 		vrt.RunTestGame(&gs.DungeonState{
 			Depth:       1,
@@ -44,7 +44,9 @@ func runScreenshot(ctx *cli.Context) error {
 	case "GameOver":
 		vrt.RunTestGame(gs.NewGameOverMessageState(), mode)
 	case "Town":
-		stateFactory := gs.NewDungeonState(1, gs.WithBuilderType(mapplanner.PlannerTypeTown))
+		// 固定seed値を使用する
+		const townSeedVal = 1
+		stateFactory := gs.NewDungeonState(1, gs.WithSeed(townSeedVal), gs.WithBuilderType(mapplanner.PlannerTypeTown))
 		vrt.RunTestGame(stateFactory(), mode)
 	case gs.InventoryMenuState{}.String():
 		vrt.RunTestGame(&gs.InventoryMenuState{}, mode)

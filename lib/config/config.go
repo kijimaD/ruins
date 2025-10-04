@@ -49,8 +49,8 @@ type Config struct {
 	ProfilePath   string `env:"RUINS_PROFILE_PATH"`
 }
 
-// Load は環境変数から設定を読み込む
-func Load() (*Config, error) {
+// load は環境変数から設定を読み込む
+func load() (*Config, error) {
 	cfg := &Config{}
 
 	// プロファイルを最初に決定(デフォルトはproduction)
