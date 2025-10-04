@@ -138,6 +138,15 @@
 			
 			
 				
+				<dd><a href="index.html#AppendNameWithColor">func AppendNameWithColor(logger *gamelog.Logger, entity ecs.Entity, name string, world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#ApplyDamage">func ApplyDamage(world w.World, target ecs.Entity, damage int, source ecs.Entity)</a></dd>
+			
+				
+				<dd><a href="index.html#ApplyHealing">func ApplyHealing(world w.World, target ecs.Entity, amount int) int</a></dd>
+			
+				
 				<dd><a href="index.html#CanCraft">func CanCraft(world w.World, name string) (bool, error)</a></dd>
 			
 				
@@ -162,6 +171,9 @@
 				<dd><a href="index.html#GetCardEquipments">func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
 			
 				
+				<dd><a href="index.html#GetEntityName">func GetEntityName(entity ecs.Entity, world w.World) string</a></dd>
+			
+				
 				<dd><a href="index.html#GetInventoryItems">func GetInventoryItems(world w.World) []ecs.Entity</a></dd>
 			
 				
@@ -172,6 +184,9 @@
 			
 				
 				<dd><a href="index.html#InitDebugData">func InitDebugData(world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#IsPlayerEntity">func IsPlayerEntity(entity ecs.Entity, world w.World) bool</a></dd>
 			
 				
 				<dd><a href="index.html#MergeMaterialIntoInventory">func MergeMaterialIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) error</a></dd>
@@ -253,6 +268,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/craft.go">craft.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go">damage.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/debug.go">debug.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/doc.go">doc.go</a>
@@ -293,6 +310,51 @@
 )</pre>
 			
 		
+		
+			
+			
+			<h2 id="AppendNameWithColor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go?s=2311:2406#L65">AppendNameWithColor</a>
+				<a class="permalink" href="index.html#AppendNameWithColor">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func AppendNameWithColor(logger *<a href="../gamelog/index.html">gamelog</a>.<a href="../gamelog/index.html#Logger">Logger</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>AppendNameWithColor はエンティティの種類に応じて色付きで名前を追加する
+
+			
+			
+
+		
+			
+			
+			<h2 id="ApplyDamage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go?s=351:432#L4">ApplyDamage</a>
+				<a class="permalink" href="index.html#ApplyDamage">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ApplyDamage(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, damage <a href="http://localhost:8888/pkg/builtin/#int">int</a>, source <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+			<p>ApplyDamage は共通のダメージ処理を実行する
+source から target へダメージを与え、死亡判定とログ出力を行う
+
+			
+			
+
+		
+			
+			
+			<h2 id="ApplyHealing">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go?s=2936:3003#L83">ApplyHealing</a>
+				<a class="permalink" href="index.html#ApplyHealing">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ApplyHealing(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, target <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+			<p>ApplyHealing は共通の回復処理を実行する
+target に amount 分のHPを回復させる
+実際の回復量を返す
+
+			
+			
+
 		
 			
 			
@@ -409,6 +471,20 @@
 		
 			
 			
+			<h2 id="GetEntityName">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go?s=2035:2094#L56">GetEntityName</a>
+				<a class="permalink" href="index.html#GetEntityName">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetEntityName(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+			<p>GetEntityName はエンティティの名前を取得する
+
+			
+			
+
+		
+			
+			
 			<h2 id="GetInventoryItems">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/inventory.go?s=3899:3949#L97">GetInventoryItems</a>
 				<a class="permalink" href="index.html#GetInventoryItems">&#xb6;</a>
 				
@@ -468,6 +544,20 @@
 		
 			
 			
+			<h2 id="IsPlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go?s=2684:2742#L76">IsPlayerEntity</a>
+				<a class="permalink" href="index.html#IsPlayerEntity">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func IsPlayerEntity(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+			<p>IsPlayerEntity はエンティティがプレイヤーかを判定する
+
+			
+			
+
+		
+			
+			
 			<h2 id="MergeMaterialIntoInventory">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/inventory.go?s=373:468#L3">MergeMaterialIntoInventory</a>
 				<a class="permalink" href="index.html#MergeMaterialIntoInventory">&#xb6;</a>
 				
@@ -497,7 +587,7 @@ materialの場合は既存と数量統合、それ以外は個別アイテムと
 		
 			
 			
-			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13903:13971#L391">MovePlayerToPosition</a>
+			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13770:13838#L391">MovePlayerToPosition</a>
 				<a class="permalink" href="index.html#MovePlayerToPosition">&#xb6;</a>
 				
 				
@@ -585,7 +675,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12405:12444#L348">SpawnAllCards</a>
+			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12272:12311#L348">SpawnAllCards</a>
 				<a class="permalink" href="index.html#SpawnAllCards">&#xb6;</a>
 				
 				
@@ -599,7 +689,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=10780:10823#L300">SpawnAllMaterials</a>
+			<h2 id="SpawnAllMaterials">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=10647:10690#L300">SpawnAllMaterials</a>
 				<a class="permalink" href="index.html#SpawnAllMaterials">&#xb6;</a>
 				
 				
@@ -613,7 +703,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11594:11635#L324">SpawnAllRecipes</a>
+			<h2 id="SpawnAllRecipes">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11461:11502#L324">SpawnAllRecipes</a>
 				<a class="permalink" href="index.html#SpawnAllRecipes">&#xb6;</a>
 				
 				
@@ -627,7 +717,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5409:5494#L150">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5369:5454#L149">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -641,7 +731,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13213:13306#L372">SpawnFieldItem</a>
+			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13080:13173#L372">SpawnFieldItem</a>
 				<a class="permalink" href="index.html#SpawnFieldItem">&#xb6;</a>
 				
 				
@@ -655,7 +745,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3447:3529#L93">SpawnFieldWarpEscape</a>
+			<h2 id="SpawnFieldWarpEscape">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3407:3489#L92">SpawnFieldWarpEscape</a>
 				<a class="permalink" href="index.html#SpawnFieldWarpEscape">&#xb6;</a>
 				
 				
@@ -669,7 +759,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2680:2760#L72">SpawnFieldWarpNext</a>
+			<h2 id="SpawnFieldWarpNext">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2640:2720#L71">SpawnFieldWarpNext</a>
 				<a class="permalink" href="index.html#SpawnFieldWarpNext">&#xb6;</a>
 				
 				
@@ -683,7 +773,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFloor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1477:1578#L40">SpawnFloor</a>
+			<h2 id="SpawnFloor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1437:1538#L39">SpawnFloor</a>
 				<a class="permalink" href="index.html#SpawnFloor">&#xb6;</a>
 				
 				
@@ -697,7 +787,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7020:7116#L200">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=6980:7076#L199">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
@@ -711,7 +801,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7601:7713#L214">SpawnMaterial</a>
+			<h2 id="SpawnMaterial">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7561:7673#L213">SpawnMaterial</a>
 				<a class="permalink" href="index.html#SpawnMaterial">&#xb6;</a>
 				
 				
@@ -725,7 +815,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4239:4325#L118">SpawnPlayer</a>
+			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4199:4285#L117">SpawnPlayer</a>
 				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
 				
 				
@@ -753,7 +843,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2035:2135#L55">SpawnWall</a>
+			<h2 id="SpawnWall">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1995:2095#L54">SpawnWall</a>
 				<a class="permalink" href="index.html#SpawnWall">&#xb6;</a>
 				
 				

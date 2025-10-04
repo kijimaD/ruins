@@ -164,7 +164,7 @@
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#DefaultActionPlanner.PlanAction">func (ap *DefaultActionPlanner) PlanAction(world w.World, aiEntity, playerEntity ecs.Entity, context *EntityContext, _ bool) (actions.ActivityType, actions.ActionParams)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#DefaultActionPlanner.PlanAction">func (ap *DefaultActionPlanner) PlanAction(world w.World, aiEntity, playerEntity ecs.Entity, context *EntityContext, _ bool) (actions.ActivityInterface, actions.ActionParams)</a></dd>
 				
 			
 				
@@ -210,7 +210,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#Processor.ProcessAllEntities">func (p *Processor) ProcessAllEntities(world w.World)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Processor.ProcessEntity">func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, entity ecs.Entity)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Processor.ProcessEntity">func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManager, entity ecs.Entity)</a></dd>
 				
 			
 				
@@ -307,7 +307,7 @@
 		
 			
 			
-			<h2 id="ActionPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=307:489#L4">ActionPlanner</a>
+			<h2 id="ActionPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=307:494#L4">ActionPlanner</a>
 				<a class="permalink" href="index.html#ActionPlanner">&#xb6;</a>
 				
 				
@@ -315,7 +315,7 @@
 			<p>ActionPlanner はAIのアクション計画システム
 
 			<pre>type ActionPlanner interface {
-    PlanAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, aiEntity, playerEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, context *<a href="index.html#EntityContext">EntityContext</a>, canSeePlayer <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) (<a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActivityType">ActivityType</a>, <a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActionParams">ActionParams</a>)
+    PlanAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, aiEntity, playerEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, context *<a href="index.html#EntityContext">EntityContext</a>, canSeePlayer <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) (<a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActivityInterface">ActivityInterface</a>, <a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActionParams">ActionParams</a>)
 }</pre>
 
 			
@@ -328,7 +328,7 @@
 
 			
 				
-				<h3 id="NewActionPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=655:692#L12">NewActionPlanner</a>
+				<h3 id="NewActionPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=660:697#L12">NewActionPlanner</a>
 					<a class="permalink" href="index.html#NewActionPlanner">&#xb6;</a>
 					
 					
@@ -344,7 +344,7 @@
 		
 			
 			
-			<h2 id="DefaultActionPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=558:592#L9">DefaultActionPlanner</a>
+			<h2 id="DefaultActionPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=563:597#L9">DefaultActionPlanner</a>
 				<a class="permalink" href="index.html#DefaultActionPlanner">&#xb6;</a>
 				
 				
@@ -366,12 +366,12 @@
 
 			
 				
-				<h3 id="DefaultActionPlanner.PlanAction">func (*DefaultActionPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=808:977#L17">PlanAction</a>
+				<h3 id="DefaultActionPlanner.PlanAction">func (*DefaultActionPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=813:987#L17">PlanAction</a>
 					<a class="permalink" href="index.html#DefaultActionPlanner.PlanAction">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (ap *<a href="index.html#DefaultActionPlanner">DefaultActionPlanner</a>) PlanAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, aiEntity, playerEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, context *<a href="index.html#EntityContext">EntityContext</a>, _ <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) (<a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActivityType">ActivityType</a>, <a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActionParams">ActionParams</a>)</pre>
+				<pre>func (ap *<a href="index.html#DefaultActionPlanner">DefaultActionPlanner</a>) PlanAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, aiEntity, playerEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, context *<a href="index.html#EntityContext">EntityContext</a>, _ <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>) (<a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActivityInterface">ActivityInterface</a>, <a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActionParams">ActionParams</a>)</pre>
 				<p>PlanAction は現在の状態に基づいてアクションを決定する
 
 				
@@ -481,7 +481,7 @@
 		
 			
 			
-			<h2 id="EntityContext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/processor.go?s=5193:5304#L126">EntityContext</a>
+			<h2 id="EntityContext">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/processor.go?s=5630:5741#L139">EntityContext</a>
 				<a class="permalink" href="index.html#EntityContext">&#xb6;</a>
 				
 				
@@ -509,7 +509,7 @@
 		
 			
 			
-			<h2 id="MoveCandidate">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=4528:4567#L117">MoveCandidate</a>
+			<h2 id="MoveCandidate">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/action_planner.go?s=4572:4611#L117">MoveCandidate</a>
 				<a class="permalink" href="index.html#MoveCandidate">&#xb6;</a>
 				
 				
@@ -584,12 +584,12 @@
 				
 			
 				
-				<h3 id="Processor.ProcessEntity">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/processor.go?s=1689:1786#L42">ProcessEntity</a>
+				<h3 id="Processor.ProcessEntity">func (*Processor) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/aiinput/processor.go?s=1724:1825#L42">ProcessEntity</a>
 					<a class="permalink" href="index.html#Processor.ProcessEntity">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (p *<a href="index.html#Processor">Processor</a>) ProcessEntity(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, actionAPI *<a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActionAPI">ActionAPI</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
+				<pre>func (p *<a href="index.html#Processor">Processor</a>) ProcessEntity(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, manager *<a href="../actions/index.html">actions</a>.<a href="../actions/index.html#ActivityManager">ActivityManager</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>)</pre>
 				<p>ProcessEntity は個別のAIエンティティを処理する
 
 				
