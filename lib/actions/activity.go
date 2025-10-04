@@ -78,6 +78,7 @@ type ActivityInfo struct {
 // ActivityInterface はアクティビティの実行を担当するインターフェース
 // CDDAのactivity_actorを参考にした設計
 type ActivityInterface interface {
+	Info() ActivityInfo
 	Validate(act *Activity, world w.World) error
 	Start(act *Activity, world w.World) error
 	DoTurn(act *Activity, world w.World) error
@@ -100,118 +101,6 @@ type Activity struct {
 	Logger *logger.Logger
 }
 
-// アクティビティ情報テーブル
-var activityInfos = map[ActivityType]ActivityInfo{
-	ActivityNull: {
-		Type:             ActivityNull,
-		Name:             "",
-		Description:      "無効なアクティビティ",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  0,
-		TotalRequiredAP:  0,
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityMove: {
-		Type:             ActivityMove,
-		Name:             "移動",
-		Description:      "隣接するタイルに移動する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100, // 初期AP相当（基本アクション）
-		TotalRequiredAP:  100,
-		RequiresTarget:   false,
-		RequiresPosition: true, // 移動先が必要
-	},
-	ActivityAttack: {
-		Type:             ActivityAttack,
-		Name:             "攻撃",
-		Description:      "敵を攻撃する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100, // 初期AP相当（基本アクション）
-		TotalRequiredAP:  100,
-		RequiresTarget:   true, // 攻撃対象が必要
-		RequiresPosition: false,
-	},
-	ActivityPickup: {
-		Type:             ActivityPickup,
-		Name:             "拾得",
-		Description:      "アイテムを拾得する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  50, // 初期APの半分（素早いアクション）
-		TotalRequiredAP:  50,
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityWarp: {
-		Type:             ActivityWarp,
-		Name:             "ワープ",
-		Description:      "ワープホールを使用する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  0, // 時間を消費しない（瞬間移動）
-		TotalRequiredAP:  0,
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityRest: {
-		Type:             ActivityRest,
-		Name:             "休息",
-		Description:      "体力を回復するために休息する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  1000, // AP100のプレイヤーで10ターン
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityRead: {
-		Type:             ActivityRead,
-		Name:             "読書",
-		Description:      "本を読んでスキルを習得する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  2000, // AP100のプレイヤーで20ターン
-		RequiresTarget:   true, // 本が対象
-		RequiresPosition: false,
-	},
-	ActivityCraft: {
-		Type:             ActivityCraft,
-		Name:             "クラフト",
-		Description:      "アイテムを作成する",
-		Interruptible:    true,
-		Resumable:        false, // 一度中断すると材料が無駄になる
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  1500, // AP100のプレイヤーで15ターン
-		RequiresTarget:   false,
-		RequiresPosition: true, // 作業場所が必要
-	},
-	ActivityWait: {
-		Type:             ActivityWait,
-		Name:             "待機",
-		Description:      "指定した時間だけ待機する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100, // 初期AP相当（意図的な時間消費）
-		TotalRequiredAP:  500, // AP100のプレイヤーで5ターン
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-}
-
 // アクティビティアクターのレジストリ
 var activityActors = map[ActivityType]ActivityInterface{
 	// 初期化は各アクティビティファイルで行う
@@ -229,11 +118,23 @@ func GetActivityActor(activityType ActivityType) ActivityInterface {
 
 // GetActivityInfo は指定されたアクティビティの情報を取得する
 func GetActivityInfo(activityType ActivityType) ActivityInfo {
-	if info, exists := activityInfos[activityType]; exists {
-		return info
+	// アクターから情報を取得
+	if actor := GetActivityActor(activityType); actor != nil {
+		return actor.Info()
 	}
-	// 未知のアクティビティに対してはNullActivityを返す
-	return activityInfos[ActivityNull]
+	// 未知のアクティビティに対してはデフォルト情報を返す
+	return ActivityInfo{
+		Type:             ActivityNull,
+		Name:             "",
+		Description:      "無効なアクティビティ",
+		Interruptible:    false,
+		Resumable:        false,
+		TimingMode:       TimingModeTime,
+		ActionPointCost:  0,
+		TotalRequiredAP:  0,
+		RequiresTarget:   false,
+		RequiresPosition: false,
+	}
 }
 
 // NewActivity は新しいアクティビティを作成する

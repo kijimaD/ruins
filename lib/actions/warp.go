@@ -18,6 +18,22 @@ func init() {
 	RegisterActivityActor(ActivityWarp, &WarpActivity{})
 }
 
+// Info はワープアクティビティの情報を返す
+func (wa *WarpActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityWarp,
+		Name:             "ワープ",
+		Description:      "ワープホールを使用する",
+		Interruptible:    false,
+		Resumable:        false,
+		TimingMode:       TimingModeTime,
+		ActionPointCost:  0, // 時間を消費しない（瞬間移動）
+		TotalRequiredAP:  0,
+		RequiresTarget:   false,
+		RequiresPosition: false,
+	}
+}
+
 // Validate はワープアクティビティの検証を行う
 func (wa *WarpActivity) Validate(act *Activity, world w.World) error {
 	// プレイヤーの現在位置のワープホールをチェック

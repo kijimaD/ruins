@@ -15,6 +15,22 @@ func init() {
 	RegisterActivityActor(ActivityWait, &WaitActivity{})
 }
 
+// Info は待機アクティビティの情報を返す
+func (wa *WaitActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityWait,
+		Name:             "待機",
+		Description:      "指定した時間だけ待機する",
+		Interruptible:    true,
+		Resumable:        true,
+		TimingMode:       TimingModeTime,
+		ActionPointCost:  100, // 初期AP相当（意図的な時間消費）
+		TotalRequiredAP:  500, // AP100のプレイヤーで5ターン
+		RequiresTarget:   false,
+		RequiresPosition: false,
+	}
+}
+
 // Validate は待機アクティビティの検証を行う
 func (wa *WaitActivity) Validate(act *Activity, _ w.World) error {
 	// 待機は基本的に常に実行可能

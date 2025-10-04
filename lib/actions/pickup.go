@@ -18,6 +18,22 @@ func init() {
 	RegisterActivityActor(ActivityPickup, &PickupActivity{})
 }
 
+// Info はアイテム拾得アクティビティの情報を返す
+func (pa *PickupActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityPickup,
+		Name:             "拾得",
+		Description:      "アイテムを拾得する",
+		Interruptible:    false,
+		Resumable:        false,
+		TimingMode:       TimingModeSpeed,
+		ActionPointCost:  50, // 初期APの半分（素早いアクション）
+		TotalRequiredAP:  50,
+		RequiresTarget:   false,
+		RequiresPosition: false,
+	}
+}
+
 // Validate はアイテム拾得アクティビティの検証を行う
 func (pa *PickupActivity) Validate(act *Activity, world w.World) error {
 	// プレイヤーの位置情報が必要

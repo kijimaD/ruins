@@ -41,6 +41,22 @@ func init() {
 	RegisterActivityActor(ActivityAttack, &AttackActivity{})
 }
 
+// Info は攻撃アクティビティの情報を返す
+func (aa *AttackActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityAttack,
+		Name:             "攻撃",
+		Description:      "敵を攻撃する",
+		Interruptible:    false,
+		Resumable:        false,
+		TimingMode:       TimingModeSpeed,
+		ActionPointCost:  100, // 初期AP相当（基本アクション）
+		TotalRequiredAP:  100,
+		RequiresTarget:   true, // 攻撃対象が必要
+		RequiresPosition: false,
+	}
+}
+
 // Validate は攻撃アクティビティの検証を行う
 func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 	// 攻撃対象の確認

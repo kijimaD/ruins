@@ -17,6 +17,22 @@ func init() {
 	RegisterActivityActor(ActivityCraft, &CraftActivity{})
 }
 
+// Info はクラフトアクティビティの情報を返す
+func (ca *CraftActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityCraft,
+		Name:             "クラフト",
+		Description:      "アイテムを作成する",
+		Interruptible:    true,
+		Resumable:        false, // 一度中断すると材料が無駄になる
+		TimingMode:       TimingModeSpeed,
+		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
+		TotalRequiredAP:  1500, // AP100のプレイヤーで15ターン
+		RequiresTarget:   false,
+		RequiresPosition: true, // 作業場所が必要
+	}
+}
+
 // Validate はクラフトアクティビティの検証を行う
 func (ca *CraftActivity) Validate(act *Activity, world w.World) error {
 	// クラフト対象（レシピ）が必要

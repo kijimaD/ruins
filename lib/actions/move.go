@@ -17,6 +17,22 @@ func init() {
 	RegisterActivityActor(ActivityMove, &MoveActivity{})
 }
 
+// Info は移動アクティビティの情報を返す
+func (ma *MoveActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityMove,
+		Name:             "移動",
+		Description:      "隣接するタイルに移動する",
+		Interruptible:    false,
+		Resumable:        false,
+		TimingMode:       TimingModeSpeed,
+		ActionPointCost:  100, // 初期AP相当（基本アクション）
+		TotalRequiredAP:  100,
+		RequiresTarget:   false,
+		RequiresPosition: true, // 移動先が必要
+	}
+}
+
 // Validate は移動アクティビティの検証を行う
 func (ma *MoveActivity) Validate(act *Activity, world w.World) error {
 	// 移動先の確認

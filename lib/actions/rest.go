@@ -17,6 +17,22 @@ func init() {
 	RegisterActivityActor(ActivityRest, &RestActivity{})
 }
 
+// Info は休息アクティビティの情報を返す
+func (ra *RestActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityRest,
+		Name:             "休息",
+		Description:      "体力を回復するために休息する",
+		Interruptible:    true,
+		Resumable:        true,
+		TimingMode:       TimingModeTime,
+		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
+		TotalRequiredAP:  1000, // AP100のプレイヤーで10ターン
+		RequiresTarget:   false,
+		RequiresPosition: false,
+	}
+}
+
 // Validate は休息アクティビティの検証を行う
 func (ra *RestActivity) Validate(act *Activity, world w.World) error {
 	// 周囲の安全性をチェック

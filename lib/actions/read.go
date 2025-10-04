@@ -16,6 +16,22 @@ func init() {
 	RegisterActivityActor(ActivityRead, &ReadActivity{})
 }
 
+// Info は読書アクティビティの情報を返す
+func (ra *ReadActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Type:             ActivityRead,
+		Name:             "読書",
+		Description:      "本を読んでスキルを習得する",
+		Interruptible:    true,
+		Resumable:        true,
+		TimingMode:       TimingModeTime,
+		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
+		TotalRequiredAP:  2000, // AP100のプレイヤーで20ターン
+		RequiresTarget:   true, // 本が対象
+		RequiresPosition: false,
+	}
+}
+
 // Validate は読書アクティビティの検証を行う
 func (ra *ReadActivity) Validate(act *Activity, world w.World) error {
 	// 読書対象（本）が必要
