@@ -120,7 +120,7 @@ func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManage
 		}
 
 		// アクティビティタイプに応じたAPコストを計算
-		actionCost, _ := actions.GetActivityCost(actorImpl)
+		actionCost := actorImpl.Info().ActionPointCost
 		if !turnManager.CanEntityAct(world, entity, actionCost) {
 			p.logger.Debug("AP不足でアクション実行不可", "entity", entity, "activity", activityName, "cost", actionCost)
 			break

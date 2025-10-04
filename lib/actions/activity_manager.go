@@ -363,9 +363,3 @@ type ActionResult struct {
 	ActivityName string // 実行されたアクティビティ名
 	Message      string // 結果メッセージ
 }
-
-// GetActivityCost はアクティビティ実装に応じたコストと名前を返す
-func GetActivityCost(actorImpl ActivityInterface) (int, string) {
-	info := actorImpl.Info()
-	return info.ActionPointCost, info.Name
-}
