@@ -231,7 +231,7 @@
 				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error)</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnProp">func SpawnProp(world w.World, propType gc.PropType, x gc.Tile, y gc.Tile) (ecs.Entity, error)</a></dd>
+				<dd><a href="index.html#SpawnProp">func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity, error)</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnWall">func SpawnWall(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error)</a></dd>
@@ -739,12 +739,12 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnProp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=299:392#L5">SpawnProp</a>
+			<h2 id="SpawnProp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=289:377#L3">SpawnProp</a>
 				<a class="permalink" href="index.html#SpawnProp">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func SpawnProp(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, propType <a href="../components/index.html">gc</a>.<a href="../components/index.html#PropType">PropType</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<pre>func SpawnProp(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, propName <a href="http://localhost:8888/pkg/builtin/#string">string</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>SpawnProp は置物を生成する統一関数
 
 			
