@@ -53,6 +53,12 @@ func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManage
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 	p.logger.Debug("AIエンティティ処理開始", "entity", entity)
 
+	// 死亡しているエンティティは処理しない
+	if entity.HasComponent(world.Components.Dead) {
+		p.logger.Debug("Deadエンティティのため処理スキップ", "entity", entity)
+		return
+	}
+
 	// 必要なコンポーネントを取得
 	context, err := p.gatherEntityContext(world, entity)
 	if err != nil {
@@ -96,6 +102,12 @@ func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManage
 	maxActions := 10 // 無限ループを防ぐためのリミット
 
 	for actionsExecuted < maxActions {
+		// アクション実行中に死亡した場合は処理を中断
+		if entity.HasComponent(world.Components.Dead) {
+			p.logger.Debug("エンティティが死亡したため処理中断", "entity", entity)
+			break
+		}
+
 		// アクション決定
 		actorImpl, actionParams := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
 
