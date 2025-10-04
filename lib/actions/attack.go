@@ -8,6 +8,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -148,8 +149,8 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 	// 1. 攻撃試行ログ
 	aa.logAttackResult(attacker, target, world, true, criticalHit, damage)
 
-	// 2. ダメージを直接適用（ダメージログと死亡ログはapplyDamage内で出力）
-	aa.applyDamage(world, target, damage, attacker)
+	// 2. ダメージを直接適用（ダメージログと死亡ログは共通関数内で出力）
+	worldhelper.ApplyDamage(world, target, damage, attacker)
 
 	return nil
 }
@@ -244,53 +245,6 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 	return finalDamage
 }
 
-// applyDamage はダメージを適用する
-func (aa *AttackActivity) applyDamage(world w.World, target ecs.Entity, damage int, source ecs.Entity) {
-	pools := world.Components.Pools.Get(target).(*gc.Pools)
-
-	beforeHP := pools.HP.Current
-	pools.HP.Current -= damage
-	if pools.HP.Current < 0 {
-		pools.HP.Current = 0
-	}
-
-	// ダメージログ出力（プレイヤー関連の場合のみ）
-	if isPlayerActivity(&Activity{Actor: source}, world) || isPlayerActivity(&Activity{Actor: target}, world) {
-		sourceName := aa.getEntityName(source, world)
-		targetName := aa.getEntityName(target, world)
-
-		logger := gamelog.New(gamelog.FieldLog)
-		logger.Build(func(l *gamelog.Logger) {
-			aa.appendNameWithColor(l, source, sourceName, world)
-		}).Append(" は ").Build(func(l *gamelog.Logger) {
-			aa.appendNameWithColor(l, target, targetName, world)
-		}).Append(fmt.Sprintf(" に %d のダメージを与えた。", damage)).Log()
-	}
-
-	// 死亡チェック
-	if pools.HP.Current <= 0 && beforeHP > 0 {
-		target.AddComponent(world.Components.Dead, &gc.Dead{})
-		aa.logDeath(world, target, source)
-	}
-}
-
-// logDeath は死亡ログを出力する
-func (aa *AttackActivity) logDeath(world w.World, target ecs.Entity, source ecs.Entity) {
-	// プレイヤー関連の場合のみログ出力
-	if !isPlayerActivity(&Activity{Actor: source}, world) && !isPlayerActivity(&Activity{Actor: target}, world) {
-		return
-	}
-
-	targetName := aa.getEntityName(target, world)
-
-	gamelog.New(gamelog.FieldLog).
-		Build(func(l *gamelog.Logger) {
-			aa.appendNameWithColor(l, target, targetName, world)
-		}).
-		Append(" は倒れた。").
-		Log()
-}
-
 // logAttackResult は攻撃結果をログに出力する
 // ダメージと死亡は別途ログ出力されるため、ここでは攻撃の成否のみを出力
 func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, _ int) {
@@ -300,16 +254,16 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 	}
 
 	// 攻撃者名とターゲット名を取得
-	attackerName := aa.getEntityName(attacker, world)
-	targetName := aa.getEntityName(target, world)
+	attackerName := worldhelper.GetEntityName(attacker, world)
+	targetName := worldhelper.GetEntityName(target, world)
 
 	gamelog.New(gamelog.FieldLog).
 		Build(func(l *gamelog.Logger) {
-			aa.appendNameWithColor(l, attacker, attackerName, world)
+			worldhelper.AppendNameWithColor(l, attacker, attackerName, world)
 		}).
 		Append(" は ").
 		Build(func(l *gamelog.Logger) {
-			aa.appendNameWithColor(l, target, targetName, world)
+			worldhelper.AppendNameWithColor(l, target, targetName, world)
 		}).
 		Build(func(l *gamelog.Logger) {
 			if !hit {
@@ -321,26 +275,4 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 			}
 		}).
 		Log()
-}
-
-// getEntityName はエンティティの名前を取得する
-func (aa *AttackActivity) getEntityName(entity ecs.Entity, world w.World) string {
-	// Nameコンポーネントから名前を取得
-	name := world.Components.Name.Get(entity)
-	if name != nil {
-		return name.(*gc.Name).Name
-	}
-
-	return "Unknown"
-}
-
-// appendNameWithColor はエンティティの種類に応じて色付きで名前を追加する
-func (aa *AttackActivity) appendNameWithColor(logger *gamelog.Logger, entity ecs.Entity, name string, world w.World) {
-	if entity.HasComponent(world.Components.Player) {
-		logger.PlayerName(name)
-	} else if entity.HasComponent(world.Components.AIMoveFSM) {
-		logger.NPCName(name)
-	} else {
-		logger.Append(name)
-	}
 }

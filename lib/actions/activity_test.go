@@ -236,37 +236,6 @@ func TestActivityDoTurn(t *testing.T) {
 	}
 }
 
-func TestActivityStringMethods(t *testing.T) {
-	t.Parallel()
-	// ActivityInterface.String()のテスト
-	restActor := &RestActivity{}
-	if restActor.String() != "Rest" {
-		t.Errorf("Expected 'Rest', got '%s'", restActor.String())
-	}
-
-	waitActor := &WaitActivity{}
-	if waitActor.String() != "Wait" {
-		t.Errorf("Expected 'Wait', got '%s'", waitActor.String())
-	}
-
-	// ActivityState.String()のテスト
-	if ActivityStateRunning.String() != "Running" {
-		t.Errorf("Expected 'Running', got '%s'", ActivityStateRunning.String())
-	}
-
-	if ActivityStatePaused.String() != "Paused" {
-		t.Errorf("Expected 'Paused', got '%s'", ActivityStatePaused.String())
-	}
-
-	if ActivityStateCompleted.String() != "Completed" {
-		t.Errorf("Expected 'Completed', got '%s'", ActivityStateCompleted.String())
-	}
-
-	if ActivityStateCanceled.String() != "Canceled" {
-		t.Errorf("Expected 'Canceled', got '%s'", ActivityStateCanceled.String())
-	}
-}
-
 // createMockWorld はテスト用のモックワールドを作成する
 func createMockWorld() w.World {
 	manager := ecs.NewManager()

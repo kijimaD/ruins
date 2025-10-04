@@ -6,12 +6,8 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
-)
-
-const (
-	// unknownEntityName は不明なエンティティ名
-	unknownEntityName = "Unknown"
 )
 
 // UseItemActivity はActivityInterfaceの実装
@@ -90,10 +86,8 @@ func (u *UseItemActivity) DoTurn(act *Activity, world w.World) error {
 	// ダメージ効果があるかチェック
 	if damage := world.Components.InflictsDamage.Get(item); damage != nil {
 		damageComponent := damage.(*gc.InflictsDamage)
-		if err := u.applyDamage(act, world, damageComponent.Amount, item); err != nil {
-			act.Cancel(fmt.Sprintf("ダメージ処理エラー: %s", err.Error()))
-			return err
-		}
+		// 共通のダメージ処理を使用
+		worldhelper.ApplyDamage(world, act.Actor, damageComponent.Amount, act.Actor)
 	}
 
 	// 消費可能アイテムの場合は削除
@@ -131,38 +125,12 @@ func (u *UseItemActivity) applyHealing(act *Activity, world w.World, amounter gc
 	default:
 		return fmt.Errorf("未対応のAmounterタイプ: %T", amounter)
 	}
-	pools := world.Components.Pools.Get(act.Actor).(*gc.Pools)
 
-	beforeHP := pools.HP.Current
-	pools.HP.Current += amount
-	if pools.HP.Current > pools.HP.Max {
-		pools.HP.Current = pools.HP.Max
-	}
-	actualHealing := pools.HP.Current - beforeHP
+	// 共通の回復処理を使用
+	actualHealing := worldhelper.ApplyHealing(world, act.Actor, amount)
 
 	// ログ出力
 	u.logItemUse(act, world, item, actualHealing, true)
-
-	return nil
-}
-
-// applyDamage はダメージ処理を適用する
-func (u *UseItemActivity) applyDamage(act *Activity, world w.World, amount int, item ecs.Entity) error {
-	pools := world.Components.Pools.Get(act.Actor).(*gc.Pools)
-
-	pools.HP.Current -= amount
-	if pools.HP.Current < 0 {
-		pools.HP.Current = 0
-	}
-
-	// 死亡チェック
-	if pools.HP.Current <= 0 {
-		act.Actor.AddComponent(world.Components.Dead, &gc.Dead{})
-		u.logDeath(world, act.Actor)
-	}
-
-	// ログ出力
-	u.logItemUse(act, world, item, amount, false)
 
 	return nil
 }
@@ -175,11 +143,11 @@ func (u *UseItemActivity) logItemUse(act *Activity, world w.World, item ecs.Enti
 	}
 
 	itemName := u.getItemName(item, world)
-	actorName := u.getEntityName(act.Actor, world)
+	actorName := worldhelper.GetEntityName(act.Actor, world)
 
 	logger := gamelog.New(gamelog.FieldLog)
 	logger.Build(func(l *gamelog.Logger) {
-		u.appendNameWithColor(l, act.Actor, actorName, world)
+		worldhelper.AppendNameWithColor(l, act.Actor, actorName, world)
 	}).Append(" は ").ItemName(itemName).Append(" を使った。")
 
 	if isHealing {
@@ -191,18 +159,6 @@ func (u *UseItemActivity) logItemUse(act *Activity, world w.World, item ecs.Enti
 	logger.Log()
 }
 
-// logDeath は死亡ログを出力する
-func (u *UseItemActivity) logDeath(world w.World, entity ecs.Entity) {
-	name := u.getEntityName(entity, world)
-
-	gamelog.New(gamelog.FieldLog).
-		Build(func(l *gamelog.Logger) {
-			u.appendNameWithColor(l, entity, name, world)
-		}).
-		Append(" は倒れた。").
-		Log()
-}
-
 // getItemName はアイテムの名前を取得する
 func (u *UseItemActivity) getItemName(item ecs.Entity, world w.World) string {
 	name := world.Components.Name.Get(item)
@@ -210,24 +166,4 @@ func (u *UseItemActivity) getItemName(item ecs.Entity, world w.World) string {
 		return name.(*gc.Name).Name
 	}
 	return "アイテム"
-}
-
-// getEntityName はエンティティの名前を取得する
-func (u *UseItemActivity) getEntityName(entity ecs.Entity, world w.World) string {
-	name := world.Components.Name.Get(entity)
-	if name != nil {
-		return name.(*gc.Name).Name
-	}
-	return unknownEntityName
-}
-
-// appendNameWithColor はエンティティの種類に応じて色付きで名前を追加する
-func (u *UseItemActivity) appendNameWithColor(logger *gamelog.Logger, entity ecs.Entity, name string, world w.World) {
-	if entity.HasComponent(world.Components.Player) {
-		logger.PlayerName(name)
-	} else if entity.HasComponent(world.Components.AIMoveFSM) {
-		logger.NPCName(name)
-	} else {
-		logger.Append(name)
-	}
 }
