@@ -32,7 +32,7 @@ func (p *Processor) ProcessAllEntities(world w.World) {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 	p.logger.Debug("AI処理開始", "turn", turnManager.TurnNumber, "playerMoves", turnManager.PlayerMoves)
 
-	actionAPI := actions.NewActionAPI()
+	manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
 	entityCount := 0
 
 	// AIMoveFSMコンポーネントを持つ全エンティティを処理
@@ -42,14 +42,14 @@ func (p *Processor) ProcessAllEntities(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		entityCount++
 		p.logger.Debug("AIエンティティを処理中", "entity", entity, "count", entityCount)
-		p.ProcessEntity(world, actionAPI, entity)
+		p.ProcessEntity(world, manager, entity)
 	}))
 
 	p.logger.Debug("AI処理完了", "処理されたエンティティ数", entityCount, "turn", turnManager.TurnNumber, "playerMoves", turnManager.PlayerMoves)
 }
 
 // ProcessEntity は個別のAIエンティティを処理する
-func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, entity ecs.Entity) {
+func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManager, entity ecs.Entity) {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 	p.logger.Debug("AIエンティティ処理開始", "entity", entity)
 
@@ -113,7 +113,7 @@ func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, e
 			break
 		}
 
-		result, err := actionAPI.Execute(activityType, actionParams, world)
+		result, err := manager.Execute(activityType, actionParams, world)
 		if err != nil {
 			p.logger.Warn("AIアクション実行失敗", "entity", entity, "activity", activityType.String(), "error", err.Error())
 			break

@@ -6,6 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -65,9 +66,9 @@ func TileInputSystem(world w.World) {
 
 // executeActivity はアクティビティ実行関数
 func executeActivity(world w.World, activityType actions.ActivityType, params actions.ActionParams) {
-	actionAPI := actions.NewActionAPI()
+	manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
 
-	result, err := actionAPI.Execute(activityType, params, world)
+	result, err := manager.Execute(activityType, params, world)
 	if err != nil {
 		_ = result // エラーの場合は結果を使用しない
 		return

@@ -13,64 +13,34 @@
 // - アクションコストの定義と管理
 // - ターン管理システムとの連携
 //
-// # ActionとActivityの使い分け
+// # ActivityManagerの責務
 //
-// ## Action（アクション）
-// **概念レベル**：ユーザーの意図や指示を表現する抽象的な概念
-// - **ActionAPI**: すべてのアクションの統一エントリーポイント
-// - **ActionParams**: アクション実行時のパラメータ
-// - **ActionResult**: アクション実行結果
-// - **ActionPoints**: アクションポイント（ターンコスト）
-//
-// 責務：プレイヤーやAIからの「何をしたいか」の指示を受け取り、パラメータを
-// 受け渡して結果を返却する。ターンコストの管理も行う。
-//
-// ## Activity（アクティビティ）
-// **実装レベル**：具体的な処理の実行単位
+// ## ActivityManager（アクション実行エンジン）
+// **役割**：すべてのアクション（即座実行・継続実行）を統一的に管理
+// - **Execute**: アクションの実行エントリーポイント
 // - **ActivityType**: 実行可能なアクティビティの種別（移動、攻撃、休息など）
 // - **Activity struct**: 実行中のアクティビティの状態データ
 // - **ActivityInterface**: アクティビティの実行ロジック
 // - **各種Activity実装**: MoveActivity, AttackActivity, RestActivityなど
 //
-// 責務：アクションの具体的な実行処理、状態管理（実行中、一時停止、完了、
-// キャンセル）、ライフサイクル管理（Validate, Start, DoTurn, Finish, Canceled）、
-// 継続実行とターン管理を行う。
-//
-// ## 関係性
-// ```
-// ユーザー入力 → Action（何をしたいか） → Activity（どう実行するか）
-// ```
-// Actionは外部インターフェース（API層）として機能し、Activityは内部実装
-// （実行エンジン層）として機能する。この分離により、外部からは単純な
-// Actionで指示でき、内部では複雑な継続実行・中断・再開処理をActivityで
-// 管理できる。
-//
-// ## 主要コンポーネントと使い分け
-//
-// ### ActionAPI（外部インターフェース層）
-// **用途**：外部システムからアクションを実行する際の統一エントリーポイント
-// - systems/tile_input_system.go から使用（プレイヤー入力処理）
-// - aiinput/processor.go から使用（AI行動処理）
-//
 // 責務：
 // - アクティビティの作成（パラメータからActivityを生成）
-// - コスト計算（APコストとターン数の計算）
-// - 便利メソッドの提供（QuickMove, QuickAttack, StartRestなど）
-// - ターン管理システムとの連携
-//
-// ### ActivityManager（内部実行エンジン）
-// **用途**：アクティビティの実行管理（内部実装用）
-// - ActionAPIの内部でのみ使用
-// - 直接使用する場合はテスト目的のみ推奨
-//
-// 責務：
 // - 実行中アクティビティの状態管理
 // - ライフサイクル制御（Start, DoTurn, Finish, Canceled）
 // - 実行可能性の検証
-// - ActivityActorとの連携（具体的な実装の呼び出し）
+// - ターン管理システムとの連携（APコスト消費）
+// - 継続実行と中断・再開の管理
 //
-// **重要**：外部パッケージからはActionAPIを使用してください。
-// ActivityManagerは内部実装の詳細であり、直接使用は推奨しません。
+// ## 使用方法
+//
+// **外部システムからの使用:**
+// - systems/tile_input_system.go から使用（プレイヤー入力処理）
+// - aiinput/processor.go から使用（AI行動処理）
+//
+// ```go
+// manager := actions.NewActivityManager(logger)
+// result, err := manager.Execute(activityType, params, world)
+// ```
 //
 // ### 個別Activity実装
 // - **MoveActivity**: 移動アクション（即座実行）
@@ -81,7 +51,7 @@
 // # 他パッケージとの関係
 //
 // ```
-// systems → actions.ActionAPI → アクション実行
+// systems → actions.ActivityManager.Execute() → アクション実行
 //
 //	↓
 //
@@ -130,21 +100,23 @@
 //
 // # 使用例
 //
-//	// ActionAPIを通じた統一的なアクション実行
-//	actionAPI := actions.NewActionAPI()
+//	// ActivityManagerを通じた統一的なアクション実行
+//	manager := actions.NewActivityManager(logger)
 //
 //	// 即座実行アクション（移動）
-//	result, err := actionAPI.QuickMove(player, destination, world)
+//	params := actions.ActionParams{Actor: player, Destination: &dest}
+//	result, err := manager.Execute(actions.ActivityMove, params, world)
 //
 //	// 継続実行アクション（休息）
-//	result, err := actionAPI.StartRest(player, 10, world)
+//	params := actions.ActionParams{Actor: player, Duration: 10}
+//	result, err := manager.Execute(actions.ActivityRest, params, world)
 //
 //	// アクティビティの管理
-//	actionAPI.InterruptActivity(player, "戦闘開始")
-//	actionAPI.ResumeActivity(player, world)
+//	manager.InterruptActivity(player, "戦闘開始")
+//	manager.ResumeActivity(player, world)
 //
 //	// ターン毎の処理
-//	actionAPI.ProcessTurn(world)
+//	manager.ProcessTurn(world)
 //
 // # CDDAとの対応関係
 //
@@ -163,6 +135,6 @@
 // 1. ActivityTypeに新しい定数を追加
 // 2. activityInfosに情報を追加
 // 3. 具体的な実装ファイルを作成（例：new_action.go）
-// 4. ActionAPI.createActivityに分岐を追加
+// 4. ActivityManager.createActivityに分岐を追加
 // 5. 必要に応じてActivity.DoTurnに処理を追加
 package actions
