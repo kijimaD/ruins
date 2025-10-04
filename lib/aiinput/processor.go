@@ -97,34 +97,35 @@ func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManage
 
 	for actionsExecuted < maxActions {
 		// アクション決定
-		activityType, actionParams := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
+		actorImpl, actionParams := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
 
 		// アクション実行
-		p.logger.Debug("アクション決定", "entity", entity, "activity", activityType.String(), "state", context.Roaming.SubState, "actions", actionsExecuted)
-		if activityType.String() == "" {
+		activityName := actorImpl.String()
+		p.logger.Debug("アクション決定", "entity", entity, "activity", activityName, "state", context.Roaming.SubState, "actions", actionsExecuted)
+		if actorImpl == nil {
 			p.logger.Debug("アクション無し", "entity", entity)
 			break
 		}
 
 		// アクティビティタイプに応じたAPコストを計算
-		actionCost, _ := actions.GetActivityCost(activityType)
+		actionCost, _ := actions.GetActivityCost(actorImpl)
 		if !turnManager.CanEntityAct(world, entity, actionCost) {
-			p.logger.Debug("AP不足でアクション実行不可", "entity", entity, "activity", activityType.String(), "cost", actionCost)
+			p.logger.Debug("AP不足でアクション実行不可", "entity", entity, "activity", activityName, "cost", actionCost)
 			break
 		}
 
-		result, err := manager.Execute(activityType, actionParams, world)
+		result, err := manager.Execute(actorImpl, actionParams, world)
 		if err != nil {
-			p.logger.Warn("AIアクション実行失敗", "entity", entity, "activity", activityType.String(), "error", err.Error())
+			p.logger.Warn("AIアクション実行失敗", "entity", entity, "activity", activityName, "error", err.Error())
 			break
 		}
 
-		p.logger.Debug("AIアクション実行成功", "entity", entity, "activity", activityType.String(), "success", result.Success, "state", context.Roaming.SubState, "message", result.Message)
+		p.logger.Debug("AIアクション実行成功", "entity", entity, "activity", activityName, "success", result.Success, "state", context.Roaming.SubState, "message", result.Message)
 		actionsExecuted++
 
 		// アクション失敗時は停止
 		if !result.Success {
-			p.logger.Debug("アクション失敗により停止", "entity", entity, "activity", activityType.String())
+			p.logger.Debug("アクション失敗により停止", "entity", entity, "activity", activityName)
 			break
 		}
 	}

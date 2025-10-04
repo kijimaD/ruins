@@ -13,14 +13,9 @@ import (
 // PickupActivity はActivityInterfaceの実装
 type PickupActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityPickup, &PickupActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (pa *PickupActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityPickup,
 		Name:             "拾得",
 		Description:      "アイテムを拾得する",
 		Interruptible:    false,

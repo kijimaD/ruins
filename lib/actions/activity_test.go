@@ -13,10 +13,11 @@ func TestActivityCreation(t *testing.T) {
 	actor := ecs.Entity(1)
 
 	// 休息アクティビティの作成テスト
-	activity := NewActivity(ActivityRest, actor, 10)
+	actorImpl := &RestActivity{}
+	activity := NewActivity(actorImpl, actor, 10)
 
-	if activity.Type != ActivityRest {
-		t.Errorf("Expected activity type %v, got %v", ActivityRest, activity.Type)
+	if activity.ActorImpl != actorImpl {
+		t.Errorf("Expected activity actor %v, got %v", actorImpl, activity.ActorImpl)
 	}
 
 	if activity.State != ActivityStateRunning {
@@ -39,10 +40,11 @@ func TestActivityCreation(t *testing.T) {
 func TestActivityInfo(t *testing.T) {
 	t.Parallel()
 	// 休息アクティビティの情報テスト
-	info := GetActivityInfo(ActivityRest)
+	actorImpl := &RestActivity{}
+	info := actorImpl.Info()
 
-	if info.Type != ActivityRest {
-		t.Errorf("Expected type %v, got %v", ActivityRest, info.Type)
+	if info.Name != "休息" {
+		t.Errorf("Expected name '休息', got '%s'", info.Name)
 	}
 
 	if info.Name != "休息" {
@@ -56,18 +58,13 @@ func TestActivityInfo(t *testing.T) {
 	if !info.Resumable {
 		t.Errorf("Expected rest activity to be resumable")
 	}
-
-	// 無効なアクティビティタイプのテスト
-	invalidInfo := GetActivityInfo(ActivityType(999))
-	if invalidInfo.Type != ActivityNull {
-		t.Errorf("Expected null activity for invalid type, got %v", invalidInfo.Type)
-	}
 }
 
 func TestActivityInterruptAndResume(t *testing.T) {
 	t.Parallel()
 	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityRest, actor, 10)
+	actorImpl := &RestActivity{}
+	activity := NewActivity(actorImpl, actor, 10)
 
 	// 初期状態での中断可能性チェック
 	if !activity.CanInterrupt() {
@@ -117,7 +114,8 @@ func TestActivityInterruptAndResume(t *testing.T) {
 func TestActivityCancel(t *testing.T) {
 	t.Parallel()
 	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityWait, actor, 5)
+	actorImpl := &WaitActivity{}
+	activity := NewActivity(actorImpl, actor, 5)
 
 	// キャンセル実行
 	activity.Cancel("テストキャンセル")
@@ -143,7 +141,8 @@ func TestActivityCancel(t *testing.T) {
 func TestActivityComplete(t *testing.T) {
 	t.Parallel()
 	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityWait, actor, 5)
+	actorImpl := &WaitActivity{}
+	activity := NewActivity(actorImpl, actor, 5)
 
 	// 完了実行
 	activity.Complete()
@@ -164,7 +163,8 @@ func TestActivityComplete(t *testing.T) {
 func TestActivityProgressCalculation(t *testing.T) {
 	t.Parallel()
 	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityRest, actor, 10)
+	actorImpl := &RestActivity{}
+	activity := NewActivity(actorImpl, actor, 10)
 
 	// 初期進捗（0%）
 	progress := activity.GetProgressPercent()
@@ -191,19 +191,14 @@ func TestActivityDoTurn(t *testing.T) {
 	t.Parallel()
 
 	actor := ecs.Entity(1)
-	activity := NewActivity(ActivityWait, actor, 3)
+	actorImpl := &WaitActivity{}
+	activity := NewActivity(actorImpl, actor, 3)
 
 	// モックワールドを作成（簡易版）
 	world := createMockWorld()
 
-	// ActivityActorを取得してテスト
-	activityActor := GetActivityActor(activity.Type)
-	if activityActor == nil {
-		t.Fatal("Activity actor not found")
-	}
-
 	// 1ターン目
-	err := activityActor.DoTurn(activity, world)
+	err := activity.ActorImpl.DoTurn(activity, world)
 	if err != nil {
 		t.Errorf("Unexpected error in turn 1: %v", err)
 	}
@@ -217,7 +212,7 @@ func TestActivityDoTurn(t *testing.T) {
 	}
 
 	// 2ターン目
-	err = activityActor.DoTurn(activity, world)
+	err = activity.ActorImpl.DoTurn(activity, world)
 	if err != nil {
 		t.Errorf("Unexpected error in turn 2: %v", err)
 	}
@@ -227,7 +222,7 @@ func TestActivityDoTurn(t *testing.T) {
 	}
 
 	// 3ターン目（完了）
-	err = activityActor.DoTurn(activity, world)
+	err = activity.ActorImpl.DoTurn(activity, world)
 	if err != nil {
 		t.Errorf("Unexpected error in turn 3: %v", err)
 	}
@@ -243,17 +238,15 @@ func TestActivityDoTurn(t *testing.T) {
 
 func TestActivityStringMethods(t *testing.T) {
 	t.Parallel()
-	// ActivityType.String()のテスト
-	if ActivityRest.String() != "Rest" {
-		t.Errorf("Expected 'Rest', got '%s'", ActivityRest.String())
+	// ActivityInterface.String()のテスト
+	restActor := &RestActivity{}
+	if restActor.String() != "Rest" {
+		t.Errorf("Expected 'Rest', got '%s'", restActor.String())
 	}
 
-	if ActivityWait.String() != "Wait" {
-		t.Errorf("Expected 'Wait', got '%s'", ActivityWait.String())
-	}
-
-	if ActivityNull.String() != "Null" {
-		t.Errorf("Expected 'Null', got '%s'", ActivityNull.String())
+	waitActor := &WaitActivity{}
+	if waitActor.String() != "Wait" {
+		t.Errorf("Expected 'Wait', got '%s'", waitActor.String())
 	}
 
 	// ActivityState.String()のテスト

@@ -12,14 +12,9 @@ import (
 // MoveActivity はActivityInterfaceの実装
 type MoveActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityMove, &MoveActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (ma *MoveActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityMove,
 		Name:             "移動",
 		Description:      "隣接するタイルに移動する",
 		Interruptible:    false,

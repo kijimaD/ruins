@@ -13,14 +13,9 @@ import (
 // WarpActivity はActivityInterfaceの実装
 type WarpActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityWarp, &WarpActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (wa *WarpActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityWarp,
 		Name:             "ワープ",
 		Description:      "ワープホールを使用する",
 		Interruptible:    false,

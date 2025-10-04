@@ -33,7 +33,8 @@ func TestActivityManagerStartActivity(t *testing.T) {
 	actor := ecs.Entity(1)
 
 	// アクティビティを作成
-	activity := NewActivity(ActivityWait, actor, 5)
+	actorImpl := &WaitActivity{}
+	activity := NewActivity(actorImpl, actor, 5)
 
 	// アクティビティ開始
 	err := manager.StartActivity(activity, world)
@@ -72,8 +73,9 @@ func TestActivityManagerMultipleActivities(t *testing.T) {
 	actor2 := ecs.Entity(2)
 
 	// 複数のアクターでアクティビティを開始
-	activity1 := NewActivity(ActivityWait, actor1, 10)
-	activity2 := NewActivity(ActivityWait, actor2, 5)
+	actorImpl := &WaitActivity{}
+	activity1 := NewActivity(actorImpl, actor1, 10)
+	activity2 := NewActivity(actorImpl, actor2, 5)
 
 	err := manager.StartActivity(activity1, world)
 	if err != nil {
@@ -96,13 +98,13 @@ func TestActivityManagerMultipleActivities(t *testing.T) {
 
 	// 正しいアクティビティが取得できるかチェック
 	retrievedActivity1 := manager.GetCurrentActivity(actor1)
-	if retrievedActivity1.Type != ActivityWait {
-		t.Errorf("Expected actor1 to have wait activity, got %v", retrievedActivity1.Type)
+	if retrievedActivity1.ActorImpl.String() != "Wait" {
+		t.Errorf("Expected actor1 to have wait activity, got %v", retrievedActivity1.ActorImpl.String())
 	}
 
 	retrievedActivity2 := manager.GetCurrentActivity(actor2)
-	if retrievedActivity2.Type != ActivityWait {
-		t.Errorf("Expected actor2 to have wait activity, got %v", retrievedActivity2.Type)
+	if retrievedActivity2.ActorImpl.String() != "Wait" {
+		t.Errorf("Expected actor2 to have wait activity, got %v", retrievedActivity2.ActorImpl.String())
 	}
 }
 
@@ -113,7 +115,8 @@ func TestActivityManagerReplaceActivity(t *testing.T) {
 	actor := ecs.Entity(1)
 
 	// 最初のアクティビティを開始
-	activity1 := NewActivity(ActivityWait, actor, 10)
+	actorImpl := &WaitActivity{}
+	activity1 := NewActivity(actorImpl, actor, 10)
 	err := manager.StartActivity(activity1, world)
 	if err != nil {
 		t.Errorf("Unexpected error starting first activity: %v", err)
@@ -125,7 +128,7 @@ func TestActivityManagerReplaceActivity(t *testing.T) {
 	}
 
 	// 新しいアクティビティを開始（古いものを置き換え）
-	activity2 := NewActivity(ActivityWait, actor, 5)
+	activity2 := NewActivity(actorImpl, actor, 5)
 	err = manager.StartActivity(activity2, world)
 	if err != nil {
 		t.Errorf("Unexpected error starting second activity: %v", err)
@@ -142,8 +145,8 @@ func TestActivityManagerReplaceActivity(t *testing.T) {
 		t.Errorf("Expected current activity to be the second activity")
 	}
 
-	if currentActivity.Type != ActivityWait {
-		t.Errorf("Expected current activity to be wait activity, got %v", currentActivity.Type)
+	if currentActivity.ActorImpl.String() != "Wait" {
+		t.Errorf("Expected current activity to be wait activity, got %v", currentActivity.ActorImpl.String())
 	}
 }
 
@@ -154,7 +157,8 @@ func TestActivityManagerInterruptAndResume(t *testing.T) {
 	actor := ecs.Entity(1)
 
 	// アクティビティを開始
-	activity := NewActivity(ActivityWait, actor, 10)
+	actorImpl := &WaitActivity{}
+	activity := NewActivity(actorImpl, actor, 10)
 	err := manager.StartActivity(activity, world)
 	if err != nil {
 		t.Errorf("Unexpected error starting activity: %v", err)
@@ -210,7 +214,8 @@ func TestActivityManagerCancel(t *testing.T) {
 	actor := ecs.Entity(1)
 
 	// アクティビティを開始
-	activity := NewActivity(ActivityWait, actor, 5)
+	actorImpl := &WaitActivity{}
+	activity := NewActivity(actorImpl, actor, 5)
 	err := manager.StartActivity(activity, world)
 	if err != nil {
 		t.Errorf("Unexpected error starting activity: %v", err)
@@ -243,8 +248,9 @@ func TestActivityManagerProcessTurn(t *testing.T) {
 	actor2 := ecs.Entity(2)
 
 	// 短いアクティビティと長いアクティビティを開始
-	shortActivity := NewActivity(ActivityWait, actor1, 2) // 2ターンで完了
-	longActivity := NewActivity(ActivityWait, actor2, 5)  // 5ターンで完了
+	actorImpl := &WaitActivity{}
+	shortActivity := NewActivity(actorImpl, actor1, 2) // 2ターンで完了
+	longActivity := NewActivity(actorImpl, actor2, 5)  // 5ターンで完了
 
 	err := manager.StartActivity(shortActivity, world)
 	if err != nil {
@@ -322,8 +328,9 @@ func TestActivityManagerSummary(t *testing.T) {
 	actor1 := ecs.Entity(1)
 	actor2 := ecs.Entity(2)
 
-	activity1 := NewActivity(ActivityWait, actor1, 10)
-	activity2 := NewActivity(ActivityWait, actor2, 5)
+	actorImpl := &WaitActivity{}
+	activity1 := NewActivity(actorImpl, actor1, 10)
+	activity2 := NewActivity(actorImpl, actor2, 5)
 
 	err := manager.StartActivity(activity1, world)
 	if err != nil {

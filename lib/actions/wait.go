@@ -10,14 +10,9 @@ import (
 // WaitActivity はActivityInterfaceの実装
 type WaitActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityWait, &WaitActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (wa *WaitActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityWait,
 		Name:             "待機",
 		Description:      "指定した時間だけ待機する",
 		Interruptible:    true,

@@ -12,14 +12,9 @@ import (
 // RestActivity はActivityInterfaceの実装
 type RestActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityRest, &RestActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (ra *RestActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityRest,
 		Name:             "休息",
 		Description:      "体力を回復するために休息する",
 		Interruptible:    true,

@@ -36,14 +36,9 @@ const (
 // AttackActivity はActivityInterfaceの実装
 type AttackActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityAttack, &AttackActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (aa *AttackActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityAttack,
 		Name:             "攻撃",
 		Description:      "敵を攻撃する",
 		Interruptible:    false,

@@ -12,14 +12,9 @@ import (
 // CraftActivity はActivityInterfaceの実装
 type CraftActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityCraft, &CraftActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (ca *CraftActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityCraft,
 		Name:             "クラフト",
 		Description:      "アイテムを作成する",
 		Interruptible:    true,

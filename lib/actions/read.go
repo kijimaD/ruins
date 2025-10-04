@@ -11,14 +11,9 @@ import (
 // ReadActivity はActivityInterfaceの実装
 type ReadActivity struct{}
 
-func init() {
-	RegisterActivityActor(ActivityRead, &ReadActivity{})
-}
-
 // Info はActivityInterfaceの実装
 func (ra *ReadActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Type:             ActivityRead,
 		Name:             "読書",
 		Description:      "本を読んでスキルを習得する",
 		Interruptible:    true,

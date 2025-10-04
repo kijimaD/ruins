@@ -28,26 +28,20 @@ func NewActivityManager(logger *logger.Logger) *ActivityManager {
 
 // Execute は指定されたアクション（アクティビティ）を実行する
 // 即座実行アクション（移動、攻撃等）も継続アクション（休息等）も統一的に処理
-func (am *ActivityManager) Execute(activityType ActivityType, params ActionParams, world w.World) (*ActionResult, error) {
+func (am *ActivityManager) Execute(actorImpl ActivityInterface, params ActionParams, world w.World) (*ActionResult, error) {
+	activityName := actorImpl.String()
 	am.logger.Debug("アクション実行開始",
-		"type", activityType.String(),
+		"type", activityName,
 		"actor", params.Actor)
 
 	// アクティビティを作成
-	activity, err := am.createActivity(activityType, params, world)
-	if err != nil {
-		return &ActionResult{
-			Success:      false,
-			ActivityType: activityType,
-			Message:      err.Error(),
-		}, err
-	}
+	activity := am.createActivity(actorImpl, params, world)
 
 	// アクティビティを開始
 	if err := am.StartActivity(activity, world); err != nil {
 		return &ActionResult{
 			Success:      false,
-			ActivityType: activityType,
+			ActivityName: activityName,
 			Message:      err.Error(),
 		}, err
 	}
@@ -58,20 +52,20 @@ func (am *ActivityManager) Execute(activityType ActivityType, params ActionParam
 		am.ProcessTurn(world)
 
 		// ターン管理システムに移動コストを通知
-		am.consumeMoveCost(world, activityType, params.Actor)
+		am.consumeMoveCost(world, actorImpl, params.Actor)
 
 		// 結果を確認
 		currentActivity := am.GetCurrentActivity(params.Actor)
 		if currentActivity == nil || currentActivity.IsCompleted() {
 			return &ActionResult{
 				Success:      true,
-				ActivityType: activityType,
+				ActivityName: activityName,
 				Message:      "アクション完了",
 			}, nil
 		} else if currentActivity.IsCanceled() {
 			return &ActionResult{
 				Success:      false,
-				ActivityType: activityType,
+				ActivityName: activityName,
 				Message:      currentActivity.CancelReason,
 			}, fmt.Errorf("アクション失敗: %s", currentActivity.CancelReason)
 		}
@@ -80,7 +74,7 @@ func (am *ActivityManager) Execute(activityType ActivityType, params ActionParam
 	// 継続アクションの場合は開始成功を返す
 	return &ActionResult{
 		Success:      true,
-		ActivityType: activityType,
+		ActivityName: activityName,
 		Message:      "アクション開始",
 	}, nil
 }
@@ -98,14 +92,8 @@ func (am *ActivityManager) StartActivity(activity *Activity, world w.World) erro
 		}
 	}
 
-	// アクティビティアクターを取得
-	activityActor := GetActivityActor(activity.Type)
-	if activityActor == nil {
-		return fmt.Errorf("%w: %s", ErrActivityActorNotFound, activity.Type.String())
-	}
-
 	// アクティビティアクターでの検証
-	if err := activityActor.Validate(activity, world); err != nil {
+	if err := activity.ActorImpl.Validate(activity, world); err != nil {
 		return fmt.Errorf("アクティビティ検証失敗: %w", err)
 	}
 
@@ -119,7 +107,7 @@ func (am *ActivityManager) StartActivity(activity *Activity, world w.World) erro
 	activity.State = ActivityStateRunning
 
 	// アクティビティアクターのStart処理を実行
-	if err := activityActor.Start(activity, world); err != nil {
+	if err := activity.ActorImpl.Start(activity, world); err != nil {
 		// 開始に失敗した場合はクリーンアップ
 		delete(am.currentActivities, activity.Actor)
 		return fmt.Errorf("アクティビティ開始失敗: %w", err)
@@ -127,7 +115,7 @@ func (am *ActivityManager) StartActivity(activity *Activity, world w.World) erro
 
 	am.logger.Debug("アクティビティ開始",
 		"entity", activity.Actor,
-		"type", activity.Type.String(),
+		"type", activity.ActorImpl.String(),
 		"duration", activity.TurnsTotal)
 
 	return nil
@@ -177,13 +165,10 @@ func (am *ActivityManager) CancelActivity(entity ecs.Entity, reason string, worl
 	}
 
 	// アクティビティアクターを取得してCanceled処理を実行
-	activityActor := GetActivityActor(activity.Type)
-	if activityActor != nil {
-		if err := activityActor.Canceled(activity, world); err != nil {
-			am.logger.Warn("アクティビティキャンセル処理エラー",
-				"entity", entity,
-				"error", err.Error())
-		}
+	if err := activity.ActorImpl.Canceled(activity, world); err != nil {
+		am.logger.Warn("アクティビティキャンセル処理エラー",
+			"entity", entity,
+			"error", err.Error())
 	}
 
 	// アクティビティ自体をキャンセル状態に
@@ -192,7 +177,7 @@ func (am *ActivityManager) CancelActivity(entity ecs.Entity, reason string, worl
 
 	am.logger.Debug("アクティビティキャンセル",
 		"entity", entity,
-		"type", activity.Type.String(),
+		"type", activity.ActorImpl.String(),
 		"reason", reason)
 }
 
@@ -212,22 +197,11 @@ func (am *ActivityManager) ProcessTurn(world w.World) {
 			continue
 		}
 
-		// アクティビティアクターのDoTurn処理を実行
-		activityActor := GetActivityActor(activity.Type)
-		if activityActor == nil {
-			am.logger.Error("アクティビティアクターが見つかりません",
-				"entity", entity,
-				"type", activity.Type.String())
-			activity.Cancel("アクティビティアクターが見つかりません")
-			toRemove = append(toRemove, entity)
-			continue
-		}
-
 		// ターン処理を実行
-		if err := activityActor.DoTurn(activity, world); err != nil {
+		if err := activity.ActorImpl.DoTurn(activity, world); err != nil {
 			am.logger.Error("アクティビティターン処理エラー",
 				"entity", entity,
-				"type", activity.Type.String(),
+				"type", activity.ActorImpl.String(),
 				"error", err.Error())
 
 			// エラーが発生した場合はキャンセル
@@ -239,16 +213,16 @@ func (am *ActivityManager) ProcessTurn(world w.World) {
 		// 完了したアクティビティの処理
 		if activity.IsCompleted() {
 			// Finish処理を実行
-			if err := activityActor.Finish(activity, world); err != nil {
+			if err := activity.ActorImpl.Finish(activity, world); err != nil {
 				am.logger.Error("アクティビティ完了処理エラー",
 					"entity", entity,
-					"type", activity.Type.String(),
+					"type", activity.ActorImpl.String(),
 					"error", err.Error())
 			}
 
 			am.logger.Debug("アクティビティ完了",
 				"entity", entity,
-				"type", activity.Type.String())
+				"type", activity.ActorImpl.String())
 			toRemove = append(toRemove, entity)
 		}
 	}
@@ -305,128 +279,48 @@ func (am *ActivityManager) validateResume(activity *Activity, world w.World) err
 	}
 
 	// アクティビティアクターでの検証を再実行
-	activityActor := GetActivityActor(activity.Type)
-	if activityActor != nil {
-		if err := activityActor.Validate(activity, world); err != nil {
-			return fmt.Errorf("再開時検証失敗: %w", err)
-		}
+	if err := activity.ActorImpl.Validate(activity, world); err != nil {
+		return fmt.Errorf("再開時検証失敗: %w", err)
 	}
 
 	// 基本要件を再チェック
 	return am.validateBasicRequirements(activity)
 }
 
-// createActivity はActivityTypeとパラメータからアクティビティを作成する
-func (am *ActivityManager) createActivity(activityType ActivityType, params ActionParams, world w.World) (*Activity, error) {
-	switch activityType {
-	case ActivityMove:
-		if params.Destination == nil {
-			return nil, fmt.Errorf("移動先が指定されていません")
-		}
+// createActivity はアクティビティ実装とパラメータからアクティビティを作成する
+func (am *ActivityManager) createActivity(actorImpl ActivityInterface, params ActionParams, world w.World) *Activity {
+	// 基本のdurationを計算
+	duration := params.Duration
+	if duration <= 0 {
 		characterAP := am.getEntityMaxAP(params.Actor, world)
-		duration := CalculateRequiredTurns(ActivityMove, characterAP)
-		activity := NewActivity(ActivityMove, params.Actor, duration)
-		activity.Position = params.Destination
-		return activity, nil
-
-	case ActivityAttack:
-		if params.Target == nil {
-			return nil, fmt.Errorf("攻撃対象が指定されていません")
-		}
-		characterAP := am.getEntityMaxAP(params.Actor, world)
-		duration := CalculateRequiredTurns(ActivityAttack, characterAP)
-		activity := NewActivity(ActivityAttack, params.Actor, duration)
-		activity.Target = params.Target
-		return activity, nil
-
-	case ActivityPickup:
-		return &Activity{
-			Actor:      params.Actor,
-			Type:       ActivityPickup,
-			State:      ActivityStateRunning,
-			TurnsLeft:  1,
-			TurnsTotal: 1,
-			Message:    "アイテムを拾得中...",
-			Logger:     logger.New(logger.CategoryAction),
-		}, nil
-
-	case ActivityWarp:
-		return &Activity{
-			Actor:      params.Actor,
-			Type:       ActivityWarp,
-			State:      ActivityStateRunning,
-			TurnsLeft:  1,
-			TurnsTotal: 1,
-			Message:    "ワープ中...",
-			Logger:     logger.New(logger.CategoryAction),
-		}, nil
-
-	case ActivityRest:
-		duration := params.Duration
-		if duration <= 0 {
-			characterAP := am.getEntityMaxAP(params.Actor, world)
-			duration = CalculateRequiredTurns(ActivityRest, characterAP)
-		}
-		return &Activity{
-			Actor:      params.Actor,
-			Type:       ActivityRest,
-			State:      ActivityStateRunning,
-			TurnsLeft:  duration,
-			TurnsTotal: duration,
-			Message:    "休息中...",
-			Logger:     logger.New(logger.CategoryAction),
-		}, nil
-
-	case ActivityWait:
-		duration := params.Duration
-		if duration <= 0 {
-			characterAP := am.getEntityMaxAP(params.Actor, world)
-			duration = CalculateRequiredTurns(ActivityWait, characterAP)
-		}
-		return &Activity{
-			Actor:      params.Actor,
-			Type:       ActivityWait,
-			State:      ActivityStateRunning,
-			TurnsLeft:  duration,
-			TurnsTotal: duration,
-			Message:    "待機中...",
-			Logger:     logger.New(logger.CategoryAction),
-		}, nil
-
-	case ActivityRead:
-		duration := params.Duration
-		if duration <= 0 {
-			characterAP := am.getEntityMaxAP(params.Actor, world)
-			duration = CalculateRequiredTurns(ActivityRead, characterAP)
-		}
-		activity := NewActivity(ActivityRead, params.Actor, duration)
-		activity.Target = params.Target
-		return activity, nil
-
-	case ActivityCraft:
-		duration := params.Duration
-		if duration <= 0 {
-			characterAP := am.getEntityMaxAP(params.Actor, world)
-			duration = CalculateRequiredTurns(ActivityCraft, characterAP)
-		}
-		activity := NewActivity(ActivityCraft, params.Actor, duration)
-		activity.Target = params.Target
-		return activity, nil
-
-	default:
-		return nil, fmt.Errorf("%w: %v", ErrUnsupportedActivity, activityType)
+		duration = CalculateRequiredTurns(actorImpl, characterAP)
 	}
+
+	// アクティビティを作成
+	activity := NewActivity(actorImpl, params.Actor, duration)
+
+	// パラメータを設定
+	if params.Destination != nil {
+		activity.Position = params.Destination
+	}
+	if params.Target != nil {
+		activity.Target = params.Target
+	}
+
+	return activity
 }
 
 // consumeMoveCost はターン管理システムに移動コストを通知する
-func (am *ActivityManager) consumeMoveCost(world w.World, activityType ActivityType, actor ecs.Entity) {
+func (am *ActivityManager) consumeMoveCost(world w.World, actorImpl ActivityInterface, actor ecs.Entity) {
 	if world.Resources.TurnManager == nil {
 		am.logger.Warn("TurnManagerリソースが見つかりません")
 		return
 	}
 
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
-	cost, actionName := GetActivityCost(activityType)
+	info := actorImpl.Info()
+	cost := info.ActionPointCost
+	actionName := info.Name
 
 	if actor.HasComponent(world.Components.Player) {
 		turnManager.ConsumePlayerMoves(actionName, cost)
@@ -438,7 +332,7 @@ func (am *ActivityManager) consumeMoveCost(world w.World, activityType ActivityT
 	}
 
 	am.logger.Debug("移動コスト消費",
-		"activity", activityType.String(),
+		"activity", actorImpl.String(),
 		"cost", cost,
 		"actor", actor,
 		"isPlayer", actor.HasComponent(world.Components.Player))
@@ -465,13 +359,13 @@ type ActionParams struct {
 
 // ActionResult はアクション実行結果を表す
 type ActionResult struct {
-	Success      bool         // 実行成功/失敗
-	ActivityType ActivityType // 実行されたアクティビティタイプ
-	Message      string       // 結果メッセージ
+	Success      bool   // 実行成功/失敗
+	ActivityName string // 実行されたアクティビティ名
+	Message      string // 結果メッセージ
 }
 
-// GetActivityCost はアクティビティタイプに応じたコストと名前を返す
-func GetActivityCost(activityType ActivityType) (int, string) {
-	info := GetActivityInfo(activityType)
+// GetActivityCost はアクティビティ実装に応じたコストと名前を返す
+func GetActivityCost(actorImpl ActivityInterface) (int, string) {
+	info := actorImpl.Info()
 	return info.ActionPointCost, info.Name
 }
