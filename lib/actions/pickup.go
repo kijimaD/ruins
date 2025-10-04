@@ -10,15 +10,14 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// PickupActivity はアイテム拾得アクティビティの実装
+// PickupActivity はActivityInterfaceの実装
 type PickupActivity struct{}
 
 func init() {
-	// アイテム拾得アクティビティをレジストリに登録
 	RegisterActivityActor(ActivityPickup, &PickupActivity{})
 }
 
-// Info はアイテム拾得アクティビティの情報を返す
+// Info はActivityInterfaceの実装
 func (pa *PickupActivity) Info() ActivityInfo {
 	return ActivityInfo{
 		Type:             ActivityPickup,
@@ -27,7 +26,7 @@ func (pa *PickupActivity) Info() ActivityInfo {
 		Interruptible:    false,
 		Resumable:        false,
 		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  50, // 初期APの半分（素早いアクション）
+		ActionPointCost:  50,
 		TotalRequiredAP:  50,
 		RequiresTarget:   false,
 		RequiresPosition: false,
@@ -35,6 +34,7 @@ func (pa *PickupActivity) Info() ActivityInfo {
 }
 
 // Validate はアイテム拾得アクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (pa *PickupActivity) Validate(act *Activity, world w.World) error {
 	// プレイヤーの位置情報が必要
 	gridElement := world.Components.GridElement.Get(act.Actor)
@@ -67,12 +67,14 @@ func (pa *PickupActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start はアイテム拾得開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (pa *PickupActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("アイテム拾得開始", "actor", act.Actor)
 	return nil
 }
 
 // DoTurn はアイテム拾得アクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (pa *PickupActivity) DoTurn(act *Activity, world w.World) error {
 	// アイテム拾得処理を実行
 	if err := pa.performPickupActivity(act, world); err != nil {
@@ -86,12 +88,14 @@ func (pa *PickupActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish はアイテム拾得完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (pa *PickupActivity) Finish(act *Activity, _ w.World) error {
 	act.Logger.Debug("アイテム拾得アクティビティ完了", "actor", act.Actor)
 	return nil
 }
 
 // Canceled はアイテム拾得キャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (pa *PickupActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("アイテム拾得キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil

@@ -9,31 +9,31 @@ import (
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
-// CraftActivity はクラフトアクティビティの実装
+// CraftActivity はActivityInterfaceの実装
 type CraftActivity struct{}
 
 func init() {
-	// クラフトアクティビティをレジストリに登録
 	RegisterActivityActor(ActivityCraft, &CraftActivity{})
 }
 
-// Info はクラフトアクティビティの情報を返す
+// Info はActivityInterfaceの実装
 func (ca *CraftActivity) Info() ActivityInfo {
 	return ActivityInfo{
 		Type:             ActivityCraft,
 		Name:             "クラフト",
 		Description:      "アイテムを作成する",
 		Interruptible:    true,
-		Resumable:        false, // 一度中断すると材料が無駄になる
+		Resumable:        false,
 		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  1500, // AP100のプレイヤーで15ターン
+		ActionPointCost:  100,
+		TotalRequiredAP:  1500,
 		RequiresTarget:   false,
-		RequiresPosition: true, // 作業場所が必要
+		RequiresPosition: true,
 	}
 }
 
 // Validate はクラフトアクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (ca *CraftActivity) Validate(act *Activity, world w.World) error {
 	// クラフト対象（レシピ）が必要
 	if act.Target == nil {
@@ -80,6 +80,7 @@ func (ca *CraftActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start はクラフト開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (ca *CraftActivity) Start(act *Activity, world w.World) error {
 	act.Logger.Debug("クラフト開始", "actor", act.Actor, "target", *act.Target, "duration", act.TurnsLeft)
 
@@ -103,6 +104,7 @@ func (ca *CraftActivity) Start(act *Activity, world w.World) error {
 }
 
 // DoTurn はクラフトアクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 	// クラフト条件を再チェック
 	if err := ca.Validate(act, world); err != nil {
@@ -139,6 +141,7 @@ func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish はクラフト完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (ca *CraftActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("クラフト完了", "actor", act.Actor)
 
@@ -172,6 +175,7 @@ func (ca *CraftActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled はクラフトキャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (ca *CraftActivity) Canceled(act *Activity, world w.World) error {
 	// プレイヤーの場合のみ中断時のメッセージを表示
 	if isPlayerActivity(act, world) {

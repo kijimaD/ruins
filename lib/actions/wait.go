@@ -7,15 +7,14 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// WaitActivity は待機アクティビティの実装
+// WaitActivity はActivityInterfaceの実装
 type WaitActivity struct{}
 
 func init() {
-	// 待機アクティビティをレジストリに登録
 	RegisterActivityActor(ActivityWait, &WaitActivity{})
 }
 
-// Info は待機アクティビティの情報を返す
+// Info はActivityInterfaceの実装
 func (wa *WaitActivity) Info() ActivityInfo {
 	return ActivityInfo{
 		Type:             ActivityWait,
@@ -24,14 +23,15 @@ func (wa *WaitActivity) Info() ActivityInfo {
 		Interruptible:    true,
 		Resumable:        true,
 		TimingMode:       TimingModeTime,
-		ActionPointCost:  100, // 初期AP相当（意図的な時間消費）
-		TotalRequiredAP:  500, // AP100のプレイヤーで5ターン
+		ActionPointCost:  100,
+		TotalRequiredAP:  500,
 		RequiresTarget:   false,
 		RequiresPosition: false,
 	}
 }
 
 // Validate は待機アクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (wa *WaitActivity) Validate(act *Activity, _ w.World) error {
 	// 待機は基本的に常に実行可能
 	// ただし、最低限のチェックは行う
@@ -50,6 +50,7 @@ func (wa *WaitActivity) Validate(act *Activity, _ w.World) error {
 }
 
 // Start は待機開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (wa *WaitActivity) Start(act *Activity, _ w.World) error {
 	reason := "時間を過ごすため"
 	act.Logger.Debug("待機開始", "actor", act.Actor, "reason", reason, "duration", act.TurnsLeft)
@@ -57,6 +58,7 @@ func (wa *WaitActivity) Start(act *Activity, _ w.World) error {
 }
 
 // DoTurn は待機アクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 	// 環境を観察
 	wa.observeEnvironment(act, world)
@@ -85,6 +87,7 @@ func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish は待機完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (wa *WaitActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("待機完了", "actor", act.Actor)
 
@@ -100,6 +103,7 @@ func (wa *WaitActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled は待機キャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (wa *WaitActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("待機キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil

@@ -10,15 +10,14 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// WarpActivity はワープアクティビティの実装
+// WarpActivity はActivityInterfaceの実装
 type WarpActivity struct{}
 
 func init() {
-	// ワープアクティビティをレジストリに登録
 	RegisterActivityActor(ActivityWarp, &WarpActivity{})
 }
 
-// Info はワープアクティビティの情報を返す
+// Info はActivityInterfaceの実装
 func (wa *WarpActivity) Info() ActivityInfo {
 	return ActivityInfo{
 		Type:             ActivityWarp,
@@ -27,7 +26,7 @@ func (wa *WarpActivity) Info() ActivityInfo {
 		Interruptible:    false,
 		Resumable:        false,
 		TimingMode:       TimingModeTime,
-		ActionPointCost:  0, // 時間を消費しない（瞬間移動）
+		ActionPointCost:  0,
 		TotalRequiredAP:  0,
 		RequiresTarget:   false,
 		RequiresPosition: false,
@@ -35,6 +34,7 @@ func (wa *WarpActivity) Info() ActivityInfo {
 }
 
 // Validate はワープアクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (wa *WarpActivity) Validate(act *Activity, world w.World) error {
 	// プレイヤーの現在位置のワープホールをチェック
 	warp := wa.getPlayerWarp(act, world)
@@ -54,12 +54,14 @@ func (wa *WarpActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start はワープ開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (wa *WarpActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("ワープ開始", "actor", act.Actor)
 	return nil
 }
 
 // DoTurn はワープアクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (wa *WarpActivity) DoTurn(act *Activity, world w.World) error {
 	// ワープ可能性をチェック
 	warp := wa.getPlayerWarp(act, world)
@@ -80,6 +82,7 @@ func (wa *WarpActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish はワープ完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (wa *WarpActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("ワープアクティビティ完了", "actor", act.Actor)
 
@@ -94,6 +97,7 @@ func (wa *WarpActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled はワープキャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("ワープキャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil

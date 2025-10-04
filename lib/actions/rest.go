@@ -9,15 +9,14 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// RestActivity は休息アクティビティの実装
+// RestActivity はActivityInterfaceの実装
 type RestActivity struct{}
 
 func init() {
-	// 休息アクティビティをレジストリに登録
 	RegisterActivityActor(ActivityRest, &RestActivity{})
 }
 
-// Info は休息アクティビティの情報を返す
+// Info はActivityInterfaceの実装
 func (ra *RestActivity) Info() ActivityInfo {
 	return ActivityInfo{
 		Type:             ActivityRest,
@@ -26,14 +25,15 @@ func (ra *RestActivity) Info() ActivityInfo {
 		Interruptible:    true,
 		Resumable:        true,
 		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  1000, // AP100のプレイヤーで10ターン
+		ActionPointCost:  100,
+		TotalRequiredAP:  1000,
 		RequiresTarget:   false,
 		RequiresPosition: false,
 	}
 }
 
 // Validate は休息アクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (ra *RestActivity) Validate(act *Activity, world w.World) error {
 	// 周囲の安全性をチェック
 	if !ra.isSafe(act, world) {
@@ -49,12 +49,14 @@ func (ra *RestActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は休息開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (ra *RestActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("休息開始", "actor", act.Actor, "duration", act.TurnsLeft)
 	return nil
 }
 
 // DoTurn は休息アクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 	// 周囲の安全性をチェック
 	if !ra.isSafe(act, world) {
@@ -91,6 +93,7 @@ func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 }
 
 // Finish は休息完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (ra *RestActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("休息完了", "actor", act.Actor)
 
@@ -135,6 +138,7 @@ func (ra *RestActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled は休息キャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (ra *RestActivity) Canceled(act *Activity, world w.World) error {
 	// プレイヤーの場合のみ中断時のメッセージを表示
 	if isPlayerActivity(act, world) {
