@@ -77,15 +77,20 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 
 	if needsUpdate {
 		// タイルの可視性マップを更新
-		visionRadius := gc.Pixel(384)
+		// 視界範囲は光源範囲より広く設定する（光があれば遠くまで見える）
+		visionRadius := gc.Pixel(20 * consts.TileSize)
 		visibilityData = calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
 
-		// 視界内のタイルを探索済みとしてマーク
+		// 視界内かつ光源があるタイルを探索済みとしてマーク
 		for _, tileData := range visibilityData {
 			if tileData.Visible {
-				// GridElementを直接キーとして使用
-				gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
-				world.Resources.Dungeon.ExploredTiles[gridElement] = true
+				// 光源チェック
+				lightDarkness := calculateLightSourceDarkness(world, tileData.Col, tileData.Row)
+				// 光源範囲内（暗闇レベルが1.0未満）のみ探索済み
+				if lightDarkness < 1.0 {
+					gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
+					world.Resources.Dungeon.ExploredTiles[gridElement] = true
+				}
 			}
 		}
 
@@ -285,6 +290,48 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 	return darkness
 }
 
+// calculateLightSourceDarkness は光源からの距離に応じた暗闇レベルを計算する
+func calculateLightSourceDarkness(world w.World, tileX, tileY int) float64 {
+	minDarkness := 1.0 // 完全に暗い状態からスタート
+
+	// 全ての光源をチェック
+	world.Manager.Join(
+		world.Components.LightSource,
+		world.Components.GridElement,
+	).Visit(ecs.Visit(func(lightEntity ecs.Entity) {
+		lightSource := world.Components.LightSource.Get(lightEntity).(*gc.LightSource)
+
+		// 無効な光源はスキップ
+		if !lightSource.Enabled {
+			return
+		}
+
+		lightGrid := world.Components.GridElement.Get(lightEntity).(*gc.GridElement)
+
+		// 距離計算（タイル単位）
+		dx := float64(tileX - int(lightGrid.X))
+		dy := float64(tileY - int(lightGrid.Y))
+		distance := math.Sqrt(dx*dx + dy*dy)
+
+		// 光源範囲内かチェック
+		if distance <= float64(lightSource.Radius) {
+			// 距離の正規化
+			normalizedDistance := distance / float64(lightSource.Radius)
+
+			// 光源中心から滑らかに暗くなる
+			// 中心(0.0)は完全に明るく、範囲端(1.0)で暗闇レベル0.9
+			darkness := math.Pow(normalizedDistance, 1.5) * 0.9
+
+			// 複数光源がある場合は明るい方を採用
+			if darkness < minDarkness {
+				minDarkness = darkness
+			}
+		}
+	}))
+
+	return minDarkness
+}
+
 // drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
 func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	tileSize := int(consts.TileSize)
@@ -343,16 +390,16 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 			// 視界データをチェック
 			if tileData, exists := visibilityData[tileKey]; exists {
 				if tileData.Visible {
-					// 視界内: 距離に応じた暗闇レベル
-					darkness = tileData.Darkness
+					// 視界内: 光源のみで暗さを決定（視界の暗闇は無視）
+					darkness = calculateLightSourceDarkness(world, tileX, tileY)
 				} else {
-					// 視界範囲内だが見えないタイル: 完全に暗い
+					// 視界範囲内だが見えないタイル: 完全に暗い（壁で遮られている）
 					darkness = 1.0
 				}
 			} else {
-				// 視界範囲外: 探索済みかチェック
+				// 視界範囲外
 				if explored := world.Resources.Dungeon.ExploredTiles[gridElement]; explored {
-					// 探索済み視界外タイル: 真っ黒
+					// 探索済み視界外タイル: 完全に暗い（記憶として表示）
 					darkness = 1.0
 				} else {
 					// 未探索タイル: 描画しない（完全に隠れる）
