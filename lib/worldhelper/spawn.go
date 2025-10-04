@@ -7,7 +7,6 @@ import (
 	"sort"
 
 	"github.com/kijimaD/ruins/lib/config"
-	"github.com/kijimaD/ruins/lib/effects"
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/turns"
@@ -239,18 +238,19 @@ func fullRecover(world w.World, entity ecs.Entity) {
 	// 新しく生成されたエンティティの最大HP/SPを設定
 	_ = setMaxHPSP(world, entity) // エラーが発生した場合もリカバリーは続行する
 
-	processor := effects.NewProcessor()
+	// Poolsコンポーネントを取得
+	poolsComponent := world.Components.Pools.Get(entity)
+	if poolsComponent == nil {
+		return // Poolsがない場合は何もしない
+	}
+
+	pools := poolsComponent.(*gc.Pools)
 
 	// HP全回復
-	hpEffect := effects.FullRecoveryHP{}
-	processor.AddEffect(hpEffect, nil, entity)
+	pools.HP.Current = pools.HP.Max
 
 	// SP全回復
-	spEffect := effects.FullRecoverySP{}
-	processor.AddEffect(spEffect, nil, entity)
-
-	// エフェクト実行
-	_ = processor.Execute(world) // エラーが発生した場合もリカバリーは続行する（ログ出力はProcessor内で行われる）
+	pools.SP.Current = pools.SP.Max
 
 	// ActionPointsコンポーネントがある場合は最大APに設定
 	if entity.HasComponent(world.Components.TurnBased) {

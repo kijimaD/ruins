@@ -168,32 +168,23 @@ func (ra *RestActivity) performHealing(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// HP回復
-	healingPerTurn := 5 // 1ターンあたり5HP回復
-	oldHP := pools.HP.Current
-	pools.HP.Current += healingPerTurn
+	// 直接HP回復（1ターンあたり5HP）
+	healAmount := 5
+	beforeHP := pools.HP.Current
+	pools.HP.Current += healAmount
 	if pools.HP.Current > pools.HP.Max {
 		pools.HP.Current = pools.HP.Max
 	}
+	actualHealing := pools.HP.Current - beforeHP
 
-	recoveredHP := pools.HP.Current - oldHP
-	act.Logger.Debug("HP回復",
-		"actor", act.Actor,
-		"recovered", recoveredHP,
-		"current", pools.HP.Current,
-		"max", pools.HP.Max)
-
-	// 回復ログを出力（5ターン毎）
-	if act.TurnsTotal-act.TurnsLeft > 0 && (act.TurnsTotal-act.TurnsLeft)%5 == 0 {
+	// 5ターン毎にゲームログ出力（プレイヤーの場合のみ）
+	if isPlayerActivity(act, world) && act.TurnsTotal-act.TurnsLeft > 0 && (act.TurnsTotal-act.TurnsLeft)%5 == 0 {
 		gamelog.New(gamelog.FieldLog).
-			Append("休息により ").
-			Append(fmt.Sprintf("%d", recoveredHP)).
-			Append(" HP回復した (").
-			Append(fmt.Sprintf("%d/%d", pools.HP.Current, pools.HP.Max)).
-			Append(")").
+			Append(fmt.Sprintf("HPが %d 回復した。", actualHealing)).
 			Log()
 	}
 
+	act.Logger.Debug("HP回復", "actor", act.Actor, "amount", actualHealing)
 	return nil
 }
 

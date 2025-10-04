@@ -55,8 +55,7 @@ type Activity struct {
 	Target       *ecs.Entity       // 対象エンティティ（nilの場合もある）
 	Position     *gc.Position      // 対象位置（nilの場合もある）
 	CancelReason string            // キャンセル理由
-
-	Logger *logger.Logger
+	Logger       *logger.Logger
 }
 
 // NewActivity は新しいアクティビティを作成する

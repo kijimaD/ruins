@@ -145,12 +145,10 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 		damage = 0
 	}
 
-	if err := aa.applyDamage(target, damage, world); err != nil {
-		return fmt.Errorf("ダメージ適用エラー: %w", err)
-	}
+	// ダメージを直接適用
+	aa.applyDamage(world, target, damage, attacker)
 
 	aa.logAttackResult(attacker, target, world, true, criticalHit, damage)
-	aa.checkDeath(target, world)
 
 	return nil
 }
@@ -245,55 +243,54 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 	return finalDamage
 }
 
-// applyDamage はダメージをターゲットに適用する
-// TODO: ダメージeffectを発行するようにする
-func (aa *AttackActivity) applyDamage(target ecs.Entity, damage int, world w.World) error {
-	// ターゲットのPoolsコンポーネントを取得
-	pools := world.Components.Pools.Get(target)
-	if pools == nil {
-		return ErrTargetNoPoolsComponent
+// applyDamage はダメージを適用する
+func (aa *AttackActivity) applyDamage(world w.World, target ecs.Entity, damage int, source ecs.Entity) {
+	pools := world.Components.Pools.Get(target).(*gc.Pools)
+
+	beforeHP := pools.HP.Current
+	pools.HP.Current -= damage
+	if pools.HP.Current < 0 {
+		pools.HP.Current = 0
 	}
 
-	targetPools := pools.(*gc.Pools)
-
-	// HPからダメージを減算
-	targetPools.HP.Current -= damage
-	if targetPools.HP.Current < 0 {
-		targetPools.HP.Current = 0
+	// ダメージログ出力（プレイヤー関連の場合のみ）
+	if isPlayerActivity(&Activity{Actor: source}, world) || isPlayerActivity(&Activity{Actor: target}, world) {
+		targetName := aa.getEntityName(target, world)
+		gamelog.New(gamelog.FieldLog).
+			Build(func(l *gamelog.Logger) {
+				aa.appendNameWithColor(l, target, targetName, world)
+			}).
+			Append(fmt.Sprintf(" は %d のダメージを受けた。", damage)).
+			Log()
 	}
 
-	return nil
+	// 死亡チェック
+	if pools.HP.Current <= 0 && beforeHP > 0 {
+		world.Components.Dead.Set(target, &gc.Dead{})
+		aa.logDeath(world, target, source)
+	}
 }
 
-// checkDeath は死亡判定を行う
-func (aa *AttackActivity) checkDeath(target ecs.Entity, world w.World) {
-	// ターゲットのHPをチェック
-	pools := world.Components.Pools.Get(target)
-	if pools == nil {
-		return // Poolsがない場合は死亡判定しない
+// logDeath は死亡ログを出力する
+func (aa *AttackActivity) logDeath(world w.World, target ecs.Entity, source ecs.Entity) {
+	// プレイヤー関連の場合のみログ出力
+	if !isPlayerActivity(&Activity{Actor: source}, world) && !isPlayerActivity(&Activity{Actor: target}, world) {
+		return
 	}
 
-	targetPools := pools.(*gc.Pools)
-	if targetPools.HP.Current <= 0 {
-		// 死亡メッセージをログ出力（プレイヤーまたは敵の場合）
-		if target.HasComponent(world.Components.Player) || target.HasComponent(world.Components.AIMoveFSM) {
-			targetName := aa.getEntityName(target, world)
-			gamelog.New(gamelog.FieldLog).
-				Build(func(l *gamelog.Logger) {
-					aa.appendNameWithColor(l, target, targetName, world)
-				}).
-				Append(" は倒れた。").
-				Log()
-		}
+	targetName := aa.getEntityName(target, world)
 
-		if !target.HasComponent(world.Components.Dead) {
-			target.AddComponent(world.Components.Dead, &gc.Dead{})
-		}
-	}
+	gamelog.New(gamelog.FieldLog).
+		Build(func(l *gamelog.Logger) {
+			aa.appendNameWithColor(l, target, targetName, world)
+		}).
+		Append(" は倒れた。").
+		Log()
 }
 
 // logAttackResult は攻撃結果をログに出力する
-func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, damage int) {
+// ダメージと死亡は別途ログ出力されるため、ここでは攻撃の成否のみを出力
+func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, _ int) {
 	// プレイヤーが関わる攻撃のみログ出力
 	if !isPlayerActivity(&Activity{Actor: attacker}, world) && !isPlayerActivity(&Activity{Actor: target}, world) {
 		return
@@ -315,9 +312,9 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 			if !hit {
 				l.Append(" を攻撃したが外れた。")
 			} else if critical {
-				l.Append(" にクリティカルヒット。").Damage(damage).Append("ダメージ")
+				l.Append(" にクリティカルヒット！")
 			} else {
-				l.Append(" を攻撃した。").Damage(damage).Append("ダメージ")
+				l.Append(" を攻撃した。")
 			}
 		}).
 		Log()

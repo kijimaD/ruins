@@ -7,11 +7,12 @@ import (
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/kijimaD/ruins/lib/effects"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
@@ -372,16 +373,31 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 
 	switch selectedAction {
 	case "使う":
-		// 直接プレイヤーに使用
-		processor := effects.NewProcessor()
-		useItemEffect := effects.UseItem{Item: st.selectedItem}
-		playerSelector := effects.TargetPlayer{}
-		if err := processor.AddTargetedEffect(useItemEffect, nil, playerSelector, world); err != nil {
-			log.Printf("アイテムエフェクト追加エラー: %v", err)
+		// プレイヤーエンティティを取得
+		var playerEntity ecs.Entity
+		world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
+			playerEntity = entity
+		}))
+
+		if playerEntity == 0 {
+			log.Printf("プレイヤーエンティティが見つかりません")
+			st.closeActionWindow()
+			return
 		}
-		if err := processor.Execute(world); err != nil {
-			log.Printf("アイテムエフェクト実行エラー: %v", err)
+
+		// UseItemActivityを使用
+		manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
+		params := actions.ActionParams{
+			Actor:  playerEntity,
+			Target: &st.selectedItem,
 		}
+		result, err := manager.Execute(&actions.UseItemActivity{}, params, world)
+		if err != nil {
+			log.Printf("アイテム使用エラー: %v", err)
+		} else if !result.Success {
+			log.Printf("アイテム使用失敗: %s", result.Message)
+		}
+
 		st.closeActionWindow()
 		st.reloadTabs(world)
 		st.updateTabDisplay(world)
