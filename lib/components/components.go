@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"image/color"
 	"reflect"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -353,7 +354,7 @@ type Prop struct{}
 
 // LightSource は光源コンポーネント
 type LightSource struct {
-	Radius    Tile    // 照明範囲
-	Intensity float64 // 光の強度（0.0-1.0）
-	Enabled   bool    // 有効/無効
+	Radius  Tile       // 照明範囲
+	Color   color.RGBA // 光の色
+	Enabled bool       // 有効/無効
 }

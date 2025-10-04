@@ -85,8 +85,13 @@ BlockView = false
 
 [Props.LightSource]
 Radius = 7
-Intensity = 1.0
 Enabled = true
+
+[Props.LightSource.Color]
+R = 255
+G = 220
+B = 180
+A = 255
 `)
 	return &rawMaster
 }
