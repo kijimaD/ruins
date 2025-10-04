@@ -75,7 +75,7 @@ func executeActivity(world w.World, actorImpl actions.ActivityInterface, params 
 	}
 
 	// 移動の場合は追加でタイルイベントをチェック
-	if actorImpl.String() == "Move" && result != nil && result.Success && params.Destination != nil {
+	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
 		// TODO: AI用と共通化したほうがよさそう? プレイヤーの場合だけログを出す、とかはありそうなものの
 		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
 	}
