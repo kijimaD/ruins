@@ -9,31 +9,6 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// ActivityType は継続的なアクション（アクティビティ）の種別を表す
-// CDDAのactivity_idを参考にした設計
-type ActivityType int
-
-const (
-	// ActivityNull は無効なアクティビティを表す
-	ActivityNull ActivityType = iota
-	// ActivityMove は移動アクティビティを表す
-	ActivityMove
-	// ActivityAttack は攻撃アクティビティを表す
-	ActivityAttack
-	// ActivityPickup はアイテム拾得アクティビティを表す
-	ActivityPickup
-	// ActivityWarp はワープアクティビティを表す
-	ActivityWarp
-	// ActivityRest は休息アクティビティを表す
-	ActivityRest
-	// ActivityRead は読書アクティビティを表す
-	ActivityRead
-	// ActivityCraft はクラフトアクティビティを表す
-	ActivityCraft
-	// ActivityWait は待機アクティビティを表す
-	ActivityWait
-)
-
 // ActivityState はアクティビティの実行状態を表す
 type ActivityState int
 
@@ -48,36 +23,21 @@ const (
 	ActivityStateCanceled
 )
 
-// TimingMode は時間消費の計算方法を表す
-// CDDAのbased_on_typeを参考
-type TimingMode int
-
-const (
-	// TimingModeTime は実時間ベース（キャラクター速度に関係なく固定時間）
-	TimingModeTime TimingMode = iota
-	// TimingModeSpeed は速度ベース（速いキャラクターは早く完了）
-	TimingModeSpeed
-	// TimingModeCustom はカスタムタイミング
-	TimingModeCustom
-)
-
 // ActivityInfo はアクティビティのメタデータを保持する
 type ActivityInfo struct {
-	Type             ActivityType // アクティビティの種別
-	Name             string       // 表示名
-	Description      string       // 説明文
-	Interruptible    bool         // 中断可能か
-	Resumable        bool         // 中断後の再開可能か
-	TimingMode       TimingMode   // 時間計算方法
-	ActionPointCost  int          // 1ターン毎のアクションポイントコスト
-	TotalRequiredAP  int          // アクティビティ完了に必要な総AP量
-	RequiresTarget   bool         // ターゲットが必要か
-	RequiresPosition bool         // 位置が必要か
+	Name            string // 表示名
+	Description     string // 説明文
+	Interruptible   bool   // 中断可能か
+	Resumable       bool   // 中断後の再開可能か
+	ActionPointCost int    // 1ターン毎のアクションポイントコスト
+	TotalRequiredAP int    // アクティビティ完了に必要な総AP量
 }
 
 // ActivityInterface はアクティビティの実行を担当するインターフェース
 // CDDAのactivity_actorを参考にした設計
 type ActivityInterface interface {
+	Info() ActivityInfo
+	String() string
 	Validate(act *Activity, world w.World) error
 	Start(act *Activity, world w.World) error
 	DoTurn(act *Activity, world w.World) error
@@ -87,164 +47,26 @@ type ActivityInterface interface {
 
 // Activity は継続的なアクション（アクティビティ）のデータを表す
 type Activity struct {
-	Type         ActivityType  // アクティビティの種別
-	State        ActivityState // 実行状態
-	TurnsTotal   int           // 総必要ターン数
-	TurnsLeft    int           // 残りターン数
-	Actor        ecs.Entity    // 実行者
-	Target       *ecs.Entity   // 対象エンティティ（nilの場合もある）
-	Position     *gc.Position  // 対象位置（nilの場合もある）
-	Message      string        // 進行状況メッセージ
-	CancelReason string        // キャンセル理由
-
-	Logger *logger.Logger
-}
-
-// アクティビティ情報テーブル
-var activityInfos = map[ActivityType]ActivityInfo{
-	ActivityNull: {
-		Type:             ActivityNull,
-		Name:             "",
-		Description:      "無効なアクティビティ",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  0,
-		TotalRequiredAP:  0,
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityMove: {
-		Type:             ActivityMove,
-		Name:             "移動",
-		Description:      "隣接するタイルに移動する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100, // 初期AP相当（基本アクション）
-		TotalRequiredAP:  100,
-		RequiresTarget:   false,
-		RequiresPosition: true, // 移動先が必要
-	},
-	ActivityAttack: {
-		Type:             ActivityAttack,
-		Name:             "攻撃",
-		Description:      "敵を攻撃する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100, // 初期AP相当（基本アクション）
-		TotalRequiredAP:  100,
-		RequiresTarget:   true, // 攻撃対象が必要
-		RequiresPosition: false,
-	},
-	ActivityPickup: {
-		Type:             ActivityPickup,
-		Name:             "拾得",
-		Description:      "アイテムを拾得する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  50, // 初期APの半分（素早いアクション）
-		TotalRequiredAP:  50,
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityWarp: {
-		Type:             ActivityWarp,
-		Name:             "ワープ",
-		Description:      "ワープホールを使用する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  0, // 時間を消費しない（瞬間移動）
-		TotalRequiredAP:  0,
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityRest: {
-		Type:             ActivityRest,
-		Name:             "休息",
-		Description:      "体力を回復するために休息する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  1000, // AP100のプレイヤーで10ターン
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-	ActivityRead: {
-		Type:             ActivityRead,
-		Name:             "読書",
-		Description:      "本を読んでスキルを習得する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  2000, // AP100のプレイヤーで20ターン
-		RequiresTarget:   true, // 本が対象
-		RequiresPosition: false,
-	},
-	ActivityCraft: {
-		Type:             ActivityCraft,
-		Name:             "クラフト",
-		Description:      "アイテムを作成する",
-		Interruptible:    true,
-		Resumable:        false, // 一度中断すると材料が無駄になる
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100,  // 初期AP相当（継続アクション毎ターン）
-		TotalRequiredAP:  1500, // AP100のプレイヤーで15ターン
-		RequiresTarget:   false,
-		RequiresPosition: true, // 作業場所が必要
-	},
-	ActivityWait: {
-		Type:             ActivityWait,
-		Name:             "待機",
-		Description:      "指定した時間だけ待機する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100, // 初期AP相当（意図的な時間消費）
-		TotalRequiredAP:  500, // AP100のプレイヤーで5ターン
-		RequiresTarget:   false,
-		RequiresPosition: false,
-	},
-}
-
-// アクティビティアクターのレジストリ
-var activityActors = map[ActivityType]ActivityInterface{
-	// 初期化は各アクティビティファイルで行う
-}
-
-// RegisterActivityActor はアクティビティアクターを登録する
-func RegisterActivityActor(activityType ActivityType, actor ActivityInterface) {
-	activityActors[activityType] = actor
-}
-
-// GetActivityActor は指定されたアクティビティのアクターを取得する
-func GetActivityActor(activityType ActivityType) ActivityInterface {
-	return activityActors[activityType]
-}
-
-// GetActivityInfo は指定されたアクティビティの情報を取得する
-func GetActivityInfo(activityType ActivityType) ActivityInfo {
-	if info, exists := activityInfos[activityType]; exists {
-		return info
-	}
-	// 未知のアクティビティに対してはNullActivityを返す
-	return activityInfos[ActivityNull]
+	ActorImpl    ActivityInterface // アクティビティの実装
+	State        ActivityState     // 実行状態
+	TurnsTotal   int               // 総必要ターン数
+	TurnsLeft    int               // 残りターン数
+	Actor        ecs.Entity        // 実行者
+	Target       *ecs.Entity       // 対象エンティティ（nilの場合もある）
+	Position     *gc.Position      // 対象位置（nilの場合もある）
+	CancelReason string            // キャンセル理由
+	Logger       *logger.Logger
 }
 
 // NewActivity は新しいアクティビティを作成する
-func NewActivity(activityType ActivityType, actor ecs.Entity, duration int) *Activity {
+func NewActivity(actorImpl ActivityInterface, actor ecs.Entity, duration int) *Activity {
 	// durationは0以下の値は許可しない（呼び出し側で適切な値を指定する必要がある）
 	if duration <= 0 {
 		duration = 1 // 最低1ターンは必要
 	}
 
 	return &Activity{
-		Type:       activityType,
+		ActorImpl:  actorImpl,
 		State:      ActivityStateRunning,
 		TurnsTotal: duration,
 		TurnsLeft:  duration,
@@ -254,8 +76,8 @@ func NewActivity(activityType ActivityType, actor ecs.Entity, duration int) *Act
 }
 
 // CalculateRequiredTurns はキャラクターのAP量に基づいて必要ターン数を計算する
-func CalculateRequiredTurns(activityType ActivityType, characterAP int) int {
-	info := GetActivityInfo(activityType)
+func CalculateRequiredTurns(actorImpl ActivityInterface, characterAP int) int {
+	info := actorImpl.Info()
 
 	// AP積み上げ方式の場合
 	if info.TotalRequiredAP > 0 && characterAP > 0 {
@@ -269,13 +91,13 @@ func CalculateRequiredTurns(activityType ActivityType, characterAP int) int {
 
 // CanInterrupt はアクティビティが中断可能かを返す
 func (a *Activity) CanInterrupt() bool {
-	info := GetActivityInfo(a.Type)
+	info := a.ActorImpl.Info()
 	return info.Interruptible && a.State == ActivityStateRunning
 }
 
 // CanResume はアクティビティが再開可能かを返す
 func (a *Activity) CanResume() bool {
-	info := GetActivityInfo(a.Type)
+	info := a.ActorImpl.Info()
 	return info.Resumable && a.State == ActivityStatePaused
 }
 
@@ -289,7 +111,7 @@ func (a *Activity) Interrupt(reason string) error {
 	a.CancelReason = reason
 
 	a.Logger.Debug("アクティビティ中断",
-		"type", a.Type.String(),
+		"type", a.ActorImpl.String(),
 		"actor", a.Actor,
 		"reason", reason,
 		"turns_left", a.TurnsLeft)
@@ -307,7 +129,7 @@ func (a *Activity) Resume() error {
 	a.CancelReason = ""
 
 	a.Logger.Debug("アクティビティ再開",
-		"type", a.Type.String(),
+		"type", a.ActorImpl.String(),
 		"actor", a.Actor,
 		"turns_left", a.TurnsLeft)
 
@@ -320,7 +142,7 @@ func (a *Activity) Cancel(reason string) {
 	a.CancelReason = reason
 
 	a.Logger.Debug("アクティビティキャンセル",
-		"type", a.Type.String(),
+		"type", a.ActorImpl.String(),
 		"actor", a.Actor,
 		"reason", reason)
 }
@@ -331,7 +153,7 @@ func (a *Activity) Complete() {
 	a.TurnsLeft = 0
 
 	a.Logger.Debug("アクティビティ完了",
-		"type", a.Type.String(),
+		"type", a.ActorImpl.String(),
 		"actor", a.Actor,
 		"duration", a.TurnsTotal)
 }
@@ -362,34 +184,8 @@ func (a *Activity) GetProgressPercent() float64 {
 
 // GetDisplayName は表示用の名前を返す
 func (a *Activity) GetDisplayName() string {
-	info := GetActivityInfo(a.Type)
+	info := a.ActorImpl.Info()
 	return info.Name
-}
-
-// String はActivityTypeの文字列表現を返す
-func (t ActivityType) String() string {
-	switch t {
-	case ActivityMove:
-		return "Move"
-	case ActivityAttack:
-		return "Attack"
-	case ActivityPickup:
-		return "Pickup"
-	case ActivityWarp:
-		return "Warp"
-	case ActivityRest:
-		return "Rest"
-	case ActivityRead:
-		return "Read"
-	case ActivityCraft:
-		return "Craft"
-	case ActivityWait:
-		return "Wait"
-	case ActivityNull:
-		return "Null"
-	default:
-		return fmt.Sprintf("ActivityType(%d)", int(t))
-	}
 }
 
 // String はActivityStateの文字列表現を返す

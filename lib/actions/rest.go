@@ -9,15 +9,28 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// RestActivity は休息アクティビティの実装
+// RestActivity はActivityInterfaceの実装
 type RestActivity struct{}
 
-func init() {
-	// 休息アクティビティをレジストリに登録
-	RegisterActivityActor(ActivityRest, &RestActivity{})
+// Info はActivityInterfaceの実装
+func (ra *RestActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Name:            "休息",
+		Description:     "体力を回復するために休息する",
+		Interruptible:   true,
+		Resumable:       true,
+		ActionPointCost: 100,
+		TotalRequiredAP: 1000,
+	}
+}
+
+// String はActivityInterfaceの実装
+func (ra *RestActivity) String() string {
+	return "Rest"
 }
 
 // Validate は休息アクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (ra *RestActivity) Validate(act *Activity, world w.World) error {
 	// 周囲の安全性をチェック
 	if !ra.isSafe(act, world) {
@@ -33,12 +46,14 @@ func (ra *RestActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は休息開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (ra *RestActivity) Start(act *Activity, _ w.World) error {
 	act.Logger.Debug("休息開始", "actor", act.Actor, "duration", act.TurnsLeft)
 	return nil
 }
 
 // DoTurn は休息アクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 	// 周囲の安全性をチェック
 	if !ra.isSafe(act, world) {
@@ -69,12 +84,11 @@ func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	ra.updateMessage(act)
 	return nil
 }
 
 // Finish は休息完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (ra *RestActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("休息完了", "actor", act.Actor)
 
@@ -119,6 +133,7 @@ func (ra *RestActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled は休息キャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (ra *RestActivity) Canceled(act *Activity, world w.World) error {
 	// プレイヤーの場合のみ中断時のメッセージを表示
 	if isPlayerActivity(act, world) {
@@ -150,36 +165,26 @@ func (ra *RestActivity) performHealing(act *Activity, world w.World) error {
 	if pools.HP.Current >= pools.HP.Max {
 		// 既に満タンの場合は早期完了
 		act.Complete()
-		act.Message = "既に体力は十分回復しています"
 		return nil
 	}
 
-	// HP回復
-	healingPerTurn := 5 // 1ターンあたり5HP回復
-	oldHP := pools.HP.Current
-	pools.HP.Current += healingPerTurn
+	// 直接HP回復（1ターンあたり5HP）
+	healAmount := 5
+	beforeHP := pools.HP.Current
+	pools.HP.Current += healAmount
 	if pools.HP.Current > pools.HP.Max {
 		pools.HP.Current = pools.HP.Max
 	}
+	actualHealing := pools.HP.Current - beforeHP
 
-	recoveredHP := pools.HP.Current - oldHP
-	act.Logger.Debug("HP回復",
-		"actor", act.Actor,
-		"recovered", recoveredHP,
-		"current", pools.HP.Current,
-		"max", pools.HP.Max)
-
-	// 回復ログを出力（5ターン毎）
-	if act.TurnsTotal-act.TurnsLeft > 0 && (act.TurnsTotal-act.TurnsLeft)%5 == 0 {
+	// 5ターン毎にゲームログ出力（プレイヤーの場合のみ）
+	if isPlayerActivity(act, world) && act.TurnsTotal-act.TurnsLeft > 0 && (act.TurnsTotal-act.TurnsLeft)%5 == 0 {
 		gamelog.New(gamelog.FieldLog).
-			Append("休息により ").
-			Append(fmt.Sprintf("%d", recoveredHP)).
-			Append(" HP回復した (").
-			Append(fmt.Sprintf("%d/%d", pools.HP.Current, pools.HP.Max)).
-			Append(")").
+			Append(fmt.Sprintf("HPが %d 回復した。", actualHealing)).
 			Log()
 	}
 
+	act.Logger.Debug("HP回復", "actor", act.Actor, "amount", actualHealing)
 	return nil
 }
 
@@ -213,19 +218,4 @@ func (ra *RestActivity) isSafe(act *Activity, world w.World) bool {
 	}))
 
 	return !hasEnemies
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (ra *RestActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-
-	if progress < 25.0 {
-		act.Message = "横になって休息している..."
-	} else if progress < 50.0 {
-		act.Message = "体力が少しずつ回復してきている..."
-	} else if progress < 75.0 {
-		act.Message = "深い休息に入っている..."
-	} else {
-		act.Message = "十分な休息を取れそうだ..."
-	}
 }

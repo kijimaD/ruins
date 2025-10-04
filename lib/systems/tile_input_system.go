@@ -6,6 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
 	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -64,17 +65,17 @@ func TileInputSystem(world w.World) {
 }
 
 // executeActivity はアクティビティ実行関数
-func executeActivity(world w.World, activityType actions.ActivityType, params actions.ActionParams) {
-	actionAPI := actions.NewActionAPI()
+func executeActivity(world w.World, actorImpl actions.ActivityInterface, params actions.ActionParams) {
+	manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
 
-	result, err := actionAPI.Execute(activityType, params, world)
+	result, err := manager.Execute(actorImpl, params, world)
 	if err != nil {
 		_ = result // エラーの場合は結果を使用しない
 		return
 	}
 
 	// 移動の場合は追加でタイルイベントをチェック
-	if activityType == actions.ActivityMove && result != nil && result.Success && params.Destination != nil {
+	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
 		// TODO: AI用と共通化したほうがよさそう? プレイヤーの場合だけログを出す、とかはありそうなものの
 		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
 	}
@@ -118,7 +119,7 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 				Actor:  entity,
 				Target: &enemy,
 			}
-			executeActivity(world, actions.ActivityAttack, params)
+			executeActivity(world, &actions.AttackActivity{}, params)
 			return
 		}
 
@@ -132,7 +133,7 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 				Actor:       entity,
 				Destination: &destination,
 			}
-			executeActivity(world, actions.ActivityMove, params)
+			executeActivity(world, &actions.MoveActivity{}, params)
 		}
 	}
 }
@@ -148,7 +149,7 @@ func executeWaitAction(world w.World) {
 			Duration: 1,
 			Reason:   "プレイヤー待機",
 		}
-		executeActivity(world, actions.ActivityWait, params)
+		executeActivity(world, &actions.WaitActivity{}, params)
 	}))
 }
 
@@ -166,14 +167,14 @@ func executeEnterAction(world w.World) {
 		// ワープホールチェック
 		if checkForWarp(world, entity) {
 			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, actions.ActivityWarp, params)
+			executeActivity(world, &actions.WarpActivity{}, params)
 			return
 		}
 
 		// アイテム拾得チェック
 		if checkForItems(world, tileX, tileY) {
 			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, actions.ActivityPickup, params)
+			executeActivity(world, &actions.PickupActivity{}, params)
 			return
 		}
 	}))

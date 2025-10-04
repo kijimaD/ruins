@@ -32,7 +32,7 @@ func (p *Processor) ProcessAllEntities(world w.World) {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 	p.logger.Debug("AI処理開始", "turn", turnManager.TurnNumber, "playerMoves", turnManager.PlayerMoves)
 
-	actionAPI := actions.NewActionAPI()
+	manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
 	entityCount := 0
 
 	// AIMoveFSMコンポーネントを持つ全エンティティを処理
@@ -42,16 +42,22 @@ func (p *Processor) ProcessAllEntities(world w.World) {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		entityCount++
 		p.logger.Debug("AIエンティティを処理中", "entity", entity, "count", entityCount)
-		p.ProcessEntity(world, actionAPI, entity)
+		p.ProcessEntity(world, manager, entity)
 	}))
 
 	p.logger.Debug("AI処理完了", "処理されたエンティティ数", entityCount, "turn", turnManager.TurnNumber, "playerMoves", turnManager.PlayerMoves)
 }
 
 // ProcessEntity は個別のAIエンティティを処理する
-func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, entity ecs.Entity) {
+func (p *Processor) ProcessEntity(world w.World, manager *actions.ActivityManager, entity ecs.Entity) {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 	p.logger.Debug("AIエンティティ処理開始", "entity", entity)
+
+	// 死亡しているエンティティは処理しない
+	if entity.HasComponent(world.Components.Dead) {
+		p.logger.Debug("Deadエンティティのため処理スキップ", "entity", entity)
+		return
+	}
 
 	// 必要なコンポーネントを取得
 	context, err := p.gatherEntityContext(world, entity)
@@ -96,35 +102,42 @@ func (p *Processor) ProcessEntity(world w.World, actionAPI *actions.ActionAPI, e
 	maxActions := 10 // 無限ループを防ぐためのリミット
 
 	for actionsExecuted < maxActions {
+		// アクション実行中に死亡した場合は処理を中断
+		if entity.HasComponent(world.Components.Dead) {
+			p.logger.Debug("エンティティが死亡したため処理中断", "entity", entity)
+			break
+		}
+
 		// アクション決定
-		activityType, actionParams := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
+		actorImpl, actionParams := p.actionPlanner.PlanAction(world, entity, *playerEntity, context, canSeePlayer)
 
 		// アクション実行
-		p.logger.Debug("アクション決定", "entity", entity, "activity", activityType.String(), "state", context.Roaming.SubState, "actions", actionsExecuted)
-		if activityType.String() == "" {
+		activityName := actorImpl.String()
+		p.logger.Debug("アクション決定", "entity", entity, "activity", activityName, "state", context.Roaming.SubState, "actions", actionsExecuted)
+		if actorImpl == nil {
 			p.logger.Debug("アクション無し", "entity", entity)
 			break
 		}
 
 		// アクティビティタイプに応じたAPコストを計算
-		actionCost, _ := actions.GetActivityCost(activityType)
+		actionCost := actorImpl.Info().ActionPointCost
 		if !turnManager.CanEntityAct(world, entity, actionCost) {
-			p.logger.Debug("AP不足でアクション実行不可", "entity", entity, "activity", activityType.String(), "cost", actionCost)
+			p.logger.Debug("AP不足でアクション実行不可", "entity", entity, "activity", activityName, "cost", actionCost)
 			break
 		}
 
-		result, err := actionAPI.Execute(activityType, actionParams, world)
+		result, err := manager.Execute(actorImpl, actionParams, world)
 		if err != nil {
-			p.logger.Warn("AIアクション実行失敗", "entity", entity, "activity", activityType.String(), "error", err.Error())
+			p.logger.Warn("AIアクション実行失敗", "entity", entity, "activity", activityName, "error", err.Error())
 			break
 		}
 
-		p.logger.Debug("AIアクション実行成功", "entity", entity, "activity", activityType.String(), "success", result.Success, "state", context.Roaming.SubState, "message", result.Message)
+		p.logger.Debug("AIアクション実行成功", "entity", entity, "activity", activityName, "success", result.Success, "state", context.Roaming.SubState, "message", result.Message)
 		actionsExecuted++
 
 		// アクション失敗時は停止
 		if !result.Success {
-			p.logger.Debug("アクション失敗により停止", "entity", entity, "activity", activityType.String())
+			p.logger.Debug("アクション失敗により停止", "entity", entity, "activity", activityName)
 			break
 		}
 	}

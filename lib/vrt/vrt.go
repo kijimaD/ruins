@@ -9,9 +9,7 @@ import (
 	"os"
 	"path"
 
-	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
-	"github.com/kijimaD/ruins/lib/effects"
 	gs "github.com/kijimaD/ruins/lib/systems"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -99,22 +97,6 @@ func RunTestGame(state es.State[w.World], outputPath string) {
 	// 装備変更後にステータスを更新
 	if changed := gs.EquipmentChangedSystem(world); !changed {
 		log.Println("Equipment change was not detected")
-	}
-
-	// 完全回復
-	processor := effects.NewProcessor()
-	healingEffect := effects.Healing{Amount: gc.RatioAmount{Ratio: 1.0}}
-	staminaEffect := effects.RestoreStamina{Amount: gc.RatioAmount{Ratio: 1.0}}
-
-	playerSelector := effects.TargetPlayer{}
-	if err := processor.AddTargetedEffect(healingEffect, nil, playerSelector, world); err != nil {
-		log.Printf("回復エフェクト追加エラー: %v", err)
-	}
-	if err := processor.AddTargetedEffect(staminaEffect, nil, playerSelector, world); err != nil {
-		log.Printf("スタミナ回復エフェクト追加エラー: %v", err)
-	}
-	if err := processor.Execute(world); err != nil {
-		log.Printf("回復エフェクト実行エラー: %v", err)
 	}
 
 	g := &TestGame{

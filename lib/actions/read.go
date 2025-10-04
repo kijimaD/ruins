@@ -8,15 +8,28 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// ReadActivity は読書アクティビティの実装
+// ReadActivity はActivityInterfaceの実装
 type ReadActivity struct{}
 
-func init() {
-	// 読書アクティビティをレジストリに登録
-	RegisterActivityActor(ActivityRead, &ReadActivity{})
+// Info はActivityInterfaceの実装
+func (ra *ReadActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Name:            "読書",
+		Description:     "本を読んでスキルを習得する",
+		Interruptible:   true,
+		Resumable:       true,
+		ActionPointCost: 100,
+		TotalRequiredAP: 2000,
+	}
+}
+
+// String はActivityInterfaceの実装
+func (ra *ReadActivity) String() string {
+	return "Read"
 }
 
 // Validate は読書アクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (ra *ReadActivity) Validate(act *Activity, world w.World) error {
 	// 読書対象（本）が必要
 	if act.Target == nil {
@@ -50,6 +63,7 @@ func (ra *ReadActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start は読書開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (ra *ReadActivity) Start(act *Activity, world w.World) error {
 	act.Logger.Debug("読書開始", "actor", act.Actor, "target", *act.Target, "duration", act.TurnsLeft)
 
@@ -73,6 +87,7 @@ func (ra *ReadActivity) Start(act *Activity, world w.World) error {
 }
 
 // DoTurn は読書アクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (ra *ReadActivity) DoTurn(act *Activity, world w.World) error {
 	// 読書条件を再チェック
 	if err := ra.Validate(act, world); err != nil {
@@ -103,12 +118,11 @@ func (ra *ReadActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	ra.updateMessage(act)
 	return nil
 }
 
 // Finish は読書完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (ra *ReadActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("読書完了", "actor", act.Actor)
 
@@ -137,6 +151,7 @@ func (ra *ReadActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled は読書キャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (ra *ReadActivity) Canceled(act *Activity, world w.World) error {
 	// プレイヤーの場合のみ中断時のメッセージを表示
 	if isPlayerActivity(act, world) {
@@ -170,19 +185,4 @@ func (ra *ReadActivity) performReading(act *Activity, world w.World) error {
 	}
 
 	return nil
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (ra *ReadActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-
-	if progress < 25.0 {
-		act.Message = "読書を始めている..."
-	} else if progress < 50.0 {
-		act.Message = "内容を理解しようとしている..."
-	} else if progress < 75.0 {
-		act.Message = "深く読み込んでいる..."
-	} else {
-		act.Message = "読書を完了しそうだ..."
-	}
 }

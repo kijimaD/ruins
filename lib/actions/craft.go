@@ -9,15 +9,28 @@ import (
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
-// CraftActivity はクラフトアクティビティの実装
+// CraftActivity はActivityInterfaceの実装
 type CraftActivity struct{}
 
-func init() {
-	// クラフトアクティビティをレジストリに登録
-	RegisterActivityActor(ActivityCraft, &CraftActivity{})
+// Info はActivityInterfaceの実装
+func (ca *CraftActivity) Info() ActivityInfo {
+	return ActivityInfo{
+		Name:            "クラフト",
+		Description:     "アイテムを作成する",
+		Interruptible:   true,
+		Resumable:       false,
+		ActionPointCost: 100,
+		TotalRequiredAP: 1500,
+	}
+}
+
+// String はActivityInterfaceの実装
+func (ca *CraftActivity) String() string {
+	return "Craft"
 }
 
 // Validate はクラフトアクティビティの検証を行う
+// Validate はActivityInterfaceの実装
 func (ca *CraftActivity) Validate(act *Activity, world w.World) error {
 	// クラフト対象（レシピ）が必要
 	if act.Target == nil {
@@ -64,6 +77,7 @@ func (ca *CraftActivity) Validate(act *Activity, world w.World) error {
 }
 
 // Start はクラフト開始時の処理を実行する
+// Start はActivityInterfaceの実装
 func (ca *CraftActivity) Start(act *Activity, world w.World) error {
 	act.Logger.Debug("クラフト開始", "actor", act.Actor, "target", *act.Target, "duration", act.TurnsLeft)
 
@@ -87,6 +101,7 @@ func (ca *CraftActivity) Start(act *Activity, world w.World) error {
 }
 
 // DoTurn はクラフトアクティビティの1ターン分の処理を実行する
+// DoTurn はActivityInterfaceの実装
 func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 	// クラフト条件を再チェック
 	if err := ca.Validate(act, world); err != nil {
@@ -117,12 +132,11 @@ func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	ca.updateMessage(act)
 	return nil
 }
 
 // Finish はクラフト完了時の処理を実行する
+// Finish はActivityInterfaceの実装
 func (ca *CraftActivity) Finish(act *Activity, world w.World) error {
 	act.Logger.Debug("クラフト完了", "actor", act.Actor)
 
@@ -156,6 +170,7 @@ func (ca *CraftActivity) Finish(act *Activity, world w.World) error {
 }
 
 // Canceled はクラフトキャンセル時の処理を実行する
+// Canceled はActivityInterfaceの実装
 func (ca *CraftActivity) Canceled(act *Activity, world w.World) error {
 	// プレイヤーの場合のみ中断時のメッセージを表示
 	if isPlayerActivity(act, world) {
@@ -199,19 +214,4 @@ func (ca *CraftActivity) performCrafting(act *Activity, world w.World) error {
 	}
 
 	return nil
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (ca *CraftActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-
-	if progress < 25.0 {
-		act.Message = "材料を準備している..."
-	} else if progress < 50.0 {
-		act.Message = "作業を開始している..."
-	} else if progress < 75.0 {
-		act.Message = "丁寧に作業している..."
-	} else {
-		act.Message = "仕上げ作業中..."
-	}
 }

@@ -34,6 +34,10 @@ var (
 	ErrPositionNotFound = errors.New("位置情報が見つかりません")
 	ErrNoItemsToPickup  = errors.New("拾えるアイテムがありません")
 	ErrItemPickupFailed = errors.New("アイテムの拾得に失敗しました")
+	ErrItemNotSet       = errors.New("アイテムが指定されていません")
+	ErrInvalidItem      = errors.New("無効なアイテムです")
+	ErrItemNoEffect     = errors.New("このアイテムには効果がありません")
+	ErrActorNoPools     = errors.New("アクターにPoolsコンポーネントがありません")
 
 	// 休息関連エラー
 	ErrRestEnemiesNearby   = errors.New("周囲に敵がいるため休息できません")
