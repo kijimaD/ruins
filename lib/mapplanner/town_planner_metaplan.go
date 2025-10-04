@@ -72,8 +72,7 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 				// 土タイル（屋外の空き地）
 				planData.Tiles[idx] = planData.GenerateTile("Dirt")
 			default:
-				// その他は空タイル
-				planData.Tiles[idx] = planData.GenerateTile("Empty")
+				return fmt.Errorf("無効なタイル指定子が存在する: %s", string(char))
 			}
 		}
 	}
@@ -89,6 +88,9 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 			}
 
 			switch char {
+			case '.':
+				// 何もしない
+				continue
 			case '@':
 				// プレイヤー開始位置を設定
 				planData.PlayerStartPosition = &struct {
@@ -128,6 +130,8 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					Y:       y,
 					PropKey: propKey,
 				})
+			default:
+				return fmt.Errorf("無効なエンティティ指定子が存在する: %s", string(char))
 			}
 		}
 	}
