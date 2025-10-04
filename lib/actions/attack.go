@@ -145,10 +145,11 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 		damage = 0
 	}
 
-	// ダメージを直接適用
-	aa.applyDamage(world, target, damage, attacker)
-
+	// 1. 攻撃試行ログ
 	aa.logAttackResult(attacker, target, world, true, criticalHit, damage)
+
+	// 2. ダメージを直接適用（ダメージログと死亡ログはapplyDamage内で出力）
+	aa.applyDamage(world, target, damage, attacker)
 
 	return nil
 }
@@ -255,18 +256,20 @@ func (aa *AttackActivity) applyDamage(world w.World, target ecs.Entity, damage i
 
 	// ダメージログ出力（プレイヤー関連の場合のみ）
 	if isPlayerActivity(&Activity{Actor: source}, world) || isPlayerActivity(&Activity{Actor: target}, world) {
+		sourceName := aa.getEntityName(source, world)
 		targetName := aa.getEntityName(target, world)
-		gamelog.New(gamelog.FieldLog).
-			Build(func(l *gamelog.Logger) {
-				aa.appendNameWithColor(l, target, targetName, world)
-			}).
-			Append(fmt.Sprintf(" は %d のダメージを受けた。", damage)).
-			Log()
+
+		logger := gamelog.New(gamelog.FieldLog)
+		logger.Build(func(l *gamelog.Logger) {
+			aa.appendNameWithColor(l, source, sourceName, world)
+		}).Append(" は ").Build(func(l *gamelog.Logger) {
+			aa.appendNameWithColor(l, target, targetName, world)
+		}).Append(fmt.Sprintf(" に %d のダメージを与えた。", damage)).Log()
 	}
 
 	// 死亡チェック
 	if pools.HP.Current <= 0 && beforeHP > 0 {
-		world.Components.Dead.Set(target, &gc.Dead{})
+		target.AddComponent(world.Components.Dead, &gc.Dead{})
 		aa.logDeath(world, target, source)
 	}
 }

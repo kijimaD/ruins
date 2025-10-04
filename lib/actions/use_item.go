@@ -157,7 +157,7 @@ func (u *UseItemActivity) applyDamage(act *Activity, world w.World, amount int, 
 
 	// 死亡チェック
 	if pools.HP.Current <= 0 {
-		world.Components.Dead.Set(act.Actor, &gc.Dead{})
+		act.Actor.AddComponent(world.Components.Dead, &gc.Dead{})
 		u.logDeath(world, act.Actor)
 	}
 
