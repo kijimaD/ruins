@@ -109,7 +109,7 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					Y:    y,
 					Type: WarpPortalNext, // 次の階層への移動
 				})
-			case 'C', 'T', 'S', 'M', 'R':
+			case 'C', 'T', 'S', 'M', 'R', 'L':
 				// Props（家具類）
 				var propKey string
 				switch char {
@@ -123,6 +123,8 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					propKey = "barrel"
 				case 'R':
 					propKey = "crate"
+				case 'L':
+					propKey = "lantern"
 				}
 
 				planData.Props = append(planData.Props, PropsSpec{
@@ -238,7 +240,7 @@ func getTownLayout() ([]string, []string) {
 		"..................................................",
 		"..................................................",
 		"..................................................",
-		"..................................................", // 南区域の道路（幅3）
+		"...........L..........L...L..........L............", // 南区域の道路（幅3）
 		"..................................................",
 		"..................................................",
 		".....................CT.@.........................",

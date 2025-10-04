@@ -2236,3 +2236,11 @@ SpriteSheetName = "field"
 SpriteKey = "prop_bed"
 BlockPass = true
 BlockView = false
+
+[[Props]]
+Name = "lantern"
+Description = "床置きランタン。広い範囲を明るく照らす"
+SpriteSheetName = "field"
+SpriteKey = "prop_lantern"
+BlockPass = true
+BlockView = false
