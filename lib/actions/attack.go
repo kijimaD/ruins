@@ -56,6 +56,11 @@ func (aa *AttackActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (aa *AttackActivity) String() string {
+	return "Attack"
+}
+
 // Validate はActivityInterfaceの実装
 func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 	if act.Target == nil {

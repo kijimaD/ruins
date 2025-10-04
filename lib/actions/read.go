@@ -31,6 +31,11 @@ func (ra *ReadActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (ra *ReadActivity) String() string {
+	return "Read"
+}
+
 // Validate は読書アクティビティの検証を行う
 // Validate はActivityInterfaceの実装
 func (ra *ReadActivity) Validate(act *Activity, world w.World) error {

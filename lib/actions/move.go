@@ -32,6 +32,11 @@ func (ma *MoveActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (ma *MoveActivity) String() string {
+	return "Move"
+}
+
 // Validate はActivityInterfaceの実装
 func (ma *MoveActivity) Validate(act *Activity, world w.World) error {
 	if act.Position == nil {

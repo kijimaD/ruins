@@ -33,6 +33,11 @@ func (wa *WarpActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (wa *WarpActivity) String() string {
+	return "Warp"
+}
+
 // Validate はワープアクティビティの検証を行う
 // Validate はActivityInterfaceの実装
 func (wa *WarpActivity) Validate(act *Activity, world w.World) error {

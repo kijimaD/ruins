@@ -30,6 +30,11 @@ func (wa *WaitActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (wa *WaitActivity) String() string {
+	return "Wait"
+}
+
 // Validate は待機アクティビティの検証を行う
 // Validate はActivityInterfaceの実装
 func (wa *WaitActivity) Validate(act *Activity, _ w.World) error {

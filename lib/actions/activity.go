@@ -79,6 +79,7 @@ type ActivityInfo struct {
 // CDDAのactivity_actorを参考にした設計
 type ActivityInterface interface {
 	Info() ActivityInfo
+	String() string
 	Validate(act *Activity, world w.World) error
 	Start(act *Activity, world w.World) error
 	DoTurn(act *Activity, world w.World) error
@@ -269,28 +270,13 @@ func (a *Activity) GetDisplayName() string {
 
 // String はActivityTypeの文字列表現を返す
 func (t ActivityType) String() string {
-	switch t {
-	case ActivityMove:
-		return "Move"
-	case ActivityAttack:
-		return "Attack"
-	case ActivityPickup:
-		return "Pickup"
-	case ActivityWarp:
-		return "Warp"
-	case ActivityRest:
-		return "Rest"
-	case ActivityRead:
-		return "Read"
-	case ActivityCraft:
-		return "Craft"
-	case ActivityWait:
-		return "Wait"
-	case ActivityNull:
+	if t == ActivityNull {
 		return "Null"
-	default:
-		return fmt.Sprintf("ActivityType(%d)", int(t))
 	}
+	if actor := GetActivityActor(t); actor != nil {
+		return actor.String()
+	}
+	return fmt.Sprintf("ActivityType(%d)", int(t))
 }
 
 // String はActivityStateの文字列表現を返す

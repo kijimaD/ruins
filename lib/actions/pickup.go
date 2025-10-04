@@ -33,6 +33,11 @@ func (pa *PickupActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (pa *PickupActivity) String() string {
+	return "Pickup"
+}
+
 // Validate はアイテム拾得アクティビティの検証を行う
 // Validate はActivityInterfaceの実装
 func (pa *PickupActivity) Validate(act *Activity, world w.World) error {

@@ -32,6 +32,11 @@ func (ca *CraftActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (ca *CraftActivity) String() string {
+	return "Craft"
+}
+
 // Validate はクラフトアクティビティの検証を行う
 // Validate はActivityInterfaceの実装
 func (ca *CraftActivity) Validate(act *Activity, world w.World) error {

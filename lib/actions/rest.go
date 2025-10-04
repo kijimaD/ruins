@@ -32,6 +32,11 @@ func (ra *RestActivity) Info() ActivityInfo {
 	}
 }
 
+// String はActivityInterfaceの実装
+func (ra *RestActivity) String() string {
+	return "Rest"
+}
+
 // Validate は休息アクティビティの検証を行う
 // Validate はActivityInterfaceの実装
 func (ra *RestActivity) Validate(act *Activity, world w.World) error {
