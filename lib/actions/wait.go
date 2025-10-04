@@ -13,15 +13,12 @@ type WaitActivity struct{}
 // Info はActivityInterfaceの実装
 func (wa *WaitActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "待機",
-		Description:      "指定した時間だけ待機する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,
-		TotalRequiredAP:  500,
-		RequiresTarget:   false,
-		RequiresPosition: false,
+		Name:            "待機",
+		Description:     "指定した時間だけ待機する",
+		Interruptible:   true,
+		Resumable:       true,
+		ActionPointCost: 100,
+		TotalRequiredAP: 500,
 	}
 }
 
@@ -81,8 +78,6 @@ func (wa *WaitActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	wa.updateMessage(act)
 	return nil
 }
 
@@ -107,24 +102,6 @@ func (wa *WaitActivity) Finish(act *Activity, world w.World) error {
 func (wa *WaitActivity) Canceled(act *Activity, _ w.World) error {
 	act.Logger.Debug("待機キャンセル", "actor", act.Actor, "reason", act.CancelReason)
 	return nil
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (wa *WaitActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-	remainingTurns := act.TurnsLeft
-
-	if progress < 25.0 {
-		act.Message = "待機している..."
-	} else if progress < 50.0 {
-		act.Message = "時間を過ごしている..."
-	} else if progress < 75.0 {
-		act.Message = "のんびりと過ごしている..."
-	} else if remainingTurns <= 1 {
-		act.Message = "もうすぐ待機が終わりそうだ..."
-	} else {
-		act.Message = "引き続き待機している..."
-	}
 }
 
 // observeEnvironment は環境観察処理を実行する

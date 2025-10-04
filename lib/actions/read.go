@@ -14,15 +14,12 @@ type ReadActivity struct{}
 // Info はActivityInterfaceの実装
 func (ra *ReadActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "読書",
-		Description:      "本を読んでスキルを習得する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,
-		TotalRequiredAP:  2000,
-		RequiresTarget:   true,
-		RequiresPosition: false,
+		Name:            "読書",
+		Description:     "本を読んでスキルを習得する",
+		Interruptible:   true,
+		Resumable:       true,
+		ActionPointCost: 100,
+		TotalRequiredAP: 2000,
 	}
 }
 
@@ -121,8 +118,6 @@ func (ra *ReadActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	ra.updateMessage(act)
 	return nil
 }
 
@@ -190,19 +185,4 @@ func (ra *ReadActivity) performReading(act *Activity, world w.World) error {
 	}
 
 	return nil
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (ra *ReadActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-
-	if progress < 25.0 {
-		act.Message = "読書を始めている..."
-	} else if progress < 50.0 {
-		act.Message = "内容を理解しようとしている..."
-	} else if progress < 75.0 {
-		act.Message = "深く読み込んでいる..."
-	} else {
-		act.Message = "読書を完了しそうだ..."
-	}
 }

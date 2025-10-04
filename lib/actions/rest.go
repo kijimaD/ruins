@@ -15,15 +15,12 @@ type RestActivity struct{}
 // Info はActivityInterfaceの実装
 func (ra *RestActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "休息",
-		Description:      "体力を回復するために休息する",
-		Interruptible:    true,
-		Resumable:        true,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  100,
-		TotalRequiredAP:  1000,
-		RequiresTarget:   false,
-		RequiresPosition: false,
+		Name:            "休息",
+		Description:     "体力を回復するために休息する",
+		Interruptible:   true,
+		Resumable:       true,
+		ActionPointCost: 100,
+		TotalRequiredAP: 1000,
 	}
 }
 
@@ -87,8 +84,6 @@ func (ra *RestActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	ra.updateMessage(act)
 	return nil
 }
 
@@ -170,7 +165,6 @@ func (ra *RestActivity) performHealing(act *Activity, world w.World) error {
 	if pools.HP.Current >= pools.HP.Max {
 		// 既に満タンの場合は早期完了
 		act.Complete()
-		act.Message = "既に体力は十分回復しています"
 		return nil
 	}
 
@@ -233,19 +227,4 @@ func (ra *RestActivity) isSafe(act *Activity, world w.World) bool {
 	}))
 
 	return !hasEnemies
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (ra *RestActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-
-	if progress < 25.0 {
-		act.Message = "横になって休息している..."
-	} else if progress < 50.0 {
-		act.Message = "体力が少しずつ回復してきている..."
-	} else if progress < 75.0 {
-		act.Message = "深い休息に入っている..."
-	} else {
-		act.Message = "十分な休息を取れそうだ..."
-	}
 }

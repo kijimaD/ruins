@@ -16,15 +16,12 @@ type WarpActivity struct{}
 // Info はActivityInterfaceの実装
 func (wa *WarpActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "ワープ",
-		Description:      "ワープホールを使用する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeTime,
-		ActionPointCost:  0,
-		TotalRequiredAP:  0,
-		RequiresTarget:   false,
-		RequiresPosition: false,
+		Name:            "ワープ",
+		Description:     "ワープホールを使用する",
+		Interruptible:   false,
+		Resumable:       false,
+		ActionPointCost: 0,
+		TotalRequiredAP: 0,
 	}
 }
 

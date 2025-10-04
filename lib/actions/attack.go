@@ -39,15 +39,12 @@ type AttackActivity struct{}
 // Info はActivityInterfaceの実装
 func (aa *AttackActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "攻撃",
-		Description:      "敵を攻撃する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100,
-		TotalRequiredAP:  100,
-		RequiresTarget:   true,
-		RequiresPosition: false,
+		Name:            "攻撃",
+		Description:     "敵を攻撃する",
+		Interruptible:   false,
+		Resumable:       false,
+		ActionPointCost: 100,
+		TotalRequiredAP: 100,
 	}
 }
 

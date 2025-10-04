@@ -16,15 +16,12 @@ type PickupActivity struct{}
 // Info はActivityInterfaceの実装
 func (pa *PickupActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "拾得",
-		Description:      "アイテムを拾得する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  50,
-		TotalRequiredAP:  50,
-		RequiresTarget:   false,
-		RequiresPosition: false,
+		Name:            "拾得",
+		Description:     "アイテムを拾得する",
+		Interruptible:   false,
+		Resumable:       false,
+		ActionPointCost: 50,
+		TotalRequiredAP: 50,
 	}
 }
 

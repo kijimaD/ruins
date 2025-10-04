@@ -15,15 +15,12 @@ type MoveActivity struct{}
 // Info はActivityInterfaceの実装
 func (ma *MoveActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "移動",
-		Description:      "隣接するタイルに移動する",
-		Interruptible:    false,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100,
-		TotalRequiredAP:  100,
-		RequiresTarget:   false,
-		RequiresPosition: true,
+		Name:            "移動",
+		Description:     "隣接するタイルに移動する",
+		Interruptible:   false,
+		Resumable:       false,
+		ActionPointCost: 100,
+		TotalRequiredAP: 100,
 	}
 }
 

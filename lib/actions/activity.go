@@ -23,30 +23,14 @@ const (
 	ActivityStateCanceled
 )
 
-// TimingMode は時間消費の計算方法を表す
-// CDDAのbased_on_typeを参考
-type TimingMode int
-
-const (
-	// TimingModeTime は実時間ベース（キャラクター速度に関係なく固定時間）
-	TimingModeTime TimingMode = iota
-	// TimingModeSpeed は速度ベース（速いキャラクターは早く完了）
-	TimingModeSpeed
-	// TimingModeCustom はカスタムタイミング
-	TimingModeCustom
-)
-
 // ActivityInfo はアクティビティのメタデータを保持する
 type ActivityInfo struct {
-	Name             string     // 表示名
-	Description      string     // 説明文
-	Interruptible    bool       // 中断可能か
-	Resumable        bool       // 中断後の再開可能か
-	TimingMode       TimingMode // 時間計算方法
-	ActionPointCost  int        // 1ターン毎のアクションポイントコスト
-	TotalRequiredAP  int        // アクティビティ完了に必要な総AP量
-	RequiresTarget   bool       // ターゲットが必要か
-	RequiresPosition bool       // 位置が必要か
+	Name            string // 表示名
+	Description     string // 説明文
+	Interruptible   bool   // 中断可能か
+	Resumable       bool   // 中断後の再開可能か
+	ActionPointCost int    // 1ターン毎のアクションポイントコスト
+	TotalRequiredAP int    // アクティビティ完了に必要な総AP量
 }
 
 // ActivityInterface はアクティビティの実行を担当するインターフェース
@@ -70,7 +54,6 @@ type Activity struct {
 	Actor        ecs.Entity        // 実行者
 	Target       *ecs.Entity       // 対象エンティティ（nilの場合もある）
 	Position     *gc.Position      // 対象位置（nilの場合もある）
-	Message      string            // 進行状況メッセージ
 	CancelReason string            // キャンセル理由
 
 	Logger *logger.Logger

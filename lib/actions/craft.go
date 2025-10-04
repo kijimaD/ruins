@@ -15,15 +15,12 @@ type CraftActivity struct{}
 // Info はActivityInterfaceの実装
 func (ca *CraftActivity) Info() ActivityInfo {
 	return ActivityInfo{
-		Name:             "クラフト",
-		Description:      "アイテムを作成する",
-		Interruptible:    true,
-		Resumable:        false,
-		TimingMode:       TimingModeSpeed,
-		ActionPointCost:  100,
-		TotalRequiredAP:  1500,
-		RequiresTarget:   false,
-		RequiresPosition: true,
+		Name:            "クラフト",
+		Description:     "アイテムを作成する",
+		Interruptible:   true,
+		Resumable:       false,
+		ActionPointCost: 100,
+		TotalRequiredAP: 1500,
 	}
 }
 
@@ -135,8 +132,6 @@ func (ca *CraftActivity) DoTurn(act *Activity, world w.World) error {
 		return nil
 	}
 
-	// メッセージ更新
-	ca.updateMessage(act)
 	return nil
 }
 
@@ -219,19 +214,4 @@ func (ca *CraftActivity) performCrafting(act *Activity, world w.World) error {
 	}
 
 	return nil
-}
-
-// updateMessage は進行状況メッセージを更新する
-func (ca *CraftActivity) updateMessage(act *Activity) {
-	progress := act.GetProgressPercent()
-
-	if progress < 25.0 {
-		act.Message = "材料を準備している..."
-	} else if progress < 50.0 {
-		act.Message = "作業を開始している..."
-	} else if progress < 75.0 {
-		act.Message = "丁寧に作業している..."
-	} else {
-		act.Message = "仕上げ作業中..."
-	}
 }
