@@ -29,6 +29,9 @@ var (
 
 	// 光源色ごとの暗闇画像キャッシュ
 	coloredDarknessCache = make(map[string]*ebiten.Image) // "R,G,B,darkness" -> image
+
+	// 光源情報キャッシュ（タイル座標 -> 光源情報）
+	lightSourceCache = make(map[gc.GridElement]LightInfo)
 )
 
 // abs は絶対値を返す
@@ -50,6 +53,9 @@ func ClearVisionCaches() {
 
 	// 光源色キャッシュをクリア
 	coloredDarknessCache = make(map[string]*ebiten.Image)
+
+	// 光源情報キャッシュをクリア
+	lightSourceCache = make(map[gc.GridElement]LightInfo)
 }
 
 // VisionSystem はタイルごとの視界を管理する（暗闇描画はRenderSpriteSystemで行う）
@@ -73,26 +79,32 @@ func VisionSystem(world w.World, _ *ebiten.Image) {
 		Y: gc.Pixel(int(playerGridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
 	}
 
-	// 移動ごとの視界更新判定
-	const updateThreshold = 4
+	// 移動ごとの視界更新判定（移動ごとに更新）
+	const updateThreshold = int(consts.TileSize)
 	needsUpdate := !playerPositionCache.isInitialized ||
 		abs(int(playerPos.X-playerPositionCache.lastPlayerX)) >= updateThreshold ||
 		abs(int(playerPos.Y-playerPositionCache.lastPlayerY)) >= updateThreshold
 
 	if needsUpdate {
 		// タイルの可視性マップを更新
-		// 視界範囲は光源範囲より広く設定する（光があれば遠くまで見える）
-		visionRadius := gc.Pixel(20 * consts.TileSize)
+		visionRadius := gc.Pixel(16 * consts.TileSize)
 		visibilityData := calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
+
+		// 光源情報キャッシュをクリア（更新前）
+		lightSourceCache = make(map[gc.GridElement]LightInfo)
 
 		// 視界内かつ光源があるタイルを探索済みとしてマーク
 		for _, tileData := range visibilityData {
 			if tileData.Visible {
 				// 光源チェック
 				lightInfo := calculateLightSourceDarkness(world, tileData.Col, tileData.Row)
+				gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
+
+				// 光源情報をキャッシュに保存
+				lightSourceCache[gridElement] = lightInfo
+
 				// 光源範囲内（暗闇レベルが1.0未満）のみ探索済み
 				if lightInfo.Darkness < 1.0 {
-					gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
 					world.Resources.Dungeon.ExploredTiles[gridElement] = true
 				}
 			}
@@ -296,6 +308,16 @@ type LightInfo struct {
 }
 
 // calculateLightSourceDarkness は光源からの距離に応じた暗闇レベルと色を計算する
+// getCachedLightInfo はキャッシュから光源情報を取得する
+func getCachedLightInfo(world w.World, tileX, tileY int) LightInfo {
+	gridElement := gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	if info, exists := lightSourceCache[gridElement]; exists {
+		return info
+	}
+	// キャッシュになければ計算
+	return calculateLightSourceDarkness(world, tileX, tileY)
+}
+
 func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
 	minDarkness := 1.0                                 // 完全に暗い状態からスタート
 	lightColor := color.RGBA{R: 0, G: 0, B: 0, A: 255} // デフォルトは黒
@@ -482,7 +504,7 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 	tileX := int(fx / 32)
 	tileY := int(fy / 32)
 
-	// より正確なチェック: GridElementから直接確認
+	// タイル座標でのチェック（1回のスキャンで済ませる）
 	blocked := false
 	world.Manager.Join(
 		world.Components.GridElement,
@@ -490,32 +512,6 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		if int(grid.X) == tileX && int(grid.Y) == tileY {
-			blocked = true
-		}
-	}))
-
-	if blocked {
-		return true
-	}
-
-	// GridElement + BlockView のチェック
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.BlockView,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-
-		// タイル単位での視界ブロックチェック
-		tilePixelX := float64(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2)
-		tilePixelY := float64(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2)
-
-		// タイル境界での判定
-		left := tilePixelX - float64(consts.TileSize)/2
-		right := tilePixelX + float64(consts.TileSize)/2
-		top := tilePixelY - float64(consts.TileSize)/2
-		bottom := tilePixelY + float64(consts.TileSize)/2
-
-		if fx >= left && fx <= right && fy >= top && fy <= bottom {
 			blocked = true
 		}
 	}))

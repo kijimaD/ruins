@@ -2,7 +2,8 @@
 
 .PHONY: run
 run: ## 実行する。スクショのキーを指定している
-	RUINS_PROFILE=development go run . play
+	RUINS_PROFILE=development \
+	go run . play
 
 .PHONY: test
 test: ## テストを実行する

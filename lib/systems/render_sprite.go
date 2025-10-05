@@ -255,7 +255,7 @@ func renderProps(world w.World, screen *ebiten.Image, visibilityData map[string]
 		}
 
 		// 光源チェック - 光がある場所のみ描画（完全に暗い場所は描画しない）
-		lightInfo := calculateLightSourceDarkness(world, int(gridElement.X), int(gridElement.Y))
+		lightInfo := getCachedLightInfo(world, int(gridElement.X), int(gridElement.Y))
 		if lightInfo.Darkness >= 1.0 {
 			continue // 完全に暗い場所は描画しない
 		}
@@ -390,7 +390,7 @@ func renderMovers(world w.World, screen *ebiten.Image, visibilityData map[string
 		}
 
 		// 光源チェック - 光がある場所のみ描画（完全に暗い場所は描画しない）
-		lightInfo := calculateLightSourceDarkness(world, int(gridElement.X), int(gridElement.Y))
+		lightInfo := getCachedLightInfo(world, int(gridElement.X), int(gridElement.Y))
 		if lightInfo.Darkness >= 1.0 {
 			continue // 完全に暗い場所は描画しない
 		}
