@@ -89,8 +89,8 @@ Enabled = true
 
 [Props.LightSource.Color]
 R = 255
-G = 220
-B = 180
+G = 200
+B = 150
 A = 255
 `)
 	return &rawMaster

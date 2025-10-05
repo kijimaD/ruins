@@ -430,7 +430,7 @@ func (rw *Master) GeneratePlayer(name string) (gc.EntitySpec, error) {
 	cl.Hunger = gc.NewHunger()
 	cl.LightSource = &gc.LightSource{
 		Radius:  6,
-		Color:   color.RGBA{R: 255, G: 255, B: 255, A: 255}, // 白色光
+		Color:   color.RGBA{R: 255, G: 200, B: 150, A: 255}, // ランタンの暖色光
 		Enabled: true,
 	}
 	return cl, nil

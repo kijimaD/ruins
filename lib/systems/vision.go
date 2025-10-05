@@ -26,6 +26,9 @@ var (
 
 	// レイキャスト結果のキャッシュ
 	raycastCache = make(map[string]bool) // "x1,y1,x2,y2" -> visible
+
+	// 光源色ごとの暗闇画像キャッシュ
+	coloredDarknessCache = make(map[string]*ebiten.Image) // "R,G,B,darkness" -> image
 )
 
 // abs は絶対値を返す
@@ -44,6 +47,9 @@ func ClearVisionCaches() {
 
 	// レイキャストキャッシュをクリア
 	raycastCache = make(map[string]bool)
+
+	// 光源色キャッシュをクリア
+	coloredDarknessCache = make(map[string]*ebiten.Image)
 }
 
 // VisionSystem はタイルごとの視界を管理し、暗闇を描画する
@@ -85,9 +91,9 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		for _, tileData := range visibilityData {
 			if tileData.Visible {
 				// 光源チェック
-				lightDarkness := calculateLightSourceDarkness(world, tileData.Col, tileData.Row)
+				lightInfo := calculateLightSourceDarkness(world, tileData.Col, tileData.Row)
 				// 光源範囲内（暗闇レベルが1.0未満）のみ探索済み
-				if lightDarkness < 1.0 {
+				if lightInfo.Darkness < 1.0 {
 					gridElement := gc.GridElement{X: gc.Tile(tileData.Col), Y: gc.Tile(tileData.Row)}
 					world.Resources.Dungeon.ExploredTiles[gridElement] = true
 				}
@@ -290,9 +296,16 @@ func calculateDarknessByDistance(distance, maxRadius float64) float64 {
 	return darkness
 }
 
-// calculateLightSourceDarkness は光源からの距離に応じた暗闇レベルを計算する
-func calculateLightSourceDarkness(world w.World, tileX, tileY int) float64 {
-	minDarkness := 1.0 // 完全に暗い状態からスタート
+// LightInfo は光源情報を保持する
+type LightInfo struct {
+	Darkness float64
+	Color    color.RGBA
+}
+
+// calculateLightSourceDarkness は光源からの距離に応じた暗闇レベルと色を計算する
+func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
+	minDarkness := 1.0                                 // 完全に暗い状態からスタート
+	lightColor := color.RGBA{R: 0, G: 0, B: 0, A: 255} // デフォルトは黒
 
 	// 全ての光源をチェック
 	world.Manager.Join(
@@ -325,11 +338,15 @@ func calculateLightSourceDarkness(world w.World, tileX, tileY int) float64 {
 			// 複数光源がある場合は明るい方を採用
 			if darkness < minDarkness {
 				minDarkness = darkness
+				lightColor = lightSource.Color
 			}
 		}
 	}))
 
-	return minDarkness
+	return LightInfo{
+		Darkness: minDarkness,
+		Color:    lightColor,
+	}
 }
 
 // drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
@@ -385,22 +402,22 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 			tileKey := fmt.Sprintf("%d,%d", tileX, tileY)
 			gridElement := gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 
-			var darkness float64
+			var lightInfo LightInfo
 
 			// 視界データをチェック
 			if tileData, exists := visibilityData[tileKey]; exists {
 				if tileData.Visible {
 					// 視界内: 光源のみで暗さを決定（視界の暗闇は無視）
-					darkness = calculateLightSourceDarkness(world, tileX, tileY)
+					lightInfo = calculateLightSourceDarkness(world, tileX, tileY)
 				} else {
 					// 視界範囲内だが見えないタイル: 完全に暗い（壁で遮られている）
-					darkness = 1.0
+					lightInfo = LightInfo{Darkness: 1.0, Color: color.RGBA{R: 0, G: 0, B: 0, A: 255}}
 				}
 			} else {
 				// 視界範囲外
 				if explored := world.Resources.Dungeon.ExploredTiles[gridElement]; explored {
 					// 探索済み視界外タイル: 完全に暗い（記憶として表示）
-					darkness = 1.0
+					lightInfo = LightInfo{Darkness: 1.0, Color: color.RGBA{R: 0, G: 0, B: 0, A: 255}}
 				} else {
 					// 未探索タイル: 描画しない（完全に隠れる）
 					continue
@@ -408,7 +425,7 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 			}
 
 			// 暗闇レベルが0より大きい場合のみ描画
-			if darkness > 0.0 {
+			if lightInfo.Darkness > 0.0 {
 				// タイルの画面座標を計算（スケールを考慮）
 				worldX := float64(tileX * tileSize)
 				worldY := float64(tileY * tileSize)
@@ -416,7 +433,7 @@ func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityDa
 				screenY := (worldY-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
 				// 暗闇レベルに応じた画像を描画
-				drawDarknessAtLevelWithScale(screen, screenX, screenY, darkness, cameraScale)
+				drawDarknessAtLevelWithColor(screen, screenX, screenY, lightInfo.Darkness, lightInfo.Color, cameraScale, tileSize)
 			}
 		}
 	}
@@ -453,30 +470,6 @@ func initializeDarknessCache(tileSize int) {
 			b := uint8(float64(alpha) * 0.05) // 透明度の5%の青成分
 			darknessCacheImages[i].Fill(color.RGBA{r, g, b, alpha})
 		}
-	}
-}
-
-// drawDarknessAtLevelWithScale は指定した暗闇レベルで暗闇を描画する（スケール対応）
-func drawDarknessAtLevelWithScale(screen *ebiten.Image, x, y, darkness, scale float64) {
-	if darkness <= 0.0 {
-		return // 暗闇なし
-	}
-
-	// 暗闇レベルを配列インデックスに変換（0.1刻みで10段階）
-	index := int(darkness*10 + 0.5) // 四捨五入
-	if index > 10 {
-		index = 10
-	}
-	if index < 1 {
-		index = 1
-	}
-
-	darknessImage := darknessCacheImages[index]
-	if darknessImage != nil {
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(scale, scale)
-		op.GeoM.Translate(x, y)
-		screen.DrawImage(darknessImage, op)
 	}
 }
 
@@ -535,4 +528,48 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 	}))
 
 	return blocked
+}
+
+// drawDarknessAtLevelWithColor は光源の色を考慮した暗闇を描画する
+func drawDarknessAtLevelWithColor(screen *ebiten.Image, x, y, darkness float64, lightColor color.RGBA, scale float64, tileSize int) {
+	if darkness <= 0.0 {
+		return // 暗闇なし
+	}
+
+	// 暗闇レベルを丸める（キャッシュキー用）
+	darknessLevel := int(darkness*10 + 0.5) // 0.1刻みで10段階
+
+	// キャッシュキーを生成
+	cacheKey := fmt.Sprintf("%d,%d,%d,%d", lightColor.R, lightColor.G, lightColor.B, darknessLevel)
+
+	// キャッシュから画像を取得、なければ生成
+	darknessImg, exists := coloredDarknessCache[cacheKey]
+	if !exists {
+		// 暗闇の強さに応じた透明度
+		alpha := uint8(darkness * 255)
+
+		// 光源の色を使った暗闇を作る
+		// 明るい部分（darknessが小さい）はランタンの色が強く、暗い部分は黒に近づく
+		lightStrength := 1.0 - darkness // 0.0(暗い) ~ 1.0(明るい)
+		darknessColor := color.RGBA{
+			R: uint8(float64(lightColor.R) * lightStrength * 0.6), // 明るい部分でランタンの色
+			G: uint8(float64(lightColor.G) * lightStrength * 0.5),
+			B: uint8(float64(lightColor.B) * lightStrength * 0.3),
+			A: alpha,
+		}
+
+		// 暗闇画像を生成してキャッシュ
+		darknessImg = ebiten.NewImage(tileSize, tileSize)
+		darknessImg.Fill(darknessColor)
+
+		// キャッシュサイズ制限（メモリ節約）
+		if len(coloredDarknessCache) < 1000 {
+			coloredDarknessCache[cacheKey] = darknessImg
+		}
+	}
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(scale, scale)
+	op.GeoM.Translate(x, y)
+	screen.DrawImage(darknessImg, op)
 }
