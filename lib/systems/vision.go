@@ -52,8 +52,8 @@ func ClearVisionCaches() {
 	coloredDarknessCache = make(map[string]*ebiten.Image)
 }
 
-// VisionSystem はタイルごとの視界を管理し、暗闇を描画する
-func VisionSystem(world w.World, screen *ebiten.Image) {
+// VisionSystem はタイルごとの視界を管理する（暗闇描画はRenderSpriteSystemで行う）
+func VisionSystem(world w.World, _ *ebiten.Image) {
 	// プレイヤー位置を取得
 	var playerGridElement *gc.GridElement
 	world.Manager.Join(
@@ -79,13 +79,11 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		abs(int(playerPos.X-playerPositionCache.lastPlayerX)) >= updateThreshold ||
 		abs(int(playerPos.Y-playerPositionCache.lastPlayerY)) >= updateThreshold
 
-	var visibilityData map[string]TileVisibility
-
 	if needsUpdate {
 		// タイルの可視性マップを更新
 		// 視界範囲は光源範囲より広く設定する（光があれば遠くまで見える）
 		visionRadius := gc.Pixel(20 * consts.TileSize)
-		visibilityData = calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
+		visibilityData := calculateTileVisibilityWithDistance(world, playerPos.X, playerPos.Y, visionRadius)
 
 		// 視界内かつ光源があるタイルを探索済みとしてマーク
 		for _, tileData := range visibilityData {
@@ -105,13 +103,8 @@ func VisionSystem(world w.World, screen *ebiten.Image) {
 		playerPositionCache.lastPlayerY = playerPos.Y
 		playerPositionCache.visibilityData = visibilityData
 		playerPositionCache.isInitialized = true
-	} else {
-		// キャッシュされたデータを使用
-		visibilityData = playerPositionCache.visibilityData
 	}
-
-	// 距離に応じた段階的暗闇を描画
-	drawDistanceBasedDarkness(world, screen, visibilityData)
+	// 距離に応じた段階的暗闇の描画はRenderSpriteSystemで行う
 }
 
 // TileVisibility はタイルの可視性を表す
@@ -349,8 +342,8 @@ func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
 	}
 }
 
-// drawDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
-func drawDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+// renderDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
+func renderDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	tileSize := int(consts.TileSize)
 
 	// カメラ位置とスケールを取得
