@@ -319,8 +319,10 @@ func getCachedLightInfo(world w.World, tileX, tileY int) LightInfo {
 }
 
 func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
-	minDarkness := 1.0                                 // 完全に暗い状態からスタート
-	lightColor := color.RGBA{R: 0, G: 0, B: 0, A: 255} // デフォルトは黒
+	minDarkness := 1.0 // 完全に暗い状態からスタート
+
+	// 色の加算合成用（float64で計算して最後にクランプ）
+	var totalR, totalG, totalB float64
 
 	// 全ての光源をチェック
 	world.Manager.Join(
@@ -350,17 +352,29 @@ func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
 			// 中心(0.0)は完全に明るく、範囲端(1.0)で暗闇レベル0.9
 			darkness := math.Pow(normalizedDistance, 1.5) * 0.9
 
-			// 複数光源がある場合は明るい方を採用
+			// 暗闇レベルは最も明るい光源を採用
 			if darkness < minDarkness {
 				minDarkness = darkness
-				lightColor = lightSource.Color
 			}
+
+			// 光の強さ（1.0 = 中心、0.0 = 範囲端）
+			lightStrength := 1.0 - normalizedDistance
+
+			// 色を加算合成（距離に応じて減衰）
+			totalR += float64(lightSource.Color.R) * lightStrength
+			totalG += float64(lightSource.Color.G) * lightStrength
+			totalB += float64(lightSource.Color.B) * lightStrength
 		}
 	}))
 
+	// 色をクランプ（0-255）
+	finalR := uint8(math.Min(255, totalR))
+	finalG := uint8(math.Min(255, totalG))
+	finalB := uint8(math.Min(255, totalB))
+
 	return LightInfo{
 		Darkness: minDarkness,
-		Color:    lightColor,
+		Color:    color.RGBA{R: finalR, G: finalG, B: finalB, A: 255},
 	}
 }
 
