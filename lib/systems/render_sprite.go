@@ -82,8 +82,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	renderLightSourceGlow(world, screen, visibilityData)       // 床タイルに光源グロー
 	renderMoverShadows(world, screen, visibilityData)
 	renderWallShadows(world, screen, visibilityData)
-	renderProps(world, screen, visibilityData)
-	renderMovers(world, screen, visibilityData)
+	renderSprites(world, screen, visibilityData)
 }
 
 // initializeShadowImages は影画像を初期化する
@@ -223,27 +222,36 @@ func renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData m
 	}))
 }
 
-// renderProps はプロップ（家具など）を描画する
-func renderProps(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	iSprite := 0
-	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement, world.Components.Prop).Size())
+// renderSprites はスプライトを描画する
+func renderSprites(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+	var entities []ecs.Entity
+
+	// Props を収集
 	world.Manager.Join(
 		world.Components.SpriteRender,
 		world.Components.GridElement,
 		world.Components.Prop,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		entities[iSprite] = entity
-		iSprite++
+		entities = append(entities, entity)
 	}))
 
-	sort.Slice(entities[:iSprite], func(i, j int) bool {
+	// Movers を収集
+	world.Manager.Join(
+		world.Components.SpriteRender,
+		world.Components.GridElement,
+		world.Components.TurnBased,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		entities = append(entities, entity)
+	}))
+
+	sort.Slice(entities, func(i, j int) bool {
 		spriteRender1 := world.Components.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
 		spriteRender2 := world.Components.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
 		return spriteRender1.Depth < spriteRender2.Depth
 	})
 
-	for i := 0; i < iSprite; i++ {
-		entity := entities[i]
+	// 描画
+	for _, entity := range entities {
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
 		// 視界チェック - 視界内のもののみ描画
@@ -358,52 +366,6 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 			screen.DrawImage(wallShadowImage, op)
 		}
 	}))
-}
-
-// renderMovers は移動体を描画する
-func renderMovers(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	iSprite := 0
-	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement, world.Components.TurnBased).Size())
-	world.Manager.Join(
-		world.Components.SpriteRender,
-		world.Components.GridElement,
-		world.Components.TurnBased,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		entities[iSprite] = entity
-		iSprite++
-	}))
-	sort.Slice(entities[:iSprite], func(i, j int) bool {
-		spriteRender1 := world.Components.SpriteRender.Get(entities[i]).(*gc.SpriteRender)
-		spriteRender2 := world.Components.SpriteRender.Get(entities[j]).(*gc.SpriteRender)
-		return spriteRender1.Depth < spriteRender2.Depth
-	})
-	for i := 0; i < iSprite; i++ {
-		entity := entities[i]
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-
-		// 移動体の視界チェック - 視界内のもののみ描画
-		if visibilityData != nil {
-			tileKey := fmt.Sprintf("%d,%d", gridElement.X, gridElement.Y)
-			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
-				continue
-			}
-		}
-
-		// 光源チェック - 光がある場所のみ描画（完全に暗い場所は描画しない）
-		lightInfo := getCachedLightInfo(world, int(gridElement.X), int(gridElement.Y))
-		if lightInfo.Darkness >= 1.0 {
-			continue // 完全に暗い場所は描画しない
-		}
-
-		// グリッド座標からピクセル座標に変換
-		pixelPos := &gc.Position{
-			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
-			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
-		}
-
-		spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-		drawImage(world, screen, spriteRender, pixelPos, 0) // 移動体は回転なし
-	}
 }
 
 func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
