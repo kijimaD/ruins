@@ -80,9 +80,8 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	renderGridTiles(world, screen, visibilityData)             // 床タイルを描画
 	renderDistanceBasedDarkness(world, screen, visibilityData) // 床タイルに暗闇オーバーレイ
 	renderLightSourceGlow(world, screen, visibilityData)       // 床タイルに光源グロー
-	renderMoverShadows(world, screen, visibilityData)
-	renderWallShadows(world, screen, visibilityData)
-	renderSprites(world, screen, visibilityData)
+	renderShadows(world, screen, visibilityData)               // 影を描画
+	renderSprites(world, screen, visibilityData)               // 物体を描画
 }
 
 // initializeShadowImages は影画像を初期化する
@@ -277,16 +276,21 @@ func renderSprites(world w.World, screen *ebiten.Image, visibilityData map[strin
 	}
 }
 
-// renderMoverShadows は移動体の影を描画する
-func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+// renderShadows は物体と壁の影を描画する
+func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+	// 物体の影
 	world.Manager.Join(
 		world.Components.SpriteRender,
 		world.Components.GridElement,
-		world.Components.TurnBased,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		// TurnBased または Prop を持つエンティティのみ
+		if !entity.HasComponent(world.Components.TurnBased) && !entity.HasComponent(world.Components.Prop) {
+			return
+		}
+
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		// 移動体の影も視界チェック
+		// 視界チェック
 		if visibilityData != nil {
 			tileKey := fmt.Sprintf("%d,%d", gridElement.X, gridElement.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
@@ -305,10 +309,8 @@ func renderMoverShadows(world w.World, screen *ebiten.Image, visibilityData map[
 			screen.DrawImage(moverShadowImage, op)
 		}
 	}))
-}
 
-// renderWallShadows は壁の影を描画する
-func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+	// 壁の影（下タイルが床の場合のみ）
 	tileMap := make(map[gc.GridElement]ecs.Entity)
 	world.Manager.Join(
 		world.Components.GridElement,
@@ -326,22 +328,22 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		grid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		// 視界内のタイルのみ描画する
+		// 視界チェック
 		if visibilityData != nil {
 			tileKey := fmt.Sprintf("%d,%d", grid.X, grid.Y)
 			if tileData, exists := visibilityData[tileKey]; !exists || !tileData.Visible {
-				return // 視界外の影は描画しない
+				return
 			}
 		}
 
 		spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
 
-		// 高さのあるもの（壁など）だけが影を落とす
-		if spriteRender.Depth != gc.DepthNumTaller {
+		// 高さのあるものだけが影を落とす
+		if spriteRender.Depth > gc.DepthNumTaller {
 			return
 		}
 
-		// マップから下のタイルを高速検索
+		// 下のタイルを検索
 		belowPos := gc.GridElement{X: grid.X, Y: grid.Y + 1}
 		belowTileEntity, foundBelow := tileMap[belowPos]
 
@@ -356,7 +358,7 @@ func renderWallShadows(world w.World, screen *ebiten.Image, visibilityData map[s
 
 		// 下のタイルが壁でないことも確認（壁->床->壁の場合は影を描画しない）
 		if belowTileEntity.HasComponent(world.Components.BlockView) && belowTileEntity.HasComponent(world.Components.BlockPass) {
-			return // 下のタイルも壁なら影を描画しない
+			return
 		}
 
 		op := &ebiten.DrawImageOptions{}
