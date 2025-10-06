@@ -321,8 +321,8 @@ func getCachedLightInfo(world w.World, tileX, tileY int) LightInfo {
 func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
 	minDarkness := 1.0 // 完全に暗い状態からスタート
 
-	// 色の加算合成用（float64で計算して最後にクランプ）
-	var totalR, totalG, totalB float64
+	// 色の最大値を保持
+	var maxR, maxG, maxB float64
 
 	// 全ての光源をチェック
 	world.Manager.Join(
@@ -360,17 +360,27 @@ func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
 			// 光の強さ（1.0 = 中心、0.0 = 範囲端）
 			lightStrength := 1.0 - normalizedDistance
 
-			// 色を加算合成（距離に応じて減衰）
-			totalR += float64(lightSource.Color.R) * lightStrength
-			totalG += float64(lightSource.Color.G) * lightStrength
-			totalB += float64(lightSource.Color.B) * lightStrength
+			// 色は最大値を採用して元の光源より明るくならないようにする
+			colorR := float64(lightSource.Color.R) * lightStrength
+			colorG := float64(lightSource.Color.G) * lightStrength
+			colorB := float64(lightSource.Color.B) * lightStrength
+
+			if colorR > maxR {
+				maxR = colorR
+			}
+			if colorG > maxG {
+				maxG = colorG
+			}
+			if colorB > maxB {
+				maxB = colorB
+			}
 		}
 	}))
 
 	// 色をクランプ（0-255）
-	finalR := uint8(math.Min(255, totalR))
-	finalG := uint8(math.Min(255, totalG))
-	finalB := uint8(math.Min(255, totalB))
+	finalR := uint8(math.Min(255, maxR))
+	finalG := uint8(math.Min(255, maxG))
+	finalB := uint8(math.Min(255, maxB))
 
 	return LightInfo{
 		Darkness: minDarkness,
