@@ -25,25 +25,25 @@ var (
 	}
 
 	// レイキャスト結果のキャッシュ
-	raycastCache = make(map[RaycastCacheKey]bool)
+	raycastCache = make(map[raycastCacheKey]bool)
 
 	// 光源色ごとの暗闇画像キャッシュ
-	coloredDarknessCache = make(map[ColoredDarknessCacheKey]*ebiten.Image)
+	coloredDarknessCache = make(map[coloredDarknessCacheKey]*ebiten.Image)
 
 	// 光源情報キャッシュ（タイル座標 -> 光源情報）
 	lightSourceCache = make(map[gc.GridElement]LightInfo)
 )
 
-// RaycastCacheKey はレイキャスト結果のキャッシュキー
-type RaycastCacheKey struct {
+// raycastCacheKey はレイキャスト結果のキャッシュキー
+type raycastCacheKey struct {
 	PlayerX int
 	PlayerY int
 	TargetX int
 	TargetY int
 }
 
-// ColoredDarknessCacheKey は光源色ごとの暗闇画像のキャッシュキー
-type ColoredDarknessCacheKey struct {
+// coloredDarknessCacheKey は光源色ごとの暗闇画像のキャッシュキー
+type coloredDarknessCacheKey struct {
 	R             uint8
 	G             uint8
 	B             uint8
@@ -65,10 +65,10 @@ func ClearVisionCaches() {
 	playerPositionCache.visibilityData = nil
 
 	// レイキャストキャッシュをクリア
-	raycastCache = make(map[RaycastCacheKey]bool)
+	raycastCache = make(map[raycastCacheKey]bool)
 
 	// 光源色キャッシュをクリア
-	coloredDarknessCache = make(map[ColoredDarknessCacheKey]*ebiten.Image)
+	coloredDarknessCache = make(map[coloredDarknessCacheKey]*ebiten.Image)
 
 	// 光源情報キャッシュをクリア
 	lightSourceCache = make(map[gc.GridElement]LightInfo)
@@ -213,7 +213,7 @@ func isTileVisibleByRaycast(world w.World, playerX, playerY, targetX, targetY fl
 	py := int(playerY/4) * 4
 	tx := int(targetX/4) * 4
 	ty := int(targetY/4) * 4
-	cacheKey := RaycastCacheKey{
+	cacheKey := raycastCacheKey{
 		PlayerX: px,
 		PlayerY: py,
 		TargetX: tx,
@@ -574,7 +574,7 @@ func drawDarknessAtLevelWithColor(screen *ebiten.Image, x, y, darkness float64, 
 	darknessLevel := int(darkness*10 + 0.5) // 0.1刻みで10段階
 
 	// キャッシュキーを生成
-	cacheKey := ColoredDarknessCacheKey{
+	cacheKey := coloredDarknessCacheKey{
 		R:             lightColor.R,
 		G:             lightColor.G,
 		B:             lightColor.B,
