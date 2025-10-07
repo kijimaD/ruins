@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,9 +18,10 @@ func TestSpriteImageCache(t *testing.T) {
 
 	t.Run("sprite image cache is map", func(t *testing.T) {
 		t.Parallel()
-		// キャッシュがマップ型であることを確認
+		// キャッシュがmap型であることを確認
 		cache := spriteImageCache
-		assert.IsType(t, map[string]*ebiten.Image{}, cache, "spriteImageCacheの型が正しくない")
+		expectedType := make(map[gc.SpriteRenderKey]*ebiten.Image)
+		assert.IsType(t, expectedType, cache, "spriteImageCacheの型が正しくない")
 	})
 }
 
@@ -31,22 +33,28 @@ func TestSpriteImageCacheOperations(t *testing.T) {
 		// 初期状態の確認
 		initialLen := len(spriteImageCache)
 
+		testSpriteRender := &gc.SpriteRender{
+			SpriteSheetName: "test_sheet",
+			SpriteKey:       "test_sprite",
+		}
+		testKey := testSpriteRender.CacheKey()
+
 		// キーが存在しないことを確認
-		_, exists := spriteImageCache["test_key"]
+		_, exists := spriteImageCache[testKey]
 		assert.False(t, exists, "存在しないキーがtrueを返している")
 
 		// キャッシュに値を設定（nilでテスト）
-		spriteImageCache["test_key"] = nil
+		spriteImageCache[testKey] = nil
 
 		// キーが存在することを確認
-		_, exists = spriteImageCache["test_key"]
+		_, exists = spriteImageCache[testKey]
 		assert.True(t, exists, "設定したキーが存在しない")
 
 		// サイズが増えたことを確認
 		assert.Equal(t, initialLen+1, len(spriteImageCache), "キャッシュサイズが正しくない")
 
 		// キャッシュをクリア（テスト後の処理）
-		delete(spriteImageCache, "test_key")
+		delete(spriteImageCache, testKey)
 
 		// 元の状態に戻ったことを確認
 		assert.Equal(t, initialLen, len(spriteImageCache), "キャッシュクリア後のサイズが正しくない")

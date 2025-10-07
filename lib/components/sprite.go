@@ -64,6 +64,20 @@ type SpriteRender struct {
 	Options ebiten.DrawImageOptions
 }
 
+// SpriteRenderKey はSpriteRenderのキャッシュキー（比較可能なフィールドのみ）
+type SpriteRenderKey struct {
+	SpriteSheetName string
+	SpriteKey       string
+}
+
+// CacheKey はSpriteRenderからキャッシュキーを生成する
+func (s *SpriteRender) CacheKey() SpriteRenderKey {
+	return SpriteRenderKey{
+		SpriteSheetName: s.SpriteSheetName,
+		SpriteKey:       s.SpriteKey,
+	}
+}
+
 // DepthNum はオブジェクトの描画順。小さい値を先に描画する
 type DepthNum int
 

@@ -25,14 +25,30 @@ var (
 	}
 
 	// レイキャスト結果のキャッシュ
-	raycastCache = make(map[string]bool) // "x1,y1,x2,y2" -> visible
+	raycastCache = make(map[RaycastCacheKey]bool)
 
 	// 光源色ごとの暗闇画像キャッシュ
-	coloredDarknessCache = make(map[string]*ebiten.Image) // "R,G,B,darkness" -> image
+	coloredDarknessCache = make(map[ColoredDarknessCacheKey]*ebiten.Image)
 
 	// 光源情報キャッシュ（タイル座標 -> 光源情報）
 	lightSourceCache = make(map[gc.GridElement]LightInfo)
 )
+
+// RaycastCacheKey はレイキャスト結果のキャッシュキー
+type RaycastCacheKey struct {
+	PlayerX int
+	PlayerY int
+	TargetX int
+	TargetY int
+}
+
+// ColoredDarknessCacheKey は光源色ごとの暗闇画像のキャッシュキー
+type ColoredDarknessCacheKey struct {
+	R             uint8
+	G             uint8
+	B             uint8
+	DarknessLevel int
+}
 
 // abs は絶対値を返す
 func abs(x int) int {
@@ -49,10 +65,10 @@ func ClearVisionCaches() {
 	playerPositionCache.visibilityData = nil
 
 	// レイキャストキャッシュをクリア
-	raycastCache = make(map[string]bool)
+	raycastCache = make(map[RaycastCacheKey]bool)
 
 	// 光源色キャッシュをクリア
-	coloredDarknessCache = make(map[string]*ebiten.Image)
+	coloredDarknessCache = make(map[ColoredDarknessCacheKey]*ebiten.Image)
 
 	// 光源情報キャッシュをクリア
 	lightSourceCache = make(map[gc.GridElement]LightInfo)
@@ -197,7 +213,12 @@ func isTileVisibleByRaycast(world w.World, playerX, playerY, targetX, targetY fl
 	py := int(playerY/4) * 4
 	tx := int(targetX/4) * 4
 	ty := int(targetY/4) * 4
-	cacheKey := fmt.Sprintf("%d,%d,%d,%d", px, py, tx, ty)
+	cacheKey := RaycastCacheKey{
+		PlayerX: px,
+		PlayerY: py,
+		TargetX: tx,
+		TargetY: ty,
+	}
 
 	// キャッシュから結果をチェック
 	if result, exists := raycastCache[cacheKey]; exists {
@@ -553,7 +574,12 @@ func drawDarknessAtLevelWithColor(screen *ebiten.Image, x, y, darkness float64, 
 	darknessLevel := int(darkness*10 + 0.5) // 0.1刻みで10段階
 
 	// キャッシュキーを生成
-	cacheKey := fmt.Sprintf("%d,%d,%d,%d", lightColor.R, lightColor.G, lightColor.B, darknessLevel)
+	cacheKey := ColoredDarknessCacheKey{
+		R:             lightColor.R,
+		G:             lightColor.G,
+		B:             lightColor.B,
+		DarknessLevel: darknessLevel,
+	}
 
 	// キャッシュから画像を取得、なければ生成
 	darknessImg, exists := coloredDarknessCache[cacheKey]
