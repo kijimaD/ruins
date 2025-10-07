@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +19,7 @@ func TestSpriteImageCache(t *testing.T) {
 		t.Parallel()
 		// キャッシュがmap型であることを確認
 		cache := spriteImageCache
-		expectedType := make(map[gc.SpriteRenderKey]*ebiten.Image)
+		expectedType := make(map[spriteImageCacheKey]*ebiten.Image)
 		assert.IsType(t, expectedType, cache, "spriteImageCacheの型が正しくない")
 	})
 }
@@ -33,11 +32,10 @@ func TestSpriteImageCacheOperations(t *testing.T) {
 		// 初期状態の確認
 		initialLen := len(spriteImageCache)
 
-		testSpriteRender := &gc.SpriteRender{
+		testKey := spriteImageCacheKey{
 			SpriteSheetName: "test_sheet",
 			SpriteKey:       "test_sprite",
 		}
-		testKey := testSpriteRender.CacheKey()
 
 		// キーが存在しないことを確認
 		_, exists := spriteImageCache[testKey]

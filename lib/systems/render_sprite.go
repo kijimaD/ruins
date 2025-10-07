@@ -22,7 +22,14 @@ var (
 	moverShadowImage *ebiten.Image // 動く物体が落とす影
 )
 
-var spriteImageCache = make(map[gc.SpriteRenderKey]*ebiten.Image)
+// spriteImageCacheKey はスプライト画像キャッシュのキー
+// SpriteRenderには比較不能なフィールドが含まれていて直接使えないので定義する
+type spriteImageCacheKey struct {
+	SpriteSheetName string
+	SpriteKey       string
+}
+
+var spriteImageCache = make(map[spriteImageCacheKey]*ebiten.Image)
 
 // SetTranslate はカメラを考慮した画像配置オプションをセットする
 // TODO: ズーム率を追加する
@@ -198,12 +205,11 @@ func renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData m
 		screenY := (worldY-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
 		// 光源色で明るいオーバーレイを作成
-		// 光源グローのキャッシュキーを作成（SpriteRenderを使用）
-		glowSpriteRender := &gc.SpriteRender{
+		// 光源グローのキャッシュキーを作成
+		cacheKey := spriteImageCacheKey{
 			SpriteSheetName: "glow",
 			SpriteKey:       fmt.Sprintf("%d,%d,%d", lightSource.Color.R, lightSource.Color.G, lightSource.Color.B),
 		}
-		cacheKey := glowSpriteRender.CacheKey()
 		glowImg, exists := spriteImageCache[cacheKey]
 		if !exists {
 			glowImg = ebiten.NewImage(tileSize, tileSize)
@@ -377,7 +383,10 @@ func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[strin
 
 func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
 	var result *ebiten.Image
-	key := spriteRender.CacheKey()
+	key := spriteImageCacheKey{
+		SpriteSheetName: spriteRender.SpriteSheetName,
+		SpriteKey:       spriteRender.SpriteKey,
+	}
 	if v, ok := spriteImageCache[key]; ok {
 		result = v
 	} else {
