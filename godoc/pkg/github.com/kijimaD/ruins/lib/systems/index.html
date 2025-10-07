@@ -217,7 +217,7 @@ func TileInputSystem(world w.World) {
 				<dd><a href="index.html#TurnSystem">func TurnSystem(world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, screen *ebiten.Image)</a></dd>
+				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, _ *ebiten.Image)</a></dd>
 			
 			
 				
@@ -232,6 +232,11 @@ func TileInputSystem(world w.World) {
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Update">func (sys *HUDRenderingSystem) Update(world w.World)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#LightInfo">type LightInfo</a></dd>
+				
 				
 			
 				
@@ -320,7 +325,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="ClearVisionCaches">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=924:948#L30">ClearVisionCaches</a>
+			<h2 id="ClearVisionCaches">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=1517:1541#L52">ClearVisionCaches</a>
 				<a class="permalink" href="index.html#ClearVisionCaches">&#xb6;</a>
 				
 				
@@ -476,7 +481,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=13919:13976#L427">GetCurrentVisibilityData</a>
+			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=17420:17477#L522">GetCurrentVisibilityData</a>
 				<a class="permalink" href="index.html#GetCurrentVisibilityData">&#xb6;</a>
 				
 				
@@ -504,13 +509,13 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=2214:2274#L62">RenderSpriteSystem</a>
+			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=2501:2561#L69">RenderSpriteSystem</a>
 				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func RenderSpriteSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>RenderSpriteSystem は (下) タイル -&gt; 影 -&gt; スプライト (上) の順に表示する
+			<p>RenderSpriteSystem は (下) タイル -&gt; 暗闇 -&gt; 光源グロー -&gt; 影 -&gt; スプライト (上) の順に表示する
 
 			
 			
@@ -518,7 +523,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="SetTranslate">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=691:752#L19">SetTranslate</a>
+			<h2 id="SetTranslate">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=949:1010#L26">SetTranslate</a>
 				<a class="permalink" href="index.html#SetTranslate">&#xb6;</a>
 				
 				
@@ -563,13 +568,13 @@ TODO: 文脈に応じて発行アクションを判定する
 		
 			
 			
-			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=1261:1315#L40">VisionSystem</a>
+			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2104:2153#L68">VisionSystem</a>
 				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func VisionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>VisionSystem はタイルごとの視界を管理し、暗闇を描画する
+			<pre>func VisionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *ebiten.<a href="index.html#Image">Image</a>)</pre>
+			<p>VisionSystem はタイルごとの視界を管理する（暗闇描画はRenderSpriteSystemで行う）
 
 			
 			
@@ -643,6 +648,33 @@ worldからデータを抽出し、HUDを描画する
 		
 			
 			
+			<h2 id="LightInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=9846:9910#L313">LightInfo</a>
+				<a class="permalink" href="index.html#LightInfo">&#xb6;</a>
+				
+				
+			</h2>
+			<p>LightInfo は光源情報を保持する
+
+			<pre>type LightInfo struct {
+<span id="LightInfo.Darkness"></span>    Darkness <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+<span id="LightInfo.Color"></span>    Color    <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
 			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go?s=3809:3847#L117">TileColorInfo</a>
 				<a class="permalink" href="index.html#TileColorInfo">&#xb6;</a>
 				
@@ -666,7 +698,7 @@ worldからデータを抽出し、HUDを描画する
 		
 			
 			
-			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=3254:3410#L97">TileVisibility</a>
+			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=4371:4527#L129">TileVisibility</a>
 				<a class="permalink" href="index.html#TileVisibility">&#xb6;</a>
 				
 				
