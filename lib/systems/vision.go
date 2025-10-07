@@ -565,8 +565,8 @@ func drawDarknessAtLevelWithColor(screen *ebiten.Image, x, y, darkness float64, 
 		return // 暗闇なし
 	}
 
-	// 暗闇レベルを丸める（キャッシュキー用）
-	darknessLevel := int(darkness*10 + 0.5) // 0.1刻みで10段階
+	// 暗闇レベルを0-10の範囲にクランプ
+	darknessLevel := int(math.Max(0, math.Min(10, darkness*10+0.5)))
 
 	// キャッシュキーを生成
 	cacheKey := coloredDarknessCacheKey{
