@@ -146,16 +146,14 @@ type TileVisibility struct {
 
 // calculateTileVisibilityWithDistance はレイキャストでタイルごとの可視性と距離を計算する
 func calculateTileVisibilityWithDistance(world w.World, playerX, playerY, radius gc.Pixel) map[string]TileVisibility {
-	tileSize := 32 // タイルサイズ（固定値、実際はgameResourcesから取得すべき）
-
 	visibilityMap := make(map[string]TileVisibility)
 
 	// プレイヤーの位置からタイル座標を計算
-	playerTileX := int(playerX) / tileSize
-	playerTileY := int(playerY) / tileSize
+	playerTileX := int(playerX) / int(consts.TileSize)
+	playerTileY := int(playerY) / int(consts.TileSize)
 
 	// 視界範囲を分割して段階的処理（視界範囲最適化）
-	maxTileDistance := int(radius)/tileSize + 2
+	maxTileDistance := int(radius)/int(consts.TileSize) + 2
 
 	// タイルベース視界判定（Dark Days Ahead風）
 
@@ -170,8 +168,8 @@ func calculateTileVisibilityWithDistance(world w.World, playerX, playerY, radius
 			}
 
 			// タイルの中心座標を計算
-			tileCenterX := float64(tileX*tileSize + tileSize/2)
-			tileCenterY := float64(tileY*tileSize + tileSize/2)
+			tileCenterX := float64(tileX*int(consts.TileSize) + int(consts.TileSize)/2)
+			tileCenterY := float64(tileY*int(consts.TileSize) + int(consts.TileSize)/2)
 
 			// プレイヤーからタイル中心への距離をチェック（平方根計算の最適化）
 			dxF := tileCenterX - float64(playerX)
@@ -226,11 +224,10 @@ func isTileVisibleByRaycast(world w.World, playerX, playerY, targetX, targetY fl
 	}
 
 	// タイル座標に変換
-	const tileSize = 32.0
-	playerTileX := int(playerX / tileSize)
-	playerTileY := int(playerY / tileSize)
-	targetTileX := int(targetX / tileSize)
-	targetTileY := int(targetY / tileSize)
+	playerTileX := int(playerX / float64(consts.TileSize))
+	playerTileY := int(playerY / float64(consts.TileSize))
+	targetTileX := int(targetX / float64(consts.TileSize))
+	targetTileY := int(targetY / float64(consts.TileSize))
 
 	// 同じタイルまたは隣接タイルは常に見える
 	if abs(targetTileX-playerTileX) <= 1 && abs(targetTileY-playerTileY) <= 1 {
@@ -411,8 +408,6 @@ func calculateLightSourceDarkness(world w.World, tileX, tileY int) LightInfo {
 
 // renderDistanceBasedDarkness は距離に応じた段階的暗闇を描画する
 func renderDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
-	tileSize := int(consts.TileSize)
-
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
 	cameraScale := 1.0 // デフォルトスケール
@@ -433,7 +428,7 @@ func renderDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibility
 
 	// 段階的暗闃用の画像を初期化（キャッシュ）
 	if len(darknessCacheImages) == 0 {
-		initializeDarknessCache(tileSize)
+		initializeDarknessCache(int(consts.TileSize))
 	}
 
 	// 画面上に表示されるタイル範囲を計算
@@ -451,10 +446,10 @@ func renderDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibility
 	bottomEdge := int(cameraPos.Y) + actualScreenHeight/2
 
 	// タイル範囲に変換
-	startTileX := leftEdge/tileSize - 1
-	endTileX := rightEdge/tileSize + 1
-	startTileY := topEdge/tileSize - 1
-	endTileY := bottomEdge/tileSize + 1
+	startTileX := leftEdge/int(consts.TileSize) - 1
+	endTileX := rightEdge/int(consts.TileSize) + 1
+	startTileY := topEdge/int(consts.TileSize) - 1
+	endTileY := bottomEdge/int(consts.TileSize) + 1
 
 	// 距離に応じた段階的暗闇を描画
 	for tileX := startTileX; tileX <= endTileX; tileX++ {
@@ -487,13 +482,13 @@ func renderDistanceBasedDarkness(world w.World, screen *ebiten.Image, visibility
 			// 暗闇レベルが0より大きい場合のみ描画
 			if lightInfo.Darkness > 0.0 {
 				// タイルの画面座標を計算（スケールを考慮）
-				worldX := float64(tileX * tileSize)
-				worldY := float64(tileY * tileSize)
+				worldX := float64(tileX * int(consts.TileSize))
+				worldY := float64(tileY * int(consts.TileSize))
 				screenX := (worldX-float64(cameraPos.X))*cameraScale + float64(screenWidth)/2
 				screenY := (worldY-float64(cameraPos.Y))*cameraScale + float64(screenHeight)/2
 
 				// 暗闇レベルに応じた画像を描画
-				drawDarknessAtLevelWithColor(screen, screenX, screenY, lightInfo.Darkness, lightInfo.Color, cameraScale, tileSize)
+				drawDarknessAtLevelWithColor(screen, screenX, screenY, lightInfo.Darkness, lightInfo.Color, cameraScale, int(consts.TileSize))
 			}
 		}
 	}
