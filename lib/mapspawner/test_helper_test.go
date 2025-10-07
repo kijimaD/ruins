@@ -74,6 +74,24 @@ SpriteSheetName = "field"
 SpriteKey = "prop_bed"
 BlockPass = true
 BlockView = false
+
+[[Props]]
+Name = "lantern"
+Description = "テスト用ランタン"
+SpriteSheetName = "field"
+SpriteKey = "prop_lantern"
+BlockPass = true
+BlockView = false
+
+[Props.LightSource]
+Radius = 7
+Enabled = true
+
+[Props.LightSource.Color]
+R = 255
+G = 200
+B = 150
+A = 255
 `)
 	return &rawMaster
 }

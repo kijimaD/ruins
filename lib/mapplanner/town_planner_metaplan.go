@@ -72,8 +72,7 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 				// 土タイル（屋外の空き地）
 				planData.Tiles[idx] = planData.GenerateTile("Dirt")
 			default:
-				// その他は空タイル
-				planData.Tiles[idx] = planData.GenerateTile("Empty")
+				return fmt.Errorf("無効なタイル指定子が存在する: %s", string(char))
 			}
 		}
 	}
@@ -89,6 +88,9 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 			}
 
 			switch char {
+			case '.':
+				// 何もしない
+				continue
 			case '@':
 				// プレイヤー開始位置を設定
 				planData.PlayerStartPosition = &struct {
@@ -107,7 +109,7 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					Y:    y,
 					Type: WarpPortalNext, // 次の階層への移動
 				})
-			case 'C', 'T', 'S', 'M', 'R':
+			case 'C', 'T', 'S', 'M', 'R', 'L':
 				// Props（家具類）
 				var propKey string
 				switch char {
@@ -121,6 +123,8 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					propKey = "barrel"
 				case 'R':
 					propKey = "crate"
+				case 'L':
+					propKey = "lantern"
 				}
 
 				planData.Props = append(planData.Props, PropsSpec{
@@ -128,6 +132,8 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					Y:       y,
 					PropKey: propKey,
 				})
+			default:
+				return fmt.Errorf("無効なエンティティ指定子が存在する: %s", string(char))
 			}
 		}
 	}
@@ -234,7 +240,7 @@ func getTownLayout() ([]string, []string) {
 		"..................................................",
 		"..................................................",
 		"..................................................",
-		"..................................................", // 南区域の道路（幅3）
+		"...........L..........L...L..........L............", // 南区域の道路（幅3）
 		"..................................................",
 		"..................................................",
 		".....................CT.@.........................",
