@@ -541,8 +541,8 @@ func isBlockedByWall(world w.World, x, y gc.Pixel) bool {
 	fx, fy := float64(x), float64(y)
 
 	// GridElement + BlockView のチェック（32x32タイル）
-	tileX := int(fx / 32)
-	tileY := int(fy / 32)
+	tileX := int(fx / float64(consts.TileSize))
+	tileY := int(fy / float64(consts.TileSize))
 
 	// タイル座標でのチェック（1回のスキャンで済ませる）
 	blocked := false
