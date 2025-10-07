@@ -265,6 +265,11 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
+		case "TurnBased":
+			world.Manager.Join(world.Components.TurnBased).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
 		case "Attributes":
 			world.Manager.Join(world.Components.Attributes).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
@@ -342,6 +347,11 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		case "InflictsDamage":
 			world.Manager.Join(world.Components.InflictsDamage).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
+		case "LightSource":
+			world.Manager.Join(world.Components.LightSource).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))

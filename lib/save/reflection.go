@@ -57,13 +57,14 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, r.resolveAIRoamingRefs)
 	r.registerComponent(reflect.TypeOf(&gc.SpriteRender{}), components.SpriteRender, r.extractSpriteRender, r.restoreSpriteRender, r.resolveSpriteRenderRefs)
 
-	// 汎用処理で十分なコンポーネント（削除済み - 未使用のため登録しない）
-	// AIChasing, Cameraは現在テストで使用されていないため登録を削除
+	// カメラコンポーネント
+	r.registerComponent(reflect.TypeOf(&gc.Camera{}), components.Camera, r.extractCamera, r.restoreCamera, nil)
 
 	// NullComponentは特別扱い
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
 	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
 	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
+	r.registerNullComponent(reflect.TypeOf(&gc.Prop{}), components.Prop)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
 	r.registerNullComponent(reflect.TypeOf(&gc.Item{}), components.Item)
@@ -95,6 +96,9 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// 特別処理が必要なコンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.ProvidesHealing{}), components.ProvidesHealing, r.extractProvidesHealing, r.restoreProvidesHealing, nil)
 	r.registerComponent(reflect.TypeOf(&gc.InflictsDamage{}), components.InflictsDamage, r.extractInflictsDamage, r.restoreInflictsDamage, nil)
+
+	// フィールドコンポーネント
+	r.registerComponent(reflect.TypeOf(&gc.LightSource{}), components.LightSource, r.extractLightSource, r.restoreLightSource, nil)
 
 	r.initialized = true
 	return nil
@@ -141,6 +145,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.BlockPass)
 			case "Player":
 				return struct{}{}, entity.HasComponent(world.Components.Player)
+			case "Prop":
+				return struct{}{}, entity.HasComponent(world.Components.Prop)
 			case "FactionAllyData":
 				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
 			case "FactionEnemyData":
@@ -167,6 +173,8 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
 			case "Player":
 				entity.AddComponent(world.Components.Player, &gc.Player{})
+			case "Prop":
+				entity.AddComponent(world.Components.Prop, &gc.Prop{})
 			case "FactionAllyData":
 				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
 			case "FactionEnemyData":
@@ -616,5 +624,39 @@ func (r *ComponentRegistry) restoreInflictsDamage(world w.World, entity ecs.Enti
 		return fmt.Errorf("invalid InflictsDamage data type: %T", data)
 	}
 	entity.AddComponent(world.Components.InflictsDamage, &damage)
+	return nil
+}
+
+func (r *ComponentRegistry) extractLightSource(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.LightSource) {
+		return nil, false
+	}
+	lightSource := world.Components.LightSource.Get(entity).(*gc.LightSource)
+	return *lightSource, true
+}
+
+func (r *ComponentRegistry) restoreLightSource(world w.World, entity ecs.Entity, data interface{}) error {
+	lightSource, ok := data.(gc.LightSource)
+	if !ok {
+		return fmt.Errorf("invalid LightSource data type: %T", data)
+	}
+	entity.AddComponent(world.Components.LightSource, &lightSource)
+	return nil
+}
+
+func (r *ComponentRegistry) extractCamera(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Camera) {
+		return nil, false
+	}
+	camera := world.Components.Camera.Get(entity).(*gc.Camera)
+	return *camera, true
+}
+
+func (r *ComponentRegistry) restoreCamera(world w.World, entity ecs.Entity, data interface{}) error {
+	camera, ok := data.(gc.Camera)
+	if !ok {
+		return fmt.Errorf("invalid Camera data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Camera, &camera)
 	return nil
 }

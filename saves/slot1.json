@@ -1,6 +1,6 @@
 {
-  "checksum": "97838ed0cae08e6d94672e1764ac3ca139e39793d7f42a9ef7d1b2d34bf49c86",
-  "timestamp": "2025-10-07T21:21:15.478628418+09:00",
+  "checksum": "7498d8d88dd1d2a6b9a11d10d632c60394f58c76eafa1baeebacf93313a6733a",
+  "timestamp": "2025-10-07T22:10:40.180828871+09:00",
   "version": "1.0.0",
   "world": {
     "entities": [
@@ -122,6 +122,13 @@
               }
             },
             "type": "Attributes"
+          },
+          "Camera": {
+            "data": {
+              "Scale": 0.9892247363356941,
+              "ScaleTo": 1
+            },
+            "type": "Camera"
           },
           "EquipmentChanged": {
             "data": {},
