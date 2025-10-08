@@ -320,6 +320,11 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
+		case "Value":
+			world.Manager.Join(world.Components.Value).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
 		case "Consumable":
 			world.Manager.Join(world.Components.Consumable).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++

@@ -40,6 +40,7 @@ type Raws struct {
 type Item struct {
 	Name            string
 	Description     string
+	Value           int
 	InflictsDamage  int
 	SpriteSheetName string
 	SpriteKey       string
@@ -97,6 +98,7 @@ type EquipBonus struct {
 }
 
 // Material は素材アイテムの情報
+// TODO: 削除してアイテムすべて素材になるようにする
 type Material struct {
 	Name            string
 	Description     string
