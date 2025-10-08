@@ -25,6 +25,12 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 			targetContainer.AddChild(styled.NewBodyText(amount, consts.TextColor, world.Resources.UIResources))
 		}
 
+		if entity.HasComponent(world.Components.Value) {
+			v := world.Components.Value.Get(entity).(*gc.Value)
+			value := fmt.Sprintf("価値 %d", v.Value)
+			targetContainer.AddChild(styled.NewBodyText(value, consts.TextColor, world.Resources.UIResources))
+		}
+
 		if entity.HasComponent(world.Components.Attack) {
 			attack := world.Components.Attack.Get(entity).(*gc.Attack)
 			targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.String(), consts.TextColor, world.Resources.UIResources))
