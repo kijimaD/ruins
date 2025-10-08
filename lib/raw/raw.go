@@ -40,9 +40,10 @@ type Raws struct {
 type Item struct {
 	Name            string
 	Description     string
-	InflictsDamage  int
 	SpriteSheetName string
 	SpriteKey       string
+	Value           *int
+	InflictsDamage  *int
 	Consumable      *Consumable
 	ProvidesHealing *ProvidesHealing
 	Wearable        *Wearable
@@ -97,6 +98,7 @@ type EquipBonus struct {
 }
 
 // Material は素材アイテムの情報
+// TODO: 削除してアイテムすべて素材になるようにする
 type Material struct {
 	Name            string
 	Description     string
@@ -253,8 +255,8 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 			cl.ProvidesHealing = &gc.ProvidesHealing{Amount: gc.NumeralAmount{Numeral: item.ProvidesHealing.Amount}}
 		}
 	}
-	if item.InflictsDamage != 0 {
-		cl.InflictsDamage = &gc.InflictsDamage{Amount: item.InflictsDamage}
+	if item.InflictsDamage != nil {
+		cl.InflictsDamage = &gc.InflictsDamage{Amount: *item.InflictsDamage}
 	}
 
 	if item.Card != nil {
@@ -313,6 +315,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 		}
 	}
 
+	if item.Value != nil {
+		cl.Value = &gc.Value{Value: *item.Value}
+	}
+
 	return cl, nil
 }
 
@@ -369,6 +375,9 @@ func (rw *Master) GenerateRecipe(name string) (gc.EntitySpec, error) {
 	}
 	if item.Consumable != nil {
 		cl.Consumable = item.Consumable
+	}
+	if item.Value != nil {
+		cl.Value = item.Value
 	}
 
 	return cl, nil

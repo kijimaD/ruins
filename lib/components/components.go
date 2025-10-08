@@ -22,6 +22,7 @@ type EntitySpec struct {
 	Pools            *Pools
 	Attack           *Attack
 	Material         *Material
+	Value            *Value
 	Recipe           *Recipe
 	Wearable         *Wearable
 	Attributes       *Attributes
@@ -74,6 +75,7 @@ type Components struct {
 	Pools                  *ecs.SliceComponent
 	Attack                 *ecs.SliceComponent
 	Material               *ecs.SliceComponent
+	Value                  *ecs.SliceComponent
 	Recipe                 *ecs.SliceComponent
 	Wearable               *ecs.SliceComponent
 	Attributes             *ecs.SliceComponent
@@ -238,6 +240,12 @@ type InflictsDamage struct {
 // - 複数の単位で扱うのでAmountを持つ。x3を合成で使ったりする
 type Material struct {
 	Amount int
+}
+
+// Value はアイテムの基本価値
+// 売買時の基準となる。実際の売値・買値は店や状況に応じて倍率が適用される
+type Value struct {
+	Value int
 }
 
 // Recipe は合成に必要な素材

@@ -89,6 +89,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Card{}), components.Card, r.extractCard, r.restoreCard, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Material{}), components.Material, r.extractMaterial, r.restoreMaterial, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Value{}), components.Value, r.extractValue, r.restoreValue, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Recipe{}), components.Recipe, r.extractRecipe, r.restoreRecipe, nil)
@@ -556,6 +557,23 @@ func (r *ComponentRegistry) restoreMaterial(world w.World, entity ecs.Entity, da
 		return fmt.Errorf("invalid Material data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Material, &material)
+	return nil
+}
+
+func (r *ComponentRegistry) extractValue(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Value) {
+		return nil, false
+	}
+	value := world.Components.Value.Get(entity).(*gc.Value)
+	return *value, true
+}
+
+func (r *ComponentRegistry) restoreValue(world w.World, entity ecs.Entity, data interface{}) error {
+	value, ok := data.(gc.Value)
+	if !ok {
+		return fmt.Errorf("invalid Value data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Value, &value)
 	return nil
 }
 
