@@ -209,10 +209,43 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, &locationType, nil)
+	gameComponent, err := rawMaster.GenerateItem(name, &locationType)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
+	componentList.Entities = append(componentList.Entities, gameComponent)
+	entities := entities.AddEntities(world, componentList)
+
+	return entities[len(entities)-1], nil
+}
+
+// SpawnStackable はStackableアイテムを生成する
+// countは1以上である必要がある（0以下の場合はエラー）
+func SpawnStackable(world w.World, name string, count int, location gc.ItemLocationType) (ecs.Entity, error) {
+	if count <= 0 {
+		return 0, fmt.Errorf("count must be positive: %d", count)
+	}
+
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	itemIdx, ok := rawMaster.ItemIndex[name]
+	if !ok {
+		return 0, fmt.Errorf("item not found: %s", name)
+	}
+	itemDef := rawMaster.Raws.Items[itemIdx]
+	if itemDef.Stackable == nil || !*itemDef.Stackable {
+		return 0, fmt.Errorf("item %s is not stackable", name)
+	}
+
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	gameComponent, err := rawMaster.GenerateItem(name, &location)
+	if err != nil {
+		return 0, fmt.Errorf("failed to spawn stackable item: %w", err)
+	}
+
+	// Stackableコンポーネントを設定
+	gameComponent.Stackable = &gc.Stackable{Count: count}
+
 	componentList.Entities = append(componentList.Entities, gameComponent)
 	entities := entities.AddEntities(world, componentList)
 
@@ -330,7 +363,7 @@ func SpawnAllCards(world w.World) error {
 	// ソート済みの順序でカードを生成する(マスターデータ)
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateItem(k, nil, nil)
+		gameComponent, err := rawMaster.GenerateItem(k, nil)
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}

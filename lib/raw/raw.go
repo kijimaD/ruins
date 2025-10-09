@@ -191,7 +191,7 @@ func Load(entityMetadataContent string) (Master, error) {
 }
 
 // GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
-func (rw *Master) GenerateItem(name string, locationType *gc.ItemLocationType, count *int) (gc.EntitySpec, error) {
+func (rw *Master) GenerateItem(name string, locationType *gc.ItemLocationType) (gc.EntitySpec, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
@@ -209,10 +209,6 @@ func (rw *Master) GenerateItem(name string, locationType *gc.ItemLocationType, c
 		SpriteSheetName: item.SpriteSheetName,
 		SpriteKey:       item.SpriteKey,
 		Depth:           gc.DepthNumRug,
-	}
-
-	if count != nil && item.Stackable != nil && *item.Stackable {
-		cl.Stackable = &gc.Stackable{Count: *count}
 	}
 
 	if item.Consumable != nil {
@@ -329,8 +325,8 @@ func (rw *Master) GenerateRecipe(name string) (gc.EntitySpec, error) {
 	}
 
 	// 説明文や分類のため、マッチしたitemの定義から持ってくる
-	// マスターデータのため位置とStackableコンポーネントを付与しない
-	item, err := rw.GenerateItem(recipe.Name, nil, nil)
+	// マスターデータのため位置を指定しない
+	item, err := rw.GenerateItem(recipe.Name, nil)
 	if err != nil {
 		return gc.EntitySpec{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
 	}

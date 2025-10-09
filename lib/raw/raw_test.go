@@ -55,7 +55,7 @@ SpriteKey = "repair_item"
 	raw, err := Load(str)
 	assert.NoError(t, err)
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("リペア", &loc, nil)
+	entity, err := raw.GenerateItem("リペア", &loc)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
@@ -75,7 +75,7 @@ Description = "スプライトなしアイテム"
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("テストアイテム", &loc, nil)
+	entity, err := raw.GenerateItem("テストアイテム", &loc)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.SpriteRender)
 	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
@@ -151,16 +151,15 @@ Stackable = true
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
-	count := 5
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("テスト素材", &loc, &count)
+	entity, err := raw.GenerateItem("テスト素材", &loc)
 	assert.NoError(t, err)
 
 	// 基本コンポーネントの確認
 	assert.NotNil(t, entity.Name)
-	assert.NotNil(t, entity.Stackable)
-	assert.Equal(t, 5, entity.Stackable.Count)
 	assert.NotNil(t, entity.Description)
+	// GenerateItemはStackableコンポーネントを付与しない
+	assert.Nil(t, entity.Stackable)
 
 	// SpriteRenderコンポーネントの確認
 	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
@@ -181,7 +180,7 @@ Description = "スプライトなし素材"
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("スプライトなし素材", &loc, nil)
+	entity, err := raw.GenerateItem("スプライトなし素材", &loc)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.SpriteRender)
 	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)

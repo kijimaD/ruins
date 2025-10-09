@@ -4,36 +4,9 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/engine/entities"
-	"github.com/kijimaD/ruins/lib/raw"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
-
-// SpawnStackable はStackableアイテムを生成する
-// countは1以上である必要がある（0以下の場合はエラー）
-func SpawnStackable(world w.World, name string, count int, location gc.ItemLocationType) (ecs.Entity, error) {
-	if count <= 0 {
-		return 0, fmt.Errorf("count must be positive: %d", count)
-	}
-
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, &location, &count)
-	if err != nil {
-		return 0, fmt.Errorf("failed to spawn stackable item: %w", err)
-	}
-
-	// Stackableコンポーネントがあることを確認
-	if gameComponent.Stackable == nil {
-		return 0, fmt.Errorf("item %s does not have Stackable component", name)
-	}
-
-	componentList.Entities = append(componentList.Entities, gameComponent)
-	entities := entities.AddEntities(world, componentList)
-
-	return entities[len(entities)-1], nil
-}
 
 // MergeStackableIntoInventory は既存のバックパック内Stackableアイテムと統合するか新規追加する
 // Stackableコンポーネントを持つ場合は既存と数量統合、それ以外は個別アイテムとして追加
