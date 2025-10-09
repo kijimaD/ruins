@@ -13,7 +13,7 @@ import (
 func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	// RawMasterから置物の設定を生成
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	entitySpec, err := rawMaster.GenerateProp(propName)
+	entitySpec, err := rawMaster.NewPropSpec(propName)
 	if err != nil {
 		return ecs.Entity(0), err
 	}

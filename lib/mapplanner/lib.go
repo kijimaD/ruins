@@ -457,7 +457,7 @@ func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
 	if bm.RawMaster == nil {
 		panic("RawMasterが設定されていない。TOMLからのタイル生成が必須である")
 	}
-	tile, err := bm.RawMaster.GenerateTile(name)
+	tile, err := bm.RawMaster.GetTile(name)
 	if err != nil {
 		panic(fmt.Sprintf("タイル生成エラー: %v", err))
 	}

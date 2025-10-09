@@ -55,12 +55,12 @@ SpriteKey = "repair_item"
 	raw, err := Load(str)
 	assert.NoError(t, err)
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("リペア", &loc)
+	entitySpec, err := raw.NewItemSpec("リペア", &loc)
 	assert.NoError(t, err)
-	assert.NotNil(t, entity.Name)
-	assert.NotNil(t, entity.Item)
-	assert.NotNil(t, entity.Description)
-	assert.NotNil(t, entity.SpriteRender)
+	assert.NotNil(t, entitySpec.Name)
+	assert.NotNil(t, entitySpec.Item)
+	assert.NotNil(t, entitySpec.Description)
+	assert.NotNil(t, entitySpec.SpriteRender)
 }
 
 func TestGenerateItemWithoutSprite(t *testing.T) {
@@ -75,11 +75,11 @@ Description = "スプライトなしアイテム"
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("テストアイテム", &loc)
+	entitySpec, err := raw.NewItemSpec("テストアイテム", &loc)
 	assert.NoError(t, err)
-	assert.NotNil(t, entity.SpriteRender)
-	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
-	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Equal(t, "", entitySpec.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "", entitySpec.SpriteRender.SpriteKey)
 }
 
 func TestGenerateMemberWithSprite(t *testing.T) {
@@ -100,18 +100,18 @@ Defense = 0
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
-	entity, err := raw.GeneratePlayer("テストプレイヤー")
+	entitySpec, err := raw.NewPlayerSpec("テストプレイヤー")
 	assert.NoError(t, err)
 
 	// 基本コンポーネントの確認
-	assert.NotNil(t, entity.Name)
-	assert.NotNil(t, entity.Player)
+	assert.NotNil(t, entitySpec.Name)
+	assert.NotNil(t, entitySpec.Player)
 
 	// SpriteRenderコンポーネントの確認
-	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
-	assert.Equal(t, "field", entity.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
-	assert.Equal(t, "player", entity.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
-	assert.Equal(t, gc.DepthNumPlayer, entity.SpriteRender.Depth, "Depthが正しくない")
+	assert.NotNil(t, entitySpec.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
+	assert.Equal(t, "field", entitySpec.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
+	assert.Equal(t, "player", entitySpec.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
+	assert.Equal(t, gc.DepthNumPlayer, entitySpec.SpriteRender.Depth, "Depthが正しくない")
 }
 
 func TestGenerateMemberWithoutSprite(t *testing.T) {
@@ -132,11 +132,11 @@ Defense = 0
 	assert.NoError(t, err)
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
-	entity, err := raw.GeneratePlayer("スプライトなしキャラ")
+	entitySpec, err := raw.NewPlayerSpec("スプライトなしキャラ")
 	assert.NoError(t, err)
-	assert.NotNil(t, entity.SpriteRender)
-	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
-	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Equal(t, "", entitySpec.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "", entitySpec.SpriteRender.SpriteKey)
 }
 
 func TestGenerateMaterialWithSprite(t *testing.T) {
@@ -152,20 +152,20 @@ Stackable = true
 	raw, err := Load(str)
 	assert.NoError(t, err)
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("テスト素材", &loc)
+	entitySpec, err := raw.NewItemSpec("テスト素材", &loc)
 	assert.NoError(t, err)
 
 	// 基本コンポーネントの確認
-	assert.NotNil(t, entity.Name)
-	assert.NotNil(t, entity.Description)
+	assert.NotNil(t, entitySpec.Name)
+	assert.NotNil(t, entitySpec.Description)
 	// GenerateItemはStackableコンポーネントを付与しない
-	assert.Nil(t, entity.Stackable)
+	assert.Nil(t, entitySpec.Stackable)
 
 	// SpriteRenderコンポーネントの確認
-	assert.NotNil(t, entity.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
-	assert.Equal(t, "field", entity.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
-	assert.Equal(t, "field_item", entity.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
-	assert.Equal(t, gc.DepthNumRug, entity.SpriteRender.Depth, "Depthが正しくない")
+	assert.NotNil(t, entitySpec.SpriteRender, "SpriteRenderコンポーネントが設定されていない")
+	assert.Equal(t, "field", entitySpec.SpriteRender.SpriteSheetName, "SpriteSheetNameが正しくない")
+	assert.Equal(t, "field_item", entitySpec.SpriteRender.SpriteKey, "SpriteKeyが正しくない")
+	assert.Equal(t, gc.DepthNumRug, entitySpec.SpriteRender.Depth, "Depthが正しくない")
 }
 
 func TestGenerateMaterialWithoutSprite(t *testing.T) {
@@ -180,13 +180,13 @@ Description = "スプライトなし素材"
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
 	loc := gc.ItemLocationInBackpack
-	entity, err := raw.GenerateItem("スプライトなし素材", &loc)
+	entitySpec, err := raw.NewItemSpec("スプライトなし素材", &loc)
 	assert.NoError(t, err)
-	assert.NotNil(t, entity.SpriteRender)
-	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
-	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Equal(t, "", entitySpec.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "", entitySpec.SpriteRender.SpriteKey)
 	// Stackable=true が設定されていないので Stackable コンポーネントは付かない
-	assert.Nil(t, entity.Stackable)
+	assert.Nil(t, entitySpec.Stackable)
 }
 
 func TestLoadTilesFromRaw(t *testing.T) {
@@ -238,18 +238,18 @@ Walkable = false
 	master, err := Load(tomlData)
 	require.NoError(t, err, "テストTOMLの読み込みに失敗")
 
-	// 床タイルの生成をテスト
-	floorTile, err := master.GenerateTile("GenerateTestFloor")
-	require.NoError(t, err, "床タイルの生成に失敗")
+	// 床タイルの取得をテスト
+	floorTile, err := master.GetTile("GenerateTestFloor")
+	require.NoError(t, err, "床タイルの取得に失敗")
 	assert.True(t, floorTile.Walkable)
 
-	// 壁タイルの生成をテスト
-	wallTile, err := master.GenerateTile("GenerateTestWall")
-	require.NoError(t, err, "壁タイルの生成に失敗")
+	// 壁タイルの取得をテスト
+	wallTile, err := master.GetTile("GenerateTestWall")
+	require.NoError(t, err, "壁タイルの取得に失敗")
 	assert.False(t, wallTile.Walkable)
 
 	// 存在しないタイルのテスト（エラーが発生する）
-	_, err = master.GenerateTile("NonExistent")
+	_, err = master.GetTile("NonExistent")
 	assert.Error(t, err, "存在しないタイルでエラーが発生すべき")
 }
 
@@ -273,13 +273,13 @@ Walkable = false
 	master, err := Load(tomlData)
 	require.NoError(t, err, "テストTOMLの読み込みに失敗")
 
-	// GenerateTile のテスト（存在するタイル）
-	tileRaw, err := master.GenerateTile("Helper1")
-	require.NoError(t, err, "タイル生成に失敗")
+	// GetTile のテスト（存在するタイル）
+	tileRaw, err := master.GetTile("Helper1")
+	require.NoError(t, err, "タイル取得に失敗")
 	assert.True(t, tileRaw.Walkable)
 
-	// GenerateTile のテスト（存在しないタイル）
-	_, err = master.GenerateTile("NonExistent")
+	// GetTile のテスト（存在しないタイル）
+	_, err = master.GetTile("NonExistent")
 	assert.Error(t, err, "存在しないタイルでエラーが発生すべき")
 }
 
@@ -317,8 +317,8 @@ Walkable = false
 	}
 
 	for _, tc := range testCases {
-		tile, err := master.GenerateTile(tc.name)
-		require.NoError(t, err, "タイル生成に失敗: %s", tc.name)
+		tile, err := master.GetTile(tc.name)
+		require.NoError(t, err, "タイル取得に失敗: %s", tc.name)
 		assert.Equal(t, tc.expectedWalk, tile.Walkable, "Walkableが期待値と一致しない: %s", tc.name)
 	}
 }
@@ -337,14 +337,14 @@ func TestLoadFromRealTileFile(t *testing.T) {
 		assert.True(t, ok, "タイル '%s' が実際のファイルで見つかりません", tileName)
 	}
 
-	// 実際のタイル生成テスト
-	floorTile, err := master.GenerateTile("Floor")
-	require.NoError(t, err, "床タイル生成に失敗")
+	// 実際のタイル取得テスト
+	floorTile, err := master.GetTile("Floor")
+	require.NoError(t, err, "床タイル取得に失敗")
 	assert.True(t, floorTile.Walkable)
 
 	// 壁タイルテスト
-	wallTile, err := master.GenerateTile("Wall")
-	require.NoError(t, err, "壁タイル生成に失敗")
+	wallTile, err := master.GetTile("Wall")
+	require.NoError(t, err, "壁タイル取得に失敗")
 	assert.False(t, wallTile.Walkable)
 }
 

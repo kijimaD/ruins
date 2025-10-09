@@ -27,7 +27,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// 全体を非土タイル（Floor）で初期化
 	for i := range metaPlan.Tiles {
-		tile, err := metaPlan.RawMaster.GenerateTile(floorTileType)
+		tile, err := metaPlan.RawMaster.GetTile(floorTileType)
 		if err != nil {
 			t.Fatalf("床タイル生成エラー: %v", err)
 		}
@@ -36,7 +36,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// 中央（2,2）を土タイルに設定
 	centerIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(2))
-	dirtTile, err := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	dirtTile, err := metaPlan.RawMaster.GetTile(dirtTileType)
 	if err != nil {
 		t.Fatalf("土タイル生成エラー: %v", err)
 	}
@@ -52,7 +52,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// テストケース2: 上に土タイルを追加（下だけが異なる状態）
 	topIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(1))
-	topDirt, err := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	topDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
 	if err != nil {
 		t.Fatalf("土タイル生成エラー: %v", err)
 	}
@@ -75,7 +75,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 
 	// テストケース3: 右にも土タイルを追加（下左が異なる状態）
 	rightIdx := metaPlan.Level.XYTileIndex(gc.Tile(3), gc.Tile(2))
-	rightDirt, err := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	rightDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
 	if err != nil {
 		t.Fatalf("土タイル生成エラー: %v", err)
 	}
@@ -91,11 +91,11 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 	// テストケース4: 全方向に土タイルを配置（中央タイル）
 	bottomIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(3))
 	leftIdx := metaPlan.Level.XYTileIndex(gc.Tile(1), gc.Tile(2))
-	bottomDirt, err := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	bottomDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
 	if err != nil {
 		t.Fatalf("土タイル生成エラー: %v", err)
 	}
-	leftDirt, err := metaPlan.RawMaster.GenerateTile(dirtTileType)
+	leftDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
 	if err != nil {
 		t.Fatalf("土タイル生成エラー: %v", err)
 	}

@@ -127,11 +127,11 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gcl, err := rawMaster.GeneratePlayer(name)
+	entitySpec, err := rawMaster.NewPlayerSpec(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}
-	gcl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	entitySpec.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 	// カメラ
 	{
 		// config設定を確認
@@ -146,9 +146,9 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 			scale = cameraInitialScale
 			scaleTo = cameraNormalScale
 		}
-		gcl.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
+		entitySpec.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
 	}
-	componentList.Entities = append(componentList.Entities, gcl)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
 
@@ -161,25 +161,25 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
 	// raw.Masterから敵データを取得
-	cl, err := rawMaster.GenerateEnemy(name)
+	entitySpec, err := rawMaster.NewEnemySpec(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrEnemyGeneration, err)
 	}
 
 	// フィールド用のコンポーネントを設定
-	cl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	cl.BlockPass = &gc.BlockPass{}
-	cl.AIMoveFSM = &gc.AIMoveFSM{}
-	cl.AIRoaming = &gc.AIRoaming{
+	entitySpec.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	entitySpec.BlockPass = &gc.BlockPass{}
+	entitySpec.AIMoveFSM = &gc.AIMoveFSM{}
+	entitySpec.AIRoaming = &gc.AIRoaming{
 		SubState:              gc.AIRoamingWaiting,
 		StartSubStateTurn:     1,                // 初期ターン
 		DurationSubStateTurns: 2 + rand.IntN(3), // 2-4ターン待機
 	}
-	cl.AIVision = &gc.AIVision{
+	entitySpec.AIVision = &gc.AIVision{
 		ViewDistance: gc.Pixel(aiVisionDistance),
 	}
 
-	componentList.Entities = append(componentList.Entities, cl)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 
 	// 全回復
@@ -209,11 +209,11 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, &locationType)
+	entitySpec, err := rawMaster.NewItemSpec(name, &locationType)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
-	componentList.Entities = append(componentList.Entities, gameComponent)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 
 	return entities[len(entities)-1], nil
@@ -238,15 +238,15 @@ func SpawnStackable(world w.World, name string, count int, location gc.ItemLocat
 	}
 
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	gameComponent, err := rawMaster.GenerateItem(name, &location)
+	entitySpec, err := rawMaster.NewItemSpec(name, &location)
 	if err != nil {
 		return 0, fmt.Errorf("failed to spawn stackable item: %w", err)
 	}
 
 	// Stackableコンポーネントを設定
-	gameComponent.Stackable = &gc.Stackable{Count: count}
+	entitySpec.Stackable = &gc.Stackable{Count: count}
 
-	componentList.Entities = append(componentList.Entities, gameComponent)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 
 	return entities[len(entities)-1], nil
@@ -339,11 +339,11 @@ func SpawnAllRecipes(world w.World) error {
 	// ソート済みの順序でレシピを生成
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateRecipe(k)
+		entitySpec, err := rawMaster.NewRecipeSpec(k)
 		if err != nil {
 			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Entities = append(componentList.Entities, gameComponent)
+		componentList.Entities = append(componentList.Entities, entitySpec)
 		entities.AddEntities(world, componentList)
 	}
 	return nil
@@ -363,11 +363,11 @@ func SpawnAllCards(world w.World) error {
 	// ソート済みの順序でカードを生成する(マスターデータ)
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateItem(k, nil)
+		entitySpec, err := rawMaster.NewItemSpec(k, nil)
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Entities = append(componentList.Entities, gameComponent)
+		componentList.Entities = append(componentList.Entities, entitySpec)
 		entities.AddEntities(world, componentList)
 	}
 	return nil
