@@ -27,10 +27,6 @@ func TransferItem(world w.World, itemEntity ecs.Entity, fromLocation, toLocation
 		if itemEntity.HasComponent(world.Components.ItemLocationOnField) {
 			itemEntity.RemoveComponent(world.Components.ItemLocationOnField)
 		}
-	case gc.ItemLocationNone:
-		if itemEntity.HasComponent(world.Components.ItemLocationNone) {
-			itemEntity.RemoveComponent(world.Components.ItemLocationNone)
-		}
 	}
 
 	// 新しい位置コンポーネントを追加
@@ -39,8 +35,6 @@ func TransferItem(world w.World, itemEntity ecs.Entity, fromLocation, toLocation
 		itemEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
 	case gc.ItemLocationOnField:
 		itemEntity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
-	case gc.ItemLocationNone:
-		itemEntity.AddComponent(world.Components.ItemLocationNone, &gc.LocationNone{})
 	}
 }
 

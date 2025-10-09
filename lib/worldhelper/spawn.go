@@ -209,7 +209,7 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, locationType, nil)
+	gameComponent, err := rawMaster.GenerateItem(name, &locationType, nil)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
@@ -327,10 +327,10 @@ func SpawnAllCards(world w.World) error {
 	}
 	sort.Strings(keys)
 
-	// ソート済みの順序でカードを生成（マスターデータなのでcountはnil）
+	// ソート済みの順序でカードを生成する(マスターデータ)
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone, nil)
+		gameComponent, err := rawMaster.GenerateItem(k, nil, nil)
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}

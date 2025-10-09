@@ -27,7 +27,6 @@ const (
 	ComponentLocationInBackpack = "LocationInBackpack"
 	ComponentLocationEquipped   = "LocationEquipped"
 	ComponentLocationOnField    = "LocationOnField"
-	ComponentLocationNone       = "LocationNone"
 	ComponentEquipmentChanged   = "EquipmentChanged"
 )
 
@@ -292,11 +291,6 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 			}))
 		case ComponentLocationOnField:
 			world.Manager.Join(world.Components.ItemLocationOnField).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentLocationNone:
-			world.Manager.Join(world.Components.ItemLocationNone).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))

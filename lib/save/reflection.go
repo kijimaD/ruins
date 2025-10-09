@@ -72,7 +72,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// アイテム位置情報コンポーネント
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationInBackpack{}), components.ItemLocationInBackpack)
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
-	r.registerNullComponent(reflect.TypeOf(&gc.LocationNone{}), components.ItemLocationNone)
 	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, r.resolveLocationEquippedRefs)
 
 	// 装備変更フラグ
@@ -158,8 +157,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationInBackpack)
 			case "LocationOnField":
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationOnField)
-			case "LocationNone":
-				return struct{}{}, entity.HasComponent(world.Components.ItemLocationNone)
 			case "EquipmentChanged":
 				return struct{}{}, entity.HasComponent(world.Components.EquipmentChanged)
 			}
@@ -186,8 +183,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
 			case "LocationOnField":
 				entity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
-			case "LocationNone":
-				entity.AddComponent(world.Components.ItemLocationNone, &gc.LocationNone{})
 			case "EquipmentChanged":
 				entity.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 			}

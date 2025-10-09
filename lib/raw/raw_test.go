@@ -54,7 +54,8 @@ SpriteKey = "repair_item"
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
-	entity, err := raw.GenerateItem("リペア", gc.ItemLocationInBackpack, nil)
+	loc := gc.ItemLocationInBackpack
+	entity, err := raw.GenerateItem("リペア", &loc, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
@@ -73,7 +74,8 @@ Description = "スプライトなしアイテム"
 	assert.NoError(t, err)
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
-	entity, err := raw.GenerateItem("テストアイテム", gc.ItemLocationInBackpack, nil)
+	loc := gc.ItemLocationInBackpack
+	entity, err := raw.GenerateItem("テストアイテム", &loc, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.SpriteRender)
 	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
@@ -150,7 +152,8 @@ Stackable = true
 	raw, err := Load(str)
 	assert.NoError(t, err)
 	count := 5
-	entity, err := raw.GenerateItem("テスト素材", gc.ItemLocationInBackpack, &count)
+	loc := gc.ItemLocationInBackpack
+	entity, err := raw.GenerateItem("テスト素材", &loc, &count)
 	assert.NoError(t, err)
 
 	// 基本コンポーネントの確認
@@ -177,7 +180,8 @@ Description = "スプライトなし素材"
 	assert.NoError(t, err)
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
-	entity, err := raw.GenerateItem("スプライトなし素材", gc.ItemLocationInBackpack, nil)
+	loc := gc.ItemLocationInBackpack
+	entity, err := raw.GenerateItem("スプライトなし素材", &loc, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.SpriteRender)
 	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)

@@ -19,7 +19,7 @@ func SpawnStackable(world w.World, name string, count int, location gc.ItemLocat
 
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, location, &count)
+	gameComponent, err := rawMaster.GenerateItem(name, &location, &count)
 	if err != nil {
 		return 0, fmt.Errorf("failed to spawn stackable item: %w", err)
 	}

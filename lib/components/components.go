@@ -83,7 +83,6 @@ type Components struct {
 	ItemLocationInBackpack *ecs.NullComponent
 	ItemLocationEquipped   *ecs.SliceComponent
 	ItemLocationOnField    *ecs.NullComponent
-	ItemLocationNone       *ecs.NullComponent
 
 	// field ================
 	AIMoveFSM    *ecs.SliceComponent
@@ -319,8 +318,6 @@ var (
 	ItemLocationEquipped ItemLocationType = LocationEquipped{}
 	// ItemLocationOnField はフィールド上
 	ItemLocationOnField ItemLocationType = LocationOnField{}
-	// ItemLocationNone はいずれにも存在しない。マスター用
-	ItemLocationNone ItemLocationType = LocationNone{}
 )
 
 // LocationInBackpack はバックパック内位置
@@ -345,13 +342,6 @@ type LocationOnField struct{}
 
 func (c LocationOnField) String() string {
 	return "ItemLocationOnField"
-}
-
-// LocationNone は位置なし
-type LocationNone struct{}
-
-func (c LocationNone) String() string {
-	return "ItemLocationNone"
 }
 
 // Prop は置物を表すマーカーコンポーネント
