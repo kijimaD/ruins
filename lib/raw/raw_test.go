@@ -34,7 +34,6 @@ Description = "半分程度回復する"
 			"回復薬": 1,
 		},
 		MemberIndex:       map[string]int{},
-		MaterialIndex:     map[string]int{},
 		RecipeIndex:       map[string]int{},
 		CommandTableIndex: map[string]int{},
 		DropTableIndex:    map[string]int{},
@@ -55,7 +54,7 @@ SpriteKey = "repair_item"
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
-	entity, err := raw.GenerateItem("リペア", gc.ItemLocationInBackpack)
+	entity, err := raw.GenerateItem("リペア", gc.ItemLocationInBackpack, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.Name)
 	assert.NotNil(t, entity.Item)
@@ -74,7 +73,7 @@ Description = "スプライトなしアイテム"
 	assert.NoError(t, err)
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
-	entity, err := raw.GenerateItem("テストアイテム", gc.ItemLocationInBackpack)
+	entity, err := raw.GenerateItem("テストアイテム", gc.ItemLocationInBackpack, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.SpriteRender)
 	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
@@ -141,20 +140,23 @@ Defense = 0
 func TestGenerateMaterialWithSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[Materials]]
+[[Items]]
 Name = "テスト素材"
 Description = "スプライト付き素材"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
+Stackable = true
 `
 	raw, err := Load(str)
 	assert.NoError(t, err)
-	entity, err := raw.GenerateMaterial("テスト素材", 5, gc.ItemLocationInBackpack)
+	count := 5
+	entity, err := raw.GenerateItem("テスト素材", gc.ItemLocationInBackpack, &count)
 	assert.NoError(t, err)
 
 	// 基本コンポーネントの確認
 	assert.NotNil(t, entity.Name)
-	assert.NotNil(t, entity.Material)
+	assert.NotNil(t, entity.Stackable)
+	assert.Equal(t, 5, entity.Stackable.Count)
 	assert.NotNil(t, entity.Description)
 
 	// SpriteRenderコンポーネントの確認
@@ -167,7 +169,7 @@ SpriteKey = "field_item"
 func TestGenerateMaterialWithoutSprite(t *testing.T) {
 	t.Parallel()
 	str := `
-[[Materials]]
+[[Items]]
 Name = "スプライトなし素材"
 Description = "スプライトなし素材"
 `
@@ -175,11 +177,13 @@ Description = "スプライトなし素材"
 	assert.NoError(t, err)
 
 	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
-	entity, err := raw.GenerateMaterial("スプライトなし素材", 5, gc.ItemLocationInBackpack)
+	entity, err := raw.GenerateItem("スプライトなし素材", gc.ItemLocationInBackpack, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, entity.SpriteRender)
 	assert.Equal(t, "", entity.SpriteRender.SpriteSheetName)
 	assert.Equal(t, "", entity.SpriteRender.SpriteKey)
+	// Stackable=true が設定されていないので Stackable コンポーネントは付かない
+	assert.Nil(t, entity.Stackable)
 }
 
 func TestLoadTilesFromRaw(t *testing.T) {

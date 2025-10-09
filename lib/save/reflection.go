@@ -88,7 +88,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// アイテム関連コンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Card{}), components.Card, r.extractCard, r.restoreCard, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Material{}), components.Material, r.extractMaterial, r.restoreMaterial, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Stackable{}), components.Stackable, r.extractStackable, r.restoreStackable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Value{}), components.Value, r.extractValue, r.restoreValue, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
@@ -543,20 +543,20 @@ func (r *ComponentRegistry) restoreCard(world w.World, entity ecs.Entity, data i
 	return nil
 }
 
-func (r *ComponentRegistry) extractMaterial(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Material) {
+func (r *ComponentRegistry) extractStackable(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Stackable) {
 		return nil, false
 	}
-	material := world.Components.Material.Get(entity).(*gc.Material)
-	return *material, true
+	stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
+	return *stackable, true
 }
 
-func (r *ComponentRegistry) restoreMaterial(world w.World, entity ecs.Entity, data interface{}) error {
-	material, ok := data.(gc.Material)
+func (r *ComponentRegistry) restoreStackable(world w.World, entity ecs.Entity, data interface{}) error {
+	stackable, ok := data.(gc.Stackable)
 	if !ok {
-		return fmt.Errorf("invalid Material data type: %T", data)
+		return fmt.Errorf("invalid Stackable data type: %T", data)
 	}
-	entity.AddComponent(world.Components.Material, &material)
+	entity.AddComponent(world.Components.Stackable, &stackable)
 	return nil
 }
 

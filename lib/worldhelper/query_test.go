@@ -10,35 +10,35 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-func TestQueryOwnedMaterial(t *testing.T) {
+func TestQueryOwnedStackable(t *testing.T) {
 	t.Parallel()
 	world, err := maingame.InitWorld(960, 720)
 	require.NoError(t, err)
 
-	// テスト用素材エンティティを作成
-	materialEntity := world.Manager.NewEntity()
-	materialEntity.AddComponent(world.Components.Material, &gc.Material{Amount: 5})
-	materialEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	materialEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テスト素材"})
+	// テスト用スタック可能アイテムエンティティを作成
+	stackableEntity := world.Manager.NewEntity()
+	stackableEntity.AddComponent(world.Components.Stackable, &gc.Stackable{Count: 5})
+	stackableEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	stackableEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テストスタック可能アイテム"})
 
-	// 素材でないエンティティを作成（除外されることを確認）
-	nonMaterialEntity := world.Manager.NewEntity()
-	nonMaterialEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
-	nonMaterialEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テストアイテム"})
+	// スタック不可アイテムを作成（除外されることを確認）
+	nonStackableEntity := world.Manager.NewEntity()
+	nonStackableEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
+	nonStackableEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テストアイテム"})
 
 	// クエリを実行
 	var foundEntities []ecs.Entity
-	QueryOwnedMaterial(func(entity ecs.Entity) {
+	QueryOwnedStackable(world, func(entity ecs.Entity) {
 		foundEntities = append(foundEntities, entity)
-	}, world)
+	})
 
 	// 結果を検証
-	assert.Len(t, foundEntities, 1, "素材エンティティが1つだけ見つかるべき")
-	assert.Equal(t, materialEntity, foundEntities[0], "正しい素材エンティティが見つかるべき")
+	assert.Len(t, foundEntities, 1, "スタック可能アイテムが1つだけ見つかるべき")
+	assert.Equal(t, stackableEntity, foundEntities[0], "正しいスタック可能アイテムが見つかるべき")
 
 	// クリーンアップ
-	world.Manager.DeleteEntity(materialEntity)
-	world.Manager.DeleteEntity(nonMaterialEntity)
+	world.Manager.DeleteEntity(stackableEntity)
+	world.Manager.DeleteEntity(nonStackableEntity)
 }
 
 func TestQueryPlayer(t *testing.T) {

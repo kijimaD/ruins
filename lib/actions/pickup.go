@@ -179,7 +179,7 @@ func (pa *PickupActivity) collectFieldItem(act *Activity, world w.World, itemEnt
 	}
 
 	// 既存のバックパック内の同じアイテムと統合する処理
-	if err := worldhelper.MergeMaterialIntoInventory(world, itemEntity, itemName); err != nil {
+	if err := worldhelper.MergeStackableIntoInventory(world, itemEntity, itemName); err != nil {
 		return fmt.Errorf("インベントリ統合エラー: %w", err)
 	}
 

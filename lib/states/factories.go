@@ -115,9 +115,9 @@ func NewDebugMenuState() es.State[w.World] {
 		}).
 		WithChoice("アイテム入手イベント", func(world w.World) {
 			// アイテムを実際にインベントリに追加
-			worldhelper.PlusAmount("鉄", 1, world)
-			worldhelper.PlusAmount("木の棒", 1, world)
-			worldhelper.PlusAmount("フェライトコア", 2, world)
+			_ = worldhelper.AddStackableCount(world, "鉄", 1)
+			_ = worldhelper.AddStackableCount(world, "木の棒", 1)
+			_ = worldhelper.AddStackableCount(world, "フェライトコア", 2)
 
 			// アイテム入手完了後の表示用メッセージを生成
 			messageText := "宝箱を発見した。\n\n" +

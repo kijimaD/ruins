@@ -315,8 +315,8 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
-		case "Material":
-			world.Manager.Join(world.Components.Material).Visit(ecs.Visit(func(entity ecs.Entity) {
+		case "Stackable":
+			world.Manager.Join(world.Components.Stackable).Visit(ecs.Visit(func(entity ecs.Entity) {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))

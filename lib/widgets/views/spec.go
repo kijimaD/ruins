@@ -19,9 +19,9 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 	targetContainer.RemoveChildren()
 
 	{
-		if entity.HasComponent(world.Components.Material) {
-			v := world.Components.Material.Get(entity).(*gc.Material)
-			amount := fmt.Sprintf("%d 個", v.Amount)
+		if entity.HasComponent(world.Components.Stackable) {
+			v := world.Components.Stackable.Get(entity).(*gc.Stackable)
+			amount := fmt.Sprintf("%d 個", v.Count)
 			targetContainer.AddChild(styled.NewBodyText(amount, consts.TextColor, world.Resources.UIResources))
 		}
 

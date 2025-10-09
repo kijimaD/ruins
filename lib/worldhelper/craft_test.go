@@ -26,12 +26,12 @@ func TestCanCraft(t *testing.T) {
 
 	// 必要な素材を作成（十分な量）
 	ironMaterial := world.Manager.NewEntity()
-	ironMaterial.AddComponent(world.Components.Material, &gc.Material{Amount: 5})
+	ironMaterial.AddComponent(world.Components.Stackable, &gc.Stackable{Count: 5})
 	ironMaterial.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
 	ironMaterial.AddComponent(world.Components.Name, &gc.Name{Name: "鉄"})
 
 	woodMaterial := world.Manager.NewEntity()
-	woodMaterial.AddComponent(world.Components.Material, &gc.Material{Amount: 2})
+	woodMaterial.AddComponent(world.Components.Stackable, &gc.Stackable{Count: 2})
 	woodMaterial.AddComponent(world.Components.ItemLocationInBackpack, &gc.ItemLocationInBackpack)
 	woodMaterial.AddComponent(world.Components.Name, &gc.Name{Name: "木"})
 
@@ -41,8 +41,8 @@ func TestCanCraft(t *testing.T) {
 	assert.NoError(t, err, "十分な素材があるときはエラーが発生してはいけない")
 
 	// 素材が不足している場合のテスト
-	woodMaterialComp := world.Components.Material.Get(woodMaterial).(*gc.Material)
-	woodMaterialComp.Amount = 0 // 木の量を0にする
+	woodMaterialComp := world.Components.Stackable.Get(woodMaterial).(*gc.Stackable)
+	woodMaterialComp.Count = 0 // 木の量を0にする
 
 	canCraft, err = CanCraft(world, "鉄剣")
 	assert.False(t, canCraft, "素材が不足しているときはクラフト不可能であるべき")

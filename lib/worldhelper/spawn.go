@@ -205,25 +205,11 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 // Items
 // ================
 
-// SpawnItem はアイテムを生成する
+// SpawnItem はアイテムを生成する（Stackableコンポーネントは付与しない）
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, locationType)
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
-	}
-	componentList.Entities = append(componentList.Entities, gameComponent)
-	entities := entities.AddEntities(world, componentList)
-
-	return entities[len(entities)-1], nil
-}
-
-// SpawnMaterial はmaterialを生成する
-func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) (ecs.Entity, error) {
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateMaterial(name, amount, locationType)
+	gameComponent, err := rawMaster.GenerateItem(name, locationType, nil)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
@@ -306,30 +292,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 	return nil
 }
 
-// SpawnAllMaterials は所持素材の個数を0で初期化する
-func SpawnAllMaterials(world w.World) error {
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-
-	// マップのキーをソートして決定的な順序にする
-	keys := make([]string, 0, len(rawMaster.MaterialIndex))
-	for k := range rawMaster.MaterialIndex {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// ソート済みの順序でマテリアルを生成
-	for _, k := range keys {
-		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
-		if err != nil {
-			return fmt.Errorf("%w (material: %s): %v", ErrItemGeneration, k, err)
-		}
-		componentList.Entities = append(componentList.Entities, gameComponent)
-		entities.AddEntities(world, componentList)
-	}
-	return nil
-}
-
 // SpawnAllRecipes はレシピ初期化
 func SpawnAllRecipes(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
@@ -365,10 +327,10 @@ func SpawnAllCards(world w.World) error {
 	}
 	sort.Strings(keys)
 
-	// ソート済みの順序でカードを生成
+	// ソート済みの順序でカードを生成（マスターデータなのでcountはnil）
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
+		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone, nil)
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}
@@ -385,10 +347,28 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
 
-	// アイテムエンティティを生成
-	item, err := SpawnItem(world, itemName, gc.ItemLocationOnField)
-	if err != nil {
-		return ecs.Entity(0), err
+	// TOMLの定義を取得してStackable対応かどうかを確認
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	itemIdx, ok := rawMaster.ItemIndex[itemName]
+	if !ok {
+		return ecs.Entity(0), fmt.Errorf("item not found: %s", itemName)
+	}
+	itemDef := rawMaster.Raws.Items[itemIdx]
+	isStackable := itemDef.Stackable != nil && *itemDef.Stackable
+
+	var item ecs.Entity
+	if isStackable {
+		// Stackable対応アイテムはCount=1で生成
+		item, err = SpawnStackable(world, itemName, 1, gc.ItemLocationOnField)
+		if err != nil {
+			return ecs.Entity(0), err
+		}
+	} else {
+		// 通常アイテムは通常通り生成
+		item, err = SpawnItem(world, itemName, gc.ItemLocationOnField)
+		if err != nil {
+			return ecs.Entity(0), err
+		}
 	}
 
 	// フィールド表示用のコンポーネントを追加

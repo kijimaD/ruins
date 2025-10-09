@@ -378,9 +378,14 @@ func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entit
 		if entity == targetEntity {
 			recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
 			for _, input := range recipe.Inputs {
-				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, worldhelper.GetAmount(input.Name, world))
+				var currentAmount int
+				if stackableEntity, found := worldhelper.FindStackableInInventory(world, input.Name); found {
+					stackable := world.Components.Stackable.Get(stackableEntity).(*gc.Stackable)
+					currentAmount = stackable.Count
+				}
+				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, currentAmount)
 				var color color.RGBA
-				if worldhelper.GetAmount(input.Name, world) >= input.Amount {
+				if currentAmount >= input.Amount {
 					color = consts.SuccessColor
 				} else {
 					color = consts.DangerColor

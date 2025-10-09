@@ -2,6 +2,7 @@ package worldhelper
 
 import (
 	"fmt"
+	"log"
 	"math/rand/v2"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -40,11 +41,15 @@ func CanCraft(world w.World, name string) (bool, error) {
 		return false, fmt.Errorf("レシピが存在しません: %s", name)
 	}
 
-	// 素材不足をチェック（素材不足はエラーではなくfalseを返す）
+	// 素材不足をチェックする。素材不足はエラーではなくfalseを返す
 	for _, recipeInput := range required {
-		currentAmount := GetAmount(recipeInput.Name, world)
-		if currentAmount < recipeInput.Amount {
-			return false, nil // 素材不足はエラーではない
+		entity, found := FindStackableInInventory(world, recipeInput.Name)
+		if !found {
+			return false, nil
+		}
+		stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
+		if stackable.Count < recipeInput.Amount {
+			return false, nil
 		}
 	}
 
@@ -54,7 +59,10 @@ func CanCraft(world w.World, name string) (bool, error) {
 // consumeMaterials はアイテム合成に必要な素材を消費する
 func consumeMaterials(world w.World, goal string) {
 	for _, recipeInput := range requiredMaterials(world, goal) {
-		MinusAmount(recipeInput.Name, recipeInput.Amount, world)
+		err := RemoveStackableCount(world, recipeInput.Name, recipeInput.Amount)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

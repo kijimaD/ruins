@@ -13,7 +13,6 @@ import (
 type Master struct {
 	Raws              Raws
 	ItemIndex         map[string]int
-	MaterialIndex     map[string]int
 	RecipeIndex       map[string]int
 	MemberIndex       map[string]int
 	CommandTableIndex map[string]int
@@ -26,7 +25,6 @@ type Master struct {
 // Raws は全てのローデータを格納する構造体
 type Raws struct {
 	Items         []Item
-	Materials     []Material
 	Recipes       []Recipe
 	Members       []Member
 	CommandTables []CommandTable
@@ -44,6 +42,7 @@ type Item struct {
 	SpriteKey       string
 	Value           *int
 	InflictsDamage  *int
+	Stackable       *bool // スタック可能かどうか
 	Consumable      *Consumable
 	ProvidesHealing *ProvidesHealing
 	Wearable        *Wearable
@@ -97,15 +96,6 @@ type EquipBonus struct {
 	Agility   int
 }
 
-// Material は素材アイテムの情報
-// TODO: 削除してアイテムすべて素材になるようにする
-type Material struct {
-	Name            string
-	Description     string
-	SpriteSheetName string
-	SpriteKey       string
-}
-
 // Recipe はレシピの情報
 type Recipe struct {
 	Name   string
@@ -154,7 +144,6 @@ func LoadFromFile(path string) (Master, error) {
 func Load(entityMetadataContent string) (Master, error) {
 	rw := Master{}
 	rw.ItemIndex = map[string]int{}
-	rw.MaterialIndex = map[string]int{}
 	rw.RecipeIndex = map[string]int{}
 	rw.MemberIndex = map[string]int{}
 	rw.CommandTableIndex = map[string]int{}
@@ -175,9 +164,6 @@ func Load(entityMetadataContent string) (Master, error) {
 
 	for i, item := range rw.Raws.Items {
 		rw.ItemIndex[item.Name] = i
-	}
-	for i, material := range rw.Raws.Materials {
-		rw.MaterialIndex[material.Name] = i
 	}
 	for i, recipe := range rw.Raws.Recipes {
 		rw.RecipeIndex[recipe.Name] = i
@@ -205,7 +191,7 @@ func Load(entityMetadataContent string) (Master, error) {
 }
 
 // GenerateItem は指定された名前のアイテムのゲームコンポーネントを生成する
-func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (gc.EntitySpec, error) {
+func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType, count *int) (gc.EntitySpec, error) {
 	itemIdx, ok := rw.ItemIndex[name]
 	if !ok {
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
@@ -221,6 +207,10 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 		SpriteSheetName: item.SpriteSheetName,
 		SpriteKey:       item.SpriteKey,
 		Depth:           gc.DepthNumRug,
+	}
+
+	if count != nil && item.Stackable != nil && *item.Stackable {
+		cl.Stackable = &gc.Stackable{Count: *count}
 	}
 
 	if item.Consumable != nil {
@@ -322,28 +312,6 @@ func (rw *Master) GenerateItem(name string, locationType gc.ItemLocationType) (g
 	return cl, nil
 }
 
-// GenerateMaterial は指定された名前の素材のゲームコンポーネントを生成する
-func (rw *Master) GenerateMaterial(name string, amount int, locationType gc.ItemLocationType) (gc.EntitySpec, error) {
-	materialIdx, ok := rw.MaterialIndex[name]
-	if !ok {
-		return gc.EntitySpec{}, NewKeyNotFoundError(name, "MaterialIndex")
-	}
-	material := rw.Raws.Materials[materialIdx]
-
-	cl := gc.EntitySpec{}
-	cl.Material = &gc.Material{Amount: amount}
-	cl.Name = &gc.Name{Name: material.Name}
-	cl.Description = &gc.Description{Description: material.Description}
-	cl.ItemLocationType = &locationType
-	cl.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: material.SpriteSheetName,
-		SpriteKey:       material.SpriteKey,
-		Depth:           gc.DepthNumRug,
-	}
-
-	return cl, nil
-}
-
 // GenerateRecipe は指定された名前のレシピのゲームコンポーネントを生成する
 func (rw *Master) GenerateRecipe(name string) (gc.EntitySpec, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
@@ -359,7 +327,7 @@ func (rw *Master) GenerateRecipe(name string) (gc.EntitySpec, error) {
 	}
 
 	// 説明文や分類のため、マッチしたitemの定義から持ってくる
-	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationInBackpack)
+	item, err := rw.GenerateItem(recipe.Name, gc.ItemLocationNone, nil)
 	if err != nil {
 		return gc.EntitySpec{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
 	}

@@ -2,6 +2,7 @@
 
 [[Items]]
 Name = "ルビー原石"
+Stackable = true
 Description = "赤く光る鉱物。高く売れる"
 Value = 500
 SpriteSheetName = "field"
@@ -9,6 +10,7 @@ SpriteKey = "field_item"
 
 [[Items]]
 Name = "回復薬"
+Stackable = true
 Description = "体力を半分程度回復する"
 Value = 100
 SpriteSheetName = "field"
@@ -25,6 +27,7 @@ Ratio = 0.5
 
 [[Items]]
 Name = "回復スプレー"
+Stackable = true
 Description = "全員の体力を半分程度回復する"
 Value = 250
 
@@ -39,6 +42,7 @@ Ratio = 0.5
 
 [[Items]]
 Name = "手榴弾"
+Stackable = true
 Description = "敵全体にダメージを与える"
 Value = 150
 InflictsDamage = 20
@@ -50,6 +54,7 @@ TargetNum = "ALL"
 
 [[Items]]
 Name = "上級回復薬"
+Stackable = true
 Description = "体力を完全回復する高級な薬"
 Value = 300
 
@@ -64,6 +69,7 @@ Ratio = 1.0
 
 [[Items]]
 Name = "古代の秘薬"
+Stackable = true
 Description = "失われた錬金術で作られた万能薬。全員を完全回復する"
 Value = 800
 
@@ -78,6 +84,7 @@ Ratio = 1.0
 
 [[Items]]
 Name = "毒消し"
+Stackable = true
 Description = "毒や状態異常を治す薬草の煎じ薬"
 Value = 80
 
@@ -88,6 +95,7 @@ TargetNum = "SINGLE"
 
 [[Items]]
 Name = "爆裂弾"
+Stackable = true
 Description = "強力な爆発で敵全体に大ダメージを与える"
 Value = 400
 InflictsDamage = 50
@@ -99,6 +107,7 @@ TargetNum = "ALL"
 
 [[Items]]
 Name = "閃光弾"
+Stackable = true
 Description = "強烈な光で敵の動きを封じる"
 Value = 180
 
@@ -109,6 +118,7 @@ TargetNum = "ALL"
 
 [[Items]]
 Name = "煙幕弾"
+Stackable = true
 Description = "煙で味方の回避率を上げる"
 Value = 200
 
@@ -119,6 +129,7 @@ TargetNum = "ALL"
 
 [[Items]]
 Name = "霊薬"
+Stackable = true
 Description = "精神力を回復する神秘的な薬"
 Value = 150
 
@@ -129,6 +140,7 @@ TargetNum = "SINGLE"
 
 [[Items]]
 Name = "狂戦士の薬"
+Stackable = true
 Description = "攻撃力を一時的に大幅に上昇させる"
 Value = 250
 
@@ -139,6 +151,7 @@ TargetNum = "SINGLE"
 
 [[Items]]
 Name = "守護の香"
+Stackable = true
 Description = "防御力を一時的に上昇させる神聖な香"
 Value = 220
 
@@ -149,61 +162,73 @@ TargetNum = "ALL"
 
 [[Items]]
 Name = "星の欠片"
+Stackable = true
 Description = "夜空から落ちた神秘的な鉱石。非常に高価"
 Value = 2000
 
 [[Items]]
 Name = "古代金貨"
+Stackable = true
 Description = "失われた文明の通貨。コレクター垂涎の品"
 Value = 1500
 
 [[Items]]
 Name = "血染めのルビー"
+Stackable = true
 Description = "暗い歴史を持つ美しい宝石。高額で取引される"
 Value = 3000
 
 [[Items]]
 Name = "教会の聖杯"
+Stackable = true
 Description = "聖別された銀製の杯。古美術品として価値が高い"
 Value = 2500
 
 [[Items]]
 Name = "竜の鱗"
+Stackable = true
 Description = "伝説の竜から剥がれたとされる鱗。幻の素材"
 Value = 5000
 
 [[Items]]
 Name = "王家の印章"
+Stackable = true
 Description = "滅んだ王朝の公式印章。歴史的価値は計り知れない"
 Value = 4000
 
 [[Items]]
 Name = "黒真珠"
+Stackable = true
 Description = "深海から取れる漆黒の真珠。極めて稀少"
 Value = 3500
 
 [[Items]]
 Name = "魔導書の断片"
+Stackable = true
 Description = "禁断の魔術書の一部。研究者が高値で買い取る"
 Value = 2800
 
 [[Items]]
 Name = "天使の羽根"
+Stackable = true
 Description = "純白に輝く美しい羽根。神聖な力を宿すとされる"
 Value = 3200
 
 [[Items]]
 Name = "古代の壺"
+Stackable = true
 Description = "精巧な装飾が施された陶製の壺。骨董品として価値が高い"
 Value = 1800
 
 [[Items]]
 Name = "狩人の記章"
+Stackable = true
 Description = "名高い狩人が身に着けていた誇りの証。記念品として珍重される"
 Value = 1200
 
 [[Items]]
 Name = "月の石"
+Stackable = true
 Description = "満月の夜にのみ光る不思議な石。占い師に重宝される"
 Value = 1600
 
@@ -1022,158 +1047,184 @@ Sensation = 3
 
 # material ================
 
-[[Materials]]
+[[Items]]
 Name = "鉄くず"
+Stackable = true
 Description = "鉄を多く含む金属の塊"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "緑ハーブ"
+Stackable = true
 Description = "よい香りに鎮静・興奮などの作用がある植物"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "黄ハーブ"
+Stackable = true
 Description = "体力を増強させる作用がある植物"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "木の棒"
+Stackable = true
 Description = "滑らかな表面を持ち、軽くて持ちやすい棒"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "フェライトコア"
+Stackable = true
 Description = "フェライト製の磁性体"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "鉄"
+Stackable = true
 Description = "加工しやすく産業の中核をなす金属"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "銀の欠片"
+Stackable = true
 Description = "淡く光る銀色の金属片。不浄なものを退ける力があるとされる"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "古い歯車"
+Stackable = true
 Description = "錆びついた真鍮の歯車。精巧な工芸技術で作られている"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "水晶の粉"
+Stackable = true
 Description = "透明な結晶を砕いた粉末。微かに光を放っている"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "黒曜石"
+Stackable = true
 Description = "漆黒に輝く火山ガラス。鋭い刃を作るのに適している"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "血赤石"
+Stackable = true
 Description = "深紅に染まった鉱石。触れると温かい"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "月光草"
+Stackable = true
 Description = "夜に青白く光る神秘的な植物。薬草として珍重される"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "古代の骨"
+Stackable = true
 Description = "長い年月を経た動物の骨。異様に硬く軽い"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "星鉄"
+Stackable = true
 Description = "隕石から取れる特殊な金属。普通の鉄より遥かに硬い"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "霧の結晶"
+Stackable = true
 Description = "霧が結晶化したような不思議な物質。触れると冷たい"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "古布の切れ端"
+Stackable = true
 Description = "古い祭服の断片。聖別された布と思われる"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "琥珀"
+Stackable = true
 Description = "太古の樹液が化石化した宝石。中に小さな虫が閉じ込められている"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "深海の塩"
+Stackable = true
 Description = "深海から採取された特殊な塩。普通の塩とは違う効能がある"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "雷光石"
+Stackable = true
 Description = "雷に打たれて生まれた石。微かに電気を帯びている"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "灰"
+Stackable = true
 Description = "何かが燃え尽きた後の灰。神聖な儀式に使われていたようだ"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "蒼鉛"
+Stackable = true
 Description = "青みがかった重い金属。魔除けの効果があるとされる"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "獣の毛皮"
+Stackable = true
 Description = "未知の獣から剥いだ毛皮。非常に丈夫で防水性に優れる"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "朽ちた羊皮紙"
+Stackable = true
 Description = "古い文書の断片。文字は読めないが重要そうな内容"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "紫水晶"
+Stackable = true
 Description = "美しい紫色の水晶。精神を集中させる効果があるという"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "錆びた鎖"
+Stackable = true
 Description = "古い鎖の一部。何かを繋ぎ止めていた痕跡がある"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
 
-[[Materials]]
+[[Items]]
 Name = "聖油"
+Stackable = true
 Description = "聖別された油。武器や防具の祝福に使用される"
 SpriteSheetName = "field"
 SpriteKey = "field_item"
