@@ -61,16 +61,16 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 			switch char {
 			case '#':
 				// 壁タイル
-				planData.Tiles[idx] = planData.GenerateTile("Wall")
+				planData.Tiles[idx] = planData.GetTile("Wall")
 			case 'f':
 				// 建物内の床タイル
-				planData.Tiles[idx] = planData.GenerateTile("Floor")
+				planData.Tiles[idx] = planData.GetTile("Floor")
 			case 'r':
 				// 道路タイル
-				planData.Tiles[idx] = planData.GenerateTile("Floor")
+				planData.Tiles[idx] = planData.GetTile("Floor")
 			case 'd':
 				// 土タイル（屋外の空き地）
-				planData.Tiles[idx] = planData.GenerateTile("Dirt")
+				planData.Tiles[idx] = planData.GetTile("Dirt")
 			default:
 				return fmt.Errorf("無効なタイル指定子が存在する: %s", string(char))
 			}

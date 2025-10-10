@@ -26,7 +26,7 @@ func (b BoundaryWall) PlanMeta(planData *MetaPlan) {
 
 		// 最外枠タイルの場合は無条件で壁にする
 		if b.isBoundaryTile(planData, idx) {
-			planData.Tiles[idx] = planData.GenerateTile(b.WallTileName)
+			planData.Tiles[idx] = planData.GetTile(b.WallTileName)
 		}
 	}
 }

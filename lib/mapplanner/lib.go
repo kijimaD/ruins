@@ -115,7 +115,7 @@ func (bm MetaPlan) existPlannedEntityOnTile(x, y int) bool {
 func (bm MetaPlan) UpTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := resources.TileIdx(int(idx) - int(bm.Level.TileWidth))
 	if targetIdx < 0 {
-		return bm.GenerateTile("Empty")
+		return bm.GetTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
@@ -125,7 +125,7 @@ func (bm MetaPlan) UpTile(idx resources.TileIdx) raw.TileRaw {
 func (bm MetaPlan) DownTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := int(idx) + int(bm.Level.TileWidth)
 	if targetIdx > len(bm.Tiles)-1 {
-		return bm.GenerateTile("Empty")
+		return bm.GetTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
@@ -135,7 +135,7 @@ func (bm MetaPlan) DownTile(idx resources.TileIdx) raw.TileRaw {
 func (bm MetaPlan) LeftTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := idx - 1
 	if targetIdx < 0 {
-		return bm.GenerateTile("Empty")
+		return bm.GetTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
@@ -145,7 +145,7 @@ func (bm MetaPlan) LeftTile(idx resources.TileIdx) raw.TileRaw {
 func (bm MetaPlan) RightTile(idx resources.TileIdx) raw.TileRaw {
 	targetIdx := idx + 1
 	if int(targetIdx) > len(bm.Tiles)-1 {
-		return bm.GenerateTile("Empty")
+		return bm.GetTile("Empty")
 	}
 
 	return bm.Tiles[targetIdx]
@@ -452,8 +452,9 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	return selectedType.PlannerFunc(width, height, seed)
 }
 
-// GenerateTile はタイルを生成する
-func (bm *MetaPlan) GenerateTile(name string) raw.TileRaw {
+// GetTile はタイルを生成する
+// エラーを潰しているだけ
+func (bm *MetaPlan) GetTile(name string) raw.TileRaw {
 	if bm.RawMaster == nil {
 		panic("RawMasterが設定されていない。TOMLからのタイル生成が必須である")
 	}
