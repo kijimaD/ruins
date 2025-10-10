@@ -342,8 +342,11 @@ func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerCha
 func NewBigRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(BigRoomPlanner{})
-	chain.With(NewFillAll("Wall"))      // 全体を壁で埋める
-	chain.With(BigRoomDraw{})           // 大部屋を描画（バリエーション込み）
+	chain.With(NewFillAll("Wall")) // 全体を壁で埋める
+	chain.With(BigRoomDraw{
+		FloorTile: "Floor",
+		WallTile:  "Wall",
+	}) // 大部屋を描画（バリエーション込み）
 	chain.With(NewBoundaryWall("Wall")) // 最外周を壁で囲む
 
 	return chain
