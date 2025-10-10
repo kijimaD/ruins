@@ -447,30 +447,26 @@ func (rw *Master) GetDropTable(name string) (DropTable, error) {
 
 // TileRaw はタイルのローデータ定義
 type TileRaw struct {
-	Name        string
-	Description string
-	Walkable    bool
+	Name         string
+	Description  string
+	Walkable     bool
+	SpriteRender gc.SpriteRender
+	BlocksView   *bool // 視界を遮断するか。nilの場合はfalse
 }
 
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
-	Name            string
-	Description     string
-	SpriteSheetName string
-	SpriteKey       string
-	BlockPass       bool
-	BlockView       bool
-	LightSource     *LightSourceRaw
-}
-
-// LightSourceRaw は光源のローデータ定義
-type LightSourceRaw struct {
-	Radius  gc.Tile
-	Color   color.RGBA
-	Enabled bool
+	Name         string
+	Description  string
+	SpriteRender gc.SpriteRender
+	BlockPass    bool
+	BlockView    bool
+	LightSource  *gc.LightSource
+	Warp         *gc.Warp
 }
 
 // GetTile は指定された名前のタイルを取得する
+// 計画段階でタイルの性質（Walkableなど）を参照する場合に使用する
 func (rw *Master) GetTile(name string) (TileRaw, error) {
 	tileIdx, ok := rw.TileIndex[name]
 	if !ok {
@@ -478,6 +474,36 @@ func (rw *Master) GetTile(name string) (TileRaw, error) {
 	}
 
 	return rw.Raws.Tiles[tileIdx], nil
+}
+
+// NewTileSpec は指定された名前のタイルのEntitySpecを生成する
+// 実際にエンティティを生成する際に使用する
+func (rw *Master) NewTileSpec(name string, x, y gc.Tile, autoTileIndex *int) (gc.EntitySpec, error) {
+	tileRaw, err := rw.GetTile(name)
+	if err != nil {
+		return gc.EntitySpec{}, err
+	}
+
+	entitySpec := gc.EntitySpec{}
+	entitySpec.Name = &gc.Name{Name: tileRaw.Name}
+	entitySpec.Description = &gc.Description{Description: tileRaw.Description}
+	entitySpec.GridElement = &gc.GridElement{X: x, Y: y}
+
+	// SpriteRenderを設定
+	sprite := tileRaw.SpriteRender
+	// オートタイルインデックスが指定されている場合はspriteKeyを動的に生成
+	if autoTileIndex != nil {
+		sprite.SpriteKey = fmt.Sprintf("%s_%d", tileRaw.SpriteRender.SpriteKey, *autoTileIndex)
+	}
+	entitySpec.SpriteRender = &sprite
+
+	// BlocksViewがtrueの場合は視界と通行を遮断
+	if tileRaw.BlocksView != nil && *tileRaw.BlocksView {
+		entitySpec.BlockView = &gc.BlockView{}
+		entitySpec.BlockPass = &gc.BlockPass{}
+	}
+
+	return entitySpec, nil
 }
 
 // GetProp は指定された名前の置物の設定を取得する
@@ -501,11 +527,7 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 	entitySpec.Prop = &gc.Prop{}
 	entitySpec.Name = &gc.Name{Name: propRaw.Name}
 	entitySpec.Description = &gc.Description{Description: propRaw.Description}
-	entitySpec.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: propRaw.SpriteSheetName,
-		SpriteKey:       propRaw.SpriteKey,
-		Depth:           gc.DepthNumRug,
-	}
+	entitySpec.SpriteRender = &propRaw.SpriteRender
 
 	if propRaw.BlockPass {
 		entitySpec.BlockPass = &gc.BlockPass{}
@@ -516,11 +538,12 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 
 	// 光源の設定
 	if propRaw.LightSource != nil {
-		entitySpec.LightSource = &gc.LightSource{
-			Radius:  propRaw.LightSource.Radius,
-			Color:   propRaw.LightSource.Color,
-			Enabled: propRaw.LightSource.Enabled,
-		}
+		entitySpec.LightSource = propRaw.LightSource
+	}
+
+	// ワープの設定
+	if propRaw.Warp != nil {
+		entitySpec.Warp = propRaw.Warp
 	}
 
 	return entitySpec, nil

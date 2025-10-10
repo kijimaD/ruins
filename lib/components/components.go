@@ -161,7 +161,7 @@ type Camera struct {
 // Warp はワープパッド
 // TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
 type Warp struct {
-	Mode warpMode
+	Mode WarpMode
 }
 
 // Item はキャラクターが保持できるもの。フィールド上、装備上、インベントリ上など位置状態を持ち、1スロットを消費する

@@ -20,7 +20,7 @@ func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity
 
 	// 床を下敷きとして配置（既に床がある場合は配置しない）
 	if !hasFloorAt(world, x, y) {
-		_, _ = SpawnFloor(world, x, y, "field", "floor")
+		_, _ = SpawnTile(world, "Floor", x, y, nil)
 	}
 
 	// 位置情報を設定

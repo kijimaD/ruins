@@ -35,7 +35,7 @@ func TestNewRandomPlanner(t *testing.T) {
 	}
 
 	for i, tile1 := range chain1.PlanData.Tiles {
-		if chain2.PlanData.Tiles[i] != tile1 {
+		if chain2.PlanData.Tiles[i].Name != tile1.Name {
 			t.Errorf("タイル[%d]が異なります。1回目: %v, 2回目: %v", i, tile1, chain2.PlanData.Tiles[i])
 			break // 最初の違いだけ報告
 		}

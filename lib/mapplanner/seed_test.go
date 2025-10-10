@@ -36,7 +36,7 @@ func TestSeedReproducibility(t *testing.T) {
 		t.Errorf("タイル数が異なります。1回目: %d, 2回目: %d", len(tiles1), len(tiles2))
 	}
 	for i := range tiles1 {
-		if tiles1[i] != tiles2[i] {
+		if tiles1[i].Name != tiles2[i].Name {
 			t.Errorf("タイル[%d]が異なります。1回目: %v, 2回目: %v", i, tiles1[i], tiles2[i])
 		}
 	}
@@ -71,7 +71,7 @@ func TestDifferentSeeds(t *testing.T) {
 	// 少なくともいくつかのタイルは異なるはず
 	differentTiles := 0
 	for i := range chain1.PlanData.Tiles {
-		if chain1.PlanData.Tiles[i] != chain2.PlanData.Tiles[i] {
+		if chain1.PlanData.Tiles[i].Name != chain2.PlanData.Tiles[i].Name {
 			differentTiles++
 		}
 	}

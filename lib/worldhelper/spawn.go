@@ -41,80 +41,26 @@ var (
 	ErrEffectGeneration = errors.New("エフェクトの生成に失敗しました")
 )
 
+// raw のNewSpec系と、worldhelperのSpawn系の使い分け
+//
+// raw: 共通なところに関してコンポーネント群を付与する
+// worldhelper: 頻繁に変わる部分に関して引数を受け取れるようにする。エンティティを発行するところまでやる
+
 // ================
 // Field
 // ================
 
-// SpawnFloor は指定されたスプライトキーでフィールド上に表示される床を生成する
-func SpawnFloor(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error) {
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: sheetName,
-			SpriteKey:       spriteKey,
-			Depth:           gc.DepthNumFloor,
-		},
-	})
-
-	return entities.AddEntities(world, componentList)[0], nil
-}
-
-// SpawnWall は指定されたスプライトキーで壁を生成する
-func SpawnWall(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error) {
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: sheetName,
-			SpriteKey:       spriteKey,
-			Depth:           gc.DepthNumTaller,
-		},
-		BlockView: &gc.BlockView{},
-		BlockPass: &gc.BlockPass{},
-	})
-
-	return entities.AddEntities(world, componentList)[0], nil
-}
-
-// SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
-func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷き描画
+// SpawnTile はタイルを生成する
+// autoTileIndexが指定された場合、spriteKeyを動的に生成する（例: "wall_5"）
+func SpawnTile(world w.World, tileName string, x gc.Tile, y gc.Tile, autoTileIndex *int) (ecs.Entity, error) {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	entitySpec, err := rawMaster.NewTileSpec(tileName, x, y, autoTileIndex)
 	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
+		return ecs.Entity(0), err
 	}
 
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: "field",
-			SpriteKey:       "warp_next",
-			Depth:           gc.DepthNumRug,
-		},
-		Warp: &gc.Warp{Mode: gc.WarpModeNext},
-	})
-
-	return entities.AddEntities(world, componentList)[0], nil
-}
-
-// SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
-func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷き描画
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
-	}
-
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: "field",
-			SpriteKey:       "warp_escape",
-			Depth:           gc.DepthNumRug,
-		},
-		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
-	})
+	componentList.Entities = append(componentList.Entities, entitySpec)
 
 	return entities.AddEntities(world, componentList)[0], nil
 }
@@ -375,7 +321,7 @@ func SpawnAllCards(world w.World) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷きの床を描画
+	_, err := SpawnTile(world, "Floor", x, y, nil) // 下敷きの床を描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
