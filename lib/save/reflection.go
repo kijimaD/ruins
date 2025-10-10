@@ -72,7 +72,6 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// アイテム位置情報コンポーネント
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationInBackpack{}), components.ItemLocationInBackpack)
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
-	r.registerNullComponent(reflect.TypeOf(&gc.LocationNone{}), components.ItemLocationNone)
 	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, r.resolveLocationEquippedRefs)
 
 	// 装備変更フラグ
@@ -88,7 +87,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// アイテム関連コンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Card{}), components.Card, r.extractCard, r.restoreCard, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Material{}), components.Material, r.extractMaterial, r.restoreMaterial, nil)
+	r.registerComponent(reflect.TypeOf(&gc.Stackable{}), components.Stackable, r.extractStackable, r.restoreStackable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Value{}), components.Value, r.extractValue, r.restoreValue, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
@@ -158,8 +157,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationInBackpack)
 			case "LocationOnField":
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationOnField)
-			case "LocationNone":
-				return struct{}{}, entity.HasComponent(world.Components.ItemLocationNone)
 			case "EquipmentChanged":
 				return struct{}{}, entity.HasComponent(world.Components.EquipmentChanged)
 			}
@@ -186,8 +183,6 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 				entity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
 			case "LocationOnField":
 				entity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
-			case "LocationNone":
-				entity.AddComponent(world.Components.ItemLocationNone, &gc.LocationNone{})
 			case "EquipmentChanged":
 				entity.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 			}
@@ -543,20 +538,20 @@ func (r *ComponentRegistry) restoreCard(world w.World, entity ecs.Entity, data i
 	return nil
 }
 
-func (r *ComponentRegistry) extractMaterial(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Material) {
+func (r *ComponentRegistry) extractStackable(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Stackable) {
 		return nil, false
 	}
-	material := world.Components.Material.Get(entity).(*gc.Material)
-	return *material, true
+	stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
+	return *stackable, true
 }
 
-func (r *ComponentRegistry) restoreMaterial(world w.World, entity ecs.Entity, data interface{}) error {
-	material, ok := data.(gc.Material)
+func (r *ComponentRegistry) restoreStackable(world w.World, entity ecs.Entity, data interface{}) error {
+	stackable, ok := data.(gc.Stackable)
 	if !ok {
-		return fmt.Errorf("invalid Material data type: %T", data)
+		return fmt.Errorf("invalid Stackable data type: %T", data)
 	}
-	entity.AddComponent(world.Components.Material, &material)
+	entity.AddComponent(world.Components.Stackable, &stackable)
 	return nil
 }
 

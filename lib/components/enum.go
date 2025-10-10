@@ -10,14 +10,14 @@ var ErrInvalidEnumType = errors.New("enumに無効な値が指定された")
 
 // ================
 
-// ワープモード
-type warpMode string
+// WarpMode はワープモードを表す
+type WarpMode string
 
 const (
 	// WarpModeNext は次の階層へワープする
-	WarpModeNext = warpMode("NEXT")
+	WarpModeNext = WarpMode("NEXT")
 	// WarpModeEscape は脱出ワープする
-	WarpModeEscape = warpMode("ESCAPE")
+	WarpModeEscape = WarpMode("ESCAPE")
 )
 
 // ================

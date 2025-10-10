@@ -30,13 +30,11 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 			// すべての歩行可能タイルは16オートタイルシステムを使用
 			switch tile.Name {
 			case "Dirt":
-				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Dirt")
-				spriteKey := fmt.Sprintf("dirt_%d", int(autoTileIndex))
-				_, err = worldhelper.SpawnFloor(world, tileX, tileY, "tile", spriteKey)
+				index := int(metaPlan.CalculateAutoTileIndex(i, "Dirt"))
+				_, err = worldhelper.SpawnTile(world, "Dirt", tileX, tileY, &index)
 			case "Floor":
-				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Floor")
-				spriteKey := fmt.Sprintf("floor_%d", int(autoTileIndex))
-				_, err = worldhelper.SpawnFloor(world, tileX, tileY, "tile", spriteKey)
+				index := int(metaPlan.CalculateAutoTileIndex(i, "Floor"))
+				_, err = worldhelper.SpawnTile(world, "Floor", tileX, tileY, &index)
 			default:
 				// 未知のタイル名はエラーとして処理
 				return resources.Level{}, fmt.Errorf("未対応の歩行可能タイル名: %s (%d, %d)", tile.Name, int(x), int(y))
@@ -45,9 +43,8 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 			// 隣接に床がある場合のみ壁エンティティを生成
 			if metaPlan.AdjacentAnyFloor(i) {
 				// 壁タイルも16タイルオートタイルを使用
-				autoTileIndex := metaPlan.CalculateAutoTileIndex(i, "Wall")
-				spriteKey := fmt.Sprintf("wall_%d", int(autoTileIndex))
-				_, err = worldhelper.SpawnWall(world, tileX, tileY, "tile", spriteKey)
+				index := int(metaPlan.CalculateAutoTileIndex(i, "Wall"))
+				_, err = worldhelper.SpawnTile(world, "Wall", tileX, tileY, &index)
 			}
 		}
 
@@ -60,14 +57,15 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 	for _, portal := range metaPlan.WarpPortals {
 		tileX, tileY := gc.Tile(portal.X), gc.Tile(portal.Y)
 
-		var err error
+		var propName string
 		switch portal.Type {
 		case mapplanner.WarpPortalNext:
-			_, err = worldhelper.SpawnFieldWarpNext(world, tileX, tileY)
+			propName = "warp_next"
 		case mapplanner.WarpPortalEscape:
-			_, err = worldhelper.SpawnFieldWarpEscape(world, tileX, tileY)
+			propName = "warp_escape"
 		}
 
+		_, err := worldhelper.SpawnProp(world, propName, tileX, tileY)
 		if err != nil {
 			return resources.Level{}, fmt.Errorf("ワープポータル生成エラー (%d, %d): %w", portal.X, portal.Y, err)
 		}

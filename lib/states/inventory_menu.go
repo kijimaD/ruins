@@ -190,11 +190,6 @@ func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
 			Label: "防具",
 			Items: st.createMenuItems(world, st.queryMenuWearable(world)),
 		},
-		{
-			ID:    "materials",
-			Label: "素材",
-			Items: st.createMenuItems(world, st.queryMenuMaterial(world)),
-		},
 	}
 
 	return tabs
@@ -319,7 +314,7 @@ func (st *InventoryMenuState) showActionWindow(world w.World, entity ecs.Entity)
 	if entity.HasComponent(world.Components.Consumable) {
 		st.actionItems = append(st.actionItems, "使う")
 	}
-	if !entity.HasComponent(world.Components.Material) {
+	if !entity.HasComponent(world.Components.Stackable) {
 		st.actionItems = append(st.actionItems, "捨てる")
 	}
 	st.actionItems = append(st.actionItems, TextClose)
@@ -460,20 +455,6 @@ func (st *InventoryMenuState) queryMenuWearable(world w.World) []ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
-
-	return worldhelper.SortEntities(world, items)
-}
-
-func (st *InventoryMenuState) queryMenuMaterial(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
-
-	worldhelper.QueryOwnedMaterial(func(entity ecs.Entity) {
-		material := world.Components.Material.Get(entity).(*gc.Material)
-		// 0で初期化してるから、インスタンスは全て存在する。個数で判定する
-		if material.Amount > 0 {
-			items = append(items, entity)
-		}
-	}, world)
 
 	return worldhelper.SortEntities(world, items)
 }

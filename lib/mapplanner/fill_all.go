@@ -20,6 +20,6 @@ func (b FillAll) PlanMeta(planData *MetaPlan) {
 func (b FillAll) build(planData *MetaPlan) {
 	// 全体を指定したタイルで埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = planData.GenerateTile(b.TileName)
+		planData.Tiles[i] = planData.GetTile(b.TileName)
 	}
 }

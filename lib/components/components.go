@@ -21,12 +21,12 @@ type EntitySpec struct {
 	Consumable       *Consumable
 	Pools            *Pools
 	Attack           *Attack
-	Material         *Material
 	Value            *Value
 	Recipe           *Recipe
 	Wearable         *Wearable
 	Attributes       *Attributes
 	Card             *Card
+	Stackable        *Stackable
 	ItemLocationType *ItemLocationType
 
 	// field ================
@@ -74,16 +74,15 @@ type Components struct {
 	Consumable             *ecs.SliceComponent
 	Pools                  *ecs.SliceComponent
 	Attack                 *ecs.SliceComponent
-	Material               *ecs.SliceComponent
 	Value                  *ecs.SliceComponent
 	Recipe                 *ecs.SliceComponent
 	Wearable               *ecs.SliceComponent
 	Attributes             *ecs.SliceComponent
 	Card                   *ecs.SliceComponent
+	Stackable              *ecs.SliceComponent
 	ItemLocationInBackpack *ecs.NullComponent
 	ItemLocationEquipped   *ecs.SliceComponent
 	ItemLocationOnField    *ecs.NullComponent
-	ItemLocationNone       *ecs.NullComponent
 
 	// field ================
 	AIMoveFSM    *ecs.SliceComponent
@@ -162,11 +161,11 @@ type Camera struct {
 // Warp はワープパッド
 // TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
 type Warp struct {
-	Mode warpMode
+	Mode WarpMode
 }
 
 // Item はキャラクターが保持できるもの。フィールド上、装備上、インベントリ上など位置状態を持ち、1スロットを消費する
-// 装備品、カード、回復アイテム、売却アイテム
+// 装備品、カード、回復アイテム、売却アイテム、素材など
 type Item struct{}
 
 // Consumable は消耗品。一度使うとなくなる
@@ -234,12 +233,9 @@ type InflictsDamage struct {
 	Amount int
 }
 
-// Material は合成素材
-// アイテムとの違い:
-// - 個々のインスタンスで性能の違いはなく、単に数量だけを見る
-// - 複数の単位で扱うのでAmountを持つ。x3を合成で使ったりする
-type Material struct {
-	Amount int
+// Stackable はスタック可能なアイテムを示すコンポーネント
+type Stackable struct {
+	Count int // 所持数
 }
 
 // Value はアイテムの基本価値
@@ -322,8 +318,6 @@ var (
 	ItemLocationEquipped ItemLocationType = LocationEquipped{}
 	// ItemLocationOnField はフィールド上
 	ItemLocationOnField ItemLocationType = LocationOnField{}
-	// ItemLocationNone はいずれにも存在しない。マスター用
-	ItemLocationNone ItemLocationType = LocationNone{}
 )
 
 // LocationInBackpack はバックパック内位置
@@ -348,13 +342,6 @@ type LocationOnField struct{}
 
 func (c LocationOnField) String() string {
 	return "ItemLocationOnField"
-}
-
-// LocationNone は位置なし
-type LocationNone struct{}
-
-func (c LocationNone) String() string {
-	return "ItemLocationNone"
 }
 
 // Prop は置物を表すマーカーコンポーネント

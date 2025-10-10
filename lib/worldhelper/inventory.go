@@ -1,69 +1,10 @@
 package worldhelper
 
 import (
-	"fmt"
-
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
-
-// MergeMaterialIntoInventory は既存のバックパック内マテリアルと統合するか新規追加する
-// materialの場合は既存と数量統合、それ以外は個別アイテムとして追加
-func MergeMaterialIntoInventory(world w.World, newItemEntity ecs.Entity, itemName string) error {
-	// ItemコンポーネントまたはMaterialコンポーネントを持っているかチェック
-	hasItem := newItemEntity.HasComponent(world.Components.Item)
-	hasMaterial := newItemEntity.HasComponent(world.Components.Material)
-
-	if !hasItem && !hasMaterial {
-		return fmt.Errorf("entity %v does not have Item or Material component", newItemEntity)
-	}
-
-	// materialかどうかを確認
-	isMaterial := hasMaterial
-
-	if isMaterial {
-		// materialの場合は既存の同名materialを探して数量を追加
-		var existingMaterial ecs.Entity
-		var found bool
-
-		world.Manager.Join(
-			world.Components.Material,
-			world.Components.ItemLocationInBackpack,
-			world.Components.Name,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			if found {
-				return // 既に見つかっている場合はスキップ
-			}
-
-			name := world.Components.Name.Get(entity).(*gc.Name)
-			if name.Name == itemName && entity != newItemEntity {
-				existingMaterial = entity
-				found = true
-			}
-		}))
-
-		if found {
-			// 既存のmaterialに数量を追加
-			mergeMaterials(world, existingMaterial, newItemEntity)
-		}
-		// 見つからなかった場合は新規materialとして追加（既にLocationInBackpackが設定済み）
-	}
-	return nil
-}
-
-// mergeMaterials はmaterial入手を処理する。materialの場合は数量管理なので、入手数量を足してアイテムエンティティは消す
-func mergeMaterials(world w.World, existingMaterial, newMaterial ecs.Entity) {
-	// 新しいmaterialの数量を既存のmaterialに追加
-	existingMat := world.Components.Material.Get(existingMaterial).(*gc.Material)
-	newMat := world.Components.Material.Get(newMaterial).(*gc.Material)
-
-	// 数量を統合
-	existingMat.Amount += newMat.Amount
-
-	// 新しいmaterialエンティティを削除
-	world.Manager.DeleteEntity(newMaterial)
-}
 
 // RemoveFromInventory はインベントリからアイテムを削除する
 func RemoveFromInventory(world w.World, itemEntity ecs.Entity) {
@@ -86,10 +27,6 @@ func TransferItem(world w.World, itemEntity ecs.Entity, fromLocation, toLocation
 		if itemEntity.HasComponent(world.Components.ItemLocationOnField) {
 			itemEntity.RemoveComponent(world.Components.ItemLocationOnField)
 		}
-	case gc.ItemLocationNone:
-		if itemEntity.HasComponent(world.Components.ItemLocationNone) {
-			itemEntity.RemoveComponent(world.Components.ItemLocationNone)
-		}
 	}
 
 	// 新しい位置コンポーネントを追加
@@ -98,8 +35,6 @@ func TransferItem(world w.World, itemEntity ecs.Entity, fromLocation, toLocation
 		itemEntity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
 	case gc.ItemLocationOnField:
 		itemEntity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
-	case gc.ItemLocationNone:
-		itemEntity.AddComponent(world.Components.ItemLocationNone, &gc.LocationNone{})
 	}
 }
 
@@ -117,18 +52,41 @@ func GetInventoryItems(world w.World) []ecs.Entity {
 	return items
 }
 
-// GetInventoryMaterials はバックパック内のマテリアル一覧を取得する
-func GetInventoryMaterials(world w.World) []ecs.Entity {
-	var materials []ecs.Entity
+// GetInventoryStackables はバックパック内のスタック可能アイテム一覧を取得する
+func GetInventoryStackables(world w.World) []ecs.Entity {
+	var stackables []ecs.Entity
 
 	world.Manager.Join(
-		world.Components.Material,
+		world.Components.Stackable,
 		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		materials = append(materials, entity)
+		stackables = append(stackables, entity)
 	}))
 
-	return materials
+	return stackables
+}
+
+// FindStackableInInventory は名前でバックパック内のStackableアイテムを検索する
+func FindStackableInInventory(world w.World, name string) (ecs.Entity, bool) {
+	var foundEntity ecs.Entity
+	var found bool
+
+	world.Manager.Join(
+		world.Components.Stackable,
+		world.Components.ItemLocationInBackpack,
+		world.Components.Name,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if found {
+			return
+		}
+		itemName := world.Components.Name.Get(entity).(*gc.Name)
+		if itemName.Name == name {
+			foundEntity = entity
+			found = true
+		}
+	}))
+
+	return foundEntity, found
 }
 
 // FindItemInInventory は名前でバックパック内のアイテムを検索する
@@ -146,29 +104,6 @@ func FindItemInInventory(world w.World, itemName string) (ecs.Entity, bool) {
 		}
 		name := world.Components.Name.Get(entity).(*gc.Name)
 		if name.Name == itemName {
-			foundEntity = entity
-			found = true
-		}
-	}))
-
-	return foundEntity, found
-}
-
-// FindMaterialInInventory は名前でバックパック内のマテリアルを検索する
-func FindMaterialInInventory(world w.World, materialName string) (ecs.Entity, bool) {
-	var foundEntity ecs.Entity
-	var found bool
-
-	world.Manager.Join(
-		world.Components.Material,
-		world.Components.ItemLocationInBackpack,
-		world.Components.Name,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if found {
-			return
-		}
-		name := world.Components.Name.Get(entity).(*gc.Name)
-		if name.Name == materialName {
 			foundEntity = entity
 			found = true
 		}

@@ -13,14 +13,14 @@ import (
 func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	// RawMasterから置物の設定を生成
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	entitySpec, err := rawMaster.GenerateProp(propName)
+	entitySpec, err := rawMaster.NewPropSpec(propName)
 	if err != nil {
 		return ecs.Entity(0), err
 	}
 
 	// 床を下敷きとして配置（既に床がある場合は配置しない）
 	if !hasFloorAt(world, x, y) {
-		_, _ = SpawnFloor(world, x, y, "field", "floor")
+		_, _ = SpawnTile(world, "Floor", x, y, nil)
 	}
 
 	// 位置情報を設定

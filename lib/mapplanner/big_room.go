@@ -26,7 +26,10 @@ func (b BigRoomPlanner) PlanInitial(planData *MetaPlan) error {
 }
 
 // BigRoomDraw は大部屋を描画し、ランダムにバリエーションを適用するビルダー
-type BigRoomDraw struct{}
+type BigRoomDraw struct {
+	FloorTile string
+	WallTile  string
+}
 
 // PlanMeta は大部屋をタイルに描画し、ランダムにバリエーションを適用する
 func (b BigRoomDraw) PlanMeta(planData *MetaPlan) {
@@ -61,7 +64,7 @@ func (b BigRoomDraw) drawBasicBigRoom(planData *MetaPlan) {
 		for x := room.X1; x <= room.X2; x++ {
 			for y := room.Y1; y <= room.Y2; y++ {
 				idx := planData.Level.XYTileIndex(x, y)
-				planData.Tiles[idx] = planData.GenerateTile("Floor")
+				planData.Tiles[idx] = planData.GetTile(b.FloorTile)
 			}
 		}
 
@@ -71,15 +74,15 @@ func (b BigRoomDraw) drawBasicBigRoom(planData *MetaPlan) {
 			// 上辺
 			if y := room.Y1 - 1; y >= 0 {
 				idx := planData.Level.XYTileIndex(x, y)
-				if planData.Tiles[idx] != planData.GenerateTile("Floor") {
-					planData.Tiles[idx] = planData.GenerateTile("Wall")
+				if planData.Tiles[idx].Name != b.FloorTile {
+					planData.Tiles[idx] = planData.GetTile(b.WallTile)
 				}
 			}
 			// 下辺
 			if y := room.Y2 + 1; int(y) < int(planData.Level.TileHeight) {
 				idx := planData.Level.XYTileIndex(x, y)
-				if planData.Tiles[idx] != planData.GenerateTile("Floor") {
-					planData.Tiles[idx] = planData.GenerateTile("Wall")
+				if planData.Tiles[idx].Name != b.FloorTile {
+					planData.Tiles[idx] = planData.GetTile(b.WallTile)
 				}
 			}
 		}
@@ -89,15 +92,15 @@ func (b BigRoomDraw) drawBasicBigRoom(planData *MetaPlan) {
 			// 左辺
 			if x := room.X1 - 1; x >= 0 {
 				idx := planData.Level.XYTileIndex(x, y)
-				if planData.Tiles[idx] != planData.GenerateTile("Floor") {
-					planData.Tiles[idx] = planData.GenerateTile("Wall")
+				if planData.Tiles[idx].Name != b.FloorTile {
+					planData.Tiles[idx] = planData.GetTile(b.WallTile)
 				}
 			}
 			// 右辺
 			if x := room.X2 + 1; int(x) < int(planData.Level.TileWidth) {
 				idx := planData.Level.XYTileIndex(x, y)
-				if planData.Tiles[idx] != planData.GenerateTile("Floor") {
-					planData.Tiles[idx] = planData.GenerateTile("Wall")
+				if planData.Tiles[idx].Name != b.FloorTile {
+					planData.Tiles[idx] = planData.GetTile(b.WallTile)
 				}
 			}
 		}
@@ -118,7 +121,7 @@ func (b BigRoomDraw) applyPillars(planData *MetaPlan) {
 		for x := startX; x < int(room.X2); x += spacing + 1 {
 			for y := startY; y < int(room.Y2); y += spacing + 1 {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-				planData.Tiles[idx] = planData.GenerateTile("Wall")
+				planData.Tiles[idx] = planData.GetTile("Wall")
 			}
 		}
 	}
@@ -138,7 +141,7 @@ func (b BigRoomDraw) applyObstacles(planData *MetaPlan) {
 			y := int(room.Y1) + 1 + planData.RandomSource.Intn(roomHeight-2)
 
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-			planData.Tiles[idx] = planData.GenerateTile("Wall")
+			planData.Tiles[idx] = planData.GetTile("Wall")
 		}
 	}
 }
@@ -152,7 +155,7 @@ func (b BigRoomDraw) applyMazePattern(planData *MetaPlan) {
 				// 縦の壁を配置（ランダムに開口部を作る）
 				if planData.RandomSource.Float64() > 0.3 {
 					idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-					planData.Tiles[idx] = planData.GenerateTile("Wall")
+					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
 			}
 		}
@@ -162,7 +165,7 @@ func (b BigRoomDraw) applyMazePattern(planData *MetaPlan) {
 				// 横の壁を配置（ランダムに開口部を作る）
 				if planData.RandomSource.Float64() > 0.3 {
 					idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
-					planData.Tiles[idx] = planData.GenerateTile("Wall")
+					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
 			}
 		}
@@ -190,7 +193,7 @@ func (b BigRoomDraw) applyCenterPlatform(planData *MetaPlan) {
 						idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 						// 外周は壁、内部は床のまま
 						if distance >= (platformSize-1)*(platformSize-1) {
-							planData.Tiles[idx] = planData.GenerateTile("Wall")
+							planData.Tiles[idx] = planData.GetTile("Wall")
 						}
 					}
 				}

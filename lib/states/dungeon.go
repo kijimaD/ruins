@@ -111,8 +111,10 @@ func (st *DungeonState) OnStop(world w.World) {
 	world.Manager.Join(
 		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		// プレイヤーエンティティは次のフロアでも必要なので削除しない
-		if !entity.HasComponent(world.Components.Player) {
+		// プレイヤーエンティティ、バックパック内アイテム、装備中アイテムは次のフロアでも必要なので削除しない
+		if !entity.HasComponent(world.Components.Player) &&
+			!entity.HasComponent(world.Components.ItemLocationInBackpack) &&
+			!entity.HasComponent(world.Components.ItemLocationEquipped) {
 			world.Manager.DeleteEntity(entity)
 		}
 	}))

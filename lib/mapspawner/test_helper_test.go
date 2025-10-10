@@ -12,76 +12,119 @@ Name = "Floor"
 Description = "床タイル"
 Walkable = true
 
+[Tiles.SpriteRender]
+SpriteSheetName = "tile"
+SpriteKey = "floor"
+Depth = 0
+
 [[Tiles]]
 Name = "Wall"
 Description = "壁タイル"
 Walkable = false
+BlocksView = true
+
+[Tiles.SpriteRender]
+SpriteSheetName = "tile"
+SpriteKey = "wall"
+Depth = 2
 
 [[Tiles]]
 Name = "Empty"
 Description = "空のタイル"
 Walkable = false
+BlocksView = true
+
+[Tiles.SpriteRender]
+SpriteSheetName = "tile"
+SpriteKey = "empty"
+Depth = 0
 
 [[Tiles]]
 Name = "Dirt"
 Description = "土タイル"
 Walkable = true
 
+[Tiles.SpriteRender]
+SpriteSheetName = "tile"
+SpriteKey = "dirt"
+Depth = 0
+
 [[Props]]
 Name = "table"
 Description = "テスト用テーブル"
-SpriteSheetName = "field"
-SpriteKey = "prop_table"
 BlockPass = true
 BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_table"
+Depth = 1
 
 [[Props]]
 Name = "chair"
 Description = "テスト用椅子"
-SpriteSheetName = "field"
-SpriteKey = "prop_chair"
 BlockPass = true
 BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_chair"
+Depth = 1
 
 [[Props]]
 Name = "bookshelf"
 Description = "テスト用本棚"
-SpriteSheetName = "field"
-SpriteKey = "prop_bookshelf"
 BlockPass = true
 BlockView = true
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_bookshelf"
+Depth = 1
 
 [[Props]]
 Name = "barrel"
 Description = "テスト用樽"
-SpriteSheetName = "field"
-SpriteKey = "prop_barrel"
 BlockPass = true
 BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_barrel"
+Depth = 1
 
 [[Props]]
 Name = "crate"
 Description = "テスト用木箱"
-SpriteSheetName = "field"
-SpriteKey = "prop_crate"
 BlockPass = true
 BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_crate"
+Depth = 1
 
 [[Props]]
 Name = "bed"
 Description = "テスト用寝台"
-SpriteSheetName = "field"
-SpriteKey = "prop_bed"
 BlockPass = true
 BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_bed"
+Depth = 1
 
 [[Props]]
 Name = "lantern"
 Description = "テスト用ランタン"
-SpriteSheetName = "field"
-SpriteKey = "prop_lantern"
 BlockPass = true
 BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "prop_lantern"
+Depth = 1
 
 [Props.LightSource]
 Radius = 7
@@ -92,6 +135,34 @@ R = 255
 G = 200
 B = 150
 A = 255
+
+[[Props]]
+Name = "warp_next"
+Description = "次のフロアへ進むワープポータル"
+BlockPass = false
+BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "warp_next"
+Depth = 1
+
+[Props.Warp]
+Mode = "NEXT"
+
+[[Props]]
+Name = "warp_escape"
+Description = "脱出用ワープポータル"
+BlockPass = false
+BlockView = false
+
+[Props.SpriteRender]
+SpriteSheetName = "field"
+SpriteKey = "warp_escape"
+Depth = 1
+
+[Props.Warp]
+Mode = "ESCAPE"
 `)
 	return &rawMaster
 }

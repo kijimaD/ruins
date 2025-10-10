@@ -3,6 +3,7 @@ package worldhelper
 import (
 	"testing"
 
+	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -49,6 +50,8 @@ func TestInitDebugData(t *testing.T) {
 	assert.Equal(t, 1, memberCount, "2回目の実行ではプレイヤー数は変わらないべき")
 
 	// アイテムが生成されていることを確認
-	ironAmount := GetAmount("鉄", world)
-	assert.Greater(t, ironAmount, 0, "鉄のアイテムが生成されているべき")
+	entity, found := FindStackableInInventory(world, "回復薬")
+	require.True(t, found, "回復薬のアイテムが生成されているべき")
+	stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
+	assert.Greater(t, stackable.Count, 0, "回復薬の数量が0より大きいべき")
 }

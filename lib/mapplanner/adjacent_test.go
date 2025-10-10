@@ -25,12 +25,12 @@ func TestPlanData_AdjacentAnyFloor(t *testing.T) {
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = planData.GenerateTile("Wall")
+		planData.Tiles[i] = planData.GetTile("Wall")
 	}
 
 	// 中央(2,2)を床にする
 	centerIdx := planData.Level.XYTileIndex(2, 2)
-	planData.Tiles[centerIdx] = planData.GenerateTile("Floor")
+	planData.Tiles[centerIdx] = planData.GetTile("Floor")
 
 	// テストケース1: 直交する隣接タイルは床を検出する
 	upIdx := planData.Level.XYTileIndex(1, 2)    // 上
@@ -94,14 +94,14 @@ func TestPlanData_AdjacentAnyFloor_WithWarpTiles(t *testing.T) {
 
 	// 全体を壁で埋める
 	for i := range planData.Tiles {
-		planData.Tiles[i] = planData.GenerateTile("Wall")
+		planData.Tiles[i] = planData.GetTile("Wall")
 	}
 
 	// ワープポータルを配置（床 + エンティティ）
 	warpNextIdx := planData.Level.XYTileIndex(2, 2)
 	warpEscapeIdx := planData.Level.XYTileIndex(2, 3)
-	planData.Tiles[warpNextIdx] = planData.GenerateTile("Floor")
-	planData.Tiles[warpEscapeIdx] = planData.GenerateTile("Floor")
+	planData.Tiles[warpNextIdx] = planData.GetTile("Floor")
+	planData.Tiles[warpEscapeIdx] = planData.GetTile("Floor")
 
 	// ワープポータルエンティティを追加
 	planData.WarpPortals = append(planData.WarpPortals, WarpPortal{

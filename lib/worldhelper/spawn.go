@@ -41,80 +41,26 @@ var (
 	ErrEffectGeneration = errors.New("エフェクトの生成に失敗しました")
 )
 
+// raw のNewSpec系と、worldhelperのSpawn系の使い分け
+//
+// raw: 共通なところに関してコンポーネント群を付与する
+// worldhelper: 頻繁に変わる部分に関して引数を受け取れるようにする。エンティティを発行するところまでやる
+
 // ================
 // Field
 // ================
 
-// SpawnFloor は指定されたスプライトキーでフィールド上に表示される床を生成する
-func SpawnFloor(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error) {
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: sheetName,
-			SpriteKey:       spriteKey,
-			Depth:           gc.DepthNumFloor,
-		},
-	})
-
-	return entities.AddEntities(world, componentList)[0], nil
-}
-
-// SpawnWall は指定されたスプライトキーで壁を生成する
-func SpawnWall(world w.World, x gc.Tile, y gc.Tile, sheetName, spriteKey string) (ecs.Entity, error) {
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: sheetName,
-			SpriteKey:       spriteKey,
-			Depth:           gc.DepthNumTaller,
-		},
-		BlockView: &gc.BlockView{},
-		BlockPass: &gc.BlockPass{},
-	})
-
-	return entities.AddEntities(world, componentList)[0], nil
-}
-
-// SpawnFieldWarpNext はフィールド上に表示される進行ワープホールを生成する
-func SpawnFieldWarpNext(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷き描画
+// SpawnTile はタイルを生成する
+// autoTileIndexが指定された場合、spriteKeyを動的に生成する（例: "wall_5"）
+func SpawnTile(world w.World, tileName string, x gc.Tile, y gc.Tile, autoTileIndex *int) (ecs.Entity, error) {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	entitySpec, err := rawMaster.NewTileSpec(tileName, x, y, autoTileIndex)
 	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
+		return ecs.Entity(0), err
 	}
 
 	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: "field",
-			SpriteKey:       "warp_next",
-			Depth:           gc.DepthNumRug,
-		},
-		Warp: &gc.Warp{Mode: gc.WarpModeNext},
-	})
-
-	return entities.AddEntities(world, componentList)[0], nil
-}
-
-// SpawnFieldWarpEscape はフィールド上に表示される脱出ワープホールを生成する
-func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷き描画
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
-	}
-
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
-		GridElement: &gc.GridElement{X: x, Y: y},
-		SpriteRender: &gc.SpriteRender{
-			SpriteSheetName: "field",
-			SpriteKey:       "warp_escape",
-			Depth:           gc.DepthNumRug,
-		},
-		Warp: &gc.Warp{Mode: gc.WarpModeEscape},
-	})
+	componentList.Entities = append(componentList.Entities, entitySpec)
 
 	return entities.AddEntities(world, componentList)[0], nil
 }
@@ -127,11 +73,11 @@ func SpawnFieldWarpEscape(world w.World, x gc.Tile, y gc.Tile) (ecs.Entity, erro
 func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gcl, err := rawMaster.GeneratePlayer(name)
+	entitySpec, err := rawMaster.NewPlayerSpec(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrMemberGeneration, err)
 	}
-	gcl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	entitySpec.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 	// カメラ
 	{
 		// config設定を確認
@@ -146,9 +92,9 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 			scale = cameraInitialScale
 			scaleTo = cameraNormalScale
 		}
-		gcl.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
+		entitySpec.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
 	}
-	componentList.Entities = append(componentList.Entities, gcl)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
 
@@ -161,25 +107,25 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
 	// raw.Masterから敵データを取得
-	cl, err := rawMaster.GenerateEnemy(name)
+	entitySpec, err := rawMaster.NewEnemySpec(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrEnemyGeneration, err)
 	}
 
 	// フィールド用のコンポーネントを設定
-	cl.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
-	cl.BlockPass = &gc.BlockPass{}
-	cl.AIMoveFSM = &gc.AIMoveFSM{}
-	cl.AIRoaming = &gc.AIRoaming{
+	entitySpec.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	entitySpec.BlockPass = &gc.BlockPass{}
+	entitySpec.AIMoveFSM = &gc.AIMoveFSM{}
+	entitySpec.AIRoaming = &gc.AIRoaming{
 		SubState:              gc.AIRoamingWaiting,
 		StartSubStateTurn:     1,                // 初期ターン
 		DurationSubStateTurns: 2 + rand.IntN(3), // 2-4ターン待機
 	}
-	cl.AIVision = &gc.AIVision{
+	entitySpec.AIVision = &gc.AIVision{
 		ViewDistance: gc.Pixel(aiVisionDistance),
 	}
 
-	componentList.Entities = append(componentList.Entities, cl)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 
 	// 全回復
@@ -205,29 +151,48 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 // Items
 // ================
 
-// SpawnItem はアイテムを生成する
+// SpawnItem はアイテムを生成する（Stackableコンポーネントは付与しない）
 func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateItem(name, locationType)
+	entitySpec, err := rawMaster.NewItemSpec(name, &locationType)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
-	componentList.Entities = append(componentList.Entities, gameComponent)
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 
 	return entities[len(entities)-1], nil
 }
 
-// SpawnMaterial はmaterialを生成する
-func SpawnMaterial(world w.World, name string, amount int, locationType gc.ItemLocationType) (ecs.Entity, error) {
-	componentList := entities.ComponentList[gc.EntitySpec]{}
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-	gameComponent, err := rawMaster.GenerateMaterial(name, amount, locationType)
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
+// SpawnStackable はStackableアイテムを生成する
+// countは1以上である必要がある（0以下の場合はエラー）
+func SpawnStackable(world w.World, name string, count int, location gc.ItemLocationType) (ecs.Entity, error) {
+	if count <= 0 {
+		return 0, fmt.Errorf("count must be positive: %d", count)
 	}
-	componentList.Entities = append(componentList.Entities, gameComponent)
+
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	itemIdx, ok := rawMaster.ItemIndex[name]
+	if !ok {
+		return 0, fmt.Errorf("item not found: %s", name)
+	}
+	itemDef := rawMaster.Raws.Items[itemIdx]
+	if itemDef.Stackable == nil || !*itemDef.Stackable {
+		return 0, fmt.Errorf("item %s is not stackable", name)
+	}
+
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	entitySpec, err := rawMaster.NewItemSpec(name, &location)
+	if err != nil {
+		return 0, fmt.Errorf("failed to spawn stackable item: %w", err)
+	}
+
+	// Stackableコンポーネントを設定
+	entitySpec.Stackable = &gc.Stackable{Count: count}
+
+	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 
 	return entities[len(entities)-1], nil
@@ -306,30 +271,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 	return nil
 }
 
-// SpawnAllMaterials は所持素材の個数を0で初期化する
-func SpawnAllMaterials(world w.World) error {
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-
-	// マップのキーをソートして決定的な順序にする
-	keys := make([]string, 0, len(rawMaster.MaterialIndex))
-	for k := range rawMaster.MaterialIndex {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// ソート済みの順序でマテリアルを生成
-	for _, k := range keys {
-		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateMaterial(k, 0, gc.ItemLocationInBackpack)
-		if err != nil {
-			return fmt.Errorf("%w (material: %s): %v", ErrItemGeneration, k, err)
-		}
-		componentList.Entities = append(componentList.Entities, gameComponent)
-		entities.AddEntities(world, componentList)
-	}
-	return nil
-}
-
 // SpawnAllRecipes はレシピ初期化
 func SpawnAllRecipes(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
@@ -344,11 +285,11 @@ func SpawnAllRecipes(world w.World) error {
 	// ソート済みの順序でレシピを生成
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateRecipe(k)
+		entitySpec, err := rawMaster.NewRecipeSpec(k)
 		if err != nil {
 			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Entities = append(componentList.Entities, gameComponent)
+		componentList.Entities = append(componentList.Entities, entitySpec)
 		entities.AddEntities(world, componentList)
 	}
 	return nil
@@ -365,14 +306,14 @@ func SpawnAllCards(world w.World) error {
 	}
 	sort.Strings(keys)
 
-	// ソート済みの順序でカードを生成
+	// ソート済みの順序でカードを生成する(マスターデータ)
 	for _, k := range keys {
 		componentList := entities.ComponentList[gc.EntitySpec]{}
-		gameComponent, err := rawMaster.GenerateItem(k, gc.ItemLocationNone)
+		entitySpec, err := rawMaster.NewItemSpec(k, nil)
 		if err != nil {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}
-		componentList.Entities = append(componentList.Entities, gameComponent)
+		componentList.Entities = append(componentList.Entities, entitySpec)
 		entities.AddEntities(world, componentList)
 	}
 	return nil
@@ -380,15 +321,33 @@ func SpawnAllCards(world w.World) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnFloor(world, x, y, "field", "floor") // 下敷きの床を描画
+	_, err := SpawnTile(world, "Floor", x, y, nil) // 下敷きの床を描画
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
 	}
 
-	// アイテムエンティティを生成
-	item, err := SpawnItem(world, itemName, gc.ItemLocationOnField)
-	if err != nil {
-		return ecs.Entity(0), err
+	// TOMLの定義を取得してStackable対応かどうかを確認
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	itemIdx, ok := rawMaster.ItemIndex[itemName]
+	if !ok {
+		return ecs.Entity(0), fmt.Errorf("item not found: %s", itemName)
+	}
+	itemDef := rawMaster.Raws.Items[itemIdx]
+	isStackable := itemDef.Stackable != nil && *itemDef.Stackable
+
+	var item ecs.Entity
+	if isStackable {
+		// Stackable対応アイテムはCount=1で生成
+		item, err = SpawnStackable(world, itemName, 1, gc.ItemLocationOnField)
+		if err != nil {
+			return ecs.Entity(0), err
+		}
+	} else {
+		// 通常アイテムは通常通り生成
+		item, err = SpawnItem(world, itemName, gc.ItemLocationOnField)
+		if err != nil {
+			return ecs.Entity(0), err
+		}
 	}
 
 	// フィールド表示用のコンポーネントを追加

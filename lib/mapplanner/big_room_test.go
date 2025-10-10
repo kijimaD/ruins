@@ -6,6 +6,10 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
+const (
+	testWallTileType = "Wall"
+)
+
 func TestBigRoomPlanner(t *testing.T) {
 	t.Parallel()
 
@@ -129,13 +133,13 @@ func TestBigRoomPlannerBoundaries(t *testing.T) {
 	for x := 0; x < int(width); x++ {
 		// 上端
 		idx := chain.PlanData.Level.XYTileIndex(gc.Tile(x), gc.Tile(0))
-		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
+		if chain.PlanData.Tiles[idx].Name != testWallTileType {
 			t.Errorf("上端の境界[%d,0]が壁になっていません: %v", x, chain.PlanData.Tiles[idx])
 		}
 
 		// 下端
 		idx = chain.PlanData.Level.XYTileIndex(gc.Tile(x), height-1)
-		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
+		if chain.PlanData.Tiles[idx].Name != testWallTileType {
 			t.Errorf("下端の境界[%d,%d]が壁になっていません: %v", x, height-1, chain.PlanData.Tiles[idx])
 		}
 	}
@@ -143,13 +147,13 @@ func TestBigRoomPlannerBoundaries(t *testing.T) {
 	for y := 0; y < int(height); y++ {
 		// 左端
 		idx := chain.PlanData.Level.XYTileIndex(gc.Tile(0), gc.Tile(y))
-		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
+		if chain.PlanData.Tiles[idx].Name != testWallTileType {
 			t.Errorf("左端の境界[0,%d]が壁になっていません: %v", y, chain.PlanData.Tiles[idx])
 		}
 
 		// 右端
 		idx = chain.PlanData.Level.XYTileIndex(width-1, gc.Tile(y))
-		if chain.PlanData.Tiles[idx] != chain.PlanData.GenerateTile("Wall") {
+		if chain.PlanData.Tiles[idx].Name != testWallTileType {
 			t.Errorf("右端の境界[%d,%d]が壁になっていません: %v", width-1, y, chain.PlanData.Tiles[idx])
 		}
 	}
