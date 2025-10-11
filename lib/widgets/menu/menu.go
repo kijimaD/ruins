@@ -57,13 +57,13 @@ type Menu struct {
 	hoveredIndex int
 
 	// ペジネーション状態
-	currentPage int // 現在のページ（0ベース）
+	currentPage    int  // 現在のページ（0ベース）
+	needsUIRebuild bool // UI再構築が必要かどうか
 
 	// UI要素
-	container      *widget.Container
-	itemWidgets    []widget.PreferredSizeLocateableWidget
-	uiBuilder      *UIBuilder // UIビルダーの参照を保持
-	needsUIRebuild bool       // UI再構築が必要かどうか
+	container   *widget.Container
+	itemWidgets []widget.PreferredSizeLocateableWidget
+	uiBuilder   *UIBuilder // UIビルダーの参照を保持
 
 	// 入力
 	keyboardInput input.KeyboardInput
@@ -97,31 +97,12 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 func (m *Menu) Update(keyboardInput input.KeyboardInput) {
 	m.keyboardInput = keyboardInput
 
-	// UI再構築が必要な場合は再構築
-	if m.needsUIRebuild {
-		m.rebuildUI()
-	}
-
 	m.handleKeyboard()
 }
 
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
 func (m *Menu) GetFocusedIndex() int {
 	return m.focusedIndex
-}
-
-// SetNeedsUIRebuild はUI再構築フラグを設定する
-// ページ変更時など、表示する項目が変わる場合に使用する
-func (m *Menu) SetNeedsUIRebuild() {
-	m.needsUIRebuild = true
-}
-
-// rebuildUI はUI全体を再構築する
-func (m *Menu) rebuildUI() {
-	if m.uiBuilder != nil {
-		m.uiBuilder.BuildUI(m)
-		m.needsUIRebuild = false
-	}
 }
 
 // SetFocusedIndex はフォーカスする項目を設定する

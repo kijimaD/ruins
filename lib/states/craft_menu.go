@@ -435,15 +435,10 @@ func (st *CraftMenuState) showActionWindow(world w.World, recipeName string) {
 	st.isWindowMode = true
 
 	// UI要素を作成（表示のみ、操作はキーボードで行う）
-	st.createActionWindowUI(world, windowContainer, recipeName)
+	st.updateActionWindowDisplay(world)
 
 	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
-}
-
-// createActionWindowUI はアクションウィンドウのUI要素を作成する
-func (st *CraftMenuState) createActionWindowUI(world w.World, _ *widget.Container, _ string) {
-	st.updateActionWindowDisplay(world)
 }
 
 // updateActionWindowDisplay はアクションウィンドウの表示を更新する
