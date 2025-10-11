@@ -129,6 +129,9 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
 
+	// 初期状態の表示を更新
+	st.updateInitialItemDisplay(world)
+
 	// タブ表示のコンテナを作成
 	st.tabDisplayContainer = styled.NewVerticalContainer()
 	st.createTabDisplayUI(world)
@@ -554,5 +557,16 @@ func (st *ShopMenuState) executeActionItem(world w.World) {
 		st.closeActionWindow()
 	case TextClose:
 		st.closeActionWindow()
+	}
+}
+
+// updateInitialItemDisplay は初期状態のアイテム表示を更新する
+func (st *ShopMenuState) updateInitialItemDisplay(world w.World) {
+	currentTab := st.tabMenu.GetCurrentTab()
+	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+
+	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
+		currentItem := currentTab.Items[currentItemIndex]
+		st.handleItemChange(world, currentItem)
 	}
 }
