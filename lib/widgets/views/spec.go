@@ -65,6 +65,48 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 	}
 }
 
+// UpdateSpecFromSpec はEntitySpecから性能表示コンテナを更新する
+// エンティティを生成せずに性能を表示できる
+func UpdateSpecFromSpec(world w.World, targetContainer *widget.Container, spec gc.EntitySpec) {
+	targetContainer.RemoveChildren()
+
+	if spec.Value != nil {
+		value := fmt.Sprintf("◆ %d", spec.Value.Value)
+		targetContainer.AddChild(styled.NewBodyText(value, consts.TextColor, world.Resources.UIResources))
+	}
+
+	if spec.Attack != nil {
+		targetContainer.AddChild(styled.NewBodyText(spec.Attack.AttackCategory.String(), consts.TextColor, world.Resources.UIResources))
+
+		damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(spec.Attack.Damage))
+		targetContainer.AddChild(styled.NewBodyText(damage, consts.TextColor, world.Resources.UIResources))
+
+		accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(spec.Attack.Accuracy))
+		targetContainer.AddChild(styled.NewBodyText(accuracy, consts.TextColor, world.Resources.UIResources))
+
+		attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(spec.Attack.AttackCount))
+		targetContainer.AddChild(styled.NewBodyText(attackCount, consts.TextColor, world.Resources.UIResources))
+
+		if spec.Attack.Element != gc.ElementTypeNone {
+			targetContainer.AddChild(damageAttrText(world, spec.Attack.Element, spec.Attack.Element.String()))
+		}
+	}
+
+	if spec.Wearable != nil {
+		equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, spec.Wearable.EquipmentCategory)
+		targetContainer.AddChild(styled.NewBodyText(equipmentCategory, consts.TextColor, world.Resources.UIResources))
+
+		defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, spec.Wearable.Defense)
+		targetContainer.AddChild(styled.NewBodyText(defense, consts.TextColor, world.Resources.UIResources))
+		addEquipBonus(targetContainer, spec.Wearable.EquipBonus, world)
+	}
+
+	if spec.Card != nil {
+		cost := fmt.Sprintf("コスト %d", spec.Card.Cost)
+		targetContainer.AddChild(styled.NewBodyText(cost, consts.TextColor, world.Resources.UIResources))
+	}
+}
+
 // damageAttrText は属性によって色付けする
 func damageAttrText(world w.World, dat gc.ElementType, str string) *widget.Text {
 	res := world.Resources.UIResources

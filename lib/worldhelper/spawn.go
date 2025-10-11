@@ -272,30 +272,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 	return nil
 }
 
-// SpawnAllRecipes はレシピ初期化
-func SpawnAllRecipes(world w.World) error {
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-
-	// マップのキーをソートして決定的な順序にする
-	keys := make([]string, 0, len(rawMaster.RecipeIndex))
-	for k := range rawMaster.RecipeIndex {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// ソート済みの順序でレシピを生成
-	for _, k := range keys {
-		componentList := entities.ComponentList[gc.EntitySpec]{}
-		entitySpec, err := rawMaster.NewRecipeSpec(k)
-		if err != nil {
-			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
-		}
-		componentList.Entities = append(componentList.Entities, entitySpec)
-		entities.AddEntities(world, componentList)
-	}
-	return nil
-}
-
 // SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
 func SpawnAllCards(world w.World) error {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)

@@ -280,27 +280,23 @@ func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) {
 	// 性能表示をクリア
 	st.specContainer.RemoveChildren()
 
-	// 一時的にエンティティを作成して性能表示とDescription取得
-	tempEntity, err := worldhelper.SpawnItem(world, itemName, gc.ItemLocationInBackpack)
+	// アイテムの情報を取得する
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	spec, err := rawMaster.NewItemSpec(itemName, nil)
 	if err != nil {
 		st.itemDesc.Label = TextNoDescription
 		return
 	}
-	defer world.Manager.DeleteEntity(tempEntity)
 
-	// Descriptionコンポーネントの存在チェック
-	if !tempEntity.HasComponent(world.Components.Description) {
-		st.itemDesc.Label = TextNoDescription
+	// Descriptionを取得
+	if spec.Description != nil {
+		st.itemDesc.Label = spec.Description.Description
 	} else {
-		desc := world.Components.Description.Get(tempEntity).(*gc.Description)
-		if desc == nil {
-			st.itemDesc.Label = TextNoDescription
-		} else {
-			st.itemDesc.Label = desc.Description
-		}
+		st.itemDesc.Label = TextNoDescription
 	}
 
-	views.UpdateSpec(world, st.specContainer, tempEntity)
+	// EntitySpecから性能表示を更新
+	views.UpdateSpecFromSpec(world, st.specContainer, spec)
 }
 
 // handlePurchase はアイテムの購入処理
