@@ -10,12 +10,13 @@ import (
 
 // Item はメニュー項目を表す
 type Item struct {
-	ID          string
-	Label       string
-	Disabled    bool
-	Icon        *ebiten.Image
-	Description string      // ツールチップや説明文
-	UserData    interface{} // 任意のデータを保持
+	ID               string
+	Label            string
+	AdditionalLabels []string // 追加表示項目（個数、価格など）右側に表示される
+	Disabled         bool
+	Icon             *ebiten.Image
+	Description      string      // ツールチップや説明文
+	UserData         interface{} // 任意のデータを保持
 }
 
 // Orientation はメニューの向き
@@ -56,13 +57,13 @@ type Menu struct {
 	hoveredIndex int
 
 	// ペジネーション状態
-	currentPage    int  // 現在のページ（0ベース）
-	needsUIRebuild bool // UI再構築が必要かどうか
+	currentPage int // 現在のページ（0ベース）
 
 	// UI要素
-	container   *widget.Container
-	itemWidgets []widget.PreferredSizeLocateableWidget
-	uiBuilder   *UIBuilder // UIビルダーの参照を保持
+	container      *widget.Container
+	itemWidgets    []widget.PreferredSizeLocateableWidget
+	uiBuilder      *UIBuilder // UIビルダーの参照を保持
+	needsUIRebuild bool       // UI再構築が必要かどうか
 
 	// 入力
 	keyboardInput input.KeyboardInput
@@ -95,6 +96,12 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 // Update はメニューの状態を更新する
 func (m *Menu) Update(keyboardInput input.KeyboardInput) {
 	m.keyboardInput = keyboardInput
+
+	// UI再構築が必要な場合は再構築
+	if m.needsUIRebuild {
+		m.rebuildUI()
+	}
+
 	m.handleKeyboard()
 	m.updateFocus()
 }
@@ -102,6 +109,20 @@ func (m *Menu) Update(keyboardInput input.KeyboardInput) {
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
 func (m *Menu) GetFocusedIndex() int {
 	return m.focusedIndex
+}
+
+// SetNeedsUIRebuild はUI再構築フラグを設定する
+// ページ変更時など、表示する項目が変わる場合に使用する
+func (m *Menu) SetNeedsUIRebuild() {
+	m.needsUIRebuild = true
+}
+
+// rebuildUI はUI全体を再構築する
+func (m *Menu) rebuildUI() {
+	if m.uiBuilder != nil {
+		m.uiBuilder.BuildUI(m)
+		m.needsUIRebuild = false
+	}
 }
 
 // SetFocusedIndex はフォーカスする項目を設定する
@@ -291,42 +312,8 @@ func (m *Menu) findFirstEnabled() int {
 
 // updateFocus はフォーカス状態を更新する（UIがある場合に使用）
 func (m *Menu) updateFocus() {
-	// UI再構築が必要かチェック
-	if m.needsUIRebuild && m.uiBuilder != nil {
-		m.rebuildUI()
-		m.needsUIRebuild = false
-	}
-
-	// フォーカス更新
 	if m.uiBuilder != nil {
 		m.uiBuilder.UpdateFocus(m)
-	}
-}
-
-// rebuildUI はUI全体を再構築する
-func (m *Menu) rebuildUI() {
-	if m.container == nil || m.uiBuilder == nil {
-		return
-	}
-
-	// コンテナをクリアして再構築
-	m.container.RemoveChildren()
-
-	// ページインジケーターを追加（2ページ以上ある場合のみ自動表示）
-	if m.config.ItemsPerPage > 0 && m.GetTotalPages() > 1 {
-		pageIndicator := m.uiBuilder.CreatePageIndicator(m)
-		m.container.AddChild(pageIndicator)
-	}
-
-	// 現在のページの項目を追加
-	m.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
-	visibleItems, indices := m.GetVisibleItems()
-
-	for i, item := range visibleItems {
-		originalIndex := indices[i]
-		btn := m.uiBuilder.CreateMenuButton(m, originalIndex, item)
-		m.container.AddChild(btn)
-		m.itemWidgets = append(m.itemWidgets, btn)
 	}
 }
 
@@ -335,7 +322,6 @@ func (m *Menu) rebuildUI() {
 // initializePagination はページネーション設定を初期化する
 func (m *Menu) initializePagination() {
 	m.currentPage = 0
-	m.needsUIRebuild = false
 }
 
 // updatePageFromFocus はフォーカスに基づいてページを更新する
@@ -347,7 +333,9 @@ func (m *Menu) updatePageFromFocus() {
 	newPage := m.focusedIndex / m.config.ItemsPerPage
 	if newPage != m.currentPage {
 		m.currentPage = newPage
-		m.needsUIRebuild = true // UI再構築をマーク
+		// ページが変わると表示項目が変わるため、UI全体を再構築する必要がある
+		// フォーカスの背景色変更だけでは対応できない
+		m.needsUIRebuild = true
 	}
 }
 
@@ -370,7 +358,6 @@ func (m *Menu) navigatePageDown() {
 			oldIndex := m.focusedIndex
 			m.focusedIndex = i
 			m.currentPage = i / m.config.ItemsPerPage
-			m.needsUIRebuild = true
 
 			if m.callbacks.OnFocusChange != nil {
 				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
@@ -399,7 +386,6 @@ func (m *Menu) navigatePageUp() {
 			oldIndex := m.focusedIndex
 			m.focusedIndex = i
 			m.currentPage = i / m.config.ItemsPerPage
-			m.needsUIRebuild = true
 
 			if m.callbacks.OnFocusChange != nil {
 				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)

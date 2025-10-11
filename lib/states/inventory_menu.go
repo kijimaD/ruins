@@ -201,11 +201,22 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 
 	for i, entity := range entities {
 		name := world.Components.Name.Get(entity).(*gc.Name).Name
-		items[i] = menu.Item{
+
+		item := menu.Item{
 			ID:       fmt.Sprintf("entity_%d", entity),
 			Label:    name,
 			UserData: entity,
 		}
+
+		// Stackableコンポーネントがあれば個数を追加ラベルに設定
+		if entity.HasComponent(world.Components.Stackable) {
+			stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
+			if stackable.Count > 1 {
+				item.AdditionalLabels = []string{fmt.Sprintf("x%d", stackable.Count)}
+			}
+		}
+
+		items[i] = item
 	}
 
 	return items
@@ -518,15 +529,14 @@ func (st *InventoryMenuState) updateTabDisplay(world w.World) {
 	for i, item := range visibleItems {
 		actualIndex := indices[i]
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
+
+		var itemWidget *widget.Container
 		if isSelected {
-			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
+			itemWidget = styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources, item.AdditionalLabels...)
 		} else {
-			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
+			itemWidget = styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources, item.AdditionalLabels...)
 		}
+		st.tabDisplayContainer.AddChild(itemWidget)
 	}
 
 	// アイテムがない場合の表示

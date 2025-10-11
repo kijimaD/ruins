@@ -185,8 +185,9 @@ func (st *ShopMenuState) createBuyItems(world w.World) []menu.Item {
 	for _, itemName := range shopInventory {
 		price := st.getItemPrice(world, itemName, true)
 		items = append(items, menu.Item{
-			Label:    fmt.Sprintf("%s  ◆ %d", itemName, price),
-			UserData: map[string]interface{}{"itemName": itemName, "price": price, "isBuy": true},
+			Label:            itemName,
+			AdditionalLabels: []string{fmt.Sprintf("◆ %d", price)},
+			UserData:         map[string]interface{}{"itemName": itemName, "price": price, "isBuy": true},
 		})
 	}
 
@@ -209,14 +210,23 @@ func (st *ShopMenuState) createSellItems(world w.World) []menu.Item {
 			baseValue := worldhelper.GetItemValue(world, entity)
 			price := worldhelper.CalculateSellPrice(baseValue)
 
-			displayName := itemName
+			// 追加ラベルを作成
+			var additionalLabels []string
+
+			// 価格を先に追加（常に表示されるため、位置が揃う）
+			additionalLabels = append(additionalLabels, fmt.Sprintf("◆ %d", price))
+
+			// 個数がある場合は後に追加（オプション）
 			if entity.HasComponent(world.Components.Stackable) {
 				stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
-				displayName = fmt.Sprintf("%s (%d個)", itemName, stackable.Count)
+				if stackable.Count > 1 {
+					additionalLabels = append(additionalLabels, fmt.Sprintf("x%d", stackable.Count))
+				}
 			}
 
 			items = append(items, menu.Item{
-				Label: fmt.Sprintf("%s  ◆ %d", displayName, price),
+				Label:            itemName,
+				AdditionalLabels: additionalLabels,
 				UserData: map[string]interface{}{
 					"itemName": itemName,
 					"entity":   entity,
@@ -405,15 +415,14 @@ func (st *ShopMenuState) updateTabDisplay(world w.World) {
 	for i, item := range visibleItems {
 		actualIndex := indices[i]
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
+
+		var itemWidget *widget.Container
 		if isSelected {
-			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
+			itemWidget = styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources, item.AdditionalLabels...)
 		} else {
-			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
+			itemWidget = styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources, item.AdditionalLabels...)
 		}
+		st.tabDisplayContainer.AddChild(itemWidget)
 	}
 
 	// アイテムがない場合の表示
