@@ -100,6 +100,9 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	// フィールドコンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.LightSource{}), components.LightSource, r.extractLightSource, r.restoreLightSource, nil)
 
+	// Walletコンポーネント
+	r.registerComponent(reflect.TypeOf(&gc.Wallet{}), components.Wallet, r.extractWallet, r.restoreWallet, nil)
+
 	r.initialized = true
 	return nil
 }
@@ -671,5 +674,22 @@ func (r *ComponentRegistry) restoreCamera(world w.World, entity ecs.Entity, data
 		return fmt.Errorf("invalid Camera data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Camera, &camera)
+	return nil
+}
+
+func (r *ComponentRegistry) extractWallet(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.Wallet) {
+		return nil, false
+	}
+	wallet := world.Components.Wallet.Get(entity).(*gc.Wallet)
+	return *wallet, true
+}
+
+func (r *ComponentRegistry) restoreWallet(world w.World, entity ecs.Entity, data interface{}) error {
+	wallet, ok := data.(gc.Wallet)
+	if !ok {
+		return fmt.Errorf("invalid Wallet data type: %T", data)
+	}
+	entity.AddComponent(world.Components.Wallet, &wallet)
 	return nil
 }

@@ -354,6 +354,11 @@ func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 				entityCount++
 				sm.processEntityForSave(entity, world, &entities, processedEntities)
 			}))
+		case "Wallet":
+			world.Manager.Join(world.Components.Wallet).Visit(ecs.Visit(func(entity ecs.Entity) {
+				entityCount++
+				sm.processEntityForSave(entity, world, &entities, processedEntities)
+			}))
 		}
 	}
 
