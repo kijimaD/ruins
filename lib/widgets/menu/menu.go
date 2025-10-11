@@ -14,8 +14,6 @@ type Item struct {
 	Label            string
 	AdditionalLabels []string // 追加表示項目（個数、価格など）右側に表示される
 	Disabled         bool
-	Icon             *ebiten.Image
-	Description      string      // ツールチップや説明文
 	UserData         interface{} // 任意のデータを保持
 }
 
@@ -44,7 +42,6 @@ type Callbacks struct {
 	OnSelect      func(index int, item Item)
 	OnCancel      func()
 	OnFocusChange func(oldIndex, newIndex int)
-	OnHover       func(index int, item Item)
 }
 
 // Menu は共通メニューコンポーネント
@@ -54,11 +51,9 @@ type Menu struct {
 
 	// 基本状態
 	focusedIndex int
-	hoveredIndex int
 
 	// ペジネーション状態
-	currentPage    int  // 現在のページ（0ベース）
-	needsUIRebuild bool // UI再構築が必要かどうか
+	currentPage int // 現在のページ（0ベース）
 
 	// UI要素
 	container   *widget.Container
@@ -75,7 +70,6 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 		config:       config,
 		callbacks:    callbacks,
 		focusedIndex: config.InitialIndex,
-		hoveredIndex: -1,
 	}
 
 	// ページ設定の初期化
@@ -289,9 +283,6 @@ func (m *Menu) updatePageFromFocus() {
 	newPage := m.focusedIndex / m.config.ItemsPerPage
 	if newPage != m.currentPage {
 		m.currentPage = newPage
-		// ページが変わると表示項目が変わるため、UI全体を再構築する必要がある
-		// フォーカスの背景色変更だけでは対応できない
-		m.needsUIRebuild = true
 	}
 }
 
