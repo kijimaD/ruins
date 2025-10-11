@@ -272,7 +272,9 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 
 	// EntitySpecから性能表示を更新
 	views.UpdateSpecFromSpec(world, st.specContainer, spec)
-	st.updateRecipeList(world, recipeName, spec.Recipe)
+	if err := st.updateRecipeList(world, spec.Recipe); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
@@ -387,11 +389,11 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 	st.ui.AddWindow(st.resultWindow)
 }
 
-func (st *CraftMenuState) updateRecipeList(world w.World, _ string, recipe *gc.Recipe) {
+func (st *CraftMenuState) updateRecipeList(world w.World, recipe *gc.Recipe) error {
 	st.recipeList.RemoveChildren()
 
 	if recipe == nil {
-		return
+		return fmt.Errorf("recipeがnilです")
 	}
 
 	for _, input := range recipe.Inputs {
@@ -410,6 +412,7 @@ func (st *CraftMenuState) updateRecipeList(world w.World, _ string, recipe *gc.R
 
 		st.recipeList.AddChild(styled.NewBodyText(str, color, world.Resources.UIResources))
 	}
+	return nil
 }
 
 // showActionWindow はアクションウィンドウを表示する
@@ -592,8 +595,14 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 
 		// レシピリストを更新
 		rawMaster := world.Resources.RawMaster.(*raw.Master)
-		spec, _ := rawMaster.NewRecipeSpec(recipeName)
-		st.updateRecipeList(world, recipeName, spec.Recipe)
+		var spec gc.EntitySpec
+		spec, err = rawMaster.NewRecipeSpec(recipeName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err = st.updateRecipeList(world, spec.Recipe); err != nil {
+			log.Fatal(err)
+		}
 
 		st.closeActionWindow()
 		st.showResultWindow(world, *resultEntity)
