@@ -103,7 +103,6 @@ func (m *Menu) Update(keyboardInput input.KeyboardInput) {
 	}
 
 	m.handleKeyboard()
-	m.updateFocus()
 }
 
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
@@ -163,27 +162,20 @@ func (m *Menu) handleKeyboard() {
 		return
 	}
 
-	oldIndex := m.focusedIndex
-	handled := false
-
 	// 基本的なナビゲーション（スクロール対応）
 	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
 		m.navigateNext()
-		handled = true
 	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
 		m.navigatePrevious()
-		handled = true
 	}
 
 	// ページ移動（PageUp/PageDownまたはCtrl+Up/Down）
 	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp) ||
 		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)) {
 		m.navigatePageUp()
-		handled = true
 	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown) ||
 		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)) {
 		m.navigatePageDown()
-		handled = true
 	}
 
 	// Tab/Shift+Tab
@@ -193,15 +185,11 @@ func (m *Menu) handleKeyboard() {
 		} else {
 			m.navigateNext()
 		}
-		handled = true
 	}
 
 	// 選択（Enterは押下-押上ワンセット）
-	enterPressed := m.keyboardInput.IsEnterJustPressedOnce()
-
-	if enterPressed {
+	if m.keyboardInput.IsEnterJustPressedOnce() {
 		m.selectCurrent()
-		handled = true
 	}
 
 	// キャンセル
@@ -209,12 +197,6 @@ func (m *Menu) handleKeyboard() {
 		if m.callbacks.OnCancel != nil {
 			m.callbacks.OnCancel()
 		}
-		handled = true
-	}
-
-	// フォーカス変更の通知
-	if handled && oldIndex != m.focusedIndex && m.callbacks.OnFocusChange != nil {
-		m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
 	}
 }
 
@@ -308,13 +290,6 @@ func (m *Menu) findFirstEnabled() int {
 		}
 	}
 	return 0
-}
-
-// updateFocus はフォーカス状態を更新する（UIがある場合に使用）
-func (m *Menu) updateFocus() {
-	if m.uiBuilder != nil {
-		m.uiBuilder.UpdateFocus(m)
-	}
 }
 
 // ================ スクロール関連メソッド ================

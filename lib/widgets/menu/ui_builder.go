@@ -196,9 +196,23 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 		originalIndex := indices[i]
 		isFocused := originalIndex == menu.GetFocusedIndex()
 
+		var btn *widget.Button
+
 		// ボタンの場合
-		if btn, ok := w.(*widget.Button); ok {
-			// フォーカス状態に応じてボタンの画像を更新
+		if b, ok := w.(*widget.Button); ok {
+			btn = b
+		} else if container, ok := w.(*widget.Container); ok {
+			// コンテナの場合は、子要素からボタンを探す
+			for _, child := range container.Children() {
+				if b, ok := child.(*widget.Button); ok {
+					btn = b
+					break
+				}
+			}
+		}
+
+		// ボタンが見つかった場合、フォーカス状態に応じて画像を更新
+		if btn != nil {
 			if isFocused {
 				// フォーカス時: より明るい背景色
 				focusedImage := b.createFocusedButtonImage()
