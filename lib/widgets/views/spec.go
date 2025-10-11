@@ -27,7 +27,7 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 
 		if entity.HasComponent(world.Components.Value) {
 			v := world.Components.Value.Get(entity).(*gc.Value)
-			value := fmt.Sprintf("価値 %d", v.Value)
+			value := fmt.Sprintf("◆ %d", v.Value)
 			targetContainer.AddChild(styled.NewBodyText(value, consts.TextColor, world.Resources.UIResources))
 		}
 

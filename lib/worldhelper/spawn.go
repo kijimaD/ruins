@@ -94,6 +94,7 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 		}
 		entitySpec.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
 	}
+	entitySpec.Wallet = &gc.Wallet{Currency: 1000}
 	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])

@@ -8,21 +8,23 @@ import (
 
 // HUDRenderingSystem はクエリを実行し、UIを描画するシステム
 type HUDRenderingSystem struct {
-	gameInfo     *hud.GameInfo
-	minimap      *hud.Minimap
-	debugOverlay *hud.DebugOverlay
-	messageArea  *hud.MessageArea
-	enabled      bool
+	gameInfo        *hud.GameInfo
+	minimap         *hud.Minimap
+	debugOverlay    *hud.DebugOverlay
+	messageArea     *hud.MessageArea
+	currencyDisplay *hud.CurrencyDisplay
+	enabled         bool
 }
 
 // NewHUDRenderingSystem は新しいHUD描画システムを作成する
 func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
 	return &HUDRenderingSystem{
-		gameInfo:     hud.NewGameInfo(),
-		minimap:      hud.NewMinimap(),
-		debugOverlay: hud.NewDebugOverlay(),
-		messageArea:  hud.NewMessageArea(world), // MessageAreaのみ初期化にworldが必要
-		enabled:      true,
+		gameInfo:        hud.NewGameInfo(),
+		minimap:         hud.NewMinimap(),
+		debugOverlay:    hud.NewDebugOverlay(),
+		messageArea:     hud.NewMessageArea(world),
+		currencyDisplay: hud.NewCurrencyDisplay(world),
+		enabled:         true,
 	}
 }
 
@@ -44,6 +46,9 @@ func (sys *HUDRenderingSystem) Update(world w.World) {
 	}
 	if sys.messageArea != nil {
 		sys.messageArea.Update(world)
+	}
+	if sys.currencyDisplay != nil {
+		sys.currencyDisplay.Update(world)
 	}
 }
 
@@ -69,5 +74,8 @@ func (sys *HUDRenderingSystem) Run(world w.World, screen *ebiten.Image) {
 	}
 	if sys.messageArea != nil {
 		sys.messageArea.Draw(screen, hudData.MessageData)
+	}
+	if sys.currencyDisplay != nil {
+		sys.currencyDisplay.Draw(screen, hudData.CurrencyData)
 	}
 }
