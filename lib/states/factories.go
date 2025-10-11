@@ -29,6 +29,9 @@ func NewDungeonMenuState() es.State[w.World] {
 		WithChoice("装備", func(_ w.World) {
 			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
 		}).
+		WithChoice("店", func(_ w.World) {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewShopMenuState}})
+		}).
 		WithChoice("書込", func(_ w.World) {
 			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewSaveMenuState}})
 		}).
@@ -358,4 +361,9 @@ func NewMessageState(messageData *messagedata.MessageData) es.State[w.World] {
 	return &MessageState{
 		messageData: messageData,
 	}
+}
+
+// NewShopMenuState は新しいShopMenuStateインスタンスを作成するファクトリー関数
+func NewShopMenuState() es.State[w.World] {
+	return &ShopMenuState{}
 }

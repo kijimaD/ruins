@@ -27,4 +27,5 @@ cmd LoadMenu
 cmd MainMenu
 cmd Message
 cmd SaveMenu
+cmd ShopMenu
 cmd Town
