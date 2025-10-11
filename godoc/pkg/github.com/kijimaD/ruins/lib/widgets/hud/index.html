@@ -162,6 +162,28 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
+				<dd><a href="index.html#CurrencyData">type CurrencyData</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#CurrencyDisplay">type CurrencyDisplay</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewCurrencyDisplay">func NewCurrencyDisplay(world w.World) *CurrencyDisplay</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CurrencyDisplay.Draw">func (c *CurrencyDisplay) Draw(screen *ebiten.Image, data CurrencyData)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CurrencyDisplay.SetEnabled">func (c *CurrencyDisplay) SetEnabled(enabled bool)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CurrencyDisplay.Update">func (c *CurrencyDisplay) Update(_ w.World)</a></dd>
+				
+			
+				
 				<dd><a href="index.html#Data">type Data</a></dd>
 				
 				
@@ -292,6 +314,8 @@ func Draw(world w.World, screen *ebiten.Image) {
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go">currency.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go">data.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go">debug_overlay.go</a>
@@ -331,7 +355,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="AIStateInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2338:2490#L56">AIStateInfo</a>
+			<h2 id="AIStateInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2365:2517#L57">AIStateInfo</a>
 				<a class="permalink" href="index.html#AIStateInfo">&#xb6;</a>
 				
 				
@@ -359,7 +383,112 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="Data">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=153:283#L1">Data</a>
+			<h2 id="CurrencyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=3371:3621#L87">CurrencyData</a>
+				<a class="permalink" href="index.html#CurrencyData">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CurrencyData は通貨表示に必要なデータ
+
+			<pre>type CurrencyData struct {
+<span id="CurrencyData.Currency"></span>    Currency         <a href="http://localhost:8888/pkg/builtin/#int">int</a>               <span class="comment">// プレイヤーの所持遺光</span>
+<span id="CurrencyData.ScreenDimensions"></span>    ScreenDimensions <a href="index.html#ScreenDimensions">ScreenDimensions</a>  <span class="comment">// 画面サイズ</span>
+<span id="CurrencyData.Config"></span>    Config           <a href="index.html#MessageAreaConfig">MessageAreaConfig</a> <span class="comment">// 位置計算にメッセージエリアの情報が必要</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="CurrencyDisplay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=221:283#L3">CurrencyDisplay</a>
+				<a class="permalink" href="index.html#CurrencyDisplay">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CurrencyDisplay は遺光表示ウィジェット
+
+			<pre>type CurrencyDisplay struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewCurrencyDisplay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=350:405#L9">NewCurrencyDisplay</a>
+					<a class="permalink" href="index.html#NewCurrencyDisplay">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewCurrencyDisplay(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a></pre>
+				<p>NewCurrencyDisplay は新しいCurrencyDisplayを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="CurrencyDisplay.Draw">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=789:860#L27">Draw</a>
+					<a class="permalink" href="index.html#CurrencyDisplay.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a>) Draw(screen *ebiten.<a href="index.html#Image">Image</a>, data <a href="index.html#CurrencyData">CurrencyData</a>)</pre>
+				<p>Draw は遺光を描画する
+
+				
+				
+				
+			
+				
+				<h3 id="CurrencyDisplay.SetEnabled">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=530:580#L17">SetEnabled</a>
+					<a class="permalink" href="index.html#CurrencyDisplay.SetEnabled">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a>) SetEnabled(enabled <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>SetEnabled は表示の有効/無効を設定する
+
+				
+				
+				
+			
+				
+				<h3 id="CurrencyDisplay.Update">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=663:706#L22">Update</a>
+					<a class="permalink" href="index.html#CurrencyDisplay.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a>) Update(_ <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>)</pre>
+				<p>Update は更新処理（現在は何もしない）
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Data">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=153:310#L1">Data</a>
 				<a class="permalink" href="index.html#Data">&#xb6;</a>
 				
 				
@@ -371,6 +500,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 <span id="Data.MinimapData"></span>    MinimapData  <a href="index.html#MinimapData">MinimapData</a>
 <span id="Data.DebugOverlay"></span>    DebugOverlay <a href="index.html#DebugOverlayData">DebugOverlayData</a>
 <span id="Data.MessageData"></span>    MessageData  <a href="index.html#MessageData">MessageData</a>
+<span id="Data.CurrencyData"></span>    CurrencyData <a href="index.html#CurrencyData">CurrencyData</a>
 }
 </pre>
 
@@ -452,7 +582,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="DebugOverlayData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1974:2300#L47">DebugOverlayData</a>
+			<h2 id="DebugOverlayData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2001:2327#L48">DebugOverlayData</a>
 				<a class="permalink" href="index.html#DebugOverlayData">&#xb6;</a>
 				
 				
@@ -546,7 +676,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="GameInfoData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=338:956#L4">GameInfoData</a>
+			<h2 id="GameInfoData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=365:983#L5">GameInfoData</a>
 				<a class="permalink" href="index.html#GameInfoData">&#xb6;</a>
 				
 				
@@ -582,7 +712,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="HPDisplayInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2753:3001#L70">HPDisplayInfo</a>
+			<h2 id="HPDisplayInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2780:3028#L71">HPDisplayInfo</a>
 				<a class="permalink" href="index.html#HPDisplayInfo">&#xb6;</a>
 				
 				
@@ -745,7 +875,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MessageData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=3064:3289#L79">MessageData</a>
+			<h2 id="MessageData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=3091:3316#L80">MessageData</a>
 				<a class="permalink" href="index.html#MessageData">&#xb6;</a>
 				
 				
@@ -837,7 +967,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MinimapConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1657:1819#L34">MinimapConfig</a>
+			<h2 id="MinimapConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1684:1846#L35">MinimapConfig</a>
 				<a class="permalink" href="index.html#MinimapConfig">&#xb6;</a>
 				
 				
@@ -865,7 +995,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="MinimapData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1019:1519#L19">MinimapData</a>
+			<h2 id="MinimapData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1046:1546#L20">MinimapData</a>
 				<a class="permalink" href="index.html#MinimapData">&#xb6;</a>
 				
 				
@@ -896,7 +1026,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="ScreenDimensions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1860:1916#L41">ScreenDimensions</a>
+			<h2 id="ScreenDimensions">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1887:1943#L42">ScreenDimensions</a>
 				<a class="permalink" href="index.html#ScreenDimensions">&#xb6;</a>
 				
 				
@@ -923,7 +1053,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1563:1610#L29">TileColorInfo</a>
+			<h2 id="TileColorInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=1590:1637#L30">TileColorInfo</a>
 				<a class="permalink" href="index.html#TileColorInfo">&#xb6;</a>
 				
 				
@@ -949,7 +1079,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="VisionRangeInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2536:2713#L63">VisionRangeInfo</a>
+			<h2 id="VisionRangeInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/data.go?s=2563:2740#L64">VisionRangeInfo</a>
 				<a class="permalink" href="index.html#VisionRangeInfo">&#xb6;</a>
 				
 				

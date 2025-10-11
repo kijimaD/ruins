@@ -207,7 +207,7 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 				<dd><a href="index.html#NewItemGridContainer">func NewItemGridContainer(opts ...widget.ContainerOpt) *widget.Container</a></dd>
 			
 				
-				<dd><a href="index.html#NewListItemText">func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *resources.UIResources) *widget.Container</a></dd>
+				<dd><a href="index.html#NewListItemText">func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *resources.UIResources, additionalLabels ...string) *widget.Container</a></dd>
 			
 				
 				<dd><a href="index.html#NewMenuText">func NewMenuText(title string, res *resources.UIResources) *widget.Text</a></dd>
@@ -286,7 +286,7 @@ splitContainer := styled.NewWSplitContainer(leftPanel, rightPanel)
 		
 			
 			
-			<h2 id="BaseRowLayoutOpts">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=12572:12618#L383">BaseRowLayoutOpts</a>
+			<h2 id="BaseRowLayoutOpts">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=15530:15576#L470">BaseRowLayoutOpts</a>
 				<a class="permalink" href="index.html#BaseRowLayoutOpts">&#xb6;</a>
 				
 				
@@ -358,7 +358,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewButton">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=11992:12088#L363">NewButton</a>
+			<h2 id="NewButton">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=14950:15046#L450">NewButton</a>
 				<a class="permalink" href="index.html#NewButton">&#xb6;</a>
 				
 				
@@ -386,7 +386,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewFragmentText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=8926:9022#L276">NewFragmentText</a>
+			<h2 id="NewFragmentText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=11884:11980#L363">NewFragmentText</a>
 				<a class="permalink" href="index.html#NewFragmentText">&#xb6;</a>
 				
 				
@@ -414,13 +414,14 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewListItemText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=7475:7593#L234">NewListItemText</a>
+			<h2 id="NewListItemText">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=7601:7747#L235">NewListItemText</a>
 				<a class="permalink" href="index.html#NewListItemText">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func NewListItemText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, textColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, isSelected <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>, res *<a href="../../resources/index.html">resources</a>.<a href="../../resources/index.html#UIResources">UIResources</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
+			<pre>func NewListItemText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, textColor <a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a>, isSelected <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>, res *<a href="../../resources/index.html">resources</a>.<a href="../../resources/index.html#UIResources">UIResources</a>, additionalLabels ...<a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/">widget</a>.<a href="http://localhost:8888/pkg/github.com/ebitenui/ebitenui/widget/#Container">Container</a></pre>
 			<p>NewListItemText はリスト項目用テキストを作成する（背景色変更で選択状態を表現）
+additionalLabels が空の場合は単純なテキスト表示、指定された場合は右側に追加ラベルを表示
 
 			
 			
@@ -442,7 +443,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewMessageList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=10140:10256#L311">NewMessageList</a>
+			<h2 id="NewMessageList">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=13098:13214#L398">NewMessageList</a>
 				<a class="permalink" href="index.html#NewMessageList">&#xb6;</a>
 				
 				
@@ -484,7 +485,7 @@ TODO: いい感じにしたい
 		
 			
 			
-			<h2 id="NewSmallWindow">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=9419:9531#L291">NewSmallWindow</a>
+			<h2 id="NewSmallWindow">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/styled/eui.go?s=12377:12489#L378">NewSmallWindow</a>
 				<a class="permalink" href="index.html#NewSmallWindow">&#xb6;</a>
 				
 				
