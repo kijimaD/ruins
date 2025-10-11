@@ -2053,6 +2053,16 @@ Dexterity = 6
 Agility = 5
 Defense = 0
 
+[Members.LightSource]
+Radius = 5
+Enabled = true
+
+[Members.LightSource.Color]
+R = 255
+G = 255
+B = 220
+A = 255
+
 [[Members]]
 Name = "コルデリア"
 [Members.Attributes]
@@ -2226,6 +2236,16 @@ Sensation = 4
 Dexterity = 5
 Agility = 6
 Defense = 4
+
+[Members.LightSource]
+Radius = 6
+Enabled = true
+
+[Members.LightSource.Color]
+R = 255
+G = 100
+B = 50
+A = 255
 
 [[Members]]
 Name = "灰の偶像"
@@ -2441,6 +2461,16 @@ Depth = 1
 [Props.Warp]
 Mode = "NEXT"
 
+[Props.LightSource]
+Radius = 5
+Enabled = true
+
+[Props.LightSource.Color]
+R = 50
+G = 0
+B = 0
+A = 255
+
 [[Props]]
 Name = "warp_escape"
 Description = "脱出用ワープポータル"
@@ -2454,3 +2484,13 @@ Depth = 1
 
 [Props.Warp]
 Mode = "ESCAPE"
+
+[Props.LightSource]
+Radius = 4
+Enabled = true
+
+[Props.LightSource.Color]
+R = 0
+G = 0
+B = 255
+A = 255

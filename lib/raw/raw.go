@@ -2,7 +2,6 @@ package raw
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/BurntSushi/toml"
 	"github.com/kijimaD/ruins/assets"
@@ -115,6 +114,7 @@ type Member struct {
 	Attributes      Attributes
 	SpriteSheetName string
 	SpriteKey       string
+	LightSource     *gc.LightSource
 }
 
 // Attributes はキャラクターの能力値
@@ -392,6 +392,10 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 		entitySpec.DropTable = &gc.DropTable{Name: dropTable.Name}
 	}
 
+	if member.LightSource != nil {
+		entitySpec.LightSource = member.LightSource
+	}
+
 	return entitySpec, nil
 }
 
@@ -404,11 +408,6 @@ func (rw *Master) NewPlayerSpec(name string) (gc.EntitySpec, error) {
 	entitySpec.FactionType = &gc.FactionAlly
 	entitySpec.Player = &gc.Player{}
 	entitySpec.Hunger = gc.NewHunger()
-	entitySpec.LightSource = &gc.LightSource{
-		Radius:  6,
-		Color:   color.RGBA{R: 255, G: 200, B: 150, A: 255}, // ランタンの暖色光
-		Enabled: true,
-	}
 	return entitySpec, nil
 }
 
