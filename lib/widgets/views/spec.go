@@ -18,13 +18,6 @@ import (
 func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	targetContainer.RemoveChildren()
 
-	// Stackableは個数表示
-	if entity.HasComponent(world.Components.Stackable) {
-		v := world.Components.Stackable.Get(entity).(*gc.Stackable)
-		amount := fmt.Sprintf("%d 個", v.Count)
-		targetContainer.AddChild(styled.NewBodyText(amount, consts.TextColor, world.Resources.UIResources))
-	}
-
 	// 各コンポーネントの情報を追加
 	if entity.HasComponent(world.Components.Attack) {
 		attack := world.Components.Attack.Get(entity).(*gc.Attack)
