@@ -20,6 +20,7 @@ vrt: ## 各ステートでスクショを取得する
 .PHONY: fmt
 fmt: ## フォーマットする
 	goimports -w .
+	npx @taplo/cli format
 
 .PHONY: lint
 lint: ## Linterを実行する
@@ -33,6 +34,7 @@ tools-install: ## 開発ツールをインストールする
 	@go install golang.org/x/tools/cmd/goimports@latest
 	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && \
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v2.2.2)
+	@npm install
 	@./scripts/setup-hooks.sh
 
 .PHONY: check
