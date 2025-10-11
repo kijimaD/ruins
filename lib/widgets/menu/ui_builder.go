@@ -100,24 +100,33 @@ func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
 }
 
 // CreateMenuButton はメニューボタンを作成する
-func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) *widget.Button {
+// 追加ラベルがある場合は、Button + ラベル群をコンテナでまとめて返す
+func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) widget.PreferredSizeLocateableWidget {
 	res := b.world.Resources.UIResources
 
+	// フォーカス状態をチェック
+	isFocused := index == menu.GetFocusedIndex()
+
+	// ボタン画像を作成
+	var buttonImage *widget.ButtonImage
+	if isFocused {
+		buttonImage = b.createFocusedButtonImage()
+	} else {
+		buttonImage = b.createTransparentButtonImage()
+	}
+
+	// ボタンを作成
 	btn := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Stretch: true,
+				Stretch: len(item.AdditionalLabels) == 0, // 追加ラベルがなければStretch
 			}),
 			widget.WidgetOpts.MinSize(100, 28),
 		),
-		widget.ButtonOpts.Image(res.Button.Image),
-		widget.ButtonOpts.Text(
-			item.Label,
-			&res.Button.Face,
-			res.Button.Text,
-		),
+		widget.ButtonOpts.Image(buttonImage),
+		widget.ButtonOpts.Text(item.Label, &res.Button.Face, res.Button.Text),
 		widget.ButtonOpts.TextPadding(&res.Button.Padding),
-		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter), // 左寄せ
+		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 			menu.SetFocusedIndex(index)
 			menu.selectCurrent()
@@ -129,7 +138,42 @@ func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) *widget.B
 		btn.GetWidget().Disabled = true
 	}
 
-	return btn
+	// 追加ラベルがない場合はボタンをそのまま返す
+	if len(item.AdditionalLabels) == 0 {
+		return btn
+	}
+
+	// 追加ラベルがある場合は、コンテナでまとめる
+	container := widget.NewContainer(
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true,
+			}),
+		),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+			widget.RowLayoutOpts.Spacing(10),
+		)),
+	)
+
+	// ボタンを追加
+	container.AddChild(btn)
+
+	// 右側: 追加ラベル群（右寄せ）
+	for _, label := range item.AdditionalLabels {
+		additionalText := widget.NewText(
+			widget.TextOpts.Text(label, &res.Button.Face, res.Button.Text.Idle),
+			widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
+			widget.TextOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionEnd,
+				}),
+			),
+		)
+		container.AddChild(additionalText)
+	}
+
+	return container
 }
 
 // UpdateFocus はメニューのフォーカス表示を更新する
@@ -145,11 +189,30 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 
 	// 全てのボタンのフォーカスを更新
 	for i, w := range menu.itemWidgets {
-		if btn, ok := w.(*widget.Button); ok && i < len(indices) {
-			originalIndex := indices[i]
-			isFocused := originalIndex == menu.GetFocusedIndex()
+		if i >= len(indices) {
+			continue
+		}
 
-			// フォーカス状態に応じてボタンの画像を更新
+		originalIndex := indices[i]
+		isFocused := originalIndex == menu.GetFocusedIndex()
+
+		var btn *widget.Button
+
+		// ボタンの場合
+		if b, ok := w.(*widget.Button); ok {
+			btn = b
+		} else if container, ok := w.(*widget.Container); ok {
+			// コンテナの場合は、子要素からボタンを探す
+			for _, child := range container.Children() {
+				if b, ok := child.(*widget.Button); ok {
+					btn = b
+					break
+				}
+			}
+		}
+
+		// ボタンが見つかった場合、フォーカス状態に応じて画像を更新
+		if btn != nil {
 			if isFocused {
 				// フォーカス時: より明るい背景色
 				focusedImage := b.createFocusedButtonImage()

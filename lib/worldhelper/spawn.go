@@ -94,6 +94,7 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 		}
 		entitySpec.Camera = &gc.Camera{Scale: scale, ScaleTo: scaleTo}
 	}
+	entitySpec.Wallet = &gc.Wallet{Currency: 1000}
 	componentList.Entities = append(componentList.Entities, entitySpec)
 	entities := entities.AddEntities(world, componentList)
 	fullRecover(world, entities[len(entities)-1])
@@ -268,30 +269,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 	pools.SP.Max = attrs.Vitality.Total*spVitalityMultiply + attrs.Dexterity.Total + attrs.Agility.Total
 	pools.SP.Current = pools.SP.Max
 
-	return nil
-}
-
-// SpawnAllRecipes はレシピ初期化
-func SpawnAllRecipes(world w.World) error {
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-
-	// マップのキーをソートして決定的な順序にする
-	keys := make([]string, 0, len(rawMaster.RecipeIndex))
-	for k := range rawMaster.RecipeIndex {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// ソート済みの順序でレシピを生成
-	for _, k := range keys {
-		componentList := entities.ComponentList[gc.EntitySpec]{}
-		entitySpec, err := rawMaster.NewRecipeSpec(k)
-		if err != nil {
-			return fmt.Errorf("%w (recipe: %s): %v", ErrItemGeneration, k, err)
-		}
-		componentList.Entities = append(componentList.Entities, entitySpec)
-		entities.AddEntities(world, componentList)
-	}
 	return nil
 }
 

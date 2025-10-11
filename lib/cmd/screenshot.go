@@ -66,6 +66,8 @@ func runScreenshot(ctx *cli.Context) error {
 		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
 	case "SaveMenu":
 		vrt.RunTestGame(gs.NewSaveMenuState(), mode)
+	case gs.ShopMenuState{}.String():
+		vrt.RunTestGame(&gs.ShopMenuState{}, mode)
 	default:
 		return fmt.Errorf("スクリーンショット実行時に対応してないステートが指定された: %s", mode)
 	}

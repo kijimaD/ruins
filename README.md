@@ -15,7 +15,7 @@
 
 <img src="./vrtimages/GameOver.png" width="50%" /><img src="./vrtimages/Message.png" width="50%" />
 
-<img src="./vrtimages/DebugMenu.png" width="50%" />
+<img src="./vrtimages/DebugMenu.png" width="50%" /><img src="./vrtimages/ShopMenu.png" width="50%" />
 
 各画像は全自動でキャプチャされる。最新なことをCIで保証している。
 

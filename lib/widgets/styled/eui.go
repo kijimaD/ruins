@@ -241,7 +241,9 @@ func NewBodyText(title string, _ color.RGBA, res *resources.UIResources) *widget
 }
 
 // NewListItemText はリスト項目用テキストを作成する（背景色変更で選択状態を表現）
-func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *resources.UIResources) *widget.Container {
+// additionalLabels が空の場合は単純なテキスト表示、指定された場合は右側に追加ラベルを表示
+func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *resources.UIResources, additionalLabels ...string) *widget.Container {
+	// 背景色の設定
 	var backgroundColor *image.NineSlice
 	if isSelected {
 		// 選択中は背景色を付ける
@@ -251,34 +253,119 @@ func NewListItemText(text string, textColor color.RGBA, isSelected bool, res *re
 		backgroundColor = image.NewNineSliceColor(consts.TransparentColor)
 	}
 
-	container := widget.NewContainer(
-		widget.ContainerOpts.BackgroundImage(backgroundColor),
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-		widget.ContainerOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-				Stretch: true, // 横幅を親コンテナに合わせる
-			}),
-			widget.WidgetOpts.MinSize(120, 0), // 最小横幅を固定
-		),
-	)
-
-	textWidget := widget.NewText(
-		widget.TextOpts.Text(text, &res.Text.Face, textColor),
-		widget.TextOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionStart, // 左寄せ
-				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				Padding: &widget.Insets{ // 縦パディングを小さく、横パディングは適度に
-					Top:    2,
-					Bottom: 2,
+	// 追加ラベルがない場合は、外側のcontainerに背景色を設定
+	var containerOpts []widget.ContainerOpt
+	if len(additionalLabels) == 0 {
+		containerOpts = []widget.ContainerOpt{
+			widget.ContainerOpts.BackgroundImage(backgroundColor),
+			widget.ContainerOpts.Layout(widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+				widget.RowLayoutOpts.Spacing(10),
+				widget.RowLayoutOpts.Padding(&widget.Insets{
+					Top:    0,
+					Bottom: 0,
 					Left:   8,
 					Right:  8,
-				},
+				}),
+			)),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: true,
+				}),
+				widget.WidgetOpts.MinSize(120, 0),
+			),
+		}
+	} else {
+		containerOpts = []widget.ContainerOpt{
+			widget.ContainerOpts.Layout(widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+				widget.RowLayoutOpts.Spacing(10),
+				widget.RowLayoutOpts.Padding(&widget.Insets{
+					Top:    0,
+					Bottom: 0,
+					Left:   8,
+					Right:  8,
+				}),
+			)),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: true,
+				}),
+				widget.WidgetOpts.MinSize(120, 0),
+			),
+		}
+	}
+
+	container := widget.NewContainer(containerOpts...)
+
+	// メインテキストコンテナ
+	// 追加ラベルがない場合はStretch、ある場合は固定幅
+	var mainTextContainerOpts []widget.ContainerOpt
+	if len(additionalLabels) == 0 {
+		// 追加ラベルなし: 全幅使用、背景色なし（外側のcontainerに設定済み）
+		mainTextContainerOpts = []widget.ContainerOpt{
+			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: true,
+				}),
+			),
+		}
+	} else {
+		// 追加ラベルあり: 固定幅、背景色あり
+		mainTextContainerOpts = []widget.ContainerOpt{
+			widget.ContainerOpts.BackgroundImage(backgroundColor),
+			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+				}),
+				widget.WidgetOpts.MinSize(250, 0), // 固定幅を設定
+			),
+		}
+	}
+
+	mainTextContainer := widget.NewContainer(mainTextContainerOpts...)
+
+	mainText := widget.NewText(
+		widget.TextOpts.Text(text, &res.Text.Face, textColor),
+		widget.TextOpts.Position(widget.TextPositionStart, widget.TextPositionCenter),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionStart,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
 			}),
 		),
 	)
+	mainTextContainer.AddChild(mainText)
+	container.AddChild(mainTextContainer)
 
-	container.AddChild(textWidget)
+	// 右側: 追加ラベル群（固定幅で配置、背景色なし）
+	for _, label := range additionalLabels {
+		labelContainer := widget.NewContainer(
+			widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Position: widget.RowLayoutPositionEnd,
+				}),
+				widget.WidgetOpts.MinSize(80, 0), // 追加ラベルも固定幅
+			),
+		)
+
+		labelText := widget.NewText(
+			widget.TextOpts.Text(label, &res.Text.Face, textColor),
+			widget.TextOpts.Position(widget.TextPositionEnd, widget.TextPositionCenter),
+			widget.TextOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionEnd,
+					VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				}),
+			),
+		)
+		labelContainer.AddChild(labelText)
+		container.AddChild(labelContainer)
+	}
+
 	return container
 }
 

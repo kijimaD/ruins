@@ -18,51 +18,82 @@ import (
 func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Entity) {
 	targetContainer.RemoveChildren()
 
-	{
-		if entity.HasComponent(world.Components.Stackable) {
-			v := world.Components.Stackable.Get(entity).(*gc.Stackable)
-			amount := fmt.Sprintf("%d 個", v.Count)
-			targetContainer.AddChild(styled.NewBodyText(amount, consts.TextColor, world.Resources.UIResources))
-		}
-
-		if entity.HasComponent(world.Components.Value) {
-			v := world.Components.Value.Get(entity).(*gc.Value)
-			value := fmt.Sprintf("価値 %d", v.Value)
-			targetContainer.AddChild(styled.NewBodyText(value, consts.TextColor, world.Resources.UIResources))
-		}
-
-		if entity.HasComponent(world.Components.Attack) {
-			attack := world.Components.Attack.Get(entity).(*gc.Attack)
-			targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.String(), consts.TextColor, world.Resources.UIResources))
-
-			damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(attack.Damage))
-			targetContainer.AddChild(styled.NewBodyText(damage, consts.TextColor, world.Resources.UIResources))
-
-			accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(attack.Accuracy))
-			targetContainer.AddChild(styled.NewBodyText(accuracy, consts.TextColor, world.Resources.UIResources))
-
-			attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(attack.AttackCount))
-			targetContainer.AddChild(styled.NewBodyText(attackCount, consts.TextColor, world.Resources.UIResources))
-
-			if attack.Element != gc.ElementTypeNone {
-				targetContainer.AddChild(damageAttrText(world, attack.Element, attack.Element.String()))
-			}
-		}
-		if entity.HasComponent(world.Components.Wearable) {
-			wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
-			equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, wearable.EquipmentCategory)
-			targetContainer.AddChild(styled.NewBodyText(equipmentCategory, consts.TextColor, world.Resources.UIResources))
-
-			defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, wearable.Defense)
-			targetContainer.AddChild(styled.NewBodyText(defense, consts.TextColor, world.Resources.UIResources))
-			addEquipBonus(targetContainer, wearable.EquipBonus, world)
-		}
-		if entity.HasComponent(world.Components.Card) {
-			card := world.Components.Card.Get(entity).(*gc.Card)
-			cost := fmt.Sprintf("コスト %d", card.Cost)
-			targetContainer.AddChild(styled.NewBodyText(cost, consts.TextColor, world.Resources.UIResources))
-		}
+	// 各コンポーネントの情報を追加
+	if entity.HasComponent(world.Components.Attack) {
+		attack := world.Components.Attack.Get(entity).(*gc.Attack)
+		addAttackInfo(targetContainer, attack, world)
 	}
+	if entity.HasComponent(world.Components.Wearable) {
+		wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
+		addWearableInfo(targetContainer, wearable, world)
+	}
+	if entity.HasComponent(world.Components.Card) {
+		card := world.Components.Card.Get(entity).(*gc.Card)
+		addCardInfo(targetContainer, card, world)
+	}
+	if entity.HasComponent(world.Components.Value) {
+		v := world.Components.Value.Get(entity).(*gc.Value)
+		addValueInfo(targetContainer, v, world)
+	}
+}
+
+// UpdateSpecFromSpec はEntitySpecから性能表示コンテナを更新する
+// エンティティを生成せずに性能を表示できる
+func UpdateSpecFromSpec(world w.World, targetContainer *widget.Container, spec gc.EntitySpec) {
+	targetContainer.RemoveChildren()
+
+	if spec.Attack != nil {
+		addAttackInfo(targetContainer, spec.Attack, world)
+	}
+	if spec.Wearable != nil {
+		addWearableInfo(targetContainer, spec.Wearable, world)
+	}
+	if spec.Card != nil {
+		addCardInfo(targetContainer, spec.Card, world)
+	}
+	if spec.Value != nil {
+		addValueInfo(targetContainer, spec.Value, world)
+	}
+}
+
+// addAttackInfo はAttackコンポーネントの情報を追加する
+func addAttackInfo(targetContainer *widget.Container, attack *gc.Attack, world w.World) {
+	targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.String(), consts.TextColor, world.Resources.UIResources))
+
+	damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(attack.Damage))
+	targetContainer.AddChild(styled.NewBodyText(damage, consts.TextColor, world.Resources.UIResources))
+
+	accuracy := fmt.Sprintf("%s %s", consts.AccuracyLabel, strconv.Itoa(attack.Accuracy))
+	targetContainer.AddChild(styled.NewBodyText(accuracy, consts.TextColor, world.Resources.UIResources))
+
+	attackCount := fmt.Sprintf("%s %s", consts.AttackCountLabel, strconv.Itoa(attack.AttackCount))
+	targetContainer.AddChild(styled.NewBodyText(attackCount, consts.TextColor, world.Resources.UIResources))
+
+	if attack.Element != gc.ElementTypeNone {
+		targetContainer.AddChild(damageAttrText(world, attack.Element, attack.Element.String()))
+	}
+}
+
+// addWearableInfo はWearableコンポーネントの情報を追加する
+func addWearableInfo(targetContainer *widget.Container, wearable *gc.Wearable, world w.World) {
+	equipmentCategory := fmt.Sprintf("%s %s", consts.EquimentCategoryLabel, wearable.EquipmentCategory)
+	targetContainer.AddChild(styled.NewBodyText(equipmentCategory, consts.TextColor, world.Resources.UIResources))
+
+	defense := fmt.Sprintf("%s %+d", consts.DefenseLabel, wearable.Defense)
+	targetContainer.AddChild(styled.NewBodyText(defense, consts.TextColor, world.Resources.UIResources))
+	addEquipBonus(targetContainer, wearable.EquipBonus, world)
+}
+
+// addCardInfo はCardコンポーネントの情報を追加する
+func addCardInfo(targetContainer *widget.Container, card *gc.Card, world w.World) {
+	cost := fmt.Sprintf("コスト %d", card.Cost)
+	targetContainer.AddChild(styled.NewBodyText(cost, consts.TextColor, world.Resources.UIResources))
+}
+
+// addValueInfo はValueコンポーネントの情報を追加する
+func addValueInfo(targetContainer *widget.Container, value *gc.Value, world w.World) {
+	valueText := fmt.Sprintf("◆ %d", value.Value)
+	targetContainer.AddChild(styled.NewBodyText(valueText, consts.TextColor, world.Resources.UIResources))
 }
 
 // damageAttrText は属性によって色付けする

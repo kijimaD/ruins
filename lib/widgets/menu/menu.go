@@ -10,12 +10,11 @@ import (
 
 // Item はメニュー項目を表す
 type Item struct {
-	ID          string
-	Label       string
-	Disabled    bool
-	Icon        *ebiten.Image
-	Description string      // ツールチップや説明文
-	UserData    interface{} // 任意のデータを保持
+	ID               string
+	Label            string
+	AdditionalLabels []string // 追加表示項目（個数、価格など）右側に表示される
+	Disabled         bool
+	UserData         interface{} // 任意のデータを保持
 }
 
 // Orientation はメニューの向き
@@ -43,7 +42,6 @@ type Callbacks struct {
 	OnSelect      func(index int, item Item)
 	OnCancel      func()
 	OnFocusChange func(oldIndex, newIndex int)
-	OnHover       func(index int, item Item)
 }
 
 // Menu は共通メニューコンポーネント
@@ -53,11 +51,9 @@ type Menu struct {
 
 	// 基本状態
 	focusedIndex int
-	hoveredIndex int
 
 	// ペジネーション状態
-	currentPage    int  // 現在のページ（0ベース）
-	needsUIRebuild bool // UI再構築が必要かどうか
+	currentPage int // 現在のページ（0ベース）
 
 	// UI要素
 	container   *widget.Container
@@ -74,7 +70,6 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 		config:       config,
 		callbacks:    callbacks,
 		focusedIndex: config.InitialIndex,
-		hoveredIndex: -1,
 	}
 
 	// ページ設定の初期化
@@ -95,8 +90,8 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 // Update はメニューの状態を更新する
 func (m *Menu) Update(keyboardInput input.KeyboardInput) {
 	m.keyboardInput = keyboardInput
+
 	m.handleKeyboard()
-	m.updateFocus()
 }
 
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
@@ -142,27 +137,20 @@ func (m *Menu) handleKeyboard() {
 		return
 	}
 
-	oldIndex := m.focusedIndex
-	handled := false
-
 	// 基本的なナビゲーション（スクロール対応）
 	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
 		m.navigateNext()
-		handled = true
 	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
 		m.navigatePrevious()
-		handled = true
 	}
 
 	// ページ移動（PageUp/PageDownまたはCtrl+Up/Down）
 	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp) ||
 		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)) {
 		m.navigatePageUp()
-		handled = true
 	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown) ||
 		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)) {
 		m.navigatePageDown()
-		handled = true
 	}
 
 	// Tab/Shift+Tab
@@ -172,15 +160,11 @@ func (m *Menu) handleKeyboard() {
 		} else {
 			m.navigateNext()
 		}
-		handled = true
 	}
 
 	// 選択（Enterは押下-押上ワンセット）
-	enterPressed := m.keyboardInput.IsEnterJustPressedOnce()
-
-	if enterPressed {
+	if m.keyboardInput.IsEnterJustPressedOnce() {
 		m.selectCurrent()
-		handled = true
 	}
 
 	// キャンセル
@@ -188,12 +172,6 @@ func (m *Menu) handleKeyboard() {
 		if m.callbacks.OnCancel != nil {
 			m.callbacks.OnCancel()
 		}
-		handled = true
-	}
-
-	// フォーカス変更の通知
-	if handled && oldIndex != m.focusedIndex && m.callbacks.OnFocusChange != nil {
-		m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
 	}
 }
 
@@ -289,53 +267,11 @@ func (m *Menu) findFirstEnabled() int {
 	return 0
 }
 
-// updateFocus はフォーカス状態を更新する（UIがある場合に使用）
-func (m *Menu) updateFocus() {
-	// UI再構築が必要かチェック
-	if m.needsUIRebuild && m.uiBuilder != nil {
-		m.rebuildUI()
-		m.needsUIRebuild = false
-	}
-
-	// フォーカス更新
-	if m.uiBuilder != nil {
-		m.uiBuilder.UpdateFocus(m)
-	}
-}
-
-// rebuildUI はUI全体を再構築する
-func (m *Menu) rebuildUI() {
-	if m.container == nil || m.uiBuilder == nil {
-		return
-	}
-
-	// コンテナをクリアして再構築
-	m.container.RemoveChildren()
-
-	// ページインジケーターを追加（2ページ以上ある場合のみ自動表示）
-	if m.config.ItemsPerPage > 0 && m.GetTotalPages() > 1 {
-		pageIndicator := m.uiBuilder.CreatePageIndicator(m)
-		m.container.AddChild(pageIndicator)
-	}
-
-	// 現在のページの項目を追加
-	m.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
-	visibleItems, indices := m.GetVisibleItems()
-
-	for i, item := range visibleItems {
-		originalIndex := indices[i]
-		btn := m.uiBuilder.CreateMenuButton(m, originalIndex, item)
-		m.container.AddChild(btn)
-		m.itemWidgets = append(m.itemWidgets, btn)
-	}
-}
-
 // ================ スクロール関連メソッド ================
 
 // initializePagination はページネーション設定を初期化する
 func (m *Menu) initializePagination() {
 	m.currentPage = 0
-	m.needsUIRebuild = false
 }
 
 // updatePageFromFocus はフォーカスに基づいてページを更新する
@@ -347,7 +283,6 @@ func (m *Menu) updatePageFromFocus() {
 	newPage := m.focusedIndex / m.config.ItemsPerPage
 	if newPage != m.currentPage {
 		m.currentPage = newPage
-		m.needsUIRebuild = true // UI再構築をマーク
 	}
 }
 
@@ -370,7 +305,6 @@ func (m *Menu) navigatePageDown() {
 			oldIndex := m.focusedIndex
 			m.focusedIndex = i
 			m.currentPage = i / m.config.ItemsPerPage
-			m.needsUIRebuild = true
 
 			if m.callbacks.OnFocusChange != nil {
 				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
@@ -399,7 +333,6 @@ func (m *Menu) navigatePageUp() {
 			oldIndex := m.focusedIndex
 			m.focusedIndex = i
 			m.currentPage = i / m.config.ItemsPerPage
-			m.needsUIRebuild = true
 
 			if m.callbacks.OnFocusChange != nil {
 				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)

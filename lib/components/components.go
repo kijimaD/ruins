@@ -48,6 +48,7 @@ type EntitySpec struct {
 	// member ================
 	Player      *Player
 	Hunger      *Hunger
+	Wallet      *Wallet
 	FactionType *FactionType
 	Dead        *Dead
 
@@ -102,6 +103,7 @@ type Components struct {
 	// member ================
 	Player       *ecs.NullComponent
 	Hunger       *ecs.SliceComponent
+	Wallet       *ecs.SliceComponent
 	FactionAlly  *ecs.NullComponent
 	FactionEnemy *ecs.NullComponent
 	Dead         *ecs.NullComponent
@@ -197,6 +199,11 @@ type Player struct{}
 // Dead はキャラクターが死亡している状態を示すマーカーコンポーネント
 // 死亡時の処理(ドロップ/統計処理/ゲームログ...)を共通化するために使う
 type Dead struct{}
+
+// Wallet はプレイヤーの資金を管理する
+type Wallet struct {
+	Currency int
+}
 
 // Pools はキャラクターのプール情報
 type Pools struct {

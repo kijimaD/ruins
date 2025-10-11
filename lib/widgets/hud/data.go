@@ -8,6 +8,7 @@ type Data struct {
 	MinimapData  MinimapData
 	DebugOverlay DebugOverlayData
 	MessageData  MessageData
+	CurrencyData CurrencyData
 }
 
 // GameInfoData はゲーム基本情報のデータ
@@ -90,4 +91,11 @@ type MessageData struct {
 	Messages         []string          // 表示するメッセージ一覧
 	ScreenDimensions ScreenDimensions  // 画面サイズ
 	Config           MessageAreaConfig // メッセージエリア設定
+}
+
+// CurrencyData は通貨表示に必要なデータ
+type CurrencyData struct {
+	Currency         int               // プレイヤーの所持遺光
+	ScreenDimensions ScreenDimensions  // 画面サイズ
+	Config           MessageAreaConfig // 位置計算にメッセージエリアの情報が必要
 }

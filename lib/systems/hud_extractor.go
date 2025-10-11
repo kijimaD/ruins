@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/turns"
 	"github.com/kijimaD/ruins/lib/widgets/hud"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -20,6 +21,7 @@ func ExtractHUDData(world w.World) hud.Data {
 		MinimapData:  extractMinimapData(world),
 		DebugOverlay: extractDebugOverlay(world),
 		MessageData:  extractMessageData(world, gamelog.FieldLog),
+		CurrencyData: extractCurrencyData(world),
 	}
 }
 
@@ -281,6 +283,29 @@ func extractMessageData(world w.World, store *gamelog.SafeSlice) hud.MessageData
 
 	return hud.MessageData{
 		Messages:         store.GetHistory(),
+		ScreenDimensions: screenDimensions,
+		Config:           config,
+	}
+}
+
+// extractCurrencyData は通貨データを抽出する
+func extractCurrencyData(world w.World) hud.CurrencyData {
+	screenDimensions := hud.ScreenDimensions{
+		Width:  world.Resources.ScreenDimensions.Width,
+		Height: world.Resources.ScreenDimensions.Height,
+	}
+
+	// デフォルト設定を使用
+	config := hud.DefaultMessageAreaConfig
+
+	// プレイヤーの遺光を取得
+	currency := 0
+	worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
+		currency = worldhelper.GetCurrency(world, entity)
+	})
+
+	return hud.CurrencyData{
+		Currency:         currency,
 		ScreenDimensions: screenDimensions,
 		Config:           config,
 	}

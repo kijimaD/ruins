@@ -8,6 +8,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/raw"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -67,20 +68,20 @@ func consumeMaterials(world w.World, goal string) {
 }
 
 // requiredMaterials は指定したレシピに必要な素材一覧
-func requiredMaterials(world w.World, goal string) []gc.RecipeInput {
-	required := []gc.RecipeInput{}
-	world.Manager.Join(
-		world.Components.Recipe,
-		world.Components.Name,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		name := world.Components.Name.Get(entity).(*gc.Name)
-		if name.Name == goal {
-			recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
-			required = append(required, recipe.Inputs...)
-		}
-	}))
+func requiredMaterials(world w.World, need string) []gc.RecipeInput {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
-	return required
+	// RawMasterからレシピを取得
+	spec, err := rawMaster.NewRecipeSpec(need)
+	if err != nil {
+		return []gc.RecipeInput{}
+	}
+
+	if spec.Recipe == nil {
+		return []gc.RecipeInput{}
+	}
+
+	return spec.Recipe.Inputs
 }
 
 // randomize はアイテムにランダム値を設定する

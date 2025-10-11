@@ -99,7 +99,6 @@
 //   - OnSelect: 項目選択時
 //   - OnCancel: キャンセル時（Escape キー）
 //   - OnFocusChange: フォーカス変更時
-//   - OnHover: マウスホバー時（将来実装予定）
 //
 // # Design Principles
 //

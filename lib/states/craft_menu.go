@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"log"
+	"sort"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
@@ -12,6 +13,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
@@ -28,7 +30,7 @@ type CraftMenuState struct {
 
 	tabMenu             *tabmenu.TabMenu
 	keyboardInput       input.KeyboardInput
-	selectedItem        ecs.Entity        // 選択中のアイテム
+	selectedItem        string            // 選択中のレシピ名
 	itemDesc            *widget.Text      // アイテムの概要
 	specContainer       *widget.Container // 性能表示のコンテナ
 	recipeList          *widget.Container // レシピリストのコンテナ
@@ -210,16 +212,15 @@ func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
 	return tabs
 }
 
-// createMenuItems はECSエンティティをMenuItemに変換する
-func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.Item {
-	items := make([]menu.Item, len(entities))
+// createMenuItems はレシピ名リストをMenuItemに変換する
+func (st *CraftMenuState) createMenuItems(_ w.World, recipeNames []string) []menu.Item {
+	items := make([]menu.Item, len(recipeNames))
 
-	for i, entity := range entities {
-		name := world.Components.Name.Get(entity).(*gc.Name).Name
+	for i, recipeName := range recipeNames {
 		items[i] = menu.Item{
-			ID:       fmt.Sprintf("entity_%d", entity),
-			Label:    name,
-			UserData: entity,
+			ID:       fmt.Sprintf("recipe_%s", recipeName),
+			Label:    recipeName,
+			UserData: recipeName,
 		}
 	}
 
@@ -228,13 +229,13 @@ func (st *CraftMenuState) createMenuItems(world w.World, entities []ecs.Entity) 
 
 // handleItemSelection はアイテム選択時の処理
 func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
-	entity, ok := item.UserData.(ecs.Entity)
+	recipeName, ok := item.UserData.(string)
 	if !ok {
 		log.Fatal("unexpected item UserData")
 	}
 
-	st.selectedItem = entity
-	st.showActionWindow(world, entity)
+	st.selectedItem = recipeName
+	st.showActionWindow(world, recipeName)
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
@@ -247,73 +248,91 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 		return
 	}
 
-	entity, ok := item.UserData.(ecs.Entity)
+	recipeName, ok := item.UserData.(string)
 	if !ok {
 		log.Fatal("unexpected item UserData")
 	}
 
-	// Descriptionコンポーネントの存在チェック
-	if !entity.HasComponent(world.Components.Description) {
+	// RawMasterからEntitySpecを取得
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	spec, err := rawMaster.NewRecipeSpec(recipeName)
+	if err != nil {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
 		return
 	}
 
-	desc := world.Components.Description.Get(entity).(*gc.Description)
-	if desc == nil {
+	// Descriptionを取得
+	if spec.Description != nil {
+		st.itemDesc.Label = spec.Description.Description
+	} else {
 		st.itemDesc.Label = TextNoDescription
-		st.specContainer.RemoveChildren()
-		st.recipeList.RemoveChildren()
-		return
 	}
 
-	st.itemDesc.Label = desc.Description
-	views.UpdateSpec(world, st.specContainer, entity)
-	st.updateRecipeList(world, entity)
+	// EntitySpecから性能表示を更新
+	views.UpdateSpecFromSpec(world, st.specContainer, spec)
+	if err := st.updateRecipeList(world, spec.Recipe); err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (st *CraftMenuState) queryMenuConsumable(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
+func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	var items []string
 
-	world.Manager.Join(
-		world.Components.Name,
-		world.Components.Recipe,
-		world.Components.Consumable,
-		world.Components.Card.Not(),
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
-	}))
+	// 全レシピから消耗品（カード以外）を抽出
+	for recipeName := range rawMaster.RecipeIndex {
+		spec, err := rawMaster.NewRecipeSpec(recipeName)
+		if err != nil {
+			continue
+		}
+		// 消耗品でカード以外
+		if spec.Consumable != nil && spec.Card == nil {
+			items = append(items, recipeName)
+		}
+	}
 
-	return worldhelper.SortEntities(world, items)
+	sort.Strings(items)
+	return items
 }
 
-func (st *CraftMenuState) queryMenuCard(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
+func (st *CraftMenuState) queryMenuCard(world w.World) []string {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	var items []string
 
-	world.Manager.Join(
-		world.Components.Name,
-		world.Components.Recipe,
-		world.Components.Card,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
-	}))
+	// 全レシピからカードを抽出
+	for recipeName := range rawMaster.RecipeIndex {
+		spec, err := rawMaster.NewRecipeSpec(recipeName)
+		if err != nil {
+			continue
+		}
+		if spec.Card != nil {
+			items = append(items, recipeName)
+		}
+	}
 
-	return worldhelper.SortEntities(world, items)
+	sort.Strings(items)
+	return items
 }
 
-func (st *CraftMenuState) queryMenuWearable(world w.World) []ecs.Entity {
-	items := []ecs.Entity{}
+func (st *CraftMenuState) queryMenuWearable(world w.World) []string {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	var items []string
 
-	world.Manager.Join(
-		world.Components.Name,
-		world.Components.Recipe,
-		world.Components.Wearable,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		items = append(items, entity)
-	}))
+	// 全レシピから装備品を抽出
+	for recipeName := range rawMaster.RecipeIndex {
+		spec, err := rawMaster.NewRecipeSpec(recipeName)
+		if err != nil {
+			continue
+		}
+		if spec.Wearable != nil {
+			items = append(items, recipeName)
+		}
+	}
 
-	return worldhelper.SortEntities(world, items)
+	sort.Strings(items)
+	return items
 }
 
 // showResultWindow は合成結果ウィンドウを表示する
@@ -370,47 +389,44 @@ func (st *CraftMenuState) updateResultWindowDisplay(world w.World) {
 	st.ui.AddWindow(st.resultWindow)
 }
 
-func (st *CraftMenuState) updateRecipeList(world w.World, targetEntity ecs.Entity) {
+func (st *CraftMenuState) updateRecipeList(world w.World, recipe *gc.Recipe) error {
 	st.recipeList.RemoveChildren()
-	world.Manager.Join(
-		world.Components.Recipe,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity == targetEntity {
-			recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
-			for _, input := range recipe.Inputs {
-				var currentAmount int
-				if stackableEntity, found := worldhelper.FindStackableInInventory(world, input.Name); found {
-					stackable := world.Components.Stackable.Get(stackableEntity).(*gc.Stackable)
-					currentAmount = stackable.Count
-				}
-				str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, currentAmount)
-				var color color.RGBA
-				if currentAmount >= input.Amount {
-					color = consts.SuccessColor
-				} else {
-					color = consts.DangerColor
-				}
 
-				st.recipeList.AddChild(styled.NewBodyText(str, color, world.Resources.UIResources))
-			}
+	if recipe == nil {
+		return fmt.Errorf("recipeがnilです")
+	}
+
+	for _, input := range recipe.Inputs {
+		var currentAmount int
+		if stackableEntity, found := worldhelper.FindStackableInInventory(world, input.Name); found {
+			stackable := world.Components.Stackable.Get(stackableEntity).(*gc.Stackable)
+			currentAmount = stackable.Count
 		}
-	}))
+		str := fmt.Sprintf("%s %d pcs\n    所持: %d pcs", input.Name, input.Amount, currentAmount)
+		var color color.RGBA
+		if currentAmount >= input.Amount {
+			color = consts.SuccessColor
+		} else {
+			color = consts.DangerColor
+		}
+
+		st.recipeList.AddChild(styled.NewBodyText(str, color, world.Resources.UIResources))
+	}
+	return nil
 }
 
 // showActionWindow はアクションウィンドウを表示する
-func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
+func (st *CraftMenuState) showActionWindow(world w.World, recipeName string) {
 	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
 	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world.Resources.UIResources)
 	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
 
-	name := world.Components.Name.Get(entity).(*gc.Name)
-
 	// アクション項目を準備
 	st.actionItems = []string{}
-	st.selectedItem = entity
+	st.selectedItem = recipeName
 
 	// 合成可能かチェック
-	if canCraft, _ := worldhelper.CanCraft(world, name.Name); canCraft {
+	if canCraft, _ := worldhelper.CanCraft(world, recipeName); canCraft {
 		st.actionItems = append(st.actionItems, "合成する")
 	}
 	st.actionItems = append(st.actionItems, TextClose)
@@ -419,15 +435,10 @@ func (st *CraftMenuState) showActionWindow(world w.World, entity ecs.Entity) {
 	st.isWindowMode = true
 
 	// UI要素を作成（表示のみ、操作はキーボードで行う）
-	st.createActionWindowUI(world, windowContainer, entity)
+	st.updateActionWindowDisplay(world)
 
 	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
-}
-
-// createActionWindowUI はアクションウィンドウのUI要素を作成する
-func (st *CraftMenuState) createActionWindowUI(world w.World, _ *widget.Container, _ ecs.Entity) {
-	st.updateActionWindowDisplay(world)
 }
 
 // updateActionWindowDisplay はアクションウィンドウの表示を更新する
@@ -568,15 +579,25 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
-	name := world.Components.Name.Get(st.selectedItem).(*gc.Name)
+	recipeName := st.selectedItem
 
 	switch selectedAction {
 	case "合成する":
-		resultEntity, err := worldhelper.Craft(world, name.Name)
+		resultEntity, err := worldhelper.Craft(world, recipeName)
 		if err != nil {
 			log.Fatal(err)
 		}
-		st.updateRecipeList(world, st.selectedItem)
+
+		// レシピリストを更新
+		rawMaster := world.Resources.RawMaster.(*raw.Master)
+		var spec gc.EntitySpec
+		spec, err = rawMaster.NewRecipeSpec(recipeName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err = st.updateRecipeList(world, spec.Recipe); err != nil {
+			log.Fatal(err)
+		}
 
 		st.closeActionWindow()
 		st.showResultWindow(world, *resultEntity)
