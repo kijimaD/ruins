@@ -73,7 +73,9 @@ func BuyItem(world w.World, playerEntity ecs.Entity, itemName string) error {
 			_, err = SpawnStackable(world, itemName, 1, gc.ItemLocationInBackpack)
 			if err != nil {
 				// 購入失敗時は通貨を返金
-				AddCurrency(world, playerEntity, price)
+				if refundErr := AddCurrency(world, playerEntity, price); refundErr != nil {
+					return fmt.Errorf("アイテムの生成に失敗し、返金も失敗しました: %w (返金エラー: %v)", err, refundErr)
+				}
 				return fmt.Errorf("アイテムの生成に失敗しました: %w", err)
 			}
 		}
@@ -82,7 +84,9 @@ func BuyItem(world w.World, playerEntity ecs.Entity, itemName string) error {
 		_, err := SpawnItem(world, itemName, gc.ItemLocationInBackpack)
 		if err != nil {
 			// 購入失敗時は通貨を返金
-			AddCurrency(world, playerEntity, price)
+			if refundErr := AddCurrency(world, playerEntity, price); refundErr != nil {
+				return fmt.Errorf("アイテムの生成に失敗し、返金も失敗しました: %w (返金エラー: %v)", err, refundErr)
+			}
 			return fmt.Errorf("アイテムの生成に失敗しました: %w", err)
 		}
 	}
@@ -115,7 +119,9 @@ func SellItem(world w.World, playerEntity ecs.Entity, itemEntity ecs.Entity) err
 	}
 
 	// 通貨を追加
-	AddCurrency(world, playerEntity, price)
+	if err := AddCurrency(world, playerEntity, price); err != nil {
+		return fmt.Errorf("通貨の追加に失敗しました: %w", err)
+	}
 
 	return nil
 }

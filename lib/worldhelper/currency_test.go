@@ -19,7 +19,8 @@ func TestAddCurrency(t *testing.T) {
 	player.AddComponent(world.Components.Wallet, &gc.Wallet{Currency: 100})
 
 	// 通貨を追加
-	AddCurrency(world, player, 50)
+	err = AddCurrency(world, player, 50)
+	require.NoError(t, err)
 
 	// 結果を検証
 	currency := GetCurrency(world, player)
@@ -62,7 +63,8 @@ func TestSetCurrency(t *testing.T) {
 	player.AddComponent(world.Components.Wallet, &gc.Wallet{Currency: 100})
 
 	// 通貨を設定
-	SetCurrency(world, player, 500)
+	err = SetCurrency(world, player, 500)
+	require.NoError(t, err)
 
 	// 結果を検証
 	currency := GetCurrency(world, player)
@@ -126,11 +128,13 @@ func TestCurrencyOperationsWithoutWallet(t *testing.T) {
 	// Walletを持たないエンティティ
 	entity := world.Manager.NewEntity()
 
-	// 各操作がエラーなく動作することを確認
-	AddCurrency(world, entity, 100)
+	// 各操作がエラーを返すことを確認
+	err = AddCurrency(world, entity, 100)
+	assert.Error(t, err, "Walletがない場合はエラーを返すべき")
 	assert.Equal(t, 0, GetCurrency(world, entity), "Walletがないので0")
 
-	SetCurrency(world, entity, 200)
+	err = SetCurrency(world, entity, 200)
+	assert.Error(t, err, "Walletがない場合はエラーを返すべき")
 	assert.Equal(t, 0, GetCurrency(world, entity), "Walletがないので0")
 
 	assert.False(t, HasCurrency(world, entity, 1), "Walletがないのでfalse")
