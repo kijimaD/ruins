@@ -86,7 +86,11 @@ func (st *CraftMenuState) Update(world w.World) (es.Transition[w.World], error) 
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
-		if st.updateWindowMode(world) {
+		handled, err := st.updateWindowMode(world)
+		if err != nil {
+			return es.Transition[w.World]{}, err
+		}
+		if handled {
 			return es.Transition[w.World]{Type: es.TransNone}, nil
 		}
 	}
@@ -474,11 +478,11 @@ func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
 }
 
 // updateWindowMode はウィンドウモード時の操作を処理する
-func (st *CraftMenuState) updateWindowMode(world w.World) bool {
+func (st *CraftMenuState) updateWindowMode(world w.World) (bool, error) {
 	// Escapeでウィンドウモードを終了
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		st.closeActionWindow()
-		return false
+		return false, nil
 	}
 
 	// 上下矢印でフォーカス移動
@@ -488,7 +492,7 @@ func (st *CraftMenuState) updateWindowMode(world w.World) bool {
 			st.actionFocusIndex = len(st.actionItems) - 1
 		}
 		st.updateActionWindowDisplay(world)
-		return true
+		return true, nil
 	}
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
 		st.actionFocusIndex++
@@ -496,16 +500,18 @@ func (st *CraftMenuState) updateWindowMode(world w.World) bool {
 			st.actionFocusIndex = 0
 		}
 		st.updateActionWindowDisplay(world)
-		return true
+		return true, nil
 	}
 
 	// Enterで選択実行（押下-押上ワンセット）
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.executeActionItem(world)
-		return true
+		if err := st.executeActionItem(world); err != nil {
+			return false, err
+		}
+		return true, nil
 	}
 
-	return true
+	return true, nil
 }
 
 // updateResultMode は結果ウィンドウモード時の操作を処理する
@@ -581,9 +587,9 @@ func (st *CraftMenuState) executeResultItem(_ w.World) {
 }
 
 // executeActionItem は選択されたアクション項目を実行する
-func (st *CraftMenuState) executeActionItem(world w.World) {
+func (st *CraftMenuState) executeActionItem(world w.World) error {
 	if st.actionFocusIndex >= len(st.actionItems) {
-		return
+		return nil
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
@@ -593,8 +599,7 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	case "合成する":
 		resultEntity, err := worldhelper.Craft(world, recipeName)
 		if err != nil {
-			// TODO: コールバック関数内なのでpanicするしかない
-			panic(err)
+			return err
 		}
 
 		// レシピリストを更新
@@ -602,12 +607,10 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 		var spec gc.EntitySpec
 		spec, err = rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
-			// TODO: コールバック関数内なのでpanicするしかない
-			panic(err)
+			return err
 		}
 		if err = st.updateRecipeList(world, spec.Recipe); err != nil {
-			// TODO: コールバック関数内なのでpanicするしかない
-			panic(err)
+			return err
 		}
 
 		st.closeActionWindow()
@@ -618,6 +621,7 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	case TextClose:
 		st.closeActionWindow()
 	}
+	return nil
 }
 
 // reloadTabs はタブの内容を再読み込みする
