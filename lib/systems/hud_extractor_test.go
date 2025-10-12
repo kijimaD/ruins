@@ -7,6 +7,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/resources"
+	"github.com/kijimaD/ruins/lib/testutil"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -98,7 +99,7 @@ func TestBuildTileColors(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			world := CreateTestWorldWithResources(t)
+			world := testutil.InitTestWorld(t)
 
 			// セットアップ処理を実行
 			tt.setupEntities(world)
@@ -119,7 +120,7 @@ func TestBuildTileColors(t *testing.T) {
 
 func TestExtractMinimapData(t *testing.T) {
 	t.Parallel()
-	world := CreateTestWorldWithResources(t)
+	world := testutil.InitTestWorld(t)
 
 	// ゲームリソースを設定
 	world.Resources.Dungeon.ExploredTiles = make(map[gc.GridElement]bool)

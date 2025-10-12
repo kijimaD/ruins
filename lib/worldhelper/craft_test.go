@@ -4,15 +4,13 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCanCraft(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 必要な素材を作成（木刀レシピは木の棒2個が必要）
 	material, _ := SpawnStackable(world, "木の棒", 5, gc.ItemLocationInBackpack)
@@ -42,8 +40,7 @@ func TestCanCraft(t *testing.T) {
 
 func TestCraft(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 存在しないレシピでのクラフト試行
 	result, err := Craft(world, "存在しない武器")

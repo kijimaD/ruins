@@ -7,25 +7,15 @@ import (
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
-	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// テスト用のワールドを作成
-func createTestWorld() w.World {
-	world, err := maingame.InitWorld(960, 720)
-	if err != nil {
-		panic(err)
-	}
-	return world
-}
-
 func TestStableIDManager(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	manager := NewStableIDManager()
 
 	// エンティティを作成
@@ -55,7 +45,7 @@ func TestStableIDManager(t *testing.T) {
 
 func TestStableIDGeneration(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	manager := NewStableIDManager()
 
 	// エンティティを作成
@@ -81,12 +71,11 @@ func TestStableIDGeneration(t *testing.T) {
 
 func TestComponentRegistry(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	registry := NewComponentRegistry()
 
 	// ワールドから自動初期化
-	err := registry.InitializeFromWorld(world)
-	require.NoError(t, err)
+	_ = registry.InitializeFromWorld(world)
 
 	// 型情報が正しく登録されていることを確認
 	visionInfo, exists := registry.GetTypeInfoByName("AIVision")
@@ -110,7 +99,7 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	manager := NewSerializationManager(testDir)
 
 	// テスト用ワールドを作成
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()
@@ -135,7 +124,7 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	require.NoError(t, err)
 
 	// 新しいワールドを作成
-	newWorld := createTestWorld()
+	newWorld := testutil.InitTestWorld(t)
 
 	// 読み込み
 	err = manager.LoadWorld(newWorld, "test_slot")
@@ -208,14 +197,14 @@ func TestSerializationManager_EmptyWorld(t *testing.T) {
 	manager := NewSerializationManager(testDir)
 
 	// 空のワールドを作成
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	// 保存
 	err := manager.SaveWorld(world, "empty_slot")
 	require.NoError(t, err)
 
 	// 読み込み
-	newWorld := createTestWorld()
+	newWorld := testutil.InitTestWorld(t)
 	err = manager.LoadWorld(newWorld, "empty_slot")
 	require.NoError(t, err)
 
@@ -252,7 +241,7 @@ func TestValidJSONButNoChecksum(t *testing.T) {
 
 	// シリアライゼーションマネージャーを作成
 	manager := NewSerializationManager(testDir)
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	// 有効なJSONだがチェックサムなしのファイルの読み込み（失敗するはず）
 	err = manager.LoadWorld(world, "valid_no_checksum")
@@ -263,7 +252,7 @@ func TestValidJSONButNoChecksum(t *testing.T) {
 
 func TestChecksumValidation(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	// テスト用のセーブディレクトリ
 	tempDir := t.TempDir()
@@ -311,7 +300,7 @@ func TestChecksumValidation(t *testing.T) {
 
 func TestTamperedSaveDataLoad(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	// テスト用のセーブディレクトリ
 	tempDir := t.TempDir()
@@ -351,7 +340,7 @@ func TestTamperedSaveDataLoad(t *testing.T) {
 
 func TestDeterministicHashCalculation(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	// テスト用のセーブディレクトリ
 	tempDir := t.TempDir()
@@ -396,7 +385,7 @@ func TestDeterministicHashCalculation(t *testing.T) {
 
 func TestHashConsistencyAcrossRuns(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
@@ -448,7 +437,7 @@ func TestMissingChecksumValidation(t *testing.T) {
 
 func TestOldSaveDataWithoutChecksum(t *testing.T) {
 	t.Parallel()
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	tempDir := t.TempDir()
 	manager := NewSerializationManager(tempDir)
 

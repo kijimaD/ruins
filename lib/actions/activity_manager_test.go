@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/kijimaD/ruins/lib/logger"
+	"github.com/kijimaD/ruins/lib/testutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -29,7 +30,7 @@ func TestActivityManagerCreation(t *testing.T) {
 func TestActivityManagerStartActivity(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 	actor := ecs.Entity(1)
 
 	// アクティビティを作成
@@ -67,7 +68,7 @@ func TestActivityManagerStartActivity(t *testing.T) {
 func TestActivityManagerMultipleActivities(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 
 	actor1 := ecs.Entity(1)
 	actor2 := ecs.Entity(2)
@@ -111,7 +112,7 @@ func TestActivityManagerMultipleActivities(t *testing.T) {
 func TestActivityManagerReplaceActivity(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 	actor := ecs.Entity(1)
 
 	// 最初のアクティビティを開始
@@ -149,7 +150,7 @@ func TestActivityManagerReplaceActivity(t *testing.T) {
 func TestActivityManagerInterruptAndResume(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 	actor := ecs.Entity(1)
 
 	// アクティビティを開始
@@ -206,7 +207,7 @@ func TestActivityManagerInterruptAndResume(t *testing.T) {
 func TestActivityManagerCancel(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 	actor := ecs.Entity(1)
 
 	// アクティビティを開始
@@ -238,7 +239,7 @@ func TestActivityManagerCancel(t *testing.T) {
 func TestActivityManagerProcessTurn(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 
 	actor1 := ecs.Entity(1)
 	actor2 := ecs.Entity(2)
@@ -306,7 +307,7 @@ func TestActivityManagerProcessTurn(t *testing.T) {
 func TestActivityManagerSummary(t *testing.T) {
 	t.Parallel()
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 
 	// 初期状態のサマリー
 	summary := manager.GetActivitySummary()

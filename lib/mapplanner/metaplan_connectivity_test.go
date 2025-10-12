@@ -3,19 +3,15 @@ package mapplanner
 import (
 	"testing"
 
-	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestMetaPlanConnectivityIntegration(t *testing.T) {
 	t.Parallel()
 
 	// テスト用のワールドを作成
-	components := &gc.Components{}
-	assert.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
-	world, _ := world.InitWorld(components)
+	world := testutil.InitTestWorld(t)
 	world.Resources.RawMaster = createTownTestRawMaster()
 
 	// 接続性検証が組み込まれたPlan関数をテスト
@@ -47,9 +43,7 @@ func TestMetaPlanConnectivityWithTownMap(t *testing.T) {
 	t.Parallel()
 
 	// テスト用のワールドを作成
-	components := &gc.Components{}
-	assert.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
-	world, _ := world.InitWorld(components)
+	world := testutil.InitTestWorld(t)
 	world.Resources.RawMaster = createTownTestRawMaster()
 
 	// 街マップでの接続性検証テスト

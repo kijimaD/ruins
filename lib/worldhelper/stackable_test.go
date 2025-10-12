@@ -4,15 +4,14 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetAmount(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
@@ -36,8 +35,7 @@ func TestGetAmount(t *testing.T) {
 
 func TestPlusMinusAmount(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// テスト用素材エンティティを作成
 	materialEntity := world.Manager.NewEntity()
@@ -46,7 +44,7 @@ func TestPlusMinusAmount(t *testing.T) {
 	materialEntity.AddComponent(world.Components.Name, &gc.Name{Name: "鉄"})
 
 	// 数量を増加
-	err = AddStackableCount(world, "鉄", 5)
+	err := AddStackableCount(world, "鉄", 5)
 	require.NoError(t, err)
 	entity, found := FindStackableInInventory(world, "鉄")
 	require.True(t, found)

@@ -5,18 +5,15 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestNewTownPlannerMetaPlan(t *testing.T) {
 	t.Parallel()
 
 	// テスト用のワールドを作成
-	components := &gc.Components{}
-	assert.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
-	world, _ := world.InitWorld(components)
+	world := testutil.InitTestWorld(t)
 	world.Resources.RawMaster = createTownTestRawMaster()
 
 	// TownPlannerで街マップを生成

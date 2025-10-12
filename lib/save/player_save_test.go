@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -21,8 +21,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	}()
 
 	// テスト用のワールドを作成
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()
@@ -42,7 +41,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 
 	// セーブマネージャーを作成してセーブ
 	saveManager := NewSerializationManager(testDir)
-	err = saveManager.SaveWorld(world, "player_test")
+	err := saveManager.SaveWorld(world, "player_test")
 	require.NoError(t, err)
 
 	// セーブファイルの存在確認
@@ -51,8 +50,7 @@ func TestPlayerComponentSaveLoad(t *testing.T) {
 	assert.NoError(t, err, "Save file should exist")
 
 	// 新しいワールドを作成してロード
-	newWorld, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	newWorld := testutil.InitTestWorld(t)
 
 	err = saveManager.LoadWorld(newWorld, "player_test")
 	require.NoError(t, err)

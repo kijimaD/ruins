@@ -4,22 +4,21 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAddCurrency(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成してWalletを追加
 	player := world.Manager.NewEntity()
 	player.AddComponent(world.Components.Wallet, &gc.Wallet{Currency: 100})
 
 	// 通貨を追加
-	err = AddCurrency(world, player, 50)
+	err := AddCurrency(world, player, 50)
 	require.NoError(t, err)
 
 	// 結果を検証
@@ -32,8 +31,7 @@ func TestAddCurrency(t *testing.T) {
 
 func TestGetCurrency(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成してWalletを追加
 	player := world.Manager.NewEntity()
@@ -55,15 +53,14 @@ func TestGetCurrency(t *testing.T) {
 
 func TestSetCurrency(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成してWalletを追加
 	player := world.Manager.NewEntity()
 	player.AddComponent(world.Components.Wallet, &gc.Wallet{Currency: 100})
 
 	// 通貨を設定
-	err = SetCurrency(world, player, 500)
+	err := SetCurrency(world, player, 500)
 	require.NoError(t, err)
 
 	// 結果を検証
@@ -76,8 +73,7 @@ func TestSetCurrency(t *testing.T) {
 
 func TestHasCurrency(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成してWalletを追加
 	player := world.Manager.NewEntity()
@@ -94,8 +90,7 @@ func TestHasCurrency(t *testing.T) {
 
 func TestConsumeCurrency(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成してWalletを追加
 	player := world.Manager.NewEntity()
@@ -122,14 +117,13 @@ func TestConsumeCurrency(t *testing.T) {
 
 func TestCurrencyOperationsWithoutWallet(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// Walletを持たないエンティティ
 	entity := world.Manager.NewEntity()
 
 	// 各操作がエラーを返すことを確認
-	err = AddCurrency(world, entity, 100)
+	err := AddCurrency(world, entity, 100)
 	assert.Error(t, err, "Walletがない場合はエラーを返すべき")
 	assert.Equal(t, 0, GetCurrency(world, entity), "Walletがないので0")
 

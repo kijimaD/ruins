@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -22,8 +22,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 	}()
 
 	// ワールドを作成
-	w, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	w := testutil.InitTestWorld(t)
 
 	// 回復アイテムを作成
 	healingItem := w.Manager.NewEntity()
@@ -79,8 +78,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 	require.NoError(t, err)
 
 	// 新しいワールドを作成してロード
-	newWorld, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	newWorld := testutil.InitTestWorld(t)
 
 	err = sm.LoadWorld(newWorld, "test_effect")
 	require.NoError(t, err)

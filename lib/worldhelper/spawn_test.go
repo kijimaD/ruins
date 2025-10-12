@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -62,8 +62,7 @@ func TestSetMaxHPSP(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			// 独立したworldを作成
-			world, err := maingame.InitWorld(960, 720)
-			require.NoError(t, err)
+			world := testutil.InitTestWorld(t)
 
 			// エンティティを作成
 			entity := world.Manager.NewEntity()
@@ -85,7 +84,7 @@ func TestSetMaxHPSP(t *testing.T) {
 			})
 
 			// 関数を実行
-			err = setMaxHPSP(world, entity)
+			err := setMaxHPSP(world, entity)
 			require.NoError(t, err)
 
 			// 結果を検証
@@ -113,14 +112,13 @@ func TestSetMaxHPSP(t *testing.T) {
 
 func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 必要なコンポーネントがないエンティティ
 	entity := world.Manager.NewEntity()
 
 	// 関数を実行してエラーが発生することを確認
-	err = setMaxHPSP(world, entity)
+	err := setMaxHPSP(world, entity)
 	require.Error(t, err, "必要なコンポーネントがない場合はエラーを返すべき")
 	assert.Contains(t, err.Error(), "does not have required components", "エラーメッセージが適切であるべき")
 
@@ -130,8 +128,7 @@ func TestSetMaxHPSP_WithoutComponents(t *testing.T) {
 
 func TestFullRecover(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// テスト用エンティティを作成
 	entity := world.Manager.NewEntity()
@@ -174,8 +171,7 @@ func TestFullRecover(t *testing.T) {
 func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	t.Parallel()
 	// NPCが敵として認識されるAIMoveFSMコンポーネントを持つことを確認
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// SpriteSheetsを初期化
 	spriteSheets := make(map[string]gc.SpriteSheet)
@@ -193,7 +189,7 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// NPCを生成（タイル座標で指定）
-	_, err = SpawnEnemy(world, 5, 5, "火の玉")
+	_, err := SpawnEnemy(world, 5, 5, "火の玉")
 	require.NoError(t, err)
 
 	// AIMoveFSMコンポーネントを持つエンティティが存在することを確認

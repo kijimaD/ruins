@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/kijimaD/ruins/lib/consts"
-	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 )
 
 func TestNewFragmentText(t *testing.T) {
 	t.Parallel()
 	// モックのworldを作成（テスト用）
-	world := w.World{}
+	world := testutil.InitTestWorld(t)
 	// 実際のUIリソースが必要になるため、このテストは統合テスト環境でのみ実行可能
 	// 単体テストとしては関数の存在確認のみ行う
 

@@ -5,13 +5,18 @@ import (
 
 	"github.com/kijimaD/ruins/lib/aiinput"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/testutil"
+	"github.com/kijimaD/ruins/lib/turns"
 )
 
 func TestAISystem(t *testing.T) {
 	t.Parallel()
 
-	// テスト用のワールド作成（TurnManagerを含む）
-	world := CreateTestWorldWithResources(t)
+	// テスト用のワールド作成
+	world := testutil.InitTestWorld(t)
+
+	// TurnManagerを初期化
+	world.Resources.TurnManager = turns.NewTurnManager()
 
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()

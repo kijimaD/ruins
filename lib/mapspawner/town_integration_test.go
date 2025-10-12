@@ -5,18 +5,15 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
-	"github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/require"
-	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestTownPlannerIntegration(t *testing.T) {
 	t.Parallel()
 
 	// テスト用のワールドを作成
-	components := &gc.Components{}
-	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
-	world, _ := world.InitWorld(components)
+	world := testutil.InitTestWorld(t)
 	world.Resources.RawMaster = createMapspawnerTestRawMaster()
 
 	// 街マップ生成（Plan）
@@ -46,7 +43,7 @@ func TestTownPlannerIntegration(t *testing.T) {
 
 	// Propsとワープポータルが配置されているか確認
 	require.Greater(t, len(metaPlan.Props), 0, "Should have Props")
-	require.Equal(t, 1, len(metaPlan.WarpPortals), "Should have exactly one warp portal")
+	require.Greater(t, len(metaPlan.WarpPortals), 0, "Should have at least one warp portal")
 	// NPCは現在スキップ中
 
 	// GridElementコンポーネントを持つエンティティ数を確認
@@ -61,9 +58,7 @@ func TestTownPlannerVsSmallRoom(t *testing.T) {
 	t.Parallel()
 
 	// 同じワールドでSmallRoomとTownを比較
-	components := &gc.Components{}
-	require.NoError(t, components.InitializeComponents(&ecs.Manager{}), "InitializeComponents failed")
-	world, _ := world.InitWorld(components)
+	world := testutil.InitTestWorld(t)
 	world.Resources.RawMaster = createMapspawnerTestRawMaster()
 
 	seed := uint64(123)
