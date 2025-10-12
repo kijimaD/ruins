@@ -17,8 +17,8 @@ type MessageData struct {
 // Choice は選択肢のデータ
 type Choice struct {
 	Text        string
-	Action      func(w.World) // 選択時に実行する
-	MessageData *MessageData  // 選択肢を選んだ時に表示するメッセージ
+	Action      func(w.World) error // 選択時に実行する
+	MessageData *MessageData        // 選択肢を選んだ時に表示するメッセージ
 	Disabled    bool
 }
 
@@ -39,7 +39,7 @@ func NewSystemMessage(text string) *MessageData {
 }
 
 // WithChoice は選択肢を追加する
-func (m *MessageData) WithChoice(text string, action func(w.World)) *MessageData {
+func (m *MessageData) WithChoice(text string, action func(w.World) error) *MessageData {
 	m.Choices = append(m.Choices, Choice{
 		Text:   text,
 		Action: action,

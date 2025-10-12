@@ -16,13 +16,13 @@ type MetaTownPlanner struct {
 }
 
 // NewTownPlanner は MetaPlan 対応の街プランナーを作成する
-func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error) {
 	// 50x50の街レイアウト（幅3の道路と5x5以上の建物）
 	tileMap, entityMap := getTownLayout()
 
 	// レイアウトの基本整合性を検証
 	if err := validateTownLayout(tileMap, entityMap); err != nil {
-		panic(fmt.Sprintf("街レイアウト検証エラー: %v", err))
+		return nil, fmt.Errorf("街レイアウト検証エラー: %w", err)
 	}
 
 	planner := &MetaTownPlanner{
@@ -33,7 +33,7 @@ func NewTownPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	// 実際のマップサイズは文字列から自動検出される（50x50）
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(planner)
-	return chain
+	return chain, nil
 }
 
 // PlanInitial は MetaPlan の初期化を行う

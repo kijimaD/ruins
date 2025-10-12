@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTabSwitching(t *testing.T) {
@@ -41,7 +42,8 @@ func TestTabSwitching(t *testing.T) {
 
 	// Tabキーでタブ2に移動
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err := tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
@@ -54,7 +56,8 @@ func TestTabSwitching(t *testing.T) {
 	// Shift+Tabでタブ1に戻る
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
 	mockInput.SetKeyPressed(ebiten.KeyShift, true)
-	tabMenu.Update()
+	_, err = tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
@@ -95,7 +98,8 @@ func TestTabSwitchingWithTabKey(t *testing.T) {
 
 	// Tabキーでタブ2に移動
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err := tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
@@ -108,7 +112,8 @@ func TestTabSwitchingWithTabKey(t *testing.T) {
 	// Shift+Tabでタブ1に戻る（前回のTabキーをリセット）
 	mockInput.SetKeyPressed(ebiten.KeyShift, true)
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err = tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
@@ -121,7 +126,8 @@ func TestTabSwitchingWithTabKey(t *testing.T) {
 	// 最初のタブでShift+Tab → 最後のタブに循環
 	mockInput.SetKeyPressed(ebiten.KeyShift, true)
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err = tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 2 {
@@ -131,7 +137,8 @@ func TestTabSwitchingWithTabKey(t *testing.T) {
 	// 最後のタブでTab → 最初のタブに循環
 	mockInput.SetKeyPressed(ebiten.KeyShift, false) // Shiftキーを離す
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err = tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
@@ -163,8 +170,9 @@ func TestItemNavigation(t *testing.T) {
 
 	itemChangeCount := 0
 	callbacks := Callbacks{
-		OnItemChange: func(_ int, _, _ int, _ menu.Item) {
+		OnItemChange: func(_ int, _, _ int, _ menu.Item) error {
 			itemChangeCount++
+			return nil
 		},
 	}
 
@@ -178,7 +186,8 @@ func TestItemNavigation(t *testing.T) {
 
 	// 下矢印でアイテム2に移動
 	mockInput.SetKeyJustPressed(ebiten.KeyArrowDown, true)
-	tabMenu.Update()
+	_, err := tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentItemIndex() != 1 {
@@ -190,7 +199,8 @@ func TestItemNavigation(t *testing.T) {
 
 	// 上矢印でアイテム1に戻る
 	mockInput.SetKeyJustPressed(ebiten.KeyArrowUp, true)
-	tabMenu.Update()
+	_, err = tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentItemIndex() != 0 {
@@ -218,7 +228,8 @@ func TestWrapNavigation(t *testing.T) {
 	// 最初のタブでShift+Tab → 最後のタブに循環
 	mockInput.SetKeyPressed(ebiten.KeyShift, true)
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err := tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 1 {
@@ -228,7 +239,8 @@ func TestWrapNavigation(t *testing.T) {
 	// 最後のタブでTab → 最初のタブに循環
 	mockInput.SetKeyPressed(ebiten.KeyShift, false) // Shiftキーを離す
 	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	tabMenu.Update()
+	_, err = tabMenu.Update()
+	require.NoError(t, err)
 	mockInput.Reset()
 
 	if tabMenu.GetCurrentTabIndex() != 0 {
@@ -256,8 +268,9 @@ func TestSelection(t *testing.T) {
 
 	var selectedItem menu.Item
 	callbacks := Callbacks{
-		OnSelectItem: func(_, _ int, _ TabItem, item menu.Item) {
+		OnSelectItem: func(_, _ int, _ TabItem, item menu.Item) error {
 			selectedItem = item
+			return nil
 		},
 	}
 
@@ -266,7 +279,8 @@ func TestSelection(t *testing.T) {
 
 	// Enterキーで選択（セッションベース）
 	mockInput.SimulateEnterPressRelease()
-	tabMenu.Update()
+	_, err := tabMenu.Update()
+	require.NoError(t, err)
 
 	if selectedItem.ID != "item1" {
 		t.Errorf("選択されたアイテムが不正: 期待 item1, 実際 %s", selectedItem.ID)
@@ -297,7 +311,8 @@ func TestCancel(t *testing.T) {
 
 	// Escapeキーでキャンセル
 	mockInput.SetKeyJustPressed(ebiten.KeyEscape, true)
-	tabMenu.Update()
+	_, err := tabMenu.Update()
+	require.NoError(t, err)
 
 	if !cancelCalled {
 		t.Error("キャンセルコールバックが呼ばれていない")
@@ -363,14 +378,14 @@ func TestTabMenuSetters(t *testing.T) {
 	tabMenu := NewTabMenu(config, Callbacks{}, mockInput)
 
 	// タブインデックスの設定
-	tabMenu.SetTabIndex(1)
+	require.NoError(t, tabMenu.SetTabIndex(1))
 	if tabMenu.GetCurrentTabIndex() != 1 {
 		t.Errorf("設定後のタブインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentTabIndex())
 	}
 
 	// アイテムインデックスの設定
-	tabMenu.SetTabIndex(0) // タブ1に戻す
-	tabMenu.SetItemIndex(1)
+	require.NoError(t, tabMenu.SetTabIndex(0)) // タブ1に戻す
+	require.NoError(t, tabMenu.SetItemIndex(1))
 	if tabMenu.GetCurrentItemIndex() != 1 {
 		t.Errorf("設定後のアイテムインデックスが不正: 期待 1, 実際 %d", tabMenu.GetCurrentItemIndex())
 	}

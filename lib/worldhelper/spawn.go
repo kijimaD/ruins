@@ -62,7 +62,11 @@ func SpawnTile(world w.World, tileName string, x gc.Tile, y gc.Tile, autoTileInd
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	componentList.Entities = append(componentList.Entities, entitySpec)
 
-	return entities.AddEntities(world, componentList)[0], nil
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
+	return entitiesSlice[0], nil
 }
 
 // ================
@@ -96,10 +100,13 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 	}
 	entitySpec.Wallet = &gc.Wallet{Currency: 1000}
 	componentList.Entities = append(componentList.Entities, entitySpec)
-	entities := entities.AddEntities(world, componentList)
-	fullRecover(world, entities[len(entities)-1])
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
+	fullRecover(world, entitiesSlice[len(entitiesSlice)-1])
 
-	return entities[len(entities)-1], nil
+	return entitiesSlice[len(entitiesSlice)-1], nil
 }
 
 // SpawnEnemy はフィールド上に敵キャラクターを生成する
@@ -127,10 +134,13 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 	}
 
 	componentList.Entities = append(componentList.Entities, entitySpec)
-	entities := entities.AddEntities(world, componentList)
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
 
 	// 全回復
-	npcEntity := entities[len(entities)-1]
+	npcEntity := entitiesSlice[len(entitiesSlice)-1]
 	fullRecover(world, npcEntity)
 
 	// ActionPointsを初期化
@@ -138,7 +148,10 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 		if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
 			if npcEntity.HasComponent(world.Components.TurnBased) {
 				actionPoints := world.Components.TurnBased.Get(npcEntity).(*gc.TurnBased)
-				maxAP := turnManager.CalculateMaxActionPoints(world, npcEntity)
+				maxAP, err := turnManager.CalculateMaxActionPoints(world, npcEntity)
+				if err != nil {
+					return ecs.Entity(0), fmt.Errorf("AP計算エラー: %w", err)
+				}
 				actionPoints.AP.Current = maxAP
 				actionPoints.AP.Max = maxAP
 			}
@@ -161,9 +174,12 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ec
 		return ecs.Entity(0), fmt.Errorf("%w: %v", ErrItemGeneration, err)
 	}
 	componentList.Entities = append(componentList.Entities, entitySpec)
-	entities := entities.AddEntities(world, componentList)
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
 
-	return entities[len(entities)-1], nil
+	return entitiesSlice[len(entitiesSlice)-1], nil
 }
 
 // SpawnStackable はStackableアイテムを生成する
@@ -194,9 +210,12 @@ func SpawnStackable(world w.World, name string, count int, location gc.ItemLocat
 	entitySpec.Stackable = &gc.Stackable{Count: count}
 
 	componentList.Entities = append(componentList.Entities, entitySpec)
-	entities := entities.AddEntities(world, componentList)
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
 
-	return entities[len(entities)-1], nil
+	return entitiesSlice[len(entitiesSlice)-1], nil
 }
 
 // 完全回復させる
@@ -223,7 +242,12 @@ func fullRecover(world w.World, entity ecs.Entity) {
 		if world.Resources.TurnManager != nil {
 			if turnManager, ok := world.Resources.TurnManager.(*turns.TurnManager); ok {
 				actionPoints := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
-				maxAP := turnManager.CalculateMaxActionPoints(world, entity)
+				maxAP, err := turnManager.CalculateMaxActionPoints(world, entity)
+				if err != nil {
+					// FullRecoverはエラーを返さないので、ログに記録してデフォルト値を設定
+					fmt.Printf("AP計算エラー: %v\n", err)
+					maxAP = 100 // デフォルト値
+				}
 				actionPoints.AP.Current = maxAP
 				actionPoints.AP.Max = maxAP
 			}
@@ -291,7 +315,9 @@ func SpawnAllCards(world w.World) error {
 			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
 		}
 		componentList.Entities = append(componentList.Entities, entitySpec)
-		entities.AddEntities(world, componentList)
+		if _, err := entities.AddEntities(world, componentList); err != nil {
+			return err
+		}
 	}
 	return nil
 }

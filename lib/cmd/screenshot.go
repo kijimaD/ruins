@@ -59,9 +59,9 @@ func runScreenshot(ctx *cli.Context) error {
 			"これはメッセージウィンドウのVRTテストです。\n\n表示状態の確認用メッセージです。",
 			"VRTテスト",
 		).WithChoice(
-			"選択肢1", func(_ w.World) {},
+			"選択肢1", func(_ w.World) error { return nil },
 		).WithChoice(
-			"選択肢2", func(_ w.World) {},
+			"選択肢2", func(_ w.World) error { return nil },
 		)
 		vrt.RunTestGame(gs.NewMessageState(messageData), mode)
 	case "SaveMenu":

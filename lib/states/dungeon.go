@@ -1,6 +1,7 @@
 package states
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -67,23 +68,23 @@ func (st *DungeonState) OnStart(world w.World) error {
 	// 計画作成する
 	plan, err := mapplanner.Plan(world, consts.MapTileWidth, consts.MapTileHeight, st.Seed, st.BuilderType)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	// スポーンする
 	level, err := mapspawner.Spawn(world, plan)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	world.Resources.Dungeon.Level = level
 
 	// プレイヤー位置を取得する
 	playerX, playerY, hasPlayerPos := plan.GetPlayerStartPosition()
 	if !hasPlayerPos {
-		panic("プレイヤー開始位置が設定されていません")
+		return fmt.Errorf("プレイヤー開始位置が設定されていません")
 	}
 	// プレイヤーを配置する
 	if err := worldhelper.MovePlayerToPosition(world, playerX, playerY); err != nil {
-		panic(err)
+		return err
 	}
 
 	// フロア移動時に探索済みマップをリセット
@@ -138,7 +139,9 @@ func (st *DungeonState) OnStop(world w.World) error {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
-	gs.TurnSystem(world)
+	if err := gs.TurnSystem(world); err != nil {
+		return es.Transition[w.World]{}, err
+	}
 	// 移動処理の後にカメラ更新
 	gs.CameraSystem(world)
 

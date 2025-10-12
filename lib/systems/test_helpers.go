@@ -6,6 +6,7 @@ import (
 
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/stretchr/testify/require"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 )
@@ -41,7 +42,8 @@ func CreatePlayerEntity(t *testing.T, world w.World, x, y float64) {
 			SpriteKey:       "test_sprite",
 		},
 	})
-	entities.AddEntities(world, cl)
+	_, err := entities.AddEntities(world, cl)
+	require.NoError(t, err)
 }
 
 // CreateEnemyEntity は指定された位置に敵エンティティを作成する
@@ -69,7 +71,8 @@ func CreateEnemyEntity(t *testing.T, world w.World, x, y float64) {
 			SpriteKey:       "test_sprite",
 		},
 	})
-	entities.AddEntities(world, cl)
+	_, err := entities.AddEntities(world, cl)
+	require.NoError(t, err)
 }
 
 // CreateEntityWithSprite は指定されたスプライトサイズでエンティティを作成する
@@ -117,7 +120,8 @@ func CreateEntityWithSprite(t *testing.T, world w.World, x, y float64, width, he
 		})
 	}
 
-	entities.AddEntities(world, cl)
+	_, err := entities.AddEntities(world, cl)
+	require.NoError(t, err)
 }
 
 // CreateEntityWithSpriteSize はspriteSize構造体を使ってエンティティを作成する
@@ -145,5 +149,6 @@ func CreateEntityWithGridPosition(t *testing.T, world w.World, gridX, gridY int,
 		})
 	}
 
-	entities.AddEntities(world, cl)
+	_, err := entities.AddEntities(world, cl)
+	require.NoError(t, err)
 }

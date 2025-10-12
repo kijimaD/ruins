@@ -2,7 +2,6 @@ package worldhelper
 
 import (
 	"fmt"
-	"log"
 	"math/rand/v2"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -29,7 +28,9 @@ func Craft(world w.World, name string) (*ecs.Entity, error) {
 		return nil, fmt.Errorf("アイテム生成に失敗: %w", err)
 	}
 	randomize(world, resultEntity)
-	consumeMaterials(world, name)
+	if err := consumeMaterials(world, name); err != nil {
+		return nil, fmt.Errorf("素材消費に失敗: %w", err)
+	}
 
 	return &resultEntity, nil
 }
@@ -58,13 +59,14 @@ func CanCraft(world w.World, name string) (bool, error) {
 }
 
 // consumeMaterials はアイテム合成に必要な素材を消費する
-func consumeMaterials(world w.World, goal string) {
+func consumeMaterials(world w.World, goal string) error {
 	for _, recipeInput := range requiredMaterials(world, goal) {
 		err := RemoveStackableCount(world, recipeInput.Name, recipeInput.Amount)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // requiredMaterials は指定したレシピに必要な素材一覧

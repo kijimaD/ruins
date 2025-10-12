@@ -16,12 +16,12 @@ import (
 // TileInputSystem はプレイヤーからのタイルベース入力を処理する。Actionシステムを使用して移動を実行する
 // AIの移動・攻撃も将来的に同じActionシステムを使用予定
 // TODO: 文脈に応じて発行アクションを判定する
-func TileInputSystem(world w.World) {
+func TileInputSystem(world w.World) error {
 	// ターン管理チェック - プレイヤーターンでない場合は入力を受け付けない
 	if world.Resources.TurnManager != nil {
 		turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 		if !turnManager.CanPlayerAct() {
-			return
+			return nil
 		}
 	}
 	// キー入力を方向に変換
@@ -50,7 +50,7 @@ func TileInputSystem(world w.World) {
 		direction = gc.DirectionRight
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
 		executeWaitAction(world)
-		return
+		return nil
 	}
 
 	// 移動アクションを実行
@@ -62,6 +62,8 @@ func TileInputSystem(world w.World) {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 		executeEnterAction(world)
 	}
+
+	return nil
 }
 
 // executeActivity はアクティビティ実行関数

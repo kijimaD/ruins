@@ -4,7 +4,6 @@ package mapplanner
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -294,17 +293,18 @@ func (b *PlannerChain) With(metaMapPlanner MetaMapPlanner) {
 }
 
 // Plan はプランナーチェーンを実行してマップを生成する
-func (b *PlannerChain) Plan() {
+func (b *PlannerChain) Plan() error {
 	if b.Starter == nil {
-		log.Fatal("empty starter planner!")
+		return fmt.Errorf("empty starter planner")
 	}
 	if err := (*b.Starter).PlanInitial(&b.PlanData); err != nil {
-		log.Fatalf("PlanInitial failed: %v", err)
+		return fmt.Errorf("PlanInitial failed: %w", err)
 	}
 
 	for _, meta := range b.Planners {
 		meta.PlanMeta(&b.PlanData)
 	}
+	return nil
 }
 
 // ValidateConnectivity はマップの接続性を検証する
@@ -326,7 +326,7 @@ type MetaMapPlanner interface {
 }
 
 // NewSmallRoomPlanner はシンプルな小部屋プランナーを作成する
-func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error) {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(RectRoomPlanner{})
 	chain.With(NewFillAll("Wall"))      // 全体を壁で埋める
@@ -334,12 +334,12 @@ func NewSmallRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerCha
 	chain.With(LineCorridorPlanner{})   // 廊下を作成
 	chain.With(NewBoundaryWall("Wall")) // 最外周を壁で囲む
 
-	return chain
+	return chain, nil
 }
 
 // NewBigRoomPlanner は大部屋プランナーを作成する
 // ランダムにバリエーションを適用する統合版
-func NewBigRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+func NewBigRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error) {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(BigRoomPlanner{})
 	chain.With(NewFillAll("Wall")) // 全体を壁で埋める
@@ -349,7 +349,7 @@ func NewBigRoomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain
 	}) // 大部屋を描画（バリエーション込み）
 	chain.With(NewBoundaryWall("Wall")) // 最外周を壁で囲む
 
-	return chain
+	return chain, nil
 }
 
 // PlannerType はマップ生成の設定を表す構造体
@@ -363,7 +363,7 @@ type PlannerType struct {
 	// ポータル位置を固定するか
 	UseFixedPortalPos bool
 	// プランナー関数
-	PlannerFunc func(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain
+	PlannerFunc func(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error)
 }
 
 var (
@@ -431,7 +431,7 @@ var (
 )
 
 // NewRandomPlanner はシード値を使用してランダムにプランナーを選択し作成する
-func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error) {
 	// シードが0の場合はランダムなシードを生成する。後続のビルダーに渡される
 	if seed == 0 {
 		seed = uint64(time.Now().UnixNano())
@@ -452,7 +452,11 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	// ランダムに選択
 	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
 
-	return selectedType.PlannerFunc(width, height, seed)
+	chain, err := selectedType.PlannerFunc(width, height, seed)
+	if err != nil {
+		return nil, fmt.Errorf("ランダムプランナー選択エラー: %w", err)
+	}
+	return chain, nil
 }
 
 // GetTile はタイルを生成する

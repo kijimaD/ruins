@@ -76,7 +76,9 @@ func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 		}
 	}
 
-	st.tabMenu.Update()
+	if _, err := st.tabMenu.Update(); err != nil {
+		return es.Transition[w.World]{}, err
+	}
 	st.ui.Update()
 
 	return st.ConsumeTransition(), nil
@@ -104,8 +106,8 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
-			st.handleItemSelection(world, tab, item)
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
@@ -114,9 +116,12 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) {
-			st.handleItemChange(world, item)
+		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+			if err := st.handleItemChange(world, item); err != nil {
+				return err
+			}
 			st.updateTabDisplay(world)
+			return nil
 		},
 	}
 
@@ -272,21 +277,22 @@ func (st *ShopMenuState) getItemPrice(world w.World, itemName string, isBuy bool
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *ShopMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
+func (st *ShopMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
 	if item.UserData == nil {
-		return
+		return nil
 	}
 
 	st.selectedItem = item
 	st.showActionWindow(world, item)
+	return nil
 }
 
 // handleItemChange はアイテムフォーカス変更時の処理
-func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) {
+func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) error {
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
 		st.specContainer.RemoveChildren()
-		return
+		return nil
 	}
 
 	data := item.UserData.(map[string]interface{})
@@ -300,7 +306,7 @@ func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) {
 	spec, err := rawMaster.NewItemSpec(itemName, nil)
 	if err != nil {
 		st.itemDesc.Label = TextNoDescription
-		return
+		return err
 	}
 
 	// Descriptionを取得
@@ -312,6 +318,7 @@ func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) {
 
 	// EntitySpecから性能表示を更新
 	views.UpdateSpecFromSpec(world, st.specContainer, spec)
+	return nil
 }
 
 // handlePurchase はアイテムの購入処理
@@ -569,6 +576,9 @@ func (st *ShopMenuState) updateInitialItemDisplay(world w.World) {
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
-		st.handleItemChange(world, currentItem)
+		if err := st.handleItemChange(world, currentItem); err != nil {
+			// TODO: エラーハンドリング改善
+			panic(err)
+		}
 	}
 }

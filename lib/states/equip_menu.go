@@ -2,7 +2,6 @@ package states
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
@@ -102,7 +101,9 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		}
 	}
 
-	st.tabMenu.Update()
+	if _, err := st.tabMenu.Update(); err != nil {
+		return es.Transition[w.World]{}, err
+	}
 	st.ui.Update()
 
 	return st.ConsumeTransition(), nil
@@ -128,8 +129,8 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
-			st.handleItemSelection(world, tab, item)
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeで前の画面に戻る
@@ -139,9 +140,12 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateAbilityDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) {
-			st.handleItemChange(world, item)
+		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+			if err := st.handleItemChange(world, item); err != nil {
+				return err
+			}
 			st.updateTabDisplay(world)
+			return nil
 		},
 	}
 
@@ -269,35 +273,36 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
+func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
 	if st.isEquipMode {
 		// 装備選択モードの場合
-		st.handleEquipItemSelection(world, item)
-	} else {
-		// スロット選択モードの場合
-		userData, ok := item.UserData.(map[string]interface{})
-		if !ok {
-			log.Fatal("unexpected item UserData")
-		}
-
-		st.showActionWindow(world, userData)
+		return st.handleEquipItemSelection(world, item)
 	}
+
+	// スロット選択モードの場合
+	userData, ok := item.UserData.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected item UserData")
+	}
+
+	st.showActionWindow(world, userData)
+	return nil
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
+func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
 		st.specContainer.RemoveChildren()
-		return
+		return nil
 	}
 
 	if st.isEquipMode {
 		// 装備選択モードの場合
 		entity, ok := item.UserData.(ecs.Entity)
 		if !ok {
-			log.Fatal("unexpected item UserData")
+			return fmt.Errorf("unexpected item UserData")
 		}
 
 		if entity.HasComponent(world.Components.Description) {
@@ -309,7 +314,7 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
 		// スロット選択モードの場合
 		userData, ok := item.UserData.(map[string]interface{})
 		if !ok {
-			log.Fatal("unexpected item UserData")
+			return fmt.Errorf("unexpected item UserData")
 		}
 
 		slotEntity := userData["entity"].(*ecs.Entity)
@@ -329,6 +334,7 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) {
 			st.updateAbilityDisplay(world)
 		}
 	}
+	return nil
 }
 
 // createTabDisplayUI はタブ表示UIを作成する
@@ -387,7 +393,10 @@ func (st *EquipMenuState) updateInitialItemDisplay(world w.World) {
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
-		st.handleItemChange(world, currentItem)
+		if err := st.handleItemChange(world, currentItem); err != nil {
+			// TODO: エラーハンドリング改善
+			panic(err)
+		}
 	}
 }
 
@@ -644,10 +653,10 @@ func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Ent
 }
 
 // handleEquipItemSelection は装備選択時の処理
-func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item) {
+func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item) error {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	// 前の装備を外す
@@ -659,7 +668,7 @@ func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item
 	worldhelper.Equip(world, entity, st.equipTargetMember, st.equipSlotNumber)
 
 	// 装備モードを終了して元の表示に戻る
-	st.exitEquipMode(world)
+	return st.exitEquipMode(world)
 }
 
 // unequipItem は装備を外す
@@ -675,7 +684,7 @@ func (st *EquipMenuState) unequipItem(world w.World, userData map[string]interfa
 }
 
 // exitEquipMode は装備選択モードを終了する
-func (st *EquipMenuState) exitEquipMode(world w.World) {
+func (st *EquipMenuState) exitEquipMode(world w.World) error {
 	st.isEquipMode = false
 	st.equipSlotNumber = 0
 	st.previousEquipment = nil
@@ -687,11 +696,14 @@ func (st *EquipMenuState) exitEquipMode(world w.World) {
 
 	// 保存されたタブインデックスに復元
 	if st.previousTabIndex >= 0 && st.previousTabIndex < len(newTabs) {
-		st.tabMenu.SetTabIndex(st.previousTabIndex)
+		if err := st.tabMenu.SetTabIndex(st.previousTabIndex); err != nil {
+			return err
+		}
 	}
 
 	st.updateTabDisplay(world)
 	st.updateAbilityDisplay(world)
+	return nil
 }
 
 // reloadTabs はタブの内容を再読み込みする

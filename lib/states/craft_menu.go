@@ -3,7 +3,6 @@ package states
 import (
 	"fmt"
 	"image/color"
-	"log"
 	"sort"
 
 	"github.com/ebitenui/ebitenui"
@@ -99,7 +98,9 @@ func (st *CraftMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		}
 	}
 
-	st.tabMenu.Update()
+	if _, err := st.tabMenu.Update(); err != nil {
+		return es.Transition[w.World]{}, err
+	}
 	st.ui.Update()
 
 	return st.ConsumeTransition(), nil
@@ -127,8 +128,8 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
-			st.handleItemSelection(world, tab, item)
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeで前の画面に戻る
@@ -138,9 +139,12 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) {
-			st.handleItemChange(world, item)
+		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+			if err := st.handleItemChange(world, item); err != nil {
+				return err
+			}
 			st.updateTabDisplay(world)
+			return nil
 		},
 	}
 
@@ -230,29 +234,30 @@ func (st *CraftMenuState) createMenuItems(_ w.World, recipeNames []string) []men
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
+func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
 	recipeName, ok := item.UserData.(string)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	st.selectedItem = recipeName
 	st.showActionWindow(world, recipeName)
+	return nil
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
+func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
-		return
+		return nil
 	}
 
 	recipeName, ok := item.UserData.(string)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	// RawMasterからEntitySpecを取得
@@ -262,7 +267,7 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
-		return
+		return err
 	}
 
 	// Descriptionを取得
@@ -275,8 +280,9 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 	// EntitySpecから性能表示を更新
 	views.UpdateSpecFromSpec(world, st.specContainer, spec)
 	if err := st.updateRecipeList(world, spec.Recipe); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
@@ -587,7 +593,8 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	case "合成する":
 		resultEntity, err := worldhelper.Craft(world, recipeName)
 		if err != nil {
-			log.Fatal(err)
+			// TODO: コールバック関数内なのでpanicするしかない
+			panic(err)
 		}
 
 		// レシピリストを更新
@@ -595,10 +602,12 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 		var spec gc.EntitySpec
 		spec, err = rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
-			log.Fatal(err)
+			// TODO: コールバック関数内なのでpanicするしかない
+			panic(err)
 		}
 		if err = st.updateRecipeList(world, spec.Recipe); err != nil {
-			log.Fatal(err)
+			// TODO: コールバック関数内なのでpanicするしかない
+			panic(err)
 		}
 
 		st.closeActionWindow()
@@ -703,6 +712,9 @@ func (st *CraftMenuState) updateInitialItemDisplay(world w.World) {
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
-		st.handleItemChange(world, currentItem)
+		if err := st.handleItemChange(world, currentItem); err != nil {
+			// TODO: エラーハンドリング改善
+			panic(err)
+		}
 	}
 }

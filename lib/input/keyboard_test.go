@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGlobalKeyStateLogic(t *testing.T) {
@@ -118,9 +119,7 @@ func TestSharedKeyboardInput(t *testing.T) {
 	}
 
 	// キーボード入力が正常に動作することを確認
-	if keyboard1 == nil {
-		t.Fatal("GetSharedKeyboardInput() returned nil")
-	}
+	require.NotNil(t, keyboard1, "GetSharedKeyboardInput() returned nil")
 }
 
 func TestGlobalEnterPressStateStorage(t *testing.T) {
