@@ -4,15 +4,13 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCraftMenuSortIntegration(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	state := &CraftMenuState{}
 
@@ -31,8 +29,7 @@ func TestCraftMenuSortIntegration(t *testing.T) {
 
 func TestCraftMenuCardSortIntegration(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	state := &CraftMenuState{}
 
@@ -50,8 +47,7 @@ func TestCraftMenuCardSortIntegration(t *testing.T) {
 
 func TestCraftMenuWearableSortIntegration(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	state := &CraftMenuState{}
 
