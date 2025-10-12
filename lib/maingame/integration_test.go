@@ -68,9 +68,11 @@ func TestMainGameLifecycle(t *testing.T) {
 		// 完全なワールドを使用（テスト用の最小限ワールドではUIリソースが不足）
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(t, err)
+		stateMachine, err := es.Init(&gs.MainMenuState{}, world)
+		require.NoError(t, err)
 		game := &MainGame{
 			World:        world,
-			StateMachine: es.Init(&gs.MainMenuState{}, world),
+			StateMachine: stateMachine,
 		}
 
 		// Layout関数のテスト
@@ -94,7 +96,8 @@ func TestMainGameLifecycle(t *testing.T) {
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(t, err)
 		initialState := &gs.MainMenuState{}
-		stateMachine := es.Init(initialState, world)
+		stateMachine, err := es.Init(initialState, world)
+		require.NoError(t, err)
 
 		game := &MainGame{
 			World:        world,
@@ -113,7 +116,8 @@ func TestMainGameLifecycle(t *testing.T) {
 
 		// 状態機械の基本動作確認
 		assert.NotPanics(t, func() {
-			stateMachine.Update(world)
+			err := stateMachine.Update(world)
+			assert.NoError(t, err, "StateMachine.Updateでエラー")
 		}, "StateMachine.Updateでパニック")
 
 		// 複数回のUpdateを実行して安定性を確認
@@ -219,7 +223,8 @@ func validateResourceLoading(t *testing.T, world ew.World) {
 // validateStateMachineInitialization は状態機械初期化の検証
 func validateStateMachineInitialization(t *testing.T, world ew.World) {
 	initialState := &gs.MainMenuState{}
-	stateMachine := es.Init(initialState, world)
+	stateMachine, err := es.Init(initialState, world)
+	require.NoError(t, err)
 
 	// 状態スタックの確認
 	states := stateMachine.GetStates()
@@ -237,15 +242,18 @@ func validateStateMachineInitialization(t *testing.T, world ew.World) {
 
 	// Update呼び出しでパニックしないことを確認
 	assert.NotPanics(t, func() {
-		stateMachine.Update(world)
+		err := stateMachine.Update(world)
+		assert.NoError(t, err, "状態機械のUpdate呼び出しでエラー")
 	}, "状態機械のUpdate呼び出しでパニック")
 }
 
 // validateMainGameInitialization はMainGame初期化の検証
 func validateMainGameInitialization(t *testing.T, world ew.World) {
+	stateMachine, err := es.Init(&gs.MainMenuState{}, world)
+	require.NoError(t, err)
 	game := &MainGame{
 		World:        world,
-		StateMachine: es.Init(&gs.MainMenuState{}, world),
+		StateMachine: stateMachine,
 	}
 
 	assert.NotNil(t, game.World, "ゲームワールドがnil")
@@ -306,7 +314,7 @@ func BenchmarkGameInitialization(b *testing.B) {
 		require.NoError(b, err)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			_ = es.Init(&gs.MainMenuState{}, world)
+			_, _ = es.Init(&gs.MainMenuState{}, world)
 		}
 	})
 
@@ -314,7 +322,8 @@ func BenchmarkGameInitialization(b *testing.B) {
 		// 完全なワールドを使用
 		world, err := InitWorld(consts.MinGameWidth, consts.MinGameHeight)
 		require.NoError(b, err)
-		stateMachine := es.Init(&gs.MainMenuState{}, world)
+		stateMachine, err := es.Init(&gs.MainMenuState{}, world)
+		require.NoError(b, err)
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			_ = &MainGame{

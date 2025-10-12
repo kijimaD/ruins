@@ -26,10 +26,10 @@ type Config struct {
 
 // Callbacks はタブメニューのコールバック
 type Callbacks struct {
-	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item menu.Item)
+	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item menu.Item) error
 	OnCancel     func()
 	OnTabChange  func(oldTabIndex, newTabIndex int, tab TabItem)
-	OnItemChange func(tabIndex int, oldItemIndex, newItemIndex int, item menu.Item)
+	OnItemChange func(tabIndex int, oldItemIndex, newItemIndex int, item menu.Item) error
 }
 
 // TabMenu はタブ付きメニューコンポーネント
@@ -73,17 +73,28 @@ func NewTabMenu(config Config, callbacks Callbacks, keyboardInput input.Keyboard
 }
 
 // Update はタブメニューを更新する
-func (tm *TabMenu) Update() bool {
+func (tm *TabMenu) Update() (bool, error) {
 	// タブ切り替え（左右矢印キー）
-	handled := tm.handleTabNavigation()
+	handled, err := tm.handleTabNavigation()
+	if err != nil {
+		return false, err
+	}
 
 	// アイテム選択（上下矢印キー）
-	if tm.handleItemNavigation() {
+	itemHandled, err := tm.handleItemNavigation()
+	if err != nil {
+		return false, err
+	}
+	if itemHandled {
 		handled = true
 	}
 
 	// 選択（Enter）
-	if tm.handleSelection() {
+	selectionHandled, err := tm.handleSelection()
+	if err != nil {
+		return false, err
+	}
+	if selectionHandled {
 		handled = true
 	}
 
@@ -92,11 +103,11 @@ func (tm *TabMenu) Update() bool {
 		handled = true
 	}
 
-	return handled
+	return handled, nil
 }
 
 // handleTabNavigation はタブ切り替えを処理する
-func (tm *TabMenu) handleTabNavigation() bool {
+func (tm *TabMenu) handleTabNavigation() (bool, error) {
 	tabPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyTab)
 
 	// Shift+Tabの判定
@@ -110,51 +121,65 @@ func (tm *TabMenu) handleTabNavigation() bool {
 	}
 
 	if shiftTabPressed {
-		tm.navigateToPreviousTab()
-		return true
+		if err := tm.navigateToPreviousTab(); err != nil {
+			return false, err
+		}
+		return true, nil
 	} else if tabPressed {
-		tm.navigateToNextTab()
-		return true
+		if err := tm.navigateToNextTab(); err != nil {
+			return false, err
+		}
+		return true, nil
 	}
 
-	return false
+	return false, nil
 }
 
 // handleItemNavigation はアイテム選択を処理する
-func (tm *TabMenu) handleItemNavigation() bool {
+func (tm *TabMenu) handleItemNavigation() (bool, error) {
 	upPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)
 	downPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)
 	pageUpPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp)
 	pageDownPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown)
 
 	if upPressed {
-		tm.navigateToPreviousItem()
-		return true
+		if err := tm.navigateToPreviousItem(); err != nil {
+			return false, err
+		}
+		return true, nil
 	} else if downPressed {
-		tm.navigateToNextItem()
-		return true
+		if err := tm.navigateToNextItem(); err != nil {
+			return false, err
+		}
+		return true, nil
 	} else if pageUpPressed {
-		tm.navigatePageUp()
-		return true
+		if err := tm.navigatePageUp(); err != nil {
+			return false, err
+		}
+		return true, nil
 	} else if pageDownPressed {
-		tm.navigatePageDown()
-		return true
+		if err := tm.navigatePageDown(); err != nil {
+			return false, err
+		}
+		return true, nil
 	}
 
-	return false
+	return false, nil
 }
 
 // handleSelection は選択を処理する
-func (tm *TabMenu) handleSelection() bool {
+func (tm *TabMenu) handleSelection() (bool, error) {
 	// Enterキーは押下-押上ワンセット制御を使用
 	enterPressed := tm.keyboardInput.IsEnterJustPressedOnce()
 
 	if enterPressed {
-		tm.selectCurrentItem()
-		return true
+		if err := tm.selectCurrentItem(); err != nil {
+			return false, err
+		}
+		return true, nil
 	}
 
-	return false
+	return false, nil
 }
 
 // handleCancel はキャンセルを処理する
@@ -172,7 +197,7 @@ func (tm *TabMenu) handleCancel() bool {
 }
 
 // navigateToPreviousTab は前のタブに移動する
-func (tm *TabMenu) navigateToPreviousTab() {
+func (tm *TabMenu) navigateToPreviousTab() error {
 	oldIndex := tm.currentTabIndex
 
 	if tm.currentTabIndex > 0 {
@@ -197,13 +222,16 @@ func (tm *TabMenu) navigateToPreviousTab() {
 
 		// アイテムが存在する場合のみnotifyItemChangeを呼ぶ
 		if len(newTab.Items) > 0 {
-			tm.notifyItemChange(0, 0)
+			if err := tm.notifyItemChange(0, 0); err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }
 
 // navigateToNextTab は次のタブに移動する
-func (tm *TabMenu) navigateToNextTab() {
+func (tm *TabMenu) navigateToNextTab() error {
 	oldIndex := tm.currentTabIndex
 
 	if tm.currentTabIndex < len(tm.config.Tabs)-1 {
@@ -228,20 +256,23 @@ func (tm *TabMenu) navigateToNextTab() {
 
 		// アイテムが存在する場合のみnotifyItemChangeを呼ぶ
 		if len(newTab.Items) > 0 {
-			tm.notifyItemChange(0, 0)
+			if err := tm.notifyItemChange(0, 0); err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }
 
 // navigateToPreviousItem は前のアイテムに移動する
-func (tm *TabMenu) navigateToPreviousItem() {
+func (tm *TabMenu) navigateToPreviousItem() error {
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return
+		return nil
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	if len(currentTab.Items) == 0 {
-		return
+		return nil
 	}
 
 	oldIndex := tm.currentItemIndex
@@ -276,19 +307,22 @@ func (tm *TabMenu) navigateToPreviousItem() {
 	}
 
 	if oldIndex != tm.currentItemIndex {
-		tm.notifyItemChange(oldIndex, tm.currentItemIndex)
+		if err := tm.notifyItemChange(oldIndex, tm.currentItemIndex); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // navigateToNextItem は次のアイテムに移動する
-func (tm *TabMenu) navigateToNextItem() {
+func (tm *TabMenu) navigateToNextItem() error {
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return
+		return nil
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	if len(currentTab.Items) == 0 {
-		return
+		return nil
 	}
 
 	oldIndex := tm.currentItemIndex
@@ -327,87 +361,102 @@ func (tm *TabMenu) navigateToNextItem() {
 	}
 
 	if oldIndex != tm.currentItemIndex {
-		tm.notifyItemChange(oldIndex, tm.currentItemIndex)
+		if err := tm.notifyItemChange(oldIndex, tm.currentItemIndex); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // navigatePageUp は前のページに移動する
-func (tm *TabMenu) navigatePageUp() {
+func (tm *TabMenu) navigatePageUp() error {
 	if tm.config.ItemsPerPage <= 0 {
-		return
+		return nil
 	}
 
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return
+		return nil
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	if len(currentTab.Items) == 0 {
-		return
+		return nil
 	}
 
 	if tm.currentPage > 0 {
 		tm.currentPage--
 		tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
-		tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex)
+		if err := tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // navigatePageDown は次のページに移動する
-func (tm *TabMenu) navigatePageDown() {
+func (tm *TabMenu) navigatePageDown() error {
 	if tm.config.ItemsPerPage <= 0 {
-		return
+		return nil
 	}
 
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return
+		return nil
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	if len(currentTab.Items) == 0 {
-		return
+		return nil
 	}
 
 	totalPages := (len(currentTab.Items) + tm.config.ItemsPerPage - 1) / tm.config.ItemsPerPage
 	if tm.currentPage < totalPages-1 {
 		tm.currentPage++
 		tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
-		tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex)
+		if err := tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // selectCurrentItem は現在のアイテムを選択する
-func (tm *TabMenu) selectCurrentItem() {
+func (tm *TabMenu) selectCurrentItem() error {
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return
+		return nil
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) || tm.currentItemIndex < 0 {
-		return
+		return nil
 	}
 
 	currentItem := currentTab.Items[tm.currentItemIndex]
 
 	if tm.callbacks.OnSelectItem != nil {
-		tm.callbacks.OnSelectItem(tm.currentTabIndex, tm.currentItemIndex, currentTab, currentItem)
+		if err := tm.callbacks.OnSelectItem(tm.currentTabIndex, tm.currentItemIndex, currentTab, currentItem); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // notifyItemChange はアイテム変更を通知する
-func (tm *TabMenu) notifyItemChange(oldIndex, newIndex int) {
+func (tm *TabMenu) notifyItemChange(oldIndex, newIndex int) error {
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return
+		return nil
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
 	if len(currentTab.Items) == 0 || newIndex >= len(currentTab.Items) || newIndex < 0 {
-		return
+		return nil
 	}
 
 	if tm.callbacks.OnItemChange != nil {
-		tm.callbacks.OnItemChange(tm.currentTabIndex, oldIndex, newIndex, currentTab.Items[newIndex])
+		if err := tm.callbacks.OnItemChange(tm.currentTabIndex, oldIndex, newIndex, currentTab.Items[newIndex]); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // GetCurrentTabIndex は現在のタブインデックスを返す
@@ -438,7 +487,7 @@ func (tm *TabMenu) GetCurrentItem() menu.Item {
 }
 
 // SetTabIndex はタブインデックスを設定する
-func (tm *TabMenu) SetTabIndex(index int) {
+func (tm *TabMenu) SetTabIndex(index int) error {
 	if index >= 0 && index < len(tm.config.Tabs) {
 		oldIndex := tm.currentTabIndex
 		tm.currentTabIndex = index
@@ -459,23 +508,29 @@ func (tm *TabMenu) SetTabIndex(index int) {
 
 			// アイテムが存在する場合のみnotifyItemChangeを呼ぶ
 			if len(newTab.Items) > 0 {
-				tm.notifyItemChange(0, 0)
+				if err := tm.notifyItemChange(0, 0); err != nil {
+					return err
+				}
 			}
 		}
 	}
+	return nil
 }
 
 // SetItemIndex はアイテムインデックスを設定する
-func (tm *TabMenu) SetItemIndex(index int) {
+func (tm *TabMenu) SetItemIndex(index int) error {
 	currentTab := tm.GetCurrentTab()
 	if index >= 0 && index < len(currentTab.Items) {
 		oldIndex := tm.currentItemIndex
 		tm.currentItemIndex = index
 
 		if oldIndex != tm.currentItemIndex {
-			tm.notifyItemChange(oldIndex, tm.currentItemIndex)
+			if err := tm.notifyItemChange(oldIndex, tm.currentItemIndex); err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }
 
 // UpdateTabs はタブを更新する（動的にアイテムが変更された場合）

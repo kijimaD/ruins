@@ -123,10 +123,11 @@ func TestMergeMaterialIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) 
 	componentList.Entities = append(componentList.Entities, gc.EntitySpec{
 		Name: &gc.Name{Name: "テスト"},
 	})
-	entities := entities.AddEntities(world, componentList)
+	entities, err := entities.AddEntities(world, componentList)
+	require.NoError(t, err)
 	nonStackableEntity := entities[0]
 
 	// MergeStackableIntoInventoryを実行しても何もしない（エラーなし）
-	err := MergeStackableIntoInventory(world, nonStackableEntity, "テスト")
+	err = MergeStackableIntoInventory(world, nonStackableEntity, "テスト")
 	require.NoError(t, err, "Stackableコンポーネントを持たないエンティティは個別アイテムとして扱われ、マージ不要")
 }

@@ -7,6 +7,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/kijimaD/ruins/lib/turns"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAISystem(t *testing.T) {
@@ -43,7 +44,7 @@ func TestAISystem(t *testing.T) {
 
 	// AIシステムを実行（aiinputパッケージを使用）
 	processor := aiinput.NewProcessor()
-	processor.ProcessAllEntities(world)
+	require.NoError(t, processor.ProcessAllEntities(world))
 
 	// システム実行後の位置を記録
 	finalGrid := world.Components.GridElement.Get(aiEntity).(*gc.GridElement)

@@ -3,7 +3,6 @@ package states
 import (
 	"fmt"
 	"image/color"
-	"log"
 	"sort"
 
 	"github.com/ebitenui/ebitenui"
@@ -61,52 +60,60 @@ func (st CraftMenuState) String() string {
 var _ es.State[w.World] = &CraftMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *CraftMenuState) OnPause(_ w.World) {}
+func (st *CraftMenuState) OnPause(_ w.World) error { return nil }
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *CraftMenuState) OnResume(_ w.World) {}
+func (st *CraftMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *CraftMenuState) OnStart(world w.World) {
+func (st *CraftMenuState) OnStart(world w.World) error {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 	st.ui = st.initUI(world)
+	return nil
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *CraftMenuState) OnStop(_ w.World) {}
+func (st *CraftMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
-func (st *CraftMenuState) Update(world w.World) es.Transition[w.World] {
+func (st *CraftMenuState) Update(world w.World) (es.Transition[w.World], error) {
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
-		if st.updateWindowMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}
+		handled, err := st.updateWindowMode(world)
+		if err != nil {
+			return es.Transition[w.World]{}, err
+		}
+		if handled {
+			return es.Transition[w.World]{Type: es.TransNone}, nil
 		}
 	}
 
 	// 結果ウィンドウモードの場合は結果ウィンドウ操作を優先
 	if st.isResultMode {
 		if st.updateResultMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
 		}
 	}
 
-	st.tabMenu.Update()
+	if _, err := st.tabMenu.Update(); err != nil {
+		return es.Transition[w.World]{}, err
+	}
 	st.ui.Update()
 
-	return st.ConsumeTransition()
+	return st.ConsumeTransition(), nil
 }
 
 // Draw はゲームステートの描画処理を行う
-func (st *CraftMenuState) Draw(_ w.World, screen *ebiten.Image) {
+func (st *CraftMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 	st.ui.Draw(screen)
+	return nil
 }
 
 // ================
@@ -125,8 +132,8 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
-			st.handleItemSelection(world, tab, item)
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeで前の画面に戻る
@@ -136,9 +143,12 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) {
-			st.handleItemChange(world, item)
+		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+			if err := st.handleItemChange(world, item); err != nil {
+				return err
+			}
 			st.updateTabDisplay(world)
+			return nil
 		},
 	}
 
@@ -228,29 +238,30 @@ func (st *CraftMenuState) createMenuItems(_ w.World, recipeNames []string) []men
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
+func (st *CraftMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
 	recipeName, ok := item.UserData.(string)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	st.selectedItem = recipeName
 	st.showActionWindow(world, recipeName)
+	return nil
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
+func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
-		return
+		return nil
 	}
 
 	recipeName, ok := item.UserData.(string)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	// RawMasterからEntitySpecを取得
@@ -260,7 +271,7 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
 		st.recipeList.RemoveChildren()
-		return
+		return err
 	}
 
 	// Descriptionを取得
@@ -273,8 +284,9 @@ func (st *CraftMenuState) handleItemChange(world w.World, item menu.Item) {
 	// EntitySpecから性能表示を更新
 	views.UpdateSpecFromSpec(world, st.specContainer, spec)
 	if err := st.updateRecipeList(world, spec.Recipe); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
@@ -466,11 +478,11 @@ func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
 }
 
 // updateWindowMode はウィンドウモード時の操作を処理する
-func (st *CraftMenuState) updateWindowMode(world w.World) bool {
+func (st *CraftMenuState) updateWindowMode(world w.World) (bool, error) {
 	// Escapeでウィンドウモードを終了
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		st.closeActionWindow()
-		return false
+		return false, nil
 	}
 
 	// 上下矢印でフォーカス移動
@@ -480,7 +492,7 @@ func (st *CraftMenuState) updateWindowMode(world w.World) bool {
 			st.actionFocusIndex = len(st.actionItems) - 1
 		}
 		st.updateActionWindowDisplay(world)
-		return true
+		return true, nil
 	}
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
 		st.actionFocusIndex++
@@ -488,16 +500,18 @@ func (st *CraftMenuState) updateWindowMode(world w.World) bool {
 			st.actionFocusIndex = 0
 		}
 		st.updateActionWindowDisplay(world)
-		return true
+		return true, nil
 	}
 
 	// Enterで選択実行（押下-押上ワンセット）
 	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.executeActionItem(world)
-		return true
+		if err := st.executeActionItem(world); err != nil {
+			return false, err
+		}
+		return true, nil
 	}
 
-	return true
+	return true, nil
 }
 
 // updateResultMode は結果ウィンドウモード時の操作を処理する
@@ -573,9 +587,9 @@ func (st *CraftMenuState) executeResultItem(_ w.World) {
 }
 
 // executeActionItem は選択されたアクション項目を実行する
-func (st *CraftMenuState) executeActionItem(world w.World) {
+func (st *CraftMenuState) executeActionItem(world w.World) error {
 	if st.actionFocusIndex >= len(st.actionItems) {
-		return
+		return nil
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
@@ -585,7 +599,7 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	case "合成する":
 		resultEntity, err := worldhelper.Craft(world, recipeName)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// レシピリストを更新
@@ -593,10 +607,10 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 		var spec gc.EntitySpec
 		spec, err = rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		if err = st.updateRecipeList(world, spec.Recipe); err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		st.closeActionWindow()
@@ -607,6 +621,7 @@ func (st *CraftMenuState) executeActionItem(world w.World) {
 	case TextClose:
 		st.closeActionWindow()
 	}
+	return nil
 }
 
 // reloadTabs はタブの内容を再読み込みする
@@ -701,6 +716,9 @@ func (st *CraftMenuState) updateInitialItemDisplay(world w.World) {
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
-		st.handleItemChange(world, currentItem)
+		if err := st.handleItemChange(world, currentItem); err != nil {
+			// TODO: エラーハンドリング改善
+			panic(err)
+		}
 	}
 }

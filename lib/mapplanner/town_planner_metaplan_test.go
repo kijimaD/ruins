@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/testutil"
@@ -18,11 +20,13 @@ func TestNewTownPlannerMetaPlan(t *testing.T) {
 
 	// TownPlannerで街マップを生成
 	width, height := 50, 50
-	chain := NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	chain, err := NewTownPlanner(gc.Tile(width), gc.Tile(height), 123)
+	require.NoError(t, err)
 	chain.PlanData.RawMaster = createTownTestRawMaster()
 
 	// マップを構築
-	chain.Plan()
+	err = chain.Plan()
+	require.NoError(t, err)
 
 	// MetaPlanが正しく生成されているかテスト
 	metaPlan := &chain.PlanData

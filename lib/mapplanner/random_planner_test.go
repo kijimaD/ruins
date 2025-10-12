@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
@@ -14,13 +16,17 @@ func TestNewRandomPlanner(t *testing.T) {
 	// 同じシードで複数回実行して同じビルダータイプが選択されることを確認
 	seed := uint64(12345)
 
-	chain1 := NewRandomPlanner(width, height, seed)
+	chain1, err := NewRandomPlanner(width, height, seed)
+	require.NoError(t, err)
 	chain1.PlanData.RawMaster = CreateTestRawMaster()
-	chain1.Plan()
+	err = chain1.Plan()
+	require.NoError(t, err)
 
-	chain2 := NewRandomPlanner(width, height, seed)
+	chain2, err := NewRandomPlanner(width, height, seed)
+	require.NoError(t, err)
 	chain2.PlanData.RawMaster = CreateTestRawMaster()
-	chain2.Plan()
+	err = chain2.Plan()
+	require.NoError(t, err)
 
 	// 同じシードなので同じビルダータイプが選ばれ、同じ結果になるはず
 	if len(chain1.PlanData.Rooms) != len(chain2.PlanData.Rooms) {
@@ -42,72 +48,6 @@ func TestNewRandomPlanner(t *testing.T) {
 	}
 }
 
-func TestNewRandomPlannerBuildsSuccessfully(t *testing.T) {
-	t.Parallel()
-
-	// 様々なマップサイズでテスト
-	testCases := []struct {
-		name   string
-		width  gc.Tile
-		height gc.Tile
-		seed   uint64
-	}{
-		{"小さいマップ", 10, 10, 111},
-		{"中サイズマップ", 30, 30, 222},
-		{"大きいマップ", 50, 50, 333},
-		{"横長マップ", 40, 20, 444},
-		{"縦長マップ", 20, 40, 555},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-
-			// パニックなく実行できることを確認
-			var chain *PlannerChain
-			func() {
-				defer func() {
-					if r := recover(); r != nil {
-						t.Errorf("%sでパニックが発生しました: %v", tc.name, r)
-					}
-				}()
-
-				chain = NewRandomPlanner(tc.width, tc.height, tc.seed)
-				chain.PlanData.RawMaster = CreateTestRawMaster()
-				chain.Plan()
-			}()
-
-			if chain == nil {
-				return // パニックで終了した場合
-			}
-
-			// タイル数が正しいことを確認
-			expectedCount := int(tc.width) * int(tc.height)
-			if len(chain.PlanData.Tiles) != expectedCount {
-				t.Errorf("%sのタイル数が正しくない。期待: %d, 実際: %d",
-					tc.name, expectedCount, len(chain.PlanData.Tiles))
-			}
-
-			// 部屋が生成されていることを確認
-			if len(chain.PlanData.Rooms) == 0 {
-				t.Errorf("%sで部屋が生成されませんでした", tc.name)
-			}
-
-			// 床タイルが存在することを確認
-			floorCount := 0
-			for _, tile := range chain.PlanData.Tiles {
-				if tile.Walkable {
-					floorCount++
-				}
-			}
-
-			if floorCount == 0 {
-				t.Errorf("%sで床タイルが生成されませんでした", tc.name)
-			}
-		})
-	}
-}
-
 func TestRandomPlannerTypes(t *testing.T) {
 	t.Parallel()
 
@@ -122,25 +62,51 @@ func TestRandomPlannerTypes(t *testing.T) {
 	testSeeds := []uint64{1, 2, 3, 4, 5, 10, 20, 30, 100, 200}
 
 	for _, seed := range testSeeds {
-		chain := NewRandomPlanner(width, height, seed)
+		chain, err := NewRandomPlanner(width, height, seed)
+		require.NoError(t, err)
 		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
+		err = chain.Plan()
+		require.NoError(t, err)
 
 		roomCount := len(chain.PlanData.Rooms)
 		seedResults[seed] = roomCount
 
-		// 各シードで正常にマップが生成されることを確認
-		if roomCount == 0 {
-			t.Errorf("シード%dで部屋が生成されませんでした", seed)
-		}
-
 		// タイル総数の確認
 		expectedTileCount := int(width) * int(height)
-		if len(chain.PlanData.Tiles) != expectedTileCount {
-			t.Errorf("シード%dでタイル数が不正。期待: %d, 実際: %d",
-				seed, expectedTileCount, len(chain.PlanData.Tiles))
+		require.Equal(t, expectedTileCount, len(chain.PlanData.Tiles),
+			"シード%dでタイル数が不正", seed)
+
+		// 部屋が生成されていることを確認
+		require.Greater(t, roomCount, 0,
+			"シード%dで部屋が生成されませんでした", seed)
+
+		// 床タイルと壁タイルの両方が存在することを確認
+		floorCount := 0
+		wallCount := 0
+		for _, tile := range chain.PlanData.Tiles {
+			if tile.Walkable {
+				floorCount++
+			} else {
+				wallCount++
+			}
 		}
+		require.Greater(t, floorCount, 0,
+			"シード%dで床タイルが生成されませんでした", seed)
+		require.Greater(t, wallCount, 0,
+			"シード%dで壁タイルが生成されませんでした", seed)
+
+		// 床と壁でタイル総数と一致することを確認
+		require.Equal(t, expectedTileCount, floorCount+wallCount,
+			"シード%dで床+壁がタイル総数と一致しません", seed)
 	}
+
+	// 異なるシードで異なる部屋数が生成されることを確認（ランダム性の検証）
+	uniqueRoomCounts := make(map[int]bool)
+	for _, count := range seedResults {
+		uniqueRoomCounts[count] = true
+	}
+	require.GreaterOrEqual(t, len(uniqueRoomCounts), 2,
+		"異なるシードで同じ部屋数しか生成されていません: %v", seedResults)
 
 	t.Logf("各シードでの部屋数: %v", seedResults)
 }

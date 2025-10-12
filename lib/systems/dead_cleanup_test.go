@@ -6,6 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -39,7 +40,7 @@ func TestDeadCleanupSystem(t *testing.T) {
 	alive.AddComponent(world.Components.AIMoveFSM, &gc.AIMoveFSM{})
 
 	// DeadCleanupSystemを実行
-	DeadCleanupSystem(world)
+	require.NoError(t, DeadCleanupSystem(world))
 
 	// 結果を検証
 
@@ -76,7 +77,7 @@ func TestDeadCleanupSystem_NoDeadEntities(t *testing.T) {
 	alive2.AddComponent(world.Components.AIMoveFSM, &gc.AIMoveFSM{})
 
 	// DeadCleanupSystemを実行
-	DeadCleanupSystem(world)
+	require.NoError(t, DeadCleanupSystem(world))
 
 	// すべてのエンティティが残っているべき
 	assert.True(t, alive1.HasComponent(world.Components.Name), "生きているエンティティ1は残るべき")
@@ -94,7 +95,7 @@ func TestDeadCleanupSystem_EmptyWorld(t *testing.T) {
 
 	// エンティティが存在しない状態でテスト
 	// パニックやエラーが発生しないことを確認
-	DeadCleanupSystem(world)
+	require.NoError(t, DeadCleanupSystem(world))
 
 	// エンティティ数が0であることを確認
 	count := 0

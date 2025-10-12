@@ -1,7 +1,7 @@
 package turns
 
 import (
-	"log"
+	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/logger"
@@ -108,11 +108,11 @@ func (tm *TurnManager) IsAITurn() bool {
 
 // CalculateMaxActionPoints はエンティティの最大アクションポイントを計算する
 // CDDAスタイルで敏捷性を重視したAP計算式
-func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity) int {
+func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity) (int, error) {
 	// Attributesコンポーネントがない場合はエラー
 	attributesComponent := world.Components.Attributes.Get(entity)
 	if attributesComponent == nil {
-		log.Fatal("attributesが設定されていない")
+		return 0, fmt.Errorf("attributesが設定されていない")
 	}
 
 	attrs := attributesComponent.(*gc.Attributes)
@@ -130,7 +130,7 @@ func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity
 		calculatedAP = 20
 	}
 
-	return calculatedAP
+	return calculatedAP, nil
 }
 
 // ConsumeActionPoints はエンティティのアクションポイントを消費する
@@ -186,16 +186,20 @@ func (tm *TurnManager) CanEntityAct(world w.World, entity ecs.Entity, cost int) 
 }
 
 // RestoreAllActionPoints は全エンティティのAPを回復する（ターン終了時）
-func (tm *TurnManager) RestoreAllActionPoints(world w.World) {
+func (tm *TurnManager) RestoreAllActionPoints(world w.World) error {
+	// 複数ある場合は最後のエラー
+	var err error
 	// ActionPointsコンポーネントを持つ全エンティティのAP回復
 	world.Manager.Join(world.Components.TurnBased).Visit(ecs.Visit(func(entity ecs.Entity) {
 		actionPoints := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
-		maxAP := tm.CalculateMaxActionPoints(world, entity)
+		maxAP, calcErr := tm.CalculateMaxActionPoints(world, entity)
+		err = calcErr
+
 		actionPoints.AP.Current = maxAP
 		actionPoints.AP.Max = maxAP
-
 		tm.logger.Debug("アクションポイント回復",
 			"entity", entity,
 			"restored", maxAP)
 	}))
+	return err
 }

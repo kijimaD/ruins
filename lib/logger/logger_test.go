@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 // captureOutput はos.Stdoutの出力をキャプチャする
@@ -139,9 +141,8 @@ func TestJSONOutput(t *testing.T) {
 
 	// JSON解析
 	var entry map[string]interface{}
-	if err := json.Unmarshal([]byte(output), &entry); err != nil {
-		t.Fatalf("JSON解析エラー: %v", err)
-	}
+	err := json.Unmarshal([]byte(output), &entry)
+	require.NoError(t, err, "JSON解析エラー")
 
 	// 必須フィールドの確認
 	const expectedLevel = "INFO"

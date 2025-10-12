@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 )
@@ -14,18 +16,22 @@ func TestSeedReproducibility(t *testing.T) {
 	width, height := gc.Tile(20), gc.Tile(20)
 
 	// 1回目の生成
-	chain1 := NewSmallRoomPlanner(width, height, testSeed)
+	chain1, err := NewSmallRoomPlanner(width, height, testSeed)
+	require.NoError(t, err)
 	chain1.PlanData.RawMaster = CreateTestRawMaster()
-	chain1.Plan()
+	err = chain1.Plan()
+	require.NoError(t, err)
 	tiles1 := make([]raw.TileRaw, len(chain1.PlanData.Tiles))
 	copy(tiles1, chain1.PlanData.Tiles)
 	rooms1 := make([]gc.Rect, len(chain1.PlanData.Rooms))
 	copy(rooms1, chain1.PlanData.Rooms)
 
 	// 2回目の生成（同じシード）
-	chain2 := NewSmallRoomPlanner(width, height, testSeed)
+	chain2, err := NewSmallRoomPlanner(width, height, testSeed)
+	require.NoError(t, err)
 	chain2.PlanData.RawMaster = CreateTestRawMaster()
-	chain2.Plan()
+	err = chain2.Plan()
+	require.NoError(t, err)
 	tiles2 := make([]raw.TileRaw, len(chain2.PlanData.Tiles))
 	copy(tiles2, chain2.PlanData.Tiles)
 	rooms2 := make([]gc.Rect, len(chain2.PlanData.Rooms))
@@ -58,14 +64,18 @@ func TestDifferentSeeds(t *testing.T) {
 	width, height := gc.Tile(20), gc.Tile(20)
 
 	// シード1で生成
-	chain1 := NewSmallRoomPlanner(width, height, 11111)
+	chain1, err := NewSmallRoomPlanner(width, height, 11111)
+	require.NoError(t, err)
 	chain1.PlanData.RawMaster = CreateTestRawMaster()
-	chain1.Plan()
+	err = chain1.Plan()
+	require.NoError(t, err)
 
 	// シード2で生成
-	chain2 := NewSmallRoomPlanner(width, height, 22222)
+	chain2, err := NewSmallRoomPlanner(width, height, 22222)
+	require.NoError(t, err)
 	chain2.PlanData.RawMaster = CreateTestRawMaster()
-	chain2.Plan()
+	err = chain2.Plan()
+	require.NoError(t, err)
 
 	// 部屋数が異なる可能性が高い（必ずしも異なるとは限らないが）
 	// 少なくともいくつかのタイルは異なるはず

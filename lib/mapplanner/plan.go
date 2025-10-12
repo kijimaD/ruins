@@ -51,10 +51,14 @@ func Plan(world w.World, width, height int, seed uint64, plannerType PlannerType
 func attemptMetaPlan(world w.World, width, height int, seed uint64, plannerType PlannerType) (*MetaPlan, error) {
 	// PlannerChainを初期化
 	var chain *PlannerChain
+	var err error
 	if plannerType.Name == PlannerTypeRandom.Name {
-		chain = NewRandomPlanner(gc.Tile(width), gc.Tile(height), seed)
+		chain, err = NewRandomPlanner(gc.Tile(width), gc.Tile(height), seed)
 	} else {
-		chain = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
+		chain, err = plannerType.PlannerFunc(gc.Tile(width), gc.Tile(height), seed)
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	// RawMasterを設定
@@ -87,7 +91,9 @@ func attemptMetaPlan(world w.World, width, height int, seed uint64, plannerType 
 	chain.With(propsPlanner)
 
 	// プランナーチェーンを実行
-	chain.Plan()
+	if err := chain.Plan(); err != nil {
+		return nil, err
+	}
 
 	// 基本的な検証: プレイヤー開始位置があるか確認
 	playerX, playerY, hasPlayer := chain.PlanData.GetPlayerStartPosition()

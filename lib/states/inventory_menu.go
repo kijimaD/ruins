@@ -52,45 +52,49 @@ func (st InventoryMenuState) String() string {
 var _ es.State[w.World] = &InventoryMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *InventoryMenuState) OnPause(_ w.World) {}
+func (st *InventoryMenuState) OnPause(_ w.World) error { return nil }
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *InventoryMenuState) OnResume(_ w.World) {}
+func (st *InventoryMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *InventoryMenuState) OnStart(world w.World) {
+func (st *InventoryMenuState) OnStart(world w.World) error {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 	st.ui = st.initUI(world)
+	return nil
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *InventoryMenuState) OnStop(_ w.World) {}
+func (st *InventoryMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
-func (st *InventoryMenuState) Update(world w.World) es.Transition[w.World] {
+func (st *InventoryMenuState) Update(world w.World) (es.Transition[w.World], error) {
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
 		}
 	}
 
-	st.tabMenu.Update()
+	if _, err := st.tabMenu.Update(); err != nil {
+		return es.Transition[w.World]{}, err
+	}
 	st.ui.Update()
 
-	return st.ConsumeTransition()
+	return st.ConsumeTransition(), nil
 }
 
 // Draw はゲームステートの描画処理を行う
-func (st *InventoryMenuState) Draw(_ w.World, screen *ebiten.Image) {
+func (st *InventoryMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 	st.ui.Draw(screen)
+	return nil
 }
 
 // ================
@@ -109,8 +113,8 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) {
-			st.handleItemSelection(world, tab, item)
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			// Escapeで前の画面に戻る
@@ -120,9 +124,12 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) {
-			st.handleItemChange(world, item)
+		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+			if err := st.handleItemChange(world, item); err != nil {
+				return err
+			}
 			st.updateTabDisplay(world)
+			return nil
 		},
 	}
 
@@ -223,46 +230,48 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *InventoryMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) {
+func (st *InventoryMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	st.selectedItem = entity
 	st.showActionWindow(world, entity)
+	return nil
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *InventoryMenuState) handleItemChange(world w.World, item menu.Item) {
+func (st *InventoryMenuState) handleItemChange(world w.World, item menu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
 		st.specContainer.RemoveChildren()
-		return
+		return nil
 	}
 
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
-		log.Fatal("unexpected item UserData")
+		return fmt.Errorf("unexpected item UserData")
 	}
 
 	// Descriptionコンポーネントの存在チェック
 	if !entity.HasComponent(world.Components.Description) {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
-		return
+		return nil
 	}
 
 	desc := world.Components.Description.Get(entity).(*gc.Description)
 	if desc == nil {
 		st.itemDesc.Label = TextNoDescription
 		st.specContainer.RemoveChildren()
-		return
+		return nil
 	}
 
 	st.itemDesc.Label = desc.Description
 	views.UpdateSpec(world, st.specContainer, entity)
+	return nil
 }
 
 // updateWindowMode はウィンドウモード時の操作を処理する
@@ -553,6 +562,9 @@ func (st *InventoryMenuState) updateInitialItemDisplay(world w.World) {
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
-		st.handleItemChange(world, currentItem)
+		if err := st.handleItemChange(world, currentItem); err != nil {
+			// TODO: エラーハンドリング改善
+			panic(err)
+		}
 	}
 }

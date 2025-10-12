@@ -110,8 +110,9 @@ func TestChoiceMethods(t *testing.T) {
 		t.Parallel()
 
 		actionExecuted := false
-		action := func(_ w.World) {
+		action := func(_ w.World) error {
 			actionExecuted = true
+			return nil
 		}
 
 		msg := NewDialogMessage("選択してください", "").
@@ -124,7 +125,8 @@ func TestChoiceMethods(t *testing.T) {
 		assert.False(t, choice.Disabled)
 
 		require.NotNil(t, choice.Action)
-		choice.Action(w.World{})
+		err := choice.Action(w.World{})
+		require.NoError(t, err)
 		assert.True(t, actionExecuted)
 	})
 
@@ -145,9 +147,9 @@ func TestChoiceMethods(t *testing.T) {
 		t.Parallel()
 
 		msg := NewDialogMessage("どうしますか？", "NPC").
-			WithChoice("はい", func(_ w.World) {}).
-			WithChoice("いいえ", func(_ w.World) {}).
-			WithChoice("詳細", func(_ w.World) {})
+			WithChoice("はい", func(_ w.World) error { return nil }).
+			WithChoice("いいえ", func(_ w.World) error { return nil }).
+			WithChoice("詳細", func(_ w.World) error { return nil })
 
 		assert.Len(t, msg.Choices, 3)
 		assert.Equal(t, "はい", msg.Choices[0].Text)
@@ -253,7 +255,7 @@ func TestChoice(t *testing.T) {
 		resultMsg := NewSystemMessage("結果")
 		choice := Choice{
 			Text:        "選択肢",
-			Action:      func(_ w.World) {},
+			Action:      func(_ w.World) error { return nil },
 			MessageData: resultMsg,
 			Disabled:    true,
 		}
@@ -324,8 +326,8 @@ func TestComplexScenarios(t *testing.T) {
 		actionCalled := false
 
 		msg := NewDialogMessage("複雑なテスト", "最終キャラクター").
-			WithChoice("アクション", func(_ w.World) { actionCalled = true }).
-			WithChoice("説明付き", func(_ w.World) {}).
+			WithChoice("アクション", func(_ w.World) error { actionCalled = true; return nil }).
+			WithChoice("説明付き", func(_ w.World) error { return nil }).
 			WithOnComplete(func() { completeCalled = true }).
 			SystemMessage("次のメッセージ").
 			SystemMessage("システム通知").
@@ -354,7 +356,8 @@ func TestComplexScenarios(t *testing.T) {
 
 		// アクションの実行
 		require.NotNil(t, msg.Choices[0].Action)
-		msg.Choices[0].Action(w.World{})
+		err := msg.Choices[0].Action(w.World{})
+		require.NoError(t, err)
 		assert.True(t, actionCalled)
 	})
 }

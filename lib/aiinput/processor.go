@@ -28,7 +28,7 @@ func NewProcessor() *Processor {
 }
 
 // ProcessAllEntities は全てのAIエンティティを処理する
-func (p *Processor) ProcessAllEntities(world w.World) {
+func (p *Processor) ProcessAllEntities(world w.World) error {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 	p.logger.Debug("AI処理開始", "turn", turnManager.TurnNumber, "playerMoves", turnManager.PlayerMoves)
 
@@ -46,6 +46,7 @@ func (p *Processor) ProcessAllEntities(world w.World) {
 	}))
 
 	p.logger.Debug("AI処理完了", "処理されたエンティティ数", entityCount, "turn", turnManager.TurnNumber, "playerMoves", turnManager.PlayerMoves)
+	return nil
 }
 
 // ProcessEntity は個別のAIエンティティを処理する

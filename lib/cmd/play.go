@@ -111,9 +111,14 @@ func runPlay(_ *cli.Context) error {
 		log.Fatalf("無効なstate: %s", cfg.StartingState)
 	}
 
+	stateMachine, err := es.Init(initialState, world)
+	if err != nil {
+		return err
+	}
+
 	err = ebiten.RunGame(&maingame.MainGame{
 		World:        world,
-		StateMachine: es.Init(initialState, world),
+		StateMachine: stateMachine,
 	})
 	if err != nil {
 		return err

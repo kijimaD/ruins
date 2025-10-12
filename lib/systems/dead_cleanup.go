@@ -7,7 +7,7 @@ import (
 )
 
 // DeadCleanupSystem はDeadコンポーネントを持つ敵エンティティを削除する
-func DeadCleanupSystem(world w.World) {
+func DeadCleanupSystem(world w.World) error {
 	logger := logger.New(logger.CategoryEntity)
 
 	// Deadコンポーネントを持つエンティティを検索
@@ -27,4 +27,6 @@ func DeadCleanupSystem(world w.World) {
 	if len(toDelete) > 0 {
 		logger.Debug("Dead cleanup completed", "deleted_count", len(toDelete))
 	}
+
+	return nil
 }

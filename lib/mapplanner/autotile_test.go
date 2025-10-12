@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -28,18 +30,14 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 	// 全体を非土タイル（Floor）で初期化
 	for i := range metaPlan.Tiles {
 		tile, err := metaPlan.RawMaster.GetTile(floorTileType)
-		if err != nil {
-			t.Fatalf("床タイル生成エラー: %v", err)
-		}
+		require.NoError(t, err, "床タイル生成エラー")
 		metaPlan.Tiles[i] = tile
 	}
 
 	// 中央（2,2）を土タイルに設定
 	centerIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(2))
 	dirtTile, err := metaPlan.RawMaster.GetTile(dirtTileType)
-	if err != nil {
-		t.Fatalf("土タイル生成エラー: %v", err)
-	}
+	require.NoError(t, err, "土タイル生成エラー")
 	metaPlan.Tiles[centerIdx] = dirtTile
 
 	// テストケース1: 孤立した土タイル
@@ -53,9 +51,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 	// テストケース2: 上に土タイルを追加（下だけが異なる状態）
 	topIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(1))
 	topDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
-	if err != nil {
-		t.Fatalf("土タイル生成エラー: %v", err)
-	}
+	require.NoError(t, err, "土タイル生成エラー")
 	metaPlan.Tiles[topIdx] = topDirt
 
 	autoTileIndex = metaPlan.CalculateAutoTileIndex(centerIdx, dirtTileType)
@@ -76,9 +72,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 	// テストケース3: 右にも土タイルを追加（下左が異なる状態）
 	rightIdx := metaPlan.Level.XYTileIndex(gc.Tile(3), gc.Tile(2))
 	rightDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
-	if err != nil {
-		t.Fatalf("土タイル生成エラー: %v", err)
-	}
+	require.NoError(t, err, "土タイル生成エラー")
 	metaPlan.Tiles[rightIdx] = rightDirt
 
 	autoTileIndex = metaPlan.CalculateAutoTileIndex(centerIdx, dirtTileType)
@@ -92,13 +86,9 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 	bottomIdx := metaPlan.Level.XYTileIndex(gc.Tile(2), gc.Tile(3))
 	leftIdx := metaPlan.Level.XYTileIndex(gc.Tile(1), gc.Tile(2))
 	bottomDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
-	if err != nil {
-		t.Fatalf("土タイル生成エラー: %v", err)
-	}
+	require.NoError(t, err, "土タイル生成エラー")
 	leftDirt, err := metaPlan.RawMaster.GetTile(dirtTileType)
-	if err != nil {
-		t.Fatalf("土タイル生成エラー: %v", err)
-	}
+	require.NoError(t, err, "土タイル生成エラー")
 	metaPlan.Tiles[bottomIdx] = bottomDirt
 	metaPlan.Tiles[leftIdx] = leftDirt
 

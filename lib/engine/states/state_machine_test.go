@@ -27,29 +27,34 @@ func (ts *TestState) String() string {
 	return ts.name
 }
 
-func (ts *TestState) OnStart(_ TestWorld) {
+func (ts *TestState) OnStart(_ TestWorld) error {
 	ts.onStartCalled = true
+	return nil
 }
 
-func (ts *TestState) OnStop(_ TestWorld) {
+func (ts *TestState) OnStop(_ TestWorld) error {
 	ts.onStopCalled = true
+	return nil
 }
 
-func (ts *TestState) OnPause(_ TestWorld) {
+func (ts *TestState) OnPause(_ TestWorld) error {
 	ts.onPauseCalled = true
+	return nil
 }
 
-func (ts *TestState) OnResume(_ TestWorld) {
+func (ts *TestState) OnResume(_ TestWorld) error {
 	ts.onResumeCalled = true
+	return nil
 }
 
-func (ts *TestState) Update(_ TestWorld) Transition[TestWorld] {
+func (ts *TestState) Update(_ TestWorld) (Transition[TestWorld], error) {
 	ts.updateCalled = true
-	return Transition[TestWorld]{Type: TransNone}
+	return Transition[TestWorld]{Type: TransNone}, nil
 }
 
-func (ts *TestState) Draw(_ TestWorld, _ *ebiten.Image) {
+func (ts *TestState) Draw(_ TestWorld, _ *ebiten.Image) error {
 	ts.drawCalled = true
+	return nil
 }
 
 // TestGetStatesMethods はGetStatesメソッド群のテスト
@@ -61,7 +66,8 @@ func TestGetStatesMethods(t *testing.T) {
 		initialState := &TestState{name: "InitialState"}
 
 		// StateMachineの初期化
-		stateMachine := Init(initialState, world)
+		stateMachine, err := Init(initialState, world)
+		assert.NoError(t, err)
 
 		// GetStatesのテスト
 		states := stateMachine.GetStates()
@@ -85,7 +91,8 @@ func TestGetStatesMethods(t *testing.T) {
 		t.Parallel()
 		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, world)
+		stateMachine, err := Init(initialState, world)
+		assert.NoError(t, err)
 
 		// GetStatesで取得したスライスを変更しても元のスタックに影響しないことを確認
 		states := stateMachine.GetStates()
@@ -126,7 +133,8 @@ func TestStateMachineTransitions(t *testing.T) {
 		t.Parallel()
 		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, world)
+		stateMachine, err := Init(initialState, world)
+		assert.NoError(t, err)
 
 		// Push遷移を実行
 		newState := &TestState{name: "PushedState"}
@@ -134,7 +142,8 @@ func TestStateMachineTransitions(t *testing.T) {
 			Type:          TransPush,
 			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return newState }},
 		}
-		stateMachine.Update(world)
+		err = stateMachine.Update(world)
+		assert.NoError(t, err, "Push遷移でエラーが発生")
 
 		// 状態数の確認
 		assert.Equal(t, 2, stateMachine.GetStateCount(), "Push後の状態数が正しくない")
@@ -159,7 +168,8 @@ func TestStateMachineTransitions(t *testing.T) {
 		t.Parallel()
 		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, world)
+		stateMachine, err := Init(initialState, world)
+		assert.NoError(t, err)
 
 		// まずPushして2つの状態にする
 		pushedState := &TestState{name: "PushedState"}
@@ -167,11 +177,13 @@ func TestStateMachineTransitions(t *testing.T) {
 			Type:          TransPush,
 			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return pushedState }},
 		}
-		stateMachine.Update(world)
+		err = stateMachine.Update(world)
+		assert.NoError(t, err, "Push遷移でエラーが発生")
 
 		// Pop遷移を実行
 		stateMachine.lastTransition = Transition[TestWorld]{Type: TransPop}
-		stateMachine.Update(world)
+		err = stateMachine.Update(world)
+		assert.NoError(t, err, "Pop遷移でエラーが発生")
 
 		// 状態数の確認
 		assert.Equal(t, 1, stateMachine.GetStateCount(), "Pop後の状態数が正しくない")
@@ -190,7 +202,8 @@ func TestStateMachineTransitions(t *testing.T) {
 		t.Parallel()
 		world := TestWorld{Name: "TestWorld"}
 		initialState := &TestState{name: "InitialState"}
-		stateMachine := Init(initialState, world)
+		stateMachine, err := Init(initialState, world)
+		assert.NoError(t, err)
 
 		// Switch遷移を実行
 		newState := &TestState{name: "SwitchedState"}
@@ -198,7 +211,8 @@ func TestStateMachineTransitions(t *testing.T) {
 			Type:          TransSwitch,
 			NewStateFuncs: []StateFactory[TestWorld]{func() State[TestWorld] { return newState }},
 		}
-		stateMachine.Update(world)
+		err = stateMachine.Update(world)
+		assert.NoError(t, err, "Switch遷移でエラーが発生")
 
 		// 状態数の確認（変わらず1つ）
 		assert.Equal(t, 1, stateMachine.GetStateCount(), "Switch後の状態数が正しくない")

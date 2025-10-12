@@ -280,7 +280,7 @@ func (f ForestWildlife) PlanMeta(planData *MetaPlan) {
 }
 
 // NewForestPlanner は森ビルダーを作成する
-func NewForestPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+func NewForestPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error) {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(ForestPlanner{})
 	chain.With(ForestTerrain{})         // 基本地形を生成
@@ -289,5 +289,5 @@ func NewForestPlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain 
 	chain.With(ForestWildlife{})        // 野生動物の痕跡を追加
 	chain.With(NewBoundaryWall("Wall")) // 最外周を壁で囲む
 
-	return chain
+	return chain, nil
 }

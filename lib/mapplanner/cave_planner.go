@@ -335,7 +335,7 @@ func (c CaveConnector) createCaveTunnel(planData *MetaPlan, room1, room2 gc.Rect
 }
 
 // NewCavePlanner は洞窟ビルダーを作成する
-func NewCavePlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
+func NewCavePlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error) {
 	chain := NewPlannerChain(width, height, seed)
 	chain.StartWith(CavePlanner{})
 	chain.With(CaveCellularAutomata{Iterations: 3}) // セルラーオートマトン
@@ -344,5 +344,5 @@ func NewCavePlanner(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 	chain.With(CaveStalactites{})                   // 鍾乳石配置
 	chain.With(NewBoundaryWall("Wall"))             // 最外周を壁で囲む
 
-	return chain
+	return chain, nil
 }

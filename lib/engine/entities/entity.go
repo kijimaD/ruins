@@ -2,7 +2,6 @@ package entities
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -23,29 +22,33 @@ type World interface {
 
 // AddEntities はComponentListからECSエンティティを作成する
 // EntitySpecをECSエンティティに変換し、ワールドに追加する
-func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) []ecs.Entity {
+func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) ([]ecs.Entity, error) {
 	// Create new entities and add engine components
 	entities := make([]ecs.Entity, len(entityComponentList.Entities))
 	for iEntity := range entityComponentList.Entities {
 		entities[iEntity] = world.GetManager().NewEntity()
-		AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity])
+		if err := AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity]); err != nil {
+			return nil, err
+		}
 	}
 
 	// Add game components
 	if entityComponentList.Entities != nil {
 		if len(entityComponentList.Entities) != len(entities) {
-			log.Fatal("incorrect size for game component list")
+			return nil, fmt.Errorf("incorrect size for game component list")
 		}
 		for iEntity := range entities {
-			AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity])
+			if err := AddEntityComponents(entities[iEntity], world.GetComponents(), entityComponentList.Entities[iEntity]); err != nil {
+				return nil, err
+			}
 		}
 	}
-	return entities
+	return entities, nil
 }
 
 // AddEntityComponents はエンティティにコンポーネントを追加する
 // EntitySpec の各フィールドを対応する ECS コンポーネントに変換して追加する
-func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity {
+func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) error {
 	// 追加先のコンポーネントリスト。コンポーネントのスライス群
 	ecv := reflect.ValueOf(ecsComponentList).Elem()
 	// 追加するコンポーネント
@@ -66,11 +69,11 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 				if component.Type().Implements(reflect.TypeOf((*fmt.Stringer)(nil)).Elem()) {
 					method := component.MethodByName("String")
 					if !method.IsValid() {
-						log.Fatal("String() に失敗した")
+						return fmt.Errorf("String() に失敗した")
 					}
 					results := method.Call(nil)
 					if len(results) != 1 {
-						log.Fatal("String() の返り値の取得に失敗した")
+						return fmt.Errorf("String() の返り値の取得に失敗した")
 					}
 					v := component.Elem().Interface()
 					value.Elem().Set(reflect.ValueOf(v))
@@ -86,9 +89,9 @@ func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, compon
 				ecsComponent := ecv.FieldByName(component.Type().Name()).Interface().(ecs.DataComponent)
 				entity.AddComponent(ecsComponent, value.Interface())
 			default:
-				log.Fatalf("EntitySpecフィールドに指定された型の処理は定義されていない: %s", component.Kind())
+				return fmt.Errorf("EntitySpecフィールドに指定された型の処理は定義されていない: %s", component.Kind())
 			}
 		}
 	}
-	return entity
+	return nil
 }

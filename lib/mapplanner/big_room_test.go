@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
@@ -12,9 +14,11 @@ func TestBigRoomPlanner(t *testing.T) {
 	width, height := gc.Tile(20), gc.Tile(20)
 	seed := uint64(12345)
 
-	chain := NewBigRoomPlanner(width, height, seed)
+	chain, err := NewBigRoomPlanner(width, height, seed)
+	require.NoError(t, err)
 	chain.PlanData.RawMaster = CreateTestRawMaster()
-	chain.Plan()
+	err = chain.Plan()
+	require.NoError(t, err)
 
 	// 部屋が1つだけ生成されることを確認
 	if len(chain.PlanData.Rooms) != 1 {
@@ -67,9 +71,11 @@ func TestBigRoomVariations(t *testing.T) {
 	variantCounts := make(map[string]int)
 
 	for _, seed := range seeds {
-		chain := NewBigRoomPlanner(20, 20, seed)
+		chain, err := NewBigRoomPlanner(20, 20, seed)
+		require.NoError(t, err)
 		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
+		err = chain.Plan()
+		require.NoError(t, err)
 
 		// 部屋が1つ生成されることを確認
 		if len(chain.PlanData.Rooms) != 1 {
@@ -123,9 +129,11 @@ func TestBigRoomPlannerBoundaries(t *testing.T) {
 	width, height := gc.Tile(10), gc.Tile(10)
 	seed := uint64(11111)
 
-	chain := NewBigRoomPlanner(width, height, seed)
+	chain, err := NewBigRoomPlanner(width, height, seed)
+	require.NoError(t, err)
 	chain.PlanData.RawMaster = CreateTestRawMaster()
-	chain.Plan()
+	err = chain.Plan()
+	require.NoError(t, err)
 
 	// マップの境界が壁になっていることを確認
 	for x := 0; x < int(width); x++ {

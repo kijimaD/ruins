@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +17,8 @@ func TestSmallRoomPlanner(t *testing.T) {
 		width := gc.Tile(20)
 		height := gc.Tile(20)
 
-		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain, err := NewSmallRoomPlanner(width, height, 12345)
+		require.NoError(t, err)
 
 		// チェーンが作成されていることを確認
 		assert.NotNil(t, chain, "チェーンがnilである")
@@ -27,11 +30,13 @@ func TestSmallRoomPlanner(t *testing.T) {
 		width := gc.Tile(30)
 		height := gc.Tile(30)
 
-		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain, err := NewSmallRoomPlanner(width, height, 12345)
+		require.NoError(t, err)
 
 		// ビルド実行
 		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
+		err = chain.Plan()
+		require.NoError(t, err)
 
 		// タイル数が正しいことを確認
 		expectedCount := int(width) * int(height)
@@ -63,9 +68,11 @@ func TestSmallRoomPlanner(t *testing.T) {
 		width := gc.Tile(25)
 		height := gc.Tile(25)
 
-		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain, err := NewSmallRoomPlanner(width, height, 12345)
+		require.NoError(t, err)
 		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
+		err = chain.Plan()
+		require.NoError(t, err)
 
 		// 各部屋が有効な範囲内にあることを確認
 		for i, room := range chain.PlanData.Rooms {
@@ -85,9 +92,11 @@ func TestSmallRoomPlanner(t *testing.T) {
 		width := gc.Tile(20)
 		height := gc.Tile(20)
 
-		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain, err := NewSmallRoomPlanner(width, height, 12345)
+		require.NoError(t, err)
 		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
+		err = chain.Plan()
+		require.NoError(t, err)
 
 		// 各部屋の内部の少なくとも一部が床タイルであることを確認
 		for i, room := range chain.PlanData.Rooms {
@@ -124,18 +133,40 @@ func TestSmallRoomPlanner(t *testing.T) {
 		for _, tc := range testCases {
 			t.Run(tc.name, func(t *testing.T) {
 				t.Parallel()
-				chain := NewSmallRoomPlanner(tc.width, tc.height, 12345)
+				chain, err := NewSmallRoomPlanner(tc.width, tc.height, 12345)
+				require.NoError(t, err)
 
-				// パニックなく実行できることを確認
-				assert.NotPanics(t, func() {
-					chain.PlanData.RawMaster = CreateTestRawMaster()
-					chain.Plan()
-				}, "%sでパニックが発生した", tc.name)
+				chain.PlanData.RawMaster = CreateTestRawMaster()
+				err = chain.Plan()
+				require.NoError(t, err)
 
 				// タイル数が正しいことを確認
 				expectedCount := int(tc.width) * int(tc.height)
 				assert.Len(t, chain.PlanData.Tiles, expectedCount,
 					"%sのタイル数が正しくない", tc.name)
+
+				// 部屋が生成されていることを確認
+				assert.Greater(t, len(chain.PlanData.Rooms), 0,
+					"%sで部屋が生成されていない", tc.name)
+
+				// 床タイルと壁タイルの両方が存在することを確認
+				floorCount := 0
+				wallCount := 0
+				for _, tile := range chain.PlanData.Tiles {
+					if tile.Walkable {
+						floorCount++
+					} else {
+						wallCount++
+					}
+				}
+				assert.Greater(t, floorCount, 0,
+					"%sで床タイルが生成されていない", tc.name)
+				assert.Greater(t, wallCount, 0,
+					"%sで壁タイルが生成されていない", tc.name)
+
+				// 床と壁でタイル総数と一致することを確認
+				assert.Equal(t, expectedCount, floorCount+wallCount,
+					"%sで床+壁がタイル総数と一致しない", tc.name)
 			})
 		}
 	})
@@ -145,9 +176,11 @@ func TestSmallRoomPlanner(t *testing.T) {
 		width := gc.Tile(30)
 		height := gc.Tile(30)
 
-		chain := NewSmallRoomPlanner(width, height, 12345)
+		chain, err := NewSmallRoomPlanner(width, height, 12345)
+		require.NoError(t, err)
 		chain.PlanData.RawMaster = CreateTestRawMaster()
-		chain.Plan()
+		err = chain.Plan()
+		require.NoError(t, err)
 
 		// 廊下が生成されていることを確認
 		// LineCorridorPlannerの仕様により、部屋が2つ以上ある場合は廊下が生成される

@@ -157,7 +157,10 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 			Text: choice.Text,
 			Action: func() {
 				if choice.Action != nil {
-					choice.Action(w.world)
+					if err := choice.Action(w.world); err != nil {
+						// TODO: エラーハンドリング改善
+						panic(err)
+					}
 				}
 				// 選択肢にメッセージが関連付けられている場合はキューに追加
 				if choice.MessageData != nil {

@@ -51,16 +51,19 @@ func TestStateNoReuse(t *testing.T) {
 
 		// StateMachineを初期化
 		initialState := &TestState{name: "Init"}
-		sm := Init(initialState, world)
+		sm, err := Init(initialState, world)
+		assert.NoError(t, err)
 		sm.lastTransition = transition
 
 		// 最初の実行
-		sm.Update(world)
+		err = sm.Update(world)
+		assert.NoError(t, err, "最初のUpdate でエラーが発生")
 		assert.Equal(t, 2, instanceCount, "2つのステートが作成されるべき")
 
 		// 同じTransitionで再実行
 		sm.lastTransition = transition
-		sm.Update(world)
+		err = sm.Update(world)
+		assert.NoError(t, err, "2回目のUpdateでエラーが発生")
 		assert.Equal(t, 4, instanceCount, "さらに2つの新しいステートが作成されるべき")
 	})
 
@@ -83,7 +86,8 @@ func TestStateNoReuse(t *testing.T) {
 		}
 
 		// StateMachineを初期化
-		sm := Init(&TestState{name: "Init"}, world)
+		sm, err := Init(&TestState{name: "Init"}, world)
+		assert.NoError(t, err)
 
 		// 複数回同じStateFactory[TestWorld]でPush
 		for i := 0; i < 3; i++ {
@@ -91,7 +95,8 @@ func TestStateNoReuse(t *testing.T) {
 				Type:          TransPush,
 				NewStateFuncs: []StateFactory[TestWorld]{factory},
 			}
-			sm.Update(world)
+			err := sm.Update(world)
+			assert.NoError(t, err, "Update %d回目でエラーが発生", i+1)
 		}
 
 		// 3つの異なるインスタンスが作成されたことを確認

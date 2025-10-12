@@ -29,7 +29,10 @@ func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity
 	// エンティティを生成
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	componentList.Entities = append(componentList.Entities, entitySpec)
-	entities := entities.AddEntities(world, componentList)
+	entities, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
 	return entities[len(entities)-1], nil
 }
 

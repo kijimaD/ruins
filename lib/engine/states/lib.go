@@ -31,17 +31,17 @@ type Transition[T any] struct {
 // State はゲームステートのジェネリックインターフェース
 type State[T any] interface {
 	// Executed when the state begins
-	OnStart(world T)
+	OnStart(world T) error
 	// Executed when the state exits
-	OnStop(world T)
+	OnStop(world T) error
 	// Executed when a new state is pushed over this one
-	OnPause(world T)
+	OnPause(world T) error
 	// Executed when the state become active again (states pushed over this one have been popped)
-	OnResume(world T)
+	OnResume(world T) error
 	// Executed on every frame when the state is active
-	Update(world T) Transition[T]
+	Update(world T) (Transition[T], error)
 	// 描画
-	Draw(world T, screen *ebiten.Image)
+	Draw(world T, screen *ebiten.Image) error
 }
 
 // StateFactory はステートを作成するファクトリー関数の型
@@ -54,45 +54,66 @@ type StateMachine[T any] struct {
 }
 
 // Init は新しいステートマシンを初期化する
-func Init[T any](s State[T], world T) StateMachine[T] {
-	s.OnStart(world)
+func Init[T any](s State[T], world T) (StateMachine[T], error) {
+	if err := s.OnStart(world); err != nil {
+		return StateMachine[T]{}, err
+	}
 	return StateMachine[T]{
 		states:         []State[T]{s},
 		lastTransition: Transition[T]{Type: TransNone},
-	}
+	}, nil
 }
 
 // Update はステートマシンを更新する
-func (sm *StateMachine[T]) Update(world T) {
+func (sm *StateMachine[T]) Update(world T) error {
 	// ファクトリー関数からステートを作成
 	states := sm.createStatesFromFunc()
 
 	switch sm.lastTransition.Type {
 	case TransPop:
-		sm.pop(world)
+		if err := sm.pop(world); err != nil {
+			return err
+		}
 	case TransPush:
-		sm.push(world, states)
+		if err := sm.push(world, states); err != nil {
+			return err
+		}
 	case TransSwitch:
-		sm.switchState(world, states)
+		if err := sm.switchState(world, states); err != nil {
+			return err
+		}
 	case TransReplace:
-		sm.replace(world, states)
+		if err := sm.replace(world, states); err != nil {
+			return err
+		}
 	case TransQuit:
-		sm.quit(world)
+		if err := sm.quit(world); err != nil {
+			return err
+		}
 	}
 
 	if len(sm.states) < 1 {
-		return
+		return nil
 	}
 
 	// アクティブなステートを更新
-	sm.lastTransition = sm.states[len(sm.states)-1].Update(world)
+	trans, err := sm.states[len(sm.states)-1].Update(world)
+	if err != nil {
+		return err
+	}
+	sm.lastTransition = trans
+	return nil
 }
 
 // Draw は画面を描画する
-func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image) {
+// エラーが発生した場合は最初のエラーを返す
+func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image) error {
 	for _, state := range sm.states {
-		state.Draw(world, screen)
+		if err := state.Draw(world, screen); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // createStatesFromFunc はファクトリー関数からステートを作成する
@@ -109,85 +130,116 @@ func (sm *StateMachine[T]) createStatesFromFunc() []State[T] {
 }
 
 // pop はアクティブなステートを削除して次のステートを再開する
-func (sm *StateMachine[T]) pop(world T) {
+func (sm *StateMachine[T]) pop(world T) error {
 	if len(sm.states) == 0 {
-		return
+		return nil
 	}
 
 	currentState := sm.states[len(sm.states)-1]
-	currentState.OnStop(world)
+	if err := currentState.OnStop(world); err != nil {
+		return err
+	}
 	sm.states = sm.states[:len(sm.states)-1]
 
 	if len(sm.states) > 0 {
 		resumeState := sm.states[len(sm.states)-1]
-		resumeState.OnResume(world)
+		if err := resumeState.OnResume(world); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // push はアクティブなステートを一時停止して新しいステートをスタックに追加する
-func (sm *StateMachine[T]) push(world T, newStates []State[T]) {
+func (sm *StateMachine[T]) push(world T, newStates []State[T]) error {
 	if len(newStates) == 0 {
-		return
+		return nil
 	}
 
 	if len(sm.states) > 0 {
 		currentState := sm.states[len(sm.states)-1]
-		currentState.OnPause(world)
+		if err := currentState.OnPause(world); err != nil {
+			return err
+		}
 	}
 
 	for _, state := range newStates[:len(newStates)-1] {
-		state.OnStart(world)
-		state.OnPause(world)
+		if err := state.OnStart(world); err != nil {
+			return err
+		}
+		if err := state.OnPause(world); err != nil {
+			return err
+		}
 	}
 
 	activeState := newStates[len(newStates)-1]
-	activeState.OnStart(world)
+	if err := activeState.OnStart(world); err != nil {
+		return err
+	}
 
 	sm.states = append(sm.states, newStates...)
+	return nil
 }
 
 // switchState はアクティブなステートを新しいものに置き換える
-func (sm *StateMachine[T]) switchState(world T, newStates []State[T]) {
+func (sm *StateMachine[T]) switchState(world T, newStates []State[T]) error {
 	if len(newStates) != 1 {
-		return
+		return nil
 	}
 
 	if len(sm.states) > 0 {
 		currentState := sm.states[len(sm.states)-1]
 		newState := newStates[0]
 
-		currentState.OnStop(world)
-		newState.OnStart(world)
+		if err := currentState.OnStop(world); err != nil {
+			return err
+		}
+		if err := newState.OnStart(world); err != nil {
+			return err
+		}
 		sm.states[len(sm.states)-1] = newState
 	}
+	return nil
 }
 
 // replace はすべてのステートを削除して新しいスタックを挿入する
-func (sm *StateMachine[T]) replace(world T, newStates []State[T]) {
+func (sm *StateMachine[T]) replace(world T, newStates []State[T]) error {
 	for len(sm.states) > 0 {
 		currentState := sm.states[len(sm.states)-1]
-		currentState.OnStop(world)
+		if err := currentState.OnStop(world); err != nil {
+			return err
+		}
 		sm.states = sm.states[:len(sm.states)-1]
 	}
 
 	if len(newStates) > 0 {
 		for _, state := range newStates[:len(newStates)-1] {
-			state.OnStart(world)
-			state.OnPause(world)
+			if err := state.OnStart(world); err != nil {
+				return err
+			}
+			if err := state.OnPause(world); err != nil {
+				return err
+			}
 		}
 		activeState := newStates[len(newStates)-1]
-		activeState.OnStart(world)
+		if err := activeState.OnStart(world); err != nil {
+			return err
+		}
 	}
 	sm.states = newStates
+	return nil
 }
 
 // quit はすべてのステートを削除して終了する
-func (sm *StateMachine[T]) quit(world T) {
+func (sm *StateMachine[T]) quit(world T) error {
 	for len(sm.states) > 0 {
 		currentState := sm.states[len(sm.states)-1]
-		currentState.OnStop(world)
+		if err := currentState.OnStop(world); err != nil {
+			return err
+		}
 		sm.states = sm.states[:len(sm.states)-1]
 	}
+	return nil
 }
 
 // GetStates はステートスタックのコピーを返す（テスト用）

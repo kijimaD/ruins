@@ -2,6 +2,7 @@ package maingame
 
 import (
 	"fmt"
+	"log"
 	"runtime"
 	"time"
 
@@ -43,14 +44,18 @@ func (game *MainGame) Update() error {
 		cfg.NoEncounter = !cfg.NoEncounter
 	}
 
-	game.StateMachine.Update(game.World)
+	if err := game.StateMachine.Update(game.World); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // Draw はゲームの描画処理を行う
 func (game *MainGame) Draw(screen *ebiten.Image) {
-	game.StateMachine.Draw(game.World, screen)
+	if err := game.StateMachine.Draw(game.World, screen); err != nil {
+		log.Fatal(err)
+	}
 
 	cfg := config.Get()
 	if cfg.ShowMonitor {

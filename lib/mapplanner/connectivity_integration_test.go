@@ -3,6 +3,8 @@ package mapplanner
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	gc "github.com/kijimaD/ruins/lib/components"
 )
 
@@ -10,9 +12,11 @@ import (
 func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 小さなテスト用マップを生成
-	chain := NewSmallRoomPlanner(20, 20, 42) // 固定シードで再現可能
+	chain, err := NewSmallRoomPlanner(20, 20, 42) // 固定シードで再現可能
+	require.NoError(t, err)
 	chain.PlanData.RawMaster = CreateTestRawMaster()
-	chain.Plan()
+	err = chain.Plan()
+	require.NoError(t, err)
 
 	// プレイヤーのスタート位置を部屋の中心付近に設定
 	var playerStartX, playerStartY int
@@ -31,7 +35,7 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 	}
 
 	// 接続性を検証（ワープポータルがない場合はErrNoWarpPortalが期待される）
-	err := chain.ValidateConnectivity(playerStartX, playerStartY)
+	err = chain.ValidateConnectivity(playerStartX, playerStartY)
 	if err != ErrNoWarpPortal {
 		t.Errorf("Expected ErrNoWarpPortal for map without portals, got: %v", err)
 	}
@@ -41,9 +45,11 @@ func TestPlannerChain_ValidateConnectivity(t *testing.T) {
 func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 	t.Parallel()
 	// 洞窟マップを生成
-	chain := NewCavePlanner(30, 30, 123)
+	chain, err := NewCavePlanner(30, 30, 123)
+	require.NoError(t, err)
 	chain.PlanData.RawMaster = CreateTestRawMaster()
-	chain.Plan()
+	err = chain.Plan()
+	require.NoError(t, err)
 
 	// 床タイルを見つけてプレイヤーのスタート位置とする
 	var playerStartX, playerStartY int
@@ -66,12 +72,10 @@ func TestCavePlanner_ValidateConnectivity(t *testing.T) {
 		}
 	}
 
-	if !foundFloor {
-		t.Fatal("Could not find a floor tile for player start position")
-	}
+	require.True(t, foundFloor, "Could not find a floor tile for player start position")
 
 	// 接続性を検証（ワープポータルがない場合はErrNoWarpPortalが期待される）
-	err := chain.ValidateConnectivity(playerStartX, playerStartY)
+	err = chain.ValidateConnectivity(playerStartX, playerStartY)
 	if err != ErrNoWarpPortal {
 		t.Errorf("Expected ErrNoWarpPortal for cave map without portals, got: %v", err)
 	}
@@ -84,7 +88,8 @@ func TestPathFinder_WithPortals(t *testing.T) {
 	chain := NewPlannerChain(10, 10, 1)
 	chain.PlanData.RawMaster = CreateTestRawMaster()
 	chain.StartWith(&TestRoomPlanner{})
-	chain.Plan()
+	err := chain.Plan()
+	require.NoError(t, err)
 
 	// プレイヤーのスタート位置（十字の中心）
 	playerStartX, playerStartY := 5, 5
@@ -111,7 +116,7 @@ func TestPathFinder_WithPortals(t *testing.T) {
 
 	// 接続性を検証（ワープポータルは到達可能だが脱出ポータルは到達不可能）
 	// この場合、ワープポータルが到達可能なので接続性エラーは発生しない
-	err := chain.ValidateConnectivity(playerStartX, playerStartY)
+	err = chain.ValidateConnectivity(playerStartX, playerStartY)
 	if err != nil {
 		t.Errorf("Expected no connectivity error when warp portal is reachable, got: %v", err)
 	}
