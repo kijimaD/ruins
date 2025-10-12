@@ -223,7 +223,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.SystemMessage">func (m *MessageData) SystemMessage(text string) *MessageData</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.WithChoice">func (m *MessageData) WithChoice(text string, action func(w.World)) *MessageData</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.WithChoice">func (m *MessageData) WithChoice(text string, action func(w.World) error) *MessageData</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.WithChoiceMessage">func (m *MessageData) WithChoiceMessage(text string, messageData *MessageData) *MessageData</a></dd>
@@ -261,7 +261,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 		
 			
 			
-			<h2 id="Choice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=524:724#L8">Choice</a>
+			<h2 id="Choice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=524:736#L8">Choice</a>
 				<a class="permalink" href="index.html#Choice">&#xb6;</a>
 				
 				
@@ -270,8 +270,8 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			<pre>type Choice struct {
 <span id="Choice.Text"></span>    Text        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="Choice.Action"></span>    Action      func(<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <span class="comment">// 選択時に実行する</span>
-<span id="Choice.MessageData"></span>    MessageData *<a href="index.html#MessageData">MessageData</a>  <span class="comment">// 選択肢を選んだ時に表示するメッセージ</span>
+<span id="Choice.Action"></span>    Action      func(<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a> <span class="comment">// 選択時に実行する</span>
+<span id="Choice.MessageData"></span>    MessageData *<a href="index.html#MessageData">MessageData</a>        <span class="comment">// 選択肢を選んだ時に表示するメッセージ</span>
 <span id="Choice.Disabled"></span>    Disabled    <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
 }
 </pre>
@@ -316,7 +316,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			
 				
-				<h3 id="NewDialogMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=786:842#L16">NewDialogMessage</a>
+				<h3 id="NewDialogMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=798:854#L16">NewDialogMessage</a>
 					<a class="permalink" href="index.html#NewDialogMessage">&#xb6;</a>
 					
 					
@@ -328,7 +328,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="NewSystemMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=976:1023#L24">NewSystemMessage</a>
+				<h3 id="NewSystemMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=988:1035#L24">NewSystemMessage</a>
 					<a class="permalink" href="index.html#NewSystemMessage">&#xb6;</a>
 					
 					
@@ -342,7 +342,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			
 				
-				<h3 id="MessageData.DialogMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1819:1889#L56">DialogMessage</a>
+				<h3 id="MessageData.DialogMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1837:1907#L56">DialogMessage</a>
 					<a class="permalink" href="index.html#MessageData.DialogMessage">&#xb6;</a>
 					
 					
@@ -355,7 +355,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.GetNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2381:2435#L73">GetNextMessages</a>
+				<h3 id="MessageData.GetNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2399:2453#L73">GetNextMessages</a>
 					<a class="permalink" href="index.html#MessageData.GetNextMessages">&#xb6;</a>
 					
 					
@@ -368,7 +368,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.HasNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2243:2287#L68">HasNextMessages</a>
+				<h3 id="MessageData.HasNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2261:2305#L68">HasNextMessages</a>
 					<a class="permalink" href="index.html#MessageData.HasNextMessages">&#xb6;</a>
 					
 					
@@ -381,7 +381,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.SystemMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2036:2097#L62">SystemMessage</a>
+				<h3 id="MessageData.SystemMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2054:2115#L62">SystemMessage</a>
 					<a class="permalink" href="index.html#MessageData.SystemMessage">&#xb6;</a>
 					
 					
@@ -394,12 +394,12 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.WithChoice">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1140:1220#L32">WithChoice</a>
+				<h3 id="MessageData.WithChoice">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1152:1238#L32">WithChoice</a>
 					<a class="permalink" href="index.html#MessageData.WithChoice">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) WithChoice(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, action func(<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)) *<a href="index.html#MessageData">MessageData</a></pre>
+				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) WithChoice(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>, action func(<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>) *<a href="index.html#MessageData">MessageData</a></pre>
 				<p>WithChoice は選択肢を追加する
 
 				
@@ -407,7 +407,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.WithChoiceMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1395:1486#L41">WithChoiceMessage</a>
+				<h3 id="MessageData.WithChoiceMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1413:1504#L41">WithChoiceMessage</a>
 					<a class="permalink" href="index.html#MessageData.WithChoiceMessage">&#xb6;</a>
 					
 					
@@ -420,7 +420,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.WithOnComplete">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1661:1727#L50">WithOnComplete</a>
+				<h3 id="MessageData.WithOnComplete">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1679:1745#L50">WithOnComplete</a>
 					<a class="permalink" href="index.html#MessageData.WithOnComplete">&#xb6;</a>
 					
 					

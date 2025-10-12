@@ -144,11 +144,11 @@
 				<dd><a href="index.html#StateMachine">type StateMachine</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Init">func Init[T any](s State[T], world T) StateMachine[T]</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Init">func Init[T any](s State[T], world T) (StateMachine[T], error)</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Draw">func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Draw">func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetCurrentState">func (sm *StateMachine[T]) GetCurrentState() State[T]</a></dd>
@@ -160,7 +160,7 @@
 					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.GetStates">func (sm *StateMachine[T]) GetStates() []State[T]</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Update">func (sm *StateMachine[T]) Update(world T)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#StateMachine.Update">func (sm *StateMachine[T]) Update(world T) error</a></dd>
 				
 			
 				
@@ -287,7 +287,7 @@
 		
 			
 			
-			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=758:1211#L22">State</a>
+			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=758:1250#L22">State</a>
 				<a class="permalink" href="index.html#State">&#xb6;</a>
 				
 				
@@ -296,17 +296,17 @@
 
 			<pre>type State[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] interface {
     <span class="comment">// Executed when the state begins</span>
-    OnStart(world T)
+    OnStart(world T) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
     <span class="comment">// Executed when the state exits</span>
-    OnStop(world T)
+    OnStop(world T) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
     <span class="comment">// Executed when a new state is pushed over this one</span>
-    OnPause(world T)
+    OnPause(world T) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
     <span class="comment">// Executed when the state become active again (states pushed over this one have been popped)</span>
-    OnResume(world T)
+    OnResume(world T) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
     <span class="comment">// Executed on every frame when the state is active</span>
-    Update(world T) <a href="index.html#Transition">Transition</a>[T]
+    Update(world T) (<a href="index.html#Transition">Transition</a>[T], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
     <span class="comment">// 描画</span>
-    Draw(world T, screen *ebiten.<a href="index.html#Image">Image</a>)
+    Draw(world T, screen *ebiten.<a href="index.html#Image">Image</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
 }</pre>
 
 			
@@ -323,7 +323,7 @@
 		
 			
 			
-			<h2 id="StateFactory">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1290:1330#L38">StateFactory</a>
+			<h2 id="StateFactory">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1329:1369#L38">StateFactory</a>
 				<a class="permalink" href="index.html#StateFactory">&#xb6;</a>
 				
 				
@@ -346,7 +346,7 @@
 		
 			
 			
-			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1406:1498#L41">StateMachine</a>
+			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1445:1537#L41">StateMachine</a>
 				<a class="permalink" href="index.html#StateMachine">&#xb6;</a>
 				
 				
@@ -368,12 +368,12 @@
 
 			
 				
-				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1560:1613#L47">Init</a>
+				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1599:1661#L47">Init</a>
 					<a class="permalink" href="index.html#Init">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func Init[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>](s <a href="index.html#State">State</a>[T], world T) <a href="index.html#StateMachine">StateMachine</a>[T]</pre>
+				<pre>func Init[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>](s <a href="index.html#State">State</a>[T], world T) (<a href="index.html#StateMachine">StateMachine</a>[T], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>Init は新しいステートマシンを初期化する
 
 				
@@ -382,20 +382,21 @@
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2362:2424#L82">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2824:2892#L100">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) Draw(world T, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) Draw(world T, screen *ebiten.<a href="index.html#Image">Image</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Draw は画面を描画する
+エラーが発生した場合は最初のエラーを返す
 
 				
 				
 				
 			
 				
-				<h3 id="StateMachine.GetCurrentState">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5327:5380#L191">GetCurrentState</a>
+				<h3 id="StateMachine.GetCurrentState">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6497:6550#L243">GetCurrentState</a>
 					<a class="permalink" href="index.html#StateMachine.GetCurrentState">&#xb6;</a>
 					
 					
@@ -408,7 +409,7 @@
 				
 			
 				
-				<h3 id="StateMachine.GetStateCount">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5542:5588#L199">GetStateCount</a>
+				<h3 id="StateMachine.GetStateCount">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6712:6758#L251">GetStateCount</a>
 					<a class="permalink" href="index.html#StateMachine.GetStateCount">&#xb6;</a>
 					
 					
@@ -421,7 +422,7 @@
 				
 			
 				
-				<h3 id="StateMachine.GetStates">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=5102:5151#L184">GetStates</a>
+				<h3 id="StateMachine.GetStates">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6272:6321#L236">GetStates</a>
 					<a class="permalink" href="index.html#StateMachine.GetStates">&#xb6;</a>
 					
 					
@@ -434,12 +435,12 @@
 				
 			
 				
-				<h3 id="StateMachine.Update">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1798:1840#L56">Update</a>
+				<h3 id="StateMachine.Update">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1910:1958#L58">Update</a>
 					<a class="permalink" href="index.html#StateMachine.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) Update(world T)</pre>
+				<pre>func (sm *<a href="index.html#StateMachine">StateMachine</a>[T]) Update(world T) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Update はステートマシンを更新する
 
 				

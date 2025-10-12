@@ -133,10 +133,10 @@ entitiesResult := entities.AddEntities(world, componentList)
 			
 			
 				
-				<dd><a href="index.html#AddEntities">func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) []ecs.Entity</a></dd>
+				<dd><a href="index.html#AddEntities">func AddEntities[W World, C any](world W, entityComponentList ComponentList[C]) ([]ecs.Entity, error)</a></dd>
 			
 				
-				<dd><a href="index.html#AddEntityComponents">func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) ecs.Entity</a></dd>
+				<dd><a href="index.html#AddEntityComponents">func AddEntityComponents(entity ecs.Entity, ecsComponentList interface{}, components interface{}) error</a></dd>
 			
 			
 				
@@ -177,12 +177,12 @@ entitiesResult := entities.AddEntities(world, componentList)
 		
 			
 			
-			<h2 id="AddEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=746:838#L16">AddEntities</a>
+			<h2 id="AddEntities">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=739:840#L15">AddEntities</a>
 				<a class="permalink" href="index.html#AddEntities">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AddEntities[W <a href="index.html#World">World</a>, C <a href="http://localhost:8888/pkg/builtin/#any">any</a>](world W, entityComponentList <a href="index.html#ComponentList">ComponentList</a>[C]) []<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<pre>func AddEntities[W <a href="index.html#World">World</a>, C <a href="http://localhost:8888/pkg/builtin/#any">any</a>](world W, entityComponentList <a href="index.html#ComponentList">ComponentList</a>[C]) ([]<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>AddEntities はComponentListからECSエンティティを作成する
 EntitySpecをECSエンティティに変換し、ワールドに追加する
 
@@ -192,12 +192,12 @@ EntitySpecをECSエンティティに変換し、ワールドに追加する
 		
 			
 			
-			<h2 id="AddEntityComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=1707:1815#L38">AddEntityComponents</a>
+			<h2 id="AddEntityComponents">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=1823:1926#L41">AddEntityComponents</a>
 				<a class="permalink" href="index.html#AddEntityComponents">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func AddEntityComponents(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, ecsComponentList interface{}, components interface{}) <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<pre>func AddEntityComponents(entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, ecsComponentList interface{}, components interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 			<p>AddEntityComponents はエンティティにコンポーネントを追加する
 EntitySpec の各フィールドを対応する ECS コンポーネントに変換して追加する
 
@@ -208,7 +208,7 @@ EntitySpec の各フィールドを対応する ECS コンポーネントに変�
 		
 			
 			
-			<h2 id="ComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=291:387#L3">ComponentList</a>
+			<h2 id="ComponentList">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=284:380#L2">ComponentList</a>
 				<a class="permalink" href="index.html#ComponentList">&#xb6;</a>
 				
 				
@@ -235,7 +235,7 @@ Gameフィールドに EntitySpec のスライスを設定し、AddEntities でE
 		
 			
 			
-			<h2 id="World">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=510:590#L9">World</a>
+			<h2 id="World">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/entities/entity.go?s=503:583#L8">World</a>
 				<a class="permalink" href="index.html#World">&#xb6;</a>
 				
 				

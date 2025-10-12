@@ -184,7 +184,7 @@ func TileInputSystem(world w.World) {
 				<dd><a href="index.html#CreatePlayerEntity">func CreatePlayerEntity(t *testing.T, world w.World, x, y float64)</a></dd>
 			
 				
-				<dd><a href="index.html#DeadCleanupSystem">func DeadCleanupSystem(world w.World)</a></dd>
+				<dd><a href="index.html#DeadCleanupSystem">func DeadCleanupSystem(world w.World) error</a></dd>
 			
 				
 				<dd><a href="index.html#EquipmentChangedSystem">func EquipmentChangedSystem(world w.World) bool</a></dd>
@@ -205,10 +205,10 @@ func TileInputSystem(world w.World) {
 				<dd><a href="index.html#SetTranslate">func SetTranslate(world w.World, op *ebiten.DrawImageOptions)</a></dd>
 			
 				
-				<dd><a href="index.html#TileInputSystem">func TileInputSystem(world w.World)</a></dd>
+				<dd><a href="index.html#TileInputSystem">func TileInputSystem(world w.World) error</a></dd>
 			
 				
-				<dd><a href="index.html#TurnSystem">func TurnSystem(world w.World)</a></dd>
+				<dd><a href="index.html#TurnSystem">func TurnSystem(world w.World) error</a></dd>
 			
 				
 				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, _ *ebiten.Image)</a></dd>
@@ -305,7 +305,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="CanMoveTo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=6922:6999#L188">CanMoveTo</a>
+			<h2 id="CanMoveTo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=6949:7026#L190">CanMoveTo</a>
 				<a class="permalink" href="index.html#CanMoveTo">&#xb6;</a>
 				
 				
@@ -333,7 +333,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="CreateEnemyEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=1284:1349#L38">CreateEnemyEntity</a>
+			<h2 id="CreateEnemyEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=1358:1423#L40">CreateEnemyEntity</a>
 				<a class="permalink" href="index.html#CreateEnemyEntity">&#xb6;</a>
 				
 				
@@ -347,7 +347,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="CreateEntityWithGridPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=3989:4084#L120">CreateEntityWithGridPosition</a>
+			<h2 id="CreateEntityWithGridPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=4133:4228#L124">CreateEntityWithGridPosition</a>
 				<a class="permalink" href="index.html#CreateEntityWithGridPosition">&#xb6;</a>
 				
 				
@@ -361,7 +361,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="CreateEntityWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=2223:2327#L66">CreateEntityWithSprite</a>
+			<h2 id="CreateEntityWithSprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=2332:2436#L69">CreateEntityWithSprite</a>
 				<a class="permalink" href="index.html#CreateEntityWithSprite">&#xb6;</a>
 				
 				
@@ -375,7 +375,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="CreateEntityWithSpriteSize">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=3700:3806#L114">CreateEntityWithSpriteSize</a>
+			<h2 id="CreateEntityWithSpriteSize">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=3844:3950#L118">CreateEntityWithSpriteSize</a>
 				<a class="permalink" href="index.html#CreateEntityWithSpriteSize">&#xb6;</a>
 				
 				
@@ -389,7 +389,7 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="CreatePlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=399:465#L10">CreatePlayerEntity</a>
+			<h2 id="CreatePlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go?s=438:504#L11">CreatePlayerEntity</a>
 				<a class="permalink" href="index.html#CreatePlayerEntity">&#xb6;</a>
 				
 				
@@ -403,12 +403,12 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="DeadCleanupSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/dead_cleanup.go?s=238:275#L1">DeadCleanupSystem</a>
+			<h2 id="DeadCleanupSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/dead_cleanup.go?s=238:281#L1">DeadCleanupSystem</a>
 				<a class="permalink" href="index.html#DeadCleanupSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func DeadCleanupSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<pre>func DeadCleanupSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 			<p>DeadCleanupSystem はDeadコンポーネントを持つ敵エンティティを削除する
 
 			
@@ -504,12 +504,12 @@ TODO: ズーム率を追加する
 		
 			
 			
-			<h2 id="TileInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=715:750#L9">TileInputSystem</a>
+			<h2 id="TileInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=715:756#L9">TileInputSystem</a>
 				<a class="permalink" href="index.html#TileInputSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func TileInputSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<pre>func TileInputSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 			<p>TileInputSystem はプレイヤーからのタイルベース入力を処理する。Actionシステムを使用して移動を実行する
 AIの移動・攻撃も将来的に同じActionシステムを使用予定
 TODO: 文脈に応じて発行アクションを判定する
@@ -520,12 +520,12 @@ TODO: 文脈に応じて発行アクションを判定する
 		
 			
 			
-			<h2 id="TurnSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go?s=240:270#L1">TurnSystem</a>
+			<h2 id="TurnSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go?s=240:276#L1">TurnSystem</a>
 				<a class="permalink" href="index.html#TurnSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func TurnSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<pre>func TurnSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 			<p>TurnSystem はターン管理を行うシステム
 
 			

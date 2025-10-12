@@ -230,13 +230,13 @@ tabMenu.Update()
 					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.HasPreviousPage">func (tm *TabMenu) HasPreviousPage() bool</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.SetItemIndex">func (tm *TabMenu) SetItemIndex(index int)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.SetItemIndex">func (tm *TabMenu) SetItemIndex(index int) error</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.SetTabIndex">func (tm *TabMenu) SetTabIndex(index int)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.SetTabIndex">func (tm *TabMenu) SetTabIndex(index int) error</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.Update">func (tm *TabMenu) Update() bool</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.Update">func (tm *TabMenu) Update() (bool, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#TabMenu.UpdateTabs">func (tm *TabMenu) UpdateTabs(tabs []TabItem)</a></dd>
@@ -271,7 +271,7 @@ tabMenu.Update()
 		
 			
 			
-			<h2 id="Callbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=620:886#L18">Callbacks</a>
+			<h2 id="Callbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=620:898#L18">Callbacks</a>
 				<a class="permalink" href="index.html#Callbacks">&#xb6;</a>
 				
 				
@@ -279,10 +279,10 @@ tabMenu.Update()
 			<p>Callbacks はタブメニューのコールバック
 
 			<pre>type Callbacks struct {
-<span id="Callbacks.OnSelectItem"></span>    OnSelectItem func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, itemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>)
+<span id="Callbacks.OnSelectItem"></span>    OnSelectItem func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, itemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
 <span id="Callbacks.OnCancel"></span>    OnCancel     func()
 <span id="Callbacks.OnTabChange"></span>    OnTabChange  func(oldTabIndex, newTabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tab <a href="index.html#TabItem">TabItem</a>)
-<span id="Callbacks.OnItemChange"></span>    OnItemChange func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, oldItemIndex, newItemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>)
+<span id="Callbacks.OnItemChange"></span>    OnItemChange func(tabIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, oldItemIndex, newItemIndex <a href="http://localhost:8888/pkg/builtin/#int">int</a>, item <a href="../menu/index.html">menu</a>.<a href="../menu/index.html#Item">Item</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
 }
 </pre>
 
@@ -358,7 +358,7 @@ tabMenu.Update()
 		
 			
 			
-			<h2 id="TabMenu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1217:1464#L27">TabMenu</a>
+			<h2 id="TabMenu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1229:1476#L27">TabMenu</a>
 				<a class="permalink" href="index.html#TabMenu">&#xb6;</a>
 				
 				
@@ -381,7 +381,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 
 			
 				
-				<h3 id="NewTabMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1515:1610#L41">NewTabMenu</a>
+				<h3 id="NewTabMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=1527:1622#L41">NewTabMenu</a>
 					<a class="permalink" href="index.html#NewTabMenu">&#xb6;</a>
 					
 					
@@ -395,7 +395,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 
 			
 				
-				<h3 id="TabMenu.GetCurrentItem">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=11698:11743#L422">GetCurrentItem</a>
+				<h3 id="TabMenu.GetCurrentItem">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=12885:12930#L471">GetCurrentItem</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentItem">&#xb6;</a>
 					
 					
@@ -408,7 +408,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=11334:11378#L409">GetCurrentItemIndex</a>
+				<h3 id="TabMenu.GetCurrentItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=12521:12565#L458">GetCurrentItemIndex</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentItemIndex">&#xb6;</a>
 					
 					
@@ -421,7 +421,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentPage">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=15118:15157#L535">GetCurrentPage</a>
+				<h3 id="TabMenu.GetCurrentPage">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=16431:16470#L590">GetCurrentPage</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentPage">&#xb6;</a>
 					
 					
@@ -434,7 +434,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentTab">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=11457:11499#L414">GetCurrentTab</a>
+				<h3 id="TabMenu.GetCurrentTab">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=12644:12686#L463">GetCurrentTab</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentTab">&#xb6;</a>
 					
 					
@@ -447,7 +447,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetCurrentTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=11183:11226#L404">GetCurrentTabIndex</a>
+				<h3 id="TabMenu.GetCurrentTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=12370:12413#L453">GetCurrentTabIndex</a>
 					<a class="permalink" href="index.html#TabMenu.GetCurrentTabIndex">&#xb6;</a>
 					
 					
@@ -460,7 +460,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetPageIndicatorText">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=15637:15685#L554">GetPageIndicatorText</a>
+				<h3 id="TabMenu.GetPageIndicatorText">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=16950:16998#L609">GetPageIndicatorText</a>
 					<a class="permalink" href="index.html#TabMenu.GetPageIndicatorText">&#xb6;</a>
 					
 					
@@ -473,7 +473,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetTotalPages">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=15235:15273#L540">GetTotalPages</a>
+				<h3 id="TabMenu.GetTotalPages">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=16548:16586#L595">GetTotalPages</a>
 					<a class="permalink" href="index.html#TabMenu.GetTotalPages">&#xb6;</a>
 					
 					
@@ -486,7 +486,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.GetVisibleItems">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=14234:14291#L500">GetVisibleItems</a>
+				<h3 id="TabMenu.GetVisibleItems">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=15547:15604#L555">GetVisibleItems</a>
 					<a class="permalink" href="index.html#TabMenu.GetVisibleItems">&#xb6;</a>
 					
 					
@@ -499,7 +499,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.HasNextPage">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=16317:16354#L584">HasNextPage</a>
+				<h3 id="TabMenu.HasNextPage">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=17630:17667#L639">HasNextPage</a>
 					<a class="permalink" href="index.html#TabMenu.HasNextPage">&#xb6;</a>
 					
 					
@@ -512,7 +512,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.HasPreviousPage">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=16188:16229#L579">HasPreviousPage</a>
+				<h3 id="TabMenu.HasPreviousPage">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=17501:17542#L634">HasPreviousPage</a>
 					<a class="permalink" href="index.html#TabMenu.HasPreviousPage">&#xb6;</a>
 					
 					
@@ -525,12 +525,12 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.SetItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=12835:12877#L459">SetItemIndex</a>
+				<h3 id="TabMenu.SetItemIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=14086:14134#L511">SetItemIndex</a>
 					<a class="permalink" href="index.html#TabMenu.SetItemIndex">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) SetItemIndex(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) SetItemIndex(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>SetItemIndex はアイテムインデックスを設定する
 
 				
@@ -538,12 +538,12 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.SetTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=12019:12060#L431">SetTabIndex</a>
+				<h3 id="TabMenu.SetTabIndex">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=13206:13253#L480">SetTabIndex</a>
 					<a class="permalink" href="index.html#TabMenu.SetTabIndex">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) SetTabIndex(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>)</pre>
+				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) SetTabIndex(index <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>SetTabIndex はタブインデックスを設定する
 
 				
@@ -551,12 +551,12 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.Update">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=2332:2364#L66">Update</a>
+				<h3 id="TabMenu.Update">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=2344:2385#L66">Update</a>
 					<a class="permalink" href="index.html#TabMenu.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) Update() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+				<pre>func (tm *<a href="index.html#TabMenu">TabMenu</a>) Update() (<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>Update はタブメニューを更新する
 
 				
@@ -564,7 +564,7 @@ TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態
 				
 			
 				
-				<h3 id="TabMenu.UpdateTabs">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=13222:13267#L472">UpdateTabs</a>
+				<h3 id="TabMenu.UpdateTabs">func (*TabMenu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/tabmenu/tabmenu.go?s=14535:14580#L527">UpdateTabs</a>
 					<a class="permalink" href="index.html#TabMenu.UpdateTabs">&#xb6;</a>
 					
 					

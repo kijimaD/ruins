@@ -191,7 +191,7 @@ if turnManager.IsAITurn() {
 					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.AdvanceToTurnEnd">func (tm *TurnManager) AdvanceToTurnEnd()</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.CalculateMaxActionPoints">func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity) int</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.CalculateMaxActionPoints">func (tm *TurnManager) CalculateMaxActionPoints(world w.World, entity ecs.Entity) (int, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.CanEntityAct">func (tm *TurnManager) CanEntityAct(world w.World, entity ecs.Entity, cost int) bool</a></dd>
@@ -212,7 +212,7 @@ if turnManager.IsAITurn() {
 					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.IsPlayerTurn">func (tm *TurnManager) IsPlayerTurn() bool</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.RestoreAllActionPoints">func (tm *TurnManager) RestoreAllActionPoints(world w.World)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.RestoreAllActionPoints">func (tm *TurnManager) RestoreAllActionPoints(world w.World) error</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#TurnManager.StartNewTurn">func (tm *TurnManager) StartNewTurn()</a></dd>
@@ -320,12 +320,12 @@ if turnManager.IsAITurn() {
 				
 			
 				
-				<h3 id="TurnManager.CalculateMaxActionPoints">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=2968:3053#L101">CalculateMaxActionPoints</a>
+				<h3 id="TurnManager.CalculateMaxActionPoints">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=2968:3062#L101">CalculateMaxActionPoints</a>
 					<a class="permalink" href="index.html#TurnManager.CalculateMaxActionPoints">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (tm *<a href="index.html#TurnManager">TurnManager</a>) CalculateMaxActionPoints(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
+				<pre>func (tm *<a href="index.html#TurnManager">TurnManager</a>) CalculateMaxActionPoints(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, entity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (<a href="http://localhost:8888/pkg/builtin/#int">int</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 				<p>CalculateMaxActionPoints はエンティティの最大アクションポイントを計算する
 CDDAスタイルで敏捷性を重視したAP計算式
 
@@ -334,7 +334,7 @@ CDDAスタイルで敏捷性を重視したAP計算式
 				
 			
 				
-				<h3 id="TurnManager.CanEntityAct">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=4756:4840#L161">CanEntityAct</a>
+				<h3 id="TurnManager.CanEntityAct">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=4781:4865#L161">CanEntityAct</a>
 					<a class="permalink" href="index.html#TurnManager.CanEntityAct">&#xb6;</a>
 					
 					
@@ -360,7 +360,7 @@ CDDAスタイルで敏捷性を重視したAP計算式
 				
 			
 				
-				<h3 id="TurnManager.ConsumeActionPoints">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=3844:3954#L128">ConsumeActionPoints</a>
+				<h3 id="TurnManager.ConsumeActionPoints">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=3869:3979#L128">ConsumeActionPoints</a>
 					<a class="permalink" href="index.html#TurnManager.ConsumeActionPoints">&#xb6;</a>
 					
 					
@@ -413,12 +413,12 @@ CDDAスタイルの共通AP管理システム
 				
 			
 				
-				<h3 id="TurnManager.RestoreAllActionPoints">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=5382:5442#L179">RestoreAllActionPoints</a>
+				<h3 id="TurnManager.RestoreAllActionPoints">func (*TurnManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/turns/manager.go?s=5407:5473#L179">RestoreAllActionPoints</a>
 					<a class="permalink" href="index.html#TurnManager.RestoreAllActionPoints">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (tm *<a href="index.html#TurnManager">TurnManager</a>) RestoreAllActionPoints(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<pre>func (tm *<a href="index.html#TurnManager">TurnManager</a>) RestoreAllActionPoints(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>RestoreAllActionPoints は全エンティティのAPを回復する（ターン終了時）
 
 				
