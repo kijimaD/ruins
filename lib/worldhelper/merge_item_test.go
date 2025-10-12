@@ -5,7 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/engine/entities"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -13,8 +13,7 @@ import (
 
 func TestMergeMaterialIntoInventoryWithMaterial(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 既存のmaterialをバックパックに配置（初期数量5）
 	existingMaterial, err := SpawnStackable(world, "鉄くず", 5, gc.ItemLocationInBackpack)
@@ -38,8 +37,7 @@ func TestMergeMaterialIntoInventoryWithMaterial(t *testing.T) {
 
 func TestMergeMaterialIntoInventoryWithNewMaterial(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 新しいmaterialを作成（既存のものはなし）
 	newMaterial, err := SpawnStackable(world, "緑ハーブ", 2, gc.ItemLocationInBackpack)
@@ -78,8 +76,7 @@ func TestMergeMaterialIntoInventoryWithNewMaterial(t *testing.T) {
 
 func TestMergeMaterialIntoInventoryWithNonMaterial(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 既存のアイテム（Stackableを持たない）をバックパックに配置
 	existingItem, err := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
@@ -119,8 +116,7 @@ func TestMergeMaterialIntoInventoryWithNonMaterial(t *testing.T) {
 
 func TestMergeMaterialIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// Stackableコンポーネントを持たないエンティティを作成（個別アイテムとして扱われる）
 	componentList := entities.ComponentList[gc.EntitySpec]{}
@@ -131,6 +127,6 @@ func TestMergeMaterialIntoInventoryWithoutItemOrMaterialComponent(t *testing.T) 
 	nonStackableEntity := entities[0]
 
 	// MergeStackableIntoInventoryを実行しても何もしない（エラーなし）
-	err = MergeStackableIntoInventory(world, nonStackableEntity, "テスト")
+	err := MergeStackableIntoInventory(world, nonStackableEntity, "テスト")
 	require.NoError(t, err, "Stackableコンポーネントを持たないエンティティは個別アイテムとして扱われ、マージ不要")
 }

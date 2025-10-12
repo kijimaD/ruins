@@ -5,10 +5,7 @@ import (
 	"testing"
 
 	"github.com/kijimaD/ruins/lib/engine/entities"
-	"github.com/kijimaD/ruins/lib/resources"
-	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
-	"github.com/stretchr/testify/require"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 )
@@ -17,50 +14,6 @@ import (
 type spriteSize struct {
 	width  int
 	height int
-}
-
-// CreateTestWorldWithResources はテスト用のワールドを作成し、必要なリソースを初期化する
-func CreateTestWorldWithResources(t *testing.T) w.World {
-	t.Helper()
-
-	components := &gc.Components{}
-	world, err := w.InitWorld(components)
-	require.NoError(t, err)
-
-	// Gameリソースを初期化
-	gameResource := &resources.Dungeon{
-		ExploredTiles: make(map[gc.GridElement]bool),
-	}
-	gameResource.SetStateEvent(resources.StateEventNone)
-	world.Resources.Dungeon = gameResource
-
-	// TurnManagerを初期化
-	turnManager := turns.NewTurnManager()
-	world.Resources.TurnManager = turnManager
-
-	return world
-}
-
-// CreateTestWorldForCollision は衝突判定テスト用のワールドを作成する
-func CreateTestWorldForCollision(t *testing.T) w.World {
-	t.Helper()
-
-	components := &gc.Components{}
-	world, err := w.InitWorld(components)
-	require.NoError(t, err)
-
-	// Gameリソースを初期化してpanic回避
-	gameResource := &resources.Dungeon{
-		ExploredTiles: make(map[gc.GridElement]bool),
-	}
-	gameResource.SetStateEvent(resources.StateEventNone)
-	world.Resources.Dungeon = gameResource
-
-	// TurnManagerを初期化
-	turnManager := turns.NewTurnManager()
-	world.Resources.TurnManager = turnManager
-
-	return world
 }
 
 // CreatePlayerEntity は指定された位置にプレイヤーエンティティを作成する

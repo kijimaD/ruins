@@ -4,15 +4,13 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestEquipDisarm(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// アイテムエンティティを作成
 	item := world.Manager.NewEntity()

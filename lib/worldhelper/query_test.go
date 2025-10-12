@@ -4,16 +4,14 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 func TestQueryOwnedStackable(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// テスト用スタック可能アイテムエンティティを作成
 	stackableEntity := world.Manager.NewEntity()
@@ -43,8 +41,7 @@ func TestQueryOwnedStackable(t *testing.T) {
 
 func TestQueryPlayer(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成
 	player := world.Manager.NewEntity()

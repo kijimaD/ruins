@@ -3,8 +3,7 @@ package actions
 import (
 	"testing"
 
-	gc "github.com/kijimaD/ruins/lib/components"
-	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -194,8 +193,7 @@ func TestActivityDoTurn(t *testing.T) {
 	actorImpl := &WaitActivity{}
 	activity := NewActivity(actorImpl, actor, 3)
 
-	// モックワールドを作成（簡易版）
-	world := createMockWorld()
+	world := testutil.InitTestWorld(t)
 
 	// 1ターン目
 	err := activity.ActorImpl.DoTurn(activity, world)
@@ -234,22 +232,4 @@ func TestActivityDoTurn(t *testing.T) {
 	if !activity.IsCompleted() {
 		t.Errorf("Expected activity to be completed after turn 3")
 	}
-}
-
-// createMockWorld はテスト用のモックワールドを作成する
-func createMockWorld() w.World {
-	manager := ecs.NewManager()
-
-	// 必要最小限のコンポーネントを作成
-	components := &gc.Components{}
-	if err := components.InitializeComponents(manager); err != nil {
-		panic(err)
-	}
-
-	world := w.World{
-		Manager:    manager,
-		Components: components,
-	}
-
-	return world
 }

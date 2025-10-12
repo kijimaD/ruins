@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	gs "github.com/kijimaD/ruins/lib/states"
+	"github.com/kijimaD/ruins/lib/testutil"
 	ew "github.com/kijimaD/ruins/lib/world"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -49,9 +49,7 @@ func TestGameInitializationIntegration(t *testing.T) {
 
 	t.Run("部分的な初期化テスト", func(t *testing.T) {
 		// 最小限のリソースでの初期化テスト
-		world, err := ew.InitWorld(&gc.Components{})
-		require.NoError(t, err)
-		world.Resources.SetScreenDimensions(consts.MinGameWidth, consts.MinGameHeight)
+		world := testutil.InitTestWorld(t)
 
 		// 基本構造の確認
 		assert.NotNil(t, world.Resources, "ワールドリソースが初期化されていない")

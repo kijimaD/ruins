@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -21,8 +21,7 @@ func TestSaveLoadIntegration(t *testing.T) {
 	}()
 
 	// テスト用のワールドを作成
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// テスト用エンティティを作成
 	player := world.Manager.NewEntity()
@@ -45,7 +44,7 @@ func TestSaveLoadIntegration(t *testing.T) {
 	saveManager := NewSerializationManager(testDir)
 
 	// セーブテスト
-	err = saveManager.SaveWorld(world, "test_slot")
+	err := saveManager.SaveWorld(world, "test_slot")
 	require.NoError(t, err)
 
 	// セーブファイルの存在確認
@@ -54,8 +53,7 @@ func TestSaveLoadIntegration(t *testing.T) {
 	assert.NoError(t, err, "Save file should exist")
 
 	// 新しいワールドを作成
-	newWorld, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	newWorld := testutil.InitTestWorld(t)
 
 	// ロードテスト
 	err = saveManager.LoadWorld(newWorld, "test_slot")
@@ -90,12 +88,11 @@ func TestSaveSlotInfo(t *testing.T) {
 	saveManager := NewSerializationManager(testDir)
 
 	// テスト用のワールドを作成
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 初期状態（セーブファイルなし）でセーブファイルの存在を確認
 	slotFile := filepath.Join(testDir, "slot1.json")
-	_, err = os.Stat(slotFile)
+	_, err := os.Stat(slotFile)
 	assert.Error(t, err, "Save file should not exist initially")
 
 	// 1つのセーブファイルを作成

@@ -6,8 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
-	"github.com/kijimaD/ruins/lib/resources"
-	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/testutil"
 )
 
 func TestMainMenuNavigation(t *testing.T) {
@@ -20,7 +19,7 @@ func TestMainMenuNavigation(t *testing.T) {
 	state.keyboardInput = mockInput
 
 	// メニューを初期化（Worldは簡易版を使用）
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
 	// 初期状態の確認
@@ -56,7 +55,7 @@ func TestMainMenuCircularNavigation(t *testing.T) {
 	state.keyboardInput = mockInput
 
 	// メニューを初期化
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
 	// 最後の項目にフォーカス移動
@@ -82,7 +81,7 @@ func TestMainMenuSelection(t *testing.T) {
 	state.keyboardInput = mockInput
 
 	// メニューを初期化
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
 	// 「終了」項目にフォーカス移動（インデックス2）
@@ -110,7 +109,7 @@ func TestMainMenuCancel(t *testing.T) {
 	state.keyboardInput = mockInput
 
 	// メニューを初期化
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
 	// Escapeキーでキャンセル
@@ -131,7 +130,7 @@ func TestMainMenuItems(t *testing.T) {
 	state := &MainMenuState{}
 
 	// メニューを初期化
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
 	// メニュー項目の確認
@@ -167,7 +166,7 @@ func TestMainMenuTabNavigation(t *testing.T) {
 	state.keyboardInput = mockInput
 
 	// メニューを初期化
-	world := createTestWorld()
+	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
 	// Tabキーでフォーカス移動
@@ -187,12 +186,5 @@ func TestMainMenuTabNavigation(t *testing.T) {
 
 	if state.menu.GetFocusedIndex() != 0 {
 		t.Errorf("Shift+Tabキー後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
-	}
-}
-
-// createTestWorld はテスト用の簡易Worldを作成する
-func createTestWorld() w.World {
-	return w.World{
-		Resources: resources.InitGameResources(),
 	}
 }

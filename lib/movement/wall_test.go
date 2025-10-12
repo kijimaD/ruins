@@ -3,7 +3,7 @@ package movement
 import (
 	"testing"
 
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -14,8 +14,7 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 
 	t.Run("壁がない方向への移動は可能", func(t *testing.T) {
 		t.Parallel()
-		world, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		world := testutil.InitTestWorld(t)
 
 		// プレイヤーを(10, 10)にスポーン
 		player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")
@@ -40,8 +39,7 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 
 	t.Run("壁がある方向への移動は不可", func(t *testing.T) {
 		t.Parallel()
-		world, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		world := testutil.InitTestWorld(t)
 
 		// プレイヤーを(10, 10)にスポーン
 		player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")
@@ -66,8 +64,7 @@ func TestPlayerMovementWithWalls(t *testing.T) {
 
 	t.Run("プレイヤーが壁に完全に囲まれた場合", func(t *testing.T) {
 		t.Parallel()
-		world, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		world := testutil.InitTestWorld(t)
 
 		// プレイヤーを(10, 10)にスポーン
 		player, err := worldhelper.SpawnPlayer(world, 10, 10, "セレスティン")

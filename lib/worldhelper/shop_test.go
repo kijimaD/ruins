@@ -4,8 +4,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
-	"github.com/stretchr/testify/require"
+	"github.com/kijimaD/ruins/lib/testutil"
 )
 
 func TestCalculateBuyPrice(t *testing.T) {
@@ -59,13 +58,12 @@ func TestBuyItem(t *testing.T) {
 
 	t.Run("通常アイテムの購入成功", func(t *testing.T) {
 		t.Parallel()
-		world, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		world := testutil.InitTestWorld(t)
 
 		player := world.Manager.NewEntity()
 		player.AddComponent(world.Components.Wallet, &gc.Wallet{Currency: 1000})
 
-		err = BuyItem(world, player, "木刀")
+		err := BuyItem(world, player, "木刀")
 		if err != nil {
 			t.Errorf("購入に失敗しました: %v", err)
 		}
@@ -80,13 +78,12 @@ func TestBuyItem(t *testing.T) {
 
 	t.Run("通貨不足で購入失敗", func(t *testing.T) {
 		t.Parallel()
-		world, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		world := testutil.InitTestWorld(t)
 
 		player := world.Manager.NewEntity()
 		player.AddComponent(world.Components.Wallet, &gc.Wallet{Currency: 10})
 
-		err = BuyItem(world, player, "木刀")
+		err := BuyItem(world, player, "木刀")
 		if err == nil {
 			t.Error("通貨不足なのに購入できてしまった")
 		}
@@ -95,8 +92,7 @@ func TestBuyItem(t *testing.T) {
 
 func TestSellItem(t *testing.T) {
 	t.Parallel()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// プレイヤーを作成
 	player := world.Manager.NewEntity()

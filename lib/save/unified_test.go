@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
-	"github.com/kijimaD/ruins/lib/maingame"
+	"github.com/kijimaD/ruins/lib/testutil"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	"github.com/stretchr/testify/assert"
@@ -67,8 +67,7 @@ func TestJSONDeterministicBehavior(t *testing.T) {
 		var jsonStrings []string
 
 		for variant := 0; variant < 3; variant++ {
-			world, err := maingame.InitWorld(960, 720)
-			require.NoError(t, err)
+			world := testutil.InitTestWorld(t)
 
 			entity := world.Manager.NewEntity()
 
@@ -121,8 +120,7 @@ func TestJSONDeterministicBehavior(t *testing.T) {
 		var jsonStrings []string
 
 		for variant := 0; variant < 2; variant++ {
-			world, err := maingame.InitWorld(960, 720)
-			require.NoError(t, err)
+			world := testutil.InitTestWorld(t)
 
 			var entities []ecs.Entity
 			for i := 0; i < 3; i++ {
@@ -159,8 +157,7 @@ func TestJSONDeterministicBehavior(t *testing.T) {
 		var jsonStrings []string
 
 		for session := 0; session < 3; session++ {
-			world, err := maingame.InitWorld(960, 720)
-			require.NoError(t, err)
+			world := testutil.InitTestWorld(t)
 
 			// InitDebugDataを使用してリアルなゲームデータを作成
 			worldhelper.InitDebugData(world)
@@ -247,8 +244,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		require.NoError(t, err)
 
 		// 新しいワールドに復元
-		newWorld, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		newWorld := testutil.InitTestWorld(t)
 
 		err = sm.RestoreWorldFromJSON(newWorld, originalJSON)
 		require.NoError(t, err)
@@ -282,8 +278,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		require.NoError(t, err)
 
 		// ロード
-		loadedWorld, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		loadedWorld := testutil.InitTestWorld(t)
 		err = sm.LoadWorld(loadedWorld, "original")
 		require.NoError(t, err)
 
@@ -330,8 +325,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 
 			if cycle < 2 {
 				// 次のサイクル用にロード
-				newWorld, err := maingame.InitWorld(960, 720)
-				require.NoError(t, err)
+				newWorld := testutil.InitTestWorld(t)
 				err = sm.LoadWorld(newWorld, filename)
 				require.NoError(t, err)
 				world = newWorld
@@ -359,8 +353,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		sm := NewSerializationManager(tempDir)
 
 		// InitDebugDataで複雑なワールドを作成
-		originalWorld, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		originalWorld := testutil.InitTestWorld(t)
 		worldhelper.InitDebugData(originalWorld)
 
 		// 元データ保存
@@ -368,8 +361,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		require.NoError(t, err)
 
 		// ロード
-		loadedWorld, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		loadedWorld := testutil.InitTestWorld(t)
 		err = sm.LoadWorld(loadedWorld, "initdebug_original")
 		require.NoError(t, err)
 
@@ -409,8 +401,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		require.NoError(t, err)
 
 		// ロード
-		loadedWorld, err := maingame.InitWorld(960, 720)
-		require.NoError(t, err)
+		loadedWorld := testutil.InitTestWorld(t)
 		err = sm.LoadWorld(loadedWorld, "complex_original")
 		require.NoError(t, err)
 
@@ -435,8 +426,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 // createStandardTestWorld テスト用の標準的なワールドを作成
 func createStandardTestWorld(t *testing.T) w.World {
 	t.Helper()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 決定的なエンティティを作成
 	player := world.Manager.NewEntity()
@@ -469,8 +459,7 @@ func createTestSerializationManager(t *testing.T) *SerializationManager {
 // createComplexDeterministicWorld InitDebugDataのような複雑だが決定的なワールドを作成
 func createComplexDeterministicWorld(t *testing.T) w.World {
 	t.Helper()
-	world, err := maingame.InitWorld(960, 720)
-	require.NoError(t, err)
+	world := testutil.InitTestWorld(t)
 
 	// 決定的なプレイヤー作成（手動でコンポーネント追加）
 	player := world.Manager.NewEntity()
