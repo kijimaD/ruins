@@ -50,40 +50,42 @@ func (st ShopMenuState) String() string {
 var _ es.State[w.World] = &ShopMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *ShopMenuState) OnPause(_ w.World) {}
+func (st *ShopMenuState) OnPause(_ w.World) error { return nil }
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *ShopMenuState) OnResume(_ w.World) {}
+func (st *ShopMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *ShopMenuState) OnStart(world w.World) {
+func (st *ShopMenuState) OnStart(world w.World) error {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 	st.ui = st.initUI(world)
+	return nil
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *ShopMenuState) OnStop(_ w.World) {}
+func (st *ShopMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
-func (st *ShopMenuState) Update(world w.World) es.Transition[w.World] {
+func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
 		}
 	}
 
 	st.tabMenu.Update()
 	st.ui.Update()
 
-	return st.ConsumeTransition()
+	return st.ConsumeTransition(), nil
 }
 
 // Draw はゲームステートの描画処理を行う
-func (st *ShopMenuState) Draw(_ w.World, screen *ebiten.Image) {
+func (st *ShopMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 	st.ui.Draw(screen)
+	return nil
 }
 
 // ================

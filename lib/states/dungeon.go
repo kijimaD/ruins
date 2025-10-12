@@ -43,13 +43,13 @@ func (st DungeonState) String() string {
 var _ es.State[w.World] = &DungeonState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *DungeonState) OnPause(_ w.World) {}
+func (st *DungeonState) OnPause(_ w.World) error { return nil }
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *DungeonState) OnResume(_ w.World) {}
+func (st *DungeonState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *DungeonState) OnStart(world w.World) {
+func (st *DungeonState) OnStart(world w.World) error {
 	screenWidth := world.Resources.ScreenDimensions.Width
 	screenHeight := world.Resources.ScreenDimensions.Height
 	if screenWidth > 0 && screenHeight > 0 {
@@ -104,10 +104,11 @@ func (st *DungeonState) OnStart(world w.World) {
 			System("Mキー: メニューを開く。").
 			Log()
 	}
+	return nil
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *DungeonState) OnStop(world w.World) {
+func (st *DungeonState) OnStop(world w.World) error {
 	world.Manager.Join(
 		world.Components.SpriteRender,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -132,36 +133,37 @@ func (st *DungeonState) OnStop(world w.World) {
 
 	// 視界キャッシュをクリア
 	gs.ClearVisionCaches()
+	return nil
 }
 
 // Update はゲームステートの更新処理を行う
-func (st *DungeonState) Update(world w.World) es.Transition[w.World] {
+func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	gs.TurnSystem(world)
 	// 移動処理の後にカメラ更新
 	gs.CameraSystem(world)
 
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}, nil
 	}
 
 	// メニューキー（M）でダンジョンメニューを開く
 	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}, nil
 	}
 
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
 	}
 
 	// StateEvent処理をチェック
 	if transition := st.handleStateEvent(world); transition.Type != es.TransNone {
-		return transition
+		return transition, nil
 	}
 
 	// BaseStateの共通処理を使用
-	return st.ConsumeTransition()
+	return st.ConsumeTransition(), nil
 }
 
 // checkPlayerDeath はプレイヤーの死亡状態をチェックする
@@ -190,10 +192,11 @@ func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
 }
 
 // Draw はゲームステートの描画処理を行う
-func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) {
+func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
 	screen.DrawImage(baseImage, nil)
 
 	gs.RenderSpriteSystem(world, screen)
 	gs.VisionSystem(world, screen)
 	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
+	return nil
 }

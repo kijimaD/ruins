@@ -33,25 +33,26 @@ func (st MainMenuState) String() string {
 var _ es.State[w.World] = &MainMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *MainMenuState) OnPause(_ w.World) {}
+func (st *MainMenuState) OnPause(_ w.World) error { return nil }
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *MainMenuState) OnResume(_ w.World) {}
+func (st *MainMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステート開始時の処理を行う
-func (st *MainMenuState) OnStart(world w.World) {
+func (st *MainMenuState) OnStart(world w.World) error {
 	if st.keyboardInput == nil {
 		st.keyboardInput = input.GetSharedKeyboardInput()
 	}
 	st.initMenu(world)
 	st.ui = st.initUI(world)
+	return nil
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *MainMenuState) OnStop(_ w.World) {}
+func (st *MainMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
-func (st *MainMenuState) Update(_ w.World) es.Transition[w.World] {
+func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
 	// Escapeキーでの終了処理はメニューのOnCancelで処理するため、ここでは削除
 
 	// メニューの更新
@@ -60,15 +61,16 @@ func (st *MainMenuState) Update(_ w.World) es.Transition[w.World] {
 	st.ui.Update()
 
 	// BaseStateの共通処理を使用
-	return st.ConsumeTransition()
+	return st.ConsumeTransition(), nil
 }
 
 // Draw はスクリーンに描画する
-func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) {
+func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) error {
 	bg := (*world.Resources.SpriteSheets)["bg_title1"]
 	screen.DrawImage(bg.Texture.Image, nil)
 
 	st.ui.Draw(screen)
+	return nil
 }
 
 // initMenu はメニューコンポーネントを初期化する

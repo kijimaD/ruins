@@ -32,7 +32,9 @@ type TestGame struct {
 // Update はゲームの更新処理を行う
 func (g *TestGame) Update() error {
 	// テストの前に実行される
-	g.StateMachine.Update(g.World)
+	if err := g.StateMachine.Update(g.World); err != nil {
+		return err
+	}
 
 	// 10フレームだけ実行する。更新→描画の順なので、1度は更新しないと描画されない
 	if g.gameCount < 10 {
@@ -49,7 +51,9 @@ const dirPerm = 0o755
 
 // Draw はゲームの描画処理を行う
 func (g *TestGame) Draw(screen *ebiten.Image) {
-	g.StateMachine.Draw(g.World, screen)
+	if err := g.StateMachine.Draw(g.World, screen); err != nil {
+		log.Printf("Draw error: %v", err)
+	}
 
 	// テストでは保存しない
 	if flag.Lookup("test.v") != nil {
@@ -99,10 +103,15 @@ func RunTestGame(state es.State[w.World], outputPath string) {
 		log.Println("Equipment change was not detected")
 	}
 
+	stateMachine, err := es.Init(state, world)
+	if err != nil {
+		panic(fmt.Sprintf("StateMachine Init failed: %v", err))
+	}
+
 	g := &TestGame{
 		MainGame: maingame.MainGame{
 			World:        world,
-			StateMachine: es.Init(state, world),
+			StateMachine: stateMachine,
 		},
 		gameCount:  0,
 		outputPath: outputPath,

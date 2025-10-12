@@ -22,43 +22,45 @@ func (st MessageState) String() string {
 var _ es.State[w.World] = &MessageState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
-func (st *MessageState) OnPause(_ w.World) {}
+func (st *MessageState) OnPause(_ w.World) error { return nil }
 
 // OnResume はステートが再開される際に呼ばれる
-func (st *MessageState) OnResume(_ w.World) {}
+func (st *MessageState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
-func (st *MessageState) OnStart(world w.World) {
+func (st *MessageState) OnStart(world w.World) error {
 	// メッセージデータからキュー対応メッセージウィンドウを構築
 	st.messageWindow = messagewindow.NewBuilder(world).Build(st.messageData)
+	return nil
 }
 
 // OnStop はステートが停止される際に呼ばれる
-func (st *MessageState) OnStop(_ w.World) {}
+func (st *MessageState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
-func (st *MessageState) Update(_ w.World) es.Transition[w.World] {
+func (st *MessageState) Update(_ w.World) (es.Transition[w.World], error) {
 	if st.messageWindow != nil {
 		st.messageWindow.Update()
 
 		if st.messageWindow.IsClosed() {
 			// BaseStateで設定された遷移を優先確認
 			if transition := st.ConsumeTransition(); transition.Type != es.TransNone {
-				return transition
+				return transition, nil
 			}
 			// デフォルトはステートをポップ
-			return es.Transition[w.World]{Type: es.TransPop}
+			return es.Transition[w.World]{Type: es.TransPop}, nil
 		}
 		// MessageWindowがアクティブな間は何もしない
-		return es.Transition[w.World]{Type: es.TransNone}
+		return es.Transition[w.World]{Type: es.TransNone}, nil
 	}
 
-	return st.ConsumeTransition()
+	return st.ConsumeTransition(), nil
 }
 
 // Draw はゲームステートの描画処理を行う
-func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) {
+func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) error {
 	if st.messageWindow != nil {
 		st.messageWindow.Draw(screen)
 	}
+	return nil
 }
