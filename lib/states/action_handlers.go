@@ -1,87 +1,14 @@
-package systems
+package states
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
-	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
-	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
-
-// TileInputSystem はプレイヤーからのタイルベース入力を処理する。Actionシステムを使用して移動を実行する
-// AIの移動・攻撃も将来的に同じActionシステムを使用予定
-// TODO: 文脈に応じて発行アクションを判定する
-func TileInputSystem(world w.World) error {
-	// ターン管理チェック - プレイヤーターンでない場合は入力を受け付けない
-	if world.Resources.TurnManager != nil {
-		turnManager := world.Resources.TurnManager.(*turns.TurnManager)
-		if !turnManager.CanPlayerAct() {
-			return nil
-		}
-	}
-
-	keyboardInput := input.GetSharedKeyboardInput()
-
-	// キー入力を方向に変換
-	var direction gc.Direction
-
-	// 8方向キー入力（キーリピート対応）
-	// 斜め移動は両方のキーがリピート判定で真になる場合のみ
-	upPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyW) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyUp)
-	downPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyS) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyDown)
-	leftPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyA) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyLeft)
-	rightPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyD) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyRight)
-
-	if upPressed && leftPressed {
-		direction = gc.DirectionUpLeft
-	} else if upPressed && rightPressed {
-		direction = gc.DirectionUpRight
-	} else if downPressed && leftPressed {
-		direction = gc.DirectionDownLeft
-	} else if downPressed && rightPressed {
-		direction = gc.DirectionDownRight
-	} else if upPressed {
-		direction = gc.DirectionUp
-	} else if downPressed {
-		direction = gc.DirectionDown
-	} else if leftPressed {
-		direction = gc.DirectionLeft
-	} else if rightPressed {
-		direction = gc.DirectionRight
-	} else if keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyPeriod) {
-		ExecuteWaitAction(world)
-		return nil
-	}
-
-	// 移動アクションを実行
-	if direction != gc.DirectionNone {
-		ExecuteMoveAction(world, direction)
-	}
-
-	return nil
-}
-
-// executeActivity はアクティビティ実行関数
-func executeActivity(world w.World, actorImpl actions.ActivityInterface, params actions.ActionParams) {
-	manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
-
-	result, err := manager.Execute(actorImpl, params, world)
-	if err != nil {
-		_ = result // エラーの場合は結果を使用しない
-		return
-	}
-
-	// 移動の場合は追加でタイルイベントをチェック
-	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
-		// TODO: AI用と共通化したほうがよさそう? プレイヤーの場合だけログを出す、とかはありそうなものの
-		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
-	}
-}
 
 // ExecuteMoveAction は移動アクションを実行する
 // 複数プレイヤーエンティティが存在する場合は最初のエンティティのみを処理する
@@ -126,7 +53,7 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 		}
 
 		// 移動可能かチェックして移動
-		canMove := CanMoveTo(world, newX, newY, entity)
+		canMove := movement.CanMoveTo(world, newX, newY, entity)
 
 		if canMove {
 			// 統一されたアクティビティ実行関数を使用
@@ -137,6 +64,22 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 			}
 			executeActivity(world, &actions.MoveActivity{}, params)
 		}
+	}
+}
+
+// executeActivity はアクティビティ実行関数
+func executeActivity(world w.World, actorImpl actions.ActivityInterface, params actions.ActionParams) {
+	manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
+
+	result, err := manager.Execute(actorImpl, params, world)
+	if err != nil {
+		_ = result // エラーの場合は結果を使用しない
+		return
+	}
+
+	// 移動の場合は追加でタイルイベントをチェック
+	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
+		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
 	}
 }
 
@@ -194,11 +137,6 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 		// アイテムのチェック
 		checkTileItemsForGridPlayer(world, gridElement)
 	}
-}
-
-// CanMoveTo は指定位置に移動可能かチェックする
-func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
-	return movement.CanMoveTo(world, tileX, tileY, movingEntity)
 }
 
 // getWarpAtPlayerPosition はプレイヤーの現在位置のワープホールを取得する
@@ -309,7 +247,7 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 			// 敵対関係かチェック
 			if isHostileFaction(world, movingEntity, entity) {
 				foundEnemy = entity
-				return // 最初に見つかった敵を返す
+				return
 			}
 		}
 	}))

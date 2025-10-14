@@ -265,36 +265,36 @@ func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es
 
 	// 移動系アクション（World状態を変更）
 	case inputmapper.ActionMoveNorth:
-		gs.ExecuteMoveAction(world, gc.DirectionUp)
+		ExecuteMoveAction(world, gc.DirectionUp)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveSouth:
-		gs.ExecuteMoveAction(world, gc.DirectionDown)
+		ExecuteMoveAction(world, gc.DirectionDown)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveEast:
-		gs.ExecuteMoveAction(world, gc.DirectionRight)
+		ExecuteMoveAction(world, gc.DirectionRight)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveWest:
-		gs.ExecuteMoveAction(world, gc.DirectionLeft)
+		ExecuteMoveAction(world, gc.DirectionLeft)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveNorthEast:
-		gs.ExecuteMoveAction(world, gc.DirectionUpRight)
+		ExecuteMoveAction(world, gc.DirectionUpRight)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveNorthWest:
-		gs.ExecuteMoveAction(world, gc.DirectionUpLeft)
+		ExecuteMoveAction(world, gc.DirectionUpLeft)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveSouthEast:
-		gs.ExecuteMoveAction(world, gc.DirectionDownRight)
+		ExecuteMoveAction(world, gc.DirectionDownRight)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionMoveSouthWest:
-		gs.ExecuteMoveAction(world, gc.DirectionDownLeft)
+		ExecuteMoveAction(world, gc.DirectionDownLeft)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	case inputmapper.ActionWait:
-		gs.ExecuteWaitAction(world)
+		ExecuteWaitAction(world)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 
 	// 相互作用系アクション
 	case inputmapper.ActionInteract:
-		gs.ExecuteEnterAction(world)
+		ExecuteEnterAction(world)
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 
 	default:
