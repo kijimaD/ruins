@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -53,15 +54,27 @@ func (st *MainMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
-	// Escapeキーでの終了処理はメニューのOnCancelで処理するため、ここでは削除
+	// メニューの更新（キーボード入力→Action変換は Menu 内部で実施）
+	st.menu.Update()
 
-	// メニューの更新
-	st.menu.Update(st.keyboardInput)
-
-	st.ui.Update()
+	if st.ui != nil {
+		st.ui.Update()
+	}
 
 	// BaseStateの共通処理を使用
 	return st.ConsumeTransition(), nil
+}
+
+// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	switch action {
+	case inputmapper.ActionMenuCancel:
+		// メインメニューでのキャンセルは終了
+		return es.Transition[w.World]{Type: es.TransQuit}, nil
+	default:
+		// 未知のActionの場合は何もしない
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	}
 }
 
 // Draw はスクリーンに描画する

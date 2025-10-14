@@ -49,18 +49,18 @@ func TileInputSystem(world w.World) error {
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 		direction = gc.DirectionRight
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
-		executeWaitAction(world)
+		ExecuteWaitAction(world)
 		return nil
 	}
 
 	// 移動アクションを実行
 	if direction != gc.DirectionNone {
-		executeMoveAction(world, direction)
+		ExecuteMoveAction(world, direction)
 	}
 
 	// Enterキー: 状況に応じたアクションを実行
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		executeEnterAction(world)
+		ExecuteEnterAction(world)
 	}
 
 	return nil
@@ -83,9 +83,9 @@ func executeActivity(world w.World, actorImpl actions.ActivityInterface, params 
 	}
 }
 
-// executeMoveAction は移動アクションを実行する
+// ExecuteMoveAction は移動アクションを実行する
 // 複数プレイヤーエンティティが存在する場合は最初のエンティティのみを処理する
-func executeMoveAction(world w.World, direction gc.Direction) {
+func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	var firstPlayerEntity ecs.Entity
 	var hasFirstPlayer bool
 
@@ -140,8 +140,8 @@ func executeMoveAction(world w.World, direction gc.Direction) {
 	}
 }
 
-// executeWaitAction は待機アクションを実行する
-func executeWaitAction(world w.World) {
+// ExecuteWaitAction は待機アクションを実行する
+func ExecuteWaitAction(world w.World) {
 	// プレイヤーエンティティを取得
 	world.Manager.Join(
 		world.Components.Player,
@@ -155,8 +155,8 @@ func executeWaitAction(world w.World) {
 	}))
 }
 
-// executeEnterAction はEnterキーによる状況に応じたアクションを実行する
-func executeEnterAction(world w.World) {
+// ExecuteEnterAction はEnterキーによる状況に応じたアクションを実行する
+func ExecuteEnterAction(world w.World) {
 	// プレイヤーエンティティを取得
 	world.Manager.Join(
 		world.Components.Player,

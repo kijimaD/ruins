@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
@@ -69,6 +70,10 @@ func (st *ShopMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
+	if transition := st.handleInputAsAction(world); transition.Type != es.TransNone {
+		return transition, nil
+	}
+
 	// ウィンドウモードの場合はウィンドウ操作を優先
 	if st.isWindowMode {
 		if st.updateWindowMode(world) {
@@ -82,6 +87,23 @@ func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 	st.ui.Update()
 
 	return st.ConsumeTransition(), nil
+}
+
+// handleInputAsAction はキー入力をActionに変換して処理する
+func (st *ShopMenuState) handleInputAsAction(_ w.World) es.Transition[w.World] {
+	// 現時点では特別なキー入力処理はない
+	return es.Transition[w.World]{Type: es.TransNone}
+}
+
+// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+func (st *ShopMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	switch action {
+	case inputmapper.ActionMenuCancel, inputmapper.ActionCloseMenu:
+		return es.Transition[w.World]{Type: es.TransPop}, nil
+	default:
+		// 未知のActionの場合は何もしない
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	}
 }
 
 // Draw はゲームステートの描画処理を行う
@@ -125,7 +147,7 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
+	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()

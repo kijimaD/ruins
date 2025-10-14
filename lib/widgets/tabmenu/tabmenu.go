@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
@@ -41,20 +42,18 @@ type TabMenu struct {
 	// 状態
 	currentTabIndex  int
 	currentItemIndex int
-	keyboardInput    input.KeyboardInput
 
 	// ページネーション状態
 	currentPage int // 現在のページ（0ベース）
 }
 
 // NewTabMenu は新しいTabMenuを作成する
-func NewTabMenu(config Config, callbacks Callbacks, keyboardInput input.KeyboardInput) *TabMenu {
+func NewTabMenu(config Config, callbacks Callbacks) *TabMenu {
 	tm := &TabMenu{
 		config:           config,
 		callbacks:        callbacks,
 		currentTabIndex:  config.InitialTabIndex,
 		currentItemIndex: config.InitialItemIndex,
-		keyboardInput:    keyboardInput,
 	}
 
 	// 初期タブのアイテム数を確認してインデックスを調整
@@ -72,128 +71,80 @@ func NewTabMenu(config Config, callbacks Callbacks, keyboardInput input.Keyboard
 	return tm
 }
 
-// Update はタブメニューを更新する
+// Update はキーボード入力を待ち受けて、Actionに変換してタブメニュー操作を実行する
+// 本実装で使用する。テストではDoAction()を直接呼ぶ
 func (tm *TabMenu) Update() (bool, error) {
-	// タブ切り替え（左右矢印キー）
-	handled, err := tm.handleTabNavigation()
-	if err != nil {
-		return false, err
+	keyboardInput := input.GetSharedKeyboardInput()
+	if action, ok := tm.translateKeyToAction(keyboardInput); ok {
+		return false, tm.DoAction(action)
 	}
-
-	// アイテム選択（上下矢印キー）
-	itemHandled, err := tm.handleItemNavigation()
-	if err != nil {
-		return false, err
-	}
-	if itemHandled {
-		handled = true
-	}
-
-	// 選択（Enter）
-	selectionHandled, err := tm.handleSelection()
-	if err != nil {
-		return false, err
-	}
-	if selectionHandled {
-		handled = true
-	}
-
-	// キャンセル（Escape）
-	if tm.handleCancel() {
-		handled = true
-	}
-
-	return handled, nil
-}
-
-// handleTabNavigation はタブ切り替えを処理する
-func (tm *TabMenu) handleTabNavigation() (bool, error) {
-	tabPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyTab)
-
-	// Shift+Tabの判定
-	var shiftTabPressed bool
-	if tabPressed {
-		shiftPressed := tm.keyboardInput.IsKeyPressed(ebiten.KeyShift)
-		if shiftPressed {
-			shiftTabPressed = true
-			tabPressed = false // Shift+Tabの場合は通常のTabとして扱わない
-		}
-	}
-
-	if shiftTabPressed {
-		if err := tm.navigateToPreviousTab(); err != nil {
-			return false, err
-		}
-		return true, nil
-	} else if tabPressed {
-		if err := tm.navigateToNextTab(); err != nil {
-			return false, err
-		}
-		return true, nil
-	}
-
 	return false, nil
 }
 
-// handleItemNavigation はアイテム選択を処理する
-func (tm *TabMenu) handleItemNavigation() (bool, error) {
-	upPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)
-	downPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)
-	pageUpPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp)
-	pageDownPressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown)
-
-	if upPressed {
-		if err := tm.navigateToPreviousItem(); err != nil {
-			return false, err
-		}
-		return true, nil
-	} else if downPressed {
-		if err := tm.navigateToNextItem(); err != nil {
-			return false, err
-		}
-		return true, nil
-	} else if pageUpPressed {
-		if err := tm.navigatePageUp(); err != nil {
-			return false, err
-		}
-		return true, nil
-	} else if pageDownPressed {
-		if err := tm.navigatePageDown(); err != nil {
-			return false, err
-		}
-		return true, nil
+// translateKeyToAction はキーボード入力をActionに変換する
+func (tm *TabMenu) translateKeyToAction(keyboardInput input.KeyboardInput) (inputmapper.ActionID, bool) {
+	// 左矢印キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowLeft) {
+		return inputmapper.ActionMenuLeft, true
 	}
 
-	return false, nil
-}
-
-// handleSelection は選択を処理する
-func (tm *TabMenu) handleSelection() (bool, error) {
-	// Enterキーは押下-押上ワンセット制御を使用
-	enterPressed := tm.keyboardInput.IsEnterJustPressedOnce()
-
-	if enterPressed {
-		if err := tm.selectCurrentItem(); err != nil {
-			return false, err
-		}
-		return true, nil
+	// 右矢印キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowRight) {
+		return inputmapper.ActionMenuRight, true
 	}
 
-	return false, nil
+	// 上矢印キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+		return inputmapper.ActionMenuUp, true
+	}
+
+	// 下矢印キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+		return inputmapper.ActionMenuDown, true
+	}
+
+	// Tabキー（タブ切り替え）
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyTab) {
+		if keyboardInput.IsKeyPressed(ebiten.KeyShift) {
+			return inputmapper.ActionMenuLeft, true
+		}
+		return inputmapper.ActionMenuRight, true
+	}
+
+	// Enterキー（セッションベース検出で複数回実行を防止）
+	if keyboardInput.IsEnterJustPressedOnce() {
+		return inputmapper.ActionMenuSelect, true
+	}
+
+	// Escapeキー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return inputmapper.ActionMenuCancel, true
+	}
+
+	return "", false
 }
 
-// handleCancel はキャンセルを処理する
-func (tm *TabMenu) handleCancel() bool {
-	escapePressed := tm.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape)
-
-	if escapePressed {
+// DoAction はActionを受け取ってタブメニュー操作を実行する
+func (tm *TabMenu) DoAction(action inputmapper.ActionID) error {
+	switch action {
+	case inputmapper.ActionMenuLeft:
+		return tm.navigateToPreviousTab()
+	case inputmapper.ActionMenuRight:
+		return tm.navigateToNextTab()
+	case inputmapper.ActionMenuUp:
+		return tm.navigateToPreviousItem()
+	case inputmapper.ActionMenuDown:
+		return tm.navigateToNextItem()
+	case inputmapper.ActionMenuSelect:
+		return tm.selectCurrentItem()
+	case inputmapper.ActionMenuCancel:
 		if tm.callbacks.OnCancel != nil {
 			tm.callbacks.OnCancel()
 		}
-		return true
+		return nil
+	default:
+		return nil
 	}
-
-	return false
 }
 
 // navigateToPreviousTab は前のタブに移動する
@@ -362,57 +313,6 @@ func (tm *TabMenu) navigateToNextItem() error {
 
 	if oldIndex != tm.currentItemIndex {
 		if err := tm.notifyItemChange(oldIndex, tm.currentItemIndex); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// navigatePageUp は前のページに移動する
-func (tm *TabMenu) navigatePageUp() error {
-	if tm.config.ItemsPerPage <= 0 {
-		return nil
-	}
-
-	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return nil
-	}
-
-	currentTab := tm.config.Tabs[tm.currentTabIndex]
-	if len(currentTab.Items) == 0 {
-		return nil
-	}
-
-	if tm.currentPage > 0 {
-		tm.currentPage--
-		tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
-		if err := tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// navigatePageDown は次のページに移動する
-func (tm *TabMenu) navigatePageDown() error {
-	if tm.config.ItemsPerPage <= 0 {
-		return nil
-	}
-
-	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return nil
-	}
-
-	currentTab := tm.config.Tabs[tm.currentTabIndex]
-	if len(currentTab.Items) == 0 {
-		return nil
-	}
-
-	totalPages := (len(currentTab.Items) + tm.config.ItemsPerPage - 1) / tm.config.ItemsPerPage
-	if tm.currentPage < totalPages-1 {
-		tm.currentPage++
-		tm.currentItemIndex = tm.currentPage * tm.config.ItemsPerPage
-		if err := tm.notifyItemChange(tm.currentItemIndex, tm.currentItemIndex); err != nil {
 			return err
 		}
 	}

@@ -31,3 +31,7 @@
 - シンプルさを優先したコードにする
 - 定義する関数は最小限に保つ。呼び出されていない関数は削除する
 - linterルールは無視設定しない
+
+## テスト
+
+- 極力 github.com/stretchr/testify/assert のアサート (assert.Error や require.Error)を使ってテストする。t.Error() や t.Fatal() は使わない

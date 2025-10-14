@@ -12,6 +12,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
@@ -71,9 +72,11 @@ func (st *InventoryMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *InventoryMenuState) Update(world w.World) (es.Transition[w.World], error) {
-
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
+	// キー入力をActionに変換して処理
+	if transition, err := st.handleInputAsAction(world); err != nil {
+		return es.Transition[w.World]{}, err
+	} else if transition.Type != es.TransNone {
+		return transition, nil
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
@@ -89,6 +92,32 @@ func (st *InventoryMenuState) Update(world w.World) (es.Transition[w.World], err
 	st.ui.Update()
 
 	return st.ConsumeTransition(), nil
+}
+
+// handleInputAsAction はキー入力をActionに変換して処理する
+func (st *InventoryMenuState) handleInputAsAction(world w.World) (es.Transition[w.World], error) {
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
+		return st.DoAction(world, inputmapper.ActionOpenDebugMenu)
+	}
+
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return st.DoAction(world, inputmapper.ActionMenuCancel)
+	}
+
+	return es.Transition[w.World]{Type: es.TransNone}, nil
+}
+
+// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+func (st *InventoryMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	switch action {
+	case inputmapper.ActionOpenDebugMenu:
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
+	case inputmapper.ActionMenuCancel, inputmapper.ActionCloseMenu:
+		return es.Transition[w.World]{Type: es.TransPop}, nil
+	default:
+		// 未知のActionの場合は何もしない
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	}
 }
 
 // Draw はゲームステートの描画処理を行う
@@ -133,7 +162,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
+	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()

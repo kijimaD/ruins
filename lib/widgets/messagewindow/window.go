@@ -63,7 +63,7 @@ func (w *Window) Update() {
 
 	// 選択肢メニューがある場合は優先的に処理
 	if w.hasChoices && w.choiceMenu != nil {
-		w.choiceMenu.Update(w.keyboardInput)
+		w.choiceMenu.Update()
 	} else {
 		// 通常のキーボード入力処理
 		w.handleKeyboardInput()
