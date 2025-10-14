@@ -86,24 +86,6 @@ func (st *CraftMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		}
 	}
 
-	// ウィンドウモードの場合はウィンドウ操作を優先
-	if st.isWindowMode {
-		handled, err := st.updateWindowMode(world)
-		if err != nil {
-			return es.Transition[w.World]{}, err
-		}
-		if handled {
-			return es.Transition[w.World]{Type: es.TransNone}, nil
-		}
-	}
-
-	// 結果ウィンドウモードの場合は結果ウィンドウ操作を優先
-	if st.isResultMode {
-		if st.updateResultMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}, nil
-		}
-	}
-
 	if _, err := st.tabMenu.Update(); err != nil {
 		return es.Transition[w.World]{}, err
 	}
@@ -122,24 +104,77 @@ func (st *CraftMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 
 // HandleInput はキー入力をActionに変換する
 func (st *CraftMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	// ウィンドウモード時の入力処理を優先
+	if st.isWindowMode {
+		return HandleWindowInput()
+	}
+
+	// 結果ウィンドウモード時の入力処理
+	if st.isResultMode {
+		return HandleWindowInput()
+	}
+
 	keyboardInput := input.GetSharedKeyboardInput()
 	if keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return inputmapper.ActionOpenDebugMenu, true
+	}
+
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return inputmapper.ActionMenuCancel, true
 	}
 
 	return "", false
 }
 
 // DoAction はActionを実行する
-func (st *CraftMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+func (st *CraftMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	// ウィンドウモード時のアクション処理
+	if st.isWindowMode {
+		switch action {
+		case inputmapper.ActionWindowUp, inputmapper.ActionWindowDown:
+			if UpdateFocusIndex(action, &st.actionFocusIndex, len(st.actionItems)) {
+				st.updateActionWindowDisplay(world)
+			}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowConfirm:
+			if err := st.executeActionItem(world); err != nil {
+				return es.Transition[w.World]{}, err
+			}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowCancel:
+			st.closeActionWindow()
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		default:
+			return es.Transition[w.World]{}, fmt.Errorf("ウィンドウモード時の未知のアクション: %s", action)
+		}
+	}
+
+	// 結果ウィンドウモード時のアクション処理
+	if st.isResultMode {
+		switch action {
+		case inputmapper.ActionWindowUp, inputmapper.ActionWindowDown:
+			if UpdateFocusIndex(action, &st.resultFocusIndex, len(st.resultItems)) {
+				st.updateResultWindowDisplay(world)
+			}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowConfirm:
+			st.executeResultItem(world)
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowCancel:
+			st.closeResultWindow()
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		default:
+			return es.Transition[w.World]{}, fmt.Errorf("結果ウィンドウモード時の未知のアクション: %s", action)
+		}
+	}
+
 	switch action {
 	case inputmapper.ActionOpenDebugMenu:
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
 	case inputmapper.ActionMenuCancel, inputmapper.ActionCloseMenu:
 		return es.Transition[w.World]{Type: es.TransPop}, nil
 	default:
-		// 未知のActionの場合は何もしない
-		return es.Transition[w.World]{Type: es.TransNone}, nil
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
 	}
 }
 
@@ -502,82 +537,6 @@ func (st *CraftMenuState) updateActionWindowDisplay(world w.World) {
 
 	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
-}
-
-// updateWindowMode はウィンドウモード時の操作を処理する
-func (st *CraftMenuState) updateWindowMode(world w.World) (bool, error) {
-	keyboardInput := input.GetSharedKeyboardInput()
-
-	// Escapeでウィンドウモードを終了
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		st.closeActionWindow()
-		return false, nil
-	}
-
-	// 上下矢印でフォーカス移動
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
-		st.actionFocusIndex--
-		if st.actionFocusIndex < 0 {
-			st.actionFocusIndex = len(st.actionItems) - 1
-		}
-		st.updateActionWindowDisplay(world)
-		return true, nil
-	}
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
-		st.actionFocusIndex++
-		if st.actionFocusIndex >= len(st.actionItems) {
-			st.actionFocusIndex = 0
-		}
-		st.updateActionWindowDisplay(world)
-		return true, nil
-	}
-
-	// Enterで選択実行（押下-押上ワンセット）
-	if keyboardInput.IsEnterJustPressedOnce() {
-		if err := st.executeActionItem(world); err != nil {
-			return false, err
-		}
-		return true, nil
-	}
-
-	return true, nil
-}
-
-// updateResultMode は結果ウィンドウモード時の操作を処理する
-func (st *CraftMenuState) updateResultMode(world w.World) bool {
-	keyboardInput := input.GetSharedKeyboardInput()
-
-	// Escapeで結果ウィンドウモードを終了
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		st.closeResultWindow()
-		return false
-	}
-
-	// 上下矢印でフォーカス移動
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
-		st.resultFocusIndex--
-		if st.resultFocusIndex < 0 {
-			st.resultFocusIndex = len(st.resultItems) - 1
-		}
-		st.updateResultWindowDisplay(world)
-		return true
-	}
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
-		st.resultFocusIndex++
-		if st.resultFocusIndex >= len(st.resultItems) {
-			st.resultFocusIndex = 0
-		}
-		st.updateResultWindowDisplay(world)
-		return true
-	}
-
-	// Enterで選択実行（押下-押上ワンセット）
-	if keyboardInput.IsEnterJustPressedOnce() {
-		st.executeResultItem(world)
-		return true
-	}
-
-	return true
 }
 
 // closeActionWindow はアクションウィンドウを閉じる

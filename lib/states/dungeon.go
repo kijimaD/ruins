@@ -298,8 +298,7 @@ func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 
 	default:
-		// 未知のActionの場合は何もしない
-		return es.Transition[w.World]{Type: es.TransNone}, nil
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
 	}
 }
 

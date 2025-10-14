@@ -1,6 +1,7 @@
 package states
 
 import (
+	"fmt"
 	"image/color"
 	"strings"
 
@@ -85,8 +86,7 @@ func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Tr
 		// メインメニューでのキャンセルは終了
 		return es.Transition[w.World]{Type: es.TransQuit}, nil
 	default:
-		// 未知のActionの場合は何もしない
-		return es.Transition[w.World]{Type: es.TransNone}, nil
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
 	}
 }
 

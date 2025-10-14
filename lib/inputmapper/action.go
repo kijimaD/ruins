@@ -61,3 +61,11 @@ const (
 	ActionConfirm ActionID = "confirm" // メッセージ確認
 	ActionSkip    ActionID = "skip"    // メッセージスキップ
 )
+
+// ウィンドウモード操作アクション
+const (
+	ActionWindowUp      ActionID = "window_up"
+	ActionWindowDown    ActionID = "window_down"
+	ActionWindowConfirm ActionID = "window_confirm"
+	ActionWindowCancel  ActionID = "window_cancel"
+)

@@ -30,6 +30,7 @@ func TestDoActionUIActions(t *testing.T) {
 		expectedType      es.TransType
 		shouldHaveFunc    bool
 		expectedStateType string
+		expectError       bool
 	}{
 		{
 			name:              "ダンジョンメニューを開く",
@@ -46,9 +47,9 @@ func TestDoActionUIActions(t *testing.T) {
 			expectedStateType: "*states.InventoryMenuState",
 		},
 		{
-			name:         "未知のアクション",
-			action:       inputmapper.ActionID("unknown"),
-			expectedType: es.TransNone,
+			name:        "未知のアクション",
+			action:      inputmapper.ActionID("unknown"),
+			expectError: true,
 		},
 	}
 
@@ -60,6 +61,12 @@ func TestDoActionUIActions(t *testing.T) {
 			state := &DungeonState{}
 
 			transition, err := state.DoAction(world, tt.action)
+
+			if tt.expectError {
+				require.Error(t, err, "DoActionがエラーを返すべきです")
+				return
+			}
+
 			require.NoError(t, err, "DoActionがエラーを返しました")
 
 			assert.Equal(t, tt.expectedType, transition.Type, "トランジションタイプが不正")
