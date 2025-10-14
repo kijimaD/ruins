@@ -49,6 +49,7 @@ func (st ShopMenuState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &ShopMenuState{}
+var _ es.ActionHandler[w.World] = &ShopMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *ShopMenuState) OnPause(_ w.World) error { return nil }
@@ -70,8 +71,13 @@ func (st *ShopMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
-	if transition := st.handleInputAsAction(world); transition.Type != es.TransNone {
-		return transition, nil
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
+		}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
@@ -89,13 +95,21 @@ func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 	return st.ConsumeTransition(), nil
 }
 
-// handleInputAsAction はキー入力をActionに変換して処理する
-func (st *ShopMenuState) handleInputAsAction(_ w.World) es.Transition[w.World] {
-	// 現時点では特別なキー入力処理はない
-	return es.Transition[w.World]{Type: es.TransNone}
+// Draw はゲームステートの描画処理を行う
+func (st *ShopMenuState) Draw(_ w.World, screen *ebiten.Image) error {
+	st.ui.Draw(screen)
+	return nil
 }
 
-// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *ShopMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	// 現時点では特別なキー入力処理はない
+	return "", false
+}
+
+// DoAction はActionを実行する
 func (st *ShopMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
 	switch action {
 	case inputmapper.ActionMenuCancel, inputmapper.ActionCloseMenu:
@@ -104,12 +118,6 @@ func (st *ShopMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Tr
 		// 未知のActionの場合は何もしない
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	}
-}
-
-// Draw はゲームステートの描画処理を行う
-func (st *ShopMenuState) Draw(_ w.World, screen *ebiten.Image) error {
-	st.ui.Draw(screen)
-	return nil
 }
 
 // ================

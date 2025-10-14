@@ -51,6 +51,7 @@ func (st InventoryMenuState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &InventoryMenuState{}
+var _ es.ActionHandler[w.World] = &InventoryMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *InventoryMenuState) OnPause(_ w.World) error { return nil }
@@ -72,11 +73,13 @@ func (st *InventoryMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *InventoryMenuState) Update(world w.World) (es.Transition[w.World], error) {
-	// キー入力をActionに変換して処理
-	if transition, err := st.handleInputAsAction(world); err != nil {
-		return es.Transition[w.World]{}, err
-	} else if transition.Type != es.TransNone {
-		return transition, nil
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
+		}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
@@ -94,20 +97,28 @@ func (st *InventoryMenuState) Update(world w.World) (es.Transition[w.World], err
 	return st.ConsumeTransition(), nil
 }
 
-// handleInputAsAction はキー入力をActionに変換して処理する
-func (st *InventoryMenuState) handleInputAsAction(world w.World) (es.Transition[w.World], error) {
+// Draw はゲームステートの描画処理を行う
+func (st *InventoryMenuState) Draw(_ w.World, screen *ebiten.Image) error {
+	st.ui.Draw(screen)
+	return nil
+}
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *InventoryMenuState) HandleInput() (inputmapper.ActionID, bool) {
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return st.DoAction(world, inputmapper.ActionOpenDebugMenu)
+		return inputmapper.ActionOpenDebugMenu, true
 	}
 
 	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		return st.DoAction(world, inputmapper.ActionMenuCancel)
+		return inputmapper.ActionMenuCancel, true
 	}
 
-	return es.Transition[w.World]{Type: es.TransNone}, nil
+	return "", false
 }
 
-// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+// DoAction はActionを実行する
 func (st *InventoryMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
 	switch action {
 	case inputmapper.ActionOpenDebugMenu:
@@ -118,12 +129,6 @@ func (st *InventoryMenuState) DoAction(_ w.World, action inputmapper.ActionID) (
 		// 未知のActionの場合は何もしない
 		return es.Transition[w.World]{Type: es.TransNone}, nil
 	}
-}
-
-// Draw はゲームステートの描画処理を行う
-func (st *InventoryMenuState) Draw(_ w.World, screen *ebiten.Image) error {
-	st.ui.Draw(screen)
-	return nil
 }
 
 // ================

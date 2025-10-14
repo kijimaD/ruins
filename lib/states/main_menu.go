@@ -32,6 +32,7 @@ func (st MainMenuState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &MainMenuState{}
+var _ es.ActionHandler[w.World] = &MainMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *MainMenuState) OnPause(_ w.World) error { return nil }
@@ -65,7 +66,24 @@ func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
 	return st.ConsumeTransition(), nil
 }
 
-// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+// Draw はスクリーンに描画する
+func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) error {
+	bg := (*world.Resources.SpriteSheets)["bg_title1"]
+	screen.DrawImage(bg.Texture.Image, nil)
+
+	st.ui.Draw(screen)
+	return nil
+}
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *MainMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	// 未使用
+	return "", false
+}
+
+// DoAction はActionを実行する
 func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
 	switch action {
 	case inputmapper.ActionMenuCancel:
@@ -77,14 +95,7 @@ func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Tr
 	}
 }
 
-// Draw はスクリーンに描画する
-func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) error {
-	bg := (*world.Resources.SpriteSheets)["bg_title1"]
-	screen.DrawImage(bg.Texture.Image, nil)
-
-	st.ui.Draw(screen)
-	return nil
-}
+// ================
 
 // initMenu はメニューコンポーネントを初期化する
 func (st *MainMenuState) initMenu(world w.World) {

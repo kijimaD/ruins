@@ -43,6 +43,7 @@ func (st DungeonState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &DungeonState{}
+var _ es.ActionHandler[w.World] = &DungeonState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *DungeonState) OnPause(_ w.World) error { return nil }
@@ -140,10 +141,13 @@ func (st *DungeonState) OnStop(world w.World) error {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
-	if transition, err := st.handleInputAsAction(world); err != nil {
-		return es.Transition[w.World]{}, err
-	} else if transition.Type != es.TransNone {
-		return transition, nil
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
+		}
 	}
 
 	if err := gs.TurnSystem(world); err != nil {
@@ -166,58 +170,70 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	return st.ConsumeTransition(), nil
 }
 
-// handleInputAsAction はキー入力をActionに変換して処理する
-func (st *DungeonState) handleInputAsAction(world w.World) (es.Transition[w.World], error) {
+// Draw はゲームステートの描画処理を行う
+func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
+	screen.DrawImage(baseImage, nil)
+
+	gs.RenderSpriteSystem(world, screen)
+	gs.VisionSystem(world, screen)
+	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
+	return nil
+}
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool) {
 	// メニューキー（M）でダンジョンメニューを開く
 	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
-		return st.DoAction(world, inputmapper.ActionOpenDungeonMenu)
+		return inputmapper.ActionOpenDungeonMenu, true
 	}
 
 	cfg := config.MustGet()
 	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return st.DoAction(world, inputmapper.ActionOpenDebugMenu)
+		return inputmapper.ActionOpenDebugMenu, true
 	}
 
 	// 8方向移動キー入力
 	if inpututil.IsKeyJustPressed(ebiten.KeyW) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			return st.DoAction(world, inputmapper.ActionMoveNorthWest)
+			return inputmapper.ActionMoveNorthWest, true
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			return st.DoAction(world, inputmapper.ActionMoveNorthEast)
+			return inputmapper.ActionMoveNorthEast, true
 		}
-		return st.DoAction(world, inputmapper.ActionMoveNorth)
+		return inputmapper.ActionMoveNorth, true
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyS) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
 		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			return st.DoAction(world, inputmapper.ActionMoveSouthWest)
+			return inputmapper.ActionMoveSouthWest, true
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			return st.DoAction(world, inputmapper.ActionMoveSouthEast)
+			return inputmapper.ActionMoveSouthEast, true
 		}
-		return st.DoAction(world, inputmapper.ActionMoveSouth)
+		return inputmapper.ActionMoveSouth, true
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-		return st.DoAction(world, inputmapper.ActionMoveWest)
+		return inputmapper.ActionMoveWest, true
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-		return st.DoAction(world, inputmapper.ActionMoveEast)
+		return inputmapper.ActionMoveEast, true
 	}
 
 	// 待機キー
 	if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
-		return st.DoAction(world, inputmapper.ActionWait)
+		return inputmapper.ActionWait, true
 	}
 
 	// 相互作用キー（Enter）
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		return st.DoAction(world, inputmapper.ActionInteract)
+		return inputmapper.ActionInteract, true
 	}
 
-	return es.Transition[w.World]{Type: es.TransNone}, nil
+	return "", false
 }
 
-// DoAction はActionを実行する（
+// DoAction はActionを実行する
 func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
 	// UI系アクションは常に実行可能
 	switch action {
@@ -282,6 +298,8 @@ func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es
 	}
 }
 
+// ================
+
 // checkPlayerDeath はプレイヤーの死亡状態をチェックする
 func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 	playerDead := false
@@ -305,14 +323,4 @@ func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
 		// StateEventNoneまたは未知のイベントの場合は何もしない
 		return es.Transition[w.World]{Type: es.TransNone}
 	}
-}
-
-// Draw はゲームステートの描画処理を行う
-func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
-	screen.DrawImage(baseImage, nil)
-
-	gs.RenderSpriteSystem(world, screen)
-	gs.VisionSystem(world, screen)
-	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
-	return nil
 }

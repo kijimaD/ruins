@@ -2,6 +2,7 @@ package states
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 )
 
 // TransType is a transition type
@@ -42,6 +43,17 @@ type State[T any] interface {
 	Update(world T) (Transition[T], error)
 	// 描画
 	Draw(world T, screen *ebiten.Image) error
+}
+
+// ActionHandler はActionベースの入力処理を行うステートのためのオプショナルインターフェース
+//   - HandleInput でキー入力をActionIDに変換
+//   - DoAction でActionIDを受け取ってステート遷移を返す
+type ActionHandler[T any] interface {
+	// HandleInput はキー入力をActionIDに変換する
+	HandleInput() (inputmapper.ActionID, bool)
+
+	// DoAction はActionを実行してステート遷移を返す
+	DoAction(world T, action inputmapper.ActionID) (Transition[T], error)
 }
 
 // StateFactory はステートを作成するファクトリー関数の型

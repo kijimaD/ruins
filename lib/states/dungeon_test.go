@@ -20,6 +20,10 @@ import (
 func TestDoActionUIActions(t *testing.T) {
 	t.Parallel()
 
+	// インターフェース実装の確認（コンパイル時チェック）
+	var _ es.State[w.World] = &DungeonState{}
+	var _ es.ActionHandler[w.World] = &DungeonState{}
+
 	tests := []struct {
 		name              string
 		action            inputmapper.ActionID

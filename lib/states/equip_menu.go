@@ -65,6 +65,7 @@ const (
 // State interface ================
 
 var _ es.State[w.World] = &EquipMenuState{}
+var _ es.ActionHandler[w.World] = &EquipMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *EquipMenuState) OnPause(_ w.World) error { return nil }
@@ -91,11 +92,13 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		st.reloadAbilityContainer(world)
 	}
 
-	// キー入力をActionに変換して処理
-	if transition, err := st.handleInputAsAction(world); err != nil {
-		return es.Transition[w.World]{}, err
-	} else if transition.Type != es.TransNone {
-		return transition, nil
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
+		}
 	}
 
 	// ウィンドウモードの場合はウィンドウ操作を優先
@@ -113,16 +116,24 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 	return st.ConsumeTransition(), nil
 }
 
-// handleInputAsAction はキー入力をActionに変換して処理する
-func (st *EquipMenuState) handleInputAsAction(world w.World) (es.Transition[w.World], error) {
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return st.DoAction(world, inputmapper.ActionOpenDebugMenu)
-	}
-
-	return es.Transition[w.World]{Type: es.TransNone}, nil
+// Draw はゲームステートの描画処理を行う
+func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) error {
+	st.ui.Draw(screen)
+	return nil
 }
 
-// DoAction はActionを実行する（ゲームとテストの統一インターフェース）
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *EquipMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
+		return inputmapper.ActionOpenDebugMenu, true
+	}
+
+	return "", false
+}
+
+// DoAction はActionを実行する
 func (st *EquipMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
 	switch action {
 	case inputmapper.ActionOpenDebugMenu:
@@ -135,11 +146,7 @@ func (st *EquipMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.T
 	}
 }
 
-// Draw はゲームステートの描画処理を行う
-func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) error {
-	st.ui.Draw(screen)
-	return nil
-}
+// ================
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	res := world.Resources.UIResources
