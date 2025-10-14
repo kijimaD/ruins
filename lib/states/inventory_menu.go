@@ -400,19 +400,13 @@ func (st *InventoryMenuState) executeActionItem(world w.World) {
 
 	switch selectedAction {
 	case "使う":
-		// プレイヤーエンティティを取得
-		var playerEntity ecs.Entity
-		world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
-			playerEntity = entity
-		}))
-
-		if playerEntity == 0 {
-			log.Printf("プレイヤーエンティティが見つかりません")
+		playerEntity, err := worldhelper.GetPlayerEntity(world)
+		if err != nil {
+			log.Printf("プレイヤーエンティティの取得に失敗: %v", err)
 			st.closeActionWindow()
 			return
 		}
 
-		// UseItemActivityを使用
 		manager := actions.NewActivityManager(logger.New(logger.CategoryAction))
 		params := actions.ActionParams{
 			Actor:  playerEntity,

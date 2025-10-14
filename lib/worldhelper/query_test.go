@@ -6,6 +6,7 @@ import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/testutil"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -67,4 +68,49 @@ func TestQueryPlayer(t *testing.T) {
 	// クリーンアップ
 	world.Manager.DeleteEntity(player)
 	world.Manager.DeleteEntity(enemy)
+}
+
+func TestGetPlayerEntity(t *testing.T) {
+	t.Parallel()
+
+	t.Run("プレイヤーが1個存在する場合", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		player := world.Manager.NewEntity()
+		player.AddComponent(world.Components.Player, &gc.Player{})
+
+		entity, err := GetPlayerEntity(world)
+		require.NoError(t, err)
+		assert.Equal(t, player, entity)
+
+		world.Manager.DeleteEntity(player)
+	})
+
+	t.Run("プレイヤーが0個の場合", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		_, err := GetPlayerEntity(world)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "プレイヤーエンティティが存在しません")
+	})
+
+	t.Run("プレイヤーが2個以上の場合", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		player1 := world.Manager.NewEntity()
+		player1.AddComponent(world.Components.Player, &gc.Player{})
+
+		player2 := world.Manager.NewEntity()
+		player2.AddComponent(world.Components.Player, &gc.Player{})
+
+		_, err := GetPlayerEntity(world)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "プレイヤーエンティティが複数存在します")
+
+		world.Manager.DeleteEntity(player1)
+		world.Manager.DeleteEntity(player2)
+	})
 }

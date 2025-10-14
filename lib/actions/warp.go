@@ -7,6 +7,7 @@ import (
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -120,13 +121,8 @@ func (wa *WarpActivity) performWarp(act *Activity, world w.World, warp *gc.Warp)
 
 // getPlayerWarp はプレイヤーの現在位置のワープホールを取得する
 func (wa *WarpActivity) getPlayerWarp(_ *Activity, world w.World) *gc.Warp {
-	// プレイヤーエンティティを探す
-	var playerEntity ecs.Entity
-	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
-		playerEntity = entity
-	}))
-
-	if playerEntity == 0 {
+	playerEntity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
 		return nil
 	}
 

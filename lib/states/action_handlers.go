@@ -7,63 +7,48 @@ import (
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // ExecuteMoveAction は移動アクションを実行する
-// 複数プレイヤーエンティティが存在する場合は最初のエンティティのみを処理する
 func ExecuteMoveAction(world w.World, direction gc.Direction) {
-	var firstPlayerEntity ecs.Entity
-	var hasFirstPlayer bool
+	entity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return
+	}
 
-	// 最初のプレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if !hasFirstPlayer {
-			firstPlayerEntity = entity
-			hasFirstPlayer = true
+	if !entity.HasComponent(world.Components.GridElement) {
+		return
+	}
+
+	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+	currentX := int(gridElement.X)
+	currentY := int(gridElement.Y)
+
+	deltaX, deltaY := direction.GetDelta()
+	newX := currentX + deltaX
+	newY := currentY + deltaY
+
+	// 移動先に敵がいる場合は攻撃アクション
+	enemy := findEnemyAtPosition(world, entity, newX, newY)
+	if enemy != ecs.Entity(0) {
+		params := actions.ActionParams{
+			Actor:  entity,
+			Target: &enemy,
 		}
-	}))
+		executeActivity(world, &actions.AttackActivity{}, params)
+		return
+	}
 
-	// 最初のプレイヤーエンティティのみを処理
-	if hasFirstPlayer {
-		entity := firstPlayerEntity
-		// 現在位置を取得
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		currentX := int(gridElement.X)
-		currentY := int(gridElement.Y)
-
-		// 移動先を計算
-		deltaX, deltaY := direction.GetDelta()
-		newX := currentX + deltaX
-		newY := currentY + deltaY
-
-		// 移動先に敵がいるかチェック
-		enemy := findEnemyAtPosition(world, entity, newX, newY)
-		if enemy != ecs.Entity(0) {
-			// 敵がいる場合は攻撃アクション
-			params := actions.ActionParams{
-				Actor:  entity,
-				Target: &enemy,
-			}
-			executeActivity(world, &actions.AttackActivity{}, params)
-			return
+	canMove := movement.CanMoveTo(world, newX, newY, entity)
+	if canMove {
+		destination := gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
+		params := actions.ActionParams{
+			Actor:       entity,
+			Destination: &destination,
 		}
-
-		// 移動可能かチェックして移動
-		canMove := movement.CanMoveTo(world, newX, newY, entity)
-
-		if canMove {
-			// 統一されたアクティビティ実行関数を使用
-			destination := gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
-			params := actions.ActionParams{
-				Actor:       entity,
-				Destination: &destination,
-			}
-			executeActivity(world, &actions.MoveActivity{}, params)
-		}
+		executeActivity(world, &actions.MoveActivity{}, params)
 	}
 }
 
@@ -85,44 +70,45 @@ func executeActivity(world w.World, actorImpl actions.ActivityInterface, params 
 
 // ExecuteWaitAction は待機アクションを実行する
 func ExecuteWaitAction(world w.World) {
-	// プレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		params := actions.ActionParams{
-			Actor:    entity,
-			Duration: 1,
-			Reason:   "プレイヤー待機",
-		}
-		executeActivity(world, &actions.WaitActivity{}, params)
-	}))
+	entity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return
+	}
+
+	params := actions.ActionParams{
+		Actor:    entity,
+		Duration: 1,
+		Reason:   "プレイヤー待機",
+	}
+	executeActivity(world, &actions.WaitActivity{}, params)
 }
 
 // ExecuteEnterAction はEnterキーによる状況に応じたアクションを実行する
 func ExecuteEnterAction(world w.World) {
-	// プレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		tileX := int(gridElement.X)
-		tileY := int(gridElement.Y)
+	entity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return
+	}
 
-		// ワープホールチェック
-		if checkForWarp(world, entity) {
-			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, &actions.WarpActivity{}, params)
-			return
-		}
+	if !entity.HasComponent(world.Components.GridElement) {
+		return
+	}
 
-		// アイテム拾得チェック
-		if checkForItems(world, tileX, tileY) {
-			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, &actions.PickupActivity{}, params)
-			return
-		}
-	}))
+	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+	tileX := int(gridElement.X)
+	tileY := int(gridElement.Y)
+
+	if checkForWarp(world, entity) {
+		params := actions.ActionParams{Actor: entity}
+		executeActivity(world, &actions.WarpActivity{}, params)
+		return
+	}
+
+	if checkForItems(world, tileX, tileY) {
+		params := actions.ActionParams{Actor: entity}
+		executeActivity(world, &actions.PickupActivity{}, params)
+		return
+	}
 }
 
 // checkTileEvents はタイル上のイベントをチェックする
