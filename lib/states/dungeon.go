@@ -5,12 +5,12 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/mapspawner"
@@ -96,10 +96,7 @@ func (st *DungeonState) OnStart(world w.World) error {
 	gs.ClearVisionCaches()
 
 	// 初回の冒険開始時のみ操作ガイドを表示
-	if st.Depth == 1 {
-		gamelog.New(gamelog.FieldLog).
-			Append("冒険を開始した。").
-			Log()
+	if st.BuilderType.Name == mapplanner.PlannerTypeTown.Name {
 		gamelog.New(gamelog.FieldLog).
 			System("WASD: 移動する。").
 			Log()
@@ -184,49 +181,51 @@ func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
 
 // HandleInput はキー入力をActionに変換する
 func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool) {
+	keyboardInput := input.GetSharedKeyboardInput()
+
 	// メニューキー（M）でダンジョンメニューを開く
-	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyM) {
 		return inputmapper.ActionOpenDungeonMenu, true
 	}
 
 	cfg := config.MustGet()
-	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
+	if cfg.Debug && keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return inputmapper.ActionOpenDebugMenu, true
 	}
 
 	// 8方向移動キー入力
-	if inpututil.IsKeyJustPressed(ebiten.KeyW) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyW) || keyboardInput.IsKeyJustPressed(ebiten.KeyUp) {
+		if keyboardInput.IsKeyJustPressed(ebiten.KeyA) || keyboardInput.IsKeyJustPressed(ebiten.KeyLeft) {
 			return inputmapper.ActionMoveNorthWest, true
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+		if keyboardInput.IsKeyJustPressed(ebiten.KeyD) || keyboardInput.IsKeyJustPressed(ebiten.KeyRight) {
 			return inputmapper.ActionMoveNorthEast, true
 		}
 		return inputmapper.ActionMoveNorth, true
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyS) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyS) || keyboardInput.IsKeyJustPressed(ebiten.KeyDown) {
+		if keyboardInput.IsKeyJustPressed(ebiten.KeyA) || keyboardInput.IsKeyJustPressed(ebiten.KeyLeft) {
 			return inputmapper.ActionMoveSouthWest, true
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+		if keyboardInput.IsKeyJustPressed(ebiten.KeyD) || keyboardInput.IsKeyJustPressed(ebiten.KeyRight) {
 			return inputmapper.ActionMoveSouthEast, true
 		}
 		return inputmapper.ActionMoveSouth, true
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyA) || keyboardInput.IsKeyJustPressed(ebiten.KeyLeft) {
 		return inputmapper.ActionMoveWest, true
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyD) || keyboardInput.IsKeyJustPressed(ebiten.KeyRight) {
 		return inputmapper.ActionMoveEast, true
 	}
 
 	// 待機キー
-	if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyPeriod) {
 		return inputmapper.ActionWait, true
 	}
 
 	// 相互作用キー（Enter）
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEnter) {
 		return inputmapper.ActionInteract, true
 	}
 

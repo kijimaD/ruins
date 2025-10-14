@@ -58,11 +58,6 @@ func TileInputSystem(world w.World) error {
 		ExecuteMoveAction(world, direction)
 	}
 
-	// Enterキー: 状況に応じたアクションを実行
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		ExecuteEnterAction(world)
-	}
-
 	return nil
 }
 

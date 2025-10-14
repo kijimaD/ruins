@@ -55,3 +55,9 @@ const (
 	ActionMenuSelect ActionID = "menu_select"
 	ActionMenuCancel ActionID = "menu_cancel"
 )
+
+// メッセージウィンドウ系アクション
+const (
+	ActionConfirm ActionID = "confirm" // メッセージ確認
+	ActionSkip    ActionID = "skip"    // メッセージスキップ
+)

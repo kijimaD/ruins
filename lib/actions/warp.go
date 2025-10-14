@@ -102,7 +102,6 @@ func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error {
 
 // performWarp は実際のワープ処理を実行する
 func (wa *WarpActivity) performWarp(act *Activity, world w.World, warp *gc.Warp) error {
-
 	switch warp.Mode {
 	case gc.WarpModeNext:
 		world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpNext)

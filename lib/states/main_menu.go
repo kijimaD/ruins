@@ -9,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
@@ -19,10 +18,9 @@ import (
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
 	es.BaseState[w.World]
-	ui            *ebitenui.UI
-	menu          *menu.Menu
-	uiBuilder     *menu.UIBuilder
-	keyboardInput input.KeyboardInput
+	ui        *ebitenui.UI
+	menu      *menu.Menu
+	uiBuilder *menu.UIBuilder
 }
 
 func (st MainMenuState) String() string {
@@ -42,9 +40,6 @@ func (st *MainMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステート開始時の処理を行う
 func (st *MainMenuState) OnStart(world w.World) error {
-	if st.keyboardInput == nil {
-		st.keyboardInput = input.GetSharedKeyboardInput()
-	}
 	st.initMenu(world)
 	st.ui = st.initUI(world)
 	return nil

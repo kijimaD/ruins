@@ -27,7 +27,6 @@ type EquipMenuState struct {
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
-	keyboardInput       input.KeyboardInput
 	itemDesc            *widget.Text      // アイテムの説明
 	specContainer       *widget.Container // 性能コンテナ
 	abilityContainer    *widget.Container // プレイヤーの能力表示コンテナ
@@ -75,9 +74,6 @@ func (st *EquipMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *EquipMenuState) OnStart(world w.World) error {
-	if st.keyboardInput == nil {
-		st.keyboardInput = input.GetSharedKeyboardInput()
-	}
 	st.ui = st.initUI(world)
 	return nil
 }
@@ -126,7 +122,8 @@ func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 
 // HandleInput はキー入力をActionに変換する
 func (st *EquipMenuState) HandleInput() (inputmapper.ActionID, bool) {
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
+	keyboardInput := input.GetSharedKeyboardInput()
+	if keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
 		return inputmapper.ActionOpenDebugMenu, true
 	}
 
@@ -555,14 +552,16 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 
 // updateWindowMode はウィンドウモード時の操作を処理する
 func (st *EquipMenuState) updateWindowMode(world w.World) bool {
+	keyboardInput := input.GetSharedKeyboardInput()
+
 	// Escapeでウィンドウモードを終了
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		st.closeActionWindow()
 		return false
 	}
 
 	// 上下矢印でフォーカス移動
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
 		st.actionFocusIndex--
 		if st.actionFocusIndex < 0 {
 			st.actionFocusIndex = len(st.actionItems) - 1
@@ -570,7 +569,7 @@ func (st *EquipMenuState) updateWindowMode(world w.World) bool {
 		st.updateActionWindowDisplay(world)
 		return true
 	}
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
 		st.actionFocusIndex++
 		if st.actionFocusIndex >= len(st.actionItems) {
 			st.actionFocusIndex = 0
@@ -580,7 +579,7 @@ func (st *EquipMenuState) updateWindowMode(world w.World) bool {
 	}
 
 	// Enterで選択実行（押下-押上ワンセット）
-	if st.keyboardInput.IsEnterJustPressedOnce() {
+	if keyboardInput.IsEnterJustPressedOnce() {
 		st.executeActionItem(world)
 		return true
 	}
