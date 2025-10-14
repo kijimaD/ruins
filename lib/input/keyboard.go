@@ -2,19 +2,36 @@ package input
 
 import (
 	"sync"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
+const (
+	// KeyRepeatInitialDelay はキーリピート開始までの遅延（ミリ秒）
+	KeyRepeatInitialDelay = 500 * time.Millisecond
+
+	// KeyRepeatInterval はキーリピートの間隔（ミリ秒）
+	KeyRepeatInterval = 100 * time.Millisecond
+)
+
 // GlobalKeyState はグローバルなキー状態を管理する
 var GlobalKeyState = &globalKeyState{
 	enterPressSession: false,
+	keyRepeatStates:   make(map[ebiten.Key]*keyRepeatState),
+}
+
+// keyRepeatState はキーリピート状態を管理する
+type keyRepeatState struct {
+	pressStartTime time.Time // キーが押され始めた時刻
+	lastRepeatTime time.Time // 最後にリピートした時刻
 }
 
 // globalKeyState はアプリケーション全体で共有されるキー状態
 type globalKeyState struct {
-	enterPressSession bool // Enterキーの押下セッション状態（押下中かどうか）
+	enterPressSession bool                           // Enterキーの押下セッション状態（押下中かどうか）
+	keyRepeatStates   map[ebiten.Key]*keyRepeatState // キーリピート状態
 	mutex             sync.RWMutex
 }
 
@@ -43,7 +60,8 @@ func ResetGlobalKeyStateForTest() {
 type KeyboardInput interface {
 	IsKeyJustPressed(key ebiten.Key) bool
 	IsKeyPressed(key ebiten.Key) bool
-	IsEnterJustPressedOnce() bool // Enterキーが押下-押上のワンセットで押されたかどうか
+	IsEnterJustPressedOnce() bool               // Enterキーが押下-押上のワンセットで押されたかどうか
+	IsKeyPressedWithRepeat(key ebiten.Key) bool // キーリピート機能付きの押下判定
 }
 
 // sharedKeyboardInput はシングルトンのキーボード入力実装
@@ -90,5 +108,50 @@ func (s *sharedKeyboardInput) IsEnterJustPressedOnce() bool {
 		return true
 	}
 
+	return false
+}
+
+// IsKeyPressedWithRepeat はキーリピート機能付きの押下判定を行う
+func (s *sharedKeyboardInput) IsKeyPressedWithRepeat(key ebiten.Key) bool {
+	GlobalKeyState.mutex.Lock()
+	defer GlobalKeyState.mutex.Unlock()
+
+	// 初回押下
+	if inpututil.IsKeyJustPressed(key) {
+		now := time.Now()
+		GlobalKeyState.keyRepeatStates[key] = &keyRepeatState{
+			pressStartTime: now,
+			lastRepeatTime: now,
+		}
+		return true
+	}
+
+	// キーが押され続けている場合
+	if ebiten.IsKeyPressed(key) {
+		state, exists := GlobalKeyState.keyRepeatStates[key]
+		if !exists {
+			return false
+		}
+
+		now := time.Now()
+		pressDuration := now.Sub(state.pressStartTime)
+
+		// 初回遅延未経過
+		if pressDuration < KeyRepeatInitialDelay {
+			return false
+		}
+
+		// リピート間隔チェック
+		timeSinceLastRepeat := now.Sub(state.lastRepeatTime)
+		if timeSinceLastRepeat >= KeyRepeatInterval {
+			state.lastRepeatTime = now
+			return true
+		}
+
+		return false
+	}
+
+	// キーが離された場合、状態をクリア
+	delete(GlobalKeyState.keyRepeatStates, key)
 	return false
 }

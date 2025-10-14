@@ -193,34 +193,40 @@ func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool) {
 		return inputmapper.ActionOpenDebugMenu, true
 	}
 
-	// 8方向移動キー入力
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyW) || keyboardInput.IsKeyJustPressed(ebiten.KeyUp) {
-		if keyboardInput.IsKeyJustPressed(ebiten.KeyA) || keyboardInput.IsKeyJustPressed(ebiten.KeyLeft) {
-			return inputmapper.ActionMoveNorthWest, true
-		}
-		if keyboardInput.IsKeyJustPressed(ebiten.KeyD) || keyboardInput.IsKeyJustPressed(ebiten.KeyRight) {
-			return inputmapper.ActionMoveNorthEast, true
-		}
+	// 8方向移動キー入力（キーリピート対応）
+	// 斜め移動は両方のキーがリピート判定で真になる場合のみ
+	upPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyW) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyUp)
+	downPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyS) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyDown)
+	leftPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyA) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyLeft)
+	rightPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyD) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyRight)
+
+	if upPressed && leftPressed {
+		return inputmapper.ActionMoveNorthWest, true
+	}
+	if upPressed && rightPressed {
+		return inputmapper.ActionMoveNorthEast, true
+	}
+	if downPressed && leftPressed {
+		return inputmapper.ActionMoveSouthWest, true
+	}
+	if downPressed && rightPressed {
+		return inputmapper.ActionMoveSouthEast, true
+	}
+	if upPressed {
 		return inputmapper.ActionMoveNorth, true
 	}
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyS) || keyboardInput.IsKeyJustPressed(ebiten.KeyDown) {
-		if keyboardInput.IsKeyJustPressed(ebiten.KeyA) || keyboardInput.IsKeyJustPressed(ebiten.KeyLeft) {
-			return inputmapper.ActionMoveSouthWest, true
-		}
-		if keyboardInput.IsKeyJustPressed(ebiten.KeyD) || keyboardInput.IsKeyJustPressed(ebiten.KeyRight) {
-			return inputmapper.ActionMoveSouthEast, true
-		}
+	if downPressed {
 		return inputmapper.ActionMoveSouth, true
 	}
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyA) || keyboardInput.IsKeyJustPressed(ebiten.KeyLeft) {
+	if leftPressed {
 		return inputmapper.ActionMoveWest, true
 	}
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyD) || keyboardInput.IsKeyJustPressed(ebiten.KeyRight) {
+	if rightPressed {
 		return inputmapper.ActionMoveEast, true
 	}
 
-	// 待機キー
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyPeriod) {
+	// 待機キー（キーリピート対応）
+	if keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyPeriod) {
 		return inputmapper.ActionWait, true
 	}
 

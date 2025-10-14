@@ -2,10 +2,10 @@ package systems
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
 	"github.com/kijimaD/ruins/lib/turns"
@@ -24,31 +24,36 @@ func TileInputSystem(world w.World) error {
 			return nil
 		}
 	}
+
+	keyboardInput := input.GetSharedKeyboardInput()
+
 	// キー入力を方向に変換
 	var direction gc.Direction
 
-	// 8方向キー入力
-	if inpututil.IsKeyJustPressed(ebiten.KeyW) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			direction = gc.DirectionUpLeft
-		} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			direction = gc.DirectionUpRight
-		} else {
-			direction = gc.DirectionUp
-		}
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyS) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			direction = gc.DirectionDownLeft
-		} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			direction = gc.DirectionDownRight
-		} else {
-			direction = gc.DirectionDown
-		}
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+	// 8方向キー入力（キーリピート対応）
+	// 斜め移動は両方のキーがリピート判定で真になる場合のみ
+	upPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyW) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyUp)
+	downPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyS) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyDown)
+	leftPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyA) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyLeft)
+	rightPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyD) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyRight)
+
+	if upPressed && leftPressed {
+		direction = gc.DirectionUpLeft
+	} else if upPressed && rightPressed {
+		direction = gc.DirectionUpRight
+	} else if downPressed && leftPressed {
+		direction = gc.DirectionDownLeft
+	} else if downPressed && rightPressed {
+		direction = gc.DirectionDownRight
+	} else if upPressed {
+		direction = gc.DirectionUp
+	} else if downPressed {
+		direction = gc.DirectionDown
+	} else if leftPressed {
 		direction = gc.DirectionLeft
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+	} else if rightPressed {
 		direction = gc.DirectionRight
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
+	} else if keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyPeriod) {
 		ExecuteWaitAction(world)
 		return nil
 	}
