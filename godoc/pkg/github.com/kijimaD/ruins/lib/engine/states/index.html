@@ -114,6 +114,11 @@
 			
 			
 				
+				<dd><a href="index.html#ActionHandler">type ActionHandler</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#BaseState">type BaseState</a></dd>
 				
 				
@@ -209,6 +214,39 @@
 		
 			
 			
+			<h2 id="ActionHandler">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1550:1828#L41">ActionHandler</a>
+				<a class="permalink" href="index.html#ActionHandler">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ActionHandler はActionベースの入力処理を行うステートのためのオプショナルインターフェース
+<ul>
+<li>HandleInput でキー入力をActionIDに変換
+<li>DoAction でActionIDを受け取ってステート遷移を返す
+</ul>
+
+			<pre>type ActionHandler[T <a href="http://localhost:8888/pkg/builtin/#any">any</a>] interface {
+    <span class="comment">// HandleInput はキー入力をActionIDに変換する</span>
+    HandleInput() (<a href="../../inputmapper/index.html">inputmapper</a>.<a href="../../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)
+
+    <span class="comment">// DoAction はActionを実行してステート遷移を返す</span>
+    DoAction(world T, action <a href="../../inputmapper/index.html">inputmapper</a>.<a href="../../inputmapper/index.html#ActionID">ActionID</a>) (<a href="index.html#Transition">Transition</a>[T], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
 			<h2 id="BaseState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/base.go?s=85:139#L1">BaseState</a>
 				<a class="permalink" href="index.html#BaseState">&#xb6;</a>
 				
@@ -287,7 +325,7 @@
 		
 			
 			
-			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=758:1250#L22">State</a>
+			<h2 id="State">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=802:1294#L23">State</a>
 				<a class="permalink" href="index.html#State">&#xb6;</a>
 				
 				
@@ -323,7 +361,7 @@
 		
 			
 			
-			<h2 id="StateFactory">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1329:1369#L38">StateFactory</a>
+			<h2 id="StateFactory">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1907:1947#L50">StateFactory</a>
 				<a class="permalink" href="index.html#StateFactory">&#xb6;</a>
 				
 				
@@ -346,7 +384,7 @@
 		
 			
 			
-			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1445:1537#L41">StateMachine</a>
+			<h2 id="StateMachine">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2023:2115#L53">StateMachine</a>
 				<a class="permalink" href="index.html#StateMachine">&#xb6;</a>
 				
 				
@@ -368,7 +406,7 @@
 
 			
 				
-				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1599:1661#L47">Init</a>
+				<h3 id="Init">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2177:2239#L59">Init</a>
 					<a class="permalink" href="index.html#Init">&#xb6;</a>
 					
 					
@@ -382,7 +420,7 @@
 
 			
 				
-				<h3 id="StateMachine.Draw">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2824:2892#L100">Draw</a>
+				<h3 id="StateMachine.Draw">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=3402:3470#L112">Draw</a>
 					<a class="permalink" href="index.html#StateMachine.Draw">&#xb6;</a>
 					
 					
@@ -396,7 +434,7 @@
 				
 			
 				
-				<h3 id="StateMachine.GetCurrentState">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6497:6550#L243">GetCurrentState</a>
+				<h3 id="StateMachine.GetCurrentState">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=7075:7128#L255">GetCurrentState</a>
 					<a class="permalink" href="index.html#StateMachine.GetCurrentState">&#xb6;</a>
 					
 					
@@ -409,7 +447,7 @@
 				
 			
 				
-				<h3 id="StateMachine.GetStateCount">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6712:6758#L251">GetStateCount</a>
+				<h3 id="StateMachine.GetStateCount">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=7290:7336#L263">GetStateCount</a>
 					<a class="permalink" href="index.html#StateMachine.GetStateCount">&#xb6;</a>
 					
 					
@@ -422,7 +460,7 @@
 				
 			
 				
-				<h3 id="StateMachine.GetStates">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6272:6321#L236">GetStates</a>
+				<h3 id="StateMachine.GetStates">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=6850:6899#L248">GetStates</a>
 					<a class="permalink" href="index.html#StateMachine.GetStates">&#xb6;</a>
 					
 					
@@ -435,7 +473,7 @@
 				
 			
 				
-				<h3 id="StateMachine.Update">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=1910:1958#L58">Update</a>
+				<h3 id="StateMachine.Update">func (*StateMachine[T]) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=2488:2536#L70">Update</a>
 					<a class="permalink" href="index.html#StateMachine.Update">&#xb6;</a>
 					
 					
@@ -477,7 +515,7 @@
 		
 			
 			
-			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=98:116#L1">TransType</a>
+			<h2 id="TransType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=142:160#L1">TransType</a>
 				<a class="permalink" href="index.html#TransType">&#xb6;</a>
 				
 				
@@ -516,7 +554,7 @@
 		
 			
 			
-			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=586:677#L16">Transition</a>
+			<h2 id="Transition">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/engine/states/lib.go?s=630:721#L17">Transition</a>
 				<a class="permalink" href="index.html#Transition">&#xb6;</a>
 				
 				

@@ -94,6 +94,82 @@
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
 				<p>Package states はゲームステートの実装を提供する。
+<h3 id="hdr-Action__________">Actionベース入力処理の規約</h3>
+<p>Actionベースの入力処理を行うステートは、es.ActionHandler インターフェースを実装してください。
+これはオプショナルなインターフェースで、すべてのステートが実装する必要はありません。
+<p>## 実装方法
+<p>1. es.ActionHandler インターフェースを実装
+<pre>type YourState struct {
+    es.BaseState[w.World]
+}
+
+// インターフェース実装の確認（コンパイル時チェック）
+var _ es.State[w.World] = &amp;YourState{}
+var _ es.ActionHandler[w.World] = &amp;YourState{}
+</pre>
+<p>2. HandleInput メソッドを実装（インターフェース要求）
+<pre>func (st *YourState) HandleInput() (inputmapper.ActionID, bool) {
+    if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+        return inputmapper.ActionMenuCancel, true
+    }
+    // 複数キー同時押しの判定もここで行う
+    if inpututil.IsKeyJustPressed(ebiten.KeyW) &amp;&amp; inpututil.IsKeyJustPressed(ebiten.KeyA) {
+        return inputmapper.ActionMoveNorthWest, true
+    }
+    return &quot;&quot;, false
+}
+</pre>
+<p>3. DoAction メソッドを実装（インターフェース要求）
+<pre>func (st *YourState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+    switch action {
+    case inputmapper.ActionMenuCancel:
+        return es.Transition[w.World]{Type: es.TransPop}, nil
+    case inputmapper.ActionMoveNorthWest:
+        // 移動処理
+        return es.Transition[w.World]{Type: es.TransNone}, nil
+    default:
+        return es.Transition[w.World]{Type: es.TransNone}, nil
+    }
+}
+</pre>
+<p>4. Update メソッドで規約パターンを使用
+<pre>func (st *YourState) Update(world w.World) (es.Transition[w.World], error) {
+    // キー入力をActionに変換
+    if action, ok := st.HandleInput(); ok {
+        if transition, err := st.DoAction(world, action); err != nil {
+            return es.Transition[w.World]{}, err
+        } else if transition.Type != es.TransNone {
+            return transition, nil
+        }
+    }
+
+    // その他の処理
+    // ...
+
+    return st.ConsumeTransition(), nil
+}
+</pre>
+<p>## テスト実装パターン
+<pre>func TestDoAction(t *testing.T) {
+    state := &amp;YourState{}
+    world := testutil.InitTestWorld(t)
+
+    // インターフェース実装の検証
+    var _ es.ActionHandler[w.World] = state
+
+    transition, err := state.DoAction(world, inputmapper.ActionMenuCancel)
+    require.NoError(t, err)
+    assert.Equal(t, es.TransPop, transition.Type)
+}
+</pre>
+<p>## 参考実装
+<p>- DungeonState: 8方向移動とメニュー操作の実装例
+- InventoryMenuState: メニュー操作の実装例
+<p>## メリット
+<p>- 入力処理とロジックを分離できる
+- テストからDoActionを直接呼び出せる
+- キー入力に依存しないテストが書ける
+- 複数キー同時押しの判定をhandleInputに集約できる
 
 				
 			</div>
@@ -113,6 +189,18 @@
 				<dd><a href="index.html#pkg-constants">Constants</a></dd>
 			
 			
+			
+				
+				<dd><a href="index.html#ExecuteEnterAction">func ExecuteEnterAction(world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#ExecuteMoveAction">func ExecuteMoveAction(world w.World, direction gc.Direction)</a></dd>
+			
+				
+				<dd><a href="index.html#ExecuteWaitAction">func ExecuteWaitAction(world w.World)</a></dd>
+			
+				
+				<dd><a href="index.html#HandleWindowInput">func HandleWindowInput() (inputmapper.ActionID, bool)</a></dd>
 			
 				
 				<dd><a href="index.html#NewCraftMenuState">func NewCraftMenuState() es.State[w.World]</a></dd>
@@ -150,13 +238,22 @@
 				
 				<dd><a href="index.html#NewShopMenuState">func NewShopMenuState() es.State[w.World]</a></dd>
 			
+				
+				<dd><a href="index.html#UpdateFocusIndex">func UpdateFocusIndex(action inputmapper.ActionID, focusIndex *int, itemCount int) bool</a></dd>
+			
 			
 				
 				<dd><a href="index.html#CraftMenuState">type CraftMenuState</a></dd>
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.DoAction">func (st *CraftMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.Draw">func (st *CraftMenuState) Draw(_ w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.HandleInput">func (st *CraftMenuState) HandleInput() (inputmapper.ActionID, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#CraftMenuState.OnPause">func (st *CraftMenuState) OnPause(_ w.World) error</a></dd>
@@ -182,7 +279,13 @@
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.DoAction">func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.Draw">func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.HandleInput">func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#DungeonState.OnPause">func (st *DungeonState) OnPause(_ w.World) error</a></dd>
@@ -219,7 +322,13 @@
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.DoAction">func (st *EquipMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.Draw">func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.HandleInput">func (st *EquipMenuState) HandleInput() (inputmapper.ActionID, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#EquipMenuState.OnPause">func (st *EquipMenuState) OnPause(_ w.World) error</a></dd>
@@ -245,7 +354,13 @@
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.DoAction">func (st *InventoryMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.Draw">func (st *InventoryMenuState) Draw(_ w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.HandleInput">func (st *InventoryMenuState) HandleInput() (inputmapper.ActionID, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#InventoryMenuState.OnPause">func (st *InventoryMenuState) OnPause(_ w.World) error</a></dd>
@@ -271,7 +386,13 @@
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.DoAction">func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.Draw">func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.HandleInput">func (st *MainMenuState) HandleInput() (inputmapper.ActionID, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MainMenuState.OnPause">func (st *MainMenuState) OnPause(_ w.World) error</a></dd>
@@ -340,7 +461,13 @@
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#ShopMenuState.DoAction">func (st *ShopMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#ShopMenuState.Draw">func (st *ShopMenuState) Draw(_ w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ShopMenuState.HandleInput">func (st *ShopMenuState) HandleInput() (inputmapper.ActionID, bool)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#ShopMenuState.OnPause">func (st *ShopMenuState) OnPause(_ w.World) error</a></dd>
@@ -372,6 +499,8 @@
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go">action_handlers.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go">craft_menu.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/doc.go">doc.go</a>
@@ -394,6 +523,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go">shop_menu.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/window.go">window.go</a>
+			
 			</span>
 			</p>
 		
@@ -415,6 +546,62 @@
 			
 		
 		
+		
+			
+			
+			<h2 id="ExecuteEnterAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=2590:2628#L77">ExecuteEnterAction</a>
+				<a class="permalink" href="index.html#ExecuteEnterAction">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ExecuteEnterAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>ExecuteEnterAction はEnterキーによる状況に応じたアクションを実行する
+
+			
+			
+
+		
+			
+			
+			<h2 id="ExecuteMoveAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=414:475#L5">ExecuteMoveAction</a>
+				<a class="permalink" href="index.html#ExecuteMoveAction">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ExecuteMoveAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, direction <a href="../components/index.html">gc</a>.<a href="../components/index.html#Direction">Direction</a>)</pre>
+			<p>ExecuteMoveAction は移動アクションを実行する
+
+			
+			
+
+		
+			
+			
+			<h2 id="ExecuteWaitAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=2207:2244#L62">ExecuteWaitAction</a>
+				<a class="permalink" href="index.html#ExecuteWaitAction">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func ExecuteWaitAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+			<p>ExecuteWaitAction は待機アクションを実行する
+
+			
+			
+
+		
+			
+			
+			<h2 id="HandleWindowInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/window.go?s=237:290#L1">HandleWindowInput</a>
+				<a class="permalink" href="index.html#HandleWindowInput">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func HandleWindowInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+			<p>HandleWindowInput はウィンドウモード時のキー入力をActionに変換する
+
+			
+			
+
 		
 			
 			
@@ -585,10 +772,24 @@
 			
 
 		
+			
+			
+			<h2 id="UpdateFocusIndex">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/window.go?s=890:977#L20">UpdateFocusIndex</a>
+				<a class="permalink" href="index.html#UpdateFocusIndex">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func UpdateFocusIndex(action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, focusIndex *<a href="http://localhost:8888/pkg/builtin/#int">int</a>, itemCount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+			<p>UpdateFocusIndex はナビゲーションアクションに応じてフォーカスインデックスを更新する
+
+			
+			
+
+		
 		
 			
 			
-			<h2 id="CraftMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=749:2128#L16">CraftMenuState</a>
+			<h2 id="CraftMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=793:2131#L17">CraftMenuState</a>
 				<a class="permalink" href="index.html#CraftMenuState">&#xb6;</a>
 				
 				
@@ -613,7 +814,20 @@
 
 			
 				
-				<h3 id="CraftMenuState.Draw">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=3931:4000#L104">Draw</a>
+				<h3 id="CraftMenuState.DoAction">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=4283:4393#L120">DoAction</a>
+					<a class="permalink" href="index.html#CraftMenuState.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) DoAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>) (<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>DoAction はActionを実行する
+
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.Draw">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=3495:3564#L88">Draw</a>
 					<a class="permalink" href="index.html#CraftMenuState.Draw">&#xb6;</a>
 					
 					
@@ -626,7 +840,20 @@
 				
 			
 				
-				<h3 id="CraftMenuState.OnPause">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2347:2397#L53">OnPause</a>
+				<h3 id="CraftMenuState.HandleInput">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=3678:3746#L96">HandleInput</a>
+					<a class="permalink" href="index.html#CraftMenuState.HandleInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#CraftMenuState">CraftMenuState</a>) HandleInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>HandleInput はキー入力をActionに変換する
+
+				
+				
+				
+			
+				
+				<h3 id="CraftMenuState.OnPause">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2402:2452#L54">OnPause</a>
 					<a class="permalink" href="index.html#CraftMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -639,7 +866,7 @@
 				
 			
 				
-				<h3 id="CraftMenuState.OnResume">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2478:2529#L56">OnResume</a>
+				<h3 id="CraftMenuState.OnResume">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2533:2584#L57">OnResume</a>
 					<a class="permalink" href="index.html#CraftMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -652,7 +879,7 @@
 				
 			
 				
-				<h3 id="CraftMenuState.OnStart">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2609:2663#L59">OnStart</a>
+				<h3 id="CraftMenuState.OnStart">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2664:2718#L60">OnStart</a>
 					<a class="permalink" href="index.html#CraftMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -665,7 +892,7 @@
 				
 			
 				
-				<h3 id="CraftMenuState.OnStop">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2854:2903#L68">OnStop</a>
+				<h3 id="CraftMenuState.OnStop">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2824:2873#L66">OnStop</a>
 					<a class="permalink" href="index.html#CraftMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -678,7 +905,7 @@
 				
 			
 				
-				<h3 id="CraftMenuState.String">func (CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2130:2170#L44">String</a>
+				<h3 id="CraftMenuState.String">func (CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2133:2173#L44">String</a>
 					<a class="permalink" href="index.html#CraftMenuState.String">&#xb6;</a>
 					
 					
@@ -690,7 +917,7 @@
 				
 			
 				
-				<h3 id="CraftMenuState.Update">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2979:3058#L71">Update</a>
+				<h3 id="CraftMenuState.Update">func (*CraftMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/craft_menu.go?s=2949:3028#L69">Update</a>
 					<a class="permalink" href="index.html#CraftMenuState.Update">&#xb6;</a>
 					
 					
@@ -705,7 +932,7 @@
 		
 			
 			
-			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=818:1156#L19">DungeonState</a>
+			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=854:1192#L20">DungeonState</a>
 				<a class="permalink" href="index.html#DungeonState">&#xb6;</a>
 				
 				
@@ -734,7 +961,20 @@
 
 			
 				
-				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=6664:6735#L188">Draw</a>
+				<h3 id="DungeonState.DoAction">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=7790:7898#L232">DoAction</a>
+					<a class="permalink" href="index.html#DungeonState.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) DoAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>) (<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>DoAction はActionを実行する
+
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5460:5531#L161">Draw</a>
 					<a class="permalink" href="index.html#DungeonState.Draw">&#xb6;</a>
 					
 					
@@ -747,7 +987,20 @@
 				
 			
 				
-				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1369:1417#L37">OnPause</a>
+				<h3 id="DungeonState.HandleInput">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5800:5866#L173">HandleInput</a>
+					<a class="permalink" href="index.html#DungeonState.HandleInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#DungeonState">DungeonState</a>) HandleInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>HandleInput はキー入力をActionに変換する
+
+				
+				
+				
+			
+				
+				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1455:1503#L39">OnPause</a>
 					<a class="permalink" href="index.html#DungeonState.OnPause">&#xb6;</a>
 					
 					
@@ -760,7 +1013,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1498:1547#L40">OnResume</a>
+				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1584:1633#L42">OnResume</a>
 					<a class="permalink" href="index.html#DungeonState.OnResume">&#xb6;</a>
 					
 					
@@ -773,7 +1026,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1627:1679#L43">OnStart</a>
+				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1713:1765#L45">OnStart</a>
 					<a class="permalink" href="index.html#DungeonState.OnStart">&#xb6;</a>
 					
 					
@@ -786,7 +1039,7 @@
 				
 			
 				
-				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=3396:3447#L102">OnStop</a>
+				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=3442:3493#L101">OnStop</a>
 					<a class="permalink" href="index.html#DungeonState.OnStop">&#xb6;</a>
 					
 					
@@ -799,7 +1052,7 @@
 				
 			
 				
-				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1158:1196#L28">String</a>
+				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1194:1232#L29">String</a>
 					<a class="permalink" href="index.html#DungeonState.String">&#xb6;</a>
 					
 					
@@ -811,7 +1064,7 @@
 				
 			
 				
-				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=4440:4517#L131">Update</a>
+				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=4486:4563#L130">Update</a>
 					<a class="permalink" href="index.html#DungeonState.Update">&#xb6;</a>
 					
 					
@@ -873,7 +1126,7 @@
 		
 			
 			
-			<h2 id="EquipMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=727:1952#L14">EquipMenuState</a>
+			<h2 id="EquipMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=771:1955#L15">EquipMenuState</a>
 				<a class="permalink" href="index.html#EquipMenuState">&#xb6;</a>
 				
 				
@@ -898,7 +1151,20 @@
 
 			
 				
-				<h3 id="EquipMenuState.Draw">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=3661:3730#L103">Draw</a>
+				<h3 id="EquipMenuState.DoAction">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=4199:4309#L126">DoAction</a>
+					<a class="permalink" href="index.html#EquipMenuState.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) DoAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>) (<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>DoAction はActionを実行する
+
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.Draw">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=3519:3588#L99">Draw</a>
 					<a class="permalink" href="index.html#EquipMenuState.Draw">&#xb6;</a>
 					
 					
@@ -911,7 +1177,20 @@
 				
 			
 				
-				<h3 id="EquipMenuState.OnPause">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2273:2323#L59">OnPause</a>
+				<h3 id="EquipMenuState.HandleInput">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=3702:3770#L107">HandleInput</a>
+					<a class="permalink" href="index.html#EquipMenuState.HandleInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#EquipMenuState">EquipMenuState</a>) HandleInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>HandleInput はキー入力をActionに変換する
+
+				
+				
+				
+			
+				
+				<h3 id="EquipMenuState.OnPause">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2328:2378#L60">OnPause</a>
 					<a class="permalink" href="index.html#EquipMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -924,7 +1203,7 @@
 				
 			
 				
-				<h3 id="EquipMenuState.OnResume">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2404:2455#L62">OnResume</a>
+				<h3 id="EquipMenuState.OnResume">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2459:2510#L63">OnResume</a>
 					<a class="permalink" href="index.html#EquipMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -937,7 +1216,7 @@
 				
 			
 				
-				<h3 id="EquipMenuState.OnStart">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2535:2589#L65">OnStart</a>
+				<h3 id="EquipMenuState.OnStart">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2590:2644#L66">OnStart</a>
 					<a class="permalink" href="index.html#EquipMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -950,7 +1229,7 @@
 				
 			
 				
-				<h3 id="EquipMenuState.OnStop">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2780:2829#L74">OnStop</a>
+				<h3 id="EquipMenuState.OnStop">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2750:2799#L72">OnStop</a>
 					<a class="permalink" href="index.html#EquipMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -963,7 +1242,7 @@
 				
 			
 				
-				<h3 id="EquipMenuState.String">func (EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1954:1994#L42">String</a>
+				<h3 id="EquipMenuState.String">func (EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=1957:1997#L42">String</a>
 					<a class="permalink" href="index.html#EquipMenuState.String">&#xb6;</a>
 					
 					
@@ -975,7 +1254,7 @@
 				
 			
 				
-				<h3 id="EquipMenuState.Update">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2905:2984#L77">Update</a>
+				<h3 id="EquipMenuState.Update">func (*EquipMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/equip_menu.go?s=2875:2954#L75">Update</a>
 					<a class="permalink" href="index.html#EquipMenuState.Update">&#xb6;</a>
 					
 					
@@ -990,7 +1269,7 @@
 		
 			
 			
-			<h2 id="InventoryMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=786:1678#L16">InventoryMenuState</a>
+			<h2 id="InventoryMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=830:1681#L17">InventoryMenuState</a>
 				<a class="permalink" href="index.html#InventoryMenuState">&#xb6;</a>
 				
 				
@@ -1015,7 +1294,20 @@
 
 			
 				
-				<h3 id="InventoryMenuState.Draw">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=3220:3293#L85">Draw</a>
+				<h3 id="InventoryMenuState.DoAction">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=3769:3883#L107">DoAction</a>
+					<a class="permalink" href="index.html#InventoryMenuState.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) DoAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>) (<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>DoAction はActionを実行する
+
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.Draw">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=3081:3154#L80">Draw</a>
 					<a class="permalink" href="index.html#InventoryMenuState.Draw">&#xb6;</a>
 					
 					
@@ -1028,7 +1320,20 @@
 				
 			
 				
-				<h3 id="InventoryMenuState.OnPause">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1909:1963#L45">OnPause</a>
+				<h3 id="InventoryMenuState.HandleInput">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=3268:3340#L88">HandleInput</a>
+					<a class="permalink" href="index.html#InventoryMenuState.HandleInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#InventoryMenuState">InventoryMenuState</a>) HandleInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>HandleInput はキー入力をActionに変換する
+
+				
+				
+				
+			
+				
+				<h3 id="InventoryMenuState.OnPause">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1968:2022#L46">OnPause</a>
 					<a class="permalink" href="index.html#InventoryMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -1041,7 +1346,7 @@
 				
 			
 				
-				<h3 id="InventoryMenuState.OnResume">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2044:2099#L48">OnResume</a>
+				<h3 id="InventoryMenuState.OnResume">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2103:2158#L49">OnResume</a>
 					<a class="permalink" href="index.html#InventoryMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -1054,7 +1359,7 @@
 				
 			
 				
-				<h3 id="InventoryMenuState.OnStart">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2179:2237#L51">OnStart</a>
+				<h3 id="InventoryMenuState.OnStart">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2238:2296#L52">OnStart</a>
 					<a class="permalink" href="index.html#InventoryMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -1067,7 +1372,7 @@
 				
 			
 				
-				<h3 id="InventoryMenuState.OnStop">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2428:2481#L60">OnStop</a>
+				<h3 id="InventoryMenuState.OnStop">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2402:2455#L58">OnStop</a>
 					<a class="permalink" href="index.html#InventoryMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -1080,7 +1385,7 @@
 				
 			
 				
-				<h3 id="InventoryMenuState.String">func (InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1680:1724#L36">String</a>
+				<h3 id="InventoryMenuState.String">func (InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=1683:1727#L36">String</a>
 					<a class="permalink" href="index.html#InventoryMenuState.String">&#xb6;</a>
 					
 					
@@ -1092,7 +1397,7 @@
 				
 			
 				
-				<h3 id="InventoryMenuState.Update">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2557:2640#L63">Update</a>
+				<h3 id="InventoryMenuState.Update">func (*InventoryMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/inventory_menu.go?s=2531:2614#L61">Update</a>
 					<a class="permalink" href="index.html#InventoryMenuState.Update">&#xb6;</a>
 					
 					
@@ -1107,7 +1412,7 @@
 		
 			
 			
-			<h2 id="MainMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=515:687#L9">MainMenuState</a>
+			<h2 id="MainMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=528:653#L10">MainMenuState</a>
 				<a class="permalink" href="index.html#MainMenuState">&#xb6;</a>
 				
 				
@@ -1132,7 +1437,20 @@
 
 			
 				
-				<h3 id="MainMenuState.Draw">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1920:1992#L58">Draw</a>
+				<h3 id="MainMenuState.DoAction">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=2243:2348#L73">DoAction</a>
+					<a class="permalink" href="index.html#MainMenuState.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) DoAction(_ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>) (<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>DoAction はActionを実行する
+
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.Draw">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1821:1893#L56">Draw</a>
 					<a class="permalink" href="index.html#MainMenuState.Draw">&#xb6;</a>
 					
 					
@@ -1145,7 +1463,20 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnPause">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=903:952#L26">OnPause</a>
+				<h3 id="MainMenuState.HandleInput">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=2101:2168#L67">HandleInput</a>
+					<a class="permalink" href="index.html#MainMenuState.HandleInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#MainMenuState">MainMenuState</a>) HandleInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>HandleInput はキー入力をActionに変換する
+
+				
+				
+				
+			
+				
+				<h3 id="MainMenuState.OnPause">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=920:969#L27">OnPause</a>
 					<a class="permalink" href="index.html#MainMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -1158,7 +1489,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnResume">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1033:1083#L29">OnResume</a>
+				<h3 id="MainMenuState.OnResume">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1050:1100#L30">OnResume</a>
 					<a class="permalink" href="index.html#MainMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -1171,7 +1502,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnStart">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1154:1207#L32">OnStart</a>
+				<h3 id="MainMenuState.OnStart">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1171:1224#L33">OnStart</a>
 					<a class="permalink" href="index.html#MainMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -1184,7 +1515,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.OnStop">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1418:1466#L42">OnStop</a>
+				<h3 id="MainMenuState.OnStop">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1350:1398#L40">OnStop</a>
 					<a class="permalink" href="index.html#MainMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -1197,7 +1528,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.String">func (MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=689:728#L17">String</a>
+				<h3 id="MainMenuState.String">func (MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=655:694#L17">String</a>
 					<a class="permalink" href="index.html#MainMenuState.String">&#xb6;</a>
 					
 					
@@ -1209,7 +1540,7 @@
 				
 			
 				
-				<h3 id="MainMenuState.Update">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1542:1616#L45">Update</a>
+				<h3 id="MainMenuState.Update">func (*MainMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/main_menu.go?s=1474:1548#L43">Update</a>
 					<a class="permalink" href="index.html#MainMenuState.Update">&#xb6;</a>
 					
 					
@@ -1417,7 +1748,7 @@
 		
 			
 			
-			<h2 id="ShopMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=725:1612#L14">ShopMenuState</a>
+			<h2 id="ShopMenuState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=769:1615#L15">ShopMenuState</a>
 				<a class="permalink" href="index.html#ShopMenuState">&#xb6;</a>
 				
 				
@@ -1442,7 +1773,20 @@
 
 			
 				
-				<h3 id="ShopMenuState.Draw">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2933:3001#L78">Draw</a>
+				<h3 id="ShopMenuState.DoAction">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=3543:3652#L101">DoAction</a>
+					<a class="permalink" href="index.html#ShopMenuState.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ShopMenuState">ShopMenuState</a>) DoAction(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, action <a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>) (<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#Transition">Transition</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>DoAction はActionを実行する
+
+				
+				
+				
+			
+				
+				<h3 id="ShopMenuState.Draw">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2970:3038#L78">Draw</a>
 					<a class="permalink" href="index.html#ShopMenuState.Draw">&#xb6;</a>
 					
 					
@@ -1455,7 +1799,20 @@
 				
 			
 				
-				<h3 id="ShopMenuState.OnPause">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=1828:1877#L43">OnPause</a>
+				<h3 id="ShopMenuState.HandleInput">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=3152:3219#L86">HandleInput</a>
+					<a class="permalink" href="index.html#ShopMenuState.HandleInput">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (st *<a href="index.html#ShopMenuState">ShopMenuState</a>) HandleInput() (<a href="../inputmapper/index.html">inputmapper</a>.<a href="../inputmapper/index.html#ActionID">ActionID</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
+				<p>HandleInput はキー入力をActionに変換する
+
+				
+				
+				
+			
+				
+				<h3 id="ShopMenuState.OnPause">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=1882:1931#L44">OnPause</a>
 					<a class="permalink" href="index.html#ShopMenuState.OnPause">&#xb6;</a>
 					
 					
@@ -1468,7 +1825,7 @@
 				
 			
 				
-				<h3 id="ShopMenuState.OnResume">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=1958:2008#L46">OnResume</a>
+				<h3 id="ShopMenuState.OnResume">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2012:2062#L47">OnResume</a>
 					<a class="permalink" href="index.html#ShopMenuState.OnResume">&#xb6;</a>
 					
 					
@@ -1481,7 +1838,7 @@
 				
 			
 				
-				<h3 id="ShopMenuState.OnStart">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2088:2141#L49">OnStart</a>
+				<h3 id="ShopMenuState.OnStart">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2142:2195#L50">OnStart</a>
 					<a class="permalink" href="index.html#ShopMenuState.OnStart">&#xb6;</a>
 					
 					
@@ -1494,7 +1851,7 @@
 				
 			
 				
-				<h3 id="ShopMenuState.OnStop">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2332:2380#L58">OnStop</a>
+				<h3 id="ShopMenuState.OnStop">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2301:2349#L56">OnStop</a>
 					<a class="permalink" href="index.html#ShopMenuState.OnStop">&#xb6;</a>
 					
 					
@@ -1507,7 +1864,7 @@
 				
 			
 				
-				<h3 id="ShopMenuState.String">func (ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=1614:1653#L34">String</a>
+				<h3 id="ShopMenuState.String">func (ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=1617:1656#L34">String</a>
 					<a class="permalink" href="index.html#ShopMenuState.String">&#xb6;</a>
 					
 					
@@ -1519,7 +1876,7 @@
 				
 			
 				
-				<h3 id="ShopMenuState.Update">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2456:2534#L61">Update</a>
+				<h3 id="ShopMenuState.Update">func (*ShopMenuState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/shop_menu.go?s=2425:2503#L59">Update</a>
 					<a class="permalink" href="index.html#ShopMenuState.Update">&#xb6;</a>
 					
 					

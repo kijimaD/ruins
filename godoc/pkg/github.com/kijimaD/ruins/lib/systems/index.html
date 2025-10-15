@@ -163,9 +163,6 @@ func TileInputSystem(world w.World) {
 				<dd><a href="index.html#CameraSystem">func CameraSystem(world w.World)</a></dd>
 			
 				
-				<dd><a href="index.html#CanMoveTo">func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool</a></dd>
-			
-				
 				<dd><a href="index.html#ClearVisionCaches">func ClearVisionCaches()</a></dd>
 			
 				
@@ -203,9 +200,6 @@ func TileInputSystem(world w.World) {
 			
 				
 				<dd><a href="index.html#SetTranslate">func SetTranslate(world w.World, op *ebiten.DrawImageOptions)</a></dd>
-			
-				
-				<dd><a href="index.html#TileInputSystem">func TileInputSystem(world w.World) error</a></dd>
 			
 				
 				<dd><a href="index.html#TurnSystem">func TurnSystem(world w.World) error</a></dd>
@@ -272,8 +266,6 @@ func TileInputSystem(world w.World) {
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/test_helpers.go">test_helpers.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go">tile_input_system.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go">turn_system.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go">vision.go</a>
@@ -298,20 +290,6 @@ func TileInputSystem(world w.World) {
 			</h2>
 			<pre>func CameraSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
 			<p>CameraSystem はカメラの追従とズーム処理を行う
-
-			
-			
-
-		
-			
-			
-			<h2 id="CanMoveTo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=6949:7026#L190">CanMoveTo</a>
-				<a class="permalink" href="index.html#CanMoveTo">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func CanMoveTo(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>, movingEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
-			<p>CanMoveTo は指定位置に移動可能かチェックする
 
 			
 			
@@ -497,22 +475,6 @@ TODO: マイナスにならないようにする
 			<pre>func SetTranslate(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, op *ebiten.<a href="index.html#DrawImageOptions">DrawImageOptions</a>)</pre>
 			<p>SetTranslate はカメラを考慮した画像配置オプションをセットする
 TODO: ズーム率を追加する
-
-			
-			
-
-		
-			
-			
-			<h2 id="TileInputSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/tile_input_system.go?s=715:756#L9">TileInputSystem</a>
-				<a class="permalink" href="index.html#TileInputSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func TileInputSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>TileInputSystem はプレイヤーからのタイルベース入力を処理する。Actionシステムを使用して移動を実行する
-AIの移動・攻撃も将来的に同じActionシステムを使用予定
-TODO: 文脈に応じて発行アクションを判定する
 
 			
 			

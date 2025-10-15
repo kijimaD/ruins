@@ -203,6 +203,9 @@
 				<dd><a href="index.html#GetItemValue">func GetItemValue(world w.World, entity ecs.Entity) int</a></dd>
 			
 				
+				<dd><a href="index.html#GetPlayerEntity">func GetPlayerEntity(world w.World) (ecs.Entity, error)</a></dd>
+			
+				
 				<dd><a href="index.html#GetShopInventory">func GetShopInventory() []string</a></dd>
 			
 				
@@ -646,6 +649,21 @@ target に amount 分のHPを回復させる
 		
 			
 			
+			<h2 id="GetPlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=730:785#L18">GetPlayerEntity</a>
+				<a class="permalink" href="index.html#GetPlayerEntity">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetPlayerEntity(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>GetPlayerEntity はプレイヤーエンティティを返す
+プレイヤーが0個または2個以上の場合はエラーを返す
+
+			
+			
+
+		
+			
+			
 			<h2 id="GetShopInventory">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/shop.go?s=4279:4311#L120">GetShopInventory</a>
 				<a class="permalink" href="index.html#GetShopInventory">&#xb6;</a>
 				
@@ -748,7 +766,7 @@ Stackableコンポーネントを持つ場合は既存と数量統合、それ�
 		
 			
 			
-			<h2 id="QueryOwnedStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=192:258#L1">QueryOwnedStackable</a>
+			<h2 id="QueryOwnedStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=200:266#L1">QueryOwnedStackable</a>
 				<a class="permalink" href="index.html#QueryOwnedStackable">&#xb6;</a>
 				
 				
@@ -762,7 +780,7 @@ Stackableコンポーネントを持つ場合は既存と数量統合、それ�
 		
 			
 			
-			<h2 id="QueryPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=415:473#L7">QueryPlayer</a>
+			<h2 id="QueryPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=423:481#L9">QueryPlayer</a>
 				<a class="permalink" href="index.html#QueryPlayer">&#xb6;</a>
 				
 				

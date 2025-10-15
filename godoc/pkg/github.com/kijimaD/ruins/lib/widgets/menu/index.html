@@ -235,6 +235,9 @@ parentContainer.AddChild(container)
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#Menu.DoAction">func (m *Menu) DoAction(action inputmapper.ActionID)</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#Menu.GetContainer">func (m *Menu) GetContainer() *widget.Container</a></dd>
 				
 					
@@ -271,7 +274,7 @@ parentContainer.AddChild(container)
 					<dd>&nbsp; &nbsp; <a href="index.html#Menu.SetUIBuilder">func (m *Menu) SetUIBuilder(builder *UIBuilder)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#Menu.Update">func (m *Menu) Update(keyboardInput input.KeyboardInput)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#Menu.Update">func (m *Menu) Update()</a></dd>
 				
 			
 				
@@ -330,7 +333,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="Callbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=989:1122#L31">Callbacks</a>
+			<h2 id="Callbacks">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1033:1166#L32">Callbacks</a>
 				<a class="permalink" href="index.html#Callbacks">&#xb6;</a>
 				
 				
@@ -358,7 +361,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=657:937#L21">Config</a>
+			<h2 id="Config">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=701:981#L22">Config</a>
 				<a class="permalink" href="index.html#Config">&#xb6;</a>
 				
 				
@@ -389,7 +392,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=186:440#L2">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=230:484#L3">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -419,7 +422,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="Menu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1175:1562#L38">Menu</a>
+			<h2 id="Menu">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1219:1559#L39">Menu</a>
 				<a class="permalink" href="index.html#Menu">&#xb6;</a>
 				
 				
@@ -441,7 +444,7 @@ parentContainer.AddChild(container)
 
 			
 				
-				<h3 id="NewMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1606:1660#L58">NewMenu</a>
+				<h3 id="NewMenu">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=1603:1657#L56">NewMenu</a>
 					<a class="permalink" href="index.html#NewMenu">&#xb6;</a>
 					
 					
@@ -455,7 +458,20 @@ parentContainer.AddChild(container)
 
 			
 				
-				<h3 id="Menu.GetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=3031:3078#L110">GetContainer</a>
+				<h3 id="Menu.DoAction">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=3443:3495#L120">DoAction</a>
+					<a class="permalink" href="index.html#Menu.DoAction">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#Menu">Menu</a>) DoAction(action <a href="../../inputmapper/index.html">inputmapper</a>.<a href="../../inputmapper/index.html#ActionID">ActionID</a>)</pre>
+				<p>DoAction はActionを受け取ってメニュー操作を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="Menu.GetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=4492:4539#L158">GetContainer</a>
 					<a class="permalink" href="index.html#Menu.GetContainer">&#xb6;</a>
 					
 					
@@ -468,7 +484,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetCurrentPage">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=8758:8793#L336">GetCurrentPage</a>
+				<h3 id="Menu.GetCurrentPage">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=7524:7559#L284">GetCurrentPage</a>
 					<a class="permalink" href="index.html#Menu.GetCurrentPage">&#xb6;</a>
 					
 					
@@ -481,7 +497,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2420:2456#L88">GetFocusedIndex</a>
+				<h3 id="Menu.GetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=3881:3917#L136">GetFocusedIndex</a>
 					<a class="permalink" href="index.html#Menu.GetFocusedIndex">&#xb6;</a>
 					
 					
@@ -494,7 +510,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetItems">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2927:2959#L105">GetItems</a>
+				<h3 id="Menu.GetItems">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=4388:4420#L153">GetItems</a>
 					<a class="permalink" href="index.html#Menu.GetItems">&#xb6;</a>
 					
 					
@@ -507,7 +523,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetPageIndicatorText">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=9768:9812#L374">GetPageIndicatorText</a>
+				<h3 id="Menu.GetPageIndicatorText">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=8534:8578#L322">GetPageIndicatorText</a>
 					<a class="permalink" href="index.html#Menu.GetPageIndicatorText">&#xb6;</a>
 					
 					
@@ -520,7 +536,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetTotalPages">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=8870:8904#L341">GetTotalPages</a>
+				<h3 id="Menu.GetTotalPages">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=7636:7670#L289">GetTotalPages</a>
 					<a class="permalink" href="index.html#Menu.GetTotalPages">&#xb6;</a>
 					
 					
@@ -533,7 +549,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.GetVisibleItems">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=9146:9194#L349">GetVisibleItems</a>
+				<h3 id="Menu.GetVisibleItems">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=7912:7960#L297">GetVisibleItems</a>
 					<a class="permalink" href="index.html#Menu.GetVisibleItems">&#xb6;</a>
 					
 					
@@ -546,7 +562,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.HasNextPage">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=10433:10466#L404">HasNextPage</a>
+				<h3 id="Menu.HasNextPage">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=9199:9232#L352">HasNextPage</a>
 					<a class="permalink" href="index.html#Menu.HasNextPage">&#xb6;</a>
 					
 					
@@ -559,7 +575,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.HasPreviousPage">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=10309:10346#L399">HasPreviousPage</a>
+				<h3 id="Menu.HasPreviousPage">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=9075:9112#L347">HasPreviousPage</a>
 					<a class="permalink" href="index.html#Menu.HasPreviousPage">&#xb6;</a>
 					
 					
@@ -572,7 +588,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.SetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=3153:3209#L115">SetContainer</a>
+				<h3 id="Menu.SetContainer">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=4614:4670#L163">SetContainer</a>
 					<a class="permalink" href="index.html#Menu.SetContainer">&#xb6;</a>
 					
 					
@@ -585,7 +601,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.SetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2550:2591#L93">SetFocusedIndex</a>
+				<h3 id="Menu.SetFocusedIndex">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=4011:4052#L141">SetFocusedIndex</a>
 					<a class="permalink" href="index.html#Menu.SetFocusedIndex">&#xb6;</a>
 					
 					
@@ -598,7 +614,7 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.SetUIBuilder">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=3289:3336#L120">SetUIBuilder</a>
+				<h3 id="Menu.SetUIBuilder">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=4750:4797#L168">SetUIBuilder</a>
 					<a class="permalink" href="index.html#Menu.SetUIBuilder">&#xb6;</a>
 					
 					
@@ -611,13 +627,13 @@ parentContainer.AddChild(container)
 				
 			
 				
-				<h3 id="Menu.Update">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2209:2265#L81">Update</a>
+				<h3 id="Menu.Update">func (*Menu) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=2266:2289#L79">Update</a>
 					<a class="permalink" href="index.html#Menu.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (m *<a href="index.html#Menu">Menu</a>) Update(keyboardInput <a href="../../input/index.html">input</a>.<a href="../../input/index.html#KeyboardInput">KeyboardInput</a>)</pre>
-				<p>Update はメニューの状態を更新する
+				<pre>func (m *<a href="index.html#Menu">Menu</a>) Update()</pre>
+				<p>Update はキーボード入力を待ち受けて、Actionに変換してメニュー操作を実行する
 
 				
 				
@@ -626,7 +642,7 @@ parentContainer.AddChild(container)
 		
 			
 			
-			<h2 id="Orientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=482:502#L11">Orientation</a>
+			<h2 id="Orientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/menu/menu.go?s=526:546#L12">Orientation</a>
 				<a class="permalink" href="index.html#Orientation">&#xb6;</a>
 				
 				

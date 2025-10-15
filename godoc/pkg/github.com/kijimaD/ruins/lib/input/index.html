@@ -110,6 +110,8 @@
 			<div id="manual-nav">
 			<dl>
 			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
 			
 				<dd><a href="index.html#pkg-variables">Variables</a></dd>
 			
@@ -184,6 +186,18 @@
 		
 
 		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const (
+    <span class="comment">// KeyRepeatInitialDelay はキーリピート開始までの遅延（ミリ秒）</span>
+    <span id="KeyRepeatInitialDelay">KeyRepeatInitialDelay</span> = 500 * <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Millisecond">Millisecond</a>
+
+    <span class="comment">// KeyRepeatInterval はキーリピートの間隔（ミリ秒）</span>
+    <span id="KeyRepeatInterval">KeyRepeatInterval</span> = 100 * <a href="http://localhost:8888/pkg/time/">time</a>.<a href="http://localhost:8888/pkg/time/#Millisecond">Millisecond</a>
+)</pre>
+			
+		
 		
 			<h2 id="pkg-variables">Variables</h2>
 			
@@ -191,13 +205,14 @@
 
 				<pre>var <span id="GlobalKeyState">GlobalKeyState</span> = &amp;globalKeyState{
     enterPressSession: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+    keyRepeatStates:   <a href="http://localhost:8888/pkg/builtin/#make">make</a>(map[ebiten.<a href="index.html#Key">Key</a>]*keyRepeatState),
 }</pre>
 			
 		
 		
 			
 			
-			<h2 id="ResetGlobalKeyStateForTest">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=1039:1072#L26">ResetGlobalKeyStateForTest</a>
+			<h2 id="ResetGlobalKeyStateForTest">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=1684:1717#L43">ResetGlobalKeyStateForTest</a>
 				<a class="permalink" href="index.html#ResetGlobalKeyStateForTest">&#xb6;</a>
 				
 				
@@ -212,7 +227,7 @@
 		
 			
 			
-			<h2 id="KeyboardInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=1321:1534#L33">KeyboardInput</a>
+			<h2 id="KeyboardInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=1966:2287#L50">KeyboardInput</a>
 				<a class="permalink" href="index.html#KeyboardInput">&#xb6;</a>
 				
 				
@@ -222,7 +237,8 @@
 			<pre>type KeyboardInput interface {
     IsKeyJustPressed(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     IsKeyPressed(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
-    IsEnterJustPressedOnce() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a> <span class="comment">// Enterキーが押下-押上のワンセットで押されたかどうか</span>
+    IsEnterJustPressedOnce() <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>               <span class="comment">// Enterキーが押下-押上のワンセットで押されたかどうか</span>
+    IsKeyPressedWithRepeat(key ebiten.<a href="index.html#Key">Key</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a> <span class="comment">// キーリピート機能付きの押下判定</span>
 }</pre>
 
 			
@@ -235,7 +251,7 @@
 
 			
 				
-				<h3 id="GetSharedKeyboardInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=1887:1930#L49">GetSharedKeyboardInput</a>
+				<h3 id="GetSharedKeyboardInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=2640:2683#L67">GetSharedKeyboardInput</a>
 					<a class="permalink" href="index.html#GetSharedKeyboardInput">&#xb6;</a>
 					
 					
@@ -247,7 +263,7 @@
 				
 			
 				
-				<h3 id="NewDefaultKeyboardInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=2130:2174#L57">NewDefaultKeyboardInput</a>
+				<h3 id="NewDefaultKeyboardInput">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/input/keyboard.go?s=2883:2927#L75">NewDefaultKeyboardInput</a>
 					<a class="permalink" href="index.html#NewDefaultKeyboardInput">&#xb6;</a>
 					
 					
