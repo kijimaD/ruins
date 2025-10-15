@@ -80,7 +80,7 @@ func (minimap *Minimap) Draw(screen *ebiten.Image, data MinimapData) {
 			// タイル色情報を取得
 			if colorInfo, exists := data.TileColors[gridElement]; exists {
 				tileColor := color.RGBA{colorInfo.R, colorInfo.G, colorInfo.B, colorInfo.A}
-				vector.DrawFilledRect(screen, mapX, mapY, float32(minimapScale), float32(minimapScale), tileColor, false)
+				vector.FillRect(screen, mapX, mapY, float32(minimapScale), float32(minimapScale), tileColor, false)
 			}
 		}
 	}
@@ -88,7 +88,7 @@ func (minimap *Minimap) Draw(screen *ebiten.Image, data MinimapData) {
 	// プレイヤーの位置を赤い点で表示
 	playerMapX := float32(centerX)
 	playerMapY := float32(centerY)
-	vector.DrawFilledCircle(screen, playerMapX, playerMapY, 2, color.RGBA{255, 0, 0, 255}, false)
+	vector.FillCircle(screen, playerMapX, playerMapY, 2, color.RGBA{255, 0, 0, 255}, false)
 
 	// ミニマップの枠を描画
 	minimap.drawFrame(screen, minimapX, minimapY, minimapWidth, minimapHeight)
@@ -123,8 +123,8 @@ func (minimap *Minimap) drawFrame(screen *ebiten.Image, x, y, width, height int)
 	whiteColor := color.RGBA{255, 255, 255, 255}
 
 	// 枠線を描画
-	vector.DrawFilledRect(screen, float32(x-1), float32(y-1), 1, float32(height+2), whiteColor, false)     // 左
-	vector.DrawFilledRect(screen, float32(x+width), float32(y-1), 1, float32(height+2), whiteColor, false) // 右
-	vector.DrawFilledRect(screen, float32(x-1), float32(y-1), float32(width+2), 1, whiteColor, false)      // 上
-	vector.DrawFilledRect(screen, float32(x-1), float32(y+height), float32(width+2), 1, whiteColor, false) // 下
+	vector.FillRect(screen, float32(x-1), float32(y-1), 1, float32(height+2), whiteColor, false)     // 左
+	vector.FillRect(screen, float32(x+width), float32(y-1), 1, float32(height+2), whiteColor, false) // 右
+	vector.FillRect(screen, float32(x-1), float32(y-1), float32(width+2), 1, whiteColor, false)      // 上
+	vector.FillRect(screen, float32(x-1), float32(y+height), float32(width+2), 1, whiteColor, false) // 下
 }

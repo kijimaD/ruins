@@ -41,7 +41,7 @@ func DrawFramedBackground(screen *ebiten.Image, x, y, width, height int, style B
 		borderOffset = 1
 	}
 
-	vector.DrawFilledRect(screen,
+	vector.FillRect(screen,
 		float32(x+borderOffset),
 		float32(y+borderOffset),
 		float32(width-borderOffset*2),
