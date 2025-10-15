@@ -8,13 +8,14 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/messagedata"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// Window はメッセージウィンドウ
+// Window はメッセージウィンドウを表す
 type Window struct {
 	config   Config
 	content  MessageContent
@@ -22,21 +23,19 @@ type Window struct {
 	onClose  func()
 	onChoice func(choice Choice)
 
-	// 状態管理
 	isOpen      bool
 	ui          *ebitenui.UI
 	initialized bool
 	window      *widget.Window
 
-	// 入力管理
-	keyboardInput input.KeyboardInput
+	// 選択肢がある場合、メニューシステムでページング可能な選択肢一覧を表示
+	choiceMenu      *menu.Menu
+	choiceBuilder   *menu.UIBuilder
+	hasChoices      bool
+	currentMenuPage int
+	needsUIRebuild  bool // ページ変更時のUI再構築フラグ
 
-	// 選択肢システム用
-	choiceMenu    *menu.Menu
-	choiceBuilder *menu.UIBuilder
-	hasChoices    bool
-
-	// メッセージキュー管理
+	// 複数メッセージを順番に表示
 	queueManager   *QueueManager
 	currentMessage *messagedata.MessageData
 }
@@ -47,29 +46,28 @@ func (w *Window) Update() {
 		return
 	}
 
-	// 初期化
 	if !w.initialized {
-		// キーボード入力インスタンスを初期化
-		w.keyboardInput = input.GetSharedKeyboardInput()
-		// 選択肢状態を設定
 		w.hasChoices = len(w.content.Choices) > 0
 		if w.hasChoices {
 			w.initChoiceMenu()
 		}
-		// UI初期化（選択肢設定後に実行）
 		w.initUI()
 		w.initialized = true
 	}
 
-	// 選択肢メニューがある場合は優先的に処理
 	if w.hasChoices && w.choiceMenu != nil {
-		w.choiceMenu.Update(w.keyboardInput)
+		w.choiceMenu.Update()
+
+		if w.needsUIRebuild {
+			w.rebuildUI()
+			w.needsUIRebuild = false
+		}
 	} else {
-		// 通常のキーボード入力処理
-		w.handleKeyboardInput()
+		if action, ok := w.HandleInput(); ok {
+			w.DoAction(action)
+		}
 	}
 
-	// UI更新
 	if w.ui != nil {
 		w.ui.Update()
 	}
@@ -95,17 +93,16 @@ func (w *Window) IsClosed() bool {
 }
 
 // Close はウィンドウを閉じる
+// キューに次のメッセージがある場合は閉じずに次を表示する
 func (w *Window) Close() {
 	if !w.isOpen {
 		return
 	}
 
-	// 現在のメッセージの完了コールバック実行
 	if w.currentMessage != nil && w.currentMessage.OnComplete != nil {
 		w.currentMessage.OnComplete()
 	}
 
-	// キューに次のメッセージがある場合は次を表示
 	if w.queueManager != nil && w.queueManager.HasNext() {
 		w.showNextMessage()
 		return
@@ -113,13 +110,12 @@ func (w *Window) Close() {
 
 	w.isOpen = false
 
-	// コールバック実行
 	if w.onClose != nil {
 		w.onClose()
 	}
 }
 
-// showNextMessage は次のメッセージを表示する
+// showNextMessage はキューから次のメッセージを取り出して表示する
 func (w *Window) showNextMessage() {
 	if w.queueManager == nil {
 		return
@@ -137,7 +133,7 @@ func (w *Window) showNextMessage() {
 	w.currentMessage = nextMessage
 	w.updateContentFromMessage(nextMessage)
 
-	// UIを再初期化
+	// UI再初期化
 	w.initialized = false
 	w.ui = nil
 	w.window = nil
@@ -145,12 +141,11 @@ func (w *Window) showNextMessage() {
 	w.choiceBuilder = nil
 }
 
-// updateContentFromMessage はMessageDataからcontentを更新する
+// updateContentFromMessage はMessageDataから表示コンテンツを更新する
 func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 	w.content.Text = msg.Text
 	w.content.SpeakerName = msg.Speaker
 
-	// 選択肢をconvertする
 	w.content.Choices = make([]Choice, len(msg.Choices))
 	for i, choice := range msg.Choices {
 		w.content.Choices[i] = Choice{
@@ -162,7 +157,7 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 						panic(err)
 					}
 				}
-				// 選択肢にメッセージが関連付けられている場合はキューに追加
+				// 選択肢に関連メッセージがある場合はキュー先頭に追加して即座に表示
 				if choice.MessageData != nil {
 					if w.queueManager == nil {
 						w.queueManager = NewQueueManager()
@@ -204,40 +199,8 @@ func (w *Window) createAndAddWindow() {
 		widget.WindowOpts.MaxSize(windowSize.Width, windowSize.Height), // 固定サイズ
 	)
 
-	// 選択肢に応じて位置を調整
-	screenWidth := w.world.Resources.ScreenDimensions.Width
-	screenHeight := w.world.Resources.ScreenDimensions.Height
-	x := (screenWidth - windowSize.Width) / 2
-
-	var y int
-	numChoices := len(w.content.Choices)
-
-	if w.hasChoices && numChoices > 0 {
-		// 選択肢の数に応じて位置を調整
-		if numChoices <= 3 {
-			// 少ない選択肢は画面中央
-			y = (screenHeight - windowSize.Height) / 2
-		} else if numChoices <= 8 {
-			// 中程度の選択肢は上寄り中央
-			y = screenHeight / 3
-		} else {
-			// 多い選択肢は上寄りに配置
-			y = screenHeight / 5
-		}
-	} else {
-		// 選択肢がない場合は画面中央に配置
-		y = (screenHeight - windowSize.Height) / 2
-	}
-
-	// 画面からはみ出さないように調整
-	margin := 30
-	if y+windowSize.Height > screenHeight-margin {
-		y = screenHeight - windowSize.Height - margin
-	}
-	if y < margin {
-		y = margin
-	}
-
+	// ウィンドウ位置を計算
+	x, y := w.calculateWindowPosition(windowSize)
 	w.window.SetLocation(image.Rect(x, y, x+windowSize.Width, y+windowSize.Height))
 
 	// UIにウィンドウを追加
@@ -251,6 +214,37 @@ func (w *Window) createTitleContainer() *widget.Container {
 		title = w.content.SpeakerName
 	}
 	return styled.NewWindowHeaderContainer(title, w.world.Resources.UIResources)
+}
+
+// calculateWindowPosition はウィンドウの表示位置を計算する
+func (w *Window) calculateWindowPosition(windowSize WindowSize) (x, y int) {
+	screenWidth := w.world.Resources.ScreenDimensions.Width
+	screenHeight := w.world.Resources.ScreenDimensions.Height
+
+	x = (screenWidth - windowSize.Width) / 2
+
+	numChoices := len(w.content.Choices)
+	if w.hasChoices && numChoices > 0 {
+		if numChoices <= 3 {
+			y = (screenHeight - windowSize.Height) / 2
+		} else if numChoices <= 8 {
+			y = screenHeight / 3
+		} else {
+			y = screenHeight / 5
+		}
+	} else {
+		y = (screenHeight - windowSize.Height) / 2
+	}
+
+	margin := 30
+	if y+windowSize.Height > screenHeight-margin {
+		y = screenHeight - windowSize.Height - margin
+	}
+	if y < margin {
+		y = margin
+	}
+
+	return x, y
 }
 
 // calculateWindowSize は選択肢に応じてウィンドウサイズを計算する
@@ -288,7 +282,6 @@ func (w *Window) calculateWindowSize() WindowSize {
 
 // createWindowContainer はウィンドウコンテナを作成する
 func (w *Window) createWindowContainer() *widget.Container {
-	// AnchorLayoutを使用してEnterプロンプトを絶対位置に配置
 	windowContainer := widget.NewContainer(
 		widget.ContainerOpts.BackgroundImage(w.world.Resources.UIResources.Panel.ImageTrans),
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
@@ -299,14 +292,13 @@ func (w *Window) createWindowContainer() *widget.Container {
 		),
 	)
 
-	// メッセージコンテンツエリア（上部全体）
 	contentArea := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 				widget.RowLayoutOpts.Padding(&widget.Insets{
 					Top:    20,
-					Bottom: 60, // Enterプロンプト用のスペースを確保
+					Bottom: 60,
 					Left:   10,
 					Right:  10,
 				}),
@@ -331,7 +323,6 @@ func (w *Window) createWindowContainer() *widget.Container {
 	)
 	contentArea.AddChild(messageText)
 
-	// 選択肢表示エリア
 	if w.hasChoices && w.choiceMenu != nil {
 		choicesContainer := w.createChoicesContainer()
 		contentArea.AddChild(choicesContainer)
@@ -339,7 +330,6 @@ func (w *Window) createWindowContainer() *widget.Container {
 
 	windowContainer.AddChild(contentArea)
 
-	// 選択肢がない場合のみ Enter プロンプトを固定下部に表示
 	if !w.hasChoices || w.choiceMenu == nil {
 		enterPrompt := w.createEnterPrompt()
 		windowContainer.AddChild(enterPrompt)
@@ -350,12 +340,10 @@ func (w *Window) createWindowContainer() *widget.Container {
 
 // createChoicesContainer は選択肢コンテナを作成する
 func (w *Window) createChoicesContainer() *widget.Container {
-	// Menuコンポーネント用のUIを構築
 	if w.choiceBuilder != nil && w.choiceMenu != nil {
 		return w.choiceBuilder.BuildUI(w.choiceMenu)
 	}
 
-	// フォールバック: 選択肢を直接表示
 	container := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
@@ -366,12 +354,11 @@ func (w *Window) createChoicesContainer() *widget.Container {
 		),
 	)
 
-	// デバッグ用: 選択肢を直接テキストとして表示
 	for i, choice := range w.content.Choices {
 		choiceText := styled.NewListItemText(
 			choice.Text,
 			w.config.TextStyle.Color,
-			i == 0, // 最初の選択肢を選択状態として表示
+			i == 0,
 			w.world.Resources.UIResources,
 		)
 		container.AddChild(choiceText)
@@ -380,7 +367,7 @@ func (w *Window) createChoicesContainer() *widget.Container {
 	return container
 }
 
-// createEnterPrompt はウィンドウ下部に固定されたEnterプロンプトを作成する
+// createEnterPrompt はEnterプロンプトを作成する
 func (w *Window) createEnterPrompt() *widget.Container {
 	container := widget.NewContainer(
 		widget.ContainerOpts.Layout(
@@ -391,20 +378,17 @@ func (w *Window) createEnterPrompt() *widget.Container {
 		),
 		widget.ContainerOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter, // 水平中央
-				VerticalPosition:   widget.AnchorLayoutPositionEnd,    // 下部に固定
-				Padding:            &widget.Insets{Bottom: 15},        // 下端からの余白
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionEnd,
+				Padding:            &widget.Insets{Bottom: 15},
 			}),
 		),
 	)
 
-	// プロンプトテキスト
-	promptText := "Enter"
-
 	prompt := styled.NewListItemText(
-		promptText,
-		color.RGBA{255, 255, 255, 255}, // 白色テキスト
-		true,                           // 選択状態（背景色付き）
+		"Enter",
+		color.RGBA{255, 255, 255, 255},
+		true,
 		w.world.Resources.UIResources,
 	)
 
@@ -412,32 +396,29 @@ func (w *Window) createEnterPrompt() *widget.Container {
 	return container
 }
 
-// handleKeyboardInput はキーボード入力を処理する（選択肢がない場合）
-func (w *Window) handleKeyboardInput() {
-	// Enterキーの重複押下を防ぐためにグローバル管理システムを使用
-	if w.isEnterKeyPressed() {
-		w.Close()
-		return
-	}
+// HandleInput はキーボード入力をActionに変換する
+func (w *Window) HandleInput() (inputmapper.ActionID, bool) {
+	keyboardInput := input.GetSharedKeyboardInput()
 
-	// その他のスキップ可能キーをチェック（Enterを除く）
-	for _, key := range w.config.SkippableKeys {
-		if key != ebiten.KeyEnter && w.keyboardInput.IsKeyJustPressed(key) {
-			w.Close()
-			return
-		}
-	}
-}
-
-// isEnterKeyPressed はEnterキーが重複押下されないように管理された形で押されたかを返す
-func (w *Window) isEnterKeyPressed() bool {
-	// 設定でEnterがスキップ可能キーに含まれている場合のみチェック
 	for _, key := range w.config.SkippableKeys {
 		if key == ebiten.KeyEnter {
-			return w.keyboardInput.IsEnterJustPressedOnce()
+			if keyboardInput.IsEnterJustPressedOnce() {
+				return inputmapper.ActionConfirm, true
+			}
+		} else if keyboardInput.IsKeyJustPressed(key) {
+			return inputmapper.ActionSkip, true
 		}
 	}
-	return false
+
+	return "", false
+}
+
+// DoAction はActionを実行する
+func (w *Window) DoAction(action inputmapper.ActionID) {
+	switch action {
+	case inputmapper.ActionConfirm, inputmapper.ActionSkip:
+		w.Close()
+	}
 }
 
 // initChoiceMenu は選択肢メニューを初期化する
@@ -446,19 +427,16 @@ func (w *Window) initChoiceMenu() {
 		return
 	}
 
-	// Menu用のアイテムを作成
 	items := make([]menu.Item, len(w.content.Choices))
 	for i, choice := range w.content.Choices {
 		items[i] = menu.Item{
 			ID:       choice.Text,
 			Label:    choice.Text,
 			Disabled: false,
-			UserData: i, // インデックスを保存
+			UserData: i,
 		}
 	}
 
-	// Menu設定
-	// 選択肢の数に応じてページサイズを調整
 	itemsPerPage := w.calculateItemsPerPage(len(w.content.Choices))
 
 	config := menu.Config{
@@ -469,7 +447,6 @@ func (w *Window) initChoiceMenu() {
 		ItemsPerPage:   itemsPerPage,
 	}
 
-	// Menuコールバック
 	callbacks := menu.Callbacks{
 		OnSelect: func(index int, _ menu.Item) {
 			w.selectChoice(index)
@@ -478,40 +455,49 @@ func (w *Window) initChoiceMenu() {
 			w.Close()
 		},
 		OnFocusChange: func(_, _ int) {
-			// フォーカス変更時にUIを更新
-			if w.choiceBuilder != nil {
+			if w.choiceMenu != nil {
+				newPage := w.choiceMenu.GetCurrentPage()
+				if newPage != w.currentMenuPage {
+					w.currentMenuPage = newPage
+					w.needsUIRebuild = true
+				}
+			}
+
+			if w.choiceBuilder != nil && !w.needsUIRebuild {
 				w.choiceBuilder.UpdateFocus(w.choiceMenu)
 			}
 		},
 	}
 
-	// Menuを作成
 	w.choiceMenu = menu.NewMenu(config, callbacks)
 	w.choiceBuilder = menu.NewUIBuilder(w.world)
+	w.currentMenuPage = 1
 }
 
-// calculateItemsPerPage は選択肢の数とウィンドウサイズに応じて1ページあたりのアイテム数を計算する
+// rebuildUI はUIを再構築する
+func (w *Window) rebuildUI() {
+	w.ui = nil
+	w.window = nil
+	w.initUI()
+}
+
+// calculateItemsPerPage は1ページあたりのアイテム数を計算する
 func (w *Window) calculateItemsPerPage(totalItems int) int {
-	// ウィンドウの高さからメッセージテキストとパディング、ページインジケーターを除いた利用可能な高さを計算
 	windowHeight := w.calculateWindowSize().Height
 
-	// メッセージテキスト部分とパディングを除く
-	textAreaHeight := 150     // メッセージテキスト + パディング
-	pageIndicatorHeight := 30 // ページインジケーターの高さ
+	textAreaHeight := 150
+	pageIndicatorHeight := 30
 	availableHeight := windowHeight - textAreaHeight - pageIndicatorHeight
 
-	// 1つのアイテムあたりの高さ（35px）
 	itemHeight := 35
 	maxItemsPerPage := availableHeight / itemHeight
 
-	// 最低3つ、最大15つの範囲で制限
 	if maxItemsPerPage < 3 {
 		maxItemsPerPage = 3
 	} else if maxItemsPerPage > 15 {
 		maxItemsPerPage = 15
 	}
 
-	// 総アイテム数がページサイズより少ない場合は、総アイテム数を返す
 	if totalItems <= maxItemsPerPage {
 		return totalItems
 	}

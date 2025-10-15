@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
@@ -26,7 +27,6 @@ type ShopMenuState struct {
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
-	keyboardInput       input.KeyboardInput
 	selectedItem        menu.Item         // 選択中のアイテム
 	itemDesc            *widget.Text      // アイテムの概要
 	specContainer       *widget.Container // 性能表示のコンテナ
@@ -48,6 +48,7 @@ func (st ShopMenuState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &ShopMenuState{}
+var _ es.ActionHandler[w.World] = &ShopMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *ShopMenuState) OnPause(_ w.World) error { return nil }
@@ -57,9 +58,6 @@ func (st *ShopMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *ShopMenuState) OnStart(world w.World) error {
-	if st.keyboardInput == nil {
-		st.keyboardInput = input.GetSharedKeyboardInput()
-	}
 	st.ui = st.initUI(world)
 	return nil
 }
@@ -69,10 +67,12 @@ func (st *ShopMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
-	// ウィンドウモードの場合はウィンドウ操作を優先
-	if st.isWindowMode {
-		if st.updateWindowMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}, nil
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
 		}
 	}
 
@@ -88,6 +88,52 @@ func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 func (st *ShopMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 	st.ui.Draw(screen)
 	return nil
+}
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *ShopMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	// ウィンドウモード時の入力処理を優先
+	if st.isWindowMode {
+		return HandleWindowInput()
+	}
+
+	keyboardInput := input.GetSharedKeyboardInput()
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return inputmapper.ActionMenuCancel, true
+	}
+
+	return "", false
+}
+
+// DoAction はActionを実行する
+func (st *ShopMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	// ウィンドウモード時のアクション処理
+	if st.isWindowMode {
+		switch action {
+		case inputmapper.ActionWindowUp, inputmapper.ActionWindowDown:
+			if UpdateFocusIndex(action, &st.actionFocusIndex, len(st.actionItems)) {
+				st.updateActionWindowDisplay(world)
+			}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowConfirm:
+			st.executeActionItem(world)
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowCancel:
+			st.closeActionWindow()
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		default:
+			return es.Transition[w.World]{}, fmt.Errorf("ウィンドウモード時の未知のアクション: %s", action)
+		}
+	}
+
+	switch action {
+	case inputmapper.ActionMenuCancel, inputmapper.ActionCloseMenu:
+		return es.Transition[w.World]{Type: es.TransPop}, nil
+	default:
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
+	}
 }
 
 // ================
@@ -125,7 +171,7 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
+	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
@@ -501,41 +547,6 @@ func (st *ShopMenuState) updateActionWindowDisplay(world w.World) {
 
 	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
-}
-
-// updateWindowMode はウィンドウモード時の操作を処理する
-func (st *ShopMenuState) updateWindowMode(world w.World) bool {
-	// Escapeでウィンドウモードを終了
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		st.closeActionWindow()
-		return false
-	}
-
-	// 上下矢印でフォーカス移動
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
-		st.actionFocusIndex--
-		if st.actionFocusIndex < 0 {
-			st.actionFocusIndex = len(st.actionItems) - 1
-		}
-		st.updateActionWindowDisplay(world)
-		return true
-	}
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
-		st.actionFocusIndex++
-		if st.actionFocusIndex >= len(st.actionItems) {
-			st.actionFocusIndex = 0
-		}
-		st.updateActionWindowDisplay(world)
-		return true
-	}
-
-	// Enterで選択実行（押下-押上ワンセット）
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.executeActionItem(world)
-		return true
-	}
-
-	return true
 }
 
 // closeActionWindow はアクションウィンドウを閉じる

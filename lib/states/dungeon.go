@@ -5,12 +5,13 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/mapspawner"
 	"github.com/kijimaD/ruins/lib/resources"
@@ -42,6 +43,7 @@ func (st DungeonState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &DungeonState{}
+var _ es.ActionHandler[w.World] = &DungeonState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *DungeonState) OnPause(_ w.World) error { return nil }
@@ -94,10 +96,7 @@ func (st *DungeonState) OnStart(world w.World) error {
 	gs.ClearVisionCaches()
 
 	// 初回の冒険開始時のみ操作ガイドを表示
-	if st.Depth == 1 {
-		gamelog.New(gamelog.FieldLog).
-			Append("冒険を開始した。").
-			Log()
+	if st.BuilderType.Name == mapplanner.PlannerTypeTown.Name {
 		gamelog.New(gamelog.FieldLog).
 			System("WASD: 移動する。").
 			Log()
@@ -139,6 +138,15 @@ func (st *DungeonState) OnStop(world w.World) error {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
+		}
+	}
+
 	if err := gs.TurnSystem(world); err != nil {
 		return es.Transition[w.World]{}, err
 	}
@@ -150,16 +158,6 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}, nil
 	}
 
-	// メニューキー（M）でダンジョンメニューを開く
-	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}, nil
-	}
-
-	cfg := config.MustGet()
-	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
-	}
-
 	// StateEvent処理をチェック
 	if transition := st.handleStateEvent(world); transition.Type != es.TransNone {
 		return transition, nil
@@ -168,6 +166,143 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	// BaseStateの共通処理を使用
 	return st.ConsumeTransition(), nil
 }
+
+// Draw はゲームステートの描画処理を行う
+func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
+	screen.DrawImage(baseImage, nil)
+
+	gs.RenderSpriteSystem(world, screen)
+	gs.VisionSystem(world, screen)
+	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
+	return nil
+}
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool) {
+	keyboardInput := input.GetSharedKeyboardInput()
+
+	// メニューキー（M）でダンジョンメニューを開く
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyM) {
+		return inputmapper.ActionOpenDungeonMenu, true
+	}
+
+	cfg := config.MustGet()
+	if cfg.Debug && keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
+		return inputmapper.ActionOpenDebugMenu, true
+	}
+
+	// 8方向移動キー入力（キーリピート対応）
+	// 斜め移動は両方のキーがリピート判定で真になる場合のみ
+	upPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyW) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyUp)
+	downPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyS) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyDown)
+	leftPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyA) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyLeft)
+	rightPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyD) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyRight)
+
+	if upPressed && leftPressed {
+		return inputmapper.ActionMoveNorthWest, true
+	}
+	if upPressed && rightPressed {
+		return inputmapper.ActionMoveNorthEast, true
+	}
+	if downPressed && leftPressed {
+		return inputmapper.ActionMoveSouthWest, true
+	}
+	if downPressed && rightPressed {
+		return inputmapper.ActionMoveSouthEast, true
+	}
+	if upPressed {
+		return inputmapper.ActionMoveNorth, true
+	}
+	if downPressed {
+		return inputmapper.ActionMoveSouth, true
+	}
+	if leftPressed {
+		return inputmapper.ActionMoveWest, true
+	}
+	if rightPressed {
+		return inputmapper.ActionMoveEast, true
+	}
+
+	// 待機キー（キーリピート対応）
+	if keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyPeriod) {
+		return inputmapper.ActionWait, true
+	}
+
+	// 相互作用キー（Enter）
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEnter) {
+		return inputmapper.ActionInteract, true
+	}
+
+	return "", false
+}
+
+// DoAction はActionを実行する
+func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	// UI系アクションは常に実行可能
+	switch action {
+	case inputmapper.ActionOpenDungeonMenu, inputmapper.ActionOpenDebugMenu, inputmapper.ActionOpenInventory:
+		// UI系はターンチェック不要
+	default:
+		// ゲーム内アクション（移動、攻撃など）はターンチェックが必要
+		if world.Resources.TurnManager != nil {
+			turnManager := world.Resources.TurnManager.(*turns.TurnManager)
+			if !turnManager.CanPlayerAct() {
+				return es.Transition[w.World]{Type: es.TransNone}, nil
+			}
+		}
+	}
+
+	switch action {
+	// UI系アクション（ステート遷移）
+	case inputmapper.ActionOpenDungeonMenu:
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonMenuState}}, nil
+	case inputmapper.ActionOpenDebugMenu:
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
+	case inputmapper.ActionOpenInventory:
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}}, nil
+
+	// 移動系アクション（World状態を変更）
+	case inputmapper.ActionMoveNorth:
+		ExecuteMoveAction(world, gc.DirectionUp)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveSouth:
+		ExecuteMoveAction(world, gc.DirectionDown)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveEast:
+		ExecuteMoveAction(world, gc.DirectionRight)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveWest:
+		ExecuteMoveAction(world, gc.DirectionLeft)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveNorthEast:
+		ExecuteMoveAction(world, gc.DirectionUpRight)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveNorthWest:
+		ExecuteMoveAction(world, gc.DirectionUpLeft)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveSouthEast:
+		ExecuteMoveAction(world, gc.DirectionDownRight)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionMoveSouthWest:
+		ExecuteMoveAction(world, gc.DirectionDownLeft)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+	case inputmapper.ActionWait:
+		ExecuteWaitAction(world)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+
+	// 相互作用系アクション
+	case inputmapper.ActionInteract:
+		ExecuteEnterAction(world)
+		return es.Transition[w.World]{Type: es.TransNone}, nil
+
+	default:
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
+	}
+}
+
+// ================
 
 // checkPlayerDeath はプレイヤーの死亡状態をチェックする
 func (st *DungeonState) checkPlayerDeath(world w.World) bool {
@@ -192,14 +327,4 @@ func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
 		// StateEventNoneまたは未知のイベントの場合は何もしない
 		return es.Transition[w.World]{Type: es.TransNone}
 	}
-}
-
-// Draw はゲームステートの描画処理を行う
-func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
-	screen.DrawImage(baseImage, nil)
-
-	gs.RenderSpriteSystem(world, screen)
-	gs.VisionSystem(world, screen)
-	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
-	return nil
 }

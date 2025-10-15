@@ -6,6 +6,7 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 )
 
 // Item はメニュー項目を表す
@@ -59,9 +60,6 @@ type Menu struct {
 	container   *widget.Container
 	itemWidgets []widget.PreferredSizeLocateableWidget
 	uiBuilder   *UIBuilder // UIビルダーの参照を保持
-
-	// 入力
-	keyboardInput input.KeyboardInput
 }
 
 // NewMenu はメニューを作成する
@@ -87,11 +85,61 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 	return m
 }
 
-// Update はメニューの状態を更新する
-func (m *Menu) Update(keyboardInput input.KeyboardInput) {
-	m.keyboardInput = keyboardInput
+// Update はキーボード入力を待ち受けて、Actionに変換してメニュー操作を実行する
+func (m *Menu) Update() {
+	keyboardInput := input.GetSharedKeyboardInput()
+	if action, ok := m.translateKeyToAction(keyboardInput); ok {
+		m.DoAction(action)
+	}
+}
 
-	m.handleKeyboard()
+// translateKeyToAction はキーボード入力をActionに変換する
+func (m *Menu) translateKeyToAction(keyboardInput input.KeyboardInput) (inputmapper.ActionID, bool) {
+	// 下矢印キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+		return inputmapper.ActionMenuDown, true
+	}
+
+	// 上矢印キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+		return inputmapper.ActionMenuUp, true
+	}
+
+	// Tabキー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyTab) {
+		if keyboardInput.IsKeyPressed(ebiten.KeyShift) {
+			return inputmapper.ActionMenuUp, true
+		}
+		return inputmapper.ActionMenuDown, true
+	}
+
+	// Enterキー（セッションベース検出で複数回実行を防止）
+	if keyboardInput.IsEnterJustPressedOnce() {
+		return inputmapper.ActionMenuSelect, true
+	}
+
+	// Escapeキー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return inputmapper.ActionMenuCancel, true
+	}
+
+	return "", false
+}
+
+// DoAction はActionを受け取ってメニュー操作を実行する
+func (m *Menu) DoAction(action inputmapper.ActionID) {
+	switch action {
+	case inputmapper.ActionMenuDown:
+		m.navigateNext()
+	case inputmapper.ActionMenuUp:
+		m.navigatePrevious()
+	case inputmapper.ActionMenuSelect:
+		m.selectCurrent()
+	case inputmapper.ActionMenuCancel:
+		if m.callbacks.OnCancel != nil {
+			m.callbacks.OnCancel()
+		}
+	}
 }
 
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
@@ -129,50 +177,6 @@ func (m *Menu) SetContainer(container *widget.Container) {
 // SetUIBuilder はUIビルダーを設定する
 func (m *Menu) SetUIBuilder(builder *UIBuilder) {
 	m.uiBuilder = builder
-}
-
-// handleKeyboard はキーボード入力を処理する
-func (m *Menu) handleKeyboard() {
-	if len(m.config.Items) == 0 {
-		return
-	}
-
-	// 基本的なナビゲーション（スクロール対応）
-	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
-		m.navigateNext()
-	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
-		m.navigatePrevious()
-	}
-
-	// ページ移動（PageUp/PageDownまたはCtrl+Up/Down）
-	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageUp) ||
-		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp)) {
-		m.navigatePageUp()
-	} else if m.keyboardInput.IsKeyJustPressed(ebiten.KeyPageDown) ||
-		(m.keyboardInput.IsKeyPressed(ebiten.KeyControl) && m.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown)) {
-		m.navigatePageDown()
-	}
-
-	// Tab/Shift+Tab
-	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyTab) {
-		if m.keyboardInput.IsKeyPressed(ebiten.KeyShift) {
-			m.navigatePrevious()
-		} else {
-			m.navigateNext()
-		}
-	}
-
-	// 選択（Enterは押下-押上ワンセット）
-	if m.keyboardInput.IsEnterJustPressedOnce() {
-		m.selectCurrent()
-	}
-
-	// キャンセル
-	if m.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		if m.callbacks.OnCancel != nil {
-			m.callbacks.OnCancel()
-		}
-	}
 }
 
 // navigateNext は次の有効な項目に移動する
@@ -283,62 +287,6 @@ func (m *Menu) updatePageFromFocus() {
 	newPage := m.focusedIndex / m.config.ItemsPerPage
 	if newPage != m.currentPage {
 		m.currentPage = newPage
-	}
-}
-
-// navigatePageDown は次のページに移動
-func (m *Menu) navigatePageDown() {
-	if m.config.ItemsPerPage <= 0 {
-		return
-	}
-
-	itemCount := len(m.config.Items)
-	nextPageStart := (m.currentPage + 1) * m.config.ItemsPerPage
-
-	if nextPageStart >= itemCount {
-		return // 最後のページ
-	}
-
-	// 次のページの最初の有効な項目にフォーカス
-	for i := nextPageStart; i < itemCount && i < nextPageStart+m.config.ItemsPerPage; i++ {
-		if !m.config.Items[i].Disabled {
-			oldIndex := m.focusedIndex
-			m.focusedIndex = i
-			m.currentPage = i / m.config.ItemsPerPage
-
-			if m.callbacks.OnFocusChange != nil {
-				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
-			}
-			return
-		}
-	}
-}
-
-// navigatePageUp は前のページに移動
-func (m *Menu) navigatePageUp() {
-	if m.config.ItemsPerPage <= 0 {
-		return
-	}
-
-	if m.currentPage <= 0 {
-		return // 既に最初のページ
-	}
-
-	prevPageStart := (m.currentPage - 1) * m.config.ItemsPerPage
-	prevPageEnd := prevPageStart + m.config.ItemsPerPage
-
-	// 前のページの最初の有効な項目にフォーカス
-	for i := prevPageStart; i < prevPageEnd && i < len(m.config.Items); i++ {
-		if !m.config.Items[i].Disabled {
-			oldIndex := m.focusedIndex
-			m.focusedIndex = i
-			m.currentPage = i / m.config.ItemsPerPage
-
-			if m.callbacks.OnFocusChange != nil {
-				m.callbacks.OnFocusChange(oldIndex, m.focusedIndex)
-			}
-			return
-		}
 	}
 }
 

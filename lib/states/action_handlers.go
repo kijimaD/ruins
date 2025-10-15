@@ -1,69 +1,55 @@
-package systems
+package states
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
-	"github.com/kijimaD/ruins/lib/turns"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// TileInputSystem はプレイヤーからのタイルベース入力を処理する。Actionシステムを使用して移動を実行する
-// AIの移動・攻撃も将来的に同じActionシステムを使用予定
-// TODO: 文脈に応じて発行アクションを判定する
-func TileInputSystem(world w.World) error {
-	// ターン管理チェック - プレイヤーターンでない場合は入力を受け付けない
-	if world.Resources.TurnManager != nil {
-		turnManager := world.Resources.TurnManager.(*turns.TurnManager)
-		if !turnManager.CanPlayerAct() {
-			return nil
+// ExecuteMoveAction は移動アクションを実行する
+func ExecuteMoveAction(world w.World, direction gc.Direction) {
+	entity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return
+	}
+
+	if !entity.HasComponent(world.Components.GridElement) {
+		return
+	}
+
+	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+	currentX := int(gridElement.X)
+	currentY := int(gridElement.Y)
+
+	deltaX, deltaY := direction.GetDelta()
+	newX := currentX + deltaX
+	newY := currentY + deltaY
+
+	// 移動先に敵がいる場合は攻撃アクション
+	enemy := findEnemyAtPosition(world, entity, newX, newY)
+	if enemy != ecs.Entity(0) {
+		params := actions.ActionParams{
+			Actor:  entity,
+			Target: &enemy,
 		}
+		executeActivity(world, &actions.AttackActivity{}, params)
+		return
 	}
-	// キー入力を方向に変換
-	var direction gc.Direction
 
-	// 8方向キー入力
-	if inpututil.IsKeyJustPressed(ebiten.KeyW) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			direction = gc.DirectionUpLeft
-		} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			direction = gc.DirectionUpRight
-		} else {
-			direction = gc.DirectionUp
+	canMove := movement.CanMoveTo(world, newX, newY, entity)
+	if canMove {
+		destination := gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
+		params := actions.ActionParams{
+			Actor:       entity,
+			Destination: &destination,
 		}
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyS) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			direction = gc.DirectionDownLeft
-		} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			direction = gc.DirectionDownRight
-		} else {
-			direction = gc.DirectionDown
-		}
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyA) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-		direction = gc.DirectionLeft
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-		direction = gc.DirectionRight
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyPeriod) {
-		executeWaitAction(world)
-		return nil
+		executeActivity(world, &actions.MoveActivity{}, params)
 	}
-
-	// 移動アクションを実行
-	if direction != gc.DirectionNone {
-		executeMoveAction(world, direction)
-	}
-
-	// Enterキー: 状況に応じたアクションを実行
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-		executeEnterAction(world)
-	}
-
-	return nil
 }
 
 // executeActivity はアクティビティ実行関数
@@ -78,108 +64,51 @@ func executeActivity(world w.World, actorImpl actions.ActivityInterface, params 
 
 	// 移動の場合は追加でタイルイベントをチェック
 	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
-		// TODO: AI用と共通化したほうがよさそう? プレイヤーの場合だけログを出す、とかはありそうなものの
 		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
 	}
 }
 
-// executeMoveAction は移動アクションを実行する
-// 複数プレイヤーエンティティが存在する場合は最初のエンティティのみを処理する
-func executeMoveAction(world w.World, direction gc.Direction) {
-	var firstPlayerEntity ecs.Entity
-	var hasFirstPlayer bool
-
-	// 最初のプレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if !hasFirstPlayer {
-			firstPlayerEntity = entity
-			hasFirstPlayer = true
-		}
-	}))
-
-	// 最初のプレイヤーエンティティのみを処理
-	if hasFirstPlayer {
-		entity := firstPlayerEntity
-		// 現在位置を取得
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		currentX := int(gridElement.X)
-		currentY := int(gridElement.Y)
-
-		// 移動先を計算
-		deltaX, deltaY := direction.GetDelta()
-		newX := currentX + deltaX
-		newY := currentY + deltaY
-
-		// 移動先に敵がいるかチェック
-		enemy := findEnemyAtPosition(world, entity, newX, newY)
-		if enemy != ecs.Entity(0) {
-			// 敵がいる場合は攻撃アクション
-			params := actions.ActionParams{
-				Actor:  entity,
-				Target: &enemy,
-			}
-			executeActivity(world, &actions.AttackActivity{}, params)
-			return
-		}
-
-		// 移動可能かチェックして移動
-		canMove := CanMoveTo(world, newX, newY, entity)
-
-		if canMove {
-			// 統一されたアクティビティ実行関数を使用
-			destination := gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
-			params := actions.ActionParams{
-				Actor:       entity,
-				Destination: &destination,
-			}
-			executeActivity(world, &actions.MoveActivity{}, params)
-		}
+// ExecuteWaitAction は待機アクションを実行する
+func ExecuteWaitAction(world w.World) {
+	entity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return
 	}
+
+	params := actions.ActionParams{
+		Actor:    entity,
+		Duration: 1,
+		Reason:   "プレイヤー待機",
+	}
+	executeActivity(world, &actions.WaitActivity{}, params)
 }
 
-// executeWaitAction は待機アクションを実行する
-func executeWaitAction(world w.World) {
-	// プレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		params := actions.ActionParams{
-			Actor:    entity,
-			Duration: 1,
-			Reason:   "プレイヤー待機",
-		}
-		executeActivity(world, &actions.WaitActivity{}, params)
-	}))
-}
+// ExecuteEnterAction はEnterキーによる状況に応じたアクションを実行する
+func ExecuteEnterAction(world w.World) {
+	entity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return
+	}
 
-// executeEnterAction はEnterキーによる状況に応じたアクションを実行する
-func executeEnterAction(world w.World) {
-	// プレイヤーエンティティを取得
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		tileX := int(gridElement.X)
-		tileY := int(gridElement.Y)
+	if !entity.HasComponent(world.Components.GridElement) {
+		return
+	}
 
-		// ワープホールチェック
-		if checkForWarp(world, entity) {
-			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, &actions.WarpActivity{}, params)
-			return
-		}
+	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+	tileX := int(gridElement.X)
+	tileY := int(gridElement.Y)
 
-		// アイテム拾得チェック
-		if checkForItems(world, tileX, tileY) {
-			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, &actions.PickupActivity{}, params)
-			return
-		}
-	}))
+	if checkForWarp(world, entity) {
+		params := actions.ActionParams{Actor: entity}
+		executeActivity(world, &actions.WarpActivity{}, params)
+		return
+	}
+
+	if checkForItems(world, tileX, tileY) {
+		params := actions.ActionParams{Actor: entity}
+		executeActivity(world, &actions.PickupActivity{}, params)
+		return
+	}
 }
 
 // checkTileEvents はタイル上のイベントをチェックする
@@ -194,11 +123,6 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 		// アイテムのチェック
 		checkTileItemsForGridPlayer(world, gridElement)
 	}
-}
-
-// CanMoveTo は指定位置に移動可能かチェックする
-func CanMoveTo(world w.World, tileX, tileY int, movingEntity ecs.Entity) bool {
-	return movement.CanMoveTo(world, tileX, tileY, movingEntity)
 }
 
 // getWarpAtPlayerPosition はプレイヤーの現在位置のワープホールを取得する
@@ -309,7 +233,7 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 			// 敵対関係かチェック
 			if isHostileFaction(world, movingEntity, entity) {
 				foundEnemy = entity
-				return // 最初に見つかった敵を返す
+				return
 			}
 		}
 	}))

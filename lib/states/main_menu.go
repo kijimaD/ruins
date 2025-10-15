@@ -1,6 +1,7 @@
 package states
 
 import (
+	"fmt"
 	"image/color"
 	"strings"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -18,10 +19,9 @@ import (
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
 	es.BaseState[w.World]
-	ui            *ebitenui.UI
-	menu          *menu.Menu
-	uiBuilder     *menu.UIBuilder
-	keyboardInput input.KeyboardInput
+	ui        *ebitenui.UI
+	menu      *menu.Menu
+	uiBuilder *menu.UIBuilder
 }
 
 func (st MainMenuState) String() string {
@@ -31,6 +31,7 @@ func (st MainMenuState) String() string {
 // State interface ================
 
 var _ es.State[w.World] = &MainMenuState{}
+var _ es.ActionHandler[w.World] = &MainMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *MainMenuState) OnPause(_ w.World) error { return nil }
@@ -40,9 +41,6 @@ func (st *MainMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステート開始時の処理を行う
 func (st *MainMenuState) OnStart(world w.World) error {
-	if st.keyboardInput == nil {
-		st.keyboardInput = input.GetSharedKeyboardInput()
-	}
 	st.initMenu(world)
 	st.ui = st.initUI(world)
 	return nil
@@ -53,12 +51,12 @@ func (st *MainMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
-	// Escapeキーでの終了処理はメニューのOnCancelで処理するため、ここでは削除
+	// メニューの更新（キーボード入力→Action変換は Menu 内部で実施）
+	st.menu.Update()
 
-	// メニューの更新
-	st.menu.Update(st.keyboardInput)
-
-	st.ui.Update()
+	if st.ui != nil {
+		st.ui.Update()
+	}
 
 	// BaseStateの共通処理を使用
 	return st.ConsumeTransition(), nil
@@ -72,6 +70,27 @@ func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) error {
 	st.ui.Draw(screen)
 	return nil
 }
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *MainMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	// 未使用
+	return "", false
+}
+
+// DoAction はActionを実行する
+func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	switch action {
+	case inputmapper.ActionMenuCancel:
+		// メインメニューでのキャンセルは終了
+		return es.Transition[w.World]{Type: es.TransQuit}, nil
+	default:
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
+	}
+}
+
+// ================
 
 // initMenu はメニューコンポーネントを初期化する
 func (st *MainMenuState) initMenu(world w.World) {

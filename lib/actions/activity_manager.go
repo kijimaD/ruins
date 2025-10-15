@@ -265,10 +265,6 @@ func (am *ActivityManager) validateBasicRequirements(activity *Activity) error {
 		return ErrActivityNil
 	}
 
-	if activity.Actor == 0 {
-		return ErrActorNotSet
-	}
-
 	return nil
 }
 

@@ -13,12 +13,7 @@ func TurnSystem(world w.World) error {
 
 	switch turnManager.TurnPhase {
 	case turns.PlayerTurn:
-		// プレイヤーターンでは入力システムが処理
-		// 移動ポイントが尽きるまでプレイヤーが連続行動
-		// TileInputSystemがアクション実行時にConsumePlayerMovesを呼ぶ
-		if err := TileInputSystem(world); err != nil {
-			return err
-		}
+		// プレイヤー入力処理はDungeonStateで実行される
 	case turns.AITurn:
 		// AIターン: 全AI・NPCを一括処理
 		if err := processAITurn(world); err != nil {

@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
@@ -26,7 +27,6 @@ type EquipMenuState struct {
 	ui *ebitenui.UI
 
 	tabMenu             *tabmenu.TabMenu
-	keyboardInput       input.KeyboardInput
 	itemDesc            *widget.Text      // アイテムの説明
 	specContainer       *widget.Container // 性能コンテナ
 	abilityContainer    *widget.Container // プレイヤーの能力表示コンテナ
@@ -64,6 +64,7 @@ const (
 // State interface ================
 
 var _ es.State[w.World] = &EquipMenuState{}
+var _ es.ActionHandler[w.World] = &EquipMenuState{}
 
 // OnPause はステートが一時停止される際に呼ばれる
 func (st *EquipMenuState) OnPause(_ w.World) error { return nil }
@@ -73,9 +74,6 @@ func (st *EquipMenuState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *EquipMenuState) OnStart(world w.World) error {
-	if st.keyboardInput == nil {
-		st.keyboardInput = input.GetSharedKeyboardInput()
-	}
 	st.ui = st.initUI(world)
 	return nil
 }
@@ -90,14 +88,12 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		st.reloadAbilityContainer(world)
 	}
 
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
-	}
-
-	// ウィンドウモードの場合はウィンドウ操作を優先
-	if st.isWindowMode {
-		if st.updateWindowMode(world) {
-			return es.Transition[w.World]{Type: es.TransNone}, nil
+	// キー入力をActionに変換
+	if action, ok := st.HandleInput(); ok {
+		if transition, err := st.DoAction(world, action); err != nil {
+			return es.Transition[w.World]{}, err
+		} else if transition.Type != es.TransNone {
+			return transition, nil
 		}
 	}
 
@@ -114,6 +110,60 @@ func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 	st.ui.Draw(screen)
 	return nil
 }
+
+// ================
+
+// HandleInput はキー入力をActionに変換する
+func (st *EquipMenuState) HandleInput() (inputmapper.ActionID, bool) {
+	// ウィンドウモード時の入力処理を優先
+	if st.isWindowMode {
+		return HandleWindowInput()
+	}
+
+	keyboardInput := input.GetSharedKeyboardInput()
+	if keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
+		return inputmapper.ActionOpenDebugMenu, true
+	}
+
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
+		return inputmapper.ActionMenuCancel, true
+	}
+
+	return "", false
+}
+
+// DoAction はActionを実行する
+func (st *EquipMenuState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
+	// ウィンドウモード時のアクション処理
+	if st.isWindowMode {
+		switch action {
+		case inputmapper.ActionWindowUp, inputmapper.ActionWindowDown:
+			if UpdateFocusIndex(action, &st.actionFocusIndex, len(st.actionItems)) {
+				st.updateActionWindowDisplay(world)
+			}
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowConfirm:
+			st.executeActionItem(world)
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		case inputmapper.ActionWindowCancel:
+			st.closeActionWindow()
+			return es.Transition[w.World]{Type: es.TransNone}, nil
+		default:
+			return es.Transition[w.World]{}, fmt.Errorf("ウィンドウモード時の未知のアクション: %s", action)
+		}
+	}
+
+	switch action {
+	case inputmapper.ActionOpenDebugMenu:
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
+	case inputmapper.ActionMenuCancel, inputmapper.ActionCloseMenu:
+		return es.Transition[w.World]{Type: es.TransPop}, nil
+	default:
+		return es.Transition[w.World]{}, fmt.Errorf("未知のアクション: %s", action)
+	}
+}
+
+// ================
 
 func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	res := world.Resources.UIResources
@@ -149,7 +199,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks, st.keyboardInput)
+	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
@@ -518,41 +568,6 @@ func (st *EquipMenuState) updateActionWindowDisplay(world w.World) {
 
 	st.actionWindow.SetLocation(getCenterWinRect(world))
 	st.ui.AddWindow(st.actionWindow)
-}
-
-// updateWindowMode はウィンドウモード時の操作を処理する
-func (st *EquipMenuState) updateWindowMode(world w.World) bool {
-	// Escapeでウィンドウモードを終了
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
-		st.closeActionWindow()
-		return false
-	}
-
-	// 上下矢印でフォーカス移動
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
-		st.actionFocusIndex--
-		if st.actionFocusIndex < 0 {
-			st.actionFocusIndex = len(st.actionItems) - 1
-		}
-		st.updateActionWindowDisplay(world)
-		return true
-	}
-	if st.keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
-		st.actionFocusIndex++
-		if st.actionFocusIndex >= len(st.actionItems) {
-			st.actionFocusIndex = 0
-		}
-		st.updateActionWindowDisplay(world)
-		return true
-	}
-
-	// Enterで選択実行（押下-押上ワンセット）
-	if st.keyboardInput.IsEnterJustPressedOnce() {
-		st.executeActionItem(world)
-		return true
-	}
-
-	return true
 }
 
 // closeActionWindow はアクションウィンドウを閉じる

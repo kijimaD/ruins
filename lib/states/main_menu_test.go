@@ -3,9 +3,8 @@ package states
 import (
 	"testing"
 
-	"github.com/hajimehoshi/ebiten/v2"
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/input"
+	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/testutil"
 )
 
@@ -13,10 +12,6 @@ func TestMainMenuNavigation(t *testing.T) {
 	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
-
-	// モックキーボード入力を作成
-	mockInput := input.NewMockKeyboardInput()
-	state.keyboardInput = mockInput
 
 	// メニューを初期化（Worldは簡易版を使用）
 	world := testutil.InitTestWorld(t)
@@ -27,21 +22,18 @@ func TestMainMenuNavigation(t *testing.T) {
 		t.Errorf("初期フォーカスが不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
 	}
 
-	// 下矢印キーでフォーカス移動
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowDown, true)
-	state.menu.Update(mockInput)
+	// ActionMenuDownでフォーカス移動
+	state.menu.DoAction(inputmapper.ActionMenuDown)
 
 	if state.menu.GetFocusedIndex() != 1 {
-		t.Errorf("下矢印キー後のフォーカス位置が不正: 期待 1, 実際 %d", state.menu.GetFocusedIndex())
+		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.menu.GetFocusedIndex())
 	}
 
-	// 上矢印キーでフォーカス移動
-	mockInput.Reset()
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowUp, true)
-	state.menu.Update(mockInput)
+	// ActionMenuUpでフォーカス移動
+	state.menu.DoAction(inputmapper.ActionMenuUp)
 
 	if state.menu.GetFocusedIndex() != 0 {
-		t.Errorf("上矢印キー後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
+		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
 	}
 }
 
@@ -49,10 +41,6 @@ func TestMainMenuCircularNavigation(t *testing.T) {
 	t.Parallel()
 	// MainMenuStateを作成
 	state := &MainMenuState{}
-
-	// モックキーボード入力を作成
-	mockInput := input.NewMockKeyboardInput()
-	state.keyboardInput = mockInput
 
 	// メニューを初期化
 	world := testutil.InitTestWorld(t)
@@ -62,9 +50,8 @@ func TestMainMenuCircularNavigation(t *testing.T) {
 	itemCount := len(state.menu.GetItems())
 	state.menu.SetFocusedIndex(itemCount - 1)
 
-	// 下矢印キーで循環して最初に戻る
-	mockInput.SetKeyJustPressed(ebiten.KeyArrowDown, true)
-	state.menu.Update(mockInput)
+	// ActionMenuDownで循環して最初に戻る
+	state.menu.DoAction(inputmapper.ActionMenuDown)
 
 	if state.menu.GetFocusedIndex() != 0 {
 		t.Errorf("循環移動後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
@@ -76,10 +63,6 @@ func TestMainMenuSelection(t *testing.T) {
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
-	// モックキーボード入力を作成
-	mockInput := input.NewMockKeyboardInput()
-	state.keyboardInput = mockInput
-
 	// メニューを初期化
 	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
@@ -87,15 +70,17 @@ func TestMainMenuSelection(t *testing.T) {
 	// 「終了」項目にフォーカス移動（インデックス2）
 	state.menu.SetFocusedIndex(2)
 
-	// Enterキーで選択（セッションベース）
-	mockInput.SimulateEnterPressRelease()
-	state.menu.Update(mockInput)
+	// ActionMenuSelectで選択
+	state.menu.DoAction(inputmapper.ActionMenuSelect)
 
 	// トランジションが設定されることを確認
-	if state.GetTransition() == nil {
-		t.Error("トランジションが設定されていない")
-	} else if state.GetTransition().Type != es.TransQuit {
-		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.GetTransition().Type)
+	transition := state.GetTransition()
+	if transition == nil || transition.Type != es.TransQuit {
+		if transition == nil {
+			t.Error("トランジションが設定されていない")
+		} else {
+			t.Errorf("期待されるトランジション: TransQuit, 実際: %v", transition.Type)
+		}
 	}
 }
 
@@ -104,23 +89,21 @@ func TestMainMenuCancel(t *testing.T) {
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
-	// モックキーボード入力を作成
-	mockInput := input.NewMockKeyboardInput()
-	state.keyboardInput = mockInput
-
 	// メニューを初期化
 	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
-	// Escapeキーでキャンセル
-	mockInput.SetKeyJustPressed(ebiten.KeyEscape, true)
-	state.menu.Update(mockInput)
+	// ActionMenuCancelでキャンセル
+	state.menu.DoAction(inputmapper.ActionMenuCancel)
 
 	// トランジションが設定されることを確認
-	if state.GetTransition() == nil {
-		t.Error("トランジションが設定されていない")
-	} else if state.GetTransition().Type != es.TransQuit {
-		t.Errorf("期待されるトランジション: TransQuit, 実際: %v", state.GetTransition().Type)
+	transition := state.GetTransition()
+	if transition == nil || transition.Type != es.TransQuit {
+		if transition == nil {
+			t.Error("トランジションが設定されていない")
+		} else {
+			t.Errorf("期待されるトランジション: TransQuit, 実際: %v", transition.Type)
+		}
 	}
 }
 
@@ -161,30 +144,21 @@ func TestMainMenuTabNavigation(t *testing.T) {
 	// MainMenuStateを作成
 	state := &MainMenuState{}
 
-	// モックキーボード入力を作成
-	mockInput := input.NewMockKeyboardInput()
-	state.keyboardInput = mockInput
-
 	// メニューを初期化
 	world := testutil.InitTestWorld(t)
 	state.initMenu(world)
 
-	// Tabキーでフォーカス移動
-	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	mockInput.SetKeyPressed(ebiten.KeyShift, false)
-	state.menu.Update(mockInput)
+	// ActionMenuDownでフォーカス移動（Tabキーと同じ動作）
+	state.menu.DoAction(inputmapper.ActionMenuDown)
 
 	if state.menu.GetFocusedIndex() != 1 {
-		t.Errorf("Tabキー後のフォーカス位置が不正: 期待 1, 実際 %d", state.menu.GetFocusedIndex())
+		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.menu.GetFocusedIndex())
 	}
 
-	// Shift+Tabキーでフォーカス移動
-	mockInput.Reset()
-	mockInput.SetKeyJustPressed(ebiten.KeyTab, true)
-	mockInput.SetKeyPressed(ebiten.KeyShift, true)
-	state.menu.Update(mockInput)
+	// ActionMenuUpでフォーカス移動（Shift+Tabキーと同じ動作）
+	state.menu.DoAction(inputmapper.ActionMenuUp)
 
 	if state.menu.GetFocusedIndex() != 0 {
-		t.Errorf("Shift+Tabキー後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
+		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
 	}
 }
