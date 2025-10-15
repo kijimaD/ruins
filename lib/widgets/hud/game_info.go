@@ -76,7 +76,7 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
 
 	// 背景（暗い赤い領域）を描画
-	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 0, 0, 255}, false)
+	vector.FillRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 0, 0, 255}, false)
 
 	// HP比率を計算
 	if maxHP > 0 {
@@ -102,7 +102,7 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 
 		// 現在のHPバーを描画
 		currentWidth := float32(width) * hpRatio
-		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
 	// 数値をゲージの右に描画
@@ -131,7 +131,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
 
 	// 背景（暗いグレー領域）を描画
-	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 100, 100, 255}, false)
+	vector.FillRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 100, 100, 255}, false)
 
 	// SP比率を計算
 	if maxSP > 0 {
@@ -155,7 +155,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 
 		// 現在のSPバーを描画
 		currentWidth := float32(width) * spRatio
-		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
 	// 数値をゲージの右に描画
@@ -184,7 +184,7 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
 
 	// 背景（暗い青い領域）を描画
-	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{0, 0, 80, 255}, false)
+	vector.FillRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{0, 0, 80, 255}, false)
 
 	// EP比率を計算
 	if maxEP > 0 {
@@ -210,7 +210,7 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 
 		// 現在のEPバーを描画
 		currentWidth := float32(width) * epRatio
-		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
 	// 数値をゲージの右に描画
