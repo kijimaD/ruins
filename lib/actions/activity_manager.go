@@ -265,9 +265,6 @@ func (am *ActivityManager) validateBasicRequirements(activity *Activity) error {
 		return ErrActivityNil
 	}
 
-	// エンティティID=0は有効（goecs v2ではエンティティIDは0から始まる）
-	// アクターの有効性は各アクティビティのValidateメソッドでチェックする
-
 	return nil
 }
 
