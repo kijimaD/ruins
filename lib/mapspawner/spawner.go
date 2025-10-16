@@ -97,5 +97,14 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 		}
 	}
 
+	// ドアを生成
+	for _, door := range metaPlan.Doors {
+		tileX, tileY := gc.Tile(door.X), gc.Tile(door.Y)
+		_, err := worldhelper.SpawnDoor(world, tileX, tileY, door.Orientation)
+		if err != nil {
+			return resources.Level{}, fmt.Errorf("ドア生成エラー (%d, %d): %w", door.X, door.Y, err)
+		}
+	}
+
 	return level, nil
 }

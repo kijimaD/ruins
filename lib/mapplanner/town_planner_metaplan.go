@@ -132,6 +132,15 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					Y:       y,
 					PropKey: propKey,
 				})
+			case 'D':
+				// ドア
+				// 周囲の壁配置からドアの向きを判定
+				orientation := p.determineDoorOrientation(x, y)
+				planData.Doors = append(planData.Doors, DoorSpec{
+					X:           x,
+					Y:           y,
+					Orientation: orientation,
+				})
 			default:
 				return fmt.Errorf("無効なエンティティ指定子が存在する: %s", string(char))
 			}
@@ -179,13 +188,13 @@ func getTownLayout() ([]string, []string) {
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 広場から南への道路（幅3）
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
-		"#rrr####f###rrr####f###rrr####f###rrr####f####r###", // 南区域の住宅
+		"#rrr####f###rrr########rrr####f###rrr####f####r###", // 南区域の住宅
 		"#rrr#ffffff#rrr#ffffff#rrr#ffffff#rrr#fffffff#r###", // 5x5の家
 		"#rrrfffffff#rrr#ffffff#rrr#ffffff#rrr#fffffff#r###",
 		"#rrr#ffffff#rrrfffffff#rrr#ffffff#rrr#fffffff#r###",
 		"#rrr#ffffff#rrr#ffffff#rrrfffffff#rrr#fffffff#r###",
 		"#rrr#ffffff#rrr#ffffff#rrr#ffffff#rrrfffffffr#r###",
-		"#rrr########rrr########rrr########rrr#########r###",
+		"#rrr########rrr######f#rrr########rrr#########r###",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##", // 南区域の道路（幅3）
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
 		"#rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr##",
@@ -234,12 +243,12 @@ func getTownLayout() ([]string, []string) {
 		"..................................................",
 		"..................................................",
 		"..................................................", // 南区域の住宅
-		"....&..CT......&..SM......&.T.......&.R...........", // 5x5の家
+		"....&..CT......&..........&ST.......&.R...........", // 5x5の家
 		"..................................................",
-		"...............C..........S.......................",
+		"...............D..................................",
+		"..........................D.......................",
 		"..................................................",
-		"..................................................",
-		"..................................................",
+		".....................D............................",
 		"...........L..........L...L..........L............", // 南区域の道路（幅3）
 		"..................................................",
 		"..................................................",
@@ -252,6 +261,29 @@ func getTownLayout() ([]string, []string) {
 	}
 
 	return tileMap, entityMap
+}
+
+// determineDoorOrientation はドアの向きを周囲の壁配置から判定する
+func (p *MetaTownPlanner) determineDoorOrientation(x, y int) gc.DoorOrientation {
+	height := len(p.TileMap)
+	width := len(p.TileMap[0])
+
+	// 上下左右のタイルをチェック
+	hasWallUp := y > 0 && p.TileMap[y-1][x] == '#'
+	hasWallDown := y < height-1 && p.TileMap[y+1][x] == '#'
+	hasWallLeft := x > 0 && p.TileMap[y][x-1] == '#'
+	hasWallRight := x < width-1 && p.TileMap[y][x+1] == '#'
+
+	// 上下に壁がある場合は横向き、左右に壁がある場合は縦向き
+	if hasWallUp && hasWallDown {
+		return gc.DoorOrientationHorizontal
+	}
+	if hasWallLeft && hasWallRight {
+		return gc.DoorOrientationVertical
+	}
+
+	// デフォルトは縦向き
+	return gc.DoorOrientationVertical
 }
 
 // validateTownLayout は街レイアウトの基本整合性を検証する（接続性を除く）

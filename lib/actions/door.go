@@ -72,6 +72,16 @@ func (oda *OpenDoorActivity) DoTurn(act *Activity, world w.World) error {
 			targetEntity.RemoveComponent(world.Components.BlockView)
 		}
 
+		// スプライトを開いた状態に変更
+		if targetEntity.HasComponent(world.Components.SpriteRender) {
+			spriteRender := world.Components.SpriteRender.Get(targetEntity).(*gc.SpriteRender)
+			if doorComp.Orientation == gc.DoorOrientationHorizontal {
+				spriteRender.SpriteKey = "door_horizontal_open"
+			} else {
+				spriteRender.SpriteKey = "door_vertical_open"
+			}
+		}
+
 		act.Logger.Debug("ドアを開きました", "door", targetEntity)
 	}
 

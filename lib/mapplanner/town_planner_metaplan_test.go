@@ -48,6 +48,9 @@ func TestNewTownPlannerMetaPlan(t *testing.T) {
 	// Propsが配置されているか確認
 	assert.Greater(t, len(metaPlan.Props), 0, "Should have Props")
 
+	// Doorsが配置されているか確認
+	assert.Greater(t, len(metaPlan.Doors), 0, "Should have Doors")
+
 	// 壁と床タイルが適切に設定されているか確認
 	wallCount := 0
 	floorCount := 0
@@ -62,8 +65,16 @@ func TestNewTownPlannerMetaPlan(t *testing.T) {
 	assert.Greater(t, wallCount, 0, "Should have wall tiles")
 	assert.Greater(t, floorCount, 0, "Should have floor tiles")
 
-	t.Logf("街マップ生成成功: 壁=%d, 床=%d, NPC=%d(スキップ中), Props=%d, ワープ=%d",
-		wallCount, floorCount, len(metaPlan.NPCs), len(metaPlan.Props), len(metaPlan.WarpPortals))
+	t.Logf("街マップ生成成功: 壁=%d, 床=%d, NPC=%d(スキップ中), Props=%d, ドア=%d, ワープ=%d",
+		wallCount, floorCount, len(metaPlan.NPCs), len(metaPlan.Props), len(metaPlan.Doors), len(metaPlan.WarpPortals))
+
+	// ドアが床の位置に配置されているか確認
+	for i, door := range metaPlan.Doors {
+		idx := metaPlan.Level.XYTileIndex(gc.Tile(door.X), gc.Tile(door.Y))
+		tile := metaPlan.Tiles[idx]
+		assert.True(t, tile.Walkable, "ドア%d (%d, %d) は歩行可能タイル上にあるべき", i+1, door.X, door.Y)
+		t.Logf("ドア%d: (%d, %d) - タイル: %s, 向き: %d", i+1, door.X, door.Y, tile.Name, door.Orientation)
+	}
 }
 
 func TestTownLayoutValidation(t *testing.T) {

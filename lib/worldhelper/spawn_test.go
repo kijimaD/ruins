@@ -203,3 +203,49 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 
 	assert.True(t, enemyFound, "SpawnEnemyで生成されたエンティティはAIMoveFSMコンポーネントを持つべき")
 }
+
+func TestSpawnDoor(t *testing.T) {
+	t.Parallel()
+
+	t.Run("縦向きドアのスポーン", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		door, err := SpawnDoor(world, 10, 10, gc.DoorOrientationVertical)
+		require.NoError(t, err)
+		require.NotEqual(t, uint(0), uint(door))
+
+		// SpriteRenderを確認
+		require.True(t, door.HasComponent(world.Components.SpriteRender))
+		sprite := world.Components.SpriteRender.Get(door).(*gc.SpriteRender)
+		assert.Equal(t, "field", sprite.SpriteSheetName)
+		assert.Equal(t, "door_vertical_closed", sprite.SpriteKey)
+		assert.Equal(t, gc.DepthNumTaller, sprite.Depth)
+
+		// Doorコンポーネントを確認
+		require.True(t, door.HasComponent(world.Components.Door))
+		doorComp := world.Components.Door.Get(door).(*gc.Door)
+		assert.False(t, doorComp.IsOpen)
+		assert.Equal(t, gc.DoorOrientationVertical, doorComp.Orientation)
+
+		// BlockPass/BlockViewを確認
+		assert.True(t, door.HasComponent(world.Components.BlockPass))
+		assert.True(t, door.HasComponent(world.Components.BlockView))
+	})
+
+	t.Run("横向きドアのスポーン", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		door, err := SpawnDoor(world, 10, 10, gc.DoorOrientationHorizontal)
+		require.NoError(t, err)
+
+		// SpriteRenderを確認
+		sprite := world.Components.SpriteRender.Get(door).(*gc.SpriteRender)
+		assert.Equal(t, "door_horizontal_closed", sprite.SpriteKey)
+
+		// Doorコンポーネントを確認
+		doorComp := world.Components.Door.Get(door).(*gc.Door)
+		assert.Equal(t, gc.DoorOrientationHorizontal, doorComp.Orientation)
+	})
+}

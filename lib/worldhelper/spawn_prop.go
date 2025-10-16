@@ -9,7 +9,7 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// SpawnProp は置物を生成する統一関数
+// SpawnProp は置物を生成する
 func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
 	// RawMasterから置物の設定を生成
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
@@ -34,6 +34,52 @@ func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity
 		return ecs.Entity(0), err
 	}
 	return entities[len(entities)-1], nil
+}
+
+// SpawnDoor はドアを生成する
+func SpawnDoor(world w.World, x gc.Tile, y gc.Tile, orientation gc.DoorOrientation) (ecs.Entity, error) {
+	// 床を下敷きとして配置（既に床がある場合は配置しない）
+	if !hasFloorAt(world, x, y) {
+		_, err := SpawnTile(world, "Floor", x, y, nil)
+		if err != nil {
+			return ecs.Entity(0), err
+		}
+	}
+
+	// スプライトキーを決定（閉じたドア）
+	var spriteKey string
+	if orientation == gc.DoorOrientationHorizontal {
+		spriteKey = "door_horizontal_closed"
+	} else {
+		spriteKey = "door_vertical_closed"
+	}
+
+	// EntitySpecを構築
+	entitySpec := gc.EntitySpec{
+		Name:        &gc.Name{Name: "ドア"},
+		Description: &gc.Description{Description: "開閉できるドア"},
+		GridElement: &gc.GridElement{X: x, Y: y},
+		SpriteRender: &gc.SpriteRender{
+			SpriteSheetName: "field",
+			SpriteKey:       spriteKey,
+			Depth:           gc.DepthNumTaller,
+		},
+		BlockPass: &gc.BlockPass{}, // 閉じているので通行不可
+		BlockView: &gc.BlockView{}, // 閉じているので視線を遮る
+		Door: &gc.Door{
+			IsOpen:      false,
+			Orientation: orientation,
+		},
+	}
+
+	// エンティティを生成
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	componentList.Entities = append(componentList.Entities, entitySpec)
+	ents, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
+	return ents[len(ents)-1], nil
 }
 
 // hasFloorAt は指定位置に床が存在するかチェックする

@@ -44,6 +44,7 @@ type EntitySpec struct {
 	TurnBased    *TurnBased
 	Prop         *Prop
 	LightSource  *LightSource
+	Door         *Door
 
 	// member ================
 	Player      *Player
