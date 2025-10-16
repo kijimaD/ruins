@@ -289,3 +289,78 @@ func isHostileFaction(world w.World, entity1, entity2 ecs.Entity) bool {
 	// その他の組み合わせは敵対関係ではない
 	return false
 }
+
+// InteractionAction はインタラクション可能なアクション情報
+type InteractionAction struct {
+	Label    string                    // 表示ラベル（例："開く(上)"）
+	Activity actions.ActivityInterface // 実行するアクティビティ
+	Target   ecs.Entity                // ターゲットエンティティ
+}
+
+// GetInteractionActions はプレイヤー周辺の実行可能なアクションを取得する
+func GetInteractionActions(world w.World) []InteractionAction {
+	playerEntity, err := worldhelper.GetPlayerEntity(world)
+	if err != nil {
+		return nil
+	}
+
+	if !playerEntity.HasComponent(world.Components.GridElement) {
+		return nil
+	}
+
+	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
+	playerX := int(gridElement.X)
+	playerY := int(gridElement.Y)
+
+	var interactionActions []InteractionAction
+
+	// 近傍8マスをスキャン（プレイヤー位置を除く周辺）
+	directions := []struct {
+		dx    int
+		dy    int
+		label string
+	}{
+		{0, -1, "上"},
+		{0, 1, "下"},
+		{-1, 0, "左"},
+		{1, 0, "右"},
+		{-1, -1, "左上"},
+		{1, -1, "右上"},
+		{-1, 1, "左下"},
+		{1, 1, "右下"},
+	}
+
+	for _, dir := range directions {
+		tileX := playerX + dir.dx
+		tileY := playerY + dir.dy
+
+		// ドアをチェック
+		world.Manager.Join(
+			world.Components.GridElement,
+			world.Components.Door,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+			if int(ge.X) == tileX && int(ge.Y) == tileY {
+				door := world.Components.Door.Get(entity).(*gc.Door)
+
+				if door.IsOpen {
+					// 開いているドアは閉じる
+					interactionActions = append(interactionActions, InteractionAction{
+						Label:    "閉じる(" + dir.label + ")",
+						Activity: &actions.CloseDoorActivity{},
+						Target:   entity,
+					})
+				} else {
+					// 閉じているドアは開く
+					interactionActions = append(interactionActions, InteractionAction{
+						Label:    "開く(" + dir.label + ")",
+						Activity: &actions.OpenDoorActivity{},
+						Target:   entity,
+					})
+				}
+			}
+		}))
+	}
+
+	return interactionActions
+}

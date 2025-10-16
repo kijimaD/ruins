@@ -193,6 +193,11 @@ func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool) {
 		return inputmapper.ActionOpenDebugMenu, true
 	}
 
+	// インタラクションメニュー（Space）
+	if keyboardInput.IsKeyJustPressed(ebiten.KeySpace) {
+		return inputmapper.ActionOpenInteractionMenu, true
+	}
+
 	// 8方向移動キー入力（キーリピート対応）
 	// 斜め移動は両方のキーがリピート判定で真になる場合のみ
 	upPressed := keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyW) || keyboardInput.IsKeyPressedWithRepeat(ebiten.KeyUp)
@@ -242,7 +247,7 @@ func (st *DungeonState) HandleInput() (inputmapper.ActionID, bool) {
 func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es.Transition[w.World], error) {
 	// UI系アクションは常に実行可能
 	switch action {
-	case inputmapper.ActionOpenDungeonMenu, inputmapper.ActionOpenDebugMenu, inputmapper.ActionOpenInventory:
+	case inputmapper.ActionOpenDungeonMenu, inputmapper.ActionOpenDebugMenu, inputmapper.ActionOpenInventory, inputmapper.ActionOpenInteractionMenu:
 		// UI系はターンチェック不要
 	default:
 		// ゲーム内アクション（移動、攻撃など）はターンチェックが必要
@@ -262,6 +267,10 @@ func (st *DungeonState) DoAction(world w.World, action inputmapper.ActionID) (es
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewDebugMenuState}}, nil
 	case inputmapper.ActionOpenInventory:
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}}, nil
+	case inputmapper.ActionOpenInteractionMenu:
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+			func() es.State[w.World] { return NewInteractionMenuState(world) },
+		}}, nil
 
 	// 移動系アクション（World状態を変更）
 	case inputmapper.ActionMoveNorth:
