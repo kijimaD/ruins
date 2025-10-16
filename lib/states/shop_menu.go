@@ -33,6 +33,7 @@ type ShopMenuState struct {
 	rootContainer       *widget.Container
 	tabDisplayContainer *widget.Container // タブ表示のコンテナ
 	categoryContainer   *widget.Container // カテゴリ一覧のコンテナ
+	currencyText        *widget.Text      // 所持金表示
 
 	// アクション選択ウィンドウ用
 	actionWindow     *widget.Window // アクション選択ウィンドウ
@@ -193,6 +194,12 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 	st.categoryContainer = styled.NewRowContainer()
 	st.createCategoryDisplayUI(world)
 
+	// 所持金表示コンテナを作成
+	currencyContainer := styled.NewRowContainer()
+	st.currencyText = styled.NewMenuText("", world.Resources.UIResources)
+	st.updateCurrencyDisplay(world)
+	currencyContainer.AddChild(st.currencyText)
+
 	st.rootContainer = styled.NewItemGridContainer(
 		widget.ContainerOpts.BackgroundImage(res.Panel.ImageTrans),
 	)
@@ -201,7 +208,7 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 		// 1行目
 		st.rootContainer.AddChild(styled.NewTitleText("店", world.Resources.UIResources))
 		st.rootContainer.AddChild(st.categoryContainer) // カテゴリ一覧の表示
-		st.rootContainer.AddChild(widget.NewContainer())
+		st.rootContainer.AddChild(currencyContainer)
 
 		// 2行目
 		st.rootContainer.AddChild(st.tabDisplayContainer)
@@ -412,6 +419,7 @@ func (st *ShopMenuState) reloadTabs(world w.World) {
 	// UpdateTabs後に表示を更新
 	st.updateTabDisplay(world)
 	st.updateCategoryDisplay(world)
+	st.updateCurrencyDisplay(world)
 }
 
 // createTabDisplayUI はタブ表示UIを作成する
@@ -592,4 +600,18 @@ func (st *ShopMenuState) updateInitialItemDisplay(world w.World) {
 			panic(err)
 		}
 	}
+}
+
+// updateCurrencyDisplay は所持金表示を更新する
+func (st *ShopMenuState) updateCurrencyDisplay(world w.World) {
+	if st.currencyText == nil {
+		return
+	}
+
+	currency := 0
+	worldhelper.QueryPlayer(world, func(playerEntity ecs.Entity) {
+		currency = worldhelper.GetCurrency(world, playerEntity)
+	})
+
+	st.currencyText.Label = fmt.Sprintf("◆ %d", currency)
 }
