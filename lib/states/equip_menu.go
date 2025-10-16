@@ -121,10 +121,6 @@ func (st *EquipMenuState) HandleInput() (inputmapper.ActionID, bool) {
 	}
 
 	keyboardInput := input.GetSharedKeyboardInput()
-	if keyboardInput.IsKeyJustPressed(ebiten.KeySlash) {
-		return inputmapper.ActionOpenDebugMenu, true
-	}
-
 	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		return inputmapper.ActionMenuCancel, true
 	}

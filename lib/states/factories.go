@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/messagedata"
@@ -217,6 +218,13 @@ func NewDebugMenuState() es.State[w.World] {
 			testMessageData.Choices[1].Action = func(_ w.World) error { choiceAction2(); return nil }
 
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(testMessageData) }}})
+			return nil
+		}).
+		WithChoice("デバッグ表示切り替え", func(_ w.World) error {
+			cfg := config.Get()
+			cfg.ShowAIDebug = !cfg.ShowAIDebug
+			cfg.NoEncounter = !cfg.NoEncounter
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
 		}).
 		WithChoice("閉じる", func(_ w.World) error {

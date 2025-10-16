@@ -35,13 +35,9 @@ func (game *MainGame) Layout(_, _ int) (int, int) {
 func (game *MainGame) Update() error {
 	// デバッグ表示をトグルする
 	cfg := config.Get()
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyTab) {
 		// パフォーマンスモニターは攻略に関係ないのでトグルできてよい
 		cfg.ShowMonitor = !cfg.ShowMonitor
-	}
-	if cfg.Debug && inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		cfg.ShowAIDebug = !cfg.ShowAIDebug
-		cfg.NoEncounter = !cfg.NoEncounter
 	}
 
 	if err := game.StateMachine.Update(game.World); err != nil {
