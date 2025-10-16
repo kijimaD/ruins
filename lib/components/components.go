@@ -97,6 +97,7 @@ type Components struct {
 	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
+	Door         *ecs.SliceComponent
 	Prop         *ecs.NullComponent
 	LightSource  *ecs.SliceComponent
 
@@ -360,3 +361,19 @@ type LightSource struct {
 	Color   color.RGBA // 光の色
 	Enabled bool       // 有効/無効
 }
+
+// Door は開閉可能なドアコンポーネント
+type Door struct {
+	IsOpen      bool            // 開いているかどうか
+	Orientation DoorOrientation // ドアの向き
+}
+
+// DoorOrientation はドアの向き
+type DoorOrientation int
+
+const (
+	// DoorOrientationHorizontal は横向きのドア
+	DoorOrientationHorizontal DoorOrientation = iota
+	// DoorOrientationVertical は縦向きのドア
+	DoorOrientationVertical
+)

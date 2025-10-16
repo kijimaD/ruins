@@ -41,6 +41,17 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 		return
 	}
 
+	// 移動先に閉じたドアがある場合はドアを開くアクション
+	door := findClosedDoorAtPosition(world, newX, newY)
+	if door != ecs.Entity(0) {
+		params := actions.ActionParams{
+			Actor:  entity,
+			Target: &door,
+		}
+		executeActivity(world, &actions.OpenDoorActivity{}, params)
+		return
+	}
+
 	canMove := movement.CanMoveTo(world, newX, newY, entity)
 	if canMove {
 		destination := gc.Position{X: gc.Pixel(newX), Y: gc.Pixel(newY)}
@@ -239,6 +250,27 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 	}))
 
 	return foundEnemy
+}
+
+// findClosedDoorAtPosition は指定位置にある閉じたドアエンティティを検索する
+func findClosedDoorAtPosition(world w.World, tileX, tileY int) ecs.Entity {
+	var foundDoor ecs.Entity
+
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Door,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
+			door := world.Components.Door.Get(entity).(*gc.Door)
+			// 閉じているドアのみを対象
+			if !door.IsOpen {
+				foundDoor = entity
+			}
+		}
+	}))
+
+	return foundDoor
 }
 
 // isHostileFaction は2つのエンティティが敵対関係にあるかを判定する
