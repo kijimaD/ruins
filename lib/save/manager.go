@@ -251,8 +251,8 @@ func (sm *SerializationManager) processEntityReferences(data interface{}, typeIn
 		if equipped, ok := data.(gc.LocationEquipped); ok {
 			ownerStableID := sm.stableIDManager.GetStableID(equipped.Owner)
 			equippedRef := struct {
-				OwnerRef      StableID               `json:"owner_ref"`
-				EquipmentSlot gc.EquipmentSlotNumber `json:"equipment_slot"`
+				OwnerRef      StableID               `json:"OwnerRef"`
+				EquipmentSlot gc.EquipmentSlotNumber `json:"EquipmentSlot"`
 			}{
 				OwnerRef:      ownerStableID,
 				EquipmentSlot: equipped.EquipmentSlot,
@@ -345,13 +345,13 @@ func (sm *SerializationManager) restoreComponentData(jsonData interface{}, typeI
 		}
 
 		// EquipmentSlotを取得
-		equipmentSlotVal, exists := dataMap["equipment_slot"]
+		equipmentSlotVal, exists := dataMap["EquipmentSlot"]
 		if !exists {
-			return nil, fmt.Errorf("equipment_slot not found in LocationEquipped data")
+			return nil, fmt.Errorf("EquipmentSlot not found in LocationEquipped data")
 		}
 		equipmentSlot, ok := equipmentSlotVal.(float64)
 		if !ok {
-			return nil, fmt.Errorf("invalid equipment_slot type: %T", equipmentSlotVal)
+			return nil, fmt.Errorf("invalid EquipmentSlot type: %T", equipmentSlotVal)
 		}
 
 		// LocationEquipped構造体を作成（Ownerは後で解決）
@@ -392,8 +392,8 @@ func (sm *SerializationManager) resolveEntityReferences(world w.World, entity ec
 		}
 
 		var equippedRef struct {
-			OwnerRef      StableID               `json:"owner_ref"`
-			EquipmentSlot gc.EquipmentSlotNumber `json:"equipment_slot"`
+			OwnerRef      StableID               `json:"OwnerRef"`
+			EquipmentSlot gc.EquipmentSlotNumber `json:"EquipmentSlot"`
 		}
 
 		err = json.Unmarshal(jsonBytes, &equippedRef)

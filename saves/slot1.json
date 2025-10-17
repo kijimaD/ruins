@@ -1,6 +1,6 @@
 {
-  "checksum": "1daa2f328435c57a784a29a203ead6aa619e094f3ccd85dbd788d2bcb0d30068",
-  "timestamp": "2025-10-17T23:27:58.833204651+09:00",
+  "checksum": "f33f7b0f95f264b6048e5f162433d06440d75992aa4c305d32da42092701607a",
+  "timestamp": "2025-10-18T01:09:53.234500631+09:00",
   "version": "1.0.0",
   "world": {
     "entities": [
@@ -5262,8 +5262,8 @@
           },
           "LocationEquipped": {
             "data": {
-              "equipment_slot": 0,
-              "owner_ref": {
+              "EquipmentSlot": 0,
+              "OwnerRef": {
                 "generation": 0,
                 "index": 1
               }
@@ -5350,8 +5350,8 @@
           },
           "LocationEquipped": {
             "data": {
-              "equipment_slot": 1,
-              "owner_ref": {
+              "EquipmentSlot": 1,
+              "OwnerRef": {
                 "generation": 0,
                 "index": 1
               }
@@ -5438,8 +5438,8 @@
           },
           "LocationEquipped": {
             "data": {
-              "equipment_slot": 2,
-              "owner_ref": {
+              "EquipmentSlot": 2,
+              "OwnerRef": {
                 "generation": 0,
                 "index": 1
               }
@@ -5506,8 +5506,8 @@
           },
           "LocationEquipped": {
             "data": {
-              "equipment_slot": 0,
-              "owner_ref": {
+              "EquipmentSlot": 0,
+              "OwnerRef": {
                 "generation": 0,
                 "index": 1
               }
