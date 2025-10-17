@@ -19,7 +19,7 @@ type Dungeon struct {
 	// ミニマップの設定
 	MinimapSettings MinimapSettings
 	// 視界を更新するか外部から設定するフラグ
-	NeedsUpdate bool
+	NeedsForceUpdate bool
 }
 
 // SetStateEvent はStateEventを設定する

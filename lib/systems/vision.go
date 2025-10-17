@@ -102,9 +102,9 @@ func VisionSystem(world w.World, _ *ebiten.Image) {
 		abs(int(playerPos.Y-playerPositionCache.lastPlayerY)) >= updateThreshold
 
 	// 外部から設定された視界更新フラグをチェックする(ドア開閉時など)
-	if world.Resources.Dungeon != nil && world.Resources.Dungeon.NeedsUpdate {
+	if world.Resources.Dungeon != nil && world.Resources.Dungeon.NeedsForceUpdate {
 		needsUpdate = true
-		world.Resources.Dungeon.NeedsUpdate = false
+		world.Resources.Dungeon.NeedsForceUpdate = false
 	}
 
 	if needsUpdate {

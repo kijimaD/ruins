@@ -85,7 +85,7 @@ func (oda *OpenDoorActivity) DoTurn(act *Activity, world w.World) error {
 		act.Logger.Debug("ドアを開きました", "door", targetEntity)
 
 		// 視界の更新が必要
-		world.Resources.Dungeon.NeedsUpdate = true
+		world.Resources.Dungeon.NeedsForceUpdate = true
 	}
 
 	act.Complete()
@@ -189,7 +189,7 @@ func (cda *CloseDoorActivity) DoTurn(act *Activity, world w.World) error {
 		act.Logger.Debug("ドアを閉じました", "door", targetEntity)
 
 		// 視界の更新が必要であることをマーク（BlockViewが変更されたため）
-		world.Resources.Dungeon.NeedsUpdate = true
+		world.Resources.Dungeon.NeedsForceUpdate = true
 	}
 
 	act.Complete()
