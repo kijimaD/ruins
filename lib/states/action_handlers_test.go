@@ -408,3 +408,62 @@ func TestIsHostileFaction(t *testing.T) {
 		assert.False(t, isHostileFaction(world, enemy1, enemy2), "敵側同士は敵対関係ではないべき")
 	})
 }
+
+func TestFindClosedDoorAtPosition(t *testing.T) {
+	t.Parallel()
+
+	t.Run("指定位置に閉じたドアがある場合", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		// 閉じたドアを作成
+		door := world.Manager.NewEntity()
+		door.AddComponent(world.Components.Door, &gc.Door{IsOpen: false, Orientation: gc.DoorOrientationHorizontal})
+		door.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+
+		foundDoor := findClosedDoorAtPosition(world, 10, 10)
+		assert.Equal(t, door, foundDoor, "閉じたドアが見つかるべき")
+	})
+
+	t.Run("指定位置にドアがない場合", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		foundDoor := findClosedDoorAtPosition(world, 10, 10)
+		assert.Equal(t, 0, int(foundDoor), "ドアが見つからないべき")
+	})
+
+	t.Run("ドアが開いている場合は無視される", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		// 開いたドアを作成
+		door := world.Manager.NewEntity()
+		door.AddComponent(world.Components.Door, &gc.Door{IsOpen: true, Orientation: gc.DoorOrientationVertical})
+		door.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+
+		foundDoor := findClosedDoorAtPosition(world, 10, 10)
+		assert.Equal(t, 0, int(foundDoor), "開いたドアは見つからないべき")
+	})
+
+	t.Run("複数のドアがある場合", func(t *testing.T) {
+		t.Parallel()
+		world := testutil.InitTestWorld(t)
+
+		// 閉じたドアを作成
+		door1 := world.Manager.NewEntity()
+		door1.AddComponent(world.Components.Door, &gc.Door{IsOpen: false, Orientation: gc.DoorOrientationHorizontal})
+		door1.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+
+		// 別の位置に開いたドアを作成
+		door2 := world.Manager.NewEntity()
+		door2.AddComponent(world.Components.Door, &gc.Door{IsOpen: true, Orientation: gc.DoorOrientationVertical})
+		door2.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
+
+		foundDoor := findClosedDoorAtPosition(world, 10, 10)
+		assert.Equal(t, door1, foundDoor, "閉じたドアのみが見つかるべき")
+
+		foundDoor2 := findClosedDoorAtPosition(world, 11, 10)
+		assert.Equal(t, 0, int(foundDoor2), "開いたドアは見つからないべき")
+	})
+}

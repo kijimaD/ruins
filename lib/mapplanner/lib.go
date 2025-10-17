@@ -29,6 +29,13 @@ type WarpPortal struct {
 	Type WarpPortalType // ポータルの種別
 }
 
+// DoorSpec はドアエンティティの配置情報
+type DoorSpec struct {
+	X           int                // X座標
+	Y           int                // Y座標
+	Orientation gc.DoorOrientation // ドアの向き（横/縦）
+}
+
 // MetaPlan は階層のタイルを作る元になる概念の集合体
 type MetaPlan struct {
 	// 階層情報
@@ -52,6 +59,8 @@ type MetaPlan struct {
 	Items []ItemSpec
 	// Props は配置予定のPropsリスト
 	Props []PropsSpec
+	// Doors は配置予定のドアリスト
+	Doors []DoorSpec
 	// PlayerStartPosition はプレイヤー開始位置（'@'文字で指定された場合に使用する）
 	PlayerStartPosition *struct {
 		X int
@@ -103,6 +112,13 @@ func (bm MetaPlan) existPlannedEntityOnTile(x, y int) bool {
 	// Propsをチェック
 	for _, prop := range bm.Props {
 		if prop.X == x && prop.Y == y {
+			return true
+		}
+	}
+
+	// Doorsをチェック
+	for _, door := range bm.Doors {
+		if door.X == x && door.Y == y {
 			return true
 		}
 	}

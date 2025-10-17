@@ -18,13 +18,14 @@ const (
 
 // UI系アクション
 const (
-	ActionOpenInventory   ActionID = "open_inventory"
-	ActionOpenEquipment   ActionID = "open_equipment"
-	ActionOpenCraft       ActionID = "open_craft"
-	ActionOpenShop        ActionID = "open_shop"
-	ActionOpenDungeonMenu ActionID = "open_dungeon_menu"
-	ActionOpenDebugMenu   ActionID = "open_debug_menu"
-	ActionCloseMenu       ActionID = "close_menu"
+	ActionOpenInventory       ActionID = "open_inventory"
+	ActionOpenEquipment       ActionID = "open_equipment"
+	ActionOpenCraft           ActionID = "open_craft"
+	ActionOpenShop            ActionID = "open_shop"
+	ActionOpenDungeonMenu     ActionID = "open_dungeon_menu"
+	ActionOpenDebugMenu       ActionID = "open_debug_menu"
+	ActionOpenInteractionMenu ActionID = "open_interaction_menu"
+	ActionCloseMenu           ActionID = "close_menu"
 )
 
 // アイテム系アクション

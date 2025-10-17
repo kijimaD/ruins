@@ -3,7 +3,9 @@ package states
 import (
 	"fmt"
 
+	"github.com/kijimaD/ruins/lib/actions"
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/messagedata"
@@ -219,6 +221,13 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(testMessageData) }}})
 			return nil
 		}).
+		WithChoice("デバッグ表示切り替え", func(_ w.World) error {
+			cfg := config.Get()
+			cfg.ShowAIDebug = !cfg.ShowAIDebug
+			cfg.NoEncounter = !cfg.NoEncounter
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+			return nil
+		}).
 		WithChoice("閉じる", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
@@ -394,4 +403,51 @@ func NewMessageState(messageData *messagedata.MessageData) es.State[w.World] {
 // NewShopMenuState は新しいShopMenuStateインスタンスを作成するファクトリー関数
 func NewShopMenuState() es.State[w.World] {
 	return &ShopMenuState{}
+}
+
+// NewInteractionMenuState はインタラクションメニューStateを作成する
+func NewInteractionMenuState(world w.World) es.State[w.World] {
+	messageState := &MessageState{}
+
+	// プレイヤー周辺の実行可能なアクションを取得
+	interactionActions := GetInteractionActions(world)
+
+	if len(interactionActions) == 0 {
+		// アクションがない場合
+		messageState.messageData = messagedata.NewSystemMessage("実行可能なアクションがありません。")
+		return messageState
+	}
+
+	// アクションメニューを構築
+	messageState.messageData = messagedata.NewSystemMessage("")
+
+	for _, action := range interactionActions {
+		// クロージャで変数をキャプチャ
+		capturedAction := action
+		messageState.messageData = messageState.messageData.WithChoice(capturedAction.Label, func(world w.World) error {
+			// アクションを実行
+			playerEntity, err := worldhelper.GetPlayerEntity(world)
+			if err != nil {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+				return err
+			}
+
+			params := actions.ActionParams{
+				Actor:  playerEntity,
+				Target: &capturedAction.Target,
+			}
+			executeActivity(world, capturedAction.Activity, params)
+
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+			return nil
+		})
+	}
+
+	// キャンセル用の「閉じる」選択肢を追加
+	messageState.messageData = messageState.messageData.WithChoice("キャンセル", func(_ w.World) error {
+		messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		return nil
+	})
+
+	return messageState
 }

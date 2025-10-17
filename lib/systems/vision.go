@@ -101,6 +101,12 @@ func VisionSystem(world w.World, _ *ebiten.Image) {
 		abs(int(playerPos.X-playerPositionCache.lastPlayerX)) >= updateThreshold ||
 		abs(int(playerPos.Y-playerPositionCache.lastPlayerY)) >= updateThreshold
 
+	// 外部から設定された視界更新フラグをチェックする(ドア開閉時など)
+	if world.Resources.Dungeon != nil && world.Resources.Dungeon.NeedsForceUpdate {
+		needsUpdate = true
+		world.Resources.Dungeon.NeedsForceUpdate = false
+	}
+
 	if needsUpdate {
 		// タイルの可視性マップを更新
 		visionRadius := gc.Pixel(16 * consts.TileSize)

@@ -15,6 +15,11 @@ prop_bookshelf = { x = 160, y = 64, width = 32, height = 32 }
 prop_barrel    = { x = 192, y = 64, width = 32, height = 32 }
 prop_crate     = { x = 224, y = 64, width = 32, height = 32 }
 
+door_vertical_closed   = { x = 0, y = 96, width = 32, height = 32 }
+door_vertical_open     = { x = 32, y = 96, width = 32, height = 32 }
+door_horizontal_closed = { x = 64, y = 96, width = 32, height = 32 }
+door_horizontal_open   = { x = 96, y = 96, width = 32, height = 32 }
+
 # ================
 
 # オートタイル用スプライトシート
