@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.7";</script>
+<script>var goVersion = "go1.24.9";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -249,6 +249,9 @@
 			
 				
 				<dd><a href="index.html#SpawnAllCards">func SpawnAllCards(world w.World) error</a></dd>
+			
+				
+				<dd><a href="index.html#SpawnDoor">func SpawnDoor(world w.World, x gc.Tile, y gc.Tile, orientation gc.DoorOrientation) (ecs.Entity, error)</a></dd>
 			
 				
 				<dd><a href="index.html#SpawnEnemy">func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, error)</a></dd>
@@ -882,6 +885,20 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
+			<h2 id="SpawnDoor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=1160:1263#L30">SpawnDoor</a>
+				<a class="permalink" href="index.html#SpawnDoor">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SpawnDoor(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, orientation <a href="../components/index.html">gc</a>.<a href="../components/index.html#DoorOrientation">DoorOrientation</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>SpawnDoor はドアを生成する
+
+			
+			
+
+		
+			
+			
 			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3765:3850#L103">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
@@ -938,13 +955,13 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnProp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=289:377#L3">SpawnProp</a>
+			<h2 id="SpawnProp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=277:365#L3">SpawnProp</a>
 				<a class="permalink" href="index.html#SpawnProp">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func SpawnProp(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, propName <a href="http://localhost:8888/pkg/builtin/#string">string</a>, x <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, y <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-			<p>SpawnProp は置物を生成する統一関数
+			<p>SpawnProp は置物を生成する
 
 			
 			
@@ -1006,7 +1023,7 @@ autoTileIndexが指定された場合、spriteKeyを動的に生成する（例:
 
 
 <div id="footer">
-Build version go1.24.7.<br>
+Build version go1.24.9.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

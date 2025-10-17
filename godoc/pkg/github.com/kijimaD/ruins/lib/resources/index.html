@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.7";</script>
+<script>var goVersion = "go1.24.9";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -437,7 +437,7 @@
 		
 			
 			
-			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=337:698#L1">Dungeon</a>
+			<h2 id="Dungeon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=337:783#L1">Dungeon</a>
 				<a class="permalink" href="index.html#Dungeon">&#xb6;</a>
 				
 				
@@ -455,6 +455,8 @@
 <span id="Dungeon.ExploredTiles"></span>    ExploredTiles map[<a href="../components/index.html">gc</a>.<a href="../components/index.html#GridElement">GridElement</a>]<a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// ミニマップの設定</span>
 <span id="Dungeon.MinimapSettings"></span>    MinimapSettings <a href="index.html#MinimapSettings">MinimapSettings</a>
+    <span class="comment">// 視界を更新するか外部から設定するフラグ</span>
+<span id="Dungeon.NeedsForceUpdate"></span>    NeedsForceUpdate <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// contains filtered or unexported fields</span>
 }
 </pre>
@@ -471,7 +473,7 @@
 
 			
 				
-				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=944:992#L19">ConsumeStateEvent</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1029:1077#L21">ConsumeStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
@@ -484,7 +486,7 @@
 				
 			
 				
-				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=746:795#L14">SetStateEvent</a>
+				<h3 id="Dungeon.SetStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=831:880#L16">SetStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.SetStateEvent">&#xb6;</a>
 					
 					
@@ -595,7 +597,7 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1198:1304#L28">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1283:1389#L30">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
@@ -624,7 +626,7 @@ TODO: 状態として持たないほうがいいかも
 
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1996:2029#L54">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2081:2114#L56">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -637,7 +639,7 @@ TODO: 状態として持たないほうがいいかも
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1841:1873#L49">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1926:1958#L51">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -650,7 +652,7 @@ TODO: 状態として持たないほうがいいかも
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1614:1675#L41">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1699:1760#L43">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -663,7 +665,7 @@ TODO: 状態として持たないほうがいいかも
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1403:1462#L36">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1488:1547#L38">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
@@ -712,7 +714,7 @@ TODO: 状態として持たないほうがいいかも
 		
 			
 			
-			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2156:2447#L59">MinimapSettings</a>
+			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2241:2532#L61">MinimapSettings</a>
 				<a class="permalink" href="index.html#MinimapSettings">&#xb6;</a>
 				
 				
@@ -1204,7 +1206,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 
 
 <div id="footer">
-Build version go1.24.7.<br>
+Build version go1.24.9.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

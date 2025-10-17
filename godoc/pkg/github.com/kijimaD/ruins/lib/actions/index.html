@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.7";</script>
+<script>var goVersion = "go1.24.9";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -358,6 +358,32 @@ manager.ProcessTurn(world)
 				
 			
 				
+				<dd><a href="index.html#CloseDoorActivity">type CloseDoorActivity</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.Canceled">func (cda *CloseDoorActivity) Canceled(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.DoTurn">func (cda *CloseDoorActivity) DoTurn(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.Finish">func (cda *CloseDoorActivity) Finish(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.Info">func (cda *CloseDoorActivity) Info() ActivityInfo</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.Start">func (cda *CloseDoorActivity) Start(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.String">func (cda *CloseDoorActivity) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CloseDoorActivity.Validate">func (cda *CloseDoorActivity) Validate(act *Activity, world w.World) error</a></dd>
+				
+			
+				
 				<dd><a href="index.html#CraftActivity">type CraftActivity</a></dd>
 				
 				
@@ -407,6 +433,32 @@ manager.ProcessTurn(world)
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MoveActivity.Validate">func (ma *MoveActivity) Validate(act *Activity, world w.World) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#OpenDoorActivity">type OpenDoorActivity</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.Canceled">func (oda *OpenDoorActivity) Canceled(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.DoTurn">func (oda *OpenDoorActivity) DoTurn(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.Finish">func (oda *OpenDoorActivity) Finish(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.Info">func (oda *OpenDoorActivity) Info() ActivityInfo</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.Start">func (oda *OpenDoorActivity) Start(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.String">func (oda *OpenDoorActivity) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#OpenDoorActivity.Validate">func (oda *OpenDoorActivity) Validate(act *Activity, world w.World) error</a></dd>
 				
 			
 				
@@ -585,6 +637,8 @@ manager.ProcessTurn(world)
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go">craft.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/doc.go">doc.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go">door.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/errors.go">errors.go</a>
 			
@@ -1356,6 +1410,121 @@ CDDAのactivity_actorを参考にした設計
 		
 			
 			
+			<h2 id="CloseDoorActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=3448:3479#L106">CloseDoorActivity</a>
+				<a class="permalink" href="index.html#CloseDoorActivity">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CloseDoorActivity はActivityInterfaceの実装
+
+			<pre>type CloseDoorActivity struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CloseDoorActivity.Canceled">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=6559:6629#L204">Canceled</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.Canceled">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) Canceled(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Canceled はドア閉鎖キャンセル時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="CloseDoorActivity.DoTurn">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=4666:4738#L148">DoTurn</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.DoTurn">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) DoTurn(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>DoTurn はドア閉鎖アクティビティの1ターン分の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="CloseDoorActivity.Finish">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=6141:6213#L190">Finish</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.Finish">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) Finish(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Finish はドア閉鎖完了時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="CloseDoorActivity.Info">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=3519:3568#L109">Info</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.Info">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) Info() <a href="index.html#ActivityInfo">ActivityInfo</a></pre>
+				<p>Info はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="CloseDoorActivity.Start">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=4434:4501#L142">Start</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.Start">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) Start(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Start はドア閉鎖開始時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="CloseDoorActivity.String">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=3815:3860#L121">String</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="CloseDoorActivity.Validate">func (*CloseDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=3953:4027#L126">Validate</a>
+					<a class="permalink" href="index.html#CloseDoorActivity.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (cda *<a href="index.html#CloseDoorActivity">CloseDoorActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はドア閉鎖アクティビティの検証を行う
+
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="CraftActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=254:281#L3">CraftActivity</a>
 				<a class="permalink" href="index.html#CraftActivity">&#xb6;</a>
 				
@@ -1583,6 +1752,121 @@ Validate はActivityInterfaceの実装
 				</h3>
 				<pre>func (ma *<a href="index.html#MoveActivity">MoveActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Validate はActivityInterfaceの実装
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="OpenDoorActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=213:243#L2">OpenDoorActivity</a>
+				<a class="permalink" href="index.html#OpenDoorActivity">&#xb6;</a>
+				
+				
+			</h2>
+			<p>OpenDoorActivity はActivityInterfaceの実装
+
+			<pre>type OpenDoorActivity struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="OpenDoorActivity.Canceled">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=3213:3282#L100">Canceled</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.Canceled">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) Canceled(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Canceled はドア開閉キャンセル時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="OpenDoorActivity.DoTurn">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=1422:1493#L44">DoTurn</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.DoTurn">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) DoTurn(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>DoTurn はドア開閉アクティビティの1ターン分の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="OpenDoorActivity.Finish">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=2796:2867#L86">Finish</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.Finish">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) Finish(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Finish はドア開閉完了時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="OpenDoorActivity.Info">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=283:331#L5">Info</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.Info">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) Info() <a href="index.html#ActivityInfo">ActivityInfo</a></pre>
+				<p>Info はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="OpenDoorActivity.Start">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=1191:1257#L38">Start</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.Start">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) Start(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Start はドア開閉開始時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="OpenDoorActivity.String">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=575:619#L17">String</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="OpenDoorActivity.Validate">func (*OpenDoorActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/door.go?s=711:784#L22">Validate</a>
+					<a class="permalink" href="index.html#OpenDoorActivity.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (oda *<a href="index.html#OpenDoorActivity">OpenDoorActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はドア開閉アクティビティの検証を行う
 
 				
 				
@@ -2315,7 +2599,7 @@ Validate はActivityInterfaceの実装
 
 
 <div id="footer">
-Build version go1.24.7.<br>
+Build version go1.24.9.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

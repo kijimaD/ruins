@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.7";</script>
+<script>var goVersion = "go1.24.9";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -261,6 +261,11 @@ Walkable = true
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#CaveStalactites.PlanMeta">func (c CaveStalactites) PlanMeta(planData *MetaPlan)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DoorSpec">type DoorSpec</a></dd>
+				
 				
 			
 				
@@ -1151,6 +1156,34 @@ TODO: 全然わかってないので理解する
 		
 			
 			
+			<h2 id="DoorSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=857:1031#L23">DoorSpec</a>
+				<a class="permalink" href="index.html#DoorSpec">&#xb6;</a>
+				
+				
+			</h2>
+			<p>DoorSpec はドアエンティティの配置情報
+
+			<pre>type DoorSpec struct {
+<span id="DoorSpec.X"></span>    X           <a href="http://localhost:8888/pkg/builtin/#int">int</a>                <span class="comment">// X座標</span>
+<span id="DoorSpec.Y"></span>    Y           <a href="http://localhost:8888/pkg/builtin/#int">int</a>                <span class="comment">// Y座標</span>
+<span id="DoorSpec.Orientation"></span>    Orientation <a href="../components/index.html">gc</a>.<a href="../components/index.html#DoorOrientation">DoorOrientation</a> <span class="comment">// ドアの向き（横/縦）</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
 			<h2 id="FillAll">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=89:129#L1">FillAll</a>
 				<a class="permalink" href="index.html#FillAll">&#xb6;</a>
 				
@@ -1388,7 +1421,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9832:9898#L309">InitialMapPlanner</a>
+			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10240:10306#L325">InitialMapPlanner</a>
 				<a class="permalink" href="index.html#InitialMapPlanner">&#xb6;</a>
 				
 				
@@ -1543,7 +1576,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9976:10030#L314">MetaMapPlanner</a>
+			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10384:10438#L330">MetaMapPlanner</a>
 				<a class="permalink" href="index.html#MetaMapPlanner">&#xb6;</a>
 				
 				
@@ -1568,7 +1601,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=875:2091#L23">MetaPlan</a>
+			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=1106:2384#L30">MetaPlan</a>
 				<a class="permalink" href="index.html#MetaPlan">&#xb6;</a>
 				
 				
@@ -1597,6 +1630,8 @@ TODO: 全然わかってないので理解する
     Items []<a href="index.html#ItemSpec">ItemSpec</a>
 <span id="MetaPlan.Props"></span>    <span class="comment">// Props は配置予定のPropsリスト</span>
     Props []<a href="index.html#PropsSpec">PropsSpec</a>
+<span id="MetaPlan.Doors"></span>    <span class="comment">// Doors は配置予定のドアリスト</span>
+    Doors []<a href="index.html#DoorSpec">DoorSpec</a>
 <span id="MetaPlan.PlayerStartPosition"></span>    <span class="comment">// PlayerStartPosition はプレイヤー開始位置（&#39;@&#39;文字で指定された場合に使用する）</span>
     PlayerStartPosition *struct {
         X <a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -1631,7 +1666,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4270:4333#L144">AdjacentAnyFloor</a>
+				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4678:4741#L160">AdjacentAnyFloor</a>
 					<a class="permalink" href="index.html#MetaPlan.AdjacentAnyFloor">&#xb6;</a>
 					
 					
@@ -1657,7 +1692,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3503:3565#L114">DownTile</a>
+				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3911:3973#L130">DownTile</a>
 					<a class="permalink" href="index.html#MetaPlan.DownTile">&#xb6;</a>
 					
 					
@@ -1670,7 +1705,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14927:14988#L466">GetPlayerStartPosition</a>
+				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15335:15396#L482">GetPlayerStartPosition</a>
 					<a class="permalink" href="index.html#MetaPlan.GetPlayerStartPosition">&#xb6;</a>
 					
 					
@@ -1683,7 +1718,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14536:14588#L454">GetTile</a>
+				<h3 id="MetaPlan.GetTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14944:14996#L470">GetTile</a>
 					<a class="permalink" href="index.html#MetaPlan.GetTile">&#xb6;</a>
 					
 					
@@ -1697,7 +1732,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=5058:5120#L176">GetWallType</a>
+				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=5466:5528#L192">GetWallType</a>
 					<a class="permalink" href="index.html#MetaPlan.GetWallType">&#xb6;</a>
 					
 					
@@ -1710,7 +1745,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2170:2244#L55">IsSpawnableTile</a>
+				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2463:2537#L64">IsSpawnableTile</a>
 					<a class="permalink" href="index.html#MetaPlan.IsSpawnableTile">&#xb6;</a>
 					
 					
@@ -1736,7 +1771,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3764:3826#L124">LeftTile</a>
+				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4172:4234#L140">LeftTile</a>
 					<a class="permalink" href="index.html#MetaPlan.LeftTile">&#xb6;</a>
 					
 					
@@ -1749,7 +1784,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3985:4048#L134">RightTile</a>
+				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4393:4456#L150">RightTile</a>
 					<a class="permalink" href="index.html#MetaPlan.RightTile">&#xb6;</a>
 					
 					
@@ -1762,7 +1797,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3239:3299#L104">UpTile</a>
+				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3647:3707#L120">UpTile</a>
 					<a class="permalink" href="index.html#MetaPlan.UpTile">&#xb6;</a>
 					
 					
@@ -1988,7 +2023,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7477:7580#L237">PlannerChain</a>
+			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7885:7988#L253">PlannerChain</a>
 				<a class="permalink" href="index.html#PlannerChain">&#xb6;</a>
 				
 				
@@ -2012,7 +2047,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10683:10772#L332">NewBigRoomPlanner</a>
+				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11091:11180#L348">NewBigRoomPlanner</a>
 					<a class="permalink" href="index.html#NewBigRoomPlanner">&#xb6;</a>
 					
 					
@@ -2049,7 +2084,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7742:7820#L245">NewPlannerChain</a>
+				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8150:8228#L261">NewPlannerChain</a>
 					<a class="permalink" href="index.html#NewPlannerChain">&#xb6;</a>
 					
 					
@@ -2062,7 +2097,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=13602:13690#L424">NewRandomPlanner</a>
+				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14010:14098#L440">NewRandomPlanner</a>
 					<a class="permalink" href="index.html#NewRandomPlanner">&#xb6;</a>
 					
 					
@@ -2086,7 +2121,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10113:10204#L319">NewSmallRoomPlanner</a>
+				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10521:10612#L335">NewSmallRoomPlanner</a>
 					<a class="permalink" href="index.html#NewSmallRoomPlanner">&#xb6;</a>
 					
 					
@@ -2112,7 +2147,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8957:8992#L286">Plan</a>
+				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9365:9400#L302">Plan</a>
 					<a class="permalink" href="index.html#PlannerChain.Plan">&#xb6;</a>
 					
 					
@@ -2125,7 +2160,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8611:8680#L276">StartWith</a>
+				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9019:9088#L292">StartWith</a>
 					<a class="permalink" href="index.html#PlannerChain.StartWith">&#xb6;</a>
 					
 					
@@ -2138,7 +2173,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9475:9556#L302">ValidateConnectivity</a>
+				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9883:9964#L318">ValidateConnectivity</a>
 					<a class="permalink" href="index.html#PlannerChain.ValidateConnectivity">&#xb6;</a>
 					
 					
@@ -2152,7 +2187,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8766:8824#L281">With</a>
+				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9174:9232#L297">With</a>
 					<a class="permalink" href="index.html#PlannerChain.With">&#xb6;</a>
 					
 					
@@ -2167,7 +2202,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11193:11541#L346">PlannerType</a>
+			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11601:11949#L362">PlannerType</a>
 				<a class="permalink" href="index.html#PlannerType">&#xb6;</a>
 				
 				
@@ -2809,7 +2844,7 @@ TODO: 全然わかってないので理解する
 
 
 <div id="footer">
-Build version go1.24.7.<br>
+Build version go1.24.9.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,
