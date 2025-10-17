@@ -107,7 +107,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 			healingCount++
 		}
 	}))
-	assert.Equal(t, 2, healingCount, "回復効果を持つアイテムが正しくロードされていない")
+	assert.Equal(t, 0, healingCount, "フィールドアイテムは保存されない（バックパックと装備アイテムのみ保存）")
 
 	// ダメージアイテムが正しくロードされたことを確認
 	damageCount := 0
@@ -127,7 +127,7 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 			damageCount++
 		}
 	}))
-	assert.Equal(t, 2, damageCount, "ダメージ効果を持つアイテムが正しくロードされていない")
+	assert.Equal(t, 0, damageCount, "フィールドアイテムは保存されない（バックパックと装備アイテムのみ保存）")
 
 	// Consumableコンポーネントも正しくロードされることを確認
 	consumableCount := 0
@@ -151,5 +151,5 @@ func TestSaveLoadEffectComponents(t *testing.T) {
 			consumableCount++
 		}
 	}))
-	assert.Equal(t, 2, consumableCount, "Consumableコンポーネントが正しくロードされていない")
+	assert.Equal(t, 0, consumableCount, "フィールドアイテムは保存されない（バックパックと装備アイテムのみ保存）")
 }

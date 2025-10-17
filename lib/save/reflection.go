@@ -48,30 +48,15 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 
 	components := world.Components
 
-	// リフレクションを使って全コンポーネント型を自動登録
-	// 特別処理が必要なコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.AIVision{}), components.AIVision, r.extractAIVision, r.restoreAIVision, r.resolveAIVisionRefs)
-
-	// テストで使用されているコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.GridElement{}), components.GridElement, r.extractGridElement, r.restoreGridElement, r.resolveGridElementRefs)
-	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, r.resolveAIRoamingRefs)
-	r.registerComponent(reflect.TypeOf(&gc.SpriteRender{}), components.SpriteRender, r.extractSpriteRender, r.restoreSpriteRender, r.resolveSpriteRenderRefs)
-
-	// カメラコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.Camera{}), components.Camera, r.extractCamera, r.restoreCamera, nil)
-
-	// NullComponentは特別扱い
-	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
-	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
+	// プレイヤー識別用
 	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
-	r.registerNullComponent(reflect.TypeOf(&gc.Prop{}), components.Prop)
 	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
-	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
+
+	// アイテム識別用
 	r.registerNullComponent(reflect.TypeOf(&gc.Item{}), components.Item)
 
-	// アイテム位置情報コンポーネント
+	// アイテム位置情報（バックパック・装備のみ保存）
 	r.registerNullComponent(reflect.TypeOf(&gc.LocationInBackpack{}), components.ItemLocationInBackpack)
-	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
 	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, r.resolveLocationEquippedRefs)
 
 	// 装備変更フラグ
@@ -83,6 +68,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.registerComponent(reflect.TypeOf(&gc.TurnBased{}), components.TurnBased, r.extractTurnBased, r.restoreTurnBased, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
 	r.registerComponent(reflect.TypeOf(&gc.Description{}), components.Description, r.extractDescription, r.restoreDescription, nil)
+	r.registerComponent(reflect.TypeOf(&gc.SpriteRender{}), components.SpriteRender, r.extractSpriteRender, r.restoreSpriteRender, nil)
 
 	// アイテム関連コンポーネント
 	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
@@ -142,24 +128,14 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 		ExtractFunc: func(world w.World, entity ecs.Entity) (interface{}, bool) {
 			// NullComponentの存在チェック
 			switch elemType.Name() {
-			case "BlockView":
-				return struct{}{}, entity.HasComponent(world.Components.BlockView)
-			case "BlockPass":
-				return struct{}{}, entity.HasComponent(world.Components.BlockPass)
 			case "Player":
 				return struct{}{}, entity.HasComponent(world.Components.Player)
-			case "Prop":
-				return struct{}{}, entity.HasComponent(world.Components.Prop)
 			case "FactionAllyData":
 				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
-			case "FactionEnemyData":
-				return struct{}{}, entity.HasComponent(world.Components.FactionEnemy)
 			case "Item":
 				return struct{}{}, entity.HasComponent(world.Components.Item)
 			case "LocationInBackpack":
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationInBackpack)
-			case "LocationOnField":
-				return struct{}{}, entity.HasComponent(world.Components.ItemLocationOnField)
 			case "EquipmentChanged":
 				return struct{}{}, entity.HasComponent(world.Components.EquipmentChanged)
 			}
@@ -168,24 +144,14 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 		RestoreFunc: func(world w.World, entity ecs.Entity, _ interface{}) error {
 			// NullComponentを追加
 			switch elemType.Name() {
-			case "BlockView":
-				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
-			case "BlockPass":
-				entity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
 			case "Player":
 				entity.AddComponent(world.Components.Player, &gc.Player{})
-			case "Prop":
-				entity.AddComponent(world.Components.Prop, &gc.Prop{})
 			case "FactionAllyData":
 				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
-			case "FactionEnemyData":
-				entity.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemyData{})
 			case "Item":
 				entity.AddComponent(world.Components.Item, &gc.Item{})
 			case "LocationInBackpack":
 				entity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
-			case "LocationOnField":
-				entity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
 			case "EquipmentChanged":
 				entity.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 			}
@@ -237,99 +203,6 @@ func (r *ComponentRegistry) GetAllTypes() []*ComponentTypeInfo {
 	})
 
 	return types
-}
-
-// 各コンポーネント型の抽出・復元関数
-func (r *ComponentRegistry) extractAIVision(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.AIVision) {
-		return nil, false
-	}
-	vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
-
-	// 注意: エンティティ参照のStableID変換は上位レベルで行う
-	return *vision, true
-}
-
-func (r *ComponentRegistry) restoreAIVision(world w.World, entity ecs.Entity, data interface{}) error {
-	vision, ok := data.(gc.AIVision)
-	if !ok {
-		return fmt.Errorf("invalid AIVision data type: %T", data)
-	}
-	// エンティティ参照の復元は後で行うため、一旦nilで設定
-	vision.TargetEntity = nil
-	entity.AddComponent(world.Components.AIVision, &vision)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveAIVisionRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	// エンティティ参照の解決はSerializationManagerで実装
-	return nil
-}
-
-// GridElement コンポーネントの処理
-func (r *ComponentRegistry) extractGridElement(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.GridElement) {
-		return nil, false
-	}
-	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	return *gridElement, true
-}
-
-func (r *ComponentRegistry) restoreGridElement(world w.World, entity ecs.Entity, data interface{}) error {
-	gridElement, ok := data.(gc.GridElement)
-	if !ok {
-		return fmt.Errorf("invalid GridElement data type: %T", data)
-	}
-	entity.AddComponent(world.Components.GridElement, &gridElement)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveGridElementRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	return nil
-}
-
-// AIRoaming コンポーネントの処理
-func (r *ComponentRegistry) extractAIRoaming(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.AIRoaming) {
-		return nil, false
-	}
-	roaming := world.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
-	return *roaming, true
-}
-
-func (r *ComponentRegistry) restoreAIRoaming(world w.World, entity ecs.Entity, data interface{}) error {
-	roaming, ok := data.(gc.AIRoaming)
-	if !ok {
-		return fmt.Errorf("invalid AIRoaming data type: %T", data)
-	}
-	entity.AddComponent(world.Components.AIRoaming, &roaming)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveAIRoamingRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	return nil
-}
-
-// SpriteRender コンポーネントの処理
-func (r *ComponentRegistry) extractSpriteRender(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.SpriteRender) {
-		return nil, false
-	}
-	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-	return *spriteRender, true
-}
-
-func (r *ComponentRegistry) restoreSpriteRender(world w.World, entity ecs.Entity, data interface{}) error {
-	spriteRender, ok := data.(gc.SpriteRender)
-	if !ok {
-		return fmt.Errorf("invalid SpriteRender data type: %T", data)
-	}
-	entity.AddComponent(world.Components.SpriteRender, &spriteRender)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveSpriteRenderRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	return nil
 }
 
 // ItemLocationEquipped コンポーネントの処理
@@ -660,23 +533,6 @@ func (r *ComponentRegistry) restoreLightSource(world w.World, entity ecs.Entity,
 	return nil
 }
 
-func (r *ComponentRegistry) extractCamera(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Camera) {
-		return nil, false
-	}
-	camera := world.Components.Camera.Get(entity).(*gc.Camera)
-	return *camera, true
-}
-
-func (r *ComponentRegistry) restoreCamera(world w.World, entity ecs.Entity, data interface{}) error {
-	camera, ok := data.(gc.Camera)
-	if !ok {
-		return fmt.Errorf("invalid Camera data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Camera, &camera)
-	return nil
-}
-
 func (r *ComponentRegistry) extractWallet(world w.World, entity ecs.Entity) (interface{}, bool) {
 	if !entity.HasComponent(world.Components.Wallet) {
 		return nil, false
@@ -691,5 +547,22 @@ func (r *ComponentRegistry) restoreWallet(world w.World, entity ecs.Entity, data
 		return fmt.Errorf("invalid Wallet data type: %T", data)
 	}
 	entity.AddComponent(world.Components.Wallet, &wallet)
+	return nil
+}
+
+func (r *ComponentRegistry) extractSpriteRender(world w.World, entity ecs.Entity) (interface{}, bool) {
+	if !entity.HasComponent(world.Components.SpriteRender) {
+		return nil, false
+	}
+	sprite := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
+	return *sprite, true
+}
+
+func (r *ComponentRegistry) restoreSpriteRender(world w.World, entity ecs.Entity, data interface{}) error {
+	sprite, ok := data.(gc.SpriteRender)
+	if !ok {
+		return fmt.Errorf("invalid SpriteRender data type: %T", data)
+	}
+	entity.AddComponent(world.Components.SpriteRender, &sprite)
 	return nil
 }

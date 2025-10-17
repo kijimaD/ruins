@@ -360,15 +360,13 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 }
 
 // MovePlayerToPosition は既存のプレイヤーエンティティを指定位置に移動させる
+// GridElement、SpriteRender、Cameraコンポーネントがない場合は追加する（ロード時に対応）
 func MovePlayerToPosition(world w.World, tileX int, tileY int) error {
 	// 既存のプレイヤーエンティティを検索
 	var playerEntity ecs.Entity
 	var found bool
 
-	world.Manager.Join(
-		world.Components.Player,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
 		if !found {
 			playerEntity = entity
 			found = true
@@ -379,10 +377,27 @@ func MovePlayerToPosition(world w.World, tileX int, tileY int) error {
 		return errors.New("プレイヤーエンティティが見つかりません")
 	}
 
+	// GridElementがない場合は追加
+	if !playerEntity.HasComponent(world.Components.GridElement) {
+		playerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{})
+	}
+
 	// プレイヤーの位置を更新
 	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
 	gridElement.X = gc.Tile(tileX)
 	gridElement.Y = gc.Tile(tileY)
+
+	// SpriteRenderがない場合は追加
+	if !playerEntity.HasComponent(world.Components.SpriteRender) {
+		playerEntity.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
+			SpriteKey: "player",
+		})
+	}
+
+	// Cameraがない場合は追加
+	if !playerEntity.HasComponent(world.Components.Camera) {
+		playerEntity.AddComponent(world.Components.Camera, &gc.Camera{})
+	}
 
 	return nil
 }

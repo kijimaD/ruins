@@ -92,7 +92,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		assert.Equal(t, "テストアイテム2", name.Name)
 		fieldItemCount++
 	}))
-	assert.Equal(t, 1, fieldItemCount, "フィールドのアイテムが正しくロードされていない")
+	assert.Equal(t, 0, fieldItemCount, "フィールドアイテムは保存されない（バックパックと装備アイテムのみ保存）")
 
 	// 装備アイテムが存在することを確認
 	equippedItemCount := 0

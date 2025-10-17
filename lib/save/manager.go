@@ -17,17 +17,7 @@ import (
 
 // コンポーネント名の定数
 const (
-	ComponentAIVision           = "AIVision"
-	ComponentBlockView          = "BlockView"
-	ComponentBlockPass          = "BlockPass"
-	ComponentPlayer             = "Player"
-	ComponentFactionAllyData    = "FactionAllyData"
-	ComponentFactionEnemyData   = "FactionEnemyData"
-	ComponentItem               = "Item"
-	ComponentLocationInBackpack = "LocationInBackpack"
-	ComponentLocationEquipped   = "LocationEquipped"
-	ComponentLocationOnField    = "LocationOnField"
-	ComponentEquipmentChanged   = "EquipmentChanged"
+	ComponentLocationEquipped = "LocationEquipped"
 )
 
 // Data はセーブデータの最上位構造
@@ -187,180 +177,26 @@ func (sm *SerializationManager) LoadWorld(world w.World, slotName string) error 
 }
 
 // extractWorldData はワールドからセーブデータを抽出
-//
-//nolint:gocyclo // コンポーネント種別ごとの処理が必要なため複雑度が高い
+// プレイヤーエンティティとその所持アイテム（バックパック・装備）のみを保存する
+// 地形、ドア、フィールドアイテム、敵などは毎回再生成し、保存しない
 func (sm *SerializationManager) extractWorldData(world w.World) WorldSaveData {
 	entities := []EntitySaveData{}
 	processedEntities := make(map[ecs.Entity]bool) // 重複処理防止
 
-	// 各コンポーネント型を持つエンティティを検索
-	for _, typeInfo := range sm.componentRegistry.GetAllTypes() {
-		entityCount := 0
+	// 1. プレイヤーエンティティを保存
+	world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
+		sm.processEntityForSave(entity, world, &entities, processedEntities)
+	}))
 
-		// この型のコンポーネントを持つ全エンティティを取得
-		switch typeInfo.Name {
-		case ComponentAIVision:
-			world.Manager.Join(world.Components.AIVision).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "AIRoaming":
-			world.Manager.Join(world.Components.AIRoaming).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "AIChasing":
-			world.Manager.Join(world.Components.AIChasing).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Camera":
-			world.Manager.Join(world.Components.Camera).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "SpriteRender":
-			world.Manager.Join(world.Components.SpriteRender).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "GridElement":
-			world.Manager.Join(world.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentBlockView:
-			world.Manager.Join(world.Components.BlockView).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentBlockPass:
-			world.Manager.Join(world.Components.BlockPass).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentPlayer:
-			world.Manager.Join(world.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentFactionAllyData:
-			world.Manager.Join(world.Components.FactionAlly).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentFactionEnemyData:
-			world.Manager.Join(world.Components.FactionEnemy).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Name":
-			world.Manager.Join(world.Components.Name).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Pools":
-			world.Manager.Join(world.Components.Pools).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "TurnBased":
-			world.Manager.Join(world.Components.TurnBased).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Attributes":
-			world.Manager.Join(world.Components.Attributes).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentItem:
-			world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentLocationInBackpack:
-			world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentLocationEquipped:
-			world.Manager.Join(world.Components.ItemLocationEquipped).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentLocationOnField:
-			world.Manager.Join(world.Components.ItemLocationOnField).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Description":
-			world.Manager.Join(world.Components.Description).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Wearable":
-			world.Manager.Join(world.Components.Wearable).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Card":
-			world.Manager.Join(world.Components.Card).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Stackable":
-			world.Manager.Join(world.Components.Stackable).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Value":
-			world.Manager.Join(world.Components.Value).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Consumable":
-			world.Manager.Join(world.Components.Consumable).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Attack":
-			world.Manager.Join(world.Components.Attack).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Recipe":
-			world.Manager.Join(world.Components.Recipe).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case ComponentEquipmentChanged:
-			world.Manager.Join(world.Components.EquipmentChanged).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "ProvidesHealing":
-			world.Manager.Join(world.Components.ProvidesHealing).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "InflictsDamage":
-			world.Manager.Join(world.Components.InflictsDamage).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "LightSource":
-			world.Manager.Join(world.Components.LightSource).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		case "Wallet":
-			world.Manager.Join(world.Components.Wallet).Visit(ecs.Visit(func(entity ecs.Entity) {
-				entityCount++
-				sm.processEntityForSave(entity, world, &entities, processedEntities)
-			}))
-		}
-	}
+	// 2. バックパック内のアイテムを保存
+	world.Manager.Join(world.Components.ItemLocationInBackpack).Visit(ecs.Visit(func(entity ecs.Entity) {
+		sm.processEntityForSave(entity, world, &entities, processedEntities)
+	}))
+
+	// 3. 装備中のアイテムを保存
+	world.Manager.Join(world.Components.ItemLocationEquipped).Visit(ecs.Visit(func(entity ecs.Entity) {
+		sm.processEntityForSave(entity, world, &entities, processedEntities)
+	}))
 
 	// エンティティをStableIDでソートして決定的な順序にする
 	sort.Slice(entities, func(i, j int) bool {
@@ -410,25 +246,6 @@ func (sm *SerializationManager) processEntityForSave(entity ecs.Entity, world w.
 
 // processEntityReferences はエンティティ参照を安定IDに変換
 func (sm *SerializationManager) processEntityReferences(data interface{}, typeInfo *ComponentTypeInfo) interface{} {
-	// AIVisionのTargetEntityを特別処理
-	if typeInfo.Name == ComponentAIVision {
-		if vision, ok := data.(gc.AIVision); ok {
-			visionRef := struct {
-				ViewDistance gc.Pixel  `json:"view_distance"`
-				TargetRef    *StableID `json:"target_ref,omitempty"`
-			}{
-				ViewDistance: vision.ViewDistance,
-			}
-
-			if vision.TargetEntity != nil {
-				targetStableID := sm.stableIDManager.GetStableID(*vision.TargetEntity)
-				visionRef.TargetRef = &targetStableID
-			}
-
-			return visionRef
-		}
-	}
-
 	// LocationEquippedのOwnerを特別処理
 	if typeInfo.Name == ComponentLocationEquipped {
 		if equipped, ok := data.(gc.LocationEquipped); ok {
@@ -513,31 +330,6 @@ func (sm *SerializationManager) restoreWorldData(world w.World, worldData WorldS
 
 // restoreComponentData はJSONデータからコンポーネントデータを復元
 func (sm *SerializationManager) restoreComponentData(jsonData interface{}, typeInfo *ComponentTypeInfo) (interface{}, error) {
-	// AIVisionを特別処理（カスタムシリアライズ形式のため）
-	if typeInfo.Name == "AIVision" {
-		dataMap, ok := jsonData.(map[string]interface{})
-		if !ok {
-			return nil, fmt.Errorf("invalid AIVision JSON data type: %T", jsonData)
-		}
-
-		// ViewDistanceを取得
-		viewDistanceVal, exists := dataMap["view_distance"]
-		if !exists {
-			return nil, fmt.Errorf("view_distance not found in AIVision data")
-		}
-		viewDistance, ok := viewDistanceVal.(float64)
-		if !ok {
-			return nil, fmt.Errorf("invalid view_distance type: %T", viewDistanceVal)
-		}
-
-		// AIVision構造体を作成（TargetEntityは後で解決）
-		vision := gc.AIVision{
-			ViewDistance: gc.Pixel(viewDistance),
-			TargetEntity: nil,
-		}
-		return vision, nil
-	}
-
 	// ProvidesHealingを特別処理（Amounterインターフェースのため）
 	if typeInfo.Name == "ProvidesHealing" {
 		// この型はreflection.goのrestoreProvidesHealingで処理されるため、
@@ -592,38 +384,6 @@ func (sm *SerializationManager) restoreComponentData(jsonData interface{}, typeI
 
 // resolveEntityReferences はエンティティ参照を解決
 func (sm *SerializationManager) resolveEntityReferences(world w.World, entity ecs.Entity, jsonData interface{}, typeInfo *ComponentTypeInfo) error {
-	if typeInfo.Name == "AIVision" {
-		// JSONデータを変換
-		jsonBytes, err := json.Marshal(jsonData)
-		if err != nil {
-			return err
-		}
-
-		var visionRef struct {
-			ViewDistance gc.Pixel  `json:"view_distance"`
-			TargetRef    *StableID `json:"target_ref,omitempty"`
-		}
-
-		err = json.Unmarshal(jsonBytes, &visionRef)
-		if err != nil {
-			return err
-		}
-
-		// AIVisionコンポーネントを取得
-		if entity.HasComponent(world.Components.AIVision) {
-			vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
-
-			// エンティティ参照を解決
-			if visionRef.TargetRef != nil {
-				if targetEntity, exists := sm.stableIDManager.GetEntity(*visionRef.TargetRef); exists {
-					vision.TargetEntity = &targetEntity
-				} else {
-					fmt.Printf("Warning: target entity not found for stable ID: %v\n", *visionRef.TargetRef)
-				}
-			}
-		}
-	}
-
 	if typeInfo.Name == ComponentLocationEquipped {
 		// JSONデータを変換
 		jsonBytes, err := json.Marshal(jsonData)
