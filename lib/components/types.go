@@ -48,6 +48,16 @@ type EquipBonus struct {
 // EquipmentSlotNumber は装備スロット番号。0始まり
 type EquipmentSlotNumber int
 
+// 装備スロット番号定数
+const (
+	SlotHead         EquipmentSlotNumber = 0 // 頭部防具スロット
+	SlotTorso        EquipmentSlotNumber = 1 // 胴体防具スロット
+	SlotLegs         EquipmentSlotNumber = 2 // 脚部防具スロット
+	SlotJewelry      EquipmentSlotNumber = 3 // 装飾品スロット
+	SlotMeleeWeapon  EquipmentSlotNumber = 4 // 近接武器スロット
+	SlotRangedWeapon EquipmentSlotNumber = 5 // 遠距離武器スロット
+)
+
 // Amounter は量を計算するためのインターフェース
 type Amounter interface {
 	Amount() // 量計算を識別するマーカーメソッド

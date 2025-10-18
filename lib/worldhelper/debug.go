@@ -28,7 +28,7 @@ func InitDebugData(world w.World) {
 	// 基本アイテムの生成
 	weapon1, _ := SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
 	weapon2, _ := SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-	weapon3, _ := SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
+	_, _ = SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
 	armor, _ := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
 	_, _ = SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
 	_, _ = SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
@@ -60,13 +60,10 @@ func InitDebugData(world w.World) {
 	// プレイヤー生成
 	celestine, _ := SpawnPlayer(world, 5, 5, "セレスティン")
 
-	// 装備（木刀とハンドガンとM72 LAWを装備、西洋鎧を装備）
-	// 木刀は近接武器なのでスロット4に装備
-	Equip(world, weapon1, celestine, GetMeleeWeaponSlot())
-	// ハンドガンは遠距離武器なのでスロット5に装備
-	Equip(world, weapon2, celestine, GetRangedWeaponSlot())
-	// M72 LAWは遠距離武器（上書き）
-	Equip(world, weapon3, celestine, GetRangedWeaponSlot())
-	// 西洋鎧は防具スロット0に装備
-	Equip(world, armor, celestine, gc.EquipmentSlotNumber(0))
+	// 木刀は近接武器スロットに装備
+	Equip(world, weapon1, celestine, gc.SlotMeleeWeapon)
+	// ハンドガンは遠距離武器スロットに装備
+	Equip(world, weapon2, celestine, gc.SlotRangedWeapon)
+	// 西洋鎧は胴体スロットに装備
+	Equip(world, armor, celestine, gc.SlotTorso)
 }

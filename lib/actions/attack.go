@@ -305,8 +305,7 @@ func (aa *AttackActivity) getAttackParams(attacker ecs.Entity, world w.World) (*
 	// プレイヤーの場合: 装備武器から攻撃パラメータを取得
 	if attacker.HasComponent(world.Components.Player) {
 		// 近接武器スロットから武器を取得
-		weaponSlots := worldhelper.GetWeaponEquipments(world, attacker)
-		meleeWeapon := weaponSlots[0] // 0番目が近接武器スロット
+		meleeWeapon := worldhelper.GetMeleeWeapon(world, attacker)
 
 		if meleeWeapon != nil {
 			// 装備している武器から攻撃パラメータを取得
