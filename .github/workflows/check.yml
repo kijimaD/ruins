@@ -2,6 +2,9 @@ name: ⚗️Check
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
 
 env:
   GH_TOKEN: ${{ secrets.WRITE_PACKAGE }}
@@ -50,9 +53,15 @@ jobs:
 
   test:
     needs: setup
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
+    permissions:
+      # octocov 用の設定
+      # PRにコメントする
+      pull-requests: write
+      # 実行時間取得
+      contents: write
+      # 前のレポートを取得する
+      actions: read
     steps:
       - uses: actions/checkout@v5
       - name: build
@@ -71,11 +80,12 @@ jobs:
         uses: actions/setup-go@v6
       - name: lint
         run: make tools-install lint # buildできる環境でないと、エラーになる。jobを分けるのが望ましいが、面倒なのでここに書く
-      - name: upload result
-        uses: actions/upload-artifact@v4
-        with:
-          name: vrt
-          path: vrtimages
+      -
+        name: coverage for octocov
+        run: go test ./... -coverprofile=coverage.out
+      -
+        uses: k1LoW/octocov-action@v1
+
       # 差分があればコミット
       - name: commit for changes
         run: |
