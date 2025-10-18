@@ -58,7 +58,7 @@ func UpdateSpecFromSpec(world w.World, targetContainer *widget.Container, spec g
 
 // addAttackInfo はAttackコンポーネントの情報を追加する
 func addAttackInfo(targetContainer *widget.Container, attack *gc.Attack, world w.World) {
-	targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.String(), consts.TextColor, world.Resources.UIResources))
+	targetContainer.AddChild(styled.NewBodyText(attack.AttackCategory.Label, consts.TextColor, world.Resources.UIResources))
 
 	damage := fmt.Sprintf("%s %s", consts.DamageLabel, strconv.Itoa(attack.Damage))
 	targetContainer.AddChild(styled.NewBodyText(damage, consts.TextColor, world.Resources.UIResources))

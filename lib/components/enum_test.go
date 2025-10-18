@@ -172,7 +172,7 @@ func TestAttackType(t *testing.T) {
 		}
 	})
 
-	t.Run("attack type string representation", func(t *testing.T) {
+	t.Run("attack type label", func(t *testing.T) {
 		t.Parallel()
 		tests := []struct {
 			attackType AttackType
@@ -189,8 +189,7 @@ func TestAttackType(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.attackType.Type, func(t *testing.T) {
 				t.Parallel()
-				result := tt.attackType.String()
-				assert.Equal(t, tt.expected, result, "文字列表現が正しくない")
+				assert.Equal(t, tt.expected, tt.attackType.Label, "ラベルが正しくない")
 			})
 		}
 	})

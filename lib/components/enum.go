@@ -108,28 +108,41 @@ const (
 type AttackType struct {
 	Type  string          // 武器種別の識別子
 	Range AttackRangeType // 近接/遠距離の区分
+	Label string          // 表示用ラベル
 }
 
 var (
 	// AttackSword は刀剣
-	AttackSword = AttackType{Type: "SWORD", Range: AttackRangeMelee}
+	AttackSword = AttackType{Type: "SWORD", Range: AttackRangeMelee, Label: "刀剣"}
 	// AttackSpear は長物
-	AttackSpear = AttackType{Type: "SPEAR", Range: AttackRangeMelee}
+	AttackSpear = AttackType{Type: "SPEAR", Range: AttackRangeMelee, Label: "長物"}
 	// AttackHandgun は拳銃
-	AttackHandgun = AttackType{Type: "HANDGUN", Range: AttackRangeRanged}
+	AttackHandgun = AttackType{Type: "HANDGUN", Range: AttackRangeRanged, Label: "拳銃"}
 	// AttackRifle は小銃
-	AttackRifle = AttackType{Type: "RIFLE", Range: AttackRangeRanged}
+	AttackRifle = AttackType{Type: "RIFLE", Range: AttackRangeRanged, Label: "小銃"}
 	// AttackFist は格闘
-	AttackFist = AttackType{Type: "FIST", Range: AttackRangeMelee}
+	AttackFist = AttackType{Type: "FIST", Range: AttackRangeMelee, Label: "格闘"}
 	// AttackCanon は大砲
-	AttackCanon = AttackType{Type: "CANON", Range: AttackRangeRanged}
+	AttackCanon = AttackType{Type: "CANON", Range: AttackRangeRanged, Label: "大砲"}
 )
+
+// AllAttackTypes は定義済みの全AttackTypeのリスト
+// 新しいAttackTypeを追加する場合は、ここにも追加すること
+var AllAttackTypes = []AttackType{
+	AttackSword,
+	AttackSpear,
+	AttackHandgun,
+	AttackRifle,
+	AttackFist,
+	AttackCanon,
+}
 
 // Valid はAttackTypeの値が有効かを検証する
 func (at AttackType) Valid() error {
-	switch at.Type {
-	case AttackSword.Type, AttackSpear.Type, AttackHandgun.Type, AttackRifle.Type, AttackFist.Type, AttackCanon.Type:
-		return nil
+	for _, valid := range AllAttackTypes {
+		if at.Type == valid.Type {
+			return nil
+		}
 	}
 
 	return fmt.Errorf("get %s: %w", at.Type, ErrInvalidEnumType)
@@ -143,28 +156,6 @@ func (at AttackType) IsMelee() bool {
 // IsRanged は遠距離武器かどうかを返す
 func (at AttackType) IsRanged() bool {
 	return at.Range == AttackRangeRanged
-}
-
-func (at AttackType) String() string {
-	var result string
-	switch at.Type {
-	case "SWORD":
-		result = "刀剣"
-	case "SPEAR":
-		result = "長物"
-	case "HANDGUN":
-		result = "拳銃"
-	case "RIFLE":
-		result = "小銃"
-	case "FIST":
-		result = "格闘"
-	case "CANON":
-		result = "大砲"
-	default:
-		panic("invalid attack type")
-	}
-
-	return result
 }
 
 // ParseAttackType は文字列からAttackTypeを生成する

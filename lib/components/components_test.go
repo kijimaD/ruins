@@ -238,3 +238,22 @@ func TestComponentsStructure(t *testing.T) {
 		}
 	})
 }
+
+func TestAllAttackTypesCovered(t *testing.T) {
+	t.Parallel()
+
+	t.Run("全てのAttackTypeが正しく実装されている", func(t *testing.T) {
+		for _, at := range AllAttackTypes {
+			t.Run(at.Type, func(t *testing.T) {
+				// Labelが設定されていること
+				assert.NotEmpty(t, at.Label, "Labelが空である")
+
+				// ParseAttackType()でラウンドトリップできること
+				assert.NotPanics(t, func() {
+					parsed := ParseAttackType(at.Type)
+					assert.Equal(t, at.Type, parsed.Type)
+				})
+			})
+		}
+	})
+}
