@@ -155,7 +155,7 @@ func (pa *PickupActivity) performPickupActivity(act *Activity, world w.World) er
 }
 
 // collectFieldItem はフィールドアイテムを収集してバックパックに移動する
-func (pa *PickupActivity) collectFieldItem(act *Activity, world w.World, itemEntity ecs.Entity) error {
+func (pa *PickupActivity) collectFieldItem(_ *Activity, world w.World, itemEntity ecs.Entity) error {
 	itemName := "Unknown Item"
 	if nameComp := world.Components.Name.Get(itemEntity); nameComp != nil {
 		name := nameComp.(*gc.Name)
@@ -183,15 +183,7 @@ func (pa *PickupActivity) collectFieldItem(act *Activity, world w.World, itemEnt
 		return fmt.Errorf("インベントリ統合エラー: %w", err)
 	}
 
-	// エンティティの名前を取得
-	entityName := "Unknown"
-	if nameComp := world.Components.Name.Get(act.Actor); nameComp != nil {
-		name := nameComp.(*gc.Name)
-		entityName = name.Name
-	}
-
 	gamelog.New(gamelog.FieldLog).
-		Append(entityName + "が ").
 		ItemName(itemName).
 		Append(" を入手した。").
 		Log()

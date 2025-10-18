@@ -193,7 +193,7 @@ func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 			// アイテムを発見したメッセージを表示
 			gamelog.New(gamelog.FieldLog).
 				ItemName(nameComp.Name).
-				Append("を発見した。").
+				Append(" を発見した。").
 				Log()
 		}
 	}))

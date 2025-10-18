@@ -78,7 +78,15 @@ func (st *CraftMenuState) OnStop(_ w.World) error { return nil }
 // Update はゲームステートの更新処理を行う
 func (st *CraftMenuState) Update(world w.World) (es.Transition[w.World], error) {
 	// キー入力をActionに変換
-	if action, ok := st.HandleInput(); ok {
+	var action inputmapper.ActionID
+	var ok bool
+	if st.isWindowMode || st.isResultMode {
+		action, ok = HandleWindowInput()
+	} else {
+		action, ok = st.HandleInput()
+	}
+
+	if ok {
 		if transition, err := st.DoAction(world, action); err != nil {
 			return es.Transition[w.World]{}, err
 		} else if transition.Type != es.TransNone {
@@ -86,8 +94,11 @@ func (st *CraftMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		}
 	}
 
-	if _, err := st.tabMenu.Update(); err != nil {
-		return es.Transition[w.World]{}, err
+	// アクションウィンドウまたは結果ウィンドウ表示中はTabMenuの更新をスキップ
+	if !st.isWindowMode && !st.isResultMode {
+		if _, err := st.tabMenu.Update(); err != nil {
+			return es.Transition[w.World]{}, err
+		}
 	}
 	st.ui.Update()
 
@@ -104,16 +115,6 @@ func (st *CraftMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 
 // HandleInput はキー入力をActionに変換する
 func (st *CraftMenuState) HandleInput() (inputmapper.ActionID, bool) {
-	// ウィンドウモード時の入力処理を優先
-	if st.isWindowMode {
-		return HandleWindowInput()
-	}
-
-	// 結果ウィンドウモード時の入力処理
-	if st.isResultMode {
-		return HandleWindowInput()
-	}
-
 	keyboardInput := input.GetSharedKeyboardInput()
 	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		return inputmapper.ActionMenuCancel, true
@@ -266,9 +267,9 @@ func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
 			Items: st.createMenuItems(world, st.queryMenuConsumable(world)),
 		},
 		{
-			ID:    "cards",
-			Label: "手札",
-			Items: st.createMenuItems(world, st.queryMenuCard(world)),
+			ID:    "weapons",
+			Label: "武器",
+			Items: st.createMenuItems(world, st.queryMenuWeapon(world)),
 		},
 		{
 			ID:    "wearables",
@@ -351,14 +352,14 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	var items []string
 
-	// 全レシピから消耗品（カード以外）を抽出
+	// 全レシピから消耗品を抽出
 	for recipeName := range rawMaster.RecipeIndex {
 		spec, err := rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
 			continue
 		}
-		// 消耗品でカード以外
-		if spec.Consumable != nil && spec.Card == nil {
+		// 消耗品
+		if spec.Consumable != nil {
 			items = append(items, recipeName)
 		}
 	}
@@ -367,17 +368,17 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
 	return items
 }
 
-func (st *CraftMenuState) queryMenuCard(world w.World) []string {
+func (st *CraftMenuState) queryMenuWeapon(world w.World) []string {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	var items []string
 
-	// 全レシピからカードを抽出
+	// 全レシピから武器を抽出
 	for recipeName := range rawMaster.RecipeIndex {
 		spec, err := rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
 			continue
 		}
-		if spec.Card != nil {
+		if spec.Weapon != nil {
 			items = append(items, recipeName)
 		}
 	}

@@ -58,7 +58,7 @@ func TestTargetGroupType(t *testing.T) {
 		t.Parallel()
 		assert.Equal(t, TargetGroupType("ALLY"), TargetGroupAlly, "TargetGroupAllyの値が正しくない")
 		assert.Equal(t, TargetGroupType("ENEMY"), TargetGroupEnemy, "TargetGroupEnemyの値が正しくない")
-		assert.Equal(t, TargetGroupType("CARD"), TargetGroupCard, "TargetGroupCardの値が正しくない")
+		assert.Equal(t, TargetGroupType("WEAPON"), TargetGroupWeapon, "TargetGroupWeaponの値が正しくない")
 		assert.Equal(t, TargetGroupType("NONE"), TargetGroupNone, "TargetGroupNoneの値が正しくない")
 	})
 
@@ -71,7 +71,7 @@ func TestTargetGroupType(t *testing.T) {
 		}{
 			{"valid ally", TargetGroupAlly, false},
 			{"valid enemy", TargetGroupEnemy, false},
-			{"valid card", TargetGroupCard, false},
+			{"valid weapon", TargetGroupWeapon, false},
 			{"valid none", TargetGroupNone, false},
 			{"invalid type", TargetGroupType("INVALID"), true},
 			{"empty type", TargetGroupType(""), true},
@@ -134,12 +134,12 @@ func TestAttackType(t *testing.T) {
 	t.Parallel()
 	t.Run("attack type constants", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, AttackType("SWORD"), AttackSword, "AttackSwordの値が正しくない")
-		assert.Equal(t, AttackType("SPEAR"), AttackSpear, "AttackSpearの値が正しくない")
-		assert.Equal(t, AttackType("HANDGUN"), AttackHandgun, "AttackHandgunの値が正しくない")
-		assert.Equal(t, AttackType("RIFLE"), AttackRifle, "AttackRifleの値が正しくない")
-		assert.Equal(t, AttackType("FIST"), AttackFist, "AttackFistの値が正しくない")
-		assert.Equal(t, AttackType("CANON"), AttackCanon, "AttackCanonの値が正しくない")
+		assert.Equal(t, "SWORD", AttackSword.Type, "AttackSwordの値が正しくない")
+		assert.Equal(t, "SPEAR", AttackSpear.Type, "AttackSpearの値が正しくない")
+		assert.Equal(t, "HANDGUN", AttackHandgun.Type, "AttackHandgunの値が正しくない")
+		assert.Equal(t, "RIFLE", AttackRifle.Type, "AttackRifleの値が正しくない")
+		assert.Equal(t, "FIST", AttackFist.Type, "AttackFistの値が正しくない")
+		assert.Equal(t, "CANON", AttackCanon.Type, "AttackCanonの値が正しくない")
 	})
 
 	t.Run("valid attack types", func(t *testing.T) {
@@ -172,7 +172,7 @@ func TestAttackType(t *testing.T) {
 		}
 	})
 
-	t.Run("attack type string representation", func(t *testing.T) {
+	t.Run("attack type label", func(t *testing.T) {
 		t.Parallel()
 		tests := []struct {
 			attackType AttackType
@@ -187,12 +187,24 @@ func TestAttackType(t *testing.T) {
 		}
 
 		for _, tt := range tests {
-			t.Run(string(tt.attackType), func(t *testing.T) {
+			t.Run(tt.attackType.Type, func(t *testing.T) {
 				t.Parallel()
-				result := tt.attackType.String()
-				assert.Equal(t, tt.expected, result, "文字列表現が正しくない")
+				assert.Equal(t, tt.expected, tt.attackType.Label, "ラベルが正しくない")
 			})
 		}
+	})
+
+	t.Run("melee and ranged check", func(t *testing.T) {
+		t.Parallel()
+		// 近接武器のテスト
+		assert.Equal(t, AttackRangeMelee, AttackSword.Range, "刀剣は近接武器である")
+		assert.Equal(t, AttackRangeMelee, AttackSpear.Range, "長物は近接武器である")
+		assert.Equal(t, AttackRangeMelee, AttackFist.Range, "格闘は近接武器である")
+
+		// 遠距離武器のテスト
+		assert.Equal(t, AttackRangeRanged, AttackHandgun.Range, "拳銃は遠距離武器である")
+		assert.Equal(t, AttackRangeRanged, AttackRifle.Range, "小銃は遠距離武器である")
+		assert.Equal(t, AttackRangeRanged, AttackCanon.Range, "大砲は遠距離武器である")
 	})
 
 	// 注: invalid attack typeのString()はlog.Fatalを呼ぶため、テスト不可

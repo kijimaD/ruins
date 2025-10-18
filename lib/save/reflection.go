@@ -67,7 +67,7 @@ func getComponentTypeMap() map[string]reflect.Type {
 
 		// アイテム属性
 		"Wearable":  reflect.TypeOf(&gc.Wearable{}),
-		"Card":      reflect.TypeOf(&gc.Card{}),
+		"Weapon":    reflect.TypeOf(&gc.Weapon{}),
 		"Stackable": reflect.TypeOf(&gc.Stackable{}),
 		"Value":     reflect.TypeOf(&gc.Value{}),
 		"Attack":    reflect.TypeOf(&gc.Attack{}),

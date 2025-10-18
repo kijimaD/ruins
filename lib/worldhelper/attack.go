@@ -10,7 +10,7 @@ import (
 )
 
 // GetAttackFromCommandTable は敵のCommandTableからランダムに攻撃を選択する
-// カードエンティティを生成せずに攻撃パラメータを取得する
+// 武器エンティティを生成せずに攻撃パラメータを取得する
 func GetAttackFromCommandTable(world w.World, enemyEntity ecs.Entity) (*gc.Attack, string, error) {
 	// CommandTableコンポーネントを取得
 	commandTableComp := world.Components.CommandTable.Get(enemyEntity)
@@ -27,43 +27,43 @@ func GetAttackFromCommandTable(world w.World, enemyEntity ecs.Entity) (*gc.Attac
 		return nil, "", fmt.Errorf("failed to get command table: %w", err)
 	}
 
-	// 重み付きランダムでカード名を選択
-	cardName := commandTable.SelectByWeight()
-	if cardName == "" {
-		return nil, "", fmt.Errorf("no card selected from command table")
+	// 重み付きランダムで武器名を選択
+	weaponName := commandTable.SelectByWeight()
+	if weaponName == "" {
+		return nil, "", fmt.Errorf("no weapon selected from command table")
 	}
 
-	// カード名からEntitySpecを取得（エンティティは生成しない）
-	cardSpec, err := rawMaster.NewCardSpec(cardName)
+	// 武器名からEntitySpecを取得（エンティティは生成しない）
+	weaponSpec, err := rawMaster.NewWeaponSpec(weaponName)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to get card spec: %w", err)
+		return nil, "", fmt.Errorf("failed to get weapon spec: %w", err)
 	}
 
 	// Attackコンポーネントがない場合はエラー
-	if cardSpec.Attack == nil {
-		return nil, "", fmt.Errorf("card %s has no Attack component", cardName)
+	if weaponSpec.Attack == nil {
+		return nil, "", fmt.Errorf("weapon %s has no Attack component", weaponName)
 	}
 
-	return cardSpec.Attack, cardName, nil
+	return weaponSpec.Attack, weaponName, nil
 }
 
-// GetAttackFromCard はカードエンティティから攻撃パラメータを取得する
-// プレイヤーが装備しているカードエンティティから攻撃情報を取得する
-func GetAttackFromCard(world w.World, cardEntity ecs.Entity) (*gc.Attack, string, error) {
+// GetAttackFromWeapon は武器エンティティから攻撃パラメータを取得する
+// プレイヤーが装備している武器エンティティから攻撃情報を取得する
+func GetAttackFromWeapon(world w.World, weaponEntity ecs.Entity) (*gc.Attack, string, error) {
 	// Attackコンポーネントを取得
-	attackComp := world.Components.Attack.Get(cardEntity)
+	attackComp := world.Components.Attack.Get(weaponEntity)
 	if attackComp == nil {
-		return nil, "", fmt.Errorf("card has no Attack component")
+		return nil, "", fmt.Errorf("weapon has no Attack component")
 	}
 
 	// 名前を取得
-	nameComp := world.Components.Name.Get(cardEntity)
+	nameComp := world.Components.Name.Get(weaponEntity)
 	if nameComp == nil {
-		return nil, "", fmt.Errorf("card has no Name component")
+		return nil, "", fmt.Errorf("weapon has no Name component")
 	}
 
 	attack := attackComp.(*gc.Attack)
-	cardName := nameComp.(*gc.Name).Name
+	weaponName := nameComp.(*gc.Name).Name
 
-	return attack, cardName, nil
+	return attack, weaponName, nil
 }

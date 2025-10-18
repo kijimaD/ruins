@@ -52,8 +52,8 @@ const (
 	TargetGroupAlly = TargetGroupType("ALLY") // 味方
 	// TargetGroupEnemy は敵グループ
 	TargetGroupEnemy = TargetGroupType("ENEMY") // 敵
-	// TargetGroupCard はカードグループ
-	TargetGroupCard = TargetGroupType("CARD") // カード
+	// TargetGroupWeapon は武器グループ
+	TargetGroupWeapon = TargetGroupType("WEAPON") // 武器
 	// TargetGroupNone はグループなし
 	TargetGroupNone = TargetGroupType("NONE") // なし
 )
@@ -61,7 +61,7 @@ const (
 // Valid はTargetGroupTypeの値が有効かを検証する
 func (enum TargetGroupType) Valid() error {
 	switch enum {
-	case TargetGroupAlly, TargetGroupEnemy, TargetGroupCard, TargetGroupNone:
+	case TargetGroupAlly, TargetGroupEnemy, TargetGroupWeapon, TargetGroupNone:
 		return nil
 	}
 
@@ -94,54 +94,68 @@ func (enum UsableSceneType) Valid() error {
 
 // ================
 
-// AttackType は武器種別を表す。種別によって適用する計算式が異なる
-type AttackType string
+// AttackRangeType は攻撃の射程タイプを表す
+type AttackRangeType string
 
 const (
-	// AttackSword は刀剣
-	AttackSword = AttackType("SWORD") // 刀剣
-	// AttackSpear は長物
-	AttackSpear = AttackType("SPEAR") // 長物
-	// AttackHandgun は拳銃
-	AttackHandgun = AttackType("HANDGUN") // 拳銃
-	// AttackRifle は小銃
-	AttackRifle = AttackType("RIFLE") // 小銃
-	// AttackFist は格闘
-	AttackFist = AttackType("FIST") // 格闘
-	// AttackCanon は大砲
-	AttackCanon = AttackType("CANON") // 大砲
+	// AttackRangeMelee は近接攻撃
+	AttackRangeMelee = AttackRangeType("MELEE")
+	// AttackRangeRanged は遠距離攻撃
+	AttackRangeRanged = AttackRangeType("RANGED")
 )
 
-// Valid はAttackTypeの値が有効かを検証する
-func (enum AttackType) Valid() error {
-	switch enum {
-	case AttackSword, AttackSpear, AttackHandgun, AttackRifle, AttackFist, AttackCanon:
-		return nil
-	}
-
-	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
+// AttackType は武器種別を表す。種別によって適用する計算式が異なる
+type AttackType struct {
+	Type  string          // 武器種別の識別子
+	Range AttackRangeType // 近接/遠距離の区分
+	Label string          // 表示用ラベル
 }
 
-func (enum AttackType) String() string {
-	var result string
-	switch enum {
-	case AttackSword:
-		result = "刀剣"
-	case AttackSpear:
-		result = "長物"
-	case AttackHandgun:
-		result = "拳銃"
-	case AttackRifle:
-		result = "小銃"
-	case AttackFist:
-		result = "格闘"
-	case AttackCanon:
-		result = "大砲"
-	default:
-		panic("invalid attack type")
+var (
+	// AttackSword は刀剣
+	AttackSword = AttackType{Type: "SWORD", Range: AttackRangeMelee, Label: "刀剣"}
+	// AttackSpear は長物
+	AttackSpear = AttackType{Type: "SPEAR", Range: AttackRangeMelee, Label: "長物"}
+	// AttackHandgun は拳銃
+	AttackHandgun = AttackType{Type: "HANDGUN", Range: AttackRangeRanged, Label: "拳銃"}
+	// AttackRifle は小銃
+	AttackRifle = AttackType{Type: "RIFLE", Range: AttackRangeRanged, Label: "小銃"}
+	// AttackFist は格闘
+	AttackFist = AttackType{Type: "FIST", Range: AttackRangeMelee, Label: "格闘"}
+	// AttackCanon は大砲
+	AttackCanon = AttackType{Type: "CANON", Range: AttackRangeRanged, Label: "大砲"}
+)
+
+// AllAttackTypes は定義済みの全AttackTypeのリスト
+// 新しいAttackTypeを追加する場合は、ここにも追加すること
+var AllAttackTypes = []AttackType{
+	AttackSword,
+	AttackSpear,
+	AttackHandgun,
+	AttackRifle,
+	AttackFist,
+	AttackCanon,
+}
+
+// Valid はAttackTypeの値が有効かを検証する
+func (at AttackType) Valid() error {
+	for _, valid := range AllAttackTypes {
+		if at.Type == valid.Type {
+			return nil
+		}
 	}
 
-	return result
+	return fmt.Errorf("get %s: %w", at.Type, ErrInvalidEnumType)
+}
+
+// ParseAttackType は文字列からAttackTypeを生成する
+func ParseAttackType(s string) (AttackType, error) {
+	for _, at := range AllAttackTypes {
+		if at.Type == s {
+			return at, nil
+		}
+	}
+	return AttackType{}, fmt.Errorf("invalid attack type: %s: %w", s, ErrInvalidEnumType)
 }
 
 // ================

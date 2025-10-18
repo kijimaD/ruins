@@ -20,9 +20,45 @@ func Disarm(world w.World, item ecs.Entity) {
 	item.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 }
 
-// GetWearEquipments は指定キャラクターの装備中の防具一覧を取得する
+// GetMeleeWeapon は近接武器を取得する
+func GetMeleeWeapon(world w.World, owner ecs.Entity) *ecs.Entity {
+	var result *ecs.Entity
+
+	world.Manager.Join(
+		world.Components.Item,
+		world.Components.ItemLocationEquipped,
+		world.Components.Weapon,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+		if owner == equipped.Owner && equipped.EquipmentSlot == gc.SlotMeleeWeapon {
+			result = &entity
+		}
+	}))
+
+	return result
+}
+
+// GetRangedWeapon は遠距離武器を取得する
+func GetRangedWeapon(world w.World, owner ecs.Entity) *ecs.Entity {
+	var result *ecs.Entity
+
+	world.Manager.Join(
+		world.Components.Item,
+		world.Components.ItemLocationEquipped,
+		world.Components.Weapon,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
+		if owner == equipped.Owner && equipped.EquipmentSlot == gc.SlotRangedWeapon {
+			result = &entity
+		}
+	}))
+
+	return result
+}
+
+// GetArmorEquipments は防具一覧を取得する（HEAD, TORSO, LEGS, JEWELRY）
 // 必ず長さ4のスライスを返す
-func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
+func GetArmorEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	entities := make([]*ecs.Entity, 4)
 
 	world.Manager.Join(
@@ -32,35 +68,16 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
-			for i := range entities {
-				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
-					continue
-				}
-				entities[i] = &entity
-			}
-		}
-	}))
-
-	return entities
-}
-
-// GetCardEquipments は指定キャラクターの装備中のカード一覧を取得する
-// 必ず長さ8のスライスを返す
-func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
-	entities := make([]*ecs.Entity, 8)
-
-	world.Manager.Join(
-		world.Components.Item,
-		world.Components.ItemLocationEquipped,
-		world.Components.Card,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
-		if owner == equipped.Owner {
-			for i := range entities {
-				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
-					continue
-				}
-				entities[i] = &entity
+			// スロット番号から配列インデックスを決定
+			switch equipped.EquipmentSlot {
+			case gc.SlotHead:
+				entities[0] = &entity
+			case gc.SlotTorso:
+				entities[1] = &entity
+			case gc.SlotLegs:
+				entities[2] = &entity
+			case gc.SlotJewelry:
+				entities[3] = &entity
 			}
 		}
 	}))
