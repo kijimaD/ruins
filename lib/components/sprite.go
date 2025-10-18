@@ -55,13 +55,13 @@ type SpriteSheet struct {
 // コンポーネントはセーブ&ロード時のシリアライズが必要なので、ファイル類をそのまま保存できない
 type SpriteRender struct {
 	// スプライトシート名(画像データはResourcesから取得)
-	SpriteSheetName string `json:"SpriteSheetName"`
+	SpriteSheetName string
 	// スプライトキー名
-	SpriteKey string `json:"SpriteKey"`
+	SpriteKey string
 	// 描画順。小さい順に先に(下に)描画する
-	Depth DepthNum `json:"Depth"`
+	Depth DepthNum
 	// Draw options
-	Options ebiten.DrawImageOptions `json:"Options"`
+	Options ebiten.DrawImageOptions
 }
 
 // DepthNum はオブジェクトの描画順。小さい値を先に描画する

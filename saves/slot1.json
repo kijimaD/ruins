@@ -1,108 +1,80 @@
 {
-  "checksum": "27e170063dd5183815d5425ab801906366b71c8bd1a7fe28aae57e86470dca1f",
-  "timestamp": "2025-10-18T10:59:16.534026884+09:00",
+  "checksum": "a40d517a325d20975f023dd5756bbc8e4e57c8a5838f2fd3eee26ba4054aa456",
+  "timestamp": "2025-10-18T12:29:42.40126461+09:00",
   "version": "1.0.0",
   "world": {
     "entities": [
       {
         "components": {
           "Attributes": {
-            "data": {
-              "Agility": {
-                "Base": 5,
-                "Modifier": 0,
-                "Total": 5
-              },
-              "Defense": {
-                "Base": 0,
-                "Modifier": 0,
-                "Total": 0
-              },
-              "Dexterity": {
-                "Base": 6,
-                "Modifier": 0,
-                "Total": 6
-              },
-              "Sensation": {
-                "Base": 5,
-                "Modifier": 0,
-                "Total": 5
-              },
-              "Strength": {
-                "Base": 50,
-                "Modifier": 0,
-                "Total": 50
-              },
-              "Vitality": {
-                "Base": 50,
-                "Modifier": 0,
-                "Total": 50
-              }
+            "Agility": {
+              "Base": 5,
+              "Modifier": 0,
+              "Total": 5
             },
-            "type": "Attributes"
+            "Defense": {
+              "Base": 0,
+              "Modifier": 0,
+              "Total": 0
+            },
+            "Dexterity": {
+              "Base": 6,
+              "Modifier": 0,
+              "Total": 6
+            },
+            "Sensation": {
+              "Base": 5,
+              "Modifier": 0,
+              "Total": 5
+            },
+            "Strength": {
+              "Base": 50,
+              "Modifier": 0,
+              "Total": 50
+            },
+            "Vitality": {
+              "Base": 50,
+              "Modifier": 0,
+              "Total": 50
+            }
           },
-          "EquipmentChanged": {
-            "data": {},
-            "type": "EquipmentChanged"
-          },
-          "FactionAllyData": {
-            "data": {},
-            "type": "FactionAllyData"
-          },
+          "FactionAllyData": {},
           "LightSource": {
-            "data": {
-              "Color": {
-                "A": 255,
-                "B": 220,
-                "G": 255,
-                "R": 255
-              },
-              "Enabled": true,
-              "Radius": 5
+            "Color": {
+              "A": 255,
+              "B": 220,
+              "G": 255,
+              "R": 255
             },
-            "type": "LightSource"
+            "Enabled": true,
+            "Radius": 5
           },
           "Name": {
-            "data": {
-              "Name": "セレスティン"
-            },
-            "type": "Name"
+            "Name": "セレスティン"
           },
-          "Player": {
-            "data": {},
-            "type": "Player"
-          },
+          "Player": {},
           "Pools": {
-            "data": {
-              "EP": {
-                "Current": 0,
-                "Max": 0
-              },
-              "HP": {
-                "Current": 485,
-                "Max": 485
-              },
-              "SP": {
-                "Current": 111,
-                "Max": 111
-              }
+            "EP": {
+              "Current": 0,
+              "Max": 0
             },
-            "type": "Pools"
+            "HP": {
+              "Current": 485,
+              "Max": 485
+            },
+            "SP": {
+              "Current": 111,
+              "Max": 111
+            }
           },
           "TurnBased": {
-            "data": {
-              "AP": {
-                "Current": 100,
-                "Max": 100
-              }
-            },
-            "type": "TurnBased"
+            "AP": {
+              "Current": 100,
+              "Max": 100
+            }
           },
           "Wallet": {
-            "data": {
-              "Currency": 1000
-            },
-            "type": "Wallet"
+            "Currency": 1000
           }
         },
         "stable_id": {
@@ -113,44 +85,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -161,44 +115,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -209,50 +145,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -263,36 +178,18 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "赤く光る鉱物。高く売れる"
-            },
-            "type": "Description"
+            "Description": "赤く光る鉱物。高く売れる"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ルビー原石"
-            },
-            "type": "Name"
+            "Name": "ルビー原石"
           },
           "Stackable": {
-            "data": {
-              "Count": 2
-            },
-            "type": "Stackable"
+            "Count": 2
           },
           "Value": {
-            "data": {
-              "Value": 500
-            },
-            "type": "Value"
+            "Value": 500
           }
         },
         "stable_id": {
@@ -303,55 +200,31 @@
       {
         "components": {
           "Consumable": {
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ALLY",
-                "TargetNum": "SINGLE"
-              },
-              "UsableScene": "ANY"
+            "TargetType": {
+              "TargetGroup": "ALLY",
+              "TargetNum": "SINGLE"
             },
-            "type": "Consumable"
+            "UsableScene": "ANY"
           },
           "Description": {
-            "data": {
-              "Description": "体力を半分程度回復する"
-            },
-            "type": "Description"
+            "Description": "体力を半分程度回復する"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "回復薬"
-            },
-            "type": "Name"
+            "Name": "回復薬"
           },
           "ProvidesHealing": {
-            "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
-              }
-            },
-            "type": "ProvidesHealing"
+            "amount": {
+              "ratio": 0.5,
+              "type": "ratio"
+            }
           },
           "Stackable": {
-            "data": {
-              "Count": 3
-            },
-            "type": "Stackable"
+            "Count": 3
           },
           "Value": {
-            "data": {
-              "Value": 100
-            },
-            "type": "Value"
+            "Value": 100
           }
         },
         "stable_id": {
@@ -362,55 +235,31 @@
       {
         "components": {
           "Consumable": {
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ALLY",
-                "TargetNum": "ALL"
-              },
-              "UsableScene": "ANY"
+            "TargetType": {
+              "TargetGroup": "ALLY",
+              "TargetNum": "ALL"
             },
-            "type": "Consumable"
+            "UsableScene": "ANY"
           },
           "Description": {
-            "data": {
-              "Description": "全員の体力を半分程度回復する"
-            },
-            "type": "Description"
+            "Description": "全員の体力を半分程度回復する"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "回復スプレー"
-            },
-            "type": "Name"
+            "Name": "回復スプレー"
           },
           "ProvidesHealing": {
-            "data": {
-              "amount": {
-                "ratio": 0.5,
-                "type": "ratio"
-              }
-            },
-            "type": "ProvidesHealing"
+            "amount": {
+              "ratio": 0.5,
+              "type": "ratio"
+            }
           },
           "Stackable": {
-            "data": {
-              "Count": 3
-            },
-            "type": "Stackable"
+            "Count": 3
           },
           "Value": {
-            "data": {
-              "Value": 250
-            },
-            "type": "Value"
+            "Value": 250
           }
         },
         "stable_id": {
@@ -421,52 +270,28 @@
       {
         "components": {
           "Consumable": {
-            "data": {
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "ALL"
-              },
-              "UsableScene": "BATTLE"
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "ALL"
             },
-            "type": "Consumable"
+            "UsableScene": "BATTLE"
           },
           "Description": {
-            "data": {
-              "Description": "敵全体にダメージを与える"
-            },
-            "type": "Description"
+            "Description": "敵全体にダメージを与える"
           },
           "InflictsDamage": {
-            "data": {
-              "Amount": 20
-            },
-            "type": "InflictsDamage"
+            "Amount": 20
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "手榴弾"
-            },
-            "type": "Name"
+            "Name": "手榴弾"
           },
           "Stackable": {
-            "data": {
-              "Count": 5
-            },
-            "type": "Stackable"
+            "Count": 5
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -477,30 +302,15 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "加工しやすく産業の中核をなす金属"
-            },
-            "type": "Description"
+            "Description": "加工しやすく産業の中核をなす金属"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "鉄"
-            },
-            "type": "Name"
+            "Name": "鉄"
           },
           "Stackable": {
-            "data": {
-              "Count": 104
-            },
-            "type": "Stackable"
+            "Count": 104
           }
         },
         "stable_id": {
@@ -511,50 +321,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -565,50 +354,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -619,50 +387,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -673,50 +420,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -727,50 +453,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -781,50 +486,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -835,50 +519,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -889,50 +552,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -943,50 +585,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -997,50 +618,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -1051,50 +651,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -1105,50 +684,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -1159,50 +717,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -1213,50 +750,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -1267,50 +783,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -1321,50 +816,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -1375,50 +849,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -1429,50 +882,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -1483,50 +915,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -1537,50 +948,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -1591,50 +981,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -1645,50 +1014,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -1699,50 +1047,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -1753,50 +1080,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -1807,50 +1113,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -1861,50 +1146,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -1915,50 +1179,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -1969,50 +1212,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -2023,50 +1245,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -2077,50 +1278,29 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 90,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 20,
-              "Element": "PHOTON"
-            },
-            "type": "Attack"
+            "Accuracy": 90,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "光線を発射する拳銃"
-            },
-            "type": "Description"
+            "Description": "光線を発射する拳銃"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "レイガン"
-            },
-            "type": "Name"
+            "Name": "レイガン"
           },
           "Value": {
-            "data": {
-              "Value": 280
-            },
-            "type": "Value"
+            "Value": 280
           }
         },
         "stable_id": {
@@ -2131,44 +1311,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2179,44 +1341,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2227,44 +1371,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2275,44 +1401,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2323,44 +1431,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2371,44 +1461,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2419,44 +1491,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2467,44 +1521,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2515,44 +1551,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2563,44 +1581,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2611,44 +1611,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2659,44 +1641,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2707,44 +1671,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2755,44 +1701,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2803,44 +1731,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2851,44 +1761,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2899,44 +1791,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2947,44 +1821,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2995,44 +1851,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -3043,44 +1881,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -3091,44 +1911,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -3139,44 +1941,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -3187,44 +1971,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -3235,44 +2001,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -3283,44 +2031,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -3331,44 +2061,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -3379,44 +2091,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -3427,44 +2121,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -3475,44 +2151,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "衝撃吸収性に優れた産業用の帽子"
-            },
-            "type": "Description"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "作業用ヘルメット"
-            },
-            "type": "Name"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           },
           "Wearable": {
-            "data": {
-              "Defense": 4,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 4
-              },
-              "EquipmentCategory": "HEAD"
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
             },
-            "type": "Wearable"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -3523,44 +2181,26 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "よくなめされた革で成形された長靴"
-            },
-            "type": "Description"
+            "Description": "よくなめされた革で成形された長靴"
           },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
-          "LocationInBackpack": {
-            "data": {},
-            "type": "LocationInBackpack"
-          },
+          "Item": {},
+          "LocationInBackpack": {},
           "Name": {
-            "data": {
-              "Name": "革のブーツ"
-            },
-            "type": "Name"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "data": {
-              "Value": 120
-            },
-            "type": "Value"
+            "Value": 120
           },
           "Wearable": {
-            "data": {
-              "Defense": 3,
-              "EquipBonus": {
-                "Agility": -2,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "LEGS"
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -3571,60 +2211,35 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 100,
-              "AttackCategory": "SWORD",
-              "AttackCount": 1,
-              "Damage": 8,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 100,
+            "AttackCategory": "SWORD",
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-            },
-            "type": "Description"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
-          "EquipmentChanged": {
-            "data": {},
-            "type": "EquipmentChanged"
-          },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
+          "Item": {},
           "LocationEquipped": {
-            "data": {
-              "EquipmentSlot": 0,
-              "OwnerRef": {
-                "generation": 0,
-                "index": 1
-              }
-            },
-            "type": "LocationEquipped"
+            "EquipmentSlot": 0,
+            "OwnerRef": {
+              "generation": 0,
+              "index": 1
+            }
           },
           "Name": {
-            "data": {
-              "Name": "木刀"
-            },
-            "type": "Name"
+            "Name": "木刀"
           },
           "Value": {
-            "data": {
-              "Value": 80
-            },
-            "type": "Value"
+            "Value": 80
           }
         },
         "stable_id": {
@@ -3635,60 +2250,35 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 95,
-              "AttackCategory": "HANDGUN",
-              "AttackCount": 1,
-              "Damage": 14,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 95,
+            "AttackCategory": "HANDGUN",
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 2,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "樹脂素材を多用した自動拳銃"
-            },
-            "type": "Description"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
-          "EquipmentChanged": {
-            "data": {},
-            "type": "EquipmentChanged"
-          },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
+          "Item": {},
           "LocationEquipped": {
-            "data": {
-              "EquipmentSlot": 1,
-              "OwnerRef": {
-                "generation": 0,
-                "index": 1
-              }
-            },
-            "type": "LocationEquipped"
+            "EquipmentSlot": 1,
+            "OwnerRef": {
+              "generation": 0,
+              "index": 1
+            }
           },
           "Name": {
-            "data": {
-              "Name": "ハンドガン"
-            },
-            "type": "Name"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "data": {
-              "Value": 150
-            },
-            "type": "Value"
+            "Value": 150
           }
         },
         "stable_id": {
@@ -3699,60 +2289,35 @@
       {
         "components": {
           "Attack": {
-            "data": {
-              "Accuracy": 85,
-              "AttackCategory": "CANON",
-              "AttackCount": 1,
-              "Damage": 34,
-              "Element": "NONE"
-            },
-            "type": "Attack"
+            "Accuracy": 85,
+            "AttackCategory": "CANON",
+            "AttackCount": 1,
+            "Damage": 34,
+            "Element": "NONE"
           },
           "Card": {
-            "data": {
-              "Cost": 14,
-              "TargetType": {
-                "TargetGroup": "ENEMY",
-                "TargetNum": "SINGLE"
-              }
-            },
-            "type": "Card"
+            "Cost": 14,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           },
           "Description": {
-            "data": {
-              "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
-            },
-            "type": "Description"
+            "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
           },
-          "EquipmentChanged": {
-            "data": {},
-            "type": "EquipmentChanged"
-          },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
+          "Item": {},
           "LocationEquipped": {
-            "data": {
-              "EquipmentSlot": 2,
-              "OwnerRef": {
-                "generation": 0,
-                "index": 1
-              }
-            },
-            "type": "LocationEquipped"
+            "EquipmentSlot": 2,
+            "OwnerRef": {
+              "generation": 0,
+              "index": 1
+            }
           },
           "Name": {
-            "data": {
-              "Name": "M72 LAW"
-            },
-            "type": "Name"
+            "Name": "M72 LAW"
           },
           "Value": {
-            "data": {
-              "Value": 480
-            },
-            "type": "Value"
+            "Value": 480
           }
         },
         "stable_id": {
@@ -3763,54 +2328,32 @@
       {
         "components": {
           "Description": {
-            "data": {
-              "Description": "伝統的な意匠が施されたずっしりと重い鎧"
-            },
-            "type": "Description"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
-          "EquipmentChanged": {
-            "data": {},
-            "type": "EquipmentChanged"
-          },
-          "Item": {
-            "data": {},
-            "type": "Item"
-          },
+          "Item": {},
           "LocationEquipped": {
-            "data": {
-              "EquipmentSlot": 0,
-              "OwnerRef": {
-                "generation": 0,
-                "index": 1
-              }
-            },
-            "type": "LocationEquipped"
+            "EquipmentSlot": 0,
+            "OwnerRef": {
+              "generation": 0,
+              "index": 1
+            }
           },
           "Name": {
-            "data": {
-              "Name": "西洋鎧"
-            },
-            "type": "Name"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "data": {
-              "Value": 400
-            },
-            "type": "Value"
+            "Value": 400
           },
           "Wearable": {
-            "data": {
-              "Defense": 8,
-              "EquipBonus": {
-                "Agility": -4,
-                "Dexterity": 0,
-                "Sensation": 0,
-                "Strength": 0,
-                "Vitality": 0
-              },
-              "EquipmentCategory": "TORSO"
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
             },
-            "type": "Wearable"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {

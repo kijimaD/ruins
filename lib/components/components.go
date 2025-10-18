@@ -174,25 +174,25 @@ type Item struct{}
 
 // Consumable は消耗品。一度使うとなくなる
 type Consumable struct {
-	UsableScene UsableSceneType `json:"UsableScene"`
-	TargetType  TargetType      `json:"TargetType"`
+	UsableScene UsableSceneType
+	TargetType  TargetType
 }
 
 // Name は表示名
 type Name struct {
-	Name string `json:"Name"`
+	Name string
 }
 
 // Description は説明
 type Description struct {
-	Description string `json:"Description"`
+	Description string
 }
 
 // Wearable は装備品。キャラクタが装備することでパラメータを変更できる
 type Wearable struct {
-	Defense           int           `json:"Defense"`           // 防御力
-	EquipmentCategory EquipmentType `json:"EquipmentCategory"` // 装備部位
-	EquipBonus        EquipBonus    `json:"EquipBonus"`        // ステータスへのボーナス
+	Defense           int           // 防御力
+	EquipmentCategory EquipmentType // 装備部位
+	EquipBonus        EquipBonus    // ステータスへのボーナス
 }
 
 // Player は操作対象の主人公キャラクター
@@ -204,30 +204,30 @@ type Dead struct{}
 
 // Wallet はプレイヤーの資金を管理する
 type Wallet struct {
-	Currency int `json:"Currency"`
+	Currency int
 }
 
 // Pools はキャラクターのプール情報
 type Pools struct {
 	// 生命力 Health point
 	// なくなるとゲームオーバー
-	HP Pool `json:"HP"`
+	HP Pool
 	// スタミナ Stamina point
 	// 走ったり攻撃したら減る。自動回復する
-	SP Pool `json:"SP"`
+	SP Pool
 	// 電力 Electricity point
 	// 機能のトグルで消費量が変わる
-	EP Pool `json:"EP"`
+	EP Pool
 }
 
 // Attributes はエンティティが持つステータス値。各種計算式で使う
 type Attributes struct {
-	Vitality  Attribute `json:"Vitality"`  // 体力。丈夫さ、持久力、しぶとさ。HPやSPに影響する
-	Strength  Attribute `json:"Strength"`  // 筋力。主に近接攻撃のダメージに影響する
-	Sensation Attribute `json:"Sensation"` // 感覚。主に射撃攻撃のダメージに影響する
-	Dexterity Attribute `json:"Dexterity"` // 器用。攻撃時の命中率に影響する
-	Agility   Attribute `json:"Agility"`   // 敏捷。回避率、行動の速さに影響する
-	Defense   Attribute `json:"Defense"`   // 防御。被弾ダメージを軽減させる
+	Vitality  Attribute // 体力。丈夫さ、持久力、しぶとさ。HPやSPに影響する
+	Strength  Attribute // 筋力。主に近接攻撃のダメージに影響する
+	Sensation Attribute // 感覚。主に射撃攻撃のダメージに影響する
+	Dexterity Attribute // 器用。攻撃時の命中率に影響する
+	Agility   Attribute // 敏捷。回避率、行動の速さに影響する
+	Defense   Attribute // 防御。被弾ダメージを軽減させる
 }
 
 // ProvidesHealing は回復する性質
@@ -239,23 +239,23 @@ type ProvidesHealing struct {
 // InflictsDamage はダメージを与える性質
 // 直接的な数値が作用し、ステータスなどは考慮されない
 type InflictsDamage struct {
-	Amount int `json:"Amount"`
+	Amount int
 }
 
 // Stackable はスタック可能なアイテムを示すコンポーネント
 type Stackable struct {
-	Count int `json:"Count"` // 所持数
+	Count int // 所持数
 }
 
 // Value はアイテムの基本価値
 // 売買時の基準となる。実際の売値・買値は店や状況に応じて倍率が適用される
 type Value struct {
-	Value int `json:"Value"`
+	Value int
 }
 
 // Recipe は合成に必要な素材
 type Recipe struct {
-	Inputs []RecipeInput `json:"Inputs"`
+	Inputs []RecipeInput
 }
 
 // EquipmentChanged は装備変更が行われたことを示すダーティーフラグ
@@ -264,17 +264,17 @@ type EquipmentChanged struct{}
 // Card はカードは戦闘中に選択するコマンド
 // 攻撃、防御、回復など、人に影響を及ぼすものをアクションカードという
 type Card struct {
-	TargetType TargetType `json:"TargetType"`
-	Cost       int        `json:"Cost"`
+	TargetType TargetType
+	Cost       int
 }
 
 // Attack は攻撃の性質。攻撃毎にこの数値と作用対象のステータスを加味して、最終的なダメージ量を決定する
 type Attack struct {
-	Accuracy       int         `json:"Accuracy"`       // 命中率
-	Damage         int         `json:"Damage"`         // 攻撃力
-	AttackCount    int         `json:"AttackCount"`    // 攻撃回数
-	Element        ElementType `json:"Element"`        // 攻撃属性
-	AttackCategory AttackType  `json:"AttackCategory"` // 攻撃種別
+	Accuracy       int         // 命中率
+	Damage         int         // 攻撃力
+	AttackCount    int         // 攻撃回数
+	Element        ElementType // 攻撃属性
+	AttackCategory AttackType  // 攻撃種別
 }
 
 // CommandTable はAI用の、戦闘コマンドテーブル名
@@ -358,9 +358,9 @@ type Prop struct{}
 
 // LightSource は光源コンポーネント
 type LightSource struct {
-	Radius  Tile       `json:"Radius"`  // 照明範囲
-	Color   color.RGBA `json:"Color"`   // 光の色
-	Enabled bool       `json:"Enabled"` // 有効/無効
+	Radius  Tile       // 照明範囲
+	Color   color.RGBA // 光の色
+	Enabled bool       // 有効/無効
 }
 
 // Door は開閉可能なドアコンポーネント

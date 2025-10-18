@@ -35,14 +35,8 @@ type WorldSaveData struct {
 
 // EntitySaveData は単一エンティティのセーブデータ
 type EntitySaveData struct {
-	StableID   StableID                 `json:"stable_id"`
-	Components map[string]ComponentData `json:"components"`
-}
-
-// ComponentData はコンポーネントデータ
-type ComponentData struct {
-	Type string      `json:"type"`
-	Data interface{} `json:"data"`
+	StableID   StableID               `json:"stable_id"`
+	Components map[string]interface{} `json:"components"`
 }
 
 // EntityReference はエンティティ参照のセーブデータ
@@ -222,7 +216,7 @@ func (sm *SerializationManager) processEntityForSave(entity ecs.Entity, world w.
 	// エンティティデータを作成
 	entityData := EntitySaveData{
 		StableID:   stableID,
-		Components: make(map[string]ComponentData),
+		Components: make(map[string]interface{}),
 	}
 
 	// 各コンポーネント型をチェック
@@ -231,10 +225,8 @@ func (sm *SerializationManager) processEntityForSave(entity ecs.Entity, world w.
 			// エンティティ参照の処理
 			processedData := sm.processEntityReferences(data, typeInfo)
 
-			entityData.Components[typeInfo.Name] = ComponentData{
-				Type: typeInfo.Name,
-				Data: processedData,
-			}
+			// コンポーネントデータを直接格納する。キー名が型名を示す
+			entityData.Components[typeInfo.Name] = processedData
 		}
 	}
 
@@ -295,7 +287,7 @@ func (sm *SerializationManager) restoreWorldData(world w.World, worldData WorldS
 			}
 
 			// JSONからコンポーネントデータを復元
-			restoredData, err := sm.restoreComponentData(componentData.Data, typeInfo)
+			restoredData, err := sm.restoreComponentData(componentData, typeInfo)
 			if err != nil {
 				return fmt.Errorf("failed to restore component %s: %w", componentName, err)
 			}
@@ -318,7 +310,7 @@ func (sm *SerializationManager) restoreWorldData(world w.World, worldData WorldS
 				continue
 			}
 
-			err := sm.resolveEntityReferences(world, entity, componentData.Data, typeInfo)
+			err := sm.resolveEntityReferences(world, entity, componentData, typeInfo)
 			if err != nil {
 				return fmt.Errorf("failed to resolve references for %s: %w", componentName, err)
 			}
@@ -524,14 +516,14 @@ func (sm *SerializationManager) calculateEntityHash(entity EntitySaveData) strin
 }
 
 // calculateComponentHash はコンポーネントの決定的ハッシュを計算する
-func (sm *SerializationManager) calculateComponentHash(name string, component ComponentData) string {
+func (sm *SerializationManager) calculateComponentHash(name string, component interface{}) string {
 	// シンプルな実装: コンポーネント名とデータサイズでハッシュ計算
 	// より厳密には、データの内容を決定的にシリアライズする必要がある
 
 	var dataSize int
-	if component.Data != nil {
+	if component != nil {
 		// JSON marshal でサイズを概算
-		if jsonBytes, err := json.Marshal(component.Data); err == nil {
+		if jsonBytes, err := json.Marshal(component); err == nil {
 			dataSize = len(jsonBytes)
 		}
 	}
