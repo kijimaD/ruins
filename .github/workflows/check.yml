@@ -10,27 +10,7 @@ env:
   GH_TOKEN: ${{ secrets.WRITE_PACKAGE }}
 
 jobs:
-  # 共通処理
-  setup:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: set up
-        uses: actions/setup-go@v6
-        id: go
-      - name: check out
-        uses: actions/checkout@v5
-      - name: Cache
-        uses: actions/cache@main
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
   build:
-    needs: setup
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -40,7 +20,6 @@ jobs:
         run: docker build --target release .
 
   crosscomple:
-    needs: setup
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -52,19 +31,25 @@ jobs:
         run: make build
 
   test:
-    needs: setup
     runs-on: ubuntu-latest
     permissions:
       # octocov 用の設定
       # PRにコメントする
       pull-requests: write
       # 実行時間取得
-      contents: write
+      contents: read
       # 前のレポートを取得する
       actions: read
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-go-with-x
+      - name: Cache Go modules
+        uses: actions/cache@main
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: test
         run: make test
       - name: coverage for octocov
@@ -72,11 +57,19 @@ jobs:
       - uses: k1LoW/octocov-action@v1
 
   vrt:
-    needs: setup
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-go-with-x
+      - name: Cache Go modules
+        uses: actions/cache@main
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: vrt
         run: make vrt
       # 差分があればコミット
@@ -92,16 +85,21 @@ jobs:
           fi
 
   lint:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-go-with-x
+      - name: Cache Go modules
+        uses: actions/cache@main
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: lint
         run: make tools-install lint
 
   image:
-    needs: setup
     runs-on: ubuntu-latest
     permissions:
       contents: read
