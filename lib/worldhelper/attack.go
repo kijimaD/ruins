@@ -10,7 +10,7 @@ import (
 )
 
 // GetAttackFromCommandTable は敵のCommandTableからランダムに攻撃を選択する
-// digger_rsのNaturalAttackDefenseと同様に、カードエンティティを生成せずに攻撃パラメータを取得する
+// カードエンティティを生成せずに攻撃パラメータを取得する
 func GetAttackFromCommandTable(world w.World, enemyEntity ecs.Entity) (*gc.Attack, string, error) {
 	// CommandTableコンポーネントを取得
 	commandTableComp := world.Components.CommandTable.Get(enemyEntity)

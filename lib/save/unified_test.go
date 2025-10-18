@@ -343,7 +343,6 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 
 	t.Run("複雑な実世界データのラウンドトリップ", func(t *testing.T) {
 		t.Parallel()
-		// createComplexDeterministicWorldもマスターカード等を含む可能性があるため、
 		// 保存対象のみ（プレイヤー、バックパック、装備）のラウンドトリップをテストする
 		tempDir, err := os.MkdirTemp("", "complex_round_trip_test_")
 		require.NoError(t, err)
