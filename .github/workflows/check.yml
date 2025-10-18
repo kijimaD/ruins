@@ -6,9 +6,6 @@ on:
       - main
   pull_request:
 
-env:
-  GH_TOKEN: ${{ secrets.WRITE_PACKAGE }}
-
 jobs:
   build:
     permissions:
@@ -103,6 +100,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      # GitHub Container Registryへのpush用
+      packages: write
     steps:
       - uses: actions/checkout@v5
 
@@ -121,7 +120,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.WRITE_PACKAGE }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v4
