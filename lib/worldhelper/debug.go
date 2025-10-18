@@ -60,9 +60,13 @@ func InitDebugData(world w.World) {
 	// プレイヤー生成
 	celestine, _ := SpawnPlayer(world, 5, 5, "セレスティン")
 
-	// 装備
-	Equip(world, weapon1, celestine, gc.EquipmentSlotNumber(0))
-	Equip(world, weapon2, celestine, gc.EquipmentSlotNumber(1))
-	Equip(world, weapon3, celestine, gc.EquipmentSlotNumber(2))
+	// 装備（木刀とハンドガンとM72 LAWを装備、西洋鎧を装備）
+	// 木刀は近接武器なのでスロット4に装備
+	Equip(world, weapon1, celestine, GetMeleeWeaponSlot())
+	// ハンドガンは遠距離武器なのでスロット5に装備
+	Equip(world, weapon2, celestine, GetRangedWeaponSlot())
+	// M72 LAWは遠距離武器（上書き）
+	Equip(world, weapon3, celestine, GetRangedWeaponSlot())
+	// 西洋鎧は防具スロット0に装備
 	Equip(world, armor, celestine, gc.EquipmentSlotNumber(0))
 }

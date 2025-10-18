@@ -134,12 +134,12 @@ func TestAttackType(t *testing.T) {
 	t.Parallel()
 	t.Run("attack type constants", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, AttackType("SWORD"), AttackSword, "AttackSwordの値が正しくない")
-		assert.Equal(t, AttackType("SPEAR"), AttackSpear, "AttackSpearの値が正しくない")
-		assert.Equal(t, AttackType("HANDGUN"), AttackHandgun, "AttackHandgunの値が正しくない")
-		assert.Equal(t, AttackType("RIFLE"), AttackRifle, "AttackRifleの値が正しくない")
-		assert.Equal(t, AttackType("FIST"), AttackFist, "AttackFistの値が正しくない")
-		assert.Equal(t, AttackType("CANON"), AttackCanon, "AttackCanonの値が正しくない")
+		assert.Equal(t, "SWORD", AttackSword.Type, "AttackSwordの値が正しくない")
+		assert.Equal(t, "SPEAR", AttackSpear.Type, "AttackSpearの値が正しくない")
+		assert.Equal(t, "HANDGUN", AttackHandgun.Type, "AttackHandgunの値が正しくない")
+		assert.Equal(t, "RIFLE", AttackRifle.Type, "AttackRifleの値が正しくない")
+		assert.Equal(t, "FIST", AttackFist.Type, "AttackFistの値が正しくない")
+		assert.Equal(t, "CANON", AttackCanon.Type, "AttackCanonの値が正しくない")
 	})
 
 	t.Run("valid attack types", func(t *testing.T) {
@@ -187,12 +187,31 @@ func TestAttackType(t *testing.T) {
 		}
 
 		for _, tt := range tests {
-			t.Run(string(tt.attackType), func(t *testing.T) {
+			t.Run(tt.attackType.Type, func(t *testing.T) {
 				t.Parallel()
 				result := tt.attackType.String()
 				assert.Equal(t, tt.expected, result, "文字列表現が正しくない")
 			})
 		}
+	})
+
+	t.Run("melee and ranged check", func(t *testing.T) {
+		t.Parallel()
+		// 近接武器のテスト
+		assert.True(t, AttackSword.IsMelee(), "刀剣は近接武器である")
+		assert.False(t, AttackSword.IsRanged(), "刀剣は遠距離武器ではない")
+		assert.True(t, AttackSpear.IsMelee(), "長物は近接武器である")
+		assert.False(t, AttackSpear.IsRanged(), "長物は遠距離武器ではない")
+		assert.True(t, AttackFist.IsMelee(), "格闘は近接武器である")
+		assert.False(t, AttackFist.IsRanged(), "格闘は遠距離武器ではない")
+
+		// 遠距離武器のテスト
+		assert.False(t, AttackHandgun.IsMelee(), "拳銃は近接武器ではない")
+		assert.True(t, AttackHandgun.IsRanged(), "拳銃は遠距離武器である")
+		assert.False(t, AttackRifle.IsMelee(), "小銃は近接武器ではない")
+		assert.True(t, AttackRifle.IsRanged(), "小銃は遠距離武器である")
+		assert.False(t, AttackCanon.IsMelee(), "大砲は近接武器ではない")
+		assert.True(t, AttackCanon.IsRanged(), "大砲は遠距離武器である")
 	})
 
 	// 注: invalid attack typeのString()はlog.Fatalを呼ぶため、テスト不可

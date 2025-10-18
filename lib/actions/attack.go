@@ -7,6 +7,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/gamelog"
+	"github.com/kijimaD/ruins/lib/raw"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -64,15 +65,15 @@ func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 		return ErrAttackTargetInvalid
 	}
 
-	if world.Components.Dead.Get(act.Actor) != nil {
+	if act.Actor.HasComponent(world.Components.Dead) {
 		return ErrAttackerDead
 	}
 
-	if world.Components.GridElement.Get(*act.Target) == nil {
+	if !act.Target.HasComponent(world.Components.GridElement) {
 		return ErrAttackTargetNotExists
 	}
 
-	if world.Components.Dead.Get(*act.Target) != nil {
+	if act.Target.HasComponent(world.Components.Dead) {
 		return ErrAttackTargetDead
 	}
 
@@ -136,7 +137,10 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 	act.Logger.Debug("攻撃実行", "attacker", attacker, "target", target)
 
 	// 攻撃方法を取得
-	_, attackMethodName := aa.getAttackParams(attacker, world)
+	_, attackMethodName, err := aa.getAttackParams(attacker, world)
+	if err != nil {
+		return fmt.Errorf("攻撃パラメータの取得に失敗: %w", err)
+	}
 
 	hit, criticalHit := aa.rollHitCheck(attacker, target, world)
 	if !hit {
@@ -149,11 +153,22 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 		damage = 0
 	}
 
-	// 1. 攻撃試行ログ
+	// ダメージを適用
+	pools := world.Components.Pools.Get(target).(*gc.Pools)
+	beforeHP := pools.HP.Current
+	pools.HP.Current -= damage
+	if pools.HP.Current < 0 {
+		pools.HP.Current = 0
+	}
+
+	// 攻撃とダメージを1行でログ出力
 	aa.logAttackResult(attacker, target, world, true, criticalHit, damage, attackMethodName)
 
-	// 2. ダメージを直接適用（ダメージログと死亡ログは共通関数内で出力）
-	worldhelper.ApplyDamage(world, target, damage, attacker)
+	// 死亡チェックと死亡ログ
+	if pools.HP.Current <= 0 && beforeHP > 0 {
+		target.AddComponent(world.Components.Dead, &gc.Dead{})
+		aa.logDeath(world, target)
+	}
 
 	return nil
 }
@@ -254,8 +269,8 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 
 // getWeaponDamage は攻撃者の武器から攻撃力を取得する
 func (aa *AttackActivity) getWeaponDamage(attacker ecs.Entity, world w.World) int {
-	attack, _ := aa.getAttackParams(attacker, world)
-	if attack == nil {
+	attack, _, err := aa.getAttackParams(attacker, world)
+	if err != nil || attack == nil {
 		return 0
 	}
 	return attack.Damage
@@ -263,40 +278,64 @@ func (aa *AttackActivity) getWeaponDamage(attacker ecs.Entity, world w.World) in
 
 // getWeaponAccuracy は攻撃者の武器から命中率を取得する
 func (aa *AttackActivity) getWeaponAccuracy(attacker ecs.Entity, world w.World) int {
-	attack, _ := aa.getAttackParams(attacker, world)
-	if attack == nil {
+	attack, _, err := aa.getAttackParams(attacker, world)
+	if err != nil || attack == nil {
 		return 0
 	}
 	// Accuracyは0-100なので、BaseHitRateとの差分を返す
 	return attack.Accuracy - BaseHitRate
 }
 
+// getBareHandsAttack は素手武器の攻撃パラメータを取得する
+func (aa *AttackActivity) getBareHandsAttack(world w.World) (*gc.Attack, string, error) {
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+	bareHandsSpec, err := rawMaster.NewWeaponSpec("素手")
+	if err != nil {
+		return nil, "", fmt.Errorf("素手武器が見つかりません: %w", err)
+	}
+	if bareHandsSpec.Attack == nil {
+		return nil, "", fmt.Errorf("素手武器にAttackコンポーネントがありません")
+	}
+	return bareHandsSpec.Attack, "素手", nil
+}
+
 // getAttackParams は攻撃者の武器から攻撃パラメータと攻撃方法名を取得する
-// 戻り値: (攻撃パラメータ, 攻撃方法名)
-func (aa *AttackActivity) getAttackParams(attacker ecs.Entity, world w.World) (*gc.Attack, string) {
+// 戻り値: (攻撃パラメータ, 攻撃方法名, エラー)
+func (aa *AttackActivity) getAttackParams(attacker ecs.Entity, world w.World) (*gc.Attack, string, error) {
 	// プレイヤーの場合: 装備武器から攻撃パラメータを取得
-	if world.Components.Player.Get(attacker) != nil {
-		// TODO: 装備スロットから実際に装備している武器を取得
-		// 現時点では装備武器が複数あるので未実装
-		return nil, ""
+	if attacker.HasComponent(world.Components.Player) {
+		// 近接武器スロットから武器を取得
+		weaponSlots := worldhelper.GetWeaponEquipments(world, attacker)
+		meleeWeapon := weaponSlots[0] // 0番目が近接武器スロット
+
+		if meleeWeapon != nil {
+			// 装備している武器から攻撃パラメータを取得
+			attack, weaponName, err := worldhelper.GetAttackFromWeapon(world, *meleeWeapon)
+			if err == nil && attack != nil {
+				return attack, weaponName, nil
+			}
+		}
+
+		// 装備していない場合は素手武器を使用
+		return aa.getBareHandsAttack(world)
 	}
 
 	// 敵の場合: CommandTableから攻撃パラメータを取得
-	if world.Components.CommandTable.Get(attacker) != nil {
+	if attacker.HasComponent(world.Components.CommandTable) {
 		attack, weaponName, err := worldhelper.GetAttackFromCommandTable(world, attacker)
-		if err != nil {
-			// エラーログは出さず、武器なしとして扱う
-			return nil, ""
+		if err == nil && attack != nil {
+			return attack, weaponName, nil
 		}
-		return attack, weaponName
+
+		// CommandTableから取得できない場合は素手武器を使用
+		return aa.getBareHandsAttack(world)
 	}
 
-	return nil, ""
+	return nil, "", fmt.Errorf("攻撃パラメータを取得できません: 攻撃者にPlayerまたはCommandTableコンポーネントがありません")
 }
 
-// logAttackResult は攻撃結果をログに出力する
-// ダメージと死亡は別途ログ出力されるため、ここでは攻撃の成否のみを出力
-func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, _ int, attackMethodName string) {
+// logAttackResult は攻撃結果をログに出力する（ダメージも含む）
+func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, damage int, attackMethodName string) {
 	// プレイヤーが関わる攻撃のみログ出力
 	if !isPlayerActivity(&Activity{Actor: attacker}, world) && !isPlayerActivity(&Activity{Actor: target}, world) {
 		return
@@ -322,10 +361,22 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 			if !hit {
 				l.Append(" を攻撃したが外れた。")
 			} else if critical {
-				l.Append(" にクリティカルヒット！")
+				l.Append(fmt.Sprintf(" にクリティカルヒットし、%d のダメージを与えた！", damage))
 			} else {
-				l.Append(" を攻撃した。")
+				l.Append(fmt.Sprintf(" を攻撃し、%d のダメージを与えた。", damage))
 			}
 		}).
+		Log()
+}
+
+// logDeath は死亡ログを出力する
+func (aa *AttackActivity) logDeath(world w.World, target ecs.Entity) {
+	targetName := worldhelper.GetEntityName(target, world)
+
+	gamelog.New(gamelog.FieldLog).
+		Build(func(l *gamelog.Logger) {
+			worldhelper.AppendNameWithColor(l, target, targetName, world)
+		}).
+		Append(" は倒れた。").
 		Log()
 }

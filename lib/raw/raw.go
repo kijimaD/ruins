@@ -268,7 +268,8 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 		if err := gc.ElementType(item.Attack.Element).Valid(); err != nil {
 			return gc.EntitySpec{}, err
 		}
-		if err := gc.AttackType(item.Attack.AttackCategory).Valid(); err != nil {
+		attackType := gc.ParseAttackType(item.Attack.AttackCategory)
+		if err := attackType.Valid(); err != nil {
 			return gc.EntitySpec{}, err
 		}
 
@@ -277,7 +278,7 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 			Damage:         item.Attack.Damage,
 			AttackCount:    item.Attack.AttackCount,
 			Element:        gc.ElementType(item.Attack.Element),
-			AttackCategory: gc.AttackType(item.Attack.AttackCategory),
+			AttackCategory: attackType,
 		}
 	}
 

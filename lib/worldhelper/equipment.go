@@ -45,9 +45,9 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 }
 
 // GetWeaponEquipments は指定キャラクターの装備中の武器一覧を取得する
-// 必ず長さ8のスライスを返す
+// 必ず長さ2のスライスを返す（0: 近接武器, 1: 遠距離武器）
 func GetWeaponEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
-	entities := make([]*ecs.Entity, 8)
+	entities := make([]*ecs.Entity, 2)
 
 	world.Manager.Join(
 		world.Components.Item,
@@ -56,14 +56,24 @@ func GetWeaponEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {
-			for i := range entities {
-				if equipped.EquipmentSlot != gc.EquipmentSlotNumber(i) {
-					continue
-				}
-				entities[i] = &entity
+			// 武器スロット番号は4番から開始（0-3番は防具用）
+			// 4番: 近接武器, 5番: 遠距離武器
+			slotIndex := int(equipped.EquipmentSlot) - 4
+			if slotIndex >= 0 && slotIndex < len(entities) {
+				entities[slotIndex] = &entity
 			}
 		}
 	}))
 
 	return entities
+}
+
+// GetMeleeWeaponSlot は近接武器スロット番号を返す
+func GetMeleeWeaponSlot() gc.EquipmentSlotNumber {
+	return gc.EquipmentSlotNumber(4)
+}
+
+// GetRangedWeaponSlot は遠距離武器スロット番号を返す
+func GetRangedWeaponSlot() gc.EquipmentSlotNumber {
+	return gc.EquipmentSlotNumber(5)
 }

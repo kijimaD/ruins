@@ -94,54 +94,97 @@ func (enum UsableSceneType) Valid() error {
 
 // ================
 
-// AttackType は武器種別を表す。種別によって適用する計算式が異なる
-type AttackType string
+// AttackRangeType は攻撃の射程タイプを表す
+type AttackRangeType string
 
 const (
+	// AttackRangeMelee は近接攻撃
+	AttackRangeMelee = AttackRangeType("MELEE")
+	// AttackRangeRanged は遠距離攻撃
+	AttackRangeRanged = AttackRangeType("RANGED")
+)
+
+// AttackType は武器種別を表す。種別によって適用する計算式が異なる
+type AttackType struct {
+	Type  string          // 武器種別の識別子
+	Range AttackRangeType // 近接/遠距離の区分
+}
+
+var (
 	// AttackSword は刀剣
-	AttackSword = AttackType("SWORD") // 刀剣
+	AttackSword = AttackType{Type: "SWORD", Range: AttackRangeMelee}
 	// AttackSpear は長物
-	AttackSpear = AttackType("SPEAR") // 長物
+	AttackSpear = AttackType{Type: "SPEAR", Range: AttackRangeMelee}
 	// AttackHandgun は拳銃
-	AttackHandgun = AttackType("HANDGUN") // 拳銃
+	AttackHandgun = AttackType{Type: "HANDGUN", Range: AttackRangeRanged}
 	// AttackRifle は小銃
-	AttackRifle = AttackType("RIFLE") // 小銃
+	AttackRifle = AttackType{Type: "RIFLE", Range: AttackRangeRanged}
 	// AttackFist は格闘
-	AttackFist = AttackType("FIST") // 格闘
+	AttackFist = AttackType{Type: "FIST", Range: AttackRangeMelee}
 	// AttackCanon は大砲
-	AttackCanon = AttackType("CANON") // 大砲
+	AttackCanon = AttackType{Type: "CANON", Range: AttackRangeRanged}
 )
 
 // Valid はAttackTypeの値が有効かを検証する
-func (enum AttackType) Valid() error {
-	switch enum {
-	case AttackSword, AttackSpear, AttackHandgun, AttackRifle, AttackFist, AttackCanon:
+func (at AttackType) Valid() error {
+	switch at.Type {
+	case AttackSword.Type, AttackSpear.Type, AttackHandgun.Type, AttackRifle.Type, AttackFist.Type, AttackCanon.Type:
 		return nil
 	}
 
-	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)
+	return fmt.Errorf("get %s: %w", at.Type, ErrInvalidEnumType)
 }
 
-func (enum AttackType) String() string {
+// IsMelee は近接武器かどうかを返す
+func (at AttackType) IsMelee() bool {
+	return at.Range == AttackRangeMelee
+}
+
+// IsRanged は遠距離武器かどうかを返す
+func (at AttackType) IsRanged() bool {
+	return at.Range == AttackRangeRanged
+}
+
+func (at AttackType) String() string {
 	var result string
-	switch enum {
-	case AttackSword:
+	switch at.Type {
+	case "SWORD":
 		result = "刀剣"
-	case AttackSpear:
+	case "SPEAR":
 		result = "長物"
-	case AttackHandgun:
+	case "HANDGUN":
 		result = "拳銃"
-	case AttackRifle:
+	case "RIFLE":
 		result = "小銃"
-	case AttackFist:
+	case "FIST":
 		result = "格闘"
-	case AttackCanon:
+	case "CANON":
 		result = "大砲"
 	default:
 		panic("invalid attack type")
 	}
 
 	return result
+}
+
+// ParseAttackType は文字列からAttackTypeを生成する
+func ParseAttackType(s string) AttackType {
+	switch s {
+	case "SWORD":
+		return AttackSword
+	case "SPEAR":
+		return AttackSpear
+	case "HANDGUN":
+		return AttackHandgun
+	case "RIFLE":
+		return AttackRifle
+	case "FIST":
+		return AttackFist
+	case "CANON":
+		return AttackCanon
+	default:
+		panic(fmt.Sprintf("invalid attack type: %s", s))
+	}
 }
 
 // ================

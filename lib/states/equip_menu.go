@@ -267,9 +267,35 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 	return tabs
 }
 
-// createAllSlotItems は防具と武器の全スロットのMenuItemを作成する
+// createAllSlotItems は武器と防具の全スロットのMenuItemを作成する
 func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.Item {
 	items := []menu.Item{}
+
+	// 武器スロットを追加（近接武器、遠距離武器）
+	weaponSlots := worldhelper.GetWeaponEquipments(world, member)
+	weaponLabels := []string{"近接武器", "遠距離武器"}
+	for i, slot := range weaponSlots {
+		var name string
+		if slot != nil {
+			name = fmt.Sprintf("%s: %s", weaponLabels[i], world.Components.Name.Get(*slot).(*gc.Name).Name)
+		} else {
+			name = fmt.Sprintf("%s: -", weaponLabels[i])
+		}
+
+		// スロット番号は4番から開始（0-3番は防具用）
+		slotNumber := i + 4
+
+		items = append(items, menu.Item{
+			ID:    fmt.Sprintf("weapon_slot_%d", i),
+			Label: name,
+			UserData: map[string]interface{}{
+				"member":     member,
+				"slotNumber": slotNumber,
+				"entity":     slot,
+				"equipType":  equipTargetWeapon,
+			},
+		})
+	}
 
 	// 防具スロットを追加
 	wearSlots := worldhelper.GetWearEquipments(world, member)
@@ -289,28 +315,6 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 				"slotNumber": i,
 				"entity":     slot,
 				"equipType":  equipTargetWear,
-			},
-		})
-	}
-
-	// 武器スロットを追加
-	weaponSlots := worldhelper.GetWeaponEquipments(world, member)
-	for i, slot := range weaponSlots {
-		var name string
-		if slot != nil {
-			name = fmt.Sprintf("武器%d: %s", i+1, world.Components.Name.Get(*slot).(*gc.Name).Name)
-		} else {
-			name = fmt.Sprintf("武器%d: -", i+1)
-		}
-
-		items = append(items, menu.Item{
-			ID:    fmt.Sprintf("weapon_slot_%d", i),
-			Label: name,
-			UserData: map[string]interface{}{
-				"member":     member,
-				"slotNumber": i,
-				"entity":     slot,
-				"equipType":  equipTargetWeapon,
 			},
 		})
 	}
@@ -670,13 +674,30 @@ func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item
 		return fmt.Errorf("unexpected item UserData")
 	}
 
+	// 装備するスロット番号を決定
+	slotNumber := st.equipSlotNumber
+
+	// 武器の場合、攻撃タイプに応じてスロット番号を決定
+	if entity.HasComponent(world.Components.Weapon) {
+		weaponComp := world.Components.Weapon.Get(entity).(*gc.Weapon)
+		attack := world.Components.Attack.Get(entity).(*gc.Attack)
+		if attack != nil {
+			if attack.AttackCategory.IsMelee() {
+				slotNumber = worldhelper.GetMeleeWeaponSlot()
+			} else if attack.AttackCategory.IsRanged() {
+				slotNumber = worldhelper.GetRangedWeaponSlot()
+			}
+		}
+		_ = weaponComp // 未使用の警告を回避
+	}
+
 	// 前の装備を外す
 	if st.previousEquipment != nil {
 		worldhelper.Disarm(world, *st.previousEquipment)
 	}
 
 	// 保存されたメンバーに新しい装備を装着
-	worldhelper.Equip(world, entity, st.equipTargetMember, st.equipSlotNumber)
+	worldhelper.Equip(world, entity, st.equipTargetMember, slotNumber)
 
 	// 装備モードを終了して元の表示に戻る
 	return st.exitEquipMode(world)

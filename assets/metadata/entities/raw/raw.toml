@@ -235,6 +235,23 @@ Value       = 1600
 # weapon ================
 
 [[Items]]
+Name        = "素手"
+Description = "素手による打撃"
+Value       = 0
+
+[Items.Weapon]
+Cost        = 1
+TargetGroup = "ENEMY"
+TargetNum   = "SINGLE"
+
+[Items.Attack]
+Accuracy       = 80
+Damage         = 3
+AttackCount    = 1
+Element        = "NONE"
+AttackCategory = "FIST"
+
+[[Items]]
 Name        = "体当たり"
 Description = "勢いをつけて体を接触させてダメージを与える"
 Value       = 50
