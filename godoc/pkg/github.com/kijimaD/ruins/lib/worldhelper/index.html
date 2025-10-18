@@ -185,13 +185,13 @@
 				<dd><a href="index.html#FindStackableInInventory">func FindStackableInInventory(world w.World, name string) (ecs.Entity, bool)</a></dd>
 			
 				
-				<dd><a href="index.html#GetAttackFromCard">func GetAttackFromCard(world w.World, cardEntity ecs.Entity) (*gc.Attack, string, error)</a></dd>
+				<dd><a href="index.html#GetArmorEquipments">func GetArmorEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
 			
 				
 				<dd><a href="index.html#GetAttackFromCommandTable">func GetAttackFromCommandTable(world w.World, enemyEntity ecs.Entity) (*gc.Attack, string, error)</a></dd>
 			
 				
-				<dd><a href="index.html#GetCardEquipments">func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
+				<dd><a href="index.html#GetAttackFromWeapon">func GetAttackFromWeapon(world w.World, weaponEntity ecs.Entity) (*gc.Attack, string, error)</a></dd>
 			
 				
 				<dd><a href="index.html#GetCurrency">func GetCurrency(world w.World, entity ecs.Entity) int</a></dd>
@@ -209,13 +209,16 @@
 				<dd><a href="index.html#GetItemValue">func GetItemValue(world w.World, entity ecs.Entity) int</a></dd>
 			
 				
+				<dd><a href="index.html#GetMeleeWeapon">func GetMeleeWeapon(world w.World, owner ecs.Entity) *ecs.Entity</a></dd>
+			
+				
 				<dd><a href="index.html#GetPlayerEntity">func GetPlayerEntity(world w.World) (ecs.Entity, error)</a></dd>
 			
 				
-				<dd><a href="index.html#GetShopInventory">func GetShopInventory() []string</a></dd>
+				<dd><a href="index.html#GetRangedWeapon">func GetRangedWeapon(world w.World, owner ecs.Entity) *ecs.Entity</a></dd>
 			
 				
-				<dd><a href="index.html#GetWearEquipments">func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
+				<dd><a href="index.html#GetShopInventory">func GetShopInventory() []string</a></dd>
 			
 				
 				<dd><a href="index.html#HasCurrency">func HasCurrency(world w.World, entity ecs.Entity, amount int) bool</a></dd>
@@ -572,14 +575,14 @@ target に amount 分のHPを回復させる
 		
 			
 			
-			<h2 id="GetAttackFromCard">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go?s=1803:1891#L42">GetAttackFromCard</a>
-				<a class="permalink" href="index.html#GetAttackFromCard">&#xb6;</a>
+			<h2 id="GetArmorEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equipment.go?s=2007:2077#L51">GetArmorEquipments</a>
+				<a class="permalink" href="index.html#GetArmorEquipments">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func GetAttackFromCard(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, cardEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (*<a href="../components/index.html">gc</a>.<a href="../components/index.html#Attack">Attack</a>, <a href="http://localhost:8888/pkg/builtin/#string">string</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
-			<p>GetAttackFromCard はカードエンティティから攻撃パラメータを取得する
-プレイヤーが装備しているカードエンティティから攻撃情報を取得する
+			<pre>func GetArmorEquipments(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []*<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>GetArmorEquipments は防具一覧を取得する（HEAD, TORSO, LEGS, JEWELRY）
+必ず長さ4のスライスを返す
 
 			
 			
@@ -587,14 +590,14 @@ target に amount 分のHPを回復させる
 		
 			
 			
-			<h2 id="GetAttackFromCommandTable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go?s=376:473#L4">GetAttackFromCommandTable</a>
+			<h2 id="GetAttackFromCommandTable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go?s=373:470#L4">GetAttackFromCommandTable</a>
 				<a class="permalink" href="index.html#GetAttackFromCommandTable">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func GetAttackFromCommandTable(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, enemyEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (*<a href="../components/index.html">gc</a>.<a href="../components/index.html#Attack">Attack</a>, <a href="http://localhost:8888/pkg/builtin/#string">string</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>GetAttackFromCommandTable は敵のCommandTableからランダムに攻撃を選択する
-カードエンティティを生成せずに攻撃パラメータを取得する
+武器エンティティを生成せずに攻撃パラメータを取得する
 
 			
 			
@@ -602,14 +605,14 @@ target に amount 分のHPを回復させる
 		
 			
 			
-			<h2 id="GetCardEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equipment.go?s=1673:1742#L39">GetCardEquipments</a>
-				<a class="permalink" href="index.html#GetCardEquipments">&#xb6;</a>
+			<h2 id="GetAttackFromWeapon">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go?s=1814:1906#L42">GetAttackFromWeapon</a>
+				<a class="permalink" href="index.html#GetAttackFromWeapon">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func GetCardEquipments(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []*<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>GetCardEquipments は指定キャラクターの装備中のカード一覧を取得する
-必ず長さ8のスライスを返す
+			<pre>func GetAttackFromWeapon(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, weaponEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (*<a href="../components/index.html">gc</a>.<a href="../components/index.html#Attack">Attack</a>, <a href="http://localhost:8888/pkg/builtin/#string">string</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>GetAttackFromWeapon は武器エンティティから攻撃パラメータを取得する
+プレイヤーが装備している武器エンティティから攻撃情報を取得する
 
 			
 			
@@ -687,6 +690,20 @@ target に amount 分のHPを回復させる
 		
 			
 			
+			<h2 id="GetMeleeWeapon">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equipment.go?s=896:960#L14">GetMeleeWeapon</a>
+				<a class="permalink" href="index.html#GetMeleeWeapon">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetMeleeWeapon(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>GetMeleeWeapon は近接武器を取得する
+
+			
+			
+
+		
+			
+			
 			<h2 id="GetPlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/query.go?s=730:785#L18">GetPlayerEntity</a>
 				<a class="permalink" href="index.html#GetPlayerEntity">&#xb6;</a>
 				
@@ -702,13 +719,13 @@ target に amount 分のHPを回復させる
 		
 			
 			
-			<h2 id="GetShopInventory">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/shop.go?s=4279:4311#L120">GetShopInventory</a>
-				<a class="permalink" href="index.html#GetShopInventory">&#xb6;</a>
+			<h2 id="GetRangedWeapon">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equipment.go?s=1414:1479#L32">GetRangedWeapon</a>
+				<a class="permalink" href="index.html#GetRangedWeapon">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func GetShopInventory() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-			<p>GetShopInventory は店の品揃えを返す（ハードコーディング）
+			<pre>func GetRangedWeapon(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
+			<p>GetRangedWeapon は遠距離武器を取得する
 
 			
 			
@@ -716,14 +733,13 @@ target に amount 分のHPを回復させる
 		
 			
 			
-			<h2 id="GetWearEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equipment.go?s=979:1048#L15">GetWearEquipments</a>
-				<a class="permalink" href="index.html#GetWearEquipments">&#xb6;</a>
+			<h2 id="GetShopInventory">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/shop.go?s=4279:4311#L120">GetShopInventory</a>
+				<a class="permalink" href="index.html#GetShopInventory">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func GetWearEquipments(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, owner <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) []*<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a></pre>
-			<p>GetWearEquipments は指定キャラクターの装備中の防具一覧を取得する
-必ず長さ4のスライスを返す
+			<pre>func GetShopInventory() []<a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+			<p>GetShopInventory は店の品揃えを返す（ハードコーディング）
 
 			
 			
