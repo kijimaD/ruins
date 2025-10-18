@@ -113,9 +113,6 @@ func TestSaveLoadItemLocations(t *testing.T) {
 			"Owner参照が無効なエンティティを指している: equipped.Owner = %d", equipped.Owner)
 		loadedOwner = equipped.Owner
 
-		// EquipmentChangedコンポーネントも正しくロードされることを確認
-		assert.True(t, entity.HasComponent(newWorld.Components.EquipmentChanged), "EquipmentChangedコンポーネントが正しくロードされていない")
-
 		equippedItemCount++
 	}))
 	assert.Equal(t, 1, equippedItemCount, "装備アイテムが正しくロードされていない")

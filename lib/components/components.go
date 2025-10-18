@@ -112,7 +112,7 @@ type Components struct {
 	TurnBased    *ecs.SliceComponent `save:"true"`
 
 	// event ================
-	EquipmentChanged *ecs.NullComponent  `save:"true"`
+	EquipmentChanged *ecs.NullComponent
 	ProvidesHealing  *ecs.SliceComponent `save:"true"`
 	InflictsDamage   *ecs.SliceComponent `save:"true"`
 
