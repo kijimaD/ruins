@@ -2,32 +2,12 @@ name: ⚗️Check
 
 on:
   push:
-
-env:
-  GH_TOKEN: ${{ secrets.WRITE_PACKAGE }}
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  # 共通処理
-  setup:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: set up
-        uses: actions/setup-go@v6
-        id: go
-      - name: check out
-        uses: actions/checkout@v5
-      - name: Cache
-        uses: actions/cache@main
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
   build:
-    needs: setup
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -37,7 +17,6 @@ jobs:
         run: docker build --target release .
 
   crosscomple:
-    needs: setup
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -49,33 +28,47 @@ jobs:
         run: make build
 
   test:
-    needs: setup
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
+    permissions:
+      # octocov 用の設定
+      # PRにコメントする
+      pull-requests: write
+      # 実行時間取得
+      contents: read
+      # 前のレポートを取得する
+      actions: read
     steps:
       - uses: actions/checkout@v5
-      - name: build
-        run: docker build --target builder -t testimage .
-      # テスト実行が docker 上ではうまくいかないのでここで実行する
-      - name: test
-        run: |
-          sudo apt update -y
-          sudo apt install -y libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
-          export DISPLAY=:99
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-
-          make test
-          make vrt
-      - name: set up
-        uses: actions/setup-go@v6
-      - name: lint
-        run: make tools-install lint # buildできる環境でないと、エラーになる。jobを分けるのが望ましいが、面倒なのでここに書く
-      - name: upload result
-        uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/setup-go-with-x
+      - name: Cache Go modules
+        uses: actions/cache@main
         with:
-          name: vrt
-          path: vrtimages
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: test
+        run: make test
+      - name: coverage for octocov
+        run: go test ./... -coverprofile=coverage.out
+      - uses: k1LoW/octocov-action@v1
+
+  vrt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-go-with-x
+      - name: Cache Go modules
+        uses: actions/cache@main
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: vrt
+        run: make vrt
       # 差分があればコミット
       - name: commit for changes
         run: |
@@ -88,11 +81,27 @@ jobs:
             git push
           fi
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-go-with-x
+      - name: Cache Go modules
+        uses: actions/cache@main
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: lint
+        run: make tools-install lint
+
   image:
-    needs: setup
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      # GitHub Container Registryへのpush用
+      packages: write
     steps:
       - uses: actions/checkout@v5
 
@@ -111,7 +120,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.WRITE_PACKAGE }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v4
