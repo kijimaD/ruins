@@ -500,9 +500,9 @@ func (st *EquipMenuState) queryEquipableItemsForSlot(world w.World, slotNumber g
 			attack := world.Components.Attack.Get(entity).(*gc.Attack)
 			if attack != nil {
 				// スロット番号に応じた武器種別のみ追加
-				if slotNumber == gc.SlotMeleeWeapon && attack.AttackCategory.IsMelee() {
+				if slotNumber == gc.SlotMeleeWeapon && attack.AttackCategory.Range == gc.AttackRangeMelee {
 					items = append(items, entity)
-				} else if slotNumber == gc.SlotRangedWeapon && attack.AttackCategory.IsRanged() {
+				} else if slotNumber == gc.SlotRangedWeapon && attack.AttackCategory.Range == gc.AttackRangeRanged {
 					items = append(items, entity)
 				}
 			}
@@ -699,9 +699,9 @@ func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item
 		weaponComp := world.Components.Weapon.Get(entity).(*gc.Weapon)
 		attack := world.Components.Attack.Get(entity).(*gc.Attack)
 		if attack != nil {
-			if attack.AttackCategory.IsMelee() {
+			if attack.AttackCategory.Range == gc.AttackRangeMelee {
 				slotNumber = gc.SlotMeleeWeapon
-			} else if attack.AttackCategory.IsRanged() {
+			} else if attack.AttackCategory.Range == gc.AttackRangeRanged {
 				slotNumber = gc.SlotRangedWeapon
 			}
 		}

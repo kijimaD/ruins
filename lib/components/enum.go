@@ -148,34 +148,14 @@ func (at AttackType) Valid() error {
 	return fmt.Errorf("get %s: %w", at.Type, ErrInvalidEnumType)
 }
 
-// IsMelee は近接武器かどうかを返す
-func (at AttackType) IsMelee() bool {
-	return at.Range == AttackRangeMelee
-}
-
-// IsRanged は遠距離武器かどうかを返す
-func (at AttackType) IsRanged() bool {
-	return at.Range == AttackRangeRanged
-}
-
 // ParseAttackType は文字列からAttackTypeを生成する
-func ParseAttackType(s string) AttackType {
-	switch s {
-	case "SWORD":
-		return AttackSword
-	case "SPEAR":
-		return AttackSpear
-	case "HANDGUN":
-		return AttackHandgun
-	case "RIFLE":
-		return AttackRifle
-	case "FIST":
-		return AttackFist
-	case "CANON":
-		return AttackCanon
-	default:
-		panic(fmt.Sprintf("invalid attack type: %s", s))
+func ParseAttackType(s string) (AttackType, error) {
+	for _, at := range AllAttackTypes {
+		if at.Type == s {
+			return at, nil
+		}
 	}
+	return AttackType{}, fmt.Errorf("invalid attack type: %s: %w", s, ErrInvalidEnumType)
 }
 
 // ================

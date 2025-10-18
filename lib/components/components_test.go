@@ -249,10 +249,9 @@ func TestAllAttackTypesCovered(t *testing.T) {
 				assert.NotEmpty(t, at.Label, "Labelが空である")
 
 				// ParseAttackType()でラウンドトリップできること
-				assert.NotPanics(t, func() {
-					parsed := ParseAttackType(at.Type)
-					assert.Equal(t, at.Type, parsed.Type)
-				})
+				parsed, err := ParseAttackType(at.Type)
+				require.NoError(t, err, "ParseAttackType()でエラーが発生した")
+				assert.Equal(t, at.Type, parsed.Type)
 			})
 		}
 	})
