@@ -350,6 +350,29 @@ func (rw *Master) NewRecipeSpec(name string) (gc.EntitySpec, error) {
 	return entitySpec, nil
 }
 
+// NewCardSpec は指定された名前のカードのEntitySpecを生成する
+// カードはマスターデータとして位置なしで生成される
+func (rw *Master) NewCardSpec(name string) (gc.EntitySpec, error) {
+	// カードはアイテムの一種なので、ItemIndexから検索
+	_, ok := rw.ItemIndex[name]
+	if !ok {
+		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
+	}
+
+	// マスターデータのため位置を指定しない
+	itemSpec, err := rw.NewItemSpec(name, nil)
+	if err != nil {
+		return gc.EntitySpec{}, fmt.Errorf("failed to generate card spec: %w", err)
+	}
+
+	// カードコンポーネントがない場合はエラー
+	if itemSpec.Card == nil {
+		return gc.EntitySpec{}, fmt.Errorf("%s is not a card (Card component missing)", name)
+	}
+
+	return itemSpec, nil
+}
+
 // generateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する(敵・味方共通)
 func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 	memberIdx, ok := rw.MemberIndex[name]

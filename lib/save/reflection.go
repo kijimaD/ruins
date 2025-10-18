@@ -289,12 +289,12 @@ func (r *ComponentRegistry) createGenericExtract(componentRef interface{}) func(
 	sliceComp, ok := componentRef.(*ecs.SliceComponent)
 	if !ok {
 		// SliceComponentでない場合はnilを返す
-		return func(world w.World, entity ecs.Entity) (interface{}, bool) {
+		return func(_ w.World, _ ecs.Entity) (interface{}, bool) {
 			return nil, false
 		}
 	}
 
-	return func(world w.World, entity ecs.Entity) (interface{}, bool) {
+	return func(_ w.World, entity ecs.Entity) (interface{}, bool) {
 		if !entity.HasComponent(sliceComp) {
 			return nil, false
 		}
@@ -310,7 +310,7 @@ func (r *ComponentRegistry) createGenericExtract(componentRef interface{}) func(
 
 // createGenericRestore は汎用的なrestore関数を生成(SliceComponent用)
 // JSONタグを使った自動デシリアライズに対応
-func (r *ComponentRegistry) createGenericRestore(fieldName string, componentType reflect.Type) func(w.World, ecs.Entity, interface{}) error {
+func (r *ComponentRegistry) createGenericRestore(fieldName string, _ reflect.Type) func(w.World, ecs.Entity, interface{}) error {
 	return func(world w.World, entity ecs.Entity, data interface{}) error {
 		// worldからComponentsフィールドを取得
 		componentsValue := reflect.ValueOf(world.Components).Elem()

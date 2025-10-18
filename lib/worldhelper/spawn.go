@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand/v2"
-	"sort"
 
 	"github.com/kijimaD/ruins/lib/config"
 	"github.com/kijimaD/ruins/lib/engine/entities"
@@ -293,32 +292,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 	pools.SP.Max = attrs.Vitality.Total*spVitalityMultiply + attrs.Dexterity.Total + attrs.Agility.Total
 	pools.SP.Current = pools.SP.Max
 
-	return nil
-}
-
-// SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
-func SpawnAllCards(world w.World) error {
-	rawMaster := world.Resources.RawMaster.(*raw.Master)
-
-	// マップのキーをソートして決定的な順序にする
-	keys := make([]string, 0, len(rawMaster.ItemIndex))
-	for k := range rawMaster.ItemIndex {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// ソート済みの順序でカードを生成する(マスターデータ)
-	for _, k := range keys {
-		componentList := entities.ComponentList[gc.EntitySpec]{}
-		entitySpec, err := rawMaster.NewItemSpec(k, nil)
-		if err != nil {
-			return fmt.Errorf("%w (card: %s): %v", ErrItemGeneration, k, err)
-		}
-		componentList.Entities = append(componentList.Entities, entitySpec)
-		if _, err := entities.AddEntities(world, componentList); err != nil {
-			return err
-		}
-	}
 	return nil
 }
 

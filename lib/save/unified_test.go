@@ -341,14 +341,6 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		}
 	})
 
-	t.Run("InitDebugDataによるラウンドトリップ", func(t *testing.T) {
-		t.Parallel()
-		// InitDebugDataはマスターカード(ItemLocationなし)を含むため、
-		// これらは保存対象外となりラウンドトリップできない
-		// このテストはスキップする
-		t.Skip("InitDebugDataはマスターカードを含むため、ラウンドトリップテストには不適切")
-	})
-
 	t.Run("複雑な実世界データのラウンドトリップ", func(t *testing.T) {
 		t.Parallel()
 		// createComplexDeterministicWorldもマスターカード等を含む可能性があるため、
