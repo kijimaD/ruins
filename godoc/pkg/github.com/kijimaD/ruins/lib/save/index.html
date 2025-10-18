@@ -251,11 +251,6 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 			
 			
 				
-				<dd><a href="index.html#ComponentData">type ComponentData</a></dd>
-				
-				
-			
-				
 				<dd><a href="index.html#ComponentRegistry">type ComponentRegistry</a></dd>
 				
 					
@@ -410,17 +405,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				<p>コンポーネント名の定数
 
 				<pre>const (
-    <span id="ComponentAIVision">ComponentAIVision</span>           = &#34;AIVision&#34;
-    <span id="ComponentBlockView">ComponentBlockView</span>          = &#34;BlockView&#34;
-    <span id="ComponentBlockPass">ComponentBlockPass</span>          = &#34;BlockPass&#34;
-    <span id="ComponentPlayer">ComponentPlayer</span>             = &#34;Player&#34;
-    <span id="ComponentFactionAllyData">ComponentFactionAllyData</span>    = &#34;FactionAllyData&#34;
-    <span id="ComponentFactionEnemyData">ComponentFactionEnemyData</span>   = &#34;FactionEnemyData&#34;
-    <span id="ComponentItem">ComponentItem</span>               = &#34;Item&#34;
-    <span id="ComponentLocationInBackpack">ComponentLocationInBackpack</span> = &#34;LocationInBackpack&#34;
-    <span id="ComponentLocationEquipped">ComponentLocationEquipped</span>   = &#34;LocationEquipped&#34;
-    <span id="ComponentLocationOnField">ComponentLocationOnField</span>    = &#34;LocationOnField&#34;
-    <span id="ComponentEquipmentChanged">ComponentEquipmentChanged</span>   = &#34;EquipmentChanged&#34;
+    <span id="ComponentLocationEquipped">ComponentLocationEquipped</span> = &#34;LocationEquipped&#34;
 )</pre>
 			
 		
@@ -436,34 +421,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 		
 			
 			
-			<h2 id="ComponentData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1481:1574#L43">ComponentData</a>
-				<a class="permalink" href="index.html#ComponentData">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ComponentData はコンポーネントデータ
-
-			<pre>type ComponentData struct {
-<span id="ComponentData.Type"></span>    Type <a href="http://localhost:8888/pkg/builtin/#string">string</a>      `json:&#34;type&#34;`
-<span id="ComponentData.Data"></span>    Data interface{} `json:&#34;data&#34;`
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="ComponentRegistry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=1044:1207#L15">ComponentRegistry</a>
+			<h2 id="ComponentRegistry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=1177:1340#L16">ComponentRegistry</a>
 				<a class="permalink" href="index.html#ComponentRegistry">&#xb6;</a>
 				
 				
@@ -485,7 +443,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 
 			
 				
-				<h3 id="NewComponentRegistry">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=1272:1318#L23">NewComponentRegistry</a>
+				<h3 id="NewComponentRegistry">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=1405:1451#L24">NewComponentRegistry</a>
 					<a class="permalink" href="index.html#NewComponentRegistry">&#xb6;</a>
 					
 					
@@ -499,7 +457,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 
 			
 				
-				<h3 id="ComponentRegistry.GetAllTypes">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=10027:10089#L215">GetAllTypes</a>
+				<h3 id="ComponentRegistry.GetAllTypes">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9509:9571#L258">GetAllTypes</a>
 					<a class="permalink" href="index.html#ComponentRegistry.GetAllTypes">&#xb6;</a>
 					
 					
@@ -512,7 +470,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="ComponentRegistry.GetTypeInfo">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9436:9520#L192">GetTypeInfo</a>
+				<h3 id="ComponentRegistry.GetTypeInfo">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=8918:9002#L235">GetTypeInfo</a>
 					<a class="permalink" href="index.html#ComponentRegistry.GetTypeInfo">&#xb6;</a>
 					
 					
@@ -525,7 +483,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="ComponentRegistry.GetTypeInfoByName">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9675:9760#L201">GetTypeInfoByName</a>
+				<h3 id="ComponentRegistry.GetTypeInfoByName">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=9157:9242#L244">GetTypeInfoByName</a>
 					<a class="permalink" href="index.html#ComponentRegistry.GetTypeInfoByName">&#xb6;</a>
 					
 					
@@ -538,13 +496,14 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="ComponentRegistry.InitializeFromWorld">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=1556:1624#L31">InitializeFromWorld</a>
+				<h3 id="ComponentRegistry.InitializeFromWorld">func (*ComponentRegistry) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=3433:3501#L78">InitializeFromWorld</a>
 					<a class="permalink" href="index.html#ComponentRegistry.InitializeFromWorld">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (r *<a href="index.html#ComponentRegistry">ComponentRegistry</a>) InitializeFromWorld(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>InitializeFromWorld はワールドから自動的にコンポーネント型を検出・登録
+save:&quot;true&quot;タグが付いたComponentsフィールドを自動的に登録する
 
 				
 				
@@ -553,7 +512,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 		
 			
 			
-			<h2 id="ComponentTypeInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=240:960#L5">ComponentTypeInfo</a>
+			<h2 id="ComponentTypeInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/reflection.go?s=240:1093#L5">ComponentTypeInfo</a>
 				<a class="permalink" href="index.html#ComponentTypeInfo">&#xb6;</a>
 				
 				
@@ -563,6 +522,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 			<pre>type ComponentTypeInfo struct {
 <span id="ComponentTypeInfo.Name"></span>    Name           <a href="http://localhost:8888/pkg/builtin/#string">string</a>                                                         <span class="comment">// 型名</span>
 <span id="ComponentTypeInfo.Type"></span>    Type           <a href="http://localhost:8888/pkg/reflect/">reflect</a>.<a href="http://localhost:8888/pkg/reflect/#Type">Type</a>                                                   <span class="comment">// 型情報</span>
+<span id="ComponentTypeInfo.FieldName"></span>    FieldName      <a href="http://localhost:8888/pkg/builtin/#string">string</a>                                                         <span class="comment">// Componentsフィールド名(例: &#34;Name&#34;, &#34;Pools&#34;)</span>
 <span id="ComponentTypeInfo.ComponentRef"></span>    ComponentRef   interface{}                                                    <span class="comment">// ECSコンポーネントへの参照</span>
 <span id="ComponentTypeInfo.ExtractFunc"></span>    ExtractFunc    func(<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (interface{}, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)                  <span class="comment">// エンティティからコンポーネントを抽出</span>
 <span id="ComponentTypeInfo.RestoreFunc"></span>    RestoreFunc    func(<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a>                   <span class="comment">// エンティティにコンポーネントを復元</span>
@@ -584,7 +544,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 		
 			
 			
-			<h2 id="Data">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=845:1080#L24">Data</a>
+			<h2 id="Data">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=387:622#L14">Data</a>
 				<a class="permalink" href="index.html#Data">&#xb6;</a>
 				
 				
@@ -613,7 +573,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 		
 			
 			
-			<h2 id="EntityReference">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1644:1737#L49">EntityReference</a>
+			<h2 id="EntityReference">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1036:1129#L33">EntityReference</a>
 				<a class="permalink" href="index.html#EntityReference">&#xb6;</a>
 				
 				
@@ -639,7 +599,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 		
 			
 			
-			<h2 id="EntitySaveData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1285:1428#L37">EntitySaveData</a>
+			<h2 id="EntitySaveData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=827:966#L27">EntitySaveData</a>
 				<a class="permalink" href="index.html#EntitySaveData">&#xb6;</a>
 				
 				
@@ -647,8 +607,8 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 			<p>EntitySaveData は単一エンティティのセーブデータ
 
 			<pre>type EntitySaveData struct {
-<span id="EntitySaveData.StableID"></span>    StableID   <a href="index.html#StableID">StableID</a>                 `json:&#34;stable_id&#34;`
-<span id="EntitySaveData.Components"></span>    Components map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="index.html#ComponentData">ComponentData</a> `json:&#34;components&#34;`
+<span id="EntitySaveData.StableID"></span>    StableID   <a href="index.html#StableID">StableID</a>               `json:&#34;stable_id&#34;`
+<span id="EntitySaveData.Components"></span>    Components map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]interface{} `json:&#34;components&#34;`
 }
 </pre>
 
@@ -666,7 +626,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 		
 			
 			
-			<h2 id="SerializationManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1850:1986#L54">SerializationManager</a>
+			<h2 id="SerializationManager">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1242:1378#L38">SerializationManager</a>
 				<a class="permalink" href="index.html#SerializationManager">&#xb6;</a>
 				
 				
@@ -688,7 +648,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 
 			
 				
-				<h3 id="NewSerializationManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=2057:2123#L61">NewSerializationManager</a>
+				<h3 id="NewSerializationManager">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1449:1515#L45">NewSerializationManager</a>
 					<a class="permalink" href="index.html#NewSerializationManager">&#xb6;</a>
 					
 					
@@ -702,7 +662,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 
 			
 				
-				<h3 id="SerializationManager.GenerateWorldJSON">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=2432:2512#L75">GenerateWorldJSON</a>
+				<h3 id="SerializationManager.GenerateWorldJSON">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1824:1904#L59">GenerateWorldJSON</a>
 					<a class="permalink" href="index.html#SerializationManager.GenerateWorldJSON">&#xb6;</a>
 					
 					
@@ -715,7 +675,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="SerializationManager.GetComponentRegistry">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=23779:23852#L693">GetComponentRegistry</a>
+				<h3 id="SerializationManager.GetComponentRegistry">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=14751:14824#L445">GetComponentRegistry</a>
 					<a class="permalink" href="index.html#SerializationManager.GetComponentRegistry">&#xb6;</a>
 					
 					
@@ -728,7 +688,7 @@ func (r *ComponentRegistry) restoreNewComponent(world w.World, entity ecs.Entity
 				
 			
 				
-				<h3 id="SerializationManager.GetSaveFileTimestamp">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=23180:23268#L672">GetSaveFileTimestamp</a>
+				<h3 id="SerializationManager.GetSaveFileTimestamp">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=14152:14240#L424">GetSaveFileTimestamp</a>
 					<a class="permalink" href="index.html#SerializationManager.GetSaveFileTimestamp">&#xb6;</a>
 					
 					
@@ -742,7 +702,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.GetStableIDManager">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=23604:23673#L688">GetStableIDManager</a>
+				<h3 id="SerializationManager.GetStableIDManager">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=14576:14645#L440">GetStableIDManager</a>
 					<a class="permalink" href="index.html#SerializationManager.GetStableIDManager">&#xb6;</a>
 					
 					
@@ -755,7 +715,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.LoadWorld">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=5293:5372#L168">LoadWorld</a>
+				<h3 id="SerializationManager.LoadWorld">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=4685:4764#L152">LoadWorld</a>
 					<a class="permalink" href="index.html#SerializationManager.LoadWorld">&#xb6;</a>
 					
 					
@@ -768,7 +728,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.LoadWorldJSON">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=3722:3800#L118">LoadWorldJSON</a>
+				<h3 id="SerializationManager.LoadWorldJSON">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=3114:3192#L102">LoadWorldJSON</a>
 					<a class="permalink" href="index.html#SerializationManager.LoadWorldJSON">&#xb6;</a>
 					
 					
@@ -781,7 +741,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.RestoreWorldFromJSON">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=4138:4228#L129">RestoreWorldFromJSON</a>
+				<h3 id="SerializationManager.RestoreWorldFromJSON">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=3530:3620#L113">RestoreWorldFromJSON</a>
 					<a class="permalink" href="index.html#SerializationManager.RestoreWorldFromJSON">&#xb6;</a>
 					
 					
@@ -794,7 +754,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.SaveFileExists">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=22907:22975#L666">SaveFileExists</a>
+				<h3 id="SerializationManager.SaveFileExists">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=13879:13947#L418">SaveFileExists</a>
 					<a class="permalink" href="index.html#SerializationManager.SaveFileExists">&#xb6;</a>
 					
 					
@@ -807,7 +767,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 				
 			
 				
-				<h3 id="SerializationManager.SaveWorld">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=3400:3479#L106">SaveWorld</a>
+				<h3 id="SerializationManager.SaveWorld">func (*SerializationManager) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=2792:2871#L90">SaveWorld</a>
 					<a class="permalink" href="index.html#SerializationManager.SaveWorld">&#xb6;</a>
 					
 					
@@ -1004,7 +964,7 @@ JSONファイルの中身のtimestampフィールドを読み取る
 		
 			
 			
-			<h2 id="WorldSaveData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=1142:1216#L32">WorldSaveData</a>
+			<h2 id="WorldSaveData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/save/manager.go?s=684:758#L22">WorldSaveData</a>
 				<a class="permalink" href="index.html#WorldSaveData">&#xb6;</a>
 				
 				

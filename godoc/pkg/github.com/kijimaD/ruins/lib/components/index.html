@@ -874,7 +874,7 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8351:8587#L262">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8648:8884#L262">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -980,7 +980,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6610:7111#L214">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6907:7408#L214">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -1059,7 +1059,7 @@
 		
 			
 			
-			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4734:4790#L150">Camera</a>
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5031:5087#L150">Camera</a>
 				<a class="permalink" href="index.html#Camera">&#xb6;</a>
 				
 				
@@ -1087,7 +1087,7 @@
 		
 			
 			
-			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8141:8200#L256">Card</a>
+			<h2 id="Card">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8438:8497#L256">Card</a>
 				<a class="permalink" href="index.html#Card">&#xb6;</a>
 				
 				
@@ -1115,7 +1115,7 @@
 		
 			
 			
-			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8653:8694#L271">CommandTable</a>
+			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8950:8991#L271">CommandTable</a>
 				<a class="permalink" href="index.html#CommandTable">&#xb6;</a>
 				
 				
@@ -1141,7 +1141,7 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1668:3387#L59">Components</a>
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1668:3684#L59">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
@@ -1152,22 +1152,22 @@ Manager.Join()でのクエリに使用される
 
 			<pre>type Components struct {
     <span class="comment">// general ================</span>
-<span id="Components.Name"></span>    Name        *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Description"></span>    Description *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Name"></span>    Name        *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Description"></span>    Description *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
 
     <span class="comment">// item ================</span>
-<span id="Components.Item"></span>    Item                   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
-<span id="Components.Consumable"></span>    Consumable             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Pools"></span>    Pools                  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Attack"></span>    Attack                 *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Value"></span>    Value                  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Recipe"></span>    Recipe                 *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Wearable"></span>    Wearable               *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Attributes"></span>    Attributes             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Card"></span>    Card                   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Stackable"></span>    Stackable              *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.ItemLocationInBackpack"></span>    ItemLocationInBackpack *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
-<span id="Components.ItemLocationEquipped"></span>    ItemLocationEquipped   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Item"></span>    Item                   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>  `save:&#34;true&#34;`
+<span id="Components.Consumable"></span>    Consumable             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Pools"></span>    Pools                  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Attack"></span>    Attack                 *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Value"></span>    Value                  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Recipe"></span>    Recipe                 *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Wearable"></span>    Wearable               *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Attributes"></span>    Attributes             *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Card"></span>    Card                   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.Stackable"></span>    Stackable              *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.ItemLocationInBackpack"></span>    ItemLocationInBackpack *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>  `save:&#34;true&#34;`
+<span id="Components.ItemLocationEquipped"></span>    ItemLocationEquipped   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
 <span id="Components.ItemLocationOnField"></span>    ItemLocationOnField    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 
     <span class="comment">// field ================</span>
@@ -1184,21 +1184,21 @@ Manager.Join()でのクエリに使用される
 <span id="Components.BlockPass"></span>    BlockPass    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.Door"></span>    Door         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.Prop"></span>    Prop         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
-<span id="Components.LightSource"></span>    LightSource  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.LightSource"></span>    LightSource  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
 
     <span class="comment">// member ================</span>
-<span id="Components.Player"></span>    Player       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Player"></span>    Player       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a> `save:&#34;true&#34;`
 <span id="Components.Hunger"></span>    Hunger       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.Wallet"></span>    Wallet       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.FactionAlly"></span>    FactionAlly  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
+<span id="Components.Wallet"></span>    Wallet       *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.FactionAlly"></span>    FactionAlly  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>  `save:&#34;true&#34;`
 <span id="Components.FactionEnemy"></span>    FactionEnemy *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.Dead"></span>    Dead         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
-<span id="Components.TurnBased"></span>    TurnBased    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.TurnBased"></span>    TurnBased    *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
 
     <span class="comment">// event ================</span>
 <span id="Components.EquipmentChanged"></span>    EquipmentChanged *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
-<span id="Components.ProvidesHealing"></span>    ProvidesHealing  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
-<span id="Components.InflictsDamage"></span>    InflictsDamage   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.ProvidesHealing"></span>    ProvidesHealing  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
+<span id="Components.InflictsDamage"></span>    InflictsDamage   *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
 
     <span class="comment">// battle ================</span>
 <span id="Components.CommandTable"></span>    CommandTable *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
@@ -1218,7 +1218,7 @@ Manager.Join()でのクエリに使用される
 
 			
 				
-				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3628:3697#L117">InitializeComponents</a>
+				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=3925:3994#L117">InitializeComponents</a>
 					<a class="permalink" href="index.html#Components.InitializeComponents">&#xb6;</a>
 					
 					
@@ -1235,7 +1235,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5296:5375#L166">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5593:5672#L166">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -1262,7 +1262,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6076:6094#L193">Dead</a>
+			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6373:6391#L193">Dead</a>
 				<a class="permalink" href="index.html#Dead">&#xb6;</a>
 				
 				
@@ -1322,7 +1322,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5458:5505#L177">Description</a>
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5755:5802#L177">Description</a>
 				<a class="permalink" href="index.html#Description">&#xb6;</a>
 				
 				
@@ -1406,7 +1406,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Door">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10725:10853#L357">Door</a>
+			<h2 id="Door">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11022:11150#L357">Door</a>
 				<a class="permalink" href="index.html#Door">&#xb6;</a>
 				
 				
@@ -1433,7 +1433,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="DoorOrientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10893:10917#L363">DoorOrientation</a>
+			<h2 id="DoorOrientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11190:11214#L363">DoorOrientation</a>
 				<a class="permalink" href="index.html#DoorOrientation">&#xb6;</a>
 				
 				
@@ -1464,7 +1464,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8740:8778#L276">DropTable</a>
+			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9037:9075#L276">DropTable</a>
 				<a class="permalink" href="index.html#DropTable">&#xb6;</a>
 				
 				
@@ -1659,7 +1659,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7946:7976#L252">EquipmentChanged</a>
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8243:8273#L252">EquipmentChanged</a>
 				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
 				
 				
@@ -1754,7 +1754,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9212:9241#L297">FactionAllyData</a>
+			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9509:9538#L297">FactionAllyData</a>
 				<a class="permalink" href="index.html#FactionAllyData">&#xb6;</a>
 				
 				
@@ -1776,7 +1776,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9243:9283#L299">String</a>
+				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9540:9580#L299">String</a>
 					<a class="permalink" href="index.html#FactionAllyData.String">&#xb6;</a>
 					
 					
@@ -1790,7 +1790,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9356:9386#L304">FactionEnemyData</a>
+			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9653:9683#L304">FactionEnemyData</a>
 				<a class="permalink" href="index.html#FactionEnemyData">&#xb6;</a>
 				
 				
@@ -1812,7 +1812,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9388:9429#L306">String</a>
+				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9685:9726#L306">String</a>
 					<a class="permalink" href="index.html#FactionEnemyData.String">&#xb6;</a>
 					
 					
@@ -1826,7 +1826,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8937:8966#L287">FactionType</a>
+			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9234:9263#L287">FactionType</a>
 				<a class="permalink" href="index.html#FactionType">&#xb6;</a>
 				
 				
@@ -2028,7 +2028,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7414:7456#L231">InflictsDamage</a>
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7711:7753#L231">InflictsDamage</a>
 				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
 				
 				
@@ -2055,7 +2055,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5219:5237#L163">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5516:5534#L163">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -2080,7 +2080,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9503:9537#L311">ItemLocationType</a>
+			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9800:9834#L311">ItemLocationType</a>
 				<a class="permalink" href="index.html#ItemLocationType">&#xb6;</a>
 				
 				
@@ -2113,7 +2113,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LightSource">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10536:10669#L350">LightSource</a>
+			<h2 id="LightSource">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10833:10966#L350">LightSource</a>
 				<a class="permalink" href="index.html#LightSource">&#xb6;</a>
 				
 				
@@ -2141,7 +2141,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10083:10176#L330">LocationEquipped</a>
+			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10380:10473#L330">LocationEquipped</a>
 				<a class="permalink" href="index.html#LocationEquipped">&#xb6;</a>
 				
 				
@@ -2166,7 +2166,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10178:10219#L335">String</a>
+				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10475:10516#L335">String</a>
 					<a class="permalink" href="index.html#LocationEquipped.String">&#xb6;</a>
 					
 					
@@ -2180,7 +2180,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9928:9960#L323">LocationInBackpack</a>
+			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10225:10257#L323">LocationInBackpack</a>
 				<a class="permalink" href="index.html#LocationInBackpack">&#xb6;</a>
 				
 				
@@ -2202,7 +2202,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9962:10005#L325">String</a>
+				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10259:10302#L325">String</a>
 					<a class="permalink" href="index.html#LocationInBackpack.String">&#xb6;</a>
 					
 					
@@ -2216,7 +2216,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10303:10332#L340">LocationOnField</a>
+			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10600:10629#L340">LocationOnField</a>
 				<a class="permalink" href="index.html#LocationOnField">&#xb6;</a>
 				
 				
@@ -2238,7 +2238,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10334:10374#L342">String</a>
+				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10631:10671#L342">String</a>
 					<a class="permalink" href="index.html#LocationOnField.String">&#xb6;</a>
 					
 					
@@ -2252,7 +2252,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5398:5431#L172">Name</a>
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5695:5728#L172">Name</a>
 				<a class="permalink" href="index.html#Name">&#xb6;</a>
 				
 				
@@ -2353,7 +2353,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5854:5874#L189">Player</a>
+			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6151:6171#L189">Player</a>
 				<a class="permalink" href="index.html#Player">&#xb6;</a>
 				
 				
@@ -2404,7 +2404,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6236:6518#L201">Pools</a>
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6533:6815#L201">Pools</a>
 				<a class="permalink" href="index.html#Pools">&#xb6;</a>
 				
 				
@@ -2471,7 +2471,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Prop">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10470:10488#L347">Prop</a>
+			<h2 id="Prop">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10767:10785#L347">Prop</a>
 				<a class="permalink" href="index.html#Prop">&#xb6;</a>
 				
 				
@@ -2495,7 +2495,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7233:7281#L225">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7530:7578#L225">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -2574,7 +2574,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7810:7854#L247">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8107:8151#L247">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -2693,7 +2693,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8819:8883#L281">SheetImage</a>
+			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9116:9180#L281">SheetImage</a>
 				<a class="permalink" href="index.html#SheetImage">&#xb6;</a>
 				
 				
@@ -2819,7 +2819,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Stackable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7538:7587#L236">Stackable</a>
+			<h2 id="Stackable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7835:7884#L236">Stackable</a>
 				<a class="permalink" href="index.html#Stackable">&#xb6;</a>
 				
 				
@@ -3071,7 +3071,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Value">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7738:7770#L242">Value</a>
+			<h2 id="Value">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8035:8067#L242">Value</a>
 				<a class="permalink" href="index.html#Value">&#xb6;</a>
 				
 				
@@ -3098,7 +3098,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Wallet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6149:6185#L196">Wallet</a>
+			<h2 id="Wallet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6446:6482#L196">Wallet</a>
 				<a class="permalink" href="index.html#Wallet">&#xb6;</a>
 				
 				
@@ -3124,7 +3124,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4931:4966#L157">Warp</a>
+			<h2 id="Warp">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5228:5263#L157">Warp</a>
 				<a class="permalink" href="index.html#Warp">&#xb6;</a>
 				
 				
@@ -3174,7 +3174,7 @@ TODO: 接触をトリガーに何かさせたいことはよくあるので、�
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5607:5796#L182">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5904:6093#L182">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				

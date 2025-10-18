@@ -185,6 +185,12 @@
 				<dd><a href="index.html#FindStackableInInventory">func FindStackableInInventory(world w.World, name string) (ecs.Entity, bool)</a></dd>
 			
 				
+				<dd><a href="index.html#GetAttackFromCard">func GetAttackFromCard(world w.World, cardEntity ecs.Entity) (*gc.Attack, string, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetAttackFromCommandTable">func GetAttackFromCommandTable(world w.World, enemyEntity ecs.Entity) (*gc.Attack, string, error)</a></dd>
+			
+				
 				<dd><a href="index.html#GetCardEquipments">func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
 			
 				
@@ -248,9 +254,6 @@
 				<dd><a href="index.html#SortEntities">func SortEntities(world w.World, entities []ecs.Entity) []ecs.Entity</a></dd>
 			
 				
-				<dd><a href="index.html#SpawnAllCards">func SpawnAllCards(world w.World) error</a></dd>
-			
-				
 				<dd><a href="index.html#SpawnDoor">func SpawnDoor(world w.World, x gc.Tile, y gc.Tile, orientation gc.DoorOrientation) (ecs.Entity, error)</a></dd>
 			
 				
@@ -288,6 +291,8 @@
 			<h3>Package files</h3>
 			<p>
 			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go">attack.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/craft.go">craft.go</a>
 			
@@ -567,6 +572,36 @@ target に amount 分のHPを回復させる
 		
 			
 			
+			<h2 id="GetAttackFromCard">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go?s=1803:1891#L42">GetAttackFromCard</a>
+				<a class="permalink" href="index.html#GetAttackFromCard">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetAttackFromCard(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, cardEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (*<a href="../components/index.html">gc</a>.<a href="../components/index.html#Attack">Attack</a>, <a href="http://localhost:8888/pkg/builtin/#string">string</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>GetAttackFromCard はカードエンティティから攻撃パラメータを取得する
+プレイヤーが装備しているカードエンティティから攻撃情報を取得する
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetAttackFromCommandTable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/attack.go?s=376:473#L4">GetAttackFromCommandTable</a>
+				<a class="permalink" href="index.html#GetAttackFromCommandTable">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func GetAttackFromCommandTable(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, enemyEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>) (*<a href="../components/index.html">gc</a>.<a href="../components/index.html#Attack">Attack</a>, <a href="http://localhost:8888/pkg/builtin/#string">string</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>GetAttackFromCommandTable は敵のCommandTableからランダムに攻撃を選択する
+カードエンティティを生成せずに攻撃パラメータを取得する
+
+			
+			
+
+		
+			
+			
 			<h2 id="GetCardEquipments">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/equipment.go?s=1673:1742#L39">GetCardEquipments</a>
 				<a class="permalink" href="index.html#GetCardEquipments">&#xb6;</a>
 				
@@ -755,13 +790,14 @@ Stackableコンポーネントを持つ場合は既存と数量統合、それ�
 		
 			
 			
-			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12323:12391#L353">MovePlayerToPosition</a>
+			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11559:11627#L327">MovePlayerToPosition</a>
 				<a class="permalink" href="index.html#MovePlayerToPosition">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func MovePlayerToPosition(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 			<p>MovePlayerToPosition は既存のプレイヤーエンティティを指定位置に移動させる
+GridElement、SpriteRender、Cameraコンポーネントがない場合は追加する（ロード時に対応）
 
 			
 			
@@ -871,20 +907,6 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnAllCards">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=10192:10231#L290">SpawnAllCards</a>
-				<a class="permalink" href="index.html#SpawnAllCards">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func SpawnAllCards(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>SpawnAllCards は敵が使う用。マスタとなるカードを初期化する
-
-			
-			
-
-		
-			
-			
 			<h2 id="SpawnDoor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=1160:1263#L30">SpawnDoor</a>
 				<a class="permalink" href="index.html#SpawnDoor">&#xb6;</a>
 				
@@ -899,7 +921,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3765:3850#L103">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3757:3842#L102">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -913,7 +935,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11051:11144#L316">SpawnFieldItem</a>
+			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=10170:10263#L289">SpawnFieldItem</a>
 				<a class="permalink" href="index.html#SpawnFieldItem">&#xb6;</a>
 				
 				
@@ -927,7 +949,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5652:5748#L159">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5644:5740#L158">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
@@ -941,7 +963,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2442:2528#L67">SpawnPlayer</a>
+			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2434:2520#L66">SpawnPlayer</a>
 				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
 				
 				
@@ -969,7 +991,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=6386:6494#L177">SpawnStackable</a>
+			<h2 id="SpawnStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=6378:6486#L176">SpawnStackable</a>
 				<a class="permalink" href="index.html#SpawnStackable">&#xb6;</a>
 				
 				
@@ -984,7 +1006,7 @@ countは1以上である必要がある（0以下の場合はエラー）
 		
 			
 			
-			<h2 id="SpawnTile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1758:1866#L45">SpawnTile</a>
+			<h2 id="SpawnTile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=1750:1858#L44">SpawnTile</a>
 				<a class="permalink" href="index.html#SpawnTile">&#xb6;</a>
 				
 				
