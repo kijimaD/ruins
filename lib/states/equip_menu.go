@@ -58,7 +58,7 @@ type equipTarget int
 
 const (
 	equipTargetWear equipTarget = iota
-	equipTargetCard
+	equipTargetWeapon
 )
 
 // State interface ================
@@ -267,7 +267,7 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 	return tabs
 }
 
-// createAllSlotItems は防具と手札の全スロットのMenuItemを作成する
+// createAllSlotItems は防具と武器の全スロットのMenuItemを作成する
 func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.Item {
 	items := []menu.Item{}
 
@@ -293,24 +293,24 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 		})
 	}
 
-	// 手札スロットを追加
-	cardSlots := worldhelper.GetCardEquipments(world, member)
-	for i, slot := range cardSlots {
+	// 武器スロットを追加
+	weaponSlots := worldhelper.GetWeaponEquipments(world, member)
+	for i, slot := range weaponSlots {
 		var name string
 		if slot != nil {
-			name = fmt.Sprintf("手札%d: %s", i+1, world.Components.Name.Get(*slot).(*gc.Name).Name)
+			name = fmt.Sprintf("武器%d: %s", i+1, world.Components.Name.Get(*slot).(*gc.Name).Name)
 		} else {
-			name = fmt.Sprintf("手札%d: -", i+1)
+			name = fmt.Sprintf("武器%d: -", i+1)
 		}
 
 		items = append(items, menu.Item{
-			ID:    fmt.Sprintf("card_slot_%d", i),
+			ID:    fmt.Sprintf("weapon_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
 				"member":     member,
 				"slotNumber": i,
 				"entity":     slot,
-				"equipType":  equipTargetCard,
+				"equipType":  equipTargetWeapon,
 			},
 		})
 	}
@@ -495,14 +495,14 @@ func (st *EquipMenuState) queryMenuWear(world w.World) []ecs.Entity {
 	return worldhelper.SortEntities(world, items)
 }
 
-// 装備可能な手札を取得する
-func (st *EquipMenuState) queryMenuCard(world w.World) []ecs.Entity {
+// 装備可能な武器を取得する
+func (st *EquipMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	world.Manager.Join(
 		world.Components.Item,
 		world.Components.ItemLocationInBackpack,
-		world.Components.Card,
+		world.Components.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -628,8 +628,8 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 	switch equipType {
 	case equipTargetWear:
 		items = st.queryMenuWear(world)
-	case equipTargetCard:
-		items = st.queryMenuCard(world)
+	case equipTargetWeapon:
+		items = st.queryMenuWeapon(world)
 	}
 
 	equipItems := st.createEquipMenuItems(world, items, member)

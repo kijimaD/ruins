@@ -44,15 +44,15 @@ func GetWearEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	return entities
 }
 
-// GetCardEquipments は指定キャラクターの装備中のカード一覧を取得する
+// GetWeaponEquipments は指定キャラクターの装備中の武器一覧を取得する
 // 必ず長さ8のスライスを返す
-func GetCardEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
+func GetWeaponEquipments(world w.World, owner ecs.Entity) []*ecs.Entity {
 	entities := make([]*ecs.Entity, 8)
 
 	world.Manager.Join(
 		world.Components.Item,
 		world.Components.ItemLocationEquipped,
-		world.Components.Card,
+		world.Components.Weapon,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		equipped := world.Components.ItemLocationEquipped.Get(entity).(*gc.LocationEquipped)
 		if owner == equipped.Owner {

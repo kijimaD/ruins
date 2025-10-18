@@ -38,12 +38,12 @@ func TestSaveLoadItemTypes(t *testing.T) {
 		},
 	})
 
-	// カードアイテムを作成
-	cardItem := w.Manager.NewEntity()
-	cardItem.AddComponent(w.Components.Item, &gc.Item{})
-	cardItem.AddComponent(w.Components.Name, &gc.Name{Name: "テストカード"})
-	cardItem.AddComponent(w.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
-	cardItem.AddComponent(w.Components.Card, &gc.Card{
+	// 武器アイテムを作成
+	weaponItem := w.Manager.NewEntity()
+	weaponItem.AddComponent(w.Components.Item, &gc.Item{})
+	weaponItem.AddComponent(w.Components.Name, &gc.Name{Name: "テスト武器"})
+	weaponItem.AddComponent(w.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
+	weaponItem.AddComponent(w.Components.Weapon, &gc.Weapon{
 		TargetType: gc.TargetType{
 			TargetGroup: gc.TargetGroupAlly,
 			TargetNum:   gc.TargetSingle,
@@ -135,24 +135,24 @@ func TestSaveLoadItemTypes(t *testing.T) {
 	}))
 	assert.Equal(t, 1, wearableCount, "防具アイテムが正しくロードされていない")
 
-	// カードアイテムが正しくロードされたか確認
-	cardCount := 0
+	// 武器アイテムが正しくロードされたか確認
+	weaponCount := 0
 	newWorld.Manager.Join(
 		newWorld.Components.Item,
-		newWorld.Components.Card,
+		newWorld.Components.Weapon,
 		newWorld.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		name := newWorld.Components.Name.Get(entity).(*gc.Name)
-		assert.Equal(t, "テストカード", name.Name)
+		assert.Equal(t, "テスト武器", name.Name)
 
-		card := newWorld.Components.Card.Get(entity).(*gc.Card)
-		assert.Equal(t, gc.TargetGroupAlly, card.TargetType.TargetGroup)
-		assert.Equal(t, gc.TargetSingle, card.TargetType.TargetNum)
-		assert.Equal(t, 3, card.Cost)
+		weapon := newWorld.Components.Weapon.Get(entity).(*gc.Weapon)
+		assert.Equal(t, gc.TargetGroupAlly, weapon.TargetType.TargetGroup)
+		assert.Equal(t, gc.TargetSingle, weapon.TargetType.TargetNum)
+		assert.Equal(t, 3, weapon.Cost)
 
-		cardCount++
+		weaponCount++
 	}))
-	assert.Equal(t, 1, cardCount, "カードアイテムが正しくロードされていない")
+	assert.Equal(t, 1, weaponCount, "武器アイテムが正しくロードされていない")
 
 	// 素材アイテムが正しくロードされたか確認
 	materialCount := 0

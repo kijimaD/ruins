@@ -21,7 +21,7 @@ func TestGetAttackFromCommandTable(t *testing.T) {
 		{
 			Name: "test_goblin_attacks",
 			Entries: []raw.CommandTableEntry{
-				{Card: "木刀", Weight: 1.0},
+				{Weapon: "木刀", Weight: 1.0},
 			},
 		},
 	}
@@ -36,11 +36,11 @@ func TestGetAttackFromCommandTable(t *testing.T) {
 	})
 
 	// テスト実行
-	attack, cardName, err := GetAttackFromCommandTable(world, enemy)
+	attack, weaponName, err := GetAttackFromCommandTable(world, enemy)
 
 	// 検証
 	require.NoError(t, err)
-	assert.Equal(t, "木刀", cardName)
+	assert.Equal(t, "木刀", weaponName)
 	assert.NotNil(t, attack)
 	assert.Equal(t, 8, attack.Damage) // 木刀の実際のダメージ値
 }
@@ -61,15 +61,15 @@ func TestGetAttackFromCommandTable_NoCommandTable(t *testing.T) {
 	assert.Contains(t, err.Error(), "has no CommandTable component")
 }
 
-func TestGetAttackFromCard(t *testing.T) {
+func TestGetAttackFromWeapon(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 
-	// カードエンティティを作成
-	card := world.Manager.NewEntity()
-	card.AddComponent(world.Components.Name, &gc.Name{Name: "火炎斬り"})
-	card.AddComponent(world.Components.Attack, &gc.Attack{
+	// 武器エンティティを作成
+	weapon := world.Manager.NewEntity()
+	weapon.AddComponent(world.Components.Name, &gc.Name{Name: "火炎斬り"})
+	weapon.AddComponent(world.Components.Attack, &gc.Attack{
 		Damage:      20,
 		Accuracy:    90,
 		AttackCount: 1,
@@ -77,27 +77,27 @@ func TestGetAttackFromCard(t *testing.T) {
 	})
 
 	// テスト実行
-	attack, cardName, err := GetAttackFromCard(world, card)
+	attack, weaponName, err := GetAttackFromWeapon(world, weapon)
 
 	// 検証
 	require.NoError(t, err)
-	assert.Equal(t, "火炎斬り", cardName)
+	assert.Equal(t, "火炎斬り", weaponName)
 	assert.NotNil(t, attack)
 	assert.Equal(t, 20, attack.Damage)
 	assert.Equal(t, gc.ElementTypeFire, attack.Element)
 }
 
-func TestGetAttackFromCard_NoAttack(t *testing.T) {
+func TestGetAttackFromWeapon_NoAttack(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 
 	// Attackコンポーネントを持たないエンティティ
-	card := world.Manager.NewEntity()
-	card.AddComponent(world.Components.Name, &gc.Name{Name: "回復薬"})
+	weapon := world.Manager.NewEntity()
+	weapon.AddComponent(world.Components.Name, &gc.Name{Name: "回復薬"})
 
 	// テスト実行
-	_, _, err := GetAttackFromCard(world, card)
+	_, _, err := GetAttackFromWeapon(world, weapon)
 
 	// 検証
 	require.Error(t, err)
@@ -115,7 +115,7 @@ func TestAttackUnification(t *testing.T) {
 		{
 			Name: "enemy_attacks",
 			Entries: []raw.CommandTableEntry{
-				{Card: "木刀", Weight: 1.0},
+				{Weapon: "木刀", Weight: 1.0},
 			},
 		},
 	}
@@ -126,24 +126,24 @@ func TestAttackUnification(t *testing.T) {
 	// 敵の攻撃取得
 	enemy := world.Manager.NewEntity()
 	enemy.AddComponent(world.Components.CommandTable, &gc.CommandTable{Name: "enemy_attacks"})
-	enemyAttack, enemyCardName, err := GetAttackFromCommandTable(world, enemy)
+	enemyAttack, enemyWeaponName, err := GetAttackFromCommandTable(world, enemy)
 	require.NoError(t, err)
 
-	// プレイヤーのカード攻撃取得
-	playerCard := world.Manager.NewEntity()
-	playerCard.AddComponent(world.Components.Name, &gc.Name{Name: "木刀"})
-	playerCard.AddComponent(world.Components.Attack, &gc.Attack{
+	// プレイヤーの武器攻撃取得
+	playerWeapon := world.Manager.NewEntity()
+	playerWeapon.AddComponent(world.Components.Name, &gc.Name{Name: "木刀"})
+	playerWeapon.AddComponent(world.Components.Attack, &gc.Attack{
 		Damage:         8, // 木刀の実際のダメージ値
 		Accuracy:       100,
 		AttackCount:    1,
 		Element:        gc.ElementTypeNone,
 		AttackCategory: gc.AttackSword,
 	})
-	playerAttack, playerCardName, err := GetAttackFromCard(world, playerCard)
+	playerAttack, playerWeaponName, err := GetAttackFromWeapon(world, playerWeapon)
 	require.NoError(t, err)
 
-	// 同じカード名で同じ攻撃パラメータを取得できることを確認
-	assert.Equal(t, enemyCardName, playerCardName)
+	// 同じ武器名で同じ攻撃パラメータを取得できることを確認
+	assert.Equal(t, enemyWeaponName, playerWeaponName)
 	assert.Equal(t, enemyAttack.Damage, playerAttack.Damage)
 	assert.Equal(t, enemyAttack.Element, playerAttack.Element)
 }

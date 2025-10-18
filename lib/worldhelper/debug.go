@@ -26,9 +26,9 @@ func InitDebugData(world w.World) {
 	}
 
 	// 基本アイテムの生成
-	card1, _ := SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
-	card2, _ := SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
-	card3, _ := SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
+	weapon1, _ := SpawnItem(world, "木刀", gc.ItemLocationInBackpack)
+	weapon2, _ := SpawnItem(world, "ハンドガン", gc.ItemLocationInBackpack)
+	weapon3, _ := SpawnItem(world, "M72 LAW", gc.ItemLocationInBackpack)
 	armor, _ := SpawnItem(world, "西洋鎧", gc.ItemLocationInBackpack)
 	_, _ = SpawnItem(world, "作業用ヘルメット", gc.ItemLocationInBackpack)
 	_, _ = SpawnItem(world, "革のブーツ", gc.ItemLocationInBackpack)
@@ -61,8 +61,8 @@ func InitDebugData(world w.World) {
 	celestine, _ := SpawnPlayer(world, 5, 5, "セレスティン")
 
 	// 装備
-	Equip(world, card1, celestine, gc.EquipmentSlotNumber(0))
-	Equip(world, card2, celestine, gc.EquipmentSlotNumber(1))
-	Equip(world, card3, celestine, gc.EquipmentSlotNumber(2))
+	Equip(world, weapon1, celestine, gc.EquipmentSlotNumber(0))
+	Equip(world, weapon2, celestine, gc.EquipmentSlotNumber(1))
+	Equip(world, weapon3, celestine, gc.EquipmentSlotNumber(2))
 	Equip(world, armor, celestine, gc.EquipmentSlotNumber(0))
 }

@@ -25,7 +25,7 @@ type EntitySpec struct {
 	Recipe           *Recipe
 	Wearable         *Wearable
 	Attributes       *Attributes
-	Card             *Card
+	Weapon           *Weapon
 	Stackable        *Stackable
 	ItemLocationType *ItemLocationType
 
@@ -80,7 +80,7 @@ type Components struct {
 	Recipe                 *ecs.SliceComponent `save:"true"`
 	Wearable               *ecs.SliceComponent `save:"true"`
 	Attributes             *ecs.SliceComponent `save:"true"`
-	Card                   *ecs.SliceComponent `save:"true"`
+	Weapon                 *ecs.SliceComponent `save:"true"`
 	Stackable              *ecs.SliceComponent `save:"true"`
 	ItemLocationInBackpack *ecs.NullComponent  `save:"true"`
 	ItemLocationEquipped   *ecs.SliceComponent `save:"true"`
@@ -169,7 +169,7 @@ type Warp struct {
 }
 
 // Item はキャラクターが保持できるもの。フィールド上、装備上、インベントリ上など位置状態を持ち、1スロットを消費する
-// 装備品、カード、回復アイテム、売却アイテム、素材など
+// 装備品、武器、回復アイテム、売却アイテム、素材など
 type Item struct{}
 
 // Consumable は消耗品。一度使うとなくなる
@@ -261,9 +261,8 @@ type Recipe struct {
 // EquipmentChanged は装備変更が行われたことを示すダーティーフラグ
 type EquipmentChanged struct{}
 
-// Card はカードは戦闘中に選択するコマンド
-// 攻撃、防御、回復など、人に影響を及ぼすものをアクションカードという
-type Card struct {
+// Weapon は戦闘中に選択する武器コマンド
+type Weapon struct {
 	TargetType TargetType
 	Cost       int
 }

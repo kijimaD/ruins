@@ -252,7 +252,7 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 	return finalDamage
 }
 
-// getWeaponDamage は攻撃者の武器/カードから攻撃力を取得する
+// getWeaponDamage は攻撃者の武器から攻撃力を取得する
 func (aa *AttackActivity) getWeaponDamage(attacker ecs.Entity, world w.World) int {
 	attack, _ := aa.getAttackParams(attacker, world)
 	if attack == nil {
@@ -261,7 +261,7 @@ func (aa *AttackActivity) getWeaponDamage(attacker ecs.Entity, world w.World) in
 	return attack.Damage
 }
 
-// getWeaponAccuracy は攻撃者の武器/カードから命中率を取得する
+// getWeaponAccuracy は攻撃者の武器から命中率を取得する
 func (aa *AttackActivity) getWeaponAccuracy(attacker ecs.Entity, world w.World) int {
 	attack, _ := aa.getAttackParams(attacker, world)
 	if attack == nil {
@@ -271,24 +271,24 @@ func (aa *AttackActivity) getWeaponAccuracy(attacker ecs.Entity, world w.World) 
 	return attack.Accuracy - BaseHitRate
 }
 
-// getAttackParams は攻撃者の武器/カードから攻撃パラメータと攻撃方法名を取得する
+// getAttackParams は攻撃者の武器から攻撃パラメータと攻撃方法名を取得する
 // 戻り値: (攻撃パラメータ, 攻撃方法名)
 func (aa *AttackActivity) getAttackParams(attacker ecs.Entity, world w.World) (*gc.Attack, string) {
-	// プレイヤーの場合: 装備カードから攻撃パラメータを取得
+	// プレイヤーの場合: 装備武器から攻撃パラメータを取得
 	if world.Components.Player.Get(attacker) != nil {
-		// TODO: 装備スロットから実際に装備しているカードを取得
+		// TODO: 装備スロットから実際に装備している武器を取得
 		// 現時点では装備武器が複数あるので未実装
 		return nil, ""
 	}
 
 	// 敵の場合: CommandTableから攻撃パラメータを取得
 	if world.Components.CommandTable.Get(attacker) != nil {
-		attack, cardName, err := worldhelper.GetAttackFromCommandTable(world, attacker)
+		attack, weaponName, err := worldhelper.GetAttackFromCommandTable(world, attacker)
 		if err != nil {
 			// エラーログは出さず、武器なしとして扱う
 			return nil, ""
 		}
-		return attack, cardName
+		return attack, weaponName
 	}
 
 	return nil, ""

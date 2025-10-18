@@ -52,8 +52,8 @@ const (
 	TargetGroupAlly = TargetGroupType("ALLY") // 味方
 	// TargetGroupEnemy は敵グループ
 	TargetGroupEnemy = TargetGroupType("ENEMY") // 敵
-	// TargetGroupCard はカードグループ
-	TargetGroupCard = TargetGroupType("CARD") // カード
+	// TargetGroupWeapon は武器グループ
+	TargetGroupWeapon = TargetGroupType("WEAPON") // 武器
 	// TargetGroupNone はグループなし
 	TargetGroupNone = TargetGroupType("NONE") // なし
 )
@@ -61,7 +61,7 @@ const (
 // Valid はTargetGroupTypeの値が有効かを検証する
 func (enum TargetGroupType) Valid() error {
 	switch enum {
-	case TargetGroupAlly, TargetGroupEnemy, TargetGroupCard, TargetGroupNone:
+	case TargetGroupAlly, TargetGroupEnemy, TargetGroupWeapon, TargetGroupNone:
 		return nil
 	}
 

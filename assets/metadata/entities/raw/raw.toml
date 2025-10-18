@@ -232,14 +232,14 @@ Stackable   = true
 Description = "満月の夜にのみ光る不思議な石。占い師に重宝される"
 Value       = 1600
 
-# card ================
+# weapon ================
 
 [[Items]]
 Name        = "体当たり"
 Description = "勢いをつけて体を接触させてダメージを与える"
 Value       = 50
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 0
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -256,7 +256,7 @@ Name        = "木刀"
 Description = "旅行の土産でおなじみの、木でできた刃のない刀"
 Value       = 80
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 2
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -273,7 +273,7 @@ Name        = "鉄のナイフ"
 Description = "鉄で作られた軽いナイフ"
 Value       = 90
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 2
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -290,7 +290,7 @@ Name        = "ハンドガン"
 Description = "樹脂素材を多用した自動拳銃"
 Value       = 150
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 2
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -307,7 +307,7 @@ Name        = "レイガン"
 Description = "光線を発射する拳銃"
 Value       = 280
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 2
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -324,7 +324,7 @@ Name        = "電撃グレネード"
 Description = "放電物質を投射する擲弾銃"
 Value       = 350
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 3
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -341,7 +341,7 @@ Name        = "冷凍グレネード"
 Description = "極低温物質を投射する擲弾銃"
 Value       = 340
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 3
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -358,7 +358,7 @@ Name        = "M72 LAW"
 Description = "成形炸薬弾を投射する対戦車ロケット弾発射機"
 Value       = 480
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 14
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -375,7 +375,7 @@ Name        = "50ミリ砲"
 Description = "取り回しがよい車両用の大砲"
 Value       = 480
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 14
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -392,7 +392,7 @@ Name        = "M1919重機関銃"
 Description = "車載型の空冷式機関銃"
 Value       = 420
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 10
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -409,7 +409,7 @@ Name        = "溶解液"
 Description = "濃度の高い強酸性の液体"
 Value       = 150
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 8
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -426,7 +426,7 @@ Name        = "聖なる刃"
 Description = "聖別された銀の短剣"
 Value       = 130
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 3
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -443,7 +443,7 @@ Name        = "鉄槌の一撃"
 Description = "重い鉄槌による強打"
 Value       = 200
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 4
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -460,7 +460,7 @@ Name        = "血の呪文"
 Description = "古い血の魔術を込めた攻撃"
 Value       = 300
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 5
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -477,7 +477,7 @@ Name        = "月光の矢"
 Description = "月光に祝福された矢"
 Value       = 120
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 2
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -494,7 +494,7 @@ Name        = "狩人の銃弾"
 Description = "獣を狩るための特製弾丸"
 Value       = 180
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 3
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -511,7 +511,7 @@ Name        = "古代の雷撃"
 Description = "古代文明の雷の力を宿す"
 Value       = 380
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 6
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -528,7 +528,7 @@ Name        = "氷の槍"
 Description = "氷の結晶で作られた槍"
 Value       = 250
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 4
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -545,7 +545,7 @@ Name        = "炎の拳"
 Description = "炎を纏った拳による連続攻撃"
 Value       = 270
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 5
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -562,7 +562,7 @@ Name        = "星の破片"
 Description = "流れ星の欠片を投射する"
 Value       = 320
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 7
 TargetGroup = "ENEMY"
 TargetNum   = "ALL"
@@ -579,7 +579,7 @@ Name        = "影の短剣"
 Description = "影に隠れながら放つ暗殺技"
 Value       = 280
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 4
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -596,7 +596,7 @@ Name        = "聖水の祝福"
 Description = "聖なる水による浄化攻撃"
 Value       = 200
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 3
 TargetGroup = "ENEMY"
 TargetNum   = "ALL"
@@ -613,7 +613,7 @@ Name        = "獣の爪"
 Description = "野生の獣の爪による引き裂き攻撃"
 Value       = 110
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 2
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -630,7 +630,7 @@ Name        = "鋼鉄の盾撃"
 Description = "重い盾による渾身の一撃"
 Value       = 330
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 5
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -647,7 +647,7 @@ Name        = "毒の霧"
 Description = "毒性の霧を散布する"
 Value       = 250
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 6
 TargetGroup = "ENEMY"
 TargetNum   = "ALL"
@@ -664,7 +664,7 @@ Name        = "光の剣"
 Description = "光を纏った剣による神聖な攻撃"
 Value       = 420
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 8
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -681,7 +681,7 @@ Name        = "連射砲"
 Description = "小型砲弾の連続射撃"
 Value       = 380
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 9
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -698,7 +698,7 @@ Name        = "暗黒の矢"
 Description = "闇の力を込めた矢"
 Value       = 200
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 4
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -715,7 +715,7 @@ Name        = "狂戦士の斧"
 Description = "狂気に駆られた戦士の斧撃"
 Value       = 450
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 6
 TargetGroup = "ENEMY"
 TargetNum   = "SINGLE"
@@ -732,7 +732,7 @@ Name        = "治癒の光"
 Description = "回復の光を放つ"
 Value       = 200
 
-[Items.Card]
+[Items.Weapon]
 Cost        = 4
 TargetGroup = "ALLY"
 TargetNum   = "SINGLE"
@@ -1233,7 +1233,7 @@ SpriteKey       = "field_item"
 # recipe          #
 ###################
 
-# 手札のレシピ ================
+# 武器のレシピ ================
 
 [[Recipes]]
 Name = "木刀"
@@ -2264,25 +2264,25 @@ Defense   = 40
 [[CommandTables]]
 Name = "軽戦車"
 [[CommandTables.Entries]]
-Card   = "50ミリ砲"
+Weapon = "50ミリ砲"
 Weight = 0.5
 [[CommandTables.Entries]]
-Card   = "M1919重機関銃"
+Weapon = "M1919重機関銃"
 Weight = 0.5
 
 [[CommandTables]]
 Name = "火の玉"
 [[CommandTables.Entries]]
-Card   = "体当たり"
+Weapon = "体当たり"
 Weight = 0.8
 [[CommandTables.Entries]]
-Card   = "溶解液"
+Weapon = "溶解液"
 Weight = 0.2
 
 [[CommandTables]]
 Name = "灰の偶像"
 [[CommandTables.Entries]]
-Card   = "体当たり"
+Weapon = "体当たり"
 Weight = 1.0
 
 # drop table ================

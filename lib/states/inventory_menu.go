@@ -231,9 +231,9 @@ func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
 			Items: st.createMenuItems(world, st.queryMenuItem(world)),
 		},
 		{
-			ID:    "cards",
-			Label: "手札",
-			Items: st.createMenuItems(world, st.queryMenuCard(world)),
+			ID:    "weapons",
+			Label: "武器",
+			Items: st.createMenuItems(world, st.queryMenuWeapon(world)),
 		},
 		{
 			ID:    "wearables",
@@ -445,7 +445,7 @@ func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 		world.Components.Item,
 		world.Components.ItemLocationInBackpack,
 		world.Components.Wearable.Not(),
-		world.Components.Card.Not(),
+		world.Components.Weapon.Not(),
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)
 	}))
@@ -453,12 +453,12 @@ func (st *InventoryMenuState) queryMenuItem(world w.World) []ecs.Entity {
 	return worldhelper.SortEntities(world, items)
 }
 
-func (st *InventoryMenuState) queryMenuCard(world w.World) []ecs.Entity {
+func (st *InventoryMenuState) queryMenuWeapon(world w.World) []ecs.Entity {
 	items := []ecs.Entity{}
 
 	world.Manager.Join(
 		world.Components.Item,
-		world.Components.Card,
+		world.Components.Weapon,
 		world.Components.ItemLocationInBackpack,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		items = append(items, entity)

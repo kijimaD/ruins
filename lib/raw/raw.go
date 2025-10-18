@@ -46,7 +46,7 @@ type Item struct {
 	ProvidesHealing *ProvidesHealing
 	Wearable        *Wearable
 	EquipBonus      *EquipBonus
-	Card            *Card
+	Weapon          *Weapon
 	Attack          *Attack
 }
 
@@ -64,8 +64,8 @@ type Consumable struct {
 	TargetNum   string
 }
 
-// Card はカードアイテムの設定
-type Card struct {
+// Weapon は武器アイテムの設定
+type Weapon struct {
 	Cost        int
 	TargetGroup string
 	TargetNum   string
@@ -247,20 +247,20 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 		entitySpec.InflictsDamage = &gc.InflictsDamage{Amount: *item.InflictsDamage}
 	}
 
-	if item.Card != nil {
-		if err := gc.TargetGroupType(item.Card.TargetGroup).Valid(); err != nil {
-			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid card target group type", err)
+	if item.Weapon != nil {
+		if err := gc.TargetGroupType(item.Weapon.TargetGroup).Valid(); err != nil {
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid weapon target group type", err)
 		}
-		if err := gc.TargetNumType(item.Card.TargetNum).Valid(); err != nil {
-			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid card target num type", err)
+		if err := gc.TargetNumType(item.Weapon.TargetNum).Valid(); err != nil {
+			return gc.EntitySpec{}, fmt.Errorf("%s: %w", "invalid weapon target num type", err)
 		}
 
-		entitySpec.Card = &gc.Card{
+		entitySpec.Weapon = &gc.Weapon{
 			TargetType: gc.TargetType{
-				TargetGroup: gc.TargetGroupType(item.Card.TargetGroup),
-				TargetNum:   gc.TargetNumType(item.Card.TargetNum),
+				TargetGroup: gc.TargetGroupType(item.Weapon.TargetGroup),
+				TargetNum:   gc.TargetNumType(item.Weapon.TargetNum),
 			},
-			Cost: item.Card.Cost,
+			Cost: item.Weapon.Cost,
 		}
 	}
 
@@ -331,8 +331,8 @@ func (rw *Master) NewRecipeSpec(name string) (gc.EntitySpec, error) {
 		return gc.EntitySpec{}, fmt.Errorf("%s: %w", "failed to generate item for recipe", err)
 	}
 	entitySpec.Description = &gc.Description{Description: itemSpec.Description.Description}
-	if itemSpec.Card != nil {
-		entitySpec.Card = itemSpec.Card
+	if itemSpec.Weapon != nil {
+		entitySpec.Weapon = itemSpec.Weapon
 	}
 	if itemSpec.Attack != nil {
 		entitySpec.Attack = itemSpec.Attack
@@ -350,10 +350,10 @@ func (rw *Master) NewRecipeSpec(name string) (gc.EntitySpec, error) {
 	return entitySpec, nil
 }
 
-// NewCardSpec は指定された名前のカードのEntitySpecを生成する
-// カードはマスターデータとして位置なしで生成される
-func (rw *Master) NewCardSpec(name string) (gc.EntitySpec, error) {
-	// カードはアイテムの一種なので、ItemIndexから検索
+// NewWeaponSpec は指定された名前の武器のEntitySpecを生成する
+// 武器はマスターデータとして位置なしで生成される
+func (rw *Master) NewWeaponSpec(name string) (gc.EntitySpec, error) {
+	// 武器はアイテムの一種なので、ItemIndexから検索
 	_, ok := rw.ItemIndex[name]
 	if !ok {
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
@@ -362,12 +362,12 @@ func (rw *Master) NewCardSpec(name string) (gc.EntitySpec, error) {
 	// マスターデータのため位置を指定しない
 	itemSpec, err := rw.NewItemSpec(name, nil)
 	if err != nil {
-		return gc.EntitySpec{}, fmt.Errorf("failed to generate card spec: %w", err)
+		return gc.EntitySpec{}, fmt.Errorf("failed to generate weapon spec: %w", err)
 	}
 
-	// カードコンポーネントがない場合はエラー
-	if itemSpec.Card == nil {
-		return gc.EntitySpec{}, fmt.Errorf("%s is not a card (Card component missing)", name)
+	// Weaponコンポーネントがない場合はエラー
+	if itemSpec.Weapon == nil {
+		return gc.EntitySpec{}, fmt.Errorf("%s is not a weapon (Weapon component missing)", name)
 	}
 
 	return itemSpec, nil

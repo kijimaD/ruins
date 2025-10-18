@@ -158,7 +158,7 @@ func TestTargetType(t *testing.T) {
 			{"all enemies", TargetGroupEnemy, TargetAll},
 			{"single ally", TargetGroupAlly, TargetSingle},
 			{"all allies", TargetGroupAlly, TargetAll},
-			{"single card", TargetGroupCard, TargetSingle},
+			{"single weapon", TargetGroupWeapon, TargetSingle},
 			{"none target", TargetGroupNone, TargetSingle},
 		}
 

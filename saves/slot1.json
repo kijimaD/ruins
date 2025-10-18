@@ -1,6 +1,6 @@
 {
-  "checksum": "a40d517a325d20975f023dd5756bbc8e4e57c8a5838f2fd3eee26ba4054aa456",
-  "timestamp": "2025-10-18T12:29:42.40126461+09:00",
+  "checksum": "8faf6a57dbb252d00ecc7b70b5bbc310748de84bd60501a8274a1b0058eb8e96",
+  "timestamp": "2025-10-18T13:48:35.364580665+09:00",
   "version": "1.0.0",
   "world": {
     "entities": [
@@ -69,8 +69,8 @@
           },
           "TurnBased": {
             "AP": {
-              "Current": 100,
-              "Max": 100
+              "Current": 121,
+              "Max": 121
             }
           },
           "Wallet": {
@@ -151,13 +151,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -168,6 +161,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -327,13 +327,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -344,6 +337,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -360,13 +360,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -377,6 +370,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -393,13 +393,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -410,6 +403,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -426,13 +426,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -443,6 +436,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -459,13 +459,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -476,6 +469,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -492,13 +492,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -509,6 +502,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -525,13 +525,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -542,6 +535,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -558,13 +558,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -575,6 +568,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -591,13 +591,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -608,6 +601,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -624,13 +624,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -641,6 +634,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -657,13 +657,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -674,6 +667,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -690,13 +690,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -707,6 +700,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -723,13 +723,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -740,6 +733,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -756,13 +756,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -773,6 +766,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -789,13 +789,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -806,6 +799,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -822,13 +822,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -839,6 +832,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -855,13 +855,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -872,6 +865,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -888,13 +888,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -905,6 +898,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -921,13 +921,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -938,6 +931,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -954,13 +954,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -971,6 +964,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -987,13 +987,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -1004,6 +997,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1020,13 +1020,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -1037,6 +1030,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1053,13 +1053,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -1070,6 +1063,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1086,13 +1086,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -1103,6 +1096,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1119,13 +1119,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -1136,6 +1129,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1152,13 +1152,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -1169,6 +1162,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1185,13 +1185,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -1202,6 +1195,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1218,13 +1218,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -1235,6 +1228,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1251,13 +1251,6 @@
             "Damage": 14,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
           },
@@ -1268,6 +1261,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1284,13 +1284,6 @@
             "Damage": 20,
             "Element": "PHOTON"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "光線を発射する拳銃"
           },
@@ -1301,6 +1294,13 @@
           },
           "Value": {
             "Value": 280
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -2217,13 +2217,6 @@
             "Damage": 8,
             "Element": "NONE"
           },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          },
           "Description": {
             "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
@@ -2240,6 +2233,13 @@
           },
           "Value": {
             "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -2255,13 +2255,6 @@
             "AttackCount": 1,
             "Damage": 14,
             "Element": "NONE"
-          },
-          "Card": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
           },
           "Description": {
             "Description": "樹脂素材を多用した自動拳銃"
@@ -2279,6 +2272,13 @@
           },
           "Value": {
             "Value": 150
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -2294,13 +2294,6 @@
             "AttackCount": 1,
             "Damage": 34,
             "Element": "NONE"
-          },
-          "Card": {
-            "Cost": 14,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
           },
           "Description": {
             "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
@@ -2318,6 +2311,13 @@
           },
           "Value": {
             "Value": 480
+          },
+          "Weapon": {
+            "Cost": 14,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {

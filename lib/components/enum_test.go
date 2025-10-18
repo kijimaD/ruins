@@ -58,7 +58,7 @@ func TestTargetGroupType(t *testing.T) {
 		t.Parallel()
 		assert.Equal(t, TargetGroupType("ALLY"), TargetGroupAlly, "TargetGroupAllyの値が正しくない")
 		assert.Equal(t, TargetGroupType("ENEMY"), TargetGroupEnemy, "TargetGroupEnemyの値が正しくない")
-		assert.Equal(t, TargetGroupType("CARD"), TargetGroupCard, "TargetGroupCardの値が正しくない")
+		assert.Equal(t, TargetGroupType("WEAPON"), TargetGroupWeapon, "TargetGroupWeaponの値が正しくない")
 		assert.Equal(t, TargetGroupType("NONE"), TargetGroupNone, "TargetGroupNoneの値が正しくない")
 	})
 
@@ -71,7 +71,7 @@ func TestTargetGroupType(t *testing.T) {
 		}{
 			{"valid ally", TargetGroupAlly, false},
 			{"valid enemy", TargetGroupEnemy, false},
-			{"valid card", TargetGroupCard, false},
+			{"valid weapon", TargetGroupWeapon, false},
 			{"valid none", TargetGroupNone, false},
 			{"invalid type", TargetGroupType("INVALID"), true},
 			{"empty type", TargetGroupType(""), true},

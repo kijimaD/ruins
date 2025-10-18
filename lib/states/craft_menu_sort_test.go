@@ -27,20 +27,20 @@ func TestCraftMenuSortIntegration(t *testing.T) {
 	}
 }
 
-func TestCraftMenuCardSortIntegration(t *testing.T) {
+func TestCraftMenuWeaponSortIntegration(t *testing.T) {
 	t.Parallel()
 	world := testutil.InitTestWorld(t)
 
 	state := &CraftMenuState{}
 
-	// queryMenuCardのテスト（手札タブ）
-	cards := state.queryMenuCard(world)
+	// queryMenuWeaponのテスト（武器タブ）
+	weapons := state.queryMenuWeapon(world)
 
-	// カード名がアルファベット順にソートされているか確認
-	if len(cards) > 1 {
-		for i := 0; i < len(cards)-1; i++ {
-			assert.True(t, cards[i] <= cards[i+1],
-				"カードレシピがソートされていない: %s > %s", cards[i], cards[i+1])
+	// 武器名がアルファベット順にソートされているか確認
+	if len(weapons) > 1 {
+		for i := 0; i < len(weapons)-1; i++ {
+			assert.True(t, weapons[i] <= weapons[i+1],
+				"武器レシピがソートされていない: %s > %s", weapons[i], weapons[i+1])
 		}
 	}
 }

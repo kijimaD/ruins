@@ -13,15 +13,15 @@ func TestSelectByWeight(t *testing.T) {
 		Name: "TEST",
 		Entries: []raw.CommandTableEntry{
 			raw.CommandTableEntry{
-				Card:   "A",
+				Weapon: "A",
 				Weight: 0.5,
 			},
 			raw.CommandTableEntry{
-				Card:   "B",
+				Weapon: "B",
 				Weight: 0.2,
 			},
 			raw.CommandTableEntry{
-				Card:   "C",
+				Weapon: "C",
 				Weight: 0.3,
 			},
 		},

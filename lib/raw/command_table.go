@@ -12,7 +12,7 @@ type CommandTable struct {
 
 // CommandTableEntry はコマンドテーブルのエントリ
 type CommandTableEntry struct {
-	Card   string
+	Weapon string
 	Weight float64
 }
 
@@ -29,7 +29,7 @@ func (ct CommandTable) SelectByWeight() string {
 	for _, entry := range ct.Entries {
 		cumulativeWeight += entry.Weight
 		if randomValue < cumulativeWeight {
-			return entry.Card
+			return entry.Weapon
 		}
 	}
 

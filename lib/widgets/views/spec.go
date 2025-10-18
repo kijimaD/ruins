@@ -27,9 +27,9 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 		wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
 		addWearableInfo(targetContainer, wearable, world)
 	}
-	if entity.HasComponent(world.Components.Card) {
-		card := world.Components.Card.Get(entity).(*gc.Card)
-		addCardInfo(targetContainer, card, world)
+	if entity.HasComponent(world.Components.Weapon) {
+		weapon := world.Components.Weapon.Get(entity).(*gc.Weapon)
+		addWeaponInfo(targetContainer, weapon, world)
 	}
 	if entity.HasComponent(world.Components.Value) {
 		v := world.Components.Value.Get(entity).(*gc.Value)
@@ -48,8 +48,8 @@ func UpdateSpecFromSpec(world w.World, targetContainer *widget.Container, spec g
 	if spec.Wearable != nil {
 		addWearableInfo(targetContainer, spec.Wearable, world)
 	}
-	if spec.Card != nil {
-		addCardInfo(targetContainer, spec.Card, world)
+	if spec.Weapon != nil {
+		addWeaponInfo(targetContainer, spec.Weapon, world)
 	}
 	if spec.Value != nil {
 		addValueInfo(targetContainer, spec.Value, world)
@@ -84,9 +84,9 @@ func addWearableInfo(targetContainer *widget.Container, wearable *gc.Wearable, w
 	addEquipBonus(targetContainer, wearable.EquipBonus, world)
 }
 
-// addCardInfo はCardコンポーネントの情報を追加する
-func addCardInfo(targetContainer *widget.Container, card *gc.Card, world w.World) {
-	cost := fmt.Sprintf("コスト %d", card.Cost)
+// addWeaponInfo はWeaponコンポーネントの情報を追加する
+func addWeaponInfo(targetContainer *widget.Container, weapon *gc.Weapon, world w.World) {
+	cost := fmt.Sprintf("コスト %d", weapon.Cost)
 	targetContainer.AddChild(styled.NewBodyText(cost, consts.TextColor, world.Resources.UIResources))
 }
 

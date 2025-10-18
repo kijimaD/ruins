@@ -266,9 +266,9 @@ func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
 			Items: st.createMenuItems(world, st.queryMenuConsumable(world)),
 		},
 		{
-			ID:    "cards",
-			Label: "手札",
-			Items: st.createMenuItems(world, st.queryMenuCard(world)),
+			ID:    "weapons",
+			Label: "武器",
+			Items: st.createMenuItems(world, st.queryMenuWeapon(world)),
 		},
 		{
 			ID:    "wearables",
@@ -351,14 +351,14 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	var items []string
 
-	// 全レシピから消耗品（カード以外）を抽出
+	// 全レシピから消耗品を抽出
 	for recipeName := range rawMaster.RecipeIndex {
 		spec, err := rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
 			continue
 		}
-		// 消耗品でカード以外
-		if spec.Consumable != nil && spec.Card == nil {
+		// 消耗品
+		if spec.Consumable != nil {
 			items = append(items, recipeName)
 		}
 	}
@@ -367,17 +367,17 @@ func (st *CraftMenuState) queryMenuConsumable(world w.World) []string {
 	return items
 }
 
-func (st *CraftMenuState) queryMenuCard(world w.World) []string {
+func (st *CraftMenuState) queryMenuWeapon(world w.World) []string {
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	var items []string
 
-	// 全レシピからカードを抽出
+	// 全レシピから武器を抽出
 	for recipeName := range rawMaster.RecipeIndex {
 		spec, err := rawMaster.NewRecipeSpec(recipeName)
 		if err != nil {
 			continue
 		}
-		if spec.Card != nil {
+		if spec.Weapon != nil {
 			items = append(items, recipeName)
 		}
 	}
