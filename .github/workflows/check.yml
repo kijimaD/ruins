@@ -76,16 +76,13 @@ jobs:
 
           make test
           make vrt
+          go test ./... -coverprofile=coverage.out
       - name: set up
         uses: actions/setup-go@v6
       - name: lint
         run: make tools-install lint # buildできる環境でないと、エラーになる。jobを分けるのが望ましいが、面倒なのでここに書く
       -
-        name: coverage for octocov
-        run: go test ./... -coverprofile=coverage.out
-      -
         uses: k1LoW/octocov-action@v1
-
       # 差分があればコミット
       - name: commit for changes
         run: |
