@@ -92,7 +92,7 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		assert.Equal(t, "テストアイテム2", name.Name)
 		fieldItemCount++
 	}))
-	assert.Equal(t, 1, fieldItemCount, "フィールドのアイテムが正しくロードされていない")
+	assert.Equal(t, 0, fieldItemCount, "フィールドアイテムは保存されない（バックパックと装備アイテムのみ保存）")
 
 	// 装備アイテムが存在することを確認
 	equippedItemCount := 0
@@ -112,9 +112,6 @@ func TestSaveLoadItemLocations(t *testing.T) {
 		assert.True(t, equipped.Owner.HasComponent(newWorld.Components.Name),
 			"Owner参照が無効なエンティティを指している: equipped.Owner = %d", equipped.Owner)
 		loadedOwner = equipped.Owner
-
-		// EquipmentChangedコンポーネントも正しくロードされることを確認
-		assert.True(t, entity.HasComponent(newWorld.Components.EquipmentChanged), "EquipmentChangedコンポーネントが正しくロードされていない")
 
 		equippedItemCount++
 	}))

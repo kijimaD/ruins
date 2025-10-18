@@ -60,9 +60,6 @@ func InitDebugData(world w.World) {
 	// プレイヤー生成
 	celestine, _ := SpawnPlayer(world, 5, 5, "セレスティン")
 
-	// 敵が使用するマスターのカード
-	_ = SpawnAllCards(world)
-
 	// 装備
 	Equip(world, card1, celestine, gc.EquipmentSlotNumber(0))
 	Equip(world, card2, celestine, gc.EquipmentSlotNumber(1))

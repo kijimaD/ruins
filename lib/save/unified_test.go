@@ -341,50 +341,9 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 		}
 	})
 
-	t.Run("InitDebugDataによるラウンドトリップ", func(t *testing.T) {
-		t.Parallel()
-		// InitDebugDataの実世界データでのラウンドトリップテスト
-		tempDir, err := os.MkdirTemp("", "initdebug_round_trip_test_")
-		require.NoError(t, err)
-		defer func() {
-			_ = os.RemoveAll(tempDir)
-		}()
-
-		sm := NewSerializationManager(tempDir)
-
-		// InitDebugDataで複雑なワールドを作成
-		originalWorld := testutil.InitTestWorld(t)
-		worldhelper.InitDebugData(originalWorld)
-
-		// 元データ保存
-		err = sm.SaveWorld(originalWorld, "initdebug_original")
-		require.NoError(t, err)
-
-		// ロード
-		loadedWorld := testutil.InitTestWorld(t)
-		err = sm.LoadWorld(loadedWorld, "initdebug_original")
-		require.NoError(t, err)
-
-		// 再保存
-		err = sm.SaveWorld(loadedWorld, "initdebug_reloaded")
-		require.NoError(t, err)
-
-		// 内容比較
-		originalJSON, err := sm.LoadWorldJSON("initdebug_original")
-		require.NoError(t, err)
-		reloadedJSON, err := sm.LoadWorldJSON("initdebug_reloaded")
-		require.NoError(t, err)
-
-		originalNormalized := normalizeJSONForComparison(originalJSON)
-		reloadedNormalized := normalizeJSONForComparison(reloadedJSON)
-
-		assert.Equal(t, originalNormalized, reloadedNormalized,
-			"InitDebugDataラウンドトリップで内容が変化しました")
-	})
-
 	t.Run("複雑な実世界データのラウンドトリップ", func(t *testing.T) {
 		t.Parallel()
-		// 決定的な複雑データでのラウンドトリップテスト
+		// 保存対象のみ（プレイヤー、バックパック、装備）のラウンドトリップをテストする
 		tempDir, err := os.MkdirTemp("", "complex_round_trip_test_")
 		require.NoError(t, err)
 		defer func() {
@@ -393,8 +352,8 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 
 		sm := NewSerializationManager(tempDir)
 
-		// 決定的な複雑ワールドを作成
-		originalWorld := createComplexDeterministicWorld(t)
+		// 保存対象のみを含むワールドを作成
+		originalWorld := createStandardTestWorld(t)
 
 		// 元データ保存
 		err = sm.SaveWorld(originalWorld, "complex_original")

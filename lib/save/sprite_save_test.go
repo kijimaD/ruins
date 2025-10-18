@@ -106,5 +106,5 @@ func TestSaveLoadSpriteRender(t *testing.T) {
 			spriteCount++
 		}
 	}))
-	assert.Equal(t, 2, spriteCount, "SpriteRenderエンティティが正しくロードされていない")
+	assert.Equal(t, 0, spriteCount, "SpriteRenderを持つフィールドエンティティは保存されない（プレイヤーとアイテムのみ保存）")
 }

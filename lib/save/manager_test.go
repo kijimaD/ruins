@@ -77,10 +77,10 @@ func TestComponentRegistry(t *testing.T) {
 	// ワールドから自動初期化
 	_ = registry.InitializeFromWorld(world)
 
-	// 型情報が正しく登録されていることを確認
-	visionInfo, exists := registry.GetTypeInfoByName("AIVision")
+	// 型情報が正しく登録されていることを確認（プレイヤー関連コンポーネント）
+	nameInfo, exists := registry.GetTypeInfoByName("Name")
 	assert.True(t, exists)
-	assert.Equal(t, "AIVision", visionInfo.Name)
+	assert.Equal(t, "Name", nameInfo.Name)
 
 	// 存在しない型
 	_, exists = registry.GetTypeInfoByName("NonExistent")
@@ -103,21 +103,13 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 
 	// プレイヤーエンティティを作成
 	player := world.Manager.NewEntity()
-	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(5), Y: gc.Tile(10)})
 	player.AddComponent(world.Components.Player, &gc.Player{})
+	player.AddComponent(world.Components.Name, &gc.Name{Name: "テストプレイヤー"})
 
-	// NPCエンティティを作成
+	// NPCエンティティを作成（保存されないはず）
 	npc := world.Manager.NewEntity()
-	npc.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(15), Y: gc.Tile(20)})
-	npc.AddComponent(world.Components.AIVision, &gc.AIVision{
-		ViewDistance: gc.Pixel(160),
-		TargetEntity: &player, // プレイヤーを参照
-	})
-	npc.AddComponent(world.Components.AIRoaming, &gc.AIRoaming{
-		SubState:              gc.AIRoamingWaiting,
-		StartSubStateTurn:     1,
-		DurationSubStateTurns: 3,
-	})
+	npc.AddComponent(world.Components.Name, &gc.Name{Name: "テストNPC"})
+	npc.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemyData{})
 
 	// 保存
 	err := manager.SaveWorld(world, "test_slot")
@@ -130,59 +122,22 @@ func TestSerializationManager_SaveAndLoad(t *testing.T) {
 	err = manager.LoadWorld(newWorld, "test_slot")
 	require.NoError(t, err)
 
-	// データが正しく復元されているかチェック
-	var restoredPlayer ecs.Entity
-	var playerFound, npcFound bool
-
-	// まずプレイヤーを見つける
+	// プレイヤーが復元されているか確認
+	playerCount := 0
 	newWorld.Manager.Join(newWorld.Components.Player).Visit(ecs.Visit(func(entity ecs.Entity) {
-		restoredPlayer = entity
-		playerFound = true
-
-		// GridElementをチェック
-		grid := newWorld.Components.GridElement.Get(entity).(*gc.GridElement)
-		assert.Equal(t, gc.Tile(5), grid.X)
-		assert.Equal(t, gc.Tile(10), grid.Y)
-
+		playerCount++
+		name := newWorld.Components.Name.Get(entity).(*gc.Name)
+		assert.Equal(t, "テストプレイヤー", name.Name)
 	}))
 
-	// エンティティの検証
-	entityCount := 0
-	newWorld.Manager.Join(newWorld.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		entityCount++
-
-		// NPCを特定
-		if entity.HasComponent(newWorld.Components.AIVision) {
-			npcFound = true
-
-			// GridElementをチェック
-			grid := newWorld.Components.GridElement.Get(entity).(*gc.GridElement)
-			assert.Equal(t, gc.Tile(15), grid.X)
-			assert.Equal(t, gc.Tile(20), grid.Y)
-
-			// AIVisionをチェック
-			vision := newWorld.Components.AIVision.Get(entity).(*gc.AIVision)
-			assert.Equal(t, gc.Pixel(160), vision.ViewDistance)
-
-			// エンティティ参照が正しく復元されているかチェック
-			if vision.TargetEntity != nil && playerFound {
-				assert.Equal(t, restoredPlayer, *vision.TargetEntity)
-			}
-
-			// AIRoamingをチェック
-			if entity.HasComponent(newWorld.Components.AIRoaming) {
-				roaming := newWorld.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
-				assert.Equal(t, gc.AIRoamingWaiting, roaming.SubState)
-				assert.Equal(t, 3, roaming.DurationSubStateTurns)
-			}
-		}
+	// NPCが保存されていないことを確認
+	npcCount := 0
+	newWorld.Manager.Join(newWorld.Components.FactionEnemy).Visit(ecs.Visit(func(_ ecs.Entity) {
+		npcCount++
 	}))
 
-	t.Logf("Total entities restored: %d", entityCount)
-	t.Logf("Player found: %v, NPC found: %v", playerFound, npcFound)
-
-	assert.True(t, playerFound, "Player entity should be restored")
-	assert.True(t, npcFound, "NPC entity should be restored")
+	assert.Equal(t, 1, playerCount, "プレイヤーが正しくロードされる")
+	assert.Equal(t, 0, npcCount, "NPCは保存されない（プレイヤーとアイテムのみ保存）")
 }
 
 func TestSerializationManager_EmptyWorld(t *testing.T) {
@@ -393,7 +348,7 @@ func TestHashConsistencyAcrossRuns(t *testing.T) {
 	// テストエンティティを作成（複数のコンポーネント付き）
 	entity := world.Manager.NewEntity()
 	world.Components.Name.Set(entity, &gc.Name{Name: "ConsistencyTest"})
-	world.Components.GridElement.Set(entity, &gc.GridElement{X: gc.Tile(5), Y: gc.Tile(10)})
+	world.Components.Player.Set(entity, &gc.Player{})
 
 	// ワールドデータを抽出
 	worldData := manager.extractWorldData(world)

@@ -25,20 +25,12 @@ func TestSaveLoadIntegration(t *testing.T) {
 
 	// テスト用エンティティを作成
 	player := world.Manager.NewEntity()
-	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(5), Y: gc.Tile(10)})
 	player.AddComponent(world.Components.Player, &gc.Player{})
+	player.AddComponent(world.Components.Name, &gc.Name{Name: "テストプレイヤー"})
 
 	npc := world.Manager.NewEntity()
-	npc.AddComponent(world.Components.GridElement, &gc.GridElement{X: gc.Tile(15), Y: gc.Tile(20)})
-	npc.AddComponent(world.Components.AIVision, &gc.AIVision{
-		ViewDistance: gc.Pixel(160),
-		TargetEntity: &player,
-	})
-	npc.AddComponent(world.Components.AIRoaming, &gc.AIRoaming{
-		SubState:              gc.AIRoamingWaiting,
-		StartSubStateTurn:     1,
-		DurationSubStateTurns: 3,
-	})
+	npc.AddComponent(world.Components.Name, &gc.Name{Name: "テストNPC"})
+	npc.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemyData{})
 
 	// セーブマネージャーを作成
 	saveManager := NewSerializationManager(testDir)
@@ -63,17 +55,16 @@ func TestSaveLoadIntegration(t *testing.T) {
 	playerCount := 0
 	npcCount := 0
 
-	newWorld.Manager.Join(newWorld.Components.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		if entity.HasComponent(newWorld.Components.Player) {
-			playerCount++
-		}
-		if entity.HasComponent(newWorld.Components.AIVision) {
-			npcCount++
-		}
+	newWorld.Manager.Join(newWorld.Components.Player).Visit(ecs.Visit(func(_ ecs.Entity) {
+		playerCount++
 	}))
 
-	assert.Equal(t, 1, playerCount, "Should have 1 player")
-	assert.Equal(t, 1, npcCount, "Should have 1 NPC")
+	newWorld.Manager.Join(newWorld.Components.FactionEnemy).Visit(ecs.Visit(func(_ ecs.Entity) {
+		npcCount++
+	}))
+
+	assert.Equal(t, 1, playerCount, "プレイヤーが1個存在する")
+	assert.Equal(t, 0, npcCount, "NPCは保存されない（プレイヤーとアイテムのみ保存）")
 }
 
 func TestSaveSlotInfo(t *testing.T) {

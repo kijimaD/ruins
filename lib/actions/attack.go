@@ -135,9 +135,12 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 
 	act.Logger.Debug("攻撃実行", "attacker", attacker, "target", target)
 
+	// 攻撃方法を取得
+	_, attackMethodName := aa.getAttackParams(attacker, world)
+
 	hit, criticalHit := aa.rollHitCheck(attacker, target, world)
 	if !hit {
-		aa.logAttackResult(attacker, target, world, false, false, 0)
+		aa.logAttackResult(attacker, target, world, false, false, 0, attackMethodName)
 		return nil
 	}
 
@@ -147,7 +150,7 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 	}
 
 	// 1. 攻撃試行ログ
-	aa.logAttackResult(attacker, target, world, true, criticalHit, damage)
+	aa.logAttackResult(attacker, target, world, true, criticalHit, damage, attackMethodName)
 
 	// 2. ダメージを直接適用（ダメージログと死亡ログは共通関数内で出力）
 	worldhelper.ApplyDamage(world, target, damage, attacker)
@@ -208,6 +211,9 @@ func (aa *AttackActivity) rollHitCheck(attacker, target ecs.Entity, world w.Worl
 
 	baseHitRate := BaseHitRate + (attackerDexterity-targetAgility)*HitRatePerStatPoint
 
+	weaponAccuracy := aa.getWeaponAccuracy(attacker, world)
+	baseHitRate += weaponAccuracy
+
 	if baseHitRate > MaxHitRate {
 		baseHitRate = MaxHitRate
 	}
@@ -231,7 +237,8 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 
 	baseDamage := attackerStrength + rand.IntN(DamageRandomRange) + 1
 
-	// TODO: 武器攻撃力の追加
+	weaponDamage := aa.getWeaponDamage(attacker, world)
+	baseDamage += weaponDamage
 
 	if critical {
 		baseDamage = baseDamage * CriticalDamageMultiplier / CriticalDamageBase
@@ -245,9 +252,51 @@ func (aa *AttackActivity) calculateDamage(attacker, target ecs.Entity, world w.W
 	return finalDamage
 }
 
+// getWeaponDamage は攻撃者の武器/カードから攻撃力を取得する
+func (aa *AttackActivity) getWeaponDamage(attacker ecs.Entity, world w.World) int {
+	attack, _ := aa.getAttackParams(attacker, world)
+	if attack == nil {
+		return 0
+	}
+	return attack.Damage
+}
+
+// getWeaponAccuracy は攻撃者の武器/カードから命中率を取得する
+func (aa *AttackActivity) getWeaponAccuracy(attacker ecs.Entity, world w.World) int {
+	attack, _ := aa.getAttackParams(attacker, world)
+	if attack == nil {
+		return 0
+	}
+	// Accuracyは0-100なので、BaseHitRateとの差分を返す
+	return attack.Accuracy - BaseHitRate
+}
+
+// getAttackParams は攻撃者の武器/カードから攻撃パラメータと攻撃方法名を取得する
+// 戻り値: (攻撃パラメータ, 攻撃方法名)
+func (aa *AttackActivity) getAttackParams(attacker ecs.Entity, world w.World) (*gc.Attack, string) {
+	// プレイヤーの場合: 装備カードから攻撃パラメータを取得
+	if world.Components.Player.Get(attacker) != nil {
+		// TODO: 装備スロットから実際に装備しているカードを取得
+		// 現時点では装備武器が複数あるので未実装
+		return nil, ""
+	}
+
+	// 敵の場合: CommandTableから攻撃パラメータを取得
+	if world.Components.CommandTable.Get(attacker) != nil {
+		attack, cardName, err := worldhelper.GetAttackFromCommandTable(world, attacker)
+		if err != nil {
+			// エラーログは出さず、武器なしとして扱う
+			return nil, ""
+		}
+		return attack, cardName
+	}
+
+	return nil, ""
+}
+
 // logAttackResult は攻撃結果をログに出力する
 // ダメージと死亡は別途ログ出力されるため、ここでは攻撃の成否のみを出力
-func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, _ int) {
+func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.World, hit bool, critical bool, _ int, attackMethodName string) {
 	// プレイヤーが関わる攻撃のみログ出力
 	if !isPlayerActivity(&Activity{Actor: attacker}, world) && !isPlayerActivity(&Activity{Actor: target}, world) {
 		return
@@ -263,6 +312,10 @@ func (aa *AttackActivity) logAttackResult(attacker, target ecs.Entity, world w.W
 		}).
 		Append(" は ").
 		Build(func(l *gamelog.Logger) {
+			// 攻撃方法がある場合は表示
+			if attackMethodName != "" {
+				l.Append(attackMethodName).Append(" で ")
+			}
 			worldhelper.AppendNameWithColor(l, target, targetName, world)
 		}).
 		Build(func(l *gamelog.Logger) {

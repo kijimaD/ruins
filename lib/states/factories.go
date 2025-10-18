@@ -366,7 +366,7 @@ func NewLoadMenuState() es.State[w.World] {
 					messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 					return err
 				}
-				// 遷移
+				// 遷移（街マップを生成してプレイヤーを配置）
 				stateFactory := NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{stateFactory}})
 				return nil

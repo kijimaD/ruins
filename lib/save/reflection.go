@@ -15,6 +15,7 @@ import (
 type ComponentTypeInfo struct {
 	Name           string                                                         // 型名
 	Type           reflect.Type                                                   // 型情報
+	FieldName      string                                                         // Componentsフィールド名(例: "Name", "Pools")
 	ComponentRef   interface{}                                                    // ECSコンポーネントへの参照
 	ExtractFunc    func(w.World, ecs.Entity) (interface{}, bool)                  // エンティティからコンポーネントを抽出
 	RestoreFunc    func(w.World, ecs.Entity, interface{}) error                   // エンティティにコンポーネントを復元
@@ -37,7 +38,53 @@ func NewComponentRegistry() *ComponentRegistry {
 	}
 }
 
+// getComponentTypeMap はComponentsフィールド名からコンポーネント型へのマッピングを返す
+// 新しいコンポーネントを保存対象にする場合は、ここに追加する
+func getComponentTypeMap() map[string]reflect.Type {
+	return map[string]reflect.Type{
+		// プレイヤー・味方
+		"Player":      reflect.TypeOf(&gc.Player{}),
+		"FactionAlly": reflect.TypeOf(&gc.FactionAllyData{}),
+
+		// アイテム
+		"Item":                   reflect.TypeOf(&gc.Item{}),
+		"ItemLocationInBackpack": reflect.TypeOf(&gc.LocationInBackpack{}),
+		"ItemLocationEquipped":   reflect.TypeOf(&gc.LocationEquipped{}),
+
+		// イベント
+		"EquipmentChanged": reflect.TypeOf(&gc.EquipmentChanged{}),
+
+		// データ
+		"Name":        reflect.TypeOf(&gc.Name{}),
+		"Description": reflect.TypeOf(&gc.Description{}),
+		"Pools":       reflect.TypeOf(&gc.Pools{}),
+		"TurnBased":   reflect.TypeOf(&gc.TurnBased{}),
+		"Attributes":  reflect.TypeOf(&gc.Attributes{}),
+
+		// 表示
+		"SpriteRender": reflect.TypeOf(&gc.SpriteRender{}),
+		"LightSource":  reflect.TypeOf(&gc.LightSource{}),
+
+		// アイテム属性
+		"Wearable":  reflect.TypeOf(&gc.Wearable{}),
+		"Card":      reflect.TypeOf(&gc.Card{}),
+		"Stackable": reflect.TypeOf(&gc.Stackable{}),
+		"Value":     reflect.TypeOf(&gc.Value{}),
+		"Attack":    reflect.TypeOf(&gc.Attack{}),
+		"Recipe":    reflect.TypeOf(&gc.Recipe{}),
+
+		// アイテム効果
+		"Consumable":      reflect.TypeOf(&gc.Consumable{}),
+		"ProvidesHealing": reflect.TypeOf(&gc.ProvidesHealing{}),
+		"InflictsDamage":  reflect.TypeOf(&gc.InflictsDamage{}),
+
+		// その他
+		"Wallet": reflect.TypeOf(&gc.Wallet{}),
+	}
+}
+
 // InitializeFromWorld はワールドから自動的にコンポーネント型を検出・登録
+// save:"true"タグが付いたComponentsフィールドを自動的に登録する
 func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
@@ -48,60 +95,73 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 
 	components := world.Components
 
-	// リフレクションを使って全コンポーネント型を自動登録
-	// 特別処理が必要なコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.AIVision{}), components.AIVision, r.extractAIVision, r.restoreAIVision, r.resolveAIVisionRefs)
+	// Componentsのフィールドをリフレクションでスキャン
+	componentsValue := reflect.ValueOf(components).Elem()
+	componentsType := componentsValue.Type()
 
-	// テストで使用されているコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.GridElement{}), components.GridElement, r.extractGridElement, r.restoreGridElement, r.resolveGridElementRefs)
-	r.registerComponent(reflect.TypeOf(&gc.AIRoaming{}), components.AIRoaming, r.extractAIRoaming, r.restoreAIRoaming, r.resolveAIRoamingRefs)
-	r.registerComponent(reflect.TypeOf(&gc.SpriteRender{}), components.SpriteRender, r.extractSpriteRender, r.restoreSpriteRender, r.resolveSpriteRenderRefs)
+	// 特別処理が必要なコンポーネントのマップ
+	// インターフェースやエンティティ参照を含むコンポーネントのみ個別処理
+	specialExtractFuncs := map[string]func(w.World, ecs.Entity) (interface{}, bool){
+		"ItemLocationEquipped": r.extractItemLocationEquipped,
+		"ProvidesHealing":      r.extractProvidesHealing,
+	}
 
-	// カメラコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.Camera{}), components.Camera, r.extractCamera, r.restoreCamera, nil)
+	specialRestoreFuncs := map[string]func(w.World, ecs.Entity, interface{}) error{
+		"ItemLocationEquipped": r.restoreItemLocationEquipped,
+		"ProvidesHealing":      r.restoreProvidesHealing,
+	}
 
-	// NullComponentは特別扱い
-	r.registerNullComponent(reflect.TypeOf(&gc.BlockView{}), components.BlockView)
-	r.registerNullComponent(reflect.TypeOf(&gc.BlockPass{}), components.BlockPass)
-	r.registerNullComponent(reflect.TypeOf(&gc.Player{}), components.Player)
-	r.registerNullComponent(reflect.TypeOf(&gc.Prop{}), components.Prop)
-	r.registerNullComponent(reflect.TypeOf(&gc.FactionAllyData{}), components.FactionAlly)
-	r.registerNullComponent(reflect.TypeOf(&gc.FactionEnemyData{}), components.FactionEnemy)
-	r.registerNullComponent(reflect.TypeOf(&gc.Item{}), components.Item)
+	// LocationEquippedは特別処理（エンティティ参照解決が必要）
+	specialResolveFuncs := map[string]func(w.World, ecs.Entity, interface{}, *StableIDManager) error{
+		"ItemLocationEquipped": r.resolveLocationEquippedRefs,
+	}
 
-	// アイテム位置情報コンポーネント
-	r.registerNullComponent(reflect.TypeOf(&gc.LocationInBackpack{}), components.ItemLocationInBackpack)
-	r.registerNullComponent(reflect.TypeOf(&gc.LocationOnField{}), components.ItemLocationOnField)
-	r.registerComponent(reflect.TypeOf(&gc.LocationEquipped{}), components.ItemLocationEquipped, r.extractItemLocationEquipped, r.restoreItemLocationEquipped, r.resolveLocationEquippedRefs)
+	// フィールド名→コンポーネント型のマッピング
+	// save:"true"タグと組み合わせて使用
+	componentTypeMap := getComponentTypeMap()
 
-	// 装備変更フラグ
-	r.registerNullComponent(reflect.TypeOf(&gc.EquipmentChanged{}), components.EquipmentChanged)
+	for i := 0; i < componentsType.NumField(); i++ {
+		field := componentsType.Field(i)
 
-	// データコンポーネント（汎用処理）
-	r.registerComponent(reflect.TypeOf(&gc.Name{}), components.Name, r.extractName, r.restoreName, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Pools{}), components.Pools, r.extractPools, r.restorePools, nil)
-	r.registerComponent(reflect.TypeOf(&gc.TurnBased{}), components.TurnBased, r.extractTurnBased, r.restoreTurnBased, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Attributes{}), components.Attributes, r.extractAttributes, r.restoreAttributes, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Description{}), components.Description, r.extractDescription, r.restoreDescription, nil)
+		// save:"true"タグがあるフィールドのみ処理
+		if field.Tag.Get("save") != "true" {
+			continue
+		}
 
-	// アイテム関連コンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.Wearable{}), components.Wearable, r.extractWearable, r.restoreWearable, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Card{}), components.Card, r.extractCard, r.restoreCard, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Stackable{}), components.Stackable, r.extractStackable, r.restoreStackable, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Value{}), components.Value, r.extractValue, r.restoreValue, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Consumable{}), components.Consumable, r.extractConsumable, r.restoreConsumable, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Attack{}), components.Attack, r.extractAttack, r.restoreAttack, nil)
-	r.registerComponent(reflect.TypeOf(&gc.Recipe{}), components.Recipe, r.extractRecipe, r.restoreRecipe, nil)
+		componentName := field.Name
+		componentRef := componentsValue.Field(i).Interface()
 
-	// 特別処理が必要なコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.ProvidesHealing{}), components.ProvidesHealing, r.extractProvidesHealing, r.restoreProvidesHealing, nil)
-	r.registerComponent(reflect.TypeOf(&gc.InflictsDamage{}), components.InflictsDamage, r.extractInflictsDamage, r.restoreInflictsDamage, nil)
+		// フィールド名から型を取得
+		componentType, exists := componentTypeMap[componentName]
+		if !exists {
+			// 未知のコンポーネント型
+			continue
+		}
 
-	// フィールドコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.LightSource{}), components.LightSource, r.extractLightSource, r.restoreLightSource, nil)
+		// NullComponentかどうかを判定
+		_, isNull := componentRef.(*ecs.NullComponent)
 
-	// Walletコンポーネント
-	r.registerComponent(reflect.TypeOf(&gc.Wallet{}), components.Wallet, r.extractWallet, r.restoreWallet, nil)
+		if isNull {
+			r.registerNullComponent(componentType, componentName, componentRef)
+		} else {
+			// extract/restore関数を取得
+			// 特別処理が必要なコンポーネントのみspecialFuncsから取得、それ以外は汎用関数を使用
+			extractFunc := specialExtractFuncs[componentName]
+			restoreFunc := specialRestoreFuncs[componentName]
+			resolveFunc := specialResolveFuncs[componentName]
+
+			if extractFunc != nil && restoreFunc != nil {
+				// 特別処理が必要なコンポーネント
+				r.registerComponent(componentType, componentName, componentRef, extractFunc, restoreFunc, resolveFunc)
+			} else {
+				// JSONタグを使った汎用処理
+				elemType := componentType.Elem()
+				genericExtract := r.createGenericExtract(componentRef)
+				genericRestore := r.createGenericRestore(componentName, elemType)
+				r.registerComponent(componentType, componentName, componentRef, genericExtract, genericRestore, nil)
+			}
+		}
+	}
 
 	r.initialized = true
 	return nil
@@ -110,6 +170,7 @@ func (r *ComponentRegistry) InitializeFromWorld(world w.World) error {
 // registerComponent は単一コンポーネント型を登録
 func (r *ComponentRegistry) registerComponent(
 	typ reflect.Type,
+	fieldName string,
 	componentRef interface{},
 	extractFunc func(w.World, ecs.Entity) (interface{}, bool),
 	restoreFunc func(w.World, ecs.Entity, interface{}) error,
@@ -121,6 +182,7 @@ func (r *ComponentRegistry) registerComponent(
 	info := &ComponentTypeInfo{
 		Name:           elemType.Name(),
 		Type:           elemType,
+		FieldName:      fieldName,
 		ComponentRef:   componentRef,
 		ExtractFunc:    extractFunc,
 		RestoreFunc:    restoreFunc,
@@ -132,34 +194,25 @@ func (r *ComponentRegistry) registerComponent(
 }
 
 // registerNullComponent はNullComponent型を登録
-func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef interface{}) {
+func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, fieldName string, componentRef interface{}) {
 	elemType := typ.Elem()
 
 	info := &ComponentTypeInfo{
 		Name:         elemType.Name(),
 		Type:         elemType,
+		FieldName:    fieldName,
 		ComponentRef: componentRef,
 		ExtractFunc: func(world w.World, entity ecs.Entity) (interface{}, bool) {
 			// NullComponentの存在チェック
 			switch elemType.Name() {
-			case "BlockView":
-				return struct{}{}, entity.HasComponent(world.Components.BlockView)
-			case "BlockPass":
-				return struct{}{}, entity.HasComponent(world.Components.BlockPass)
 			case "Player":
 				return struct{}{}, entity.HasComponent(world.Components.Player)
-			case "Prop":
-				return struct{}{}, entity.HasComponent(world.Components.Prop)
 			case "FactionAllyData":
 				return struct{}{}, entity.HasComponent(world.Components.FactionAlly)
-			case "FactionEnemyData":
-				return struct{}{}, entity.HasComponent(world.Components.FactionEnemy)
 			case "Item":
 				return struct{}{}, entity.HasComponent(world.Components.Item)
 			case "LocationInBackpack":
 				return struct{}{}, entity.HasComponent(world.Components.ItemLocationInBackpack)
-			case "LocationOnField":
-				return struct{}{}, entity.HasComponent(world.Components.ItemLocationOnField)
 			case "EquipmentChanged":
 				return struct{}{}, entity.HasComponent(world.Components.EquipmentChanged)
 			}
@@ -168,24 +221,14 @@ func (r *ComponentRegistry) registerNullComponent(typ reflect.Type, componentRef
 		RestoreFunc: func(world w.World, entity ecs.Entity, _ interface{}) error {
 			// NullComponentを追加
 			switch elemType.Name() {
-			case "BlockView":
-				entity.AddComponent(world.Components.BlockView, &gc.BlockView{})
-			case "BlockPass":
-				entity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
 			case "Player":
 				entity.AddComponent(world.Components.Player, &gc.Player{})
-			case "Prop":
-				entity.AddComponent(world.Components.Prop, &gc.Prop{})
 			case "FactionAllyData":
 				entity.AddComponent(world.Components.FactionAlly, &gc.FactionAllyData{})
-			case "FactionEnemyData":
-				entity.AddComponent(world.Components.FactionEnemy, &gc.FactionEnemyData{})
 			case "Item":
 				entity.AddComponent(world.Components.Item, &gc.Item{})
 			case "LocationInBackpack":
 				entity.AddComponent(world.Components.ItemLocationInBackpack, &gc.LocationInBackpack{})
-			case "LocationOnField":
-				entity.AddComponent(world.Components.ItemLocationOnField, &gc.LocationOnField{})
 			case "EquipmentChanged":
 				entity.AddComponent(world.Components.EquipmentChanged, &gc.EquipmentChanged{})
 			}
@@ -239,97 +282,71 @@ func (r *ComponentRegistry) GetAllTypes() []*ComponentTypeInfo {
 	return types
 }
 
-// 各コンポーネント型の抽出・復元関数
-func (r *ComponentRegistry) extractAIVision(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.AIVision) {
-		return nil, false
-	}
-	vision := world.Components.AIVision.Get(entity).(*gc.AIVision)
-
-	// 注意: エンティティ参照のStableID変換は上位レベルで行う
-	return *vision, true
-}
-
-func (r *ComponentRegistry) restoreAIVision(world w.World, entity ecs.Entity, data interface{}) error {
-	vision, ok := data.(gc.AIVision)
+// createGenericExtract は汎用的なextract関数を生成(SliceComponent用)
+// JSONタグを使った自動シリアライズに対応
+func (r *ComponentRegistry) createGenericExtract(componentRef interface{}) func(w.World, ecs.Entity) (interface{}, bool) {
+	// componentRefを*ecs.SliceComponentにキャスト
+	sliceComp, ok := componentRef.(*ecs.SliceComponent)
 	if !ok {
-		return fmt.Errorf("invalid AIVision data type: %T", data)
+		// SliceComponentでない場合はnilを返す
+		return func(_ w.World, _ ecs.Entity) (interface{}, bool) {
+			return nil, false
+		}
 	}
-	// エンティティ参照の復元は後で行うため、一旦nilで設定
-	vision.TargetEntity = nil
-	entity.AddComponent(world.Components.AIVision, &vision)
-	return nil
-}
 
-func (r *ComponentRegistry) resolveAIVisionRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	// エンティティ参照の解決はSerializationManagerで実装
-	return nil
-}
+	return func(_ w.World, entity ecs.Entity) (interface{}, bool) {
+		if !entity.HasComponent(sliceComp) {
+			return nil, false
+		}
 
-// GridElement コンポーネントの処理
-func (r *ComponentRegistry) extractGridElement(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.GridElement) {
-		return nil, false
+		dataPtr := sliceComp.Get(entity)
+
+		// ポインタをデリファレンス
+		data := reflect.ValueOf(dataPtr).Elem().Interface()
+
+		return data, true
 	}
-	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	return *gridElement, true
 }
 
-func (r *ComponentRegistry) restoreGridElement(world w.World, entity ecs.Entity, data interface{}) error {
-	gridElement, ok := data.(gc.GridElement)
-	if !ok {
-		return fmt.Errorf("invalid GridElement data type: %T", data)
+// createGenericRestore は汎用的なrestore関数を生成(SliceComponent用)
+// JSONタグを使った自動デシリアライズに対応
+func (r *ComponentRegistry) createGenericRestore(fieldName string, _ reflect.Type) func(w.World, ecs.Entity, interface{}) error {
+	return func(world w.World, entity ecs.Entity, data interface{}) error {
+		// worldからComponentsフィールドを取得
+		componentsValue := reflect.ValueOf(world.Components).Elem()
+		componentsType := componentsValue.Type()
+
+		// フィールド名からコンポーネントを取得
+		field, found := componentsType.FieldByName(fieldName)
+		if !found {
+			return fmt.Errorf("field %s not found in Components", fieldName)
+		}
+
+		// フィールドの値を取得
+		fieldValue := componentsValue.FieldByName(field.Name)
+		componentRef := fieldValue.Interface()
+
+		// SliceComponentにキャスト
+		sliceComp, ok := componentRef.(*ecs.SliceComponent)
+		if !ok {
+			return fmt.Errorf("field %s is not a SliceComponent", fieldName)
+		}
+
+		// dataを適切な型にキャストしてポインタ化
+		dataValue := reflect.ValueOf(data)
+
+		// 実際の型を使用してポインタを作成
+		actualType := dataValue.Type()
+
+		// ポインタ化
+		dataPtr := reflect.New(actualType)
+		dataPtr.Elem().Set(dataValue)
+
+		// AddComponent
+		entity.AddComponent(sliceComp, dataPtr.Interface())
+
+		return nil
 	}
-	entity.AddComponent(world.Components.GridElement, &gridElement)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveGridElementRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	return nil
-}
-
-// AIRoaming コンポーネントの処理
-func (r *ComponentRegistry) extractAIRoaming(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.AIRoaming) {
-		return nil, false
-	}
-	roaming := world.Components.AIRoaming.Get(entity).(*gc.AIRoaming)
-	return *roaming, true
-}
-
-func (r *ComponentRegistry) restoreAIRoaming(world w.World, entity ecs.Entity, data interface{}) error {
-	roaming, ok := data.(gc.AIRoaming)
-	if !ok {
-		return fmt.Errorf("invalid AIRoaming data type: %T", data)
-	}
-	entity.AddComponent(world.Components.AIRoaming, &roaming)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveAIRoamingRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	return nil
-}
-
-// SpriteRender コンポーネントの処理
-func (r *ComponentRegistry) extractSpriteRender(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.SpriteRender) {
-		return nil, false
-	}
-	spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-	return *spriteRender, true
-}
-
-func (r *ComponentRegistry) restoreSpriteRender(world w.World, entity ecs.Entity, data interface{}) error {
-	spriteRender, ok := data.(gc.SpriteRender)
-	if !ok {
-		return fmt.Errorf("invalid SpriteRender data type: %T", data)
-	}
-	entity.AddComponent(world.Components.SpriteRender, &spriteRender)
-	return nil
-}
-
-func (r *ComponentRegistry) resolveSpriteRenderRefs(_ w.World, _ ecs.Entity, _ interface{}, _ *StableIDManager) error {
-	return nil
 }
 
 // ItemLocationEquipped コンポーネントの処理
@@ -418,278 +435,5 @@ func (r *ComponentRegistry) restoreProvidesHealing(world w.World, entity ecs.Ent
 		Amount: amount,
 	}
 	entity.AddComponent(world.Components.ProvidesHealing, healing)
-	return nil
-}
-
-// 基本的なコンポーネント処理メソッド
-func (r *ComponentRegistry) extractName(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Name) {
-		return nil, false
-	}
-	name := world.Components.Name.Get(entity).(*gc.Name)
-	return *name, true
-}
-
-func (r *ComponentRegistry) restoreName(world w.World, entity ecs.Entity, data interface{}) error {
-	name, ok := data.(gc.Name)
-	if !ok {
-		return fmt.Errorf("invalid Name data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Name, &name)
-	return nil
-}
-
-func (r *ComponentRegistry) extractPools(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Pools) {
-		return nil, false
-	}
-	pools := world.Components.Pools.Get(entity).(*gc.Pools)
-	return *pools, true
-}
-
-func (r *ComponentRegistry) restorePools(world w.World, entity ecs.Entity, data interface{}) error {
-	pools, ok := data.(gc.Pools)
-	if !ok {
-		return fmt.Errorf("invalid Pools data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Pools, &pools)
-	return nil
-}
-
-func (r *ComponentRegistry) extractTurnBased(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.TurnBased) {
-		return nil, false
-	}
-	turnBased := world.Components.TurnBased.Get(entity).(*gc.TurnBased)
-	return *turnBased, true
-}
-
-func (r *ComponentRegistry) restoreTurnBased(world w.World, entity ecs.Entity, data interface{}) error {
-	turnBased, ok := data.(gc.TurnBased)
-	if !ok {
-		return fmt.Errorf("invalid TurnBased data type: %T", data)
-	}
-	entity.AddComponent(world.Components.TurnBased, &turnBased)
-	return nil
-}
-
-func (r *ComponentRegistry) extractAttributes(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Attributes) {
-		return nil, false
-	}
-	attributes := world.Components.Attributes.Get(entity).(*gc.Attributes)
-	return *attributes, true
-}
-
-func (r *ComponentRegistry) restoreAttributes(world w.World, entity ecs.Entity, data interface{}) error {
-	attributes, ok := data.(gc.Attributes)
-	if !ok {
-		return fmt.Errorf("invalid Attributes data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Attributes, &attributes)
-	return nil
-}
-
-func (r *ComponentRegistry) extractDescription(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Description) {
-		return nil, false
-	}
-	desc := world.Components.Description.Get(entity).(*gc.Description)
-	return *desc, true
-}
-
-func (r *ComponentRegistry) restoreDescription(world w.World, entity ecs.Entity, data interface{}) error {
-	desc, ok := data.(gc.Description)
-	if !ok {
-		return fmt.Errorf("invalid Description data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Description, &desc)
-	return nil
-}
-
-func (r *ComponentRegistry) extractWearable(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Wearable) {
-		return nil, false
-	}
-	wearable := world.Components.Wearable.Get(entity).(*gc.Wearable)
-	return *wearable, true
-}
-
-func (r *ComponentRegistry) restoreWearable(world w.World, entity ecs.Entity, data interface{}) error {
-	wearable, ok := data.(gc.Wearable)
-	if !ok {
-		return fmt.Errorf("invalid Wearable data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Wearable, &wearable)
-	return nil
-}
-
-func (r *ComponentRegistry) extractCard(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Card) {
-		return nil, false
-	}
-	card := world.Components.Card.Get(entity).(*gc.Card)
-	return *card, true
-}
-
-func (r *ComponentRegistry) restoreCard(world w.World, entity ecs.Entity, data interface{}) error {
-	card, ok := data.(gc.Card)
-	if !ok {
-		return fmt.Errorf("invalid Card data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Card, &card)
-	return nil
-}
-
-func (r *ComponentRegistry) extractStackable(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Stackable) {
-		return nil, false
-	}
-	stackable := world.Components.Stackable.Get(entity).(*gc.Stackable)
-	return *stackable, true
-}
-
-func (r *ComponentRegistry) restoreStackable(world w.World, entity ecs.Entity, data interface{}) error {
-	stackable, ok := data.(gc.Stackable)
-	if !ok {
-		return fmt.Errorf("invalid Stackable data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Stackable, &stackable)
-	return nil
-}
-
-func (r *ComponentRegistry) extractValue(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Value) {
-		return nil, false
-	}
-	value := world.Components.Value.Get(entity).(*gc.Value)
-	return *value, true
-}
-
-func (r *ComponentRegistry) restoreValue(world w.World, entity ecs.Entity, data interface{}) error {
-	value, ok := data.(gc.Value)
-	if !ok {
-		return fmt.Errorf("invalid Value data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Value, &value)
-	return nil
-}
-
-func (r *ComponentRegistry) extractConsumable(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Consumable) {
-		return nil, false
-	}
-	consumable := world.Components.Consumable.Get(entity).(*gc.Consumable)
-	return *consumable, true
-}
-
-func (r *ComponentRegistry) restoreConsumable(world w.World, entity ecs.Entity, data interface{}) error {
-	consumable, ok := data.(gc.Consumable)
-	if !ok {
-		return fmt.Errorf("invalid Consumable data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Consumable, &consumable)
-	return nil
-}
-
-func (r *ComponentRegistry) extractAttack(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Attack) {
-		return nil, false
-	}
-	attack := world.Components.Attack.Get(entity).(*gc.Attack)
-	return *attack, true
-}
-
-func (r *ComponentRegistry) restoreAttack(world w.World, entity ecs.Entity, data interface{}) error {
-	attack, ok := data.(gc.Attack)
-	if !ok {
-		return fmt.Errorf("invalid Attack data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Attack, &attack)
-	return nil
-}
-
-func (r *ComponentRegistry) extractRecipe(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Recipe) {
-		return nil, false
-	}
-	recipe := world.Components.Recipe.Get(entity).(*gc.Recipe)
-	return *recipe, true
-}
-
-func (r *ComponentRegistry) restoreRecipe(world w.World, entity ecs.Entity, data interface{}) error {
-	recipe, ok := data.(gc.Recipe)
-	if !ok {
-		return fmt.Errorf("invalid Recipe data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Recipe, &recipe)
-	return nil
-}
-
-func (r *ComponentRegistry) extractInflictsDamage(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.InflictsDamage) {
-		return nil, false
-	}
-	damage := world.Components.InflictsDamage.Get(entity).(*gc.InflictsDamage)
-	return *damage, true
-}
-
-func (r *ComponentRegistry) restoreInflictsDamage(world w.World, entity ecs.Entity, data interface{}) error {
-	damage, ok := data.(gc.InflictsDamage)
-	if !ok {
-		return fmt.Errorf("invalid InflictsDamage data type: %T", data)
-	}
-	entity.AddComponent(world.Components.InflictsDamage, &damage)
-	return nil
-}
-
-func (r *ComponentRegistry) extractLightSource(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.LightSource) {
-		return nil, false
-	}
-	lightSource := world.Components.LightSource.Get(entity).(*gc.LightSource)
-	return *lightSource, true
-}
-
-func (r *ComponentRegistry) restoreLightSource(world w.World, entity ecs.Entity, data interface{}) error {
-	lightSource, ok := data.(gc.LightSource)
-	if !ok {
-		return fmt.Errorf("invalid LightSource data type: %T", data)
-	}
-	entity.AddComponent(world.Components.LightSource, &lightSource)
-	return nil
-}
-
-func (r *ComponentRegistry) extractCamera(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Camera) {
-		return nil, false
-	}
-	camera := world.Components.Camera.Get(entity).(*gc.Camera)
-	return *camera, true
-}
-
-func (r *ComponentRegistry) restoreCamera(world w.World, entity ecs.Entity, data interface{}) error {
-	camera, ok := data.(gc.Camera)
-	if !ok {
-		return fmt.Errorf("invalid Camera data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Camera, &camera)
-	return nil
-}
-
-func (r *ComponentRegistry) extractWallet(world w.World, entity ecs.Entity) (interface{}, bool) {
-	if !entity.HasComponent(world.Components.Wallet) {
-		return nil, false
-	}
-	wallet := world.Components.Wallet.Get(entity).(*gc.Wallet)
-	return *wallet, true
-}
-
-func (r *ComponentRegistry) restoreWallet(world w.World, entity ecs.Entity, data interface{}) error {
-	wallet, ok := data.(gc.Wallet)
-	if !ok {
-		return fmt.Errorf("invalid Wallet data type: %T", data)
-	}
-	entity.AddComponent(world.Components.Wallet, &wallet)
 	return nil
 }

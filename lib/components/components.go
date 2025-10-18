@@ -68,22 +68,22 @@ type EntitySpec struct {
 // Manager.Join()でのクエリに使用される
 type Components struct {
 	// general ================
-	Name        *ecs.SliceComponent
-	Description *ecs.SliceComponent
+	Name        *ecs.SliceComponent `save:"true"`
+	Description *ecs.SliceComponent `save:"true"`
 
 	// item ================
-	Item                   *ecs.NullComponent
-	Consumable             *ecs.SliceComponent
-	Pools                  *ecs.SliceComponent
-	Attack                 *ecs.SliceComponent
-	Value                  *ecs.SliceComponent
-	Recipe                 *ecs.SliceComponent
-	Wearable               *ecs.SliceComponent
-	Attributes             *ecs.SliceComponent
-	Card                   *ecs.SliceComponent
-	Stackable              *ecs.SliceComponent
-	ItemLocationInBackpack *ecs.NullComponent
-	ItemLocationEquipped   *ecs.SliceComponent
+	Item                   *ecs.NullComponent  `save:"true"`
+	Consumable             *ecs.SliceComponent `save:"true"`
+	Pools                  *ecs.SliceComponent `save:"true"`
+	Attack                 *ecs.SliceComponent `save:"true"`
+	Value                  *ecs.SliceComponent `save:"true"`
+	Recipe                 *ecs.SliceComponent `save:"true"`
+	Wearable               *ecs.SliceComponent `save:"true"`
+	Attributes             *ecs.SliceComponent `save:"true"`
+	Card                   *ecs.SliceComponent `save:"true"`
+	Stackable              *ecs.SliceComponent `save:"true"`
+	ItemLocationInBackpack *ecs.NullComponent  `save:"true"`
+	ItemLocationEquipped   *ecs.SliceComponent `save:"true"`
 	ItemLocationOnField    *ecs.NullComponent
 
 	// field ================
@@ -100,21 +100,21 @@ type Components struct {
 	BlockPass    *ecs.NullComponent
 	Door         *ecs.SliceComponent
 	Prop         *ecs.NullComponent
-	LightSource  *ecs.SliceComponent
+	LightSource  *ecs.SliceComponent `save:"true"`
 
 	// member ================
-	Player       *ecs.NullComponent
+	Player       *ecs.NullComponent `save:"true"`
 	Hunger       *ecs.SliceComponent
-	Wallet       *ecs.SliceComponent
-	FactionAlly  *ecs.NullComponent
+	Wallet       *ecs.SliceComponent `save:"true"`
+	FactionAlly  *ecs.NullComponent  `save:"true"`
 	FactionEnemy *ecs.NullComponent
 	Dead         *ecs.NullComponent
-	TurnBased    *ecs.SliceComponent
+	TurnBased    *ecs.SliceComponent `save:"true"`
 
 	// event ================
 	EquipmentChanged *ecs.NullComponent
-	ProvidesHealing  *ecs.SliceComponent
-	InflictsDamage   *ecs.SliceComponent
+	ProvidesHealing  *ecs.SliceComponent `save:"true"`
+	InflictsDamage   *ecs.SliceComponent `save:"true"`
 
 	// battle ================
 	CommandTable *ecs.SliceComponent
