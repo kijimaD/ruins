@@ -81,7 +81,15 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 	}
 
 	// キー入力をActionに変換
-	if action, ok := st.HandleInput(); ok {
+	var action inputmapper.ActionID
+	var ok bool
+	if st.isWindowMode {
+		action, ok = HandleWindowInput()
+	} else {
+		action, ok = st.HandleInput()
+	}
+
+	if ok {
 		if transition, err := st.DoAction(world, action); err != nil {
 			return es.Transition[w.World]{}, err
 		} else if transition.Type != es.TransNone {
@@ -89,8 +97,11 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 		}
 	}
 
-	if _, err := st.tabMenu.Update(); err != nil {
-		return es.Transition[w.World]{}, err
+	// アクションウィンドウ表示中はTabMenuの更新をスキップ
+	if !st.isWindowMode {
+		if _, err := st.tabMenu.Update(); err != nil {
+			return es.Transition[w.World]{}, err
+		}
 	}
 	st.ui.Update()
 
@@ -107,11 +118,6 @@ func (st *EquipMenuState) Draw(_ w.World, screen *ebiten.Image) error {
 
 // HandleInput はキー入力をActionに変換する
 func (st *EquipMenuState) HandleInput() (inputmapper.ActionID, bool) {
-	// ウィンドウモード時の入力処理を優先
-	if st.isWindowMode {
-		return HandleWindowInput()
-	}
-
 	keyboardInput := input.GetSharedKeyboardInput()
 	if keyboardInput.IsKeyJustPressed(ebiten.KeyEscape) {
 		return inputmapper.ActionMenuCancel, true
