@@ -243,8 +243,10 @@ func TestAllAttackTypesCovered(t *testing.T) {
 	t.Parallel()
 
 	t.Run("全てのAttackTypeが正しく実装されている", func(t *testing.T) {
+		t.Parallel()
 		for _, at := range AllAttackTypes {
 			t.Run(at.Type, func(t *testing.T) {
+				t.Parallel()
 				// Labelが設定されていること
 				assert.NotEmpty(t, at.Label, "Labelが空である")
 

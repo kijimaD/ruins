@@ -155,7 +155,7 @@ func (pa *PickupActivity) performPickupActivity(act *Activity, world w.World) er
 }
 
 // collectFieldItem はフィールドアイテムを収集してバックパックに移動する
-func (pa *PickupActivity) collectFieldItem(act *Activity, world w.World, itemEntity ecs.Entity) error {
+func (pa *PickupActivity) collectFieldItem(_ *Activity, world w.World, itemEntity ecs.Entity) error {
 	itemName := "Unknown Item"
 	if nameComp := world.Components.Name.Get(itemEntity); nameComp != nil {
 		name := nameComp.(*gc.Name)

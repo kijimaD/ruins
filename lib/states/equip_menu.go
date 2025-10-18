@@ -696,16 +696,17 @@ func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item
 
 	// 武器の場合、攻撃タイプに応じてスロット番号を決定
 	if entity.HasComponent(world.Components.Weapon) {
-		weaponComp := world.Components.Weapon.Get(entity).(*gc.Weapon)
 		attack := world.Components.Attack.Get(entity).(*gc.Attack)
 		if attack != nil {
-			if attack.AttackCategory.Range == gc.AttackRangeMelee {
+			switch attack.AttackCategory.Range {
+			case gc.AttackRangeMelee:
 				slotNumber = gc.SlotMeleeWeapon
-			} else if attack.AttackCategory.Range == gc.AttackRangeRanged {
+			case gc.AttackRangeRanged:
 				slotNumber = gc.SlotRangedWeapon
+			default:
+				return fmt.Errorf("unexpected attack range")
 			}
 		}
-		_ = weaponComp // 未使用の警告を回避
 	}
 
 	// 前の装備を外す
