@@ -95,7 +95,7 @@ type Components struct {
 	Warp         *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
-	SpriteRender *ecs.SliceComponent `save:"true"`
+	SpriteRender *ecs.SliceComponent
 	BlockView    *ecs.NullComponent
 	BlockPass    *ecs.NullComponent
 	Door         *ecs.SliceComponent

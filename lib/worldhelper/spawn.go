@@ -362,14 +362,23 @@ func MovePlayerToPosition(world w.World, tileX int, tileY int) error {
 
 	// SpriteRenderがない場合は追加
 	if !playerEntity.HasComponent(world.Components.SpriteRender) {
-		playerEntity.AddComponent(world.Components.SpriteRender, &gc.SpriteRender{
-			SpriteKey: "player",
-		})
+		// プレイヤー名から正しいスプライト情報を取得
+		rawMaster := world.Resources.RawMaster.(*raw.Master)
+		nameComp := world.Components.Name.Get(playerEntity).(*gc.Name)
+		playerSpec, err := rawMaster.NewPlayerSpec(nameComp.Name)
+		if err != nil {
+			return fmt.Errorf("プレイヤーのスプライト情報取得に失敗: %w", err)
+		}
+
+		playerEntity.AddComponent(world.Components.SpriteRender, playerSpec.SpriteRender)
 	}
 
-	// Cameraがない場合は追加
+	// Cameraがない場合は追加（通常スケールで初期化）
 	if !playerEntity.HasComponent(world.Components.Camera) {
-		playerEntity.AddComponent(world.Components.Camera, &gc.Camera{})
+		playerEntity.AddComponent(world.Components.Camera, &gc.Camera{
+			Scale:   cameraNormalScale,
+			ScaleTo: cameraNormalScale,
+		})
 	}
 
 	return nil

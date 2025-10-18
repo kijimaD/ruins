@@ -1,6 +1,6 @@
 {
-  "checksum": "f33f7b0f95f264b6048e5f162433d06440d75992aa4c305d32da42092701607a",
-  "timestamp": "2025-10-18T01:09:53.234500631+09:00",
+  "checksum": "27e170063dd5183815d5425ab801906366b71c8bd1a7fe28aae57e86470dca1f",
+  "timestamp": "2025-10-18T10:59:16.534026884+09:00",
   "version": "1.0.0",
   "world": {
     "entities": [
@@ -89,30 +89,6 @@
             },
             "type": "Pools"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 3,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "player",
-              "SpriteSheetName": "field"
-            },
-            "type": "SpriteRender"
-          },
           "TurnBased": {
             "data": {
               "AP": {
@@ -155,30 +131,6 @@
               "Name": "作業用ヘルメット"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -227,30 +179,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -320,30 +248,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -377,30 +281,6 @@
               "Name": "ルビー原石"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "field_item",
-              "SpriteSheetName": "field"
-            },
-            "type": "SpriteRender"
           },
           "Stackable": {
             "data": {
@@ -461,30 +341,6 @@
             },
             "type": "ProvidesHealing"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "field_item",
-              "SpriteSheetName": "field"
-            },
-            "type": "SpriteRender"
-          },
           "Stackable": {
             "data": {
               "Count": 3
@@ -544,30 +400,6 @@
             },
             "type": "ProvidesHealing"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Stackable": {
             "data": {
               "Count": 3
@@ -624,30 +456,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Stackable": {
             "data": {
               "Count": 5
@@ -687,30 +495,6 @@
               "Name": "鉄"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "field_item",
-              "SpriteSheetName": "field"
-            },
-            "type": "SpriteRender"
           },
           "Stackable": {
             "data": {
@@ -766,30 +550,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 80
@@ -843,30 +603,6 @@
               "Name": "ハンドガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -922,30 +658,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -999,30 +711,6 @@
               "Name": "木刀"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -1078,30 +766,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -1155,30 +819,6 @@
               "Name": "レイガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -1234,30 +874,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 80
@@ -1311,30 +927,6 @@
               "Name": "ハンドガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -1390,30 +982,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -1467,30 +1035,6 @@
               "Name": "木刀"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -1546,30 +1090,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -1623,30 +1143,6 @@
               "Name": "レイガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -1702,30 +1198,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 80
@@ -1779,30 +1251,6 @@
               "Name": "ハンドガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -1858,30 +1306,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -1935,30 +1359,6 @@
               "Name": "木刀"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2014,30 +1414,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -2091,30 +1467,6 @@
               "Name": "レイガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2170,30 +1522,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 80
@@ -2247,30 +1575,6 @@
               "Name": "ハンドガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2326,30 +1630,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -2403,30 +1683,6 @@
               "Name": "木刀"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2482,30 +1738,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -2559,30 +1791,6 @@
               "Name": "レイガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2638,30 +1846,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 80
@@ -2715,30 +1899,6 @@
               "Name": "ハンドガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2794,30 +1954,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -2871,30 +2007,6 @@
               "Name": "木刀"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -2950,30 +2062,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -3028,30 +2116,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 280
@@ -3085,30 +2149,6 @@
               "Name": "西洋鎧"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -3158,30 +2198,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -3229,30 +2245,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -3302,30 +2294,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 400
@@ -3373,30 +2341,6 @@
               "Name": "作業用ヘルメット"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -3446,30 +2390,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 120
@@ -3517,30 +2437,6 @@
               "Name": "西洋鎧"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -3590,30 +2486,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -3661,30 +2533,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -3734,30 +2582,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 400
@@ -3805,30 +2629,6 @@
               "Name": "作業用ヘルメット"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -3878,30 +2678,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 120
@@ -3949,30 +2725,6 @@
               "Name": "西洋鎧"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4022,30 +2774,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -4093,30 +2821,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4166,30 +2870,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 400
@@ -4237,30 +2917,6 @@
               "Name": "作業用ヘルメット"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4310,30 +2966,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 120
@@ -4381,30 +3013,6 @@
               "Name": "西洋鎧"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4454,30 +3062,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -4525,30 +3109,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4598,30 +3158,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 400
@@ -4669,30 +3205,6 @@
               "Name": "作業用ヘルメット"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4742,30 +3254,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 120
@@ -4813,30 +3301,6 @@
               "Name": "西洋鎧"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -4886,30 +3350,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -4957,30 +3397,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -5030,30 +3446,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 400
@@ -5102,30 +3494,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 150
@@ -5173,30 +3541,6 @@
               "Name": "革のブーツ"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -5276,30 +3620,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 80
@@ -5363,30 +3683,6 @@
               "Name": "ハンドガン"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
@@ -5452,30 +3748,6 @@
             },
             "type": "Name"
           },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
-          },
           "Value": {
             "data": {
               "Value": 480
@@ -5519,30 +3791,6 @@
               "Name": "西洋鎧"
             },
             "type": "Name"
-          },
-          "SpriteRender": {
-            "data": {
-              "Depth": 1,
-              "Options": {
-                "Blend": {
-                  "BlendFactorDestinationAlpha": 0,
-                  "BlendFactorDestinationRGB": 0,
-                  "BlendFactorSourceAlpha": 0,
-                  "BlendFactorSourceRGB": 0,
-                  "BlendOperationAlpha": 0,
-                  "BlendOperationRGB": 0
-                },
-                "ColorM": {},
-                "ColorScale": {},
-                "CompositeMode": 0,
-                "DisableMipmaps": false,
-                "Filter": 0,
-                "GeoM": {}
-              },
-              "SpriteKey": "",
-              "SpriteSheetName": ""
-            },
-            "type": "SpriteRender"
           },
           "Value": {
             "data": {
