@@ -6,6 +6,7 @@ player      = { x = 160, y = 0, width = 32, height = 32 }
 warp_next   = { x = 96, y = 0, width = 32, height = 32 }
 warp_escape = { x = 128, y = 0, width = 32, height = 32 }
 red_ball    = { x = 192, y = 0, width = 32, height = 32 }
+old_soldier = { x = 224, y = 0, width = 32, height = 32 }
 
 prop_lantern   = { x = 32, y = 64, width = 32, height = 32 }
 field_item     = { x = 64, y = 64, width = 32, height = 32 }
