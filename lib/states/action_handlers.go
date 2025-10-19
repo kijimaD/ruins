@@ -87,26 +87,20 @@ func executeActivity(world w.World, actorImpl actions.ActivityInterface, params 
 
 	// 会話の場合は会話メッセージを表示するStateEventを設定
 	if _, isTalkActivity := actorImpl.(*actions.TalkActivity); isTalkActivity && result != nil && result.Success && params.Target != nil {
-		handleTalkCompletion(world, *params.Target)
+		targetEntity := *params.Target
+		if targetEntity.HasComponent(world.Components.Dialog) {
+			dialog := world.Components.Dialog.Get(targetEntity).(*gc.Dialog)
+			world.Resources.Dungeon.SetStateEvent(resources.ShowDialogEvent{
+				MessageKey:    dialog.MessageKey,
+				SpeakerEntity: targetEntity,
+			})
+		}
 	}
 
 	// 移動の場合は追加でタイルイベントをチェック
 	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
 		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
 	}
-}
-
-// handleTalkCompletion は会話完了時の処理を行う
-func handleTalkCompletion(world w.World, targetEntity ecs.Entity) {
-	if !targetEntity.HasComponent(world.Components.Dialog) {
-		return
-	}
-
-	dialog := world.Components.Dialog.Get(targetEntity).(*gc.Dialog)
-	world.Resources.Dungeon.SetStateEvent(resources.ShowDialogEvent{
-		MessageKey:    dialog.MessageKey,
-		SpeakerEntity: targetEntity,
-	})
 }
 
 // ExecuteWaitAction は待機アクションを実行する
