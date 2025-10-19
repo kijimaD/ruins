@@ -108,6 +108,44 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 	return entitiesSlice[len(entitiesSlice)-1], nil
 }
 
+// SpawnNeutralNPC はフィールド上に中立NPCを生成する（会話可能なNPC用）
+func SpawnNeutralNPC(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	// NewMemberSpecでEntitySpecを生成
+	entitySpec, err := rawMaster.NewMemberSpec(name)
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("中立NPC生成エラー: %w", err)
+	}
+
+	// 中立派閥とDialog設定を確認
+	if entitySpec.FactionType == nil || *entitySpec.FactionType != gc.FactionNeutral {
+		return ecs.Entity(0), fmt.Errorf("'%s' は中立NPCではありません", name)
+	}
+	if entitySpec.Dialog == nil {
+		return ecs.Entity(0), fmt.Errorf("'%s' には会話データがありません", name)
+	}
+
+	// フィールド用のコンポーネントを設定
+	entitySpec.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	entitySpec.BlockPass = &gc.BlockPass{} // NPCは通行不可
+
+	// 中立NPCにはAIを付けない（動かない）
+
+	componentList.Entities = append(componentList.Entities, entitySpec)
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
+
+	// 全回復
+	npcEntity := entitiesSlice[len(entitiesSlice)-1]
+	fullRecover(world, npcEntity)
+
+	return npcEntity, nil
+}
+
 // SpawnEnemy はフィールド上に敵キャラクターを生成する
 func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}
@@ -297,11 +335,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnTile(world, "Floor", x, y, nil) // 下敷きの床を描画
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
-	}
-
 	// TOMLの定義を取得してStackable対応かどうかを確認
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	itemIdx, ok := rawMaster.ItemIndex[itemName]
@@ -312,6 +345,7 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 	isStackable := itemDef.Stackable != nil && *itemDef.Stackable
 
 	var item ecs.Entity
+	var err error
 	if isStackable {
 		// Stackable対応アイテムはCount=1で生成
 		item, err = SpawnStackable(world, itemName, 1, gc.ItemLocationOnField)

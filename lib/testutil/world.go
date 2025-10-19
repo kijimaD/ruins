@@ -60,7 +60,7 @@ func InitTestWorld(t *testing.T) w.World {
 			Scale:   3,
 		},
 	}
-	gameResource.SetStateEvent(gr.StateEventNone)
+	gameResource.SetStateEvent(gr.NoneEvent{})
 	world.Resources.Dungeon = gameResource
 
 	return world

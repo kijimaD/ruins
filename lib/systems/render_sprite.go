@@ -151,7 +151,16 @@ func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[str
 			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize/2)),
 			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize/2)),
 		}
-		drawImage(world, screen, spriteRender, pos, 0)
+		if err := drawImage(world, screen, spriteRender, pos, 0); err != nil {
+			// エンティティ情報を追加してエラーを詳細化
+			var entityInfo string
+			if entity.HasComponent(world.Components.Name) {
+				name := world.Components.Name.Get(entity).(*gc.Name)
+				entityInfo = fmt.Sprintf("Name: %s", name.Name)
+			}
+			panic(fmt.Errorf("entity %d at (%d,%d), SpriteSheet: '%s', SpriteKey: '%s', %s: %w",
+				entity, gridElement.X, gridElement.Y, spriteRender.SpriteSheetName, spriteRender.SpriteKey, entityInfo, err))
+		}
 	}
 }
 
@@ -283,7 +292,9 @@ func renderSprites(world w.World, screen *ebiten.Image, visibilityData map[strin
 			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
 			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
 		}
-		drawImage(world, screen, spriteRender, pos, 0)
+		if err := drawImage(world, screen, spriteRender, pos, 0); err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -381,7 +392,7 @@ func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[strin
 	}))
 }
 
-func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
+func getImage(world w.World, spriteRender *gc.SpriteRender) (*ebiten.Image, error) {
 	var result *ebiten.Image
 	key := spriteImageCacheKey{
 		SpriteSheetName: spriteRender.SpriteSheetName,
@@ -392,17 +403,17 @@ func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
 	} else {
 		// Resourcesからスプライトシートを取得
 		if world.Resources.SpriteSheets == nil {
-			return nil
+			return nil, fmt.Errorf("SpriteSheets が nil です")
 		}
 		spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.SpriteSheetName]
 		if !exists {
-			return nil
+			return nil, fmt.Errorf("スプライトシート '%s' が見つかりません", spriteRender.SpriteSheetName)
 		}
 
 		// スプライトキーからスプライトを取得
 		sprite, exists := spriteSheet.Sprites[spriteRender.SpriteKey]
 		if !exists {
-			return nil
+			return nil, fmt.Errorf("スプライトキー '%s' がスプライトシート '%s' に存在しません", spriteRender.SpriteKey, spriteRender.SpriteSheetName)
 		}
 
 		texture := spriteSheet.Texture
@@ -418,22 +429,22 @@ func getImage(world w.World, spriteRender *gc.SpriteRender) *ebiten.Image {
 		spriteImageCache[key] = result
 	}
 
-	return result
+	return result, nil
 }
 
-func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) {
+func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) error {
 	// Resourcesからスプライトシートを取得
 	if world.Resources.SpriteSheets == nil {
-		return
+		return fmt.Errorf("SpriteSheets が nil です")
 	}
 	spriteSheet, exists := (*world.Resources.SpriteSheets)[spriteRender.SpriteSheetName]
 	if !exists {
-		return
+		return fmt.Errorf("スプライトシート '%s' が見つかりません", spriteRender.SpriteSheetName)
 	}
 
 	sprite, exists := spriteSheet.Sprites[spriteRender.SpriteKey]
 	if !exists {
-		return
+		return fmt.Errorf("スプライトキー '%s' がスプライトシート '%s' に存在しません", spriteRender.SpriteKey, spriteRender.SpriteSheetName)
 	}
 
 	op := &spriteRender.Options
@@ -442,7 +453,12 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	op.GeoM.Rotate(angle)
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	SetTranslate(world, op)
-	screen.DrawImage(getImage(world, spriteRender), op)
+
+	img, err := getImage(world, spriteRender)
+	if err != nil {
+		return err
+	}
+	screen.DrawImage(img, op)
 
 	// デバッグ用：スプライト番号表示(土だけ)
 	cfg := config.Get()
@@ -459,4 +475,6 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 		screenX, screenY := textOp.GeoM.Apply(0, 0)
 		ebitenutil.DebugPrintAt(screen, number, int(screenX), int(screenY))
 	}
+
+	return nil
 }

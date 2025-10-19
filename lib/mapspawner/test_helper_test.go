@@ -163,6 +163,23 @@ Depth = 1
 
 [Props.Warp]
 Mode = "ESCAPE"
+
+[[Members]]
+Name = "老兵"
+SpriteSheetName = "field"
+SpriteKey = "old_soldier"
+FactionType = "FactionNeutral"
+
+[Members.Dialog]
+MessageKey = "old_soldier_greeting"
+
+[Members.Attributes]
+Vitality = 10
+Strength = 10
+Sensation = 10
+Dexterity = 10
+Agility = 10
+Defense = 10
 `)
 	return &rawMaster
 }

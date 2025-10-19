@@ -5,6 +5,7 @@ import (
 	"image/color"
 
 	"github.com/ebitenui/ebitenui"
+	eui_image "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
@@ -143,8 +144,8 @@ func (w *Window) showNextMessage() {
 
 // updateContentFromMessage はMessageDataから表示コンテンツを更新する
 func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
-	w.content.Text = msg.Text
 	w.content.SpeakerName = msg.Speaker
+	w.content.TextSegmentLines = msg.TextSegmentLines
 
 	w.content.Choices = make([]Choice, len(msg.Choices))
 	for i, choice := range msg.Choices {
@@ -315,13 +316,9 @@ func (w *Window) createWindowContainer() *widget.Container {
 		),
 	)
 
-	messageText := styled.NewListItemText(
-		w.content.Text,
-		w.config.TextStyle.Color,
-		false,
-		w.world.Resources.UIResources,
-	)
-	contentArea.AddChild(messageText)
+	// TextSegmentLinesを使用してメッセージを表示
+	messageWidget := w.createSegmentedTextLines()
+	contentArea.AddChild(messageWidget)
 
 	if w.hasChoices && w.choiceMenu != nil {
 		choicesContainer := w.createChoicesContainer()
@@ -525,4 +522,91 @@ func (w *Window) selectChoice(index int) {
 
 	// ウィンドウを閉じる
 	w.Close()
+}
+
+// createSegmentedTextLines はTextSegmentLinesから色付きテキストウィジェットを作成する（改行対応）
+func (w *Window) createSegmentedTextLines() *widget.Container {
+	// メインコンテナは縦方向（行を縦に並べる）
+	mainContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(
+			widget.NewRowLayout(
+				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+				widget.RowLayoutOpts.Spacing(0),
+				widget.RowLayoutOpts.Padding(&widget.Insets{
+					Top:    0,
+					Bottom: 0,
+					Left:   8,
+					Right:  8,
+				}),
+			),
+		),
+		widget.ContainerOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+				Stretch: true,
+			}),
+		),
+	)
+
+	res := w.world.Resources.UIResources
+
+	// 各行を処理
+	for _, lineSegments := range w.content.TextSegmentLines {
+		// 行コンテナ（横方向）
+		lineContainer := widget.NewContainer(
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+					widget.RowLayoutOpts.Spacing(0),
+				),
+			),
+			widget.ContainerOpts.WidgetOpts(
+				widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+					Stretch: true,
+				}),
+			),
+		)
+
+		// 行内の各セグメントを処理
+		for _, segment := range lineSegments {
+			segmentColor := w.config.TextStyle.Color
+			if segment.Color != nil {
+				segmentColor = *segment.Color
+			}
+
+			// セグメント用のコンテナオプション
+			var segmentOpts []widget.ContainerOpt
+			segmentOpts = append(segmentOpts,
+				widget.ContainerOpts.Layout(
+					widget.NewRowLayout(
+						widget.RowLayoutOpts.Direction(widget.DirectionHorizontal),
+						widget.RowLayoutOpts.Spacing(0),
+					),
+				),
+			)
+
+			// 背景色の設定
+			if segment.BackgroundColor != nil {
+				segmentOpts = append(segmentOpts,
+					widget.ContainerOpts.BackgroundImage(eui_image.NewNineSliceColor(*segment.BackgroundColor)),
+				)
+			}
+
+			segmentContainer := widget.NewContainer(segmentOpts...)
+
+			// テキストウィジェット
+			textWidget := widget.NewText(
+				widget.TextOpts.Text(segment.Text, &res.Text.Face, segmentColor),
+				widget.TextOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+				),
+			)
+
+			segmentContainer.AddChild(textWidget)
+			lineContainer.AddChild(segmentContainer)
+		}
+
+		mainContainer.AddChild(lineContainer)
+	}
+
+	return mainContainer
 }

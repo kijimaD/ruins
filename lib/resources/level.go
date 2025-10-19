@@ -27,10 +27,10 @@ func (d *Dungeon) SetStateEvent(event StateEvent) {
 	d.stateEvent = event
 }
 
-// ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
+// ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にNoneEventで自動クリアする
 func (d *Dungeon) ConsumeStateEvent() StateEvent {
 	event := d.stateEvent
-	d.stateEvent = StateEventNone
+	d.stateEvent = NoneEvent{}
 	return event
 }
 

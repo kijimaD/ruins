@@ -115,6 +115,13 @@ type Member struct {
 	SpriteSheetName string
 	SpriteKey       string
 	LightSource     *gc.LightSource
+	FactionType     string
+	Dialog          *DialogRaw
+}
+
+// DialogRaw は会話データのローデータ
+type DialogRaw struct {
+	MessageKey string // メッセージキー
 }
 
 // Attributes はキャラクターの能力値
@@ -205,9 +212,20 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 	entitySpec.Item = &gc.Item{}
 	entitySpec.Name = &gc.Name{Name: item.Name}
 	entitySpec.Description = &gc.Description{Description: item.Description}
+
+	// デフォルト値設定
+	spriteSheetName := item.SpriteSheetName
+	spriteKey := item.SpriteKey
+	if spriteSheetName == "" {
+		spriteSheetName = "field"
+	}
+	if spriteKey == "" {
+		spriteKey = "field_item"
+	}
+
 	entitySpec.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: item.SpriteSheetName,
-		SpriteKey:       item.SpriteKey,
+		SpriteSheetName: spriteSheetName,
+		SpriteKey:       spriteKey,
 		Depth:           gc.DepthNumRug,
 	}
 
@@ -377,8 +395,8 @@ func (rw *Master) NewWeaponSpec(name string) (gc.EntitySpec, error) {
 	return itemSpec, nil
 }
 
-// generateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する(敵・味方共通)
-func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
+// NewMemberSpec は指定された名前のメンバーのEntitySpecを生成する
+func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		return gc.EntitySpec{}, fmt.Errorf("キーが存在しない: %s", name)
@@ -423,12 +441,33 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 		entitySpec.LightSource = member.LightSource
 	}
 
+	// 派閥タイプの処理
+	if member.FactionType != "" {
+		switch member.FactionType {
+		case gc.FactionAlly.String():
+			entitySpec.FactionType = &gc.FactionAlly
+		case gc.FactionEnemy.String():
+			entitySpec.FactionType = &gc.FactionEnemy
+		case gc.FactionNeutral.String():
+			entitySpec.FactionType = &gc.FactionNeutral
+		default:
+			return gc.EntitySpec{}, fmt.Errorf("無効な派閥タイプ '%s' が指定されています: %s", member.FactionType, name)
+		}
+	}
+
+	// 会話データの処理
+	if member.Dialog != nil {
+		entitySpec.Dialog = &gc.Dialog{
+			MessageKey: member.Dialog.MessageKey,
+		}
+	}
+
 	return entitySpec, nil
 }
 
 // NewPlayerSpec は指定された名前のプレイヤーのEntitySpecを生成する
 func (rw *Master) NewPlayerSpec(name string) (gc.EntitySpec, error) {
-	entitySpec, err := rw.generateFighter(name)
+	entitySpec, err := rw.NewMemberSpec(name)
 	if err != nil {
 		return gc.EntitySpec{}, err
 	}
@@ -440,7 +479,7 @@ func (rw *Master) NewPlayerSpec(name string) (gc.EntitySpec, error) {
 
 // NewEnemySpec は指定された名前の敵のEntitySpecを生成する
 func (rw *Master) NewEnemySpec(name string) (gc.EntitySpec, error) {
-	entitySpec, err := rw.generateFighter(name)
+	entitySpec, err := rw.NewMemberSpec(name)
 	if err != nil {
 		return gc.EntitySpec{}, err
 	}

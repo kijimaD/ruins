@@ -212,10 +212,9 @@ func TestSpawnDoor(t *testing.T) {
 		world := testutil.InitTestWorld(t)
 
 		door, err := SpawnDoor(world, 10, 10, gc.DoorOrientationVertical)
-		require.NoError(t, err)
-		require.NotEqual(t, uint(0), uint(door))
+		require.NoError(t, err, "SpawnDoor should not return an error")
 
-		// SpriteRenderを確認
+		// SpriteRenderを確認（entity=0は有効なエンティティIDなので、コンポーネントの存在でチェック）
 		require.True(t, door.HasComponent(world.Components.SpriteRender))
 		sprite := world.Components.SpriteRender.Get(door).(*gc.SpriteRender)
 		assert.Equal(t, "field", sprite.SpriteSheetName)

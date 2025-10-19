@@ -1,6 +1,8 @@
 package worldhelper
 
 import (
+	"fmt"
+
 	"github.com/kijimaD/ruins/lib/engine/entities"
 	"github.com/kijimaD/ruins/lib/raw"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -18,11 +20,6 @@ func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity
 		return ecs.Entity(0), err
 	}
 
-	// 床を下敷きとして配置（既に床がある場合は配置しない）
-	if !hasFloorAt(world, x, y) {
-		_, _ = SpawnTile(world, "Floor", x, y, nil)
-	}
-
 	// 位置情報を設定
 	entitySpec.GridElement = &gc.GridElement{X: x, Y: y}
 
@@ -38,14 +35,6 @@ func SpawnProp(world w.World, propName string, x gc.Tile, y gc.Tile) (ecs.Entity
 
 // SpawnDoor はドアを生成する
 func SpawnDoor(world w.World, x gc.Tile, y gc.Tile, orientation gc.DoorOrientation) (ecs.Entity, error) {
-	// 床を下敷きとして配置（既に床がある場合は配置しない）
-	if !hasFloorAt(world, x, y) {
-		_, err := SpawnTile(world, "Floor", x, y, nil)
-		if err != nil {
-			return ecs.Entity(0), err
-		}
-	}
-
 	// スプライトキーを決定（閉じたドア）
 	var spriteKey string
 	if orientation == gc.DoorOrientationHorizontal {
@@ -79,25 +68,8 @@ func SpawnDoor(world w.World, x gc.Tile, y gc.Tile, orientation gc.DoorOrientati
 	if err != nil {
 		return ecs.Entity(0), err
 	}
+	if len(ents) == 0 {
+		return ecs.Entity(0), fmt.Errorf("エンティティが生成されませんでした")
+	}
 	return ents[len(ents)-1], nil
-}
-
-// hasFloorAt は指定位置に床が存在するかチェックする
-func hasFloorAt(world w.World, x, y gc.Tile) bool {
-	floorExists := false
-
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.SpriteRender,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		spriteRender := world.Components.SpriteRender.Get(entity).(*gc.SpriteRender)
-
-		if gridElement.X == x && gridElement.Y == y && spriteRender.Depth == gc.DepthNumFloor {
-			floorExists = true
-			return
-		}
-	}))
-
-	return floorExists
 }

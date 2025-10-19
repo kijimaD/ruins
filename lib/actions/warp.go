@@ -105,12 +105,12 @@ func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error {
 func (wa *WarpActivity) performWarp(act *Activity, world w.World, warp *gc.Warp) error {
 	switch warp.Mode {
 	case gc.WarpModeNext:
-		world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpNext)
+		world.Resources.Dungeon.SetStateEvent(resources.WarpNextEvent{})
 		act.Logger.Debug("次の階へワープ", "actor", act.Actor)
 		return nil
 
 	case gc.WarpModeEscape:
-		world.Resources.Dungeon.SetStateEvent(resources.StateEventWarpEscape)
+		world.Resources.Dungeon.SetStateEvent(resources.WarpEscapeEvent{})
 		act.Logger.Debug("脱出ワープ", "actor", act.Actor)
 		return nil
 

@@ -73,13 +73,13 @@ Description = "スプライトなしアイテム"
 	raw, err := Load(str)
 	assert.NoError(t, err)
 
-	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
+	// 現在の実装ではスプライト情報なしでも生成される（デフォルト値が設定される）
 	loc := gc.ItemLocationInBackpack
 	entitySpec, err := raw.NewItemSpec("テストアイテム", &loc)
 	assert.NoError(t, err)
 	assert.NotNil(t, entitySpec.SpriteRender)
-	assert.Equal(t, "", entitySpec.SpriteRender.SpriteSheetName)
-	assert.Equal(t, "", entitySpec.SpriteRender.SpriteKey)
+	assert.Equal(t, "field", entitySpec.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "field_item", entitySpec.SpriteRender.SpriteKey)
 }
 
 func TestGenerateMemberWithSprite(t *testing.T) {
@@ -178,13 +178,13 @@ Description = "スプライトなし素材"
 	raw, err := Load(str)
 	assert.NoError(t, err)
 
-	// 現在の実装ではスプライト情報なしでも生成される（空文字列が設定される）
+	// 現在の実装ではスプライト情報なしでも生成される（デフォルト値が設定される）
 	loc := gc.ItemLocationInBackpack
 	entitySpec, err := raw.NewItemSpec("スプライトなし素材", &loc)
 	assert.NoError(t, err)
 	assert.NotNil(t, entitySpec.SpriteRender)
-	assert.Equal(t, "", entitySpec.SpriteRender.SpriteSheetName)
-	assert.Equal(t, "", entitySpec.SpriteRender.SpriteKey)
+	assert.Equal(t, "field", entitySpec.SpriteRender.SpriteSheetName)
+	assert.Equal(t, "field_item", entitySpec.SpriteRender.SpriteKey)
 	// Stackable=true が設定されていないので Stackable コンポーネントは付かない
 	assert.Nil(t, entitySpec.Stackable)
 }

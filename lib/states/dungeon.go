@@ -14,6 +14,7 @@ import (
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/mapspawner"
+	"github.com/kijimaD/ruins/lib/messagedata"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/turns"
@@ -129,7 +130,7 @@ func (st *DungeonState) OnStop(world w.World) error {
 	}))
 
 	// reset
-	world.Resources.Dungeon.SetStateEvent(resources.StateEventNone)
+	world.Resources.Dungeon.SetStateEvent(resources.NoneEvent{})
 
 	// 視界キャッシュをクリア
 	gs.ClearVisionCaches()
@@ -159,7 +160,11 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	}
 
 	// StateEvent処理をチェック
-	if transition := st.handleStateEvent(world); transition.Type != es.TransNone {
+	transition, err := st.handleStateEvent(world)
+	if err != nil {
+		return es.Transition[w.World]{}, err
+	}
+	if transition.Type != es.TransNone {
 		return transition, nil
 	}
 
@@ -326,14 +331,30 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 }
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
-func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
-	switch world.Resources.Dungeon.ConsumeStateEvent() {
-	case resources.StateEventWarpNext:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(world.Resources.Dungeon.Depth + 1)}}
-	case resources.StateEventWarpEscape:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}}
-	default:
-		// StateEventNoneまたは未知のイベントの場合は何もしない
-		return es.Transition[w.World]{Type: es.TransNone}
+func (st *DungeonState) handleStateEvent(world w.World) (es.Transition[w.World], error) {
+	event := world.Resources.Dungeon.ConsumeStateEvent()
+
+	switch e := event.(type) {
+	case resources.ShowDialogEvent:
+		// SpeakerEntityからNameを取得
+		if !e.SpeakerEntity.HasComponent(world.Components.Name) {
+			return es.Transition[w.World]{}, fmt.Errorf("speaker entity does not have Name component")
+		}
+		nameComp := world.Components.Name.Get(e.SpeakerEntity).(*gc.Name)
+		speakerName := nameComp.Name
+
+		dialogMessage := messagedata.GetDialogue(e.MessageKey, speakerName)
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+			func() es.State[w.World] { return NewMessageState(dialogMessage) },
+		}}, nil
+
+	case resources.WarpNextEvent:
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(world.Resources.Dungeon.Depth + 1)}}, nil
+
+	case resources.WarpEscapeEvent:
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}}, nil
 	}
+
+	// NoneEventまたは未知のイベントの場合は何もしない
+	return es.Transition[w.World]{Type: es.TransNone}, nil
 }

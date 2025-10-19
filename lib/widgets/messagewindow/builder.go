@@ -13,9 +13,9 @@ type Choice struct {
 
 // MessageContent はメッセージの内容
 type MessageContent struct {
-	Text        string
-	Choices     []Choice // 選択肢システム
-	SpeakerName string   // 話者名
+	Choices          []Choice                    // 選択肢システム
+	SpeakerName      string                      // 話者名
+	TextSegmentLines [][]messagedata.TextSegment // 行ごとの色付きテキストセグメント
 }
 
 // Builder はメッセージウィンドウを構築するためのビルダー
