@@ -130,7 +130,7 @@ func (st *DungeonState) OnStop(world w.World) error {
 	}))
 
 	// reset
-	world.Resources.Dungeon.SetStateEvent(resources.StateEventNone)
+	world.Resources.Dungeon.SetStateEvent(resources.NoneEvent{})
 
 	// 視界キャッシュをクリア
 	gs.ClearVisionCaches()
@@ -157,24 +157,6 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}, nil
-	}
-
-	// 保留中の会話メッセージがあれば表示
-	if world.Resources.Dungeon.PendingDialogMessage != nil {
-		dialogMsg := world.Resources.Dungeon.PendingDialogMessage
-		world.Resources.Dungeon.PendingDialogMessage = nil // 消費
-
-		// SpeakerEntityからNameを取得
-		speakerName := "???"
-		if dialogMsg.SpeakerEntity.HasComponent(world.Components.Name) {
-			nameComp := world.Components.Name.Get(dialogMsg.SpeakerEntity).(*gc.Name)
-			speakerName = nameComp.Name
-		}
-
-		dialogMessage := messagedata.GetDialogue(dialogMsg.MessageKey, speakerName)
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
-			func() es.State[w.World] { return NewMessageState(dialogMessage) },
-		}}, nil
 	}
 
 	// StateEvent処理をチェック
@@ -346,13 +328,29 @@ func (st *DungeonState) checkPlayerDeath(world w.World) bool {
 
 // handleStateEvent はStateEventを処理し、対応する遷移を返す
 func (st *DungeonState) handleStateEvent(world w.World) es.Transition[w.World] {
-	switch world.Resources.Dungeon.ConsumeStateEvent() {
-	case resources.StateEventWarpNext:
+	event := world.Resources.Dungeon.ConsumeStateEvent()
+
+	switch e := event.(type) {
+	case resources.ShowDialogEvent:
+		// SpeakerEntityからNameを取得
+		speakerName := "???"
+		if e.SpeakerEntity.HasComponent(world.Components.Name) {
+			nameComp := world.Components.Name.Get(e.SpeakerEntity).(*gc.Name)
+			speakerName = nameComp.Name
+		}
+
+		dialogMessage := messagedata.GetDialogue(e.MessageKey, speakerName)
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+			func() es.State[w.World] { return NewMessageState(dialogMessage) },
+		}}
+
+	case resources.WarpNextEvent:
 		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(world.Resources.Dungeon.Depth + 1)}}
-	case resources.StateEventWarpEscape:
+
+	case resources.WarpEscapeEvent:
 		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}}
-	default:
-		// StateEventNoneまたは未知のイベントの場合は何もしない
-		return es.Transition[w.World]{Type: es.TransNone}
 	}
+
+	// NoneEventまたは未知のイベントの場合は何もしない
+	return es.Transition[w.World]{Type: es.TransNone}
 }

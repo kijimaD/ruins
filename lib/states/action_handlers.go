@@ -103,10 +103,10 @@ func handleTalkCompletion(world w.World, targetEntity ecs.Entity) {
 	}
 
 	dialog := world.Components.Dialog.Get(targetEntity).(*gc.Dialog)
-	world.Resources.Dungeon.PendingDialogMessage = &resources.DialogMessage{
+	world.Resources.Dungeon.SetStateEvent(resources.ShowDialogEvent{
 		MessageKey:    dialog.MessageKey,
 		SpeakerEntity: targetEntity,
-	}
+	})
 }
 
 // ExecuteWaitAction は待機アクションを実行する

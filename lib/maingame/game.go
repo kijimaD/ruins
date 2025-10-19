@@ -160,7 +160,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 			Scale:   3,
 		},
 	}
-	gameResource.SetStateEvent(gr.StateEventNone)
+	gameResource.SetStateEvent(gr.NoneEvent{})
 	world.Resources.Dungeon = gameResource
 
 	return world, nil
