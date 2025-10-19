@@ -113,25 +113,18 @@ func SpawnNeutralNPC(world w.World, tileX int, tileY int, name string) (ecs.Enti
 	componentList := entities.ComponentList[gc.EntitySpec]{}
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 
-	// raw.Masterから中立NPC用にMemberデータを取得
-	// generateFighterで既にFactionNeutralとDialogが設定されている
-	memberIdx, ok := rawMaster.MemberIndex[name]
-	if !ok {
-		return ecs.Entity(0), fmt.Errorf("中立NPC '%s' が見つかりません", name)
-	}
-	member := rawMaster.Raws.Members[memberIdx]
-
-	// 中立派閥とDialog設定を確認
-	if member.FactionType != gc.FactionNeutral.String() {
-		return ecs.Entity(0), fmt.Errorf("'%s' は中立NPCではありません", name)
-	}
-	if member.Dialog == nil {
-		return ecs.Entity(0), fmt.Errorf("'%s' には会話データがありません", name)
-	}
-
+	// NewMemberSpecでEntitySpecを生成
 	entitySpec, err := rawMaster.NewMemberSpec(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("中立NPC生成エラー: %w", err)
+	}
+
+	// 中立派閥とDialog設定を確認
+	if entitySpec.FactionType == nil || *entitySpec.FactionType != gc.FactionNeutral {
+		return ecs.Entity(0), fmt.Errorf("'%s' は中立NPCではありません", name)
+	}
+	if entitySpec.Dialog == nil {
+		return ecs.Entity(0), fmt.Errorf("'%s' には会話データがありません", name)
 	}
 
 	// フィールド用のコンポーネントを設定
