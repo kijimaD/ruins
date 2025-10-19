@@ -228,6 +228,10 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
 		}).
+		WithChoice("ゲーム開始メッセージ", func(_ w.World) error {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameStartMessageState}})
+			return nil
+		}).
 		WithChoice("閉じる", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
@@ -285,6 +289,27 @@ func NewGameOverMessageState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewMainMenuState}})
 			return nil
 		})
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
+}
+
+// NewGameStartMessageState はゲーム開始時の目的を説明するMessageStateを作成するファクトリー関数
+func NewGameStartMessageState() es.State[w.World] {
+	// MessageStateインスタンスを作成
+	messageState := &MessageState{}
+
+	// メッセージを作成
+	messageData := messagedata.NewDialogMessage(`「あんた、遺跡の『珠狙い』だろ?
+外からこの街に来る異常に若い連中はみんなそうさ。
+向こう見ずで破滅的で、...
+どうしようもない事情を持ってる。」
+
+「あんたは...、そうか、母親が...。
+言っちゃ悪いが、そういう奴らはここでは珍しくない。
+どんな事情があるにせよ、遺跡で辿る結末は1つさ。」`, "老兵")
 
 	// MessageStateにMessageDataを設定
 	messageState.messageData = messageData
