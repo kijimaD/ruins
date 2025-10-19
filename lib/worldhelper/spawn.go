@@ -297,11 +297,6 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 
 // SpawnFieldItem はフィールド上にアイテムを生成する
 func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.Entity, error) {
-	_, err := SpawnTile(world, "Floor", x, y, nil) // 下敷きの床を描画
-	if err != nil {
-		return ecs.Entity(0), fmt.Errorf("床の生成に失敗: %w", err)
-	}
-
 	// TOMLの定義を取得してStackable対応かどうかを確認
 	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	itemIdx, ok := rawMaster.ItemIndex[itemName]
@@ -312,6 +307,7 @@ func SpawnFieldItem(world w.World, itemName string, x gc.Tile, y gc.Tile) (ecs.E
 	isStackable := itemDef.Stackable != nil && *itemDef.Stackable
 
 	var item ecs.Entity
+	var err error
 	if isStackable {
 		// Stackable対応アイテムはCount=1で生成
 		item, err = SpawnStackable(world, itemName, 1, gc.ItemLocationOnField)
