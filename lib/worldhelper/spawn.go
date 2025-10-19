@@ -129,8 +129,7 @@ func SpawnNeutralNPC(world w.World, tileX int, tileY int, name string) (ecs.Enti
 		return ecs.Entity(0), fmt.Errorf("'%s' には会話データがありません", name)
 	}
 
-	// generateFighterを使用してエンティティ仕様を生成
-	entitySpec, err := rawMaster.NewNeutralNPCSpec(name)
+	entitySpec, err := rawMaster.NewMemberSpec(name)
 	if err != nil {
 		return ecs.Entity(0), fmt.Errorf("中立NPC生成エラー: %w", err)
 	}

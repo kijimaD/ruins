@@ -395,8 +395,8 @@ func (rw *Master) NewWeaponSpec(name string) (gc.EntitySpec, error) {
 	return itemSpec, nil
 }
 
-// generateFighter は指定された名前の戦闘員のゲームコンポーネントを生成する(敵・味方共通)
-func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
+// NewMemberSpec は指定された名前のメンバーのEntitySpecを生成する
+func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 	memberIdx, ok := rw.MemberIndex[name]
 	if !ok {
 		return gc.EntitySpec{}, fmt.Errorf("キーが存在しない: %s", name)
@@ -467,7 +467,7 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 
 // NewPlayerSpec は指定された名前のプレイヤーのEntitySpecを生成する
 func (rw *Master) NewPlayerSpec(name string) (gc.EntitySpec, error) {
-	entitySpec, err := rw.generateFighter(name)
+	entitySpec, err := rw.NewMemberSpec(name)
 	if err != nil {
 		return gc.EntitySpec{}, err
 	}
@@ -479,33 +479,11 @@ func (rw *Master) NewPlayerSpec(name string) (gc.EntitySpec, error) {
 
 // NewEnemySpec は指定された名前の敵のEntitySpecを生成する
 func (rw *Master) NewEnemySpec(name string) (gc.EntitySpec, error) {
-	entitySpec, err := rw.generateFighter(name)
+	entitySpec, err := rw.NewMemberSpec(name)
 	if err != nil {
 		return gc.EntitySpec{}, err
 	}
 	entitySpec.FactionType = &gc.FactionEnemy
-
-	return entitySpec, nil
-}
-
-// NewNeutralNPCSpec は指定された名前の中立NPCのEntitySpecを生成する
-// generateFighterで既にFactionNeutralとDialogが設定されている場合はそれを使用する
-func (rw *Master) NewNeutralNPCSpec(name string) (gc.EntitySpec, error) {
-	entitySpec, err := rw.generateFighter(name)
-	if err != nil {
-		return gc.EntitySpec{}, err
-	}
-
-	// generateFighterで既に中立派閥が設定されているはず
-	// 念のため確認
-	if entitySpec.FactionType == nil {
-		return gc.EntitySpec{}, fmt.Errorf("'%s' には派閥タイプが設定されていません", name)
-	}
-
-	// 中立派閥でない場合はエラー
-	if *entitySpec.FactionType != gc.FactionNeutral {
-		return gc.EntitySpec{}, fmt.Errorf("'%s' は中立派閥ではありません", name)
-	}
 
 	return entitySpec, nil
 }
