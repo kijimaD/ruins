@@ -221,6 +221,9 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				<dd><a href="index.html#NewGameOverMessageState">func NewGameOverMessageState() es.State[w.World]</a></dd>
 			
 				
+				<dd><a href="index.html#NewGameStartMessageState">func NewGameStartMessageState() es.State[w.World]</a></dd>
+			
+				
 				<dd><a href="index.html#NewInteractionMenuState">func NewInteractionMenuState(world w.World) es.State[w.World]</a></dd>
 			
 				
@@ -560,7 +563,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="ExecuteEnterAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=2901:2939#L88">ExecuteEnterAction</a>
+			<h2 id="ExecuteEnterAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=3725:3763#L112">ExecuteEnterAction</a>
 				<a class="permalink" href="index.html#ExecuteEnterAction">&#xb6;</a>
 				
 				
@@ -574,7 +577,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="ExecuteMoveAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=414:475#L5">ExecuteMoveAction</a>
+			<h2 id="ExecuteMoveAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=456:517#L6">ExecuteMoveAction</a>
 				<a class="permalink" href="index.html#ExecuteMoveAction">&#xb6;</a>
 				
 				
@@ -588,7 +591,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="ExecuteWaitAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=2518:2555#L73">ExecuteWaitAction</a>
+			<h2 id="ExecuteWaitAction">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=3342:3379#L97">ExecuteWaitAction</a>
 				<a class="permalink" href="index.html#ExecuteWaitAction">&#xb6;</a>
 				
 				
@@ -658,7 +661,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewDungeonState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11369:11453#L248">NewDungeonState</a>
+			<h2 id="NewDungeonState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11617:11701#L252">NewDungeonState</a>
 				<a class="permalink" href="index.html#NewDungeonState">&#xb6;</a>
 				
 				
@@ -687,7 +690,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewGameOverMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11933:11981#L267">NewGameOverMessageState</a>
+			<h2 id="NewGameOverMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12181:12229#L271">NewGameOverMessageState</a>
 				<a class="permalink" href="index.html#NewGameOverMessageState">&#xb6;</a>
 				
 				
@@ -701,7 +704,21 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewInteractionMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=16752:16813#L399">NewInteractionMenuState</a>
+			<h2 id="NewGameStartMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12941:12990#L290">NewGameStartMessageState</a>
+				<a class="permalink" href="index.html#NewGameStartMessageState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewGameStartMessageState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewGameStartMessageState はゲーム開始時の目的を説明するMessageStateを作成するファクトリー関数
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewInteractionMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17857:17918#L424">NewInteractionMenuState</a>
 				<a class="permalink" href="index.html#NewInteractionMenuState">&#xb6;</a>
 				
 				
@@ -729,7 +746,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=14251:14292#L329">NewLoadMenuState</a>
+			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=15356:15397#L354">NewLoadMenuState</a>
 				<a class="permalink" href="index.html#NewLoadMenuState">&#xb6;</a>
 				
 				
@@ -743,7 +760,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11752:11793#L262">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12000:12041#L266">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -757,7 +774,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=16354:16430#L387">NewMessageState</a>
+			<h2 id="NewMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17459:17535#L412">NewMessageState</a>
 				<a class="permalink" href="index.html#NewMessageState">&#xb6;</a>
 				
 				
@@ -771,7 +788,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=12671:12712#L286">NewSaveMenuState</a>
+			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=13776:13817#L311">NewSaveMenuState</a>
 				<a class="permalink" href="index.html#NewSaveMenuState">&#xb6;</a>
 				
 				
@@ -785,7 +802,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewShopMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=16593:16634#L394">NewShopMenuState</a>
+			<h2 id="NewShopMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17698:17739#L419">NewShopMenuState</a>
 				<a class="permalink" href="index.html#NewShopMenuState">&#xb6;</a>
 				
 				
@@ -957,7 +974,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=854:1192#L20">DungeonState</a>
+			<h2 id="DungeonState">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=898:1236#L21">DungeonState</a>
 				<a class="permalink" href="index.html#DungeonState">&#xb6;</a>
 				
 				
@@ -986,7 +1003,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 
 			
 				
-				<h3 id="DungeonState.DoAction">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=7953:8061#L237">DoAction</a>
+				<h3 id="DungeonState.DoAction">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=8058:8166#L242">DoAction</a>
 					<a class="permalink" href="index.html#DungeonState.DoAction">&#xb6;</a>
 					
 					
@@ -999,7 +1016,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5460:5531#L161">Draw</a>
+				<h3 id="DungeonState.Draw">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5565:5636#L166">Draw</a>
 					<a class="permalink" href="index.html#DungeonState.Draw">&#xb6;</a>
 					
 					
@@ -1012,7 +1029,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.HandleInput">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5800:5866#L173">HandleInput</a>
+				<h3 id="DungeonState.HandleInput">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=5905:5971#L178">HandleInput</a>
 					<a class="permalink" href="index.html#DungeonState.HandleInput">&#xb6;</a>
 					
 					
@@ -1025,7 +1042,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1455:1503#L39">OnPause</a>
+				<h3 id="DungeonState.OnPause">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1499:1547#L40">OnPause</a>
 					<a class="permalink" href="index.html#DungeonState.OnPause">&#xb6;</a>
 					
 					
@@ -1038,7 +1055,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1584:1633#L42">OnResume</a>
+				<h3 id="DungeonState.OnResume">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1628:1677#L43">OnResume</a>
 					<a class="permalink" href="index.html#DungeonState.OnResume">&#xb6;</a>
 					
 					
@@ -1051,7 +1068,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1713:1765#L45">OnStart</a>
+				<h3 id="DungeonState.OnStart">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1757:1809#L46">OnStart</a>
 					<a class="permalink" href="index.html#DungeonState.OnStart">&#xb6;</a>
 					
 					
@@ -1064,7 +1081,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=3442:3493#L101">OnStop</a>
+				<h3 id="DungeonState.OnStop">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=3486:3537#L102">OnStop</a>
 					<a class="permalink" href="index.html#DungeonState.OnStop">&#xb6;</a>
 					
 					
@@ -1077,7 +1094,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1194:1232#L29">String</a>
+				<h3 id="DungeonState.String">func (DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=1238:1276#L30">String</a>
 					<a class="permalink" href="index.html#DungeonState.String">&#xb6;</a>
 					
 					
@@ -1089,7 +1106,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=4486:4563#L130">Update</a>
+				<h3 id="DungeonState.Update">func (*DungeonState) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/dungeon.go?s=4527:4604#L131">Update</a>
 					<a class="permalink" href="index.html#DungeonState.Update">&#xb6;</a>
 					
 					
@@ -1104,7 +1121,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="DungeonStateOption">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=10774:10817#L230">DungeonStateOption</a>
+			<h2 id="DungeonStateOption">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11022:11065#L234">DungeonStateOption</a>
 				<a class="permalink" href="index.html#DungeonStateOption">&#xb6;</a>
 				
 				
@@ -1123,7 +1140,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 
 			
 				
-				<h3 id="WithBuilderType">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11064:11139#L240">WithBuilderType</a>
+				<h3 id="WithBuilderType">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11312:11387#L244">WithBuilderType</a>
 					<a class="permalink" href="index.html#WithBuilderType">&#xb6;</a>
 					
 					
@@ -1135,7 +1152,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="WithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=10877:10922#L233">WithSeed</a>
+				<h3 id="WithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=11125:11170#L237">WithSeed</a>
 					<a class="permalink" href="index.html#WithSeed">&#xb6;</a>
 					
 					
@@ -1294,7 +1311,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="InteractionAction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=9213:9472#L284">InteractionAction</a>
+			<h2 id="InteractionAction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=10596:10855#L326">InteractionAction</a>
 				<a class="permalink" href="index.html#InteractionAction">&#xb6;</a>
 				
 				
@@ -1318,7 +1335,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 
 			
 				
-				<h3 id="GetInteractionActions">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=9572:9633#L291">GetInteractionActions</a>
+				<h3 id="GetInteractionActions">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/action_handlers.go?s=10955:11016#L333">GetInteractionActions</a>
 					<a class="permalink" href="index.html#GetInteractionActions">&#xb6;</a>
 					
 					

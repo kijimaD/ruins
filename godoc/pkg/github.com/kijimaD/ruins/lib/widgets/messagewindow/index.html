@@ -362,7 +362,7 @@ if window.IsClosed() {
 		
 			
 			
-			<h2 id="Builder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=488:526#L12">Builder</a>
+			<h2 id="Builder">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=614:652#L12">Builder</a>
 				<a class="permalink" href="index.html#Builder">&#xb6;</a>
 				
 				
@@ -384,7 +384,7 @@ if window.IsClosed() {
 
 			
 				
-				<h3 id="NewBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=577:616#L17">NewBuilder</a>
+				<h3 id="NewBuilder">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=703:742#L17">NewBuilder</a>
 					<a class="permalink" href="index.html#NewBuilder">&#xb6;</a>
 					
 					
@@ -398,7 +398,7 @@ if window.IsClosed() {
 
 			
 				
-				<h3 id="Builder.Build">func (*Builder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=719:791#L24">Build</a>
+				<h3 id="Builder.Build">func (*Builder) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=845:917#L24">Build</a>
 					<a class="permalink" href="index.html#Builder.Build">&#xb6;</a>
 					
 					
@@ -491,7 +491,7 @@ if window.IsClosed() {
 		
 			
 			
-			<h2 id="MessageContent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=273:405#L5">MessageContent</a>
+			<h2 id="MessageContent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/builder.go?s=273:531#L5">MessageContent</a>
 				<a class="permalink" href="index.html#MessageContent">&#xb6;</a>
 				
 				
@@ -499,9 +499,9 @@ if window.IsClosed() {
 			<p>MessageContent はメッセージの内容
 
 			<pre>type MessageContent struct {
-<span id="MessageContent.Text"></span>    Text        <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="MessageContent.Choices"></span>    Choices     []<a href="index.html#Choice">Choice</a> <span class="comment">// 選択肢システム</span>
-<span id="MessageContent.SpeakerName"></span>    SpeakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>   <span class="comment">// 話者名</span>
+<span id="MessageContent.Choices"></span>    Choices          []<a href="index.html#Choice">Choice</a>                    <span class="comment">// 選択肢システム</span>
+<span id="MessageContent.SpeakerName"></span>    SpeakerName      <a href="http://localhost:8888/pkg/builtin/#string">string</a>                      <span class="comment">// 話者名</span>
+<span id="MessageContent.TextSegmentLines"></span>    TextSegmentLines [][]<a href="../../messagedata/index.html">messagedata</a>.<a href="../../messagedata/index.html#TextSegment">TextSegment</a> <span class="comment">// 行ごとの色付きテキストセグメント</span>
 }
 </pre>
 
@@ -731,7 +731,7 @@ if window.IsClosed() {
 		
 			
 			
-			<h2 id="Window">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=478:1093#L9">Window</a>
+			<h2 id="Window">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=526:1141#L10">Window</a>
 				<a class="permalink" href="index.html#Window">&#xb6;</a>
 				
 				
@@ -755,7 +755,7 @@ if window.IsClosed() {
 
 			
 				
-				<h3 id="Window.Close">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=2116:2140#L87">Close</a>
+				<h3 id="Window.Close">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=2164:2188#L88">Close</a>
 					<a class="permalink" href="index.html#Window.Close">&#xb6;</a>
 					
 					
@@ -769,7 +769,7 @@ if window.IsClosed() {
 				
 			
 				
-				<h3 id="Window.DoAction">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=10627:10681#L407">DoAction</a>
+				<h3 id="Window.DoAction">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=10677:10731#L404">DoAction</a>
 					<a class="permalink" href="index.html#Window.DoAction">&#xb6;</a>
 					
 					
@@ -782,7 +782,7 @@ if window.IsClosed() {
 				
 			
 				
-				<h3 id="Window.Draw">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1650:1693#L67">Draw</a>
+				<h3 id="Window.Draw">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1698:1741#L68">Draw</a>
 					<a class="permalink" href="index.html#Window.Draw">&#xb6;</a>
 					
 					
@@ -795,7 +795,7 @@ if window.IsClosed() {
 				
 			
 				
-				<h3 id="Window.HandleInput">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=10189:10248#L390">HandleInput</a>
+				<h3 id="Window.HandleInput">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=10239:10298#L387">HandleInput</a>
 					<a class="permalink" href="index.html#Window.HandleInput">&#xb6;</a>
 					
 					
@@ -808,7 +808,7 @@ if window.IsClosed() {
 				
 			
 				
-				<h3 id="Window.IsClosed">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1935:1967#L81">IsClosed</a>
+				<h3 id="Window.IsClosed">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1983:2015#L82">IsClosed</a>
 					<a class="permalink" href="index.html#Window.IsClosed">&#xb6;</a>
 					
 					
@@ -821,7 +821,7 @@ if window.IsClosed() {
 				
 			
 				
-				<h3 id="Window.IsOpen">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1821:1851#L76">IsOpen</a>
+				<h3 id="Window.IsOpen">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1869:1899#L77">IsOpen</a>
 					<a class="permalink" href="index.html#Window.IsOpen">&#xb6;</a>
 					
 					
@@ -834,7 +834,7 @@ if window.IsClosed() {
 				
 			
 				
-				<h3 id="Window.Update">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1139:1164#L34">Update</a>
+				<h3 id="Window.Update">func (*Window) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/messagewindow/window.go?s=1187:1212#L35">Update</a>
 					<a class="permalink" href="index.html#Window.Update">&#xb6;</a>
 					
 					

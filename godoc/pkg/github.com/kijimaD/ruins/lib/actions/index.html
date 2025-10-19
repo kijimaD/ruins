@@ -540,6 +540,32 @@ manager.ProcessTurn(world)
 				
 			
 				
+				<dd><a href="index.html#TalkActivity">type TalkActivity</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.Canceled">func (ta *TalkActivity) Canceled(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.DoTurn">func (ta *TalkActivity) DoTurn(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.Finish">func (ta *TalkActivity) Finish(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.Info">func (ta *TalkActivity) Info() ActivityInfo</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.Start">func (ta *TalkActivity) Start(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.String">func (ta *TalkActivity) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkActivity.Validate">func (ta *TalkActivity) Validate(act *Activity, world w.World) error</a></dd>
+				
+			
+				
 				<dd><a href="index.html#UseItemActivity">type UseItemActivity</a></dd>
 				
 				
@@ -649,6 +675,8 @@ manager.ProcessTurn(world)
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go">read.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/rest.go">rest.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go">talk.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/use_item.go">use_item.go</a>
 			
@@ -2227,6 +2255,121 @@ Start はActivityInterfaceの実装
 				<pre>func (ra *<a href="index.html#RestActivity">RestActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Validate は休息アクティビティの検証を行う
 Validate はActivityInterfaceの実装
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="TalkActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=210:236#L2">TalkActivity</a>
+				<a class="permalink" href="index.html#TalkActivity">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TalkActivity は会話アクティビティ
+
+			<pre>type TalkActivity struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TalkActivity.Canceled">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=3182:3246#L94">Canceled</a>
+					<a class="permalink" href="index.html#TalkActivity.Canceled">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) Canceled(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Canceled は会話キャンセル時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TalkActivity.DoTurn">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=1550:1616#L49">DoTurn</a>
+					<a class="permalink" href="index.html#TalkActivity.DoTurn">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) DoTurn(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>DoTurn は会話アクティビティの1ターン分の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TalkActivity.Finish">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=2520:2586#L74">Finish</a>
+					<a class="permalink" href="index.html#TalkActivity.Finish">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) Finish(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Finish は会話完了時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TalkActivity.Info">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=276:319#L5">Info</a>
+					<a class="permalink" href="index.html#TalkActivity.Info">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) Info() <a href="index.html#ActivityInfo">ActivityInfo</a></pre>
+				<p>Info はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="TalkActivity.Start">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=1336:1397#L43">Start</a>
+					<a class="permalink" href="index.html#TalkActivity.Start">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) Start(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Start は会話開始時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TalkActivity.String">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=560:599#L17">String</a>
+					<a class="permalink" href="index.html#TalkActivity.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="TalkActivity.Validate">func (*TalkActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go?s=681:749#L22">Validate</a>
+					<a class="permalink" href="index.html#TalkActivity.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TalkActivity">TalkActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate は会話アクティビティの検証を行う
 
 				
 				

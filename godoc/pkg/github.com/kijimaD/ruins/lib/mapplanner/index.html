@@ -93,7 +93,9 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				<p>Package mapplanner provides map planning functionality.
+				<p>Package mapplanner の会話NPC配置プランナー
+敵NPCとは別に、会話可能なNPCを配置する
+<p>Package mapplanner provides map planning functionality.
 <p>このパッケージは階層マップの生成機能を提供します：
 <ul>
 <li>タイルベースのマップ生成
@@ -155,9 +157,9 @@ Walkable = true
 <li>NPCやアイテムなどの詳細なエンティティ配置も直接処理
 </ul>
 <p>いずれの場合も実行時はエンティティベースの通行可否判定（movement.CanMoveTo）を使用
+<h3 id="hdr-Package_mapplanner___NPC_______">Package mapplanner の敵NPC配置プランナー</h3>
 <p>Package mapplanner はマップ生成機能を提供する
 参考: <a href="https://bfnightly.bracketproductions.com">https://bfnightly.bracketproductions.com</a>
-<h3 id="hdr-Package_mapplanner__NPC_________________mapspawner____">Package mapplanner のNPC配置プランナー - 責務分離によりmapspawnerから移動</h3>
 <h3 id="hdr-Package_mapplanner__Props_________________mapspawner____">Package mapplanner のProps配置プランナー - 責務分離によりmapspawnerから移動</h3>
 <p>Package mapplanner の MetaPlan 対応街プランナー
 元の文字列ベース街レイアウトを MetaPlan 方式で実装
@@ -264,6 +266,17 @@ Walkable = true
 				
 			
 				
+				<dd><a href="index.html#ConversationNPCPlanner">type ConversationNPCPlanner</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewConversationNPCPlanner">func NewConversationNPCPlanner(world w.World) *ConversationNPCPlanner</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ConversationNPCPlanner.PlanMeta">func (c *ConversationNPCPlanner) PlanMeta(planData *MetaPlan)</a></dd>
+				
+			
+				
 				<dd><a href="index.html#DoorSpec">type DoorSpec</a></dd>
 				
 				
@@ -317,6 +330,17 @@ Walkable = true
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#ForestWildlife.PlanMeta">func (f ForestWildlife) PlanMeta(planData *MetaPlan)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#HostileNPCPlanner">type HostileNPCPlanner</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHostileNPCPlanner">func NewHostileNPCPlanner(world w.World, plannerType PlannerType) *HostileNPCPlanner</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HostileNPCPlanner.PlanMeta">func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan)</a></dd>
 				
 			
 				
@@ -403,17 +427,6 @@ Walkable = true
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MetaTownPlanner.PlanInitial">func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error</a></dd>
-				
-			
-				
-				<dd><a href="index.html#NPCPlanner">type NPCPlanner</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewNPCPlanner">func NewNPCPlanner(world w.World, plannerType PlannerType) *NPCPlanner</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NPCPlanner.PlanMeta">func (n *NPCPlanner) PlanMeta(planData *MetaPlan)</a></dd>
 				
 			
 				
@@ -624,19 +637,21 @@ Walkable = true
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go">cave_planner.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go">conversation_npc_planner.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go">fill_all.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go">forest_planner.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go">hostile_npc_planner.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go">item_planner.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go">lib.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/line_corridor.go">line_corridor.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/npc_planner.go">npc_planner.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/pathfinder.go">pathfinder.go</a>
 			
@@ -1156,6 +1171,57 @@ TODO: 全然わかってないので理解する
 		
 			
 			
+			<h2 id="ConversationNPCPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go?s=316:369#L1">ConversationNPCPlanner</a>
+				<a class="permalink" href="index.html#ConversationNPCPlanner">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ConversationNPCPlanner は会話可能NPCの配置を担当するプランナー
+
+			<pre>type ConversationNPCPlanner struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewConversationNPCPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go?s=443:512#L6">NewConversationNPCPlanner</a>
+					<a class="permalink" href="index.html#NewConversationNPCPlanner">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewConversationNPCPlanner(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) *<a href="index.html#ConversationNPCPlanner">ConversationNPCPlanner</a></pre>
+				<p>NewConversationNPCPlanner は会話NPCプランナーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="ConversationNPCPlanner.PlanMeta">func (*ConversationNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go?s=627:688#L13">PlanMeta</a>
+					<a class="permalink" href="index.html#ConversationNPCPlanner.PlanMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (c *<a href="index.html#ConversationNPCPlanner">ConversationNPCPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<p>PlanMeta は会話可能NPCをMetaPlanに追加する
+
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="DoorSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=857:1031#L23">DoorSpec</a>
 				<a class="permalink" href="index.html#DoorSpec">&#xb6;</a>
 				
@@ -1413,6 +1479,58 @@ TODO: 全然わかってないので理解する
 				</h3>
 				<pre>func (f <a href="index.html#ForestWildlife">ForestWildlife</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
 				<p>PlanMeta は森に小さな動物の痕跡を追加する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="HostileNPCPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=733:812#L18">HostileNPCPlanner</a>
+				<a class="permalink" href="index.html#HostileNPCPlanner">&#xb6;</a>
+				
+				
+			</h2>
+			<p>HostileNPCPlanner は敵NPC配置を担当するプランナー
+会話可能なNPCはConversationNPCPlannerで配置する
+
+			<pre>type HostileNPCPlanner struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHostileNPCPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=878:962#L24">NewHostileNPCPlanner</a>
+					<a class="permalink" href="index.html#NewHostileNPCPlanner">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewHostileNPCPlanner(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, plannerType <a href="index.html#PlannerType">PlannerType</a>) *<a href="index.html#HostileNPCPlanner">HostileNPCPlanner</a></pre>
+				<p>NewHostileNPCPlanner は敵NPCプランナーを作成する
+
+				
+				
+			
+
+			
+				
+				<h3 id="HostileNPCPlanner.PlanMeta">func (*HostileNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=1109:1165#L32">PlanMeta</a>
+					<a class="permalink" href="index.html#HostileNPCPlanner.PlanMeta">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (n *<a href="index.html#HostileNPCPlanner">HostileNPCPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<p>PlanMeta は敵NPC配置情報をMetaPlanに追加する
 
 				
 				
@@ -1852,58 +1970,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="NPCPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/npc_planner.go?s=668:740#L17">NPCPlanner</a>
-				<a class="permalink" href="index.html#NPCPlanner">&#xb6;</a>
-				
-				
-			</h2>
-			<p>NPCPlanner はNPC配置を担当するプランナー
-
-			<pre>type NPCPlanner struct {
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewNPCPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/npc_planner.go?s=796:866#L23">NewNPCPlanner</a>
-					<a class="permalink" href="index.html#NewNPCPlanner">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewNPCPlanner(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, plannerType <a href="index.html#PlannerType">PlannerType</a>) *<a href="index.html#NPCPlanner">NPCPlanner</a></pre>
-				<p>NewNPCPlanner はNPCプランナーを作成する
-
-				
-				
-			
-
-			
-				
-				<h3 id="NPCPlanner.PlanMeta">func (*NPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/npc_planner.go?s=1003:1052#L31">PlanMeta</a>
-					<a class="permalink" href="index.html#NPCPlanner.PlanMeta">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (n *<a href="index.html#NPCPlanner">NPCPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
-				<p>PlanMeta はNPC配置情報をMetaPlanに追加する
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="NPCSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/npc_planner.go?s=500:609#L10">NPCSpec</a>
+			<h2 id="NPCSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=493:602#L10">NPCSpec</a>
 				<a class="permalink" href="index.html#NPCSpec">&#xb6;</a>
 				
 				

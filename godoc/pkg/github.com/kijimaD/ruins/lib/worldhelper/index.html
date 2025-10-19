@@ -269,6 +269,9 @@
 				<dd><a href="index.html#SpawnItem">func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ecs.Entity, error)</a></dd>
 			
 				
+				<dd><a href="index.html#SpawnNeutralNPC">func SpawnNeutralNPC(world w.World, tileX int, tileY int, name string) (ecs.Entity, error)</a></dd>
+			
+				
 				<dd><a href="index.html#SpawnPlayer">func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, error)</a></dd>
 			
 				
@@ -806,7 +809,7 @@ Stackableコンポーネントを持つ場合は既存と数量統合、それ�
 		
 			
 			
-			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11559:11627#L327">MovePlayerToPosition</a>
+			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12788:12856#L361">MovePlayerToPosition</a>
 				<a class="permalink" href="index.html#MovePlayerToPosition">&#xb6;</a>
 				
 				
@@ -923,7 +926,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnDoor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=1160:1263#L30">SpawnDoor</a>
+			<h2 id="SpawnDoor">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=1004:1107#L27">SpawnDoor</a>
 				<a class="permalink" href="index.html#SpawnDoor">&#xb6;</a>
 				
 				
@@ -937,7 +940,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3757:3842#L102">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5137:5222#L140">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -951,7 +954,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=10170:10263#L289">SpawnFieldItem</a>
+			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11550:11643#L327">SpawnFieldItem</a>
 				<a class="permalink" href="index.html#SpawnFieldItem">&#xb6;</a>
 				
 				
@@ -965,13 +968,27 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5644:5740#L158">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7024:7120#L196">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func SpawnItem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>, locationType <a href="../components/index.html">gc</a>.<a href="../components/index.html#ItemLocationType">ItemLocationType</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
 			<p>SpawnItem はアイテムを生成する（Stackableコンポーネントは付与しない）
+
+			
+			
+
+		
+			
+			
+			<h2 id="SpawnNeutralNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3777:3867#L102">SpawnNeutralNPC</a>
+				<a class="permalink" href="index.html#SpawnNeutralNPC">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func SpawnNeutralNPC(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, tileX <a href="http://localhost:8888/pkg/builtin/#int">int</a>, tileY <a href="http://localhost:8888/pkg/builtin/#int">int</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>SpawnNeutralNPC はフィールド上に中立NPCを生成する（会話可能なNPC用）
 
 			
 			
@@ -993,7 +1010,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnProp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=277:365#L3">SpawnProp</a>
+			<h2 id="SpawnProp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go?s=285:373#L5">SpawnProp</a>
 				<a class="permalink" href="index.html#SpawnProp">&#xb6;</a>
 				
 				
@@ -1007,7 +1024,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=6378:6486#L176">SpawnStackable</a>
+			<h2 id="SpawnStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7758:7866#L214">SpawnStackable</a>
 				<a class="permalink" href="index.html#SpawnStackable">&#xb6;</a>
 				
 				

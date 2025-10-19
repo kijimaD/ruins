@@ -213,6 +213,14 @@
 				
 			
 				
+				<dd><a href="index.html#NoneEvent">type NoneEvent</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NoneEvent.Type">func (e NoneEvent) Type() StateEventType</a></dd>
+				
+			
+				
 				<dd><a href="index.html#PanelResources">type PanelResources</a></dd>
 				
 				
@@ -245,12 +253,25 @@
 				
 			
 				
+				<dd><a href="index.html#ShowDialogEvent">type ShowDialogEvent</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ShowDialogEvent.Type">func (e ShowDialogEvent) Type() StateEventType</a></dd>
+				
+			
+				
 				<dd><a href="index.html#SliderResources">type SliderResources</a></dd>
 				
 				
 			
 				
 				<dd><a href="index.html#StateEvent">type StateEvent</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#StateEventType">type StateEventType</a></dd>
 				
 				
 			
@@ -290,6 +311,22 @@
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#NewUIResources">func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error)</a></dd>
 				
+				
+			
+				
+				<dd><a href="index.html#WarpEscapeEvent">type WarpEscapeEvent</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#WarpEscapeEvent.Type">func (e WarpEscapeEvent) Type() StateEventType</a></dd>
+				
+			
+				
+				<dd><a href="index.html#WarpNextEvent">type WarpNextEvent</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#WarpNextEvent.Type">func (e WarpNextEvent) Type() StateEventType</a></dd>
 				
 			
 			
@@ -336,12 +373,14 @@
 			
 				
 				<pre>const (
-    <span class="comment">// StateEventNone はイベントなしを表す</span>
-    <span id="StateEventNone">StateEventNone</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;NONE&#34;)
-    <span class="comment">// StateEventWarpNext は次の階層への移動を表す</span>
-    <span id="StateEventWarpNext">StateEventWarpNext</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_NEXT&#34;)
-    <span class="comment">// StateEventWarpEscape は脱出を表す</span>
-    <span id="StateEventWarpEscape">StateEventWarpEscape</span> = <a href="index.html#StateEvent">StateEvent</a>(&#34;WARP_ESCAPE&#34;)
+    <span class="comment">// StateEventTypeNone はイベントなしを表す</span>
+    <span id="StateEventTypeNone">StateEventTypeNone</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;NONE&#34;)
+    <span class="comment">// StateEventTypeWarpNext は次の階層への移動を表す</span>
+    <span id="StateEventTypeWarpNext">StateEventTypeWarpNext</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;WARP_NEXT&#34;)
+    <span class="comment">// StateEventTypeWarpEscape は脱出を表す</span>
+    <span id="StateEventTypeWarpEscape">StateEventTypeWarpEscape</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;WARP_ESCAPE&#34;)
+    <span class="comment">// StateEventTypeShowDialog は会話メッセージの表示を表す</span>
+    <span id="StateEventTypeShowDialog">StateEventTypeShowDialog</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;SHOW_DIALOG&#34;)
 )</pre>
 			
 		
@@ -473,13 +512,13 @@
 
 			
 				
-				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1029:1077#L21">ConsumeStateEvent</a>
+				<h3 id="Dungeon.ConsumeStateEvent">func (*Dungeon) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1024:1072#L21">ConsumeStateEvent</a>
 					<a class="permalink" href="index.html#Dungeon.ConsumeStateEvent">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (d *<a href="index.html#Dungeon">Dungeon</a>) ConsumeStateEvent() <a href="index.html#StateEvent">StateEvent</a></pre>
-				<p>ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にStateEventNoneで自動クリアする
+				<p>ConsumeStateEvent はStateEventを一度だけ読み取り、読み取り後にNoneEventで自動クリアする
 
 				
 				
@@ -597,7 +636,7 @@
 		
 			
 			
-			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1283:1389#L30">Level</a>
+			<h2 id="Level">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1275:1381#L30">Level</a>
 				<a class="permalink" href="index.html#Level">&#xb6;</a>
 				
 				
@@ -626,7 +665,7 @@ TODO: 状態として持たないほうがいいかも
 
 			
 				
-				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2081:2114#L56">Height</a>
+				<h3 id="Level.Height">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2073:2106#L56">Height</a>
 					<a class="permalink" href="index.html#Level.Height">&#xb6;</a>
 					
 					
@@ -639,7 +678,7 @@ TODO: 状態として持たないほうがいいかも
 				
 			
 				
-				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1926:1958#L51">Width</a>
+				<h3 id="Level.Width">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1918:1950#L51">Width</a>
 					<a class="permalink" href="index.html#Level.Width">&#xb6;</a>
 					
 					
@@ -652,7 +691,7 @@ TODO: 状態として持たないほうがいいかも
 				
 			
 				
-				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1699:1760#L43">XYTileCoord</a>
+				<h3 id="Level.XYTileCoord">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1691:1752#L43">XYTileCoord</a>
 					<a class="permalink" href="index.html#Level.XYTileCoord">&#xb6;</a>
 					
 					
@@ -665,7 +704,7 @@ TODO: 状態として持たないほうがいいかも
 				
 			
 				
-				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1488:1547#L38">XYTileIndex</a>
+				<h3 id="Level.XYTileIndex">func (*Level) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=1480:1539#L38">XYTileIndex</a>
 					<a class="permalink" href="index.html#Level.XYTileIndex">&#xb6;</a>
 					
 					
@@ -714,7 +753,7 @@ TODO: 状態として持たないほうがいいかも
 		
 			
 			
-			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2241:2532#L61">MinimapSettings</a>
+			<h2 id="MinimapSettings">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/level.go?s=2233:2524#L61">MinimapSettings</a>
 				<a class="permalink" href="index.html#MinimapSettings">&#xb6;</a>
 				
 				
@@ -743,6 +782,43 @@ TODO: 状態として持たないほうがいいかも
 
 			
 
+			
+		
+			
+			
+			<h2 id="NoneEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=798:821#L17">NoneEvent</a>
+				<a class="permalink" href="index.html#NoneEvent">&#xb6;</a>
+				
+				
+			</h2>
+			<p>NoneEvent はイベントなしを表す
+
+			<pre>type NoneEvent struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="NoneEvent.Type">func (NoneEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=865:905#L20">Type</a>
+					<a class="permalink" href="index.html#NoneEvent.Type">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e <a href="index.html#NoneEvent">NoneEvent</a>) Type() <a href="index.html#StateEventType">StateEventType</a></pre>
+				<p>Type はイベントタイプを返す
+
+				
+				
+				
 			
 		
 			
@@ -916,6 +992,46 @@ engine/resources.ResourceProviderインターフェースを実装する
 		
 			
 			
+			<h2 id="ShowDialogEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1402:1481#L41">ShowDialogEvent</a>
+				<a class="permalink" href="index.html#ShowDialogEvent">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ShowDialogEvent は会話メッセージの表示を表す
+
+			<pre>type ShowDialogEvent struct {
+<span id="ShowDialogEvent.MessageKey"></span>    MessageKey    <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="ShowDialogEvent.SpeakerEntity"></span>    SpeakerEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ShowDialogEvent.Type">func (ShowDialogEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1525:1571#L47">Type</a>
+					<a class="permalink" href="index.html#ShowDialogEvent.Type">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e <a href="index.html#ShowDialogEvent">ShowDialogEvent</a>) Type() <a href="index.html#StateEventType">StateEventType</a></pre>
+				<p>Type はイベントタイプを返す
+
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="SliderResources">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/ui.go?s=2924:3040#L110">SliderResources</a>
 				<a class="permalink" href="index.html#SliderResources">&#xb6;</a>
 				
@@ -944,14 +1060,39 @@ engine/resources.ResourceProviderインターフェースを実装する
 		
 			
 			
-			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=109:131#L1">StateEvent</a>
+			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=700:752#L12">StateEvent</a>
 				<a class="permalink" href="index.html#StateEvent">&#xb6;</a>
 				
 				
 			</h2>
 			<p>StateEvent はフィールド上でのイベント。ステート遷移が発生する
 
-			<pre>type StateEvent <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+			<pre>type StateEvent interface {
+    Type() <a href="index.html#StateEventType">StateEventType</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="StateEventType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=118:144#L1">StateEventType</a>
+				<a class="permalink" href="index.html#StateEventType">&#xb6;</a>
+				
+				
+			</h2>
+			<p>StateEventType はイベントの種類を表す
+
+			<pre>type StateEventType <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
 			
 
@@ -1193,6 +1334,80 @@ engine/resources.ResourceProviderインターフェースを実装する
 				
 			
 
+			
+		
+			
+			
+			<h2 id="WarpEscapeEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1182:1211#L33">WarpEscapeEvent</a>
+				<a class="permalink" href="index.html#WarpEscapeEvent">&#xb6;</a>
+				
+				
+			</h2>
+			<p>WarpEscapeEvent は脱出を表す
+
+			<pre>type WarpEscapeEvent struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="WarpEscapeEvent.Type">func (WarpEscapeEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1255:1301#L36">Type</a>
+					<a class="permalink" href="index.html#WarpEscapeEvent.Type">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e <a href="index.html#WarpEscapeEvent">WarpEscapeEvent</a>) Type() <a href="index.html#StateEventType">StateEventType</a></pre>
+				<p>Type はイベントタイプを返す
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="WarpNextEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=992:1019#L25">WarpNextEvent</a>
+				<a class="permalink" href="index.html#WarpNextEvent">&#xb6;</a>
+				
+				
+			</h2>
+			<p>WarpNextEvent は次の階層への移動を表す
+
+			<pre>type WarpNextEvent struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="WarpNextEvent.Type">func (WarpNextEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1063:1107#L28">Type</a>
+					<a class="permalink" href="index.html#WarpNextEvent.Type">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e <a href="index.html#WarpNextEvent">WarpNextEvent</a>) Type() <a href="index.html#StateEventType">StateEventType</a></pre>
+				<p>Type はイベントタイプを返す
+
+				
+				
+				
 			
 		
 	

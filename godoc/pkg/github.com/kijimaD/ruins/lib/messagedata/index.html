@@ -193,6 +193,8 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 			<dl>
 			
 			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
+			
 			
 			
 				
@@ -204,11 +206,23 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				<dd><a href="index.html#MessageData">type MessageData</a></dd>
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#GetDialogue">func GetDialogue(key string, speakerName string) *MessageData</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#NewDialogMessage">func NewDialogMessage(text, speaker string) *MessageData</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#NewSystemMessage">func NewSystemMessage(text string) *MessageData</a></dd>
 				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.AddKeyword">func (m *MessageData) AddKeyword(text string) *MessageData</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.AddNewLine">func (m *MessageData) AddNewLine() *MessageData</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.AddText">func (m *MessageData) AddText(text string) *MessageData</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.DialogMessage">func (m *MessageData) DialogMessage(text, speaker string) *MessageData</a></dd>
@@ -232,6 +246,11 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.WithOnComplete">func (m *MessageData) WithOnComplete(callback func()) *MessageData</a></dd>
 				
 			
+				
+				<dd><a href="index.html#TextSegment">type TextSegment</a></dd>
+				
+				
+			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -242,6 +261,8 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 			<h3>Package files</h3>
 			<p>
 			<span style="font-size:90%">
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/dialogues.go">dialogues.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/doc.go">doc.go</a>
 			
@@ -257,11 +278,47 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 		
 		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>DialogueTable は会話データのテーブル
+
+				<pre>var <span id="DialogueTable">DialogueTable</span> = map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]func(speakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#MessageData">MessageData</a>{
+    &#34;old_soldier_greeting&#34;: func(speakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#MessageData">MessageData</a> {
+
+        msg1 := <a href="index.html#NewDialogMessage">NewDialogMessage</a>(&#34;&#34;, speakerName).
+            <a href="index.html#AddText">AddText</a>(&#34;「あんた、&#34;).
+            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;遺跡&#34;).
+            <a href="index.html#AddText">AddText</a>(&#34;の&#34;).
+            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;珠狙い&#34;).
+            <a href="index.html#AddText">AddText</a>(&#34;だろ?&#34;).
+            <a href="index.html#AddNewLine">AddNewLine</a>().
+            <a href="index.html#AddText">AddText</a>(&#34;外からこの街に来る異様に若い連中はみんなそうさ。&#34;).
+            <a href="index.html#AddNewLine">AddNewLine</a>().
+            <a href="index.html#AddText">AddText</a>(&#34;向こう見ずで破滅的で、...&#34;).
+            <a href="index.html#AddNewLine">AddNewLine</a>().
+            <a href="index.html#AddText">AddText</a>(&#34;どうしようもない事情を持ってる。」&#34;)
+
+        msg2 := <a href="index.html#NewDialogMessage">NewDialogMessage</a>(&#34;&#34;, speakerName).
+            <a href="index.html#AddText">AddText</a>(&#34;「あんたは...、そうか、&#34;).
+            <a href="index.html#AddText">AddText</a>(&#34;母親が...。&#34;).
+            <a href="index.html#AddNewLine">AddNewLine</a>().
+            <a href="index.html#AddText">AddText</a>(&#34;言っちゃ悪いが、そういう奴らはここでは珍しくない。&#34;).
+            <a href="index.html#AddNewLine">AddNewLine</a>().
+            <a href="index.html#AddText">AddText</a>(&#34;どんな事情があるにせよ、&#34;).
+            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;遺跡&#34;).
+            <a href="index.html#AddText">AddText</a>(&#34;で辿る結末は1つさ。」&#34;)
+
+        msg1.<a href="index.html#NextMessages">NextMessages</a> = <a href="http://localhost:8888/pkg/builtin/#append">append</a>(msg1.<a href="index.html#NextMessages">NextMessages</a>, msg2)
+        return msg1
+    },
+}</pre>
+			
+		
 		
 		
 			
 			
-			<h2 id="Choice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=524:736#L8">Choice</a>
+			<h2 id="Choice">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=860:1072#L17">Choice</a>
 				<a class="permalink" href="index.html#Choice">&#xb6;</a>
 				
 				
@@ -290,7 +347,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 		
 			
 			
-			<h2 id="MessageData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=248:487#L1">MessageData</a>
+			<h2 id="MessageData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=264:586#L1">MessageData</a>
 				<a class="permalink" href="index.html#MessageData">&#xb6;</a>
 				
 				
@@ -298,11 +355,11 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 			<p>MessageData はメッセージウィンドウに表示するデータ
 
 			<pre>type MessageData struct {
-<span id="MessageData.Text"></span>    Text         <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="MessageData.Speaker"></span>    Speaker      <a href="http://localhost:8888/pkg/builtin/#string">string</a>
-<span id="MessageData.Choices"></span>    Choices      []<a href="index.html#Choice">Choice</a>
-<span id="MessageData.OnComplete"></span>    OnComplete   func()         <span class="comment">// メッセージ完了時のコールバック</span>
-<span id="MessageData.NextMessages"></span>    NextMessages []*<a href="index.html#MessageData">MessageData</a> <span class="comment">// 次に表示するメッセージ群</span>
+<span id="MessageData.Speaker"></span>    Speaker          <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="MessageData.Choices"></span>    Choices          []<a href="index.html#Choice">Choice</a>
+<span id="MessageData.OnComplete"></span>    OnComplete       func()          <span class="comment">// メッセージ完了時のコールバック</span>
+<span id="MessageData.NextMessages"></span>    NextMessages     []*<a href="index.html#MessageData">MessageData</a>  <span class="comment">// 次に表示するメッセージ群</span>
+<span id="MessageData.TextSegmentLines"></span>    TextSegmentLines [][]<a href="index.html#TextSegment">TextSegment</a> <span class="comment">// 行ごとの色付きテキストセグメント</span>
 }
 </pre>
 
@@ -316,7 +373,19 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			
 				
-				<h3 id="NewDialogMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=798:854#L16">NewDialogMessage</a>
+				<h3 id="GetDialogue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/dialogues.go?s=1208:1269#L27">GetDialogue</a>
+					<a class="permalink" href="index.html#GetDialogue">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func GetDialogue(key <a href="http://localhost:8888/pkg/builtin/#string">string</a>, speakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#MessageData">MessageData</a></pre>
+				<p>GetDialogue は指定されたキーに対応する会話データを取得する
+
+				
+				
+			
+				
+				<h3 id="NewDialogMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1134:1190#L25">NewDialogMessage</a>
 					<a class="permalink" href="index.html#NewDialogMessage">&#xb6;</a>
 					
 					
@@ -328,7 +397,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="NewSystemMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=988:1035#L24">NewSystemMessage</a>
+				<h3 id="NewSystemMessage">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1338:1385#L34">NewSystemMessage</a>
 					<a class="permalink" href="index.html#NewSystemMessage">&#xb6;</a>
 					
 					
@@ -342,7 +411,46 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			
 				
-				<h3 id="MessageData.DialogMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1837:1907#L56">DialogMessage</a>
+				<h3 id="MessageData.AddKeyword">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3639:3697#L110">AddKeyword</a>
+					<a class="permalink" href="index.html#MessageData.AddKeyword">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) AddKeyword(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#MessageData">MessageData</a></pre>
+				<p>AddKeyword はキーワード（赤色背景）テキストを追加する
+
+				
+				
+				
+			
+				
+				<h3 id="MessageData.AddNewLine">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3432:3479#L104">AddNewLine</a>
+					<a class="permalink" href="index.html#MessageData.AddNewLine">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) AddNewLine() *<a href="index.html#MessageData">MessageData</a></pre>
+				<p>AddNewLine は改行を追加する（新しい行を作成）
+
+				
+				
+				
+			
+				
+				<h3 id="MessageData.AddText">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3119:3174#L96">AddText</a>
+					<a class="permalink" href="index.html#MessageData.AddText">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) AddText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#MessageData">MessageData</a></pre>
+				<p>AddText は通常テキストを追加する
+
+				
+				
+				
+			
+				
+				<h3 id="MessageData.DialogMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2201:2271#L67">DialogMessage</a>
 					<a class="permalink" href="index.html#MessageData.DialogMessage">&#xb6;</a>
 					
 					
@@ -355,7 +463,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.GetNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2399:2453#L73">GetNextMessages</a>
+				<h3 id="MessageData.GetNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2763:2817#L84">GetNextMessages</a>
 					<a class="permalink" href="index.html#MessageData.GetNextMessages">&#xb6;</a>
 					
 					
@@ -368,7 +476,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.HasNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2261:2305#L68">HasNextMessages</a>
+				<h3 id="MessageData.HasNextMessages">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2625:2669#L79">HasNextMessages</a>
 					<a class="permalink" href="index.html#MessageData.HasNextMessages">&#xb6;</a>
 					
 					
@@ -381,7 +489,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.SystemMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2054:2115#L62">SystemMessage</a>
+				<h3 id="MessageData.SystemMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2418:2479#L73">SystemMessage</a>
 					<a class="permalink" href="index.html#MessageData.SystemMessage">&#xb6;</a>
 					
 					
@@ -394,7 +502,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.WithChoice">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1152:1238#L32">WithChoice</a>
+				<h3 id="MessageData.WithChoice">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1516:1602#L43">WithChoice</a>
 					<a class="permalink" href="index.html#MessageData.WithChoice">&#xb6;</a>
 					
 					
@@ -407,7 +515,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.WithChoiceMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1413:1504#L41">WithChoiceMessage</a>
+				<h3 id="MessageData.WithChoiceMessage">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1777:1868#L52">WithChoiceMessage</a>
 					<a class="permalink" href="index.html#MessageData.WithChoiceMessage">&#xb6;</a>
 					
 					
@@ -420,7 +528,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.WithOnComplete">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=1679:1745#L50">WithOnComplete</a>
+				<h3 id="MessageData.WithOnComplete">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=2043:2109#L61">WithOnComplete</a>
 					<a class="permalink" href="index.html#MessageData.WithOnComplete">&#xb6;</a>
 					
 					
@@ -431,6 +539,34 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 				
 				
+			
+		
+			
+			
+			<h2 id="TextSegment">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=646:823#L10">TextSegment</a>
+				<a class="permalink" href="index.html#TextSegment">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TextSegment は色付きテキストのセグメント
+
+			<pre>type TextSegment struct {
+<span id="TextSegment.Text"></span>    Text            <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="TextSegment.Color"></span>    Color           *<a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a> <span class="comment">// nilの場合はデフォルト色</span>
+<span id="TextSegment.BackgroundColor"></span>    BackgroundColor *<a href="http://localhost:8888/pkg/image/color/">color</a>.<a href="http://localhost:8888/pkg/image/color/#RGBA">RGBA</a> <span class="comment">// nilの場合は背景なし</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
 			
 		
 	
