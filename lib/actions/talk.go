@@ -66,11 +66,12 @@ func (ta *TalkActivity) DoTurn(act *Activity, world w.World) error {
 	}
 
 	// Nameコンポーネントから話者名を取得
-	speakerName := "???"
-	if targetEntity.HasComponent(world.Components.Name) {
-		nameComp := world.Components.Name.Get(targetEntity).(*gc.Name)
-		speakerName = nameComp.Name
+	if !targetEntity.HasComponent(world.Components.Name) {
+		act.Cancel("対象エンティティにNameコンポーネントがありません")
+		return fmt.Errorf("対象エンティティにNameコンポーネントがありません")
 	}
+	nameComp := world.Components.Name.Get(targetEntity).(*gc.Name)
+	speakerName := nameComp.Name
 
 	act.Logger.Debug("会話実行", "messageKey", dialogComp.MessageKey, "speaker", speakerName)
 
@@ -86,6 +87,9 @@ func (ta *TalkActivity) Finish(act *Activity, world w.World) error {
 	// プレイヤーの場合のみメッセージを表示
 	if isPlayerActivity(act, world) {
 		targetEntity := *act.Target
+		if !targetEntity.HasComponent(world.Components.Name) {
+			return fmt.Errorf("対象エンティティにNameコンポーネントがありません")
+		}
 		nameComp := world.Components.Name.Get(targetEntity).(*gc.Name)
 
 		gamelog.New(gamelog.FieldLog).
