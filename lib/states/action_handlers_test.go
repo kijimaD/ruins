@@ -308,7 +308,8 @@ func TestFindEnemyAtPosition(t *testing.T) {
 		enemy.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
 
 		foundEnemy := findEnemyAtPosition(world, player, 11, 10)
-		assert.Equal(t, enemy, foundEnemy, "敵が見つかるべき")
+		require.NotNil(t, foundEnemy, "敵が見つかるべき")
+		assert.Equal(t, enemy, *foundEnemy, "敵が見つかるべき")
 	})
 
 	t.Run("指定位置に敵がいない場合", func(t *testing.T) {
@@ -322,7 +323,7 @@ func TestFindEnemyAtPosition(t *testing.T) {
 		player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
 		foundEnemy := findEnemyAtPosition(world, player, 11, 10)
-		assert.Equal(t, 0, int(foundEnemy), "敵が見つからないべき")
+		assert.Nil(t, foundEnemy, "敵が見つからないべき")
 	})
 
 	t.Run("死亡している敵は無視される", func(t *testing.T) {
@@ -342,7 +343,7 @@ func TestFindEnemyAtPosition(t *testing.T) {
 		enemy.AddComponent(world.Components.Dead, &gc.Dead{})
 
 		foundEnemy := findEnemyAtPosition(world, player, 11, 10)
-		assert.Equal(t, 0, int(foundEnemy), "死亡した敵は無視されるべき")
+		assert.Nil(t, foundEnemy, "死亡した敵は無視されるべき")
 	})
 
 	t.Run("味方は敵として扱われない", func(t *testing.T) {
@@ -361,7 +362,7 @@ func TestFindEnemyAtPosition(t *testing.T) {
 		ally.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
 
 		foundEnemy := findEnemyAtPosition(world, player, 11, 10)
-		assert.Equal(t, 0, int(foundEnemy), "味方は敵として扱われないべき")
+		assert.Nil(t, foundEnemy, "味方は敵として扱われないべき")
 	})
 }
 
@@ -422,7 +423,8 @@ func TestFindClosedDoorAtPosition(t *testing.T) {
 		door.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
 		foundDoor := findClosedDoorAtPosition(world, 10, 10)
-		assert.Equal(t, door, foundDoor, "閉じたドアが見つかるべき")
+		require.NotNil(t, foundDoor, "閉じたドアが見つかるべき")
+		assert.Equal(t, door, *foundDoor, "閉じたドアが見つかるべき")
 	})
 
 	t.Run("指定位置にドアがない場合", func(t *testing.T) {
@@ -430,7 +432,7 @@ func TestFindClosedDoorAtPosition(t *testing.T) {
 		world := testutil.InitTestWorld(t)
 
 		foundDoor := findClosedDoorAtPosition(world, 10, 10)
-		assert.Equal(t, 0, int(foundDoor), "ドアが見つからないべき")
+		assert.Nil(t, foundDoor, "ドアが見つからないべき")
 	})
 
 	t.Run("ドアが開いている場合は無視される", func(t *testing.T) {
@@ -443,7 +445,7 @@ func TestFindClosedDoorAtPosition(t *testing.T) {
 		door.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
 		foundDoor := findClosedDoorAtPosition(world, 10, 10)
-		assert.Equal(t, 0, int(foundDoor), "開いたドアは見つからないべき")
+		assert.Nil(t, foundDoor, "開いたドアは見つからないべき")
 	})
 
 	t.Run("複数のドアがある場合", func(t *testing.T) {
@@ -461,9 +463,10 @@ func TestFindClosedDoorAtPosition(t *testing.T) {
 		door2.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
 
 		foundDoor := findClosedDoorAtPosition(world, 10, 10)
-		assert.Equal(t, door1, foundDoor, "閉じたドアのみが見つかるべき")
+		require.NotNil(t, foundDoor, "閉じたドアのみが見つかるべき")
+		assert.Equal(t, door1, *foundDoor, "閉じたドアのみが見つかるべき")
 
 		foundDoor2 := findClosedDoorAtPosition(world, 11, 10)
-		assert.Equal(t, 0, int(foundDoor2), "開いたドアは見つからないべき")
+		assert.Nil(t, foundDoor2, "開いたドアは見つからないべき")
 	})
 }

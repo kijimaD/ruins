@@ -33,10 +33,10 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 
 	// 移動先に会話NPCがいる場合は会話アクション
 	npc := findNeutralNPCAtPosition(world, newX, newY)
-	if npc != ecs.Entity(0) {
+	if npc != nil {
 		params := actions.ActionParams{
 			Actor:  entity,
-			Target: &npc,
+			Target: npc,
 		}
 		executeActivity(world, &actions.TalkActivity{}, params)
 		return
@@ -44,10 +44,10 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 
 	// 移動先に敵がいる場合は攻撃アクション
 	enemy := findEnemyAtPosition(world, entity, newX, newY)
-	if enemy != ecs.Entity(0) {
+	if enemy != nil {
 		params := actions.ActionParams{
 			Actor:  entity,
-			Target: &enemy,
+			Target: enemy,
 		}
 		executeActivity(world, &actions.AttackActivity{}, params)
 		return
@@ -55,10 +55,10 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 
 	// 移動先に閉じたドアがある場合はドアを開くアクション
 	door := findClosedDoorAtPosition(world, newX, newY)
-	if door != ecs.Entity(0) {
+	if door != nil {
 		params := actions.ActionParams{
 			Actor:  entity,
-			Target: &door,
+			Target: door,
 		}
 		executeActivity(world, &actions.OpenDoorActivity{}, params)
 		return
@@ -252,8 +252,8 @@ func checkForItems(world w.World, tileX, tileY int) bool {
 }
 
 // findEnemyAtPosition は指定位置にいる敵エンティティを検索する
-func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY int) ecs.Entity {
-	var foundEnemy ecs.Entity
+func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY int) *ecs.Entity {
+	var foundEnemy *ecs.Entity
 
 	// 指定位置にいる全エンティティをチェック
 	world.Manager.Join(
@@ -273,7 +273,7 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 
 			// 敵対関係かチェック
 			if isHostileFaction(world, movingEntity, entity) {
-				foundEnemy = entity
+				foundEnemy = &entity
 				return
 			}
 		}
@@ -283,8 +283,8 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 }
 
 // findNeutralNPCAtPosition は指定位置にある中立NPC（会話可能）を検索する
-func findNeutralNPCAtPosition(world w.World, tileX, tileY int) ecs.Entity {
-	var foundNPC ecs.Entity
+func findNeutralNPCAtPosition(world w.World, tileX, tileY int) *ecs.Entity {
+	var foundNPC *ecs.Entity
 
 	world.Manager.Join(
 		world.Components.GridElement,
@@ -293,7 +293,7 @@ func findNeutralNPCAtPosition(world w.World, tileX, tileY int) ecs.Entity {
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
-			foundNPC = entity
+			foundNPC = &entity
 		}
 	}))
 
@@ -301,8 +301,8 @@ func findNeutralNPCAtPosition(world w.World, tileX, tileY int) ecs.Entity {
 }
 
 // findClosedDoorAtPosition は指定位置にある閉じたドアエンティティを検索する
-func findClosedDoorAtPosition(world w.World, tileX, tileY int) ecs.Entity {
-	var foundDoor ecs.Entity
+func findClosedDoorAtPosition(world w.World, tileX, tileY int) *ecs.Entity {
+	var foundDoor *ecs.Entity
 
 	world.Manager.Join(
 		world.Components.GridElement,
@@ -313,7 +313,7 @@ func findClosedDoorAtPosition(world w.World, tileX, tileY int) ecs.Entity {
 			door := world.Components.Door.Get(entity).(*gc.Door)
 			// 閉じているドアのみを対象
 			if !door.IsOpen {
-				foundDoor = entity
+				foundDoor = &entity
 			}
 		}
 	}))
