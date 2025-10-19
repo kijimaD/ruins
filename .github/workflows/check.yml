@@ -59,6 +59,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: ./.github/actions/setup-go-with-x
       - name: Cache Go modules
         uses: actions/cache@main
@@ -69,8 +72,9 @@ jobs:
             ${{ runner.os }}-go-
       - name: vrt
         run: make vrt
-      # 差分があればコミット
+      # 差分があればコミット（PRの場合のみ）
       - name: commit for changes
+        if: github.event_name == 'pull_request'
         run: |
           if ! git diff --exit-code --quiet
           then
