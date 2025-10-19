@@ -61,10 +61,6 @@ func (aa *AttackActivity) Validate(act *Activity, world w.World) error {
 		return ErrAttackTargetNotSet
 	}
 
-	if *act.Target == 0 {
-		return ErrAttackTargetInvalid
-	}
-
 	if act.Actor.HasComponent(world.Components.Dead) {
 		return ErrAttackerDead
 	}
@@ -175,10 +171,6 @@ func (aa *AttackActivity) performAttack(act *Activity, world w.World) error {
 
 func (aa *AttackActivity) canAttack(act *Activity, world w.World) bool {
 	if act.Target == nil {
-		return false
-	}
-
-	if *act.Target == ecs.Entity(0) {
 		return false
 	}
 

@@ -37,11 +37,6 @@ func (ca *CraftActivity) Validate(act *Activity, world w.World) error {
 		return fmt.Errorf("クラフトにはレシピが必要です")
 	}
 
-	// 対象が有効なエンティティか
-	if *act.Target == 0 {
-		return fmt.Errorf("クラフト対象が無効です")
-	}
-
 	// レシピが実際に存在するかチェック
 	targetEntity := *act.Target
 
