@@ -5,6 +5,7 @@ import (
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
+	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
@@ -72,10 +73,27 @@ func Spawn(world w.World, metaPlan *mapplanner.MetaPlan) (resources.Level, error
 	}
 
 	// NPCを生成
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
 	for _, npc := range metaPlan.NPCs {
-		_, err := worldhelper.SpawnEnemy(world, npc.X, npc.Y, npc.NPCType)
-		if err != nil {
-			return resources.Level{}, fmt.Errorf("NPC生成エラー (%d, %d): %w", npc.X, npc.Y, err)
+		// NPCが中立かどうかを判断
+		memberIdx, ok := rawMaster.MemberIndex[npc.NPCType]
+		if !ok {
+			return resources.Level{}, fmt.Errorf("NPC '%s' が見つかりません", npc.NPCType)
+		}
+		member := rawMaster.Raws.Members[memberIdx]
+
+		// 中立NPCの場合
+		if member.FactionType == gc.FactionNeutral.String() {
+			_, err := worldhelper.SpawnNeutralNPC(world, npc.X, npc.Y, npc.NPCType)
+			if err != nil {
+				return resources.Level{}, fmt.Errorf("中立NPC生成エラー (%d, %d): %w", npc.X, npc.Y, err)
+			}
+		} else {
+			// 敵NPCの場合
+			_, err := worldhelper.SpawnEnemy(world, npc.X, npc.Y, npc.NPCType)
+			if err != nil {
+				return resources.Level{}, fmt.Errorf("敵NPC生成エラー (%d, %d): %w", npc.X, npc.Y, err)
+			}
 		}
 	}
 

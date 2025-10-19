@@ -108,6 +108,52 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 	return entitiesSlice[len(entitiesSlice)-1], nil
 }
 
+// SpawnNeutralNPC はフィールド上に中立NPCを生成する（会話可能なNPC用）
+func SpawnNeutralNPC(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
+	componentList := entities.ComponentList[gc.EntitySpec]{}
+	rawMaster := world.Resources.RawMaster.(*raw.Master)
+
+	// raw.Masterから中立NPC用にMemberデータを取得
+	// generateFighterで既にFactionNeutralとDialogが設定されている
+	memberIdx, ok := rawMaster.MemberIndex[name]
+	if !ok {
+		return ecs.Entity(0), fmt.Errorf("中立NPC '%s' が見つかりません", name)
+	}
+	member := rawMaster.Raws.Members[memberIdx]
+
+	// 中立派閥とDialog設定を確認
+	if member.FactionType != gc.FactionNeutral.String() {
+		return ecs.Entity(0), fmt.Errorf("'%s' は中立NPCではありません", name)
+	}
+	if member.Dialog == nil {
+		return ecs.Entity(0), fmt.Errorf("'%s' には会話データがありません", name)
+	}
+
+	// generateFighterを使用してエンティティ仕様を生成
+	entitySpec, err := rawMaster.NewNeutralNPCSpec(name)
+	if err != nil {
+		return ecs.Entity(0), fmt.Errorf("中立NPC生成エラー: %w", err)
+	}
+
+	// フィールド用のコンポーネントを設定
+	entitySpec.GridElement = &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
+	entitySpec.BlockPass = &gc.BlockPass{} // NPCは通行不可
+
+	// 中立NPCにはAIを付けない（動かない）
+
+	componentList.Entities = append(componentList.Entities, entitySpec)
+	entitiesSlice, err := entities.AddEntities(world, componentList)
+	if err != nil {
+		return ecs.Entity(0), err
+	}
+
+	// 全回復
+	npcEntity := entitiesSlice[len(entitiesSlice)-1]
+	fullRecover(world, npcEntity)
+
+	return npcEntity, nil
+}
+
 // SpawnEnemy はフィールド上に敵キャラクターを生成する
 func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, error) {
 	componentList := entities.ComponentList[gc.EntitySpec]{}

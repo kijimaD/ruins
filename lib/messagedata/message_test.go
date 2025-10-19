@@ -8,6 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// getMessageText はテスト用のヘルパー関数。TextSegmentLinesから単一行の単一セグメントのテキストを取得する
+func getMessageText(msg *MessageData) string {
+	if len(msg.TextSegmentLines) == 0 || len(msg.TextSegmentLines[0]) == 0 {
+		return ""
+	}
+	return msg.TextSegmentLines[0][0].Text
+}
+
 func TestNewDialogMessage(t *testing.T) {
 	t.Parallel()
 
@@ -18,7 +26,7 @@ func TestNewDialogMessage(t *testing.T) {
 		speaker := "テストキャラクター"
 		msg := NewDialogMessage(text, speaker)
 
-		assert.Equal(t, text, msg.Text)
+		assert.Equal(t, text, getMessageText(msg))
 		assert.Equal(t, speaker, msg.Speaker)
 		assert.Empty(t, msg.Choices)
 		assert.Nil(t, msg.OnComplete)
@@ -30,7 +38,7 @@ func TestNewDialogMessage(t *testing.T) {
 
 		msg := NewDialogMessage("メッセージ", "")
 
-		assert.Equal(t, "メッセージ", msg.Text)
+		assert.Equal(t, "メッセージ", getMessageText(msg))
 		assert.Equal(t, "", msg.Speaker)
 	})
 
@@ -39,7 +47,7 @@ func TestNewDialogMessage(t *testing.T) {
 
 		msg := NewDialogMessage("", "キャラクター")
 
-		assert.Equal(t, "", msg.Text)
+		assert.Equal(t, "", getMessageText(msg))
 		assert.Equal(t, "キャラクター", msg.Speaker)
 	})
 }
@@ -53,7 +61,7 @@ func TestNewSystemMessage(t *testing.T) {
 		text := "ゲームが保存されました"
 		msg := NewSystemMessage(text)
 
-		assert.Equal(t, text, msg.Text)
+		assert.Equal(t, text, getMessageText(msg))
 		assert.Equal(t, "システム", msg.Speaker)
 		assert.Empty(t, msg.Choices)
 		assert.Nil(t, msg.OnComplete)
@@ -65,7 +73,7 @@ func TestNewSystemMessage(t *testing.T) {
 
 		msg := NewSystemMessage("")
 
-		assert.Equal(t, "", msg.Text)
+		assert.Equal(t, "", getMessageText(msg))
 		assert.Equal(t, "システム", msg.Speaker)
 	})
 }
@@ -95,7 +103,7 @@ func TestMessageDataBuilderMethods(t *testing.T) {
 		msg := NewDialogMessage("テストメッセージ", "最終話者").
 			WithOnComplete(func() { callbackExecuted = true })
 
-		assert.Equal(t, "テストメッセージ", msg.Text)
+		assert.Equal(t, "テストメッセージ", getMessageText(msg))
 		assert.Equal(t, "最終話者", msg.Speaker)
 		require.NotNil(t, msg.OnComplete)
 		msg.OnComplete()
@@ -178,7 +186,7 @@ func TestMessageChaining(t *testing.T) {
 
 		require.Len(t, msg.NextMessages, 1)
 		nextMsg := msg.NextMessages[0]
-		assert.Equal(t, "会話メッセージ", nextMsg.Text)
+		assert.Equal(t, "会話メッセージ", getMessageText(nextMsg))
 		assert.Equal(t, "キャラクター", nextMsg.Speaker)
 	})
 
@@ -190,7 +198,7 @@ func TestMessageChaining(t *testing.T) {
 
 		require.Len(t, msg.NextMessages, 1)
 		nextMsg := msg.NextMessages[0]
-		assert.Equal(t, "システム通知", nextMsg.Text)
+		assert.Equal(t, "システム通知", getMessageText(nextMsg))
 	})
 
 	t.Run("SystemMessageメソッドによる連鎖（追加）", func(t *testing.T) {
@@ -201,7 +209,7 @@ func TestMessageChaining(t *testing.T) {
 
 		require.Len(t, msg.NextMessages, 1)
 		nextMsg := msg.NextMessages[0]
-		assert.Equal(t, "イベント発生", nextMsg.Text)
+		assert.Equal(t, "イベント発生", getMessageText(nextMsg))
 		assert.Equal(t, "システム", nextMsg.Speaker)
 	})
 
@@ -214,10 +222,10 @@ func TestMessageChaining(t *testing.T) {
 			SystemMessage("勝利！")
 
 		assert.Len(t, msg.NextMessages, 3)
-		assert.Equal(t, "攻撃", msg.NextMessages[0].Text)
-		assert.Equal(t, "やったか？", msg.NextMessages[1].Text)
+		assert.Equal(t, "攻撃", getMessageText(msg.NextMessages[0]))
+		assert.Equal(t, "やったか？", getMessageText(msg.NextMessages[1]))
 		assert.Equal(t, "主人公", msg.NextMessages[1].Speaker)
-		assert.Equal(t, "勝利！", msg.NextMessages[2].Text)
+		assert.Equal(t, "勝利！", getMessageText(msg.NextMessages[2]))
 	})
 
 	t.Run("HasNextMessagesメソッド", func(t *testing.T) {
@@ -241,8 +249,8 @@ func TestMessageChaining(t *testing.T) {
 
 		nextMessages := msg.GetNextMessages()
 		assert.Len(t, nextMessages, 2)
-		assert.Equal(t, "2番目", nextMessages[0].Text)
-		assert.Equal(t, "3番目", nextMessages[1].Text)
+		assert.Equal(t, "2番目", getMessageText(nextMessages[0]))
+		assert.Equal(t, "3番目", getMessageText(nextMessages[1]))
 	})
 }
 
@@ -300,7 +308,7 @@ func TestComplexScenarios(t *testing.T) {
 			WithChoiceMessage("逃げる", escapeResult)
 
 		// 検証
-		assert.Equal(t, "敵に遭遇した！", encounterMsg.Text)
+		assert.Equal(t, "敵に遭遇した！", getMessageText(encounterMsg))
 		assert.Equal(t, "ナレーター", encounterMsg.Speaker)
 		assert.Len(t, encounterMsg.Choices, 2)
 
@@ -308,14 +316,14 @@ func TestComplexScenarios(t *testing.T) {
 		fightChoice := encounterMsg.Choices[0]
 		assert.Equal(t, "戦う", fightChoice.Text)
 		require.NotNil(t, fightChoice.MessageData)
-		assert.Equal(t, "戦闘開始", fightChoice.MessageData.Text)
+		assert.Equal(t, "戦闘開始", getMessageText(fightChoice.MessageData))
 		assert.Len(t, fightChoice.MessageData.NextMessages, 3)
 
 		// 逃げるの選択肢
 		escapeChoice := encounterMsg.Choices[1]
 		assert.Equal(t, "逃げる", escapeChoice.Text)
 		require.NotNil(t, escapeChoice.MessageData)
-		assert.Equal(t, "逃走成功", escapeChoice.MessageData.Text)
+		assert.Equal(t, "逃走成功", getMessageText(escapeChoice.MessageData))
 		assert.Len(t, escapeChoice.MessageData.NextMessages, 1)
 	})
 
@@ -334,7 +342,7 @@ func TestComplexScenarios(t *testing.T) {
 			DialogMessage("最後の会話", "別キャラクター")
 
 		// 基本設定の確認
-		assert.Equal(t, "複雑なテスト", msg.Text)
+		assert.Equal(t, "複雑なテスト", getMessageText(msg))
 		assert.Equal(t, "最終キャラクター", msg.Speaker)
 
 		// 選択肢の確認
@@ -344,9 +352,9 @@ func TestComplexScenarios(t *testing.T) {
 
 		// 連鎖メッセージの確認
 		assert.Len(t, msg.NextMessages, 3)
-		assert.Equal(t, "次のメッセージ", msg.NextMessages[0].Text)
-		assert.Equal(t, "システム通知", msg.NextMessages[1].Text)
-		assert.Equal(t, "最後の会話", msg.NextMessages[2].Text)
+		assert.Equal(t, "次のメッセージ", getMessageText(msg.NextMessages[0]))
+		assert.Equal(t, "システム通知", getMessageText(msg.NextMessages[1]))
+		assert.Equal(t, "最後の会話", getMessageText(msg.NextMessages[2]))
 		assert.Equal(t, "別キャラクター", msg.NextMessages[2].Speaker)
 
 		// コールバックの実行

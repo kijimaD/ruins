@@ -3,6 +3,7 @@ package resources
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
 	"github.com/kijimaD/ruins/lib/consts"
+	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
 // Dungeon は冒険出発から帰還までを1セットとした情報を保持する。
@@ -20,6 +21,14 @@ type Dungeon struct {
 	MinimapSettings MinimapSettings
 	// 視界を更新するか外部から設定するフラグ
 	NeedsForceUpdate bool
+	// 保留中の会話メッセージ（移動時の会話用）
+	PendingDialogMessage *DialogMessage
+}
+
+// DialogMessage は会話メッセージ情報
+type DialogMessage struct {
+	MessageKey    string     // メッセージキー
+	SpeakerEntity ecs.Entity // 話者エンティティ（Nameコンポーネントから話者名を取得）
 }
 
 // SetStateEvent はStateEventを設定する

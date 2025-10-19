@@ -80,9 +80,9 @@ func TestTownPlannerVsSmallRoom(t *testing.T) {
 	require.Equal(t, gc.Tile(20), smallRoomPlan.Level.TileWidth, "SmallRoom should be 20x20")
 	require.Equal(t, gc.Tile(50), townPlan.Level.TileWidth, "Town should be 50x50")
 
-	// NPCの配置状況を確認（SmallRoomはランダム生成、TownはNPCスキップ）
-	// SmallRoomはSpawnEnemies=falseでもPropsプランナーがNPCを追加する可能性があります
-	require.Equal(t, 0, len(townPlan.NPCs), "Town NPCs are currently disabled")
+	// NPCの配置状況を確認
+	// TownマップにはConversationNPCPlanner により会話NPC（老兵）が1体配置される
+	require.Equal(t, 1, len(townPlan.NPCs), "Town should have 1 conversation NPC")
 	// SmallRoomのNPC数は制限しない（ランダム生成のため）
 
 	// Propsの配置の違いを確認

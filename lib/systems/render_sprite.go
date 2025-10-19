@@ -152,7 +152,14 @@ func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[str
 			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize/2)),
 		}
 		if err := drawImage(world, screen, spriteRender, pos, 0); err != nil {
-			panic(err)
+			// エンティティ情報を追加してエラーを詳細化
+			var entityInfo string
+			if entity.HasComponent(world.Components.Name) {
+				name := world.Components.Name.Get(entity).(*gc.Name)
+				entityInfo = fmt.Sprintf("Name: %s", name.Name)
+			}
+			panic(fmt.Errorf("entity %d at (%d,%d), SpriteSheet: '%s', SpriteKey: '%s', %s: %w",
+				entity, gridElement.X, gridElement.Y, spriteRender.SpriteSheetName, spriteRender.SpriteKey, entityInfo, err))
 		}
 	}
 }

@@ -52,6 +52,7 @@ type EntitySpec struct {
 	Wallet      *Wallet
 	FactionType *FactionType
 	Dead        *Dead
+	Dialog      *Dialog
 
 	// event ================
 	EquipmentChanged *EquipmentChanged
@@ -103,13 +104,15 @@ type Components struct {
 	LightSource  *ecs.SliceComponent `save:"true"`
 
 	// member ================
-	Player       *ecs.NullComponent `save:"true"`
-	Hunger       *ecs.SliceComponent
-	Wallet       *ecs.SliceComponent `save:"true"`
-	FactionAlly  *ecs.NullComponent  `save:"true"`
-	FactionEnemy *ecs.NullComponent
-	Dead         *ecs.NullComponent
-	TurnBased    *ecs.SliceComponent `save:"true"`
+	Player         *ecs.NullComponent `save:"true"`
+	Hunger         *ecs.SliceComponent
+	Wallet         *ecs.SliceComponent `save:"true"`
+	FactionAlly    *ecs.NullComponent  `save:"true"`
+	FactionEnemy   *ecs.NullComponent
+	FactionNeutral *ecs.NullComponent `save:"true"`
+	Dialog         *ecs.SliceComponent
+	Dead           *ecs.NullComponent
+	TurnBased      *ecs.SliceComponent `save:"true"`
 
 	// event ================
 	EquipmentChanged *ecs.NullComponent
@@ -186,6 +189,11 @@ type Name struct {
 // Description は説明
 type Description struct {
 	Description string
+}
+
+// Dialog は会話データ
+type Dialog struct {
+	MessageKey string // メッセージキー
 }
 
 // Wearable は装備品。キャラクタが装備することでパラメータを変更できる
@@ -300,6 +308,8 @@ var (
 	FactionAlly FactionType = FactionAllyData{}
 	// FactionEnemy は敵性(プレイヤーと敵対)
 	FactionEnemy FactionType = FactionEnemyData{}
+	// FactionNeutral は中立(会話可能NPC)
+	FactionNeutral FactionType = FactionNeutralData{}
 )
 
 // FactionAllyData は味方派閥データ
@@ -314,6 +324,13 @@ type FactionEnemyData struct{}
 
 func (c FactionEnemyData) String() string {
 	return "FactionEnemy"
+}
+
+// FactionNeutralData は中立派閥データ
+type FactionNeutralData struct{}
+
+func (c FactionNeutralData) String() string {
+	return "FactionNeutral"
 }
 
 // ItemLocationType はアイテムの場所

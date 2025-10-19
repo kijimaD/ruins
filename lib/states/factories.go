@@ -147,9 +147,9 @@ func NewDebugMenuState() es.State[w.World] {
 				"フェライトコアを2個手に入れた。\n"
 
 			itemMessageData := &messagedata.MessageData{
-				Text:    messageText,
 				Speaker: "",
 			}
+			itemMessageData.AddText(messageText)
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(itemMessageData) }}})
 			return nil
 		}).
@@ -462,6 +462,24 @@ func NewInteractionMenuState(world w.World) es.State[w.World] {
 				Target: &capturedAction.Target,
 			}
 			executeActivity(world, capturedAction.Activity, params)
+
+			// 会話アクティビティの場合は会話メッセージを表示
+			if _, ok := capturedAction.Activity.(*actions.TalkActivity); ok {
+				if capturedAction.Target.HasComponent(world.Components.Dialog) {
+					dialog := world.Components.Dialog.Get(capturedAction.Target).(*gc.Dialog)
+
+					// TargetからNameを取得
+					speakerName := "???"
+					if capturedAction.Target.HasComponent(world.Components.Name) {
+						nameComp := world.Components.Name.Get(capturedAction.Target).(*gc.Name)
+						speakerName = nameComp.Name
+					}
+
+					dialogMessage := messagedata.GetDialogue(dialog.MessageKey, speakerName)
+					messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{func() es.State[w.World] { return NewMessageState(dialogMessage) }}})
+					return nil
+				}
+			}
 
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil

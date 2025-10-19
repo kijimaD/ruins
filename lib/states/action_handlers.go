@@ -6,6 +6,7 @@ import (
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/logger"
 	"github.com/kijimaD/ruins/lib/movement"
+	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -29,6 +30,17 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	deltaX, deltaY := direction.GetDelta()
 	newX := currentX + deltaX
 	newY := currentY + deltaY
+
+	// 移動先に会話NPCがいる場合は会話アクション
+	npc := findNeutralNPCAtPosition(world, newX, newY)
+	if npc != ecs.Entity(0) {
+		params := actions.ActionParams{
+			Actor:  entity,
+			Target: &npc,
+		}
+		executeActivity(world, &actions.TalkActivity{}, params)
+		return
+	}
 
 	// 移動先に敵がいる場合は攻撃アクション
 	enemy := findEnemyAtPosition(world, entity, newX, newY)
@@ -73,9 +85,27 @@ func executeActivity(world w.World, actorImpl actions.ActivityInterface, params 
 		return
 	}
 
+	// 会話の場合は会話メッセージを表示するStateEventを設定
+	if _, isTalkActivity := actorImpl.(*actions.TalkActivity); isTalkActivity && result != nil && result.Success && params.Target != nil {
+		handleTalkCompletion(world, *params.Target)
+	}
+
 	// 移動の場合は追加でタイルイベントをチェック
 	if _, isMoveActivity := actorImpl.(*actions.MoveActivity); isMoveActivity && result != nil && result.Success && params.Destination != nil {
 		checkTileEvents(world, params.Actor, int(params.Destination.X), int(params.Destination.Y))
+	}
+}
+
+// handleTalkCompletion は会話完了時の処理を行う
+func handleTalkCompletion(world w.World, targetEntity ecs.Entity) {
+	if !targetEntity.HasComponent(world.Components.Dialog) {
+		return
+	}
+
+	dialog := world.Components.Dialog.Get(targetEntity).(*gc.Dialog)
+	world.Resources.Dungeon.PendingDialogMessage = &resources.DialogMessage{
+		MessageKey:    dialog.MessageKey,
+		SpeakerEntity: targetEntity,
 	}
 }
 
@@ -252,6 +282,24 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 	return foundEnemy
 }
 
+// findNeutralNPCAtPosition は指定位置にある中立NPC（会話可能）を検索する
+func findNeutralNPCAtPosition(world w.World, tileX, tileY int) ecs.Entity {
+	var foundNPC ecs.Entity
+
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.FactionNeutral,
+		world.Components.Dialog,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
+			foundNPC = entity
+		}
+	}))
+
+	return foundNPC
+}
+
 // findClosedDoorAtPosition は指定位置にある閉じたドアエンティティを検索する
 func findClosedDoorAtPosition(world w.World, tileX, tileY int) ecs.Entity {
 	var foundDoor ecs.Entity
@@ -358,6 +406,23 @@ func GetInteractionActions(world w.World) []InteractionAction {
 						Target:   entity,
 					})
 				}
+			}
+		}))
+
+		// 会話可能NPCをチェック
+		world.Manager.Join(
+			world.Components.GridElement,
+			world.Components.FactionNeutral,
+			world.Components.Dialog,
+		).Visit(ecs.Visit(func(entity ecs.Entity) {
+			ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+			if int(ge.X) == tileX && int(ge.Y) == tileY {
+				name := world.Components.Name.Get(entity).(*gc.Name)
+				interactionActions = append(interactionActions, InteractionAction{
+					Label:    "話しかける(" + name.Name + ")",
+					Activity: &actions.TalkActivity{},
+					Target:   entity,
+				})
 			}
 		}))
 	}

@@ -115,6 +115,13 @@ type Member struct {
 	SpriteSheetName string
 	SpriteKey       string
 	LightSource     *gc.LightSource
+	FactionType     string
+	Dialog          *DialogRaw
+}
+
+// DialogRaw は会話データのローデータ
+type DialogRaw struct {
+	MessageKey string // メッセージキー
 }
 
 // Attributes はキャラクターの能力値
@@ -205,9 +212,20 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 	entitySpec.Item = &gc.Item{}
 	entitySpec.Name = &gc.Name{Name: item.Name}
 	entitySpec.Description = &gc.Description{Description: item.Description}
+
+	// デフォルト値設定
+	spriteSheetName := item.SpriteSheetName
+	spriteKey := item.SpriteKey
+	if spriteSheetName == "" {
+		spriteSheetName = "field"
+	}
+	if spriteKey == "" {
+		spriteKey = "field_item"
+	}
+
 	entitySpec.SpriteRender = &gc.SpriteRender{
-		SpriteSheetName: item.SpriteSheetName,
-		SpriteKey:       item.SpriteKey,
+		SpriteSheetName: spriteSheetName,
+		SpriteKey:       spriteKey,
 		Depth:           gc.DepthNumRug,
 	}
 
@@ -423,6 +441,27 @@ func (rw *Master) generateFighter(name string) (gc.EntitySpec, error) {
 		entitySpec.LightSource = member.LightSource
 	}
 
+	// 派閥タイプの処理
+	if member.FactionType != "" {
+		switch member.FactionType {
+		case gc.FactionAlly.String():
+			entitySpec.FactionType = &gc.FactionAlly
+		case gc.FactionEnemy.String():
+			entitySpec.FactionType = &gc.FactionEnemy
+		case gc.FactionNeutral.String():
+			entitySpec.FactionType = &gc.FactionNeutral
+		default:
+			return gc.EntitySpec{}, fmt.Errorf("無効な派閥タイプ '%s' が指定されています: %s", member.FactionType, name)
+		}
+	}
+
+	// 会話データの処理
+	if member.Dialog != nil {
+		entitySpec.Dialog = &gc.Dialog{
+			MessageKey: member.Dialog.MessageKey,
+		}
+	}
+
 	return entitySpec, nil
 }
 
@@ -445,6 +484,28 @@ func (rw *Master) NewEnemySpec(name string) (gc.EntitySpec, error) {
 		return gc.EntitySpec{}, err
 	}
 	entitySpec.FactionType = &gc.FactionEnemy
+
+	return entitySpec, nil
+}
+
+// NewNeutralNPCSpec は指定された名前の中立NPCのEntitySpecを生成する
+// generateFighterで既にFactionNeutralとDialogが設定されている場合はそれを使用する
+func (rw *Master) NewNeutralNPCSpec(name string) (gc.EntitySpec, error) {
+	entitySpec, err := rw.generateFighter(name)
+	if err != nil {
+		return gc.EntitySpec{}, err
+	}
+
+	// generateFighterで既に中立派閥が設定されているはず
+	// 念のため確認
+	if entitySpec.FactionType == nil {
+		return gc.EntitySpec{}, fmt.Errorf("'%s' には派閥タイプが設定されていません", name)
+	}
+
+	// 中立派閥でない場合はエラー
+	if *entitySpec.FactionType != gc.FactionNeutral {
+		return gc.EntitySpec{}, fmt.Errorf("'%s' は中立派閥ではありません", name)
+	}
 
 	return entitySpec, nil
 }

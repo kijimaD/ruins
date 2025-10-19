@@ -53,10 +53,12 @@ TargetGroup = "ENEMY"
 TargetNum   = "ALL"
 
 [[Items]]
-Name        = "上級回復薬"
-Stackable   = true
-Description = "体力を完全回復する高級な薬"
-Value       = 300
+Name            = "上級回復薬"
+Stackable       = true
+Description     = "体力を完全回復する高級な薬"
+Value           = 300
+SpriteSheetName = "field"
+SpriteKey       = "field_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -68,10 +70,12 @@ ValueType = "PERCENTAGE"
 Ratio     = 1.0
 
 [[Items]]
-Name        = "古代の秘薬"
-Stackable   = true
-Description = "失われた錬金術で作られた万能薬。全員を完全回復する"
-Value       = 800
+Name            = "古代の秘薬"
+Stackable       = true
+Description     = "失われた錬金術で作られた万能薬。全員を完全回復する"
+Value           = 800
+SpriteSheetName = "field"
+SpriteKey       = "field_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -2282,7 +2286,7 @@ Defense   = 40
 Name            = "老兵"
 SpriteSheetName = "field"
 SpriteKey       = "old_soldier"
-FactionNeutral  = true
+FactionType     = "FactionNeutral"
 
 [Members.Dialog]
 MessageKey = "old_soldier_greeting"

@@ -168,7 +168,7 @@ Mode = "ESCAPE"
 Name = "老兵"
 SpriteSheetName = "field"
 SpriteKey = "old_soldier"
-FactionNeutral = true
+FactionType = "FactionNeutral"
 
 [Members.Dialog]
 MessageKey = "old_soldier_greeting"

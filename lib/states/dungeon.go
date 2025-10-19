@@ -14,6 +14,7 @@ import (
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	mapplanner "github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/mapspawner"
+	"github.com/kijimaD/ruins/lib/messagedata"
 	"github.com/kijimaD/ruins/lib/resources"
 	gs "github.com/kijimaD/ruins/lib/systems"
 	"github.com/kijimaD/ruins/lib/turns"
@@ -156,6 +157,24 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
 		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}}, nil
+	}
+
+	// 保留中の会話メッセージがあれば表示
+	if world.Resources.Dungeon.PendingDialogMessage != nil {
+		dialogMsg := world.Resources.Dungeon.PendingDialogMessage
+		world.Resources.Dungeon.PendingDialogMessage = nil // 消費
+
+		// SpeakerEntityからNameを取得
+		speakerName := "???"
+		if dialogMsg.SpeakerEntity.HasComponent(world.Components.Name) {
+			nameComp := world.Components.Name.Get(dialogMsg.SpeakerEntity).(*gc.Name)
+			speakerName = nameComp.Name
+		}
+
+		dialogMessage := messagedata.GetDialogue(dialogMsg.MessageKey, speakerName)
+		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+			func() es.State[w.World] { return NewMessageState(dialogMessage) },
+		}}, nil
 	}
 
 	// StateEvent処理をチェック
