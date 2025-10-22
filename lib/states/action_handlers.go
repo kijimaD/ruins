@@ -133,9 +133,9 @@ func ExecuteEnterAction(world w.World) {
 	tileX := int(gridElement.X)
 	tileY := int(gridElement.Y)
 
-	// 手動実行のTriggerを実行する
-	trigger, triggerEntity := getTriggerAtPlayerPosition(world, gridElement)
-	if trigger != nil && !trigger.AutoExecute {
+	// 手動実行型かつ直上タイル型のTriggerを実行する
+	trigger, triggerEntity := getTriggerAtSameTile(world, gridElement)
+	if trigger != nil && trigger.ActivationMode == gc.ActivationModeManual {
 		params := actions.ActionParams{Actor: entity}
 		executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
 		return
@@ -162,15 +162,20 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	}
 }
 
-// getTriggerAtPlayerPosition はプレイヤーの現在位置のTriggerとエンティティを取得する
-func getTriggerAtPlayerPosition(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, ecs.Entity) {
+// getTriggerAtSameTile はプレイヤーの直上タイルのTriggerとエンティティを取得する
+// 複数ある場合は最初に見つかったものを返す
+func getTriggerAtSameTile(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, ecs.Entity) {
 	var trigger *gc.Trigger
 	var triggerEntity ecs.Entity
 	world.Manager.Join(
 		world.Components.GridElement,
 		world.Components.Trigger,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if trigger != nil {
+			return // 既に見つかっている
+		}
 		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		// 直上タイルのみ
 		if ge.X == playerGrid.X && ge.Y == playerGrid.Y {
 			trigger = world.Components.Trigger.Get(entity).(*gc.Trigger)
 			triggerEntity = entity
@@ -179,15 +184,57 @@ func getTriggerAtPlayerPosition(world w.World, playerGrid *gc.GridElement) (*gc.
 	return trigger, triggerEntity
 }
 
+// getTriggerInRange はプレイヤーの範囲内のTriggerとエンティティを取得する
+// 複数ある場合は最初に見つかったものを返す
+func getTriggerInRange(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, ecs.Entity) {
+	var trigger *gc.Trigger
+	var triggerEntity ecs.Entity
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Trigger,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if trigger != nil {
+			return // 既に見つかっている
+		}
+		t := world.Components.Trigger.Get(entity).(*gc.Trigger)
+		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+
+		// ActivationRangeに応じた範囲チェック
+		if isInRange(playerGrid, ge, t.ActivationRange) {
+			trigger = t
+			triggerEntity = entity
+		}
+	}))
+	return trigger, triggerEntity
+}
+
+// isInRange はプレイヤーがトリガーの発動範囲内にいるかを判定する
+func isInRange(playerGrid, triggerGrid *gc.GridElement, activationRange gc.ActivationRange) bool {
+	switch activationRange {
+	case gc.ActivationRangeSameTile:
+		// 直上（同じタイル）
+		return playerGrid.X == triggerGrid.X && playerGrid.Y == triggerGrid.Y
+	case gc.ActivationRangeAdjacent:
+		// 隣接タイル（近傍8タイル）
+		diffX := int(playerGrid.X) - int(triggerGrid.X)
+		diffY := int(playerGrid.Y) - int(triggerGrid.Y)
+		dx := max(diffX, -diffX)
+		dy := max(diffY, -diffY)
+		return dx <= 1 && dy <= 1
+	default:
+		return false
+	}
+}
+
 // showTileTriggerMessage は手動トリガーのメッセージを表示する
 func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
-	trigger, _ := getTriggerAtPlayerPosition(world, playerGrid)
+	trigger, _ := getTriggerInRange(world, playerGrid)
 	if trigger == nil {
 		return
 	}
 
-	// AutoExecute=falseのTriggerのみメッセージ表示
-	if trigger.AutoExecute {
+	// ActivationMode=MANUALのTriggerのみメッセージ表示
+	if trigger.ActivationMode != gc.ActivationModeManual {
 		return
 	}
 

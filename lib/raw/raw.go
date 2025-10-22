@@ -521,12 +521,14 @@ type TileRaw struct {
 
 // WarpNextTriggerRaw は次の階へワープするトリガーのローデータ
 type WarpNextTriggerRaw struct {
-	AutoExecute *bool // nilの場合はfalse
+	ActivationRange *gc.ActivationRange // nilの場合はSAME_TILE
+	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
 }
 
 // WarpEscapeTriggerRaw は脱出ワープするトリガーのローデータ
 type WarpEscapeTriggerRaw struct {
-	AutoExecute *bool // nilの場合はfalse
+	ActivationRange *gc.ActivationRange // nilの場合はSAME_TILE
+	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
 }
 
 // PropRaw は置物のローデータ定義
@@ -617,24 +619,34 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 	}
 
 	if propRaw.WarpNextTrigger != nil {
-		autoExecute := false
-		if propRaw.WarpNextTrigger.AutoExecute != nil {
-			autoExecute = *propRaw.WarpNextTrigger.AutoExecute
+		activationRange := gc.ActivationRangeSameTile
+		if propRaw.WarpNextTrigger.ActivationRange != nil {
+			activationRange = *propRaw.WarpNextTrigger.ActivationRange
+		}
+		activationMode := gc.ActivationModeManual
+		if propRaw.WarpNextTrigger.ActivationMode != nil {
+			activationMode = *propRaw.WarpNextTrigger.ActivationMode
 		}
 		entitySpec.Trigger = &gc.Trigger{
-			Detail:      gc.WarpNextTrigger{},
-			AutoExecute: autoExecute,
+			Detail:          gc.WarpNextTrigger{},
+			ActivationRange: activationRange,
+			ActivationMode:  activationMode,
 		}
 	}
 
 	if propRaw.WarpEscapeTrigger != nil {
-		autoExecute := false
-		if propRaw.WarpEscapeTrigger.AutoExecute != nil {
-			autoExecute = *propRaw.WarpEscapeTrigger.AutoExecute
+		activationRange := gc.ActivationRangeSameTile
+		if propRaw.WarpEscapeTrigger.ActivationRange != nil {
+			activationRange = *propRaw.WarpEscapeTrigger.ActivationRange
+		}
+		activationMode := gc.ActivationModeManual
+		if propRaw.WarpEscapeTrigger.ActivationMode != nil {
+			activationMode = *propRaw.WarpEscapeTrigger.ActivationMode
 		}
 		entitySpec.Trigger = &gc.Trigger{
-			Detail:      gc.WarpEscapeTrigger{},
-			AutoExecute: autoExecute,
+			Detail:          gc.WarpEscapeTrigger{},
+			ActivationRange: activationRange,
+			ActivationMode:  activationMode,
 		}
 	}
 

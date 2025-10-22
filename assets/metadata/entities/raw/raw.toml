@@ -2499,6 +2499,8 @@ SpriteKey       = "warp_next"
 Depth           = 1
 
 [Props.WarpNextTrigger]
+ActivationRange = "SAME_TILE"
+ActivationMode  = "MANUAL"
 
 [Props.LightSource]
 Radius  = 5
@@ -2522,6 +2524,8 @@ SpriteKey       = "warp_escape"
 Depth           = 1
 
 [Props.WarpEscapeTrigger]
+ActivationRange = "SAME_TILE"
+ActivationMode  = "MANUAL"
 
 [Props.LightSource]
 Radius  = 4
