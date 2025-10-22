@@ -147,8 +147,7 @@ SpriteSheetName = "field"
 SpriteKey = "warp_next"
 Depth = 1
 
-[Props.Warp]
-Mode = "NEXT"
+[Props.WarpNextTrigger]
 
 [[Props]]
 Name = "warp_escape"
@@ -161,8 +160,7 @@ SpriteSheetName = "field"
 SpriteKey = "warp_escape"
 Depth = 1
 
-[Props.Warp]
-Mode = "ESCAPE"
+[Props.WarpEscapeTrigger]
 
 [[Members]]
 Name = "老兵"

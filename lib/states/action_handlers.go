@@ -133,9 +133,11 @@ func ExecuteEnterAction(world w.World) {
 	tileX := int(gridElement.X)
 	tileY := int(gridElement.Y)
 
-	if checkForWarp(world, entity) {
+	// 手動実行のTriggerを実行する
+	trigger, triggerEntity := getTriggerAtPlayerPosition(world, gridElement)
+	if trigger != nil && !trigger.AutoExecute {
 		params := actions.ActionParams{Actor: entity}
-		executeActivity(world, &actions.WarpActivity{}, params)
+		executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
 		return
 	}
 
@@ -152,51 +154,58 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	if entity.HasComponent(world.Components.Player) {
 		gridElement := &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 
-		// ワープホールのチェック
-		checkTileWarp(world, gridElement)
+		// 手動トリガーのメッセージ表示
+		showTileTriggerMessage(world, gridElement)
 
-		// アイテムのチェック
-		checkTileItemsForGridPlayer(world, gridElement)
+		// アイテムのメッセージ表示
+		showTileItemsForGridPlayer(world, gridElement)
 	}
 }
 
-// getWarpAtPlayerPosition はプレイヤーの現在位置のワープホールを取得する
-func getWarpAtPlayerPosition(world w.World, playerGrid *gc.GridElement) *gc.Warp {
-	// プレイヤーと同じ座標にあるWarpコンポーネントを探す
-	var warp *gc.Warp
+// getTriggerAtPlayerPosition はプレイヤーの現在位置のTriggerとエンティティを取得する
+func getTriggerAtPlayerPosition(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, ecs.Entity) {
+	var trigger *gc.Trigger
+	var triggerEntity ecs.Entity
 	world.Manager.Join(
 		world.Components.GridElement,
-		world.Components.Warp,
+		world.Components.Trigger,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
 		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
 		if ge.X == playerGrid.X && ge.Y == playerGrid.Y {
-			warp = world.Components.Warp.Get(entity).(*gc.Warp)
+			trigger = world.Components.Trigger.Get(entity).(*gc.Trigger)
+			triggerEntity = entity
 		}
 	}))
-
-	return warp
+	return trigger, triggerEntity
 }
 
-// checkTileWarp はプレイヤーがいるタイルのワープホールをチェックする
-func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
-	warp := getWarpAtPlayerPosition(world, playerGrid)
+// showTileTriggerMessage は手動トリガーのメッセージを表示する
+func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
+	trigger, _ := getTriggerAtPlayerPosition(world, playerGrid)
+	if trigger == nil {
+		return
+	}
 
-	if warp != nil {
-		switch warp.Mode {
-		case gc.WarpModeNext:
-			gamelog.New(gamelog.FieldLog).
-				Append("階段を発見した。Enterキーで移動。").
-				Log()
-		case gc.WarpModeEscape:
-			gamelog.New(gamelog.FieldLog).
-				Append("出口を発見した。Enterキーで移動。").
-				Log()
-		}
+	// AutoExecute=falseのTriggerのみメッセージ表示
+	if trigger.AutoExecute {
+		return
+	}
+
+	// Triggerの種類に応じてメッセージ表示
+	switch trigger.Detail.(type) {
+	case gc.WarpNextTrigger:
+		gamelog.New(gamelog.FieldLog).
+			Append("転移ゲートがある。Enterキーで移動。").
+			Log()
+	case gc.WarpEscapeTrigger:
+		gamelog.New(gamelog.FieldLog).
+			Append("脱出ゲートがある。Enterキーで移動。").
+			Log()
 	}
 }
 
-// checkTileItemsForGridPlayer はグリッドベースプレイヤーのタイルアイテムをチェックする
-func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
+// showTileItemsForGridPlayer はグリッドベースプレイヤーのタイル上のアイテムメッセージを表示する
+func showTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 	playerTileX := int(playerGrid.X)
 	playerTileY := int(playerGrid.Y)
 
@@ -221,12 +230,6 @@ func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
 				Log()
 		}
 	}))
-}
-
-// checkForWarp はプレイヤー位置にワープホールがあるかチェック
-func checkForWarp(world w.World, entity ecs.Entity) bool {
-	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	return getWarpAtPlayerPosition(world, gridElement) != nil
 }
 
 // checkForItems はプレイヤー位置にアイテムがあるかチェック

@@ -166,7 +166,10 @@ func TestExecuteEnterAction(t *testing.T) {
 
 		// 同じ位置にワープホールを作成
 		warp := world.Manager.NewEntity()
-		warp.AddComponent(world.Components.Warp, &gc.Warp{Mode: gc.WarpModeNext})
+		warp.AddComponent(world.Components.Trigger, &gc.Trigger{
+			Detail:      gc.WarpNextTrigger{},
+			AutoExecute: false,
+		})
 		warp.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
 		// Enterアクションを実行（ワープ処理が呼ばれることを期待）

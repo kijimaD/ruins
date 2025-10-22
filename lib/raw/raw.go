@@ -519,15 +519,26 @@ type TileRaw struct {
 	BlocksView   *bool // 視界を遮断するか。nilの場合はfalse
 }
 
+// WarpNextTriggerRaw は次の階へワープするトリガーのローデータ
+type WarpNextTriggerRaw struct {
+	AutoExecute *bool // nilの場合はfalse
+}
+
+// WarpEscapeTriggerRaw は脱出ワープするトリガーのローデータ
+type WarpEscapeTriggerRaw struct {
+	AutoExecute *bool // nilの場合はfalse
+}
+
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
-	Name         string
-	Description  string
-	SpriteRender gc.SpriteRender
-	BlockPass    bool
-	BlockView    bool
-	LightSource  *gc.LightSource
-	Warp         *gc.Warp
+	Name              string
+	Description       string
+	SpriteRender      gc.SpriteRender
+	BlockPass         bool
+	BlockView         bool
+	LightSource       *gc.LightSource
+	WarpNextTrigger   *WarpNextTriggerRaw
+	WarpEscapeTrigger *WarpEscapeTriggerRaw
 }
 
 // GetTile は指定された名前のタイルを取得する
@@ -601,14 +612,30 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 		entitySpec.BlockView = &gc.BlockView{}
 	}
 
-	// 光源の設定
 	if propRaw.LightSource != nil {
 		entitySpec.LightSource = propRaw.LightSource
 	}
 
-	// ワープの設定
-	if propRaw.Warp != nil {
-		entitySpec.Warp = propRaw.Warp
+	if propRaw.WarpNextTrigger != nil {
+		autoExecute := false
+		if propRaw.WarpNextTrigger.AutoExecute != nil {
+			autoExecute = *propRaw.WarpNextTrigger.AutoExecute
+		}
+		entitySpec.Trigger = &gc.Trigger{
+			Detail:      gc.WarpNextTrigger{},
+			AutoExecute: autoExecute,
+		}
+	}
+
+	if propRaw.WarpEscapeTrigger != nil {
+		autoExecute := false
+		if propRaw.WarpEscapeTrigger.AutoExecute != nil {
+			autoExecute = *propRaw.WarpEscapeTrigger.AutoExecute
+		}
+		entitySpec.Trigger = &gc.Trigger{
+			Detail:      gc.WarpEscapeTrigger{},
+			AutoExecute: autoExecute,
+		}
 	}
 
 	return entitySpec, nil
