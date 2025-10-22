@@ -329,6 +329,12 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 		entitySpec.Value = &gc.Value{Value: *item.Value}
 	}
 
+	if locationType != nil {
+		if _, ok := (*locationType).(gc.LocationOnField); ok {
+			entitySpec.Trigger = &gc.Trigger{Data: gc.ItemTrigger{}}
+		}
+	}
+
 	return entitySpec, nil
 }
 

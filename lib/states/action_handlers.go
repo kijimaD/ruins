@@ -137,13 +137,12 @@ func ExecuteEnterAction(world w.World) {
 	}
 
 	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	tileX := int(gridElement.X)
-	tileY := int(gridElement.Y)
 
 	// 手動実行型かつ直上タイル型のTriggerを実行する
 	trigger, triggerEntity := getTriggerAtSameTile(world, gridElement)
 	if trigger != nil && trigger.Data.Config().ActivationMode == gc.ActivationModeManual {
-		if _, ok := trigger.Data.(gc.DoorTrigger); ok {
+		switch trigger.Data.(type) {
+		case gc.DoorTrigger:
 			if triggerEntity.HasComponent(world.Components.Door) {
 				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
 				if !door.IsOpen {
@@ -155,18 +154,17 @@ func ExecuteEnterAction(world w.World) {
 					return
 				}
 			}
-		} else {
+		case gc.ItemTrigger:
+			// アイテム拾得アクション
+			params := actions.ActionParams{Actor: entity}
+			executeActivity(world, &actions.PickupActivity{}, params)
+			return
+		default:
 			// その他のTriggerはTriggerActivateActivityを実行
 			params := actions.ActionParams{Actor: entity}
 			executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
 			return
 		}
-	}
-
-	if checkForItems(world, tileX, tileY) {
-		params := actions.ActionParams{Actor: entity}
-		executeActivity(world, &actions.PickupActivity{}, params)
-		return
 	}
 }
 
@@ -178,9 +176,6 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 
 		// 手動トリガーのメッセージ表示
 		showTileTriggerMessage(world, gridElement)
-
-		// アイテムのメッセージ表示
-		showTileItemsForGridPlayer(world, gridElement)
 	}
 }
 
@@ -311,7 +306,7 @@ func isInRange(playerGrid, triggerGrid *gc.GridElement, activationRange gc.Activ
 
 // showTileTriggerMessage は手動トリガーのメッセージを表示する
 func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
-	trigger, _ := getTriggerInRange(world, playerGrid)
+	trigger, triggerEntity := getTriggerInRange(world, playerGrid)
 	if trigger == nil {
 		return
 	}
@@ -329,51 +324,16 @@ func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
 		gamelog.New(gamelog.FieldLog).
 			Append("脱出ゲートがある。Enterキーで移動。").
 			Log()
-	}
-}
-
-// showTileItemsForGridPlayer はグリッドベースプレイヤーのタイル上のアイテムメッセージを表示する
-func showTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
-	playerTileX := int(playerGrid.X)
-	playerTileY := int(playerGrid.Y)
-
-	// GridElementベースのアイテムをチェック
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.Item,
-		world.Components.Name,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		nameComp := world.Components.Name.Get(entity).(*gc.Name)
-
-		itemTileX := int(gridElement.X)
-		itemTileY := int(gridElement.Y)
-
-		// GridElementアイテムをチェック
-		if itemTileX == playerTileX && itemTileY == playerTileY {
-			// アイテムを発見したメッセージを表示
+	case gc.ItemTrigger:
+		// アイテムの名前を取得して表示
+		if triggerEntity.HasComponent(world.Components.Name) {
+			nameComp := world.Components.Name.Get(triggerEntity).(*gc.Name)
 			gamelog.New(gamelog.FieldLog).
 				ItemName(nameComp.Name).
-				Append(" を発見した。").
+				Append(" がある。").
 				Log()
 		}
-	}))
-}
-
-// checkForItems はプレイヤー位置にアイテムがあるかチェック
-func checkForItems(world w.World, tileX, tileY int) bool {
-	hasItem := false
-	world.Manager.Join(
-		world.Components.Item,
-		world.Components.ItemLocationOnField,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(itemEntity ecs.Entity) {
-		itemGrid := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
-		if int(itemGrid.X) == tileX && int(itemGrid.Y) == tileY {
-			hasItem = true
-		}
-	}))
-	return hasItem
+	}
 }
 
 // findEnemyAtPosition は指定位置にいる敵エンティティを検索する
@@ -461,6 +421,16 @@ func getTriggerActions(world w.World, trigger *gc.Trigger, triggerEntity ecs.Ent
 			result = append(result, InteractionAction{
 				Label:    "話しかける(" + name.Name + ")",
 				Activity: &actions.TalkActivity{},
+				Target:   triggerEntity,
+			})
+		}
+	case gc.ItemTrigger:
+		// アイテム拾得アクションを生成
+		if triggerEntity.HasComponent(world.Components.Name) {
+			name := world.Components.Name.Get(triggerEntity).(*gc.Name)
+			result = append(result, InteractionAction{
+				Label:    "拾う(" + name.Name + ")",
+				Activity: &actions.PickupActivity{},
 				Target:   triggerEntity,
 			})
 		}

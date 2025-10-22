@@ -62,6 +62,17 @@ func (t TalkTrigger) Config() TriggerConfig {
 	}
 }
 
+// ItemTrigger はアイテム拾得のトリガー
+type ItemTrigger struct{}
+
+// Config はトリガー設定を返す
+func (t ItemTrigger) Config() TriggerConfig {
+	return TriggerConfig{
+		ActivationRange: ActivationRangeSameTile,
+		ActivationMode:  ActivationModeManual,
+	}
+}
+
 // ActivationRange はトリガーの発動範囲を表す
 type ActivationRange string
 
