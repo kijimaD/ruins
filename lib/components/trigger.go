@@ -2,50 +2,64 @@ package components
 
 import "fmt"
 
-// TriggerType はトリガーの種類を表す
-type TriggerType string
+// Trigger は接触で発動するイベント
+type Trigger struct {
+	Data TriggerData
+}
 
-const (
-	// TriggerTypeWarp はワープホール
-	TriggerTypeWarp = TriggerType("WARP")
-	// TriggerTypeDoor はドア
-	TriggerTypeDoor = TriggerType("DOOR")
-)
+// TriggerConfig はトリガーの設定
+type TriggerConfig struct {
+	ActivationRange ActivationRange // 発動範囲
+	ActivationMode  ActivationMode  // 発動方式
+}
 
 // TriggerData はトリガーのデータインターフェース
 type TriggerData interface {
-	TriggerType() TriggerType
-}
-
-// Trigger は接触で発動するイベント
-type Trigger struct {
-	Detail          TriggerData
-	ActivationRange ActivationRange // 発動範囲
-	ActivationMode  ActivationMode  // 発動方式
+	Config() TriggerConfig
 }
 
 // WarpNextTrigger は次の階層へワープするトリガー
 type WarpNextTrigger struct{}
 
-// TriggerType はトリガータイプを返す
-func (t WarpNextTrigger) TriggerType() TriggerType {
-	return TriggerTypeWarp
+// Config はトリガー設定を返す
+func (t WarpNextTrigger) Config() TriggerConfig {
+	return TriggerConfig{
+		ActivationRange: ActivationRangeSameTile,
+		ActivationMode:  ActivationModeManual,
+	}
 }
 
 // WarpEscapeTrigger は脱出ワープするトリガー
 type WarpEscapeTrigger struct{}
 
-// TriggerType はトリガータイプを返す
-func (t WarpEscapeTrigger) TriggerType() TriggerType {
-	return TriggerTypeWarp
+// Config はトリガー設定を返す
+func (t WarpEscapeTrigger) Config() TriggerConfig {
+	return TriggerConfig{
+		ActivationRange: ActivationRangeSameTile,
+		ActivationMode:  ActivationModeManual,
+	}
 }
 
 // DoorTrigger はドアのトリガー
 type DoorTrigger struct{}
 
-// TriggerType はトリガータイプを返す
-func (t DoorTrigger) TriggerType() TriggerType {
-	return TriggerTypeDoor
+// Config はトリガー設定を返す
+func (t DoorTrigger) Config() TriggerConfig {
+	return TriggerConfig{
+		ActivationRange: ActivationRangeAdjacent,
+		ActivationMode:  ActivationModeManual,
+	}
+}
+
+// TalkTrigger は会話のトリガー
+type TalkTrigger struct{}
+
+// Config はトリガー設定を返す
+func (t TalkTrigger) Config() TriggerConfig {
+	return TriggerConfig{
+		ActivationRange: ActivationRangeAdjacent,
+		ActivationMode:  ActivationModeManual,
+	}
 }
 
 // ActivationRange はトリガーの発動範囲を表す

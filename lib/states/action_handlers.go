@@ -31,33 +31,21 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	newX := currentX + deltaX
 	newY := currentY + deltaY
 
-	// 移動先に会話NPCがいる場合は会話アクション
-	npc := findNeutralNPCAtPosition(world, newX, newY)
-	if npc != nil {
-		params := actions.ActionParams{
-			Actor:  entity,
-			Target: npc,
-		}
-		executeActivity(world, &actions.TalkActivity{}, params)
-		return
-	}
-
-	// 移動先に敵がいる場合は攻撃アクション
-	enemy := findEnemyAtPosition(world, entity, newX, newY)
-	if enemy != nil {
-		params := actions.ActionParams{
-			Actor:  entity,
-			Target: enemy,
-		}
-		executeActivity(world, &actions.AttackActivity{}, params)
-		return
-	}
-
-	// 移動先にドアトリガーがある場合はドアを開くアクション
+	// 移動先にトリガーがある場合の処理
 	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
 	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
 	if trigger != nil {
-		if _, ok := trigger.Detail.(gc.DoorTrigger); ok {
+		switch trigger.Data.(type) {
+		case gc.TalkTrigger:
+			// 会話アクション
+			params := actions.ActionParams{
+				Actor:  entity,
+				Target: &triggerEntity,
+			}
+			executeActivity(world, &actions.TalkActivity{}, params)
+			return
+		case gc.DoorTrigger:
+			// ドアを開くアクション
 			if triggerEntity.HasComponent(world.Components.Door) {
 				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
 				if !door.IsOpen {
@@ -70,6 +58,17 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 				}
 			}
 		}
+	}
+
+	// 移動先に敵がいる場合は攻撃アクション
+	enemy := findEnemyAtPosition(world, entity, newX, newY)
+	if enemy != nil {
+		params := actions.ActionParams{
+			Actor:  entity,
+			Target: enemy,
+		}
+		executeActivity(world, &actions.AttackActivity{}, params)
+		return
 	}
 
 	canMove := movement.CanMoveTo(world, newX, newY, entity)
@@ -143,8 +142,8 @@ func ExecuteEnterAction(world w.World) {
 
 	// 手動実行型かつ直上タイル型のTriggerを実行する
 	trigger, triggerEntity := getTriggerAtSameTile(world, gridElement)
-	if trigger != nil && trigger.ActivationMode == gc.ActivationModeManual {
-		if _, ok := trigger.Detail.(gc.DoorTrigger); ok {
+	if trigger != nil && trigger.Data.Config().ActivationMode == gc.ActivationModeManual {
+		if _, ok := trigger.Data.(gc.DoorTrigger); ok {
 			if triggerEntity.HasComponent(world.Components.Door) {
 				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
 				if !door.IsOpen {
@@ -223,7 +222,7 @@ func getTriggerInRange(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, 
 		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
 		// ActivationRangeに応じた範囲チェック
-		if isInRange(playerGrid, ge, t.ActivationRange) {
+		if isInRange(playerGrid, ge, t.Data.Config().ActivationRange) {
 			trigger = t
 			triggerEntity = entity
 		}
@@ -248,7 +247,7 @@ func getAllManualTriggersInRange(world w.World, playerGrid *gc.GridElement) []st
 		t := world.Components.Trigger.Get(entity).(*gc.Trigger)
 		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		if t.ActivationMode == gc.ActivationModeManual && isInRange(playerGrid, ge, t.ActivationRange) {
+		if t.Data.Config().ActivationMode == gc.ActivationModeManual && isInRange(playerGrid, ge, t.Data.Config().ActivationRange) {
 			results = append(results, struct {
 				Trigger *gc.Trigger
 				Entity  ecs.Entity
@@ -317,13 +316,11 @@ func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
 		return
 	}
 
-	// ActivationMode=MANUALのTriggerのみメッセージ表示
-	if trigger.ActivationMode != gc.ActivationModeManual {
+	if trigger.Data.Config().ActivationMode != gc.ActivationModeManual {
 		return
 	}
 
-	// Triggerの種類に応じてメッセージ表示
-	switch trigger.Detail.(type) {
+	switch trigger.Data.(type) {
 	case gc.WarpNextTrigger:
 		gamelog.New(gamelog.FieldLog).
 			Append("転移ゲートがある。Enterキーで移動。").
@@ -410,24 +407,6 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 	return foundEnemy
 }
 
-// findNeutralNPCAtPosition は指定位置にある中立NPC（会話可能）を検索する
-func findNeutralNPCAtPosition(world w.World, tileX, tileY int) *ecs.Entity {
-	var foundNPC *ecs.Entity
-
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.FactionNeutral,
-		world.Components.Dialog,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
-			foundNPC = &entity
-		}
-	}))
-
-	return foundNPC
-}
-
 // isHostileFaction は2つのエンティティが敵対関係にあるかを判定する
 func isHostileFaction(world w.World, entity1, entity2 ecs.Entity) bool {
 	// プレイヤー側(Ally)と敵(Enemy)は敵対関係
@@ -456,7 +435,7 @@ type InteractionAction struct {
 func getTriggerActions(world w.World, trigger *gc.Trigger, triggerEntity ecs.Entity, dirLabel string) []InteractionAction {
 	var result []InteractionAction
 
-	switch trigger.Detail.(type) {
+	switch trigger.Data.(type) {
 	case gc.DoorTrigger:
 		// ドアの状態に応じたアクションを生成
 		if triggerEntity.HasComponent(world.Components.Door) {
@@ -475,6 +454,16 @@ func getTriggerActions(world w.World, trigger *gc.Trigger, triggerEntity ecs.Ent
 				})
 			}
 		}
+	case gc.TalkTrigger:
+		// 会話アクションを生成
+		if triggerEntity.HasComponent(world.Components.Name) {
+			name := world.Components.Name.Get(triggerEntity).(*gc.Name)
+			result = append(result, InteractionAction{
+				Label:    "話しかける(" + name.Name + ")",
+				Activity: &actions.TalkActivity{},
+				Target:   triggerEntity,
+			})
+		}
 	}
 
 	return result
@@ -492,8 +481,6 @@ func GetInteractionActions(world w.World) []InteractionAction {
 	}
 
 	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
-	playerX := int(gridElement.X)
-	playerY := int(gridElement.Y)
 
 	var interactionActions []InteractionAction
 
@@ -507,44 +494,6 @@ func GetInteractionActions(world w.World) []InteractionAction {
 			triggerActions := getTriggerActions(world, mt.Trigger, mt.Entity, dirLabel)
 			interactionActions = append(interactionActions, triggerActions...)
 		}
-	}
-
-	// 近傍8マスをスキャン（NPC用）
-	directions := []struct {
-		dx    int
-		dy    int
-		label string
-	}{
-		{0, -1, "上"},
-		{0, 1, "下"},
-		{-1, 0, "左"},
-		{1, 0, "右"},
-		{-1, -1, "左上"},
-		{1, -1, "右上"},
-		{-1, 1, "左下"},
-		{1, 1, "右下"},
-	}
-
-	for _, dir := range directions {
-		tileX := playerX + dir.dx
-		tileY := playerY + dir.dy
-
-		// 会話可能NPCをチェック
-		world.Manager.Join(
-			world.Components.GridElement,
-			world.Components.FactionNeutral,
-			world.Components.Dialog,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
-			if int(ge.X) == tileX && int(ge.Y) == tileY {
-				name := world.Components.Name.Get(entity).(*gc.Name)
-				interactionActions = append(interactionActions, InteractionAction{
-					Label:    "話しかける(" + name.Name + ")",
-					Activity: &actions.TalkActivity{},
-					Target:   entity,
-				})
-			}
-		}))
 	}
 
 	return interactionActions

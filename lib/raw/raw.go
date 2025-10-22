@@ -455,11 +455,11 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 		}
 	}
 
-	// 会話データの処理
 	if member.Dialog != nil {
 		entitySpec.Dialog = &gc.Dialog{
 			MessageKey: member.Dialog.MessageKey,
 		}
+		entitySpec.Trigger = &gc.Trigger{Data: gc.TalkTrigger{}}
 	}
 
 	return entitySpec, nil
@@ -520,22 +520,10 @@ type TileRaw struct {
 }
 
 // WarpNextTriggerRaw は次の階へワープするトリガーのローデータ
-type WarpNextTriggerRaw struct {
-	ActivationRange *gc.ActivationRange // nilの場合はSAME_TILE
-	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
-}
+type WarpNextTriggerRaw struct{}
 
 // WarpEscapeTriggerRaw は脱出ワープするトリガーのローデータ
-type WarpEscapeTriggerRaw struct {
-	ActivationRange *gc.ActivationRange // nilの場合はSAME_TILE
-	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
-}
-
-// DoorTriggerRaw はドアトリガーのローデータ
-type DoorTriggerRaw struct {
-	ActivationRange *gc.ActivationRange // nilの場合はSAME_TILE
-	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
-}
+type WarpEscapeTriggerRaw struct{}
 
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
@@ -547,7 +535,6 @@ type PropRaw struct {
 	LightSource       *gc.LightSource
 	WarpNextTrigger   *WarpNextTriggerRaw
 	WarpEscapeTrigger *WarpEscapeTriggerRaw
-	DoorTrigger       *DoorTriggerRaw
 }
 
 // GetTile は指定された名前のタイルを取得する
@@ -626,51 +613,11 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 	}
 
 	if propRaw.WarpNextTrigger != nil {
-		activationRange := gc.ActivationRangeSameTile
-		if propRaw.WarpNextTrigger.ActivationRange != nil {
-			activationRange = *propRaw.WarpNextTrigger.ActivationRange
-		}
-		activationMode := gc.ActivationModeManual
-		if propRaw.WarpNextTrigger.ActivationMode != nil {
-			activationMode = *propRaw.WarpNextTrigger.ActivationMode
-		}
-		entitySpec.Trigger = &gc.Trigger{
-			Detail:          gc.WarpNextTrigger{},
-			ActivationRange: activationRange,
-			ActivationMode:  activationMode,
-		}
+		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpNextTrigger{}}
 	}
 
 	if propRaw.WarpEscapeTrigger != nil {
-		activationRange := gc.ActivationRangeSameTile
-		if propRaw.WarpEscapeTrigger.ActivationRange != nil {
-			activationRange = *propRaw.WarpEscapeTrigger.ActivationRange
-		}
-		activationMode := gc.ActivationModeManual
-		if propRaw.WarpEscapeTrigger.ActivationMode != nil {
-			activationMode = *propRaw.WarpEscapeTrigger.ActivationMode
-		}
-		entitySpec.Trigger = &gc.Trigger{
-			Detail:          gc.WarpEscapeTrigger{},
-			ActivationRange: activationRange,
-			ActivationMode:  activationMode,
-		}
-	}
-
-	if propRaw.DoorTrigger != nil {
-		activationRange := gc.ActivationRangeSameTile
-		if propRaw.DoorTrigger.ActivationRange != nil {
-			activationRange = *propRaw.DoorTrigger.ActivationRange
-		}
-		activationMode := gc.ActivationModeManual
-		if propRaw.DoorTrigger.ActivationMode != nil {
-			activationMode = *propRaw.DoorTrigger.ActivationMode
-		}
-		entitySpec.Trigger = &gc.Trigger{
-			Detail:          gc.DoorTrigger{},
-			ActivationRange: activationRange,
-			ActivationMode:  activationMode,
-		}
+		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpEscapeTrigger{}}
 	}
 
 	return entitySpec, nil

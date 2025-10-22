@@ -32,8 +32,7 @@ func AutoTriggerSystem(world w.World) error {
 		trigger := world.Components.Trigger.Get(entity).(*gc.Trigger)
 		triggerGrid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		// ActivationRangeに応じた範囲チェック
-		if !isInActivationRange(playerGrid, triggerGrid, trigger.ActivationRange) {
+		if !isInActivationRange(playerGrid, triggerGrid, trigger.Data.Config().ActivationRange) {
 			return
 		}
 
@@ -44,8 +43,7 @@ func AutoTriggerSystem(world w.World) error {
 	for _, triggerEntity := range triggersToProcess {
 		trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
 
-		// 手動実行はスルー
-		if trigger.ActivationMode != gc.ActivationModeAuto {
+		if trigger.Data.Config().ActivationMode != gc.ActivationModeAuto {
 			continue
 		}
 

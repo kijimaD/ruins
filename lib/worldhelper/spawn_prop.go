@@ -59,11 +59,7 @@ func SpawnDoor(world w.World, x gc.Tile, y gc.Tile, orientation gc.DoorOrientati
 			IsOpen:      false,
 			Orientation: orientation,
 		},
-		Trigger: &gc.Trigger{
-			Detail:          gc.DoorTrigger{},
-			ActivationRange: gc.ActivationRangeAdjacent,
-			ActivationMode:  gc.ActivationModeManual,
-		},
+		Trigger: &gc.Trigger{Data: gc.DoorTrigger{}},
 	}
 
 	// エンティティを生成

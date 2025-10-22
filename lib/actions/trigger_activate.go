@@ -52,13 +52,13 @@ func (ta *TriggerActivateActivity) DoTurn(act *Activity, world w.World) error {
 	trigger := world.Components.Trigger.Get(ta.TriggerEntity).(*gc.Trigger)
 
 	// Triggerの種類に応じた処理を実行
-	switch content := trigger.Detail.(type) {
+	switch content := trigger.Data.(type) {
 	case gc.WarpNextTrigger:
 		ta.executeWarpNext(act, world, content)
 	case gc.WarpEscapeTrigger:
 		ta.executeWarpEscape(act, world, content)
 	default:
-		err := fmt.Errorf("未知のトリガータイプ: %T", trigger.Detail)
+		err := fmt.Errorf("未知のトリガータイプ: %T", trigger)
 		act.Cancel(fmt.Sprintf("トリガー発動エラー: %s", err.Error()))
 		return err
 	}
