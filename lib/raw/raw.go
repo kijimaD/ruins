@@ -531,6 +531,12 @@ type WarpEscapeTriggerRaw struct {
 	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
 }
 
+// DoorTriggerRaw はドアトリガーのローデータ
+type DoorTriggerRaw struct {
+	ActivationRange *gc.ActivationRange // nilの場合はSAME_TILE
+	ActivationMode  *gc.ActivationMode  // nilの場合はMANUAL
+}
+
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
 	Name              string
@@ -541,6 +547,7 @@ type PropRaw struct {
 	LightSource       *gc.LightSource
 	WarpNextTrigger   *WarpNextTriggerRaw
 	WarpEscapeTrigger *WarpEscapeTriggerRaw
+	DoorTrigger       *DoorTriggerRaw
 }
 
 // GetTile は指定された名前のタイルを取得する
@@ -645,6 +652,22 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 		}
 		entitySpec.Trigger = &gc.Trigger{
 			Detail:          gc.WarpEscapeTrigger{},
+			ActivationRange: activationRange,
+			ActivationMode:  activationMode,
+		}
+	}
+
+	if propRaw.DoorTrigger != nil {
+		activationRange := gc.ActivationRangeSameTile
+		if propRaw.DoorTrigger.ActivationRange != nil {
+			activationRange = *propRaw.DoorTrigger.ActivationRange
+		}
+		activationMode := gc.ActivationModeManual
+		if propRaw.DoorTrigger.ActivationMode != nil {
+			activationMode = *propRaw.DoorTrigger.ActivationMode
+		}
+		entitySpec.Trigger = &gc.Trigger{
+			Detail:          gc.DoorTrigger{},
 			ActivationRange: activationRange,
 			ActivationMode:  activationMode,
 		}

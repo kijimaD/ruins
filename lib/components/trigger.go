@@ -8,6 +8,8 @@ type TriggerType string
 const (
 	// TriggerTypeWarp はワープホール
 	TriggerTypeWarp = TriggerType("WARP")
+	// TriggerTypeDoor はドア
+	TriggerTypeDoor = TriggerType("DOOR")
 )
 
 // TriggerData はトリガーのデータインターフェース
@@ -36,6 +38,14 @@ type WarpEscapeTrigger struct{}
 // TriggerType はトリガータイプを返す
 func (t WarpEscapeTrigger) TriggerType() TriggerType {
 	return TriggerTypeWarp
+}
+
+// DoorTrigger はドアのトリガー
+type DoorTrigger struct{}
+
+// TriggerType はトリガータイプを返す
+func (t DoorTrigger) TriggerType() TriggerType {
+	return TriggerTypeDoor
 }
 
 // ActivationRange はトリガーの発動範囲を表す
