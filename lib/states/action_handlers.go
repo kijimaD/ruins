@@ -42,7 +42,7 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 		return
 	}
 
-	// 移動先にOnCollisionモードのTriggerがある場合は自動実行
+	// 移動先にOnCollision方式のTriggerがある場合は自動実行
 	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
 	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
 	if trigger != nil && trigger.Data.Config().ActivationWay == gc.ActivationWayOnCollision {
@@ -198,7 +198,7 @@ func getTriggerInRange(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, 
 }
 
 // getAllInteractiveTriggersInRange はプレイヤーの範囲内の全てのインタラクティブなTriggerエンティティを取得する
-// Manual と OnCollision モードのTriggerが対象
+// Manual と OnCollision 方式のTriggerが対象
 func getAllInteractiveTriggersInRange(world w.World, playerGrid *gc.GridElement) []ecs.Entity {
 	var results []ecs.Entity
 
@@ -209,9 +209,9 @@ func getAllInteractiveTriggersInRange(world w.World, playerGrid *gc.GridElement)
 		trigger := world.Components.Trigger.Get(entity).(*gc.Trigger)
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		mode := trigger.Data.Config().ActivationWay
-		// ManualまたはOnCollisionモードで、範囲内にあるものを取得
-		if (mode == gc.ActivationWayManual || mode == gc.ActivationWayOnCollision) &&
+		way := trigger.Data.Config().ActivationWay
+		// ManualまたはOnCollision方式で、範囲内にあるものを取得
+		if (way == gc.ActivationWayManual || way == gc.ActivationWayOnCollision) &&
 			worldhelper.IsInActivationRange(playerGrid, gridElement, trigger.Data.Config().ActivationRange) {
 			results = append(results, entity)
 		}

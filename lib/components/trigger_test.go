@@ -213,7 +213,7 @@ func TestTriggerConfigConsistency(t *testing.T) {
 func TestTriggerDesignConstraints(t *testing.T) {
 	t.Parallel()
 
-	t.Run("SameTileトリガーはManualモード", func(t *testing.T) {
+	t.Run("SameTileトリガーはManual方式", func(t *testing.T) {
 		t.Parallel()
 		// 仕様: 直上タイルトリガー（WarpNext, WarpEscape, Item）は手動発動
 		sameTileTriggers := []TriggerData{
@@ -230,7 +230,7 @@ func TestTriggerDesignConstraints(t *testing.T) {
 		}
 	})
 
-	t.Run("AdjacentトリガーはOnCollisionモード", func(t *testing.T) {
+	t.Run("AdjacentトリガーはOnCollision方式", func(t *testing.T) {
 		t.Parallel()
 		// 仕様: 隣接タイルトリガー（Door, Talk）は衝突時自動発動
 		adjacentTriggers := []TriggerData{

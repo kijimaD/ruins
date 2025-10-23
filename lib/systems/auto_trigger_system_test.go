@@ -66,8 +66,8 @@ func (t InvalidAutoWayTrigger) Config() gc.TriggerConfig {
 	}
 }
 
-// TestAutoTriggerSystem_AutoMode はAutoモードのトリガーが自動実行されることを確認
-func TestAutoTriggerSystem_AutoMode(t *testing.T) {
+// TestAutoTriggerSystem_AutoWay はAuto方式のトリガーが自動実行されることを確認
+func TestAutoTriggerSystem_AutoWay(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -77,7 +77,7 @@ func TestAutoTriggerSystem_AutoMode(t *testing.T) {
 	player.AddComponent(world.Components.Player, &gc.Player{})
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
-	// Autoモードのトリガーを作成（プレイヤーと同じタイル）
+	// Auto方式のトリガーを作成（プレイヤーと同じタイル）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
@@ -95,8 +95,8 @@ func TestAutoTriggerSystem_AutoMode(t *testing.T) {
 		"Autoトリガーは自動実行され、Consumableなので削除されるべき")
 }
 
-// TestAutoTriggerSystem_ManualMode はManualモードのトリガーが自動実行されないことを確認
-func TestAutoTriggerSystem_ManualMode(t *testing.T) {
+// TestAutoTriggerSystem_ManualWay はManual方式のトリガーが自動実行されないことを確認
+func TestAutoTriggerSystem_ManualWay(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -106,11 +106,11 @@ func TestAutoTriggerSystem_ManualMode(t *testing.T) {
 	player.AddComponent(world.Components.Player, &gc.Player{})
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
-	// Manualモードのトリガーを作成（プレイヤーと同じタイル）
+	// Manual方式のトリガーを作成（プレイヤーと同じタイル）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.WarpNextTrigger{}, // Manual モード
+		Data: gc.WarpNextTrigger{}, // Manual 方式
 	})
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
@@ -125,8 +125,8 @@ func TestAutoTriggerSystem_ManualMode(t *testing.T) {
 		"Manualトリガーは自動実行されないので削除されないべき")
 }
 
-// TestAutoTriggerSystem_OnCollisionMode はOnCollisionモードのトリガーが自動実行されないことを確認
-func TestAutoTriggerSystem_OnCollisionMode(t *testing.T) {
+// TestAutoTriggerSystem_OnCollisionWay はOnCollision方式のトリガーが自動実行されないことを確認
+func TestAutoTriggerSystem_OnCollisionWay(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -136,11 +136,11 @@ func TestAutoTriggerSystem_OnCollisionMode(t *testing.T) {
 	player.AddComponent(world.Components.Player, &gc.Player{})
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
-	// OnCollisionモードのトリガーを作成（プレイヤーと隣接）
+	// OnCollision方式のトリガーを作成（プレイヤーと隣接）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.DoorTrigger{}, // OnCollision モード
+		Data: gc.DoorTrigger{}, // OnCollision 方式
 	})
 	triggerEntity.AddComponent(world.Components.Door, &gc.Door{IsOpen: false, Orientation: gc.DoorOrientationHorizontal})
 
@@ -164,7 +164,7 @@ func TestAutoTriggerSystem_OutOfRange(t *testing.T) {
 	player.AddComponent(world.Components.Player, &gc.Player{})
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
-	// Autoモードのトリガーを作成（プレイヤーから遠い位置）
+	// Auto方式のトリガーを作成（プレイヤーから遠い位置）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 50, Y: 50}) // 遠い位置
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
@@ -194,7 +194,7 @@ func TestAutoTriggerSystem_AdjacentRange(t *testing.T) {
 	player.AddComponent(world.Components.Player, &gc.Player{})
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
-	// Autoモード + Adjacent範囲のトリガーを作成（プレイヤーに隣接）
+	// Auto方式 + Adjacent範囲のトリガーを作成（プレイヤーに隣接）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10}) // 隣接
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
@@ -219,7 +219,7 @@ func TestAutoTriggerSystem_NoPlayer(t *testing.T) {
 
 	// プレイヤーを作成しない
 
-	// Autoモードのトリガーを作成
+	// Auto方式のトリガーを作成
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
@@ -275,14 +275,14 @@ func TestAutoTriggerSystem_WarpNextEvent(t *testing.T) {
 	player.AddComponent(world.Components.Player, &gc.Player{})
 	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 
-	// WarpNextをAutoモードにカスタマイズ（本来はManualだがテスト用にAuto化）
+	// WarpNextをAuto方式にカスタマイズ（本来はManualだがテスト用にAuto化）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
 	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
 		Data: gc.WarpNextTrigger{}, // 実際のWarpNextを使用
 	})
 
-	// AutoモードにするためにTrigger.Dataを上書き（テスト用）
+	// Auto方式にするためにTrigger.Dataを上書き（テスト用）
 	trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
 	trigger.Data = AutoWarpTrigger{}
 
