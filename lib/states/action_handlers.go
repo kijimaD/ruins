@@ -31,35 +31,6 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	newX := currentX + deltaX
 	newY := currentY + deltaY
 
-	// 移動先にトリガーがある場合の処理
-	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
-	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
-	if trigger != nil {
-		switch trigger.Data.(type) {
-		case gc.TalkTrigger:
-			// 会話アクション
-			params := actions.ActionParams{
-				Actor:  entity,
-				Target: &triggerEntity,
-			}
-			executeActivity(world, &actions.TalkActivity{}, params)
-			return
-		case gc.DoorTrigger:
-			// ドアを開くアクション
-			if triggerEntity.HasComponent(world.Components.Door) {
-				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
-				if !door.IsOpen {
-					params := actions.ActionParams{
-						Actor:  entity,
-						Target: &triggerEntity,
-					}
-					executeActivity(world, &actions.OpenDoorActivity{}, params)
-					return
-				}
-			}
-		}
-	}
-
 	// 移動先に敵がいる場合は攻撃アクション
 	enemy := findEnemyAtPosition(world, entity, newX, newY)
 	if enemy != nil {
@@ -69,6 +40,30 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 		}
 		executeActivity(world, &actions.AttackActivity{}, params)
 		return
+	}
+
+	// 移動先にOnCollisionモードのTriggerがある場合は自動実行
+	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
+	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
+	if trigger != nil && trigger.Data.Config().ActivationMode == gc.ActivationModeOnCollision {
+		// DoorTriggerの場合は、閉じている場合のみ実行（開いている場合は通過）
+		if _, isDoorTrigger := trigger.Data.(gc.DoorTrigger); isDoorTrigger {
+			if triggerEntity.HasComponent(world.Components.Door) {
+				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
+				if !door.IsOpen {
+					// 閉じているドアは開くトリガーを実行
+					params := actions.ActionParams{Actor: entity}
+					executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
+					return
+				}
+				// 開いているドアは通過可能なので、トリガーを実行せずに下の移動処理に進む
+			}
+		} else {
+			// ドア以外のOnCollisionトリガー（会話など）は常に実行
+			params := actions.ActionParams{Actor: entity}
+			executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
+			return
+		}
 	}
 
 	canMove := movement.CanMoveTo(world, newX, newY, entity)
@@ -125,7 +120,7 @@ func ExecuteWaitAction(world w.World) {
 	executeActivity(world, &actions.WaitActivity{}, params)
 }
 
-// ExecuteEnterAction はEnterキーによる状況に応じたアクションを実行する
+// ExecuteEnterAction は直上タイルのTriggerを実行する
 func ExecuteEnterAction(world w.World) {
 	entity, err := worldhelper.GetPlayerEntity(world)
 	if err != nil {
@@ -138,33 +133,10 @@ func ExecuteEnterAction(world w.World) {
 
 	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-	// 手動実行型かつ直上タイル型のTriggerを実行する
 	trigger, triggerEntity := getTriggerAtSameTile(world, gridElement)
-	if trigger != nil && trigger.Data.Config().ActivationMode == gc.ActivationModeManual {
-		switch trigger.Data.(type) {
-		case gc.DoorTrigger:
-			if triggerEntity.HasComponent(world.Components.Door) {
-				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
-				if !door.IsOpen {
-					params := actions.ActionParams{
-						Actor:  entity,
-						Target: &triggerEntity,
-					}
-					executeActivity(world, &actions.OpenDoorActivity{}, params)
-					return
-				}
-			}
-		case gc.ItemTrigger:
-			// アイテム拾得アクション
-			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, &actions.PickupActivity{}, params)
-			return
-		default:
-			// その他のTriggerはTriggerActivateActivityを実行
-			params := actions.ActionParams{Actor: entity}
-			executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
-			return
-		}
+	if trigger != nil && trigger.Data.Config().ActivationRange == gc.ActivationRangeSameTile {
+		params := actions.ActionParams{Actor: entity}
+		executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
 	}
 }
 
@@ -217,7 +189,7 @@ func getTriggerInRange(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, 
 		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
 		// ActivationRangeに応じた範囲チェック
-		if isInRange(playerGrid, ge, t.Data.Config().ActivationRange) {
+		if worldhelper.IsInActivationRange(playerGrid, ge, t.Data.Config().ActivationRange) {
 			trigger = t
 			triggerEntity = entity
 		}
@@ -225,28 +197,23 @@ func getTriggerInRange(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, 
 	return trigger, triggerEntity
 }
 
-// getAllManualTriggersInRange はプレイヤーの範囲内の全ての手動Triggerを取得する
-func getAllManualTriggersInRange(world w.World, playerGrid *gc.GridElement) []struct {
-	Trigger *gc.Trigger
-	Entity  ecs.Entity
-} {
-	var results []struct {
-		Trigger *gc.Trigger
-		Entity  ecs.Entity
-	}
+// getAllInteractiveTriggersInRange はプレイヤーの範囲内の全てのインタラクティブなTriggerエンティティを取得する
+// Manual と OnCollision モードのTriggerが対象
+func getAllInteractiveTriggersInRange(world w.World, playerGrid *gc.GridElement) []ecs.Entity {
+	var results []ecs.Entity
 
 	world.Manager.Join(
 		world.Components.GridElement,
 		world.Components.Trigger,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		t := world.Components.Trigger.Get(entity).(*gc.Trigger)
-		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		trigger := world.Components.Trigger.Get(entity).(*gc.Trigger)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		if t.Data.Config().ActivationMode == gc.ActivationModeManual && isInRange(playerGrid, ge, t.Data.Config().ActivationRange) {
-			results = append(results, struct {
-				Trigger *gc.Trigger
-				Entity  ecs.Entity
-			}{Trigger: t, Entity: entity})
+		mode := trigger.Data.Config().ActivationMode
+		// ManualまたはOnCollisionモードで、範囲内にあるものを取得
+		if (mode == gc.ActivationModeManual || mode == gc.ActivationModeOnCollision) &&
+			worldhelper.IsInActivationRange(playerGrid, gridElement, trigger.Data.Config().ActivationRange) {
+			results = append(results, entity)
 		}
 	}))
 
@@ -278,30 +245,11 @@ func getDirectionLabel(playerGrid, targetGrid *gc.GridElement) string {
 			return "右下"
 		}
 		return "下"
-	} else {
-		if dx < 0 {
-			return "左"
-		}
-		return "右"
 	}
-}
-
-// isInRange はプレイヤーがトリガーの発動範囲内にいるかを判定する
-func isInRange(playerGrid, triggerGrid *gc.GridElement, activationRange gc.ActivationRange) bool {
-	switch activationRange {
-	case gc.ActivationRangeSameTile:
-		// 直上（同じタイル）
-		return playerGrid.X == triggerGrid.X && playerGrid.Y == triggerGrid.Y
-	case gc.ActivationRangeAdjacent:
-		// 隣接タイル（近傍8タイル、同じタイルは含まない）
-		diffX := int(playerGrid.X) - int(triggerGrid.X)
-		diffY := int(playerGrid.Y) - int(triggerGrid.Y)
-		dx := max(diffX, -diffX)
-		dy := max(diffY, -diffY)
-		return dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0)
-	default:
-		return false
+	if dx < 0 {
+		return "左"
 	}
+	return "右"
 }
 
 // showTileTriggerMessage は手動トリガーのメッセージを表示する
@@ -454,16 +402,21 @@ func GetInteractionActions(world w.World) []InteractionAction {
 
 	var interactionActions []InteractionAction
 
-	// 手動Triggerを全て取得してアクションを生成
-	manualTriggers := getAllManualTriggersInRange(world, gridElement)
-	for _, mt := range manualTriggers {
-		// Triggerの位置を取得
-		if mt.Entity.HasComponent(world.Components.GridElement) {
-			triggerGrid := world.Components.GridElement.Get(mt.Entity).(*gc.GridElement)
-			dirLabel := getDirectionLabel(gridElement, triggerGrid)
-			triggerActions := getTriggerActions(world, mt.Trigger, mt.Entity, dirLabel)
-			interactionActions = append(interactionActions, triggerActions...)
+	// インタラクティブなTriggerを全て取得してアクションを生成
+	triggerEntities := getAllInteractiveTriggersInRange(world, gridElement)
+	for _, triggerEntity := range triggerEntities {
+		if !triggerEntity.HasComponent(world.Components.GridElement) {
+			continue
 		}
+		if !triggerEntity.HasComponent(world.Components.Trigger) {
+			continue
+		}
+
+		triggerGrid := world.Components.GridElement.Get(triggerEntity).(*gc.GridElement)
+		trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
+		dirLabel := getDirectionLabel(gridElement, triggerGrid)
+		triggerActions := getTriggerActions(world, trigger, triggerEntity, dirLabel)
+		interactionActions = append(interactionActions, triggerActions...)
 	}
 
 	return interactionActions

@@ -47,7 +47,7 @@ type DoorTrigger struct{}
 func (t DoorTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeAdjacent,
-		ActivationMode:  ActivationModeManual,
+		ActivationMode:  ActivationModeOnCollision,
 	}
 }
 
@@ -58,7 +58,7 @@ type TalkTrigger struct{}
 func (t TalkTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeAdjacent,
-		ActivationMode:  ActivationModeManual,
+		ActivationMode:  ActivationModeOnCollision,
 	}
 }
 
@@ -98,16 +98,18 @@ func (enum ActivationRange) Valid() error {
 type ActivationMode string
 
 const (
-	// ActivationModeAuto は自動発動（接触時に即座に発動）
+	// ActivationModeAuto は自動発動（範囲内に入ったら即座に発動）
 	ActivationModeAuto ActivationMode = "AUTO"
-	// ActivationModeManual は手動発動（Enterキーなどで発動）
+	// ActivationModeManual は手動発動（Enterキーやアクションメニューで発動）
 	ActivationModeManual ActivationMode = "MANUAL"
+	// ActivationModeOnCollision は移動先衝突時に自動発動（移動先として指定された時に発動）
+	ActivationModeOnCollision ActivationMode = "ON_COLLISION"
 )
 
 // Valid はActivationModeの値が有効かを検証する
 func (enum ActivationMode) Valid() error {
 	switch enum {
-	case ActivationModeAuto, ActivationModeManual:
+	case ActivationModeAuto, ActivationModeManual, ActivationModeOnCollision:
 		return nil
 	}
 	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)

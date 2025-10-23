@@ -32,14 +32,14 @@ func AutoTriggerSystem(world w.World) error {
 		trigger := world.Components.Trigger.Get(entity).(*gc.Trigger)
 		triggerGrid := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		if !isInActivationRange(playerGrid, triggerGrid, trigger.Data.Config().ActivationRange) {
+		if !worldhelper.IsInActivationRange(playerGrid, triggerGrid, trigger.Data.Config().ActivationRange) {
 			return
 		}
 
 		triggersToProcess = append(triggersToProcess, entity)
 	}))
 
-	// 自動実行トリガーを処理する
+	// 検索した自動実行トリガーを処理する
 	for _, triggerEntity := range triggersToProcess {
 		trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
 
@@ -62,22 +62,4 @@ func AutoTriggerSystem(world w.World) error {
 	}
 
 	return nil
-}
-
-// isInActivationRange はプレイヤーがトリガーの発動範囲内にいるかを判定する
-func isInActivationRange(playerGrid, triggerGrid *gc.GridElement, activationRange gc.ActivationRange) bool {
-	switch activationRange {
-	case gc.ActivationRangeSameTile:
-		// 直上（同じタイル）
-		return playerGrid.X == triggerGrid.X && playerGrid.Y == triggerGrid.Y
-	case gc.ActivationRangeAdjacent:
-		// 隣接タイル（近傍8タイル）
-		diffX := int(playerGrid.X) - int(triggerGrid.X)
-		diffY := int(playerGrid.Y) - int(triggerGrid.Y)
-		dx := max(diffX, -diffX)
-		dy := max(diffY, -diffY)
-		return dx <= 1 && dy <= 1
-	default:
-		return false
-	}
 }

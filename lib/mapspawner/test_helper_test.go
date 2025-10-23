@@ -148,8 +148,6 @@ SpriteKey = "warp_next"
 Depth = 1
 
 [Props.WarpNextTrigger]
-ActivationRange = "SAME_TILE"
-ActivationMode  = "MANUAL"
 
 [[Props]]
 Name = "warp_escape"
@@ -163,8 +161,6 @@ SpriteKey = "warp_escape"
 Depth = 1
 
 [Props.WarpEscapeTrigger]
-ActivationRange = "SAME_TILE"
-ActivationMode  = "MANUAL"
 
 [[Members]]
 Name = "老兵"

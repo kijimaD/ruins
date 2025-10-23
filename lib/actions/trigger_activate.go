@@ -57,6 +57,12 @@ func (ta *TriggerActivateActivity) DoTurn(act *Activity, world w.World) error {
 		ta.executeWarpNext(act, world, content)
 	case gc.WarpEscapeTrigger:
 		ta.executeWarpEscape(act, world, content)
+	case gc.DoorTrigger:
+		ta.executeDoor(act, world, content)
+	case gc.TalkTrigger:
+		ta.executeTalk(act, world, content)
+	case gc.ItemTrigger:
+		ta.executeItem(act, world, content)
 	default:
 		err := fmt.Errorf("未知のトリガータイプ: %T", trigger)
 		act.Cancel(fmt.Sprintf("トリガー発動エラー: %s", err.Error()))
@@ -103,5 +109,76 @@ func (ta *TriggerActivateActivity) executeWarpEscape(act *Activity, world w.Worl
 		gamelog.New(gamelog.FieldLog).
 			Magic("脱出した。").
 			Log()
+	}
+}
+
+// executeDoor はドアトリガーを実行する
+func (ta *TriggerActivateActivity) executeDoor(act *Activity, world w.World, _ gc.DoorTrigger) {
+	if !ta.TriggerEntity.HasComponent(world.Components.Door) {
+		act.Logger.Warn("DoorTriggerだがDoorコンポーネントがない", "entity", ta.TriggerEntity)
+		return
+	}
+
+	door := world.Components.Door.Get(ta.TriggerEntity).(*gc.Door)
+
+	// ドアの状態に応じて開閉アクティビティを実行
+	var doorActivity ActivityInterface
+	if door.IsOpen {
+		doorActivity = &CloseDoorActivity{}
+	} else {
+		doorActivity = &OpenDoorActivity{}
+	}
+
+	params := ActionParams{
+		Actor:  act.Actor,
+		Target: &ta.TriggerEntity,
+	}
+
+	manager := NewActivityManager(act.Logger)
+	_, err := manager.Execute(doorActivity, params, world)
+	if err != nil {
+		act.Logger.Warn("ドアアクション失敗", "error", err)
+	}
+}
+
+// executeTalk は会話トリガーを実行する
+func (ta *TriggerActivateActivity) executeTalk(act *Activity, world w.World, _ gc.TalkTrigger) {
+	if !ta.TriggerEntity.HasComponent(world.Components.Dialog) {
+		act.Logger.Warn("TalkTriggerだがDialogコンポーネントがない", "entity", ta.TriggerEntity)
+		return
+	}
+
+	params := ActionParams{
+		Actor:  act.Actor,
+		Target: &ta.TriggerEntity,
+	}
+
+	manager := NewActivityManager(act.Logger)
+	result, err := manager.Execute(&TalkActivity{}, params, world)
+	if err != nil {
+		act.Logger.Warn("会話アクション失敗", "error", err)
+		return
+	}
+
+	// 会話成功時は会話メッセージを表示するStateEventを設定
+	if result != nil && result.Success {
+		dialog := world.Components.Dialog.Get(ta.TriggerEntity).(*gc.Dialog)
+		world.Resources.Dungeon.SetStateEvent(resources.ShowDialogEvent{
+			MessageKey:    dialog.MessageKey,
+			SpeakerEntity: ta.TriggerEntity,
+		})
+	}
+}
+
+// executeItem はアイテム拾得トリガーを実行する
+func (ta *TriggerActivateActivity) executeItem(act *Activity, world w.World, _ gc.ItemTrigger) {
+	params := ActionParams{
+		Actor: act.Actor,
+	}
+
+	manager := NewActivityManager(act.Logger)
+	_, err := manager.Execute(&PickupActivity{}, params, world)
+	if err != nil {
+		act.Logger.Warn("アイテム拾得アクション失敗", "error", err)
 	}
 }
