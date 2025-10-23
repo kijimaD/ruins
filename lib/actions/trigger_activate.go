@@ -52,6 +52,7 @@ func (ta *TriggerActivateActivity) DoTurn(act *Activity, world w.World) error {
 	trigger := world.Components.Trigger.Get(ta.TriggerEntity).(*gc.Trigger)
 
 	// Triggerの種類に応じた処理を実行
+	var triggerErr error
 	switch content := trigger.Data.(type) {
 	case gc.WarpNextTrigger:
 		ta.executeWarpNext(act, world, content)
@@ -64,14 +65,17 @@ func (ta *TriggerActivateActivity) DoTurn(act *Activity, world w.World) error {
 	case gc.ItemTrigger:
 		ta.executeItem(act, world, content)
 	default:
-		err := fmt.Errorf("未知のトリガータイプ: %T", trigger)
-		act.Cancel(fmt.Sprintf("トリガー発動エラー: %s", err.Error()))
-		return err
+		triggerErr = fmt.Errorf("未知のトリガータイプ: %T", trigger)
+		act.Cancel(fmt.Sprintf("トリガー発動エラー: %s", triggerErr.Error()))
 	}
 
-	// Consumableコンポーネントがある場合はエンティティを削除
+	// Consumableコンポーネントがある場合はエンティティを削除（エラーがあっても削除する）
 	if ta.TriggerEntity.HasComponent(world.Components.Consumable) {
 		world.Manager.DeleteEntity(ta.TriggerEntity)
+	}
+
+	if triggerErr != nil {
+		return triggerErr
 	}
 
 	act.Complete()
