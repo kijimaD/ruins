@@ -344,6 +344,18 @@ func getTriggerActions(world w.World, trigger *gc.Trigger, triggerEntity ecs.Ent
 	var result []InteractionAction
 
 	switch trigger.Data.(type) {
+	case gc.WarpNextTrigger:
+		result = append(result, InteractionAction{
+			Label:    "転移(" + dirLabel + ")",
+			Activity: &actions.TriggerActivateActivity{TriggerEntity: triggerEntity},
+			Target:   triggerEntity,
+		})
+	case gc.WarpEscapeTrigger:
+		result = append(result, InteractionAction{
+			Label:    "脱出(" + dirLabel + ")",
+			Activity: &actions.TriggerActivateActivity{TriggerEntity: triggerEntity},
+			Target:   triggerEntity,
+		})
 	case gc.DoorTrigger:
 		// ドアの状態に応じたアクションを生成
 		if triggerEntity.HasComponent(world.Components.Door) {
