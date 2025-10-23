@@ -45,7 +45,7 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	// 移動先にOnCollisionモードのTriggerがある場合は自動実行
 	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
 	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
-	if trigger != nil && trigger.Data.Config().ActivationMode == gc.ActivationModeOnCollision {
+	if trigger != nil && trigger.Data.Config().ActivationWay == gc.ActivationWayOnCollision {
 		// DoorTriggerの場合は、閉じている場合のみ実行（開いている場合は通過）
 		if _, isDoorTrigger := trigger.Data.(gc.DoorTrigger); isDoorTrigger {
 			if triggerEntity.HasComponent(world.Components.Door) {
@@ -209,9 +209,9 @@ func getAllInteractiveTriggersInRange(world w.World, playerGrid *gc.GridElement)
 		trigger := world.Components.Trigger.Get(entity).(*gc.Trigger)
 		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
 
-		mode := trigger.Data.Config().ActivationMode
+		mode := trigger.Data.Config().ActivationWay
 		// ManualまたはOnCollisionモードで、範囲内にあるものを取得
-		if (mode == gc.ActivationModeManual || mode == gc.ActivationModeOnCollision) &&
+		if (mode == gc.ActivationWayManual || mode == gc.ActivationWayOnCollision) &&
 			worldhelper.IsInActivationRange(playerGrid, gridElement, trigger.Data.Config().ActivationRange) {
 			results = append(results, entity)
 		}
@@ -259,7 +259,7 @@ func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
 		return
 	}
 
-	if trigger.Data.Config().ActivationMode != gc.ActivationModeManual {
+	if trigger.Data.Config().ActivationWay != gc.ActivationWayManual {
 		return
 	}
 

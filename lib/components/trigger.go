@@ -10,7 +10,7 @@ type Trigger struct {
 // TriggerConfig はトリガーの設定
 type TriggerConfig struct {
 	ActivationRange ActivationRange // 発動範囲
-	ActivationMode  ActivationMode  // 発動方式
+	ActivationWay   ActivationWay   // 発動方式
 }
 
 // TriggerData はトリガーのデータインターフェース
@@ -25,7 +25,7 @@ type WarpNextTrigger struct{}
 func (t WarpNextTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeSameTile,
-		ActivationMode:  ActivationModeManual,
+		ActivationWay:   ActivationWayManual,
 	}
 }
 
@@ -36,7 +36,7 @@ type WarpEscapeTrigger struct{}
 func (t WarpEscapeTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeSameTile,
-		ActivationMode:  ActivationModeManual,
+		ActivationWay:   ActivationWayManual,
 	}
 }
 
@@ -47,7 +47,7 @@ type DoorTrigger struct{}
 func (t DoorTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeAdjacent,
-		ActivationMode:  ActivationModeOnCollision,
+		ActivationWay:   ActivationWayOnCollision,
 	}
 }
 
@@ -58,7 +58,7 @@ type TalkTrigger struct{}
 func (t TalkTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeAdjacent,
-		ActivationMode:  ActivationModeOnCollision,
+		ActivationWay:   ActivationWayOnCollision,
 	}
 }
 
@@ -69,7 +69,7 @@ type ItemTrigger struct{}
 func (t ItemTrigger) Config() TriggerConfig {
 	return TriggerConfig{
 		ActivationRange: ActivationRangeSameTile,
-		ActivationMode:  ActivationModeManual,
+		ActivationWay:   ActivationWayManual,
 	}
 }
 
@@ -94,22 +94,22 @@ func (enum ActivationRange) Valid() error {
 
 // ================
 
-// ActivationMode はトリガーの発動方式を表す
-type ActivationMode string
+// ActivationWay はトリガーの発動方式を表す
+type ActivationWay string
 
 const (
-	// ActivationModeAuto は自動発動（範囲内に入ったら即座に発動）
-	ActivationModeAuto ActivationMode = "AUTO"
-	// ActivationModeManual は手動発動（Enterキーやアクションメニューで発動）
-	ActivationModeManual ActivationMode = "MANUAL"
-	// ActivationModeOnCollision は移動先衝突時に自動発動（移動先として指定された時に発動）
-	ActivationModeOnCollision ActivationMode = "ON_COLLISION"
+	// ActivationWayAuto は自動発動（範囲内に入ったら即座に発動）
+	ActivationWayAuto ActivationWay = "AUTO"
+	// ActivationWayManual は手動発動（Enterキーやアクションメニューで発動）
+	ActivationWayManual ActivationWay = "MANUAL"
+	// ActivationWayOnCollision は移動先衝突時に自動発動（移動先として指定された時に発動）
+	ActivationWayOnCollision ActivationWay = "ON_COLLISION"
 )
 
-// Valid はActivationModeの値が有効かを検証する
-func (enum ActivationMode) Valid() error {
+// Valid はActivationWayの値が有効かを検証する
+func (enum ActivationWay) Valid() error {
 	switch enum {
-	case ActivationModeAuto, ActivationModeManual, ActivationModeOnCollision:
+	case ActivationWayAuto, ActivationWayManual, ActivationWayOnCollision:
 		return nil
 	}
 	return fmt.Errorf("get %s: %w", enum, ErrInvalidEnumType)

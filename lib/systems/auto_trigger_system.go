@@ -43,7 +43,7 @@ func AutoTriggerSystem(world w.World) error {
 	for _, triggerEntity := range triggersToProcess {
 		trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
 
-		if trigger.Data.Config().ActivationMode != gc.ActivationModeAuto {
+		if trigger.Data.Config().ActivationWay != gc.ActivationWayAuto {
 			continue
 		}
 
