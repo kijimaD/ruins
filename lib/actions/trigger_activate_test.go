@@ -70,6 +70,62 @@ func TestTriggerActivateActivity_Validate_NoTrigger(t *testing.T) {
 	assert.Contains(t, err.Error(), "Triggerを持っていません")
 }
 
+// InvalidRangeTrigger は無効なActivationRangeを持つテスト用トリガー
+type InvalidRangeTrigger struct{}
+
+func (t InvalidRangeTrigger) Config() gc.TriggerConfig {
+	return gc.TriggerConfig{
+		ActivationRange: gc.ActivationRange("INVALID_RANGE"),
+		ActivationWay:   gc.ActivationWayManual,
+	}
+}
+
+// InvalidWayTrigger は無効なActivationWayを持つテスト用トリガー
+type InvalidWayTrigger struct{}
+
+func (t InvalidWayTrigger) Config() gc.TriggerConfig {
+	return gc.TriggerConfig{
+		ActivationRange: gc.ActivationRangeSameTile,
+		ActivationWay:   gc.ActivationWay("INVALID_WAY"),
+	}
+}
+
+// TestTriggerActivateActivity_Validate_InvalidRange は無効なActivationRangeの検証エラーを確認
+func TestTriggerActivateActivity_Validate_InvalidRange(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+	triggerEntity := world.Manager.NewEntity()
+	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+		Data: InvalidRangeTrigger{},
+	})
+
+	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
+	act := NewActivity(activity, triggerEntity, 1)
+
+	err := activity.Validate(act, world)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "無効なActivationRange")
+}
+
+// TestTriggerActivateActivity_Validate_InvalidWay は無効なActivationWayの検証エラーを確認
+func TestTriggerActivateActivity_Validate_InvalidWay(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+	triggerEntity := world.Manager.NewEntity()
+	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+		Data: InvalidWayTrigger{},
+	})
+
+	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
+	act := NewActivity(activity, triggerEntity, 1)
+
+	err := activity.Validate(act, world)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "無効なActivationWay")
+}
+
 // TestTriggerActivateActivity_WarpNext はWarpNextTriggerの動作を確認
 func TestTriggerActivateActivity_WarpNext(t *testing.T) {
 	t.Parallel()

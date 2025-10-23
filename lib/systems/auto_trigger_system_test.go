@@ -44,6 +44,28 @@ func (t AutoWarpTrigger) Config() gc.TriggerConfig {
 	}
 }
 
+// InvalidAutoRangeTrigger は無効なActivationRangeを持つ自動発動トリガー（テスト用）
+type InvalidAutoRangeTrigger struct{}
+
+// Config はTriggerDataインターフェースの実装
+func (t InvalidAutoRangeTrigger) Config() gc.TriggerConfig {
+	return gc.TriggerConfig{
+		ActivationRange: gc.ActivationRange("INVALID_RANGE"),
+		ActivationWay:   gc.ActivationWayAuto,
+	}
+}
+
+// InvalidAutoWayTrigger は無効なActivationWayを持つトリガー（テスト用）
+type InvalidAutoWayTrigger struct{}
+
+// Config はTriggerDataインターフェースの実装
+func (t InvalidAutoWayTrigger) Config() gc.TriggerConfig {
+	return gc.TriggerConfig{
+		ActivationRange: gc.ActivationRangeSameTile,
+		ActivationWay:   gc.ActivationWay("INVALID_WAY"),
+	}
+}
+
 // TestAutoTriggerSystem_AutoMode はAutoモードのトリガーが自動実行されることを確認
 func TestAutoTriggerSystem_AutoMode(t *testing.T) {
 	t.Parallel()
@@ -299,4 +321,64 @@ func TestAutoTriggerSystem_PlayerNoGridElement(t *testing.T) {
 	// トリガーは実行されないべき
 	assert.True(t, triggerEntity.HasComponent(world.Components.Trigger),
 		"プレイヤーにGridElementがない場合、トリガーは実行されないべき")
+}
+
+// TestAutoTriggerSystem_InvalidRange は無効なActivationRangeを持つトリガーがスキップされることを確認
+func TestAutoTriggerSystem_InvalidRange(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// プレイヤーを作成
+	player := world.Manager.NewEntity()
+	player.AddComponent(world.Components.Player, &gc.Player{})
+	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+
+	// 無効なActivationRangeを持つトリガーを作成
+	triggerEntity := world.Manager.NewEntity()
+	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+		Data: InvalidAutoRangeTrigger{},
+	})
+	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
+
+	// システム実行（エラーは返さず、警告ログを出してスキップする）
+	err := AutoTriggerSystem(world)
+	assert.NoError(t, err, "無効なトリガーはスキップされ、エラーは返さない")
+
+	// トリガーは実行されず、残っているべき
+	assert.True(t, triggerEntity.HasComponent(world.Components.Trigger),
+		"無効なActivationRangeのトリガーはスキップされるべき")
+	assert.True(t, triggerEntity.HasComponent(world.Components.Consumable),
+		"無効なActivationRangeのトリガーは削除されないべき")
+}
+
+// TestAutoTriggerSystem_InvalidWay は無効なActivationWayを持つトリガーがスキップされることを確認
+func TestAutoTriggerSystem_InvalidWay(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// プレイヤーを作成
+	player := world.Manager.NewEntity()
+	player.AddComponent(world.Components.Player, &gc.Player{})
+	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+
+	// 無効なActivationWayを持つトリガーを作成
+	triggerEntity := world.Manager.NewEntity()
+	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+		Data: InvalidAutoWayTrigger{},
+	})
+	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
+
+	// システム実行（エラーは返さず、警告ログを出してスキップする）
+	err := AutoTriggerSystem(world)
+	assert.NoError(t, err, "無効なトリガーはスキップされ、エラーは返さない")
+
+	// トリガーは実行されず、残っているべき
+	assert.True(t, triggerEntity.HasComponent(world.Components.Trigger),
+		"無効なActivationWayのトリガーはスキップされるべき")
+	assert.True(t, triggerEntity.HasComponent(world.Components.Consumable),
+		"無効なActivationWayのトリガーは削除されないべき")
 }

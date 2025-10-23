@@ -38,6 +38,21 @@ func (ta *TriggerActivateActivity) Validate(_ *Activity, world w.World) error {
 	if !ta.TriggerEntity.HasComponent(world.Components.Trigger) {
 		return fmt.Errorf("指定されたエンティティはTriggerを持っていません")
 	}
+
+	// Triggerの設定が有効かチェック
+	trigger := world.Components.Trigger.Get(ta.TriggerEntity).(*gc.Trigger)
+	config := trigger.Data.Config()
+
+	// ActivationRangeの検証
+	if err := config.ActivationRange.Valid(); err != nil {
+		return fmt.Errorf("無効なActivationRange: %w", err)
+	}
+
+	// ActivationWayの検証
+	if err := config.ActivationWay.Valid(); err != nil {
+		return fmt.Errorf("無効なActivationWay: %w", err)
+	}
+
 	return nil
 }
 

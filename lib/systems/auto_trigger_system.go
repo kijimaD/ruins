@@ -42,8 +42,25 @@ func AutoTriggerSystem(world w.World) error {
 	// 検索した自動実行トリガーを処理する
 	for _, triggerEntity := range triggersToProcess {
 		trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
+		config := trigger.Data.Config()
 
-		if trigger.Data.Config().ActivationWay != gc.ActivationWayAuto {
+		// Triggerの設定が有効かチェック
+		if err := config.ActivationRange.Valid(); err != nil {
+			logger.New(logger.CategoryAction).Warn("無効なActivationRangeを持つトリガーをスキップ",
+				"entity", triggerEntity,
+				"range", config.ActivationRange,
+				"error", err)
+			continue
+		}
+		if err := config.ActivationWay.Valid(); err != nil {
+			logger.New(logger.CategoryAction).Warn("無効なActivationWayを持つトリガーをスキップ",
+				"entity", triggerEntity,
+				"way", config.ActivationWay,
+				"error", err)
+			continue
+		}
+
+		if config.ActivationWay != gc.ActivationWayAuto {
 			continue
 		}
 
