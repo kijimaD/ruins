@@ -566,6 +566,32 @@ manager.ProcessTurn(world)
 				
 			
 				
+				<dd><a href="index.html#TriggerActivateActivity">type TriggerActivateActivity</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.Canceled">func (ta *TriggerActivateActivity) Canceled(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.DoTurn">func (ta *TriggerActivateActivity) DoTurn(act *Activity, world w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.Finish">func (ta *TriggerActivateActivity) Finish(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.Info">func (ta *TriggerActivateActivity) Info() ActivityInfo</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.Start">func (ta *TriggerActivateActivity) Start(act *Activity, _ w.World) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.String">func (ta *TriggerActivateActivity) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TriggerActivateActivity.Validate">func (ta *TriggerActivateActivity) Validate(_ *Activity, world w.World) error</a></dd>
+				
+			
+				
 				<dd><a href="index.html#UseItemActivity">type UseItemActivity</a></dd>
 				
 				
@@ -617,32 +643,6 @@ manager.ProcessTurn(world)
 					<dd>&nbsp; &nbsp; <a href="index.html#WaitActivity.Validate">func (wa *WaitActivity) Validate(act *Activity, _ w.World) error</a></dd>
 				
 			
-				
-				<dd><a href="index.html#WarpActivity">type WarpActivity</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.Canceled">func (wa *WarpActivity) Canceled(act *Activity, _ w.World) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.DoTurn">func (wa *WarpActivity) DoTurn(act *Activity, world w.World) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.Finish">func (wa *WarpActivity) Finish(act *Activity, world w.World) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.Info">func (wa *WarpActivity) Info() ActivityInfo</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.Start">func (wa *WarpActivity) Start(act *Activity, _ w.World) error</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.String">func (wa *WarpActivity) String() string</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpActivity.Validate">func (wa *WarpActivity) Validate(act *Activity, world w.World) error</a></dd>
-				
-			
 			
 			</dl>
 			</div><!-- #manual-nav -->
@@ -678,11 +678,11 @@ manager.ProcessTurn(world)
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/talk.go">talk.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go">trigger_activate.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/use_item.go">use_item.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/wait.go">wait.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go">warp.go</a>
 			
 			</span>
 			</p>
@@ -1345,7 +1345,7 @@ CDDAのactivity_actorを参考にした設計
 
 			
 				
-				<h3 id="AttackActivity.Canceled">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=3320:3386#L118">Canceled</a>
+				<h3 id="AttackActivity.Canceled">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=3261:3327#L114">Canceled</a>
 					<a class="permalink" href="index.html#AttackActivity.Canceled">&#xb6;</a>
 					
 					
@@ -1358,7 +1358,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.DoTurn">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2594:2662#L88">DoTurn</a>
+				<h3 id="AttackActivity.DoTurn">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2535:2603#L84">DoTurn</a>
 					<a class="permalink" href="index.html#AttackActivity.DoTurn">&#xb6;</a>
 					
 					
@@ -1371,7 +1371,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.Finish">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=3093:3157#L109">Finish</a>
+				<h3 id="AttackActivity.Finish">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=3034:3098#L105">Finish</a>
 					<a class="permalink" href="index.html#AttackActivity.Finish">&#xb6;</a>
 					
 					
@@ -1397,7 +1397,7 @@ CDDAのactivity_actorを参考にした設計
 				
 			
 				
-				<h3 id="AttackActivity.Start">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2396:2459#L82">Start</a>
+				<h3 id="AttackActivity.Start">func (*AttackActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/attack.go?s=2337:2400#L78">Start</a>
 					<a class="permalink" href="index.html#AttackActivity.Start">&#xb6;</a>
 					
 					
@@ -1575,7 +1575,7 @@ CDDAのactivity_actorを参考にした設計
 
 			
 				
-				<h3 id="CraftActivity.Canceled">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=4835:4904#L164">Canceled</a>
+				<h3 id="CraftActivity.Canceled">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=4707:4776#L159">Canceled</a>
 					<a class="permalink" href="index.html#CraftActivity.Canceled">&#xb6;</a>
 					
 					
@@ -1589,7 +1589,7 @@ Canceled はActivityInterfaceの実装
 				
 			
 				
-				<h3 id="CraftActivity.DoTurn">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=2979:3046#L95">DoTurn</a>
+				<h3 id="CraftActivity.DoTurn">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=2851:2918#L90">DoTurn</a>
 					<a class="permalink" href="index.html#CraftActivity.DoTurn">&#xb6;</a>
 					
 					
@@ -1603,7 +1603,7 @@ DoTurn はActivityInterfaceの実装
 				
 			
 				
-				<h3 id="CraftActivity.Finish">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=3833:3900#L130">Finish</a>
+				<h3 id="CraftActivity.Finish">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=3705:3772#L125">Finish</a>
 					<a class="permalink" href="index.html#CraftActivity.Finish">&#xb6;</a>
 					
 					
@@ -1630,7 +1630,7 @@ Finish はActivityInterfaceの実装
 				
 			
 				
-				<h3 id="CraftActivity.Start">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=2199:2265#L71">Start</a>
+				<h3 id="CraftActivity.Start">func (*CraftActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/craft.go?s=2071:2137#L66">Start</a>
 					<a class="permalink" href="index.html#CraftActivity.Start">&#xb6;</a>
 					
 					
@@ -2045,7 +2045,7 @@ Validate はActivityInterfaceの実装
 
 			
 				
-				<h3 id="ReadActivity.Canceled">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=4150:4218#L145">Canceled</a>
+				<h3 id="ReadActivity.Canceled">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=4028:4096#L140">Canceled</a>
 					<a class="permalink" href="index.html#ReadActivity.Canceled">&#xb6;</a>
 					
 					
@@ -2059,7 +2059,7 @@ Canceled はActivityInterfaceの実装
 				
 			
 				
-				<h3 id="ReadActivity.DoTurn">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=2550:2616#L81">DoTurn</a>
+				<h3 id="ReadActivity.DoTurn">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=2428:2494#L76">DoTurn</a>
 					<a class="permalink" href="index.html#ReadActivity.DoTurn">&#xb6;</a>
 					
 					
@@ -2073,7 +2073,7 @@ DoTurn はActivityInterfaceの実装
 				
 			
 				
-				<h3 id="ReadActivity.Finish">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=3378:3444#L116">Finish</a>
+				<h3 id="ReadActivity.Finish">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=3256:3322#L111">Finish</a>
 					<a class="permalink" href="index.html#ReadActivity.Finish">&#xb6;</a>
 					
 					
@@ -2100,7 +2100,7 @@ Finish はActivityInterfaceの実装
 				
 			
 				
-				<h3 id="ReadActivity.Start">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=1816:1881#L57">Start</a>
+				<h3 id="ReadActivity.Start">func (*ReadActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/read.go?s=1694:1759#L52">Start</a>
 					<a class="permalink" href="index.html#ReadActivity.Start">&#xb6;</a>
 					
 					
@@ -2378,6 +2378,123 @@ Validate はActivityInterfaceの実装
 		
 			
 			
+			<h2 id="TriggerActivateActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=301:366#L4">TriggerActivateActivity</a>
+				<a class="permalink" href="index.html#TriggerActivateActivity">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TriggerActivateActivity はTriggerを発動するActivity
+
+			<pre>type TriggerActivateActivity struct {
+<span id="TriggerActivateActivity.TriggerEntity"></span>    TriggerEntity <a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TriggerActivateActivity.Canceled">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=3344:3419#L97">Canceled</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.Canceled">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) Canceled(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Canceled はトリガー発動キャンセル時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TriggerActivateActivity.DoTurn">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=1954:2031#L56">DoTurn</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.DoTurn">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) DoTurn(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>DoTurn はトリガー発動アクティビティの1ターン分の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TriggerActivateActivity.Finish">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=3090:3163#L91">Finish</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.Finish">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) Finish(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Finish はトリガー発動完了時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TriggerActivateActivity.Info">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=406:460#L9">Info</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.Info">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) Info() <a href="index.html#ActivityInfo">ActivityInfo</a></pre>
+				<p>Info はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="TriggerActivateActivity.Start">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=1676:1748#L50">Start</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.Start">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) Start(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Start はトリガー発動開始時の処理を実行する
+
+				
+				
+				
+			
+				
+				<h3 id="TriggerActivateActivity.String">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=718:768#L21">String</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はActivityInterfaceの実装
+
+				
+				
+				
+			
+				
+				<h3 id="TriggerActivateActivity.Validate">func (*TriggerActivateActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/trigger_activate.go?s=873:950#L26">Validate</a>
+					<a class="permalink" href="index.html#TriggerActivateActivity.Validate">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (ta *<a href="index.html#TriggerActivateActivity">TriggerActivateActivity</a>) Validate(_ *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Validate はトリガー発動アクティビティの検証を行う
+
+				
+				
+				
+			
+		
+			
+			
 			<h2 id="UseItemActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/use_item.go?s=291:320#L4">UseItemActivity</a>
 				<a class="permalink" href="index.html#UseItemActivity">&#xb6;</a>
 				
@@ -2604,126 +2721,6 @@ Start はActivityInterfaceの実装
 				</h3>
 				<pre>func (wa *<a href="index.html#WaitActivity">WaitActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Validate は待機アクティビティの検証を行う
-Validate はActivityInterfaceの実装
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="WarpActivity">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=330:356#L5">WarpActivity</a>
-				<a class="permalink" href="index.html#WarpActivity">&#xb6;</a>
-				
-				
-			</h2>
-			<p>WarpActivity はActivityInterfaceの実装
-
-			<pre>type WarpActivity struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="WarpActivity.Canceled">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=2780:2844#L89">Canceled</a>
-					<a class="permalink" href="index.html#WarpActivity.Canceled">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) Canceled(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Canceled はワープキャンセル時の処理を実行する
-Canceled はActivityInterfaceの実装
-
-				
-				
-				
-			
-				
-				<h3 id="WarpActivity.DoTurn">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=1719:1785#L53">DoTurn</a>
-					<a class="permalink" href="index.html#WarpActivity.DoTurn">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) DoTurn(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>DoTurn はワープアクティビティの1ターン分の処理を実行する
-DoTurn はActivityInterfaceの実装
-
-				
-				
-				
-			
-				
-				<h3 id="WarpActivity.Finish">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=2318:2384#L74">Finish</a>
-					<a class="permalink" href="index.html#WarpActivity.Finish">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) Finish(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Finish はワープ完了時の処理を実行する
-Finish はActivityInterfaceの実装
-
-				
-				
-				
-			
-				
-				<h3 id="WarpActivity.Info">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=396:439#L8">Info</a>
-					<a class="permalink" href="index.html#WarpActivity.Info">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) Info() <a href="index.html#ActivityInfo">ActivityInfo</a></pre>
-				<p>Info はActivityInterfaceの実装
-
-				
-				
-				
-			
-				
-				<h3 id="WarpActivity.Start">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=1459:1520#L46">Start</a>
-					<a class="permalink" href="index.html#WarpActivity.Start">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) Start(act *<a href="index.html#Activity">Activity</a>, _ <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Start はワープ開始時の処理を実行する
-Start はActivityInterfaceの実装
-
-				
-				
-				
-			
-				
-				<h3 id="WarpActivity.String">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=694:733#L20">String</a>
-					<a class="permalink" href="index.html#WarpActivity.String">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
-				<p>String はActivityInterfaceの実装
-
-				
-				
-				
-			
-				
-				<h3 id="WarpActivity.Validate">func (*WarpActivity) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/actions/warp.go?s=860:928#L26">Validate</a>
-					<a class="permalink" href="index.html#WarpActivity.Validate">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (wa *<a href="index.html#WarpActivity">WarpActivity</a>) Validate(act *<a href="index.html#Activity">Activity</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-				<p>Validate はワープアクティビティの検証を行う
 Validate はActivityInterfaceの実装
 
 				

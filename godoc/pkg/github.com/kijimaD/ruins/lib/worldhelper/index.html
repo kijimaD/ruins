@@ -227,6 +227,9 @@
 				<dd><a href="index.html#InitDebugData">func InitDebugData(world w.World)</a></dd>
 			
 				
+				<dd><a href="index.html#IsInActivationRange">func IsInActivationRange(playerGrid, triggerGrid *gc.GridElement, activationRange gc.ActivationRange) bool</a></dd>
+			
+				
 				<dd><a href="index.html#IsPlayerEntity">func IsPlayerEntity(entity ecs.Entity, world w.World) bool</a></dd>
 			
 				
@@ -325,6 +328,8 @@
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn_prop.go">spawn_prop.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/stackable.go">stackable.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/trigger.go">trigger.go</a>
 			
 			</span>
 			</p>
@@ -780,6 +785,20 @@ target に amount 分のHPを回復させる
 		
 			
 			
+			<h2 id="IsInActivationRange">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/trigger.go?s=181:287#L1">IsInActivationRange</a>
+				<a class="permalink" href="index.html#IsInActivationRange">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func IsInActivationRange(playerGrid, triggerGrid *<a href="../components/index.html">gc</a>.<a href="../components/index.html#GridElement">GridElement</a>, activationRange <a href="../components/index.html">gc</a>.<a href="../components/index.html#ActivationRange">ActivationRange</a>) <a href="http://localhost:8888/pkg/builtin/#bool">bool</a></pre>
+			<p>IsInActivationRange はプレイヤーがトリガーの発動範囲内にいるかを判定する
+
+			
+			
+
+		
+			
+			
 			<h2 id="IsPlayerEntity">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/damage.go?s=2684:2742#L76">IsPlayerEntity</a>
 				<a class="permalink" href="index.html#IsPlayerEntity">&#xb6;</a>
 				
@@ -809,7 +828,7 @@ Stackableコンポーネントを持つ場合は既存と数量統合、それ�
 		
 			
 			
-			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12788:12856#L361">MovePlayerToPosition</a>
+			<h2 id="MovePlayerToPosition">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=13562:13630#L379">MovePlayerToPosition</a>
 				<a class="permalink" href="index.html#MovePlayerToPosition">&#xb6;</a>
 				
 				
@@ -940,7 +959,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5137:5222#L140">SpawnEnemy</a>
+			<h2 id="SpawnEnemy">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=5515:5600#L149">SpawnEnemy</a>
 				<a class="permalink" href="index.html#SpawnEnemy">&#xb6;</a>
 				
 				
@@ -954,7 +973,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=11550:11643#L327">SpawnFieldItem</a>
+			<h2 id="SpawnFieldItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=12324:12417#L345">SpawnFieldItem</a>
 				<a class="permalink" href="index.html#SpawnFieldItem">&#xb6;</a>
 				
 				
@@ -968,7 +987,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7024:7120#L196">SpawnItem</a>
+			<h2 id="SpawnItem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7525:7621#L208">SpawnItem</a>
 				<a class="permalink" href="index.html#SpawnItem">&#xb6;</a>
 				
 				
@@ -982,7 +1001,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnNeutralNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=3777:3867#L102">SpawnNeutralNPC</a>
+			<h2 id="SpawnNeutralNPC">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=4032:4122#L108">SpawnNeutralNPC</a>
 				<a class="permalink" href="index.html#SpawnNeutralNPC">&#xb6;</a>
 				
 				
@@ -996,7 +1015,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2434:2520#L66">SpawnPlayer</a>
+			<h2 id="SpawnPlayer">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=2554:2640#L69">SpawnPlayer</a>
 				<a class="permalink" href="index.html#SpawnPlayer">&#xb6;</a>
 				
 				
@@ -1024,7 +1043,7 @@ Nameコンポーネントを持っていないエンティティはスキップ�
 		
 			
 			
-			<h2 id="SpawnStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=7758:7866#L214">SpawnStackable</a>
+			<h2 id="SpawnStackable">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/spawn.go?s=8391:8499#L229">SpawnStackable</a>
 				<a class="permalink" href="index.html#SpawnStackable">&#xb6;</a>
 				
 				
