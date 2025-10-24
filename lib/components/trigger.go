@@ -73,6 +73,17 @@ func (t ItemTrigger) Config() TriggerConfig {
 	}
 }
 
+// MeleeTrigger は近接攻撃のトリガー
+type MeleeTrigger struct{}
+
+// Config はトリガー設定を返す
+func (t MeleeTrigger) Config() TriggerConfig {
+	return TriggerConfig{
+		ActivationRange: ActivationRangeAdjacent,
+		ActivationWay:   ActivationWayOnCollision,
+	}
+}
+
 // ActivationRange はトリガーの発動範囲を表す
 type ActivationRange string
 

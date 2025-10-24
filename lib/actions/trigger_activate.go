@@ -79,6 +79,8 @@ func (ta *TriggerActivateActivity) DoTurn(act *Activity, world w.World) error {
 		ta.executeTalk(act, world, content)
 	case gc.ItemTrigger:
 		ta.executeItem(act, world, content)
+	case gc.MeleeTrigger:
+		ta.executeMelee(act, world, content)
 	default:
 		triggerErr = fmt.Errorf("未知のトリガータイプ: %T", trigger)
 		act.Cancel(fmt.Sprintf("トリガー発動エラー: %s", triggerErr.Error()))
@@ -199,5 +201,19 @@ func (ta *TriggerActivateActivity) executeItem(act *Activity, world w.World, _ g
 	_, err := manager.Execute(&PickupActivity{}, params, world)
 	if err != nil {
 		act.Logger.Warn("アイテム拾得アクション失敗", "error", err)
+	}
+}
+
+// executeMelee は近接攻撃トリガーを実行する
+func (ta *TriggerActivateActivity) executeMelee(act *Activity, world w.World, _ gc.MeleeTrigger) {
+	params := ActionParams{
+		Actor:  act.Actor,
+		Target: &ta.TriggerEntity, // トリガーを持つエンティティを攻撃対象とする
+	}
+
+	manager := NewActivityManager(act.Logger)
+	_, err := manager.Execute(&AttackActivity{}, params, world)
+	if err != nil {
+		act.Logger.Warn("近接攻撃アクション失敗", "error", err)
 	}
 }

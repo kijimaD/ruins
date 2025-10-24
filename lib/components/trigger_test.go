@@ -72,6 +72,19 @@ func TestItemTrigger_Config(t *testing.T) {
 		"Itemは手動発動する")
 }
 
+// TestMeleeTrigger_Config はMeleeTriggerの設定が正しいことを確認
+func TestMeleeTrigger_Config(t *testing.T) {
+	t.Parallel()
+
+	trigger := MeleeTrigger{}
+	config := trigger.Config()
+
+	assert.Equal(t, ActivationRangeAdjacent, config.ActivationRange,
+		"Meleeは隣接タイルで発動する")
+	assert.Equal(t, ActivationWayOnCollision, config.ActivationWay,
+		"Meleeは衝突時に自動発動する")
+}
+
 // TestActivationRange_Valid は有効なActivationRangeの検証
 func TestActivationRange_Valid(t *testing.T) {
 	t.Parallel()
@@ -175,6 +188,7 @@ func TestTriggerInterfaceImplementation(t *testing.T) {
 	var _ TriggerData = DoorTrigger{}
 	var _ TriggerData = TalkTrigger{}
 	var _ TriggerData = ItemTrigger{}
+	var _ TriggerData = MeleeTrigger{}
 }
 
 // TestTriggerConfigConsistency は全トリガーの設定が一貫していることを確認
@@ -191,6 +205,7 @@ func TestTriggerConfigConsistency(t *testing.T) {
 		{"Door", DoorTrigger{}},
 		{"Talk", TalkTrigger{}},
 		{"Item", ItemTrigger{}},
+		{"Melee", MeleeTrigger{}},
 	}
 
 	for _, tt := range triggers {
@@ -244,5 +259,16 @@ func TestTriggerDesignConstraints(t *testing.T) {
 			assert.Equal(t, ActivationWayOnCollision, config.ActivationWay,
 				"隣接タイルトリガーは衝突時自動発動である")
 		}
+	})
+
+	t.Run("MeleeトリガーはAdjacent+OnCollision方式", func(t *testing.T) {
+		t.Parallel()
+		// 仕様: 近接攻撃トリガーは隣接タイルで衝突時自動発動
+		trigger := MeleeTrigger{}
+		config := trigger.Config()
+		assert.Equal(t, ActivationRangeAdjacent, config.ActivationRange,
+			"Meleeは隣接タイルで発動する")
+		assert.Equal(t, ActivationWayOnCollision, config.ActivationWay,
+			"Meleeは衝突時自動発動する")
 	})
 }

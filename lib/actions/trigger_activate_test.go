@@ -343,6 +343,38 @@ func TestTriggerActivateActivity_Item(t *testing.T) {
 	require.NotNil(t, result)
 }
 
+// TestTriggerActivateActivity_Melee はMeleeTriggerの動作を確認
+func TestTriggerActivateActivity_Melee(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// プレイヤーを作成
+	player := world.Manager.NewEntity()
+	player.AddComponent(world.Components.Player, &gc.Player{})
+	player.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
+
+	// MeleeTriggerを持つ敵を作成
+	enemyEntity := world.Manager.NewEntity()
+	enemyEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
+	enemyEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+		Data: gc.MeleeTrigger{},
+	})
+	enemyEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テスト敵"})
+
+	// TriggerActivateActivityを実行
+	manager := NewActivityManager(logger.New(logger.CategoryAction))
+	params := ActionParams{
+		Actor: player,
+	}
+	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: enemyEntity}, params, world)
+
+	// MeleeTriggerはAttackActivityを呼び出すが、必要なコンポーネントがないため失敗する可能性がある
+	// ここではトリガーが実行されたことを確認する
+	require.NoError(t, err)
+	require.NotNil(t, result)
+}
+
 // TestTriggerActivateActivity_Consumable はConsumableコンポーネントがある場合にエンティティが削除されることを確認
 func TestTriggerActivateActivity_Consumable(t *testing.T) {
 	t.Parallel()

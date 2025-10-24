@@ -31,17 +31,6 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	newX := currentX + deltaX
 	newY := currentY + deltaY
 
-	// 移動先に敵がいる場合は攻撃アクション
-	enemy := findEnemyAtPosition(world, entity, newX, newY)
-	if enemy != nil {
-		params := actions.ActionParams{
-			Actor:  entity,
-			Target: enemy,
-		}
-		executeActivity(world, &actions.AttackActivity{}, params)
-		return
-	}
-
 	// 移動先にOnCollision方式のTriggerがある場合は自動実行
 	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
 	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
@@ -59,7 +48,7 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 				// 開いているドアは通過可能なので、トリガーを実行せずに下の移動処理に進む
 			}
 		} else {
-			// ドア以外のOnCollisionトリガー（会話など）は常に実行
+			// ドア以外のOnCollisionトリガーは常に実行
 			params := actions.ActionParams{Actor: entity}
 			executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
 			return

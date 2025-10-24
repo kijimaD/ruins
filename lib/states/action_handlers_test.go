@@ -242,6 +242,9 @@ func TestExecuteMoveActionWithEnemy(t *testing.T) {
 		enemy.AddComponent(world.Components.Pools, &gc.Pools{
 			HP: gc.Pool{Current: 100, Max: 100},
 		})
+		enemy.AddComponent(world.Components.Trigger, &gc.Trigger{
+			Data: gc.MeleeTrigger{},
+		})
 
 		initialPlayerX := int(world.Components.GridElement.Get(player).(*gc.GridElement).X)
 		initialPlayerY := int(world.Components.GridElement.Get(player).(*gc.GridElement).Y)

@@ -178,6 +178,9 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 	entitySpec.AIVision = &gc.AIVision{
 		ViewDistance: gc.Pixel(aiVisionDistance),
 	}
+	entitySpec.Trigger = &gc.Trigger{
+		Data: gc.MeleeTrigger{},
+	}
 
 	componentList.Entities = append(componentList.Entities, entitySpec)
 	entitiesSlice, err := entities.AddEntities(world, componentList)
