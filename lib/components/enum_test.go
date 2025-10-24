@@ -7,15 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestWarpMode(t *testing.T) {
-	t.Parallel()
-	t.Run("warp mode constants", func(t *testing.T) {
-		t.Parallel()
-		assert.Equal(t, WarpMode("NEXT"), WarpModeNext, "WarpModeNextの値が正しくない")
-		assert.Equal(t, WarpMode("ESCAPE"), WarpModeEscape, "WarpModeEscapeの値が正しくない")
-	})
-}
-
 func TestTargetNumType(t *testing.T) {
 	t.Parallel()
 	t.Run("target num constants", func(t *testing.T) {

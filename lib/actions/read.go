@@ -36,11 +36,6 @@ func (ra *ReadActivity) Validate(act *Activity, world w.World) error {
 		return fmt.Errorf("読書には本が必要です")
 	}
 
-	// 対象が有効なエンティティか
-	if *act.Target == 0 {
-		return fmt.Errorf("読書対象が無効です")
-	}
-
 	// 本が実際に存在し、読書可能かをチェック
 	targetEntity := *act.Target
 

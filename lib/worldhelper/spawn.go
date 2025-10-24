@@ -65,6 +65,9 @@ func SpawnTile(world w.World, tileName string, x gc.Tile, y gc.Tile, autoTileInd
 	if err != nil {
 		return ecs.Entity(0), err
 	}
+	if len(entitiesSlice) == 0 {
+		return ecs.Entity(0), fmt.Errorf("エンティティの生成に失敗しました")
+	}
 	return entitiesSlice[0], nil
 }
 
@@ -103,6 +106,9 @@ func SpawnPlayer(world w.World, tileX int, tileY int, name string) (ecs.Entity, 
 	if err != nil {
 		return ecs.Entity(0), err
 	}
+	if len(entitiesSlice) == 0 {
+		return ecs.Entity(0), fmt.Errorf("プレイヤーエンティティの生成に失敗しました")
+	}
 	fullRecover(world, entitiesSlice[len(entitiesSlice)-1])
 
 	return entitiesSlice[len(entitiesSlice)-1], nil
@@ -137,6 +143,9 @@ func SpawnNeutralNPC(world w.World, tileX int, tileY int, name string) (ecs.Enti
 	entitiesSlice, err := entities.AddEntities(world, componentList)
 	if err != nil {
 		return ecs.Entity(0), err
+	}
+	if len(entitiesSlice) == 0 {
+		return ecs.Entity(0), fmt.Errorf("NPCエンティティの生成に失敗しました")
 	}
 
 	// 全回復
@@ -174,6 +183,9 @@ func SpawnEnemy(world w.World, tileX int, tileY int, name string) (ecs.Entity, e
 	entitiesSlice, err := entities.AddEntities(world, componentList)
 	if err != nil {
 		return ecs.Entity(0), err
+	}
+	if len(entitiesSlice) == 0 {
+		return ecs.Entity(0), fmt.Errorf("敵エンティティの生成に失敗しました")
 	}
 
 	// 全回復
@@ -215,6 +227,9 @@ func SpawnItem(world w.World, name string, locationType gc.ItemLocationType) (ec
 	if err != nil {
 		return ecs.Entity(0), err
 	}
+	if len(entitiesSlice) == 0 {
+		return ecs.Entity(0), fmt.Errorf("アイテムエンティティの生成に失敗しました")
+	}
 
 	return entitiesSlice[len(entitiesSlice)-1], nil
 }
@@ -250,6 +265,9 @@ func SpawnStackable(world w.World, name string, count int, location gc.ItemLocat
 	entitiesSlice, err := entities.AddEntities(world, componentList)
 	if err != nil {
 		return ecs.Entity(0), err
+	}
+	if len(entitiesSlice) == 0 {
+		return ecs.Entity(0), fmt.Errorf("Stackableアイテムエンティティの生成に失敗しました")
 	}
 
 	return entitiesSlice[len(entitiesSlice)-1], nil

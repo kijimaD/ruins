@@ -329,6 +329,12 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 		entitySpec.Value = &gc.Value{Value: *item.Value}
 	}
 
+	if locationType != nil {
+		if _, ok := (*locationType).(gc.LocationOnField); ok {
+			entitySpec.Trigger = &gc.Trigger{Data: gc.ItemTrigger{}}
+		}
+	}
+
 	return entitySpec, nil
 }
 
@@ -455,11 +461,11 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 		}
 	}
 
-	// 会話データの処理
 	if member.Dialog != nil {
 		entitySpec.Dialog = &gc.Dialog{
 			MessageKey: member.Dialog.MessageKey,
 		}
+		entitySpec.Trigger = &gc.Trigger{Data: gc.TalkTrigger{}}
 	}
 
 	return entitySpec, nil
@@ -519,15 +525,22 @@ type TileRaw struct {
 	BlocksView   *bool // 視界を遮断するか。nilの場合はfalse
 }
 
+// WarpNextTriggerRaw は次の階へワープするトリガーのローデータ
+type WarpNextTriggerRaw struct{}
+
+// WarpEscapeTriggerRaw は脱出ワープするトリガーのローデータ
+type WarpEscapeTriggerRaw struct{}
+
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
-	Name         string
-	Description  string
-	SpriteRender gc.SpriteRender
-	BlockPass    bool
-	BlockView    bool
-	LightSource  *gc.LightSource
-	Warp         *gc.Warp
+	Name              string
+	Description       string
+	SpriteRender      gc.SpriteRender
+	BlockPass         bool
+	BlockView         bool
+	LightSource       *gc.LightSource
+	WarpNextTrigger   *WarpNextTriggerRaw
+	WarpEscapeTrigger *WarpEscapeTriggerRaw
 }
 
 // GetTile は指定された名前のタイルを取得する
@@ -601,14 +614,16 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 		entitySpec.BlockView = &gc.BlockView{}
 	}
 
-	// 光源の設定
 	if propRaw.LightSource != nil {
 		entitySpec.LightSource = propRaw.LightSource
 	}
 
-	// ワープの設定
-	if propRaw.Warp != nil {
-		entitySpec.Warp = propRaw.Warp
+	if propRaw.WarpNextTrigger != nil {
+		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpNextTrigger{}}
+	}
+
+	if propRaw.WarpEscapeTrigger != nil {
+		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpEscapeTrigger{}}
 	}
 
 	return entitySpec, nil

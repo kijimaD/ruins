@@ -35,7 +35,6 @@ type EntitySpec struct {
 	AIVision     *AIVision
 	AIChasing    *AIChasing
 	Camera       *Camera
-	Warp         *Warp
 	Position     *Position
 	GridElement  *GridElement
 	SpriteRender *SpriteRender
@@ -45,6 +44,7 @@ type EntitySpec struct {
 	Prop         *Prop
 	LightSource  *LightSource
 	Door         *Door
+	Trigger      *Trigger
 
 	// member ================
 	Player      *Player
@@ -93,7 +93,6 @@ type Components struct {
 	AIVision     *ecs.SliceComponent
 	AIChasing    *ecs.SliceComponent
 	Camera       *ecs.SliceComponent
-	Warp         *ecs.SliceComponent
 	Position     *ecs.SliceComponent
 	GridElement  *ecs.SliceComponent
 	SpriteRender *ecs.SliceComponent
@@ -102,6 +101,7 @@ type Components struct {
 	Door         *ecs.SliceComponent
 	Prop         *ecs.NullComponent
 	LightSource  *ecs.SliceComponent `save:"true"`
+	Trigger      *ecs.SliceComponent
 
 	// member ================
 	Player         *ecs.NullComponent `save:"true"`
@@ -163,12 +163,6 @@ func (c *Components) InitializeComponents(manager *ecs.Manager) error {
 type Camera struct {
 	Scale   float64
 	ScaleTo float64
-}
-
-// Warp はワープパッド
-// TODO: 接触をトリガーに何かさせたいことはよくあるので、共通の仕組みを作る
-type Warp struct {
-	Mode WarpMode
 }
 
 // Item はキャラクターが保持できるもの。フィールド上、装備上、インベントリ上など位置状態を持ち、1スロットを消費する

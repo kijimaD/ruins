@@ -62,6 +62,11 @@ func processTurnEnd(world w.World) error {
 		return err
 	}
 
+	// 自動トリガーの実行
+	if err := AutoTriggerSystem(world); err != nil {
+		return err
+	}
+
 	// TODO: ターン終了時の共通処理をここに追加
 	// - エフェクトの持続時間減少
 	// - 状態異常の更新

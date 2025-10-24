@@ -31,17 +31,6 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	newX := currentX + deltaX
 	newY := currentY + deltaY
 
-	// 移動先に会話NPCがいる場合は会話アクション
-	npc := findNeutralNPCAtPosition(world, newX, newY)
-	if npc != nil {
-		params := actions.ActionParams{
-			Actor:  entity,
-			Target: npc,
-		}
-		executeActivity(world, &actions.TalkActivity{}, params)
-		return
-	}
-
 	// 移動先に敵がいる場合は攻撃アクション
 	enemy := findEnemyAtPosition(world, entity, newX, newY)
 	if enemy != nil {
@@ -53,15 +42,28 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 		return
 	}
 
-	// 移動先に閉じたドアがある場合はドアを開くアクション
-	door := findClosedDoorAtPosition(world, newX, newY)
-	if door != nil {
-		params := actions.ActionParams{
-			Actor:  entity,
-			Target: door,
+	// 移動先にOnCollision方式のTriggerがある場合は自動実行
+	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
+	trigger, triggerEntity := getTriggerAtSameTile(world, targetGrid)
+	if trigger != nil && trigger.Data.Config().ActivationWay == gc.ActivationWayOnCollision {
+		// DoorTriggerの場合は、閉じている場合のみ実行（開いている場合は通過）
+		if _, isDoorTrigger := trigger.Data.(gc.DoorTrigger); isDoorTrigger {
+			if triggerEntity.HasComponent(world.Components.Door) {
+				door := world.Components.Door.Get(triggerEntity).(*gc.Door)
+				if !door.IsOpen {
+					// 閉じているドアは開くトリガーを実行
+					params := actions.ActionParams{Actor: entity}
+					executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
+					return
+				}
+				// 開いているドアは通過可能なので、トリガーを実行せずに下の移動処理に進む
+			}
+		} else {
+			// ドア以外のOnCollisionトリガー（会話など）は常に実行
+			params := actions.ActionParams{Actor: entity}
+			executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
+			return
 		}
-		executeActivity(world, &actions.OpenDoorActivity{}, params)
-		return
 	}
 
 	canMove := movement.CanMoveTo(world, newX, newY, entity)
@@ -118,7 +120,7 @@ func ExecuteWaitAction(world w.World) {
 	executeActivity(world, &actions.WaitActivity{}, params)
 }
 
-// ExecuteEnterAction はEnterキーによる状況に応じたアクションを実行する
+// ExecuteEnterAction は直上タイルのTriggerを実行する
 func ExecuteEnterAction(world w.World) {
 	entity, err := worldhelper.GetPlayerEntity(world)
 	if err != nil {
@@ -130,19 +132,11 @@ func ExecuteEnterAction(world w.World) {
 	}
 
 	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	tileX := int(gridElement.X)
-	tileY := int(gridElement.Y)
 
-	if checkForWarp(world, entity) {
+	trigger, triggerEntity := getTriggerAtSameTile(world, gridElement)
+	if trigger != nil && trigger.Data.Config().ActivationRange == gc.ActivationRangeSameTile {
 		params := actions.ActionParams{Actor: entity}
-		executeActivity(world, &actions.WarpActivity{}, params)
-		return
-	}
-
-	if checkForItems(world, tileX, tileY) {
-		params := actions.ActionParams{Actor: entity}
-		executeActivity(world, &actions.PickupActivity{}, params)
-		return
+		executeActivity(world, &actions.TriggerActivateActivity{TriggerEntity: triggerEntity}, params)
 	}
 }
 
@@ -152,97 +146,142 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	if entity.HasComponent(world.Components.Player) {
 		gridElement := &gc.GridElement{X: gc.Tile(tileX), Y: gc.Tile(tileY)}
 
-		// ワープホールのチェック
-		checkTileWarp(world, gridElement)
-
-		// アイテムのチェック
-		checkTileItemsForGridPlayer(world, gridElement)
+		// 手動トリガーのメッセージ表示
+		showTileTriggerMessage(world, gridElement)
 	}
 }
 
-// getWarpAtPlayerPosition はプレイヤーの現在位置のワープホールを取得する
-func getWarpAtPlayerPosition(world w.World, playerGrid *gc.GridElement) *gc.Warp {
-	// プレイヤーと同じ座標にあるWarpコンポーネントを探す
-	var warp *gc.Warp
+// getTriggerAtSameTile はプレイヤーの直上タイルのTriggerとエンティティを取得する
+// 複数ある場合は最初に見つかったものを返す
+func getTriggerAtSameTile(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, ecs.Entity) {
+	var trigger *gc.Trigger
+	var triggerEntity ecs.Entity
 	world.Manager.Join(
 		world.Components.GridElement,
-		world.Components.Warp,
+		world.Components.Trigger,
 	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if trigger != nil {
+			return // 既に見つかっている
+		}
 		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+		// 直上タイルのみ
 		if ge.X == playerGrid.X && ge.Y == playerGrid.Y {
-			warp = world.Components.Warp.Get(entity).(*gc.Warp)
+			trigger = world.Components.Trigger.Get(entity).(*gc.Trigger)
+			triggerEntity = entity
+		}
+	}))
+	return trigger, triggerEntity
+}
+
+// getTriggerInRange はプレイヤーの範囲内のTriggerとエンティティを取得する
+// 複数ある場合は最初に見つかったものを返す
+func getTriggerInRange(world w.World, playerGrid *gc.GridElement) (*gc.Trigger, ecs.Entity) {
+	var trigger *gc.Trigger
+	var triggerEntity ecs.Entity
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Trigger,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		if trigger != nil {
+			return // 既に見つかっている
+		}
+		t := world.Components.Trigger.Get(entity).(*gc.Trigger)
+		ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
+
+		// ActivationRangeに応じた範囲チェック
+		if worldhelper.IsInActivationRange(playerGrid, ge, t.Data.Config().ActivationRange) {
+			trigger = t
+			triggerEntity = entity
+		}
+	}))
+	return trigger, triggerEntity
+}
+
+// getAllInteractiveTriggersInRange はプレイヤーの範囲内の全てのインタラクティブなTriggerエンティティを取得する
+// Manual と OnCollision 方式のTriggerが対象
+func getAllInteractiveTriggersInRange(world w.World, playerGrid *gc.GridElement) []ecs.Entity {
+	var results []ecs.Entity
+
+	world.Manager.Join(
+		world.Components.GridElement,
+		world.Components.Trigger,
+	).Visit(ecs.Visit(func(entity ecs.Entity) {
+		trigger := world.Components.Trigger.Get(entity).(*gc.Trigger)
+		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
+
+		way := trigger.Data.Config().ActivationWay
+		// ManualまたはOnCollision方式で、範囲内にあるものを取得
+		if (way == gc.ActivationWayManual || way == gc.ActivationWayOnCollision) &&
+			worldhelper.IsInActivationRange(playerGrid, gridElement, trigger.Data.Config().ActivationRange) {
+			results = append(results, entity)
 		}
 	}))
 
-	return warp
+	return results
 }
 
-// checkTileWarp はプレイヤーがいるタイルのワープホールをチェックする
-func checkTileWarp(world w.World, playerGrid *gc.GridElement) {
-	warp := getWarpAtPlayerPosition(world, playerGrid)
+// getDirectionLabel はプレイヤーからターゲットへの方向ラベルを取得する
+func getDirectionLabel(playerGrid, targetGrid *gc.GridElement) string {
+	dx := int(targetGrid.X) - int(playerGrid.X)
+	dy := int(targetGrid.Y) - int(playerGrid.Y)
 
-	if warp != nil {
-		switch warp.Mode {
-		case gc.WarpModeNext:
-			gamelog.New(gamelog.FieldLog).
-				Append("階段を発見した。Enterキーで移動。").
-				Log()
-		case gc.WarpModeEscape:
-			gamelog.New(gamelog.FieldLog).
-				Append("出口を発見した。Enterキーで移動。").
-				Log()
-		}
+	// 同じタイル
+	if dx == 0 && dy == 0 {
+		return "直上"
 	}
+
+	// 8方向を判定
+	if dy < 0 {
+		if dx < 0 {
+			return "左上"
+		} else if dx > 0 {
+			return "右上"
+		}
+		return "上"
+	} else if dy > 0 {
+		if dx < 0 {
+			return "左下"
+		} else if dx > 0 {
+			return "右下"
+		}
+		return "下"
+	}
+	if dx < 0 {
+		return "左"
+	}
+	return "右"
 }
 
-// checkTileItemsForGridPlayer はグリッドベースプレイヤーのタイルアイテムをチェックする
-func checkTileItemsForGridPlayer(world w.World, playerGrid *gc.GridElement) {
-	playerTileX := int(playerGrid.X)
-	playerTileY := int(playerGrid.Y)
+// showTileTriggerMessage は手動トリガーのメッセージを表示する
+func showTileTriggerMessage(world w.World, playerGrid *gc.GridElement) {
+	trigger, triggerEntity := getTriggerInRange(world, playerGrid)
+	if trigger == nil {
+		return
+	}
 
-	// GridElementベースのアイテムをチェック
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.Item,
-		world.Components.Name,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		nameComp := world.Components.Name.Get(entity).(*gc.Name)
+	if trigger.Data.Config().ActivationWay != gc.ActivationWayManual {
+		return
+	}
 
-		itemTileX := int(gridElement.X)
-		itemTileY := int(gridElement.Y)
-
-		// GridElementアイテムをチェック
-		if itemTileX == playerTileX && itemTileY == playerTileY {
-			// アイテムを発見したメッセージを表示
+	switch trigger.Data.(type) {
+	case gc.WarpNextTrigger:
+		gamelog.New(gamelog.FieldLog).
+			Append("転移ゲートがある。Enterキーで移動。").
+			Log()
+	case gc.WarpEscapeTrigger:
+		gamelog.New(gamelog.FieldLog).
+			Append("脱出ゲートがある。Enterキーで移動。").
+			Log()
+	case gc.ItemTrigger:
+		// アイテムの名前を取得して表示
+		if triggerEntity.HasComponent(world.Components.Name) {
+			nameComp := world.Components.Name.Get(triggerEntity).(*gc.Name)
 			gamelog.New(gamelog.FieldLog).
 				ItemName(nameComp.Name).
-				Append(" を発見した。").
+				Append(" がある。").
 				Log()
 		}
-	}))
-}
-
-// checkForWarp はプレイヤー位置にワープホールがあるかチェック
-func checkForWarp(world w.World, entity ecs.Entity) bool {
-	gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-	return getWarpAtPlayerPosition(world, gridElement) != nil
-}
-
-// checkForItems はプレイヤー位置にアイテムがあるかチェック
-func checkForItems(world w.World, tileX, tileY int) bool {
-	hasItem := false
-	world.Manager.Join(
-		world.Components.Item,
-		world.Components.ItemLocationOnField,
-		world.Components.GridElement,
-	).Visit(ecs.Visit(func(itemEntity ecs.Entity) {
-		itemGrid := world.Components.GridElement.Get(itemEntity).(*gc.GridElement)
-		if int(itemGrid.X) == tileX && int(itemGrid.Y) == tileY {
-			hasItem = true
-		}
-	}))
-	return hasItem
+	}
 }
 
 // findEnemyAtPosition は指定位置にいる敵エンティティを検索する
@@ -276,45 +315,6 @@ func findEnemyAtPosition(world w.World, movingEntity ecs.Entity, tileX, tileY in
 	return foundEnemy
 }
 
-// findNeutralNPCAtPosition は指定位置にある中立NPC（会話可能）を検索する
-func findNeutralNPCAtPosition(world w.World, tileX, tileY int) *ecs.Entity {
-	var foundNPC *ecs.Entity
-
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.FactionNeutral,
-		world.Components.Dialog,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
-			foundNPC = &entity
-		}
-	}))
-
-	return foundNPC
-}
-
-// findClosedDoorAtPosition は指定位置にある閉じたドアエンティティを検索する
-func findClosedDoorAtPosition(world w.World, tileX, tileY int) *ecs.Entity {
-	var foundDoor *ecs.Entity
-
-	world.Manager.Join(
-		world.Components.GridElement,
-		world.Components.Door,
-	).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := world.Components.GridElement.Get(entity).(*gc.GridElement)
-		if int(gridElement.X) == tileX && int(gridElement.Y) == tileY {
-			door := world.Components.Door.Get(entity).(*gc.Door)
-			// 閉じているドアのみを対象
-			if !door.IsOpen {
-				foundDoor = &entity
-			}
-		}
-	}))
-
-	return foundDoor
-}
-
 // isHostileFaction は2つのエンティティが敵対関係にあるかを判定する
 func isHostileFaction(world w.World, entity1, entity2 ecs.Entity) bool {
 	// プレイヤー側(Ally)と敵(Enemy)は敵対関係
@@ -339,6 +339,66 @@ type InteractionAction struct {
 	Target   ecs.Entity                // ターゲットエンティティ
 }
 
+// getTriggerActions はTriggerに対応するアクションを取得する
+func getTriggerActions(world w.World, trigger *gc.Trigger, triggerEntity ecs.Entity, dirLabel string) []InteractionAction {
+	var result []InteractionAction
+
+	switch trigger.Data.(type) {
+	case gc.WarpNextTrigger:
+		result = append(result, InteractionAction{
+			Label:    "転移(" + dirLabel + ")",
+			Activity: &actions.TriggerActivateActivity{TriggerEntity: triggerEntity},
+			Target:   triggerEntity,
+		})
+	case gc.WarpEscapeTrigger:
+		result = append(result, InteractionAction{
+			Label:    "脱出(" + dirLabel + ")",
+			Activity: &actions.TriggerActivateActivity{TriggerEntity: triggerEntity},
+			Target:   triggerEntity,
+		})
+	case gc.DoorTrigger:
+		// ドアの状態に応じたアクションを生成
+		if triggerEntity.HasComponent(world.Components.Door) {
+			door := world.Components.Door.Get(triggerEntity).(*gc.Door)
+			if door.IsOpen {
+				result = append(result, InteractionAction{
+					Label:    "閉じる(" + dirLabel + ")",
+					Activity: &actions.CloseDoorActivity{},
+					Target:   triggerEntity,
+				})
+			} else {
+				result = append(result, InteractionAction{
+					Label:    "開く(" + dirLabel + ")",
+					Activity: &actions.OpenDoorActivity{},
+					Target:   triggerEntity,
+				})
+			}
+		}
+	case gc.TalkTrigger:
+		// 会話アクションを生成
+		if triggerEntity.HasComponent(world.Components.Name) {
+			name := world.Components.Name.Get(triggerEntity).(*gc.Name)
+			result = append(result, InteractionAction{
+				Label:    "話しかける(" + name.Name + ")",
+				Activity: &actions.TalkActivity{},
+				Target:   triggerEntity,
+			})
+		}
+	case gc.ItemTrigger:
+		// アイテム拾得アクションを生成
+		if triggerEntity.HasComponent(world.Components.Name) {
+			name := world.Components.Name.Get(triggerEntity).(*gc.Name)
+			result = append(result, InteractionAction{
+				Label:    "拾う(" + name.Name + ")",
+				Activity: &actions.PickupActivity{},
+				Target:   triggerEntity,
+			})
+		}
+	}
+
+	return result
+}
+
 // GetInteractionActions はプレイヤー周辺の実行可能なアクションを取得する
 func GetInteractionActions(world w.World) []InteractionAction {
 	playerEntity, err := worldhelper.GetPlayerEntity(world)
@@ -351,74 +411,24 @@ func GetInteractionActions(world w.World) []InteractionAction {
 	}
 
 	gridElement := world.Components.GridElement.Get(playerEntity).(*gc.GridElement)
-	playerX := int(gridElement.X)
-	playerY := int(gridElement.Y)
 
 	var interactionActions []InteractionAction
 
-	// 近傍8マスをスキャン（プレイヤー位置を除く周辺）
-	directions := []struct {
-		dx    int
-		dy    int
-		label string
-	}{
-		{0, -1, "上"},
-		{0, 1, "下"},
-		{-1, 0, "左"},
-		{1, 0, "右"},
-		{-1, -1, "左上"},
-		{1, -1, "右上"},
-		{-1, 1, "左下"},
-		{1, 1, "右下"},
-	}
+	// インタラクティブなTriggerを全て取得してアクションを生成
+	triggerEntities := getAllInteractiveTriggersInRange(world, gridElement)
+	for _, triggerEntity := range triggerEntities {
+		if !triggerEntity.HasComponent(world.Components.GridElement) {
+			continue
+		}
+		if !triggerEntity.HasComponent(world.Components.Trigger) {
+			continue
+		}
 
-	for _, dir := range directions {
-		tileX := playerX + dir.dx
-		tileY := playerY + dir.dy
-
-		// ドアをチェック
-		world.Manager.Join(
-			world.Components.GridElement,
-			world.Components.Door,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
-			if int(ge.X) == tileX && int(ge.Y) == tileY {
-				door := world.Components.Door.Get(entity).(*gc.Door)
-
-				if door.IsOpen {
-					// 開いているドアは閉じる
-					interactionActions = append(interactionActions, InteractionAction{
-						Label:    "閉じる(" + dir.label + ")",
-						Activity: &actions.CloseDoorActivity{},
-						Target:   entity,
-					})
-				} else {
-					// 閉じているドアは開く
-					interactionActions = append(interactionActions, InteractionAction{
-						Label:    "開く(" + dir.label + ")",
-						Activity: &actions.OpenDoorActivity{},
-						Target:   entity,
-					})
-				}
-			}
-		}))
-
-		// 会話可能NPCをチェック
-		world.Manager.Join(
-			world.Components.GridElement,
-			world.Components.FactionNeutral,
-			world.Components.Dialog,
-		).Visit(ecs.Visit(func(entity ecs.Entity) {
-			ge := world.Components.GridElement.Get(entity).(*gc.GridElement)
-			if int(ge.X) == tileX && int(ge.Y) == tileY {
-				name := world.Components.Name.Get(entity).(*gc.Name)
-				interactionActions = append(interactionActions, InteractionAction{
-					Label:    "話しかける(" + name.Name + ")",
-					Activity: &actions.TalkActivity{},
-					Target:   entity,
-				})
-			}
-		}))
+		triggerGrid := world.Components.GridElement.Get(triggerEntity).(*gc.GridElement)
+		trigger := world.Components.Trigger.Get(triggerEntity).(*gc.Trigger)
+		dirLabel := getDirectionLabel(gridElement, triggerGrid)
+		triggerActions := getTriggerActions(world, trigger, triggerEntity, dirLabel)
+		interactionActions = append(interactionActions, triggerActions...)
 	}
 
 	return interactionActions
