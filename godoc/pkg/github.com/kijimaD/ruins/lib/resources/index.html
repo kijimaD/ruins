@@ -176,6 +176,14 @@
 				
 			
 				
+				<dd><a href="index.html#GameClearEvent">type GameClearEvent</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#GameClearEvent.Type">func (e GameClearEvent) Type() StateEventType</a></dd>
+				
+			
+				
 				<dd><a href="index.html#HeaderResources">type HeaderResources</a></dd>
 				
 				
@@ -379,6 +387,8 @@
     <span id="StateEventTypeWarpNext">StateEventTypeWarpNext</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;WARP_NEXT&#34;)
     <span class="comment">// StateEventTypeWarpEscape は脱出を表す</span>
     <span id="StateEventTypeWarpEscape">StateEventTypeWarpEscape</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;WARP_ESCAPE&#34;)
+    <span class="comment">// StateEventTypeGameClear はゲームクリアを表す</span>
+    <span id="StateEventTypeGameClear">StateEventTypeGameClear</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;GAME_CLEAR&#34;)
     <span class="comment">// StateEventTypeShowDialog は会話メッセージの表示を表す</span>
     <span id="StateEventTypeShowDialog">StateEventTypeShowDialog</span> = <a href="index.html#StateEventType">StateEventType</a>(&#34;SHOW_DIALOG&#34;)
 )</pre>
@@ -572,6 +582,43 @@
 				</h3>
 				<pre>func (f *<a href="index.html#Font">Font</a>) UnmarshalTOML(i interface{}) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>UnmarshalTOML fills structure fields from TOML data
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="GameClearEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1504:1532#L43">GameClearEvent</a>
+				<a class="permalink" href="index.html#GameClearEvent">&#xb6;</a>
+				
+				
+			</h2>
+			<p>GameClearEvent はゲームクリアを表す
+
+			<pre>type GameClearEvent struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="GameClearEvent.Type">func (GameClearEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1576:1621#L46">Type</a>
+					<a class="permalink" href="index.html#GameClearEvent.Type">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (e <a href="index.html#GameClearEvent">GameClearEvent</a>) Type() <a href="index.html#StateEventType">StateEventType</a></pre>
+				<p>Type はイベントタイプを返す
 
 				
 				
@@ -786,7 +833,7 @@ TODO: 状態として持たないほうがいいかも
 		
 			
 			
-			<h2 id="NoneEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=798:821#L17">NoneEvent</a>
+			<h2 id="NoneEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=913:936#L19">NoneEvent</a>
 				<a class="permalink" href="index.html#NoneEvent">&#xb6;</a>
 				
 				
@@ -808,7 +855,7 @@ TODO: 状態として持たないほうがいいかも
 
 			
 				
-				<h3 id="NoneEvent.Type">func (NoneEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=865:905#L20">Type</a>
+				<h3 id="NoneEvent.Type">func (NoneEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=980:1020#L22">Type</a>
 					<a class="permalink" href="index.html#NoneEvent.Type">&#xb6;</a>
 					
 					
@@ -992,7 +1039,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 		
 			
 			
-			<h2 id="ShowDialogEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1402:1481#L41">ShowDialogEvent</a>
+			<h2 id="ShowDialogEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1721:1800#L51">ShowDialogEvent</a>
 				<a class="permalink" href="index.html#ShowDialogEvent">&#xb6;</a>
 				
 				
@@ -1017,7 +1064,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 
 			
 				
-				<h3 id="ShowDialogEvent.Type">func (ShowDialogEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1525:1571#L47">Type</a>
+				<h3 id="ShowDialogEvent.Type">func (ShowDialogEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1844:1890#L57">Type</a>
 					<a class="permalink" href="index.html#ShowDialogEvent.Type">&#xb6;</a>
 					
 					
@@ -1060,7 +1107,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 		
 			
 			
-			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=700:752#L12">StateEvent</a>
+			<h2 id="StateEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=815:867#L14">StateEvent</a>
 				<a class="permalink" href="index.html#StateEvent">&#xb6;</a>
 				
 				
@@ -1338,7 +1385,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 		
 			
 			
-			<h2 id="WarpEscapeEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1182:1211#L33">WarpEscapeEvent</a>
+			<h2 id="WarpEscapeEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1297:1326#L35">WarpEscapeEvent</a>
 				<a class="permalink" href="index.html#WarpEscapeEvent">&#xb6;</a>
 				
 				
@@ -1360,7 +1407,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 
 			
 				
-				<h3 id="WarpEscapeEvent.Type">func (WarpEscapeEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1255:1301#L36">Type</a>
+				<h3 id="WarpEscapeEvent.Type">func (WarpEscapeEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1370:1416#L38">Type</a>
 					<a class="permalink" href="index.html#WarpEscapeEvent.Type">&#xb6;</a>
 					
 					
@@ -1375,7 +1422,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 		
 			
 			
-			<h2 id="WarpNextEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=992:1019#L25">WarpNextEvent</a>
+			<h2 id="WarpNextEvent">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1107:1134#L27">WarpNextEvent</a>
 				<a class="permalink" href="index.html#WarpNextEvent">&#xb6;</a>
 				
 				
@@ -1397,7 +1444,7 @@ engine/resources.ResourceProviderインターフェースを実装する
 
 			
 				
-				<h3 id="WarpNextEvent.Type">func (WarpNextEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1063:1107#L28">Type</a>
+				<h3 id="WarpNextEvent.Type">func (WarpNextEvent) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/resources/event.go?s=1178:1222#L30">Type</a>
 					<a class="permalink" href="index.html#WarpNextEvent.Type">&#xb6;</a>
 					
 					
