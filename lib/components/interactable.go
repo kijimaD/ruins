@@ -2,78 +2,89 @@ package components
 
 import "fmt"
 
-// Trigger は接触で発動するイベント
-type Trigger struct {
-	Data TriggerData
+// Interactable はプレイヤーと相互作用可能なエンティティを示すマーカー
+type Interactable struct {
+	Data InteractionData
 }
 
-// TriggerConfig はトリガーの設定
-type TriggerConfig struct {
+// InteractionConfig は相互作用の設定
+type InteractionConfig struct {
 	ActivationRange ActivationRange // 発動範囲
 	ActivationWay   ActivationWay   // 発動方式
 }
 
-// TriggerData はトリガーのデータインターフェース
-type TriggerData interface {
-	Config() TriggerConfig
+// InteractionData は相互作用のデータインターフェース
+type InteractionData interface {
+	Config() InteractionConfig
 }
 
-// WarpNextTrigger は次の階層へワープするトリガー
-type WarpNextTrigger struct{}
+// WarpNextInteraction は次の階層へワープする相互作用
+type WarpNextInteraction struct{}
 
-// Config はトリガー設定を返す
-func (t WarpNextTrigger) Config() TriggerConfig {
-	return TriggerConfig{
+// Config は相互作用設定を返す
+func (t WarpNextInteraction) Config() InteractionConfig {
+	return InteractionConfig{
 		ActivationRange: ActivationRangeSameTile,
 		ActivationWay:   ActivationWayManual,
 	}
 }
 
-// WarpEscapeTrigger は脱出ワープするトリガー
-type WarpEscapeTrigger struct{}
+// WarpEscapeInteraction は脱出ワープする相互作用
+type WarpEscapeInteraction struct{}
 
-// Config はトリガー設定を返す
-func (t WarpEscapeTrigger) Config() TriggerConfig {
-	return TriggerConfig{
+// Config は相互作用設定を返す
+func (t WarpEscapeInteraction) Config() InteractionConfig {
+	return InteractionConfig{
 		ActivationRange: ActivationRangeSameTile,
 		ActivationWay:   ActivationWayManual,
 	}
 }
 
-// DoorTrigger はドアのトリガー
-type DoorTrigger struct{}
+// DoorInteraction はドアの相互作用
+type DoorInteraction struct{}
 
-// Config はトリガー設定を返す
-func (t DoorTrigger) Config() TriggerConfig {
-	return TriggerConfig{
+// Config は相互作用設定を返す
+func (t DoorInteraction) Config() InteractionConfig {
+	return InteractionConfig{
 		ActivationRange: ActivationRangeAdjacent,
 		ActivationWay:   ActivationWayOnCollision,
 	}
 }
 
-// TalkTrigger は会話のトリガー
-type TalkTrigger struct{}
+// TalkInteraction は会話の相互作用
+type TalkInteraction struct{}
 
-// Config はトリガー設定を返す
-func (t TalkTrigger) Config() TriggerConfig {
-	return TriggerConfig{
+// Config は相互作用設定を返す
+func (t TalkInteraction) Config() InteractionConfig {
+	return InteractionConfig{
 		ActivationRange: ActivationRangeAdjacent,
 		ActivationWay:   ActivationWayOnCollision,
 	}
 }
 
-// ItemTrigger はアイテム拾得のトリガー
-type ItemTrigger struct{}
+// ItemInteraction はアイテム拾得の相互作用
+type ItemInteraction struct{}
 
-// Config はトリガー設定を返す
-func (t ItemTrigger) Config() TriggerConfig {
-	return TriggerConfig{
+// Config は相互作用設定を返す
+func (t ItemInteraction) Config() InteractionConfig {
+	return InteractionConfig{
 		ActivationRange: ActivationRangeSameTile,
 		ActivationWay:   ActivationWayManual,
 	}
 }
 
-// ActivationRange はトリガーの発動範囲を表す
+// MeleeInteraction は近接攻撃の相互作用
+type MeleeInteraction struct{}
+
+// Config は相互作用設定を返す
+func (t MeleeInteraction) Config() InteractionConfig {
+	return InteractionConfig{
+		ActivationRange: ActivationRangeAdjacent,
+		ActivationWay:   ActivationWayOnCollision,
+	}
+}
+
+// ActivationRange は相互作用の発動範囲を表す
 type ActivationRange string
 
 const (
@@ -94,7 +105,7 @@ func (enum ActivationRange) Valid() error {
 
 // ================
 
-// ActivationWay はトリガーの発動方式を表す
+// ActivationWay は相互作用の発動方式を表す
 type ActivationWay string
 
 const (

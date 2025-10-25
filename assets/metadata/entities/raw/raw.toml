@@ -2498,7 +2498,7 @@ SpriteSheetName = "field"
 SpriteKey       = "warp_next"
 Depth           = 1
 
-[Props.WarpNextTrigger]
+[Props.WarpNextInteraction]
 
 [Props.LightSource]
 Radius  = 5
@@ -2521,7 +2521,7 @@ SpriteSheetName = "field"
 SpriteKey       = "warp_escape"
 Depth           = 1
 
-[Props.WarpEscapeTrigger]
+[Props.WarpEscapeInteraction]
 
 [Props.LightSource]
 Radius  = 4

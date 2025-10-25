@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestWarpNextTrigger_Config はWarpNextTriggerの設定が正しいことを確認
-func TestWarpNextTrigger_Config(t *testing.T) {
+// TestWarpNextInteraction_Config はWarpNextInteractionの設定が正しいことを確認
+func TestWarpNextInteraction_Config(t *testing.T) {
 	t.Parallel()
 
-	trigger := WarpNextTrigger{}
+	trigger := WarpNextInteraction{}
 	config := trigger.Config()
 
 	assert.Equal(t, ActivationRangeSameTile, config.ActivationRange,
@@ -20,11 +20,11 @@ func TestWarpNextTrigger_Config(t *testing.T) {
 		"WarpNextは手動発動する")
 }
 
-// TestWarpEscapeTrigger_Config はWarpEscapeTriggerの設定が正しいことを確認
-func TestWarpEscapeTrigger_Config(t *testing.T) {
+// TestWarpEscapeInteraction_Config はWarpEscapeInteractionの設定が正しいことを確認
+func TestWarpEscapeInteraction_Config(t *testing.T) {
 	t.Parallel()
 
-	trigger := WarpEscapeTrigger{}
+	trigger := WarpEscapeInteraction{}
 	config := trigger.Config()
 
 	assert.Equal(t, ActivationRangeSameTile, config.ActivationRange,
@@ -33,11 +33,11 @@ func TestWarpEscapeTrigger_Config(t *testing.T) {
 		"WarpEscapeは手動発動する")
 }
 
-// TestDoorTrigger_Config はDoorTriggerの設定が正しいことを確認
-func TestDoorTrigger_Config(t *testing.T) {
+// TestDoorInteraction_Config はDoorInteractionの設定が正しいことを確認
+func TestDoorInteraction_Config(t *testing.T) {
 	t.Parallel()
 
-	trigger := DoorTrigger{}
+	trigger := DoorInteraction{}
 	config := trigger.Config()
 
 	assert.Equal(t, ActivationRangeAdjacent, config.ActivationRange,
@@ -46,11 +46,11 @@ func TestDoorTrigger_Config(t *testing.T) {
 		"Doorは衝突時に自動発動する")
 }
 
-// TestTalkTrigger_Config はTalkTriggerの設定が正しいことを確認
-func TestTalkTrigger_Config(t *testing.T) {
+// TestTalkInteraction_Config はTalkInteractionの設定が正しいことを確認
+func TestTalkInteraction_Config(t *testing.T) {
 	t.Parallel()
 
-	trigger := TalkTrigger{}
+	trigger := TalkInteraction{}
 	config := trigger.Config()
 
 	assert.Equal(t, ActivationRangeAdjacent, config.ActivationRange,
@@ -59,17 +59,30 @@ func TestTalkTrigger_Config(t *testing.T) {
 		"Talkは衝突時に自動発動する")
 }
 
-// TestItemTrigger_Config はItemTriggerの設定が正しいことを確認
-func TestItemTrigger_Config(t *testing.T) {
+// TestItemInteraction_Config はItemInteractionの設定が正しいことを確認
+func TestItemInteraction_Config(t *testing.T) {
 	t.Parallel()
 
-	trigger := ItemTrigger{}
+	trigger := ItemInteraction{}
 	config := trigger.Config()
 
 	assert.Equal(t, ActivationRangeSameTile, config.ActivationRange,
 		"Itemは直上タイルで発動する")
 	assert.Equal(t, ActivationWayManual, config.ActivationWay,
 		"Itemは手動発動する")
+}
+
+// TestMeleeInteraction_Config はMeleeInteractionの設定が正しいことを確認
+func TestMeleeInteraction_Config(t *testing.T) {
+	t.Parallel()
+
+	trigger := MeleeInteraction{}
+	config := trigger.Config()
+
+	assert.Equal(t, ActivationRangeAdjacent, config.ActivationRange,
+		"Meleeは隣接タイルで発動する")
+	assert.Equal(t, ActivationWayOnCollision, config.ActivationWay,
+		"Meleeは衝突時に自動発動する")
 }
 
 // TestActivationRange_Valid は有効なActivationRangeの検証
@@ -165,16 +178,17 @@ func TestActivationWay_Valid(t *testing.T) {
 	}
 }
 
-// TestTriggerInterfaceImplementation は全てのトリガーがTriggerDataインターフェースを実装していることを確認
+// TestTriggerInterfaceImplementation は全てのトリガーがInteractionDataインターフェースを実装していることを確認
 func TestTriggerInterfaceImplementation(t *testing.T) {
 	t.Parallel()
 
-	// 全てのトリガータイプがTriggerDataインターフェースを実装していることを確認
-	var _ TriggerData = WarpNextTrigger{}
-	var _ TriggerData = WarpEscapeTrigger{}
-	var _ TriggerData = DoorTrigger{}
-	var _ TriggerData = TalkTrigger{}
-	var _ TriggerData = ItemTrigger{}
+	// 全てのトリガータイプがInteractionDataインターフェースを実装していることを確認
+	var _ InteractionData = WarpNextInteraction{}
+	var _ InteractionData = WarpEscapeInteraction{}
+	var _ InteractionData = DoorInteraction{}
+	var _ InteractionData = TalkInteraction{}
+	var _ InteractionData = ItemInteraction{}
+	var _ InteractionData = MeleeInteraction{}
 }
 
 // TestTriggerConfigConsistency は全トリガーの設定が一貫していることを確認
@@ -184,13 +198,14 @@ func TestTriggerConfigConsistency(t *testing.T) {
 	// 全トリガータイプ
 	triggers := []struct {
 		name    string
-		trigger TriggerData
+		trigger InteractionData
 	}{
-		{"WarpNext", WarpNextTrigger{}},
-		{"WarpEscape", WarpEscapeTrigger{}},
-		{"Door", DoorTrigger{}},
-		{"Talk", TalkTrigger{}},
-		{"Item", ItemTrigger{}},
+		{"WarpNext", WarpNextInteraction{}},
+		{"WarpEscape", WarpEscapeInteraction{}},
+		{"Door", DoorInteraction{}},
+		{"Talk", TalkInteraction{}},
+		{"Item", ItemInteraction{}},
+		{"Melee", MeleeInteraction{}},
 	}
 
 	for _, tt := range triggers {
@@ -216,10 +231,10 @@ func TestTriggerDesignConstraints(t *testing.T) {
 	t.Run("SameTileトリガーはManual方式", func(t *testing.T) {
 		t.Parallel()
 		// 仕様: 直上タイルトリガー（WarpNext, WarpEscape, Item）は手動発動
-		sameTileTriggers := []TriggerData{
-			WarpNextTrigger{},
-			WarpEscapeTrigger{},
-			ItemTrigger{},
+		sameTileTriggers := []InteractionData{
+			WarpNextInteraction{},
+			WarpEscapeInteraction{},
+			ItemInteraction{},
 		}
 
 		for _, trigger := range sameTileTriggers {
@@ -233,9 +248,9 @@ func TestTriggerDesignConstraints(t *testing.T) {
 	t.Run("AdjacentトリガーはOnCollision方式", func(t *testing.T) {
 		t.Parallel()
 		// 仕様: 隣接タイルトリガー（Door, Talk）は衝突時自動発動
-		adjacentTriggers := []TriggerData{
-			DoorTrigger{},
-			TalkTrigger{},
+		adjacentTriggers := []InteractionData{
+			DoorInteraction{},
+			TalkInteraction{},
 		}
 
 		for _, trigger := range adjacentTriggers {
@@ -244,5 +259,16 @@ func TestTriggerDesignConstraints(t *testing.T) {
 			assert.Equal(t, ActivationWayOnCollision, config.ActivationWay,
 				"隣接タイルトリガーは衝突時自動発動である")
 		}
+	})
+
+	t.Run("MeleeトリガーはAdjacent+OnCollision方式", func(t *testing.T) {
+		t.Parallel()
+		// 仕様: 近接攻撃トリガーは隣接タイルで衝突時自動発動
+		trigger := MeleeInteraction{}
+		config := trigger.Config()
+		assert.Equal(t, ActivationRangeAdjacent, config.ActivationRange,
+			"Meleeは隣接タイルで発動する")
+		assert.Equal(t, ActivationWayOnCollision, config.ActivationWay,
+			"Meleeは衝突時自動発動する")
 	})
 }

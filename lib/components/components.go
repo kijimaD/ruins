@@ -44,7 +44,7 @@ type EntitySpec struct {
 	Prop         *Prop
 	LightSource  *LightSource
 	Door         *Door
-	Trigger      *Trigger
+	Interactable *Interactable
 
 	// member ================
 	Player      *Player
@@ -101,7 +101,7 @@ type Components struct {
 	Door         *ecs.SliceComponent
 	Prop         *ecs.NullComponent
 	LightSource  *ecs.SliceComponent `save:"true"`
-	Trigger      *ecs.SliceComponent
+	Interactable *ecs.SliceComponent
 
 	// member ================
 	Player         *ecs.NullComponent `save:"true"`

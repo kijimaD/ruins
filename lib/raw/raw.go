@@ -203,6 +203,9 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 	if !ok {
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "ItemIndex")
 	}
+	if itemIdx >= len(rw.Raws.Items) {
+		return gc.EntitySpec{}, fmt.Errorf("アイテムインデックスが範囲外: %d (長さ: %d)", itemIdx, len(rw.Raws.Items))
+	}
 	item := rw.Raws.Items[itemIdx]
 
 	entitySpec := gc.EntitySpec{}
@@ -331,7 +334,7 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 
 	if locationType != nil {
 		if _, ok := (*locationType).(gc.LocationOnField); ok {
-			entitySpec.Trigger = &gc.Trigger{Data: gc.ItemTrigger{}}
+			entitySpec.Interactable = &gc.Interactable{Data: gc.ItemInteraction{}}
 		}
 	}
 
@@ -343,6 +346,9 @@ func (rw *Master) NewRecipeSpec(name string) (gc.EntitySpec, error) {
 	recipeIdx, ok := rw.RecipeIndex[name]
 	if !ok {
 		return gc.EntitySpec{}, NewKeyNotFoundError(name, "RecipeIndex")
+	}
+	if recipeIdx >= len(rw.Raws.Recipes) {
+		return gc.EntitySpec{}, fmt.Errorf("レシピインデックスが範囲外: %d (長さ: %d)", recipeIdx, len(rw.Raws.Recipes))
 	}
 	recipe := rw.Raws.Recipes[recipeIdx]
 	entitySpec := gc.EntitySpec{}
@@ -407,6 +413,9 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 	if !ok {
 		return gc.EntitySpec{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
+	if memberIdx >= len(rw.Raws.Members) {
+		return gc.EntitySpec{}, fmt.Errorf("メンバーインデックスが範囲外: %d (長さ: %d)", memberIdx, len(rw.Raws.Members))
+	}
 	member := rw.Raws.Members[memberIdx]
 
 	entitySpec := gc.EntitySpec{}
@@ -432,13 +441,13 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 	}
 
 	commandTableIdx, ok := rw.CommandTableIndex[name]
-	if ok {
+	if ok && commandTableIdx < len(rw.Raws.CommandTables) {
 		commandTable := rw.Raws.CommandTables[commandTableIdx]
 		entitySpec.CommandTable = &gc.CommandTable{Name: commandTable.Name}
 	}
 
 	dropTableIdx, ok := rw.DropTableIndex[name]
-	if ok {
+	if ok && dropTableIdx < len(rw.Raws.DropTables) {
 		dropTable := rw.Raws.DropTables[dropTableIdx]
 		entitySpec.DropTable = &gc.DropTable{Name: dropTable.Name}
 	}
@@ -465,7 +474,7 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 		entitySpec.Dialog = &gc.Dialog{
 			MessageKey: member.Dialog.MessageKey,
 		}
-		entitySpec.Trigger = &gc.Trigger{Data: gc.TalkTrigger{}}
+		entitySpec.Interactable = &gc.Interactable{Data: gc.TalkInteraction{}}
 	}
 
 	return entitySpec, nil
@@ -500,6 +509,9 @@ func (rw *Master) GetCommandTable(name string) (CommandTable, error) {
 	if !ok {
 		return CommandTable{}, fmt.Errorf("キーが存在しない: %s", name)
 	}
+	if ctIdx >= len(rw.Raws.CommandTables) {
+		return CommandTable{}, fmt.Errorf("コマンドテーブルインデックスが範囲外: %d (長さ: %d)", ctIdx, len(rw.Raws.CommandTables))
+	}
 	commandTable := rw.Raws.CommandTables[ctIdx]
 
 	return commandTable, nil
@@ -510,6 +522,9 @@ func (rw *Master) GetDropTable(name string) (DropTable, error) {
 	dtIdx, ok := rw.DropTableIndex[name]
 	if !ok {
 		return DropTable{}, fmt.Errorf("キーが存在しない: %s", name)
+	}
+	if dtIdx >= len(rw.Raws.DropTables) {
+		return DropTable{}, fmt.Errorf("ドロップテーブルインデックスが範囲外: %d (長さ: %d)", dtIdx, len(rw.Raws.DropTables))
 	}
 	dropTable := rw.Raws.DropTables[dtIdx]
 
@@ -525,22 +540,22 @@ type TileRaw struct {
 	BlocksView   *bool // 視界を遮断するか。nilの場合はfalse
 }
 
-// WarpNextTriggerRaw は次の階へワープするトリガーのローデータ
-type WarpNextTriggerRaw struct{}
+// WarpNextInteractionRaw は次の階へワープする相互作用のローデータ
+type WarpNextInteractionRaw struct{}
 
-// WarpEscapeTriggerRaw は脱出ワープするトリガーのローデータ
-type WarpEscapeTriggerRaw struct{}
+// WarpEscapeInteractionRaw は脱出ワープする相互作用のローデータ
+type WarpEscapeInteractionRaw struct{}
 
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
-	Name              string
-	Description       string
-	SpriteRender      gc.SpriteRender
-	BlockPass         bool
-	BlockView         bool
-	LightSource       *gc.LightSource
-	WarpNextTrigger   *WarpNextTriggerRaw
-	WarpEscapeTrigger *WarpEscapeTriggerRaw
+	Name                  string
+	Description           string
+	SpriteRender          gc.SpriteRender
+	BlockPass             bool
+	BlockView             bool
+	LightSource           *gc.LightSource
+	WarpNextInteraction   *WarpNextInteractionRaw
+	WarpEscapeInteraction *WarpEscapeInteractionRaw
 }
 
 // GetTile は指定された名前のタイルを取得する
@@ -549,6 +564,9 @@ func (rw *Master) GetTile(name string) (TileRaw, error) {
 	tileIdx, ok := rw.TileIndex[name]
 	if !ok {
 		return TileRaw{}, NewKeyNotFoundError(name, "TileIndex")
+	}
+	if tileIdx >= len(rw.Raws.Tiles) {
+		return TileRaw{}, fmt.Errorf("タイルインデックスが範囲外: %d (長さ: %d)", tileIdx, len(rw.Raws.Tiles))
 	}
 
 	return rw.Raws.Tiles[tileIdx], nil
@@ -590,6 +608,9 @@ func (rw *Master) GetProp(name string) (PropRaw, error) {
 	if !ok {
 		return PropRaw{}, NewKeyNotFoundError(name, "PropIndex")
 	}
+	if propIdx >= len(rw.Raws.Props) {
+		return PropRaw{}, fmt.Errorf("置物インデックスが範囲外: %d (長さ: %d)", propIdx, len(rw.Raws.Props))
+	}
 
 	return rw.Raws.Props[propIdx], nil
 }
@@ -618,12 +639,12 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 		entitySpec.LightSource = propRaw.LightSource
 	}
 
-	if propRaw.WarpNextTrigger != nil {
-		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpNextTrigger{}}
+	if propRaw.WarpNextInteraction != nil {
+		entitySpec.Interactable = &gc.Interactable{Data: gc.WarpNextInteraction{}}
 	}
 
-	if propRaw.WarpEscapeTrigger != nil {
-		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpEscapeTrigger{}}
+	if propRaw.WarpEscapeInteraction != nil {
+		entitySpec.Interactable = &gc.Interactable{Data: gc.WarpEscapeInteraction{}}
 	}
 
 	return entitySpec, nil
