@@ -62,8 +62,8 @@ func processTurnEnd(world w.World) error {
 		return err
 	}
 
-	// 自動トリガーの実行
-	if err := AutoTriggerSystem(world); err != nil {
+	// 自動相互作用の実行
+	if err := AutoInteractionSystem(world); err != nil {
 		return err
 	}
 

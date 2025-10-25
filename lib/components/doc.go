@@ -16,9 +16,9 @@
 // - 死亡状態はDeadコンポーネントで明示的に管理
 // - HP.Current == 0 での死亡判定とDeadコンポーネント付与を併用
 //
-// Triggerコンポーネント:
+// Interactableコンポーネント:
 // - エンティティがプレイヤーと相互作用できることを示すマーカー
-// - 相互作用の種類はTriggerData（WarpNext, Door, Talk, Item, Melee等）で定義
+// - 相互作用の種類はInteractionData（WarpNext, Door, Talk, Item, Melee等）で定義
 // - 発動範囲はActivationRange（SameTile, Adjacent）で制御
 // - 発動方式はActivationWay（Auto, Manual, OnCollision）で制御
 //   - Auto: 範囲内に入ったら即座に発動
@@ -26,5 +26,5 @@
 //   - OnCollision: 移動先として指定された時に発動（ドア開閉、会話、近接攻撃等）
 //
 // - 環境オブジェクト（ドア、アイテム）だけでなく、エンティティ（NPC、敵）も持つことができる
-// - MeleeTriggerは敵が「攻撃可能な対象」であることを示す
+// - MeleeInteractionは敵が「攻撃可能な対象」であることを示す
 package components

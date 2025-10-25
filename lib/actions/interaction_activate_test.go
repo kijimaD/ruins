@@ -11,70 +11,70 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestTriggerActivateActivity_Info はActivityInfoが正しく返されることを確認
-func TestTriggerActivateActivity_Info(t *testing.T) {
+// TestInteractionActivateActivity_Info はActivityInfoが正しく返されることを確認
+func TestInteractionActivateActivity_Info(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 	triggerEntity := world.Manager.NewEntity()
 
-	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
+	activity := &InteractionActivateActivity{InteractableEntity: triggerEntity}
 	info := activity.Info()
 
-	assert.Equal(t, "トリガー発動", info.Name)
-	assert.False(t, info.Interruptible, "トリガー発動は中断不可")
-	assert.False(t, info.Resumable, "トリガー発動は再開不可")
-	assert.Equal(t, 0, info.ActionPointCost, "トリガー発動はAPコストなし")
+	assert.Equal(t, "相互作用発動", info.Name)
+	assert.False(t, info.Interruptible, "相互作用発動は中断不可")
+	assert.False(t, info.Resumable, "相互作用発動は再開不可")
+	assert.Equal(t, 0, info.ActionPointCost, "相互作用発動はAPコストなし")
 }
 
-// TestTriggerActivateActivity_String はString()が正しく返されることを確認
-func TestTriggerActivateActivity_String(t *testing.T) {
+// TestInteractionActivateActivity_String はString()が正しく返されることを確認
+func TestInteractionActivateActivity_String(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 	triggerEntity := world.Manager.NewEntity()
 
-	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
-	assert.Equal(t, "TriggerActivate", activity.String())
+	activity := &InteractionActivateActivity{InteractableEntity: triggerEntity}
+	assert.Equal(t, "InteractionActivate", activity.String())
 }
 
-// TestTriggerActivateActivity_Validate_Success はValidateが成功することを確認
-func TestTriggerActivateActivity_Validate_Success(t *testing.T) {
+// TestInteractionActivateActivity_Validate_Success はValidateが成功することを確認
+func TestInteractionActivateActivity_Validate_Success(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 	triggerEntity := world.Manager.NewEntity()
-	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.WarpNextTrigger{},
+	triggerEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.WarpNextInteraction{},
 	})
 
-	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
+	activity := &InteractionActivateActivity{InteractableEntity: triggerEntity}
 	act := NewActivity(activity, triggerEntity, 1)
 
 	err := activity.Validate(act, world)
 	assert.NoError(t, err, "Triggerコンポーネントがある場合は検証成功")
 }
 
-// TestTriggerActivateActivity_Validate_NoTrigger はTriggerコンポーネントがない場合のエラーを確認
-func TestTriggerActivateActivity_Validate_NoTrigger(t *testing.T) {
+// TestInteractionActivateActivity_Validate_NoTrigger はTriggerコンポーネントがない場合のエラーを確認
+func TestInteractionActivateActivity_Validate_NoTrigger(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
-	notTriggerEntity := world.Manager.NewEntity()
+	notInteractableEntity := world.Manager.NewEntity()
 
-	activity := &TriggerActivateActivity{TriggerEntity: notTriggerEntity}
-	act := NewActivity(activity, notTriggerEntity, 1)
+	activity := &InteractionActivateActivity{InteractableEntity: notInteractableEntity}
+	act := NewActivity(activity, notInteractableEntity, 1)
 
 	err := activity.Validate(act, world)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Triggerを持っていません")
+	assert.Contains(t, err.Error(), "Interactableを持っていません")
 }
 
 // InvalidRangeTrigger は無効なActivationRangeを持つテスト用トリガー
 type InvalidRangeTrigger struct{}
 
-func (t InvalidRangeTrigger) Config() gc.TriggerConfig {
-	return gc.TriggerConfig{
+func (t InvalidRangeTrigger) Config() gc.InteractionConfig {
+	return gc.InteractionConfig{
 		ActivationRange: gc.ActivationRange("INVALID_RANGE"),
 		ActivationWay:   gc.ActivationWayManual,
 	}
@@ -83,24 +83,24 @@ func (t InvalidRangeTrigger) Config() gc.TriggerConfig {
 // InvalidWayTrigger は無効なActivationWayを持つテスト用トリガー
 type InvalidWayTrigger struct{}
 
-func (t InvalidWayTrigger) Config() gc.TriggerConfig {
-	return gc.TriggerConfig{
+func (t InvalidWayTrigger) Config() gc.InteractionConfig {
+	return gc.InteractionConfig{
 		ActivationRange: gc.ActivationRangeSameTile,
 		ActivationWay:   gc.ActivationWay("INVALID_WAY"),
 	}
 }
 
-// TestTriggerActivateActivity_Validate_InvalidRange は無効なActivationRangeの検証エラーを確認
-func TestTriggerActivateActivity_Validate_InvalidRange(t *testing.T) {
+// TestInteractionActivateActivity_Validate_InvalidRange は無効なActivationRangeの検証エラーを確認
+func TestInteractionActivateActivity_Validate_InvalidRange(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 	triggerEntity := world.Manager.NewEntity()
-	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+	triggerEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
 		Data: InvalidRangeTrigger{},
 	})
 
-	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
+	activity := &InteractionActivateActivity{InteractableEntity: triggerEntity}
 	act := NewActivity(activity, triggerEntity, 1)
 
 	err := activity.Validate(act, world)
@@ -108,17 +108,17 @@ func TestTriggerActivateActivity_Validate_InvalidRange(t *testing.T) {
 	assert.Contains(t, err.Error(), "無効なActivationRange")
 }
 
-// TestTriggerActivateActivity_Validate_InvalidWay は無効なActivationWayの検証エラーを確認
-func TestTriggerActivateActivity_Validate_InvalidWay(t *testing.T) {
+// TestInteractionActivateActivity_Validate_InvalidWay は無効なActivationWayの検証エラーを確認
+func TestInteractionActivateActivity_Validate_InvalidWay(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
 	triggerEntity := world.Manager.NewEntity()
-	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
+	triggerEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
 		Data: InvalidWayTrigger{},
 	})
 
-	activity := &TriggerActivateActivity{TriggerEntity: triggerEntity}
+	activity := &InteractionActivateActivity{InteractableEntity: triggerEntity}
 	act := NewActivity(activity, triggerEntity, 1)
 
 	err := activity.Validate(act, world)
@@ -126,8 +126,8 @@ func TestTriggerActivateActivity_Validate_InvalidWay(t *testing.T) {
 	assert.Contains(t, err.Error(), "無効なActivationWay")
 }
 
-// TestTriggerActivateActivity_WarpNext はWarpNextTriggerの動作を確認
-func TestTriggerActivateActivity_WarpNext(t *testing.T) {
+// TestInteractionActivateActivity_WarpNext はWarpNextTriggerの動作を確認
+func TestInteractionActivateActivity_WarpNext(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -140,16 +140,16 @@ func TestTriggerActivateActivity_WarpNext(t *testing.T) {
 	// WarpNextトリガーを作成
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
-	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.WarpNextTrigger{},
+	triggerEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.WarpNextInteraction{},
 	})
 
-	// TriggerActivateActivityを実行
+	// InteractionActivateActivityを実行
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	params := ActionParams{
 		Actor: player,
 	}
-	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: triggerEntity}, params, world)
+	result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: triggerEntity}, params, world)
 
 	require.NoError(t, err)
 	require.NotNil(t, result)
@@ -162,8 +162,8 @@ func TestTriggerActivateActivity_WarpNext(t *testing.T) {
 	assert.True(t, ok, "WarpNextEventが設定されているべき")
 }
 
-// TestTriggerActivateActivity_WarpEscape はWarpEscapeTriggerの動作を確認
-func TestTriggerActivateActivity_WarpEscape(t *testing.T) {
+// TestInteractionActivateActivity_WarpEscape はWarpEscapeTriggerの動作を確認
+func TestInteractionActivateActivity_WarpEscape(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -176,16 +176,16 @@ func TestTriggerActivateActivity_WarpEscape(t *testing.T) {
 	// WarpEscapeトリガーを作成
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
-	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.WarpEscapeTrigger{},
+	triggerEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.WarpEscapeInteraction{},
 	})
 
-	// TriggerActivateActivityを実行
+	// InteractionActivateActivityを実行
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	params := ActionParams{
 		Actor: player,
 	}
-	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: triggerEntity}, params, world)
+	result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: triggerEntity}, params, world)
 
 	require.NoError(t, err)
 	require.NotNil(t, result)
@@ -198,8 +198,8 @@ func TestTriggerActivateActivity_WarpEscape(t *testing.T) {
 	assert.True(t, ok, "WarpEscapeEventが設定されているべき")
 }
 
-// TestTriggerActivateActivity_Door はDoorTriggerの動作を確認
-func TestTriggerActivateActivity_Door(t *testing.T) {
+// TestInteractionActivateActivity_Door はDoorTriggerの動作を確認
+func TestInteractionActivateActivity_Door(t *testing.T) {
 	t.Parallel()
 
 	t.Run("閉じたドアを開く", func(t *testing.T) {
@@ -215,18 +215,18 @@ func TestTriggerActivateActivity_Door(t *testing.T) {
 		doorEntity := world.Manager.NewEntity()
 		doorEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
 		doorEntity.AddComponent(world.Components.Door, &gc.Door{IsOpen: false, Orientation: gc.DoorOrientationHorizontal})
-		doorEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-			Data: gc.DoorTrigger{},
+		doorEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+			Data: gc.DoorInteraction{},
 		})
 		doorEntity.AddComponent(world.Components.BlockPass, &gc.BlockPass{})
 		doorEntity.AddComponent(world.Components.BlockView, &gc.BlockView{})
 
-		// TriggerActivateActivityを実行
+		// InteractionActivateActivityを実行
 		manager := NewActivityManager(logger.New(logger.CategoryAction))
 		params := ActionParams{
 			Actor: player,
 		}
-		result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: doorEntity}, params, world)
+		result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: doorEntity}, params, world)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -250,16 +250,16 @@ func TestTriggerActivateActivity_Door(t *testing.T) {
 		doorEntity := world.Manager.NewEntity()
 		doorEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
 		doorEntity.AddComponent(world.Components.Door, &gc.Door{IsOpen: true, Orientation: gc.DoorOrientationHorizontal})
-		doorEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-			Data: gc.DoorTrigger{},
+		doorEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+			Data: gc.DoorInteraction{},
 		})
 
-		// TriggerActivateActivityを実行
+		// InteractionActivateActivityを実行
 		manager := NewActivityManager(logger.New(logger.CategoryAction))
 		params := ActionParams{
 			Actor: player,
 		}
-		result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: doorEntity}, params, world)
+		result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: doorEntity}, params, world)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -271,8 +271,8 @@ func TestTriggerActivateActivity_Door(t *testing.T) {
 	})
 }
 
-// TestTriggerActivateActivity_Talk はTalkTriggerの動作を確認
-func TestTriggerActivateActivity_Talk(t *testing.T) {
+// TestInteractionActivateActivity_Talk はTalkTriggerの動作を確認
+func TestInteractionActivateActivity_Talk(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -285,8 +285,8 @@ func TestTriggerActivateActivity_Talk(t *testing.T) {
 	// TalkTriggerを持つNPCを作成
 	npcEntity := world.Manager.NewEntity()
 	npcEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
-	npcEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.TalkTrigger{},
+	npcEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.TalkInteraction{},
 	})
 	npcEntity.AddComponent(world.Components.Dialog, &gc.Dialog{
 		MessageKey: "test_npc_greeting",
@@ -294,12 +294,12 @@ func TestTriggerActivateActivity_Talk(t *testing.T) {
 	npcEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テストNPC"})
 	npcEntity.AddComponent(world.Components.FactionNeutral, nil)
 
-	// TriggerActivateActivityを実行
+	// InteractionActivateActivityを実行
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	params := ActionParams{
 		Actor: player,
 	}
-	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: npcEntity}, params, world)
+	result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: npcEntity}, params, world)
 
 	require.NoError(t, err)
 	require.NotNil(t, result)
@@ -309,8 +309,8 @@ func TestTriggerActivateActivity_Talk(t *testing.T) {
 	// トリガーが正常に実行されたことのみを確認する
 }
 
-// TestTriggerActivateActivity_Item はItemTriggerの動作を確認
-func TestTriggerActivateActivity_Item(t *testing.T) {
+// TestInteractionActivateActivity_Item はItemTriggerの動作を確認
+func TestInteractionActivateActivity_Item(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -323,19 +323,19 @@ func TestTriggerActivateActivity_Item(t *testing.T) {
 	// ItemTriggerを持つアイテムを作成（Consumableで削除確認）
 	itemEntity := world.Manager.NewEntity()
 	itemEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
-	itemEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.ItemTrigger{},
+	itemEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.ItemInteraction{},
 	})
 	itemEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テストアイテム"})
 	itemEntity.AddComponent(world.Components.Item, &gc.Item{})
 	itemEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
-	// TriggerActivateActivityを実行
+	// InteractionActivateActivityを実行
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	params := ActionParams{
 		Actor: player,
 	}
-	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: itemEntity}, params, world)
+	result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: itemEntity}, params, world)
 
 	// ItemTriggerはPickupActivityを呼び出すが、プレイヤーにインベントリがないため失敗する可能性がある
 	// ここではトリガーが実行されたことを確認する
@@ -343,8 +343,8 @@ func TestTriggerActivateActivity_Item(t *testing.T) {
 	require.NotNil(t, result)
 }
 
-// TestTriggerActivateActivity_Melee はMeleeTriggerの動作を確認
-func TestTriggerActivateActivity_Melee(t *testing.T) {
+// TestInteractionActivateActivity_Melee はMeleeTriggerの動作を確認
+func TestInteractionActivateActivity_Melee(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -357,17 +357,17 @@ func TestTriggerActivateActivity_Melee(t *testing.T) {
 	// MeleeTriggerを持つ敵を作成
 	enemyEntity := world.Manager.NewEntity()
 	enemyEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 11, Y: 10})
-	enemyEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.MeleeTrigger{},
+	enemyEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.MeleeInteraction{},
 	})
 	enemyEntity.AddComponent(world.Components.Name, &gc.Name{Name: "テスト敵"})
 
-	// TriggerActivateActivityを実行
+	// InteractionActivateActivityを実行
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	params := ActionParams{
 		Actor: player,
 	}
-	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: enemyEntity}, params, world)
+	result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: enemyEntity}, params, world)
 
 	// MeleeTriggerはAttackActivityを呼び出すが、必要なコンポーネントがないため失敗する可能性がある
 	// ここではトリガーが実行されたことを確認する
@@ -375,8 +375,8 @@ func TestTriggerActivateActivity_Melee(t *testing.T) {
 	require.NotNil(t, result)
 }
 
-// TestTriggerActivateActivity_Consumable はConsumableコンポーネントがある場合にエンティティが削除されることを確認
-func TestTriggerActivateActivity_Consumable(t *testing.T) {
+// TestInteractionActivateActivity_Consumable はConsumableコンポーネントがある場合にエンティティが削除されることを確認
+func TestInteractionActivateActivity_Consumable(t *testing.T) {
 	t.Parallel()
 
 	world := testutil.InitTestWorld(t)
@@ -389,26 +389,26 @@ func TestTriggerActivateActivity_Consumable(t *testing.T) {
 	// Consumableなトリガーを作成（一度だけ発動するWarpNext）
 	triggerEntity := world.Manager.NewEntity()
 	triggerEntity.AddComponent(world.Components.GridElement, &gc.GridElement{X: 10, Y: 10})
-	triggerEntity.AddComponent(world.Components.Trigger, &gc.Trigger{
-		Data: gc.WarpNextTrigger{},
+	triggerEntity.AddComponent(world.Components.Interactable, &gc.Interactable{
+		Data: gc.WarpNextInteraction{},
 	})
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// エンティティIDを保存
 	triggerID := triggerEntity
 
-	// TriggerActivateActivityを実行
+	// InteractionActivateActivityを実行
 	manager := NewActivityManager(logger.New(logger.CategoryAction))
 	params := ActionParams{
 		Actor: player,
 	}
-	result, err := manager.Execute(&TriggerActivateActivity{TriggerEntity: triggerEntity}, params, world)
+	result, err := manager.Execute(&InteractionActivateActivity{InteractableEntity: triggerEntity}, params, world)
 
 	require.NoError(t, err)
 	require.NotNil(t, result)
 	assert.True(t, result.Success, "Consumableトリガーが成功するべき")
 
 	// トリガーエンティティが削除されていることを確認
-	assert.False(t, triggerID.HasComponent(world.Components.Trigger),
+	assert.False(t, triggerID.HasComponent(world.Components.Interactable),
 		"Consumableトリガーは実行後に削除されるべき")
 }

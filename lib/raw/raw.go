@@ -334,7 +334,7 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 
 	if locationType != nil {
 		if _, ok := (*locationType).(gc.LocationOnField); ok {
-			entitySpec.Trigger = &gc.Trigger{Data: gc.ItemTrigger{}}
+			entitySpec.Interactable = &gc.Interactable{Data: gc.ItemInteraction{}}
 		}
 	}
 
@@ -474,7 +474,7 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 		entitySpec.Dialog = &gc.Dialog{
 			MessageKey: member.Dialog.MessageKey,
 		}
-		entitySpec.Trigger = &gc.Trigger{Data: gc.TalkTrigger{}}
+		entitySpec.Interactable = &gc.Interactable{Data: gc.TalkInteraction{}}
 	}
 
 	return entitySpec, nil
@@ -640,11 +640,11 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 	}
 
 	if propRaw.WarpNextTrigger != nil {
-		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpNextTrigger{}}
+		entitySpec.Interactable = &gc.Interactable{Data: gc.WarpNextInteraction{}}
 	}
 
 	if propRaw.WarpEscapeTrigger != nil {
-		entitySpec.Trigger = &gc.Trigger{Data: gc.WarpEscapeTrigger{}}
+		entitySpec.Interactable = &gc.Interactable{Data: gc.WarpEscapeInteraction{}}
 	}
 
 	return entitySpec, nil
