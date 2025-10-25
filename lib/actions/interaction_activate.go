@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/gamelog"
 	"github.com/kijimaD/ruins/lib/resources"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -124,12 +125,21 @@ func (ia *InteractionActivateActivity) executeWarpNext(act *Activity, world w.Wo
 
 // executeWarpEscape は脱出ワープする相互作用を実行する
 func (ia *InteractionActivateActivity) executeWarpEscape(act *Activity, world w.World, _ gc.WarpEscapeInteraction) {
-	world.Resources.Dungeon.SetStateEvent(resources.WarpEscapeEvent{})
-	act.Logger.Debug("脱出ワープ", "actor", act.Actor)
+	currentDepth := world.Resources.Dungeon.Depth
+
 	if isPlayerActivity(act, world) {
 		gamelog.New(gamelog.FieldLog).
 			Magic("脱出した。").
 			Log()
+	}
+
+	// クリア深度から脱出した場合はゲームクリアイベントを発行
+	if currentDepth >= consts.GameClearDepth {
+		world.Resources.Dungeon.SetStateEvent(resources.GameClearEvent{})
+		act.Logger.Debug("ゲームクリア", "actor", act.Actor, "depth", currentDepth)
+	} else {
+		world.Resources.Dungeon.SetStateEvent(resources.WarpEscapeEvent{})
+		act.Logger.Debug("脱出ワープ", "actor", act.Actor, "depth", currentDepth)
 	}
 }
 

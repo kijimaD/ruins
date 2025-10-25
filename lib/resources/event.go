@@ -14,6 +14,8 @@ const (
 	StateEventTypeWarpNext = StateEventType("WARP_NEXT")
 	// StateEventTypeWarpEscape は脱出を表す
 	StateEventTypeWarpEscape = StateEventType("WARP_ESCAPE")
+	// StateEventTypeGameClear はゲームクリアを表す
+	StateEventTypeGameClear = StateEventType("GAME_CLEAR")
 	// StateEventTypeShowDialog は会話メッセージの表示を表す
 	StateEventTypeShowDialog = StateEventType("SHOW_DIALOG")
 )
@@ -45,6 +47,14 @@ type WarpEscapeEvent struct{}
 // Type はイベントタイプを返す
 func (e WarpEscapeEvent) Type() StateEventType {
 	return StateEventTypeWarpEscape
+}
+
+// GameClearEvent はゲームクリアを表す
+type GameClearEvent struct{}
+
+// Type はイベントタイプを返す
+func (e GameClearEvent) Type() StateEventType {
+	return StateEventTypeGameClear
 }
 
 // ShowDialogEvent は会話メッセージの表示を表す
