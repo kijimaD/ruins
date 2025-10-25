@@ -93,6 +93,10 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}})
 			return nil
 		}).
+		WithChoice("ゲームクリア", func(_ w.World) error {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameClearMessageState}})
+			return nil
+		}).
 		WithChoice("ダンジョン開始(大部屋)", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
 				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeBigRoom)),
@@ -279,7 +283,6 @@ func NewMainMenuState() es.State[w.World] {
 
 // NewGameOverMessageState はゲームオーバー用のMessageStateを作成するファクトリー関数
 func NewGameOverMessageState() es.State[w.World] {
-	// MessageStateインスタンスを作成
 	messageState := &MessageState{}
 
 	// ゲームオーバーメッセージを作成（選択肢付き）
@@ -296,9 +299,35 @@ func NewGameOverMessageState() es.State[w.World] {
 	return messageState
 }
 
+// NewGameClearMessageState はゲームクリア用のMessageStateを作成するファクトリー関数
+func NewGameClearMessageState() es.State[w.World] {
+	messageState := &MessageState{}
+
+	// ゲームクリアメッセージを作成（選択肢付き）
+	messageData := messagedata.NewSystemMessage(`眠りについていた人々は目覚めだした。
+待ち望んだ再会を喜びを噛み締めた。
+
+不毛だった大地には若草が芽吹きだした。
+人々は忘れかけた希望の感覚に
+酔いしれるのであった...。
+
+━━━━━━━━━━━━
+[GAME CLEAR]
+━━━━━━━━━━━━`).
+		WithChoice("閉じる", func(_ w.World) error {
+			// 町に遷移
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}})
+			return nil
+		})
+
+	// MessageStateにMessageDataを設定
+	messageState.messageData = messageData
+
+	return messageState
+}
+
 // NewGameStartMessageState はゲーム開始時の目的を説明するMessageStateを作成するファクトリー関数
 func NewGameStartMessageState() es.State[w.World] {
-	// MessageStateインスタンスを作成
 	messageState := &MessageState{}
 
 	// メッセージを作成

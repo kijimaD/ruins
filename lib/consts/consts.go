@@ -22,4 +22,6 @@ const (
 	MapTileWidth = 50
 	// MapTileHeight はマップの縦タイル数
 	MapTileHeight = 50
+	// GameClearDepth はゲームクリアとなる深度
+	GameClearDepth = 100
 )
