@@ -383,13 +383,60 @@ func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[strin
 			return
 		}
 
+		// 影が落ちる位置（下のタイル）の光源情報を取得
+		belowX := int(belowPos.X)
+		belowY := int(belowPos.Y)
+		lightInfo := getCachedLightInfo(world, belowX, belowY)
+
+		// 光源の明るさに応じて影の透明度を調整
+		// Darkness: 0.0(明るい) → 影薄い、1.0(暗い) → 影濃い
+		baseShadowAlpha := 80.0
+		shadowAlpha := uint8(baseShadowAlpha * lightInfo.Darkness)
+
+		// 影の透明度が非常に小さい場合は描画しない（最適化）
+		if shadowAlpha < 5 {
+			return
+		}
+
+		// 影画像を生成（キャッシュあり）
+		wallShadow := getWallShadowImage(shadowAlpha)
+		if wallShadow == nil {
+			return
+		}
+
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(int(grid.X)*int(consts.TileSize)), float64(int(grid.Y)*int(consts.TileSize)+int(consts.TileSize)))
 		SetTranslate(world, op)
-		if wallShadowImage != nil {
-			screen.DrawImage(wallShadowImage, op)
-		}
+		screen.DrawImage(wallShadow, op)
 	}))
+}
+
+// getWallShadowImage は指定した透明度の壁の影画像を取得する
+func getWallShadowImage(alpha uint8) *ebiten.Image {
+	// キャッシュキーを生成
+	cacheKey := spriteImageCacheKey{
+		SpriteSheetName: "wall_shadow",
+		SpriteKey:       fmt.Sprintf("alpha_%d", alpha),
+	}
+
+	// キャッシュから取得
+	if img, exists := spriteImageCache[cacheKey]; exists {
+		return img
+	}
+
+	// 新規作成
+	wallWidth := int(consts.TileSize)
+	wallHeight := int(consts.TileSize / 2)
+	if wallWidth <= 0 || wallHeight <= 0 {
+		return nil
+	}
+
+	img := ebiten.NewImage(wallWidth, wallHeight)
+	img.Fill(color.RGBA{0, 0, 0, alpha})
+
+	spriteImageCache[cacheKey] = img
+
+	return img
 }
 
 func getImage(world w.World, spriteRender *gc.SpriteRender) (*ebiten.Image, error) {
