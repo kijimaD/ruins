@@ -107,6 +107,18 @@
 - SliceComponent: データ保持（Pools, Attributes, Attack等）
 - 死亡状態はDeadコンポーネントで明示的に管理
 - HP.Current == 0 での死亡判定とDeadコンポーネント付与を併用
+<p>Interactableコンポーネント:
+- エンティティがプレイヤーと相互作用できることを示すマーカー
+- 相互作用の種類はInteractionData（WarpNext, Door, Talk, Item, Melee等）で定義
+- 発動範囲はActivationRange（SameTile, Adjacent）で制御
+- 発動方式はActivationWay（Auto, Manual, OnCollision）で制御
+<ul>
+<li>Auto: 範囲内に入ったら即座に発動
+<li>Manual: Enterキーやアクションメニューで発動
+<li>OnCollision: 移動先として指定された時に発動（ドア開閉、会話、近接攻撃等）
+</ul>
+<p>- 環境オブジェクト（ドア、アイテム）だけでなく、エンティティ（NPC、敵）も持つことができる
+- MeleeInteractionは敵が「攻撃可能な対象」であることを示す
 
 				
 			</div>
@@ -274,16 +286,16 @@
 				
 			
 				
-				<dd><a href="index.html#DoorOrientation">type DoorOrientation</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#DoorTrigger">type DoorTrigger</a></dd>
+				<dd><a href="index.html#DoorInteraction">type DoorInteraction</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#DoorTrigger.Config">func (t DoorTrigger) Config() TriggerConfig</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#DoorInteraction.Config">func (t DoorInteraction) Config() InteractionConfig</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DoorOrientation">type DoorOrientation</a></dd>
+				
 				
 			
 				
@@ -401,21 +413,36 @@
 				
 			
 				
+				<dd><a href="index.html#Interactable">type Interactable</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#InteractionConfig">type InteractionConfig</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#InteractionData">type InteractionData</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#Item">type Item</a></dd>
 				
 				
 			
 				
-				<dd><a href="index.html#ItemLocationType">type ItemLocationType</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#ItemTrigger">type ItemTrigger</a></dd>
+				<dd><a href="index.html#ItemInteraction">type ItemInteraction</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ItemTrigger.Config">func (t ItemTrigger) Config() TriggerConfig</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ItemInteraction.Config">func (t ItemInteraction) Config() InteractionConfig</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ItemLocationType">type ItemLocationType</a></dd>
+				
 				
 			
 				
@@ -445,6 +472,14 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#LocationOnField.String">func (c LocationOnField) String() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#MeleeInteraction">type MeleeInteraction</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#MeleeInteraction.Config">func (t MeleeInteraction) Config() InteractionConfig</a></dd>
 				
 			
 				
@@ -558,11 +593,11 @@
 				
 			
 				
-				<dd><a href="index.html#TalkTrigger">type TalkTrigger</a></dd>
+				<dd><a href="index.html#TalkInteraction">type TalkInteraction</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#TalkTrigger.Config">func (t TalkTrigger) Config() TriggerConfig</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#TalkInteraction.Config">func (t TalkInteraction) Config() InteractionConfig</a></dd>
 				
 			
 				
@@ -600,21 +635,6 @@
 				
 			
 				
-				<dd><a href="index.html#Trigger">type Trigger</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#TriggerConfig">type TriggerConfig</a></dd>
-				
-				
-			
-				
-				<dd><a href="index.html#TriggerData">type TriggerData</a></dd>
-				
-				
-			
-				
 				<dd><a href="index.html#TurnBased">type TurnBased</a></dd>
 				
 				
@@ -638,19 +658,19 @@
 				
 			
 				
-				<dd><a href="index.html#WarpEscapeTrigger">type WarpEscapeTrigger</a></dd>
+				<dd><a href="index.html#WarpEscapeInteraction">type WarpEscapeInteraction</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpEscapeTrigger.Config">func (t WarpEscapeTrigger) Config() TriggerConfig</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#WarpEscapeInteraction.Config">func (t WarpEscapeInteraction) Config() InteractionConfig</a></dd>
 				
 			
 				
-				<dd><a href="index.html#WarpNextTrigger">type WarpNextTrigger</a></dd>
+				<dd><a href="index.html#WarpNextInteraction">type WarpNextInteraction</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpNextTrigger.Config">func (t WarpNextTrigger) Config() TriggerConfig</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#WarpNextInteraction.Config">func (t WarpNextInteraction) Config() InteractionConfig</a></dd>
 				
 			
 				
@@ -686,9 +706,9 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/hunger.go">hunger.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go">sprite.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go">interactable.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go">trigger.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/sprite.go">sprite.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go">types.go</a>
 			
@@ -942,12 +962,12 @@
 		
 			
 			
-			<h2 id="ActivationRange">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1898:1925#L67">ActivationRange</a>
+			<h2 id="ActivationRange">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=2378:2405#L78">ActivationRange</a>
 				<a class="permalink" href="index.html#ActivationRange">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ActivationRange はトリガーの発動範囲を表す
+			<p>ActivationRange は相互作用の発動範囲を表す
 
 			<pre>type ActivationRange <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -971,7 +991,7 @@
 
 			
 				
-				<h3 id="ActivationRange.Valid">func (ActivationRange) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=2232:2273#L77">Valid</a>
+				<h3 id="ActivationRange.Valid">func (ActivationRange) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=2712:2753#L88">Valid</a>
 					<a class="permalink" href="index.html#ActivationRange.Valid">&#xb6;</a>
 					
 					
@@ -986,12 +1006,12 @@
 		
 			
 			
-			<h2 id="ActivationWay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=2503:2528#L88">ActivationWay</a>
+			<h2 id="ActivationWay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=2983:3008#L99">ActivationWay</a>
 				<a class="permalink" href="index.html#ActivationWay">&#xb6;</a>
 				
 				
 			</h2>
-			<p>ActivationWay はトリガーの発動方式を表す
+			<p>ActivationWay は相互作用の発動方式を表す
 
 			<pre>type ActivationWay <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
 
@@ -1017,7 +1037,7 @@
 
 			
 				
-				<h3 id="ActivationWay.Valid">func (ActivationWay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=3041:3080#L100">Valid</a>
+				<h3 id="ActivationWay.Valid">func (ActivationWay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=3521:3560#L111">Valid</a>
 					<a class="permalink" href="index.html#ActivationWay.Valid">&#xb6;</a>
 					
 					
@@ -1057,7 +1077,7 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8586:8822#L263">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8591:8827#L263">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -1191,7 +1211,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6950:7451#L216">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6955:7456#L216">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -1270,7 +1290,7 @@
 		
 			
 			
-			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5156:5212#L153">Camera</a>
+			<h2 id="Camera">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5161:5217#L153">Camera</a>
 				<a class="permalink" href="index.html#Camera">&#xb6;</a>
 				
 				
@@ -1298,7 +1318,7 @@
 		
 			
 			
-			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8888:8929#L272">CommandTable</a>
+			<h2 id="CommandTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8893:8934#L272">CommandTable</a>
 				<a class="permalink" href="index.html#CommandTable">&#xb6;</a>
 				
 				
@@ -1324,7 +1344,7 @@
 		
 			
 			
-			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1694:3809#L60">Components</a>
+			<h2 id="Components">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=1699:3814#L60">Components</a>
 				<a class="permalink" href="index.html#Components">&#xb6;</a>
 				
 				
@@ -1367,7 +1387,7 @@ Manager.Join()でのクエリに使用される
 <span id="Components.Door"></span>    Door         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 <span id="Components.Prop"></span>    Prop         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a>
 <span id="Components.LightSource"></span>    LightSource  *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a> `save:&#34;true&#34;`
-<span id="Components.Trigger"></span>    Trigger      *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
+<span id="Components.Interactable"></span>    Interactable *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#SliceComponent">SliceComponent</a>
 
     <span class="comment">// member ================</span>
 <span id="Components.Player"></span>    Player         *<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#NullComponent">NullComponent</a> `save:&#34;true&#34;`
@@ -1403,7 +1423,7 @@ Manager.Join()でのクエリに使用される
 
 			
 				
-				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4050:4119#L120">InitializeComponents</a>
+				<h3 id="Components.InitializeComponents">func (*Components) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=4055:4124#L120">InitializeComponents</a>
 					<a class="permalink" href="index.html#Components.InitializeComponents">&#xb6;</a>
 					
 					
@@ -1420,7 +1440,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5539:5618#L163">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5544:5623#L163">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -1447,7 +1467,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6416:6434#L195">Dead</a>
+			<h2 id="Dead">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6421:6439#L195">Dead</a>
 				<a class="permalink" href="index.html#Dead">&#xb6;</a>
 				
 				
@@ -1507,7 +1527,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5701:5748#L174">Description</a>
+			<h2 id="Description">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5706:5753#L174">Description</a>
 				<a class="permalink" href="index.html#Description">&#xb6;</a>
 				
 				
@@ -1533,7 +1553,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Dialog">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5779:5845#L179">Dialog</a>
+			<h2 id="Dialog">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5784:5850#L179">Dialog</a>
 				<a class="permalink" href="index.html#Dialog">&#xb6;</a>
 				
 				
@@ -1617,7 +1637,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="Door">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11212:11340#L367">Door</a>
+			<h2 id="Door">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11217:11345#L367">Door</a>
 				<a class="permalink" href="index.html#Door">&#xb6;</a>
 				
 				
@@ -1644,7 +1664,44 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="DoorOrientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11380:11404#L373">DoorOrientation</a>
+			<h2 id="DoorInteraction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=1179:1208#L34">DoorInteraction</a>
+				<a class="permalink" href="index.html#DoorInteraction">&#xb6;</a>
+				
+				
+			</h2>
+			<p>DoorInteraction はドアの相互作用
+
+			<pre>type DoorInteraction struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="DoorInteraction.Config">func (DoorInteraction) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=1251:1302#L37">Config</a>
+					<a class="permalink" href="index.html#DoorInteraction.Config">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t <a href="index.html#DoorInteraction">DoorInteraction</a>) Config() <a href="index.html#InteractionConfig">InteractionConfig</a></pre>
+				<p>Config は相互作用設定を返す
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="DoorOrientation">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11385:11409#L373">DoorOrientation</a>
 				<a class="permalink" href="index.html#DoorOrientation">&#xb6;</a>
 				
 				
@@ -1675,44 +1732,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="DoorTrigger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1056:1081#L34">DoorTrigger</a>
-				<a class="permalink" href="index.html#DoorTrigger">&#xb6;</a>
-				
-				
-			</h2>
-			<p>DoorTrigger はドアのトリガー
-
-			<pre>type DoorTrigger struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="DoorTrigger.Config">func (DoorTrigger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1124:1167#L37">Config</a>
-					<a class="permalink" href="index.html#DoorTrigger.Config">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (t <a href="index.html#DoorTrigger">DoorTrigger</a>) Config() <a href="index.html#TriggerConfig">TriggerConfig</a></pre>
-				<p>Config はトリガー設定を返す
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8975:9013#L277">DropTable</a>
+			<h2 id="DropTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8980:9018#L277">DropTable</a>
 				<a class="permalink" href="index.html#DropTable">&#xb6;</a>
 				
 				
@@ -1800,7 +1820,7 @@ Manager.Join()でのクエリに使用される
 		
 			
 			
-			<h2 id="EntitySpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=309:1507#L4">EntitySpec</a>
+			<h2 id="EntitySpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=309:1512#L4">EntitySpec</a>
 				<a class="permalink" href="index.html#EntitySpec">&#xb6;</a>
 				
 				
@@ -1842,7 +1862,7 @@ AddEntities関数でECSエンティティに変換される
 <span id="EntitySpec.Prop"></span>    Prop         *<a href="index.html#Prop">Prop</a>
 <span id="EntitySpec.LightSource"></span>    LightSource  *<a href="index.html#LightSource">LightSource</a>
 <span id="EntitySpec.Door"></span>    Door         *<a href="index.html#Door">Door</a>
-<span id="EntitySpec.Trigger"></span>    Trigger      *<a href="index.html#Trigger">Trigger</a>
+<span id="EntitySpec.Interactable"></span>    Interactable *<a href="index.html#Interactable">Interactable</a>
 
     <span class="comment">// member ================</span>
 <span id="EntitySpec.Player"></span>    Player      *<a href="index.html#Player">Player</a>
@@ -1908,7 +1928,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8286:8316#L254">EquipmentChanged</a>
+			<h2 id="EquipmentChanged">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8291:8321#L254">EquipmentChanged</a>
 				<a class="permalink" href="index.html#EquipmentChanged">&#xb6;</a>
 				
 				
@@ -2014,7 +2034,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9544:9573#L300">FactionAllyData</a>
+			<h2 id="FactionAllyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9549:9578#L300">FactionAllyData</a>
 				<a class="permalink" href="index.html#FactionAllyData">&#xb6;</a>
 				
 				
@@ -2036,7 +2056,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9575:9615#L302">String</a>
+				<h3 id="FactionAllyData.String">func (FactionAllyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9580:9620#L302">String</a>
 					<a class="permalink" href="index.html#FactionAllyData.String">&#xb6;</a>
 					
 					
@@ -2050,7 +2070,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9688:9718#L307">FactionEnemyData</a>
+			<h2 id="FactionEnemyData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9693:9723#L307">FactionEnemyData</a>
 				<a class="permalink" href="index.html#FactionEnemyData">&#xb6;</a>
 				
 				
@@ -2072,7 +2092,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9720:9761#L309">String</a>
+				<h3 id="FactionEnemyData.String">func (FactionEnemyData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9725:9766#L309">String</a>
 					<a class="permalink" href="index.html#FactionEnemyData.String">&#xb6;</a>
 					
 					
@@ -2086,7 +2106,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionNeutralData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9837:9869#L314">FactionNeutralData</a>
+			<h2 id="FactionNeutralData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9842:9874#L314">FactionNeutralData</a>
 				<a class="permalink" href="index.html#FactionNeutralData">&#xb6;</a>
 				
 				
@@ -2108,7 +2128,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="FactionNeutralData.String">func (FactionNeutralData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9871:9914#L316">String</a>
+				<h3 id="FactionNeutralData.String">func (FactionNeutralData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9876:9919#L316">String</a>
 					<a class="permalink" href="index.html#FactionNeutralData.String">&#xb6;</a>
 					
 					
@@ -2122,7 +2142,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9172:9201#L288">FactionType</a>
+			<h2 id="FactionType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9177:9206#L288">FactionType</a>
 				<a class="permalink" href="index.html#FactionType">&#xb6;</a>
 				
 				
@@ -2326,7 +2346,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7754:7796#L233">InflictsDamage</a>
+			<h2 id="InflictsDamage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7759:7801#L233">InflictsDamage</a>
 				<a class="permalink" href="index.html#InflictsDamage">&#xb6;</a>
 				
 				
@@ -2353,7 +2373,85 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5462:5480#L160">Item</a>
+			<h2 id="Interactable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=132:182#L1">Interactable</a>
+				<a class="permalink" href="index.html#Interactable">&#xb6;</a>
+				
+				
+			</h2>
+			<p>Interactable はプレイヤーと相互作用可能なエンティティを示すマーカー
+
+			<pre>type Interactable struct {
+<span id="Interactable.Data"></span>    Data <a href="index.html#InteractionData">InteractionData</a>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="InteractionConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=230:361#L1">InteractionConfig</a>
+				<a class="permalink" href="index.html#InteractionConfig">&#xb6;</a>
+				
+				
+			</h2>
+			<p>InteractionConfig は相互作用の設定
+
+			<pre>type InteractionConfig struct {
+<span id="InteractionConfig.ActivationRange"></span>    ActivationRange <a href="index.html#ActivationRange">ActivationRange</a> <span class="comment">// 発動範囲</span>
+<span id="InteractionConfig.ActivationWay"></span>    ActivationWay   <a href="index.html#ActivationWay">ActivationWay</a>   <span class="comment">// 発動方式</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="InteractionData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=434:496#L7">InteractionData</a>
+				<a class="permalink" href="index.html#InteractionData">&#xb6;</a>
+				
+				
+			</h2>
+			<p>InteractionData は相互作用のデータインターフェース
+
+			<pre>type InteractionData interface {
+    Config() <a href="index.html#InteractionConfig">InteractionConfig</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5467:5485#L160">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -2378,7 +2476,44 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9990:10024#L321">ItemLocationType</a>
+			<h2 id="ItemInteraction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=1775:1804#L56">ItemInteraction</a>
+				<a class="permalink" href="index.html#ItemInteraction">&#xb6;</a>
+				
+				
+			</h2>
+			<p>ItemInteraction はアイテム拾得の相互作用
+
+			<pre>type ItemInteraction struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ItemInteraction.Config">func (ItemInteraction) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=1847:1898#L59">Config</a>
+					<a class="permalink" href="index.html#ItemInteraction.Config">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t <a href="index.html#ItemInteraction">ItemInteraction</a>) Config() <a href="index.html#InteractionConfig">InteractionConfig</a></pre>
+				<p>Config は相互作用設定を返す
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ItemLocationType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9995:10029#L321">ItemLocationType</a>
 				<a class="permalink" href="index.html#ItemLocationType">&#xb6;</a>
 				
 				
@@ -2411,44 +2546,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="ItemTrigger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1612:1637#L56">ItemTrigger</a>
-				<a class="permalink" href="index.html#ItemTrigger">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ItemTrigger はアイテム拾得のトリガー
-
-			<pre>type ItemTrigger struct{}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-				
-				<h3 id="ItemTrigger.Config">func (ItemTrigger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1680:1723#L59">Config</a>
-					<a class="permalink" href="index.html#ItemTrigger.Config">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (t <a href="index.html#ItemTrigger">ItemTrigger</a>) Config() <a href="index.html#TriggerConfig">TriggerConfig</a></pre>
-				<p>Config はトリガー設定を返す
-
-				
-				
-				
-			
-		
-			
-			
-			<h2 id="LightSource">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11023:11156#L360">LightSource</a>
+			<h2 id="LightSource">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=11028:11161#L360">LightSource</a>
 				<a class="permalink" href="index.html#LightSource">&#xb6;</a>
 				
 				
@@ -2476,7 +2574,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10570:10663#L340">LocationEquipped</a>
+			<h2 id="LocationEquipped">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10575:10668#L340">LocationEquipped</a>
 				<a class="permalink" href="index.html#LocationEquipped">&#xb6;</a>
 				
 				
@@ -2501,7 +2599,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10665:10706#L345">String</a>
+				<h3 id="LocationEquipped.String">func (LocationEquipped) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10670:10711#L345">String</a>
 					<a class="permalink" href="index.html#LocationEquipped.String">&#xb6;</a>
 					
 					
@@ -2515,7 +2613,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10415:10447#L333">LocationInBackpack</a>
+			<h2 id="LocationInBackpack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10420:10452#L333">LocationInBackpack</a>
 				<a class="permalink" href="index.html#LocationInBackpack">&#xb6;</a>
 				
 				
@@ -2537,7 +2635,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10449:10492#L335">String</a>
+				<h3 id="LocationInBackpack.String">func (LocationInBackpack) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10454:10497#L335">String</a>
 					<a class="permalink" href="index.html#LocationInBackpack.String">&#xb6;</a>
 					
 					
@@ -2551,7 +2649,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10790:10819#L350">LocationOnField</a>
+			<h2 id="LocationOnField">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10795:10824#L350">LocationOnField</a>
 				<a class="permalink" href="index.html#LocationOnField">&#xb6;</a>
 				
 				
@@ -2573,7 +2671,7 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10821:10861#L352">String</a>
+				<h3 id="LocationOnField.String">func (LocationOnField) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10826:10866#L352">String</a>
 					<a class="permalink" href="index.html#LocationOnField.String">&#xb6;</a>
 					
 					
@@ -2587,7 +2685,44 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5641:5674#L169">Name</a>
+			<h2 id="MeleeInteraction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=2069:2099#L67">MeleeInteraction</a>
+				<a class="permalink" href="index.html#MeleeInteraction">&#xb6;</a>
+				
+				
+			</h2>
+			<p>MeleeInteraction は近接攻撃の相互作用
+
+			<pre>type MeleeInteraction struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="MeleeInteraction.Config">func (MeleeInteraction) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=2142:2194#L70">Config</a>
+					<a class="permalink" href="index.html#MeleeInteraction.Config">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (t <a href="index.html#MeleeInteraction">MeleeInteraction</a>) Config() <a href="index.html#InteractionConfig">InteractionConfig</a></pre>
+				<p>Config は相互作用設定を返す
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Name">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5646:5679#L169">Name</a>
 				<a class="permalink" href="index.html#Name">&#xb6;</a>
 				
 				
@@ -2688,7 +2823,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6194:6214#L191">Player</a>
+			<h2 id="Player">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6199:6219#L191">Player</a>
 				<a class="permalink" href="index.html#Player">&#xb6;</a>
 				
 				
@@ -2739,7 +2874,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6576:6858#L203">Pools</a>
+			<h2 id="Pools">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6581:6863#L203">Pools</a>
 				<a class="permalink" href="index.html#Pools">&#xb6;</a>
 				
 				
@@ -2806,7 +2941,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Prop">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10957:10975#L357">Prop</a>
+			<h2 id="Prop">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=10962:10980#L357">Prop</a>
 				<a class="permalink" href="index.html#Prop">&#xb6;</a>
 				
 				
@@ -2830,7 +2965,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7573:7621#L227">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7578:7626#L227">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -2909,7 +3044,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8150:8194#L249">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8155:8199#L249">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -3028,7 +3163,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9054:9118#L282">SheetImage</a>
+			<h2 id="SheetImage">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=9059:9123#L282">SheetImage</a>
 				<a class="permalink" href="index.html#SheetImage">&#xb6;</a>
 				
 				
@@ -3154,7 +3289,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Stackable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7878:7927#L238">Stackable</a>
+			<h2 id="Stackable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=7883:7932#L238">Stackable</a>
 				<a class="permalink" href="index.html#Stackable">&#xb6;</a>
 				
 				
@@ -3180,14 +3315,14 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="TalkTrigger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1328:1353#L45">TalkTrigger</a>
-				<a class="permalink" href="index.html#TalkTrigger">&#xb6;</a>
+			<h2 id="TalkInteraction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=1471:1500#L45">TalkInteraction</a>
+				<a class="permalink" href="index.html#TalkInteraction">&#xb6;</a>
 				
 				
 			</h2>
-			<p>TalkTrigger は会話のトリガー
+			<p>TalkInteraction は会話の相互作用
 
-			<pre>type TalkTrigger struct{}
+			<pre>type TalkInteraction struct{}
 </pre>
 
 			
@@ -3202,13 +3337,13 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="TalkTrigger.Config">func (TalkTrigger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=1396:1439#L48">Config</a>
-					<a class="permalink" href="index.html#TalkTrigger.Config">&#xb6;</a>
+				<h3 id="TalkInteraction.Config">func (TalkInteraction) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=1543:1594#L48">Config</a>
+					<a class="permalink" href="index.html#TalkInteraction.Config">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (t <a href="index.html#TalkTrigger">TalkTrigger</a>) Config() <a href="index.html#TriggerConfig">TriggerConfig</a></pre>
-				<p>Config はトリガー設定を返す
+				<pre>func (t <a href="index.html#TalkInteraction">TalkInteraction</a>) Config() <a href="index.html#InteractionConfig">InteractionConfig</a></pre>
+				<p>Config は相互作用設定を返す
 
 				
 				
@@ -3379,84 +3514,6 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Trigger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=82:123#L1">Trigger</a>
-				<a class="permalink" href="index.html#Trigger">&#xb6;</a>
-				
-				
-			</h2>
-			<p>Trigger は接触で発動するイベント
-
-			<pre>type Trigger struct {
-<span id="Trigger.Data"></span>    Data <a href="index.html#TriggerData">TriggerData</a>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="TriggerConfig">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=167:294#L1">TriggerConfig</a>
-				<a class="permalink" href="index.html#TriggerConfig">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TriggerConfig はトリガーの設定
-
-			<pre>type TriggerConfig struct {
-<span id="TriggerConfig.ActivationRange"></span>    ActivationRange <a href="index.html#ActivationRange">ActivationRange</a> <span class="comment">// 発動範囲</span>
-<span id="TriggerConfig.ActivationWay"></span>    ActivationWay   <a href="index.html#ActivationWay">ActivationWay</a>   <span class="comment">// 発動方式</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
-			<h2 id="TriggerData">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=363:417#L7">TriggerData</a>
-				<a class="permalink" href="index.html#TriggerData">&#xb6;</a>
-				
-				
-			</h2>
-			<p>TriggerData はトリガーのデータインターフェース
-
-			<pre>type TriggerData interface {
-    Config() <a href="index.html#TriggerConfig">TriggerConfig</a>
-}</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-
-			
-		
-			
-			
 			<h2 id="TurnBased">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/types.go?s=343:394#L1">TurnBased</a>
 				<a class="permalink" href="index.html#TurnBased">&#xb6;</a>
 				
@@ -3521,7 +3578,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Value">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8078:8110#L244">Value</a>
+			<h2 id="Value">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8083:8115#L244">Value</a>
 				<a class="permalink" href="index.html#Value">&#xb6;</a>
 				
 				
@@ -3548,7 +3605,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Wallet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6489:6525#L198">Wallet</a>
+			<h2 id="Wallet">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=6494:6530#L198">Wallet</a>
 				<a class="permalink" href="index.html#Wallet">&#xb6;</a>
 				
 				
@@ -3574,14 +3631,14 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="WarpEscapeTrigger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=777:808#L23">WarpEscapeTrigger</a>
-				<a class="permalink" href="index.html#WarpEscapeTrigger">&#xb6;</a>
+			<h2 id="WarpEscapeInteraction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=880:915#L23">WarpEscapeInteraction</a>
+				<a class="permalink" href="index.html#WarpEscapeInteraction">&#xb6;</a>
 				
 				
 			</h2>
-			<p>WarpEscapeTrigger は脱出ワープするトリガー
+			<p>WarpEscapeInteraction は脱出ワープする相互作用
 
-			<pre>type WarpEscapeTrigger struct{}
+			<pre>type WarpEscapeInteraction struct{}
 </pre>
 
 			
@@ -3596,13 +3653,13 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="WarpEscapeTrigger.Config">func (WarpEscapeTrigger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=851:900#L26">Config</a>
-					<a class="permalink" href="index.html#WarpEscapeTrigger.Config">&#xb6;</a>
+				<h3 id="WarpEscapeInteraction.Config">func (WarpEscapeInteraction) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=958:1015#L26">Config</a>
+					<a class="permalink" href="index.html#WarpEscapeInteraction.Config">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (t <a href="index.html#WarpEscapeTrigger">WarpEscapeTrigger</a>) Config() <a href="index.html#TriggerConfig">TriggerConfig</a></pre>
-				<p>Config はトリガー設定を返す
+				<pre>func (t <a href="index.html#WarpEscapeInteraction">WarpEscapeInteraction</a>) Config() <a href="index.html#InteractionConfig">InteractionConfig</a></pre>
+				<p>Config は相互作用設定を返す
 
 				
 				
@@ -3611,14 +3668,14 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="WarpNextTrigger">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=484:513#L12">WarpNextTrigger</a>
-				<a class="permalink" href="index.html#WarpNextTrigger">&#xb6;</a>
+			<h2 id="WarpNextInteraction">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=567:600#L12">WarpNextInteraction</a>
+				<a class="permalink" href="index.html#WarpNextInteraction">&#xb6;</a>
 				
 				
 			</h2>
-			<p>WarpNextTrigger は次の階層へワープするトリガー
+			<p>WarpNextInteraction は次の階層へワープする相互作用
 
-			<pre>type WarpNextTrigger struct{}
+			<pre>type WarpNextInteraction struct{}
 </pre>
 
 			
@@ -3633,13 +3690,13 @@ AddEntities関数でECSエンティティに変換される
 
 			
 				
-				<h3 id="WarpNextTrigger.Config">func (WarpNextTrigger) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/trigger.go?s=556:603#L15">Config</a>
-					<a class="permalink" href="index.html#WarpNextTrigger.Config">&#xb6;</a>
+				<h3 id="WarpNextInteraction.Config">func (WarpNextInteraction) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/interactable.go?s=643:698#L15">Config</a>
+					<a class="permalink" href="index.html#WarpNextInteraction.Config">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (t <a href="index.html#WarpNextTrigger">WarpNextTrigger</a>) Config() <a href="index.html#TriggerConfig">TriggerConfig</a></pre>
-				<p>Config はトリガー設定を返す
+				<pre>func (t <a href="index.html#WarpNextInteraction">WarpNextInteraction</a>) Config() <a href="index.html#InteractionConfig">InteractionConfig</a></pre>
+				<p>Config は相互作用設定を返す
 
 				
 				
@@ -3648,7 +3705,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Weapon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8374:8435#L257">Weapon</a>
+			<h2 id="Weapon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=8379:8440#L257">Weapon</a>
 				<a class="permalink" href="index.html#Weapon">&#xb6;</a>
 				
 				
@@ -3675,7 +3732,7 @@ AddEntities関数でECSエンティティに変換される
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5947:6136#L184">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/components/components.go?s=5952:6141#L184">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				
