@@ -540,22 +540,22 @@ type TileRaw struct {
 	BlocksView   *bool // 視界を遮断するか。nilの場合はfalse
 }
 
-// WarpNextTriggerRaw は次の階へワープするトリガーのローデータ
-type WarpNextTriggerRaw struct{}
+// WarpNextInteractionRaw は次の階へワープする相互作用のローデータ
+type WarpNextInteractionRaw struct{}
 
-// WarpEscapeTriggerRaw は脱出ワープするトリガーのローデータ
-type WarpEscapeTriggerRaw struct{}
+// WarpEscapeInteractionRaw は脱出ワープする相互作用のローデータ
+type WarpEscapeInteractionRaw struct{}
 
 // PropRaw は置物のローデータ定義
 type PropRaw struct {
-	Name              string
-	Description       string
-	SpriteRender      gc.SpriteRender
-	BlockPass         bool
-	BlockView         bool
-	LightSource       *gc.LightSource
-	WarpNextTrigger   *WarpNextTriggerRaw
-	WarpEscapeTrigger *WarpEscapeTriggerRaw
+	Name                  string
+	Description           string
+	SpriteRender          gc.SpriteRender
+	BlockPass             bool
+	BlockView             bool
+	LightSource           *gc.LightSource
+	WarpNextInteraction   *WarpNextInteractionRaw
+	WarpEscapeInteraction *WarpEscapeInteractionRaw
 }
 
 // GetTile は指定された名前のタイルを取得する
@@ -639,11 +639,11 @@ func (rw *Master) NewPropSpec(name string) (gc.EntitySpec, error) {
 		entitySpec.LightSource = propRaw.LightSource
 	}
 
-	if propRaw.WarpNextTrigger != nil {
+	if propRaw.WarpNextInteraction != nil {
 		entitySpec.Interactable = &gc.Interactable{Data: gc.WarpNextInteraction{}}
 	}
 
-	if propRaw.WarpEscapeTrigger != nil {
+	if propRaw.WarpEscapeInteraction != nil {
 		entitySpec.Interactable = &gc.Interactable{Data: gc.WarpEscapeInteraction{}}
 	}
 

@@ -31,7 +31,7 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 	newX := currentX + deltaX
 	newY := currentY + deltaY
 
-	// 移動先にOnCollision方式の相互作用がある場合は自動実行
+	// 移動先にOnCollision方式のInteractableがある場合は自動実行
 	targetGrid := &gc.GridElement{X: gc.Tile(newX), Y: gc.Tile(newY)}
 	interactable, interactableEntity := getInteractableAtSameTile(world, targetGrid)
 	if interactable != nil && interactable.Data.Config().ActivationWay == gc.ActivationWayOnCollision {
@@ -48,7 +48,7 @@ func ExecuteMoveAction(world w.World, direction gc.Direction) {
 				// 開いているドアは通過可能なので、相互作用を実行せずに下の移動処理に進む
 			}
 		} else {
-			// ドア以外のOnCollision相互作用は常に実行
+			// ドア以外のOnCollision相互作用（会話など）は常に実行
 			params := actions.ActionParams{Actor: entity}
 			executeActivity(world, &actions.InteractionActivateActivity{InteractableEntity: interactableEntity}, params)
 			return
@@ -140,7 +140,7 @@ func checkTileEvents(world w.World, entity ecs.Entity, tileX, tileY int) {
 	}
 }
 
-// getInteractableAtSameTile はプレイヤーの直上タイルの相互作用可能エンティティを取得する
+// getInteractableAtSameTile はプレイヤーの直上タイルのInteractableとエンティティを取得する
 // 複数ある場合は最初に見つかったものを返す
 func getInteractableAtSameTile(world w.World, playerGrid *gc.GridElement) (*gc.Interactable, ecs.Entity) {
 	var interactable *gc.Interactable
@@ -162,7 +162,7 @@ func getInteractableAtSameTile(world w.World, playerGrid *gc.GridElement) (*gc.I
 	return interactable, interactableEntity
 }
 
-// getInteractableInRange はプレイヤーの範囲内の相互作用可能エンティティを取得する
+// getInteractableInRange はプレイヤーの範囲内のInteractableとエンティティを取得する
 // 複数ある場合は最初に見つかったものを返す
 func getInteractableInRange(world w.World, playerGrid *gc.GridElement) (*gc.Interactable, ecs.Entity) {
 	var interactable *gc.Interactable
@@ -186,9 +186,9 @@ func getInteractableInRange(world w.World, playerGrid *gc.GridElement) (*gc.Inte
 	return interactable, interactableEntity
 }
 
-// getAllInteractableInRange はプレイヤーの範囲内の全ての相互作用可能エンティティを取得する
-// Manual と OnCollision 方式が対象
-func getAllInteractableInRange(world w.World, playerGrid *gc.GridElement) []ecs.Entity {
+// getAllInteractiveInteractablesInRange はプレイヤーの範囲内の全てのインタラクティブなInteractableエンティティを取得する
+// Manual と OnCollision 方式のInteractableが対象
+func getAllInteractiveInteractablesInRange(world w.World, playerGrid *gc.GridElement) []ecs.Entity {
 	var results []ecs.Entity
 
 	world.Manager.Join(
@@ -280,7 +280,7 @@ type InteractionAction struct {
 	Target   ecs.Entity                // ターゲットエンティティ
 }
 
-// getInteractionActions は相互作用可能エンティティに対応するアクションを取得する
+// getInteractionActions はInteractableに対応するアクションを取得する
 func getInteractionActions(world w.World, interactable *gc.Interactable, interactableEntity ecs.Entity, dirLabel string) []InteractionAction {
 	var result []InteractionAction
 
@@ -355,8 +355,8 @@ func GetInteractionActions(world w.World) []InteractionAction {
 
 	var interactionActions []InteractionAction
 
-	// 相互作用可能エンティティを全て取得してアクションを生成
-	interactableEntities := getAllInteractableInRange(world, gridElement)
+	// インタラクティブな相互作用を全て取得してアクションを生成
+	interactableEntities := getAllInteractiveInteractablesInRange(world, gridElement)
 	for _, interactableEntity := range interactableEntities {
 		if !interactableEntity.HasComponent(world.Components.GridElement) {
 			continue

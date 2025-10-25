@@ -40,14 +40,12 @@ func InitTestWorld(t *testing.T) w.World {
 	rawMasterOnce.Do(func() {
 		resourceLoader := loader.NewResourceLoader()
 		rw, err := resourceLoader.LoadRaws()
-		if err == nil {
-			rawMaster = rw
-		}
+		require.NoError(t, err, "RawMasterの読み込みに失敗しました")
+		rawMaster = rw
 	})
 
-	if rawMaster != nil {
-		world.Resources.RawMaster = rawMaster
-	}
+	require.NotNil(t, rawMaster, "RawMasterが初期化されていません")
+	world.Resources.RawMaster = rawMaster
 
 	// 最低限のゲームリソースを初期化
 	gameResource := &gr.Dungeon{
