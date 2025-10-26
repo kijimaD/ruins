@@ -60,3 +60,32 @@ func ConsumeCurrency(world w.World, entity ecs.Entity, amount int) bool {
 	w.Currency -= amount
 	return true
 }
+
+// FormatCurrency は金額を CZ 形式でフォーマットする
+// 3桁ごとにカンマで区切る（例: CZ 100,204）
+func FormatCurrency(amount int) string {
+	// 数値を文字列に変換
+	str := fmt.Sprintf("%d", amount)
+
+	// 負の数の処理
+	negative := false
+	if amount < 0 {
+		negative = true
+		str = str[1:] // マイナス記号を除去
+	}
+
+	// 3桁ごとにカンマを挿入
+	var result string
+	for i, c := range str {
+		if i > 0 && (len(str)-i)%3 == 0 {
+			result += ","
+		}
+		result += string(c)
+	}
+
+	if negative {
+		result = "-" + result
+	}
+
+	return fmt.Sprintf("CZ %s", result)
+}
