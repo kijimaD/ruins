@@ -551,6 +551,33 @@ func (w *Window) createSegmentedTextLines() *widget.Container {
 
 	// 各行を処理
 	for _, lineSegments := range w.content.TextSegmentLines {
+		// 空行かどうかを判定（全セグメントが空白文字のみ）
+		isEmptyLine := true
+		for _, seg := range lineSegments {
+			trimmed := ""
+			for _, r := range seg.Text {
+				if r != ' ' && r != '\t' && r != '\n' && r != '\r' {
+					trimmed += string(r)
+				}
+			}
+			if trimmed != "" {
+				isEmptyLine = false
+				break
+			}
+		}
+
+		// 空行の場合は固定高さのスペーサーを追加
+		if isEmptyLine {
+			spacer := widget.NewText(
+				widget.TextOpts.Text(" ", &res.Text.Face, w.config.TextStyle.Color),
+				widget.TextOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+				),
+			)
+			mainContainer.AddChild(spacer)
+			continue
+		}
+
 		// 行コンテナ（横方向）
 		lineContainer := widget.NewContainer(
 			widget.ContainerOpts.Layout(

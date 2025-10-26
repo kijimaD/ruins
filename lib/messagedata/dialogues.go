@@ -9,21 +9,20 @@ var DialogueTable = map[string]func(speakerName string) *MessageData{
 			AddKeyword("遺跡").
 			AddText("の").
 			AddKeyword("潜り").
-			AddText("だろ?").
-			AddNewLine().
-			AddText("外からこの街に来る異様に若い連中はみんなそうさ。").
-			AddNewLine().
-			AddText("向こう見ずで破滅的で、...").
-			AddNewLine().
-			AddText("どうしようもない事情を持ってる。」")
+			AddText(`だろ?
+
+外からこの街に来る異様に若い連中はみんなそうさ。
+向こう見ずで破滅的で、...
+
+どうしようもない事情を持ってる。」`)
 
 		// 2ページ目
 		msg2 := NewDialogMessage("", speakerName).
 			AddText("「あんたは...、そうか、母親が").
 			AddKeyword("虚ろ").
-			AddText("か、...。").
-			AddNewLine().
-			AddText("救えない世の中だな。」")
+			AddText(`か、...。
+
+救えない世の中だな。」`)
 
 		msg1.NextMessages = append(msg1.NextMessages, msg2)
 		return msg1

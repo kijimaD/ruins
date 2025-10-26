@@ -103,17 +103,44 @@ func (m *MessageData) ensureCurrentLine() {
 }
 
 // AddText は通常テキストを追加する
+// テキストに改行文字(\n)が含まれている場合、自動的に新しい行に分割する
 func (m *MessageData) AddText(text string) *MessageData {
 	m.ensureCurrentLine()
-	currentLineIdx := len(m.TextSegmentLines) - 1
-	m.TextSegmentLines[currentLineIdx] = append(m.TextSegmentLines[currentLineIdx], TextSegment{Text: text})
+
+	// 改行文字で分割
+	lines := splitByNewline(text)
+
+	for i, line := range lines {
+		if i > 0 {
+			// 2行目以降は新しい行を作成
+			m.TextSegmentLines = append(m.TextSegmentLines, []TextSegment{})
+		}
+
+		currentLineIdx := len(m.TextSegmentLines) - 1
+		m.TextSegmentLines[currentLineIdx] = append(m.TextSegmentLines[currentLineIdx], TextSegment{Text: line})
+	}
+
 	return m
 }
 
-// AddNewLine は改行を追加する（新しい行を作成）
-func (m *MessageData) AddNewLine() *MessageData {
-	m.TextSegmentLines = append(m.TextSegmentLines, []TextSegment{})
-	return m
+// splitByNewline は改行文字で文字列を分割する
+func splitByNewline(text string) []string {
+	var lines []string
+	var current string
+
+	for _, r := range text {
+		if r == '\n' {
+			lines = append(lines, current)
+			current = ""
+		} else {
+			current += string(r)
+		}
+	}
+
+	// 最後の行を追加
+	lines = append(lines, current)
+
+	return lines
 }
 
 // AddKeyword はキーワード（赤色背景）テキストを追加する
