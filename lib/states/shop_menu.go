@@ -255,7 +255,7 @@ func (st *ShopMenuState) createBuyItems(world w.World) []menu.Item {
 		price := st.getItemPrice(world, itemName, true)
 		items = append(items, menu.Item{
 			Label:            itemName,
-			AdditionalLabels: []string{fmt.Sprintf("◆ %d", price)},
+			AdditionalLabels: []string{worldhelper.FormatCurrency(price)},
 			UserData:         map[string]interface{}{"itemName": itemName, "price": price, "isBuy": true},
 		})
 	}
@@ -283,7 +283,7 @@ func (st *ShopMenuState) createSellItems(world w.World) []menu.Item {
 			var additionalLabels []string
 
 			// 価格を先に追加（常に表示されるため、位置が揃う）
-			additionalLabels = append(additionalLabels, fmt.Sprintf("◆ %d", price))
+			additionalLabels = append(additionalLabels, worldhelper.FormatCurrency(price))
 
 			// 個数がある場合は後に追加（オプション）
 			if entity.HasComponent(world.Components.Stackable) {
@@ -411,7 +411,7 @@ func (st *ShopMenuState) handleSell(world w.World, item menu.Item) {
 		if err != nil {
 			st.itemDesc.Label = fmt.Sprintf("売却失敗: %v", err)
 		} else {
-			st.itemDesc.Label = fmt.Sprintf("%sを売却しました（◆ %d）", itemName, price)
+			st.itemDesc.Label = fmt.Sprintf("%sを売却しました（%s）", itemName, worldhelper.FormatCurrency(price))
 			// タブを再読み込み
 			st.reloadTabs(world)
 		}
@@ -619,5 +619,5 @@ func (st *ShopMenuState) updateCurrencyDisplay(world w.World) {
 		currency = worldhelper.GetCurrency(world, playerEntity)
 	})
 
-	st.currencyText.Label = fmt.Sprintf("◆ %d", currency)
+	st.currencyText.Label = worldhelper.FormatCurrency(currency)
 }

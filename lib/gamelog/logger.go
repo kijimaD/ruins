@@ -138,6 +138,7 @@ func (l *Logger) Action(action interface{}) *Logger {
 }
 
 // Money は金額を黄色で追加
+// 呼び出し側でFormatCurrencyを使って文字列化してから渡すこと
 func (l *Logger) Money(amount interface{}) *Logger {
 	amountStr := fmt.Sprintf("%v", amount)
 	l.fragments = append(l.fragments, LogFragment{

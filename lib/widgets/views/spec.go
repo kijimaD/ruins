@@ -11,6 +11,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
@@ -92,7 +93,7 @@ func addWeaponInfo(targetContainer *widget.Container, weapon *gc.Weapon, world w
 
 // addValueInfo はValueコンポーネントの情報を追加する
 func addValueInfo(targetContainer *widget.Container, value *gc.Value, world w.World) {
-	valueText := fmt.Sprintf("◆ %d", value.Value)
+	valueText := worldhelper.FormatCurrency(value.Value)
 	targetContainer.AddChild(styled.NewBodyText(valueText, consts.TextColor, world.Resources.UIResources))
 }
 

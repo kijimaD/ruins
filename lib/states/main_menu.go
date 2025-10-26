@@ -52,7 +52,9 @@ func (st *MainMenuState) OnStop(_ w.World) error { return nil }
 // Update はゲームステートの更新処理を行う
 func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
 	// メニューの更新（キーボード入力→Action変換は Menu 内部で実施）
-	st.menu.Update()
+	if err := st.menu.Update(); err != nil {
+		return es.Transition[w.World]{Type: es.TransNone}, err
+	}
 
 	if st.ui != nil {
 		st.ui.Update()
@@ -124,11 +126,12 @@ func (st *MainMenuState) initMenu(world w.World) {
 
 	// コールバックの設定
 	callbacks := menu.Callbacks{
-		OnSelect: func(_ int, item menu.Item) {
+		OnSelect: func(_ int, item menu.Item) error {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition[w.World]); ok {
 				st.SetTransition(trans)
 			}
+			return nil
 		},
 		OnCancel: func() {
 			// Escapeキーが押された時の処理

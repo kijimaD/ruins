@@ -8,7 +8,7 @@ import (
 // Choice は選択肢を表す
 type Choice struct {
 	Text   string
-	Action func() // 選択時の処理
+	Action func() error // 選択時の処理
 }
 
 // MessageContent はメッセージの内容

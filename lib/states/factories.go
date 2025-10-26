@@ -236,6 +236,56 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameStartMessageState}})
 			return nil
 		}).
+		WithChoice("背景付きメッセージテスト", func(_ w.World) error {
+			testMessage := messagedata.NewDialogMessage("これは背景付きメッセージのテストです。\nroom1.pngが背景に表示されています。", "システム")
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(testMessage, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
+		WithChoice("病院シーン", func(_ w.World) error {
+			// 1ページ目: 症状の説明
+			page1 := &messagedata.MessageData{Speaker: "医師"}
+			page1.AddText("お母さんの容態ですが...\n").
+				AddKeyword("地髄欠乏症").
+				AddText("、俗に言う").
+				AddKeyword("虚ろ").
+				AddText("です。\n\n体内の").
+				AddKeyword("地髄").
+				AddText("が枯渇し、昏睡状態に陥っています。")
+
+			// 2ページ目: 治療法の説明
+			page2 := &messagedata.MessageData{Speaker: "医師"}
+			page2.AddText("現代医学では治療法が確立されていません。\n\nしかし、高純度の地髄を投与すれば、\n回復する可能性があることが分かっています。")
+
+			// 3ページ目: 治療費の説明
+			page3 := &messagedata.MessageData{Speaker: "医師"}
+			page3.AddText("治療に必要な地髄量は...\n").
+				AddKeyword(worldhelper.FormatCurrency(10000000)).
+				AddText("分です。\n\n当然ながら、一般人が用意できる量ではありません。")
+
+			// 4ページ目: 入手方法の説明
+			page4 := &messagedata.MessageData{Speaker: "医師"}
+			page4.AddText("非常に危険ですが、方法はあります。\n\n...地髄を直接採取するのです。\n\n").
+				AddKeyword("遺跡").
+				AddText("の深部では、純度の高い地髄が採取できます。\n").
+				AddText("うまくいけば、治療に必要な量を\n").
+				AddText("短期間に集められる可能性があります。")
+
+			// メッセージを連鎖
+			page1.NextMessages = []*messagedata.MessageData{page2}
+			page2.NextMessages = []*messagedata.MessageData{page3}
+			page3.NextMessages = []*messagedata.MessageData{page4}
+
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(page1, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
 		WithChoice("閉じる", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
@@ -448,9 +498,11 @@ func NewLoadMenuState() es.State[w.World] {
 }
 
 // NewMessageState はメッセージデータを受け取って新しいMessageStateを作成するファクトリー関数
-func NewMessageState(messageData *messagedata.MessageData) es.State[w.World] {
+// オプションを指定することで背景画像などをカスタマイズできる
+func NewMessageState(messageData *messagedata.MessageData, opts ...MessageStateOption) es.State[w.World] {
 	return &MessageState{
 		messageData: messageData,
+		options:     opts,
 	}
 }
 

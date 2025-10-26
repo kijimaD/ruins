@@ -42,9 +42,9 @@ type Window struct {
 }
 
 // Update はウィンドウを更新する
-func (w *Window) Update() {
+func (w *Window) Update() error {
 	if !w.isOpen {
-		return
+		return nil
 	}
 
 	if !w.initialized {
@@ -57,7 +57,9 @@ func (w *Window) Update() {
 	}
 
 	if w.hasChoices && w.choiceMenu != nil {
-		w.choiceMenu.Update()
+		if err := w.choiceMenu.Update(); err != nil {
+			return err
+		}
 
 		if w.needsUIRebuild {
 			w.rebuildUI()
@@ -72,6 +74,8 @@ func (w *Window) Update() {
 	if w.ui != nil {
 		w.ui.Update()
 	}
+
+	return nil
 }
 
 // Draw はウィンドウを描画する
@@ -151,11 +155,10 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 	for i, choice := range msg.Choices {
 		w.content.Choices[i] = Choice{
 			Text: choice.Text,
-			Action: func() {
+			Action: func() error {
 				if choice.Action != nil {
 					if err := choice.Action(w.world); err != nil {
-						// TODO: エラーハンドリング改善
-						panic(err)
+						return err
 					}
 				}
 				// 選択肢に関連メッセージがある場合はキュー先頭に追加して即座に表示
@@ -165,6 +168,7 @@ func (w *Window) updateContentFromMessage(msg *messagedata.MessageData) {
 					}
 					w.queueManager.EnqueueFront(choice.MessageData)
 				}
+				return nil
 			},
 		}
 	}
@@ -445,8 +449,8 @@ func (w *Window) initChoiceMenu() {
 	}
 
 	callbacks := menu.Callbacks{
-		OnSelect: func(index int, _ menu.Item) {
-			w.selectChoice(index)
+		OnSelect: func(index int, _ menu.Item) error {
+			return w.selectChoice(index)
 		},
 		OnCancel: func() {
 			w.Close()
@@ -503,9 +507,9 @@ func (w *Window) calculateItemsPerPage(totalItems int) int {
 }
 
 // selectChoice は選択肢を選択する
-func (w *Window) selectChoice(index int) {
+func (w *Window) selectChoice(index int) error {
 	if index < 0 || index >= len(w.content.Choices) {
-		return
+		return nil
 	}
 
 	choice := w.content.Choices[index]
@@ -517,11 +521,14 @@ func (w *Window) selectChoice(index int) {
 
 	// アクション実行
 	if choice.Action != nil {
-		choice.Action()
+		if err := choice.Action(); err != nil {
+			return err
+		}
 	}
 
 	// ウィンドウを閉じる
 	w.Close()
+	return nil
 }
 
 // createSegmentedTextLines はTextSegmentLinesから色付きテキストウィジェットを作成する（改行対応）
@@ -551,6 +558,33 @@ func (w *Window) createSegmentedTextLines() *widget.Container {
 
 	// 各行を処理
 	for _, lineSegments := range w.content.TextSegmentLines {
+		// 空行かどうかを判定（全セグメントが空白文字のみ）
+		isEmptyLine := true
+		for _, seg := range lineSegments {
+			trimmed := ""
+			for _, r := range seg.Text {
+				if r != ' ' && r != '\t' && r != '\n' && r != '\r' {
+					trimmed += string(r)
+				}
+			}
+			if trimmed != "" {
+				isEmptyLine = false
+				break
+			}
+		}
+
+		// 空行の場合は固定高さのスペーサーを追加
+		if isEmptyLine {
+			spacer := widget.NewText(
+				widget.TextOpts.Text(" ", &res.Text.Face, w.config.TextStyle.Color),
+				widget.TextOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{}),
+				),
+			)
+			mainContainer.AddChild(spacer)
+			continue
+		}
+
 		// 行コンテナ（横方向）
 		lineContainer := widget.NewContainer(
 			widget.ContainerOpts.Layout(

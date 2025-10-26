@@ -1,12 +1,12 @@
 package hud
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	w "github.com/kijimaD/ruins/lib/world"
+	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
 // CurrencyDisplay は遺光表示ウィジェット
@@ -43,8 +43,8 @@ func (c *CurrencyDisplay) Draw(screen *ebiten.Image, data CurrencyData) {
 	screenWidth := data.ScreenDimensions.Width
 	screenHeight := data.ScreenDimensions.Height
 
-	// 遺光テキスト
-	currencyText := fmt.Sprintf("◆ %d", data.Currency)
+	// 通貨テキスト
+	currencyText := worldhelper.FormatCurrency(data.Currency)
 
 	// UIリソースからフォントを取得
 	face := c.world.Resources.UIResources.Text.Face

@@ -129,7 +129,7 @@ func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) widget.Pr
 		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
 			menu.SetFocusedIndex(index)
-			menu.selectCurrent()
+			_ = menu.selectCurrent() // ボタンクリック時のエラーは無視
 		}),
 	)
 
