@@ -185,6 +185,9 @@
 				<dd><a href="index.html#FindStackableInInventory">func FindStackableInInventory(world w.World, name string) (ecs.Entity, bool)</a></dd>
 			
 				
+				<dd><a href="index.html#FormatCurrency">func FormatCurrency(amount int) string</a></dd>
+			
+				
 				<dd><a href="index.html#GetArmorEquipments">func GetArmorEquipments(world w.World, owner ecs.Entity) []*ecs.Entity</a></dd>
 			
 				
@@ -576,6 +579,21 @@ target に amount 分のHPを回復させる
 			</h2>
 			<pre>func FindStackableInInventory(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/">ecs</a>.<a href="http://localhost:8888/pkg/github.com/x-hgg-x/goecs/v2/#Entity">Entity</a>, <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>)</pre>
 			<p>FindStackableInInventory は名前でバックパック内のStackableアイテムを検索する
+
+			
+			
+
+		
+			
+			
+			<h2 id="FormatCurrency">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/worldhelper/currency.go?s=1973:2011#L56">FormatCurrency</a>
+				<a class="permalink" href="index.html#FormatCurrency">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func FormatCurrency(amount <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+			<p>FormatCurrency は金額を CZ 形式でフォーマットする
+3桁ごとにカンマで区切る（例: CZ 100,204）
 
 			
 			

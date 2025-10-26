@@ -219,9 +219,6 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.AddKeyword">func (m *MessageData) AddKeyword(text string) *MessageData</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.AddNewLine">func (m *MessageData) AddNewLine() *MessageData</a></dd>
-				
-					
 					<dd>&nbsp; &nbsp; <a href="index.html#MessageData.AddText">func (m *MessageData) AddText(text string) *MessageData</a></dd>
 				
 					
@@ -289,24 +286,20 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
             <a href="index.html#AddText">AddText</a>(&#34;「あんた、&#34;).
             <a href="index.html#AddKeyword">AddKeyword</a>(&#34;遺跡&#34;).
             <a href="index.html#AddText">AddText</a>(&#34;の&#34;).
-            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;珠狙い&#34;).
-            <a href="index.html#AddText">AddText</a>(&#34;だろ?&#34;).
-            <a href="index.html#AddNewLine">AddNewLine</a>().
-            <a href="index.html#AddText">AddText</a>(&#34;外からこの街に来る異様に若い連中はみんなそうさ。&#34;).
-            <a href="index.html#AddNewLine">AddNewLine</a>().
-            <a href="index.html#AddText">AddText</a>(&#34;向こう見ずで破滅的で、...&#34;).
-            <a href="index.html#AddNewLine">AddNewLine</a>().
-            <a href="index.html#AddText">AddText</a>(&#34;どうしようもない事情を持ってる。」&#34;)
+            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;潜り&#34;).
+            <a href="index.html#AddText">AddText</a>(`だろ?
+
+外からこの街に来る異様に若い連中はみんなそうさ。
+向こう見ずで破滅的で、...
+
+どうしようもない事情を持ってる。」`)
 
         msg2 := <a href="index.html#NewDialogMessage">NewDialogMessage</a>(&#34;&#34;, speakerName).
-            <a href="index.html#AddText">AddText</a>(&#34;「あんたは...、そうか、&#34;).
-            <a href="index.html#AddText">AddText</a>(&#34;母親が...。&#34;).
-            <a href="index.html#AddNewLine">AddNewLine</a>().
-            <a href="index.html#AddText">AddText</a>(&#34;言っちゃ悪いが、そういう奴らはここでは珍しくない。&#34;).
-            <a href="index.html#AddNewLine">AddNewLine</a>().
-            <a href="index.html#AddText">AddText</a>(&#34;どんな事情があるにせよ、&#34;).
-            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;遺跡&#34;).
-            <a href="index.html#AddText">AddText</a>(&#34;で辿る結末は1つさ。」&#34;)
+            <a href="index.html#AddText">AddText</a>(&#34;「あんたは...、そうか、母親が&#34;).
+            <a href="index.html#AddKeyword">AddKeyword</a>(&#34;虚ろ&#34;).
+            <a href="index.html#AddText">AddText</a>(`か、...。
+
+救えない世の中だな。」`)
 
         msg1.<a href="index.html#NextMessages">NextMessages</a> = <a href="http://localhost:8888/pkg/builtin/#append">append</a>(msg1.<a href="index.html#NextMessages">NextMessages</a>, msg2)
         return msg1
@@ -373,7 +366,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			
 				
-				<h3 id="GetDialogue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/dialogues.go?s=1208:1269#L27">GetDialogue</a>
+				<h3 id="GetDialogue">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/dialogues.go?s=928:989#L23">GetDialogue</a>
 					<a class="permalink" href="index.html#GetDialogue">&#xb6;</a>
 					
 					
@@ -411,7 +404,7 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 
 			
 				
-				<h3 id="MessageData.AddKeyword">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3639:3697#L110">AddKeyword</a>
+				<h3 id="MessageData.AddKeyword">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=4131:4189#L137">AddKeyword</a>
 					<a class="permalink" href="index.html#MessageData.AddKeyword">&#xb6;</a>
 					
 					
@@ -424,26 +417,14 @@ questMessage := messagedata.NewDialogMessage(&quot;クエストを受けます�
 				
 			
 				
-				<h3 id="MessageData.AddNewLine">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3432:3479#L104">AddNewLine</a>
-					<a class="permalink" href="index.html#MessageData.AddNewLine">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) AddNewLine() *<a href="index.html#MessageData">MessageData</a></pre>
-				<p>AddNewLine は改行を追加する（新しい行を作成）
-
-				
-				
-				
-			
-				
-				<h3 id="MessageData.AddText">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3119:3174#L96">AddText</a>
+				<h3 id="MessageData.AddText">func (*MessageData) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/messagedata/message.go?s=3223:3278#L97">AddText</a>
 					<a class="permalink" href="index.html#MessageData.AddText">&#xb6;</a>
 					
 					
 				</h3>
 				<pre>func (m *<a href="index.html#MessageData">MessageData</a>) AddText(text <a href="http://localhost:8888/pkg/builtin/#string">string</a>) *<a href="index.html#MessageData">MessageData</a></pre>
 				<p>AddText は通常テキストを追加する
+テキストに改行文字(\n)が含まれている場合、自動的に新しい行に分割する
 
 				
 				
