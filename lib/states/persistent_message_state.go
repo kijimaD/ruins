@@ -28,7 +28,9 @@ func (st *PersistentMessageState) Update(_ w.World) (es.Transition[w.World], err
 	}
 
 	if st.messageWindow != nil {
-		st.messageWindow.Update()
+		if err := st.messageWindow.Update(); err != nil {
+			return es.Transition[w.World]{Type: es.TransNone}, err
+		}
 
 		if st.messageWindow.IsClosed() {
 			// BaseStateで設定された遷移を優先確認

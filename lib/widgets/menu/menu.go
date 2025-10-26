@@ -40,7 +40,7 @@ type Config struct {
 
 // Callbacks はメニューのコールバック
 type Callbacks struct {
-	OnSelect      func(index int, item Item)
+	OnSelect      func(index int, item Item) error
 	OnCancel      func()
 	OnFocusChange func(oldIndex, newIndex int)
 }
@@ -86,11 +86,12 @@ func NewMenu(config Config, callbacks Callbacks) *Menu {
 }
 
 // Update はキーボード入力を待ち受けて、Actionに変換してメニュー操作を実行する
-func (m *Menu) Update() {
+func (m *Menu) Update() error {
 	keyboardInput := input.GetSharedKeyboardInput()
 	if action, ok := m.translateKeyToAction(keyboardInput); ok {
-		m.DoAction(action)
+		return m.DoAction(action)
 	}
+	return nil
 }
 
 // translateKeyToAction はキーボード入力をActionに変換する
@@ -127,19 +128,20 @@ func (m *Menu) translateKeyToAction(keyboardInput input.KeyboardInput) (inputmap
 }
 
 // DoAction はActionを受け取ってメニュー操作を実行する
-func (m *Menu) DoAction(action inputmapper.ActionID) {
+func (m *Menu) DoAction(action inputmapper.ActionID) error {
 	switch action {
 	case inputmapper.ActionMenuDown:
 		m.navigateNext()
 	case inputmapper.ActionMenuUp:
 		m.navigatePrevious()
 	case inputmapper.ActionMenuSelect:
-		m.selectCurrent()
+		return m.selectCurrent()
 	case inputmapper.ActionMenuCancel:
 		if m.callbacks.OnCancel != nil {
 			m.callbacks.OnCancel()
 		}
 	}
+	return nil
 }
 
 // GetFocusedIndex は現在フォーカスされている項目のインデックスを返す
@@ -250,15 +252,16 @@ func (m *Menu) navigatePrevious() {
 }
 
 // selectCurrent は現在の項目を選択する
-func (m *Menu) selectCurrent() {
+func (m *Menu) selectCurrent() error {
 	if m.focusedIndex < 0 || m.focusedIndex >= len(m.config.Items) {
-		return
+		return nil
 	}
 
 	item := m.config.Items[m.focusedIndex]
 	if !item.Disabled && m.callbacks.OnSelect != nil {
-		m.callbacks.OnSelect(m.focusedIndex, item)
+		return m.callbacks.OnSelect(m.focusedIndex, item)
 	}
+	return nil
 }
 
 // findFirstEnabled は最初の有効な項目のインデックスを返す

@@ -46,7 +46,9 @@ func (st *MessageState) OnStop(_ w.World) error { return nil }
 // Update はゲームステートの更新処理を行う
 func (st *MessageState) Update(_ w.World) (es.Transition[w.World], error) {
 	if st.messageWindow != nil {
-		st.messageWindow.Update()
+		if err := st.messageWindow.Update(); err != nil {
+			return es.Transition[w.World]{Type: es.TransNone}, err
+		}
 
 		if st.messageWindow.IsClosed() {
 			// BaseStateで設定された遷移を優先確認

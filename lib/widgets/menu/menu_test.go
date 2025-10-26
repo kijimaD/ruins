@@ -91,9 +91,10 @@ func TestMenuDoActionSelect(t *testing.T) {
 	}
 
 	callbacks := Callbacks{
-		OnSelect: func(index int, item Item) {
+		OnSelect: func(index int, item Item) error {
 			selectedIndex = index
 			selectedItem = item
+			return nil
 		},
 	}
 
@@ -215,8 +216,9 @@ func TestMenuDisabledItems(t *testing.T) {
 
 	// 無効なアイテムで選択しても何も起こらないことを確認
 	selectionCalled := false
-	menu.callbacks.OnSelect = func(_ int, _ Item) {
+	menu.callbacks.OnSelect = func(_ int, _ Item) error {
 		selectionCalled = true
+		return nil
 	}
 
 	menu.focusedIndex = 1 // 強制的に無効なアイテムにフォーカス
