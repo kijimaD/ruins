@@ -245,13 +245,11 @@ func NewDebugMenuState() es.State[w.World] {
 			}})
 			return nil
 		}).
-		WithChoice("病院シーン", func(_ w.World) error {
+		WithChoice("病院オープニング", func(_ w.World) error {
 			// 1ページ目: 症状の説明
 			page1 := &messagedata.MessageData{Speaker: "医師"}
-			page1.AddText("お母さんの容態ですが...\n").
+			page1.AddText("お母さんの容態ですが...").
 				AddKeyword("地髄欠乏症").
-				AddText("、俗に言う").
-				AddKeyword("虚ろ").
 				AddText("です。\n\n体内の").
 				AddKeyword("地髄").
 				AddText("が枯渇し、昏睡状態に陥っています。")
@@ -262,8 +260,8 @@ func NewDebugMenuState() es.State[w.World] {
 
 			// 3ページ目: 治療費の説明
 			page3 := &messagedata.MessageData{Speaker: "医師"}
-			page3.AddText("治療に必要な地髄量は...\n").
-				AddKeyword(worldhelper.FormatCurrency(10000000)).
+			page3.AddText("治療に必要な地髄量は...").
+				AddKeyword("1000万CZ").
 				AddText("分です。\n\n当然ながら、一般人が用意できる量ではありません。")
 
 			// 4ページ目: 入手方法の説明
@@ -282,6 +280,53 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] {
 					return NewMessageState(page1, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
+		WithChoice("CZ収集エンディング", func(_ w.World) error {
+			// 1ページ目: 治療費を集めた主人公
+			ending1 := &messagedata.MessageData{Speaker: ""}
+			ending1.AddText("遺跡への潜行を繰り返し、\n").
+				AddText("数え切れないほどの命の危機を乗り越えて...\n\n").
+				AddText("ついに").
+				AddKeyword("1000万CZ").
+				AddText("を集めた。")
+
+			// 2ページ目: 医師の反応
+			ending2 := &messagedata.MessageData{Speaker: "医師"}
+			ending2.AddText("「...本当に集めてきたのですか。\n\n").
+				AddText("これだけの高純度地髄を、こんな短期間で...。」")
+
+			// 3ページ目: 治療開始
+			ending3 := &messagedata.MessageData{Speaker: "医師"}
+			ending3.AddText("すぐに治療を始めます。\n\n").
+				AddText("地髄の精製と投与には時間がかかりますが、\nお母さんは必ず目を覚ますでしょう。")
+
+			// 4ページ目: 回復
+			ending4 := &messagedata.MessageData{Speaker: ""}
+			ending4.AddText("数日後...\n").
+				AddText("母は目を覚ました。\n").
+				AddText("虚ろに落ちる前の、穏やかな表情で。")
+
+			// 5ページ目: エンディング
+			ending5 := &messagedata.MessageData{Speaker: ""}
+			ending5.AddText("命を賭けた潜行の日々は終わった。\n\n").
+				AddText("しかし、").
+				AddKeyword("遺跡").
+				AddText("の最深部には\nまだ誰も到達していない。\n\n").
+				AddText("いつかまた、あの場所に戻る日が\n来るかもしれない。\n\n").
+				AddText("─ NORMAL END ─")
+
+			// メッセージを連鎖
+			ending1.NextMessages = []*messagedata.MessageData{ending2}
+			ending2.NextMessages = []*messagedata.MessageData{ending3}
+			ending3.NextMessages = []*messagedata.MessageData{ending4}
+			ending4.NextMessages = []*messagedata.MessageData{ending5}
+
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(ending1, WithBackgroundKey("bg_hospital1"))
 				},
 			}})
 			return nil
