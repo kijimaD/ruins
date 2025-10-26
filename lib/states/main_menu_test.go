@@ -6,6 +6,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/testutil"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMainMenuNavigation(t *testing.T) {
@@ -23,14 +24,14 @@ func TestMainMenuNavigation(t *testing.T) {
 	}
 
 	// ActionMenuDownでフォーカス移動
-	state.menu.DoAction(inputmapper.ActionMenuDown)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuDown))
 
 	if state.menu.GetFocusedIndex() != 1 {
 		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.menu.GetFocusedIndex())
 	}
 
 	// ActionMenuUpでフォーカス移動
-	state.menu.DoAction(inputmapper.ActionMenuUp)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuUp))
 
 	if state.menu.GetFocusedIndex() != 0 {
 		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
@@ -51,7 +52,7 @@ func TestMainMenuCircularNavigation(t *testing.T) {
 	state.menu.SetFocusedIndex(itemCount - 1)
 
 	// ActionMenuDownで循環して最初に戻る
-	state.menu.DoAction(inputmapper.ActionMenuDown)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuDown))
 
 	if state.menu.GetFocusedIndex() != 0 {
 		t.Errorf("循環移動後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())
@@ -71,7 +72,7 @@ func TestMainMenuSelection(t *testing.T) {
 	state.menu.SetFocusedIndex(2)
 
 	// ActionMenuSelectで選択
-	state.menu.DoAction(inputmapper.ActionMenuSelect)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuSelect))
 
 	// トランジションが設定されることを確認
 	transition := state.GetTransition()
@@ -94,7 +95,7 @@ func TestMainMenuCancel(t *testing.T) {
 	state.initMenu(world)
 
 	// ActionMenuCancelでキャンセル
-	state.menu.DoAction(inputmapper.ActionMenuCancel)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuCancel))
 
 	// トランジションが設定されることを確認
 	transition := state.GetTransition()
@@ -149,14 +150,14 @@ func TestMainMenuTabNavigation(t *testing.T) {
 	state.initMenu(world)
 
 	// ActionMenuDownでフォーカス移動（Tabキーと同じ動作）
-	state.menu.DoAction(inputmapper.ActionMenuDown)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuDown))
 
 	if state.menu.GetFocusedIndex() != 1 {
 		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.menu.GetFocusedIndex())
 	}
 
 	// ActionMenuUpでフォーカス移動（Shift+Tabキーと同じ動作）
-	state.menu.DoAction(inputmapper.ActionMenuUp)
+	require.NoError(t, state.menu.DoAction(inputmapper.ActionMenuUp))
 
 	if state.menu.GetFocusedIndex() != 0 {
 		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.menu.GetFocusedIndex())

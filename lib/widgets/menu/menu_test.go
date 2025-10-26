@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/kijimaD/ruins/lib/inputmapper"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMenuDoAction(t *testing.T) {
@@ -64,7 +65,7 @@ func TestMenuDoAction(t *testing.T) {
 			menu := NewMenu(config, Callbacks{})
 
 			// DoActionでメニュー操作
-			menu.DoAction(tt.action)
+			require.NoError(t, menu.DoAction(tt.action))
 
 			// 結果を確認
 			if menu.GetFocusedIndex() != tt.expectedIndex {
@@ -101,7 +102,7 @@ func TestMenuDoActionSelect(t *testing.T) {
 	menu := NewMenu(config, callbacks)
 
 	// ActionMenuSelectで選択
-	menu.DoAction(inputmapper.ActionMenuSelect)
+	require.NoError(t, menu.DoAction(inputmapper.ActionMenuSelect))
 
 	// 結果を確認
 	if selectedIndex != 0 {
@@ -135,7 +136,7 @@ func TestMenuDoActionCancel(t *testing.T) {
 	menu := NewMenu(config, callbacks)
 
 	// ActionMenuCancelでキャンセル
-	menu.DoAction(inputmapper.ActionMenuCancel)
+	require.NoError(t, menu.DoAction(inputmapper.ActionMenuCancel))
 
 	// 結果を確認
 	if !cancelCalled {
@@ -162,7 +163,7 @@ func TestMenuWrapNavigation(t *testing.T) {
 		menu := NewMenu(config, Callbacks{})
 
 		// 最後の項目から下矢印で最初に戻る
-		menu.DoAction(inputmapper.ActionMenuDown)
+		require.NoError(t, menu.DoAction(inputmapper.ActionMenuDown))
 
 		if menu.GetFocusedIndex() != 0 {
 			t.Errorf("expected wrap to first item, got index %d", menu.GetFocusedIndex())
@@ -185,7 +186,7 @@ func TestMenuWrapNavigation(t *testing.T) {
 		menu := NewMenu(config, Callbacks{})
 
 		// 最後の項目から下矢印で停止
-		menu.DoAction(inputmapper.ActionMenuDown)
+		require.NoError(t, menu.DoAction(inputmapper.ActionMenuDown))
 
 		if menu.GetFocusedIndex() != 2 {
 			t.Errorf("expected to stay at last item, got index %d", menu.GetFocusedIndex())
@@ -222,7 +223,7 @@ func TestMenuDisabledItems(t *testing.T) {
 	}
 
 	menu.focusedIndex = 1 // 強制的に無効なアイテムにフォーカス
-	menu.DoAction(inputmapper.ActionMenuSelect)
+	require.NoError(t, menu.DoAction(inputmapper.ActionMenuSelect))
 
 	if selectionCalled {
 		t.Error("expected OnSelect not to be called for disabled item")
@@ -266,9 +267,9 @@ func TestMenuPagination(t *testing.T) {
 	}
 
 	// 複数回下矢印でページをまたぐ
-	menu.DoAction(inputmapper.ActionMenuDown) // 0 -> 1
-	menu.DoAction(inputmapper.ActionMenuDown) // 1 -> 2
-	menu.DoAction(inputmapper.ActionMenuDown) // 2 -> 3 (次のページ)
+	require.NoError(t, menu.DoAction(inputmapper.ActionMenuDown)) // 0 -> 1
+	require.NoError(t, menu.DoAction(inputmapper.ActionMenuDown)) // 1 -> 2
+	require.NoError(t, menu.DoAction(inputmapper.ActionMenuDown)) // 2 -> 3 (次のページ)
 
 	if menu.GetFocusedIndex() != 3 {
 		t.Errorf("expected focused index 3, got %d", menu.GetFocusedIndex())
