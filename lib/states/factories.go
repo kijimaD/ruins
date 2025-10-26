@@ -236,6 +236,63 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewGameStartMessageState}})
 			return nil
 		}).
+		WithChoice("背景付きメッセージテスト", func(_ w.World) error {
+			testMessage := messagedata.NewDialogMessage("これは背景付きメッセージのテストです。\nroom1.pngが背景に表示されています。", "システム")
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(testMessage, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
+		WithChoice("病院シーン", func(_ w.World) error {
+			// 1ページ目: 症状の説明
+			page1 := messagedata.NewDialogMessage(
+				`お母さんの容態ですが...
+地髄欠乏症、俗に言う「虚ろ」です。
+
+体内の地髄が枯渇し、昏睡状態に陥っています。`,
+				"医師")
+
+			// 2ページ目: 治療法の説明
+			page2 := messagedata.NewDialogMessage(
+				`現代医学では治療法が確立されていません。
+
+しかし、高純度の地髄を投与すれば
+回復する可能性があることが分かっています。`,
+				"医師")
+
+			// 3ページ目: 治療費の説明
+			page3 := messagedata.NewDialogMessage(
+				`治療に必要な地髄量は...
+`+worldhelper.FormatCurrency(10000000)+`分です。
+
+あなたが平均的に稼いだとしても、
+10回分の人生が必要になるでしょう。`,
+				"医師")
+
+			// 4ページ目: 入手方法の説明
+			page4 := messagedata.NewDialogMessage(
+				`非常に危険ですが、方法はあります。
+
+...地髄を直接採取するのです。
+
+遺跡の深部ほど、純度の高い地髄が採取できます。
+それを換金すれば、治療に必要な量を集められる可能性があります。`,
+				"医師")
+
+			// メッセージを連鎖
+			page1.NextMessages = []*messagedata.MessageData{page2}
+			page2.NextMessages = []*messagedata.MessageData{page3}
+			page3.NextMessages = []*messagedata.MessageData{page4}
+
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(page1, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
 		WithChoice("閉じる", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
@@ -448,9 +505,11 @@ func NewLoadMenuState() es.State[w.World] {
 }
 
 // NewMessageState はメッセージデータを受け取って新しいMessageStateを作成するファクトリー関数
-func NewMessageState(messageData *messagedata.MessageData) es.State[w.World] {
+// オプションを指定することで背景画像などをカスタマイズできる
+func NewMessageState(messageData *messagedata.MessageData, opts ...MessageStateOption) es.State[w.World] {
 	return &MessageState{
 		messageData: messageData,
+		options:     opts,
 	}
 }
 

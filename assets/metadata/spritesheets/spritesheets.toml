@@ -91,3 +91,8 @@ floor_15 = { x = 32, y = 224, width = 32, height = 32 }  # 5: 全方向同じ (1
 texture_image = "file/bg/title1.png"
 [sprite_sheet.bg_title1.sprites]
 background = { x = 0, y = 0, width = 960, height = 720 }
+
+[sprite_sheet.bg_hospital1]
+texture_image = "file/bg/hospital1.jpg"
+[sprite_sheet.bg_hospital1.sprites]
+background = { x = 0, y = 0, width = 960, height = 720 }

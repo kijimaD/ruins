@@ -11,8 +11,10 @@ import (
 // MessageState はメッセージを表示する専用ステート
 type MessageState struct {
 	es.BaseState[w.World]
-	messageData   *messagedata.MessageData
-	messageWindow *messagewindow.Window
+	messageData     *messagedata.MessageData
+	messageWindow   *messagewindow.Window
+	backgroundImage *ebiten.Image
+	options         []MessageStateOption
 }
 
 func (st MessageState) String() string {
@@ -29,6 +31,10 @@ func (st *MessageState) OnResume(_ w.World) error { return nil }
 
 // OnStart はステートが開始される際に呼ばれる
 func (st *MessageState) OnStart(world w.World) error {
+	for _, opt := range st.options {
+		opt(st, world)
+	}
+
 	// メッセージデータからキュー対応メッセージウィンドウを構築
 	st.messageWindow = messagewindow.NewBuilder(world).Build(st.messageData)
 	return nil
@@ -59,8 +65,24 @@ func (st *MessageState) Update(_ w.World) (es.Transition[w.World], error) {
 
 // Draw はゲームステートの描画処理を行う
 func (st *MessageState) Draw(_ w.World, screen *ebiten.Image) error {
+	// 背景画像があれば最初に描画
+	if st.backgroundImage != nil {
+		screen.DrawImage(st.backgroundImage, nil)
+	}
+
 	if st.messageWindow != nil {
 		st.messageWindow.Draw(screen)
 	}
 	return nil
+}
+
+// MessageStateOption はMessageStateのオプション設定を行う関数型
+type MessageStateOption func(*MessageState, w.World)
+
+// WithBackgroundKey はSpriteSheetのキーを指定して背景画像を設定する
+func WithBackgroundKey(bgKey string) MessageStateOption {
+	return func(st *MessageState, world w.World) {
+		bg := (*world.Resources.SpriteSheets)[bgKey]
+		st.backgroundImage = bg.Texture.Image
+	}
 }
