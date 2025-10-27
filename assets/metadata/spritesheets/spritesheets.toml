@@ -96,3 +96,8 @@ background = { x = 0, y = 0, width = 960, height = 720 }
 texture_image = "file/bg/hospital1.jpg"
 [sprite_sheet.bg_hospital1.sprites]
 background = { x = 0, y = 0, width = 960, height = 720 }
+
+[sprite_sheet.bg_hospital2]
+texture_image = "file/bg/hospital2.jpg"
+[sprite_sheet.bg_hospital2.sprites]
+background = { x = 0, y = 0, width = 960, height = 720 }
