@@ -287,38 +287,48 @@ func NewDebugMenuState() es.State[w.World] {
 		WithChoice("CZ収集エンディング", func(_ w.World) error {
 			// 1ページ目: 治療費を集めた主人公
 			ending1 := &messagedata.MessageData{Speaker: ""}
-			ending1.AddText("遺跡への潜行を繰り返し、\n").
-				AddText("数え切れないほどの命の危機を乗り越えて...\n\n").
-				AddText("ついに").
-				AddKeyword("1000万CZ").
-				AddText("を集めた。")
+			ending1.AddText(
+				`遺跡への潜行を繰り返し、
+
+ついに1000万CZを集めた。`)
 
 			// 2ページ目: 医師の反応
 			ending2 := &messagedata.MessageData{Speaker: "医師"}
-			ending2.AddText("「...本当に集めてきたのですか。\n\n").
-				AddText("これだけの高純度地髄を、こんな短期間で...。」")
+			ending2.AddText(
+				`「...本当に集めてきたのですか。
+
+これだけの高純度地髄を、こんな短期間で...。」`)
 
 			// 3ページ目: 治療開始
 			ending3 := &messagedata.MessageData{Speaker: "医師"}
-			ending3.AddText("すぐに治療を始めます。\n\n").
-				AddText("地髄の精製と投与には時間がかかりますが、\nお母さんは必ず目を覚ますでしょう。")
+			ending3.AddText(
+				`すぐに治療を始めます。
+地髄の精製と投与には時間がかかりますが、
+
+お母さんは必ず目を覚ますでしょう。`)
 
 			// 4ページ目: 回復
 			ending4 := &messagedata.MessageData{Speaker: ""}
-			ending4.AddText("数日後...\n").
-				AddText("母は目を覚ました。\n").
-				AddText("虚ろに落ちる前の、穏やかな表情で。")
+			ending4.AddText(
+				`数日後...
+
+母は目を覚ました。
+虚ろに落ちる前の、穏やかな表情で。`)
 
 			// 5ページ目: エンディング
 			ending5 := &messagedata.MessageData{Speaker: ""}
-			ending5.AddText("命を賭けた潜行の日々は終わった。\n\n").
-				AddText("しかし、").
-				AddKeyword("遺跡").
-				AddText("の最深部には\nまだ誰も到達していない。\n\n").
-				AddText("いつかまた、あの場所に戻る日が\n来るかもしれない。\n\n").
-				AddText("─ NORMAL END ─")
+			ending5.AddText(
+				`命を賭けた潜行の日々は終わった。
 
-			// メッセージを連鎖
+しかし、遺跡の最深部には
+まだ誰も到達していない。
+
+いつかまた、あの場所に戻る日が
+来るかもしれない。
+
+━━━━━━━━━━━━
+[NORMAL END]
+━━━━━━━━━━━━`)
 			ending1.NextMessages = []*messagedata.MessageData{ending2}
 			ending2.NextMessages = []*messagedata.MessageData{ending3}
 			ending3.NextMessages = []*messagedata.MessageData{ending4}
@@ -327,6 +337,27 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] {
 					return NewMessageState(ending1, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
+		WithChoice("調停者エンディング", func(_ w.World) error {
+			trueEnd1 := &messagedata.MessageData{Speaker: ""}
+			trueEnd1.AddText(`地中から大気まで濃密な地髄に溢れた。
+長い眠りについていた人々は目覚めだした。
+
+不毛だった大地には風が吹き、若草が芽吹きだした。
+
+人々は忘れかけた希望の感覚に
+酔いしれるのであった...。
+
+━━━━━━━━━━
+[TRUE END]
+━━━━━━━━━━`)
+
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(trueEnd1)
 				},
 			}})
 			return nil
