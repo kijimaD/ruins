@@ -309,7 +309,7 @@ func NewDebugMenuState() es.State[w.World] {
 				}})
 			}
 
-			// 最初に町医者シーンを表示（bg_hospital2）
+			// 最初に町医者シーンを表示
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] {
 					return NewMessageState(page1, WithBackgroundKey("bg_hospital2"))
