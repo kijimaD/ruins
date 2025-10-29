@@ -245,43 +245,152 @@ func NewDebugMenuState() es.State[w.World] {
 			}})
 			return nil
 		}).
-		WithChoice("病院シーン", func(_ w.World) error {
-			// 1ページ目: 症状の説明
-			page1 := &messagedata.MessageData{Speaker: "医師"}
-			page1.AddText("お母さんの容態ですが...\n").
+		WithChoice("オープニング", func(_ w.World) error {
+			// 1ページ目: 町医者 - 診断
+			page1 := &messagedata.MessageData{Speaker: "町医者"}
+			page1.AddText("お母様の容態ですが...\n").
+				AddText("残念ながら、").
 				AddKeyword("地髄欠乏症").
-				AddText("、俗に言う").
-				AddKeyword("虚ろ").
-				AddText("です。\n\n体内の").
+				AddText("です。\n").
+				AddText("現代でも治療の難しい病の1つとされています。")
+
+			// 2ページ目: 町医者 - 闇医者を勧める
+			page2 := &messagedata.MessageData{Speaker: "町医者"}
+			page2.AddText("ただ、可能性はあります。\n西の果ての").
+				AddKeyword("ハシマ").
+				AddText("では").
 				AddKeyword("地髄").
-				AddText("が枯渇し、昏睡状態に陥っています。")
+				AddText("研究が進んでいて、\n腕の立つ医者がいます。\n\n").
+				AddText("訪ねてみるといいでしょう。")
 
-			// 2ページ目: 治療法の説明
-			page2 := &messagedata.MessageData{Speaker: "医師"}
-			page2.AddText("現代医学では治療法が確立されていません。\n\nしかし、高純度の地髄を投与すれば、\n回復する可能性があることが分かっています。")
+			// 3ページ目: 場面転換 - ハシマへ
+			page3 := &messagedata.MessageData{Speaker: ""}
+			page3.AddText("* * *\n\n").
+				AddText("ハシマの診療所 ----")
 
-			// 3ページ目: 治療費の説明
-			page3 := &messagedata.MessageData{Speaker: "医師"}
-			page3.AddText("治療に必要な地髄量は...\n").
-				AddKeyword(worldhelper.FormatCurrency(10000000)).
-				AddText("分です。\n\n当然ながら、一般人が用意できる量ではありません。")
+			// 4ページ目: 闇医者 - 街の説明
+			page4 := &messagedata.MessageData{Speaker: "闇医者"}
+			page4.AddText("よくここまで来たな。大変な街じゃろう。\n").
+				AddText("どいつもこいつも一攫千金を目指してギラついておる。\n").
+				AddText("まさに大陸のゴールドラッシュの様相じゃ。")
 
-			// 4ページ目: 入手方法の説明
-			page4 := &messagedata.MessageData{Speaker: "医師"}
-			page4.AddText("非常に危険ですが、方法はあります。\n\n...地髄を直接採取するのです。\n\n").
+			// 5ページ目: 闇医者 - 治療法と費用
+			page5 := &messagedata.MessageData{Speaker: "闇医者"}
+			page5.AddText("さて、あんたの母親じゃが、\nわしが経験論的に編み出した手法によって\n治療できると確信しとる!\n\n").
+				AddText("超高純度の精製地髄を投与して\nショックを与えれば、目覚める。\n\n").
+				AddText("それに必要な地髄量は...").
+				AddKeyword("1000万CZ").
+				AddText("分だ。\n\n")
+
+			// 6ページ目: 闇医者 - 採掘を勧める
+			page6 := &messagedata.MessageData{Speaker: "闇医者"}
+			page6.AddText("一般人が用意できる量ではないが、方法はある。\n\n").
+				AddText("...地髄を直接採取するのだ。\n\n").
+				AddKeyword("ハシマ").
+				AddText("のすぐ近くに").
 				AddKeyword("遺跡").
-				AddText("の深部では、純度の高い地髄が採取できます。\n").
-				AddText("うまくいけば、治療に必要な量を\n").
-				AddText("短期間に集められる可能性があります。")
+				AddText("がある。\n\n").
+				AddText("深層まで潜れば必要な量が手に入るじゃろう...\n")
 
-			// メッセージを連鎖
+			// page1→page2（町医者シーン）
 			page1.NextMessages = []*messagedata.MessageData{page2}
-			page2.NextMessages = []*messagedata.MessageData{page3}
+
+			// page3→page4→page5→page6（闇医者シーン）
 			page3.NextMessages = []*messagedata.MessageData{page4}
+			page4.NextMessages = []*messagedata.MessageData{page5}
+			page5.NextMessages = []*messagedata.MessageData{page6}
+
+			// page2終了時に闇医者シーンへ遷移
+			page2.OnComplete = func() {
+				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+					func() es.State[w.World] {
+						return NewMessageState(page3, WithBackgroundKey("bg_hospital1"))
+					},
+				}})
+			}
+
+			// 最初に町医者シーンを表示
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(page1, WithBackgroundKey("bg_hospital2"))
+				},
+			}})
+			return nil
+		}).
+		WithChoice("CZ収集エンディング", func(_ w.World) error {
+			// 1ページ目: 治療費を集めた主人公
+			ending1 := &messagedata.MessageData{Speaker: ""}
+			ending1.AddText(
+				`遺跡への潜行を繰り返し、
+
+ついに1000万CZを集めた。`)
+
+			// 2ページ目: 医師の反応
+			ending2 := &messagedata.MessageData{Speaker: "医師"}
+			ending2.AddText(
+				`「...本当に集めてきたのですか。
+
+これだけの高純度地髄を、こんな短期間で...。」`)
+
+			// 3ページ目: 治療開始
+			ending3 := &messagedata.MessageData{Speaker: "医師"}
+			ending3.AddText(
+				`すぐに治療を始めます。
+地髄の精製と投与には時間がかかりますが、
+
+お母さんは必ず目を覚ますでしょう。`)
+
+			// 4ページ目: 回復
+			ending4 := &messagedata.MessageData{Speaker: ""}
+			ending4.AddText(
+				`数日後...
+
+母は目を覚ました。
+虚ろに落ちる前の、穏やかな表情で。`)
+
+			// 5ページ目: エンディング
+			ending5 := &messagedata.MessageData{Speaker: ""}
+			ending5.AddText(
+				`命を賭けた潜行の日々は終わった。
+
+しかし、遺跡の最深部には
+まだ誰も到達していない。
+
+いつかまた、あの場所に戻る日が
+来るかもしれない。
+
+━━━━━━━━━━━━
+[NORMAL END]
+━━━━━━━━━━━━`)
+			ending1.NextMessages = []*messagedata.MessageData{ending2}
+			ending2.NextMessages = []*messagedata.MessageData{ending3}
+			ending3.NextMessages = []*messagedata.MessageData{ending4}
+			ending4.NextMessages = []*messagedata.MessageData{ending5}
 
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] {
-					return NewMessageState(page1, WithBackgroundKey("bg_hospital1"))
+					return NewMessageState(ending1, WithBackgroundKey("bg_hospital1"))
+				},
+			}})
+			return nil
+		}).
+		WithChoice("調停者エンディング", func(_ w.World) error {
+			trueEnd1 := &messagedata.MessageData{Speaker: ""}
+			trueEnd1.AddText(`地中から大気まで濃密な地髄に溢れた。
+長い眠りについていた人々は目覚めだした。
+
+不毛だった大地には風が吹き、若草が芽吹きだした。
+
+人々は忘れかけた希望の感覚に
+酔いしれるのであった...。
+
+━━━━━━━━━━
+[TRUE END]
+━━━━━━━━━━`)
+
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] {
+					return NewMessageState(trueEnd1)
 				},
 			}})
 			return nil

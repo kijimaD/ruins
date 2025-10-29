@@ -102,7 +102,10 @@ func (st *DungeonState) OnStart(world w.World) error {
 			System("WASD: 移動する。").
 			Log()
 		gamelog.New(gamelog.FieldLog).
-			System("Mキー: メニューを開く。").
+			System("Mキー: 拠点メニューを開く。").
+			Log()
+		gamelog.New(gamelog.FieldLog).
+			System("Spaceキー: アクションメニューを開く。").
 			Log()
 	}
 	return nil
