@@ -21,20 +21,12 @@ func NewDungeonMenuState() es.State[w.World] {
 	persistentState := NewPersistentMessageState(nil)
 
 	persistentState.messageData = messagedata.NewSystemMessage("").
-		WithChoice("合成", func(_ w.World) error {
-			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState}})
-			return nil
-		}).
 		WithChoice("所持", func(_ w.World) error {
 			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewInventoryMenuState}})
 			return nil
 		}).
 		WithChoice("装備", func(_ w.World) error {
 			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewEquipMenuState}})
-			return nil
-		}).
-		WithChoice("店", func(_ w.World) error {
-			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewShopMenuState}})
 			return nil
 		}).
 		WithChoice("書込", func(_ w.World) error {
@@ -665,4 +657,50 @@ func NewInteractionMenuState(world w.World) es.State[w.World] {
 	})
 
 	return messageState
+}
+
+// NewMerchantDialogState は商人との会話ステートを作成
+func NewMerchantDialogState(speakerName string) es.State[w.World] {
+	persistentState := NewPersistentMessageState(nil)
+
+	persistentState.messageData = messagedata.NewDialogMessage("", speakerName).
+		AddText(`何か取引しないかい?
+
+いい物揃ってるよ。`).
+		WithChoice("見る", func(_ w.World) error {
+			persistentState.SetTransition(es.Transition[w.World]{
+				Type:          es.TransPush,
+				NewStateFuncs: []es.StateFactory[w.World]{NewShopMenuState},
+			})
+			return nil
+		}).
+		WithChoice("用は無い", func(_ w.World) error {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+			return nil
+		})
+
+	return persistentState
+}
+
+// NewDoctorDialogState は医者との会話ステートを作成
+func NewDoctorDialogState(speakerName string) es.State[w.World] {
+	persistentState := NewPersistentMessageState(nil)
+
+	persistentState.messageData = messagedata.NewDialogMessage("", speakerName).
+		AddText(`わしの秘密の技術で物体合成してやろう。
+
+地髄と素材を持ってくるのじゃ!`).
+		WithChoice("合成したい", func(_ w.World) error {
+			persistentState.SetTransition(es.Transition[w.World]{
+				Type:          es.TransPush,
+				NewStateFuncs: []es.StateFactory[w.World]{NewCraftMenuState},
+			})
+			return nil
+		}).
+		WithChoice("用は無い", func(_ w.World) error {
+			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+			return nil
+		})
+
+	return persistentState
 }

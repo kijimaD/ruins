@@ -39,8 +39,8 @@ func TestNewTownPlannerMetaPlan(t *testing.T) {
 	expectedTiles := 50 * 50
 	assert.Equal(t, expectedTiles, len(metaPlan.Tiles), "Should have correct number of tiles")
 
-	// NPCは現在スキップ中
-	assert.Equal(t, 0, len(metaPlan.NPCs), "Town NPCs are currently disabled")
+	// NPCが配置されている（商人と医者）
+	assert.Equal(t, 2, len(metaPlan.NPCs), "Town should have 2 NPCs (merchant and doctor)")
 
 	// ワープポータルが配置されているか確認
 	assert.Equal(t, 1, len(metaPlan.WarpPortals), "Should have exactly one warp portal")
@@ -65,7 +65,7 @@ func TestNewTownPlannerMetaPlan(t *testing.T) {
 	assert.Greater(t, wallCount, 0, "Should have wall tiles")
 	assert.Greater(t, floorCount, 0, "Should have floor tiles")
 
-	t.Logf("街マップ生成成功: 壁=%d, 床=%d, NPC=%d(スキップ中), Props=%d, ドア=%d, ワープ=%d",
+	t.Logf("街マップ生成成功: 壁=%d, 床=%d, NPC=%d, Props=%d, ドア=%d, ワープ=%d",
 		wallCount, floorCount, len(metaPlan.NPCs), len(metaPlan.Props), len(metaPlan.Doors), len(metaPlan.WarpPortals))
 
 	// ドアが床の位置に配置されているか確認
