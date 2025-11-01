@@ -197,7 +197,7 @@ Agility = 8
 Defense = 5
 
 [[Members]]
-Name = "医者"
+Name = "怪しい科学者"
 SpriteSheetName = "field"
 SpriteKey = "doctor"
 FactionType = "FactionNeutral"
