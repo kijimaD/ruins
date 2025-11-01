@@ -356,6 +356,10 @@ func (st *DungeonState) handleStateEvent(world w.World) (es.Transition[w.World],
 			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] { return NewDoctorDialogState(speakerName) },
 			}}, nil
+		case "dark_doctor_greeting":
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] { return NewDarkDoctorDialogState(speakerName, world) },
+			}}, nil
 		default:
 			// 通常の会話はdialoguesから取得
 			dialogMessage := messagedata.GetDialogue(e.MessageKey, speakerName)

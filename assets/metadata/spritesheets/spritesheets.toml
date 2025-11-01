@@ -9,6 +9,7 @@ red_ball    = { x = 192, y = 0, width = 32, height = 32 }
 old_soldier = { x = 224, y = 0, width = 32, height = 32 }
 doctor      = { x = 0, y = 32, width = 32, height = 32 }
 merchant    = { x = 32, y = 32, width = 32, height = 32 }
+dark_doctor = { x = 64, y = 32, width = 32, height = 32 }
 
 prop_lantern   = { x = 32, y = 64, width = 32, height = 32 }
 field_item     = { x = 64, y = 64, width = 32, height = 32 }

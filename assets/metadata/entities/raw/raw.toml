@@ -2333,6 +2333,23 @@ Dexterity = 10
 Agility   = 7
 Defense   = 5
 
+[[Members]]
+Name            = "闇医者"
+SpriteSheetName = "field"
+SpriteKey       = "dark_doctor"
+FactionType     = "FactionNeutral"
+
+[Members.Dialog]
+MessageKey = "dark_doctor_greeting"
+
+[Members.Attributes]
+Vitality  = 10
+Strength  = 5
+Sensation = 15
+Dexterity = 10
+Agility   = 7
+Defense   = 5
+
 # command table ================
 
 [[CommandTables]]

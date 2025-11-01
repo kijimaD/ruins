@@ -40,7 +40,7 @@ func TestNewTownPlannerMetaPlan(t *testing.T) {
 	assert.Equal(t, expectedTiles, len(metaPlan.Tiles), "Should have correct number of tiles")
 
 	// NPCが配置されている
-	assert.Equal(t, 3, len(metaPlan.NPCs), "Town should have 3 NPCs")
+	assert.Equal(t, 4, len(metaPlan.NPCs), "Town should have 4 NPCs")
 
 	// ワープポータルが配置されているか確認
 	assert.Equal(t, 1, len(metaPlan.WarpPortals), "Should have exactly one warp portal")

@@ -310,60 +310,10 @@ func NewDebugMenuState() es.State[w.World] {
 			return nil
 		}).
 		WithChoice("CZ収集エンディング", func(_ w.World) error {
-			// 1ページ目: 治療費を集めた主人公
-			ending1 := &messagedata.MessageData{Speaker: ""}
-			ending1.AddText(
-				`遺跡への潜行を繰り返し、
-
-ついに1000万CZを集めた。`)
-
-			// 2ページ目: 医師の反応
-			ending2 := &messagedata.MessageData{Speaker: "医師"}
-			ending2.AddText(
-				`「...本当に集めてきたのですか。
-
-これだけの高純度地髄を、こんな短期間で...。」`)
-
-			// 3ページ目: 治療開始
-			ending3 := &messagedata.MessageData{Speaker: "医師"}
-			ending3.AddText(
-				`すぐに治療を始めます。
-地髄の精製と投与には時間がかかりますが、
-
-お母さんは必ず目を覚ますでしょう。`)
-
-			// 4ページ目: 回復
-			ending4 := &messagedata.MessageData{Speaker: ""}
-			ending4.AddText(
-				`数日後...
-
-母は目を覚ました。
-虚ろに落ちる前の、穏やかな表情で。`)
-
-			// 5ページ目: エンディング
-			ending5 := &messagedata.MessageData{Speaker: ""}
-			ending5.AddText(
-				`命を賭けた潜行の日々は終わった。
-
-しかし、遺跡の最深部には
-まだ誰も到達していない。
-
-いつかまた、あの場所に戻る日が
-来るかもしれない。
-
-━━━━━━━━━━━━
-[NORMAL END]
-━━━━━━━━━━━━`)
-			ending1.NextMessages = []*messagedata.MessageData{ending2}
-			ending2.NextMessages = []*messagedata.MessageData{ending3}
-			ending3.NextMessages = []*messagedata.MessageData{ending4}
-			ending4.NextMessages = []*messagedata.MessageData{ending5}
-
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
-				func() es.State[w.World] {
-					return NewMessageState(ending1, WithBackgroundKey("bg_hospital1"))
-				},
-			}})
+			messageState.SetTransition(es.Transition[w.World]{
+				Type:          es.TransPush,
+				NewStateFuncs: []es.StateFactory[w.World]{NewCZCollectionEndingState()},
+			})
 			return nil
 		}).
 		WithChoice("調停者エンディング", func(_ w.World) error {
@@ -475,6 +425,63 @@ func NewGameClearMessageState() es.State[w.World] {
 	messageState.messageData = messageData
 
 	return messageState
+}
+
+// NewCZCollectionEndingState はCZ収集エンディングのStateFactoryを作成する
+func NewCZCollectionEndingState() es.StateFactory[w.World] {
+	return func() es.State[w.World] {
+		// 1ページ目: 治療費を集めた主人公
+		ending1 := &messagedata.MessageData{Speaker: ""}
+		ending1.AddText(
+			`遺跡への潜行を繰り返し、
+
+ついに1000万CZを集めた。`)
+
+		// 2ページ目: 医師の反応
+		ending2 := &messagedata.MessageData{Speaker: "医師"}
+		ending2.AddText(
+			`「...本当に集めてきたのですか。
+
+これだけの高純度地髄を、こんな短期間で...。」`)
+
+		// 3ページ目: 治療開始
+		ending3 := &messagedata.MessageData{Speaker: "医師"}
+		ending3.AddText(
+			`すぐに治療を始めます。
+地髄の精製と投与には時間がかかりますが、
+
+お母さんは必ず目を覚ますでしょう。`)
+
+		// 4ページ目: 回復
+		ending4 := &messagedata.MessageData{Speaker: ""}
+		ending4.AddText(
+			`数日後...
+
+母は目を覚ました。
+虚ろに落ちる前の、穏やかな表情で。`)
+
+		// 5ページ目: エンディング
+		ending5 := &messagedata.MessageData{Speaker: ""}
+		ending5.AddText(
+			`命を賭けた潜行の日々は終わった。
+
+しかし、遺跡の最深部には
+まだ誰も到達していない。
+
+いつかまた、あの場所に戻る日が
+来るかもしれない。
+
+━━━━━━━━━━━━
+[NORMAL END]
+━━━━━━━━━━━━`)
+
+		ending1.NextMessages = []*messagedata.MessageData{ending2}
+		ending2.NextMessages = []*messagedata.MessageData{ending3}
+		ending3.NextMessages = []*messagedata.MessageData{ending4}
+		ending4.NextMessages = []*messagedata.MessageData{ending5}
+
+		return NewMessageState(ending1, WithBackgroundKey("bg_hospital1"))
+	}
 }
 
 // NewGameStartMessageState はゲーム開始時の目的を説明するMessageStateを作成するファクトリー関数
@@ -701,6 +708,40 @@ func NewDoctorDialogState(speakerName string) es.State[w.World] {
 			persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 			return nil
 		})
+
+	return persistentState
+}
+
+// NewDarkDoctorDialogState は闇医者との会話ステートを作成
+func NewDarkDoctorDialogState(speakerName string, world w.World) es.State[w.World] {
+	persistentState := NewPersistentMessageState(nil)
+
+	// プレイヤーの所持金を確認
+	player, _ := worldhelper.GetPlayerEntity(world)
+	requiredAmount := 10000000 // 1000万CZ
+	hasEnoughMoney := worldhelper.HasCurrency(world, player, requiredAmount)
+
+	persistentState.messageData = messagedata.NewDialogMessage("", speakerName).
+		AddText(`治療費1000万CZを用意できたかい?`)
+
+	// 1000万CZ以上持っている場合のみ「はい」選択肢を表示
+	if hasEnoughMoney {
+		persistentState.messageData = persistentState.messageData.WithChoice("はい", func(world w.World) error {
+			// 通貨を消費
+			if worldhelper.ConsumeCurrency(world, player, requiredAmount) {
+				persistentState.SetTransition(es.Transition[w.World]{
+					Type:          es.TransSwitch,
+					NewStateFuncs: []es.StateFactory[w.World]{NewCZCollectionEndingState()},
+				})
+			}
+			return nil
+		})
+	}
+
+	persistentState.messageData = persistentState.messageData.WithChoice("まだだ", func(_ w.World) error {
+		persistentState.SetTransition(es.Transition[w.World]{Type: es.TransPop})
+		return nil
+	})
 
 	return persistentState
 }
