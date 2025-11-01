@@ -24,7 +24,6 @@ type NPCSpec struct {
 }
 
 // HostileNPCPlanner は敵NPC配置を担当するプランナー
-// 会話可能なNPCはConversationNPCPlannerで配置する
 type HostileNPCPlanner struct {
 	world       w.World
 	plannerType PlannerType

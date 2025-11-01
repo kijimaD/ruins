@@ -346,16 +346,33 @@ func (st *DungeonState) handleStateEvent(world w.World) (es.Transition[w.World],
 		nameComp := world.Components.Name.Get(e.SpeakerEntity).(*gc.Name)
 		speakerName := nameComp.Name
 
-		dialogMessage := messagedata.GetDialogue(e.MessageKey, speakerName)
-		return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
-			func() es.State[w.World] { return NewMessageState(dialogMessage) },
-		}}, nil
+		// NPCの種類に応じて専用ステートを返す
+		switch e.MessageKey {
+		case "merchant_greeting":
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] { return NewMerchantDialogState(speakerName) },
+			}}, nil
+		case "doctor_greeting":
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] { return NewDoctorDialogState(speakerName) },
+			}}, nil
+		case "dark_doctor_greeting":
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] { return NewDarkDoctorDialogState(speakerName, world) },
+			}}, nil
+		default:
+			// 通常の会話はdialoguesから取得
+			dialogMessage := messagedata.GetDialogue(e.MessageKey, speakerName)
+			return es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
+				func() es.State[w.World] { return NewMessageState(dialogMessage) },
+			}}, nil
+		}
 	case resources.WarpNextEvent:
 		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(world.Resources.Dungeon.Depth + 1)}}, nil
 	case resources.WarpEscapeEvent:
 		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}}, nil
 	case resources.GameClearEvent:
-		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameClearMessageState}}, nil
+		return es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonCompleteEndingState}}, nil
 	}
 
 	// NoneEventまたは未知のイベントの場合は何もしない

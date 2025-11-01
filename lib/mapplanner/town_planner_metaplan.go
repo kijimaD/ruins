@@ -102,6 +102,34 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 				// NPC（街プランナーではNPCをスキップ - テスト用）
 				// TODO: 適切なNPCタイプが定義されたら追加
 				continue
+			case '1':
+				// 老兵NPC
+				planData.NPCs = append(planData.NPCs, NPCSpec{
+					X:       x,
+					Y:       y,
+					NPCType: "老兵",
+				})
+			case '$':
+				// 商人NPC
+				planData.NPCs = append(planData.NPCs, NPCSpec{
+					X:       x,
+					Y:       y,
+					NPCType: "商人",
+				})
+			case '2':
+				// 怪しい科学者NPC
+				planData.NPCs = append(planData.NPCs, NPCSpec{
+					X:       x,
+					Y:       y,
+					NPCType: "怪しい科学者",
+				})
+			case '3':
+				// 闇医者NPC
+				planData.NPCs = append(planData.NPCs, NPCSpec{
+					X:       x,
+					Y:       y,
+					NPCType: "闇医者",
+				})
 			case 'w':
 				// ワープホール
 				planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
@@ -250,9 +278,9 @@ func getTownLayout() ([]string, []string) {
 		"..................................................",
 		".....................D............................",
 		"...........L..........L...L..........L............", // 南区域の道路（幅3）
+		"..........................2.......................",
 		"..................................................",
-		"..................................................",
-		".....................CT.@.........................",
+		"...................1.CT.@...$...3.................",
 		"..................................................", // 広場
 		"..................................................",
 		"........................w.........................", // ワープホール（下の広場の真ん中）

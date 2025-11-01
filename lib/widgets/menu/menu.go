@@ -96,13 +96,13 @@ func (m *Menu) Update() error {
 
 // translateKeyToAction はキーボード入力をActionに変換する
 func (m *Menu) translateKeyToAction(keyboardInput input.KeyboardInput) (inputmapper.ActionID, bool) {
-	// 下矢印キー
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+	// 下移動キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) || keyboardInput.IsKeyJustPressed(ebiten.KeyS) {
 		return inputmapper.ActionMenuDown, true
 	}
 
-	// 上矢印キー
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+	// 上移動キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) || keyboardInput.IsKeyJustPressed(ebiten.KeyW) {
 		return inputmapper.ActionMenuUp, true
 	}
 

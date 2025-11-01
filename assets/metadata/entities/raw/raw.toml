@@ -2299,6 +2299,57 @@ Dexterity = 10
 Agility   = 10
 Defense   = 10
 
+[[Members]]
+Name            = "商人"
+SpriteSheetName = "field"
+SpriteKey       = "merchant"
+FactionType     = "FactionNeutral"
+
+[Members.Dialog]
+MessageKey = "merchant_greeting"
+
+[Members.Attributes]
+Vitality  = 10
+Strength  = 5
+Sensation = 10
+Dexterity = 10
+Agility   = 8
+Defense   = 5
+
+[[Members]]
+Name            = "怪しい科学者"
+SpriteSheetName = "field"
+SpriteKey       = "doctor"
+FactionType     = "FactionNeutral"
+
+[Members.Dialog]
+MessageKey = "doctor_greeting"
+
+[Members.Attributes]
+Vitality  = 10
+Strength  = 5
+Sensation = 15
+Dexterity = 10
+Agility   = 7
+Defense   = 5
+
+[[Members]]
+Name            = "闇医者"
+SpriteSheetName = "field"
+SpriteKey       = "dark_doctor"
+FactionType     = "FactionNeutral"
+
+[Members.Dialog]
+MessageKey = "dark_doctor_greeting"
+
+[Members.Attributes]
+Vitality  = 10
+Strength  = 5
+Sensation = 15
+Dexterity = 10
+Agility   = 7
+Defense   = 5
+
 # command table ================
 
 [[CommandTables]]

@@ -80,13 +80,6 @@ func attemptMetaPlan(world w.World, width, height int, seed uint64, plannerType 
 		chain.With(hostileNPCPlanner)
 	}
 
-	// 会話NPCプランナーを追加（町マップ専用）
-	// TODO: townPlannerでchainするべきだが、world依存があるため...
-	if plannerType.Name == PlannerTypeTown.Name {
-		conversationNPCPlanner := NewConversationNPCPlanner(world)
-		chain.With(conversationNPCPlanner)
-	}
-
 	// アイテムプランナーを追加
 	if plannerType.SpawnItems {
 		itemPlanner := NewItemPlanner(world, plannerType)
