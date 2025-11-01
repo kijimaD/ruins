@@ -110,11 +110,11 @@ func (p *MetaTownPlanner) PlanInitial(planData *MetaPlan) error {
 					NPCType: "商人",
 				})
 			case '2':
-				// 医者NPC
+				// 怪しい科学者NPC
 				planData.NPCs = append(planData.NPCs, NPCSpec{
 					X:       x,
 					Y:       y,
-					NPCType: "医者",
+					NPCType: "怪しい科学者",
 				})
 			case 'w':
 				// ワープホール

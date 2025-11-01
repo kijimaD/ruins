@@ -682,12 +682,12 @@ func NewMerchantDialogState(speakerName string) es.State[w.World] {
 	return persistentState
 }
 
-// NewDoctorDialogState は医者との会話ステートを作成
+// NewDoctorDialogState は怪しい科学者との会話ステートを作成
 func NewDoctorDialogState(speakerName string) es.State[w.World] {
 	persistentState := NewPersistentMessageState(nil)
 
 	persistentState.messageData = messagedata.NewDialogMessage("", speakerName).
-		AddText(`わしの秘密の技術で物体合成してやろう。
+		AddText(`フフフ...わしの秘密の技術で物質再構築してやろう
 
 地髄と素材を持ってくるのじゃ!`).
 		WithChoice("合成したい", func(_ w.World) error {
