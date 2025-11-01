@@ -85,8 +85,8 @@ func NewDebugMenuState() es.State[w.World] {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}})
 			return nil
 		}).
-		WithChoice("ゲームクリア", func(_ w.World) error {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameClearMessageState}})
+		WithChoice("踏破エンディング", func(_ w.World) error {
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonCompleteEndingState}})
 			return nil
 		}).
 		WithChoice("ダンジョン開始(大部屋)", func(_ w.World) error {
@@ -400,8 +400,8 @@ func NewGameOverMessageState() es.State[w.World] {
 	return messageState
 }
 
-// NewGameClearMessageState はゲームクリア用のMessageStateを作成するファクトリー関数
-func NewGameClearMessageState() es.State[w.World] {
+// NewDungeonCompleteEndingState はダンジョン踏破エンディングのStateを作成するファクトリー関数
+func NewDungeonCompleteEndingState() es.State[w.World] {
 	messageState := &MessageState{}
 
 	// ゲームクリアメッセージを作成（選択肢付き）
