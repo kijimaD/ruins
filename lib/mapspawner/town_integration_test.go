@@ -14,7 +14,7 @@ func TestTownPlannerIntegration(t *testing.T) {
 
 	// テスト用のワールドを作成
 	world := testutil.InitTestWorld(t)
-	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+	world.Resources.RawMaster = createTestRawMaster(t)
 
 	// 街マップ生成（Plan）
 	width, height := 50, 50
@@ -64,7 +64,7 @@ func TestTownPlannerVsSmallRoom(t *testing.T) {
 
 	// 同じワールドでSmallRoomとTownを比較
 	world := testutil.InitTestWorld(t)
-	world.Resources.RawMaster = createMapspawnerTestRawMaster()
+	world.Resources.RawMaster = createTestRawMaster(t)
 
 	seed := uint64(123)
 
