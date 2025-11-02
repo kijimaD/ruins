@@ -10,10 +10,12 @@ import (
 func HandleWindowInput() (inputmapper.ActionID, bool) {
 	keyboardInput := input.GetSharedKeyboardInput()
 
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) {
+	// 上移動キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowUp) || keyboardInput.IsKeyJustPressed(ebiten.KeyW) {
 		return inputmapper.ActionWindowUp, true
 	}
-	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) {
+	// 下移動キー
+	if keyboardInput.IsKeyJustPressed(ebiten.KeyArrowDown) || keyboardInput.IsKeyJustPressed(ebiten.KeyS) {
 		return inputmapper.ActionWindowDown, true
 	}
 	if keyboardInput.IsEnterJustPressedOnce() {
