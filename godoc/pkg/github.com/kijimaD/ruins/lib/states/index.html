@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.7";</script>
+<script>var goVersion = "go1.24.9";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -203,10 +203,22 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				<dd><a href="index.html#HandleWindowInput">func HandleWindowInput() (inputmapper.ActionID, bool)</a></dd>
 			
 				
+				<dd><a href="index.html#NewCZCollectionEndingState">func NewCZCollectionEndingState() es.StateFactory[w.World]</a></dd>
+			
+				
 				<dd><a href="index.html#NewCraftMenuState">func NewCraftMenuState() es.State[w.World]</a></dd>
 			
 				
+				<dd><a href="index.html#NewDarkDoctorDialogState">func NewDarkDoctorDialogState(speakerName string, world w.World) es.State[w.World]</a></dd>
+			
+				
 				<dd><a href="index.html#NewDebugMenuState">func NewDebugMenuState() es.State[w.World]</a></dd>
+			
+				
+				<dd><a href="index.html#NewDoctorDialogState">func NewDoctorDialogState(speakerName string) es.State[w.World]</a></dd>
+			
+				
+				<dd><a href="index.html#NewDungeonCompleteEndingState">func NewDungeonCompleteEndingState() es.State[w.World]</a></dd>
 			
 				
 				<dd><a href="index.html#NewDungeonMenuState">func NewDungeonMenuState() es.State[w.World]</a></dd>
@@ -216,9 +228,6 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 			
 				
 				<dd><a href="index.html#NewEquipMenuState">func NewEquipMenuState() es.State[w.World]</a></dd>
-			
-				
-				<dd><a href="index.html#NewGameClearMessageState">func NewGameClearMessageState() es.State[w.World]</a></dd>
 			
 				
 				<dd><a href="index.html#NewGameOverMessageState">func NewGameOverMessageState() es.State[w.World]</a></dd>
@@ -237,6 +246,9 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 			
 				
 				<dd><a href="index.html#NewMainMenuState">func NewMainMenuState() es.State[w.World]</a></dd>
+			
+				
+				<dd><a href="index.html#NewMerchantDialogState">func NewMerchantDialogState(speakerName string) es.State[w.World]</a></dd>
 			
 				
 				<dd><a href="index.html#NewMessageState">func NewMessageState(messageData *messagedata.MessageData, opts ...MessageStateOption) es.State[w.World]</a></dd>
@@ -630,7 +642,21 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2290:2332#L47">NewCraftMenuState</a>
+			<h2 id="NewCZCollectionEndingState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=18447:18505#L421">NewCZCollectionEndingState</a>
+				<a class="permalink" href="index.html#NewCZCollectionEndingState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewCZCollectionEndingState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateFactory">StateFactory</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewCZCollectionEndingState はCZ収集エンディングのStateFactoryを作成する
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewCraftMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=1882:1924#L39">NewCraftMenuState</a>
 				<a class="permalink" href="index.html#NewCraftMenuState">&#xb6;</a>
 				
 				
@@ -644,13 +670,55 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2843:2885#L62">NewDebugMenuState</a>
+			<h2 id="NewDarkDoctorDialogState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=28442:28524#L706">NewDarkDoctorDialogState</a>
+				<a class="permalink" href="index.html#NewDarkDoctorDialogState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewDarkDoctorDialogState(speakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>, world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewDarkDoctorDialogState は闇医者との会話ステートを作成
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewDebugMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2435:2477#L54">NewDebugMenuState</a>
 				<a class="permalink" href="index.html#NewDebugMenuState">&#xb6;</a>
 				
 				
 			</h2>
 			<pre>func NewDebugMenuState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
 			<p>NewDebugMenuState は新しいDebugMenuStateインスタンスを作成するファクトリー関数
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewDoctorDialogState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=27629:27692#L683">NewDoctorDialogState</a>
+				<a class="permalink" href="index.html#NewDoctorDialogState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewDoctorDialogState(speakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewDoctorDialogState は怪しい科学者との会話ステートを作成
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewDungeonCompleteEndingState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17437:17491#L394">NewDungeonCompleteEndingState</a>
+				<a class="permalink" href="index.html#NewDungeonCompleteEndingState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewDungeonCompleteEndingState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewDungeonCompleteEndingState はダンジョン踏破エンディングのStateを作成するファクトリー関数
 
 			
 			
@@ -672,7 +740,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewDungeonState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=18185:18269#L415">NewDungeonState</a>
+			<h2 id="NewDungeonState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=16159:16243#L357">NewDungeonState</a>
 				<a class="permalink" href="index.html#NewDungeonState">&#xb6;</a>
 				
 				
@@ -687,7 +755,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2664:2706#L57">NewEquipMenuState</a>
+			<h2 id="NewEquipMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2256:2298#L49">NewEquipMenuState</a>
 				<a class="permalink" href="index.html#NewEquipMenuState">&#xb6;</a>
 				
 				
@@ -701,21 +769,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewGameClearMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=19447:19496#L452">NewGameClearMessageState</a>
-				<a class="permalink" href="index.html#NewGameClearMessageState">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func NewGameClearMessageState() <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
-			<p>NewGameClearMessageState はゲームクリア用のMessageStateを作成するファクトリー関数
-
-			
-			
-
-		
-			
-			
-			<h2 id="NewGameOverMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=18749:18797#L434">NewGameOverMessageState</a>
+			<h2 id="NewGameOverMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=16723:16771#L376">NewGameOverMessageState</a>
 				<a class="permalink" href="index.html#NewGameOverMessageState">&#xb6;</a>
 				
 				
@@ -729,7 +783,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewGameStartMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=20487:20536#L479">NewGameStartMessageState</a>
+			<h2 id="NewGameStartMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=20286:20335#L478">NewGameStartMessageState</a>
 				<a class="permalink" href="index.html#NewGameStartMessageState">&#xb6;</a>
 				
 				
@@ -743,7 +797,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewInteractionMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=25499:25560#L614">NewInteractionMenuState</a>
+			<h2 id="NewInteractionMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=25298:25359#L613">NewInteractionMenuState</a>
 				<a class="permalink" href="index.html#NewInteractionMenuState">&#xb6;</a>
 				
 				
@@ -757,7 +811,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2477:2523#L52">NewInventoryMenuState</a>
+			<h2 id="NewInventoryMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=2069:2115#L44">NewInventoryMenuState</a>
 				<a class="permalink" href="index.html#NewInventoryMenuState">&#xb6;</a>
 				
 				
@@ -771,7 +825,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=22858:22899#L542">NewLoadMenuState</a>
+			<h2 id="NewLoadMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=22657:22698#L541">NewLoadMenuState</a>
 				<a class="permalink" href="index.html#NewLoadMenuState">&#xb6;</a>
 				
 				
@@ -785,7 +839,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=18568:18609#L429">NewMainMenuState</a>
+			<h2 id="NewMainMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=16542:16583#L371">NewMainMenuState</a>
 				<a class="permalink" href="index.html#NewMainMenuState">&#xb6;</a>
 				
 				
@@ -799,7 +853,21 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=25052:25156#L601">NewMessageState</a>
+			<h2 id="NewMerchantDialogState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=26876:26941#L660">NewMerchantDialogState</a>
+				<a class="permalink" href="index.html#NewMerchantDialogState">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func NewMerchantDialogState(speakerName <a href="http://localhost:8888/pkg/builtin/#string">string</a>) <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]</pre>
+			<p>NewMerchantDialogState は商人との会話ステートを作成
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewMessageState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=24851:24955#L600">NewMessageState</a>
 				<a class="permalink" href="index.html#NewMessageState">&#xb6;</a>
 				
 				
@@ -814,7 +882,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=21278:21319#L499">NewSaveMenuState</a>
+			<h2 id="NewSaveMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=21077:21118#L498">NewSaveMenuState</a>
 				<a class="permalink" href="index.html#NewSaveMenuState">&#xb6;</a>
 				
 				
@@ -828,7 +896,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="NewShopMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=25340:25381#L609">NewShopMenuState</a>
+			<h2 id="NewShopMenuState">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=25139:25180#L608">NewShopMenuState</a>
 				<a class="permalink" href="index.html#NewShopMenuState">&#xb6;</a>
 				
 				
@@ -842,7 +910,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="UpdateFocusIndex">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/window.go?s=890:977#L20">UpdateFocusIndex</a>
+			<h2 id="UpdateFocusIndex">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/window.go?s=1024:1111#L22">UpdateFocusIndex</a>
 				<a class="permalink" href="index.html#UpdateFocusIndex">&#xb6;</a>
 				
 				
@@ -1147,7 +1215,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 		
 			
 			
-			<h2 id="DungeonStateOption">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17590:17633#L397">DungeonStateOption</a>
+			<h2 id="DungeonStateOption">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=15564:15607#L339">DungeonStateOption</a>
 				<a class="permalink" href="index.html#DungeonStateOption">&#xb6;</a>
 				
 				
@@ -1166,7 +1234,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 
 			
 				
-				<h3 id="WithBuilderType">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17880:17955#L407">WithBuilderType</a>
+				<h3 id="WithBuilderType">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=15854:15929#L349">WithBuilderType</a>
 					<a class="permalink" href="index.html#WithBuilderType">&#xb6;</a>
 					
 					
@@ -1178,7 +1246,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 				
 			
 				
-				<h3 id="WithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=17693:17738#L400">WithSeed</a>
+				<h3 id="WithSeed">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/states/factories.go?s=15667:15712#L342">WithSeed</a>
 					<a class="permalink" href="index.html#WithSeed">&#xb6;</a>
 					
 					
@@ -2043,7 +2111,7 @@ var _ es.ActionHandler[w.World] = &amp;YourState{}
 
 
 <div id="footer">
-Build version go1.24.7.<br>
+Build version go1.24.9.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,

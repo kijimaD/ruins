@@ -14,7 +14,7 @@
 
 
 
-<script>var goVersion = "go1.24.7";</script>
+<script>var goVersion = "go1.24.9";</script>
 <script src="../../../../../../lib/godoc/godocs.js" defer></script>
 </head>
 <body>
@@ -93,9 +93,7 @@
 			</div>
 			<div class="expanded">
 				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
-				<p>Package mapplanner の会話NPC配置プランナー
-敵NPCとは別に、会話可能なNPCを配置する
-<p>Package mapplanner provides map planning functionality.
+				<p>Package mapplanner provides map planning functionality.
 <p>このパッケージは階層マップの生成機能を提供します：
 <ul>
 <li>タイルベースのマップ生成
@@ -263,17 +261,6 @@ Walkable = true
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#CaveStalactites.PlanMeta">func (c CaveStalactites) PlanMeta(planData *MetaPlan)</a></dd>
-				
-			
-				
-				<dd><a href="index.html#ConversationNPCPlanner">type ConversationNPCPlanner</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewConversationNPCPlanner">func NewConversationNPCPlanner(world w.World) *ConversationNPCPlanner</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#ConversationNPCPlanner.PlanMeta">func (c *ConversationNPCPlanner) PlanMeta(planData *MetaPlan)</a></dd>
 				
 			
 				
@@ -636,8 +623,6 @@ Walkable = true
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go">boundary_wall.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go">cave_planner.go</a>
-			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go">conversation_npc_planner.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/doc.go">doc.go</a>
 			
@@ -1171,57 +1156,6 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ConversationNPCPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go?s=316:369#L1">ConversationNPCPlanner</a>
-				<a class="permalink" href="index.html#ConversationNPCPlanner">&#xb6;</a>
-				
-				
-			</h2>
-			<p>ConversationNPCPlanner は会話可能NPCの配置を担当するプランナー
-
-			<pre>type ConversationNPCPlanner struct {
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewConversationNPCPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go?s=443:512#L6">NewConversationNPCPlanner</a>
-					<a class="permalink" href="index.html#NewConversationNPCPlanner">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewConversationNPCPlanner(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) *<a href="index.html#ConversationNPCPlanner">ConversationNPCPlanner</a></pre>
-				<p>NewConversationNPCPlanner は会話NPCプランナーを作成する
-
-				
-				
-			
-
-			
-				
-				<h3 id="ConversationNPCPlanner.PlanMeta">func (*ConversationNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/conversation_npc_planner.go?s=627:688#L13">PlanMeta</a>
-					<a class="permalink" href="index.html#ConversationNPCPlanner.PlanMeta">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (c *<a href="index.html#ConversationNPCPlanner">ConversationNPCPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
-				<p>PlanMeta は会話可能NPCをMetaPlanに追加する
-
-				
-				
-				
-			
-		
-			
-			
 			<h2 id="DoorSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=857:1031#L23">DoorSpec</a>
 				<a class="permalink" href="index.html#DoorSpec">&#xb6;</a>
 				
@@ -1487,13 +1421,12 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="HostileNPCPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=733:812#L18">HostileNPCPlanner</a>
+			<h2 id="HostileNPCPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=671:750#L17">HostileNPCPlanner</a>
 				<a class="permalink" href="index.html#HostileNPCPlanner">&#xb6;</a>
 				
 				
 			</h2>
 			<p>HostileNPCPlanner は敵NPC配置を担当するプランナー
-会話可能なNPCはConversationNPCPlannerで配置する
 
 			<pre>type HostileNPCPlanner struct {
     <span class="comment">// contains filtered or unexported fields</span>
@@ -1510,7 +1443,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="NewHostileNPCPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=878:962#L24">NewHostileNPCPlanner</a>
+				<h3 id="NewHostileNPCPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=816:900#L23">NewHostileNPCPlanner</a>
 					<a class="permalink" href="index.html#NewHostileNPCPlanner">&#xb6;</a>
 					
 					
@@ -1524,7 +1457,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="HostileNPCPlanner.PlanMeta">func (*HostileNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=1109:1165#L32">PlanMeta</a>
+				<h3 id="HostileNPCPlanner.PlanMeta">func (*HostileNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=1047:1103#L31">PlanMeta</a>
 					<a class="permalink" href="index.html#HostileNPCPlanner.PlanMeta">&#xb6;</a>
 					
 					
@@ -2911,7 +2844,7 @@ TODO: 全然わかってないので理解する
 
 
 <div id="footer">
-Build version go1.24.7.<br>
+Build version go1.24.9.<br>
 Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
 the content of this page is licensed under the
 Creative Commons Attribution 3.0 License,
