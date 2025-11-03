@@ -2379,8 +2379,7 @@ Weight = 1.0
 # drop table ================
 
 [[DropTables]]
-Name   = "軽戦車"
-XpBase = 10
+Name = "軽戦車"
 [[DropTables.Entries]]
 Material = "鉄"
 Weight   = 0.4
@@ -2392,8 +2391,7 @@ Material = "フェライトコア"
 Weight   = 0.2
 
 [[DropTables]]
-Name   = "火の玉"
-XpBase = 5
+Name = "火の玉"
 [[DropTables.Entries]]
 Material = ""
 Weight   = 0.5
@@ -2402,8 +2400,7 @@ Material = "鉄くず"
 Weight   = 0.5
 
 [[DropTables]]
-Name   = "灰の偶像"
-XpBase = 50
+Name = "灰の偶像"
 [[DropTables.Entries]]
 Material = "鉄くず"
 Weight   = 1.0

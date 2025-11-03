@@ -5,7 +5,6 @@ import "math/rand/v2"
 // DropTable はドロップテーブル
 type DropTable struct {
 	Name    string
-	XpBase  float64
 	Entries []DropTableEntry `toml:"entries"`
 }
 

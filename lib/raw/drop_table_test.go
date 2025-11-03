@@ -12,8 +12,7 @@ func TestDropTable_SelectByWeight_EmptyMaterial(t *testing.T) {
 
 	// 空文字列エントリを含むドロップテーブル
 	dropTable := DropTable{
-		Name:   "テスト敵",
-		XpBase: 5,
+		Name: "テスト敵",
 		Entries: []DropTableEntry{
 			{Material: "", Weight: 0.5},     // 50%でドロップなし
 			{Material: "アイテム", Weight: 0.5}, // 50%でアイテムドロップ
@@ -51,8 +50,7 @@ func TestDropTable_SelectByWeight_AllEmptyWeight(t *testing.T) {
 
 	// 重みが全て0のドロップテーブル
 	dropTable := DropTable{
-		Name:   "テスト敵",
-		XpBase: 5,
+		Name: "テスト敵",
 		Entries: []DropTableEntry{
 			{Material: "アイテム1", Weight: 0},
 			{Material: "アイテム2", Weight: 0},
@@ -71,8 +69,7 @@ func TestDropTable_SelectByWeight_SingleEntry(t *testing.T) {
 
 	// エントリが1つだけのドロップテーブル
 	dropTable := DropTable{
-		Name:   "テスト敵",
-		XpBase: 5,
+		Name: "テスト敵",
 		Entries: []DropTableEntry{
 			{Material: "確定アイテム", Weight: 1.0},
 		},
@@ -89,8 +86,7 @@ func TestDropTable_SelectByWeight_OnlyEmpty(t *testing.T) {
 
 	// 空文字列エントリのみのドロップテーブル
 	dropTable := DropTable{
-		Name:   "テスト敵",
-		XpBase: 5,
+		Name: "テスト敵",
 		Entries: []DropTableEntry{
 			{Material: "", Weight: 1.0},
 		},
@@ -107,8 +103,7 @@ func TestDropTable_SelectByWeight_MultipleEntries(t *testing.T) {
 
 	// 複数エントリのドロップテーブル
 	dropTable := DropTable{
-		Name:   "テスト敵",
-		XpBase: 10,
+		Name: "テスト敵",
 		Entries: []DropTableEntry{
 			{Material: "レアアイテム", Weight: 0.1},  // 10%
 			{Material: "コモンアイテム", Weight: 0.4}, // 40%
