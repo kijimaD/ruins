@@ -6,14 +6,10 @@ import (
 	"os"
 	"sort"
 
+	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli/v2"
-)
-
-const (
-	// MaxDepth は最大深度
-	maxDepth = 100
 )
 
 // CmdGenerateItemDoc はアイテム出現確率のドキュメントを生成するコマンド
@@ -68,7 +64,7 @@ func generateTableDoc(file *os.File, table raw.ItemTable) error {
 
 	// 各深度での最大アイテム数を計算
 	maxItems := 0
-	for depth := 1; depth <= maxDepth; depth++ {
+	for depth := 1; depth <= consts.GameClearDepth; depth++ {
 		probs := calculateProbabilities(table, depth)
 		if len(probs) > maxItems {
 			maxItems = len(probs)
@@ -91,7 +87,7 @@ func generateTableDoc(file *os.File, table raw.ItemTable) error {
 	tw.SetAutoFormatHeaders(false)
 
 	// 各深度の行を追加
-	for depth := 1; depth <= maxDepth; depth++ {
+	for depth := 1; depth <= consts.GameClearDepth; depth++ {
 		// 各アイテムの出現確率を計算
 		probs := calculateProbabilities(table, depth)
 
