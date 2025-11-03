@@ -44,27 +44,28 @@ func runGenerateItemDoc(_ *cli.Context) error {
 	}()
 
 	// ヘッダー
-	writeString(file, "# アイテム出現テーブル\n\n")
-	writeString(file, "各ステージ・階層ごとのアイテム出現確率を示す。\n\n")
+	if _, err := file.WriteString("# アイテム出現テーブル\n\n"); err != nil {
+		return fmt.Errorf("error writing header: %w", err)
+	}
+	if _, err := file.WriteString("各ステージ・階層ごとのアイテム出現確率を示す。\n\n"); err != nil {
+		return fmt.Errorf("error writing description: %w", err)
+	}
 
 	// 各ItemTableを処理
 	for _, table := range master.Raws.ItemTables {
-		generateTableDoc(file, table)
+		if err := generateTableDoc(file, table); err != nil {
+			return err
+		}
 	}
 
 	log.Println("Generated docs/item_tables.md")
 	return nil
 }
 
-// writeString はファイルへの書き込みとエラーハンドリングを行う
-func writeString(file *os.File, s string) {
-	if _, err := file.WriteString(s); err != nil {
-		log.Fatalf("Error writing to file: %v\n", err)
+func generateTableDoc(file *os.File, table raw.ItemTable) error {
+	if _, err := fmt.Fprintf(file, "## %s\n\n", table.Name); err != nil {
+		return fmt.Errorf("error writing table name: %w", err)
 	}
-}
-
-func generateTableDoc(file *os.File, table raw.ItemTable) {
-	writeString(file, fmt.Sprintf("## %s\n\n", table.Name))
 
 	// 各深度での最大アイテム数を計算
 	maxItems := 0
@@ -122,7 +123,10 @@ func generateTableDoc(file *os.File, table raw.ItemTable) {
 	// テーブルをレンダリング
 	tw.Render()
 
-	writeString(file, "\n")
+	if _, err := file.WriteString("\n"); err != nil {
+		return fmt.Errorf("error writing newline: %w", err)
+	}
+	return nil
 }
 
 func calculateProbabilities(table raw.ItemTable, depth int) map[string]float64 {
