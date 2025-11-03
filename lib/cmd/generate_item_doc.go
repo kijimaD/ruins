@@ -11,6 +11,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+const (
+	// MaxDepth は最大深度
+	maxDepth = 100
+)
+
 // CmdGenerateItemDoc はアイテム出現確率のドキュメントを生成するコマンド
 var CmdGenerateItemDoc = &cli.Command{
 	Name:        "generate-item-doc",
@@ -60,17 +65,6 @@ func writeString(file *os.File, s string) {
 
 func generateTableDoc(file *os.File, table raw.ItemTable) {
 	writeString(file, fmt.Sprintf("## %s\n\n", table.Name))
-
-	// 最大深度を決定
-	maxDepth := 0
-	for _, entry := range table.Entries {
-		if entry.MaxDepth > maxDepth {
-			maxDepth = entry.MaxDepth
-		}
-	}
-	if maxDepth == 0 {
-		maxDepth = 50 // デフォルト最大深度
-	}
 
 	// 各深度での最大アイテム数を計算
 	maxItems := 0
