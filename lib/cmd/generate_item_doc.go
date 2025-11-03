@@ -58,7 +58,6 @@ func runGenerateItemDoc(_ *cli.Context) error {
 		}
 	}
 
-	log.Println("Generated docs/item_tables.md")
 	return nil
 }
 

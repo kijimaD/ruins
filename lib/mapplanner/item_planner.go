@@ -8,8 +8,6 @@ import (
 )
 
 // アイテム配置用の定数
-// TODO(kijima): テーブルごとの項目はItemTableに移動する
-// TODO(kijima): テーブル共通の設定値はここにまとめる
 const (
 	// アイテム配置関連
 	baseItemCount     = 2 // アイテム配置の基本数
