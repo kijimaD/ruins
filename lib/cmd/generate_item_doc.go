@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/kijimaD/ruins/lib/raw"
+	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli/v2"
 )
 
@@ -60,19 +61,6 @@ func writeString(file *os.File, s string) {
 func generateTableDoc(file *os.File, table raw.ItemTable) {
 	writeString(file, fmt.Sprintf("## %s\n\n", table.Name))
 
-	// 全アイテム名を収集（ヘッダー用）
-	itemNames := make(map[string]bool)
-	for _, entry := range table.Entries {
-		itemNames[entry.ItemName] = true
-	}
-
-	// ソートされたアイテム名リスト
-	sortedItems := make([]string, 0, len(itemNames))
-	for name := range itemNames {
-		sortedItems = append(sortedItems, name)
-	}
-	sort.Strings(sortedItems)
-
 	// 最大深度を決定
 	maxDepth := 0
 	for _, entry := range table.Entries {
@@ -84,36 +72,61 @@ func generateTableDoc(file *os.File, table raw.ItemTable) {
 		maxDepth = 50 // デフォルト最大深度
 	}
 
-	// テーブルヘッダー
-	header := "| 深度 |"
-	for _, item := range sortedItems {
-		header += fmt.Sprintf(" %s |", item)
-	}
-	writeString(file, header+"\n")
-
-	// セパレータ
-	separator := "|------|"
-	for range sortedItems {
-		separator += "--------|"
-	}
-	writeString(file, separator+"\n")
-
-	// 各深度の行
+	// 各深度での最大アイテム数を計算
+	maxItems := 0
 	for depth := 1; depth <= maxDepth; depth++ {
-		row := fmt.Sprintf("| %d |", depth)
+		probs := calculateProbabilities(table, depth)
+		if len(probs) > maxItems {
+			maxItems = len(probs)
+		}
+	}
 
+	// tablewriterを初期化
+	tw := tablewriter.NewWriter(file)
+
+	// ヘッダーを設定（深度 + 最大アイテム数分のダミーカラム）
+	header := []string{"深度"}
+	for i := 0; i < maxItems; i++ {
+		header = append(header, "-")
+	}
+	tw.SetHeader(header)
+
+	// Markdown形式の設定
+	tw.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	tw.SetCenterSeparator("|")
+	tw.SetAutoFormatHeaders(false)
+
+	// 各深度の行を追加
+	for depth := 1; depth <= maxDepth; depth++ {
 		// 各アイテムの出現確率を計算
 		probs := calculateProbabilities(table, depth)
 
-		for _, item := range sortedItems {
-			if prob, ok := probs[item]; ok {
-				row += fmt.Sprintf(" %.1f%% |", prob*100)
-			} else {
-				row += " - |"
-			}
+		// アイテム名をソート
+		items := make([]string, 0, len(probs))
+		for item := range probs {
+			items = append(items, item)
 		}
-		writeString(file, row+"\n")
+		sort.Strings(items)
+
+		// 行データを作成
+		row := []string{fmt.Sprintf("%d", depth)}
+
+		// アイテムと確率を追加
+		for _, item := range items {
+			prob := probs[item]
+			row = append(row, fmt.Sprintf("%s %.1f%%", item, prob*100))
+		}
+
+		// 不足分は空欄で埋める
+		for i := len(items); i < maxItems; i++ {
+			row = append(row, "-")
+		}
+
+		tw.Append(row)
 	}
+
+	// テーブルをレンダリング
+	tw.Render()
 
 	writeString(file, "\n")
 }
