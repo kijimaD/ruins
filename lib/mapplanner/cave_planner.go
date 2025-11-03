@@ -15,7 +15,7 @@ type CavePlanner struct{}
 func (c CavePlanner) PlanInitial(planData *MetaPlan) error {
 	// 初期状態をランダムに設定（30%の確率で壁、より広い空間を確保）
 	for i := range planData.Tiles {
-		if planData.RandomSource.Float64() < 0.30 {
+		if planData.RNG.Float64() < 0.30 {
 			planData.Tiles[i] = planData.GetTile("Wall")
 		} else {
 			planData.Tiles[i] = planData.GetTile("Floor")
@@ -31,7 +31,7 @@ type CaveCellularAutomata struct {
 }
 
 // PlanMeta はセルラーオートマトンで洞窟を生成する
-func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
+func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) error {
 	iterations := c.Iterations
 	if iterations <= 0 {
 		iterations = 5 // デフォルト反復回数
@@ -71,6 +71,7 @@ func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
 
 	// 生成された洞窟から部屋領域を抽出
 	c.extractCaveRooms(planData)
+	return nil
 }
 
 // countWallsInRadius は指定半径内の壁タイル数を数える
@@ -192,7 +193,7 @@ func (c CaveCellularAutomata) floodFill(planData *MetaPlan, startX, startY int, 
 type CavePathWidener struct{}
 
 // PlanMeta は狭い通路を広げる
-func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
+func (c CavePathWidener) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -209,7 +210,7 @@ func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
 				adjacentFloorCount := c.countAdjacentFloors(planData, x, y)
 
 				// 隣接する床が2個以上ある場合、30%の確率で床にする
-				if adjacentFloorCount >= 2 && planData.RandomSource.Float64() < 0.3 {
+				if adjacentFloorCount >= 2 && planData.RNG.Float64() < 0.3 {
 					newTiles[idx] = planData.GetTile("Floor")
 				}
 			}
@@ -217,6 +218,7 @@ func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
 	}
 
 	planData.Tiles = newTiles
+	return nil
 }
 
 // countAdjacentFloors は隣接する床タイルの数を数える
@@ -246,7 +248,7 @@ func (c CavePathWidener) countAdjacentFloors(planData *MetaPlan, centerX, center
 type CaveStalactites struct{}
 
 // PlanMeta は洞窟内に鍾乳石を配置する
-func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
+func (c CaveStalactites) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -257,21 +259,22 @@ func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
 
 			if planData.Tiles[idx].Walkable {
 				// 2%の確率で鍾乳石を配置（確率を下げてより通行可能に）
-				if planData.RandomSource.Float64() < 0.02 {
+				if planData.RNG.Float64() < 0.02 {
 					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
 			}
 		}
 	}
+	return nil
 }
 
 // CaveConnector は隔離された洞窟領域を接続する
 type CaveConnector struct{}
 
 // PlanMeta は隔離された洞窟領域を接続する
-func (c CaveConnector) PlanMeta(planData *MetaPlan) {
+func (c CaveConnector) PlanMeta(planData *MetaPlan) error {
 	if len(planData.Rooms) < 2 {
-		return
+		return nil
 	}
 
 	// 各部屋を最低1つの他の部屋と接続する
@@ -281,6 +284,7 @@ func (c CaveConnector) PlanMeta(planData *MetaPlan) {
 
 		c.createCaveTunnel(planData, room1, room2)
 	}
+	return nil
 }
 
 // createCaveTunnel は2つの洞窟領域間にトンネルを作成する

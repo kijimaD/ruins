@@ -8,8 +8,9 @@ import (
 type RoomDraw struct{}
 
 // PlanMeta はメタデータをビルドする
-func (b RoomDraw) PlanMeta(planData *MetaPlan) {
+func (b RoomDraw) PlanMeta(planData *MetaPlan) error {
 	b.build(planData)
+	return nil
 }
 
 func (b RoomDraw) build(planData *MetaPlan) {

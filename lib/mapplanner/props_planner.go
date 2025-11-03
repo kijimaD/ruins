@@ -28,7 +28,7 @@ func NewPropsPlanner(world w.World, plannerType PlannerType) *PropsPlanner {
 }
 
 // PlanMeta はProps配置情報をMetaPlanに追加する
-func (p *PropsPlanner) PlanMeta(planData *MetaPlan) {
+func (p *PropsPlanner) PlanMeta(planData *MetaPlan) error {
 	// 町タイプの場合は固定Props配置を追加
 	if p.plannerType.Name == PlannerTypeTown.Name {
 		p.addTownProps(planData)
@@ -36,6 +36,7 @@ func (p *PropsPlanner) PlanMeta(planData *MetaPlan) {
 
 	// ダンジョンタイプの場合は固定Props配置を追加（必要に応じて実装）
 	// TODO: 必要に応じて他のタイプも実装
+	return nil
 }
 
 // addTownProps は町用の固定Props配置をMetaPlanに追加する

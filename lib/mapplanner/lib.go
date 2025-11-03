@@ -4,6 +4,7 @@ package mapplanner
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -46,8 +47,8 @@ type MetaPlan struct {
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
 	Corridors [][]resources.TileIdx
-	// RandomSource はシード値による再現可能なランダム生成を提供する
-	RandomSource *RandomSource
+	// 乱数生成器
+	RNG *rand.Rand
 	// 階層を構成するタイル群。長さはステージの大きさで決まる
 	// 通行可能かを判定するための情報を保持している必要がある
 	Tiles []raw.TileRaw
@@ -288,7 +289,7 @@ func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 			Tiles:               tiles,
 			Rooms:               []gc.Rect{},
 			Corridors:           [][]resources.TileIdx{},
-			RandomSource:        NewRandomSource(seed),
+			RNG:                 rand.New(rand.NewPCG(seed, seed+1)),
 			WarpPortals:         []WarpPortal{},
 			NPCs:                []NPCSpec{},
 			Items:               []ItemSpec{},
@@ -318,7 +319,9 @@ func (b *PlannerChain) Plan() error {
 	}
 
 	for _, meta := range b.Planners {
-		meta.PlanMeta(&b.PlanData)
+		if err := meta.PlanMeta(&b.PlanData); err != nil {
+			return fmt.Errorf("PlanMeta failed: %w", err)
+		}
 	}
 	return nil
 }
@@ -338,7 +341,7 @@ type InitialMapPlanner interface {
 
 // MetaMapPlanner はメタ情報をプランするインターフェース
 type MetaMapPlanner interface {
-	PlanMeta(*MetaPlan)
+	PlanMeta(*MetaPlan) error
 }
 
 // NewSmallRoomPlanner はシンプルな小部屋プランナーを作成する
@@ -378,6 +381,8 @@ type PlannerType struct {
 	SpawnItems bool
 	// ポータル位置を固定するか
 	UseFixedPortalPos bool
+	// アイテムテーブル名
+	ItemTableName string
 	// プランナー関数
 	PlannerFunc func(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error)
 }
@@ -389,6 +394,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "通常",
 	}
 
 	// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ
@@ -397,6 +403,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "通常",
 		PlannerFunc:       NewSmallRoomPlanner,
 	}
 
@@ -406,6 +413,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "通常",
 		PlannerFunc:       NewBigRoomPlanner,
 	}
 
@@ -415,15 +423,17 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "洞窟",
 		PlannerFunc:       NewCavePlanner,
 	}
 
-	// PlannerTypeRuins は遺跡ダンジョンのプランナータイプ
+	// PlannerTypeRuins は廃墟ダンジョンのプランナータイプ
 	PlannerTypeRuins = PlannerType{
-		Name:              "遺跡",
+		Name:              "廃墟",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "廃墟",
 		PlannerFunc:       NewRuinsPlanner,
 	}
 
@@ -433,6 +443,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "森",
 		PlannerFunc:       NewForestPlanner,
 	}
 
@@ -442,6 +453,7 @@ var (
 		SpawnEnemies:      false, // 街では敵をスポーンしない
 		SpawnItems:        false, // 街ではフィールドアイテムをスポーンしない
 		UseFixedPortalPos: true,  // ポータル位置を固定
+		ItemTableName:     "",    // 街ではアイテムをスポーンしないので空
 		PlannerFunc:       NewTownPlanner,
 	}
 )
@@ -454,7 +466,7 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain
 	}
 
 	// シード値からランダムソースを作成（ビルダー選択用）
-	rs := NewRandomSource(seed)
+	rng := rand.New(rand.NewPCG(seed, 0))
 
 	// ランダム選択対象のプランナータイプ（街は除外）
 	candidateTypes := []PlannerType{
@@ -466,7 +478,7 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain
 	}
 
 	// ランダムに選択
-	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
+	selectedType := candidateTypes[rng.IntN(len(candidateTypes))]
 
 	chain, err := selectedType.PlannerFunc(width, height, seed)
 	if err != nil {

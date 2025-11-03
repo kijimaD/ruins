@@ -19,7 +19,7 @@ func NewBoundaryWall(wallTileName string) BoundaryWall {
 }
 
 // PlanMeta はメタデータをビルドする
-func (b BoundaryWall) PlanMeta(planData *MetaPlan) {
+func (b BoundaryWall) PlanMeta(planData *MetaPlan) error {
 	// 全タイルをチェックして最外枠のタイルを壁で覆う
 	for i := range planData.Tiles {
 		idx := resources.TileIdx(i)
@@ -29,6 +29,7 @@ func (b BoundaryWall) PlanMeta(planData *MetaPlan) {
 			planData.Tiles[idx] = planData.GetTile(b.WallTileName)
 		}
 	}
+	return nil
 }
 
 // isBoundaryTile はマップの最外枠のタイルかを判定する

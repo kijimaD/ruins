@@ -38,7 +38,7 @@ func NewHostileNPCPlanner(world w.World, plannerType PlannerType) *HostileNPCPla
 }
 
 // PlanMeta は敵NPC配置情報をMetaPlanに追加する
-func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) {
+func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) error {
 	// NPCsフィールドが存在しない場合は初期化
 	if planData.NPCs == nil {
 		planData.NPCs = []NPCSpec{}
@@ -46,16 +46,16 @@ func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) {
 
 	// 敵NPCの配置
 	if !n.plannerType.SpawnEnemies {
-		return // 敵をスポーンしない設定の場合は何もしない
+		return nil // 敵をスポーンしない設定の場合は何もしない
 	}
 
 	failCount := 0
-	total := baseHostileNPCCount + planData.RandomSource.Intn(randomHostileNPCCount)
+	total := baseHostileNPCCount + planData.RNG.IntN(randomHostileNPCCount)
 	successCount := 0
 
 	for successCount < total && failCount <= maxHostileNPCFailCount {
-		tx := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileWidth)))
-		ty := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileHeight)))
+		tx := gc.Tile(planData.RNG.IntN(int(planData.Level.TileWidth)))
+		ty := gc.Tile(planData.RNG.IntN(int(planData.Level.TileHeight)))
 
 		if !planData.IsSpawnableTile(n.world, tx, ty) {
 			failCount++
@@ -79,4 +79,5 @@ func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) {
 		// エラーは記録するが、エラーを返さずに部分的な配置で続行
 		fmt.Printf("敵NPC配置の試行回数が上限に達しました。配置数: %d/%d\n", successCount, total)
 	}
+	return nil
 }

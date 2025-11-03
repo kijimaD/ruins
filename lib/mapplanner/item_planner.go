@@ -1,7 +1,7 @@
 package mapplanner
 
 import (
-	"log"
+	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -10,12 +10,9 @@ import (
 // アイテム配置用の定数
 const (
 	// アイテム配置関連
-	baseItemCount           = 2  // 通常アイテム配置の基本数
-	randomItemCount         = 3  // 通常アイテム配置のランダム追加数（0-2の範囲）
-	itemIncreaseDepth       = 5  // アイテム数増加の深度しきい値
-	rareItemProbability     = 30 // レアアイテム配置確率（%）
-	deepRareItemDepth       = 10 // 深い階層の判定深度
-	deepRareItemProbability = 20 // 深い階層でのレアアイテム複数配置確率（%）
+	baseItemCount     = 2 // アイテム配置の基本数
+	randomItemCount   = 3 // アイテム配置のランダム追加数（0-2の範囲）
+	itemIncreaseDepth = 5 // アイテム数増加の深度しきい値
 
 	// 配置処理関連
 	maxItemPlacementAttempts = 200 // アイテム配置処理の最大試行回数
@@ -43,25 +40,9 @@ func NewItemPlanner(world w.World, plannerType PlannerType) *ItemPlanner {
 }
 
 // PlanMeta はアイテム配置情報をMetaPlanに追加する
-func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
+func (i *ItemPlanner) PlanMeta(planData *MetaPlan) error {
 	if !i.plannerType.SpawnItems {
-		return // アイテムをスポーンしない設定の場合は何もしない
-	}
-
-	// 利用可能なアイテムリスト
-	// TODO: テーブル化・レアリティ考慮する
-	availableItems := []string{
-		"回復薬",
-		"回復スプレー",
-		"手榴弾",
-		"上級回復薬",
-		"ルビー原石",
-	}
-
-	// レアアイテム
-	rareItems := []string{
-		"上級回復薬",
-		"ルビー原石",
+		return nil // アイテムをスポーンしない設定の場合は何もしない
 	}
 
 	// Itemsフィールドが存在しない場合は初期化
@@ -69,53 +50,51 @@ func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
 		planData.Items = []ItemSpec{}
 	}
 
-	// 通常アイテムの配置数（階層の深度に応じて調整）
-	normalItemCount := baseItemCount + planData.RandomSource.Intn(randomItemCount)
-	if i.world.Resources.Dungeon != nil && i.world.Resources.Dungeon.Depth > itemIncreaseDepth {
-		normalItemCount++ // 深い階層ではアイテム数を増加
+	// アイテムテーブルを取得
+	itemTable, err := planData.RawMaster.GetItemTable(i.plannerType.ItemTableName)
+	if err != nil {
+		return fmt.Errorf("'%s'アイテムテーブルが見つかりません: %w", i.plannerType.ItemTableName, err)
 	}
 
-	// レアアイテムの配置数（低確率）
-	rareItemCount := 0
-	if planData.RandomSource.Intn(100) < rareItemProbability {
-		rareItemCount = 1
-		if i.world.Resources.Dungeon != nil && i.world.Resources.Dungeon.Depth > deepRareItemDepth && planData.RandomSource.Intn(100) < deepRareItemProbability {
-			rareItemCount = 2
+	depth := i.world.Resources.Dungeon.Depth
+
+	// アイテムの配置数（階層の深度に応じて調整）
+	itemCount := baseItemCount + planData.RNG.IntN(randomItemCount)
+	if depth > itemIncreaseDepth {
+		itemCount++ // 深い階層ではアイテム数を増加
+	}
+
+	// アイテムを配置
+	for j := 0; j < itemCount; j++ {
+		itemName := itemTable.SelectByWeight(planData.RNG, depth)
+		if itemName != "" {
+			if err := i.addItem(planData, itemName); err != nil {
+				return err
+			}
 		}
 	}
 
-	// 通常アイテムを配置
-	i.addItemsOfType(planData, availableItems, normalItemCount)
-
-	// レアアイテムを配置
-	if rareItemCount > 0 {
-		i.addItemsOfType(planData, rareItems, rareItemCount)
-	}
+	return nil
 }
 
-// addItemsOfType は指定された数のアイテムをMetaPlanに追加する
-func (i *ItemPlanner) addItemsOfType(planData *MetaPlan, itemList []string, count int) {
+// addItem は単一のアイテムをMetaPlanに追加する
+func (i *ItemPlanner) addItem(planData *MetaPlan, itemName string) error {
 	failCount := 0
-	successCount := 0
 
-	for successCount < count {
+	for {
 		if failCount > maxItemPlacementAttempts {
-			log.Printf("アイテム配置の試行回数が上限に達しました。配置数: %d/%d", successCount, count)
-			break
+			return fmt.Errorf("アイテム配置の試行回数が上限に達しました。アイテム: %s", itemName)
 		}
 
 		// ランダムな位置を選択
-		x := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileWidth)))
-		y := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileHeight)))
+		x := gc.Tile(planData.RNG.IntN(int(planData.Level.TileWidth)))
+		y := gc.Tile(planData.RNG.IntN(int(planData.Level.TileHeight)))
 
 		// スポーン可能な位置かチェック
 		if !i.isValidItemPosition(planData, x, y) {
 			failCount++
 			continue
 		}
-
-		// アイテム名をランダム選択
-		itemName := itemList[planData.RandomSource.Intn(len(itemList))]
 
 		// MetaPlanにアイテムを追加
 		planData.Items = append(planData.Items, ItemSpec{
@@ -124,8 +103,7 @@ func (i *ItemPlanner) addItemsOfType(planData *MetaPlan, itemList []string, coun
 			ItemName: itemName,
 		})
 
-		successCount++
-		failCount = 0
+		return nil
 	}
 }
 

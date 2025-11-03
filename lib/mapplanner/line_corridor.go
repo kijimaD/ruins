@@ -11,8 +11,9 @@ import (
 type LineCorridorPlanner struct{}
 
 // PlanMeta はメタデータをビルドする
-func (b LineCorridorPlanner) PlanMeta(planData *MetaPlan) {
+func (b LineCorridorPlanner) PlanMeta(planData *MetaPlan) error {
 	b.BuildCorridors(planData)
+	return nil
 }
 
 // BuildCorridors は廊下をビルドする

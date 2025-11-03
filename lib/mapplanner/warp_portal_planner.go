@@ -29,7 +29,7 @@ func NewWarpPortalPlanner(world w.World, plannerType PlannerType) *WarpPortalPla
 }
 
 // PlanMeta はワープポータルをMetaPlanに追加する
-func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
+func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) error {
 	// プランナーが既にワープポータルを配置済みかどうかを確認
 	existingWarpCount := len(planData.WarpPortals)
 
@@ -58,8 +58,8 @@ func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
 	} else {
 		// ダンジョンの場合は通常のランダム配置
 		for attempt := 0; attempt < maxPortalPlacementAttempts; attempt++ {
-			x := planData.RandomSource.Intn(int(planData.Level.TileWidth))
-			y := planData.RandomSource.Intn(int(planData.Level.TileHeight))
+			x := planData.RNG.IntN(int(planData.Level.TileWidth))
+			y := planData.RNG.IntN(int(planData.Level.TileHeight))
 
 			if planData.IsSpawnableTile(w.world, gc.Tile(x), gc.Tile(y)) {
 				planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
@@ -98,8 +98,8 @@ func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
 		} else {
 			// ダンジョンの場合は通常のランダム配置
 			for attempt := 0; attempt < maxPortalPlacementAttempts; attempt++ {
-				x := planData.RandomSource.Intn(int(planData.Level.TileWidth))
-				y := planData.RandomSource.Intn(int(planData.Level.TileHeight))
+				x := planData.RNG.IntN(int(planData.Level.TileWidth))
+				y := planData.RNG.IntN(int(planData.Level.TileHeight))
 
 				if planData.IsSpawnableTile(w.world, gc.Tile(x), gc.Tile(y)) {
 					planData.WarpPortals = append(planData.WarpPortals, WarpPortal{
@@ -112,4 +112,5 @@ func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }

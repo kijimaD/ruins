@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"math/rand/v2"
+
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/kijimaD/ruins/lib/components"
 )
@@ -17,6 +19,7 @@ type Resources struct {
 	RawMaster        interface{}
 	UIResources      *UIResources
 	TurnManager      interface{}
+	RNG              *rand.Rand // ゲーム全体で使う乱数生成器
 }
 
 // ScreenDimensions contains current screen dimensions
@@ -62,5 +65,6 @@ func InitGameResources() *Resources {
 		Fonts:            &map[string]Font{},
 		Faces:            &map[string]text.Face{},
 		UIResources:      &UIResources{},
+		RNG:              nil,
 	}
 }

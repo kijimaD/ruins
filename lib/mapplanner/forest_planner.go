@@ -16,15 +16,18 @@ func (f ForestPlanner) PlanInitial(planData *MetaPlan) error {
 	height := int(planData.Level.TileHeight)
 
 	// 森の中に小さな空き地（部屋）をいくつか作成
-	clearingCount := 3 + planData.RandomSource.Intn(4)
+	clearingCount := 3 + planData.RNG.IntN(4)
 
 	for i := 0; i < clearingCount; i++ {
 		// 空き地のサイズとランダムな位置
-		clearingWidth := 4 + planData.RandomSource.Intn(6)
-		clearingHeight := 4 + planData.RandomSource.Intn(6)
+		clearingWidth := 4 + planData.RNG.IntN(6)
+		clearingHeight := 4 + planData.RNG.IntN(6)
 
-		x := 3 + planData.RandomSource.Intn(width-clearingWidth-6)
-		y := 3 + planData.RandomSource.Intn(height-clearingHeight-6)
+		// IntNの引数が正であることを保証
+		maxXRange := max(1, width-clearingWidth-6)
+		maxYRange := max(1, height-clearingHeight-6)
+		x := 3 + planData.RNG.IntN(maxXRange)
+		y := 3 + planData.RNG.IntN(maxYRange)
 
 		// 円形に近い空き地を作成
 		centerX := x + clearingWidth/2
@@ -46,7 +49,7 @@ func (f ForestPlanner) PlanInitial(planData *MetaPlan) error {
 type ForestTerrain struct{}
 
 // PlanMeta は森の基本地形をタイルに描画する
-func (f ForestTerrain) PlanMeta(planData *MetaPlan) {
+func (f ForestTerrain) PlanMeta(planData *MetaPlan) error {
 	// まず全体を床で埋める（森の地面）
 	for i := range planData.Tiles {
 		planData.Tiles[i] = planData.GetTile("Floor")
@@ -56,6 +59,7 @@ func (f ForestTerrain) PlanMeta(planData *MetaPlan) {
 	for _, clearing := range planData.Rooms {
 		f.createCircularClearing(planData, clearing)
 	}
+	return nil
 }
 
 // createCircularClearing は円形の空き地を作成する
@@ -82,7 +86,7 @@ func (f ForestTerrain) createCircularClearing(planData *MetaPlan, clearing gc.Re
 type ForestTrees struct{}
 
 // PlanMeta は森に木を配置する
-func (f ForestTrees) PlanMeta(planData *MetaPlan) {
+func (f ForestTrees) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -95,18 +99,19 @@ func (f ForestTrees) PlanMeta(planData *MetaPlan) {
 				// 空き地の近くでは木の密度を下げる
 				treeDensity := f.calculateTreeDensity(planData, x, y)
 
-				if planData.RandomSource.Float64() < treeDensity {
+				if planData.RNG.Float64() < treeDensity {
 					// TODO: 木エンティティとして追加する
 					planData.Tiles[idx] = planData.GetTile("Wall")
 
 					// 大きな木の場合、周囲にも追加の木を配置
-					if planData.RandomSource.Float64() < 0.2 { // 20%の確率で大木
+					if planData.RNG.Float64() < 0.2 { // 20%の確率で大木
 						f.placeLargeTree(planData, x, y)
 					}
 				}
 			}
 		}
 	}
+	return nil
 }
 
 // calculateTreeDensity は位置に基づいて木の密度を計算する
@@ -144,7 +149,7 @@ func (f ForestTrees) placeLargeTree(planData *MetaPlan, centerX, centerY int) {
 	height := int(planData.Level.TileHeight)
 
 	// 大木の周囲2x2または3x3エリアに追加の木を配置
-	size := 1 + planData.RandomSource.Intn(2) // 1または2
+	size := 1 + planData.RNG.IntN(2) // 1または2
 
 	for dx := -size; dx <= size; dx++ {
 		for dy := -size; dy <= size; dy++ {
@@ -153,7 +158,7 @@ func (f ForestTrees) placeLargeTree(planData *MetaPlan, centerX, centerY int) {
 			if x >= 0 && x < width && y >= 0 && y < height {
 				idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 
-				if planData.Tiles[idx].Walkable && planData.RandomSource.Float64() < 0.7 {
+				if planData.Tiles[idx].Walkable && planData.RNG.Float64() < 0.7 {
 					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
 			}
@@ -165,9 +170,9 @@ func (f ForestTrees) placeLargeTree(planData *MetaPlan, centerX, centerY int) {
 type ForestPaths struct{}
 
 // PlanMeta は空き地間に自然な通路を作成する
-func (f ForestPaths) PlanMeta(planData *MetaPlan) {
+func (f ForestPaths) PlanMeta(planData *MetaPlan) error {
 	if len(planData.Rooms) < 2 {
-		return
+		return nil
 	}
 
 	// 各空き地を他の空き地と繋ぐ
@@ -179,6 +184,7 @@ func (f ForestPaths) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // shouldCreatePath は通路を作成するかどうかを判定する
@@ -195,11 +201,11 @@ func (f ForestPaths) shouldCreatePath(planData *MetaPlan, room1, room2 gc.Rect) 
 
 	// 近い空き地ほど繋がりやすい
 	if distance < 15 {
-		return planData.RandomSource.Float64() < 0.8
+		return planData.RNG.Float64() < 0.8
 	} else if distance < 25 {
-		return planData.RandomSource.Float64() < 0.4
+		return planData.RNG.Float64() < 0.4
 	}
-	return planData.RandomSource.Float64() < 0.1
+	return planData.RNG.Float64() < 0.1
 }
 
 // createNaturalPath は自然な曲線状の通路を作成する
@@ -222,8 +228,8 @@ func (f ForestPaths) createNaturalPath(planData *MetaPlan, room1, room2 gc.Rect)
 		midY := (center1Y + center2Y) / 2
 
 		// ランダムな偏向を追加
-		randomOffsetX := int(float64(planData.RandomSource.Intn(11)-5) * (1.0 - math.Abs(t-0.5)*2))
-		randomOffsetY := int(float64(planData.RandomSource.Intn(11)-5) * (1.0 - math.Abs(t-0.5)*2))
+		randomOffsetX := int(float64(planData.RNG.IntN(11)-5) * (1.0 - math.Abs(t-0.5)*2))
+		randomOffsetY := int(float64(planData.RNG.IntN(11)-5) * (1.0 - math.Abs(t-0.5)*2))
 
 		// 2次ベジェ曲線の近似
 		x := int((1-t)*(1-t)*float64(center1X) + 2*(1-t)*t*float64(midX+randomOffsetX) + t*t*float64(center2X))
@@ -237,7 +243,7 @@ func (f ForestPaths) createNaturalPath(planData *MetaPlan, room1, room2 gc.Rect)
 					idx := planData.Level.XYTileIndex(gc.Tile(nx), gc.Tile(ny))
 
 					// 70%の確率で通路を作成（自然な感じに）
-					if planData.RandomSource.Float64() < 0.7 {
+					if planData.RNG.Float64() < 0.7 {
 						planData.Tiles[idx] = planData.GetTile("Floor")
 					}
 				}
@@ -250,19 +256,22 @@ func (f ForestPaths) createNaturalPath(planData *MetaPlan, room1, room2 gc.Rect)
 type ForestWildlife struct{}
 
 // PlanMeta は森に小さな動物の痕跡を追加する
-func (f ForestWildlife) PlanMeta(planData *MetaPlan) {
+func (f ForestWildlife) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
 	// 小さな動物の通り道や巣穴を作成
-	wildlifeSpotCount := 2 + planData.RandomSource.Intn(4)
+	wildlifeSpotCount := 2 + planData.RNG.IntN(4)
 
 	for i := 0; i < wildlifeSpotCount; i++ {
-		x := 2 + planData.RandomSource.Intn(width-4)
-		y := 2 + planData.RandomSource.Intn(height-4)
+		// IntNの引数が正であることを保証
+		maxXRange := max(1, width-4)
+		maxYRange := max(1, height-4)
+		x := 2 + planData.RNG.IntN(maxXRange)
+		y := 2 + planData.RNG.IntN(maxYRange)
 
 		// 小さな円形の空き地を作成
-		radius := 1 + planData.RandomSource.Intn(2)
+		radius := 1 + planData.RNG.IntN(2)
 
 		for dx := -radius; dx <= radius; dx++ {
 			for dy := -radius; dy <= radius; dy++ {
@@ -277,6 +286,7 @@ func (f ForestWildlife) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // NewForestPlanner は森ビルダーを作成する

@@ -15,13 +15,13 @@ func (b RectRoomPlanner) PlanInitial(planData *MetaPlan) error {
 
 // PlanRooms は部屋をプランする
 func (b RectRoomPlanner) PlanRooms(planData *MetaPlan) {
-	maxRooms := 4 + planData.RandomSource.Intn(10)
+	maxRooms := 4 + planData.RNG.IntN(10)
 	rooms := []gc.Rect{}
 	for i := 0; i < maxRooms; i++ {
-		x := planData.RandomSource.Intn(int(planData.Level.TileWidth))
-		y := planData.RandomSource.Intn(int(planData.Level.TileHeight))
-		w := 2 + planData.RandomSource.Intn(8)
-		h := 2 + planData.RandomSource.Intn(8)
+		x := planData.RNG.IntN(int(planData.Level.TileWidth))
+		y := planData.RNG.IntN(int(planData.Level.TileHeight))
+		w := 2 + planData.RNG.IntN(8)
+		h := 2 + planData.RNG.IntN(8)
 		newRoom := gc.Rect{
 			X1: gc.Tile(x),
 			X2: gc.Tile(min(x+w, int(planData.Level.TileWidth))),

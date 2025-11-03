@@ -13,8 +13,9 @@ func NewFillAll(tileName string) FillAll {
 }
 
 // PlanMeta はメタデータをビルドする
-func (b FillAll) PlanMeta(planData *MetaPlan) {
+func (b FillAll) PlanMeta(planData *MetaPlan) error {
 	b.build(planData)
+	return nil
 }
 
 func (b FillAll) build(planData *MetaPlan) {

@@ -1,6 +1,7 @@
 package systems
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -103,4 +104,106 @@ func TestDeadCleanupSystem_EmptyWorld(t *testing.T) {
 		count++
 	}))
 	assert.Equal(t, 0, count, "空のworldではエンティティ数は0であるべき")
+}
+
+func TestDeadCleanupSystem_WithDropTable(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// ドロップテーブルを持つ敵エンティティを作成（灰の偶像は100%ドロップ）
+	enemy := world.Manager.NewEntity()
+	enemy.AddComponent(world.Components.Name, &gc.Name{Name: "灰の偶像"})
+	enemy.AddComponent(world.Components.Dead, &gc.Dead{})
+	enemy.AddComponent(world.Components.DropTable, &gc.DropTable{Name: "灰の偶像"})
+	enemy.AddComponent(world.Components.GridElement, &gc.GridElement{X: 5, Y: 5})
+
+	// DeadCleanupSystem実行前のアイテムエンティティ数をカウント
+	itemCountBefore := 0
+	world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(_ ecs.Entity) {
+		itemCountBefore++
+	}))
+
+	// DeadCleanupSystemを実行
+	require.NoError(t, DeadCleanupSystem(world))
+
+	// 敵エンティティは削除されているべき
+	assert.False(t, enemy.HasComponent(world.Components.Name), "敵エンティティは削除されるべき")
+
+	// ドロップアイテムが生成されているべき（"鉄くず"がドロップテーブルに定義されている）
+	itemCountAfter := 0
+	world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(_ ecs.Entity) {
+		itemCountAfter++
+	}))
+
+	assert.Greater(t, itemCountAfter, itemCountBefore, "ドロップアイテムが生成されているべき")
+	assert.Equal(t, itemCountBefore+1, itemCountAfter, "1つのアイテムがドロップされるべき")
+}
+
+func TestDeadCleanupSystem_WithDropTableDrops(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// シード2でドロップするケース
+	world.Resources.RNG = rand.New(rand.NewPCG(2, 0))
+
+	// 敵エンティティを作成
+	enemy := world.Manager.NewEntity()
+	enemy.AddComponent(world.Components.Name, &gc.Name{Name: "火の玉"})
+	enemy.AddComponent(world.Components.Dead, &gc.Dead{})
+	enemy.AddComponent(world.Components.DropTable, &gc.DropTable{Name: "火の玉"})
+	enemy.AddComponent(world.Components.GridElement, &gc.GridElement{X: 5, Y: 5})
+
+	// 実行前のアイテム数
+	itemCountBefore := 0
+	world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(_ ecs.Entity) {
+		itemCountBefore++
+	}))
+
+	// DeadCleanupSystemを実行
+	require.NoError(t, DeadCleanupSystem(world))
+
+	// 実行後のアイテム数
+	itemCountAfter := 0
+	world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(_ ecs.Entity) {
+		itemCountAfter++
+	}))
+
+	// シード2ではドロップする
+	assert.Equal(t, itemCountBefore+1, itemCountAfter, "シード2ではドロップするはず")
+}
+
+func TestDeadCleanupSystem_WithDropTableNoDrops(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// シード1でドロップしないケース
+	world.Resources.RNG = rand.New(rand.NewPCG(1, 0))
+
+	// 敵エンティティを作成
+	enemy := world.Manager.NewEntity()
+	enemy.AddComponent(world.Components.Name, &gc.Name{Name: "火の玉"})
+	enemy.AddComponent(world.Components.Dead, &gc.Dead{})
+	enemy.AddComponent(world.Components.DropTable, &gc.DropTable{Name: "火の玉"})
+	enemy.AddComponent(world.Components.GridElement, &gc.GridElement{X: 5, Y: 5})
+
+	// 実行前のアイテム数
+	itemCountBefore := 0
+	world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(_ ecs.Entity) {
+		itemCountBefore++
+	}))
+
+	// DeadCleanupSystemを実行
+	require.NoError(t, DeadCleanupSystem(world))
+
+	// 実行後のアイテム数
+	itemCountAfter := 0
+	world.Manager.Join(world.Components.Item).Visit(ecs.Visit(func(_ ecs.Entity) {
+		itemCountAfter++
+	}))
+
+	// シード1ではドロップしない
+	assert.Equal(t, itemCountBefore, itemCountAfter, "シード1ではドロップしないはず")
 }
