@@ -136,6 +136,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/doc.go">doc.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/generate_item_doc.go">generate_item_doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/play.go">play.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/screenshot.go">screenshot.go</a>
@@ -151,6 +153,16 @@
 		
 		
 			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>CmdGenerateItemDoc はアイテム出現確率のドキュメントを生成するコマンド
+
+				<pre>var <span id="CmdGenerateItemDoc">CmdGenerateItemDoc</span> = &amp;cli.<a href="index.html#Command">Command</a>{
+    <a href="index.html#Name">Name</a>:        &#34;generate-item-doc&#34;,
+    <a href="index.html#Usage">Usage</a>:       &#34;generate-item-doc&#34;,
+    <a href="index.html#Description">Description</a>: &#34;Generate item spawn probability documentation&#34;,
+    <a href="index.html#Action">Action</a>:      runGenerateItemDoc,
+    <a href="index.html#Flags">Flags</a>:       []cli.<a href="index.html#Flag">Flag</a>{},
+}</pre>
 			
 				<p>CmdPlay はゲームをプレイするコマンド
 
@@ -190,7 +202,7 @@
 		
 			
 			
-			<h2 id="RunMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=1396:1447#L30">RunMainApp</a>
+			<h2 id="RunMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=1418:1469#L31">RunMainApp</a>
 				<a class="permalink" href="index.html#RunMainApp">&#xb6;</a>
 				
 				

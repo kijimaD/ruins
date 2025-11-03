@@ -97,7 +97,7 @@
 <p>このパッケージは階層マップの生成機能を提供します：
 <ul>
 <li>タイルベースのマップ生成
-<li>各種マップアルゴリズム（部屋、洞窟、森林、遺跡など）
+<li>各種マップアルゴリズム（部屋、洞窟、森林、廃墟など）
 <li>タイルとエンティティの配置計画作成
 </ul>
 <p>## マップ構造の概念
@@ -201,7 +201,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BigRoomDraw.PlanMeta">func (b BigRoomDraw) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BigRoomDraw.PlanMeta">func (b BigRoomDraw) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -220,7 +220,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#BoundaryWall.PlanMeta">func (b BoundaryWall) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#BoundaryWall.PlanMeta">func (b BoundaryWall) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -228,7 +228,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#CaveCellularAutomata.PlanMeta">func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveCellularAutomata.PlanMeta">func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -236,7 +236,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#CaveConnector.PlanMeta">func (c CaveConnector) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveConnector.PlanMeta">func (c CaveConnector) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -244,7 +244,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#CavePathWidener.PlanMeta">func (c CavePathWidener) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#CavePathWidener.PlanMeta">func (c CavePathWidener) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -260,7 +260,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#CaveStalactites.PlanMeta">func (c CaveStalactites) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#CaveStalactites.PlanMeta">func (c CaveStalactites) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -276,7 +276,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#FillAll.PlanMeta">func (b FillAll) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#FillAll.PlanMeta">func (b FillAll) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -284,7 +284,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ForestPaths.PlanMeta">func (f ForestPaths) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestPaths.PlanMeta">func (f ForestPaths) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -300,7 +300,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ForestTerrain.PlanMeta">func (f ForestTerrain) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestTerrain.PlanMeta">func (f ForestTerrain) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -308,7 +308,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ForestTrees.PlanMeta">func (f ForestTrees) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestTrees.PlanMeta">func (f ForestTrees) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -316,7 +316,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ForestWildlife.PlanMeta">func (f ForestWildlife) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ForestWildlife.PlanMeta">func (f ForestWildlife) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -327,7 +327,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#HostileNPCPlanner.PlanMeta">func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#HostileNPCPlanner.PlanMeta">func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -343,7 +343,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#ItemPlanner.PlanMeta">func (i *ItemPlanner) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#ItemPlanner.PlanMeta">func (i *ItemPlanner) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -359,7 +359,7 @@ Walkable = true
 					<dd>&nbsp; &nbsp; <a href="index.html#LineCorridorPlanner.BuildCorridors">func (b LineCorridorPlanner) BuildCorridors(planData *MetaPlan)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#LineCorridorPlanner.PlanMeta">func (b LineCorridorPlanner) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#LineCorridorPlanner.PlanMeta">func (b LineCorridorPlanner) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -500,29 +500,12 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#PropsPlanner.PlanMeta">func (p *PropsPlanner) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#PropsPlanner.PlanMeta">func (p *PropsPlanner) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
 				<dd><a href="index.html#PropsSpec">type PropsSpec</a></dd>
 				
-				
-			
-				
-				<dd><a href="index.html#RandomSource">type RandomSource</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewRandomSource">func NewRandomSource(seed uint64) *RandomSource</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RandomSource.Float64">func (r *RandomSource) Float64() float64</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RandomSource.Intn">func (r *RandomSource) Intn(n int) int</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="index.html#RandomSource.Shuffle">func (r *RandomSource) Shuffle(n int, swap func(i, j int))</a></dd>
 				
 			
 				
@@ -541,7 +524,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#RoomDraw.PlanMeta">func (b RoomDraw) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#RoomDraw.PlanMeta">func (b RoomDraw) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -549,7 +532,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#RuinsCorridors.PlanMeta">func (r RuinsCorridors) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsCorridors.PlanMeta">func (r RuinsCorridors) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -557,7 +540,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#RuinsDebris.PlanMeta">func (r RuinsDebris) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsDebris.PlanMeta">func (r RuinsDebris) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -565,7 +548,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#RuinsDraw.PlanMeta">func (r RuinsDraw) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#RuinsDraw.PlanMeta">func (r RuinsDraw) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -597,7 +580,7 @@ Walkable = true
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#WarpPortalPlanner.PlanMeta">func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#WarpPortalPlanner.PlanMeta">func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) error</a></dd>
 				
 			
 				
@@ -644,8 +627,6 @@ Walkable = true
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/props_planner.go">props_planner.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/random.go">random.go</a>
-			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/rect_room.go">rect_room.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go">room_draw.go</a>
@@ -689,6 +670,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;通常&#34;,
     }
 
     <span class="comment">// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ</span>
@@ -697,6 +679,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;通常&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewSmallRoomPlanner">NewSmallRoomPlanner</a>,
     }
 
@@ -706,6 +689,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;通常&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewBigRoomPlanner">NewBigRoomPlanner</a>,
     }
 
@@ -715,15 +699,17 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;洞窟&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewCavePlanner">NewCavePlanner</a>,
     }
 
-    <span class="comment">// PlannerTypeRuins は遺跡ダンジョンのプランナータイプ</span>
+    <span class="comment">// PlannerTypeRuins は廃墟ダンジョンのプランナータイプ</span>
     <span id="PlannerTypeRuins">PlannerTypeRuins</span> = <a href="index.html#PlannerType">PlannerType</a>{
-        <a href="index.html#PlannerType.Name">Name</a>:              &#34;遺跡&#34;,
+        <a href="index.html#PlannerType.Name">Name</a>:              &#34;廃墟&#34;,
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;廃墟&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewRuinsPlanner">NewRuinsPlanner</a>,
     }
 
@@ -733,6 +719,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;森&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewForestPlanner">NewForestPlanner</a>,
     }
 
@@ -742,6 +729,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnEnemies">SpawnEnemies</a>:      <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
+        <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewTownPlanner">NewTownPlanner</a>,
     }
 )</pre>
@@ -860,12 +848,12 @@ Walkable = true
 
 			
 				
-				<h3 id="BigRoomDraw.PlanMeta">func (BigRoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/big_room.go?s=1014:1063#L25">PlanMeta</a>
+				<h3 id="BigRoomDraw.PlanMeta">func (BigRoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/big_room.go?s=1014:1069#L25">PlanMeta</a>
 					<a class="permalink" href="index.html#BigRoomDraw.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b <a href="index.html#BigRoomDraw">BigRoomDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (b <a href="index.html#BigRoomDraw">BigRoomDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は大部屋をタイルに描画し、ランダムにバリエーションを適用する
 
 				
@@ -951,12 +939,12 @@ Walkable = true
 
 			
 				
-				<h3 id="BoundaryWall.PlanMeta">func (BoundaryWall) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=576:626#L12">PlanMeta</a>
+				<h3 id="BoundaryWall.PlanMeta">func (BoundaryWall) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/boundary_wall.go?s=576:632#L12">PlanMeta</a>
 					<a class="permalink" href="index.html#BoundaryWall.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b <a href="index.html#BoundaryWall">BoundaryWall</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (b <a href="index.html#BoundaryWall">BoundaryWall</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はメタデータをビルドする
 
 				
@@ -966,7 +954,7 @@ Walkable = true
 		
 			
 			
-			<h2 id="CaveCellularAutomata">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=889:958#L18">CaveCellularAutomata</a>
+			<h2 id="CaveCellularAutomata">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=880:949#L18">CaveCellularAutomata</a>
 				<a class="permalink" href="index.html#CaveCellularAutomata">&#xb6;</a>
 				
 				
@@ -991,12 +979,12 @@ Walkable = true
 
 			
 				
-				<h3 id="CaveCellularAutomata.PlanMeta">func (CaveCellularAutomata) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=1030:1088#L24">PlanMeta</a>
+				<h3 id="CaveCellularAutomata.PlanMeta">func (CaveCellularAutomata) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=1021:1085#L24">PlanMeta</a>
 					<a class="permalink" href="index.html#CaveCellularAutomata.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (c <a href="index.html#CaveCellularAutomata">CaveCellularAutomata</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (c <a href="index.html#CaveCellularAutomata">CaveCellularAutomata</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はセルラーオートマトンで洞窟を生成する
 
 				
@@ -1006,7 +994,7 @@ Walkable = true
 		
 			
 			
-			<h2 id="CaveConnector">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7713:7740#L259">CaveConnector</a>
+			<h2 id="CaveConnector">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7740:7767#L262">CaveConnector</a>
 				<a class="permalink" href="index.html#CaveConnector">&#xb6;</a>
 				
 				
@@ -1028,12 +1016,12 @@ Walkable = true
 
 			
 				
-				<h3 id="CaveConnector.PlanMeta">func (CaveConnector) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7800:7851#L262">PlanMeta</a>
+				<h3 id="CaveConnector.PlanMeta">func (CaveConnector) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7827:7884#L265">PlanMeta</a>
 					<a class="permalink" href="index.html#CaveConnector.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (c <a href="index.html#CaveConnector">CaveConnector</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (c <a href="index.html#CaveConnector">CaveConnector</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は隔離された洞窟領域を接続する
 
 				
@@ -1043,7 +1031,7 @@ Walkable = true
 		
 			
 			
-			<h2 id="CavePathWidener">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5414:5443#L182">CavePathWidener</a>
+			<h2 id="CavePathWidener">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5423:5452#L183">CavePathWidener</a>
 				<a class="permalink" href="index.html#CavePathWidener">&#xb6;</a>
 				
 				
@@ -1065,12 +1053,12 @@ Walkable = true
 
 			
 				
-				<h3 id="CavePathWidener.PlanMeta">func (CavePathWidener) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5485:5538#L185">PlanMeta</a>
+				<h3 id="CavePathWidener.PlanMeta">func (CavePathWidener) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=5494:5553#L186">PlanMeta</a>
 					<a class="permalink" href="index.html#CavePathWidener.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (c <a href="index.html#CavePathWidener">CavePathWidener</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (c <a href="index.html#CavePathWidener">CavePathWidener</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は狭い通路を広げる
 
 				
@@ -1119,7 +1107,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="CaveStalactites">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7001:7030#L236">CaveStalactites</a>
+			<h2 id="CaveStalactites">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7019:7048#L238">CaveStalactites</a>
 				<a class="permalink" href="index.html#CaveStalactites">&#xb6;</a>
 				
 				
@@ -1141,12 +1129,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="CaveStalactites.PlanMeta">func (CaveStalactites) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7084:7137#L239">PlanMeta</a>
+				<h3 id="CaveStalactites.PlanMeta">func (CaveStalactites) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=7102:7161#L241">PlanMeta</a>
 					<a class="permalink" href="index.html#CaveStalactites.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (c <a href="index.html#CaveStalactites">CaveStalactites</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (c <a href="index.html#CaveStalactites">CaveStalactites</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は洞窟内に鍾乳石を配置する
 
 				
@@ -1156,7 +1144,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="DoorSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=857:1031#L23">DoorSpec</a>
+			<h2 id="DoorSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=873:1047#L24">DoorSpec</a>
 				<a class="permalink" href="index.html#DoorSpec">&#xb6;</a>
 				
 				
@@ -1220,12 +1208,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="FillAll.PlanMeta">func (FillAll) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=329:374#L6">PlanMeta</a>
+				<h3 id="FillAll.PlanMeta">func (FillAll) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/fill_all.go?s=329:380#L6">PlanMeta</a>
 					<a class="permalink" href="index.html#FillAll.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b <a href="index.html#FillAll">FillAll</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (b <a href="index.html#FillAll">FillAll</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はメタデータをビルドする
 
 				
@@ -1235,7 +1223,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ForestPaths">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5106:5131#L155">ForestPaths</a>
+			<h2 id="ForestPaths">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5176:5201#L160">ForestPaths</a>
 				<a class="permalink" href="index.html#ForestPaths">&#xb6;</a>
 				
 				
@@ -1257,12 +1245,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="ForestPaths.PlanMeta">func (ForestPaths) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5194:5243#L158">PlanMeta</a>
+				<h3 id="ForestPaths.PlanMeta">func (ForestPaths) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=5264:5319#L163">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestPaths.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (f <a href="index.html#ForestPaths">ForestPaths</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (f <a href="index.html#ForestPaths">ForestPaths</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は空き地間に自然な通路を作成する
 
 				
@@ -1310,7 +1298,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ForestTerrain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=1380:1407#L36">ForestTerrain</a>
+			<h2 id="ForestTerrain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=1450:1477#L39">ForestTerrain</a>
 				<a class="permalink" href="index.html#ForestTerrain">&#xb6;</a>
 				
 				
@@ -1332,12 +1320,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="ForestTerrain.PlanMeta">func (ForestTerrain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=1470:1521#L39">PlanMeta</a>
+				<h3 id="ForestTerrain.PlanMeta">func (ForestTerrain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=1540:1597#L42">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestTerrain.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (f <a href="index.html#ForestTerrain">ForestTerrain</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (f <a href="index.html#ForestTerrain">ForestTerrain</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は森の基本地形をタイルに描画する
 
 				
@@ -1347,7 +1335,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ForestTrees">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2531:2556#L72">ForestTrees</a>
+			<h2 id="ForestTrees">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2619:2644#L76">ForestTrees</a>
 				<a class="permalink" href="index.html#ForestTrees">&#xb6;</a>
 				
 				
@@ -1369,12 +1357,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="ForestTrees.PlanMeta">func (ForestTrees) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2598:2647#L75">PlanMeta</a>
+				<h3 id="ForestTrees.PlanMeta">func (ForestTrees) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=2686:2741#L79">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestTrees.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (f <a href="index.html#ForestTrees">ForestTrees</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (f <a href="index.html#ForestTrees">ForestTrees</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は森に木を配置する
 
 				
@@ -1384,7 +1372,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ForestWildlife">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8020:8048#L240">ForestWildlife</a>
+			<h2 id="ForestWildlife">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8058:8086#L246">ForestWildlife</a>
 				<a class="permalink" href="index.html#ForestWildlife">&#xb6;</a>
 				
 				
@@ -1406,12 +1394,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="ForestWildlife.PlanMeta">func (ForestWildlife) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8111:8163#L243">PlanMeta</a>
+				<h3 id="ForestWildlife.PlanMeta">func (ForestWildlife) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=8149:8207#L249">PlanMeta</a>
 					<a class="permalink" href="index.html#ForestWildlife.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (f <a href="index.html#ForestWildlife">ForestWildlife</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (f <a href="index.html#ForestWildlife">ForestWildlife</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は森に小さな動物の痕跡を追加する
 
 				
@@ -1457,12 +1445,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="HostileNPCPlanner.PlanMeta">func (*HostileNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=1047:1103#L31">PlanMeta</a>
+				<h3 id="HostileNPCPlanner.PlanMeta">func (*HostileNPCPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/hostile_npc_planner.go?s=1047:1109#L31">PlanMeta</a>
 					<a class="permalink" href="index.html#HostileNPCPlanner.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (n *<a href="index.html#HostileNPCPlanner">HostileNPCPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (n *<a href="index.html#HostileNPCPlanner">HostileNPCPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は敵NPC配置情報をMetaPlanに追加する
 
 				
@@ -1472,7 +1460,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10240:10306#L325">InitialMapPlanner</a>
+			<h2 id="InitialMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10265:10331#L328">InitialMapPlanner</a>
 				<a class="permalink" href="index.html#InitialMapPlanner">&#xb6;</a>
 				
 				
@@ -1498,7 +1486,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ItemPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=1012:1085#L22">ItemPlanner</a>
+			<h2 id="ItemPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=752:825#L19">ItemPlanner</a>
 				<a class="permalink" href="index.html#ItemPlanner">&#xb6;</a>
 				
 				
@@ -1520,7 +1508,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="NewItemPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=1151:1223#L28">NewItemPlanner</a>
+				<h3 id="NewItemPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=891:963#L25">NewItemPlanner</a>
 					<a class="permalink" href="index.html#NewItemPlanner">&#xb6;</a>
 					
 					
@@ -1534,12 +1522,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="ItemPlanner.PlanMeta">func (*ItemPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=1370:1420#L36">PlanMeta</a>
+				<h3 id="ItemPlanner.PlanMeta">func (*ItemPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=1110:1166#L33">PlanMeta</a>
 					<a class="permalink" href="index.html#ItemPlanner.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (i *<a href="index.html#ItemPlanner">ItemPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (i *<a href="index.html#ItemPlanner">ItemPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はアイテム配置情報をMetaPlanに追加する
 
 				
@@ -1549,7 +1537,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="ItemSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=827:943#L15">ItemSpec</a>
+			<h2 id="ItemSpec">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/item_planner.go?s=567:683#L12">ItemSpec</a>
 				<a class="permalink" href="index.html#ItemSpec">&#xb6;</a>
 				
 				
@@ -1599,7 +1587,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="LineCorridorPlanner.BuildCorridors">func (LineCorridorPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/line_corridor.go?s=416:479#L9">BuildCorridors</a>
+				<h3 id="LineCorridorPlanner.BuildCorridors">func (LineCorridorPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/line_corridor.go?s=434:497#L10">BuildCorridors</a>
 					<a class="permalink" href="index.html#LineCorridorPlanner.BuildCorridors">&#xb6;</a>
 					
 					
@@ -1612,12 +1600,12 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="LineCorridorPlanner.PlanMeta">func (LineCorridorPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/line_corridor.go?s=279:336#L4">PlanMeta</a>
+				<h3 id="LineCorridorPlanner.PlanMeta">func (LineCorridorPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/line_corridor.go?s=279:342#L4">PlanMeta</a>
 					<a class="permalink" href="index.html#LineCorridorPlanner.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b <a href="index.html#LineCorridorPlanner">LineCorridorPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (b <a href="index.html#LineCorridorPlanner">LineCorridorPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はメタデータをビルドする
 
 				
@@ -1627,7 +1615,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10384:10438#L330">MetaMapPlanner</a>
+			<h2 id="MetaMapPlanner">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10409:10469#L333">MetaMapPlanner</a>
 				<a class="permalink" href="index.html#MetaMapPlanner">&#xb6;</a>
 				
 				
@@ -1635,7 +1623,7 @@ TODO: 全然わかってないので理解する
 			<p>MetaMapPlanner はメタ情報をプランするインターフェース
 
 			<pre>type MetaMapPlanner interface {
-    PlanMeta(*<a href="index.html#MetaPlan">MetaPlan</a>)
+    PlanMeta(*<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a>
 }</pre>
 
 			
@@ -1652,7 +1640,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=1106:2384#L30">MetaPlan</a>
+			<h2 id="MetaPlan">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=1122:2318#L31">MetaPlan</a>
 				<a class="permalink" href="index.html#MetaPlan">&#xb6;</a>
 				
 				
@@ -1668,8 +1656,8 @@ TODO: 全然わかってないので理解する
     <span class="comment">// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。</span>
     <span class="comment">// 廊下はタイルの集合体である</span>
 <span id="MetaPlan.Corridors"></span>    Corridors [][]<a href="../resources/index.html">resources</a>.<a href="../resources/index.html#TileIdx">TileIdx</a>
-<span id="MetaPlan.RandomSource"></span>    <span class="comment">// RandomSource はシード値による再現可能なランダム生成を提供する</span>
-    RandomSource *<a href="index.html#RandomSource">RandomSource</a>
+    <span class="comment">// 乱数生成器</span>
+<span id="MetaPlan.RNG"></span>    RNG *rand.<a href="index.html#Rand">Rand</a>
     <span class="comment">// 階層を構成するタイル群。長さはステージの大きさで決まる</span>
     <span class="comment">// 通行可能かを判定するための情報を保持している必要がある</span>
 <span id="MetaPlan.Tiles"></span>    Tiles []<a href="../raw/index.html">raw</a>.<a href="../raw/index.html#TileRaw">TileRaw</a>
@@ -1717,7 +1705,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4678:4741#L160">AdjacentAnyFloor</a>
+				<h3 id="MetaPlan.AdjacentAnyFloor">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4612:4675#L161">AdjacentAnyFloor</a>
 					<a class="permalink" href="index.html#MetaPlan.AdjacentAnyFloor">&#xb6;</a>
 					
 					
@@ -1743,7 +1731,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3911:3973#L130">DownTile</a>
+				<h3 id="MetaPlan.DownTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3845:3907#L131">DownTile</a>
 					<a class="permalink" href="index.html#MetaPlan.DownTile">&#xb6;</a>
 					
 					
@@ -1756,7 +1744,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15335:15396#L482">GetPlayerStartPosition</a>
+				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15700:15761#L494">GetPlayerStartPosition</a>
 					<a class="permalink" href="index.html#MetaPlan.GetPlayerStartPosition">&#xb6;</a>
 					
 					
@@ -1769,7 +1757,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14944:14996#L470">GetTile</a>
+				<h3 id="MetaPlan.GetTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15309:15361#L482">GetTile</a>
 					<a class="permalink" href="index.html#MetaPlan.GetTile">&#xb6;</a>
 					
 					
@@ -1783,7 +1771,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=5466:5528#L192">GetWallType</a>
+				<h3 id="MetaPlan.GetWallType">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=5400:5462#L193">GetWallType</a>
 					<a class="permalink" href="index.html#MetaPlan.GetWallType">&#xb6;</a>
 					
 					
@@ -1796,7 +1784,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2463:2537#L64">IsSpawnableTile</a>
+				<h3 id="MetaPlan.IsSpawnableTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=2397:2471#L65">IsSpawnableTile</a>
 					<a class="permalink" href="index.html#MetaPlan.IsSpawnableTile">&#xb6;</a>
 					
 					
@@ -1822,7 +1810,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4172:4234#L140">LeftTile</a>
+				<h3 id="MetaPlan.LeftTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4106:4168#L141">LeftTile</a>
 					<a class="permalink" href="index.html#MetaPlan.LeftTile">&#xb6;</a>
 					
 					
@@ -1835,7 +1823,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4393:4456#L150">RightTile</a>
+				<h3 id="MetaPlan.RightTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=4327:4390#L151">RightTile</a>
 					<a class="permalink" href="index.html#MetaPlan.RightTile">&#xb6;</a>
 					
 					
@@ -1848,7 +1836,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3647:3707#L120">UpTile</a>
+				<h3 id="MetaPlan.UpTile">func (MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=3581:3641#L121">UpTile</a>
 					<a class="permalink" href="index.html#MetaPlan.UpTile">&#xb6;</a>
 					
 					
@@ -2023,7 +2011,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7885:7988#L253">PlannerChain</a>
+			<h2 id="PlannerChain">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=7819:7922#L254">PlannerChain</a>
 				<a class="permalink" href="index.html#PlannerChain">&#xb6;</a>
 				
 				
@@ -2047,7 +2035,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11091:11180#L348">NewBigRoomPlanner</a>
+				<h3 id="NewBigRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11122:11211#L351">NewBigRoomPlanner</a>
 					<a class="permalink" href="index.html#NewBigRoomPlanner">&#xb6;</a>
 					
 					
@@ -2060,7 +2048,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewCavePlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=9594:9680#L328">NewCavePlanner</a>
+				<h3 id="NewCavePlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/cave_planner.go?s=9643:9729#L332">NewCavePlanner</a>
 					<a class="permalink" href="index.html#NewCavePlanner">&#xb6;</a>
 					
 					
@@ -2072,7 +2060,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewForestPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=9041:9129#L273">NewForestPlanner</a>
+				<h3 id="NewForestPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/forest_planner.go?s=9176:9264#L283">NewForestPlanner</a>
 					<a class="permalink" href="index.html#NewForestPlanner">&#xb6;</a>
 					
 					
@@ -2084,7 +2072,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8150:8228#L261">NewPlannerChain</a>
+				<h3 id="NewPlannerChain">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8084:8162#L262">NewPlannerChain</a>
 					<a class="permalink" href="index.html#NewPlannerChain">&#xb6;</a>
 					
 					
@@ -2097,7 +2085,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14010:14098#L440">NewRandomPlanner</a>
+				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14364:14452#L452">NewRandomPlanner</a>
 					<a class="permalink" href="index.html#NewRandomPlanner">&#xb6;</a>
 					
 					
@@ -2109,7 +2097,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewRuinsPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=7225:7312#L238">NewRuinsPlanner</a>
+				<h3 id="NewRuinsPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=7263:7350#L244">NewRuinsPlanner</a>
 					<a class="permalink" href="index.html#NewRuinsPlanner">&#xb6;</a>
 					
 					
@@ -2121,7 +2109,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10521:10612#L335">NewSmallRoomPlanner</a>
+				<h3 id="NewSmallRoomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=10552:10643#L338">NewSmallRoomPlanner</a>
 					<a class="permalink" href="index.html#NewSmallRoomPlanner">&#xb6;</a>
 					
 					
@@ -2147,7 +2135,7 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9365:9400#L302">Plan</a>
+				<h3 id="PlannerChain.Plan">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9313:9348#L303">Plan</a>
 					<a class="permalink" href="index.html#PlannerChain.Plan">&#xb6;</a>
 					
 					
@@ -2160,7 +2148,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9019:9088#L292">StartWith</a>
+				<h3 id="PlannerChain.StartWith">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=8967:9036#L293">StartWith</a>
 					<a class="permalink" href="index.html#PlannerChain.StartWith">&#xb6;</a>
 					
 					
@@ -2173,7 +2161,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9883:9964#L318">ValidateConnectivity</a>
+				<h3 id="PlannerChain.ValidateConnectivity">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9908:9989#L321">ValidateConnectivity</a>
 					<a class="permalink" href="index.html#PlannerChain.ValidateConnectivity">&#xb6;</a>
 					
 					
@@ -2187,7 +2175,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9174:9232#L297">With</a>
+				<h3 id="PlannerChain.With">func (*PlannerChain) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=9122:9180#L298">With</a>
 					<a class="permalink" href="index.html#PlannerChain.With">&#xb6;</a>
 					
 					
@@ -2202,7 +2190,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11601:11949#L362">PlannerType</a>
+			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11632:12034#L365">PlannerType</a>
 				<a class="permalink" href="index.html#PlannerType">&#xb6;</a>
 				
 				
@@ -2218,6 +2206,8 @@ TODO: 全然わかってないので理解する
 <span id="PlannerType.SpawnItems"></span>    SpawnItems <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// ポータル位置を固定するか</span>
 <span id="PlannerType.UseFixedPortalPos"></span>    UseFixedPortalPos <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
+    <span class="comment">// アイテムテーブル名</span>
+<span id="PlannerType.ItemTableName"></span>    ItemTableName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
     <span class="comment">// プランナー関数</span>
 <span id="PlannerType.PlannerFunc"></span>    PlannerFunc func(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) (*<a href="index.html#PlannerChain">PlannerChain</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
 }
@@ -2300,12 +2290,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="PropsPlanner.PlanMeta">func (*PropsPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/props_planner.go?s=777:828#L21">PlanMeta</a>
+				<h3 id="PropsPlanner.PlanMeta">func (*PropsPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/props_planner.go?s=777:834#L21">PlanMeta</a>
 					<a class="permalink" href="index.html#PropsPlanner.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (p *<a href="index.html#PropsPlanner">PropsPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (p *<a href="index.html#PropsPlanner">PropsPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はProps配置情報をMetaPlanに追加する
 
 				
@@ -2339,85 +2329,6 @@ TODO: 全然わかってないので理解する
 
 			
 
-			
-		
-			
-			
-			<h2 id="RandomSource">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/random.go?s=146:312#L1">RandomSource</a>
-				<a class="permalink" href="index.html#RandomSource">&#xb6;</a>
-				
-				
-			</h2>
-			<p>RandomSource はシード値を管理して再現性のあるランダム生成を提供する
-
-			<pre>type RandomSource struct {
-<span id="RandomSource.Seed"></span>    <span class="comment">// Seed はランダム生成のシード値</span>
-    Seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>
-    <span class="comment">// contains filtered or unexported fields</span>
-}
-</pre>
-
-			
-
-			
-
-			
-			
-			
-
-			
-				
-				<h3 id="NewRandomSource">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/random.go?s=373:420#L6">NewRandomSource</a>
-					<a class="permalink" href="index.html#NewRandomSource">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func NewRandomSource(seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) *<a href="index.html#RandomSource">RandomSource</a></pre>
-				<p>NewRandomSource は新しいRandomSourceを作成する
-
-				
-				
-			
-
-			
-				
-				<h3 id="RandomSource.Float64">func (*RandomSource) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/random.go?s=761:801#L23">Float64</a>
-					<a class="permalink" href="index.html#RandomSource.Float64">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (r *<a href="index.html#RandomSource">RandomSource</a>) Float64() <a href="http://localhost:8888/pkg/builtin/#float64">float64</a></pre>
-				<p>Float64 は0.0から1.0までのランダムな浮動小数点数を返す
-
-				
-				
-				
-			
-				
-				<h3 id="RandomSource.Intn">func (*RandomSource) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/random.go?s=590:628#L15">Intn</a>
-					<a class="permalink" href="index.html#RandomSource.Intn">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (r *<a href="index.html#RandomSource">RandomSource</a>) Intn(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#int">int</a></pre>
-				<p>Intn は0からn-1までのランダムな整数を返す
-
-				
-				
-				
-			
-				
-				<h3 id="RandomSource.Shuffle">func (*RandomSource) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/random.go?s=891:949#L28">Shuffle</a>
-					<a class="permalink" href="index.html#RandomSource.Shuffle">&#xb6;</a>
-					
-					
-				</h3>
-				<pre>func (r *<a href="index.html#RandomSource">RandomSource</a>) Shuffle(n <a href="http://localhost:8888/pkg/builtin/#int">int</a>, swap func(i, j <a href="http://localhost:8888/pkg/builtin/#int">int</a>))</pre>
-				<p>Shuffle はスライスの要素をシャッフルする
-
-				
-				
-				
 			
 		
 			
@@ -2494,12 +2405,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="RoomDraw.PlanMeta">func (RoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go?s=200:246#L1">PlanMeta</a>
+				<h3 id="RoomDraw.PlanMeta">func (RoomDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/room_draw.go?s=200:252#L1">PlanMeta</a>
 					<a class="permalink" href="index.html#RoomDraw.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (b <a href="index.html#RoomDraw">RoomDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (b <a href="index.html#RoomDraw">RoomDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はメタデータをビルドする
 
 				
@@ -2509,7 +2420,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="RuinsCorridors">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5363:5429#L166">RuinsCorridors</a>
+			<h2 id="RuinsCorridors">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5406:5472#L171">RuinsCorridors</a>
 				<a class="permalink" href="index.html#RuinsCorridors">&#xb6;</a>
 				
 				
@@ -2534,12 +2445,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="RuinsCorridors.PlanMeta">func (RuinsCorridors) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5480:5532#L172">PlanMeta</a>
+				<h3 id="RuinsCorridors.PlanMeta">func (RuinsCorridors) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=5523:5581#L177">PlanMeta</a>
 					<a class="permalink" href="index.html#RuinsCorridors.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (r <a href="index.html#RuinsCorridors">RuinsCorridors</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (r <a href="index.html#RuinsCorridors">RuinsCorridors</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は廃墟間に通路を作成する
 
 				
@@ -2549,7 +2460,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="RuinsDebris">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3763:3826#L109">RuinsDebris</a>
+			<h2 id="RuinsDebris">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3797:3860#L113">RuinsDebris</a>
 				<a class="permalink" href="index.html#RuinsDebris">&#xb6;</a>
 				
 				
@@ -2574,12 +2485,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="RuinsDebris.PlanMeta">func (RuinsDebris) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3874:3923#L115">PlanMeta</a>
+				<h3 id="RuinsDebris.PlanMeta">func (RuinsDebris) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=3908:3963#L119">PlanMeta</a>
 					<a class="permalink" href="index.html#RuinsDebris.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (r <a href="index.html#RuinsDebris">RuinsDebris</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (r <a href="index.html#RuinsDebris">RuinsDebris</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は廃墟に瓦礫を配置する
 
 				
@@ -2589,7 +2500,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="RuinsDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=1181:1242#L30">RuinsDraw</a>
+			<h2 id="RuinsDraw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=1251:1312#L33">RuinsDraw</a>
 				<a class="permalink" href="index.html#RuinsDraw">&#xb6;</a>
 				
 				
@@ -2614,12 +2525,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="RuinsDraw.PlanMeta">func (RuinsDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=1299:1346#L36">PlanMeta</a>
+				<h3 id="RuinsDraw.PlanMeta">func (RuinsDraw) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/ruins_planner.go?s=1369:1422#L39">PlanMeta</a>
 					<a class="permalink" href="index.html#RuinsDraw.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (r <a href="index.html#RuinsDraw">RuinsDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (r <a href="index.html#RuinsDraw">RuinsDraw</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta は廃墟構造をタイルに描画する
 
 				
@@ -2725,7 +2636,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="WarpPortal">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=664:800#L16">WarpPortal</a>
+			<h2 id="WarpPortal">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=680:816#L17">WarpPortal</a>
 				<a class="permalink" href="index.html#WarpPortal">&#xb6;</a>
 				
 				
@@ -2789,12 +2700,12 @@ TODO: 全然わかってないので理解する
 
 			
 				
-				<h3 id="WarpPortalPlanner.PlanMeta">func (*WarpPortalPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/warp_portal_planner.go?s=991:1047#L22">PlanMeta</a>
+				<h3 id="WarpPortalPlanner.PlanMeta">func (*WarpPortalPlanner) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/warp_portal_planner.go?s=991:1053#L22">PlanMeta</a>
 					<a class="permalink" href="index.html#WarpPortalPlanner.PlanMeta">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (w *<a href="index.html#WarpPortalPlanner">WarpPortalPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>)</pre>
+				<pre>func (w *<a href="index.html#WarpPortalPlanner">WarpPortalPlanner</a>) PlanMeta(planData *<a href="index.html#MetaPlan">MetaPlan</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>PlanMeta はワープポータルをMetaPlanに追加する
 
 				
@@ -2804,7 +2715,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="WarpPortalType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=378:403#L6">WarpPortalType</a>
+			<h2 id="WarpPortalType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=394:419#L7">WarpPortalType</a>
 				<a class="permalink" href="index.html#WarpPortalType">&#xb6;</a>
 				
 				
