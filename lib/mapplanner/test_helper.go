@@ -46,6 +46,43 @@ func CreateTestRawMaster() *raw.Master {
 		},
 	}
 
+	// テスト用の敵テーブルを定義
+	testEnemyTables := []raw.EnemyTable{
+		{
+			Name: "通常",
+			Entries: []raw.EnemyTableEntry{
+				{EnemyName: "スライム", Weight: 1.2, MinDepth: 1, MaxDepth: 10},
+				{EnemyName: "火の玉", Weight: 1.0, MinDepth: 1, MaxDepth: 20},
+				{EnemyName: "軽戦車", Weight: 0.8, MinDepth: 10, MaxDepth: 50},
+			},
+		},
+		{
+			Name: "洞窟",
+			Entries: []raw.EnemyTableEntry{
+				{EnemyName: "スライム", Weight: 1.0, MinDepth: 1, MaxDepth: 8},
+				{EnemyName: "火の玉", Weight: 1.0, MinDepth: 1, MaxDepth: 15},
+				{EnemyName: "軽戦車", Weight: 0.6, MinDepth: 8, MaxDepth: 25},
+			},
+		},
+		{
+			Name: "森",
+			Entries: []raw.EnemyTableEntry{
+				{EnemyName: "スライム", Weight: 1.2, MinDepth: 1, MaxDepth: 12},
+				{EnemyName: "火の玉", Weight: 1.0, MinDepth: 1, MaxDepth: 15},
+				{EnemyName: "軽戦車", Weight: 0.5, MinDepth: 10, MaxDepth: 20},
+			},
+		},
+		{
+			Name: "廃墟",
+			Entries: []raw.EnemyTableEntry{
+				{EnemyName: "スライム", Weight: 0.9, MinDepth: 1, MaxDepth: 10},
+				{EnemyName: "火の玉", Weight: 0.8, MinDepth: 1, MaxDepth: 20},
+				{EnemyName: "軽戦車", Weight: 1.0, MinDepth: 5, MaxDepth: 30},
+				{EnemyName: "灰の偶像", Weight: 0.7, MinDepth: 15, MaxDepth: 35},
+			},
+		},
+	}
+
 	// インデックスを作成
 	tileIndex := make(map[string]int)
 	for i, tile := range testTiles {
@@ -57,12 +94,19 @@ func CreateTestRawMaster() *raw.Master {
 		itemTableIndex[table.Name] = i
 	}
 
+	enemyTableIndex := make(map[string]int)
+	for i, table := range testEnemyTables {
+		enemyTableIndex[table.Name] = i
+	}
+
 	return &raw.Master{
 		Raws: raw.Raws{
-			Tiles:      testTiles,
-			ItemTables: testItemTables,
+			Tiles:       testTiles,
+			ItemTables:  testItemTables,
+			EnemyTables: testEnemyTables,
 		},
-		TileIndex:      tileIndex,
-		ItemTableIndex: itemTableIndex,
+		TileIndex:       tileIndex,
+		ItemTableIndex:  itemTableIndex,
+		EnemyTableIndex: enemyTableIndex,
 	}
 }

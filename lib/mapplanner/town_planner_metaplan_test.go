@@ -139,6 +139,66 @@ ItemName = "TestItem"
 Weight = 1.0
 MinDepth = 1
 MaxDepth = 50
+
+[[EnemyTables]]
+Name = "通常"
+
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight = 1.2
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight = 1.0
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables]]
+Name = "洞窟"
+
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight = 1.0
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight = 1.0
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables]]
+Name = "森"
+
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight = 1.2
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight = 1.0
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables]]
+Name = "廃墟"
+
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight = 0.9
+MinDepth = 1
+MaxDepth = 50
+
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight = 1.0
+MinDepth = 1
+MaxDepth = 50
 `)
 	return &rawMaster
 }

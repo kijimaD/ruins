@@ -49,6 +49,14 @@ func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) error {
 		return nil // 敵をスポーンしない設定の場合は何もしない
 	}
 
+	// 敵テーブルを取得
+	enemyTable, err := planData.RawMaster.GetEnemyTable(n.plannerType.EnemyTableName)
+	if err != nil {
+		return fmt.Errorf("'%s'敵テーブルが見つかりません: %w", n.plannerType.EnemyTableName, err)
+	}
+
+	depth := n.world.Resources.Dungeon.Depth
+
 	failCount := 0
 	total := baseHostileNPCCount + planData.RNG.IntN(randomHostileNPCCount)
 	successCount := 0
@@ -62,8 +70,12 @@ func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) error {
 			continue
 		}
 
-		// NPCタイプを選択（現在は固定、将来的にはテーブル化）
-		npcType := "火の玉" // TODO: テーブルで選ぶ
+		// 敵テーブルから深度に応じた敵を選択
+		npcType := enemyTable.SelectByWeight(planData.RNG, depth)
+		if npcType == "" {
+			failCount++
+			continue
+		}
 
 		planData.NPCs = append(planData.NPCs, NPCSpec{
 			X:       int(tx),

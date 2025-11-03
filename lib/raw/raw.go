@@ -17,6 +17,7 @@ type Master struct {
 	CommandTableIndex map[string]int
 	DropTableIndex    map[string]int
 	ItemTableIndex    map[string]int
+	EnemyTableIndex   map[string]int
 	SpriteSheetIndex  map[string]int
 	TileIndex         map[string]int
 	PropIndex         map[string]int
@@ -30,6 +31,7 @@ type Raws struct {
 	CommandTables []CommandTable
 	DropTables    []DropTable
 	ItemTables    []ItemTable
+	EnemyTables   []EnemyTable
 	SpriteSheets  []SpriteSheet
 	Tiles         []TileRaw
 	Props         []PropRaw
@@ -158,6 +160,7 @@ func Load(entityMetadataContent string) (Master, error) {
 	rw.CommandTableIndex = map[string]int{}
 	rw.DropTableIndex = map[string]int{}
 	rw.ItemTableIndex = map[string]int{}
+	rw.EnemyTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
 	rw.TileIndex = map[string]int{}
 	rw.PropIndex = map[string]int{}
@@ -189,6 +192,9 @@ func Load(entityMetadataContent string) (Master, error) {
 	}
 	for i, itemTable := range rw.Raws.ItemTables {
 		rw.ItemTableIndex[itemTable.Name] = i
+	}
+	for i, enemyTable := range rw.Raws.EnemyTables {
+		rw.EnemyTableIndex[enemyTable.Name] = i
 	}
 	for i, spriteSheet := range rw.Raws.SpriteSheets {
 		rw.SpriteSheetIndex[spriteSheet.Name] = i
@@ -549,6 +555,20 @@ func (rw *Master) GetItemTable(name string) (ItemTable, error) {
 	itemTable := rw.Raws.ItemTables[itIdx]
 
 	return itemTable, nil
+}
+
+// GetEnemyTable は指定された名前の敵テーブルを取得する
+func (rw *Master) GetEnemyTable(name string) (EnemyTable, error) {
+	etIdx, ok := rw.EnemyTableIndex[name]
+	if !ok {
+		return EnemyTable{}, fmt.Errorf("キーが存在しない: %s", name)
+	}
+	if etIdx >= len(rw.Raws.EnemyTables) {
+		return EnemyTable{}, fmt.Errorf("敵テーブルインデックスが範囲外: %d (長さ: %d)", etIdx, len(rw.Raws.EnemyTables))
+	}
+	enemyTable := rw.Raws.EnemyTables[etIdx]
+
+	return enemyTable, nil
 }
 
 // TileRaw はタイルのローデータ定義
