@@ -671,6 +671,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;通常&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;通常&#34;,
     }
 
     <span class="comment">// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ</span>
@@ -680,6 +681,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;通常&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;通常&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewSmallRoomPlanner">NewSmallRoomPlanner</a>,
     }
 
@@ -690,6 +692,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;通常&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;通常&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewBigRoomPlanner">NewBigRoomPlanner</a>,
     }
 
@@ -700,6 +703,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;洞窟&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;洞窟&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewCavePlanner">NewCavePlanner</a>,
     }
 
@@ -710,6 +714,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;廃墟&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;廃墟&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewRuinsPlanner">NewRuinsPlanner</a>,
     }
 
@@ -720,6 +725,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;森&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;森&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewForestPlanner">NewForestPlanner</a>,
     }
 
@@ -730,6 +736,7 @@ Walkable = true
         <a href="index.html#PlannerType.SpawnItems">SpawnItems</a>:        <a href="http://localhost:8888/pkg/builtin/#false">false</a>,
         <a href="index.html#PlannerType.UseFixedPortalPos">UseFixedPortalPos</a>: <a href="http://localhost:8888/pkg/builtin/#true">true</a>,
         <a href="index.html#PlannerType.ItemTableName">ItemTableName</a>:     &#34;&#34;,
+        <a href="index.html#PlannerType.EnemyTableName">EnemyTableName</a>:    &#34;&#34;,
         <a href="index.html#PlannerType.PlannerFunc">PlannerFunc</a>:       <a href="index.html#NewTownPlanner">NewTownPlanner</a>,
     }
 )</pre>
@@ -1744,7 +1751,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15700:15761#L494">GetPlayerStartPosition</a>
+				<h3 id="MetaPlan.GetPlayerStartPosition">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=16006:16067#L503">GetPlayerStartPosition</a>
 					<a class="permalink" href="index.html#MetaPlan.GetPlayerStartPosition">&#xb6;</a>
 					
 					
@@ -1757,7 +1764,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="MetaPlan.GetTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15309:15361#L482">GetTile</a>
+				<h3 id="MetaPlan.GetTile">func (*MetaPlan) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=15615:15667#L491">GetTile</a>
 					<a class="permalink" href="index.html#MetaPlan.GetTile">&#xb6;</a>
 					
 					
@@ -2085,7 +2092,7 @@ TODO: 全然わかってないので理解する
 				
 			
 				
-				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14364:14452#L452">NewRandomPlanner</a>
+				<h3 id="NewRandomPlanner">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=14670:14758#L461">NewRandomPlanner</a>
 					<a class="permalink" href="index.html#NewRandomPlanner">&#xb6;</a>
 					
 					
@@ -2190,7 +2197,7 @@ TODO: 全然わかってないので理解する
 		
 			
 			
-			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11632:12034#L365">PlannerType</a>
+			<h2 id="PlannerType">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/mapplanner/lib.go?s=11632:12080#L365">PlannerType</a>
 				<a class="permalink" href="index.html#PlannerType">&#xb6;</a>
 				
 				
@@ -2208,6 +2215,8 @@ TODO: 全然わかってないので理解する
 <span id="PlannerType.UseFixedPortalPos"></span>    UseFixedPortalPos <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>
     <span class="comment">// アイテムテーブル名</span>
 <span id="PlannerType.ItemTableName"></span>    ItemTableName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+    <span class="comment">// 敵テーブル名</span>
+<span id="PlannerType.EnemyTableName"></span>    EnemyTableName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
     <span class="comment">// プランナー関数</span>
 <span id="PlannerType.PlannerFunc"></span>    PlannerFunc func(width <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, height <a href="../components/index.html">gc</a>.<a href="../components/index.html#Tile">Tile</a>, seed <a href="http://localhost:8888/pkg/builtin/#uint64">uint64</a>) (*<a href="index.html#PlannerChain">PlannerChain</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)
 }

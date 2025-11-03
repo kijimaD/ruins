@@ -165,6 +165,19 @@
 				
 			
 				
+				<dd><a href="index.html#EnemyTable">type EnemyTable</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#EnemyTable.SelectByWeight">func (et EnemyTable) SelectByWeight(rng *rand.Rand, depth int) string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#EnemyTableEntry">type EnemyTableEntry</a></dd>
+				
+				
+			
+				
 				<dd><a href="index.html#EquipBonus">type EquipBonus</a></dd>
 				
 				
@@ -215,6 +228,9 @@
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Master.GetDropTable">func (rw *Master) GetDropTable(name string) (DropTable, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Master.GetEnemyTable">func (rw *Master) GetEnemyTable(name string) (EnemyTable, error)</a></dd>
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#Master.GetItemTable">func (rw *Master) GetItemTable(name string) (ItemTable, error)</a></dd>
@@ -335,6 +351,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/drop_table.go">drop_table.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enemy_table.go">enemy_table.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enum.go">enum.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/errors.go">errors.go</a>
@@ -380,7 +398,7 @@
 		
 			
 			
-			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1796:2007#L67">Attack</a>
+			<h2 id="Attack">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1858:2069#L69">Attack</a>
 				<a class="permalink" href="index.html#Attack">&#xb6;</a>
 				
 				
@@ -410,7 +428,7 @@
 		
 			
 			
-			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2912:3028#L120">Attributes</a>
+			<h2 id="Attributes">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2974:3090#L122">Attributes</a>
 				<a class="permalink" href="index.html#Attributes">&#xb6;</a>
 				
 				
@@ -508,7 +526,7 @@
 		
 			
 			
-			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1551:1637#L53">Consumable</a>
+			<h2 id="Consumable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1613:1699#L55">Consumable</a>
 				<a class="permalink" href="index.html#Consumable">&#xb6;</a>
 				
 				
@@ -536,7 +554,7 @@
 		
 			
 			
-			<h2 id="DialogRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2793:2862#L115">DialogRaw</a>
+			<h2 id="DialogRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2855:2924#L117">DialogRaw</a>
 				<a class="permalink" href="index.html#DialogRaw">&#xb6;</a>
 				
 				
@@ -629,7 +647,76 @@
 		
 			
 			
-			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2178:2279#L82">EquipBonus</a>
+			<h2 id="EnemyTable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enemy_table.go?s=75:161#L1">EnemyTable</a>
+				<a class="permalink" href="index.html#EnemyTable">&#xb6;</a>
+				
+				
+			</h2>
+			<p>EnemyTable は敵出現テーブル
+
+			<pre>type EnemyTable struct {
+<span id="EnemyTable.Name"></span>    Name    <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="EnemyTable.Entries"></span>    Entries []<a href="index.html#EnemyTableEntry">EnemyTableEntry</a> `toml:&#34;entries&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="EnemyTable.SelectByWeight">func (EnemyTable) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enemy_table.go?s=447:516#L10">SelectByWeight</a>
+					<a class="permalink" href="index.html#EnemyTable.SelectByWeight">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (et <a href="index.html#EnemyTable">EnemyTable</a>) SelectByWeight(rng *rand.<a href="index.html#Rand">Rand</a>, depth <a href="http://localhost:8888/pkg/builtin/#int">int</a>) <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>SelectByWeight は重みで選択する
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="EnemyTableEntry">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/enemy_table.go?s=216:402#L2">EnemyTableEntry</a>
+				<a class="permalink" href="index.html#EnemyTableEntry">&#xb6;</a>
+				
+				
+			</h2>
+			<p>EnemyTableEntry は敵テーブルのエントリ
+
+			<pre>type EnemyTableEntry struct {
+<span id="EnemyTableEntry.EnemyName"></span>    EnemyName <a href="http://localhost:8888/pkg/builtin/#string">string</a>
+<span id="EnemyTableEntry.Weight"></span>    Weight    <a href="http://localhost:8888/pkg/builtin/#float64">float64</a>
+<span id="EnemyTableEntry.MinDepth"></span>    MinDepth  <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 最小出現深度（0は制限なし）</span>
+<span id="EnemyTableEntry.MaxDepth"></span>    MaxDepth  <a href="http://localhost:8888/pkg/builtin/#int">int</a> <span class="comment">// 最大出現深度（0は制限なし）</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="EquipBonus">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2240:2341#L84">EquipBonus</a>
 				<a class="permalink" href="index.html#EquipBonus">&#xb6;</a>
 				
 				
@@ -686,7 +773,7 @@
 		
 			
 			
-			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=962:1348#L29">Item</a>
+			<h2 id="Item">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1024:1410#L31">Item</a>
 				<a class="permalink" href="index.html#Item">&#xb6;</a>
 				
 				
@@ -832,7 +919,7 @@
 		
 			
 			
-			<h2 id="Master">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=251:603#L2">Master</a>
+			<h2 id="Master">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=251:637#L2">Master</a>
 				<a class="permalink" href="index.html#Master">&#xb6;</a>
 				
 				
@@ -847,6 +934,7 @@
 <span id="Master.CommandTableIndex"></span>    CommandTableIndex map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Master.DropTableIndex"></span>    DropTableIndex    map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Master.ItemTableIndex"></span>    ItemTableIndex    map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
+<span id="Master.EnemyTableIndex"></span>    EnemyTableIndex   map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Master.SpriteSheetIndex"></span>    SpriteSheetIndex  map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Master.TileIndex"></span>    TileIndex         map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
 <span id="Master.PropIndex"></span>    PropIndex         map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="http://localhost:8888/pkg/builtin/#int">int</a>
@@ -863,7 +951,7 @@
 
 			
 				
-				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3375:3430#L143">Load</a>
+				<h3 id="Load">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3437:3492#L145">Load</a>
 					<a class="permalink" href="index.html#Load">&#xb6;</a>
 					
 					
@@ -875,7 +963,7 @@
 				
 			
 				
-				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3098:3144#L130">LoadFromFile</a>
+				<h3 id="LoadFromFile">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=3160:3206#L132">LoadFromFile</a>
 					<a class="permalink" href="index.html#LoadFromFile">&#xb6;</a>
 					
 					
@@ -889,7 +977,7 @@
 
 			
 				
-				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=15306:15374#L503">GetCommandTable</a>
+				<h3 id="Master.GetCommandTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=15502:15570#L509">GetCommandTable</a>
 					<a class="permalink" href="index.html#Master.GetCommandTable">&#xb6;</a>
 					
 					
@@ -902,7 +990,7 @@
 				
 			
 				
-				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=15855:15917#L517">GetDropTable</a>
+				<h3 id="Master.GetDropTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=16051:16113#L523">GetDropTable</a>
 					<a class="permalink" href="index.html#Master.GetDropTable">&#xb6;</a>
 					
 					
@@ -915,7 +1003,20 @@
 				
 			
 				
-				<h3 id="Master.GetItemTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=16374:16436#L531">GetItemTable</a>
+				<h3 id="Master.GetEnemyTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17081:17145#L551">GetEnemyTable</a>
+					<a class="permalink" href="index.html#Master.GetEnemyTable">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (rw *<a href="index.html#Master">Master</a>) GetEnemyTable(name <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="index.html#EnemyTable">EnemyTable</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+				<p>GetEnemyTable は指定された名前の敵テーブルを取得する
+
+				
+				
+				
+			
+				
+				<h3 id="Master.GetItemTable">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=16570:16632#L537">GetItemTable</a>
 					<a class="permalink" href="index.html#Master.GetItemTable">&#xb6;</a>
 					
 					
@@ -928,7 +1029,7 @@
 				
 			
 				
-				<h3 id="Master.GetProp">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=19324:19379#L616">GetProp</a>
+				<h3 id="Master.GetProp">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=20032:20087#L636">GetProp</a>
 					<a class="permalink" href="index.html#Master.GetProp">&#xb6;</a>
 					
 					
@@ -941,7 +1042,7 @@
 				
 			
 				
-				<h3 id="Master.GetTile">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17809:17864#L573">GetTile</a>
+				<h3 id="Master.GetTile">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=18517:18572#L593">GetTile</a>
 					<a class="permalink" href="index.html#Master.GetTile">&#xb6;</a>
 					
 					
@@ -955,7 +1056,7 @@
 				
 			
 				
-				<h3 id="Master.NewEnemySpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=14987:15053#L492">NewEnemySpec</a>
+				<h3 id="Master.NewEnemySpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=15183:15249#L498">NewEnemySpec</a>
 					<a class="permalink" href="index.html#Master.NewEnemySpec">&#xb6;</a>
 					
 					
@@ -968,7 +1069,7 @@
 				
 			
 				
-				<h3 id="Master.NewItemSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=4975:5075#L197">NewItemSpec</a>
+				<h3 id="Master.NewItemSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=5171:5271#L203">NewItemSpec</a>
 					<a class="permalink" href="index.html#Master.NewItemSpec">&#xb6;</a>
 					
 					
@@ -981,7 +1082,7 @@
 				
 			
 				
-				<h3 id="Master.NewMemberSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11959:12026#L407">NewMemberSpec</a>
+				<h3 id="Master.NewMemberSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=12155:12222#L413">NewMemberSpec</a>
 					<a class="permalink" href="index.html#Master.NewMemberSpec">&#xb6;</a>
 					
 					
@@ -994,7 +1095,7 @@
 				
 			
 				
-				<h3 id="Master.NewPlayerSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=14610:14677#L480">NewPlayerSpec</a>
+				<h3 id="Master.NewPlayerSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=14806:14873#L486">NewPlayerSpec</a>
 					<a class="permalink" href="index.html#Master.NewPlayerSpec">&#xb6;</a>
 					
 					
@@ -1007,7 +1108,7 @@
 				
 			
 				
-				<h3 id="Master.NewPropSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=19762:19827#L629">NewPropSpec</a>
+				<h3 id="Master.NewPropSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=20470:20535#L649">NewPropSpec</a>
 					<a class="permalink" href="index.html#Master.NewPropSpec">&#xb6;</a>
 					
 					
@@ -1020,7 +1121,7 @@
 				
 			
 				
-				<h3 id="Master.NewRecipeSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=9604:9671#L341">NewRecipeSpec</a>
+				<h3 id="Master.NewRecipeSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=9800:9867#L347">NewRecipeSpec</a>
 					<a class="permalink" href="index.html#Master.NewRecipeSpec">&#xb6;</a>
 					
 					
@@ -1033,7 +1134,7 @@
 				
 			
 				
-				<h3 id="Master.NewTileSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=18317:18416#L587">NewTileSpec</a>
+				<h3 id="Master.NewTileSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=19025:19124#L607">NewTileSpec</a>
 					<a class="permalink" href="index.html#Master.NewTileSpec">&#xb6;</a>
 					
 					
@@ -1047,7 +1148,7 @@
 				
 			
 				
-				<h3 id="Master.NewWeaponSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11215:11282#L385">NewWeaponSpec</a>
+				<h3 id="Master.NewWeaponSpec">func (*Master) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=11411:11478#L391">NewWeaponSpec</a>
 					<a class="permalink" href="index.html#Master.NewWeaponSpec">&#xb6;</a>
 					
 					
@@ -1063,7 +1164,7 @@
 		
 			
 			
-			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2511:2741#L103">Member</a>
+			<h2 id="Member">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2573:2803#L105">Member</a>
 				<a class="permalink" href="index.html#Member">&#xb6;</a>
 				
 				
@@ -1096,7 +1197,7 @@
 		
 			
 			
-			<h2 id="PropRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17338:17651#L560">PropRaw</a>
+			<h2 id="PropRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=18046:18359#L580">PropRaw</a>
 				<a class="permalink" href="index.html#PropRaw">&#xb6;</a>
 				
 				
@@ -1129,7 +1230,7 @@
 		
 			
 			
-			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1409:1495#L46">ProvidesHealing</a>
+			<h2 id="ProvidesHealing">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1471:1557#L48">ProvidesHealing</a>
 				<a class="permalink" href="index.html#ProvidesHealing">&#xb6;</a>
 				
 				
@@ -1157,7 +1258,7 @@
 		
 			
 			
-			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=665:918#L16">Raws</a>
+			<h2 id="Raws">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=699:980#L17">Raws</a>
 				<a class="permalink" href="index.html#Raws">&#xb6;</a>
 				
 				
@@ -1171,6 +1272,7 @@
 <span id="Raws.CommandTables"></span>    CommandTables []<a href="index.html#CommandTable">CommandTable</a>
 <span id="Raws.DropTables"></span>    DropTables    []<a href="index.html#DropTable">DropTable</a>
 <span id="Raws.ItemTables"></span>    ItemTables    []<a href="index.html#ItemTable">ItemTable</a>
+<span id="Raws.EnemyTables"></span>    EnemyTables   []<a href="index.html#EnemyTable">EnemyTable</a>
 <span id="Raws.SpriteSheets"></span>    SpriteSheets  []<a href="index.html#SpriteSheet">SpriteSheet</a>
 <span id="Raws.Tiles"></span>    Tiles         []<a href="index.html#TileRaw">TileRaw</a>
 <span id="Raws.Props"></span>    Props         []<a href="index.html#PropRaw">PropRaw</a>
@@ -1191,7 +1293,7 @@
 		
 			
 			
-			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2313:2372#L91">Recipe</a>
+			<h2 id="Recipe">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2375:2434#L93">Recipe</a>
 				<a class="permalink" href="index.html#Recipe">&#xb6;</a>
 				
 				
@@ -1218,7 +1320,7 @@
 		
 			
 			
-			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2420:2474#L97">RecipeInput</a>
+			<h2 id="RecipeInput">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2482:2536#L99">RecipeInput</a>
 				<a class="permalink" href="index.html#RecipeInput">&#xb6;</a>
 				
 				
@@ -1271,7 +1373,7 @@
 		
 			
 			
-			<h2 id="TileRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=16858:17043#L545">TileRaw</a>
+			<h2 id="TileRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17566:17751#L565">TileRaw</a>
 				<a class="permalink" href="index.html#TileRaw">&#xb6;</a>
 				
 				
@@ -1345,7 +1447,7 @@
 		
 			
 			
-			<h2 id="WarpEscapeInteractionRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17253:17291#L557">WarpEscapeInteractionRaw</a>
+			<h2 id="WarpEscapeInteractionRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17961:17999#L577">WarpEscapeInteractionRaw</a>
 				<a class="permalink" href="index.html#WarpEscapeInteractionRaw">&#xb6;</a>
 				
 				
@@ -1369,7 +1471,7 @@
 		
 			
 			
-			<h2 id="WarpNextInteractionRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17132:17168#L554">WarpNextInteractionRaw</a>
+			<h2 id="WarpNextInteractionRaw">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=17840:17876#L574">WarpNextInteractionRaw</a>
 				<a class="permalink" href="index.html#WarpNextInteractionRaw">&#xb6;</a>
 				
 				
@@ -1393,7 +1495,7 @@
 		
 			
 			
-			<h2 id="Weapon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1680:1759#L60">Weapon</a>
+			<h2 id="Weapon">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=1742:1821#L62">Weapon</a>
 				<a class="permalink" href="index.html#Weapon">&#xb6;</a>
 				
 				
@@ -1421,7 +1523,7 @@
 		
 			
 			
-			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2058:2131#L76">Wearable</a>
+			<h2 id="Wearable">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/raw/raw.go?s=2120:2193#L78">Wearable</a>
 				<a class="permalink" href="index.html#Wearable">&#xb6;</a>
 				
 				

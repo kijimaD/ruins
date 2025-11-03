@@ -136,6 +136,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/doc.go">doc.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/generate_enemy_doc.go">generate_enemy_doc.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/generate_item_doc.go">generate_item_doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/play.go">play.go</a>
@@ -153,6 +155,16 @@
 		
 		
 			<h2 id="pkg-variables">Variables</h2>
+			
+				<p>CmdGenerateEnemyDoc は敵出現確率のドキュメントを生成するコマンド
+
+				<pre>var <span id="CmdGenerateEnemyDoc">CmdGenerateEnemyDoc</span> = &amp;cli.<a href="index.html#Command">Command</a>{
+    <a href="index.html#Name">Name</a>:        &#34;generate-enemy-doc&#34;,
+    <a href="index.html#Usage">Usage</a>:       &#34;generate-enemy-doc&#34;,
+    <a href="index.html#Description">Description</a>: &#34;Generate enemy spawn probability documentation&#34;,
+    <a href="index.html#Action">Action</a>:      runGenerateEnemyDoc,
+    <a href="index.html#Flags">Flags</a>:       []cli.<a href="index.html#Flag">Flag</a>{},
+}</pre>
 			
 				<p>CmdGenerateItemDoc はアイテム出現確率のドキュメントを生成するコマンド
 
@@ -202,7 +214,7 @@
 		
 			
 			
-			<h2 id="RunMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=1418:1469#L31">RunMainApp</a>
+			<h2 id="RunMainApp">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/cmd/cmd.go?s=1441:1492#L32">RunMainApp</a>
 				<a class="permalink" href="index.html#RunMainApp">&#xb6;</a>
 				
 				
