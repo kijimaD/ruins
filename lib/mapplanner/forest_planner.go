@@ -49,7 +49,7 @@ func (f ForestPlanner) PlanInitial(planData *MetaPlan) error {
 type ForestTerrain struct{}
 
 // PlanMeta は森の基本地形をタイルに描画する
-func (f ForestTerrain) PlanMeta(planData *MetaPlan) {
+func (f ForestTerrain) PlanMeta(planData *MetaPlan) error {
 	// まず全体を床で埋める（森の地面）
 	for i := range planData.Tiles {
 		planData.Tiles[i] = planData.GetTile("Floor")
@@ -59,6 +59,7 @@ func (f ForestTerrain) PlanMeta(planData *MetaPlan) {
 	for _, clearing := range planData.Rooms {
 		f.createCircularClearing(planData, clearing)
 	}
+	return nil
 }
 
 // createCircularClearing は円形の空き地を作成する
@@ -85,7 +86,7 @@ func (f ForestTerrain) createCircularClearing(planData *MetaPlan, clearing gc.Re
 type ForestTrees struct{}
 
 // PlanMeta は森に木を配置する
-func (f ForestTrees) PlanMeta(planData *MetaPlan) {
+func (f ForestTrees) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -110,6 +111,7 @@ func (f ForestTrees) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // calculateTreeDensity は位置に基づいて木の密度を計算する
@@ -168,9 +170,9 @@ func (f ForestTrees) placeLargeTree(planData *MetaPlan, centerX, centerY int) {
 type ForestPaths struct{}
 
 // PlanMeta は空き地間に自然な通路を作成する
-func (f ForestPaths) PlanMeta(planData *MetaPlan) {
+func (f ForestPaths) PlanMeta(planData *MetaPlan) error {
 	if len(planData.Rooms) < 2 {
-		return
+		return nil
 	}
 
 	// 各空き地を他の空き地と繋ぐ
@@ -182,6 +184,7 @@ func (f ForestPaths) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // shouldCreatePath は通路を作成するかどうかを判定する
@@ -253,7 +256,7 @@ func (f ForestPaths) createNaturalPath(planData *MetaPlan, room1, room2 gc.Rect)
 type ForestWildlife struct{}
 
 // PlanMeta は森に小さな動物の痕跡を追加する
-func (f ForestWildlife) PlanMeta(planData *MetaPlan) {
+func (f ForestWildlife) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -283,6 +286,7 @@ func (f ForestWildlife) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // NewForestPlanner は森ビルダーを作成する

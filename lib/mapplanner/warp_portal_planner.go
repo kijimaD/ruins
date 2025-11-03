@@ -29,7 +29,7 @@ func NewWarpPortalPlanner(world w.World, plannerType PlannerType) *WarpPortalPla
 }
 
 // PlanMeta はワープポータルをMetaPlanに追加する
-func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
+func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) error {
 	// プランナーが既にワープポータルを配置済みかどうかを確認
 	existingWarpCount := len(planData.WarpPortals)
 
@@ -112,4 +112,5 @@ func (w *WarpPortalPlanner) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }

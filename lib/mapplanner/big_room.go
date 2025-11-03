@@ -32,7 +32,7 @@ type BigRoomDraw struct {
 }
 
 // PlanMeta は大部屋をタイルに描画し、ランダムにバリエーションを適用する
-func (b BigRoomDraw) PlanMeta(planData *MetaPlan) {
+func (b BigRoomDraw) PlanMeta(planData *MetaPlan) error {
 	// まず基本の大部屋を描画
 	b.drawBasicBigRoom(planData)
 
@@ -55,6 +55,7 @@ func (b BigRoomDraw) PlanMeta(planData *MetaPlan) {
 		// 中央台座を追加
 		b.applyCenterPlatform(planData)
 	}
+	return nil
 }
 
 // drawBasicBigRoom は基本の大部屋を描画する

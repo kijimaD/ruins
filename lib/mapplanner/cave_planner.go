@@ -31,7 +31,7 @@ type CaveCellularAutomata struct {
 }
 
 // PlanMeta はセルラーオートマトンで洞窟を生成する
-func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
+func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) error {
 	iterations := c.Iterations
 	if iterations <= 0 {
 		iterations = 5 // デフォルト反復回数
@@ -71,6 +71,7 @@ func (c CaveCellularAutomata) PlanMeta(planData *MetaPlan) {
 
 	// 生成された洞窟から部屋領域を抽出
 	c.extractCaveRooms(planData)
+	return nil
 }
 
 // countWallsInRadius は指定半径内の壁タイル数を数える
@@ -192,7 +193,7 @@ func (c CaveCellularAutomata) floodFill(planData *MetaPlan, startX, startY int, 
 type CavePathWidener struct{}
 
 // PlanMeta は狭い通路を広げる
-func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
+func (c CavePathWidener) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -217,6 +218,7 @@ func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
 	}
 
 	planData.Tiles = newTiles
+	return nil
 }
 
 // countAdjacentFloors は隣接する床タイルの数を数える
@@ -246,7 +248,7 @@ func (c CavePathWidener) countAdjacentFloors(planData *MetaPlan, centerX, center
 type CaveStalactites struct{}
 
 // PlanMeta は洞窟内に鍾乳石を配置する
-func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
+func (c CaveStalactites) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -263,15 +265,16 @@ func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // CaveConnector は隔離された洞窟領域を接続する
 type CaveConnector struct{}
 
 // PlanMeta は隔離された洞窟領域を接続する
-func (c CaveConnector) PlanMeta(planData *MetaPlan) {
+func (c CaveConnector) PlanMeta(planData *MetaPlan) error {
 	if len(planData.Rooms) < 2 {
-		return
+		return nil
 	}
 
 	// 各部屋を最低1つの他の部屋と接続する
@@ -281,6 +284,7 @@ func (c CaveConnector) PlanMeta(planData *MetaPlan) {
 
 		c.createCaveTunnel(planData, room1, room2)
 	}
+	return nil
 }
 
 // createCaveTunnel は2つの洞窟領域間にトンネルを作成する

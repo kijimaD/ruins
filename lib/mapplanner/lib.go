@@ -319,7 +319,9 @@ func (b *PlannerChain) Plan() error {
 	}
 
 	for _, meta := range b.Planners {
-		meta.PlanMeta(&b.PlanData)
+		if err := meta.PlanMeta(&b.PlanData); err != nil {
+			return fmt.Errorf("PlanMeta failed: %w", err)
+		}
 	}
 	return nil
 }
@@ -339,7 +341,7 @@ type InitialMapPlanner interface {
 
 // MetaMapPlanner はメタ情報をプランするインターフェース
 type MetaMapPlanner interface {
-	PlanMeta(*MetaPlan)
+	PlanMeta(*MetaPlan) error
 }
 
 // NewSmallRoomPlanner はシンプルな小部屋プランナーを作成する

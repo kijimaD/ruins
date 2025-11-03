@@ -130,6 +130,15 @@ Walkable = false
 Name = "Dirt"
 Description = "土タイル"
 Walkable = true
+
+[[ItemTables]]
+Name = "通常"
+
+[[ItemTables.Entries]]
+ItemName = "TestItem"
+Weight = 1.0
+MinDepth = 1
+MaxDepth = 50
 `)
 	return &rawMaster
 }

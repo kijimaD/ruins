@@ -1,7 +1,7 @@
 package mapplanner
 
 import (
-	"log"
+	"fmt"
 
 	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
@@ -40,9 +40,9 @@ func NewItemPlanner(world w.World, plannerType PlannerType) *ItemPlanner {
 }
 
 // PlanMeta はアイテム配置情報をMetaPlanに追加する
-func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
+func (i *ItemPlanner) PlanMeta(planData *MetaPlan) error {
 	if !i.plannerType.SpawnItems {
-		return // アイテムをスポーンしない設定の場合は何もしない
+		return nil // アイテムをスポーンしない設定の場合は何もしない
 	}
 
 	// Itemsフィールドが存在しない場合は初期化
@@ -53,8 +53,7 @@ func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
 	// アイテムテーブルを取得
 	itemTable, err := planData.RawMaster.GetItemTable(i.plannerType.ItemTableName)
 	if err != nil {
-		log.Printf("警告: '%s'アイテムテーブルが見つかりません: %v", i.plannerType.ItemTableName, err)
-		return
+		return fmt.Errorf("'%s'アイテムテーブルが見つかりません: %w", i.plannerType.ItemTableName, err)
 	}
 
 	depth := i.world.Resources.Dungeon.Depth
@@ -69,19 +68,22 @@ func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
 	for j := 0; j < itemCount; j++ {
 		itemName := itemTable.SelectByWeight(planData.RNG, depth)
 		if itemName != "" {
-			i.addItem(planData, itemName)
+			if err := i.addItem(planData, itemName); err != nil {
+				return err
+			}
 		}
 	}
+
+	return nil
 }
 
 // addItem は単一のアイテムをMetaPlanに追加する
-func (i *ItemPlanner) addItem(planData *MetaPlan, itemName string) {
+func (i *ItemPlanner) addItem(planData *MetaPlan, itemName string) error {
 	failCount := 0
 
 	for {
 		if failCount > maxItemPlacementAttempts {
-			log.Printf("アイテム配置の試行回数が上限に達しました。アイテム: %s", itemName)
-			break
+			return fmt.Errorf("アイテム配置の試行回数が上限に達しました。アイテム: %s", itemName)
 		}
 
 		// ランダムな位置を選択
@@ -101,7 +103,7 @@ func (i *ItemPlanner) addItem(planData *MetaPlan, itemName string) {
 			ItemName: itemName,
 		})
 
-		return
+		return nil
 	}
 }
 

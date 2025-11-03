@@ -46,7 +46,7 @@ type RuinsDraw struct {
 }
 
 // PlanMeta は廃墟構造をタイルに描画する
-func (r RuinsDraw) PlanMeta(planData *MetaPlan) {
+func (r RuinsDraw) PlanMeta(planData *MetaPlan) error {
 	// まず全体を床で埋める（屋外エリア）
 	for i := range planData.Tiles {
 		planData.Tiles[i] = planData.GetTile(r.FloorTile)
@@ -56,6 +56,7 @@ func (r RuinsDraw) PlanMeta(planData *MetaPlan) {
 	for _, room := range planData.Rooms {
 		r.drawRuinedBuilding(planData, room)
 	}
+	return nil
 }
 
 // drawRuinedBuilding は破損した建物を描画する
@@ -125,7 +126,7 @@ type RuinsDebris struct {
 }
 
 // PlanMeta は廃墟に瓦礫を配置する
-func (r RuinsDebris) PlanMeta(planData *MetaPlan) {
+func (r RuinsDebris) PlanMeta(planData *MetaPlan) error {
 	width := int(planData.Level.TileWidth)
 	height := int(planData.Level.TileHeight)
 
@@ -144,6 +145,7 @@ func (r RuinsDebris) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // calculateDebrisChance は瓦礫の配置確率を計算する
@@ -182,9 +184,9 @@ type RuinsCorridors struct {
 }
 
 // PlanMeta は廃墟間に通路を作成する
-func (r RuinsCorridors) PlanMeta(planData *MetaPlan) {
+func (r RuinsCorridors) PlanMeta(planData *MetaPlan) error {
 	if len(planData.Rooms) < 2 {
-		return
+		return nil
 	}
 
 	// 各建物間に通路を作成
@@ -199,6 +201,7 @@ func (r RuinsCorridors) PlanMeta(planData *MetaPlan) {
 			}
 		}
 	}
+	return nil
 }
 
 // createRuinedPath は破損した通路を作成する
