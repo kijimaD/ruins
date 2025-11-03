@@ -50,12 +50,12 @@ func (n *HostileNPCPlanner) PlanMeta(planData *MetaPlan) {
 	}
 
 	failCount := 0
-	total := baseHostileNPCCount + planData.RandomSource.Intn(randomHostileNPCCount)
+	total := baseHostileNPCCount + planData.RNG.IntN(randomHostileNPCCount)
 	successCount := 0
 
 	for successCount < total && failCount <= maxHostileNPCFailCount {
-		tx := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileWidth)))
-		ty := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileHeight)))
+		tx := gc.Tile(planData.RNG.IntN(int(planData.Level.TileWidth)))
+		ty := gc.Tile(planData.RNG.IntN(int(planData.Level.TileHeight)))
 
 		if !planData.IsSpawnableTile(n.world, tx, ty) {
 			failCount++

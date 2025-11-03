@@ -37,7 +37,7 @@ func (b BigRoomDraw) PlanMeta(planData *MetaPlan) {
 	b.drawBasicBigRoom(planData)
 
 	// ランダムにバリエーションを選択して適用
-	variantType := planData.RandomSource.Intn(5)
+	variantType := planData.RNG.IntN(5)
 
 	switch variantType {
 	case 0:
@@ -110,7 +110,7 @@ func (b BigRoomDraw) drawBasicBigRoom(planData *MetaPlan) {
 // applyPillars は部屋に柱を追加する
 func (b BigRoomDraw) applyPillars(planData *MetaPlan) {
 	// 柱の間隔をランダムに決定（3-6の範囲）
-	spacing := 3 + planData.RandomSource.Intn(4)
+	spacing := 3 + planData.RNG.IntN(4)
 
 	for _, room := range planData.Rooms {
 		// 柱の開始位置を計算（部屋の中心から対称に配置）
@@ -136,9 +136,12 @@ func (b BigRoomDraw) applyObstacles(planData *MetaPlan) {
 		obstacleCount := (roomWidth * roomHeight) / 30 // 面積の1/30程度
 
 		for i := 0; i < obstacleCount; i++ {
-			// 部屋内のランダムな位置に障害物を配置
-			x := int(room.X1) + 1 + planData.RandomSource.Intn(roomWidth-2)
-			y := int(room.Y1) + 1 + planData.RandomSource.Intn(roomHeight-2)
+			// 部屋内のランダムな位置に障害物を配置する
+			// IntNの引数が正であることを保証する
+			maxXRange := max(1, roomWidth-2)
+			maxYRange := max(1, roomHeight-2)
+			x := int(room.X1) + 1 + planData.RNG.IntN(maxXRange)
+			y := int(room.Y1) + 1 + planData.RNG.IntN(maxYRange)
 
 			idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 			planData.Tiles[idx] = planData.GetTile("Wall")
@@ -153,7 +156,7 @@ func (b BigRoomDraw) applyMazePattern(planData *MetaPlan) {
 		for x := int(room.X1) + 2; x < int(room.X2)-1; x += 3 {
 			for y := int(room.Y1) + 1; y < int(room.Y2); y++ {
 				// 縦の壁を配置（ランダムに開口部を作る）
-				if planData.RandomSource.Float64() > 0.3 {
+				if planData.RNG.Float64() > 0.3 {
 					idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
@@ -163,7 +166,7 @@ func (b BigRoomDraw) applyMazePattern(planData *MetaPlan) {
 		for y := int(room.Y1) + 2; y < int(room.Y2)-1; y += 3 {
 			for x := int(room.X1) + 1; x < int(room.X2); x++ {
 				// 横の壁を配置（ランダムに開口部を作る）
-				if planData.RandomSource.Float64() > 0.3 {
+				if planData.RNG.Float64() > 0.3 {
 					idx := planData.Level.XYTileIndex(gc.Tile(x), gc.Tile(y))
 					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
@@ -179,7 +182,7 @@ func (b BigRoomDraw) applyCenterPlatform(planData *MetaPlan) {
 		centerY := int(room.Y1+room.Y2) / 2
 
 		// 台座のサイズを部屋のサイズに基づいて決定
-		platformSize := 2 + planData.RandomSource.Intn(3) // 2-4タイルの台座
+		platformSize := 2 + planData.RNG.IntN(3) // 2-4タイルの台座
 
 		// 円形の台座を作成
 		for dx := -platformSize; dx <= platformSize; dx++ {

@@ -204,6 +204,31 @@ func TestSpawnNPCHasAIMoveFSM(t *testing.T) {
 	assert.True(t, enemyFound, "SpawnEnemyで生成されたエンティティはAIMoveFSMコンポーネントを持つべき")
 }
 
+func TestSpawnEnemy_WithDropTable(t *testing.T) {
+	t.Parallel()
+
+	world := testutil.InitTestWorld(t)
+
+	// SpriteSheetsを初期化
+	spriteSheets := make(map[string]gc.SpriteSheet)
+	spriteSheets["field"] = gc.SpriteSheet{
+		Sprites: map[string]gc.Sprite{
+			"red_ball": {Width: 32, Height: 32},
+		},
+	}
+	world.Resources.SpriteSheets = &spriteSheets
+
+	// 「火の玉」を生成（DropTableが定義されている敵）
+	enemy, err := SpawnEnemy(world, 10, 10, "火の玉")
+	require.NoError(t, err, "火の玉の生成に失敗")
+
+	// DropTableコンポーネントが付与されていることを確認
+	assert.True(t, enemy.HasComponent(world.Components.DropTable), "火の玉はDropTableコンポーネントを持つべき")
+
+	dropTable := world.Components.DropTable.Get(enemy).(*gc.DropTable)
+	assert.Equal(t, "火の玉", dropTable.Name, "DropTableの名前が正しくない")
+}
+
 func TestSpawnDoor(t *testing.T) {
 	t.Parallel()
 

@@ -15,7 +15,7 @@ type CavePlanner struct{}
 func (c CavePlanner) PlanInitial(planData *MetaPlan) error {
 	// 初期状態をランダムに設定（30%の確率で壁、より広い空間を確保）
 	for i := range planData.Tiles {
-		if planData.RandomSource.Float64() < 0.30 {
+		if planData.RNG.Float64() < 0.30 {
 			planData.Tiles[i] = planData.GetTile("Wall")
 		} else {
 			planData.Tiles[i] = planData.GetTile("Floor")
@@ -209,7 +209,7 @@ func (c CavePathWidener) PlanMeta(planData *MetaPlan) {
 				adjacentFloorCount := c.countAdjacentFloors(planData, x, y)
 
 				// 隣接する床が2個以上ある場合、30%の確率で床にする
-				if adjacentFloorCount >= 2 && planData.RandomSource.Float64() < 0.3 {
+				if adjacentFloorCount >= 2 && planData.RNG.Float64() < 0.3 {
 					newTiles[idx] = planData.GetTile("Floor")
 				}
 			}
@@ -257,7 +257,7 @@ func (c CaveStalactites) PlanMeta(planData *MetaPlan) {
 
 			if planData.Tiles[idx].Walkable {
 				// 2%の確率で鍾乳石を配置（確率を下げてより通行可能に）
-				if planData.RandomSource.Float64() < 0.02 {
+				if planData.RNG.Float64() < 0.02 {
 					planData.Tiles[idx] = planData.GetTile("Wall")
 				}
 			}

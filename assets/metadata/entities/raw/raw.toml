@@ -2395,8 +2395,11 @@ Weight   = 0.2
 Name   = "火の玉"
 XpBase = 5
 [[DropTables.Entries]]
+Material = ""
+Weight   = 0.5
+[[DropTables.Entries]]
 Material = "鉄くず"
-Weight   = 1.0
+Weight   = 0.5
 
 [[DropTables]]
 Name   = "灰の偶像"

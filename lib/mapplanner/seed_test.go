@@ -1,6 +1,7 @@
 package mapplanner
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -97,13 +98,13 @@ func TestRandomSourceDeterministic(t *testing.T) {
 	const seed uint64 = 99999
 
 	// 同じシードから作成した2つのRandomSource
-	rs1 := NewRandomSource(seed)
-	rs2 := NewRandomSource(seed)
+	rs1 := rand.New(rand.NewPCG(seed, seed+1))
+	rs2 := rand.New(rand.NewPCG(seed, seed+1))
 
 	// 同じ順序で同じ値を生成することを確認
 	for i := 0; i < 100; i++ {
-		val1 := rs1.Intn(1000)
-		val2 := rs2.Intn(1000)
+		val1 := rs1.IntN(1000)
+		val2 := rs2.IntN(1000)
 		if val1 != val2 {
 			t.Errorf("反復%dで異なる値が生成されました。val1: %d, val2: %d", i, val1, val2)
 		}

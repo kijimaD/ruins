@@ -70,16 +70,16 @@ func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
 	}
 
 	// 通常アイテムの配置数（階層の深度に応じて調整）
-	normalItemCount := baseItemCount + planData.RandomSource.Intn(randomItemCount)
+	normalItemCount := baseItemCount + planData.RNG.IntN(randomItemCount)
 	if i.world.Resources.Dungeon != nil && i.world.Resources.Dungeon.Depth > itemIncreaseDepth {
 		normalItemCount++ // 深い階層ではアイテム数を増加
 	}
 
 	// レアアイテムの配置数（低確率）
 	rareItemCount := 0
-	if planData.RandomSource.Intn(100) < rareItemProbability {
+	if planData.RNG.IntN(100) < rareItemProbability {
 		rareItemCount = 1
-		if i.world.Resources.Dungeon != nil && i.world.Resources.Dungeon.Depth > deepRareItemDepth && planData.RandomSource.Intn(100) < deepRareItemProbability {
+		if i.world.Resources.Dungeon != nil && i.world.Resources.Dungeon.Depth > deepRareItemDepth && planData.RNG.IntN(100) < deepRareItemProbability {
 			rareItemCount = 2
 		}
 	}
@@ -105,8 +105,8 @@ func (i *ItemPlanner) addItemsOfType(planData *MetaPlan, itemList []string, coun
 		}
 
 		// ランダムな位置を選択
-		x := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileWidth)))
-		y := gc.Tile(planData.RandomSource.Intn(int(planData.Level.TileHeight)))
+		x := gc.Tile(planData.RNG.IntN(int(planData.Level.TileWidth)))
+		y := gc.Tile(planData.RNG.IntN(int(planData.Level.TileHeight)))
 
 		// スポーン可能な位置かチェック
 		if !i.isValidItemPosition(planData, x, y) {
@@ -115,7 +115,7 @@ func (i *ItemPlanner) addItemsOfType(planData *MetaPlan, itemList []string, coun
 		}
 
 		// アイテム名をランダム選択
-		itemName := itemList[planData.RandomSource.Intn(len(itemList))]
+		itemName := itemList[planData.RNG.IntN(len(itemList))]
 
 		// MetaPlanにアイテムを追加
 		planData.Items = append(planData.Items, ItemSpec{

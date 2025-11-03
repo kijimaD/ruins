@@ -4,6 +4,7 @@ package mapplanner
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"time"
 
 	gc "github.com/kijimaD/ruins/lib/components"
@@ -46,8 +47,8 @@ type MetaPlan struct {
 	// 廊下群。廊下は部屋と部屋をつなぐ移動可能な空間のことをいう。
 	// 廊下はタイルの集合体である
 	Corridors [][]resources.TileIdx
-	// RandomSource はシード値による再現可能なランダム生成を提供する
-	RandomSource *RandomSource
+	// 乱数生成器
+	RNG *rand.Rand
 	// 階層を構成するタイル群。長さはステージの大きさで決まる
 	// 通行可能かを判定するための情報を保持している必要がある
 	Tiles []raw.TileRaw
@@ -288,7 +289,7 @@ func NewPlannerChain(width gc.Tile, height gc.Tile, seed uint64) *PlannerChain {
 			Tiles:               tiles,
 			Rooms:               []gc.Rect{},
 			Corridors:           [][]resources.TileIdx{},
-			RandomSource:        NewRandomSource(seed),
+			RNG:                 rand.New(rand.NewPCG(seed, seed+1)),
 			WarpPortals:         []WarpPortal{},
 			NPCs:                []NPCSpec{},
 			Items:               []ItemSpec{},
@@ -454,7 +455,7 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain
 	}
 
 	// シード値からランダムソースを作成（ビルダー選択用）
-	rs := NewRandomSource(seed)
+	rng := rand.New(rand.NewPCG(seed, 0))
 
 	// ランダム選択対象のプランナータイプ（街は除外）
 	candidateTypes := []PlannerType{
@@ -466,7 +467,7 @@ func NewRandomPlanner(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain
 	}
 
 	// ランダムに選択
-	selectedType := candidateTypes[rs.Intn(len(candidateTypes))]
+	selectedType := candidateTypes[rng.IntN(len(candidateTypes))]
 
 	chain, err := selectedType.PlannerFunc(width, height, seed)
 	if err != nil {
