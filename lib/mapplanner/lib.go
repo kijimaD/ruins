@@ -379,6 +379,8 @@ type PlannerType struct {
 	SpawnItems bool
 	// ポータル位置を固定するか
 	UseFixedPortalPos bool
+	// アイテムテーブル名
+	ItemTableName string
 	// プランナー関数
 	PlannerFunc func(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error)
 }
@@ -390,6 +392,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "通常",
 	}
 
 	// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ
@@ -398,6 +401,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "通常",
 		PlannerFunc:       NewSmallRoomPlanner,
 	}
 
@@ -407,6 +411,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "通常",
 		PlannerFunc:       NewBigRoomPlanner,
 	}
 
@@ -416,15 +421,17 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "洞窟",
 		PlannerFunc:       NewCavePlanner,
 	}
 
-	// PlannerTypeRuins は遺跡ダンジョンのプランナータイプ
+	// PlannerTypeRuins は廃墟ダンジョンのプランナータイプ
 	PlannerTypeRuins = PlannerType{
-		Name:              "遺跡",
+		Name:              "廃墟",
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "廃墟",
 		PlannerFunc:       NewRuinsPlanner,
 	}
 
@@ -434,6 +441,7 @@ var (
 		SpawnEnemies:      true,
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
+		ItemTableName:     "森",
 		PlannerFunc:       NewForestPlanner,
 	}
 
@@ -443,6 +451,7 @@ var (
 		SpawnEnemies:      false, // 街では敵をスポーンしない
 		SpawnItems:        false, // 街ではフィールドアイテムをスポーンしない
 		UseFixedPortalPos: true,  // ポータル位置を固定
+		ItemTableName:     "",    // 街ではアイテムをスポーンしないので空
 		PlannerFunc:       NewTownPlanner,
 	}
 )

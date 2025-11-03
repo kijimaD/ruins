@@ -37,6 +37,7 @@ Description = "半分程度回復する"
 		RecipeIndex:       map[string]int{},
 		CommandTableIndex: map[string]int{},
 		DropTableIndex:    map[string]int{},
+		ItemTableIndex:    map[string]int{},
 		SpriteSheetIndex:  map[string]int{},
 		TileIndex:         map[string]int{},
 		PropIndex:         map[string]int{},

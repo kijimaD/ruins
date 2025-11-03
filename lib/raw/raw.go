@@ -16,6 +16,7 @@ type Master struct {
 	MemberIndex       map[string]int
 	CommandTableIndex map[string]int
 	DropTableIndex    map[string]int
+	ItemTableIndex    map[string]int
 	SpriteSheetIndex  map[string]int
 	TileIndex         map[string]int
 	PropIndex         map[string]int
@@ -28,6 +29,7 @@ type Raws struct {
 	Members       []Member
 	CommandTables []CommandTable
 	DropTables    []DropTable
+	ItemTables    []ItemTable
 	SpriteSheets  []SpriteSheet
 	Tiles         []TileRaw
 	Props         []PropRaw
@@ -155,6 +157,7 @@ func Load(entityMetadataContent string) (Master, error) {
 	rw.MemberIndex = map[string]int{}
 	rw.CommandTableIndex = map[string]int{}
 	rw.DropTableIndex = map[string]int{}
+	rw.ItemTableIndex = map[string]int{}
 	rw.SpriteSheetIndex = map[string]int{}
 	rw.TileIndex = map[string]int{}
 	rw.PropIndex = map[string]int{}
@@ -183,6 +186,9 @@ func Load(entityMetadataContent string) (Master, error) {
 	}
 	for i, dropTable := range rw.Raws.DropTables {
 		rw.DropTableIndex[dropTable.Name] = i
+	}
+	for i, itemTable := range rw.Raws.ItemTables {
+		rw.ItemTableIndex[itemTable.Name] = i
 	}
 	for i, spriteSheet := range rw.Raws.SpriteSheets {
 		rw.SpriteSheetIndex[spriteSheet.Name] = i
@@ -529,6 +535,20 @@ func (rw *Master) GetDropTable(name string) (DropTable, error) {
 	dropTable := rw.Raws.DropTables[dtIdx]
 
 	return dropTable, nil
+}
+
+// GetItemTable は指定された名前のアイテムテーブルを取得する
+func (rw *Master) GetItemTable(name string) (ItemTable, error) {
+	itIdx, ok := rw.ItemTableIndex[name]
+	if !ok {
+		return ItemTable{}, fmt.Errorf("キーが存在しない: %s", name)
+	}
+	if itIdx >= len(rw.Raws.ItemTables) {
+		return ItemTable{}, fmt.Errorf("アイテムテーブルインデックスが範囲外: %d (長さ: %d)", itIdx, len(rw.Raws.ItemTables))
+	}
+	itemTable := rw.Raws.ItemTables[itIdx]
+
+	return itemTable, nil
 }
 
 // TileRaw はタイルのローデータ定義

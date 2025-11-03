@@ -2405,6 +2405,80 @@ Name = "灰の偶像"
 Material = "鉄くず"
 Weight   = 1.0
 
+# item table ================
+
+[[ItemTables]]
+Name = "通常"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight   = 1.0
+[[ItemTables.Entries]]
+ItemName = "回復スプレー"
+Weight   = 0.8
+[[ItemTables.Entries]]
+ItemName = "手榴弾"
+Weight   = 0.5
+[[ItemTables.Entries]]
+ItemName = "毒消し"
+Weight   = 0.2
+[[ItemTables.Entries]]
+ItemName = "黒曜石"
+Weight   = 0.3
+
+[[ItemTables]]
+Name = "洞窟"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight   = 1.0
+[[ItemTables.Entries]]
+ItemName = "毒消し"
+Weight   = 0.8
+[[ItemTables.Entries]]
+ItemName = "黒曜石"
+Weight   = 0.6
+[[ItemTables.Entries]]
+ItemName = "鉄くず"
+Weight   = 0.7
+[[ItemTables.Entries]]
+ItemName = "雷光石"
+Weight   = 0.4
+
+[[ItemTables]]
+Name = "森"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight   = 1.0
+[[ItemTables.Entries]]
+ItemName = "緑ハーブ"
+Weight   = 1.2
+[[ItemTables.Entries]]
+ItemName = "黄ハーブ"
+Weight   = 0.8
+[[ItemTables.Entries]]
+ItemName = "木の棒"
+Weight   = 0.9
+[[ItemTables.Entries]]
+ItemName = "毒消し"
+Weight   = 0.7
+
+[[ItemTables]]
+Name = "廃墟"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight   = 1.0
+[[ItemTables.Entries]]
+ItemName = "銀の欠片"
+Weight   = 0.8
+[[ItemTables.Entries]]
+ItemName = "古い歯車"
+Weight   = 0.7
+[[ItemTables.Entries]]
+ItemName = "水晶の粉"
+Weight   = 0.6
+[[ItemTables.Entries]]
+ItemName = "手榴弾"
+Weight   = 0.5
+
 # tile ================
 
 [[Tiles]]

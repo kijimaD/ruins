@@ -180,6 +180,30 @@ Walkable = true
 Name = "Wall"
 Description = "壁タイル"
 Walkable = false
+
+[[ItemTables]]
+Name = "通常"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight = 1.0
+
+[[ItemTables]]
+Name = "洞窟"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight = 1.0
+
+[[ItemTables]]
+Name = "森"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight = 1.0
+
+[[ItemTables]]
+Name = "廃墟"
+[[ItemTables.Entries]]
+ItemName = "回復薬"
+Weight = 1.0
 `
 
 	master, err := raw.Load(rawData)
