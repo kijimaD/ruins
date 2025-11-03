@@ -130,30 +130,6 @@ Walkable = false
 Name = "Dirt"
 Description = "土タイル"
 Walkable = true
-
-[[ItemTables]]
-Name = "通常"
-[[ItemTables.Entries]]
-ItemName = "回復薬"
-Weight = 1.0
-
-[[ItemTables]]
-Name = "洞窟"
-[[ItemTables.Entries]]
-ItemName = "回復薬"
-Weight = 1.0
-
-[[ItemTables]]
-Name = "森"
-[[ItemTables.Entries]]
-ItemName = "回復薬"
-Weight = 1.0
-
-[[ItemTables]]
-Name = "廃墟"
-[[ItemTables.Entries]]
-ItemName = "回復薬"
-Weight = 1.0
 `)
 	return &rawMaster
 }

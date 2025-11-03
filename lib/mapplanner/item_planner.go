@@ -59,15 +59,17 @@ func (i *ItemPlanner) PlanMeta(planData *MetaPlan) {
 		return
 	}
 
+	depth := i.world.Resources.Dungeon.Depth
+
 	// アイテムの配置数（階層の深度に応じて調整）
 	itemCount := baseItemCount + planData.RNG.IntN(randomItemCount)
-	if i.world.Resources.Dungeon != nil && i.world.Resources.Dungeon.Depth > itemIncreaseDepth {
+	if depth > itemIncreaseDepth {
 		itemCount++ // 深い階層ではアイテム数を増加
 	}
 
 	// アイテムを配置
 	for j := 0; j < itemCount; j++ {
-		itemName := itemTable.SelectByWeight(planData.RNG)
+		itemName := itemTable.SelectByWeight(planData.RNG, depth)
 		if itemName != "" {
 			i.addItem(planData, itemName)
 		}

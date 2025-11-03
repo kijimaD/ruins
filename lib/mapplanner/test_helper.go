@@ -17,31 +17,31 @@ func CreateTestRawMaster() *raw.Master {
 		{
 			Name: "通常",
 			Entries: []raw.ItemTableEntry{
-				{ItemName: "回復薬", Weight: 1.0},
-				{ItemName: "回復スプレー", Weight: 0.8},
-				{ItemName: "手榴弾", Weight: 0.5},
+				{ItemName: "回復薬", Weight: 1.0, MinDepth: 1, MaxDepth: 20},
+				{ItemName: "回復スプレー", Weight: 0.8, MinDepth: 3, MaxDepth: 50},
+				{ItemName: "手榴弾", Weight: 0.5, MinDepth: 8, MaxDepth: 40},
 			},
 		},
 		{
 			Name: "洞窟",
 			Entries: []raw.ItemTableEntry{
-				{ItemName: "回復薬", Weight: 1.0},
-				{ItemName: "毒消し", Weight: 0.8},
-				{ItemName: "黒曜石", Weight: 0.6},
+				{ItemName: "回復薬", Weight: 1.0, MinDepth: 1, MaxDepth: 20},
+				{ItemName: "毒消し", Weight: 0.8, MinDepth: 1, MaxDepth: 8},
+				{ItemName: "黒曜石", Weight: 0.6, MinDepth: 3, MaxDepth: 25},
 			},
 		},
 		{
 			Name: "森",
 			Entries: []raw.ItemTableEntry{
-				{ItemName: "回復薬", Weight: 1.0},
-				{ItemName: "緑ハーブ", Weight: 1.2},
+				{ItemName: "回復薬", Weight: 1.0, MinDepth: 1, MaxDepth: 15},
+				{ItemName: "緑ハーブ", Weight: 1.2, MinDepth: 1, MaxDepth: 15},
 			},
 		},
 		{
 			Name: "廃墟",
 			Entries: []raw.ItemTableEntry{
-				{ItemName: "回復薬", Weight: 1.0},
-				{ItemName: "銀の欠片", Weight: 0.8},
+				{ItemName: "回復薬", Weight: 1.0, MinDepth: 1, MaxDepth: 15},
+				{ItemName: "銀の欠片", Weight: 0.8, MinDepth: 3, MaxDepth: 20},
 			},
 		},
 	}
