@@ -2237,7 +2237,7 @@ Defense   = 0
 [[Members]]
 Name            = "軽戦車"
 SpriteSheetName = "field"
-SpriteKey       = "red_ball"
+SpriteKey       = "light_tank"
 [Members.Attributes]
 Vitality  = 12
 Strength  = 8
@@ -2245,6 +2245,16 @@ Sensation = 5
 Dexterity = 5
 Agility   = 5
 Defense   = 5
+
+[Members.LightSource]
+Radius  = 4
+Enabled = true
+
+[Members.LightSource.Color]
+R = 255
+G = 255
+B = 50
+A = 255
 
 [[Members]]
 Name            = "火の玉"
@@ -2279,6 +2289,18 @@ Sensation = 5
 Dexterity = 2
 Agility   = 3
 Defense   = 40
+
+[[Members]]
+Name            = "スライム"
+SpriteSheetName = "field"
+SpriteKey       = "slime"
+[Members.Attributes]
+Vitality  = 5
+Strength  = 4
+Sensation = 3
+Dexterity = 3
+Agility   = 4
+Defense   = 2
 
 # NPC ================
 
@@ -2362,6 +2384,12 @@ Weapon = "M1919重機関銃"
 Weight = 0.5
 
 [[CommandTables]]
+Name = "スライム"
+[[CommandTables.Entries]]
+Weapon = "体当たり"
+Weight = 1.0
+
+[[CommandTables]]
 Name = "火の玉"
 [[CommandTables.Entries]]
 Weapon = "体当たり"
@@ -2388,6 +2416,15 @@ Material = "鉄くず"
 Weight   = 0.4
 [[DropTables.Entries]]
 Material = "フェライトコア"
+Weight   = 0.2
+
+[[DropTables]]
+Name = "スライム"
+[[DropTables.Entries]]
+Material = ""
+Weight   = 0.8
+[[DropTables.Entries]]
+Material = "鉄くず"
 Weight   = 0.2
 
 [[DropTables]]
@@ -2792,3 +2829,87 @@ R = 0
 G = 0
 B = 255
 A = 255
+
+# enemy tables ================
+
+[[EnemyTables]]
+Name = "通常"
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight    = 1.2
+MinDepth  = 1
+MaxDepth  = 10
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight    = 1.0
+MinDepth  = 1
+MaxDepth  = 20
+[[EnemyTables.Entries]]
+EnemyName = "軽戦車"
+Weight    = 0.8
+MinDepth  = 1
+MaxDepth  = 50
+[[EnemyTables.Entries]]
+EnemyName = "灰の偶像"
+Weight    = 0.5
+MinDepth  = 20
+MaxDepth  = 50
+
+[[EnemyTables]]
+Name = "洞窟"
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight    = 1.0
+MinDepth  = 1
+MaxDepth  = 8
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight    = 1.0
+MinDepth  = 1
+MaxDepth  = 15
+[[EnemyTables.Entries]]
+EnemyName = "軽戦車"
+Weight    = 0.6
+MinDepth  = 1
+MaxDepth  = 25
+
+[[EnemyTables]]
+Name = "森"
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight    = 1.2
+MinDepth  = 1
+MaxDepth  = 12
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight    = 1.0
+MinDepth  = 1
+MaxDepth  = 15
+[[EnemyTables.Entries]]
+EnemyName = "軽戦車"
+Weight    = 0.5
+MinDepth  = 1
+MaxDepth  = 20
+
+[[EnemyTables]]
+Name = "廃墟"
+[[EnemyTables.Entries]]
+EnemyName = "スライム"
+Weight    = 0.9
+MinDepth  = 1
+MaxDepth  = 10
+[[EnemyTables.Entries]]
+EnemyName = "火の玉"
+Weight    = 0.8
+MinDepth  = 1
+MaxDepth  = 20
+[[EnemyTables.Entries]]
+EnemyName = "軽戦車"
+Weight    = 1.0
+MinDepth  = 1
+MaxDepth  = 30
+[[EnemyTables.Entries]]
+EnemyName = "灰の偶像"
+Weight    = 0.7
+MinDepth  = 15
+MaxDepth  = 35

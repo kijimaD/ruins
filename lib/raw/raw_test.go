@@ -38,6 +38,7 @@ Description = "半分程度回復する"
 		CommandTableIndex: map[string]int{},
 		DropTableIndex:    map[string]int{},
 		ItemTableIndex:    map[string]int{},
+		EnemyTableIndex:   map[string]int{},
 		SpriteSheetIndex:  map[string]int{},
 		TileIndex:         map[string]int{},
 		PropIndex:         map[string]int{},

@@ -383,6 +383,8 @@ type PlannerType struct {
 	UseFixedPortalPos bool
 	// アイテムテーブル名
 	ItemTableName string
+	// 敵テーブル名
+	EnemyTableName string
 	// プランナー関数
 	PlannerFunc func(width gc.Tile, height gc.Tile, seed uint64) (*PlannerChain, error)
 }
@@ -395,6 +397,7 @@ var (
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
 		ItemTableName:     "通常",
+		EnemyTableName:    "通常",
 	}
 
 	// PlannerTypeSmallRoom は小部屋ダンジョンのプランナータイプ
@@ -404,6 +407,7 @@ var (
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
 		ItemTableName:     "通常",
+		EnemyTableName:    "通常",
 		PlannerFunc:       NewSmallRoomPlanner,
 	}
 
@@ -414,6 +418,7 @@ var (
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
 		ItemTableName:     "通常",
+		EnemyTableName:    "通常",
 		PlannerFunc:       NewBigRoomPlanner,
 	}
 
@@ -424,6 +429,7 @@ var (
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
 		ItemTableName:     "洞窟",
+		EnemyTableName:    "洞窟",
 		PlannerFunc:       NewCavePlanner,
 	}
 
@@ -434,6 +440,7 @@ var (
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
 		ItemTableName:     "廃墟",
+		EnemyTableName:    "廃墟",
 		PlannerFunc:       NewRuinsPlanner,
 	}
 
@@ -444,6 +451,7 @@ var (
 		SpawnItems:        true,
 		UseFixedPortalPos: false,
 		ItemTableName:     "森",
+		EnemyTableName:    "森",
 		PlannerFunc:       NewForestPlanner,
 	}
 
@@ -454,6 +462,7 @@ var (
 		SpawnItems:        false, // 街ではフィールドアイテムをスポーンしない
 		UseFixedPortalPos: true,  // ポータル位置を固定
 		ItemTableName:     "",    // 街ではアイテムをスポーンしないので空
+		EnemyTableName:    "",    // 街では敵をスポーンしないので空
 		PlannerFunc:       NewTownPlanner,
 	}
 )

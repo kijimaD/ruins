@@ -29,6 +29,7 @@ func NewMainApp() *cli.App {
 		CmdPlay,
 		CmdScreenshot,
 		CmdGenerateItemDoc,
+		CmdGenerateEnemyDoc,
 	}
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 %s
