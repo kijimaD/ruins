@@ -40,7 +40,7 @@ func runGenerateItemDoc(_ *cli.Context) error {
 
 	// ヘッダー
 	writeString(file, "# アイテム出現テーブル\n\n")
-	writeString(file, "各ステージ・階層ごとのアイテム出現確率を示します。\n\n")
+	writeString(file, "各ステージ・階層ごとのアイテム出現確率を示す。\n\n")
 
 	// 各ItemTableを処理
 	for _, table := range master.Raws.ItemTables {
