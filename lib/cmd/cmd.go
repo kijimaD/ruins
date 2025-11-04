@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/kijimaD/ruins/lib/consts"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 const splash = `───────────────────────────────────────────────────────
@@ -17,30 +18,26 @@ const splash = `─────────────────────�
 `
 
 // NewMainApp は新しいメインアプリケーションを作成する
-func NewMainApp() *cli.App {
-	app := cli.NewApp()
-	app.Name = "ruins"
-	app.Usage = "ruins [subcommand] [args]"
-	app.Description = "This is RPG!"
-	app.DefaultCommand = CmdPlay.Name
-	app.Version = consts.AppVersion
-	app.EnableBashCompletion = true
-	app.Commands = []*cli.Command{
-		CmdPlay,
-		CmdScreenshot,
-		CmdGenerateItemDoc,
-		CmdGenerateEnemyDoc,
+func NewMainApp() *cli.Command {
+	app := &cli.Command{
+		Name:        "ruins",
+		Usage:       "ruins [subcommand] [args]",
+		Description: splash + "\nThis is Roguelike!",
+		Version:     consts.AppVersion,
+		Commands: []*cli.Command{
+			CmdPlay,
+			CmdScreenshot,
+			CmdGenerateItemDoc,
+			CmdGenerateEnemyDoc,
+		},
 	}
-	cli.AppHelpTemplate = fmt.Sprintf(`%s
-%s
-`, splash, cli.AppHelpTemplate)
 
 	return app
 }
 
 // RunMainApp はメインアプリケーションを実行する
-func RunMainApp(app *cli.App, args ...string) error {
-	err := app.Run(args)
+func RunMainApp(app *cli.Command, args ...string) error {
+	err := app.Run(context.Background(), args)
 	if err != nil {
 		return fmt.Errorf("コマンド実行が失敗した: %w", err)
 	}
