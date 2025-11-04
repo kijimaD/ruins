@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/kijimaD/ruins/lib/mapplanner"
@@ -8,7 +9,7 @@ import (
 	gs "github.com/kijimaD/ruins/lib/states"
 	"github.com/kijimaD/ruins/lib/vrt"
 	w "github.com/kijimaD/ruins/lib/world"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // CmdScreenshot はスクリーンショットを撮影するコマンド
@@ -20,8 +21,8 @@ var CmdScreenshot = &cli.Command{
 	Flags:       []cli.Flag{},
 }
 
-func runScreenshot(ctx *cli.Context) error {
-	mode := ctx.Args().Get(0)
+func runScreenshot(_ context.Context, cmd *cli.Command) error {
+	mode := cmd.Args().Get(0)
 	if mode == "" {
 		return fmt.Errorf("引数が不足している。ステート名が必要")
 	}

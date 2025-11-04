@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 	"github.com/kijimaD/ruins/lib/maingame"
 	"github.com/kijimaD/ruins/lib/worldhelper"
 	"github.com/pkg/profile"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 
 	_ "net/http/pprof" // pprofのHTTPエンドポイントを登録するためのインポート
 
@@ -31,7 +32,7 @@ var CmdPlay = &cli.Command{
 	Flags:       []cli.Flag{},
 }
 
-func runPlay(_ *cli.Context) error {
+func runPlay(_ context.Context, _ *cli.Command) error {
 	// 設定を読み込み
 	cfg := config.Get()
 

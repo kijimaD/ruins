@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/olekukonko/tablewriter"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // CmdGenerateItemDoc はアイテム出現確率のドキュメントを生成するコマンド
@@ -21,7 +22,7 @@ var CmdGenerateItemDoc = &cli.Command{
 	Flags:       []cli.Flag{},
 }
 
-func runGenerateItemDoc(_ *cli.Context) error {
+func runGenerateItemDoc(_ context.Context, _ *cli.Command) error {
 	// raw.tomlを読み込む
 	master, err := raw.LoadFromFile("metadata/entities/raw/raw.toml")
 	if err != nil {
