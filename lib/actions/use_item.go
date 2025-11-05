@@ -164,8 +164,8 @@ func (u *UseItemActivity) applyNutrition(act *Activity, world w.World, amount in
 
 	hunger := hungerComp.(*gc.Hunger)
 
-	// 空腹度を減少させる（値が小さいほど満腹に近い）
-	hunger.Decrease(amount)
+	// 満腹度を増加させる（値が大きいほど満腹）
+	hunger.Increase(amount)
 
 	// 満腹状態になったかチェック
 	isSatiated := hunger.GetLevel() == gc.HungerSatiated
