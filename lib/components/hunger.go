@@ -1,5 +1,12 @@
 package components
 
+const (
+	// DefaultMaxHunger はデフォルトの最大満腹度
+	DefaultMaxHunger = 1000
+	// DefaultInitialHunger はデフォルトの初期満腹度
+	DefaultInitialHunger = 1000
+)
+
 // HungerLevel は空腹度の段階を表す
 type HungerLevel int
 
@@ -90,8 +97,8 @@ func (h *Hunger) GetStatusPenalty() int {
 func NewHunger() *Hunger {
 	return &Hunger{
 		Pool: Pool{
-			Max:     1000, // 最大満腹度
-			Current: 1000, // 初期状態は満腹（1000）
+			Max:     DefaultMaxHunger,     // 最大満腹度
+			Current: DefaultInitialHunger, // 初期状態は満腹
 		},
 	}
 }
