@@ -269,10 +269,10 @@ TargetGroup = "ALLY"
 TargetNum   = "SINGLE"
 
 [[Items]]
-Name              = "水筒"
+Name              = "コーラ"
 Stackable         = true
-Description       = "清潔な水。喉の渇きを癒す"
-Value             = 20
+Description       = "炭酸飲料。爽快感がある"
+Value             = 25
 ProvidesNutrition = 80
 SpriteSheetName   = "field"
 SpriteKey         = "field_item"
@@ -2599,6 +2599,36 @@ ItemName = "黒曜石"
 Weight   = 0.3
 MinDepth = 5
 MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "パン"
+Weight   = 0.8
+MinDepth = 1
+MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "乾肉"
+Weight   = 0.6
+MinDepth = 5
+MaxDepth = 30
+[[ItemTables.Entries]]
+ItemName = "コーラ"
+Weight   = 0.7
+MinDepth = 1
+MaxDepth = 15
+[[ItemTables.Entries]]
+ItemName = "チーズ"
+Weight   = 0.5
+MinDepth = 3
+MaxDepth = 25
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.6
+MinDepth = 1
+MaxDepth = 18
+[[ItemTables.Entries]]
+ItemName = "豪華な食事"
+Weight   = 0.3
+MinDepth = 10
+MaxDepth = 40
 
 [[ItemTables]]
 Name = "洞窟"
@@ -2642,6 +2672,21 @@ ItemName = "雷光石"
 Weight   = 0.4
 MinDepth = 10
 MaxDepth = 30
+[[ItemTables.Entries]]
+ItemName = "コーラ"
+Weight   = 0.9
+MinDepth = 1
+MaxDepth = 12
+[[ItemTables.Entries]]
+ItemName = "乾肉"
+Weight   = 0.7
+MinDepth = 3
+MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.6
+MinDepth = 1
+MaxDepth = 15
 
 [[ItemTables]]
 Name = "森"
@@ -2685,6 +2730,26 @@ ItemName = "守護の香"
 Weight   = 0.4
 MinDepth = 12
 MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "パン"
+Weight   = 0.9
+MinDepth = 1
+MaxDepth = 18
+[[ItemTables.Entries]]
+ItemName = "コーラ"
+Weight   = 1.0
+MinDepth = 1
+MaxDepth = 12
+[[ItemTables.Entries]]
+ItemName = "チーズ"
+Weight   = 0.6
+MinDepth = 3
+MaxDepth = 15
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.7
+MinDepth = 1
+MaxDepth = 10
 
 [[ItemTables]]
 Name = "廃墟"
@@ -2738,6 +2803,26 @@ ItemName = "狂戦士の薬"
 Weight   = 0.4
 MinDepth = 18
 MaxDepth = 32
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.7
+MinDepth = 1
+MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "乾肉"
+Weight   = 0.5
+MinDepth = 5
+MaxDepth = 25
+[[ItemTables.Entries]]
+ItemName = "パン"
+Weight   = 0.4
+MinDepth = 1
+MaxDepth = 15
+[[ItemTables.Entries]]
+ItemName = "豪華な食事"
+Weight   = 0.2
+MinDepth = 15
+MaxDepth = 30
 
 # tile ================
 
