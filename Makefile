@@ -7,7 +7,8 @@ run: ## 実行する。スクショのキーを指定している
 
 .PHONY: test
 test: ## テストを実行する
-	RUINS_LOG_LEVEL=ignore go test -v -cover -shuffle=on ./...
+	RUINS_LOG_LEVEL=ignore \
+	go test -v -cover -shuffle=on ./...
 
 .PHONY: build
 build: ## ビルドする
