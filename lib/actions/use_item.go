@@ -90,9 +90,20 @@ func (u *UseItemActivity) DoTurn(act *Activity, world w.World) error {
 		worldhelper.ApplyDamage(world, act.Actor, damageComponent.Amount, act.Actor)
 	}
 
-	// 消費可能アイテムの場合は削除
+	// 消費可能アイテムの場合は削除または個数を減らす
 	if item.HasComponent(world.Components.Consumable) {
-		world.Manager.DeleteEntity(item)
+		// スタック可能なアイテムの場合は個数を1減らす
+		if stackable := world.Components.Stackable.Get(item); stackable != nil {
+			s := stackable.(*gc.Stackable)
+			s.Count--
+			// 個数が0以下になったら削除
+			if s.Count <= 0 {
+				world.Manager.DeleteEntity(item)
+			}
+		} else {
+			// スタック不可能なアイテムは削除
+			world.Manager.DeleteEntity(item)
+		}
 	}
 
 	act.Complete()
