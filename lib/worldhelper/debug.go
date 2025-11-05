@@ -43,6 +43,7 @@ func InitDebugData(world w.World) {
 	_ = AddStackableCount(world, "回復薬", 1)
 	_ = AddStackableCount(world, "回復スプレー", 1)
 	_ = AddStackableCount(world, "手榴弾", 1)
+	_ = AddStackableCount(world, "パン", 30)
 	_ = AddStackableCount(world, "鉄", 100)
 
 	// 大量アイテム生成（デバッグ用）

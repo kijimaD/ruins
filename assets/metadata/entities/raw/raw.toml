@@ -1,14 +1,6 @@
 # item ================
 
 [[Items]]
-Name            = "ルビー原石"
-Stackable       = true
-Description     = "赤く光る鉱物。高く売れる"
-Value           = 500
-SpriteSheetName = "field"
-SpriteKey       = "field_item"
-
-[[Items]]
 Name            = "回復薬"
 Stackable       = true
 Description     = "体力を半分程度回復する"
@@ -164,6 +156,16 @@ UsableScene = "BATTLE"
 TargetGroup = "ALLY"
 TargetNum   = "ALL"
 
+# 売却用アイテム ================
+
+[[Items]]
+Name            = "ルビー原石"
+Stackable       = true
+Description     = "赤く光る鉱物。高く売れる"
+Value           = 500
+SpriteSheetName = "field"
+SpriteKey       = "field_item"
+
 [[Items]]
 Name        = "星の欠片"
 Stackable   = true
@@ -235,6 +237,92 @@ Name        = "月の石"
 Stackable   = true
 Description = "満月の夜にのみ光る不思議な石。占い師に重宝される"
 Value       = 1600
+
+# foods ================
+
+[[Items]]
+Name              = "パン"
+Stackable         = true
+Description       = "焼きたてのパン。空腹を満たす"
+Value             = 30
+ProvidesNutrition = 100
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "乾肉"
+Stackable         = true
+Description       = "保存用の肉。栄養価が高い"
+Value             = 50
+ProvidesNutrition = 150
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "水筒"
+Stackable         = true
+Description       = "清潔な水。喉の渇きを癒す"
+Value             = 20
+ProvidesNutrition = 80
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "チーズ"
+Stackable         = true
+Description       = "熟成されたチーズ。栄養満点"
+Value             = 40
+ProvidesNutrition = 120
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "ビスケット"
+Stackable         = true
+Description       = "固いビスケット。保存食として優秀"
+Value             = 25
+ProvidesNutrition = 90
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "豪華な食事"
+Stackable         = true
+Description       = "温かい料理の詰め合わせ。完全に空腹を満たす"
+Value             = 100
+ProvidesNutrition = 300
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
 
 # weapon ================
 

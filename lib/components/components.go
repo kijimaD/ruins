@@ -55,9 +55,10 @@ type EntitySpec struct {
 	Dialog      *Dialog
 
 	// event ================
-	EquipmentChanged *EquipmentChanged
-	ProvidesHealing  *ProvidesHealing
-	InflictsDamage   *InflictsDamage
+	EquipmentChanged  *EquipmentChanged
+	ProvidesHealing   *ProvidesHealing
+	ProvidesNutrition *ProvidesNutrition
+	InflictsDamage    *InflictsDamage
 
 	// battle ================
 	CommandTable *CommandTable
@@ -115,9 +116,10 @@ type Components struct {
 	TurnBased      *ecs.SliceComponent `save:"true"`
 
 	// event ================
-	EquipmentChanged *ecs.NullComponent
-	ProvidesHealing  *ecs.SliceComponent `save:"true"`
-	InflictsDamage   *ecs.SliceComponent `save:"true"`
+	EquipmentChanged  *ecs.NullComponent
+	ProvidesHealing   *ecs.SliceComponent `save:"true"`
+	ProvidesNutrition *ecs.SliceComponent `save:"true"`
+	InflictsDamage    *ecs.SliceComponent `save:"true"`
 
 	// battle ================
 	CommandTable *ecs.SliceComponent
@@ -236,6 +238,11 @@ type Attributes struct {
 // 直接的な数値が作用し、ステータスなどは考慮されない
 type ProvidesHealing struct {
 	Amount Amounter
+}
+
+// ProvidesNutrition は空腹度を回復する性質
+type ProvidesNutrition struct {
+	Amount int // 回復量（この値だけ空腹度を減らす）
 }
 
 // InflictsDamage はダメージを与える性質

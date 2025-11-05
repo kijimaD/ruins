@@ -45,6 +45,7 @@ func (u *UseItemActivity) Validate(act *Activity, world w.World) error {
 
 	// 何らかの効果があるかチェック
 	hasEffect := item.HasComponent(world.Components.ProvidesHealing) ||
+		item.HasComponent(world.Components.ProvidesNutrition) ||
 		item.HasComponent(world.Components.InflictsDamage)
 
 	if !hasEffect {
@@ -79,6 +80,15 @@ func (u *UseItemActivity) DoTurn(act *Activity, world w.World) error {
 		healingComponent := healing.(*gc.ProvidesHealing)
 		if err := u.applyHealing(act, world, healingComponent.Amount, item); err != nil {
 			act.Cancel(fmt.Sprintf("回復処理エラー: %s", err.Error()))
+			return err
+		}
+	}
+
+	// 空腹度回復効果があるかチェック
+	if nutrition := world.Components.ProvidesNutrition.Get(item); nutrition != nil {
+		nutritionComponent := nutrition.(*gc.ProvidesNutrition)
+		if err := u.applyNutrition(act, world, nutritionComponent.Amount, item); err != nil {
+			act.Cancel(fmt.Sprintf("空腹度回復処理エラー: %s", err.Error()))
 			return err
 		}
 	}
@@ -140,8 +150,27 @@ func (u *UseItemActivity) applyHealing(act *Activity, world w.World, amounter gc
 	// 共通の回復処理を使用
 	actualHealing := worldhelper.ApplyHealing(world, act.Actor, amount)
 
-	// ログ出力
 	u.logItemUse(act, world, item, actualHealing, true)
+
+	return nil
+}
+
+// applyNutrition は空腹度回復処理を適用する
+func (u *UseItemActivity) applyNutrition(act *Activity, world w.World, amount int, item ecs.Entity) error {
+	hungerComp := world.Components.Hunger.Get(act.Actor)
+	if hungerComp == nil {
+		return nil
+	}
+
+	hunger := hungerComp.(*gc.Hunger)
+
+	// 空腹度を減少させる（値が小さいほど満腹に近い）
+	hunger.Decrease(amount)
+
+	// 満腹状態になったかチェック
+	isSatiated := hunger.GetLevel() == gc.HungerSatiated
+
+	u.logNutritionUse(act, world, item, isSatiated)
 
 	return nil
 }
@@ -165,6 +194,28 @@ func (u *UseItemActivity) logItemUse(act *Activity, world w.World, item ecs.Enti
 		logger.Append(fmt.Sprintf(" HPが %d 回復した。", amount))
 	} else {
 		logger.Append(fmt.Sprintf(" %d のダメージを受けた。", amount))
+	}
+
+	logger.Log()
+}
+
+// logNutritionUse は空腹度回復のログを出力する
+func (u *UseItemActivity) logNutritionUse(act *Activity, world w.World, item ecs.Entity, isSatiated bool) {
+	// プレイヤーが関わる場合のみログ出力
+	if !isPlayerActivity(act, world) {
+		return
+	}
+
+	itemName := u.getItemName(item, world)
+	actorName := worldhelper.GetEntityName(act.Actor, world)
+
+	logger := gamelog.New(gamelog.FieldLog)
+	logger.Build(func(l *gamelog.Logger) {
+		worldhelper.AppendNameWithColor(l, act.Actor, actorName, world)
+	}).Append(" は ").ItemName(itemName).Append(" を食べた。")
+
+	if isSatiated {
+		logger.Append("満腹だ。")
 	}
 
 	logger.Log()
