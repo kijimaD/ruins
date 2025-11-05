@@ -121,7 +121,7 @@ func (ma *MoveActivity) increasePlayerHunger(entity ecs.Entity, world w.World) {
 
 	if hungerComponent := world.Components.Hunger.Get(entity); hungerComponent != nil {
 		hunger := hungerComponent.(*gc.Hunger)
-		hunger.Increase(1)
+		hunger.Decrease(1)
 	}
 }
 

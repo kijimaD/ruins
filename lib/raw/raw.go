@@ -39,19 +39,20 @@ type Raws struct {
 
 // Item はアイテムのローデータ
 type Item struct {
-	Name            string
-	Description     string
-	SpriteSheetName string
-	SpriteKey       string
-	Value           *int
-	InflictsDamage  *int
-	Stackable       *bool // スタック可能かどうか
-	Consumable      *Consumable
-	ProvidesHealing *ProvidesHealing
-	Wearable        *Wearable
-	EquipBonus      *EquipBonus
-	Weapon          *Weapon
-	Attack          *Attack
+	Name              string
+	Description       string
+	SpriteSheetName   string
+	SpriteKey         string
+	Value             *int
+	InflictsDamage    *int
+	ProvidesNutrition *int  // 空腹度回復量
+	Stackable         *bool // スタック可能かどうか
+	Consumable        *Consumable
+	ProvidesHealing   *ProvidesHealing
+	Wearable          *Wearable
+	EquipBonus        *EquipBonus
+	Weapon            *Weapon
+	Attack            *Attack
 }
 
 // ProvidesHealing は回復効果を提供する構造体
@@ -275,6 +276,9 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 		case NumeralType:
 			entitySpec.ProvidesHealing = &gc.ProvidesHealing{Amount: gc.NumeralAmount{Numeral: item.ProvidesHealing.Amount}}
 		}
+	}
+	if item.ProvidesNutrition != nil {
+		entitySpec.ProvidesNutrition = &gc.ProvidesNutrition{Amount: *item.ProvidesNutrition}
 	}
 	if item.InflictsDamage != nil {
 		entitySpec.InflictsDamage = &gc.InflictsDamage{Amount: *item.InflictsDamage}

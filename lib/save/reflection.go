@@ -74,9 +74,10 @@ func getComponentTypeMap() map[string]reflect.Type {
 		"Recipe":    reflect.TypeOf(&gc.Recipe{}),
 
 		// アイテム効果
-		"Consumable":      reflect.TypeOf(&gc.Consumable{}),
-		"ProvidesHealing": reflect.TypeOf(&gc.ProvidesHealing{}),
-		"InflictsDamage":  reflect.TypeOf(&gc.InflictsDamage{}),
+		"Consumable":        reflect.TypeOf(&gc.Consumable{}),
+		"ProvidesHealing":   reflect.TypeOf(&gc.ProvidesHealing{}),
+		"ProvidesNutrition": reflect.TypeOf(&gc.ProvidesNutrition{}),
+		"InflictsDamage":    reflect.TypeOf(&gc.InflictsDamage{}),
 
 		// その他
 		"Wallet": reflect.TypeOf(&gc.Wallet{}),

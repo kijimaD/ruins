@@ -45,6 +45,7 @@ func (u *UseItemActivity) Validate(act *Activity, world w.World) error {
 
 	// 何らかの効果があるかチェック
 	hasEffect := item.HasComponent(world.Components.ProvidesHealing) ||
+		item.HasComponent(world.Components.ProvidesNutrition) ||
 		item.HasComponent(world.Components.InflictsDamage)
 
 	if !hasEffect {
@@ -83,6 +84,15 @@ func (u *UseItemActivity) DoTurn(act *Activity, world w.World) error {
 		}
 	}
 
+	// 空腹度回復効果があるかチェック
+	if nutrition := world.Components.ProvidesNutrition.Get(item); nutrition != nil {
+		nutritionComponent := nutrition.(*gc.ProvidesNutrition)
+		if err := u.applyNutrition(act, world, nutritionComponent.Amount, item); err != nil {
+			act.Cancel(fmt.Sprintf("空腹度回復処理エラー: %s", err.Error()))
+			return err
+		}
+	}
+
 	// ダメージ効果があるかチェック
 	if damage := world.Components.InflictsDamage.Get(item); damage != nil {
 		damageComponent := damage.(*gc.InflictsDamage)
@@ -90,9 +100,20 @@ func (u *UseItemActivity) DoTurn(act *Activity, world w.World) error {
 		worldhelper.ApplyDamage(world, act.Actor, damageComponent.Amount, act.Actor)
 	}
 
-	// 消費可能アイテムの場合は削除
+	// 消費可能アイテムの場合は削除または個数を減らす
 	if item.HasComponent(world.Components.Consumable) {
-		world.Manager.DeleteEntity(item)
+		// スタック可能なアイテムの場合は個数を1減らす
+		if stackable := world.Components.Stackable.Get(item); stackable != nil {
+			s := stackable.(*gc.Stackable)
+			s.Count--
+			// 個数が0以下になったら削除
+			if s.Count <= 0 {
+				world.Manager.DeleteEntity(item)
+			}
+		} else {
+			// スタック不可能なアイテムは削除
+			world.Manager.DeleteEntity(item)
+		}
 	}
 
 	act.Complete()
@@ -129,8 +150,27 @@ func (u *UseItemActivity) applyHealing(act *Activity, world w.World, amounter gc
 	// 共通の回復処理を使用
 	actualHealing := worldhelper.ApplyHealing(world, act.Actor, amount)
 
-	// ログ出力
 	u.logItemUse(act, world, item, actualHealing, true)
+
+	return nil
+}
+
+// applyNutrition は空腹度回復処理を適用する
+func (u *UseItemActivity) applyNutrition(act *Activity, world w.World, amount int, item ecs.Entity) error {
+	hungerComp := world.Components.Hunger.Get(act.Actor)
+	if hungerComp == nil {
+		return nil
+	}
+
+	hunger := hungerComp.(*gc.Hunger)
+
+	// 満腹度を増加させる（値が大きいほど満腹）
+	hunger.Increase(amount)
+
+	// 満腹状態になったかチェック
+	isSatiated := hunger.GetLevel() == gc.HungerSatiated
+
+	u.logNutritionUse(act, world, item, isSatiated)
 
 	return nil
 }
@@ -154,6 +194,28 @@ func (u *UseItemActivity) logItemUse(act *Activity, world w.World, item ecs.Enti
 		logger.Append(fmt.Sprintf(" HPが %d 回復した。", amount))
 	} else {
 		logger.Append(fmt.Sprintf(" %d のダメージを受けた。", amount))
+	}
+
+	logger.Log()
+}
+
+// logNutritionUse は空腹度回復のログを出力する
+func (u *UseItemActivity) logNutritionUse(act *Activity, world w.World, item ecs.Entity, isSatiated bool) {
+	// プレイヤーが関わる場合のみログ出力
+	if !isPlayerActivity(act, world) {
+		return
+	}
+
+	itemName := u.getItemName(item, world)
+	actorName := worldhelper.GetEntityName(act.Actor, world)
+
+	logger := gamelog.New(gamelog.FieldLog)
+	logger.Build(func(l *gamelog.Logger) {
+		worldhelper.AppendNameWithColor(l, act.Actor, actorName, world)
+	}).Append(" は ").ItemName(itemName).Append(" を食べた。")
+
+	if isSatiated {
+		logger.Append("満腹だ。")
 	}
 
 	logger.Log()

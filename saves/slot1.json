@@ -1,6 +1,6 @@
 {
-  "checksum": "8faf6a57dbb252d00ecc7b70b5bbc310748de84bd60501a8274a1b0058eb8e96",
-  "timestamp": "2025-10-18T13:48:35.364580665+09:00",
+  "checksum": "91902b8ce03b485358afbb647e3a0a6eaf8ebd75cd04de37fcd7bd8dad8e0dd8",
+  "timestamp": "2025-11-05T22:05:11.559218277+09:00",
   "version": "1.0.0",
   "world": {
     "entities": [
@@ -69,8 +69,8 @@
           },
           "TurnBased": {
             "AP": {
-              "Current": 121,
-              "Max": 121
+              "Current": 100,
+              "Max": 100
             }
           },
           "Wallet": {
@@ -80,6 +80,43 @@
         "stable_id": {
           "generation": 0,
           "index": 1
+        }
+      },
+      {
+        "components": {
+          "Attack": {
+            "Accuracy": 85,
+            "AttackCategory": {
+              "Label": "大砲",
+              "Range": "RANGED",
+              "Type": "CANON"
+            },
+            "AttackCount": 1,
+            "Damage": 34,
+            "Element": "NONE"
+          },
+          "Description": {
+            "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
+          },
+          "Item": {},
+          "LocationInBackpack": {},
+          "Name": {
+            "Name": "M72 LAW"
+          },
+          "Value": {
+            "Value": 480
+          },
+          "Weapon": {
+            "Cost": 14,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
+          }
+        },
+        "stable_id": {
+          "generation": 0,
+          "index": 2
         }
       },
       {
@@ -109,7 +146,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 2
+          "index": 3
         }
       },
       {
@@ -139,14 +176,18 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 3
+          "index": 4
         }
       },
       {
         "components": {
           "Attack": {
             "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
             "Damage": 20,
             "Element": "PHOTON"
@@ -172,7 +213,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 4
+          "index": 5
         }
       },
       {
@@ -194,7 +235,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 5
+          "index": 6
         }
       },
       {
@@ -229,7 +270,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 6
+          "index": 7
         }
       },
       {
@@ -264,7 +305,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 7
+          "index": 8
         }
       },
       {
@@ -296,7 +337,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 8
+          "index": 9
         }
       },
       {
@@ -315,14 +356,50 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 9
+          "index": 10
+        }
+      },
+      {
+        "components": {
+          "Consumable": {
+            "TargetType": {
+              "TargetGroup": "ALLY",
+              "TargetNum": "SINGLE"
+            },
+            "UsableScene": "ANY"
+          },
+          "Description": {
+            "Description": "焼きたてのパン。空腹を満たす"
+          },
+          "Item": {},
+          "LocationInBackpack": {},
+          "Name": {
+            "Name": "パン"
+          },
+          "ProvidesNutrition": {
+            "Amount": 100
+          },
+          "Stackable": {
+            "Count": 30
+          },
+          "Value": {
+            "Value": 30
+          }
+        },
+        "stable_id": {
+          "generation": 0,
+          "index": 11
         }
       },
       {
         "components": {
           "Attack": {
             "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
             "Damage": 8,
             "Element": "NONE"
@@ -337,72 +414,6 @@
           },
           "Value": {
             "Value": 80
-          },
-          "Weapon": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          }
-        },
-        "stable_id": {
-          "generation": 0,
-          "index": 10
-        }
-      },
-      {
-        "components": {
-          "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
-            "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
-          },
-          "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
-          },
-          "Item": {},
-          "LocationInBackpack": {},
-          "Name": {
-            "Name": "ハンドガン"
-          },
-          "Value": {
-            "Value": 150
-          },
-          "Weapon": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          }
-        },
-        "stable_id": {
-          "generation": 0,
-          "index": 11
-        }
-      },
-      {
-        "components": {
-          "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
-            "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
-          },
-          "Description": {
-            "Description": "光線を発射する拳銃"
-          },
-          "Item": {},
-          "LocationInBackpack": {},
-          "Name": {
-            "Name": "レイガン"
-          },
-          "Value": {
-            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -420,22 +431,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -453,22 +468,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -486,22 +505,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -519,22 +542,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -552,22 +579,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -585,22 +616,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -618,22 +653,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -651,22 +690,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -684,22 +727,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -717,22 +764,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -750,22 +801,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -783,22 +838,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -816,22 +875,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -849,22 +912,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -882,22 +949,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -915,22 +986,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -948,22 +1023,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -981,22 +1060,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -1014,22 +1097,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -1047,22 +1134,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -1080,22 +1171,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -1113,22 +1208,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 8,
+            "Damage": 14,
             "Element": "NONE"
           },
           "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "木刀"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 80
+            "Value": 150
           },
           "Weapon": {
             "Cost": 2,
@@ -1146,22 +1245,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
-            "Damage": 14,
-            "Element": "NONE"
+            "Damage": 20,
+            "Element": "PHOTON"
           },
           "Description": {
-            "Description": "樹脂素材を多用した自動拳銃"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "ハンドガン"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
           "Weapon": {
             "Cost": 2,
@@ -1179,22 +1282,26 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
-            "Damage": 20,
-            "Element": "PHOTON"
+            "Damage": 8,
+            "Element": "NONE"
           },
           "Description": {
-            "Description": "光線を発射する拳銃"
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "レイガン"
+            "Name": "木刀"
           },
           "Value": {
-            "Value": 280
+            "Value": 80
           },
           "Weapon": {
             "Cost": 2,
@@ -1212,41 +1319,12 @@
       {
         "components": {
           "Attack": {
-            "Accuracy": 100,
-            "AttackCategory": "SWORD",
-            "AttackCount": 1,
-            "Damage": 8,
-            "Element": "NONE"
-          },
-          "Description": {
-            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
-          },
-          "Item": {},
-          "LocationInBackpack": {},
-          "Name": {
-            "Name": "木刀"
-          },
-          "Value": {
-            "Value": 80
-          },
-          "Weapon": {
-            "Cost": 2,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          }
-        },
-        "stable_id": {
-          "generation": 0,
-          "index": 37
-        }
-      },
-      {
-        "components": {
-          "Attack": {
             "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
             "Damage": 14,
             "Element": "NONE"
@@ -1272,14 +1350,18 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 38
+          "index": 37
         }
       },
       {
         "components": {
           "Attack": {
             "Accuracy": 90,
-            "AttackCategory": "HANDGUN",
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
             "Damage": 20,
             "Element": "PHOTON"
@@ -1305,32 +1387,76 @@
         },
         "stable_id": {
           "generation": 0,
+          "index": 38
+        }
+      },
+      {
+        "components": {
+          "Attack": {
+            "Accuracy": 100,
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
+            "AttackCount": 1,
+            "Damage": 8,
+            "Element": "NONE"
+          },
+          "Description": {
+            "Description": "旅行の土産でおなじみの、木でできた刃のない刀"
+          },
+          "Item": {},
+          "LocationInBackpack": {},
+          "Name": {
+            "Name": "木刀"
+          },
+          "Value": {
+            "Value": 80
+          },
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
+          }
+        },
+        "stable_id": {
+          "generation": 0,
           "index": 39
         }
       },
       {
         "components": {
+          "Attack": {
+            "Accuracy": 95,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
+            "AttackCount": 1,
+            "Damage": 14,
+            "Element": "NONE"
+          },
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "樹脂素材を多用した自動拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "ハンドガン"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
-          "Wearable": {
-            "Defense": 8,
-            "EquipBonus": {
-              "Agility": -4,
-              "Dexterity": 0,
-              "Sensation": 0,
-              "Strength": 0,
-              "Vitality": 0
-            },
-            "EquipmentCategory": "TORSO"
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1340,27 +1466,34 @@
       },
       {
         "components": {
+          "Attack": {
+            "Accuracy": 90,
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
+            "AttackCount": 1,
+            "Damage": 20,
+            "Element": "PHOTON"
+          },
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "光線を発射する拳銃"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "レイガン"
           },
           "Value": {
-            "Value": 150
+            "Value": 280
           },
-          "Wearable": {
-            "Defense": 4,
-            "EquipBonus": {
-              "Agility": -2,
-              "Dexterity": 0,
-              "Sensation": 0,
-              "Strength": 0,
-              "Vitality": 4
-            },
-            "EquipmentCategory": "HEAD"
+          "Weapon": {
+            "Cost": 2,
+            "TargetType": {
+              "TargetGroup": "ENEMY",
+              "TargetNum": "SINGLE"
+            }
           }
         },
         "stable_id": {
@@ -1371,26 +1504,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1401,26 +1534,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1431,26 +1564,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -1461,26 +1594,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1491,26 +1624,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1521,26 +1654,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -1551,26 +1684,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1581,26 +1714,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1611,26 +1744,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -1641,26 +1774,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1671,26 +1804,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1701,26 +1834,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -1731,26 +1864,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1761,26 +1894,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1791,26 +1924,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -1821,26 +1954,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1851,26 +1984,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1881,26 +2014,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -1911,26 +2044,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -1941,26 +2074,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -1971,26 +2104,26 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
+            "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "作業用ヘルメット"
+            "Name": "革のブーツ"
           },
           "Value": {
-            "Value": 150
+            "Value": 120
           },
           "Wearable": {
-            "Defense": 4,
+            "Defense": 3,
             "EquipBonus": {
               "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 4
+              "Vitality": 0
             },
-            "EquipmentCategory": "HEAD"
+            "EquipmentCategory": "LEGS"
           }
         },
         "stable_id": {
@@ -2001,26 +2134,26 @@
       {
         "components": {
           "Description": {
-            "Description": "よくなめされた革で成形された長靴"
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "革のブーツ"
+            "Name": "西洋鎧"
           },
           "Value": {
-            "Value": 120
+            "Value": 400
           },
           "Wearable": {
-            "Defense": 3,
+            "Defense": 8,
             "EquipBonus": {
-              "Agility": -2,
+              "Agility": -4,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
               "Vitality": 0
             },
-            "EquipmentCategory": "LEGS"
+            "EquipmentCategory": "TORSO"
           }
         },
         "stable_id": {
@@ -2031,26 +2164,26 @@
       {
         "components": {
           "Description": {
-            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+            "Description": "衝撃吸収性に優れた産業用の帽子"
           },
           "Item": {},
           "LocationInBackpack": {},
           "Name": {
-            "Name": "西洋鎧"
+            "Name": "作業用ヘルメット"
           },
           "Value": {
-            "Value": 400
+            "Value": 150
           },
           "Wearable": {
-            "Defense": 8,
+            "Defense": 4,
             "EquipBonus": {
-              "Agility": -4,
+              "Agility": -2,
               "Dexterity": 0,
               "Sensation": 0,
               "Strength": 0,
-              "Vitality": 0
+              "Vitality": 4
             },
-            "EquipmentCategory": "TORSO"
+            "EquipmentCategory": "HEAD"
           }
         },
         "stable_id": {
@@ -2061,36 +2194,6 @@
       {
         "components": {
           "Description": {
-            "Description": "衝撃吸収性に優れた産業用の帽子"
-          },
-          "Item": {},
-          "LocationInBackpack": {},
-          "Name": {
-            "Name": "作業用ヘルメット"
-          },
-          "Value": {
-            "Value": 150
-          },
-          "Wearable": {
-            "Defense": 4,
-            "EquipBonus": {
-              "Agility": -2,
-              "Dexterity": 0,
-              "Sensation": 0,
-              "Strength": 0,
-              "Vitality": 4
-            },
-            "EquipmentCategory": "HEAD"
-          }
-        },
-        "stable_id": {
-          "generation": 0,
-          "index": 65
-        }
-      },
-      {
-        "components": {
-          "Description": {
             "Description": "よくなめされた革で成形された長靴"
           },
           "Item": {},
@@ -2115,7 +2218,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 66
+          "index": 65
         }
       },
       {
@@ -2145,7 +2248,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 67
+          "index": 66
         }
       },
       {
@@ -2175,7 +2278,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 68
+          "index": 67
         }
       },
       {
@@ -2205,14 +2308,108 @@
         },
         "stable_id": {
           "generation": 0,
+          "index": 68
+        }
+      },
+      {
+        "components": {
+          "Description": {
+            "Description": "伝統的な意匠が施されたずっしりと重い鎧"
+          },
+          "Item": {},
+          "LocationInBackpack": {},
+          "Name": {
+            "Name": "西洋鎧"
+          },
+          "Value": {
+            "Value": 400
+          },
+          "Wearable": {
+            "Defense": 8,
+            "EquipBonus": {
+              "Agility": -4,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
+            },
+            "EquipmentCategory": "TORSO"
+          }
+        },
+        "stable_id": {
+          "generation": 0,
           "index": 69
+        }
+      },
+      {
+        "components": {
+          "Description": {
+            "Description": "衝撃吸収性に優れた産業用の帽子"
+          },
+          "Item": {},
+          "LocationInBackpack": {},
+          "Name": {
+            "Name": "作業用ヘルメット"
+          },
+          "Value": {
+            "Value": 150
+          },
+          "Wearable": {
+            "Defense": 4,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 4
+            },
+            "EquipmentCategory": "HEAD"
+          }
+        },
+        "stable_id": {
+          "generation": 0,
+          "index": 70
+        }
+      },
+      {
+        "components": {
+          "Description": {
+            "Description": "よくなめされた革で成形された長靴"
+          },
+          "Item": {},
+          "LocationInBackpack": {},
+          "Name": {
+            "Name": "革のブーツ"
+          },
+          "Value": {
+            "Value": 120
+          },
+          "Wearable": {
+            "Defense": 3,
+            "EquipBonus": {
+              "Agility": -2,
+              "Dexterity": 0,
+              "Sensation": 0,
+              "Strength": 0,
+              "Vitality": 0
+            },
+            "EquipmentCategory": "LEGS"
+          }
+        },
+        "stable_id": {
+          "generation": 0,
+          "index": 71
         }
       },
       {
         "components": {
           "Attack": {
             "Accuracy": 100,
-            "AttackCategory": "SWORD",
+            "AttackCategory": {
+              "Label": "刀剣",
+              "Range": "MELEE",
+              "Type": "SWORD"
+            },
             "AttackCount": 1,
             "Damage": 8,
             "Element": "NONE"
@@ -2222,7 +2419,7 @@
           },
           "Item": {},
           "LocationEquipped": {
-            "EquipmentSlot": 0,
+            "EquipmentSlot": 4,
             "OwnerRef": {
               "generation": 0,
               "index": 1
@@ -2244,14 +2441,18 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 70
+          "index": 72
         }
       },
       {
         "components": {
           "Attack": {
             "Accuracy": 95,
-            "AttackCategory": "HANDGUN",
+            "AttackCategory": {
+              "Label": "拳銃",
+              "Range": "RANGED",
+              "Type": "HANDGUN"
+            },
             "AttackCount": 1,
             "Damage": 14,
             "Element": "NONE"
@@ -2261,7 +2462,7 @@
           },
           "Item": {},
           "LocationEquipped": {
-            "EquipmentSlot": 1,
+            "EquipmentSlot": 5,
             "OwnerRef": {
               "generation": 0,
               "index": 1
@@ -2283,46 +2484,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 71
-        }
-      },
-      {
-        "components": {
-          "Attack": {
-            "Accuracy": 85,
-            "AttackCategory": "CANON",
-            "AttackCount": 1,
-            "Damage": 34,
-            "Element": "NONE"
-          },
-          "Description": {
-            "Description": "成形炸薬弾を投射する対戦車ロケット弾発射機"
-          },
-          "Item": {},
-          "LocationEquipped": {
-            "EquipmentSlot": 2,
-            "OwnerRef": {
-              "generation": 0,
-              "index": 1
-            }
-          },
-          "Name": {
-            "Name": "M72 LAW"
-          },
-          "Value": {
-            "Value": 480
-          },
-          "Weapon": {
-            "Cost": 14,
-            "TargetType": {
-              "TargetGroup": "ENEMY",
-              "TargetNum": "SINGLE"
-            }
-          }
-        },
-        "stable_id": {
-          "generation": 0,
-          "index": 72
+          "index": 73
         }
       },
       {
@@ -2332,7 +2494,7 @@
           },
           "Item": {},
           "LocationEquipped": {
-            "EquipmentSlot": 0,
+            "EquipmentSlot": 1,
             "OwnerRef": {
               "generation": 0,
               "index": 1
@@ -2358,7 +2520,7 @@
         },
         "stable_id": {
           "generation": 0,
-          "index": 73
+          "index": 74
         }
       }
     ]

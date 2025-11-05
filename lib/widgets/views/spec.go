@@ -32,6 +32,14 @@ func UpdateSpec(world w.World, targetContainer *widget.Container, entity ecs.Ent
 		weapon := world.Components.Weapon.Get(entity).(*gc.Weapon)
 		addWeaponInfo(targetContainer, weapon, world)
 	}
+	if entity.HasComponent(world.Components.ProvidesHealing) {
+		healing := world.Components.ProvidesHealing.Get(entity).(*gc.ProvidesHealing)
+		addHealingInfo(targetContainer, healing, world)
+	}
+	if entity.HasComponent(world.Components.ProvidesNutrition) {
+		nutrition := world.Components.ProvidesNutrition.Get(entity).(*gc.ProvidesNutrition)
+		addNutritionInfo(targetContainer, nutrition, world)
+	}
 	if entity.HasComponent(world.Components.Value) {
 		v := world.Components.Value.Get(entity).(*gc.Value)
 		addValueInfo(targetContainer, v, world)
@@ -51,6 +59,12 @@ func UpdateSpecFromSpec(world w.World, targetContainer *widget.Container, spec g
 	}
 	if spec.Weapon != nil {
 		addWeaponInfo(targetContainer, spec.Weapon, world)
+	}
+	if spec.ProvidesHealing != nil {
+		addHealingInfo(targetContainer, spec.ProvidesHealing, world)
+	}
+	if spec.ProvidesNutrition != nil {
+		addNutritionInfo(targetContainer, spec.ProvidesNutrition, world)
 	}
 	if spec.Value != nil {
 		addValueInfo(targetContainer, spec.Value, world)
@@ -95,6 +109,26 @@ func addWeaponInfo(targetContainer *widget.Container, weapon *gc.Weapon, world w
 func addValueInfo(targetContainer *widget.Container, value *gc.Value, world w.World) {
 	valueText := worldhelper.FormatCurrency(value.Value)
 	targetContainer.AddChild(styled.NewBodyText(valueText, consts.TextColor, world.Resources.UIResources))
+}
+
+// addHealingInfo はProvidesHealingコンポーネントの情報を追加する
+func addHealingInfo(targetContainer *widget.Container, healing *gc.ProvidesHealing, world w.World) {
+	var healingText string
+	switch amt := healing.Amount.(type) {
+	case gc.NumeralAmount:
+		healingText = fmt.Sprintf("体力 %d", amt.Numeral)
+	case gc.RatioAmount:
+		healingText = fmt.Sprintf("体力 %.0f%%", amt.Ratio*100)
+	default:
+		healingText = "HP回復"
+	}
+	targetContainer.AddChild(styled.NewBodyText(healingText, consts.TextColor, world.Resources.UIResources))
+}
+
+// addNutritionInfo はProvidesNutritionコンポーネントの情報を追加する
+func addNutritionInfo(targetContainer *widget.Container, nutrition *gc.ProvidesNutrition, world w.World) {
+	nutritionText := fmt.Sprintf("栄養 %d", nutrition.Amount)
+	targetContainer.AddChild(styled.NewBodyText(nutritionText, consts.TextColor, world.Resources.UIResources))
 }
 
 // damageAttrText は属性によって色付けする

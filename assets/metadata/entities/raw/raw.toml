@@ -1,14 +1,6 @@
 # item ================
 
 [[Items]]
-Name            = "ルビー原石"
-Stackable       = true
-Description     = "赤く光る鉱物。高く売れる"
-Value           = 500
-SpriteSheetName = "field"
-SpriteKey       = "field_item"
-
-[[Items]]
 Name            = "回復薬"
 Stackable       = true
 Description     = "体力を半分程度回復する"
@@ -164,6 +156,16 @@ UsableScene = "BATTLE"
 TargetGroup = "ALLY"
 TargetNum   = "ALL"
 
+# 売却用アイテム ================
+
+[[Items]]
+Name            = "ルビー原石"
+Stackable       = true
+Description     = "赤く光る鉱物。高く売れる"
+Value           = 500
+SpriteSheetName = "field"
+SpriteKey       = "field_item"
+
 [[Items]]
 Name        = "星の欠片"
 Stackable   = true
@@ -235,6 +237,92 @@ Name        = "月の石"
 Stackable   = true
 Description = "満月の夜にのみ光る不思議な石。占い師に重宝される"
 Value       = 1600
+
+# foods ================
+
+[[Items]]
+Name              = "パン"
+Stackable         = true
+Description       = "焼きたてのパン。空腹を満たす"
+Value             = 30
+ProvidesNutrition = 100
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "乾肉"
+Stackable         = true
+Description       = "保存用の肉。栄養価が高い"
+Value             = 50
+ProvidesNutrition = 150
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "コーラ"
+Stackable         = true
+Description       = "炭酸飲料。爽快感がある"
+Value             = 25
+ProvidesNutrition = 80
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "チーズ"
+Stackable         = true
+Description       = "熟成されたチーズ。栄養満点"
+Value             = 40
+ProvidesNutrition = 120
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "ビスケット"
+Stackable         = true
+Description       = "固いビスケット。保存食として優秀"
+Value             = 25
+ProvidesNutrition = 90
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
+
+[[Items]]
+Name              = "豪華な食事"
+Stackable         = true
+Description       = "温かい料理の詰め合わせ。完全に空腹を満たす"
+Value             = 100
+ProvidesNutrition = 300
+SpriteSheetName   = "field"
+SpriteKey         = "field_item"
+
+[Items.Consumable]
+UsableScene = "ANY"
+TargetGroup = "ALLY"
+TargetNum   = "SINGLE"
 
 # weapon ================
 
@@ -2511,6 +2599,36 @@ ItemName = "黒曜石"
 Weight   = 0.3
 MinDepth = 5
 MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "パン"
+Weight   = 0.8
+MinDepth = 1
+MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "乾肉"
+Weight   = 0.6
+MinDepth = 5
+MaxDepth = 30
+[[ItemTables.Entries]]
+ItemName = "コーラ"
+Weight   = 0.7
+MinDepth = 1
+MaxDepth = 15
+[[ItemTables.Entries]]
+ItemName = "チーズ"
+Weight   = 0.5
+MinDepth = 3
+MaxDepth = 25
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.6
+MinDepth = 1
+MaxDepth = 18
+[[ItemTables.Entries]]
+ItemName = "豪華な食事"
+Weight   = 0.3
+MinDepth = 10
+MaxDepth = 40
 
 [[ItemTables]]
 Name = "洞窟"
@@ -2554,6 +2672,21 @@ ItemName = "雷光石"
 Weight   = 0.4
 MinDepth = 10
 MaxDepth = 30
+[[ItemTables.Entries]]
+ItemName = "コーラ"
+Weight   = 0.9
+MinDepth = 1
+MaxDepth = 12
+[[ItemTables.Entries]]
+ItemName = "乾肉"
+Weight   = 0.7
+MinDepth = 3
+MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.6
+MinDepth = 1
+MaxDepth = 15
 
 [[ItemTables]]
 Name = "森"
@@ -2597,6 +2730,26 @@ ItemName = "守護の香"
 Weight   = 0.4
 MinDepth = 12
 MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "パン"
+Weight   = 0.9
+MinDepth = 1
+MaxDepth = 18
+[[ItemTables.Entries]]
+ItemName = "コーラ"
+Weight   = 1.0
+MinDepth = 1
+MaxDepth = 12
+[[ItemTables.Entries]]
+ItemName = "チーズ"
+Weight   = 0.6
+MinDepth = 3
+MaxDepth = 15
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.7
+MinDepth = 1
+MaxDepth = 10
 
 [[ItemTables]]
 Name = "廃墟"
@@ -2650,6 +2803,26 @@ ItemName = "狂戦士の薬"
 Weight   = 0.4
 MinDepth = 18
 MaxDepth = 32
+[[ItemTables.Entries]]
+ItemName = "ビスケット"
+Weight   = 0.7
+MinDepth = 1
+MaxDepth = 20
+[[ItemTables.Entries]]
+ItemName = "乾肉"
+Weight   = 0.5
+MinDepth = 5
+MaxDepth = 25
+[[ItemTables.Entries]]
+ItemName = "パン"
+Weight   = 0.4
+MinDepth = 1
+MaxDepth = 15
+[[ItemTables.Entries]]
+ItemName = "豪華な食事"
+Weight   = 0.2
+MinDepth = 15
+MaxDepth = 30
 
 # tile ================
 
