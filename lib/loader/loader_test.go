@@ -128,3 +128,77 @@ func TestLoadRaws(t *testing.T) {
 		assert.Equal(t, rawMaster, drl.cache.RawMaster)
 	})
 }
+
+func TestLoadSpriteSheetFromAseprite(t *testing.T) {
+	t.Parallel()
+
+	t.Run("bgスプライトシートを正常に読み込める", func(t *testing.T) {
+		t.Parallel()
+		sheet, err := LoadSpriteSheetFromAseprite("file/textures/dist/bg.json")
+
+		require.NoError(t, err)
+		assert.NotNil(t, sheet)
+		assert.NotNil(t, sheet.Texture)
+		assert.Greater(t, len(sheet.Sprites), 0)
+
+		// 各スプライトのサイズが正しいことを確認
+		for key, sprite := range sheet.Sprites {
+			assert.Greater(t, sprite.Width, 0, "スプライト %s の幅が正の値であること", key)
+			assert.Greater(t, sprite.Height, 0, "スプライト %s の高さが正の値であること", key)
+		}
+	})
+
+	t.Run("tilesスプライトシートを正常に読み込める", func(t *testing.T) {
+		t.Parallel()
+		sheet, err := LoadSpriteSheetFromAseprite("file/textures/dist/tiles.json")
+
+		require.NoError(t, err)
+		assert.NotNil(t, sheet)
+
+		// 48個のタイルスプライトが存在することを確認
+		assert.Equal(t, 48, len(sheet.Sprites), "48個のタイルスプライトが存在すること")
+	})
+
+	t.Run("singleスプライトシートを正常に読み込める", func(t *testing.T) {
+		t.Parallel()
+		sheet, err := LoadSpriteSheetFromAseprite("file/textures/dist/single.json")
+
+		require.NoError(t, err)
+		assert.NotNil(t, sheet)
+		assert.Greater(t, len(sheet.Sprites), 0)
+	})
+
+	t.Run("存在しないファイルを読み込むとエラー", func(t *testing.T) {
+		t.Parallel()
+		_, err := LoadSpriteSheetFromAseprite("file/textures/dist/nonexistent.json")
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "JSONファイルの読み込みに失敗")
+	})
+
+	t.Run("不正なパスを指定するとエラー", func(t *testing.T) {
+		t.Parallel()
+		_, err := LoadSpriteSheetFromAseprite("")
+
+		assert.Error(t, err)
+	})
+
+	t.Run("全てのスプライトファイル名が'_'で終わっていることを確認", func(t *testing.T) {
+		t.Parallel()
+		// 既存のファイルは全て'_'で終わっているはず
+		testFiles := []string{
+			"file/textures/dist/bg.json",
+			"file/textures/dist/tiles.json",
+			"file/textures/dist/single.json",
+		}
+
+		for _, file := range testFiles {
+			sheet, err := LoadSpriteSheetFromAseprite(file)
+			require.NoError(t, err, "ファイル %s の読み込みに失敗", file)
+
+			// 全てのスプライトが正常に読み込まれていることを確認
+			// （'_'で終わっていないファイル名があればエラーになるはず）
+			assert.Greater(t, len(sheet.Sprites), 0, "ファイル %s にスプライトが存在すること", file)
+		}
+	})
+}

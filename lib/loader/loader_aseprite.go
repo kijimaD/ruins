@@ -51,6 +51,9 @@ func LoadSpriteSheetFromAseprite(jsonPath string) (components.SpriteSheet, error
 			Height: frame.Frame.H,
 		}
 
+		if !strings.HasSuffix(frame.Filename, "_") {
+			return components.SpriteSheet{}, fmt.Errorf("スプライトファイル名は'_'で終わる必要があります: %s", frame.Filename)
+		}
 		// キー名の生成（末尾のアンダースコアを削除）
 		key := strings.TrimSuffix(frame.Filename, "_")
 
