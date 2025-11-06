@@ -15,6 +15,10 @@ light_tank  = { x = 224, y = 32, width = 32, height = 32 }
 
 prop_lantern   = { x = 32, y = 64, width = 32, height = 32 }
 field_item     = { x = 64, y = 64, width = 32, height = 32 }
+food_item      = { x = 0, y = 128, width = 32, height = 32 }  # 食料アイテム用
+armor_item     = { x = 32, y = 128, width = 32, height = 32 } # 防具アイテム用
+melee_weapon   = { x = 64, y = 128, width = 32, height = 32 } # 近接武器用
+heal_item      = { x = 96, y = 128, width = 32, height = 32 } # 回復アイテム用
 prop_table     = { x = 96, y = 64, width = 32, height = 32 }
 prop_chair     = { x = 128, y = 64, width = 32, height = 32 }
 prop_bookshelf = { x = 160, y = 64, width = 32, height = 32 }

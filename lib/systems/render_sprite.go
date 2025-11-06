@@ -84,7 +84,7 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	initializeShadowImages()
 
 	// 各種描画処理
-	renderGridTiles(world, screen, visibilityData)             // 床タイルを描画
+	renderFloorLayer(world, screen, visibilityData)            // 床レイヤー（タイル・アイテム）を描画
 	renderDistanceBasedDarkness(world, screen, visibilityData) // 床タイルに暗闇オーバーレイ
 	renderLightSourceGlow(world, screen, visibilityData)       // 床タイルに光源グロー
 	renderShadows(world, screen, visibilityData)               // 影を描画
@@ -111,8 +111,8 @@ func initializeShadowImages() {
 	}
 }
 
-// renderGridTiles は床タイルを描画する
-func renderGridTiles(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+// renderFloorLayer は床レイヤー（タイル・地面に落ちているアイテム）を描画する
+func renderFloorLayer(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	iSprite := 0
 	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement).Size())
 	world.Manager.Join(
