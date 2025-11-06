@@ -215,10 +215,7 @@ func NewUIResources(tfs *text.GoTextFaceSource) (*UIResources, error) {
 		return nil, err
 	}
 
-	panel, err := newPanelResources()
-	if err != nil {
-		return nil, err
-	}
+	panel := newPanelResources()
 
 	tabBook := newTabBookResources(fonts)
 
@@ -621,19 +618,17 @@ func newProgressBarResources() (*ProgressBarResources, error) {
 		},
 	}, nil
 }
-func newPanelResources() (*PanelResources, error) {
-	i, err := loadImageNineSlice("assets/graphics/panel-idle.png", 10, 10)
-	if err != nil {
-		return nil, err
-	}
-	it, err := loadImageNineSlice("assets/graphics/panel-idle-trans.png", 10, 10)
-	if err != nil {
-		return nil, err
-	}
-	t, err := loadImageNineSlice("assets/graphics/titlebar-idle.png", 10, 10)
-	if err != nil {
-		return nil, err
-	}
+
+// シンプルな単色パネル
+func newPanelResources() *PanelResources {
+	panelColor := color.NRGBA{R: 19, G: 26, B: 34, A: 240}
+	panelTransColor := color.NRGBA{R: 19, G: 26, B: 34, A: 200}
+	titleBarColor := color.NRGBA{R: 42, G: 57, B: 68, A: 255}
+
+	i := image.NewNineSliceColor(panelColor)
+	it := image.NewNineSliceColor(panelTransColor)
+	t := image.NewNineSliceColor(titleBarColor)
+
 	return &PanelResources{
 		Image:      i,
 		ImageTrans: it,
@@ -644,7 +639,7 @@ func newPanelResources() (*PanelResources, error) {
 			Top:    20,
 			Bottom: 20,
 		},
-	}, nil
+	}
 }
 
 func newTabBookResources(fonts *fonts) *TabBookResources {

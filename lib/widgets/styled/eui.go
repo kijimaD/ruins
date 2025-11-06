@@ -137,10 +137,16 @@ func NewWindowHeaderContainer(title string, res *resources.UIResources) *widget.
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 	container.AddChild(widget.NewText(
-		widget.TextOpts.Text(title, &res.Text.TitleFace, consts.TextColor),
+		widget.TextOpts.Text(title, &res.Text.Face, consts.TextColor),
 		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
 			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 			VerticalPosition:   widget.AnchorLayoutPositionCenter,
+			Padding: &widget.Insets{
+				Top:    4,
+				Bottom: 4,
+				Left:   8,
+				Right:  8,
+			},
 		})),
 	))
 
