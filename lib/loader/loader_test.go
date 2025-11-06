@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -75,6 +76,40 @@ func TestLoadSpriteSheets(t *testing.T) {
 		// キャッシュされていることの確認
 		drl := rl.(*DefaultResourceLoader)
 		assert.Equal(t, sprites, drl.cache.SpriteSheets)
+	})
+
+	t.Run("tileスプライトシートに全てのタイルが含まれる", func(t *testing.T) {
+		t.Parallel()
+		rl := NewResourceLoader()
+		sprites, err := rl.LoadSpriteSheets()
+		require.NoError(t, err)
+
+		tileSheet, ok := sprites["tile"]
+		require.True(t, ok, "tileスプライトシートが存在すること")
+
+		// dirt_0 から dirt_15 まで存在することを確認
+		for i := 0; i < 16; i++ {
+			key := fmt.Sprintf("dirt_%d", i)
+			_, exists := tileSheet.Sprites[key]
+			assert.True(t, exists, "%s が存在すること", key)
+		}
+
+		// wall_0 から wall_15 まで存在することを確認
+		for i := 0; i < 16; i++ {
+			key := fmt.Sprintf("wall_%d", i)
+			_, exists := tileSheet.Sprites[key]
+			assert.True(t, exists, "%s が存在すること", key)
+		}
+
+		// floor_0 から floor_15 まで存在することを確認
+		for i := 0; i < 16; i++ {
+			key := fmt.Sprintf("floor_%d", i)
+			_, exists := tileSheet.Sprites[key]
+			assert.True(t, exists, "%s が存在すること", key)
+		}
+
+		// 合計48個のスプライトがあることを確認
+		assert.Equal(t, 48, len(tileSheet.Sprites), "48個のタイルスプライトが存在すること")
 	})
 }
 

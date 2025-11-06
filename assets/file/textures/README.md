@@ -18,6 +18,14 @@ aseprite \
     --sheet-type packed \
     --format json-array \
     --filename-format "{title}"
+
+aseprite \
+    --batch ./bg/*.png \
+    --sheet ./dist/bg.png \
+    --data ./dist/bg.json \
+    --sheet-type packed \
+    --format json-array \
+    --filename-format "{title}"
 ```
 
 ```

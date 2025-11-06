@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 	"strings"
 
@@ -66,8 +67,17 @@ func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
 
 // Draw はスクリーンに描画する
 func (st *MainMenuState) Draw(world w.World, screen *ebiten.Image) error {
-	bg := (*world.Resources.SpriteSheets)["bg_title1"]
-	screen.DrawImage(bg.Texture.Image, nil)
+	// 背景画像を描画
+	bgSheet := (*world.Resources.SpriteSheets)["bg"]
+	bgSprite := bgSheet.Sprites["title1"]
+	rect := image.Rect(
+		bgSprite.X,
+		bgSprite.Y,
+		bgSprite.X+bgSprite.Width,
+		bgSprite.Y+bgSprite.Height,
+	)
+	bgImage := bgSheet.Texture.Image.SubImage(rect).(*ebiten.Image)
+	screen.DrawImage(bgImage, nil)
 
 	st.ui.Draw(screen)
 	return nil

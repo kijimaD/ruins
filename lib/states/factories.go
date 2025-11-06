@@ -232,7 +232,7 @@ func NewDebugMenuState() es.State[w.World] {
 			testMessage := messagedata.NewDialogMessage("これは背景付きメッセージのテストです。\nroom1.pngが背景に表示されています。", "システム")
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] {
-					return NewMessageState(testMessage, WithBackgroundKey("bg_hospital1"))
+					return NewMessageState(testMessage, WithBackgroundKey("bg", "hospital1"))
 				},
 			}})
 			return nil
@@ -296,7 +296,7 @@ func NewDebugMenuState() es.State[w.World] {
 			page2.OnComplete = func() {
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 					func() es.State[w.World] {
-						return NewMessageState(page3, WithBackgroundKey("bg_hospital1"))
+						return NewMessageState(page3, WithBackgroundKey("bg", "hospital1"))
 					},
 				}})
 			}
@@ -304,7 +304,7 @@ func NewDebugMenuState() es.State[w.World] {
 			// 最初に町医者シーンを表示
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
 				func() es.State[w.World] {
-					return NewMessageState(page1, WithBackgroundKey("bg_hospital2"))
+					return NewMessageState(page1, WithBackgroundKey("bg", "hospital2"))
 				},
 			}})
 			return nil
@@ -480,7 +480,7 @@ func NewCZCollectionEndingState() es.StateFactory[w.World] {
 		ending3.NextMessages = []*messagedata.MessageData{ending4}
 		ending4.NextMessages = []*messagedata.MessageData{ending5}
 
-		return NewMessageState(ending1, WithBackgroundKey("bg_hospital1"))
+		return NewMessageState(ending1, WithBackgroundKey("bg", "hospital1"))
 	}
 }
 

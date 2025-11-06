@@ -93,35 +93,26 @@ func (rl *DefaultResourceLoader) LoadSpriteSheets() (map[string]components.Sprit
 		return rl.cache.SpriteSheets, nil
 	}
 
-	type spriteSheetMetadata struct {
-		SpriteSheets map[string]components.SpriteSheet `toml:"sprite_sheet"`
+	spriteSheets := make(map[string]components.SpriteSheet)
+
+	// JSON形式のスプライトシート（Aseprite出力）
+	jsonFiles := map[string]string{
+		"field": "file/textures/dist/single.json",
+		"tile":  "file/textures/dist/tiles.json",
+		"bg":    "file/textures/dist/bg.json",
 	}
 
-	var metadata spriteSheetMetadata
-	bs, err := assets.FS.ReadFile(rl.config.SpriteSheetsPath)
-	if err != nil {
-		return nil, fmt.Errorf("スプライトシートファイルの読み込みに失敗: %w", err)
+	for name, path := range jsonFiles {
+		sheet, err := LoadSpriteSheetFromAseprite(path)
+		if err != nil {
+			return nil, fmt.Errorf("スプライトシート '%s' の読み込みに失敗: %w", name, err)
+		}
+		sheet.Name = name
+		spriteSheets[name] = sheet
 	}
 
-	metaData, err := toml.Decode(string(bs), &metadata)
-	if err != nil {
-		return nil, fmt.Errorf("スプライトシートメタデータのデコードに失敗: %w", err)
-	}
-
-	// 未知のキーがあった場合はエラーにする
-	undecoded := metaData.Undecoded()
-	if len(undecoded) > 0 {
-		return nil, fmt.Errorf("unknown keys found in sprite sheets TOML: %v", undecoded)
-	}
-
-	// 名前を設定
-	for k, v := range metadata.SpriteSheets {
-		v.Name = k
-		metadata.SpriteSheets[k] = v
-	}
-
-	rl.cache.SpriteSheets = metadata.SpriteSheets
-	return metadata.SpriteSheets, nil
+	rl.cache.SpriteSheets = spriteSheets
+	return spriteSheets, nil
 }
 
 // LoadRaws はRawデータを読み込む
