@@ -6,7 +6,7 @@ Stackable       = true
 Description     = "体力を半分程度回復する"
 Value           = 100
 SpriteSheetName = "field"
-SpriteKey       = "field_item"
+SpriteKey       = "heal_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -50,7 +50,7 @@ Stackable       = true
 Description     = "体力を完全回復する高級な薬"
 Value           = 300
 SpriteSheetName = "field"
-SpriteKey       = "field_item"
+SpriteKey       = "heal_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -67,7 +67,7 @@ Stackable       = true
 Description     = "失われた錬金術で作られた万能薬。全員を完全回復する"
 Value           = 800
 SpriteSheetName = "field"
-SpriteKey       = "field_item"
+SpriteKey       = "heal_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -247,7 +247,7 @@ Description       = "焼きたてのパン。空腹を満たす"
 Value             = 30
 ProvidesNutrition = 100
 SpriteSheetName   = "field"
-SpriteKey         = "field_item"
+SpriteKey         = "food_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -261,7 +261,7 @@ Description       = "保存用の肉。栄養価が高い"
 Value             = 50
 ProvidesNutrition = 150
 SpriteSheetName   = "field"
-SpriteKey         = "field_item"
+SpriteKey         = "food_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -275,7 +275,7 @@ Description       = "炭酸飲料。爽快感がある"
 Value             = 25
 ProvidesNutrition = 80
 SpriteSheetName   = "field"
-SpriteKey         = "field_item"
+SpriteKey         = "food_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -289,7 +289,7 @@ Description       = "熟成されたチーズ。栄養満点"
 Value             = 40
 ProvidesNutrition = 120
 SpriteSheetName   = "field"
-SpriteKey         = "field_item"
+SpriteKey         = "food_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -303,7 +303,7 @@ Description       = "固いビスケット。保存食として優秀"
 Value             = 25
 ProvidesNutrition = 90
 SpriteSheetName   = "field"
-SpriteKey         = "field_item"
+SpriteKey         = "food_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -317,7 +317,7 @@ Description       = "温かい料理の詰め合わせ。完全に空腹を満�
 Value             = 100
 ProvidesNutrition = 300
 SpriteSheetName   = "field"
-SpriteKey         = "field_item"
+SpriteKey         = "food_item"
 
 [Items.Consumable]
 UsableScene = "ANY"
@@ -1168,14 +1168,14 @@ Name            = "緑ハーブ"
 Stackable       = true
 Description     = "よい香りに鎮静・興奮などの作用がある植物"
 SpriteSheetName = "field"
-SpriteKey       = "field_item"
+SpriteKey       = "heal_item"
 
 [[Items]]
 Name            = "黄ハーブ"
 Stackable       = true
 Description     = "体力を増強させる作用がある植物"
 SpriteSheetName = "field"
-SpriteKey       = "field_item"
+SpriteKey       = "heal_item"
 
 [[Items]]
 Name            = "木の棒"
