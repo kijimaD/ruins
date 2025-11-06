@@ -1,0 +1,29 @@
+aseprite でパッキングしている。
+
+```
+aseprite \
+    --batch ./tiles/*.png \
+    --sheet ./dist/tiles.png \
+    --data ./dist/tiles.json \
+    --sheet-type packed \
+    --format json-array \
+    --trim \
+    --filename-format "{title}"
+
+aseprite \
+    --batch ./single/*.png \
+    --sheet ./dist/single.png \
+    --data ./dist/single.json \
+    --sheet-type packed \
+    --format json-array \
+    --trim \
+    --filename-format "{title}"
+```
+
+```
+tree -d
+.
+├── dist    # asepriteによる生成物。手動ではいじらない
+├── single # 1つで機能するスプライト
+└── tiles   # オートタイルのスプライト
+```
