@@ -19,9 +19,9 @@ type HUDRenderingSystem struct {
 // NewHUDRenderingSystem は新しいHUD描画システムを作成する
 func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
 	return &HUDRenderingSystem{
-		gameInfo:        hud.NewGameInfo(),
-		minimap:         hud.NewMinimap(),
-		debugOverlay:    hud.NewDebugOverlay(),
+		gameInfo:        hud.NewGameInfo(world),
+		minimap:         hud.NewMinimap(world),
+		debugOverlay:    hud.NewDebugOverlay(world),
 		messageArea:     hud.NewMessageArea(world),
 		currencyDisplay: hud.NewCurrencyDisplay(world),
 		enabled:         true,
