@@ -139,6 +139,34 @@ if err != nil {
 			
 			
 			
+				
+				<dd><a href="index.html#LoadSpriteSheetFromAseprite">func LoadSpriteSheetFromAseprite(jsonPath string) (components.SpriteSheet, error)</a></dd>
+			
+			
+				
+				<dd><a href="index.html#AsepriteFrame">type AsepriteFrame</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#AsepriteJSON">type AsepriteJSON</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#AsepriteMeta">type AsepriteMeta</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#AsepriteRect">type AsepriteRect</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#AsepriteSize">type AsepriteSize</a></dd>
+				
+				
 			
 				
 				<dd><a href="index.html#DefaultResourceLoader">type DefaultResourceLoader</a></dd>
@@ -183,9 +211,13 @@ if err != nil {
 			<p>
 			<span style="font-size:90%">
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/aseprite.go">aseprite.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/doc.go">doc.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go">loader.go</a>
+			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader_aseprite.go">loader_aseprite.go</a>
 			
 			</span>
 			</p>
@@ -198,6 +230,166 @@ if err != nil {
 		
 		
 		
+			
+			
+			<h2 id="LoadSpriteSheetFromAseprite">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader_aseprite.go?s=272:353#L4">LoadSpriteSheetFromAseprite</a>
+				<a class="permalink" href="index.html#LoadSpriteSheetFromAseprite">&#xb6;</a>
+				
+				
+			</h2>
+			<pre>func LoadSpriteSheetFromAseprite(jsonPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>) (<a href="../components/index.html">components</a>.<a href="../components/index.html#SpriteSheet">SpriteSheet</a>, <a href="http://localhost:8888/pkg/builtin/#error">error</a>)</pre>
+			<p>LoadSpriteSheetFromAseprite は Aseprite JSON フォーマットからスプライトシートを読み込む
+
+			
+			
+
+		
+		
+			
+			
+			<h2 id="AsepriteFrame">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/aseprite.go?s=278:655#L1">AsepriteFrame</a>
+				<a class="permalink" href="index.html#AsepriteFrame">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AsepriteFrame は1つのスプライトフレーム情報
+
+			<pre>type AsepriteFrame struct {
+<span id="AsepriteFrame.Filename"></span>    Filename         <a href="http://localhost:8888/pkg/builtin/#string">string</a>       `json:&#34;filename&#34;`
+<span id="AsepriteFrame.Frame"></span>    Frame            <a href="index.html#AsepriteRect">AsepriteRect</a> `json:&#34;frame&#34;`
+<span id="AsepriteFrame.Rotated"></span>    Rotated          <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>         `json:&#34;rotated&#34;`
+<span id="AsepriteFrame.Trimmed"></span>    Trimmed          <a href="http://localhost:8888/pkg/builtin/#bool">bool</a>         `json:&#34;trimmed&#34;`
+<span id="AsepriteFrame.SpriteSourceSize"></span>    SpriteSourceSize <a href="index.html#AsepriteRect">AsepriteRect</a> `json:&#34;spriteSourceSize&#34;`
+<span id="AsepriteFrame.SourceSize"></span>    SourceSize       <a href="index.html#AsepriteSize">AsepriteSize</a> `json:&#34;sourceSize&#34;`
+<span id="AsepriteFrame.Duration"></span>    Duration         <a href="http://localhost:8888/pkg/builtin/#int">int</a>          `json:&#34;duration&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="AsepriteJSON">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/aseprite.go?s=109:215#L1">AsepriteJSON</a>
+				<a class="permalink" href="index.html#AsepriteJSON">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AsepriteJSON は Aseprite が生成する JSON スプライトシートフォーマット
+
+			<pre>type AsepriteJSON struct {
+<span id="AsepriteJSON.Frames"></span>    Frames []<a href="index.html#AsepriteFrame">AsepriteFrame</a> `json:&#34;frames&#34;`
+<span id="AsepriteJSON.Meta"></span>    Meta   <a href="index.html#AsepriteMeta">AsepriteMeta</a>    `json:&#34;meta&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="AsepriteMeta">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/aseprite.go?s=936:1186#L25">AsepriteMeta</a>
+				<a class="permalink" href="index.html#AsepriteMeta">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AsepriteMeta はメタデータ
+
+			<pre>type AsepriteMeta struct {
+<span id="AsepriteMeta.App"></span>    App     <a href="http://localhost:8888/pkg/builtin/#string">string</a>       `json:&#34;app&#34;`
+<span id="AsepriteMeta.Version"></span>    Version <a href="http://localhost:8888/pkg/builtin/#string">string</a>       `json:&#34;version&#34;`
+<span id="AsepriteMeta.Image"></span>    Image   <a href="http://localhost:8888/pkg/builtin/#string">string</a>       `json:&#34;image&#34;`
+<span id="AsepriteMeta.Format"></span>    Format  <a href="http://localhost:8888/pkg/builtin/#string">string</a>       `json:&#34;format&#34;`
+<span id="AsepriteMeta.Size"></span>    Size    <a href="index.html#AsepriteSize">AsepriteSize</a> `json:&#34;size&#34;`
+<span id="AsepriteMeta.Scale"></span>    Scale   <a href="http://localhost:8888/pkg/builtin/#string">string</a>       `json:&#34;scale&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="AsepriteRect">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/aseprite.go?s=704:804#L11">AsepriteRect</a>
+				<a class="permalink" href="index.html#AsepriteRect">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AsepriteRect は矩形の位置とサイズ
+
+			<pre>type AsepriteRect struct {
+<span id="AsepriteRect.X"></span>    X <a href="http://localhost:8888/pkg/builtin/#int">int</a> `json:&#34;x&#34;`
+<span id="AsepriteRect.Y"></span>    Y <a href="http://localhost:8888/pkg/builtin/#int">int</a> `json:&#34;y&#34;`
+<span id="AsepriteRect.W"></span>    W <a href="http://localhost:8888/pkg/builtin/#int">int</a> `json:&#34;w&#34;`
+<span id="AsepriteRect.H"></span>    H <a href="http://localhost:8888/pkg/builtin/#int">int</a> `json:&#34;h&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="AsepriteSize">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/aseprite.go?s=835:899#L19">AsepriteSize</a>
+				<a class="permalink" href="index.html#AsepriteSize">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AsepriteSize はサイズ
+
+			<pre>type AsepriteSize struct {
+<span id="AsepriteSize.W"></span>    W <a href="http://localhost:8888/pkg/builtin/#int">int</a> `json:&#34;w&#34;`
+<span id="AsepriteSize.H"></span>    H <a href="http://localhost:8888/pkg/builtin/#int">int</a> `json:&#34;h&#34;`
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
 		
 			
 			
@@ -238,7 +430,7 @@ if err != nil {
 				
 			
 				
-				<h3 id="DefaultResourceLoader.LoadRaws">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=3780:3844#L118">LoadRaws</a>
+				<h3 id="DefaultResourceLoader.LoadRaws">func (*DefaultResourceLoader) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/loader/loader.go?s=3495:3559#L109">LoadRaws</a>
 					<a class="permalink" href="index.html#DefaultResourceLoader.LoadRaws">&#xb6;</a>
 					
 					
