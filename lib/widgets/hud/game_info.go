@@ -5,19 +5,21 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // GameInfo はHUDの基本ゲーム情報エリア
 type GameInfo struct {
+	face    text.Face
 	enabled bool
 }
 
 // NewGameInfo は新しいHUDGameInfoを作成する
-func NewGameInfo() *GameInfo {
+func NewGameInfo(face text.Face) *GameInfo {
 	return &GameInfo{
+		face:    face,
 		enabled: true,
 	}
 }
@@ -245,7 +247,10 @@ func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 }
 
 // drawWhiteText は通常の文字でテキストを描画するヘルパー関数
-func (info *GameInfo) drawWhiteText(screen *ebiten.Image, text string, x, y int) {
-	// 通常の文字を描画
-	ebitenutil.DebugPrintAt(screen, text, x, y)
+func (info *GameInfo) drawWhiteText(screen *ebiten.Image, textStr string, x, y int) {
+	// テキストを描画
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(float64(x), float64(y))
+	op.ColorScale.ScaleWithColor(color.White)
+	text.Draw(screen, textStr, info.face, op)
 }

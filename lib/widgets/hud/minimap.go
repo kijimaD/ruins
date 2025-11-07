@@ -4,19 +4,21 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // Minimap はHUDのミニマップエリア
 type Minimap struct {
+	face    text.Face
 	enabled bool
 }
 
 // NewMinimap は新しいHUDMinimapを作成する
-func NewMinimap() *Minimap {
+func NewMinimap(face text.Face) *Minimap {
 	return &Minimap{
+		face:    face,
 		enabled: true,
 	}
 }
@@ -115,7 +117,10 @@ func (minimap *Minimap) drawEmpty(screen *ebiten.Image, data MinimapData) {
 	minimap.drawFrame(screen, minimapX, minimapY, minimapWidth, minimapHeight)
 
 	// 中央に"No Data"テキストを表示
-	ebitenutil.DebugPrintAt(screen, "No Data", minimapX+50, minimapY+70)
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(float64(minimapX+50), float64(minimapY+70))
+	op.ColorScale.ScaleWithColor(color.White)
+	text.Draw(screen, "No Data", minimap.face, op)
 }
 
 // drawFrame はミニマップの枠を描画する
