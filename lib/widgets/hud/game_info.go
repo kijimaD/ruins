@@ -12,14 +12,14 @@ import (
 
 // GameInfo はHUDの基本ゲーム情報エリア
 type GameInfo struct {
-	world   w.World
+	face    text.Face
 	enabled bool
 }
 
 // NewGameInfo は新しいHUDGameInfoを作成する
-func NewGameInfo(world w.World) *GameInfo {
+func NewGameInfo(face text.Face) *GameInfo {
 	return &GameInfo{
-		world:   world,
+		face:    face,
 		enabled: true,
 	}
 }
@@ -248,12 +248,9 @@ func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 
 // drawWhiteText は通常の文字でテキストを描画するヘルパー関数
 func (info *GameInfo) drawWhiteText(screen *ebiten.Image, textStr string, x, y int) {
-	// UIリソースからフォントを取得
-	face := info.world.Resources.UIResources.Text.Face
-
 	// テキストを描画
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(float64(x), float64(y))
 	op.ColorScale.ScaleWithColor(color.White)
-	text.Draw(screen, textStr, face, op)
+	text.Draw(screen, textStr, info.face, op)
 }

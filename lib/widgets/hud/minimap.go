@@ -11,14 +11,14 @@ import (
 
 // Minimap はHUDのミニマップエリア
 type Minimap struct {
-	world   w.World
+	face    text.Face
 	enabled bool
 }
 
 // NewMinimap は新しいHUDMinimapを作成する
-func NewMinimap(world w.World) *Minimap {
+func NewMinimap(face text.Face) *Minimap {
 	return &Minimap{
-		world:   world,
+		face:    face,
 		enabled: true,
 	}
 }
@@ -117,11 +117,10 @@ func (minimap *Minimap) drawEmpty(screen *ebiten.Image, data MinimapData) {
 	minimap.drawFrame(screen, minimapX, minimapY, minimapWidth, minimapHeight)
 
 	// 中央に"No Data"テキストを表示
-	face := minimap.world.Resources.UIResources.Text.Face
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(float64(minimapX+50), float64(minimapY+70))
 	op.ColorScale.ScaleWithColor(color.White)
-	text.Draw(screen, "No Data", face, op)
+	text.Draw(screen, "No Data", minimap.face, op)
 }
 
 // drawFrame はミニマップの枠を描画する

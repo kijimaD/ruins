@@ -11,14 +11,14 @@ import (
 
 // CurrencyDisplay は遺光表示ウィジェット
 type CurrencyDisplay struct {
-	world   w.World
+	face    text.Face
 	enabled bool
 }
 
 // NewCurrencyDisplay は新しいCurrencyDisplayを作成する
-func NewCurrencyDisplay(world w.World) *CurrencyDisplay {
+func NewCurrencyDisplay(face text.Face) *CurrencyDisplay {
 	return &CurrencyDisplay{
-		world:   world,
+		face:    face,
 		enabled: true,
 	}
 }
@@ -46,11 +46,8 @@ func (c *CurrencyDisplay) Draw(screen *ebiten.Image, data CurrencyData) {
 	// 通貨テキスト
 	currencyText := worldhelper.FormatCurrency(data.Currency)
 
-	// UIリソースからフォントを取得
-	face := c.world.Resources.UIResources.Text.Face
-
 	// テキストの幅を計算
-	textWidth, _ := text.Measure(currencyText, face, 0)
+	textWidth, _ := text.Measure(currencyText, c.face, 0)
 
 	// メッセージウィンドウの位置を計算
 	fixedHeight := data.Config.LogAreaMargin*2 + data.Config.MaxLogLines*data.Config.LineHeight + data.Config.YPadding*2
@@ -64,5 +61,5 @@ func (c *CurrencyDisplay) Draw(screen *ebiten.Image, data CurrencyData) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(currencyX, currencyY)
 	op.ColorScale.ScaleWithColor(color.White)
-	text.Draw(screen, currencyText, face, op)
+	text.Draw(screen, currencyText, c.face, op)
 }

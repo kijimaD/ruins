@@ -12,14 +12,14 @@ import (
 
 // DebugOverlay はAI情報のデバッグ表示エリア
 type DebugOverlay struct {
-	world   w.World
+	face    text.Face
 	enabled bool
 }
 
 // NewDebugOverlay は新しいHUDDebugOverlayを作成する
-func NewDebugOverlay(world w.World) *DebugOverlay {
+func NewDebugOverlay(face text.Face) *DebugOverlay {
 	return &DebugOverlay{
-		world:   world,
+		face:    face,
 		enabled: true,
 	}
 }
@@ -35,13 +35,10 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 		return
 	}
 
-	// UIリソースからフォントを取得
-	face := overlay.world.Resources.UIResources.Text.Face
-
 	// AI状態を描画
 	for _, aiState := range data.AIStates {
 		textOffsetY := 30.0
-		overlay.drawText(screen, face, aiState.StateText, int(aiState.ScreenX)-20, int(aiState.ScreenY-textOffsetY))
+		overlay.drawText(screen, overlay.face, aiState.StateText, int(aiState.ScreenX)-20, int(aiState.ScreenY-textOffsetY))
 	}
 
 	// 視界範囲を描画
@@ -53,7 +50,7 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	for _, hpDisplay := range data.HPDisplays {
 		hpText := fmt.Sprintf("%d/%d", hpDisplay.CurrentHP, hpDisplay.MaxHP)
 		textOffsetY := 15.0 // AI状態テキスト（30.0）より上に表示して重複を避ける
-		overlay.drawText(screen, face, hpText, int(hpDisplay.ScreenX)-15, int(hpDisplay.ScreenY-textOffsetY))
+		overlay.drawText(screen, overlay.face, hpText, int(hpDisplay.ScreenX)-15, int(hpDisplay.ScreenY-textOffsetY))
 	}
 }
 

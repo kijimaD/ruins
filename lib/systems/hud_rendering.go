@@ -18,12 +18,13 @@ type HUDRenderingSystem struct {
 
 // NewHUDRenderingSystem は新しいHUD描画システムを作成する
 func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
+	face := world.Resources.UIResources.Text.Face
 	return &HUDRenderingSystem{
-		gameInfo:        hud.NewGameInfo(world),
-		minimap:         hud.NewMinimap(world),
-		debugOverlay:    hud.NewDebugOverlay(world),
+		gameInfo:        hud.NewGameInfo(face),
+		minimap:         hud.NewMinimap(face),
+		debugOverlay:    hud.NewDebugOverlay(face),
 		messageArea:     hud.NewMessageArea(world),
-		currencyDisplay: hud.NewCurrencyDisplay(world),
+		currencyDisplay: hud.NewCurrencyDisplay(face),
 		enabled:         true,
 	}
 }
