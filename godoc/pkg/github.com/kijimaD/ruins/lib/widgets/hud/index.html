@@ -170,7 +170,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				<dd><a href="index.html#CurrencyDisplay">type CurrencyDisplay</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewCurrencyDisplay">func NewCurrencyDisplay(world w.World) *CurrencyDisplay</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewCurrencyDisplay">func NewCurrencyDisplay(face text.Face) *CurrencyDisplay</a></dd>
 				
 				
 					
@@ -192,7 +192,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				<dd><a href="index.html#DebugOverlay">type DebugOverlay</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewDebugOverlay">func NewDebugOverlay() *DebugOverlay</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewDebugOverlay">func NewDebugOverlay(face text.Face) *DebugOverlay</a></dd>
 				
 				
 					
@@ -211,7 +211,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				<dd><a href="index.html#GameInfo">type GameInfo</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewGameInfo">func NewGameInfo() *GameInfo</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewGameInfo">func NewGameInfo(face text.Face) *GameInfo</a></dd>
 				
 				
 					
@@ -268,7 +268,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				<dd><a href="index.html#Minimap">type Minimap</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#NewMinimap">func NewMinimap() *Minimap</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMinimap">func NewMinimap(face text.Face) *Minimap</a></dd>
 				
 				
 					
@@ -411,7 +411,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="CurrencyDisplay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=258:320#L3">CurrencyDisplay</a>
+			<h2 id="CurrencyDisplay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=258:322#L3">CurrencyDisplay</a>
 				<a class="permalink" href="index.html#CurrencyDisplay">&#xb6;</a>
 				
 				
@@ -433,12 +433,12 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="NewCurrencyDisplay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=387:442#L9">NewCurrencyDisplay</a>
+				<h3 id="NewCurrencyDisplay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=389:445#L9">NewCurrencyDisplay</a>
 					<a class="permalink" href="index.html#NewCurrencyDisplay">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewCurrencyDisplay(world <a href="../../world/index.html">w</a>.<a href="../../world/index.html#World">World</a>) *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a></pre>
+				<pre>func NewCurrencyDisplay(face text.<a href="index.html#Face">Face</a>) *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a></pre>
 				<p>NewCurrencyDisplay は新しいCurrencyDisplayを作成する
 
 				
@@ -447,7 +447,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="CurrencyDisplay.Draw">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=826:897#L27">Draw</a>
+				<h3 id="CurrencyDisplay.Draw">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=828:899#L27">Draw</a>
 					<a class="permalink" href="index.html#CurrencyDisplay.Draw">&#xb6;</a>
 					
 					
@@ -460,7 +460,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="CurrencyDisplay.SetEnabled">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=567:617#L17">SetEnabled</a>
+				<h3 id="CurrencyDisplay.SetEnabled">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=569:619#L17">SetEnabled</a>
 					<a class="permalink" href="index.html#CurrencyDisplay.SetEnabled">&#xb6;</a>
 					
 					
@@ -473,7 +473,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="CurrencyDisplay.Update">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=700:743#L22">Update</a>
+				<h3 id="CurrencyDisplay.Update">func (*CurrencyDisplay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/currency.go?s=702:745#L22">Update</a>
 					<a class="permalink" href="index.html#CurrencyDisplay.Update">&#xb6;</a>
 					
 					
@@ -518,7 +518,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="DebugOverlay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=237:279#L4">DebugOverlay</a>
+			<h2 id="DebugOverlay">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=234:295#L4">DebugOverlay</a>
 				<a class="permalink" href="index.html#DebugOverlay">&#xb6;</a>
 				
 				
@@ -540,12 +540,12 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="NewDebugOverlay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=343:379#L9">NewDebugOverlay</a>
+				<h3 id="NewDebugOverlay">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=359:409#L10">NewDebugOverlay</a>
 					<a class="permalink" href="index.html#NewDebugOverlay">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewDebugOverlay() *<a href="index.html#DebugOverlay">DebugOverlay</a></pre>
+				<pre>func NewDebugOverlay(face text.<a href="index.html#Face">Face</a>) *<a href="index.html#DebugOverlay">DebugOverlay</a></pre>
 				<p>NewDebugOverlay は新しいHUDDebugOverlayを作成する
 
 				
@@ -554,7 +554,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="DebugOverlay.Draw">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=628:706#L21">Draw</a>
+				<h3 id="DebugOverlay.Draw">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=675:753#L23">Draw</a>
 					<a class="permalink" href="index.html#DebugOverlay.Draw">&#xb6;</a>
 					
 					
@@ -567,7 +567,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="DebugOverlay.Update">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=487:533#L16">Update</a>
+				<h3 id="DebugOverlay.Update">func (*DebugOverlay) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/debug_overlay.go?s=534:580#L18">Update</a>
 					<a class="permalink" href="index.html#DebugOverlay.Update">&#xb6;</a>
 					
 					
@@ -612,7 +612,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="GameInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=266:304#L4">GameInfo</a>
+			<h2 id="GameInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=263:320#L4">GameInfo</a>
 				<a class="permalink" href="index.html#GameInfo">&#xb6;</a>
 				
 				
@@ -634,12 +634,12 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="NewGameInfo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=360:388#L9">NewGameInfo</a>
+				<h3 id="NewGameInfo">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=376:418#L10">NewGameInfo</a>
 					<a class="permalink" href="index.html#NewGameInfo">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewGameInfo() *<a href="index.html#GameInfo">GameInfo</a></pre>
+				<pre>func NewGameInfo(face text.<a href="index.html#Face">Face</a>) *<a href="index.html#GameInfo">GameInfo</a></pre>
 				<p>NewGameInfo は新しいHUDGameInfoを作成する
 
 				
@@ -648,7 +648,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="GameInfo.Draw">func (*GameInfo) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=614:681#L21">Draw</a>
+				<h3 id="GameInfo.Draw">func (*GameInfo) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=661:728#L23">Draw</a>
 					<a class="permalink" href="index.html#GameInfo.Draw">&#xb6;</a>
 					
 					
@@ -661,7 +661,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="GameInfo.Update">func (*GameInfo) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=486:525#L16">Update</a>
+				<h3 id="GameInfo.Update">func (*GameInfo) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/game_info.go?s=533:572#L18">Update</a>
 					<a class="permalink" href="index.html#GameInfo.Update">&#xb6;</a>
 					
 					
@@ -903,7 +903,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 		
 			
 			
-			<h2 id="Minimap">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=252:289#L3">Minimap</a>
+			<h2 id="Minimap">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=249:305#L3">Minimap</a>
 				<a class="permalink" href="index.html#Minimap">&#xb6;</a>
 				
 				
@@ -925,12 +925,12 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="NewMinimap">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=343:369#L8">NewMinimap</a>
+				<h3 id="NewMinimap">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=359:399#L9">NewMinimap</a>
 					<a class="permalink" href="index.html#NewMinimap">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func NewMinimap() *<a href="index.html#Minimap">Minimap</a></pre>
+				<pre>func NewMinimap(face text.<a href="index.html#Face">Face</a>) *<a href="index.html#Minimap">Minimap</a></pre>
 				<p>NewMinimap は新しいHUDMinimapを作成する
 
 				
@@ -939,7 +939,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 
 			
 				
-				<h3 id="Minimap.Draw">func (*Minimap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=578:646#L20">Draw</a>
+				<h3 id="Minimap.Draw">func (*Minimap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=625:693#L22">Draw</a>
 					<a class="permalink" href="index.html#Minimap.Draw">&#xb6;</a>
 					
 					
@@ -952,7 +952,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 			
 				
-				<h3 id="Minimap.Update">func (*Minimap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=457:498#L15">Update</a>
+				<h3 id="Minimap.Update">func (*Minimap) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go?s=504:545#L17">Update</a>
 					<a class="permalink" href="index.html#Minimap.Update">&#xb6;</a>
 					
 					
