@@ -341,31 +341,51 @@ func (w *Window) createWindowContainer() *widget.Container {
 
 // createChoicesContainer は選択肢コンテナを作成する
 func (w *Window) createChoicesContainer() *widget.Container {
+	var itemsContainer *widget.Container
+
 	if w.choiceBuilder != nil && w.choiceMenu != nil {
-		return w.choiceBuilder.BuildUI(w.choiceMenu)
-	}
-
-	container := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(5),
-				widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10}),
+		itemsContainer = w.choiceBuilder.BuildUI(w.choiceMenu)
+	} else {
+		// 選択肢アイテムのコンテナ（縦並び、各アイテムを中央寄せ）
+		itemsContainer = widget.NewContainer(
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+					widget.RowLayoutOpts.Spacing(5),
+					widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10}),
+				),
 			),
-		),
-	)
-
-	for i, choice := range w.content.Choices {
-		choiceText := styled.NewListItemText(
-			choice.Text,
-			w.config.TextStyle.Color,
-			i == 0,
-			w.world.Resources.UIResources,
 		)
-		container.AddChild(choiceText)
+
+		for i, choice := range w.content.Choices {
+			// 各選択肢を中央配置するコンテナでラップ
+			choiceWrapper := widget.NewContainer(
+				widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Stretch: true,
+					}),
+				),
+			)
+
+			choiceText := w.createChoiceText(choice.Text, i == 0)
+			choiceText.GetWidget().LayoutData = widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				StretchHorizontal:  false, // 水平方向に引き伸ばさない
+			}
+			choiceWrapper.AddChild(choiceText)
+			itemsContainer.AddChild(choiceWrapper)
+		}
 	}
 
-	return container
+	// 親のRowLayout内で中央配置するためのLayoutDataを設定
+	itemsContainer.GetWidget().LayoutData = widget.RowLayoutData{
+		Position: widget.RowLayoutPositionCenter,
+		Stretch:  false,
+	}
+
+	return itemsContainer
 }
 
 // createEnterPrompt はEnterプロンプトを作成する
@@ -643,4 +663,45 @@ func (w *Window) createSegmentedTextLines() *widget.Container {
 	}
 
 	return mainContainer
+}
+
+// createChoiceText は選択肢用のテキストウィジェットを作成する（自然な幅で中央寄せ用）
+func (w *Window) createChoiceText(choiceText string, isSelected bool) *widget.Container {
+	res := w.world.Resources.UIResources
+
+	// 背景色の設定
+	var backgroundColor *eui_image.NineSlice
+	if isSelected {
+		// 選択中は背景色を付ける
+		backgroundColor = eui_image.NewNineSliceColor(color.NRGBA{R: 75, G: 104, B: 122, A: 100})
+	} else {
+		// 非選択は透明
+		backgroundColor = eui_image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
+	}
+
+	// コンテナ（自然な幅を保持）
+	container := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(backgroundColor),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
+
+	// テキストウィジェット
+	textWidget := widget.NewText(
+		widget.TextOpts.Text(choiceText, &res.Text.Face, w.config.TextStyle.Color),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				Padding: &widget.Insets{
+					Top:    4,
+					Bottom: 4,
+					Left:   16,
+					Right:  16,
+				},
+			}),
+		),
+	)
+
+	container.AddChild(textWidget)
+	return container
 }
