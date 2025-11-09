@@ -468,10 +468,6 @@ func (st *ShopMenuState) updateTabDisplay(world w.World) {
 	currentTab := st.tabMenu.GetCurrentTab()
 	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
 
-	// タブ名を表示（サブタイトルとして）
-	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world.Resources.UIResources)
-	st.tabDisplayContainer.AddChild(tabNameText)
-
 	// ページインジケーターを表示
 	pageText := st.tabMenu.GetPageIndicatorText()
 	if pageText != "" {
