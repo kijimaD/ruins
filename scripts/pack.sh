@@ -31,3 +31,5 @@ main() {
     pack_sprites "single"
     pack_sprites "bg"
 }
+
+main
