@@ -90,8 +90,12 @@ func (b *uiBuilder) CreateMenuButton(tabMenu *tabMenu, index int, item Item) wid
 		widget.ButtonOpts.TextPadding(&res.Button.Padding),
 		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
-			_ = tabMenu.SetItemIndex(index)
-			_ = tabMenu.selectCurrentItem() // ボタンクリック時のエラーは無視
+			if err := tabMenu.SetItemIndex(index); err != nil {
+				panic(err)
+			}
+			if err := tabMenu.selectCurrentItem(); err != nil {
+				panic(err)
+			}
 		}),
 	)
 
