@@ -4,16 +4,15 @@ import (
 	"testing"
 
 	"github.com/kijimaD/ruins/lib/inputmapper"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/stretchr/testify/require"
 )
 
 func TestTabSwitching(t *testing.T) {
 	t.Parallel()
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
-		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
-		{ID: "tab3", Label: "タブ3", Items: []menu.Item{{ID: "item3", Label: "アイテム3"}}},
+		{ID: "tab1", Label: "タブ1", Items: []Item{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab2", Label: "タブ2", Items: []Item{{ID: "item2", Label: "アイテム2"}}},
+		{ID: "tab3", Label: "タブ3", Items: []Item{{ID: "item3", Label: "アイテム3"}}},
 	}
 
 	config := Config{
@@ -66,7 +65,7 @@ func TestItemNavigation(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.Item{
+			Items: []Item{
 				{ID: "item1", Label: "アイテム1"},
 				{ID: "item2", Label: "アイテム2"},
 				{ID: "item3", Label: "アイテム3"},
@@ -83,7 +82,7 @@ func TestItemNavigation(t *testing.T) {
 
 	itemChangeCount := 0
 	callbacks := Callbacks{
-		OnItemChange: func(_ int, _, _ int, _ menu.Item) error {
+		OnItemChange: func(_ int, _, _ int, _ Item) error {
 			itemChangeCount++
 			return nil
 		},
@@ -119,8 +118,8 @@ func TestItemNavigation(t *testing.T) {
 func TestWrapNavigation(t *testing.T) {
 	t.Parallel()
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
-		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item2", Label: "アイテム2"}}},
+		{ID: "tab1", Label: "タブ1", Items: []Item{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab2", Label: "タブ2", Items: []Item{{ID: "item2", Label: "アイテム2"}}},
 	}
 
 	config := Config{
@@ -155,7 +154,7 @@ func TestSelection(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.Item{
+			Items: []Item{
 				{ID: "item1", Label: "アイテム1", UserData: "data1"},
 			},
 		},
@@ -167,9 +166,9 @@ func TestSelection(t *testing.T) {
 		InitialItemIndex: 0,
 	}
 
-	var selectedItem menu.Item
+	var selectedItem Item
 	callbacks := Callbacks{
-		OnSelectItem: func(_, _ int, _ TabItem, item menu.Item) error {
+		OnSelectItem: func(_, _ int, _ TabItem, item Item) error {
 			selectedItem = item
 			return nil
 		},
@@ -189,7 +188,7 @@ func TestSelection(t *testing.T) {
 func TestCancel(t *testing.T) {
 	t.Parallel()
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}}},
+		{ID: "tab1", Label: "タブ1", Items: []Item{{ID: "item1", Label: "アイテム1"}}},
 	}
 
 	config := Config{
@@ -222,7 +221,7 @@ func TestTabMenuGetters(t *testing.T) {
 		{
 			ID:    "tab1",
 			Label: "タブ1",
-			Items: []menu.Item{
+			Items: []Item{
 				{ID: "item1", Label: "アイテム1"},
 				{ID: "item2", Label: "アイテム2"},
 			},
@@ -252,8 +251,8 @@ func TestTabMenuGetters(t *testing.T) {
 func TestTabMenuSetters(t *testing.T) {
 	t.Parallel()
 	tabs := []TabItem{
-		{ID: "tab1", Label: "タブ1", Items: []menu.Item{{ID: "item1", Label: "アイテム1"}, {ID: "item2", Label: "アイテム2"}}},
-		{ID: "tab2", Label: "タブ2", Items: []menu.Item{{ID: "item3", Label: "アイテム3"}}},
+		{ID: "tab1", Label: "タブ1", Items: []Item{{ID: "item1", Label: "アイテム1"}, {ID: "item2", Label: "アイテム2"}}},
+		{ID: "tab2", Label: "タブ2", Items: []Item{{ID: "item3", Label: "アイテム3"}}},
 	}
 
 	config := Config{

@@ -14,7 +14,6 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/logger"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	"github.com/kijimaD/ruins/lib/widgets/views"
@@ -162,7 +161,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item tabmenu.Item) error {
 			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
@@ -173,7 +172,7 @@ func (st *InventoryMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+		OnItemChange: func(_ int, _, _ int, item tabmenu.Item) error {
 			if err := st.handleItemChange(world, item); err != nil {
 				return err
 			}
@@ -252,13 +251,13 @@ func (st *InventoryMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createMenuItems はECSエンティティをMenuItemに変換する
-func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Entity) []menu.Item {
-	items := make([]menu.Item, len(entities))
+func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Entity) []tabmenu.Item {
+	items := make([]tabmenu.Item, len(entities))
 
 	for i, entity := range entities {
 		name := world.Components.Name.Get(entity).(*gc.Name).Name
 
-		item := menu.Item{
+		item := tabmenu.Item{
 			ID:       fmt.Sprintf("entity_%d", entity),
 			Label:    name,
 			UserData: entity,
@@ -279,7 +278,7 @@ func (st *InventoryMenuState) createMenuItems(world w.World, entities []ecs.Enti
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *InventoryMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
+func (st *InventoryMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item tabmenu.Item) error {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		return fmt.Errorf("unexpected item UserData")
@@ -291,7 +290,7 @@ func (st *InventoryMenuState) handleItemSelection(world w.World, _ tabmenu.TabIt
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *InventoryMenuState) handleItemChange(world w.World, item menu.Item) error {
+func (st *InventoryMenuState) handleItemChange(world w.World, item tabmenu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "

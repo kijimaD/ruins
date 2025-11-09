@@ -11,8 +11,8 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/messagedata"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
+	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -30,8 +30,8 @@ type Window struct {
 	window      *widget.Window
 
 	// 選択肢がある場合、メニューシステムでページング可能な選択肢一覧を表示
-	choiceMenu      *menu.Menu
-	choiceBuilder   *menu.UIBuilder
+	choiceMenu      *tabmenu.TabMenu
+	choiceBuilder   *tabmenu.UIBuilder
 	hasChoices      bool
 	currentMenuPage int
 	needsUIRebuild  bool // ページ変更時のUI再構築フラグ
@@ -57,7 +57,7 @@ func (w *Window) Update() error {
 	}
 
 	if w.hasChoices && w.choiceMenu != nil {
-		if err := w.choiceMenu.Update(); err != nil {
+		if _, err := w.choiceMenu.Update(); err != nil {
 			return err
 		}
 
@@ -448,9 +448,9 @@ func (w *Window) initChoiceMenu() {
 		return
 	}
 
-	items := make([]menu.Item, len(w.content.Choices))
+	items := make([]tabmenu.Item, len(w.content.Choices))
 	for i, choice := range w.content.Choices {
-		items[i] = menu.Item{
+		items[i] = tabmenu.Item{
 			ID:       choice.Text,
 			Label:    choice.Text,
 			Disabled: false,
@@ -460,22 +460,31 @@ func (w *Window) initChoiceMenu() {
 
 	itemsPerPage := w.calculateItemsPerPage(len(w.content.Choices))
 
-	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
-		ItemsPerPage:   itemsPerPage,
+	// タブ1つ
+	tabs := []tabmenu.TabItem{
+		{
+			ID:    "choices",
+			Label: "",
+			Items: items,
+		},
 	}
 
-	callbacks := menu.Callbacks{
-		OnSelect: func(index int, _ menu.Item) error {
-			return w.selectChoice(index)
+	config := tabmenu.Config{
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
+		ItemsPerPage:     itemsPerPage,
+	}
+
+	callbacks := tabmenu.Callbacks{
+		OnSelectItem: func(_ int, itemIndex int, _ tabmenu.TabItem, _ tabmenu.Item) error {
+			return w.selectChoice(itemIndex)
 		},
 		OnCancel: func() {
 			w.Close()
 		},
-		OnFocusChange: func(_, _ int) {
+		OnItemChange: func(_ int, _, _ int, _ tabmenu.Item) error {
 			if w.choiceMenu != nil {
 				newPage := w.choiceMenu.GetCurrentPage()
 				if newPage != w.currentMenuPage {
@@ -484,14 +493,17 @@ func (w *Window) initChoiceMenu() {
 				}
 			}
 
-			if w.choiceBuilder != nil && !w.needsUIRebuild {
+			if w.choiceBuilder != nil && w.choiceMenu != nil && !w.needsUIRebuild {
 				w.choiceBuilder.UpdateFocus(w.choiceMenu)
 			}
+			return nil
 		},
 	}
 
-	w.choiceMenu = menu.NewMenu(config, callbacks)
-	w.choiceBuilder = menu.NewUIBuilder(w.world)
+	w.choiceMenu = tabmenu.NewTabMenu(config, callbacks)
+
+	// UIBuilderを作成
+	w.choiceBuilder = tabmenu.NewUIBuilder(w.world)
 	w.currentMenuPage = 1
 }
 

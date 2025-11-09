@@ -12,7 +12,6 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	gs "github.com/kijimaD/ruins/lib/systems"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	"github.com/kijimaD/ruins/lib/widgets/views"
@@ -173,7 +172,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item tabmenu.Item) error {
 			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
@@ -184,7 +183,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 			st.updateTabDisplay(world)
 			st.updateAbilityDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+		OnItemChange: func(_ int, _, _ int, item tabmenu.Item) error {
 			if err := st.handleItemChange(world, item); err != nil {
 				return err
 			}
@@ -266,8 +265,8 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createAllSlotItems は武器と防具の全スロットのMenuItemを作成する
-func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.Item {
-	items := []menu.Item{}
+func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []tabmenu.Item {
+	items := []tabmenu.Item{}
 
 	// 武器スロットを追加（近接武器、遠距離武器）
 	weaponSlots := []struct {
@@ -286,7 +285,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 			name = fmt.Sprintf("%s: -", slot.label)
 		}
 
-		items = append(items, menu.Item{
+		items = append(items, tabmenu.Item{
 			ID:    fmt.Sprintf("weapon_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
@@ -309,7 +308,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 			name = fmt.Sprintf("%s: -", armorLabels[i])
 		}
 
-		items = append(items, menu.Item{
+		items = append(items, tabmenu.Item{
 			ID:    fmt.Sprintf("wear_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
@@ -324,7 +323,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
+func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item tabmenu.Item) error {
 	if st.isEquipMode {
 		// 装備選択モードの場合
 		return st.handleEquipItemSelection(world, item)
@@ -341,7 +340,7 @@ func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, 
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) error {
+func (st *EquipMenuState) handleItemChange(world w.World, item tabmenu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
@@ -669,12 +668,12 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 }
 
 // createEquipMenuItems は装備選択用のMenuItemを作成する
-func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []menu.Item {
-	items := make([]menu.Item, len(entities))
+func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []tabmenu.Item {
+	items := make([]tabmenu.Item, len(entities))
 
 	for i, entity := range entities {
 		name := world.Components.Name.Get(entity).(*gc.Name).Name
-		items[i] = menu.Item{
+		items[i] = tabmenu.Item{
 			ID:       fmt.Sprintf("equip_entity_%d", entity),
 			Label:    name,
 			UserData: entity,
@@ -685,7 +684,7 @@ func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Ent
 }
 
 // handleEquipItemSelection は装備選択時の処理
-func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item) error {
+func (st *EquipMenuState) handleEquipItemSelection(world w.World, item tabmenu.Item) error {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		return fmt.Errorf("unexpected item UserData")

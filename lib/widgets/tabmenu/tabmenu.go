@@ -6,14 +6,13 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 )
 
 // TabItem はタブの項目を定義する
 type TabItem struct {
 	ID    string
 	Label string
-	Items []menu.Item
+	Items []Item
 }
 
 // Config はタブメニューの設定
@@ -27,14 +26,13 @@ type Config struct {
 
 // Callbacks はタブメニューのコールバック
 type Callbacks struct {
-	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item menu.Item) error
+	OnSelectItem func(tabIndex int, itemIndex int, tab TabItem, item Item) error
 	OnCancel     func()
 	OnTabChange  func(oldTabIndex, newTabIndex int, tab TabItem)
-	OnItemChange func(tabIndex int, oldItemIndex, newItemIndex int, item menu.Item) error
+	OnItemChange func(tabIndex int, oldItemIndex, newItemIndex int, item Item) error
 }
 
 // TabMenu はタブ付きメニューコンポーネント
-// TODO: Menuとの違いを明確にする。TabMenuはUIBuilderを持たず状態管理だけを行っている。なのでインジケーターUIを各自で実装する必要がある。いっぽうでMenuはUIを持ち、インジケーターが含まれている
 type TabMenu struct {
 	config    Config
 	callbacks Callbacks
@@ -378,10 +376,10 @@ func (tm *TabMenu) GetCurrentTab() TabItem {
 }
 
 // GetCurrentItem は現在のアイテムを返す
-func (tm *TabMenu) GetCurrentItem() menu.Item {
+func (tm *TabMenu) GetCurrentItem() Item {
 	currentTab := tm.GetCurrentTab()
 	if len(currentTab.Items) == 0 || tm.currentItemIndex >= len(currentTab.Items) || tm.currentItemIndex < 0 {
-		return menu.Item{}
+		return Item{}
 	}
 	return currentTab.Items[tm.currentItemIndex]
 }
@@ -462,9 +460,9 @@ func (tm *TabMenu) UpdateTabs(tabs []TabItem) {
 }
 
 // GetVisibleItems は現在のページで表示される項目とその元のインデックスを返す
-func (tm *TabMenu) GetVisibleItems() ([]menu.Item, []int) {
+func (tm *TabMenu) GetVisibleItems() ([]Item, []int) {
 	if len(tm.config.Tabs) == 0 || tm.currentTabIndex >= len(tm.config.Tabs) {
-		return []menu.Item{}, []int{}
+		return []Item{}, []int{}
 	}
 
 	currentTab := tm.config.Tabs[tm.currentTabIndex]
@@ -484,7 +482,7 @@ func (tm *TabMenu) GetVisibleItems() ([]menu.Item, []int) {
 	}
 
 	if start >= len(currentTab.Items) {
-		return []menu.Item{}, []int{}
+		return []Item{}, []int{}
 	}
 
 	visibleItems := currentTab.Items[start:end]
