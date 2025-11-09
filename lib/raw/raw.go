@@ -43,6 +43,7 @@ type Item struct {
 	Description       string
 	SpriteSheetName   string
 	SpriteKey         string
+	AnimKeys          []string
 	Value             *int
 	InflictsDamage    *int
 	ProvidesNutrition *int  // 空腹度回復量
@@ -119,6 +120,7 @@ type Member struct {
 	Attributes      Attributes
 	SpriteSheetName string
 	SpriteKey       string
+	AnimKeys        []string
 	LightSource     *gc.LightSource
 	FactionType     string
 	Dialog          *DialogRaw
@@ -242,6 +244,7 @@ func (rw *Master) NewItemSpec(name string, locationType *gc.ItemLocationType) (g
 	entitySpec.SpriteRender = &gc.SpriteRender{
 		SpriteSheetName: spriteSheetName,
 		SpriteKey:       spriteKey,
+		AnimKeys:        item.AnimKeys,
 		Depth:           gc.DepthNumRug,
 	}
 
@@ -440,6 +443,7 @@ func (rw *Master) NewMemberSpec(name string) (gc.EntitySpec, error) {
 	entitySpec.SpriteRender = &gc.SpriteRender{
 		SpriteSheetName: member.SpriteSheetName,
 		SpriteKey:       member.SpriteKey,
+		AnimKeys:        member.AnimKeys,
 		Depth:           gc.DepthNumPlayer,
 	}
 	entitySpec.Attributes = &gc.Attributes{

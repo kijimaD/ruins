@@ -391,3 +391,115 @@ Walkable = true
 	assert.Equal(t, 1, len(master.Raws.Items), "アイテムが1つ読み込まれるべき")
 	assert.Equal(t, 1, len(master.Raws.Tiles), "タイルが1つ読み込まれるべき")
 }
+
+func TestItemWithAnimKeys(t *testing.T) {
+	t.Parallel()
+	str := `
+[[Items]]
+Name = "アニメーションアイテム"
+Description = "2フレームアニメーションするアイテム"
+SpriteSheetName = "field"
+SpriteKey = "item_0"
+AnimKeys = ["item_0", "item_1"]
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+
+	// AnimKeysが正しく読み込まれていることを確認
+	assert.Equal(t, 1, len(raw.Raws.Items))
+	item := raw.Raws.Items[0]
+	assert.Equal(t, []string{"item_0", "item_1"}, item.AnimKeys)
+
+	// NewItemSpecでAnimKeysがSpriteRenderに設定されることを確認
+	loc := gc.ItemLocationInBackpack
+	entitySpec, err := raw.NewItemSpec("アニメーションアイテム", &loc)
+	assert.NoError(t, err)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Equal(t, []string{"item_0", "item_1"}, entitySpec.SpriteRender.AnimKeys)
+}
+
+func TestItemWithoutAnimKeys(t *testing.T) {
+	t.Parallel()
+	str := `
+[[Items]]
+Name = "静的アイテム"
+Description = "アニメーションしないアイテム"
+SpriteSheetName = "field"
+SpriteKey = "static_item"
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+
+	// AnimKeysが指定されていない場合はnil
+	item := raw.Raws.Items[0]
+	assert.Nil(t, item.AnimKeys)
+
+	// NewItemSpecでもAnimKeysはnil
+	loc := gc.ItemLocationInBackpack
+	entitySpec, err := raw.NewItemSpec("静的アイテム", &loc)
+	assert.NoError(t, err)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Nil(t, entitySpec.SpriteRender.AnimKeys)
+}
+
+func TestMemberWithAnimKeys(t *testing.T) {
+	t.Parallel()
+	str := `
+[[Members]]
+Name = "アニメーションキャラ"
+Player = true
+SpriteSheetName = "field"
+SpriteKey = "player_0"
+AnimKeys = ["player_0", "player_1"]
+[Members.Attributes]
+Vitality = 50
+Strength = 50
+Sensation = 5
+Dexterity = 6
+Agility = 5
+Defense = 0
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+
+	// AnimKeysが正しく読み込まれていることを確認
+	assert.Equal(t, 1, len(raw.Raws.Members))
+	member := raw.Raws.Members[0]
+	assert.Equal(t, []string{"player_0", "player_1"}, member.AnimKeys)
+
+	// NewPlayerSpecでAnimKeysがSpriteRenderに設定されることを確認
+	entitySpec, err := raw.NewPlayerSpec("アニメーションキャラ")
+	assert.NoError(t, err)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Equal(t, []string{"player_0", "player_1"}, entitySpec.SpriteRender.AnimKeys)
+}
+
+func TestMemberWithoutAnimKeys(t *testing.T) {
+	t.Parallel()
+	str := `
+[[Members]]
+Name = "静的キャラ"
+Player = true
+SpriteSheetName = "field"
+SpriteKey = "static_player"
+[Members.Attributes]
+Vitality = 50
+Strength = 50
+Sensation = 5
+Dexterity = 6
+Agility = 5
+Defense = 0
+`
+	raw, err := Load(str)
+	assert.NoError(t, err)
+
+	// AnimKeysが指定されていない場合はnil
+	member := raw.Raws.Members[0]
+	assert.Nil(t, member.AnimKeys)
+
+	// NewPlayerSpecでもAnimKeysはnil
+	entitySpec, err := raw.NewPlayerSpec("静的キャラ")
+	assert.NoError(t, err)
+	assert.NotNil(t, entitySpec.SpriteRender)
+	assert.Nil(t, entitySpec.SpriteRender.AnimKeys)
+}
