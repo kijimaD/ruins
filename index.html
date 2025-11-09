@@ -13,6 +13,7 @@
      }
 
      const go = new Go();
+     go.argv = ["ruins", "play"];
      WebAssembly.instantiateStreaming(fetch("game.wasm"), go.importObject).then(result => {
          document.getElementById("loading").classList.remove("active");
          go.run(result.instance);
