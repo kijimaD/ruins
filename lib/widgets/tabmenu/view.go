@@ -56,11 +56,6 @@ func (v *View) Update() error {
 	return nil
 }
 
-// UpdateFocus はフォーカス表示を更新する
-func (v *View) UpdateFocus() {
-	v.uiBuilder.UpdateFocus(v.tabMenu)
-}
-
 // DoAction はアクションを実行する
 func (v *View) DoAction(actionID inputmapper.ActionID) error {
 	err := v.tabMenu.DoAction(actionID)
@@ -82,11 +77,6 @@ func (v *View) GetCurrentItemIndex() int {
 // GetCurrentTab は現在のタブを取得する
 func (v *View) GetCurrentTab() TabItem {
 	return v.tabMenu.GetCurrentTab()
-}
-
-// GetCurrentItem は現在のアイテムを取得する
-func (v *View) GetCurrentItem() Item {
-	return v.tabMenu.GetCurrentItem()
 }
 
 // UpdateTabs はタブを更新する
