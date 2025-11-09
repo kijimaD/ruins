@@ -2153,7 +2153,9 @@ Amount = 1
 Name            = "セレスティン"
 Player          = true
 SpriteSheetName = "field"
-SpriteKey       = "player"
+SpriteKey       = "player_0"
+AnimKeys        = [ "player_0", "player_1" ]
+
 [Members.Attributes]
 Vitality  = 50
 Strength  = 50
@@ -2325,7 +2327,9 @@ Defense   = 0
 [[Members]]
 Name            = "軽戦車"
 SpriteSheetName = "field"
-SpriteKey       = "light_tank"
+SpriteKey       = "light_tank_0"
+AnimKeys        = [ "light_tank_0", "light_tank_1" ]
+
 [Members.Attributes]
 Vitality  = 12
 Strength  = 8
@@ -2347,7 +2351,9 @@ A = 255
 [[Members]]
 Name            = "火の玉"
 SpriteSheetName = "field"
-SpriteKey       = "red_ball"
+SpriteKey       = "red_ball_0"
+AnimKeys        = [ "red_ball_0", "red_ball_1" ]
+
 [Members.Attributes]
 Vitality  = 7
 Strength  = 8
@@ -2381,7 +2387,9 @@ Defense   = 40
 [[Members]]
 Name            = "スライム"
 SpriteSheetName = "field"
-SpriteKey       = "slime"
+SpriteKey       = "slime_0"
+AnimKeys        = [ "slime_0", "slime_1" ]
+
 [Members.Attributes]
 Vitality  = 5
 Strength  = 4
@@ -2395,7 +2403,8 @@ Defense   = 2
 [[Members]]
 Name            = "老兵"
 SpriteSheetName = "field"
-SpriteKey       = "old_soldier"
+SpriteKey       = "old_soldier_0"
+AnimKeys        = [ "old_soldier_0", "old_soldier_1" ]
 FactionType     = "FactionNeutral"
 
 [Members.Dialog]
@@ -2412,7 +2421,8 @@ Defense   = 10
 [[Members]]
 Name            = "商人"
 SpriteSheetName = "field"
-SpriteKey       = "merchant"
+SpriteKey       = "merchant_0"
+AnimKeys        = [ "merchant_0", "merchant_1" ]
 FactionType     = "FactionNeutral"
 
 [Members.Dialog]
@@ -2429,7 +2439,8 @@ Defense   = 5
 [[Members]]
 Name            = "怪しい科学者"
 SpriteSheetName = "field"
-SpriteKey       = "doctor"
+SpriteKey       = "doctor_0"
+AnimKeys        = [ "doctor_0", "doctor_1" ]
 FactionType     = "FactionNeutral"
 
 [Members.Dialog]
@@ -2446,7 +2457,8 @@ Defense   = 5
 [[Members]]
 Name            = "闇医者"
 SpriteSheetName = "field"
-SpriteKey       = "dark_doctor"
+SpriteKey       = "dark_doctor_0"
+AnimKeys        = [ "dark_doctor_0", "dark_doctor_1" ]
 FactionType     = "FactionNeutral"
 
 [Members.Dialog]

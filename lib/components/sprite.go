@@ -58,6 +58,8 @@ type SpriteRender struct {
 	SpriteSheetName string
 	// スプライトキー名
 	SpriteKey string
+	// アニメーション用スプライトキー配列。空ならアニメーションなし
+	AnimKeys []string
 	// 描画順。小さい順に先に(下に)描画する
 	Depth DepthNum
 	// Draw options

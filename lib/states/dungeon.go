@@ -142,6 +142,8 @@ func (st *DungeonState) OnStop(world w.World) error {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
+	gs.AnimationSystem(world)
+
 	// キー入力をActionに変換
 	if action, ok := st.HandleInput(); ok {
 		if transition, err := st.DoAction(world, action); err != nil {
