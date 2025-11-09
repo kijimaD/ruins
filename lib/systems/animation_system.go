@@ -2,6 +2,7 @@ package systems
 
 import (
 	gc "github.com/kijimaD/ruins/lib/components"
+	"github.com/kijimaD/ruins/lib/config"
 	w "github.com/kijimaD/ruins/lib/world"
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
@@ -17,8 +18,12 @@ const (
 )
 
 // AnimationSystem は全エンティティのスプライトアニメーションを更新する
-// グローバルカウンタを使用して、全エンティティが同期してアニメーションする
 func AnimationSystem(world w.World) {
+	cfg := config.Get()
+	if cfg.DisableAnimation {
+		return
+	}
+
 	globalAnimationCounter++
 
 	world.Manager.Join(
