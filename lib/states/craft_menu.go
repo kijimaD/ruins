@@ -3,6 +3,7 @@ package states
 import (
 	"fmt"
 	"image/color"
+	"log"
 	"sort"
 
 	"github.com/ebitenui/ebitenui"
@@ -223,7 +224,9 @@ func (st *CraftMenuState) initUI(world w.World) *ebitenui.UI {
 	st.recipeList = styled.NewVerticalContainer()
 
 	// 初期状態の表示を更新
-	st.updateInitialItemDisplay(world)
+	if err := st.updateInitialItemDisplay(world); err != nil {
+		log.Fatalf("Failed to update initial item display: %v", err)
+	}
 
 	// タブ表示のコンテナを作成
 	st.tabDisplayContainer = styled.NewVerticalContainer()
@@ -652,15 +655,15 @@ func (st *CraftMenuState) updateCategoryDisplay(world w.World) {
 }
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
-func (st *CraftMenuState) updateInitialItemDisplay(world w.World) {
+func (st *CraftMenuState) updateInitialItemDisplay(world w.World) error {
 	currentTab := st.menuView.GetCurrentTab()
 	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
 		if err := st.handleItemChange(world, currentItem); err != nil {
-			// TODO: エラーハンドリング改善
-			panic(err)
+			return err
 		}
 	}
+	return nil
 }

@@ -33,29 +33,29 @@ func runScreenshot(_ context.Context, cmd *cli.Command) error {
 
 	switch mode {
 	case gs.CraftMenuState{}.String():
-		vrt.RunTestGame(mode, townStateFactory(), &gs.CraftMenuState{})
+		return vrt.RunTestGame(mode, townStateFactory(), &gs.CraftMenuState{})
 	case "DebugMenu":
-		vrt.RunTestGame(mode, townStateFactory(), gs.NewDebugMenuState())
+		return vrt.RunTestGame(mode, townStateFactory(), gs.NewDebugMenuState())
 	case gs.DungeonState{}.String():
 		// 固定seed値を使用する
 		const seedVal = 1
-		vrt.RunTestGame(mode, &gs.DungeonState{
+		return vrt.RunTestGame(mode, &gs.DungeonState{
 			Depth:       1,
 			Seed:        seedVal,
 			BuilderType: mapplanner.PlannerTypeSmallRoom,
 		})
 	case gs.EquipMenuState{}.String():
-		vrt.RunTestGame(mode, townStateFactory(), &gs.EquipMenuState{})
+		return vrt.RunTestGame(mode, townStateFactory(), &gs.EquipMenuState{})
 	case "GameOver":
-		vrt.RunTestGame(mode, townStateFactory(), gs.NewGameOverMessageState())
+		return vrt.RunTestGame(mode, townStateFactory(), gs.NewGameOverMessageState())
 	case "Town":
-		vrt.RunTestGame(mode, townStateFactory())
+		return vrt.RunTestGame(mode, townStateFactory())
 	case gs.InventoryMenuState{}.String():
-		vrt.RunTestGame(mode, townStateFactory(), &gs.InventoryMenuState{})
+		return vrt.RunTestGame(mode, townStateFactory(), &gs.InventoryMenuState{})
 	case "LoadMenu":
-		vrt.RunTestGame(mode, townStateFactory(), gs.NewLoadMenuState())
+		return vrt.RunTestGame(mode, townStateFactory(), gs.NewLoadMenuState())
 	case gs.MainMenuState{}.String():
-		vrt.RunTestGame(mode, &gs.MainMenuState{})
+		return vrt.RunTestGame(mode, &gs.MainMenuState{})
 	case gs.MessageState{}.String():
 		messageData := messagedata.NewDialogMessage(
 			"これはメッセージウィンドウのVRTテストです。\n\n表示状態の確認用メッセージです。",
@@ -65,14 +65,12 @@ func runScreenshot(_ context.Context, cmd *cli.Command) error {
 		).WithChoice(
 			"選択肢2", func(_ w.World) error { return nil },
 		)
-		vrt.RunTestGame(mode, townStateFactory(), gs.NewMessageState(messageData))
+		return vrt.RunTestGame(mode, townStateFactory(), gs.NewMessageState(messageData))
 	case "SaveMenu":
-		vrt.RunTestGame(mode, townStateFactory(), gs.NewSaveMenuState())
+		return vrt.RunTestGame(mode, townStateFactory(), gs.NewSaveMenuState())
 	case gs.ShopMenuState{}.String():
-		vrt.RunTestGame(mode, townStateFactory(), &gs.ShopMenuState{})
+		return vrt.RunTestGame(mode, townStateFactory(), &gs.ShopMenuState{})
 	default:
 		return fmt.Errorf("スクリーンショット実行時に対応してないステートが指定された: %s", mode)
 	}
-
-	return nil
 }
