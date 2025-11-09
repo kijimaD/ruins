@@ -228,12 +228,22 @@ func (w *Window) calculateWindowPosition(windowSize WindowSize) (x, y int) {
 
 	numChoices := len(w.content.Choices)
 	if w.hasChoices && numChoices > 0 {
-		if numChoices <= 3 {
+		// メッセージがない場合は、より高い位置に配置
+		if !w.hasMessage() {
+			// メッセージなし: 中央より少し上に配置
 			y = (screenHeight - windowSize.Height) / 2
-		} else if numChoices <= 8 {
-			y = screenHeight / 3
+			if numChoices > 5 {
+				y = screenHeight / 3
+			}
 		} else {
-			y = screenHeight / 5
+			// メッセージあり: 選択肢数に応じて配置
+			if numChoices <= 3 {
+				y = (screenHeight - windowSize.Height) / 2
+			} else if numChoices <= 8 {
+				y = screenHeight / 3
+			} else {
+				y = screenHeight / 5
+			}
 		}
 	} else {
 		y = (screenHeight - windowSize.Height) / 2
@@ -254,19 +264,31 @@ func (w *Window) calculateWindowPosition(windowSize WindowSize) (x, y int) {
 func (w *Window) calculateWindowSize() WindowSize {
 	baseHeight := w.config.Size.Height
 
-	// 選択肢がある場合は高さを追加
+	// 選択肢がある場合は高さを再計算
 	if w.hasChoices && len(w.content.Choices) > 0 {
 		numChoices := len(w.content.Choices)
 
-		// 選択肢1つあたりの高さを計算（フォントサイズ + 余白）
-		choiceItemHeight := 35
+		// 構成要素の高さ
+		messageHeight := 0 // メッセージの高さ
+		if w.hasMessage() {
+			messageHeight = 150 // メッセージがある場合のみ固定高さ
+		}
+		choiceItemHeight := 40 // 選択肢1つあたりの高さ
 		choiceHeight := numChoices * choiceItemHeight
+		topPadding := 20     // 上部パディング
+		bottomPadding := 15  // 下部パディング
+		titleBarHeight := 40 // タイトルバーの高さ
+		spacingHeight := 10  // スペーサー間隔（メッセージがある場合のみ）
+		if !w.hasMessage() {
+			spacingHeight = 0
+		}
+
+		// 合計高さを計算
+		calculatedHeight := messageHeight + choiceHeight + topPadding + bottomPadding + titleBarHeight + spacingHeight
 
 		// 最低高さと最大高さを設定
-		minHeightWithChoices := 400
+		minHeightWithChoices := 300
 		maxHeightWithChoices := int(float64(w.world.Resources.ScreenDimensions.Height) * 0.8) // 画面高さの80%まで
-
-		calculatedHeight := baseHeight + choiceHeight + 100 // +100 for padding and buttons
 
 		if calculatedHeight < minHeightWithChoices {
 			baseHeight = minHeightWithChoices
@@ -283,6 +305,27 @@ func (w *Window) calculateWindowSize() WindowSize {
 	}
 }
 
+// hasMessage はメッセージがあるかどうかを判定する
+func (w *Window) hasMessage() bool {
+	if len(w.content.TextSegmentLines) == 0 {
+		return false
+	}
+
+	// すべての行が空かどうかをチェック
+	for _, lineSegments := range w.content.TextSegmentLines {
+		for _, seg := range lineSegments {
+			// 空白文字以外があればメッセージありと判定
+			for _, r := range seg.Text {
+				if r != ' ' && r != '\t' && r != '\n' && r != '\r' {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 // createWindowContainer はウィンドウコンテナを作成する
 func (w *Window) createWindowContainer() *widget.Container {
 	windowContainer := widget.NewContainer(
@@ -295,17 +338,23 @@ func (w *Window) createWindowContainer() *widget.Container {
 		),
 	)
 
+	// 選択肢の有無でパディングを調整
+	bottomPadding := 60
+	if w.hasChoices && w.choiceMenuView != nil {
+		bottomPadding = 15 // 選択肢がある場合は下部パディングを少なく
+	}
+
 	contentArea := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 				widget.RowLayoutOpts.Padding(&widget.Insets{
 					Top:    20,
-					Bottom: 60,
+					Bottom: bottomPadding,
 					Left:   10,
 					Right:  10,
 				}),
-				widget.RowLayoutOpts.Spacing(2),
+				widget.RowLayoutOpts.Spacing(10),
 			),
 		),
 		widget.ContainerOpts.WidgetOpts(
@@ -318,13 +367,47 @@ func (w *Window) createWindowContainer() *widget.Container {
 		),
 	)
 
-	// TextSegmentLinesを使用してメッセージを表示
-	messageWidget := w.createSegmentedTextLines()
-	contentArea.AddChild(messageWidget)
-
 	if w.hasChoices && w.choiceMenuView != nil {
-		choicesContainer := w.createChoicesContainer()
+		// 選択肢がある場合
+		if w.hasMessage() {
+			// メッセージがある場合: メッセージコンテナを表示
+			messageContainer := widget.NewContainer(
+				widget.ContainerOpts.Layout(
+					widget.NewRowLayout(
+						widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+						widget.RowLayoutOpts.Spacing(0),
+					),
+				),
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Stretch:   false,
+						MaxHeight: 150, // 固定高さ
+					}),
+					widget.WidgetOpts.MinSize(0, 150),
+				),
+			)
+			messageWidget := w.createSegmentedTextLines()
+			messageContainer.AddChild(messageWidget)
+			contentArea.AddChild(messageContainer)
+
+			// スペーサー: メッセージと選択肢の間の空間を埋める
+			spacer := widget.NewContainer(
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Stretch: true,
+					}),
+				),
+			)
+			contentArea.AddChild(spacer)
+		}
+
+		// 選択肢コンテナ（自然な高さ、選択肢数に応じて伸びる）
+		choicesContainer := w.createChoicesItemsContainer()
 		contentArea.AddChild(choicesContainer)
+	} else {
+		// 選択肢がない場合: メッセージのみ表示
+		messageWidget := w.createSegmentedTextLines()
+		contentArea.AddChild(messageWidget)
 	}
 
 	windowContainer.AddChild(contentArea)
@@ -337,8 +420,8 @@ func (w *Window) createWindowContainer() *widget.Container {
 	return windowContainer
 }
 
-// createChoicesContainer は選択肢コンテナを作成する
-func (w *Window) createChoicesContainer() *widget.Container {
+// createChoicesItemsContainer は選択肢アイテムのコンテナを作成する
+func (w *Window) createChoicesItemsContainer() *widget.Container {
 	var itemsContainer *widget.Container
 
 	if w.choiceMenuView != nil {
@@ -350,7 +433,7 @@ func (w *Window) createChoicesContainer() *widget.Container {
 				widget.NewRowLayout(
 					widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 					widget.RowLayoutOpts.Spacing(5),
-					widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10}),
+					widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10, Bottom: 0}),
 				),
 			),
 		)
@@ -377,10 +460,10 @@ func (w *Window) createChoicesContainer() *widget.Container {
 		}
 	}
 
-	// 親のRowLayout内で中央配置するためのLayoutDataを設定
+	// RowLayout内での配置（中央寄せ）
 	itemsContainer.GetWidget().LayoutData = widget.RowLayoutData{
-		Position: widget.RowLayoutPositionCenter,
 		Stretch:  false,
+		Position: widget.RowLayoutPositionCenter,
 	}
 
 	return itemsContainer
@@ -510,7 +593,11 @@ func (w *Window) rebuildUI() {
 func (w *Window) calculateItemsPerPage(totalItems int) int {
 	windowHeight := w.calculateWindowSize().Height
 
-	textAreaHeight := 150
+	// メッセージがある場合のみメッセージエリアの高さを確保
+	textAreaHeight := 0
+	if w.hasMessage() {
+		textAreaHeight = 150
+	}
 	pageIndicatorHeight := 30
 	availableHeight := windowHeight - textAreaHeight - pageIndicatorHeight
 

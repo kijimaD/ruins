@@ -64,7 +64,7 @@ func NewEquipMenuState() es.State[w.World] {
 func NewDebugMenuState() es.State[w.World] {
 	messageState := &MessageState{}
 
-	messageState.messageData = messagedata.NewSystemMessage("デバッグメニュー").
+	messageState.messageData = messagedata.NewSystemMessage("").
 		WithChoice("回復薬スポーン(インベントリ)", func(world w.World) error {
 			_, err := worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
 			if err != nil {
@@ -511,7 +511,7 @@ func NewSaveMenuState() es.State[w.World] {
 	// セーブマネージャーで現在のスロット状態を取得
 	saveManager := save.NewSerializationManager("./saves")
 
-	messageData := messagedata.NewSystemMessage("どのスロットにセーブしますか？")
+	messageData := messagedata.NewSystemMessage("")
 
 	// 各スロットの状態を確認して選択肢を動的に生成
 	for i := 1; i <= 3; i++ {
@@ -554,7 +554,7 @@ func NewLoadMenuState() es.State[w.World] {
 	// セーブマネージャーで現在のスロット状態を取得
 	saveManager := save.NewSerializationManager("./saves")
 
-	messageData := messagedata.NewSystemMessage("どのスロットから読み込みますか？")
+	messageData := messagedata.NewSystemMessage("")
 
 	// 各スロットの状態を確認して選択肢を動的に生成
 	hasValidSlot := false
