@@ -29,7 +29,7 @@ func TestTabSwitching(t *testing.T) {
 		},
 	}
 
-	tabMenu := NewTabMenu(config, callbacks)
+	tabMenu := newTabMenu(config, callbacks)
 
 	// 初期状態の確認
 	if tabMenu.GetCurrentTabIndex() != 0 {
@@ -88,7 +88,7 @@ func TestItemNavigation(t *testing.T) {
 		},
 	}
 
-	tabMenu := NewTabMenu(config, callbacks)
+	tabMenu := newTabMenu(config, callbacks)
 
 	// 初期状態の確認
 	if tabMenu.GetCurrentItemIndex() != 0 {
@@ -129,7 +129,7 @@ func TestWrapNavigation(t *testing.T) {
 		WrapNavigation:   true,
 	}
 
-	tabMenu := NewTabMenu(config, Callbacks{})
+	tabMenu := newTabMenu(config, Callbacks{})
 
 	// 最初のタブでActionMenuLeft → 最後のタブに循環
 	err := tabMenu.DoAction(inputmapper.ActionMenuLeft)
@@ -174,7 +174,7 @@ func TestSelection(t *testing.T) {
 		},
 	}
 
-	tabMenu := NewTabMenu(config, callbacks)
+	tabMenu := newTabMenu(config, callbacks)
 
 	// ActionMenuSelectで選択
 	err := tabMenu.DoAction(inputmapper.ActionMenuSelect)
@@ -204,7 +204,7 @@ func TestCancel(t *testing.T) {
 		},
 	}
 
-	tabMenu := NewTabMenu(config, callbacks)
+	tabMenu := newTabMenu(config, callbacks)
 
 	// ActionMenuCancelでキャンセル
 	err := tabMenu.DoAction(inputmapper.ActionMenuCancel)
@@ -234,7 +234,7 @@ func TestTabMenuGetters(t *testing.T) {
 		InitialItemIndex: 1,
 	}
 
-	tabMenu := NewTabMenu(config, Callbacks{})
+	tabMenu := newTabMenu(config, Callbacks{})
 
 	// 現在のタブとアイテムの確認
 	currentTab := tabMenu.GetCurrentTab()
@@ -261,7 +261,7 @@ func TestTabMenuSetters(t *testing.T) {
 		InitialItemIndex: 0,
 	}
 
-	tabMenu := NewTabMenu(config, Callbacks{})
+	tabMenu := newTabMenu(config, Callbacks{})
 
 	// タブインデックスの設定
 	require.NoError(t, tabMenu.SetTabIndex(1))

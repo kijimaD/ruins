@@ -20,9 +20,8 @@ import (
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
 	es.BaseState[w.World]
-	ui            *ebitenui.UI
-	tabMenu       *tabmenu.TabMenu
-	menuUIBuilder *tabmenu.UIBuilder
+	ui       *ebitenui.UI
+	menuView *tabmenu.View
 }
 
 func (st MainMenuState) String() string {
@@ -53,7 +52,7 @@ func (st *MainMenuState) OnStop(_ w.World) error { return nil }
 // Update はゲームステートの更新処理を行う
 func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
 	// メニューの更新（キーボード入力→Action変換は TabMenu 内部で実施）
-	if _, err := st.tabMenu.Update(); err != nil {
+	if err := st.menuView.Update(); err != nil {
 		return es.Transition[w.World]{Type: es.TransNone}, err
 	}
 
@@ -153,20 +152,10 @@ func (st *MainMenuState) initMenu(world w.World) {
 			// Escapeキーが押された時の処理
 			st.SetTransition(es.Transition[w.World]{Type: es.TransQuit})
 		},
-		OnItemChange: func(_ int, _, _ int, _ tabmenu.Item) error {
-			// アイテム変更時にUIを更新
-			if st.menuUIBuilder != nil && st.tabMenu != nil {
-				st.menuUIBuilder.UpdateFocus(st.tabMenu)
-			}
-			return nil
-		},
 	}
 
-	// TabMenuを作成
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
-
-	// UIBuilderを作成
-	st.menuUIBuilder = tabmenu.NewUIBuilder(world)
+	// View を作成（TabMenu + UIBuilder を統合）
+	st.menuView = tabmenu.NewView(config, callbacks, world)
 }
 
 // initUI はUIを初期化する
@@ -175,8 +164,8 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 
-	// UIBuilderを使ってメニューUIを構築
-	menuContainer := st.menuUIBuilder.BuildUI(st.tabMenu)
+	// TabMenuView を使ってメニューUIを構築
+	menuContainer := st.menuView.BuildUI()
 
 	// 深い金色/琥珀色
 	amberColor := color.NRGBA{R: 255, G: 191, B: 0, A: 255}

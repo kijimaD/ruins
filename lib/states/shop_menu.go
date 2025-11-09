@@ -25,7 +25,7 @@ type ShopMenuState struct {
 	es.BaseState[w.World]
 	ui *ebitenui.UI
 
-	tabMenu             *tabmenu.TabMenu
+	menuView            *tabmenu.View
 	selectedItem        tabmenu.Item      // 選択中のアイテム
 	itemDesc            *widget.Text      // アイテムの概要
 	specContainer       *widget.Container // 性能表示のコンテナ
@@ -86,7 +86,7 @@ func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 
 	// アクションウィンドウ表示中はTabMenuの更新をスキップ
 	if !st.isWindowMode {
-		if _, err := st.tabMenu.Update(); err != nil {
+		if err := st.menuView.Update(); err != nil {
 			return es.Transition[w.World]{}, err
 		}
 	}
@@ -177,7 +177,7 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
+	st.menuView = tabmenu.NewView(config, callbacks, world)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
@@ -420,7 +420,7 @@ func (st *ShopMenuState) handleSell(world w.World, item tabmenu.Item) {
 // reloadTabs はタブの内容を再読み込みする
 func (st *ShopMenuState) reloadTabs(world w.World) {
 	newTabs := st.createTabs(world)
-	st.tabMenu.UpdateTabs(newTabs)
+	st.menuView.UpdateTabs(newTabs)
 	// UpdateTabs後に表示を更新
 	st.updateTabDisplay(world)
 	st.updateCategoryDisplay(world)
@@ -443,7 +443,7 @@ func (st *ShopMenuState) updateCategoryDisplay(world w.World) {
 	st.categoryContainer.RemoveChildren()
 
 	// 全カテゴリを横並びで表示
-	currentTabIndex := st.tabMenu.GetCurrentTabIndex()
+	currentTabIndex := st.menuView.GetCurrentTabIndex()
 	tabs := st.createTabs(world) // 最新のタブ情報を取得
 
 	for i, tab := range tabs {
@@ -465,18 +465,18 @@ func (st *ShopMenuState) updateTabDisplay(world w.World) {
 	// 既存の子要素をクリア
 	st.tabDisplayContainer.RemoveChildren()
 
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	// ページインジケーターを表示
-	pageText := st.tabMenu.GetPageIndicatorText()
+	pageText := st.menuView.GetPageIndicatorText()
 	if pageText != "" {
 		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 
 	// 現在のページで表示されるアイテムとインデックスを取得
-	visibleItems, indices := st.tabMenu.GetVisibleItems()
+	visibleItems, indices := st.menuView.GetVisibleItems()
 
 	// アイテム一覧を表示（ページ内のアイテムのみ）
 	for i, item := range visibleItems {
@@ -591,8 +591,8 @@ func (st *ShopMenuState) executeActionItem(world w.World) {
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
 func (st *ShopMenuState) updateInitialItemDisplay(world w.World) {
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]

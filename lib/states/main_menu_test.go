@@ -19,22 +19,22 @@ func TestMainMenuNavigation(t *testing.T) {
 	state.initMenu(world)
 
 	// 初期状態の確認
-	if state.tabMenu.GetCurrentItemIndex() != 0 {
-		t.Errorf("初期フォーカスが不正: 期待 0, 実際 %d", state.tabMenu.GetCurrentItemIndex())
+	if state.menuView.GetCurrentItemIndex() != 0 {
+		t.Errorf("初期フォーカスが不正: 期待 0, 実際 %d", state.menuView.GetCurrentItemIndex())
 	}
 
 	// ActionMenuDownでフォーカス移動
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuDown))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuDown))
 
-	if state.tabMenu.GetCurrentItemIndex() != 1 {
-		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.tabMenu.GetCurrentItemIndex())
+	if state.menuView.GetCurrentItemIndex() != 1 {
+		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.menuView.GetCurrentItemIndex())
 	}
 
 	// ActionMenuUpでフォーカス移動
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuUp))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuUp))
 
-	if state.tabMenu.GetCurrentItemIndex() != 0 {
-		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.tabMenu.GetCurrentItemIndex())
+	if state.menuView.GetCurrentItemIndex() != 0 {
+		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.menuView.GetCurrentItemIndex())
 	}
 }
 
@@ -48,15 +48,15 @@ func TestMainMenuCircularNavigation(t *testing.T) {
 	state.initMenu(world)
 
 	// 最後の項目にフォーカス移動
-	currentTab := state.tabMenu.GetCurrentTab()
+	currentTab := state.menuView.GetCurrentTab()
 	itemCount := len(currentTab.Items)
-	require.NoError(t, state.tabMenu.SetItemIndex(itemCount-1))
+	require.NoError(t, state.menuView.SetItemIndex(itemCount-1))
 
 	// ActionMenuDownで循環して最初に戻る
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuDown))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuDown))
 
-	if state.tabMenu.GetCurrentItemIndex() != 0 {
-		t.Errorf("循環移動後のフォーカス位置が不正: 期待 0, 実際 %d", state.tabMenu.GetCurrentItemIndex())
+	if state.menuView.GetCurrentItemIndex() != 0 {
+		t.Errorf("循環移動後のフォーカス位置が不正: 期待 0, 実際 %d", state.menuView.GetCurrentItemIndex())
 	}
 }
 
@@ -70,10 +70,10 @@ func TestMainMenuSelection(t *testing.T) {
 	state.initMenu(world)
 
 	// 「終了」項目にフォーカス移動（インデックス2）
-	require.NoError(t, state.tabMenu.SetItemIndex(2))
+	require.NoError(t, state.menuView.SetItemIndex(2))
 
 	// ActionMenuSelectで選択
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuSelect))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuSelect))
 
 	// トランジションが設定されることを確認
 	transition := state.GetTransition()
@@ -96,7 +96,7 @@ func TestMainMenuCancel(t *testing.T) {
 	state.initMenu(world)
 
 	// ActionMenuCancelでキャンセル
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuCancel))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuCancel))
 
 	// トランジションが設定されることを確認
 	transition := state.GetTransition()
@@ -119,7 +119,7 @@ func TestMainMenuItems(t *testing.T) {
 	state.initMenu(world)
 
 	// メニュー項目の確認
-	currentTab := state.tabMenu.GetCurrentTab()
+	currentTab := state.menuView.GetCurrentTab()
 	items := currentTab.Items
 	expectedItems := []string{"town", "load", "exit"}
 
@@ -152,16 +152,16 @@ func TestMainMenuTabNavigation(t *testing.T) {
 	state.initMenu(world)
 
 	// ActionMenuDownでフォーカス移動（Tabキーと同じ動作）
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuDown))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuDown))
 
-	if state.tabMenu.GetCurrentItemIndex() != 1 {
-		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.tabMenu.GetCurrentItemIndex())
+	if state.menuView.GetCurrentItemIndex() != 1 {
+		t.Errorf("ActionMenuDown後のフォーカス位置が不正: 期待 1, 実際 %d", state.menuView.GetCurrentItemIndex())
 	}
 
 	// ActionMenuUpでフォーカス移動（Shift+Tabキーと同じ動作）
-	require.NoError(t, state.tabMenu.DoAction(inputmapper.ActionMenuUp))
+	require.NoError(t, state.menuView.DoAction(inputmapper.ActionMenuUp))
 
-	if state.tabMenu.GetCurrentItemIndex() != 0 {
-		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.tabMenu.GetCurrentItemIndex())
+	if state.menuView.GetCurrentItemIndex() != 0 {
+		t.Errorf("ActionMenuUp後のフォーカス位置が不正: 期待 0, 実際 %d", state.menuView.GetCurrentItemIndex())
 	}
 }

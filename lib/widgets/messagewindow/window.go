@@ -30,8 +30,7 @@ type Window struct {
 	window      *widget.Window
 
 	// 選択肢がある場合、メニューシステムでページング可能な選択肢一覧を表示
-	choiceMenu      *tabmenu.TabMenu
-	choiceBuilder   *tabmenu.UIBuilder
+	choiceMenuView  *tabmenu.View
 	hasChoices      bool
 	currentMenuPage int
 	needsUIRebuild  bool // ページ変更時のUI再構築フラグ
@@ -56,8 +55,8 @@ func (w *Window) Update() error {
 		w.initialized = true
 	}
 
-	if w.hasChoices && w.choiceMenu != nil {
-		if _, err := w.choiceMenu.Update(); err != nil {
+	if w.hasChoices && w.choiceMenuView != nil {
+		if err := w.choiceMenuView.Update(); err != nil {
 			return err
 		}
 
@@ -142,8 +141,7 @@ func (w *Window) showNextMessage() {
 	w.initialized = false
 	w.ui = nil
 	w.window = nil
-	w.choiceMenu = nil
-	w.choiceBuilder = nil
+	w.choiceMenuView = nil
 }
 
 // updateContentFromMessage はMessageDataから表示コンテンツを更新する
@@ -324,14 +322,14 @@ func (w *Window) createWindowContainer() *widget.Container {
 	messageWidget := w.createSegmentedTextLines()
 	contentArea.AddChild(messageWidget)
 
-	if w.hasChoices && w.choiceMenu != nil {
+	if w.hasChoices && w.choiceMenuView != nil {
 		choicesContainer := w.createChoicesContainer()
 		contentArea.AddChild(choicesContainer)
 	}
 
 	windowContainer.AddChild(contentArea)
 
-	if !w.hasChoices || w.choiceMenu == nil {
+	if !w.hasChoices || w.choiceMenuView == nil {
 		enterPrompt := w.createEnterPrompt()
 		windowContainer.AddChild(enterPrompt)
 	}
@@ -343,8 +341,8 @@ func (w *Window) createWindowContainer() *widget.Container {
 func (w *Window) createChoicesContainer() *widget.Container {
 	var itemsContainer *widget.Container
 
-	if w.choiceBuilder != nil && w.choiceMenu != nil {
-		itemsContainer = w.choiceBuilder.BuildUI(w.choiceMenu)
+	if w.choiceMenuView != nil {
+		itemsContainer = w.choiceMenuView.BuildUI()
 	} else {
 		// 選択肢アイテムのコンテナ（縦並び、各アイテムを中央寄せ）
 		itemsContainer = widget.NewContainer(
@@ -485,25 +483,19 @@ func (w *Window) initChoiceMenu() {
 			w.Close()
 		},
 		OnItemChange: func(_ int, _, _ int, _ tabmenu.Item) error {
-			if w.choiceMenu != nil {
-				newPage := w.choiceMenu.GetCurrentPage()
+			if w.choiceMenuView != nil {
+				newPage := w.choiceMenuView.GetCurrentPage()
 				if newPage != w.currentMenuPage {
 					w.currentMenuPage = newPage
 					w.needsUIRebuild = true
 				}
 			}
-
-			if w.choiceBuilder != nil && w.choiceMenu != nil && !w.needsUIRebuild {
-				w.choiceBuilder.UpdateFocus(w.choiceMenu)
-			}
 			return nil
 		},
 	}
 
-	w.choiceMenu = tabmenu.NewTabMenu(config, callbacks)
-
-	// UIBuilderを作成
-	w.choiceBuilder = tabmenu.NewUIBuilder(w.world)
+	// View を作成（TabMenu + UIBuilder を統合）
+	w.choiceMenuView = tabmenu.NewView(config, callbacks, w.world)
 	w.currentMenuPage = 1
 }
 

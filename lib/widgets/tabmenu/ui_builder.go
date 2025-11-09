@@ -11,28 +11,28 @@ import (
 )
 
 // UIBuilder はTabMenuのUI要素を構築する
-type UIBuilder struct {
+type uiBuilder struct {
 	world       w.World
 	itemWidgets []widget.PreferredSizeLocateableWidget // 現在表示中のウィジェット
 }
 
-// NewUIBuilder はUIビルダーを作成する
-func NewUIBuilder(world w.World) *UIBuilder {
-	return &UIBuilder{
+// newUIBuilder はUIビルダーを作成する
+func newUIBuilder(world w.World) *uiBuilder {
+	return &uiBuilder{
 		world:       world,
 		itemWidgets: make([]widget.PreferredSizeLocateableWidget, 0),
 	}
 }
 
-// BuildUI はTabMenuのUI要素を構築する（タブが1つの場合を想定）
-func (b *UIBuilder) BuildUI(tabMenu *TabMenu) *widget.Container {
+// BuildUI はtabMenuのUI要素を構築する（タブが1つの場合を想定）
+func (b *uiBuilder) BuildUI(tabMenu *tabMenu) *widget.Container {
 	// タブが1つしかない場合は、そのタブのアイテムを直接表示
 	// 垂直リスト表示（固定）
 	return b.buildVerticalUI(tabMenu)
 }
 
 // buildVerticalUI は垂直リスト表示のUIを構築する
-func (b *UIBuilder) buildVerticalUI(tabMenu *TabMenu) *widget.Container {
+func (b *uiBuilder) buildVerticalUI(tabMenu *tabMenu) *widget.Container {
 	mainContainer := styled.NewVerticalContainer()
 
 	// ページインジケーターを追加
@@ -63,7 +63,7 @@ func (b *UIBuilder) buildVerticalUI(tabMenu *TabMenu) *widget.Container {
 
 // CreateMenuButton はメニューボタンを作成する
 // 追加ラベルがある場合は、Button + ラベル群をコンテナでまとめて返す
-func (b *UIBuilder) CreateMenuButton(tabMenu *TabMenu, index int, item Item) widget.PreferredSizeLocateableWidget {
+func (b *uiBuilder) CreateMenuButton(tabMenu *tabMenu, index int, item Item) widget.PreferredSizeLocateableWidget {
 	res := b.world.Resources.UIResources
 
 	// フォーカス状態をチェック
@@ -141,7 +141,7 @@ func (b *UIBuilder) CreateMenuButton(tabMenu *TabMenu, index int, item Item) wid
 // UpdateFocus はメニューのフォーカス表示を更新する
 // カーソルで選択中の要素だけボタンを変える。マウスのhoverでは色が変わらないようにしている
 // カーソル移動は独自実装なので、UIを対応させるために必要
-func (b *UIBuilder) UpdateFocus(tabMenu *TabMenu) {
+func (b *uiBuilder) UpdateFocus(tabMenu *tabMenu) {
 	if len(b.itemWidgets) == 0 {
 		return
 	}
@@ -190,7 +190,7 @@ func (b *UIBuilder) UpdateFocus(tabMenu *TabMenu) {
 
 // createTransparentButtonImage は半透明のボタン画像を作成する
 // マウスホバーでは色が変わらず、キーボード操作（フォーカス）でのみ反応する
-func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
+func (b *uiBuilder) createTransparentButtonImage() *widget.ButtonImage {
 	// アイドル状態: 透明
 	idle := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
 
@@ -209,7 +209,7 @@ func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
 }
 
 // createFocusedButtonImage はフォーカス時の明るいボタン画像を作成する
-func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
+func (b *uiBuilder) createFocusedButtonImage() *widget.ButtonImage {
 	// フォーカス時: 半透明の灰色
 	focused := image.NewNineSliceColor(consts.ButtonHoverColor)
 
@@ -228,7 +228,7 @@ func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
 }
 
 // CreatePageIndicator はページインジケーターを作成する
-func (b *UIBuilder) CreatePageIndicator(tabMenu *TabMenu) *widget.Text {
+func (b *uiBuilder) CreatePageIndicator(tabMenu *tabMenu) *widget.Text {
 	res := b.world.Resources.UIResources
 
 	pageText := tabMenu.GetPageIndicatorText()

@@ -25,7 +25,7 @@ type EquipMenuState struct {
 	es.BaseState[w.World]
 	ui *ebitenui.UI
 
-	tabMenu             *tabmenu.TabMenu
+	menuView            *tabmenu.View
 	itemDesc            *widget.Text      // アイテムの説明
 	specContainer       *widget.Container // 性能コンテナ
 	abilityContainer    *widget.Container // プレイヤーの能力表示コンテナ
@@ -98,7 +98,7 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 
 	// アクションウィンドウ表示中はTabMenuの更新をスキップ
 	if !st.isWindowMode {
-		if _, err := st.tabMenu.Update(); err != nil {
+		if err := st.menuView.Update(); err != nil {
 			return es.Transition[w.World]{}, err
 		}
 	}
@@ -192,7 +192,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
+	st.menuView = tabmenu.NewView(config, callbacks, world)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
@@ -397,18 +397,18 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 	// 既存の子要素をクリア
 	st.tabDisplayContainer.RemoveChildren()
 
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	// ページインジケーターを表示
-	pageText := st.tabMenu.GetPageIndicatorText()
+	pageText := st.menuView.GetPageIndicatorText()
 	if pageText != "" {
 		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
 		st.tabDisplayContainer.AddChild(pageIndicator)
 	}
 
 	// 現在のページで表示されるアイテムとインデックスを取得
-	visibleItems, indices := st.tabMenu.GetVisibleItems()
+	visibleItems, indices := st.menuView.GetVisibleItems()
 
 	// アイテム一覧を表示（ページ内のアイテムのみ）
 	for i, item := range visibleItems {
@@ -434,8 +434,8 @@ func (st *EquipMenuState) updateTabDisplay(world w.World) {
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
 func (st *EquipMenuState) updateInitialItemDisplay(world w.World) {
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
@@ -608,8 +608,8 @@ func (st *EquipMenuState) executeActionItem(world w.World) {
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if currentItemIndex < 0 || currentItemIndex >= len(currentTab.Items) {
 		st.closeActionWindow()
@@ -639,7 +639,7 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 	previousEquipment := userData["entity"].(*ecs.Entity)
 
 	// 現在のタブインデックスを保存
-	st.previousTabIndex = st.tabMenu.GetCurrentTabIndex()
+	st.previousTabIndex = st.menuView.GetCurrentTabIndex()
 
 	st.isEquipMode = true
 	st.equipSlotNumber = slotNumber
@@ -658,7 +658,7 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 		},
 	}
 
-	st.tabMenu.UpdateTabs(newTabs)
+	st.menuView.UpdateTabs(newTabs)
 	st.updateTabDisplay(world)
 	st.closeActionWindow()
 }
@@ -737,11 +737,11 @@ func (st *EquipMenuState) exitEquipMode(world w.World) error {
 
 	// 元のタブに戻る
 	newTabs := st.createTabs(world)
-	st.tabMenu.UpdateTabs(newTabs)
+	st.menuView.UpdateTabs(newTabs)
 
 	// 保存されたタブインデックスに復元
 	if st.previousTabIndex >= 0 && st.previousTabIndex < len(newTabs) {
-		if err := st.tabMenu.SetTabIndex(st.previousTabIndex); err != nil {
+		if err := st.menuView.SetTabIndex(st.previousTabIndex); err != nil {
 			return err
 		}
 	}
@@ -754,6 +754,6 @@ func (st *EquipMenuState) exitEquipMode(world w.World) error {
 // reloadTabs はタブの内容を再読み込みする
 func (st *EquipMenuState) reloadTabs(world w.World) {
 	newTabs := st.createTabs(world)
-	st.tabMenu.UpdateTabs(newTabs)
+	st.menuView.UpdateTabs(newTabs)
 	st.updateTabDisplay(world)
 }
