@@ -113,7 +113,7 @@
 			
 			
 				
-				<dd><a href="index.html#RunTestGame">func RunTestGame(state es.State[w.World], outputPath string)</a></dd>
+				<dd><a href="index.html#RunTestGame">func RunTestGame(outputPath string, states ...es.State[w.World])</a></dd>
 			
 			
 				
@@ -140,6 +140,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/doc.go">doc.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/dummy.go">dummy.go</a>
+			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go">vrt.go</a>
 			
 			</span>
@@ -155,13 +157,14 @@
 		
 			
 			
-			<h2 id="RunTestGame">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=1989:2049#L73">RunTestGame</a>
+			<h2 id="RunTestGame">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/vrt/vrt.go?s=2096:2160#L74">RunTestGame</a>
 				<a class="permalink" href="index.html#RunTestGame">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func RunTestGame(state <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>], outputPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>)</pre>
+			<pre>func RunTestGame(outputPath <a href="http://localhost:8888/pkg/builtin/#string">string</a>, states ...<a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#State">State</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>])</pre>
 			<p>RunTestGame はテストゲームを実行してスクリーンショットを保存する
+複数のstateを指定すると、最初のstateを配置した後に残りのstateを順にpushする
 
 			
 			

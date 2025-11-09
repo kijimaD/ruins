@@ -137,13 +137,13 @@ ebitenui/    ← 外部ライブラリの低レベルコンポーネント
 <p>widgetsパッケージの典型的な使用例：
 <pre>// 設定でコンポーネントを構成
 menu := menu.NewMenu(menu.MenuConfig{
-	Items: []menu.Item{
+	Items: []tabmenu.Item{
 		{ID: &quot;start&quot;, Label: &quot;ゲーム開始&quot;},
 		{ID: &quot;exit&quot;, Label: &quot;終了&quot;},
 	},
 	WrapNavigation: true,
 }, menu.MenuCallbacks{
-	OnSelect: func(index int, item menu.Item) {
+	OnSelect: func(index int, item tabmenu.Item) {
 		// ビジネスロジック
 		switch item.ID {
 		case &quot;start&quot;:
@@ -245,17 +245,6 @@ func Update() {
 				
 					<td class="pkg-synopsis">
 						Package hud はHUD（Head-Up Display）統合ウィジェットを提供する。
-					</td>
-				</tr>
-			
-				<tr>
-				
-					<td class="pkg-name" style="padding-left: 0px;">
-						<a href="menu/index.html">menu</a>
-					</td>
-				
-					<td class="pkg-synopsis">
-						Package menu は状態管理を持つ再利用可能なキーボードナビゲーション対応メニューウィジェットを提供する。
 					</td>
 				</tr>
 			

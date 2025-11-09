@@ -119,6 +119,9 @@
 				
 				<dd><a href="index.html#MainGame">type MainGame</a></dd>
 				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewMainGame">func NewMainGame(world w.World, stateMachine es.StateMachine[w.World]) *MainGame</a></dd>
+				
 				
 					
 					<dd>&nbsp; &nbsp; <a href="index.html#MainGame.Draw">func (game *MainGame) Draw(screen *ebiten.Image)</a></dd>
@@ -145,6 +148,8 @@
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go">game.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/hooks.go">hooks.go</a>
+			
 			</span>
 			</p>
 		
@@ -158,7 +163,7 @@
 		
 			
 			
-			<h2 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=3352:3420#L99">InitWorld</a>
+			<h2 id="InitWorld">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=3650:3718#L110">InitWorld</a>
 				<a class="permalink" href="index.html#InitWorld">&#xb6;</a>
 				
 				
@@ -195,10 +200,22 @@
 			
 
 			
+				
+				<h3 id="NewMainGame">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=715:795#L19">NewMainGame</a>
+					<a class="permalink" href="index.html#NewMainGame">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewMainGame(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, stateMachine <a href="../engine/states/index.html">es</a>.<a href="../engine/states/index.html#StateMachine">StateMachine</a>[<a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>]) *<a href="index.html#MainGame">MainGame</a></pre>
+				<p>NewMainGame はMainGameを初期化する
+
+				
+				
+			
 
 			
 				
-				<h3 id="MainGame.Draw">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=1400:1448#L41">Draw</a>
+				<h3 id="MainGame.Draw">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=1698:1746#L52">Draw</a>
 					<a class="permalink" href="index.html#MainGame.Draw">&#xb6;</a>
 					
 					
@@ -211,7 +228,7 @@
 				
 			
 				
-				<h3 id="MainGame.Layout">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=748:797#L19">Layout</a>
+				<h3 id="MainGame.Layout">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=1046:1095#L30">Layout</a>
 					<a class="permalink" href="index.html#MainGame.Layout">&#xb6;</a>
 					
 					
@@ -224,7 +241,7 @@
 				
 			
 				
-				<h3 id="MainGame.Update">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=938:974#L25">Update</a>
+				<h3 id="MainGame.Update">func (*MainGame) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/maingame/game.go?s=1236:1272#L36">Update</a>
 					<a class="permalink" href="index.html#MainGame.Update">&#xb6;</a>
 					
 					
