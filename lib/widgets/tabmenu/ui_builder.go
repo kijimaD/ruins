@@ -244,3 +244,44 @@ func (b *uiBuilder) CreatePageIndicator(tabMenu *tabMenu) *widget.Text {
 		),
 	)
 }
+
+// UpdateTabDisplayContainer はタブ表示コンテナを更新する
+// ページインジケーター、アイテム一覧、空の場合のメッセージを表示する
+func (b *uiBuilder) UpdateTabDisplayContainer(container *widget.Container, tabMenu *tabMenu) {
+	// 既存の子要素をクリア
+	container.RemoveChildren()
+
+	currentTab := tabMenu.GetCurrentTab()
+	currentItemIndex := tabMenu.GetCurrentItemIndex()
+
+	// ページインジケーターを表示
+	pageText := tabMenu.GetPageIndicatorText()
+	if pageText != "" {
+		pageIndicator := styled.NewPageIndicator(pageText, b.world.Resources.UIResources)
+		container.AddChild(pageIndicator)
+	}
+
+	// 現在のページで表示されるアイテムとインデックスを取得
+	visibleItems, indices := tabMenu.GetVisibleItems()
+
+	// アイテム一覧を表示（ページ内のアイテムのみ）
+	for i, item := range visibleItems {
+		actualIndex := indices[i]
+		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
+		if isSelected {
+			// 選択中のアイテムは背景色付きで明るい文字色
+			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, b.world.Resources.UIResources, item.AdditionalLabels...)
+			container.AddChild(itemWidget)
+		} else {
+			// 非選択のアイテムは背景なしでグレー文字色
+			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, b.world.Resources.UIResources, item.AdditionalLabels...)
+			container.AddChild(itemWidget)
+		}
+	}
+
+	// アイテムがない場合の表示
+	if len(currentTab.Items) == 0 {
+		emptyText := styled.NewDescriptionText("(アイテムなし)", b.world.Resources.UIResources)
+		container.AddChild(emptyText)
+	}
+}

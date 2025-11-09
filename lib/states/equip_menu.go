@@ -180,14 +180,14 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
-			st.updateTabDisplay(world)
+			st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 			st.updateAbilityDisplay(world)
 		},
 		OnItemChange: func(_ int, _, _ int, item tabmenu.Item) error {
 			if err := st.handleItemChange(world, item); err != nil {
 				return err
 			}
-			st.updateTabDisplay(world)
+			st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 			return nil
 		},
 	}
@@ -388,48 +388,8 @@ func (st *EquipMenuState) handleItemChange(world w.World, item tabmenu.Item) err
 }
 
 // createTabDisplayUI はタブ表示UIを作成する
-func (st *EquipMenuState) createTabDisplayUI(world w.World) {
-	st.updateTabDisplay(world)
-}
-
-// updateTabDisplay はタブ表示を更新する
-func (st *EquipMenuState) updateTabDisplay(world w.World) {
-	// 既存の子要素をクリア
-	st.tabDisplayContainer.RemoveChildren()
-
-	currentTab := st.menuView.GetCurrentTab()
-	currentItemIndex := st.menuView.GetCurrentItemIndex()
-
-	// ページインジケーターを表示
-	pageText := st.menuView.GetPageIndicatorText()
-	if pageText != "" {
-		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
-		st.tabDisplayContainer.AddChild(pageIndicator)
-	}
-
-	// 現在のページで表示されるアイテムとインデックスを取得
-	visibleItems, indices := st.menuView.GetVisibleItems()
-
-	// アイテム一覧を表示（ページ内のアイテムのみ）
-	for i, item := range visibleItems {
-		actualIndex := indices[i]
-		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
-		if isSelected {
-			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
-		} else {
-			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
-		}
-	}
-
-	// アイテムがない場合の表示
-	if len(currentTab.Items) == 0 {
-		emptyText := styled.NewDescriptionText("(アイテムなし)", world.Resources.UIResources)
-		st.tabDisplayContainer.AddChild(emptyText)
-	}
+func (st *EquipMenuState) createTabDisplayUI(_ w.World) {
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 }
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
@@ -659,7 +619,7 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 	}
 
 	st.menuView.UpdateTabs(newTabs)
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 	st.closeActionWindow()
 }
 
@@ -722,7 +682,7 @@ func (st *EquipMenuState) unequipItem(world w.World, userData map[string]interfa
 	if hasEquipment && slotEntity != nil {
 		worldhelper.Disarm(world, *slotEntity)
 		st.reloadTabs(world)
-		st.updateTabDisplay(world)
+		st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 		st.updateAbilityDisplay(world)
 	}
 	st.closeActionWindow()
@@ -746,7 +706,7 @@ func (st *EquipMenuState) exitEquipMode(world w.World) error {
 		}
 	}
 
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 	st.updateAbilityDisplay(world)
 	return nil
 }
@@ -755,5 +715,5 @@ func (st *EquipMenuState) exitEquipMode(world w.World) error {
 func (st *EquipMenuState) reloadTabs(world w.World) {
 	newTabs := st.createTabs(world)
 	st.menuView.UpdateTabs(newTabs)
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 }

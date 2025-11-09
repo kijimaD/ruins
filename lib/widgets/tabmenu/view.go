@@ -134,3 +134,9 @@ func (v *View) SetItemIndex(index int) error {
 func (v *View) GetCurrentPage() int {
 	return v.tabMenu.GetCurrentPage()
 }
+
+// UpdateTabDisplayContainer はタブ表示コンテナを更新する
+// ページインジケーター、アイテム一覧、空の場合のメッセージを表示する
+func (v *View) UpdateTabDisplayContainer(container *widget.Container) {
+	v.uiBuilder.UpdateTabDisplayContainer(container, v.tabMenu)
+}
