@@ -80,7 +80,12 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 }
 
 // RunTestGame はテストゲームを実行してスクリーンショットを保存する
-func RunTestGame(state es.State[w.World], outputPath string) {
+// 複数のstateを指定すると、最初のstateを配置した後に残りのstateを順にpushする
+func RunTestGame(outputPath string, states ...es.State[w.World]) {
+	if len(states) == 0 {
+		panic("RunTestGame: at least one state is required")
+	}
+
 	// VRT用にアニメーションを無効化（シングルトンインスタンスを直接変更）
 	cfg := config.Get()
 	originalConfig := *cfg
@@ -103,16 +108,25 @@ func RunTestGame(state es.State[w.World], outputPath string) {
 		log.Println("Equipment change was not detected")
 	}
 
+	// 複数のstateがある場合はラッパーstateを使用
+	var state es.State[w.World]
+	if len(states) > 1 {
+		state = &dummyState{
+			states: states,
+		}
+	} else {
+		state = states[0]
+	}
+
 	stateMachine, err := es.Init(state, world)
 	if err != nil {
 		panic(fmt.Sprintf("StateMachine Init failed: %v", err))
 	}
 
+	mainGame := maingame.NewMainGame(world, stateMachine)
+
 	g := &TestGame{
-		MainGame: maingame.MainGame{
-			World:        world,
-			StateMachine: stateMachine,
-		},
+		MainGame:   *mainGame,
 		gameCount:  0,
 		outputPath: outputPath,
 	}

@@ -12,7 +12,6 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	gs "github.com/kijimaD/ruins/lib/systems"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	"github.com/kijimaD/ruins/lib/widgets/views"
@@ -26,7 +25,7 @@ type EquipMenuState struct {
 	es.BaseState[w.World]
 	ui *ebitenui.UI
 
-	tabMenu             *tabmenu.TabMenu
+	menuView            *tabmenu.View
 	itemDesc            *widget.Text      // アイテムの説明
 	specContainer       *widget.Container // 性能コンテナ
 	abilityContainer    *widget.Container // プレイヤーの能力表示コンテナ
@@ -99,7 +98,7 @@ func (st *EquipMenuState) Update(world w.World) (es.Transition[w.World], error) 
 
 	// アクションウィンドウ表示中はTabMenuの更新をスキップ
 	if !st.isWindowMode {
-		if _, err := st.tabMenu.Update(); err != nil {
+		if err := st.menuView.Update(); err != nil {
 			return es.Transition[w.World]{}, err
 		}
 	}
@@ -173,7 +172,7 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item tabmenu.Item) error {
 			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
@@ -181,19 +180,19 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
-			st.updateTabDisplay(world)
+			st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 			st.updateAbilityDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+		OnItemChange: func(_ int, _, _ int, item tabmenu.Item) error {
 			if err := st.handleItemChange(world, item); err != nil {
 				return err
 			}
-			st.updateTabDisplay(world)
+			st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 			return nil
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
+	st.menuView = tabmenu.NewView(config, callbacks, world)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
@@ -266,8 +265,8 @@ func (st *EquipMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createAllSlotItems は武器と防具の全スロットのMenuItemを作成する
-func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []menu.Item {
-	items := []menu.Item{}
+func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _ int) []tabmenu.Item {
+	items := []tabmenu.Item{}
 
 	// 武器スロットを追加（近接武器、遠距離武器）
 	weaponSlots := []struct {
@@ -286,7 +285,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 			name = fmt.Sprintf("%s: -", slot.label)
 		}
 
-		items = append(items, menu.Item{
+		items = append(items, tabmenu.Item{
 			ID:    fmt.Sprintf("weapon_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
@@ -309,7 +308,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 			name = fmt.Sprintf("%s: -", armorLabels[i])
 		}
 
-		items = append(items, menu.Item{
+		items = append(items, tabmenu.Item{
 			ID:    fmt.Sprintf("wear_slot_%d", i),
 			Label: name,
 			UserData: map[string]interface{}{
@@ -324,7 +323,7 @@ func (st *EquipMenuState) createAllSlotItems(world w.World, member ecs.Entity, _
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
+func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item tabmenu.Item) error {
 	if st.isEquipMode {
 		// 装備選択モードの場合
 		return st.handleEquipItemSelection(world, item)
@@ -341,7 +340,7 @@ func (st *EquipMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, 
 }
 
 // handleItemChange はアイテム変更時の処理（カーソル移動）
-func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) error {
+func (st *EquipMenuState) handleItemChange(world w.World, item tabmenu.Item) error {
 	// 無効なアイテムの場合は何もしない
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
@@ -389,58 +388,14 @@ func (st *EquipMenuState) handleItemChange(world w.World, item menu.Item) error 
 }
 
 // createTabDisplayUI はタブ表示UIを作成する
-func (st *EquipMenuState) createTabDisplayUI(world w.World) {
-	st.updateTabDisplay(world)
-}
-
-// updateTabDisplay はタブ表示を更新する
-func (st *EquipMenuState) updateTabDisplay(world w.World) {
-	// 既存の子要素をクリア
-	st.tabDisplayContainer.RemoveChildren()
-
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
-
-	// タブ名を表示（サブタイトルとして）
-	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world.Resources.UIResources)
-	st.tabDisplayContainer.AddChild(tabNameText)
-
-	// ページインジケーターを表示
-	pageText := st.tabMenu.GetPageIndicatorText()
-	if pageText != "" {
-		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
-		st.tabDisplayContainer.AddChild(pageIndicator)
-	}
-
-	// 現在のページで表示されるアイテムとインデックスを取得
-	visibleItems, indices := st.tabMenu.GetVisibleItems()
-
-	// アイテム一覧を表示（ページ内のアイテムのみ）
-	for i, item := range visibleItems {
-		actualIndex := indices[i]
-		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
-		if isSelected {
-			// 選択中のアイテムは背景色付きで明るい文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
-		} else {
-			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources)
-			st.tabDisplayContainer.AddChild(itemWidget)
-		}
-	}
-
-	// アイテムがない場合の表示
-	if len(currentTab.Items) == 0 {
-		emptyText := styled.NewDescriptionText("(アイテムなし)", world.Resources.UIResources)
-		st.tabDisplayContainer.AddChild(emptyText)
-	}
+func (st *EquipMenuState) createTabDisplayUI(_ w.World) {
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 }
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
 func (st *EquipMenuState) updateInitialItemDisplay(world w.World) {
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
@@ -613,8 +568,8 @@ func (st *EquipMenuState) executeActionItem(world w.World) {
 	}
 
 	selectedAction := st.actionItems[st.actionFocusIndex]
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if currentItemIndex < 0 || currentItemIndex >= len(currentTab.Items) {
 		st.closeActionWindow()
@@ -644,7 +599,7 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 	previousEquipment := userData["entity"].(*ecs.Entity)
 
 	// 現在のタブインデックスを保存
-	st.previousTabIndex = st.tabMenu.GetCurrentTabIndex()
+	st.previousTabIndex = st.menuView.GetCurrentTabIndex()
 
 	st.isEquipMode = true
 	st.equipSlotNumber = slotNumber
@@ -663,18 +618,18 @@ func (st *EquipMenuState) startEquipMode(world w.World, userData map[string]inte
 		},
 	}
 
-	st.tabMenu.UpdateTabs(newTabs)
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabs(newTabs)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 	st.closeActionWindow()
 }
 
 // createEquipMenuItems は装備選択用のMenuItemを作成する
-func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []menu.Item {
-	items := make([]menu.Item, len(entities))
+func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Entity, _ ecs.Entity) []tabmenu.Item {
+	items := make([]tabmenu.Item, len(entities))
 
 	for i, entity := range entities {
 		name := world.Components.Name.Get(entity).(*gc.Name).Name
-		items[i] = menu.Item{
+		items[i] = tabmenu.Item{
 			ID:       fmt.Sprintf("equip_entity_%d", entity),
 			Label:    name,
 			UserData: entity,
@@ -685,7 +640,7 @@ func (st *EquipMenuState) createEquipMenuItems(world w.World, entities []ecs.Ent
 }
 
 // handleEquipItemSelection は装備選択時の処理
-func (st *EquipMenuState) handleEquipItemSelection(world w.World, item menu.Item) error {
+func (st *EquipMenuState) handleEquipItemSelection(world w.World, item tabmenu.Item) error {
 	entity, ok := item.UserData.(ecs.Entity)
 	if !ok {
 		return fmt.Errorf("unexpected item UserData")
@@ -727,7 +682,7 @@ func (st *EquipMenuState) unequipItem(world w.World, userData map[string]interfa
 	if hasEquipment && slotEntity != nil {
 		worldhelper.Disarm(world, *slotEntity)
 		st.reloadTabs(world)
-		st.updateTabDisplay(world)
+		st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 		st.updateAbilityDisplay(world)
 	}
 	st.closeActionWindow()
@@ -742,16 +697,16 @@ func (st *EquipMenuState) exitEquipMode(world w.World) error {
 
 	// 元のタブに戻る
 	newTabs := st.createTabs(world)
-	st.tabMenu.UpdateTabs(newTabs)
+	st.menuView.UpdateTabs(newTabs)
 
 	// 保存されたタブインデックスに復元
 	if st.previousTabIndex >= 0 && st.previousTabIndex < len(newTabs) {
-		if err := st.tabMenu.SetTabIndex(st.previousTabIndex); err != nil {
+		if err := st.menuView.SetTabIndex(st.previousTabIndex); err != nil {
 			return err
 		}
 	}
 
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 	st.updateAbilityDisplay(world)
 	return nil
 }
@@ -759,6 +714,6 @@ func (st *EquipMenuState) exitEquipMode(world w.World) error {
 // reloadTabs はタブの内容を再読み込みする
 func (st *EquipMenuState) reloadTabs(world w.World) {
 	newTabs := st.createTabs(world)
-	st.tabMenu.UpdateTabs(newTabs)
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabs(newTabs)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 }

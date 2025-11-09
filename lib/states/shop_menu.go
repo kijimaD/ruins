@@ -12,7 +12,6 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/raw"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	"github.com/kijimaD/ruins/lib/widgets/views"
@@ -26,8 +25,8 @@ type ShopMenuState struct {
 	es.BaseState[w.World]
 	ui *ebitenui.UI
 
-	tabMenu             *tabmenu.TabMenu
-	selectedItem        menu.Item         // 選択中のアイテム
+	menuView            *tabmenu.View
+	selectedItem        tabmenu.Item      // 選択中のアイテム
 	itemDesc            *widget.Text      // アイテムの概要
 	specContainer       *widget.Container // 性能表示のコンテナ
 	rootContainer       *widget.Container
@@ -87,7 +86,7 @@ func (st *ShopMenuState) Update(world w.World) (es.Transition[w.World], error) {
 
 	// アクションウィンドウ表示中はTabMenuの更新をスキップ
 	if !st.isWindowMode {
-		if _, err := st.tabMenu.Update(); err != nil {
+		if err := st.menuView.Update(); err != nil {
 			return es.Transition[w.World]{}, err
 		}
 	}
@@ -159,26 +158,26 @@ func (st *ShopMenuState) initUI(world w.World) *ebitenui.UI {
 	}
 
 	callbacks := tabmenu.Callbacks{
-		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item menu.Item) error {
+		OnSelectItem: func(_ int, _ int, tab tabmenu.TabItem, item tabmenu.Item) error {
 			return st.handleItemSelection(world, tab, item)
 		},
 		OnCancel: func() {
 			st.SetTransition(es.Transition[w.World]{Type: es.TransPop})
 		},
 		OnTabChange: func(_, _ int, _ tabmenu.TabItem) {
-			st.updateTabDisplay(world)
+			st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 			st.updateCategoryDisplay(world)
 		},
-		OnItemChange: func(_ int, _, _ int, item menu.Item) error {
+		OnItemChange: func(_ int, _, _ int, item tabmenu.Item) error {
 			if err := st.handleItemChange(world, item); err != nil {
 				return err
 			}
-			st.updateTabDisplay(world)
+			st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 			return nil
 		},
 	}
 
-	st.tabMenu = tabmenu.NewTabMenu(config, callbacks)
+	st.menuView = tabmenu.NewView(config, callbacks, world)
 
 	// アイテムの説明文
 	itemDescContainer := styled.NewRowContainer()
@@ -247,13 +246,13 @@ func (st *ShopMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createBuyItems は購入アイテムリストを作成
-func (st *ShopMenuState) createBuyItems(world w.World) []menu.Item {
+func (st *ShopMenuState) createBuyItems(world w.World) []tabmenu.Item {
 	shopInventory := worldhelper.GetShopInventory()
-	items := make([]menu.Item, 0, len(shopInventory))
+	items := make([]tabmenu.Item, 0, len(shopInventory))
 
 	for _, itemName := range shopInventory {
 		price := st.getItemPrice(world, itemName, true)
-		items = append(items, menu.Item{
+		items = append(items, tabmenu.Item{
 			Label:            itemName,
 			AdditionalLabels: []string{worldhelper.FormatCurrency(price)},
 			UserData:         map[string]interface{}{"itemName": itemName, "price": price, "isBuy": true},
@@ -264,8 +263,8 @@ func (st *ShopMenuState) createBuyItems(world w.World) []menu.Item {
 }
 
 // createSellItems は売却アイテムリストを作成
-func (st *ShopMenuState) createSellItems(world w.World) []menu.Item {
-	var items []menu.Item
+func (st *ShopMenuState) createSellItems(world w.World) []tabmenu.Item {
+	var items []tabmenu.Item
 
 	worldhelper.QueryPlayer(world, func(_ ecs.Entity) {
 		world.Manager.Join(
@@ -293,7 +292,7 @@ func (st *ShopMenuState) createSellItems(world w.World) []menu.Item {
 				}
 			}
 
-			items = append(items, menu.Item{
+			items = append(items, tabmenu.Item{
 				Label:            itemName,
 				AdditionalLabels: additionalLabels,
 				UserData: map[string]interface{}{
@@ -307,7 +306,7 @@ func (st *ShopMenuState) createSellItems(world w.World) []menu.Item {
 	})
 
 	if len(items) == 0 {
-		items = append(items, menu.Item{
+		items = append(items, tabmenu.Item{
 			Label:    "売却可能なアイテムがありません",
 			UserData: map[string]interface{}{},
 		})
@@ -336,7 +335,7 @@ func (st *ShopMenuState) getItemPrice(world w.World, itemName string, isBuy bool
 }
 
 // handleItemSelection はアイテム選択時の処理
-func (st *ShopMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item menu.Item) error {
+func (st *ShopMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, item tabmenu.Item) error {
 	if item.UserData == nil {
 		return nil
 	}
@@ -347,7 +346,7 @@ func (st *ShopMenuState) handleItemSelection(world w.World, _ tabmenu.TabItem, i
 }
 
 // handleItemChange はアイテムフォーカス変更時の処理
-func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) error {
+func (st *ShopMenuState) handleItemChange(world w.World, item tabmenu.Item) error {
 	if item.UserData == nil {
 		st.itemDesc.Label = " "
 		st.specContainer.RemoveChildren()
@@ -381,7 +380,7 @@ func (st *ShopMenuState) handleItemChange(world w.World, item menu.Item) error {
 }
 
 // handlePurchase はアイテムの購入処理
-func (st *ShopMenuState) handlePurchase(world w.World, item menu.Item) {
+func (st *ShopMenuState) handlePurchase(world w.World, item tabmenu.Item) {
 	data := item.UserData.(map[string]interface{})
 	itemName, _ := data["itemName"].(string)
 
@@ -397,7 +396,7 @@ func (st *ShopMenuState) handlePurchase(world w.World, item menu.Item) {
 }
 
 // handleSell はアイテムの売却処理
-func (st *ShopMenuState) handleSell(world w.World, item menu.Item) {
+func (st *ShopMenuState) handleSell(world w.World, item tabmenu.Item) {
 	data := item.UserData.(map[string]interface{})
 	itemName, _ := data["itemName"].(string)
 	entity, ok := data["entity"].(ecs.Entity)
@@ -421,16 +420,16 @@ func (st *ShopMenuState) handleSell(world w.World, item menu.Item) {
 // reloadTabs はタブの内容を再読み込みする
 func (st *ShopMenuState) reloadTabs(world w.World) {
 	newTabs := st.createTabs(world)
-	st.tabMenu.UpdateTabs(newTabs)
+	st.menuView.UpdateTabs(newTabs)
 	// UpdateTabs後に表示を更新
-	st.updateTabDisplay(world)
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 	st.updateCategoryDisplay(world)
 	st.updateCurrencyDisplay(world)
 }
 
 // createTabDisplayUI はタブ表示UIを作成する
-func (st *ShopMenuState) createTabDisplayUI(world w.World) {
-	st.updateTabDisplay(world)
+func (st *ShopMenuState) createTabDisplayUI(_ w.World) {
+	st.menuView.UpdateTabDisplayContainer(st.tabDisplayContainer)
 }
 
 // createCategoryDisplayUI はカテゴリ表示UIを作成する
@@ -444,7 +443,7 @@ func (st *ShopMenuState) updateCategoryDisplay(world w.World) {
 	st.categoryContainer.RemoveChildren()
 
 	// 全カテゴリを横並びで表示
-	currentTabIndex := st.tabMenu.GetCurrentTabIndex()
+	currentTabIndex := st.menuView.GetCurrentTabIndex()
 	tabs := st.createTabs(world) // 最新のタブ情報を取得
 
 	for i, tab := range tabs {
@@ -461,51 +460,8 @@ func (st *ShopMenuState) updateCategoryDisplay(world w.World) {
 	}
 }
 
-// updateTabDisplay はタブ表示を更新する
-func (st *ShopMenuState) updateTabDisplay(world w.World) {
-	// 既存の子要素をクリア
-	st.tabDisplayContainer.RemoveChildren()
-
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
-
-	// タブ名を表示（サブタイトルとして）
-	tabNameText := styled.NewSubtitleText(fmt.Sprintf("【%s】", currentTab.Label), world.Resources.UIResources)
-	st.tabDisplayContainer.AddChild(tabNameText)
-
-	// ページインジケーターを表示
-	pageText := st.tabMenu.GetPageIndicatorText()
-	if pageText != "" {
-		pageIndicator := styled.NewPageIndicator(pageText, world.Resources.UIResources)
-		st.tabDisplayContainer.AddChild(pageIndicator)
-	}
-
-	// 現在のページで表示されるアイテムとインデックスを取得
-	visibleItems, indices := st.tabMenu.GetVisibleItems()
-
-	// アイテム一覧を表示（ページ内のアイテムのみ）
-	for i, item := range visibleItems {
-		actualIndex := indices[i]
-		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
-
-		var itemWidget *widget.Container
-		if isSelected {
-			itemWidget = styled.NewListItemText(item.Label, consts.TextColor, true, world.Resources.UIResources, item.AdditionalLabels...)
-		} else {
-			itemWidget = styled.NewListItemText(item.Label, consts.ForegroundColor, false, world.Resources.UIResources, item.AdditionalLabels...)
-		}
-		st.tabDisplayContainer.AddChild(itemWidget)
-	}
-
-	// アイテムがない場合の表示
-	if len(currentTab.Items) == 0 {
-		emptyText := styled.NewDescriptionText("(アイテムなし)", world.Resources.UIResources)
-		st.tabDisplayContainer.AddChild(emptyText)
-	}
-}
-
 // showActionWindow はアクションウィンドウを表示する
-func (st *ShopMenuState) showActionWindow(world w.World, item menu.Item) {
+func (st *ShopMenuState) showActionWindow(world w.World, item tabmenu.Item) {
 	windowContainer := styled.NewWindowContainer(world.Resources.UIResources)
 	titleContainer := styled.NewWindowHeaderContainer("アクション選択", world.Resources.UIResources)
 	st.actionWindow = styled.NewSmallWindow(titleContainer, windowContainer)
@@ -596,8 +552,8 @@ func (st *ShopMenuState) executeActionItem(world w.World) {
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
 func (st *ShopMenuState) updateInitialItemDisplay(world w.World) {
-	currentTab := st.tabMenu.GetCurrentTab()
-	currentItemIndex := st.tabMenu.GetCurrentItemIndex()
+	currentTab := st.menuView.GetCurrentTab()
+	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]

@@ -13,16 +13,15 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/mapplanner"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
+	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
 // MainMenuState は新しいメニューコンポーネントを使用するメインメニュー
 type MainMenuState struct {
 	es.BaseState[w.World]
-	ui        *ebitenui.UI
-	menu      *menu.Menu
-	uiBuilder *menu.UIBuilder
+	ui       *ebitenui.UI
+	menuView *tabmenu.View
 }
 
 func (st MainMenuState) String() string {
@@ -52,8 +51,8 @@ func (st *MainMenuState) OnStop(_ w.World) error { return nil }
 
 // Update はゲームステートの更新処理を行う
 func (st *MainMenuState) Update(_ w.World) (es.Transition[w.World], error) {
-	// メニューの更新（キーボード入力→Action変換は Menu 内部で実施）
-	if err := st.menu.Update(); err != nil {
+	// メニューの更新（キーボード入力→Action変換は TabMenu 内部で実施）
+	if err := st.menuView.Update(); err != nil {
 		return es.Transition[w.World]{Type: es.TransNone}, err
 	}
 
@@ -106,37 +105,43 @@ func (st *MainMenuState) DoAction(_ w.World, action inputmapper.ActionID) (es.Tr
 
 // initMenu はメニューコンポーネントを初期化する
 func (st *MainMenuState) initMenu(world w.World) {
-	// メニュー項目の定義
-	items := []menu.Item{
+	// タブ1つでTabMenuを使用
+	tabs := []tabmenu.TabItem{
 		{
-			ID:       "town",
-			Label:    "開始",
-			UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}},
-		},
-		{
-			ID:       "load",
-			Label:    "読込",
-			UserData: es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewLoadMenuState}},
-		},
-		{
-			ID:       "exit",
-			Label:    "終了",
-			UserData: es.Transition[w.World]{Type: es.TransQuit},
+			ID:    "main",
+			Label: "",
+			Items: []tabmenu.Item{
+				{
+					ID:       "town",
+					Label:    "開始",
+					UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}},
+				},
+				{
+					ID:       "load",
+					Label:    "読込",
+					UserData: es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{NewLoadMenuState}},
+				},
+				{
+					ID:       "exit",
+					Label:    "終了",
+					UserData: es.Transition[w.World]{Type: es.TransQuit},
+				},
+			},
 		},
 	}
 
-	// メニューの設定
-	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
-		ItemsPerPage:   10,
+	// TabMenuの設定
+	config := tabmenu.Config{
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
+		ItemsPerPage:     10,
 	}
 
 	// コールバックの設定
-	callbacks := menu.Callbacks{
-		OnSelect: func(_ int, item menu.Item) error {
+	callbacks := tabmenu.Callbacks{
+		OnSelectItem: func(_ int, _ int, _ tabmenu.TabItem, item tabmenu.Item) error {
 			// 選択されたアイテムのUserDataからTransitionを取得
 			if trans, ok := item.UserData.(es.Transition[w.World]); ok {
 				st.SetTransition(trans)
@@ -147,19 +152,10 @@ func (st *MainMenuState) initMenu(world w.World) {
 			// Escapeキーが押された時の処理
 			st.SetTransition(es.Transition[w.World]{Type: es.TransQuit})
 		},
-		OnFocusChange: func(_, _ int) {
-			// フォーカス変更時にUIを更新
-			if st.uiBuilder != nil {
-				st.uiBuilder.UpdateFocus(st.menu)
-			}
-		},
 	}
 
-	// メニューを作成
-	st.menu = menu.NewMenu(config, callbacks)
-
-	// UIビルダーを作成
-	st.uiBuilder = menu.NewUIBuilder(world)
+	// View を作成（TabMenu + UIBuilder を統合）
+	st.menuView = tabmenu.NewView(config, callbacks, world)
 }
 
 // initUI はUIを初期化する
@@ -168,8 +164,8 @@ func (st *MainMenuState) initUI(world w.World) *ebitenui.UI {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 	)
 
-	// メニューのUIを構築してコンテナに追加
-	menuContainer := st.uiBuilder.BuildUI(st.menu)
+	// TabMenuView を使ってメニューUIを構築
+	menuContainer := st.menuView.BuildUI()
 
 	// 深い金色/琥珀色
 	amberColor := color.NRGBA{R: 255, G: 191, B: 0, A: 255}

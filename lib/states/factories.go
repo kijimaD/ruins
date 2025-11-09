@@ -64,7 +64,7 @@ func NewEquipMenuState() es.State[w.World] {
 func NewDebugMenuState() es.State[w.World] {
 	messageState := &MessageState{}
 
-	messageState.messageData = messagedata.NewSystemMessage("デバッグメニュー").
+	messageState.messageData = messagedata.NewSystemMessage("").
 		WithChoice("回復薬スポーン(インベントリ)", func(world w.World) error {
 			_, err := worldhelper.SpawnItem(world, "回復薬", gc.ItemLocationInBackpack)
 			if err != nil {
@@ -83,10 +83,6 @@ func NewDebugMenuState() es.State[w.World] {
 		}).
 		WithChoice("ゲームオーバー", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewGameOverMessageState}})
-			return nil
-		}).
-		WithChoice("踏破エンディング", func(_ w.World) error {
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonCompleteEndingState}})
 			return nil
 		}).
 		WithChoice("ダンジョン開始(大部屋)", func(_ w.World) error {
@@ -317,24 +313,7 @@ func NewDebugMenuState() es.State[w.World] {
 			return nil
 		}).
 		WithChoice("調停者エンディング", func(_ w.World) error {
-			trueEnd1 := &messagedata.MessageData{Speaker: ""}
-			trueEnd1.AddText(`地中から大気まで濃密な地髄に溢れた。
-長い眠りについていた人々は目覚めだした。
-
-不毛だった大地には風が吹き、若草が芽吹きだした。
-
-人々は忘れかけた希望の感覚に
-酔いしれるのであった...。
-
-━━━━━━━━━━
-[TRUE END]
-━━━━━━━━━━`)
-
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransPush, NewStateFuncs: []es.StateFactory[w.World]{
-				func() es.State[w.World] {
-					return NewMessageState(trueEnd1)
-				},
-			}})
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonCompleteEndingState}})
 			return nil
 		}).
 		WithChoice("閉じる", func(_ w.World) error {
@@ -405,16 +384,17 @@ func NewDungeonCompleteEndingState() es.State[w.World] {
 	messageState := &MessageState{}
 
 	// ゲームクリアメッセージを作成（選択肢付き）
-	messageData := messagedata.NewSystemMessage(`眠りについていた人々は目覚めだした。
-待ち望んだ再会を喜びを噛み締めた。
+	messageData := messagedata.NewSystemMessage(`地中から大気まで濃密な地髄に溢れた。
+長い眠りについていた人々は目覚めだした。
 
-不毛だった大地には若草が芽吹きだした。
+不毛だった大地には風が吹き、若草が芽吹きだした。
+
 人々は忘れかけた希望の感覚に
 酔いしれるのであった...。
 
-━━━━━━━━━━━━
-[GAME CLEAR]
-━━━━━━━━━━━━`).
+━━━━━━━━━━
+[TRUE END]
+━━━━━━━━━━`).
 		WithChoice("閉じる", func(_ w.World) error {
 			// 町に遷移
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}})
@@ -511,7 +491,7 @@ func NewSaveMenuState() es.State[w.World] {
 	// セーブマネージャーで現在のスロット状態を取得
 	saveManager := save.NewSerializationManager("./saves")
 
-	messageData := messagedata.NewSystemMessage("どのスロットにセーブしますか？")
+	messageData := messagedata.NewSystemMessage("")
 
 	// 各スロットの状態を確認して選択肢を動的に生成
 	for i := 1; i <= 3; i++ {
@@ -554,7 +534,7 @@ func NewLoadMenuState() es.State[w.World] {
 	// セーブマネージャーで現在のスロット状態を取得
 	saveManager := save.NewSerializationManager("./saves")
 
-	messageData := messagedata.NewSystemMessage("どのスロットから読み込みますか？")
+	messageData := messagedata.NewSystemMessage("")
 
 	// 各スロットの状態を確認して選択肢を動的に生成
 	hasValidSlot := false

@@ -1,4 +1,4 @@
-package menu
+package tabmenu
 
 import (
 	"image/color"
@@ -10,102 +10,64 @@ import (
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// UIBuilder はメニューのUI要素を構築する
-type UIBuilder struct {
-	world w.World
+// UIBuilder はTabMenuのUI要素を構築する
+type uiBuilder struct {
+	world       w.World
+	itemWidgets []widget.PreferredSizeLocateableWidget // 現在表示中のウィジェット
 }
 
-// NewUIBuilder はUIビルダーを作成する
-func NewUIBuilder(world w.World) *UIBuilder {
-	return &UIBuilder{
-		world: world,
+// newUIBuilder はUIビルダーを作成する
+func newUIBuilder(world w.World) *uiBuilder {
+	return &uiBuilder{
+		world:       world,
+		itemWidgets: make([]widget.PreferredSizeLocateableWidget, 0),
 	}
 }
 
-// BuildUI はメニューのUI要素を構築する
-func (b *UIBuilder) BuildUI(menu *Menu) *widget.Container {
-	var container *widget.Container
-
-	if menu.config.Orientation == Horizontal {
-		// 水平リスト表示
-		container = b.buildHorizontalUI(menu)
-	} else {
-		// 垂直リスト表示
-		container = b.buildVerticalUI(menu)
-	}
-
-	menu.SetContainer(container)
-	menu.SetUIBuilder(b) // UIビルダーを設定
-	return container
+// BuildUI はtabMenuのUI要素を構築する（タブが1つの場合を想定）
+func (b *uiBuilder) BuildUI(tabMenu *tabMenu) *widget.Container {
+	// タブが1つしかない場合は、そのタブのアイテムを直接表示
+	// 垂直リスト表示（固定）
+	return b.buildVerticalUI(tabMenu)
 }
 
 // buildVerticalUI は垂直リスト表示のUIを構築する
-func (b *UIBuilder) buildVerticalUI(menu *Menu) *widget.Container {
+func (b *uiBuilder) buildVerticalUI(tabMenu *tabMenu) *widget.Container {
 	mainContainer := styled.NewVerticalContainer()
 
 	// ページインジケーターを追加
-	pageText := menu.GetPageIndicatorText()
+	pageText := tabMenu.GetPageIndicatorText()
 	if pageText != "" {
-		pageIndicator := b.CreatePageIndicator(menu)
+		pageIndicator := b.CreatePageIndicator(tabMenu)
 		mainContainer.AddChild(pageIndicator)
 	}
 
 	// メニューアイテムのコンテナ
 	menuContainer := styled.NewVerticalContainer()
-	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
+	b.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
 
 	// 表示する項目のみを追加（スクロール対応）
-	visibleItems, indices := menu.GetVisibleItems()
+	visibleItems, indices := tabMenu.GetVisibleItems()
 	for i, item := range visibleItems {
 		originalIndex := indices[i]
-		btn := b.CreateMenuButton(menu, originalIndex, item)
+		btn := b.CreateMenuButton(tabMenu, originalIndex, item)
 		menuContainer.AddChild(btn)
-		menu.itemWidgets = append(menu.itemWidgets, btn)
+		b.itemWidgets = append(b.itemWidgets, btn)
 	}
 
 	mainContainer.AddChild(menuContainer)
-	b.UpdateFocus(menu)
-
-	return mainContainer
-}
-
-// buildHorizontalUI は水平リスト表示のUIを構築する
-func (b *UIBuilder) buildHorizontalUI(menu *Menu) *widget.Container {
-	mainContainer := styled.NewVerticalContainer()
-
-	// ページインジケーターを追加
-	pageText := menu.GetPageIndicatorText()
-	if pageText != "" {
-		pageIndicator := b.CreatePageIndicator(menu)
-		mainContainer.AddChild(pageIndicator)
-	}
-
-	// メニューアイテムのコンテナ
-	menuContainer := styled.NewRowContainer()
-	menu.itemWidgets = make([]widget.PreferredSizeLocateableWidget, 0)
-
-	// 表示する項目のみを追加（ペジネーション）
-	visibleItems, indices := menu.GetVisibleItems()
-	for i, item := range visibleItems {
-		originalIndex := indices[i]
-		btn := b.CreateMenuButton(menu, originalIndex, item)
-		menuContainer.AddChild(btn)
-		menu.itemWidgets = append(menu.itemWidgets, btn)
-	}
-
-	mainContainer.AddChild(menuContainer)
-	b.UpdateFocus(menu)
+	b.UpdateFocus(tabMenu)
 
 	return mainContainer
 }
 
 // CreateMenuButton はメニューボタンを作成する
 // 追加ラベルがある場合は、Button + ラベル群をコンテナでまとめて返す
-func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) widget.PreferredSizeLocateableWidget {
+func (b *uiBuilder) CreateMenuButton(tabMenu *tabMenu, index int, item Item) widget.PreferredSizeLocateableWidget {
 	res := b.world.Resources.UIResources
 
 	// フォーカス状態をチェック
-	isFocused := index == menu.GetFocusedIndex()
+	isFocused := index == tabMenu.GetCurrentItemIndex()
 
 	// ボタン画像を作成
 	var buttonImage *widget.ButtonImage
@@ -128,8 +90,12 @@ func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) widget.Pr
 		widget.ButtonOpts.TextPadding(&res.Button.Padding),
 		widget.ButtonOpts.TextPosition(widget.TextPositionStart, widget.TextPositionCenter),
 		widget.ButtonOpts.ClickedHandler(func(_ *widget.ButtonClickedEventArgs) {
-			menu.SetFocusedIndex(index)
-			_ = menu.selectCurrent() // ボタンクリック時のエラーは無視
+			if err := tabMenu.SetItemIndex(index); err != nil {
+				panic(err)
+			}
+			if err := tabMenu.selectCurrentItem(); err != nil {
+				panic(err)
+			}
 		}),
 	)
 
@@ -179,22 +145,22 @@ func (b *UIBuilder) CreateMenuButton(menu *Menu, index int, item Item) widget.Pr
 // UpdateFocus はメニューのフォーカス表示を更新する
 // カーソルで選択中の要素だけボタンを変える。マウスのhoverでは色が変わらないようにしている
 // カーソル移動は独自実装なので、UIを対応させるために必要
-func (b *UIBuilder) UpdateFocus(menu *Menu) {
-	if len(menu.itemWidgets) == 0 {
+func (b *uiBuilder) UpdateFocus(tabMenu *tabMenu) {
+	if len(b.itemWidgets) == 0 {
 		return
 	}
 
 	// 表示中の項目とそのインデックスを取得
-	_, indices := menu.GetVisibleItems()
+	_, indices := tabMenu.GetVisibleItems()
 
 	// 全てのボタンのフォーカスを更新
-	for i, w := range menu.itemWidgets {
+	for i, w := range b.itemWidgets {
 		if i >= len(indices) {
 			continue
 		}
 
 		originalIndex := indices[i]
-		isFocused := originalIndex == menu.GetFocusedIndex()
+		isFocused := originalIndex == tabMenu.GetCurrentItemIndex()
 
 		var btn *widget.Button
 
@@ -228,7 +194,7 @@ func (b *UIBuilder) UpdateFocus(menu *Menu) {
 
 // createTransparentButtonImage は半透明のボタン画像を作成する
 // マウスホバーでは色が変わらず、キーボード操作（フォーカス）でのみ反応する
-func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
+func (b *uiBuilder) createTransparentButtonImage() *widget.ButtonImage {
 	// アイドル状態: 透明
 	idle := image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
 
@@ -247,7 +213,7 @@ func (b *UIBuilder) createTransparentButtonImage() *widget.ButtonImage {
 }
 
 // createFocusedButtonImage はフォーカス時の明るいボタン画像を作成する
-func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
+func (b *uiBuilder) createFocusedButtonImage() *widget.ButtonImage {
 	// フォーカス時: 半透明の灰色
 	focused := image.NewNineSliceColor(consts.ButtonHoverColor)
 
@@ -266,10 +232,10 @@ func (b *UIBuilder) createFocusedButtonImage() *widget.ButtonImage {
 }
 
 // CreatePageIndicator はページインジケーターを作成する
-func (b *UIBuilder) CreatePageIndicator(menu *Menu) *widget.Text {
+func (b *uiBuilder) CreatePageIndicator(tabMenu *tabMenu) *widget.Text {
 	res := b.world.Resources.UIResources
 
-	pageText := menu.GetPageIndicatorText()
+	pageText := tabMenu.GetPageIndicatorText()
 
 	return widget.NewText(
 		widget.TextOpts.Text(pageText, &res.Text.SmallFace, color.White),
@@ -281,4 +247,45 @@ func (b *UIBuilder) CreatePageIndicator(menu *Menu) *widget.Text {
 			widget.WidgetOpts.MinSize(300, 20),
 		),
 	)
+}
+
+// UpdateTabDisplayContainer はタブ表示コンテナを更新する
+// ページインジケーター、アイテム一覧、空の場合のメッセージを表示する
+func (b *uiBuilder) UpdateTabDisplayContainer(container *widget.Container, tabMenu *tabMenu) {
+	// 既存の子要素をクリア
+	container.RemoveChildren()
+
+	currentTab := tabMenu.GetCurrentTab()
+	currentItemIndex := tabMenu.GetCurrentItemIndex()
+
+	// ページインジケーターを表示
+	pageText := tabMenu.GetPageIndicatorText()
+	if pageText != "" {
+		pageIndicator := styled.NewPageIndicator(pageText, b.world.Resources.UIResources)
+		container.AddChild(pageIndicator)
+	}
+
+	// 現在のページで表示されるアイテムとインデックスを取得
+	visibleItems, indices := tabMenu.GetVisibleItems()
+
+	// アイテム一覧を表示（ページ内のアイテムのみ）
+	for i, item := range visibleItems {
+		actualIndex := indices[i]
+		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
+		if isSelected {
+			// 選択中のアイテムは背景色付きで明るい文字色
+			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, b.world.Resources.UIResources, item.AdditionalLabels...)
+			container.AddChild(itemWidget)
+		} else {
+			// 非選択のアイテムは背景なしでグレー文字色
+			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, b.world.Resources.UIResources, item.AdditionalLabels...)
+			container.AddChild(itemWidget)
+		}
+	}
+
+	// アイテムがない場合の表示
+	if len(currentTab.Items) == 0 {
+		emptyText := styled.NewDescriptionText("(アイテムなし)", b.world.Resources.UIResources)
+		container.AddChild(emptyText)
+	}
 }

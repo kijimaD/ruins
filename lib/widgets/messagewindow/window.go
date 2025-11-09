@@ -11,8 +11,8 @@ import (
 	"github.com/kijimaD/ruins/lib/input"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 	"github.com/kijimaD/ruins/lib/messagedata"
-	"github.com/kijimaD/ruins/lib/widgets/menu"
 	"github.com/kijimaD/ruins/lib/widgets/styled"
+	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -30,8 +30,7 @@ type Window struct {
 	window      *widget.Window
 
 	// 選択肢がある場合、メニューシステムでページング可能な選択肢一覧を表示
-	choiceMenu      *menu.Menu
-	choiceBuilder   *menu.UIBuilder
+	choiceMenuView  *tabmenu.View
 	hasChoices      bool
 	currentMenuPage int
 	needsUIRebuild  bool // ページ変更時のUI再構築フラグ
@@ -56,8 +55,8 @@ func (w *Window) Update() error {
 		w.initialized = true
 	}
 
-	if w.hasChoices && w.choiceMenu != nil {
-		if err := w.choiceMenu.Update(); err != nil {
+	if w.hasChoices && w.choiceMenuView != nil {
+		if err := w.choiceMenuView.Update(); err != nil {
 			return err
 		}
 
@@ -142,8 +141,7 @@ func (w *Window) showNextMessage() {
 	w.initialized = false
 	w.ui = nil
 	w.window = nil
-	w.choiceMenu = nil
-	w.choiceBuilder = nil
+	w.choiceMenuView = nil
 }
 
 // updateContentFromMessage はMessageDataから表示コンテンツを更新する
@@ -230,12 +228,22 @@ func (w *Window) calculateWindowPosition(windowSize WindowSize) (x, y int) {
 
 	numChoices := len(w.content.Choices)
 	if w.hasChoices && numChoices > 0 {
-		if numChoices <= 3 {
+		// メッセージがない場合は、より高い位置に配置
+		if !w.hasMessage() {
+			// メッセージなし: 中央より少し上に配置
 			y = (screenHeight - windowSize.Height) / 2
-		} else if numChoices <= 8 {
-			y = screenHeight / 3
+			if numChoices > 5 {
+				y = screenHeight / 3
+			}
 		} else {
-			y = screenHeight / 5
+			// メッセージあり: 選択肢数に応じて配置
+			if numChoices <= 3 {
+				y = (screenHeight - windowSize.Height) / 2
+			} else if numChoices <= 8 {
+				y = screenHeight / 3
+			} else {
+				y = screenHeight / 5
+			}
 		}
 	} else {
 		y = (screenHeight - windowSize.Height) / 2
@@ -256,19 +264,31 @@ func (w *Window) calculateWindowPosition(windowSize WindowSize) (x, y int) {
 func (w *Window) calculateWindowSize() WindowSize {
 	baseHeight := w.config.Size.Height
 
-	// 選択肢がある場合は高さを追加
+	// 選択肢がある場合は高さを再計算
 	if w.hasChoices && len(w.content.Choices) > 0 {
 		numChoices := len(w.content.Choices)
 
-		// 選択肢1つあたりの高さを計算（フォントサイズ + 余白）
-		choiceItemHeight := 35
+		// 構成要素の高さ
+		messageHeight := 0 // メッセージの高さ
+		if w.hasMessage() {
+			messageHeight = 150 // メッセージがある場合のみ固定高さ
+		}
+		choiceItemHeight := 40 // 選択肢1つあたりの高さ
 		choiceHeight := numChoices * choiceItemHeight
+		topPadding := 20     // 上部パディング
+		bottomPadding := 15  // 下部パディング
+		titleBarHeight := 40 // タイトルバーの高さ
+		spacingHeight := 10  // スペーサー間隔（メッセージがある場合のみ）
+		if !w.hasMessage() {
+			spacingHeight = 0
+		}
+
+		// 合計高さを計算
+		calculatedHeight := messageHeight + choiceHeight + topPadding + bottomPadding + titleBarHeight + spacingHeight
 
 		// 最低高さと最大高さを設定
-		minHeightWithChoices := 400
+		minHeightWithChoices := 300
 		maxHeightWithChoices := int(float64(w.world.Resources.ScreenDimensions.Height) * 0.8) // 画面高さの80%まで
-
-		calculatedHeight := baseHeight + choiceHeight + 100 // +100 for padding and buttons
 
 		if calculatedHeight < minHeightWithChoices {
 			baseHeight = minHeightWithChoices
@@ -285,6 +305,27 @@ func (w *Window) calculateWindowSize() WindowSize {
 	}
 }
 
+// hasMessage はメッセージがあるかどうかを判定する
+func (w *Window) hasMessage() bool {
+	if len(w.content.TextSegmentLines) == 0 {
+		return false
+	}
+
+	// すべての行が空かどうかをチェック
+	for _, lineSegments := range w.content.TextSegmentLines {
+		for _, seg := range lineSegments {
+			// 空白文字以外があればメッセージありと判定
+			for _, r := range seg.Text {
+				if r != ' ' && r != '\t' && r != '\n' && r != '\r' {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 // createWindowContainer はウィンドウコンテナを作成する
 func (w *Window) createWindowContainer() *widget.Container {
 	windowContainer := widget.NewContainer(
@@ -297,17 +338,23 @@ func (w *Window) createWindowContainer() *widget.Container {
 		),
 	)
 
+	// 選択肢の有無でパディングを調整
+	bottomPadding := 60
+	if w.hasChoices && w.choiceMenuView != nil {
+		bottomPadding = 15 // 選択肢がある場合は下部パディングを少なく
+	}
+
 	contentArea := widget.NewContainer(
 		widget.ContainerOpts.Layout(
 			widget.NewRowLayout(
 				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
 				widget.RowLayoutOpts.Padding(&widget.Insets{
 					Top:    20,
-					Bottom: 60,
+					Bottom: bottomPadding,
 					Left:   10,
 					Right:  10,
 				}),
-				widget.RowLayoutOpts.Spacing(2),
+				widget.RowLayoutOpts.Spacing(10),
 			),
 		),
 		widget.ContainerOpts.WidgetOpts(
@@ -320,18 +367,52 @@ func (w *Window) createWindowContainer() *widget.Container {
 		),
 	)
 
-	// TextSegmentLinesを使用してメッセージを表示
-	messageWidget := w.createSegmentedTextLines()
-	contentArea.AddChild(messageWidget)
+	if w.hasChoices && w.choiceMenuView != nil {
+		// 選択肢がある場合
+		if w.hasMessage() {
+			// メッセージがある場合: メッセージコンテナを表示
+			messageContainer := widget.NewContainer(
+				widget.ContainerOpts.Layout(
+					widget.NewRowLayout(
+						widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+						widget.RowLayoutOpts.Spacing(0),
+					),
+				),
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Stretch:   false,
+						MaxHeight: 150, // 固定高さ
+					}),
+					widget.WidgetOpts.MinSize(0, 150),
+				),
+			)
+			messageWidget := w.createSegmentedTextLines()
+			messageContainer.AddChild(messageWidget)
+			contentArea.AddChild(messageContainer)
 
-	if w.hasChoices && w.choiceMenu != nil {
-		choicesContainer := w.createChoicesContainer()
+			// スペーサー: メッセージと選択肢の間の空間を埋める
+			spacer := widget.NewContainer(
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Stretch: true,
+					}),
+				),
+			)
+			contentArea.AddChild(spacer)
+		}
+
+		// 選択肢コンテナ（自然な高さ、選択肢数に応じて伸びる）
+		choicesContainer := w.createChoicesItemsContainer()
 		contentArea.AddChild(choicesContainer)
+	} else {
+		// 選択肢がない場合: メッセージのみ表示
+		messageWidget := w.createSegmentedTextLines()
+		contentArea.AddChild(messageWidget)
 	}
 
 	windowContainer.AddChild(contentArea)
 
-	if !w.hasChoices || w.choiceMenu == nil {
+	if !w.hasChoices || w.choiceMenuView == nil {
 		enterPrompt := w.createEnterPrompt()
 		windowContainer.AddChild(enterPrompt)
 	}
@@ -339,33 +420,53 @@ func (w *Window) createWindowContainer() *widget.Container {
 	return windowContainer
 }
 
-// createChoicesContainer は選択肢コンテナを作成する
-func (w *Window) createChoicesContainer() *widget.Container {
-	if w.choiceBuilder != nil && w.choiceMenu != nil {
-		return w.choiceBuilder.BuildUI(w.choiceMenu)
-	}
+// createChoicesItemsContainer は選択肢アイテムのコンテナを作成する
+func (w *Window) createChoicesItemsContainer() *widget.Container {
+	var itemsContainer *widget.Container
 
-	container := widget.NewContainer(
-		widget.ContainerOpts.Layout(
-			widget.NewRowLayout(
-				widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-				widget.RowLayoutOpts.Spacing(5),
-				widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10}),
+	if w.choiceMenuView != nil {
+		itemsContainer = w.choiceMenuView.BuildUI()
+	} else {
+		// 選択肢アイテムのコンテナ（縦並び、各アイテムを中央寄せ）
+		itemsContainer = widget.NewContainer(
+			widget.ContainerOpts.Layout(
+				widget.NewRowLayout(
+					widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+					widget.RowLayoutOpts.Spacing(5),
+					widget.RowLayoutOpts.Padding(&widget.Insets{Top: 10, Bottom: 0}),
+				),
 			),
-		),
-	)
-
-	for i, choice := range w.content.Choices {
-		choiceText := styled.NewListItemText(
-			choice.Text,
-			w.config.TextStyle.Color,
-			i == 0,
-			w.world.Resources.UIResources,
 		)
-		container.AddChild(choiceText)
+
+		for i, choice := range w.content.Choices {
+			// 各選択肢を中央配置するコンテナでラップ
+			choiceWrapper := widget.NewContainer(
+				widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+				widget.ContainerOpts.WidgetOpts(
+					widget.WidgetOpts.LayoutData(widget.RowLayoutData{
+						Stretch: true,
+					}),
+				),
+			)
+
+			choiceText := w.createChoiceText(choice.Text, i == 0)
+			choiceText.GetWidget().LayoutData = widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				StretchHorizontal:  false, // 水平方向に引き伸ばさない
+			}
+			choiceWrapper.AddChild(choiceText)
+			itemsContainer.AddChild(choiceWrapper)
+		}
 	}
 
-	return container
+	// RowLayout内での配置（中央寄せ）
+	itemsContainer.GetWidget().LayoutData = widget.RowLayoutData{
+		Stretch:  false,
+		Position: widget.RowLayoutPositionCenter,
+	}
+
+	return itemsContainer
 }
 
 // createEnterPrompt はEnterプロンプトを作成する
@@ -428,9 +529,9 @@ func (w *Window) initChoiceMenu() {
 		return
 	}
 
-	items := make([]menu.Item, len(w.content.Choices))
+	items := make([]tabmenu.Item, len(w.content.Choices))
 	for i, choice := range w.content.Choices {
-		items[i] = menu.Item{
+		items[i] = tabmenu.Item{
 			ID:       choice.Text,
 			Label:    choice.Text,
 			Disabled: false,
@@ -440,38 +541,44 @@ func (w *Window) initChoiceMenu() {
 
 	itemsPerPage := w.calculateItemsPerPage(len(w.content.Choices))
 
-	config := menu.Config{
-		Items:          items,
-		InitialIndex:   0,
-		WrapNavigation: true,
-		Orientation:    menu.Vertical,
-		ItemsPerPage:   itemsPerPage,
+	// タブ1つ
+	tabs := []tabmenu.TabItem{
+		{
+			ID:    "choices",
+			Label: "",
+			Items: items,
+		},
 	}
 
-	callbacks := menu.Callbacks{
-		OnSelect: func(index int, _ menu.Item) error {
-			return w.selectChoice(index)
+	config := tabmenu.Config{
+		Tabs:             tabs,
+		InitialTabIndex:  0,
+		InitialItemIndex: 0,
+		WrapNavigation:   true,
+		ItemsPerPage:     itemsPerPage,
+	}
+
+	callbacks := tabmenu.Callbacks{
+		OnSelectItem: func(_ int, itemIndex int, _ tabmenu.TabItem, _ tabmenu.Item) error {
+			return w.selectChoice(itemIndex)
 		},
 		OnCancel: func() {
 			w.Close()
 		},
-		OnFocusChange: func(_, _ int) {
-			if w.choiceMenu != nil {
-				newPage := w.choiceMenu.GetCurrentPage()
+		OnItemChange: func(_ int, _, _ int, _ tabmenu.Item) error {
+			if w.choiceMenuView != nil {
+				newPage := w.choiceMenuView.GetCurrentPage()
 				if newPage != w.currentMenuPage {
 					w.currentMenuPage = newPage
 					w.needsUIRebuild = true
 				}
 			}
-
-			if w.choiceBuilder != nil && !w.needsUIRebuild {
-				w.choiceBuilder.UpdateFocus(w.choiceMenu)
-			}
+			return nil
 		},
 	}
 
-	w.choiceMenu = menu.NewMenu(config, callbacks)
-	w.choiceBuilder = menu.NewUIBuilder(w.world)
+	// View を作成（TabMenu + UIBuilder を統合）
+	w.choiceMenuView = tabmenu.NewView(config, callbacks, w.world)
 	w.currentMenuPage = 1
 }
 
@@ -486,7 +593,11 @@ func (w *Window) rebuildUI() {
 func (w *Window) calculateItemsPerPage(totalItems int) int {
 	windowHeight := w.calculateWindowSize().Height
 
-	textAreaHeight := 150
+	// メッセージがある場合のみメッセージエリアの高さを確保
+	textAreaHeight := 0
+	if w.hasMessage() {
+		textAreaHeight = 150
+	}
 	pageIndicatorHeight := 30
 	availableHeight := windowHeight - textAreaHeight - pageIndicatorHeight
 
@@ -643,4 +754,45 @@ func (w *Window) createSegmentedTextLines() *widget.Container {
 	}
 
 	return mainContainer
+}
+
+// createChoiceText は選択肢用のテキストウィジェットを作成する（自然な幅で中央寄せ用）
+func (w *Window) createChoiceText(choiceText string, isSelected bool) *widget.Container {
+	res := w.world.Resources.UIResources
+
+	// 背景色の設定
+	var backgroundColor *eui_image.NineSlice
+	if isSelected {
+		// 選択中は背景色を付ける
+		backgroundColor = eui_image.NewNineSliceColor(color.NRGBA{R: 75, G: 104, B: 122, A: 100})
+	} else {
+		// 非選択は透明
+		backgroundColor = eui_image.NewNineSliceColor(color.NRGBA{R: 0, G: 0, B: 0, A: 0})
+	}
+
+	// コンテナ（自然な幅を保持）
+	container := widget.NewContainer(
+		widget.ContainerOpts.BackgroundImage(backgroundColor),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+	)
+
+	// テキストウィジェット
+	textWidget := widget.NewText(
+		widget.TextOpts.Text(choiceText, &res.Text.Face, w.config.TextStyle.Color),
+		widget.TextOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+				HorizontalPosition: widget.AnchorLayoutPositionCenter,
+				VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				Padding: &widget.Insets{
+					Top:    4,
+					Bottom: 4,
+					Left:   16,
+					Right:  16,
+				},
+			}),
+		),
+	)
+
+	container.AddChild(textWidget)
+	return container
 }
