@@ -622,8 +622,8 @@ func newProgressBarResources() (*ProgressBarResources, error) {
 // シンプルな単色パネル
 func newPanelResources() *PanelResources {
 	panelColor := color.NRGBA{R: 19, G: 26, B: 34, A: 240}
-	panelTransColor := color.NRGBA{R: 19, G: 26, B: 34, A: 200}
-	titleBarColor := color.NRGBA{R: 42, G: 57, B: 68, A: 255}
+	panelTransColor := color.NRGBA{R: 0, G: 0, B: 0, A: 0}
+	titleBarColor := color.NRGBA{R: 42, G: 57, B: 68, A: 0}
 
 	i := image.NewNineSliceColor(panelColor)
 	it := image.NewNineSliceColor(panelTransColor)
