@@ -1,10 +1,7 @@
 package states
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 )
 
@@ -62,10 +59,21 @@ type ActionHandler[T any] interface {
 // StateFactory はステートを作成するファクトリー関数の型
 type StateFactory[T any] func() State[T]
 
+// DrawHook はstate描画時のフック関数
+// stateIndex: 現在描画したstateのインデックス
+// stateCount: 現在のstateの総数
+type DrawHook[T any] func(
+	stateIndex int,
+	stateCount int,
+	world T,
+	screen *ebiten.Image,
+) error
+
 // StateMachine はジェネリックな状態スタックを管理する
 type StateMachine[T any] struct {
 	states         []State[T]
 	lastTransition Transition[T]
+	AfterDrawHook  DrawHook[T]
 }
 
 // Init は新しいステートマシンを初期化する
@@ -121,31 +129,22 @@ func (sm *StateMachine[T]) Update(world T) error {
 }
 
 // Draw は画面を描画する
-// stateが複数スタックしている場合、最初のstateの後に1回だけオーバーレイを描画する
 func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image) error {
+	stateCount := len(sm.states)
 	for i, state := range sm.states {
 		if err := state.Draw(world, screen); err != nil {
 			return err
 		}
 
-		// stateが複数ある場合、最初のstateの後にのみオーバーレイを描画
-		if len(sm.states) > 1 && i == 0 {
-			drawOverlay(screen)
+		// 各state描画後にフックを呼び出し
+		if sm.AfterDrawHook != nil {
+			if err := sm.AfterDrawHook(i, stateCount, world, screen); err != nil {
+				return err
+			}
 		}
 	}
+
 	return nil
-}
-
-// drawOverlay は半透明のオーバーレイを描画する
-func drawOverlay(screen *ebiten.Image) {
-	bounds := screen.Bounds()
-	width := float32(bounds.Dx())
-	height := float32(bounds.Dy())
-
-	// 半透明の黒
-	overlayColor := color.NRGBA{R: 0, G: 0, B: 0, A: 140}
-
-	vector.FillRect(screen, 0, 0, width, height, overlayColor, false)
 }
 
 // createStatesFromFunc はファクトリー関数からステートを作成する

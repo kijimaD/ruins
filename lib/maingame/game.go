@@ -25,6 +25,17 @@ type MainGame struct {
 	StateMachine es.StateMachine[w.World]
 }
 
+// NewMainGame はMainGameを初期化する
+func NewMainGame(world w.World, stateMachine es.StateMachine[w.World]) *MainGame {
+	// オーバーレイ描画フックを設定
+	stateMachine.AfterDrawHook = afterDrawHook
+
+	return &MainGame{
+		World:        world,
+		StateMachine: stateMachine,
+	}
+}
+
 // Layout はinterface methodのため、シグネチャは変更できない
 func (game *MainGame) Layout(_, _ int) (int, int) {
 	// TODO: 解像度変更は未実装
