@@ -1,7 +1,10 @@
 package states
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/kijimaD/ruins/lib/inputmapper"
 )
 
@@ -118,14 +121,31 @@ func (sm *StateMachine[T]) Update(world T) error {
 }
 
 // Draw は画面を描画する
-// エラーが発生した場合は最初のエラーを返す
+// stateが複数スタックしている場合、最初のstateの後に1回だけオーバーレイを描画する
 func (sm *StateMachine[T]) Draw(world T, screen *ebiten.Image) error {
-	for _, state := range sm.states {
+	for i, state := range sm.states {
 		if err := state.Draw(world, screen); err != nil {
 			return err
 		}
+
+		// stateが複数ある場合、最初のstateの後にのみオーバーレイを描画
+		if len(sm.states) > 1 && i == 0 {
+			drawOverlay(screen)
+		}
 	}
 	return nil
+}
+
+// drawOverlay は半透明のオーバーレイを描画する
+func drawOverlay(screen *ebiten.Image) {
+	bounds := screen.Bounds()
+	width := float32(bounds.Dx())
+	height := float32(bounds.Dy())
+
+	// 半透明の黒
+	overlayColor := color.NRGBA{R: 0, G: 0, B: 0, A: 140}
+
+	vector.FillRect(screen, 0, 0, width, height, overlayColor, false)
 }
 
 // createStatesFromFunc はファクトリー関数からステートを作成する
