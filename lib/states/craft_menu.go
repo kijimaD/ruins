@@ -284,14 +284,17 @@ func (st *CraftMenuState) createTabs(world w.World) []tabmenu.TabItem {
 }
 
 // createMenuItems はレシピ名リストをMenuItemに変換する
-func (st *CraftMenuState) createMenuItems(_ w.World, recipeNames []string) []tabmenu.Item {
+func (st *CraftMenuState) createMenuItems(world w.World, recipeNames []string) []tabmenu.Item {
 	items := make([]tabmenu.Item, len(recipeNames))
 
 	for i, recipeName := range recipeNames {
+		canCraft, _ := worldhelper.CanCraft(world, recipeName)
+
 		items[i] = tabmenu.Item{
 			ID:       fmt.Sprintf("recipe_%s", recipeName),
 			Label:    recipeName,
 			UserData: recipeName,
+			Disabled: !canCraft, // 合成不可能な場合はDisabled
 		}
 	}
 
