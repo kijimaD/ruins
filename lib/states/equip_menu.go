@@ -2,6 +2,7 @@ package states
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ebitenui/ebitenui"
 	"github.com/ebitenui/ebitenui/widget"
@@ -207,7 +208,9 @@ func (st *EquipMenuState) initUI(world w.World) *ebitenui.UI {
 	)
 
 	// 初期状態の表示を更新
-	st.updateInitialItemDisplay(world)
+	if err := st.updateInitialItemDisplay(world); err != nil {
+		log.Fatalf("Failed to update initial item display: %v", err)
+	}
 
 	// タブ表示のコンテナを作成
 	st.tabDisplayContainer = styled.NewVerticalContainer()
@@ -393,17 +396,17 @@ func (st *EquipMenuState) createTabDisplayUI(_ w.World) {
 }
 
 // updateInitialItemDisplay は初期状態のアイテム表示を更新する
-func (st *EquipMenuState) updateInitialItemDisplay(world w.World) {
+func (st *EquipMenuState) updateInitialItemDisplay(world w.World) error {
 	currentTab := st.menuView.GetCurrentTab()
 	currentItemIndex := st.menuView.GetCurrentItemIndex()
 
 	if len(currentTab.Items) > 0 && currentItemIndex >= 0 && currentItemIndex < len(currentTab.Items) {
 		currentItem := currentTab.Items[currentItemIndex]
 		if err := st.handleItemChange(world, currentItem); err != nil {
-			// TODO: エラーハンドリング改善
-			panic(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // updateAbilityDisplay はメンバー能力表示を更新する

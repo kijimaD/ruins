@@ -3,8 +3,7 @@
 ########
 
 FROM golang:1.24.6-bullseye AS base
-RUN apt update
-RUN apt install -y \
+RUN apt update && apt install -y \
     gcc \
     libc6-dev \
     libgl1-mesa-dev \
@@ -49,10 +48,3 @@ FROM gcr.io/distroless/base-debian12:latest AS release
 COPY --from=builder /build/bin/ruins /bin/
 WORKDIR /work
 ENTRYPOINT ["ruins"]
-
-########
-# node #
-########
-
-FROM node:25.1.0 AS releaser
-RUN yarn install

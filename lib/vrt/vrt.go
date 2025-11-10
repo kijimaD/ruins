@@ -81,9 +81,9 @@ func (g *TestGame) Draw(screen *ebiten.Image) {
 
 // RunTestGame はテストゲームを実行してスクリーンショットを保存する
 // 複数のstateを指定すると、最初のstateを配置した後に残りのstateを順にpushする
-func RunTestGame(outputPath string, states ...es.State[w.World]) {
+func RunTestGame(outputPath string, states ...es.State[w.World]) error {
 	if len(states) == 0 {
-		panic("RunTestGame: at least one state is required")
+		return fmt.Errorf("RunTestGame: at least one state is required")
 	}
 
 	// VRT用にアニメーションを無効化（シングルトンインスタンスを直接変更）
@@ -97,7 +97,7 @@ func RunTestGame(outputPath string, states ...es.State[w.World]) {
 
 	world, err := maingame.InitWorld(960, 720)
 	if err != nil {
-		panic(fmt.Sprintf("InitWorld failed: %v", err))
+		return fmt.Errorf("InitWorld failed: %w", err)
 	}
 
 	// デバッグデータを初期化
@@ -120,7 +120,7 @@ func RunTestGame(outputPath string, states ...es.State[w.World]) {
 
 	stateMachine, err := es.Init(state, world)
 	if err != nil {
-		panic(fmt.Sprintf("StateMachine Init failed: %v", err))
+		return fmt.Errorf("StateMachine Init failed: %w", err)
 	}
 
 	mainGame := maingame.NewMainGame(world, stateMachine)
@@ -132,6 +132,8 @@ func RunTestGame(outputPath string, states ...es.State[w.World]) {
 	}
 
 	if err := ebiten.RunGame(g); err != nil && err != errRegularTermination {
-		log.Fatal(err)
+		return fmt.Errorf("ebiten.RunGame failed: %w", err)
 	}
+
+	return nil
 }

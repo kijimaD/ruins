@@ -13,8 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: build
-        run: docker build --target release .
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: release
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   crosscomple:
     permissions:
@@ -126,14 +136,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Build image for release
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v6
@@ -143,11 +145,5 @@ jobs:
           target: release
           push: true
           tags: ghcr.io/kijimad/ruins:${{ steps.git-tag.outputs.git-tag }},ghcr.io/kijimad/ruins:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
-        if: github.ref == 'refs/heads/main'
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

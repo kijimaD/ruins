@@ -24,7 +24,7 @@ func TestCalculateAutoTileIndex(t *testing.T) {
 			TileHeight: height,
 		},
 		Tiles:     make([]raw.TileRaw, int(width)*int(height)),
-		RawMaster: createTestRawMaster(),
+		RawMaster: createTestRawMaster(t),
 	}
 
 	// 全体を非土タイル（Floor）で初期化
@@ -164,7 +164,9 @@ func TestIsValidIndex(t *testing.T) {
 }
 
 // createTestRawMaster はテスト用のrawマスターを作成する
-func createTestRawMaster() *raw.Master {
+func createTestRawMaster(t *testing.T) *raw.Master {
+	t.Helper()
+
 	rawData := `
 [[Tiles]]
 Name = "Floor"
@@ -183,8 +185,7 @@ Walkable = false
 `
 
 	master, err := raw.Load(rawData)
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
+
 	return &master
 }
