@@ -2978,6 +2978,7 @@ BlockView   = false
 [Props.SpriteRender]
 SpriteSheetName = "field"
 SpriteKey       = "warp_next"
+AnimKeys        = [ "warp_next_0", "warp_next_1" ]
 Depth           = 1
 
 [Props.WarpNextInteraction]
@@ -3001,6 +3002,7 @@ BlockView   = false
 [Props.SpriteRender]
 SpriteSheetName = "field"
 SpriteKey       = "warp_escape"
+AnimKeys        = [ "warp_escape_0", "warp_escape_1" ]
 Depth           = 1
 
 [Props.WarpEscapeInteraction]
