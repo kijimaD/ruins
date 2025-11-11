@@ -254,12 +254,21 @@ func (st *ShopMenuState) createBuyItems(world w.World) []tabmenu.Item {
 	shopInventory := worldhelper.GetShopInventory()
 	items := make([]tabmenu.Item, 0, len(shopInventory))
 
+	// プレイヤーの所持金を取得
+	var currency int
+	worldhelper.QueryPlayer(world, func(playerEntity ecs.Entity) {
+		currency = worldhelper.GetCurrency(world, playerEntity)
+	})
+
 	for _, itemName := range shopInventory {
 		price := st.getItemPrice(world, itemName, true)
+		canAfford := currency >= price
+
 		items = append(items, tabmenu.Item{
 			Label:            itemName,
 			AdditionalLabels: []string{worldhelper.FormatCurrency(price)},
 			UserData:         map[string]interface{}{"itemName": itemName, "price": price, "isBuy": true},
+			Disabled:         !canAfford, // 所持金が足りない場合はDisabled
 		})
 	}
 
@@ -478,7 +487,18 @@ func (st *ShopMenuState) showActionWindow(world w.World, item tabmenu.Item) {
 	isBuy, _ := data["isBuy"].(bool)
 
 	if isBuy {
-		st.actionItems = append(st.actionItems, "購入する")
+		// 購入時は所持金をチェック
+		price, _ := data["price"].(int)
+		var canAfford bool
+		worldhelper.QueryPlayer(world, func(playerEntity ecs.Entity) {
+			currency := worldhelper.GetCurrency(world, playerEntity)
+			canAfford = currency >= price
+		})
+
+		// 所持金が足りる場合のみ「購入する」を表示
+		if canAfford {
+			st.actionItems = append(st.actionItems, "購入する")
+		}
 	} else {
 		st.actionItems = append(st.actionItems, "売却する")
 	}

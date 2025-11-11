@@ -272,13 +272,18 @@ func (b *uiBuilder) UpdateTabDisplayContainer(container *widget.Container, tabMe
 	for i, item := range visibleItems {
 		actualIndex := indices[i]
 		isSelected := actualIndex == currentItemIndex && currentItemIndex >= 0
-		if isSelected {
+
+		// Disabledアイテムの場合は灰色で表示
+		if item.Disabled {
+			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, isSelected, b.world.Resources.UIResources, item.AdditionalLabels...)
+			container.AddChild(itemWidget)
+		} else if isSelected {
 			// 選択中のアイテムは背景色付きで明るい文字色
 			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, true, b.world.Resources.UIResources, item.AdditionalLabels...)
 			container.AddChild(itemWidget)
 		} else {
-			// 非選択のアイテムは背景なしでグレー文字色
-			itemWidget := styled.NewListItemText(item.Label, consts.ForegroundColor, false, b.world.Resources.UIResources, item.AdditionalLabels...)
+			// 非選択のアイテムは背景なしで明るい文字色
+			itemWidget := styled.NewListItemText(item.Label, consts.TextColor, false, b.world.Resources.UIResources, item.AdditionalLabels...)
 			container.AddChild(itemWidget)
 		}
 	}
