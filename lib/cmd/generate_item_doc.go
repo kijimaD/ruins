@@ -120,8 +120,12 @@ func generateTableDoc(file *os.File, table raw.ItemTable) error {
 		rows = append(rows, row)
 	}
 
-	tw.Bulk(rows)
-	tw.Render()
+	if err := tw.Bulk(rows); err != nil {
+		return fmt.Errorf("error adding bulk data: %w", err)
+	}
+	if err := tw.Render(); err != nil {
+		return fmt.Errorf("error rendering table: %w", err)
+	}
 
 	if _, err := file.WriteString("\n"); err != nil {
 		return fmt.Errorf("error writing newline: %w", err)
