@@ -1,14 +1,18 @@
 package maingame
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
-// ブラー画像のキャッシュ
+// ブラー画像と黒背景のキャッシュ
 var (
-	cachedBlurImage  *ebiten.Image
-	cachedStateCount int
+	cachedBlurImage       *ebiten.Image
+	cachedBlackBackground *ebiten.Image
+	cachedStateCount      int
 )
 
 // afterDrawHook は各stateのDraw完了後に呼ばれるフック関数
@@ -52,8 +56,20 @@ func afterDrawHook(stateIndex, stateCount int, _ w.World, screen *ebiten.Image) 
 			}
 		}
 
-		// キャッシュした画像を描画
+		// 黒い背景画像をキャッシュから取得または生成
+		if cachedBlackBackground == nil {
+			cachedBlackBackground = ebiten.NewImage(bounds.Dx(), bounds.Dy())
+			width := float32(bounds.Dx())
+			height := float32(bounds.Dy())
+			vector.FillRect(cachedBlackBackground, 0, 0, width, height, color.RGBA{0, 0, 0, 255}, false)
+		}
+
 		screen.Clear()
+
+		// 黒背景を描画
+		screen.DrawImage(cachedBlackBackground, nil)
+
+		// その上にブラー画像を描画
 		screen.DrawImage(cachedBlurImage, nil)
 	}
 
