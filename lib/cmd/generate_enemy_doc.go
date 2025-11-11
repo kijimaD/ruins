@@ -10,6 +10,7 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	"github.com/kijimaD/ruins/lib/raw"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/urfave/cli/v3"
 )
 
@@ -73,21 +74,20 @@ func generateEnemyTableDoc(file *os.File, table raw.EnemyTable) error {
 	}
 
 	// tablewriterを初期化
-	tw := tablewriter.NewWriter(file)
+	tw := tablewriter.NewTable(file,
+		tablewriter.WithRenderer(renderer.NewMarkdown()),
+	)
 
 	// ヘッダーを設定（深度 + 最大敵数分のダミーカラム）
-	header := []string{"深度"}
+	header := make([]string, maxEnemies+1)
+	header[0] = "深度"
 	for i := 0; i < maxEnemies; i++ {
-		header = append(header, "-")
+		header[i+1] = "-"
 	}
-	tw.SetHeader(header)
+	tw.Header(header)
 
-	// Markdown形式の設定
-	tw.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	tw.SetCenterSeparator("|")
-	tw.SetAutoFormatHeaders(false)
-
-	// 各深度の行を追加
+	// 各深度の行データを収集
+	var rows [][]any
 	for depth := 1; depth <= consts.GameClearDepth; depth++ {
 		// 各敵の出現確率を計算
 		probs := calculateEnemyProbabilities(table, depth)
@@ -100,24 +100,32 @@ func generateEnemyTableDoc(file *os.File, table raw.EnemyTable) error {
 		sort.Strings(enemies)
 
 		// 行データを作成
-		row := []string{fmt.Sprintf("%d", depth)}
+		row := make([]any, maxEnemies+1)
+		row[0] = fmt.Sprintf("%d", depth)
 
 		// 敵と確率を追加
+		idx := 1
 		for _, enemy := range enemies {
 			prob := probs[enemy]
-			row = append(row, fmt.Sprintf("%s %.1f%%", enemy, prob*100))
+			row[idx] = fmt.Sprintf("%s %.1f%%", enemy, prob*100)
+			idx++
 		}
 
 		// 不足分は空欄で埋める
 		for i := len(enemies); i < maxEnemies; i++ {
-			row = append(row, "-")
+			row[idx] = "-"
+			idx++
 		}
 
-		tw.Append(row)
+		rows = append(rows, row)
 	}
 
-	// テーブルをレンダリング
-	tw.Render()
+	if err := tw.Bulk(rows); err != nil {
+		return fmt.Errorf("error adding bulk data: %w", err)
+	}
+	if err := tw.Render(); err != nil {
+		return fmt.Errorf("error rendering table: %w", err)
+	}
 
 	if _, err := file.WriteString("\n"); err != nil {
 		return fmt.Errorf("error writing newline: %w", err)
