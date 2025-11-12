@@ -54,7 +54,7 @@ func BuyItem(world w.World, playerEntity ecs.Entity, itemName string) error {
 
 	// 所持金をチェック
 	if !HasCurrency(world, playerEntity, price) {
-		return fmt.Errorf("遺光が足りません（必要: %d、所持: %d）", price, GetCurrency(world, playerEntity))
+		return fmt.Errorf("地髄が足りません（必要: %d、所持: %d）", price, GetCurrency(world, playerEntity))
 	}
 
 	// 通貨を消費

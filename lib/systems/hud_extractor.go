@@ -298,7 +298,7 @@ func extractCurrencyData(world w.World) hud.CurrencyData {
 	// デフォルト設定を使用
 	config := hud.DefaultMessageAreaConfig
 
-	// プレイヤーの遺光を取得
+	// プレイヤーの地髄を取得
 	currency := 0
 	worldhelper.QueryPlayer(world, func(entity ecs.Entity) {
 		currency = worldhelper.GetCurrency(world, entity)

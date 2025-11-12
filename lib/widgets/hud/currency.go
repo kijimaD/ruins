@@ -9,7 +9,7 @@ import (
 	"github.com/kijimaD/ruins/lib/worldhelper"
 )
 
-// CurrencyDisplay は遺光表示ウィジェット
+// CurrencyDisplay は地髄表示ウィジェット
 type CurrencyDisplay struct {
 	face    text.Face
 	enabled bool
@@ -33,7 +33,7 @@ func (c *CurrencyDisplay) Update(_ w.World) {
 	// 必要に応じて更新処理を追加
 }
 
-// Draw は遺光を描画する
+// Draw は地髄を描画する
 func (c *CurrencyDisplay) Draw(screen *ebiten.Image, data CurrencyData) {
 	if !c.enabled {
 		return
