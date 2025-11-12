@@ -117,7 +117,7 @@ func NewDebugMenuState() es.State[w.World] {
 		}).
 		WithChoice("市街地開始", func(_ w.World) error {
 			messageState.SetTransition(es.Transition[w.World]{Type: es.TransReplace, NewStateFuncs: []es.StateFactory[w.World]{
-				NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown)),
+				NewTownState(),
 			}})
 			return nil
 		}).
@@ -356,6 +356,17 @@ func NewDungeonState(depth int, opts ...DungeonStateOption) es.StateFactory[w.Wo
 	}
 }
 
+// NewTownState は街のステートを作成するファクトリー関数
+// 街は常に深度0、BuilderTypeはTown固定
+func NewTownState(opts ...DungeonStateOption) es.StateFactory[w.World] {
+	allOpts := []DungeonStateOption{
+		WithBuilderType(mapplanner.PlannerTypeTown),
+	}
+	allOpts = append(allOpts, opts...)
+
+	return NewDungeonState(0, allOpts...)
+}
+
 // NewMainMenuState は新しいMainMenuStateインスタンスを作成するファクトリー関数
 func NewMainMenuState() es.State[w.World] {
 	return &MainMenuState{}
@@ -397,7 +408,7 @@ func NewDungeonCompleteEndingState() es.State[w.World] {
 ━━━━━━━━━━`).
 		WithChoice("閉じる", func(_ w.World) error {
 			// 町に遷移
-			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}})
+			messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewTownState()}})
 			return nil
 		})
 
@@ -559,7 +570,7 @@ func NewLoadMenuState() es.State[w.World] {
 					return err
 				}
 				// 遷移（街マップを生成してプレイヤーを配置）
-				stateFactory := NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))
+				stateFactory := NewTownState()
 				messageState.SetTransition(es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{stateFactory}})
 				return nil
 			})
