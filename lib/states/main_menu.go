@@ -12,7 +12,6 @@ import (
 	"github.com/kijimaD/ruins/lib/consts"
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/inputmapper"
-	"github.com/kijimaD/ruins/lib/mapplanner"
 	"github.com/kijimaD/ruins/lib/widgets/tabmenu"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -114,7 +113,7 @@ func (st *MainMenuState) initMenu(world w.World) {
 				{
 					ID:       "town",
 					Label:    "開始",
-					UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewDungeonState(1, WithBuilderType(mapplanner.PlannerTypeTown))}},
+					UserData: es.Transition[w.World]{Type: es.TransSwitch, NewStateFuncs: []es.StateFactory[w.World]{NewTownState()}},
 				},
 				{
 					ID:       "load",

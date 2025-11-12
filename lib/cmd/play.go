@@ -18,7 +18,6 @@ import (
 	_ "net/http/pprof" // pprofのHTTPエンドポイントを登録するためのインポート
 
 	es "github.com/kijimaD/ruins/lib/engine/states"
-	"github.com/kijimaD/ruins/lib/mapplanner"
 	gs "github.com/kijimaD/ruins/lib/states"
 	w "github.com/kijimaD/ruins/lib/world"
 )
@@ -104,7 +103,7 @@ func runPlay(_ context.Context, _ *cli.Command) error {
 	var initialState es.State[w.World]
 	switch cfg.StartingState {
 	case "town":
-		stateFactory := gs.NewDungeonState(1, gs.WithBuilderType(mapplanner.PlannerTypeTown))
+		stateFactory := gs.NewTownState()
 		initialState = stateFactory()
 	case "main_menu":
 		initialState = &gs.MainMenuState{}

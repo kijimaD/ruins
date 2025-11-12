@@ -29,7 +29,7 @@ func runScreenshot(_ context.Context, cmd *cli.Command) error {
 
 	// 固定seed値を使用したtown dungeon state
 	const townSeedVal = 1
-	townStateFactory := gs.NewDungeonState(1, gs.WithSeed(townSeedVal), gs.WithBuilderType(mapplanner.PlannerTypeTown))
+	townStateFactory := gs.NewTownState(gs.WithSeed(townSeedVal))
 
 	switch mode {
 	case gs.CraftMenuState{}.String():
