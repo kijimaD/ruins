@@ -48,13 +48,13 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 	info.drawHungerBar(screen, data.HungerLevel)
 
 	// フロア情報を描画
-	DrawOutlinedText(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), info.face, 0, 200, color.White)
+	drawOutlinedText(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), info.face, 0, 200, color.White)
 
 	// ターン情報を描画（フロア表示の下）
-	DrawOutlinedText(screen, fmt.Sprintf("turn: %d", data.TurnNumber), info.face, 0, 220, color.White)
+	drawOutlinedText(screen, fmt.Sprintf("turn: %d", data.TurnNumber), info.face, 0, 220, color.White)
 
 	// 残りアクションポイント（移動ポイント）を描画
-	DrawOutlinedText(screen, fmt.Sprintf("AP: %d", data.PlayerMoves), info.face, 0, 240, color.White)
+	drawOutlinedText(screen, fmt.Sprintf("AP: %d", data.PlayerMoves), info.face, 0, 240, color.White)
 }
 
 // drawHealthBar はプレイヤーの体力ゲージを描画する
@@ -69,7 +69,7 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 	)
 
 	// 「HP」ラベルを左に描画
-	DrawOutlinedText(screen, "HP", info.face, baseX, y-2, color.White)
+	drawOutlinedText(screen, "HP", info.face, baseX, y-2, color.White)
 
 	// ゲージの開始位置（「HP」ラベルの後）
 	gageX := float32(baseX + 20.0) // 「HP」の文字幅分オフセット
@@ -109,7 +109,7 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 
 	// 数値をゲージの右に描画
 	hpText := fmt.Sprintf("%d/%d", currentHP, maxHP)
-	DrawOutlinedText(screen, hpText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
+	drawOutlinedText(screen, hpText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
 }
 
 // drawStaminaBar はプレイヤーのスタミナポイントゲージを描画する
@@ -124,7 +124,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	)
 
 	// 「SP」ラベルを左に描画
-	DrawOutlinedText(screen, "SP", info.face, baseX, y-2, color.White)
+	drawOutlinedText(screen, "SP", info.face, baseX, y-2, color.White)
 
 	// ゲージの開始位置（「SP」ラベルの後）
 	gageX := float32(baseX + 20.0) // 「SP」の文字幅分オフセット
@@ -162,7 +162,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 
 	// 数値をゲージの右に描画
 	spText := fmt.Sprintf("%d/%d", currentSP, maxSP)
-	DrawOutlinedText(screen, spText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
+	drawOutlinedText(screen, spText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
 }
 
 // drawElectricityBar はプレイヤーの電力ポイントゲージを描画する
@@ -177,7 +177,7 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 	)
 
 	// 「EP」ラベルを左に描画
-	DrawOutlinedText(screen, "EP", info.face, baseX, y-2, color.White)
+	drawOutlinedText(screen, "EP", info.face, baseX, y-2, color.White)
 
 	// ゲージの開始位置（「EP」ラベルの後）
 	gageX := float32(baseX + 20.0) // 「EP」の文字幅分オフセット
@@ -217,7 +217,7 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 
 	// 数値をゲージの右に描画
 	epText := fmt.Sprintf("%d/%d", currentEP, maxEP)
-	DrawOutlinedText(screen, epText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
+	drawOutlinedText(screen, epText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
 }
 
 // drawHungerBar はプレイヤーの空腹度を描画する
@@ -243,5 +243,5 @@ func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 		// 危険な色
 	}
 
-	DrawOutlinedText(screen, hungerText, info.face, float64(baseX), y-2, color.White)
+	drawOutlinedText(screen, hungerText, info.face, float64(baseX), y-2, color.White)
 }

@@ -57,5 +57,5 @@ func (c *CurrencyDisplay) Draw(screen *ebiten.Image, data CurrencyData) {
 	currencyX := float64(screenWidth-data.Config.LogAreaMargin) - textWidth
 	currencyY := float64(logAreaY - 25) // メッセージウィンドウの上に十分なスペースを取って表示
 
-	DrawOutlinedText(screen, currencyText, c.face, currencyX, currencyY, color.White)
+	drawOutlinedText(screen, currencyText, c.face, currencyX, currencyY, color.White)
 }

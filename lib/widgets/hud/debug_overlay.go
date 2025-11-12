@@ -38,7 +38,7 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	// AI状態を描画
 	for _, aiState := range data.AIStates {
 		textOffsetY := 30.0
-		DrawOutlinedText(screen, aiState.StateText, overlay.face, float64(int(aiState.ScreenX)-20), aiState.ScreenY-textOffsetY, color.White)
+		drawOutlinedText(screen, aiState.StateText, overlay.face, float64(int(aiState.ScreenX)-20), aiState.ScreenY-textOffsetY, color.White)
 	}
 
 	// 視界範囲を描画
@@ -50,7 +50,7 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	for _, hpDisplay := range data.HPDisplays {
 		hpText := fmt.Sprintf("%d/%d", hpDisplay.CurrentHP, hpDisplay.MaxHP)
 		textOffsetY := 15.0 // AI状態テキスト（30.0）より上に表示して重複を避ける
-		DrawOutlinedText(screen, hpText, overlay.face, float64(int(hpDisplay.ScreenX)-15), hpDisplay.ScreenY-textOffsetY, color.White)
+		drawOutlinedText(screen, hpText, overlay.face, float64(int(hpDisplay.ScreenX)-15), hpDisplay.ScreenY-textOffsetY, color.White)
 	}
 }
 

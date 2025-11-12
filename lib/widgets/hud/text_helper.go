@@ -7,9 +7,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-// DrawOutlinedText は枠線付きテキストを描画する
+// drawOutlinedText は枠線付きテキストを描画する
 // textColorを指定することで任意の色でテキストを描画できる
-func DrawOutlinedText(screen *ebiten.Image, textStr string, face text.Face, x, y float64, textColor color.Color) {
+func drawOutlinedText(screen *ebiten.Image, textStr string, face text.Face, x, y float64, textColor color.Color) {
 	// 黒い枠線を描画（8方向に少しずらして描画）
 	offsets := []struct{ dx, dy float64 }{
 		{-1, -1}, {0, -1}, {1, -1},
