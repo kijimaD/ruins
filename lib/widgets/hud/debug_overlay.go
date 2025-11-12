@@ -38,7 +38,7 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	// AI状態を描画
 	for _, aiState := range data.AIStates {
 		textOffsetY := 30.0
-		overlay.drawText(screen, overlay.face, aiState.StateText, int(aiState.ScreenX)-20, int(aiState.ScreenY-textOffsetY))
+		DrawOutlinedText(screen, aiState.StateText, overlay.face, float64(int(aiState.ScreenX)-20), aiState.ScreenY-textOffsetY, color.White)
 	}
 
 	// 視界範囲を描画
@@ -50,7 +50,7 @@ func (overlay *DebugOverlay) Draw(screen *ebiten.Image, data DebugOverlayData) {
 	for _, hpDisplay := range data.HPDisplays {
 		hpText := fmt.Sprintf("%d/%d", hpDisplay.CurrentHP, hpDisplay.MaxHP)
 		textOffsetY := 15.0 // AI状態テキスト（30.0）より上に表示して重複を避ける
-		overlay.drawText(screen, overlay.face, hpText, int(hpDisplay.ScreenX)-15, int(hpDisplay.ScreenY-textOffsetY))
+		DrawOutlinedText(screen, hpText, overlay.face, float64(int(hpDisplay.ScreenX)-15), hpDisplay.ScreenY-textOffsetY, color.White)
 	}
 }
 
@@ -102,12 +102,4 @@ func (overlay *DebugOverlay) drawVisionCircle(screen *ebiten.Image, centerX, cen
 	whiteImg := ebiten.NewImage(1, 1)
 	whiteImg.Fill(color.White)
 	screen.DrawTriangles(vertices, indices, whiteImg, opt)
-}
-
-// drawText はテキストを描画するヘルパー関数
-func (overlay *DebugOverlay) drawText(screen *ebiten.Image, face text.Face, textStr string, x, y int) {
-	op := &text.DrawOptions{}
-	op.GeoM.Translate(float64(x), float64(y))
-	op.ColorScale.ScaleWithColor(color.White)
-	text.Draw(screen, textStr, face, op)
 }

@@ -46,7 +46,7 @@
   - 最初にコピペして作成をはじめ、改変していった
   - ECSの使い方まわりで参考にした
 - https://github.com/x-hgg-x/goecsengine
-  - ゲームステート作成まわりで参考にした
+  - ゲームステートまわりで参考にした
 - https://bfnihtly.bracketproductions.com/
   - 設定ファイルによるファクトリ、ゲームログまわりを参考にした
 - https://krkrz.github.io/krkr2doc/kag3doc/contents/
@@ -60,7 +60,11 @@
 
 使用した素材類。
 
-- https://hpgpixer.jp/image_icons/vehicle/icon_vehicle.html
+フォント。
+
 - http://jikasei.me/font/jf-dotfont/
 - https://github.com/googlefonts/morisawa-biz-ud-gothic
+
+画像。
+
 - https://www.pixilart.com

@@ -142,13 +142,22 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	}
 	world.Resources.Fonts = &fonts
 
-	font := (*world.Resources.Fonts)["kappa"]
+	kappaFont := (*world.Resources.Fonts)["kappa"]
+	dotgothicFont := (*world.Resources.Fonts)["dotgothic"]
+
+	// サイズ調整
+	dotgothicHUD := &text.GoTextFace{
+		Source: dotgothicFont.FaceSource,
+		Size:   16,
+	}
+
 	world.Resources.Faces = &map[string]text.Face{
-		"kappa": font.Font,
+		"kappa":     kappaFont.Font,
+		"dotgothic": dotgothicHUD,
 	}
 
 	// load UI resources
-	uir, err := gr.NewUIResources(font.FaceSource)
+	uir, err := gr.NewUIResources(kappaFont.FaceSource)
 	if err != nil {
 		return w.World{}, err
 	}
