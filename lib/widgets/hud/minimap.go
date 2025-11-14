@@ -116,11 +116,12 @@ func (minimap *Minimap) drawEmpty(screen *ebiten.Image, data MinimapData) {
 	// ミニマップの枠を描画
 	minimap.drawFrame(screen, minimapX, minimapY, minimapWidth, minimapHeight)
 
-	// 中央に"No Data"テキストを表示
-	op := &text.DrawOptions{}
-	op.GeoM.Translate(float64(minimapX+50), float64(minimapY+70))
-	op.ColorScale.ScaleWithColor(color.White)
-	text.Draw(screen, "No Data", minimap.face, op)
+	// 中央に"No Data"テキストを表示（枠線付き）
+	textX := float64(minimapX + 50)
+	textY := float64(minimapY + 70)
+	noDataText := "No Data"
+
+	drawOutlinedText(screen, noDataText, minimap.face, textX, textY, color.White)
 }
 
 // drawFrame はミニマップの枠を描画する

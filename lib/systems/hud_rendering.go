@@ -18,13 +18,15 @@ type HUDRenderingSystem struct {
 
 // NewHUDRenderingSystem は新しいHUD描画システムを作成する
 func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
-	face := world.Resources.UIResources.Text.Face
+	hudFace := (*world.Resources.Faces)["dotgothic"]
+	defaultFace := world.Resources.UIResources.Text.Face
+
 	return &HUDRenderingSystem{
-		gameInfo:        hud.NewGameInfo(face),
-		minimap:         hud.NewMinimap(face),
-		debugOverlay:    hud.NewDebugOverlay(face),
+		gameInfo:        hud.NewGameInfo(hudFace),
+		minimap:         hud.NewMinimap(defaultFace),
+		debugOverlay:    hud.NewDebugOverlay(defaultFace),
 		messageArea:     hud.NewMessageArea(world),
-		currencyDisplay: hud.NewCurrencyDisplay(face),
+		currencyDisplay: hud.NewCurrencyDisplay(hudFace),
 		enabled:         true,
 	}
 }
