@@ -108,7 +108,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: lint
-        run: make tools-install lint
+        run: make toolsinstall lint
 
   image:
     runs-on: ubuntu-latest

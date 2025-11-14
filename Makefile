@@ -30,8 +30,8 @@ lint: ## Linterを実行する
 	@golangci-lint run -v ./...
 	@golangci-lint run -v --tests=false ./... # テストを除外して未使用コードを検査する
 
-.PHONY: tools-install
-tools-install: ## 開発ツールをインストールする
+.PHONY: toolsinstall
+toolsinstall: ## 開発ツールをインストールする
 	@go install golang.org/x/tools/cmd/goimports@latest
 	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && \
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v2.2.2)
