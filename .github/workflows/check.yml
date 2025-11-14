@@ -114,7 +114,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # GitHub Container Registryへのpush用
       packages: write
     steps:
       - uses: actions/checkout@v5
@@ -144,6 +143,6 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           target: release
           push: true
-          tags: ghcr.io/kijimad/ruins:${{ steps.git-tag.outputs.git-tag }},ghcr.io/kijimad/ruins:latest
+          tags: ghcr.io/${{ github.repository }}:${{ steps.git-tag.outputs.git-tag }},ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
