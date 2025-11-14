@@ -328,6 +328,8 @@ func Draw(world w.World, screen *ebiten.Image) {
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/minimap.go">minimap.go</a>
 			
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/widgets/hud/text_helper.go">text_helper.go</a>
+			
 			</span>
 			</p>
 		
@@ -391,7 +393,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 			<p>CurrencyData は通貨表示に必要なデータ
 
 			<pre>type CurrencyData struct {
-<span id="CurrencyData.Currency"></span>    Currency         <a href="http://localhost:8888/pkg/builtin/#int">int</a>               <span class="comment">// プレイヤーの所持遺光</span>
+<span id="CurrencyData.Currency"></span>    Currency         <a href="http://localhost:8888/pkg/builtin/#int">int</a>               <span class="comment">// プレイヤーの所持地髄</span>
 <span id="CurrencyData.ScreenDimensions"></span>    ScreenDimensions <a href="index.html#ScreenDimensions">ScreenDimensions</a>  <span class="comment">// 画面サイズ</span>
 <span id="CurrencyData.Config"></span>    Config           <a href="index.html#MessageAreaConfig">MessageAreaConfig</a> <span class="comment">// 位置計算にメッセージエリアの情報が必要</span>
 }
@@ -416,7 +418,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 				
 				
 			</h2>
-			<p>CurrencyDisplay は遺光表示ウィジェット
+			<p>CurrencyDisplay は地髄表示ウィジェット
 
 			<pre>type CurrencyDisplay struct {
     <span class="comment">// contains filtered or unexported fields</span>
@@ -453,7 +455,7 @@ func Draw(world w.World, screen *ebiten.Image) {
 					
 				</h3>
 				<pre>func (c *<a href="index.html#CurrencyDisplay">CurrencyDisplay</a>) Draw(screen *ebiten.<a href="index.html#Image">Image</a>, data <a href="index.html#CurrencyData">CurrencyData</a>)</pre>
-				<p>Draw は遺光を描画する
+				<p>Draw は地髄を描画する
 
 				
 				
