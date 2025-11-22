@@ -2,9 +2,9 @@ package components
 
 const (
 	// DefaultMaxHunger はデフォルトの最大満腹度
-	DefaultMaxHunger = 1000
+	DefaultMaxHunger = 500
 	// DefaultInitialHunger はデフォルトの初期満腹度
-	DefaultInitialHunger = 1000
+	DefaultInitialHunger = 400
 )
 
 // HungerLevel は空腹度の段階を表す
@@ -25,15 +25,15 @@ const (
 func (h HungerLevel) String() string {
 	switch h {
 	case HungerSatiated:
-		return "Full"
+		return "満腹"
 	case HungerNormal:
-		return "Normal"
+		return "普通"
 	case HungerHungry:
-		return "Hungry"
+		return "空腹"
 	case HungerStarving:
-		return "Starving"
+		return "飢餓"
 	default:
-		return "Unknown"
+		return "不明"
 	}
 }
 
@@ -50,7 +50,7 @@ func (h *Hunger) GetLevel() HungerLevel {
 
 	ratio := float64(h.Current) / float64(h.Max)
 	switch {
-	case ratio >= 0.9: // 90%以上
+	case ratio >= 0.95: // 95%以上
 		return HungerSatiated
 	case ratio >= 0.66: // 66%以上
 		return HungerNormal

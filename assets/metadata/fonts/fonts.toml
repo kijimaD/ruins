@@ -1,8 +1,2 @@
-[font.bizu]
-font = "file/fonts/BIZUDGothic-Regular.ttf"
-
-[font.dotgothic]
-font = "file/fonts/DotGothic16-Regular.ttf"
-
-[font.kappa]
-font = "file/fonts/JF-Dot-Kappa20B.ttf"
+[font.dougenzaka]
+font = "file/fonts/KH-Dot-Dougenzaka-16.ttf"
