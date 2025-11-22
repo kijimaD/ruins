@@ -152,7 +152,7 @@ func TestResourceIntegration(t *testing.T) {
 		// デフォルトフォントの確認
 		assert.NotNil(t, world.Resources.Faces, "デフォルトフェイスが設定されていない")
 		defaultFaces := *world.Resources.Faces
-		assert.Contains(t, defaultFaces, "kappa", "kappaフォントが設定されていない")
+		assert.Contains(t, defaultFaces, "dougenzaka", "dougenzakaフォントが設定されていない")
 
 		// UIリソースの確認
 		assert.NotNil(t, world.Resources.UIResources, "UIリソースが初期化されていない")
@@ -172,10 +172,10 @@ func TestResourceIntegration(t *testing.T) {
 		fonts := *world.Resources.Fonts
 		defaultFaces := *world.Resources.Faces
 
-		if kappaFont, exists := fonts["kappa"]; exists {
-			assert.NotNil(t, kappaFont.Font, "kappaフォントのFontフィールドがnil")
-			if kappaFace, faceExists := defaultFaces["kappa"]; faceExists {
-				assert.NotNil(t, kappaFace, "kappaフェイスがnil")
+		if dougenzakaFont, exists := fonts["dougenzaka"]; exists {
+			assert.NotNil(t, dougenzakaFont.Font, "dougenzakaフォントのFontフィールドがnil")
+			if dougenzakaFace, faceExists := defaultFaces["dougenzaka"]; faceExists {
+				assert.NotNil(t, dougenzakaFace, "dougenzakaフェイスがnil")
 			}
 		}
 

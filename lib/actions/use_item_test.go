@@ -18,24 +18,24 @@ func TestUseItemActivity_applyNutrition(t *testing.T) {
 		world := testutil.InitTestWorld(t)
 		actor := world.Manager.NewEntity()
 
-		// Hungerコンポーネントを追加（初期値は1000）
+		// Hungerコンポーネントを追加（DefaultMaxHunger = 500）
 		hunger := gc.NewHunger()
-		hunger.Current = 500 // 半分の満腹度
+		hunger.Current = 250 // 半分の満腹度
 		actor.AddComponent(world.Components.Hunger, hunger)
 
 		item := world.Manager.NewEntity()
 		activity := &UseItemActivity{}
 		act := NewActivity(activity, actor, 1)
 
-		// 200の満腹度回復
-		err := activity.applyNutrition(act, world, 200, item)
+		// 100の満腹度回復
+		err := activity.applyNutrition(act, world, 100, item)
 		require.NoError(t, err)
 
-		// 満腹度が500 + 200 = 700になっているはず
+		// 満腹度が250 + 100 = 350になっているはず
 		hungerComp := world.Components.Hunger.Get(actor)
 		require.NotNil(t, hungerComp)
 		updatedHunger := hungerComp.(*gc.Hunger)
-		assert.Equal(t, 700, updatedHunger.Current, "満腹度が正しく増加していない")
+		assert.Equal(t, 350, updatedHunger.Current, "満腹度が正しく増加していない")
 	})
 
 	t.Run("満腹度が上限を超えない", func(t *testing.T) {
@@ -45,15 +45,15 @@ func TestUseItemActivity_applyNutrition(t *testing.T) {
 		actor := world.Manager.NewEntity()
 
 		hunger := gc.NewHunger()
-		hunger.Current = 950 // ほぼ満腹
+		hunger.Current = 475 // ほぼ満腹（500の95%）
 		actor.AddComponent(world.Components.Hunger, hunger)
 
 		item := world.Manager.NewEntity()
 		activity := &UseItemActivity{}
 		act := NewActivity(activity, actor, 1)
 
-		// 200の満腹度回復（上限を超える）
-		err := activity.applyNutrition(act, world, 200, item)
+		// 100の満腹度回復（上限を超える）
+		err := activity.applyNutrition(act, world, 100, item)
 		require.NoError(t, err)
 
 		hungerComp := world.Components.Hunger.Get(actor)
@@ -70,7 +70,7 @@ func TestUseItemActivity_applyNutrition(t *testing.T) {
 		actor.AddComponent(world.Components.Player, &gc.Player{})
 
 		hunger := gc.NewHunger()
-		hunger.Current = 850 // 85%
+		hunger.Current = 425 // 85%（500の85%）
 		actor.AddComponent(world.Components.Hunger, hunger)
 
 		item := world.Manager.NewEntity()
@@ -79,14 +79,14 @@ func TestUseItemActivity_applyNutrition(t *testing.T) {
 		activity := &UseItemActivity{}
 		act := NewActivity(activity, actor, 1)
 
-		// 100の満腹度回復で90%以上になる
-		err := activity.applyNutrition(act, world, 100, item)
+		// 50の満腹度回復で95%以上になる
+		err := activity.applyNutrition(act, world, 50, item)
 		require.NoError(t, err)
 
 		hungerComp := world.Components.Hunger.Get(actor)
 		require.NotNil(t, hungerComp)
 		updatedHunger := hungerComp.(*gc.Hunger)
-		assert.Equal(t, 950, updatedHunger.Current)
+		assert.Equal(t, 475, updatedHunger.Current)
 		assert.Equal(t, gc.HungerSatiated, updatedHunger.GetLevel(), "満腹状態になっているはず")
 	})
 
@@ -113,7 +113,7 @@ func TestUseItemActivity_applyNutrition(t *testing.T) {
 		actor := world.Manager.NewEntity()
 
 		hunger := gc.NewHunger()
-		hunger.Current = 100 // 10% - 飢餓状態
+		hunger.Current = 50 // 10%（500の10%）- 飢餓状態
 		actor.AddComponent(world.Components.Hunger, hunger)
 
 		item := world.Manager.NewEntity()
@@ -122,14 +122,14 @@ func TestUseItemActivity_applyNutrition(t *testing.T) {
 
 		assert.Equal(t, gc.HungerStarving, hunger.GetLevel(), "初期状態は飢餓状態")
 
-		// 600の満腹度回復で70%になる
-		err := activity.applyNutrition(act, world, 600, item)
+		// 300の満腹度回復で70%になる
+		err := activity.applyNutrition(act, world, 300, item)
 		require.NoError(t, err)
 
 		hungerComp := world.Components.Hunger.Get(actor)
 		require.NotNil(t, hungerComp)
 		updatedHunger := hungerComp.(*gc.Hunger)
-		assert.Equal(t, 700, updatedHunger.Current)
+		assert.Equal(t, 350, updatedHunger.Current)
 		assert.Equal(t, gc.HungerNormal, updatedHunger.GetLevel(), "普通状態に回復しているはず")
 	})
 }
