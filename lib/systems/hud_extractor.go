@@ -69,6 +69,9 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 		}
 	}))
 
+	// 画面サイズを取得
+	screenWidth, screenHeight := world.Resources.GetScreenDimensions()
+
 	return hud.GameInfoData{
 		FloorNumber:  floorNumber,
 		TurnNumber:   turnNumber,
@@ -81,6 +84,10 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 		PlayerMaxEP:  playerMaxEP,
 		PlayerHunger: playerHunger,
 		HungerLevel:  hungerLevel,
+		ScreenDimensions: hud.ScreenDimensions{
+			Width:  screenWidth,
+			Height: screenHeight,
+		},
 	}
 }
 

@@ -12,15 +12,17 @@ import (
 
 // GameInfo はHUDの基本ゲーム情報エリア
 type GameInfo struct {
-	face    text.Face
-	enabled bool
+	bodyFace    text.Face
+	headingFace text.Face // 階層表示用の大きなフォント
+	enabled     bool
 }
 
 // NewGameInfo は新しいHUDGameInfoを作成する
-func NewGameInfo(face text.Face) *GameInfo {
+func NewGameInfo(bodyFace text.Face, headingFace text.Face) *GameInfo {
 	return &GameInfo{
-		face:    face,
-		enabled: true,
+		bodyFace:    bodyFace,
+		headingFace: headingFace,
+		enabled:     true,
 	}
 }
 
@@ -35,26 +37,46 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 		return
 	}
 
-	// HP情報を左上に描画
+	// HP情報
 	info.drawHealthBar(screen, data.PlayerHP, data.PlayerMaxHP)
 
-	// SP情報をHPの下に描画
+	// SP情報
 	info.drawStaminaBar(screen, data.PlayerSP, data.PlayerMaxSP)
 
-	// EP情報をSPの下に描画
+	// EP情報
 	info.drawElectricityBar(screen, data.PlayerEP, data.PlayerMaxEP)
 
-	// 空腹度情報をEPの下に描画
+	// 空腹度
 	info.drawHungerBar(screen, data.HungerLevel)
 
-	// フロア情報を描画
-	drawOutlinedText(screen, fmt.Sprintf("floor: B%d", data.FloorNumber), info.face, 0, 200, color.White)
+	// ターン情報
+	drawOutlinedText(screen, fmt.Sprintf("turn: %d", data.TurnNumber), info.bodyFace, 0, 150, color.White)
 
-	// ターン情報を描画（フロア表示の下）
-	drawOutlinedText(screen, fmt.Sprintf("turn: %d", data.TurnNumber), info.face, 0, 220, color.White)
+	// 残りアクションポイント
+	drawOutlinedText(screen, fmt.Sprintf("AP: %d", data.PlayerMoves), info.bodyFace, 0, 170, color.White)
 
-	// 残りアクションポイント（移動ポイント）を描画
-	drawOutlinedText(screen, fmt.Sprintf("AP: %d", data.PlayerMoves), info.face, 0, 240, color.White)
+	// フロア情報（最後に描画して最前面に表示）
+	info.drawFloorNumber(screen, data)
+}
+
+// drawFloorNumber は階層番号を大きく描画する
+// 右上（ミニマップの上）に配置
+func (info *GameInfo) drawFloorNumber(screen *ebiten.Image, data GameInfoData) {
+	const (
+		marginRight = 10.0 // 右マージン
+		marginTop   = 5.0  // 上マージン
+	)
+
+	floorText := fmt.Sprintf("%3dF", data.FloorNumber)
+
+	// テキストの幅を測定
+	textWidth, _ := text.Measure(floorText, info.headingFace, 0)
+
+	// 右上に配置
+	x := float64(data.ScreenDimensions.Width) - textWidth - marginRight
+	y := marginTop
+
+	drawOutlinedText(screen, floorText, info.headingFace, x, y, color.White)
 }
 
 // drawHealthBar はプレイヤーの体力ゲージを描画する
@@ -62,17 +84,14 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 	// HPゲージの設定
 	const (
 		baseX    = 10.0  // 左マージン
-		y        = 10.0  // 上マージン
-		width    = 120.0 // ゲージの幅（短縮）
-		height   = 12.0  // ゲージの高さ（細く）
+		y        = 50.0  // 上マージン
+		width    = 120.0 // ゲージの幅
+		height   = 20.0  // ゲージの高さ
 		labelGap = 4.0   // ラベルとゲージの間隔
 	)
 
-	// 「HP」ラベルを左に描画
-	drawOutlinedText(screen, "HP", info.face, baseX, y-2, color.White)
-
-	// ゲージの開始位置（「HP」ラベルの後）
-	gageX := float32(baseX + 20.0) // 「HP」の文字幅分オフセット
+	// ゲージの開始位置
+	gageX := float32(baseX)
 
 	// 背景（黒い枠）を描画
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
@@ -107,9 +126,12 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
-	// 数値をゲージの右に描画
+	// 数値をゲージの中央に描画
 	hpText := fmt.Sprintf("%d/%d", currentHP, maxHP)
-	drawOutlinedText(screen, hpText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
+	textWidth, _ := text.Measure(hpText, info.bodyFace, 0)
+	textX := float64(gageX) + float64(width)/2 - textWidth/2
+	textY := y + float64(height)/2 - 6.0 // フォントサイズ16の場合の調整値
+	drawOutlinedText(screen, hpText, info.bodyFace, textX, textY, color.White)
 }
 
 // drawStaminaBar はプレイヤーのスタミナポイントゲージを描画する
@@ -117,17 +139,14 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	// SPゲージの設定
 	const (
 		baseX    = 10.0  // 左マージン
-		y        = 28.0  // 上マージン（HPバーの下）
+		y        = 76.0  // 上マージン
 		width    = 120.0 // ゲージの幅
-		height   = 12.0  // ゲージの高さ
+		height   = 20.0  // ゲージの高さ
 		labelGap = 4.0   // ラベルとゲージの間隔
 	)
 
-	// 「SP」ラベルを左に描画
-	drawOutlinedText(screen, "SP", info.face, baseX, y-2, color.White)
-
-	// ゲージの開始位置（「SP」ラベルの後）
-	gageX := float32(baseX + 20.0) // 「SP」の文字幅分オフセット
+	// ゲージの開始位置
+	gageX := float32(baseX)
 
 	// 背景（黒い枠）を描画
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
@@ -160,9 +179,12 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
-	// 数値をゲージの右に描画
+	// 数値をゲージの中央に描画（垂直方向にも中央配置）
 	spText := fmt.Sprintf("%d/%d", currentSP, maxSP)
-	drawOutlinedText(screen, spText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
+	textWidth, _ := text.Measure(spText, info.bodyFace, 0)
+	textX := float64(gageX) + float64(width)/2 - textWidth/2
+	textY := y + float64(height)/2 - 6.0 // フォントサイズ16の場合の調整値
+	drawOutlinedText(screen, spText, info.bodyFace, textX, textY, color.White)
 }
 
 // drawElectricityBar はプレイヤーの電力ポイントゲージを描画する
@@ -170,17 +192,14 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 	// EPゲージの設定
 	const (
 		baseX    = 10.0  // 左マージン
-		y        = 46.0  // 上マージン（SPバーの下）
+		y        = 102.0 // 上マージン
 		width    = 120.0 // ゲージの幅
-		height   = 12.0  // ゲージの高さ
+		height   = 20.0  // ゲージの高さ
 		labelGap = 4.0   // ラベルとゲージの間隔
 	)
 
-	// 「EP」ラベルを左に描画
-	drawOutlinedText(screen, "EP", info.face, baseX, y-2, color.White)
-
-	// ゲージの開始位置（「EP」ラベルの後）
-	gageX := float32(baseX + 20.0) // 「EP」の文字幅分オフセット
+	// ゲージの開始位置
+	gageX := float32(baseX)
 
 	// 背景（黒い枠）を描画
 	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
@@ -215,17 +234,20 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
-	// 数値をゲージの右に描画
+	// 数値をゲージの中央に描画（垂直方向にも中央配置）
 	epText := fmt.Sprintf("%d/%d", currentEP, maxEP)
-	drawOutlinedText(screen, epText, info.face, float64(float32(gageX)+float32(width)+float32(labelGap)), y-2, color.White)
+	textWidth, _ := text.Measure(epText, info.bodyFace, 0)
+	textX := float64(gageX) + float64(width)/2 - textWidth/2
+	textY := y + float64(height)/2 - 6.0 // フォントサイズ16の場合の調整値
+	drawOutlinedText(screen, epText, info.bodyFace, textX, textY, color.White)
 }
 
 // drawHungerBar はプレイヤーの空腹度を描画する
 func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 	// 空腹度表示の設定
 	const (
-		baseX = 10.0 // 左マージン
-		y     = 64.0 // 上マージン（EPバーの下）
+		baseX = 10.0  // 左マージン
+		y     = 128.0 // 上マージン（EPバーの下、高さ変更分を調整）
 	)
 
 	// 空腹度レベルのテキストを描画
@@ -243,5 +265,5 @@ func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
 		// 危険な色
 	}
 
-	drawOutlinedText(screen, hungerText, info.face, float64(baseX), y-2, color.White)
+	drawOutlinedText(screen, hungerText, info.bodyFace, float64(baseX), y-2, color.White)
 }

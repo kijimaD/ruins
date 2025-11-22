@@ -18,11 +18,12 @@ type HUDRenderingSystem struct {
 
 // NewHUDRenderingSystem は新しいHUD描画システムを作成する
 func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
-	hudFace := (*world.Resources.Faces)["dotgothic"]
+	hudFace := (*world.Resources.Faces)["dougenzaka"]
 	defaultFace := world.Resources.UIResources.Text.Face
+	bigTitleFace := world.Resources.UIResources.Text.BigTitleFace
 
 	return &HUDRenderingSystem{
-		gameInfo:        hud.NewGameInfo(hudFace),
+		gameInfo:        hud.NewGameInfo(hudFace, bigTitleFace),
 		minimap:         hud.NewMinimap(defaultFace),
 		debugOverlay:    hud.NewDebugOverlay(defaultFace),
 		messageArea:     hud.NewMessageArea(world),
@@ -65,10 +66,7 @@ func (sys *HUDRenderingSystem) Run(world w.World, screen *ebiten.Image) {
 	// worldから全HUDデータを一括抽出
 	hudData := ExtractHUDData(world)
 
-	// 各ウィジェットにデータを渡して描画
-	if sys.gameInfo != nil {
-		sys.gameInfo.Draw(screen, hudData.GameInfo)
-	}
+	// 各ウィジェットにデータを渡して描画する。描画順がある
 	if sys.minimap != nil {
 		sys.minimap.Draw(screen, hudData.MinimapData)
 	}
@@ -80,5 +78,8 @@ func (sys *HUDRenderingSystem) Run(world w.World, screen *ebiten.Image) {
 	}
 	if sys.currencyDisplay != nil {
 		sys.currencyDisplay.Draw(screen, hudData.CurrencyData)
+	}
+	if sys.gameInfo != nil {
+		sys.gameInfo.Draw(screen, hudData.GameInfo)
 	}
 }
