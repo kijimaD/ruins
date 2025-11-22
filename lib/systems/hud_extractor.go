@@ -57,7 +57,7 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 
 	// プレイヤーの空腹度情報を抽出
 	var playerHunger int
-	hungerLevel := "Normal" // デフォルト値
+	hungerLevel := gc.HungerNormal // デフォルト値
 	world.Manager.Join(
 		world.Components.Player,
 		world.Components.Hunger,
@@ -65,25 +65,30 @@ func extractGameInfo(world w.World) hud.GameInfoData {
 		if hungerComponent := world.Components.Hunger.Get(entity); hungerComponent != nil {
 			hunger := hungerComponent.(*gc.Hunger)
 			playerHunger = hunger.Current
-			hungerLevel = hunger.GetLevel().String()
+			hungerLevel = hunger.GetLevel()
 		}
 	}))
 
 	// 画面サイズを取得
 	screenWidth, screenHeight := world.Resources.GetScreenDimensions()
 
+	// メッセージエリアの高さを計算（message_area.goのDefaultMessageAreaConfigと同じ）
+	messageAreaConfig := hud.DefaultMessageAreaConfig
+	messageAreaHeight := messageAreaConfig.LogAreaMargin*2 + messageAreaConfig.MaxLogLines*messageAreaConfig.LineHeight + messageAreaConfig.YPadding*2
+
 	return hud.GameInfoData{
-		FloorNumber:  floorNumber,
-		TurnNumber:   turnNumber,
-		PlayerMoves:  playerMoves,
-		PlayerHP:     playerHP,
-		PlayerMaxHP:  playerMaxHP,
-		PlayerSP:     playerSP,
-		PlayerMaxSP:  playerMaxSP,
-		PlayerEP:     playerEP,
-		PlayerMaxEP:  playerMaxEP,
-		PlayerHunger: playerHunger,
-		HungerLevel:  hungerLevel,
+		FloorNumber:       floorNumber,
+		TurnNumber:        turnNumber,
+		PlayerMoves:       playerMoves,
+		PlayerHP:          playerHP,
+		PlayerMaxHP:       playerMaxHP,
+		PlayerSP:          playerSP,
+		PlayerMaxSP:       playerMaxSP,
+		PlayerEP:          playerEP,
+		PlayerMaxEP:       playerMaxEP,
+		PlayerHunger:      playerHunger,
+		HungerLevel:       hungerLevel,
+		MessageAreaHeight: messageAreaHeight,
 		ScreenDimensions: hud.ScreenDimensions{
 			Width:  screenWidth,
 			Height: screenHeight,

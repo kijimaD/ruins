@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	gc "github.com/kijimaD/ruins/lib/components"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -46,14 +47,14 @@ func (info *GameInfo) Draw(screen *ebiten.Image, data GameInfoData) {
 	// EP情報
 	info.drawElectricityBar(screen, data.PlayerEP, data.PlayerMaxEP)
 
-	// 空腹度
-	info.drawHungerBar(screen, data.HungerLevel)
-
 	// ターン情報
 	drawOutlinedText(screen, fmt.Sprintf("turn: %d", data.TurnNumber), info.bodyFace, 0, 150, color.White)
 
 	// 残りアクションポイント
 	drawOutlinedText(screen, fmt.Sprintf("AP: %d", data.PlayerMoves), info.bodyFace, 0, 170, color.White)
+
+	// ステータス表示（左下）
+	info.drawStatusEffects(screen, data)
 
 	// フロア情報（最後に描画して最前面に表示）
 	info.drawFloorNumber(screen, data)
@@ -93,11 +94,8 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 	// ゲージの開始位置
 	gageX := float32(baseX)
 
-	// 背景（黒い枠）を描画
-	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
-
 	// 背景（暗い赤い領域）を描画
-	vector.FillRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 0, 0, 255}, false)
+	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 0, 0, 255}, false)
 
 	// HP比率を計算
 	if maxHP > 0 {
@@ -123,7 +121,7 @@ func (info *GameInfo) drawHealthBar(screen *ebiten.Image, currentHP, maxHP int) 
 
 		// 現在のHPバーを描画
 		currentWidth := float32(width) * hpRatio
-		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
 	// 数値をゲージの中央に描画
@@ -148,11 +146,8 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 	// ゲージの開始位置
 	gageX := float32(baseX)
 
-	// 背景（黒い枠）を描画
-	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
-
 	// 背景（暗いグレー領域）を描画
-	vector.FillRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 100, 100, 255}, false)
+	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{100, 100, 100, 255}, false)
 
 	// SP比率を計算
 	if maxSP > 0 {
@@ -176,7 +171,7 @@ func (info *GameInfo) drawStaminaBar(screen *ebiten.Image, currentSP, maxSP int)
 
 		// 現在のSPバーを描画
 		currentWidth := float32(width) * spRatio
-		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
 	// 数値をゲージの中央に描画（垂直方向にも中央配置）
@@ -201,11 +196,8 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 	// ゲージの開始位置
 	gageX := float32(baseX)
 
-	// 背景（黒い枠）を描画
-	vector.StrokeRect(screen, gageX-1, float32(y-1), float32(width+2), float32(height+2), 1.0, color.RGBA{0, 0, 0, 255}, false)
-
 	// 背景（暗い青い領域）を描画
-	vector.FillRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{0, 0, 80, 255}, false)
+	vector.DrawFilledRect(screen, gageX, float32(y), float32(width), float32(height), color.RGBA{0, 0, 80, 255}, false)
 
 	// EP比率を計算
 	if maxEP > 0 {
@@ -231,7 +223,7 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 
 		// 現在のEPバーを描画
 		currentWidth := float32(width) * epRatio
-		vector.FillRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
+		vector.DrawFilledRect(screen, gageX, float32(y), currentWidth, float32(height), barColor, false)
 	}
 
 	// 数値をゲージの中央に描画（垂直方向にも中央配置）
@@ -242,28 +234,83 @@ func (info *GameInfo) drawElectricityBar(screen *ebiten.Image, currentEP, maxEP 
 	drawOutlinedText(screen, epText, info.bodyFace, textX, textY, color.White)
 }
 
-// drawHungerBar はプレイヤーの空腹度を描画する
-func (info *GameInfo) drawHungerBar(screen *ebiten.Image, hungerLevel string) {
-	// 空腹度表示の設定
+// drawStatusEffects はプレイヤーのステータス効果を左下に縦に並べて描画する
+func (info *GameInfo) drawStatusEffects(screen *ebiten.Image, data GameInfoData) {
 	const (
-		baseX = 10.0  // 左マージン
-		y     = 128.0 // 上マージン（EPバーの下、高さ変更分を調整）
+		marginLeft   = 10.0 // 左マージン
+		marginBottom = 10.0 // 下マージン
+		lineHeight   = 20.0 // 行の高さ
 	)
 
-	// 空腹度レベルのテキストを描画
-	hungerText := fmt.Sprintf("Hunger %s", hungerLevel)
+	// ステータス一覧を下から積み上げるように描画
+	var statuses []statusDisplay
 
-	// TODO: 空腹度レベルに応じて色を変える
-	switch hungerLevel {
-	case "Full":
-		// 通常の白色
-	case "Normal":
-		// 通常の白色
-	case "Hungry":
-		// やや警告の色
-	case "Starving":
-		// 危険な色
+	// 空腹度をステータスとして追加（普通以外の場合のみ表示）
+	if data.HungerLevel != gc.HungerNormal {
+		statusColor := getHungerColor(data.HungerLevel)
+		statuses = append(statuses, statusDisplay{
+			text:  data.HungerLevel.String(),
+			color: statusColor,
+		})
 	}
 
-	drawOutlinedText(screen, hungerText, info.bodyFace, float64(baseX), y-2, color.White)
+	// TODO(kijima): 将来的に他のステータスもここに追加する
+	// 例: 濡れ、重い、など
+
+	// メッセージエリアの高さを計算（message_area.goと同じ計算式）
+	messageAreaHeight := float64(data.MessageAreaHeight)
+
+	// メッセージエリアの上に表示するため、その分だけ上にオフセット
+	screenHeight := float64(data.ScreenDimensions.Height)
+	baseY := screenHeight - messageAreaHeight - marginBottom
+
+	// 下から上に向かって描画
+	for i, status := range statuses {
+		// テキストサイズを測定
+		textWidth, _ := text.Measure(status.text, info.bodyFace, 0)
+
+		// 背景矩形のパディング
+		paddingX := 4.0
+		paddingY := 4.0
+
+		// フォントサイズ16の実際の描画高さ
+		textHeight := 16.0
+
+		// 背景矩形の高さ（パディングを含む）
+		bgHeight := float32(textHeight + paddingY*2)
+
+		// 背景矩形のY位置（下から積み上げる）
+		bgY := float32(baseY - float64(i+1)*lineHeight)
+
+		// テキストのY位置（背景矩形の中央に配置）
+		textY := float64(bgY) + paddingY
+
+		// 背景矩形を描画
+		bgX := float32(marginLeft - paddingX)
+		bgWidth := float32(textWidth + paddingX*2)
+		vector.DrawFilledRect(screen, bgX, bgY, bgWidth, bgHeight, status.color, false)
+
+		// 白文字でテキストを描画
+		drawOutlinedText(screen, status.text, info.bodyFace, marginLeft, textY, color.White)
+	}
+}
+
+// statusDisplay はステータス表示の情報
+type statusDisplay struct {
+	text  string
+	color color.RGBA
+}
+
+// getHungerColor は空腹度に応じた色を返す
+func getHungerColor(hungerLevel gc.HungerLevel) color.RGBA {
+	switch hungerLevel {
+	case gc.HungerSatiated:
+		return color.RGBA{100, 200, 100, 255} // 緑（満腹）
+	case gc.HungerHungry:
+		return color.RGBA{255, 200, 0, 255} // 黄色（空腹）
+	case gc.HungerStarving:
+		return color.RGBA{255, 50, 50, 255} // 赤（飢餓）
+	default:
+		return color.RGBA{255, 255, 255, 255} // 白（通常）
+	}
 }
