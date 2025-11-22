@@ -25,11 +25,13 @@ const (
 	aiVisionDistance = 160.0 // AIの視界距離（ピクセル）
 
 	// ステータス計算係数
-	hpBaseValue        = 30   // HP計算の基本値
-	hpVitalityMultiply = 8    // HP計算の体力係数
-	spVitalityMultiply = 2    // SP計算の体力係数
-	hpLevelGrowthRate  = 0.03 // HPのレベル成長率
-	spLevelGrowthRate  = 0.02 // SPのレベル成長率
+	hpBaseValue         = 30   // HP計算の基本値
+	hpVitalityMultiply  = 8    // HP計算の体力係数
+	spVitalityMultiply  = 2    // SP計算の体力係数
+	epBaseValue         = 50   // EP計算の基本値
+	epSensationMultiply = 3    // EP計算の感覚係数
+	hpLevelGrowthRate   = 0.03 // HPのレベル成長率
+	spLevelGrowthRate   = 0.02 // SPのレベル成長率
 )
 
 // エラー定義
@@ -295,6 +297,9 @@ func fullRecover(world w.World, entity ecs.Entity) {
 	// SP全回復
 	pools.SP.Current = pools.SP.Max
 
+	// EP全回復
+	pools.EP.Current = pools.EP.Max
+
 	// ActionPointsコンポーネントがある場合は最大APに設定
 	if entity.HasComponent(world.Components.TurnBased) {
 		if world.Resources.TurnManager != nil {
@@ -350,6 +355,10 @@ func setMaxHPSP(world w.World, entity ecs.Entity) error {
 	// 最大SP計算: (体力*multiplyV+器用さ+素早さ)
 	pools.SP.Max = attrs.Vitality.Total*spVitalityMultiply + attrs.Dexterity.Total + attrs.Agility.Total
 	pools.SP.Current = pools.SP.Max
+
+	// 最大EP計算: base+(感覚*multiplyS+器用さ)
+	pools.EP.Max = int(epBaseValue) + attrs.Sensation.Total*epSensationMultiply + attrs.Dexterity.Total
+	pools.EP.Current = pools.EP.Max
 
 	return nil
 }
