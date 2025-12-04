@@ -16,6 +16,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/loader"
 	gr "github.com/kijimaD/ruins/lib/resources"
+	gs "github.com/kijimaD/ruins/lib/systems"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -153,6 +154,10 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	world.Resources.Faces = &map[string]text.Face{
 		"dougenzaka": dougenzaka,
 	}
+
+	// initialize systems
+	renderSpriteSystem := gs.NewRenderSpriteSystem()
+	world.Systems[renderSpriteSystem.String()] = renderSpriteSystem
 
 	// load UI resources
 	uir, err := gr.NewUIResources(dougenzakaFont.FaceSource)

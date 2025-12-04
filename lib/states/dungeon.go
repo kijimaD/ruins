@@ -181,7 +181,11 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
 	screen.DrawImage(baseImage, nil)
 
-	gs.RenderSpriteSystem(world, screen)
+	if sys, ok := world.Systems[gs.RenderSpriteSystem{}.String()]; ok {
+		if err := sys.Draw(world, screen); err != nil {
+			return err
+		}
+	}
 	gs.VisionSystem(world, screen)
 	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
 	return nil
