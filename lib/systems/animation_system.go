@@ -7,10 +7,6 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// グローバルアニメーションカウンタ
-// TODO(kijima): ほかでも使うようになったらworldで保持したほうがいいかもしれない
-var globalAnimationCounter int64
-
 const (
 	// AnimationFrameInterval はアニメーションフレーム切替間隔（フレーム数）
 	// 30フレームごとに切り替え（60FPSで0.5秒）
@@ -18,13 +14,30 @@ const (
 )
 
 // AnimationSystem は全エンティティのスプライトアニメーションを更新する
-func AnimationSystem(world w.World) {
+type AnimationSystem struct {
+	animationCounter int64
+}
+
+// NewAnimationSystem はAnimationSystemを初期化する
+func NewAnimationSystem() *AnimationSystem {
+	return &AnimationSystem{}
+}
+
+// String はシステム名を返す
+// w.Updater interfaceを実装
+func (sys AnimationSystem) String() string {
+	return "AnimationSystem"
+}
+
+// Update は全エンティティのスプライトアニメーションを更新する
+// w.Updater interfaceを実装
+func (sys *AnimationSystem) Update(world w.World) error {
 	cfg := config.Get()
 	if cfg.DisableAnimation {
-		return
+		return nil
 	}
 
-	globalAnimationCounter++
+	sys.animationCounter++
 
 	world.Manager.Join(
 		world.Components.SpriteRender,
@@ -37,9 +50,10 @@ func AnimationSystem(world w.World) {
 		}
 
 		// フレームインデックスを計算
-		frameIndex := (globalAnimationCounter / AnimationFrameInterval) % int64(len(spriteRender.AnimKeys))
+		frameIndex := (sys.animationCounter / AnimationFrameInterval) % int64(len(spriteRender.AnimKeys))
 
 		// SpriteKeyを更新
 		spriteRender.SpriteKey = spriteRender.AnimKeys[frameIndex]
 	}))
+	return nil
 }

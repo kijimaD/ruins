@@ -10,7 +10,17 @@ import (
 )
 
 // AutoInteractionSystem はプレイヤーが自動実行の相互作用に接触した際に自動実行する
-func AutoInteractionSystem(world w.World) error {
+type AutoInteractionSystem struct{}
+
+// String はシステム名を返す
+// w.Updater interfaceを実装
+func (sys AutoInteractionSystem) String() string {
+	return "AutoInteractionSystem"
+}
+
+// Update はプレイヤーが自動実行の相互作用に接触した際に自動実行する
+// w.Updater interfaceを実装
+func (sys *AutoInteractionSystem) Update(world w.World) error {
 	// プレイヤーエンティティを取得
 	playerEntity, err := worldhelper.GetPlayerEntity(world)
 	if err != nil {

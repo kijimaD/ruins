@@ -87,8 +87,8 @@ func TestAutoInteractionSystem_AutoWay(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// Consumableトリガーが削除されていることを確認（実行された証拠）
 	assert.False(t, triggerEntity.HasComponent(world.Components.Interactable),
@@ -115,8 +115,8 @@ func TestAutoInteractionSystem_ManualWay(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// Manualトリガーは実行されず、残っているべき
 	assert.True(t, triggerEntity.HasComponent(world.Components.Interactable),
@@ -145,8 +145,8 @@ func TestAutoInteractionSystem_OnCollisionWay(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Door, &gc.Door{IsOpen: false, Orientation: gc.DoorOrientationHorizontal})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// OnCollisionトリガーは実行されず、ドアは閉じたままのはず
 	doorComp := world.Components.Door.Get(triggerEntity).(*gc.Door)
@@ -173,8 +173,8 @@ func TestAutoInteractionSystem_OutOfRange(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 範囲外なので実行されず、残っているべき
 	assert.True(t, triggerEntity.HasComponent(world.Components.Interactable),
@@ -203,8 +203,8 @@ func TestAutoInteractionSystem_AdjacentRange(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 隣接範囲内なので実行され、削除されているべき
 	assert.False(t, triggerEntity.HasComponent(world.Components.Interactable),
@@ -227,8 +227,8 @@ func TestAutoInteractionSystem_NoPlayer(t *testing.T) {
 	})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.Error(t, err, "プレイヤーがいない場合はエラーを返すべき")
+	sys := &AutoInteractionSystem{}
+	require.Error(t, sys.Update(world), "プレイヤーがいない場合はエラーを返すべき")
 }
 
 // TestAutoInteractionSystem_MultipleAutoTriggers は複数のAutoトリガーが同時に実行されることを確認
@@ -254,8 +254,8 @@ func TestAutoInteractionSystem_MultipleAutoTriggers(t *testing.T) {
 	trigger2.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 両方のトリガーが実行され、削除されているべき
 	assert.False(t, trigger1.HasComponent(world.Components.Interactable),
@@ -287,8 +287,8 @@ func TestAutoInteractionSystem_WarpNextEvent(t *testing.T) {
 	trigger.Data = AutoWarpTrigger{}
 
 	// システム実行
-	err := AutoInteractionSystem(world)
-	require.NoError(t, err)
+	sys := &AutoInteractionSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// StateEventが設定されていることを確認
 	// 注: 実際のWarpNextTriggerでないため、StateEventは設定されない可能性がある
@@ -314,9 +314,9 @@ func TestAutoInteractionSystem_PlayerNoGridElement(t *testing.T) {
 	})
 
 	// システム実行
-	err := AutoInteractionSystem(world)
+	sys := &AutoInteractionSystem{}
 	// GridElementがない場合はnilを返して処理を中断する
-	assert.NoError(t, err, "プレイヤーにGridElementがない場合はエラーなしで終了すべき")
+	assert.NoError(t, sys.Update(world), "プレイヤーにGridElementがない場合はエラーなしで終了すべき")
 
 	// トリガーは実行されないべき
 	assert.True(t, triggerEntity.HasComponent(world.Components.Interactable),
@@ -343,8 +343,8 @@ func TestAutoInteractionSystem_InvalidRange(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行（エラーは返さず、警告ログを出してスキップする）
-	err := AutoInteractionSystem(world)
-	assert.NoError(t, err, "無効なトリガーはスキップされ、エラーは返さない")
+	sys := &AutoInteractionSystem{}
+	assert.NoError(t, sys.Update(world), "無効なトリガーはスキップされ、エラーは返さない")
 
 	// トリガーは実行されず、残っているべき
 	assert.True(t, triggerEntity.HasComponent(world.Components.Interactable),
@@ -373,8 +373,8 @@ func TestAutoInteractionSystem_InvalidWay(t *testing.T) {
 	triggerEntity.AddComponent(world.Components.Consumable, &gc.Consumable{})
 
 	// システム実行（エラーは返さず、警告ログを出してスキップする）
-	err := AutoInteractionSystem(world)
-	assert.NoError(t, err, "無効なトリガーはスキップされ、エラーは返さない")
+	sys := &AutoInteractionSystem{}
+	assert.NoError(t, sys.Update(world), "無効なトリガーはスキップされ、エラーは返さない")
 
 	// トリガーは実行されず、残っているべき
 	assert.True(t, triggerEntity.HasComponent(world.Components.Interactable),

@@ -183,17 +183,7 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	world.Resources.Dungeon = gameResource
 
 	// initialize systems
-	renderSpriteSystem := gs.NewRenderSpriteSystem()
-	world.Systems[renderSpriteSystem.String()] = renderSpriteSystem
-
-	visionSystem := &gs.VisionSystem{}
-	world.Systems[visionSystem.String()] = visionSystem
-
-	cameraSystem := &gs.CameraSystem{}
-	world.Systems[cameraSystem.String()] = cameraSystem
-
-	hudRenderingSystem := gs.NewHUDRenderingSystem(world)
-	world.Systems[hudRenderingSystem.String()] = hudRenderingSystem
+	world.Updaters, world.Renderers = gs.InitializeSystems(world)
 
 	return world, nil
 }

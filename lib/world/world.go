@@ -9,18 +9,22 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 )
 
-// System は全てのゲームシステムが実装すべきインターフェース
-// Wはworld型を表すジェネリック型パラメータ
-type System[W any] interface {
+// Updater はロジック更新を行うシステム
+type Updater interface {
 	// String はシステム名を返す
-	// map[string]Systemのキーとして使用される
+	String() string
+
+	// Update はゲームロジックの更新処理を行う
+	Update(world World) error
+}
+
+// Renderer は描画を行うシステム
+type Renderer interface {
+	// String はシステム名を返す
 	String() string
 
 	// Draw は描画処理を行う
-	Draw(world W, screen *ebiten.Image) error
-
-	// Update は更新処理を行う
-	Update(world W) error
+	Draw(world World, screen *ebiten.Image) error
 }
 
 // World はゲーム全体に必要な情報を保持する
@@ -28,7 +32,8 @@ type World struct {
 	Manager    *ecs.Manager
 	Components *gc.Components
 	Resources  *resources.Resources
-	Systems    map[string]System[World]
+	Updaters   map[string]Updater
+	Renderers  map[string]Renderer
 }
 
 // InitWorld は初期化する
@@ -42,7 +47,8 @@ func InitWorld(c *gc.Components) (World, error) {
 		Manager:    manager,
 		Components: c,
 		Resources:  resources.InitGameResources(),
-		Systems:    make(map[string]System[World]),
+		Updaters:   make(map[string]Updater),
+		Renderers:  make(map[string]Renderer),
 	}, nil
 }
 

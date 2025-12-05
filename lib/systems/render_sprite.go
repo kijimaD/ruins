@@ -87,13 +87,13 @@ func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
 }
 
 // String はシステム名を返す
-// w.System[w.World] interfaceを実装
+// w.Renderer interfaceを実装
 func (sys RenderSpriteSystem) String() string {
 	return "RenderSpriteSystem"
 }
 
 // Draw は (下) タイル -> 暗闇 -> 光源グロー -> 影 -> スプライト (上) の順に表示する
-// w.System[w.World] interfaceを実装
+// w.Renderer interfaceを実装
 func (sys *RenderSpriteSystem) Draw(world w.World, screen *ebiten.Image) error {
 	// 現在の視界データを取得（全描画で使用）
 	visibilityData := GetCurrentVisibilityData()
@@ -107,13 +107,6 @@ func (sys *RenderSpriteSystem) Draw(world w.World, screen *ebiten.Image) error {
 	sys.renderLightSourceGlow(world, screen, visibilityData)   // 床タイルに光源グロー
 	sys.renderShadows(world, screen, visibilityData)           // 影を描画
 	sys.renderSprites(world, screen, visibilityData)           // 物体を描画
-	return nil
-}
-
-// Update は更新処理を行う
-// RenderSpriteSystemは描画のみなのでno-op実装
-// w.System[w.World] interfaceを実装
-func (sys *RenderSpriteSystem) Update(_ w.World) error {
 	return nil
 }
 

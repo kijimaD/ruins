@@ -142,8 +142,6 @@ func (st *DungeonState) OnStop(world w.World) error {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
-	gs.AnimationSystem(world)
-
 	// キー入力をActionに変換
 	if action, ok := st.HandleInput(); ok {
 		if transition, err := st.DoAction(world, action); err != nil {
@@ -153,21 +151,16 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 		}
 	}
 
-	if err := gs.TurnSystem(world); err != nil {
-		return es.Transition[w.World]{}, err
-	}
-
-	// カメラシステムを更新（移動処理の後）
-	if sys, ok := world.Systems[gs.CameraSystem{}.String()]; ok {
-		if err := sys.Update(world); err != nil {
-			return es.Transition[w.World]{}, err
-		}
-	}
-
-	// HUDシステムを更新
-	if sys, ok := world.Systems[gs.HUDRenderingSystem{}.String()]; ok {
-		if err := sys.Update(world); err != nil {
-			return es.Transition[w.World]{}, err
+	for _, updater := range []w.Updater{
+		&gs.AnimationSystem{},
+		&gs.TurnSystem{},
+		&gs.CameraSystem{},
+		&gs.HUDRenderingSystem{},
+	} {
+		if sys, ok := world.Updaters[updater.String()]; ok {
+			if err := sys.Update(world); err != nil {
+				return es.Transition[w.World]{}, err
+			}
 		}
 	}
 
@@ -193,22 +186,15 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
 	screen.DrawImage(baseImage, nil)
 
-	// 全Systemsを統一的に呼び出す
-	if sys, ok := world.Systems[gs.RenderSpriteSystem{}.String()]; ok {
-		if err := sys.Draw(world, screen); err != nil {
-			return err
-		}
-	}
-
-	if sys, ok := world.Systems[gs.VisionSystem{}.String()]; ok {
-		if err := sys.Draw(world, screen); err != nil {
-			return err
-		}
-	}
-
-	if sys, ok := world.Systems[gs.HUDRenderingSystem{}.String()]; ok {
-		if err := sys.Draw(world, screen); err != nil {
-			return err
+	for _, renderer := range []w.Renderer{
+		&gs.RenderSpriteSystem{},
+		&gs.VisionSystem{},
+		&gs.HUDRenderingSystem{},
+	} {
+		if sys, ok := world.Renderers[renderer.String()]; ok {
+			if err := sys.Draw(world, screen); err != nil {
+				return err
+			}
 		}
 	}
 

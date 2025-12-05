@@ -41,7 +41,8 @@ func TestDeadCleanupSystem(t *testing.T) {
 	alive.AddComponent(world.Components.AIMoveFSM, &gc.AIMoveFSM{})
 
 	// DeadCleanupSystemを実行
-	require.NoError(t, DeadCleanupSystem(world))
+	sys := &DeadCleanupSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 結果を検証
 
@@ -78,7 +79,8 @@ func TestDeadCleanupSystem_NoDeadEntities(t *testing.T) {
 	alive2.AddComponent(world.Components.AIMoveFSM, &gc.AIMoveFSM{})
 
 	// DeadCleanupSystemを実行
-	require.NoError(t, DeadCleanupSystem(world))
+	sys := &DeadCleanupSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// すべてのエンティティが残っているべき
 	assert.True(t, alive1.HasComponent(world.Components.Name), "生きているエンティティ1は残るべき")
@@ -96,7 +98,8 @@ func TestDeadCleanupSystem_EmptyWorld(t *testing.T) {
 
 	// エンティティが存在しない状態でテスト
 	// パニックやエラーが発生しないことを確認
-	require.NoError(t, DeadCleanupSystem(world))
+	sys := &DeadCleanupSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// エンティティ数が0であることを確認
 	count := 0
@@ -125,7 +128,8 @@ func TestDeadCleanupSystem_WithDropTable(t *testing.T) {
 	}))
 
 	// DeadCleanupSystemを実行
-	require.NoError(t, DeadCleanupSystem(world))
+	sys := &DeadCleanupSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 敵エンティティは削除されているべき
 	assert.False(t, enemy.HasComponent(world.Components.Name), "敵エンティティは削除されるべき")
@@ -162,7 +166,8 @@ func TestDeadCleanupSystem_WithDropTableDrops(t *testing.T) {
 	}))
 
 	// DeadCleanupSystemを実行
-	require.NoError(t, DeadCleanupSystem(world))
+	sys := &DeadCleanupSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 実行後のアイテム数
 	itemCountAfter := 0
@@ -196,7 +201,8 @@ func TestDeadCleanupSystem_WithDropTableNoDrops(t *testing.T) {
 	}))
 
 	// DeadCleanupSystemを実行
-	require.NoError(t, DeadCleanupSystem(world))
+	sys := &DeadCleanupSystem{}
+	require.NoError(t, sys.Update(world))
 
 	// 実行後のアイテム数
 	itemCountAfter := 0

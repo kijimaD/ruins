@@ -78,13 +78,13 @@ func ClearVisionCaches() {
 type VisionSystem struct{}
 
 // String はシステム名を返す
-// w.System[w.World] interfaceを実装
+// w.Renderer interfaceを実装
 func (sys VisionSystem) String() string {
 	return "VisionSystem"
 }
 
 // Draw は視界計算を行う
-// w.System[w.World] interfaceを実装
+// w.Renderer interfaceを実装
 func (sys *VisionSystem) Draw(world w.World, _ *ebiten.Image) error {
 	// プレイヤー位置を取得
 	var playerGridElement *gc.GridElement
@@ -149,13 +149,6 @@ func (sys *VisionSystem) Draw(world w.World, _ *ebiten.Image) error {
 		playerPositionCache.isInitialized = true
 	}
 	// 距離に応じた段階的暗闇の描画はRenderSpriteSystemで行う
-	return nil
-}
-
-// Update は更新処理を行う
-// VisionSystemは描画のみなのでno-op実装
-// w.System[w.World] interfaceを実装
-func (sys *VisionSystem) Update(_ w.World) error {
 	return nil
 }
 

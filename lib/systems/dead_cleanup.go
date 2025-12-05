@@ -14,7 +14,17 @@ import (
 
 // DeadCleanupSystem はDeadコンポーネントを持つ敵エンティティを削除する
 // 削除前にドロップテーブルがあればアイテムをドロップする
-func DeadCleanupSystem(world w.World) error {
+type DeadCleanupSystem struct{}
+
+// String はシステム名を返す
+// w.Updater interfaceを実装
+func (sys DeadCleanupSystem) String() string {
+	return "DeadCleanupSystem"
+}
+
+// Update はDeadコンポーネントを持つ敵エンティティを削除する
+// w.Updater interfaceを実装
+func (sys *DeadCleanupSystem) Update(world w.World) error {
 	logger := logger.New(logger.CategoryEntity)
 
 	// Deadコンポーネントを持つエンティティを検索
