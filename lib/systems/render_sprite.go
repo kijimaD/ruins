@@ -113,7 +113,7 @@ func (sys *RenderSpriteSystem) Draw(world w.World, screen *ebiten.Image) error {
 // Update は更新処理を行う
 // RenderSpriteSystemは描画のみなのでno-op実装
 // w.System[w.World] interfaceを実装
-func (sys *RenderSpriteSystem) Update(world w.World) error {
+func (sys *RenderSpriteSystem) Update(_ w.World) error {
 	return nil
 }
 

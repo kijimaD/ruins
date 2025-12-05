@@ -156,8 +156,20 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 	if err := gs.TurnSystem(world); err != nil {
 		return es.Transition[w.World]{}, err
 	}
-	// 移動処理の後にカメラ更新
-	gs.CameraSystem(world)
+
+	// カメラシステムを更新（移動処理の後）
+	if sys, ok := world.Systems[gs.CameraSystem{}.String()]; ok {
+		if err := sys.Update(world); err != nil {
+			return es.Transition[w.World]{}, err
+		}
+	}
+
+	// HUDシステムを更新
+	if sys, ok := world.Systems[gs.HUDRenderingSystem{}.String()]; ok {
+		if err := sys.Update(world); err != nil {
+			return es.Transition[w.World]{}, err
+		}
+	}
 
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
@@ -181,13 +193,25 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
 	screen.DrawImage(baseImage, nil)
 
+	// 全Systemsを統一的に呼び出す
 	if sys, ok := world.Systems[gs.RenderSpriteSystem{}.String()]; ok {
 		if err := sys.Draw(world, screen); err != nil {
 			return err
 		}
 	}
-	gs.VisionSystem(world, screen)
-	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
+
+	if sys, ok := world.Systems[gs.VisionSystem{}.String()]; ok {
+		if err := sys.Draw(world, screen); err != nil {
+			return err
+		}
+	}
+
+	if sys, ok := world.Systems[gs.HUDRenderingSystem{}.String()]; ok {
+		if err := sys.Draw(world, screen); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
