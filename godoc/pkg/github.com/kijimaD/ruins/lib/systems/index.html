@@ -162,15 +162,6 @@ func TileInputSystem(world w.World) {
 			
 			
 				
-				<dd><a href="index.html#AnimationSystem">func AnimationSystem(world w.World)</a></dd>
-			
-				
-				<dd><a href="index.html#AutoInteractionSystem">func AutoInteractionSystem(world w.World) error</a></dd>
-			
-				
-				<dd><a href="index.html#CameraSystem">func CameraSystem(world w.World)</a></dd>
-			
-				
 				<dd><a href="index.html#ClearVisionCaches">func ClearVisionCaches()</a></dd>
 			
 				
@@ -189,9 +180,6 @@ func TileInputSystem(world w.World) {
 				<dd><a href="index.html#CreatePlayerEntity">func CreatePlayerEntity(t *testing.T, world w.World, x, y float64)</a></dd>
 			
 				
-				<dd><a href="index.html#DeadCleanupSystem">func DeadCleanupSystem(world w.World) error</a></dd>
-			
-				
 				<dd><a href="index.html#EquipmentChangedSystem">func EquipmentChangedSystem(world w.World) bool</a></dd>
 			
 				
@@ -201,20 +189,58 @@ func TileInputSystem(world w.World) {
 				<dd><a href="index.html#GetCurrentVisibilityData">func GetCurrentVisibilityData() map[string]TileVisibility</a></dd>
 			
 				
-				<dd><a href="index.html#HUDSystem">func HUDSystem(world w.World, screen *ebiten.Image)</a></dd>
-			
-				
-				<dd><a href="index.html#RenderSpriteSystem">func RenderSpriteSystem(world w.World, screen *ebiten.Image)</a></dd>
+				<dd><a href="index.html#InitializeSystems">func InitializeSystems(world w.World) (map[string]w.Updater, map[string]w.Renderer)</a></dd>
 			
 				
 				<dd><a href="index.html#SetTranslate">func SetTranslate(world w.World, op *ebiten.DrawImageOptions)</a></dd>
 			
-				
-				<dd><a href="index.html#TurnSystem">func TurnSystem(world w.World) error</a></dd>
 			
 				
-				<dd><a href="index.html#VisionSystem">func VisionSystem(world w.World, _ *ebiten.Image)</a></dd>
+				<dd><a href="index.html#AnimationSystem">type AnimationSystem</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewAnimationSystem">func NewAnimationSystem() *AnimationSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AnimationSystem.String">func (sys AnimationSystem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AnimationSystem.Update">func (sys *AnimationSystem) Update(world w.World) error</a></dd>
+				
 			
+				
+				<dd><a href="index.html#AutoInteractionSystem">type AutoInteractionSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AutoInteractionSystem.String">func (sys AutoInteractionSystem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#AutoInteractionSystem.Update">func (sys *AutoInteractionSystem) Update(world w.World) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#CameraSystem">type CameraSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CameraSystem.String">func (sys CameraSystem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#CameraSystem.Update">func (sys *CameraSystem) Update(world w.World) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#DeadCleanupSystem">type DeadCleanupSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DeadCleanupSystem.String">func (sys DeadCleanupSystem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#DeadCleanupSystem.Update">func (sys *DeadCleanupSystem) Update(world w.World) error</a></dd>
+				
 			
 				
 				<dd><a href="index.html#HUDRenderingSystem">type HUDRenderingSystem</a></dd>
@@ -224,15 +250,35 @@ func TileInputSystem(world w.World) {
 				
 				
 					
+					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Draw">func (sys *HUDRenderingSystem) Draw(world w.World, screen *ebiten.Image) error</a></dd>
+				
+					
 					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Run">func (sys *HUDRenderingSystem) Run(world w.World, screen *ebiten.Image)</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Update">func (sys *HUDRenderingSystem) Update(world w.World)</a></dd>
+					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.String">func (sys HUDRenderingSystem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HUDRenderingSystem.Update">func (sys *HUDRenderingSystem) Update(world w.World) error</a></dd>
 				
 			
 				
 				<dd><a href="index.html#LightInfo">type LightInfo</a></dd>
 				
+				
+			
+				
+				<dd><a href="index.html#RenderSpriteSystem">type RenderSpriteSystem</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewRenderSpriteSystem">func NewRenderSpriteSystem() *RenderSpriteSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RenderSpriteSystem.Draw">func (sys *RenderSpriteSystem) Draw(world w.World, screen *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RenderSpriteSystem.String">func (sys RenderSpriteSystem) String() string</a></dd>
 				
 			
 				
@@ -243,6 +289,28 @@ func TileInputSystem(world w.World) {
 				
 				<dd><a href="index.html#TileVisibility">type TileVisibility</a></dd>
 				
+				
+			
+				
+				<dd><a href="index.html#TurnSystem">type TurnSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TurnSystem.String">func (sys TurnSystem) String() string</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TurnSystem.Update">func (sys *TurnSystem) Update(world w.World) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#VisionSystem">type VisionSystem</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#VisionSystem.Draw">func (sys *VisionSystem) Draw(world w.World, _ *ebiten.Image) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#VisionSystem.String">func (sys VisionSystem) String() string</a></dd>
 				
 			
 			
@@ -268,7 +336,7 @@ func TileInputSystem(world w.World) {
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go">equipment_changed.go</a>
 			
-				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go">hud.go</a>
+				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/helper.go">helper.go</a>
 			
 				<a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_extractor.go">hud_extractor.go</a>
 			
@@ -302,48 +370,6 @@ func TileInputSystem(world w.World) {
 			
 		
 		
-		
-			
-			
-			<h2 id="AnimationSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/animation_system.go?s=680:715#L11">AnimationSystem</a>
-				<a class="permalink" href="index.html#AnimationSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func AnimationSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>AnimationSystem は全エンティティのスプライトアニメーションを更新する
-
-			
-			
-
-		
-			
-			
-			<h2 id="AutoInteractionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/auto_interaction_system.go?s=386:433#L3">AutoInteractionSystem</a>
-				<a class="permalink" href="index.html#AutoInteractionSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func AutoInteractionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>AutoInteractionSystem はプレイヤーが自動実行の相互作用に接触した際に自動実行する
-
-			
-			
-
-		
-			
-			
-			<h2 id="CameraSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/camera_system.go?s=290:322#L2">CameraSystem</a>
-				<a class="permalink" href="index.html#CameraSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func CameraSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
-			<p>CameraSystem はカメラの追従とズーム処理を行う
-
-			
-			
-
 		
 			
 			
@@ -431,21 +457,6 @@ func TileInputSystem(world w.World) {
 		
 			
 			
-			<h2 id="DeadCleanupSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/dead_cleanup.go?s=474:517#L7">DeadCleanupSystem</a>
-				<a class="permalink" href="index.html#DeadCleanupSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func DeadCleanupSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>DeadCleanupSystem はDeadコンポーネントを持つ敵エンティティを削除する
-削除前にドロップテーブルがあればアイテムをドロップする
-
-			
-			
-
-		
-			
-			
 			<h2 id="EquipmentChangedSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/equipment_changed.go?s=406:453#L2">EquipmentChangedSystem</a>
 				<a class="permalink" href="index.html#EquipmentChangedSystem">&#xb6;</a>
 				
@@ -476,7 +487,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=17674:17731#L528">GetCurrentVisibilityData</a>
+			<h2 id="GetCurrentVisibilityData">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=17941:17998#L539">GetCurrentVisibilityData</a>
 				<a class="permalink" href="index.html#GetCurrentVisibilityData">&#xb6;</a>
 				
 				
@@ -490,13 +501,13 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="HUDSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud.go?s=219:270#L3">HUDSystem</a>
-				<a class="permalink" href="index.html#HUDSystem">&#xb6;</a>
+			<h2 id="InitializeSystems">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/helper.go?s=172:255#L1">InitializeSystems</a>
+				<a class="permalink" href="index.html#InitializeSystems">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func HUDSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>HUDSystem はゲームの HUD 情報を描画する
+			<pre>func InitializeSystems(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) (map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../world/index.html">w</a>.<a href="../world/index.html#Updater">Updater</a>, map[<a href="http://localhost:8888/pkg/builtin/#string">string</a>]<a href="../world/index.html">w</a>.<a href="../world/index.html#Renderer">Renderer</a>)</pre>
+			<p>InitializeSystems は全システムを初期化して Updaters と Renderers のマップを返す
 
 			
 			
@@ -504,21 +515,7 @@ TODO: マイナスにならないようにする
 		
 			
 			
-			<h2 id="RenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=2501:2561#L69">RenderSpriteSystem</a>
-				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func RenderSpriteSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>RenderSpriteSystem は (下) タイル -&gt; 暗闇 -&gt; 光源グロー -&gt; 影 -&gt; スプライト (上) の順に表示する
-
-			
-			
-
-		
-			
-			
-			<h2 id="SetTranslate">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=949:1010#L26">SetTranslate</a>
+			<h2 id="SetTranslate">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=1303:1364#L37">SetTranslate</a>
 				<a class="permalink" href="index.html#SetTranslate">&#xb6;</a>
 				
 				
@@ -531,34 +528,229 @@ TODO: ズーム率を追加する
 			
 
 		
-			
-			
-			<h2 id="TurnSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go?s=240:276#L1">TurnSystem</a>
-				<a class="permalink" href="index.html#TurnSystem">&#xb6;</a>
-				
-				
-			</h2>
-			<pre>func TurnSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
-			<p>TurnSystem はターン管理を行うシステム
-
-			
-			
-
 		
 			
 			
-			<h2 id="VisionSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2104:2153#L68">VisionSystem</a>
-				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
+			<h2 id="AnimationSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/animation_system.go?s=484:539#L7">AnimationSystem</a>
+				<a class="permalink" href="index.html#AnimationSystem">&#xb6;</a>
 				
 				
 			</h2>
-			<pre>func VisionSystem(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *ebiten.<a href="index.html#Image">Image</a>)</pre>
-			<p>VisionSystem はタイルごとの視界を管理する（暗闇描画はRenderSpriteSystemで行う）
+			<p>AnimationSystem は全エンティティのスプライトアニメーションを更新する
+
+			<pre>type AnimationSystem struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
 
 			
 			
+			
 
+			
+				
+				<h3 id="NewAnimationSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/animation_system.go?s=600:642#L12">NewAnimationSystem</a>
+					<a class="permalink" href="index.html#NewAnimationSystem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewAnimationSystem() *<a href="index.html#AnimationSystem">AnimationSystem</a></pre>
+				<p>NewAnimationSystem はAnimationSystemを初期化する
+
+				
+				
+			
+
+			
+				
+				<h3 id="AnimationSystem.String">func (AnimationSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/animation_system.go?s=745:787#L18">String</a>
+					<a class="permalink" href="index.html#AnimationSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#AnimationSystem">AnimationSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="AnimationSystem.Update">func (*AnimationSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/animation_system.go?s=940:995#L24">Update</a>
+					<a class="permalink" href="index.html#AnimationSystem.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#AnimationSystem">AnimationSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Update は全エンティティのスプライトアニメーションを更新する
+w.Updater interfaceを実装
+
+				
+				
+				
+			
 		
+			
+			
+			<h2 id="AutoInteractionSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/auto_interaction_system.go?s=386:421#L3">AutoInteractionSystem</a>
+				<a class="permalink" href="index.html#AutoInteractionSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>AutoInteractionSystem はプレイヤーが自動実行の相互作用に接触した際に自動実行する
+
+			<pre>type AutoInteractionSystem struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="AutoInteractionSystem.String">func (AutoInteractionSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/auto_interaction_system.go?s=493:541#L7">String</a>
+					<a class="permalink" href="index.html#AutoInteractionSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#AutoInteractionSystem">AutoInteractionSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="AutoInteractionSystem.Update">func (*AutoInteractionSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/auto_interaction_system.go?s=709:770#L13">Update</a>
+					<a class="permalink" href="index.html#AutoInteractionSystem.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#AutoInteractionSystem">AutoInteractionSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Update はプレイヤーが自動実行の相互作用に接触した際に自動実行する
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="CameraSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/camera_system.go?s=290:316#L2">CameraSystem</a>
+				<a class="permalink" href="index.html#CameraSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>CameraSystem はカメラの追従とズーム処理を行う
+
+			<pre>type CameraSystem struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="CameraSystem.String">func (CameraSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/camera_system.go?s=388:427#L6">String</a>
+					<a class="permalink" href="index.html#CameraSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#CameraSystem">CameraSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="CameraSystem.Update">func (*CameraSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/camera_system.go?s=547:599#L12">Update</a>
+					<a class="permalink" href="index.html#CameraSystem.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#CameraSystem">CameraSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Update はカメラの追従とズーム処理を行う
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="DeadCleanupSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/dead_cleanup.go?s=474:505#L7">DeadCleanupSystem</a>
+				<a class="permalink" href="index.html#DeadCleanupSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>DeadCleanupSystem はDeadコンポーネントを持つ敵エンティティを削除する
+削除前にドロップテーブルがあればアイテムをドロップする
+
+			<pre>type DeadCleanupSystem struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="DeadCleanupSystem.String">func (DeadCleanupSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/dead_cleanup.go?s=577:621#L11">String</a>
+					<a class="permalink" href="index.html#DeadCleanupSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#DeadCleanupSystem">DeadCleanupSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="DeadCleanupSystem.Update">func (*DeadCleanupSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/dead_cleanup.go?s=771:828#L17">Update</a>
+					<a class="permalink" href="index.html#DeadCleanupSystem.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#DeadCleanupSystem">DeadCleanupSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Update はDeadコンポーネントを持つ敵エンティティを削除する
+w.Updater interfaceを実装
+
+				
+				
+				
+			
 		
 			
 			
@@ -598,7 +790,21 @@ TODO: ズーム率を追加する
 
 			
 				
-				<h3 id="HUDRenderingSystem.Run">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=1712:1783#L51">Run</a>
+				<h3 id="HUDRenderingSystem.Draw">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=1331:1409#L33">Draw</a>
+					<a class="permalink" href="index.html#HUDRenderingSystem.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a>) Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Draw はHUD描画を行う
+w.Renderer interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="HUDRenderingSystem.Run">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=2138:2209#L66">Run</a>
 					<a class="permalink" href="index.html#HUDRenderingSystem.Run">&#xb6;</a>
 					
 					
@@ -612,13 +818,28 @@ worldからデータを抽出し、HUDを描画する
 				
 			
 				
-				<h3 id="HUDRenderingSystem.Update">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=1129:1181#L26">Update</a>
+				<h3 id="HUDRenderingSystem.String">func (HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=1188:1233#L27">String</a>
+					<a class="permalink" href="index.html#HUDRenderingSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Updater と w.Renderer のインターフェースを実装する
+
+				
+				
+				
+			
+				
+				<h3 id="HUDRenderingSystem.Update">func (*HUDRenderingSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/hud_rendering.go?s=1533:1591#L40">Update</a>
 					<a class="permalink" href="index.html#HUDRenderingSystem.Update">&#xb6;</a>
 					
 					
 				</h3>
-				<pre>func (sys *<a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>)</pre>
+				<pre>func (sys *<a href="index.html#HUDRenderingSystem">HUDRenderingSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
 				<p>Update はHUDシステム全体を更新する
+w.Updater interfaceを実装
 
 				
 				
@@ -627,7 +848,7 @@ worldからデータを抽出し、HUDを描画する
 		
 			
 			
-			<h2 id="LightInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=10100:10164#L319">LightInfo</a>
+			<h2 id="LightInfo">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=10367:10431#L330">LightInfo</a>
 				<a class="permalink" href="index.html#LightInfo">&#xb6;</a>
 				
 				
@@ -650,6 +871,73 @@ worldからデータを抽出し、HUDを描画する
 
 			
 
+			
+		
+			
+			
+			<h2 id="RenderSpriteSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=869:959#L24">RenderSpriteSystem</a>
+				<a class="permalink" href="index.html#RenderSpriteSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>RenderSpriteSystem はスプライト描画システム
+キャッシュを保持し、描画処理を行う
+
+			<pre>type RenderSpriteSystem struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewRenderSpriteSystem">func <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=1026:1074#L29">NewRenderSpriteSystem</a>
+					<a class="permalink" href="index.html#NewRenderSpriteSystem">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func NewRenderSpriteSystem() *<a href="index.html#RenderSpriteSystem">RenderSpriteSystem</a></pre>
+				<p>NewRenderSpriteSystem はRenderSpriteSystemを初期化する
+
+				
+				
+			
+
+			
+				
+				<h3 id="RenderSpriteSystem.Draw">func (*RenderSpriteSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=3025:3103#L87">Draw</a>
+					<a class="permalink" href="index.html#RenderSpriteSystem.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#RenderSpriteSystem">RenderSpriteSystem</a>) Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, screen *ebiten.<a href="index.html#Image">Image</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Draw は (下) タイル -&gt; 暗闇 -&gt; 光源グロー -&gt; 影 -&gt; スプライト (上) の順に表示する
+w.Renderer interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="RenderSpriteSystem.String">func (RenderSpriteSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/render_sprite.go?s=2801:2846#L81">String</a>
+					<a class="permalink" href="index.html#RenderSpriteSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#RenderSpriteSystem">RenderSpriteSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Renderer interfaceを実装
+
+				
+				
+				
 			
 		
 			
@@ -677,7 +965,7 @@ worldからデータを抽出し、HUDを描画する
 		
 			
 			
-			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=4625:4781#L135">TileVisibility</a>
+			<h2 id="TileVisibility">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=4892:5048#L146">TileVisibility</a>
 				<a class="permalink" href="index.html#TileVisibility">&#xb6;</a>
 				
 				
@@ -703,6 +991,110 @@ worldからデータを抽出し、HUDを描画する
 
 			
 
+			
+		
+			
+			
+			<h2 id="TurnSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go?s=240:264#L1">TurnSystem</a>
+				<a class="permalink" href="index.html#TurnSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>TurnSystem はターン管理を行うシステム
+
+			<pre>type TurnSystem struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TurnSystem.String">func (TurnSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go?s=336:373#L5">String</a>
+					<a class="permalink" href="index.html#TurnSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#TurnSystem">TurnSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="TurnSystem.Update">func (*TurnSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/turn_system.go?s=470:520#L11">Update</a>
+					<a class="permalink" href="index.html#TurnSystem.Update">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#TurnSystem">TurnSystem</a>) Update(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Update はターン管理を行う
+w.Updater interfaceを実装
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="VisionSystem">type <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2104:2130#L68">VisionSystem</a>
+				<a class="permalink" href="index.html#VisionSystem">&#xb6;</a>
+				
+				
+			</h2>
+			<p>VisionSystem はタイルごとの視界を管理する（暗闇描画はRenderSpriteSystemで行う）
+
+			<pre>type VisionSystem struct{}
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="VisionSystem.Draw">func (*VisionSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2337:2404#L78">Draw</a>
+					<a class="permalink" href="index.html#VisionSystem.Draw">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys *<a href="index.html#VisionSystem">VisionSystem</a>) Draw(world <a href="../world/index.html">w</a>.<a href="../world/index.html#World">World</a>, _ *ebiten.<a href="index.html#Image">Image</a>) <a href="http://localhost:8888/pkg/builtin/#error">error</a></pre>
+				<p>Draw は視界計算を行う
+w.Renderer interfaceを実装
+
+				
+				
+				
+			
+				
+				<h3 id="VisionSystem.String">func (VisionSystem) <a href="http://localhost:8888/src/github.com/kijimaD/ruins/lib/systems/vision.go?s=2203:2242#L72">String</a>
+					<a class="permalink" href="index.html#VisionSystem.String">&#xb6;</a>
+					
+					
+				</h3>
+				<pre>func (sys <a href="index.html#VisionSystem">VisionSystem</a>) String() <a href="http://localhost:8888/pkg/builtin/#string">string</a></pre>
+				<p>String はシステム名を返す
+w.Renderer interfaceを実装
+
+				
+				
+				
 			
 		
 	
