@@ -8,7 +8,17 @@ import (
 )
 
 // TurnSystem はターン管理を行うシステム
-func TurnSystem(world w.World) error {
+type TurnSystem struct{}
+
+// String はシステム名を返す
+// w.Updater interfaceを実装
+func (sys TurnSystem) String() string {
+	return "TurnSystem"
+}
+
+// Update はターン管理を行う
+// w.Updater interfaceを実装
+func (sys *TurnSystem) Update(world w.World) error {
 	turnManager := world.Resources.TurnManager.(*turns.TurnManager)
 
 	switch turnManager.TurnPhase {
@@ -57,14 +67,15 @@ func processTurnEnd(world w.World) error {
 		return err
 	}
 
-	// Deadエンティティの削除処理
-	if err := DeadCleanupSystem(world); err != nil {
-		return err
-	}
-
-	// 自動相互作用の実行
-	if err := AutoInteractionSystem(world); err != nil {
-		return err
+	for _, updater := range []w.Updater{
+		&DeadCleanupSystem{},
+		&AutoInteractionSystem{},
+	} {
+		if sys, ok := world.Updaters[updater.String()]; ok {
+			if err := sys.Update(world); err != nil {
+				return err
+			}
+		}
 	}
 
 	// TODO: ターン終了時の共通処理をここに追加

@@ -75,7 +75,17 @@ func ClearVisionCaches() {
 }
 
 // VisionSystem はタイルごとの視界を管理する（暗闇描画はRenderSpriteSystemで行う）
-func VisionSystem(world w.World, _ *ebiten.Image) {
+type VisionSystem struct{}
+
+// String はシステム名を返す
+// w.Renderer interfaceを実装
+func (sys VisionSystem) String() string {
+	return "VisionSystem"
+}
+
+// Draw は視界計算を行う
+// w.Renderer interfaceを実装
+func (sys *VisionSystem) Draw(world w.World, _ *ebiten.Image) error {
 	// プレイヤー位置を取得
 	var playerGridElement *gc.GridElement
 	world.Manager.Join(
@@ -86,7 +96,7 @@ func VisionSystem(world w.World, _ *ebiten.Image) {
 	}))
 
 	if playerGridElement == nil {
-		return
+		return nil
 	}
 
 	// タイル座標をピクセル座標に変換
@@ -139,6 +149,7 @@ func VisionSystem(world w.World, _ *ebiten.Image) {
 		playerPositionCache.isInitialized = true
 	}
 	// 距離に応じた段階的暗闇の描画はRenderSpriteSystemで行う
+	return nil
 }
 
 // TileVisibility はタイルの可視性を表す

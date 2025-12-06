@@ -29,7 +29,18 @@ type spriteImageCacheKey struct {
 	SpriteKey       string
 }
 
-var spriteImageCache = make(map[spriteImageCacheKey]*ebiten.Image)
+// RenderSpriteSystem はスプライト描画システム
+// キャッシュを保持し、描画処理を行う
+type RenderSpriteSystem struct {
+	spriteImageCache map[spriteImageCacheKey]*ebiten.Image
+}
+
+// NewRenderSpriteSystem はRenderSpriteSystemを初期化する
+func NewRenderSpriteSystem() *RenderSpriteSystem {
+	return &RenderSpriteSystem{
+		spriteImageCache: make(map[spriteImageCacheKey]*ebiten.Image),
+	}
+}
 
 // SetTranslate はカメラを考慮した画像配置オプションをセットする
 // TODO: ズーム率を追加する
@@ -75,8 +86,15 @@ func SetTranslate(world w.World, op *ebiten.DrawImageOptions) {
 	op.GeoM.Translate(float64(cx), float64(cy))
 }
 
-// RenderSpriteSystem は (下) タイル -> 暗闇 -> 光源グロー -> 影 -> スプライト (上) の順に表示する
-func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
+// String はシステム名を返す
+// w.Renderer interfaceを実装
+func (sys RenderSpriteSystem) String() string {
+	return "RenderSpriteSystem"
+}
+
+// Draw は (下) タイル -> 暗闇 -> 光源グロー -> 影 -> スプライト (上) の順に表示する
+// w.Renderer interfaceを実装
+func (sys *RenderSpriteSystem) Draw(world w.World, screen *ebiten.Image) error {
 	// 現在の視界データを取得（全描画で使用）
 	visibilityData := GetCurrentVisibilityData()
 
@@ -84,11 +102,16 @@ func RenderSpriteSystem(world w.World, screen *ebiten.Image) {
 	initializeShadowImages()
 
 	// 各種描画処理
-	renderFloorLayer(world, screen, visibilityData)            // 床レイヤー（タイル・アイテム）を描画
-	renderDistanceBasedDarkness(world, screen, visibilityData) // 床タイルに暗闇オーバーレイ
-	renderLightSourceGlow(world, screen, visibilityData)       // 床タイルに光源グロー
-	renderShadows(world, screen, visibilityData)               // 影を描画
-	renderSprites(world, screen, visibilityData)               // 物体を描画
+	if err := sys.renderFloorLayer(world, screen, visibilityData); err != nil { // 床レイヤー（タイル・アイテム）を描画
+		return err
+	}
+	renderDistanceBasedDarkness(world, screen, visibilityData)               // 床タイルに暗闇オーバーレイ
+	sys.renderLightSourceGlow(world, screen, visibilityData)                 // 床タイルに光源グロー
+	sys.renderShadows(world, screen, visibilityData)                         // 影を描画
+	if err := sys.renderSprites(world, screen, visibilityData); err != nil { // 物体を描画
+		return err
+	}
+	return nil
 }
 
 // initializeShadowImages は影画像を初期化する
@@ -112,7 +135,7 @@ func initializeShadowImages() {
 }
 
 // renderFloorLayer は床レイヤー（タイル・地面に落ちているアイテム）を描画する
-func renderFloorLayer(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+func (sys *RenderSpriteSystem) renderFloorLayer(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) error {
 	iSprite := 0
 	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement).Size())
 	world.Manager.Join(
@@ -151,21 +174,22 @@ func renderFloorLayer(world w.World, screen *ebiten.Image, visibilityData map[st
 			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize/2)),
 			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize/2)),
 		}
-		if err := drawImage(world, screen, spriteRender, pos, 0); err != nil {
+		if err := sys.drawImage(world, screen, spriteRender, pos, 0); err != nil {
 			// エンティティ情報を追加してエラーを詳細化
 			var entityInfo string
 			if entity.HasComponent(world.Components.Name) {
 				name := world.Components.Name.Get(entity).(*gc.Name)
 				entityInfo = fmt.Sprintf("Name: %s", name.Name)
 			}
-			panic(fmt.Errorf("entity %d at (%d,%d), SpriteSheet: '%s', SpriteKey: '%s', %s: %w",
-				entity, gridElement.X, gridElement.Y, spriteRender.SpriteSheetName, spriteRender.SpriteKey, entityInfo, err))
+			return fmt.Errorf("entity %d at (%d,%d), SpriteSheet: '%s', SpriteKey: '%s', %s: %w",
+				entity, gridElement.X, gridElement.Y, spriteRender.SpriteSheetName, spriteRender.SpriteKey, entityInfo, err)
 		}
 	}
+	return nil
 }
 
 // renderLightSourceGlow は光源タイルに明るいオーバーレイを描画する
-func renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+func (sys *RenderSpriteSystem) renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	// カメラ位置とスケールを取得
 	var cameraPos gc.Position
 	cameraScale := 1.0
@@ -219,7 +243,7 @@ func renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData m
 			SpriteSheetName: "glow",
 			SpriteKey:       fmt.Sprintf("%d,%d,%d", lightSource.Color.R, lightSource.Color.G, lightSource.Color.B),
 		}
-		glowImg, exists := spriteImageCache[cacheKey]
+		glowImg, exists := sys.spriteImageCache[cacheKey]
 		if !exists {
 			glowImg = ebiten.NewImage(tileSize, tileSize)
 			glowColor := color.RGBA{
@@ -229,8 +253,8 @@ func renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData m
 				A: 80,
 			}
 			glowImg.Fill(glowColor)
-			if len(spriteImageCache) < 1000 {
-				spriteImageCache[cacheKey] = glowImg
+			if len(sys.spriteImageCache) < 1000 {
+				sys.spriteImageCache[cacheKey] = glowImg
 			}
 		}
 
@@ -242,7 +266,7 @@ func renderLightSourceGlow(world w.World, screen *ebiten.Image, visibilityData m
 }
 
 // renderSprites はスプライトを描画する
-func renderSprites(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+func (sys *RenderSpriteSystem) renderSprites(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) error {
 	var entities []ecs.Entity
 
 	// Props を収集
@@ -292,14 +316,15 @@ func renderSprites(world w.World, screen *ebiten.Image, visibilityData map[strin
 			X: gc.Pixel(int(gridElement.X)*int(consts.TileSize) + int(consts.TileSize)/2),
 			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
 		}
-		if err := drawImage(world, screen, spriteRender, pos, 0); err != nil {
-			panic(err)
+		if err := sys.drawImage(world, screen, spriteRender, pos, 0); err != nil {
+			return err
 		}
 	}
+	return nil
 }
 
 // renderShadows は物体と壁の影を描画する
-func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+func (sys *RenderSpriteSystem) renderShadows(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
 	// 物体の影
 	world.Manager.Join(
 		world.Components.SpriteRender,
@@ -399,7 +424,7 @@ func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[strin
 		}
 
 		// 影画像を生成（キャッシュあり）
-		wallShadow := getWallShadowImage(shadowAlpha)
+		wallShadow := sys.getWallShadowImage(shadowAlpha)
 		if wallShadow == nil {
 			return
 		}
@@ -412,7 +437,7 @@ func renderShadows(world w.World, screen *ebiten.Image, visibilityData map[strin
 }
 
 // getWallShadowImage は指定した透明度の壁の影画像を取得する
-func getWallShadowImage(alpha uint8) *ebiten.Image {
+func (sys *RenderSpriteSystem) getWallShadowImage(alpha uint8) *ebiten.Image {
 	// キャッシュキーを生成
 	cacheKey := spriteImageCacheKey{
 		SpriteSheetName: "wall_shadow",
@@ -420,7 +445,7 @@ func getWallShadowImage(alpha uint8) *ebiten.Image {
 	}
 
 	// キャッシュから取得
-	if img, exists := spriteImageCache[cacheKey]; exists {
+	if img, exists := sys.spriteImageCache[cacheKey]; exists {
 		return img
 	}
 
@@ -434,18 +459,18 @@ func getWallShadowImage(alpha uint8) *ebiten.Image {
 	img := ebiten.NewImage(wallWidth, wallHeight)
 	img.Fill(color.RGBA{0, 0, 0, alpha})
 
-	spriteImageCache[cacheKey] = img
+	sys.spriteImageCache[cacheKey] = img
 
 	return img
 }
 
-func getImage(world w.World, spriteRender *gc.SpriteRender) (*ebiten.Image, error) {
+func (sys *RenderSpriteSystem) getImage(world w.World, spriteRender *gc.SpriteRender) (*ebiten.Image, error) {
 	var result *ebiten.Image
 	key := spriteImageCacheKey{
 		SpriteSheetName: spriteRender.SpriteSheetName,
 		SpriteKey:       spriteRender.SpriteKey,
 	}
-	if v, ok := spriteImageCache[key]; ok {
+	if v, ok := sys.spriteImageCache[key]; ok {
 		result = v
 	} else {
 		// Resourcesからスプライトシートを取得
@@ -473,13 +498,13 @@ func getImage(world w.World, spriteRender *gc.SpriteRender) (*ebiten.Image, erro
 		bottom := min(textureHeight, sprite.Y+sprite.Height)
 
 		result = texture.Image.SubImage(image.Rect(left, top, right, bottom)).(*ebiten.Image)
-		spriteImageCache[key] = result
+		sys.spriteImageCache[key] = result
 	}
 
 	return result, nil
 }
 
-func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) error {
+func (sys *RenderSpriteSystem) drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRender, pos *gc.Position, angle float64) error {
 	// Resourcesからスプライトシートを取得
 	if world.Resources.SpriteSheets == nil {
 		return fmt.Errorf("SpriteSheets が nil です")
@@ -501,7 +526,7 @@ func drawImage(world w.World, screen *ebiten.Image, spriteRender *gc.SpriteRende
 	op.GeoM.Translate(float64(pos.X), float64(pos.Y))
 	SetTranslate(world, op)
 
-	img, err := getImage(world, spriteRender)
+	img, err := sys.getImage(world, spriteRender)
 	if err != nil {
 		return err
 	}

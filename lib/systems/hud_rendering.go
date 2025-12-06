@@ -32,10 +32,24 @@ func NewHUDRenderingSystem(world w.World) *HUDRenderingSystem {
 	}
 }
 
+// String はシステム名を返す
+// w.Updater と w.Renderer のインターフェースを実装する
+func (sys HUDRenderingSystem) String() string {
+	return "HUDRenderingSystem"
+}
+
+// Draw はHUD描画を行う
+// w.Renderer interfaceを実装
+func (sys *HUDRenderingSystem) Draw(world w.World, screen *ebiten.Image) error {
+	sys.Run(world, screen)
+	return nil
+}
+
 // Update はHUDシステム全体を更新する
-func (sys *HUDRenderingSystem) Update(world w.World) {
+// w.Updater interfaceを実装
+func (sys *HUDRenderingSystem) Update(world w.World) error {
 	if sys == nil || !sys.enabled {
-		return
+		return nil
 	}
 
 	// 各ウィジェットの更新処理
@@ -54,6 +68,7 @@ func (sys *HUDRenderingSystem) Update(world w.World) {
 	if sys.currencyDisplay != nil {
 		sys.currencyDisplay.Update(world)
 	}
+	return nil
 }
 
 // Run はHUD描画システムのメイン処理を実行する

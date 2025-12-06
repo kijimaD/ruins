@@ -16,6 +16,7 @@ import (
 	es "github.com/kijimaD/ruins/lib/engine/states"
 	"github.com/kijimaD/ruins/lib/loader"
 	gr "github.com/kijimaD/ruins/lib/resources"
+	gs "github.com/kijimaD/ruins/lib/systems"
 	w "github.com/kijimaD/ruins/lib/world"
 )
 
@@ -180,6 +181,9 @@ func InitWorld(minGameWidth int, minGameHeight int) (w.World, error) {
 	}
 	gameResource.SetStateEvent(gr.NoneEvent{})
 	world.Resources.Dungeon = gameResource
+
+	// initialize systems
+	world.Updaters, world.Renderers = gs.InitializeSystems(world)
 
 	return world, nil
 }

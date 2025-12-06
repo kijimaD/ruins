@@ -142,8 +142,6 @@ func (st *DungeonState) OnStop(world w.World) error {
 
 // Update はゲームステートの更新処理を行う
 func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
-	gs.AnimationSystem(world)
-
 	// キー入力をActionに変換
 	if action, ok := st.HandleInput(); ok {
 		if transition, err := st.DoAction(world, action); err != nil {
@@ -153,11 +151,18 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 		}
 	}
 
-	if err := gs.TurnSystem(world); err != nil {
-		return es.Transition[w.World]{}, err
+	for _, updater := range []w.Updater{
+		&gs.AnimationSystem{},
+		&gs.TurnSystem{},
+		&gs.CameraSystem{},
+		&gs.HUDRenderingSystem{},
+	} {
+		if sys, ok := world.Updaters[updater.String()]; ok {
+			if err := sys.Update(world); err != nil {
+				return es.Transition[w.World]{}, err
+			}
+		}
 	}
-	// 移動処理の後にカメラ更新
-	gs.CameraSystem(world)
 
 	// プレイヤー死亡チェック
 	if st.checkPlayerDeath(world) {
@@ -181,9 +186,18 @@ func (st *DungeonState) Update(world w.World) (es.Transition[w.World], error) {
 func (st *DungeonState) Draw(world w.World, screen *ebiten.Image) error {
 	screen.DrawImage(baseImage, nil)
 
-	gs.RenderSpriteSystem(world, screen)
-	gs.VisionSystem(world, screen)
-	gs.HUDSystem(world, screen) // HUD systemでメッセージも描画
+	for _, renderer := range []w.Renderer{
+		&gs.RenderSpriteSystem{},
+		&gs.VisionSystem{},
+		&gs.HUDRenderingSystem{},
+	} {
+		if sys, ok := world.Renderers[renderer.String()]; ok {
+			if err := sys.Draw(world, screen); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 

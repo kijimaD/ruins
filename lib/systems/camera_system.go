@@ -9,7 +9,17 @@ import (
 )
 
 // CameraSystem はカメラの追従とズーム処理を行う
-func CameraSystem(world w.World) {
+type CameraSystem struct{}
+
+// String はシステム名を返す
+// w.Updater interfaceを実装
+func (sys CameraSystem) String() string {
+	return "CameraSystem"
+}
+
+// Update はカメラの追従とズーム処理を行う
+// w.Updater interfaceを実装
+func (sys *CameraSystem) Update(world w.World) error {
 	var playerGridElement *gc.GridElement
 
 	// プレイヤー位置を取得
@@ -73,4 +83,5 @@ func CameraSystem(world w.World) {
 			}
 		}
 	}))
+	return nil
 }
