@@ -102,11 +102,15 @@ func (sys *RenderSpriteSystem) Draw(world w.World, screen *ebiten.Image) error {
 	initializeShadowImages()
 
 	// 各種描画処理
-	sys.renderFloorLayer(world, screen, visibilityData)        // 床レイヤー（タイル・アイテム）を描画
-	renderDistanceBasedDarkness(world, screen, visibilityData) // 床タイルに暗闇オーバーレイ
-	sys.renderLightSourceGlow(world, screen, visibilityData)   // 床タイルに光源グロー
-	sys.renderShadows(world, screen, visibilityData)           // 影を描画
-	sys.renderSprites(world, screen, visibilityData)           // 物体を描画
+	if err := sys.renderFloorLayer(world, screen, visibilityData); err != nil { // 床レイヤー（タイル・アイテム）を描画
+		return err
+	}
+	renderDistanceBasedDarkness(world, screen, visibilityData)               // 床タイルに暗闇オーバーレイ
+	sys.renderLightSourceGlow(world, screen, visibilityData)                 // 床タイルに光源グロー
+	sys.renderShadows(world, screen, visibilityData)                         // 影を描画
+	if err := sys.renderSprites(world, screen, visibilityData); err != nil { // 物体を描画
+		return err
+	}
 	return nil
 }
 
@@ -131,7 +135,7 @@ func initializeShadowImages() {
 }
 
 // renderFloorLayer は床レイヤー（タイル・地面に落ちているアイテム）を描画する
-func (sys *RenderSpriteSystem) renderFloorLayer(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+func (sys *RenderSpriteSystem) renderFloorLayer(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) error {
 	iSprite := 0
 	entities := make([]ecs.Entity, world.Manager.Join(world.Components.SpriteRender, world.Components.GridElement).Size())
 	world.Manager.Join(
@@ -177,10 +181,11 @@ func (sys *RenderSpriteSystem) renderFloorLayer(world w.World, screen *ebiten.Im
 				name := world.Components.Name.Get(entity).(*gc.Name)
 				entityInfo = fmt.Sprintf("Name: %s", name.Name)
 			}
-			panic(fmt.Errorf("entity %d at (%d,%d), SpriteSheet: '%s', SpriteKey: '%s', %s: %w",
-				entity, gridElement.X, gridElement.Y, spriteRender.SpriteSheetName, spriteRender.SpriteKey, entityInfo, err))
+			return fmt.Errorf("entity %d at (%d,%d), SpriteSheet: '%s', SpriteKey: '%s', %s: %w",
+				entity, gridElement.X, gridElement.Y, spriteRender.SpriteSheetName, spriteRender.SpriteKey, entityInfo, err)
 		}
 	}
+	return nil
 }
 
 // renderLightSourceGlow は光源タイルに明るいオーバーレイを描画する
@@ -261,7 +266,7 @@ func (sys *RenderSpriteSystem) renderLightSourceGlow(world w.World, screen *ebit
 }
 
 // renderSprites はスプライトを描画する
-func (sys *RenderSpriteSystem) renderSprites(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) {
+func (sys *RenderSpriteSystem) renderSprites(world w.World, screen *ebiten.Image, visibilityData map[string]TileVisibility) error {
 	var entities []ecs.Entity
 
 	// Props を収集
@@ -312,9 +317,10 @@ func (sys *RenderSpriteSystem) renderSprites(world w.World, screen *ebiten.Image
 			Y: gc.Pixel(int(gridElement.Y)*int(consts.TileSize) + int(consts.TileSize)/2),
 		}
 		if err := sys.drawImage(world, screen, spriteRender, pos, 0); err != nil {
-			panic(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // renderShadows は物体と壁の影を描画する
